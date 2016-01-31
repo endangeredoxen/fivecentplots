@@ -619,7 +619,7 @@ def plot(df, x, y, **kwargs):
         row_label_ws'] = kwargs.get('row_label_ws', fcp_params['rc_label_ws'])
         row_padding'] = kwargs.get('row_padding', fcp_params['row_padding'])
         rows'] = kwargs.get('rows', None)
-        save_ext'] = kwargs.get('save_ext', 'png')
+        save_ext (str)'] = kwargs.get('save_ext', 'png')
         save_name'] = kwargs.get('save_name', None)
         save_path'] = kwargs.get('save_path', None)
         sci_x'] = kwargs.get('sci_x', False)
