@@ -6,15 +6,16 @@ import matplotlib as mpl
 #########################################################
 fcp_params = {'ax_fig_ws'            : 50,
               'ax_leg_ws'            : 20,
+              'ax_label_pad'         : 4,
               'ax_size'              : [400,400],  # [width, height]
               'col_padding'          : 30,
               'cols'                 : 1,
               'dpi'                  : 100,
               'fig_ax_ws'            : 80,
               'fig_title_ws'         : 10,
-              'fs_ax_label'          : 14,
-              'fs_rc_groups'         : 10,
-              'fs_ticks'             : 12,
+              'label_font_size'      : 14,
+              'label_style'          : 'italic',
+              'label_weight'         : 'bold',
               'leg_bkgrd'            : 'white',
               'leg_border'           : 'white',
               'leg_fig_ws'           : 10,
@@ -24,9 +25,9 @@ fcp_params = {'ax_fig_ws'            : 50,
               'leg_title'            : '',
               'marker_size'          : 7,
               'rc_label_edge_color'  : '#aaaaaa',
-              'rc_label_fill_color'  : '#bbbbbb',
+              'rc_label_fill_color'  : '#969ab3',
               'rc_label_font_size'   : 14,
-              'rc_label_text_color'  : '#800000',
+              'rc_label_text_color'  : '#ffffff',
               'rc_label_text_style'  : 'bold',
               'rc_label_size'        : 25,
               'rc_label_ws'          : 10,
@@ -35,9 +36,11 @@ fcp_params = {'ax_fig_ws'            : 50,
               'tick_font_size'       : 12,
               'title_ax_ws'          : 20,
               'title_h'              : 40,
-              'title_fill_color'     : '#bbbbbb',
-              'title_edge_color'     : '#aaaaaa',
-              'title_text_color'     : '#ff0a0a',
+              'title_fill_color'     : '#ffffff',
+              'title_font_size'      : 18,
+              'title_edge_color'     : '#ffffff',
+              'title_text_color'     : '#333333',
+              'title_text_style'     : 'bold',
               }
 
 #########################################################
@@ -167,7 +170,7 @@ jmp_spectral = mpl.colors.LinearSegmentedColormap(
 ####################################################
 # Default marker scheme
 ####################################################
-markers = ['o', '+', 's', 'x', 'd', r'$Y$', '^', r'$Z', 'v', '\infty', '\#', '<', u'\u2B21', u'\u263A', '>', u'\u29C6',
+markers = ['o', '+', 's', 'x', 'd', 'Y', '^', 'Z', 'v', '\infty', '\#', '<', u'\u2B21', u'\u263A', '>', u'\u29C6',
            '\$', u'\u2B14', u'\u2B1A', u'\u25A6', u'\u229E', u'\u22A0', u'\u22A1', u'\u20DF', '\gamma', '\sigma', '\star']
 
 # '\\alpha', '\\beta', '\gamma', '\sigma','\infty', \
