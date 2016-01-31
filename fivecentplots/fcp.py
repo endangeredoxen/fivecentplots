@@ -67,7 +67,7 @@ def add_curves(plotter, x, y, color='k', marker='o', points=False, line=True,
         return lines
 
 
-def add_label(label, pos, axis, rotation, facecolor='#ffffff',
+def add_label(label, pos, axis, rotation, fillcolor='#ffffff',
               edgecolor='#aaaaaa', color='#666666', weight='bold',
               fontsize=14):
     """ Add a label to the plot
@@ -85,7 +85,7 @@ def add_label(label, pos, axis, rotation, facecolor='#ffffff',
         pos:
         axis:
         rotation:
-        facecolor:
+        fillcolor:
         edgecolor:
         color:
         weight:
@@ -99,7 +99,7 @@ def add_label(label, pos, axis, rotation, facecolor='#ffffff',
     # Define the label background
     rect = patches.Rectangle((pos[0], pos[1]), pos[2], pos[3],
                              fill=True, transform=axis.transAxes,
-                             facecolor=facecolor, edgecolor=edgecolor,
+                             facecolor=fillcolor, edgecolor=edgecolor,
                              clip_on=False, zorder=-1)
     axis.add_patch(rect)
 
@@ -128,25 +128,47 @@ def boxplot(df, y, **kwargs):
     """
 
     kw = {}
+    kw['ax_fig_ws'] = kwargs.get('ax_fig_ws', fcp_params['ax_fig_ws'])
     kw['ax_hlines'] = kwargs.get('ax_hlines', [])
     kw['ax_label_pad'] = kwargs.get('ax_label_pad', 0)
     kw['ax_lim'] = kwargs.get('ax_lim', [])
     kw['ax_lim_pad'] = kwargs.get('ax_lim_pad', 0.05)
     kw['ax_scale'] = kwargs.get('ax_scale', None)
     kw['ax_size'] = kwargs.get('ax_size', fcp_params['ax_size'])
+    kw['bp_divider_color'] = kwargs.get('bp_divider_color',
+                                        fcp_params['bp_divider_color'])
+    kw['bp_labels_on'] = kwargs.get('bp_labels_on', True)
+    kw['bp_label_size'] = kwargs.get('bp_label_size',
+                                     fcp_params['bp_label_size'])
+    kw['bp_label_edge_color'] = kwargs.get('bp_label_edge_color',
+                                           fcp_params['bp_label_edge_color'])
+    kw['bp_label_fill_color'] = kwargs.get('bp_label_fill_color',
+                                           fcp_params['bp_label_fill_color'])
+    kw['bp_label_font_size'] = kwargs.get('bp_label_font_size',
+                                          fcp_params['bp_label_font_size'])
+    kw['bp_label_text_color'] = kwargs.get('bp_label_text_color',
+                                           fcp_params['bp_label_text_color'])
+    kw['bp_label_text_style'] = kwargs.get('bp_label_text_style',
+                                           fcp_params['bp_label_text_style'])
+    kw['bp_label_text_weight'] = kwargs.get('bp_label_text_weight',
+                                            fcp_params['bp_label_text_weight'])
+    kw['bp_name_font_size'] = kwargs.get('bp_name_font_size',
+                                          fcp_params['bp_name_font_size'])
+    kw['bp_name_text_color'] = kwargs.get('bp_name_text_color',
+                                           fcp_params['bp_name_text_color'])
+    kw['bp_name_text_style'] = kwargs.get('bp_name_text_style',
+                                           fcp_params['bp_name_text_style'])
+    kw['bp_name_text_weight'] = kwargs.get('bp_name_text_weight',
+                                            fcp_params['bp_name_text_weight'])
     kw['colors'] = kwargs.get('colors', palette)
     kw['connect_means'] = kwargs.get('connect_means', False)
+    kw['dividers_on'] = kwargs.get('dividers_on', True)
     kw['fig_groups'] = kwargs.get('fig_groups', None)
     kw['fig_group_path'] = kwargs.get('fig_group_path', False)
     kw['filename'] = kwargs.get('filename', None)
     kw['filter'] = kwargs.get('filter', None)
-    kw['group_labels_on'] = kwargs.get('group_labels_on', True)
-    kw['group_label_size'] = kwargs.get('group_label_size',
-                                      fcp_params['rc_label_size'])
-    kw['group_label_ws'] = kwargs.get('group_label_ws',
-                                      fcp_params['rc_label_ws'])
     kw['groups'] = kwargs.get('groups', None)
-    kw['jitter'] = kwargs.get('jitter', True)
+    kw['jitter'] = kwargs.get('jitter', False)
     kw['label_font_size'] = kwargs.get('label_font_size',
                                        fcp_params['label_font_size'])
     kw['label_style'] = kwargs.get('label_style', fcp_params['label_style'])
@@ -163,7 +185,7 @@ def boxplot(df, y, **kwargs):
     kw['save_ext'] = kwargs.get('save_ext', 'png')
     kw['save_name'] = kwargs.get('save_name', None)
     kw['save_path'] = kwargs.get('save_path', None)
-
+    kw['show'] = kwargs.get('show', False)
     kw['tick_font_size'] = kwargs.get('tick_font_size',
                                       fcp_params['tick_font_size'])
     kw['title'] = kwargs.get('title', None)
@@ -183,36 +205,29 @@ def boxplot(df, y, **kwargs):
     kw['yticks'] = kwargs.get('yticks', None)
 
 
-    # # Turn off interactive plotting
+    # Turn off interactive plotting
     mpl.pylab.ioff()
-    #
-    # # Convert column types
-    # df[y] = df[y].astype(float)
-    #
+
+    # Clear out existing plot buffer
+    mpl.pyplot.close('all')
+
+    # Convert column types
+    df[y] = df[y].astype(float)
+
     # # Dummy-proof colors
     # if type(kw['colors'][0]) is not tuple:
     #     kw['colors'] = [kw['colors']]
     # else:
     #     kw['colors'] = list(kw['colors'])
     # kw['colors'] += [f for f in palette if f not in kw['colors']]
-    #
-    # # Filter the dataframe
-    # if kw['filter']:
-    #     df = df_filter(df, kw['filter'])
-    # if len(df) == 0:
-    #     print('No data remains after filter.  Killing plot.')
-    #     return None
-    #
-    # # Handle multiple y-values
-    # if type(y) is not list:
-    #     y = [y]
-    # if kw['twinx']:
-    #     kw['row_label_ws'] = fcp_params['fig_ax_ws']
-    #
-    #
-    # # Clear out existing plot buffer
-    # mpl.pyplot.close('all')
-    #
+
+    # Filter the dataframe
+    if kw['filter']:
+        df = df_filter(df, kw['filter'])
+    if len(df) == 0:
+        print('No data remains after filter.  Killing plot.')
+        return None
+
     # # Set up the figure grouping and iterate (each value corresponds to a
     # #  separate figure)
     # if kw['fig_groups'] is not None:
@@ -222,22 +237,28 @@ def boxplot(df, y, **kwargs):
     #         kw['fig_items'] = list(df[kw['fig_groups']].unique())
     # else:
     #     kw['fig_items'] = [None]
-    #
-    # # Eliminate title buffer if no title is provided
-    # if not kw['title']:
-    #     kw['title_h'] = 0
-    #
+
+    # Eliminate title buffer if no title is provided
+    if not kw['title']:
+        kw['title_h'] = 0
+
     # # Iterate over discrete figures
     # for ifig, fig_item in enumerate(kw['fig_items']):
     #
     #     # Make a data subset and filter
     #     df_fig = df.copy()
 
-
+    if kw['bp_labels_on'] and kw['groups'] is not None:
+        kw['ax_fig_ws'] = kw['bp_label_size']*(len(kw['groups'])+0.5)
+        kw['ax_leg_fig_ws'] = max([len(gr) for gr in kw['groups']]) * \
+                              kw['bp_label_font_size'] + \
+                              0.05*kw['ax_size'][1] # + 10
 
     data = []
     labels = []
     dividers = []
+    means = []
+    medians = []
 
     # Format the figure dimensions
     design = FigDesign(**kw)
@@ -255,6 +276,8 @@ def boxplot(df, y, **kwargs):
 
         # Get the group indices in order
         for i, (n, g) in enumerate(groups):
+            if type(n) is not tuple:
+                n = [n]
             indices[i] = [f for f in n]
         indices = indices.T
         changes = indices.copy()
@@ -273,55 +296,147 @@ def boxplot(df, y, **kwargs):
         for i, (n,g) in enumerate(groups):
 
             data += [g[y]]
+            means += [g[y].mean()]
+            medians += [g[y].median()]
             if type(n) is not tuple:
                 nn = [n]
             else:
                 nn = [str(f) for f in n]
             labels += ['']
 
-            if changes[cols[-2]].iloc[i] == 1 and len(kw['groups']) > 1:
+            if len(changes.columns) > 2 and changes[cols[-2]].iloc[i] == 1 \
+                    and len(kw['groups']) > 1:
                 dividers += [i+0.5]
+
+            if kw['points']:
+                if kw['jitter']:
+                    x = np.random.normal(i+1, 0.04, size=len(g[y]))
+                else:
+                    x = np.array([i+1]*len(g[y]))
+                ax.plot(x, g[y],
+                        color=palette[1],
+                        markersize=kw['marker_size'],
+                        marker='.',
+                        linestyle='none')
 
     else:
         data = df[y]
         labels = [y]
 
     # Plot
-    ax.boxplot(data, labels=labels)
+    bp = ax.boxplot(data, labels=labels,
+                    boxprops={'color': palette[0]},
+                    whiskerprops={'color': palette[0]},
+                    capprops={'color': palette[0]},
+                    medianprops={'color': palette[1]},
+                    )
     ax.xaxis.grid(False)
+    for flier in bp['fliers']:
+        flier.set(marker='+', markeredgecolor=palette[0]) # can't set with flierprops
+
 
     # Add divider lines
-    for d in dividers:
-        ax.axvline(d, linewidth=1, color='#bbbbbb')
+    if kw['dividers_on']:
+        for d in dividers:
+            ax.axvline(d, linewidth=1, color=kw['bp_divider_color'])
+
+    # Add mean/median connecting lines
+    if kw['connect_means']:
+        x = np.linspace(1, num_groups, num_groups)
+        ax.plot(x, means, color=palette[2])
 
     # Add labels
-    ax.set_ylabel(y)
-
+    if kw['ylabel'] is not None:
+        ax.set_ylabel(r'%s' % kw['ylabel'],
+                      fontsize=kw['label_font_size'],
+                      weight=kw['label_weight'],
+                      style=kw['label_style'])
 
     # Format the subplot spacing
     fig.subplots_adjust(
         left=design.left,
-        right=0.7,#design.right,
-        bottom=0.3,#design.bottom,
+        right=design.right,
+        bottom=design.bottom,
         top=design.top,
         hspace=1.0*design.row_padding/design.ax_h,
         wspace=1.0*design.col_padding/design.ax_w
     )
 
     # Add the grouping labels
-    num_cols = len(changes.columns)
-    for i in range(0, num_cols):
-        sub = changes[num_cols-1-i][changes[num_cols-1-i]==1]
-        for j in range(0, len(sub)):
-            label = indices.loc[sub.index[j], num_cols-1-i]
-            add_label(label, (j/len(sub), -0.1*(i+1), 1/len(sub), 0.1), ax, 0)
+    if kw['bp_labels_on']:
+        num_cols = len(changes.columns)
+        height = kw['bp_label_size']/kw['ax_size'][1]
+        for i in range(0, num_cols):
+            sub = changes[num_cols-1-i][changes[num_cols-1-i]==1]
+            for j in range(0, len(sub)):
+                label = indices.loc[sub.index[j], num_cols-1-i]
+                add_label(label,
+                          (j/len(sub), -height*(i+1), 1/len(sub), height),
+                          ax, 
+                          0,
+                          edgecolor=kw['bp_label_edge_color'],
+                          fillcolor=kw['bp_label_fill_color'],
+                          color=kw['bp_label_text_color'],
+                          fontsize=kw['bp_label_font_size'],
+                          weight=kw['bp_label_text_style'])
 
-    # Add the grouping labels
-    for i, g in enumerate(kw['groups']):
-        ax.text(1.05, -0.1*(i+1)+0.02, g , fontsize=12, transform=ax.transAxes)
+        # Add the grouping label names
+        for i, gr in enumerate(kw['groups']):
+            offset = (kw['bp_label_size']-kw['bp_label_font_size']) / \
+                     (2*kw['ax_size'][1])
+            ax.text(1.05, -height*(i+1)+offset, gr,
+                    fontsize=kw['bp_name_font_size'],
+                    color=kw['bp_name_text_color'],
+                    style=kw['bp_name_text_style'],
+                    weight=kw['bp_name_text_weight'],
+                    transform=ax.transAxes)
 
-    fig.show()
-    st()
+    if kw['title'] is not None:
+            if '@' in kw['title']:
+                r = re.search(r'\@(.*)\@', kw['title'])
+                val = r.group(1)
+                pos = r.span()
+                if val in df.columns:
+                    val = '%s' % df[val].iloc[0]
+                else:
+                    val = ''
+                kw['title'] = \
+                    kw['title'][0:pos[0]] + val + kw['title'][pos[1]:]
+            add_label('%s' % kw['title'],
+                      (design.title_left, design.title_bottom,
+                       design.title_w, design.title_h),
+                      ax, 0,
+                      edgecolor=kw['title_edge_color'],
+                      fillcolor=kw['title_fill_color'],
+                      color=kw['title_text_color'],
+                      fontsize=kw['title_font_size'],
+                      weight=kw['title_text_style']
+                      )
+
+
+    if not kw['filename']:
+        if kw['groups']:
+            groups = ' vs ' + \
+                     ', '.join([filename_label(f) for f in kw['groups']])
+        else:
+            groups = ''
+        filename = filename_label(y) + ' Boxplot' + \
+                   groups + '.' + kw['save_ext']
+    else:
+        filename = kw['filename'] + '.' + kw['save_ext']
+
+    if kw['save_path'] and kw['fig_group_path'] and kw['fig_groups']:
+        filename = os.path.join(kw['save_path'], fig_item, filename)
+    elif kw['save_path']:
+        filename = os.path.join(kw['save_path'], filename)
+
+    fig.savefig(filename)
+
+    if kw['show']:
+        # mpl.pyplot.show()
+        os.startfile(filename)
+
+
 
 
 def df_filter(df, filt):
@@ -1230,7 +1345,7 @@ def plot(df, x, y, **kwargs):
                                design.row_label_width, 1),
                               axes[ir, ic], 270, 
                               edgecolor=kw['rc_label_edge_color'],
-                              facecolor=kw['rc_label_fill_color'],
+                              fillcolor=kw['rc_label_fill_color'],
                               color=kw['rc_label_text_color'],
                               fontsize=kw['rc_label_font_size'],
                               weight=kw['rc_label_text_style'])
@@ -1243,7 +1358,7 @@ def plot(df, x, y, **kwargs):
                                1, design.col_label_height),
                               axes[ir, ic], 0, 
                               edgecolor=kw['rc_label_edge_color'],
-                              facecolor=kw['rc_label_fill_color'],
+                              fillcolor=kw['rc_label_fill_color'],
                               color=kw['rc_label_text_color'],
                               fontsize=kw['rc_label_font_size'],
                               weight=kw['rc_label_text_style'])
@@ -1276,7 +1391,7 @@ def plot(df, x, y, **kwargs):
                       (design.title_left, design.title_bottom, design.title_w, design.title_h), #pos (tuple): left, bottom, width, height
                       axes[0, 0], 0, 
                       edgecolor=kw['title_edge_color'],
-                      facecolor=kw['title_fill_color'],
+                      fillcolor=kw['title_fill_color'],
                       color=kw['title_text_color'],
                       fontsize=kw['title_font_size'],
                       weight=kw['title_text_style']

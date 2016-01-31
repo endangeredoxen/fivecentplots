@@ -58,8 +58,8 @@
           <file leaf-file-name="design.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/fivecentplots/design.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="-10.689655">
-                  <caret line="191" column="18" selection-start-line="191" selection-start-column="13" selection-end-line="191" selection-end-column="18" />
+                <state vertical-scroll-proportion="-19.689655">
+                  <caret line="181" column="0" selection-start-line="181" selection-start-column="0" selection-end-line="181" selection-end-column="0" />
                   <folding>
                     <element signature="e#0#36#0" expanded="true" />
                   </folding>
@@ -70,16 +70,17 @@
           <file leaf-file-name="fcp.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/fivecentplots/fcp.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.6441718">
-                  <caret line="320" column="37" selection-start-line="320" selection-start-column="37" selection-end-line="320" selection-end-column="37" />
+                <state vertical-scroll-proportion="0.4429448">
+                  <caret line="278" column="12" selection-start-line="278" selection-start-column="12" selection-end-line="278" selection-end-column="12" />
                   <folding>
                     <element signature="e#932#1768#0" expanded="false" />
                     <element signature="e#932#1114#1" expanded="false" />
                     <element signature="e#1159#1267#0" expanded="false" />
                     <element signature="e#1933#3015#0" expanded="false" />
-                    <element signature="e#10599#11496#0" expanded="false" />
-                    <element signature="e#11530#11738#0" expanded="false" />
-                    <element signature="e#11775#21246#1" expanded="false" />
+                    <element signature="e#16111#17008#0" expanded="false" />
+                    <element signature="e#17042#17250#0" expanded="false" />
+                    <element signature="e#17287#64379#0" expanded="false" />
+                    <marker date="1454261476186" expanded="true" signature="3566:8161" placeholder="..." />
                   </folding>
                 </state>
               </provider>
@@ -89,21 +90,21 @@
       </split-first>
       <split-second>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="plot_test.py" pinned="false" current-in-tab="true">
+          <file leaf-file-name="plot_test.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/fivecentplots/tests/plot_test.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.8530806">
-                  <caret line="48" column="73" selection-start-line="48" selection-start-column="73" selection-end-line="48" selection-end-column="73" />
+                <state vertical-scroll-proportion="0.0">
+                  <caret line="29" column="18" selection-start-line="29" selection-start-column="18" selection-end-line="29" selection-end-column="18" />
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="defaults.py" pinned="false" current-in-tab="false">
+          <file leaf-file-name="defaults.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/fivecentplots/defaults.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0">
-                  <caret line="6" column="10" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="10" />
+                <state vertical-scroll-proportion="0.26658767">
+                  <caret line="15" column="40" selection-start-line="15" selection-start-column="40" selection-end-line="15" selection-end-column="40" />
                   <folding />
                 </state>
               </provider>
@@ -131,16 +132,17 @@
         <option value="$PROJECT_DIR$/MANIFEST.in" />
         <option value="$PROJECT_DIR$/setup.py" />
         <option value="$PROJECT_DIR$/fivecentplots/tests/fake_data.csv" />
-        <option value="$PROJECT_DIR$/fivecentplots/defaults.py" />
         <option value="$PROJECT_DIR$/fivecentplots/tests/fake_data_box.csv" />
         <option value="$PROJECT_DIR$/fivecentplots/tests/plot_test.py" />
+        <option value="$PROJECT_DIR$/fivecentplots/design.py" />
+        <option value="$PROJECT_DIR$/fivecentplots/defaults.py" />
         <option value="$PROJECT_DIR$/fivecentplots/fcp.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="150" />
-    <option name="y" value="5" />
+    <option name="x" value="178" />
+    <option name="y" value="2" />
     <option name="width" value="1660" />
     <option name="height" value="981" />
   </component>
@@ -379,7 +381,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="150" y="5" width="1660" height="981" extended-state="0" />
+    <frame x="178" y="2" width="1660" height="981" extended-state="1" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.10097323" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
@@ -418,7 +420,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/fivecentplots/fcp.py</url>
-          <line>717</line>
+          <line>832</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
@@ -428,13 +430,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/fivecentplots/design.py</url>
-          <line>183</line>
+          <line>187</line>
           <option name="timeStamp" value="6" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/fivecentplots/fcp.py</url>
-          <line>326</line>
-          <option name="timeStamp" value="7" />
         </line-breakpoint>
       </breakpoints>
       <option name="time" value="8" />
@@ -469,9 +466,10 @@
             <element signature="e#932#1114#1" expanded="false" />
             <element signature="e#1159#1267#0" expanded="false" />
             <element signature="e#1933#3015#0" expanded="false" />
-            <element signature="e#10599#11496#0" expanded="false" />
-            <element signature="e#11530#11738#0" expanded="false" />
-            <element signature="e#11775#21246#1" expanded="false" />
+            <element signature="e#16111#17008#0" expanded="false" />
+            <element signature="e#17042#17250#0" expanded="false" />
+            <element signature="e#17287#64379#0" expanded="false" />
+            <marker date="1454261476186" expanded="true" signature="3566:8161" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -537,9 +535,10 @@
             <element signature="e#932#1114#1" expanded="false" />
             <element signature="e#1159#1267#0" expanded="false" />
             <element signature="e#1933#3015#0" expanded="false" />
-            <element signature="e#10599#11496#0" expanded="false" />
-            <element signature="e#11530#11738#0" expanded="false" />
-            <element signature="e#11775#21246#1" expanded="false" />
+            <element signature="e#16111#17008#0" expanded="false" />
+            <element signature="e#17042#17250#0" expanded="false" />
+            <element signature="e#17287#64379#0" expanded="false" />
+            <marker date="1454261476186" expanded="true" signature="3566:8161" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -571,9 +570,10 @@
             <element signature="e#932#1114#1" expanded="false" />
             <element signature="e#1159#1267#0" expanded="false" />
             <element signature="e#1933#3015#0" expanded="false" />
-            <element signature="e#10599#11496#0" expanded="false" />
-            <element signature="e#11530#11738#0" expanded="false" />
-            <element signature="e#11775#21246#1" expanded="false" />
+            <element signature="e#16111#17008#0" expanded="false" />
+            <element signature="e#17042#17250#0" expanded="false" />
+            <element signature="e#17287#64379#0" expanded="false" />
+            <marker date="1454261476186" expanded="true" signature="3566:8161" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -621,9 +621,10 @@
             <element signature="e#932#1114#1" expanded="false" />
             <element signature="e#1159#1267#0" expanded="false" />
             <element signature="e#1933#3015#0" expanded="false" />
-            <element signature="e#10599#11496#0" expanded="false" />
-            <element signature="e#11530#11738#0" expanded="false" />
-            <element signature="e#11775#21246#1" expanded="false" />
+            <element signature="e#16111#17008#0" expanded="false" />
+            <element signature="e#17042#17250#0" expanded="false" />
+            <element signature="e#17287#64379#0" expanded="false" />
+            <marker date="1454261476186" expanded="true" signature="3566:8161" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -671,9 +672,10 @@
             <element signature="e#932#1114#1" expanded="false" />
             <element signature="e#1159#1267#0" expanded="false" />
             <element signature="e#1933#3015#0" expanded="false" />
-            <element signature="e#10599#11496#0" expanded="false" />
-            <element signature="e#11530#11738#0" expanded="false" />
-            <element signature="e#11775#21246#1" expanded="false" />
+            <element signature="e#16111#17008#0" expanded="false" />
+            <element signature="e#17042#17250#0" expanded="false" />
+            <element signature="e#17287#64379#0" expanded="false" />
+            <marker date="1454261476186" expanded="true" signature="3566:8161" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -713,9 +715,10 @@
             <element signature="e#932#1114#1" expanded="false" />
             <element signature="e#1159#1267#0" expanded="false" />
             <element signature="e#1933#3015#0" expanded="false" />
-            <element signature="e#10599#11496#0" expanded="false" />
-            <element signature="e#11530#11738#0" expanded="false" />
-            <element signature="e#11775#21246#1" expanded="false" />
+            <element signature="e#16111#17008#0" expanded="false" />
+            <element signature="e#17042#17250#0" expanded="false" />
+            <element signature="e#17287#64379#0" expanded="false" />
+            <marker date="1454261476186" expanded="true" signature="3566:8161" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -755,9 +758,10 @@
             <element signature="e#932#1114#1" expanded="false" />
             <element signature="e#1159#1267#0" expanded="false" />
             <element signature="e#1933#3015#0" expanded="false" />
-            <element signature="e#10599#11496#0" expanded="false" />
-            <element signature="e#11530#11738#0" expanded="false" />
-            <element signature="e#11775#21246#1" expanded="false" />
+            <element signature="e#16111#17008#0" expanded="false" />
+            <element signature="e#17042#17250#0" expanded="false" />
+            <element signature="e#17287#64379#0" expanded="false" />
+            <marker date="1454261476186" expanded="true" signature="3566:8161" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -781,9 +785,10 @@
             <element signature="e#932#1114#1" expanded="false" />
             <element signature="e#1159#1267#0" expanded="false" />
             <element signature="e#1933#3015#0" expanded="false" />
-            <element signature="e#10599#11496#0" expanded="false" />
-            <element signature="e#11530#11738#0" expanded="false" />
-            <element signature="e#11775#21246#1" expanded="false" />
+            <element signature="e#16111#17008#0" expanded="false" />
+            <element signature="e#17042#17250#0" expanded="false" />
+            <element signature="e#17287#64379#0" expanded="false" />
+            <marker date="1454261476186" expanded="true" signature="3566:8161" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -823,9 +828,10 @@
             <element signature="e#932#1114#1" expanded="false" />
             <element signature="e#1159#1267#0" expanded="false" />
             <element signature="e#1933#3015#0" expanded="false" />
-            <element signature="e#10599#11496#0" expanded="false" />
-            <element signature="e#11530#11738#0" expanded="false" />
-            <element signature="e#11775#21246#1" expanded="false" />
+            <element signature="e#16111#17008#0" expanded="false" />
+            <element signature="e#17042#17250#0" expanded="false" />
+            <element signature="e#17287#64379#0" expanded="false" />
+            <marker date="1454261476186" expanded="true" signature="3566:8161" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -857,9 +863,10 @@
             <element signature="e#932#1114#1" expanded="false" />
             <element signature="e#1159#1267#0" expanded="false" />
             <element signature="e#1933#3015#0" expanded="false" />
-            <element signature="e#10599#11496#0" expanded="false" />
-            <element signature="e#11530#11738#0" expanded="false" />
-            <element signature="e#11775#21246#1" expanded="false" />
+            <element signature="e#16111#17008#0" expanded="false" />
+            <element signature="e#17042#17250#0" expanded="false" />
+            <element signature="e#17287#64379#0" expanded="false" />
+            <marker date="1454261476186" expanded="true" signature="3566:8161" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -903,36 +910,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/fivecentplots/defaults.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="6" column="10" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="10" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/fivecentplots/design.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-10.689655">
-          <caret line="191" column="18" selection-start-line="191" selection-start-column="13" selection-end-line="191" selection-end-column="18" />
-          <folding>
-            <element signature="e#0#36#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/fivecentplots/tests/fake_data.csv">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="155" column="25" selection-start-line="155" selection-start-column="25" selection-end-line="155" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/fivecentplots/tests/plot_test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.8530806">
-          <caret line="48" column="73" selection-start-line="48" selection-start-column="73" selection-end-line="48" selection-end-column="73" />
           <folding />
         </state>
       </provider>
@@ -945,18 +926,45 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/fivecentplots/tests/plot_test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="29" column="18" selection-start-line="29" selection-start-column="18" selection-end-line="29" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fivecentplots/design.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-19.689655">
+          <caret line="181" column="0" selection-start-line="181" selection-start-column="0" selection-end-line="181" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#36#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fivecentplots/defaults.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.26658767">
+          <caret line="15" column="40" selection-start-line="15" selection-start-column="40" selection-end-line="15" selection-end-column="40" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/fivecentplots/fcp.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6441718">
-          <caret line="320" column="37" selection-start-line="320" selection-start-column="37" selection-end-line="320" selection-end-column="37" />
+        <state vertical-scroll-proportion="0.4429448">
+          <caret line="278" column="12" selection-start-line="278" selection-start-column="12" selection-end-line="278" selection-end-column="12" />
           <folding>
             <element signature="e#932#1768#0" expanded="false" />
             <element signature="e#932#1114#1" expanded="false" />
             <element signature="e#1159#1267#0" expanded="false" />
             <element signature="e#1933#3015#0" expanded="false" />
-            <element signature="e#10599#11496#0" expanded="false" />
-            <element signature="e#11530#11738#0" expanded="false" />
-            <element signature="e#11775#21246#1" expanded="false" />
+            <element signature="e#16111#17008#0" expanded="false" />
+            <element signature="e#17042#17250#0" expanded="false" />
+            <element signature="e#17287#64379#0" expanded="false" />
+            <marker date="1454261476186" expanded="true" signature="3566:8161" placeholder="..." />
           </folding>
         </state>
       </provider>

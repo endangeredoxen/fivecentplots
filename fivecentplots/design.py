@@ -40,6 +40,8 @@ class FigDesign:
         # Handle kwargs and defaults
         self.ax_fig_ws       = kwargs.get('ax_fig_ws',
                                           fcp_params['ax_fig_ws'])
+        self.ax_leg_fig_ws   = kwargs.get('ax_leg_fig_ws',
+                                          fcp_params['ax_leg_fig_ws'])
         self.ax_label_pad    = kwargs.get('ax_label_pad',
                                           fcp_params['ax_label_pad'])
         self.ax_leg_ws       = kwargs.get('ax_leg_ws',
@@ -175,6 +177,8 @@ class FigDesign:
             self.leg_w = leg.get_window_extent().width + self.leg_border
             mpl.pyplot.close(fig)
             os.remove('dummy_legend.png')
+
+        self.leg_w = max(self.leg_w, self.ax_leg_fig_ws)
 
     def get_figure_size(self):
         """
