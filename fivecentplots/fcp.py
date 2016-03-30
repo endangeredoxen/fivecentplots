@@ -507,7 +507,6 @@ def filename_label(label):
     label = str(label)
     label = re.sub('\(.*?\)','', label)
     label = re.sub('\[.*?\]','', label)
-    l#label = label.replace(' ','')
     label = label.lstrip(' ').rstrip(' ')
 
     return label
