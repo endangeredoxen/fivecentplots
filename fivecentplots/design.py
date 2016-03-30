@@ -118,9 +118,9 @@ class FigDesign:
         else:
             self.col_labels = 0
         
-        # Update title position
-        if self.col_labels > 0:
-            self.title_ax_ws += self.col_labels
+        # # Update title position
+        # if self.col_labels > 0:
+            # self.title_ax_ws += self.col_labels
         
         # Weird spacing defaults out of our control
         self.fig_right_border = 6
@@ -193,7 +193,10 @@ class FigDesign:
                         self.title_ax_ws + self.ax_h*self.nrow + \
                         self.ax_fig_ws + self.row_padding*(self.nrow-1) + \
                         self.col_labels + self.ax_label_pad*self.ncol
-        self.leg_overflow = max(self.leg_h-self.fig_h_px*self.nrow, 0)
+        self.fig_only = self.ax_h*self.nrow + \
+                        self.ax_fig_ws + self.row_padding*(self.nrow-1) + \
+                        self.ax_label_pad*self.ncol
+        self.leg_overflow = max(self.leg_h-self.fig_only, 0)
         self.fig_w = self.fig_w_px/self.dpi
         self.fig_h = (self.fig_h_px+self.leg_overflow)/self.dpi
 
@@ -214,8 +217,9 @@ class FigDesign:
         Calculate the title position
         """
 
-        self.title_bottom = 1+self.title_ax_ws/self.ax_h
+        self.title_bottom = 1+(self.title_ax_ws+self.col_labels+self.ax_label_pad*self.ncol)/self.ax_h
         self.title_top = self.title_bottom+(self.title_ax_ws+self.title_h)/self.ax_h
+        
         self.title_h_px = self.title_h
         self.title_w_px = self.fig_w_px
         self.title_h = self.title_h/self.ax_h
