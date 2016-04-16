@@ -507,7 +507,6 @@ def filename_label(label):
     label = str(label)
     label = re.sub('\(.*?\)','', label)
     label = re.sub('\[.*?\]','', label)
-    l#label = label.replace(' ','')
     label = label.lstrip(' ').rstrip(' ')
 
     return label
@@ -1500,11 +1499,16 @@ def plot(df, x, y, **kwargs):
         elif kw['save_path']:
             filename = os.path.join(kw['save_path'], filename)
         
-        fig.savefig(filename)
+        try:
+            fig.savefig(filename)
+            
+            if kw['show']:
+                os.startfile(filename)
         
-        if kw['show']:
-            # mpl.pyplot.show()
-            os.startfile(filename)
+        except:
+            raise NameError('%s is not a valid filename!' % filename)    
+        
+        
         
         # Reset values for next loop
         if kw['title'] is not None:
