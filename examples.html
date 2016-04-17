@@ -30,9 +30,12 @@
   
 
   
+    <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
+  
 
   
     <link rel="top" title="fivecentplots beta documentation" href="index.html"/>
+        <link rel="next" title="Modules" href="modules.html"/>
         <link rel="prev" title="Default Settings" href="defaults.html"/> 
 
   
@@ -61,7 +64,7 @@
             
             
               <div class="version">
-                0.2
+                v0.2
               </div>
             
           
@@ -83,10 +86,19 @@
             
             
                 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="quick.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="design.html">Figure Design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="defaults.html">Default Settings</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">Example Library</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Example Library</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#setup">Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-1-single-iv-curve-grouped-by-die">Example 1: Single IV curve grouped by die</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-2-facet-grid-by-boost-level-and-temperature">Example 2: Facet grid by boost level and temperature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-3-facet-grid-by-boost-level-and-temperature-no-axis-sharing">Example 3: Facet grid by boost level and temperature (no axis sharing)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-4-multiple-y-parameters-on-same-axis">Example 4: Multiple y parameters on same axis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-5-multiple-y-parameters-using-a-secondary-y-axis-broken">Example 5: Multiple y parameters using a secondary y-axis (Broken)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
 </ul>
 
             
@@ -133,6 +145,93 @@
             
   <div class="section" id="example-library">
 <h1>Example Library<a class="headerlink" href="#example-library" title="Permalink to this headline">¶</a></h1>
+<p>All plot examples here use the provided fake data set found <a class="reference external" href="https://raw.githubusercontent.com/endangeredoxen/fivecentplots/master/fivecentplots/tests/fake_data.csv">here</a>.
+It consists of some made up semiconductor IV data.</p>
+<div class="section" id="setup">
+<h2>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">fivecentplots</span> <span class="kn">as</span> <span class="nn">fcp</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">r&#39;fake_data.csv&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-1-single-iv-curve-grouped-by-die">
+<h2>Example 1: Single IV curve grouped by die<a class="headerlink" href="#example-1-single-iv-curve-grouped-by-die" title="Permalink to this headline">¶</a></h2>
+<p>Assume we want to plot the IV curve for a single tested die.  Since this is
+xy data we will use the <code class="docutils literal"><span class="pre">fcp.plot</span></code> command.  First, let&#8217;s do this wrong
+without any filtering:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">leg_groups</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/Ex1a.png" src="_images/Ex1a.png" />
+<p>Notice that we do not have discrete IV curves but a continuum of data points
+that connect back to the starting point each time.  This occurs because the
+original DataFrame contains data for multiple IV curves at multiple sites
+and conditions and our function
+call does not account for this.  Next, we will add some filtering to get the
+intended result:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">filt</span> <span class="o">=</span> <span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target_Wavelength==450 &amp; Boost_Level==0.2 &amp; &#39;</span> \
+       <span class="s1">&#39;Temperature_C==25&#39;</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">leg_groups</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="n">filt</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/Ex1b.png" src="_images/Ex1b.png" />
+<p>Much cleaner!</p>
+</div>
+<div class="section" id="example-2-facet-grid-by-boost-level-and-temperature">
+<h2>Example 2: Facet grid by boost level and temperature<a class="headerlink" href="#example-2-facet-grid-by-boost-level-and-temperature" title="Permalink to this headline">¶</a></h2>
+<p>Next, we will group the IV data into multiple plots based on the boost level
+and the temperature.  The various factors are separated by value into rows and
+columns instead of overlaying all the plots on one axis:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">leg_groups</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+         <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target_Wavelength==450&#39;</span><span class="p">,</span>
+         <span class="n">xticks</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/Ex2.png" src="_images/Ex2.png" />
+</div>
+<div class="section" id="example-3-facet-grid-by-boost-level-and-temperature-no-axis-sharing">
+<h2>Example 3: Facet grid by boost level and temperature (no axis sharing)<a class="headerlink" href="#example-3-facet-grid-by-boost-level-and-temperature-no-axis-sharing" title="Permalink to this headline">¶</a></h2>
+<p>In the previous example, the plot axis ranges of all plot windows are set by
+the outlier device of die (-1,2) at 75°C and 0.2V boost.  This occurs
+because axis sharing is enabled by default.  We can turn this off to get
+better clarity of the plot windows without the outlier as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">leg_groups</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+         <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target_Wavelength==450&#39;</span><span class="p">,</span>
+         <span class="n">sharex</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+         <span class="n">xticks</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/Ex3.png" src="_images/Ex3.png" />
+</div>
+<div class="section" id="example-4-multiple-y-parameters-on-same-axis">
+<h2>Example 4: Multiple y parameters on same axis<a class="headerlink" href="#example-4-multiple-y-parameters-on-same-axis" title="Permalink to this headline">¶</a></h2>
+<p>Often we need to display multiple plots that share the same y-axis.  In
+this case, the legend will be updated to help us distinguish between the
+different curves.  This can be done as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">filt</span> <span class="o">=</span> <span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target_Wavelength==450 &amp; Boost_Level==0.2 &amp; &#39;</span> \
+       <span class="s1">&#39;Temperature_C==25&#39;</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="s1">&#39;Voltage&#39;</span><span class="p">],</span> <span class="n">leg_groups</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="n">filt</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Values&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/Ex4.png" src="_images/Ex4.png" />
+</div>
+<div class="section" id="example-5-multiple-y-parameters-using-a-secondary-y-axis-broken">
+<h2>Example 5: Multiple y parameters using a secondary y-axis (Broken)<a class="headerlink" href="#example-5-multiple-y-parameters-using-a-secondary-y-axis-broken" title="Permalink to this headline">¶</a></h2>
+<p>As an alternative to Example 4, we can force the second y-value to plot on a
+separate y-axis by &#8220;twinning&#8221; the x-axis as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">filt</span> <span class="o">=</span> <span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target_Wavelength==450 &amp; Boost_Level==0.2 &amp; &#39;</span> \
+       <span class="s1">&#39;Temperature_C==25&#39;</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">y2</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">twinx</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">leg_groups</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="n">filt</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">ylabel2</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_static/images/Ex5.png" src="_static/images/Ex5.png" />
+</div>
 </div>
 
 
@@ -141,6 +240,8 @@
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="modules.html" class="btn btn-neutral float-right" title="Modules" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="defaults.html" class="btn btn-neutral" title="Default Settings" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>

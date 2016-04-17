@@ -30,10 +30,12 @@
   
 
   
+    <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
+  
 
   
     <link rel="top" title="fivecentplots beta documentation" href="#"/>
-        <link rel="next" title="Quick Start Guide" href="quick.html"/> 
+        <link rel="next" title="Overview" href="overview.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -61,7 +63,7 @@
             
             
               <div class="version">
-                0.2
+                v0.2
               </div>
             
           
@@ -83,10 +85,11 @@
             
             
                 <ul>
-<li class="toctree-l1"><a class="reference internal" href="quick.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="design.html">Figure Design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="defaults.html">Default Settings</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Example Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
 </ul>
 
             
@@ -139,19 +142,88 @@
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="why-another-plotting-library">
 <h3>Why another plotting library?<a class="headerlink" href="#why-another-plotting-library" title="Permalink to this headline">¶</a></h3>
+<p>Given that there is no shortage of quality Python plotting packages on the
+world wide web (matplotlib, bokeh, seaborn, etc.), it is fair to ask why we
+need another.  The answer is simple:  <em>you may not; I do.</em>  fivecentplots
+exists to make generation, customization, and automation of certain types of
+plots (i.e., facet grids with row and/or column grouping; boxplots with
+factor grouping labels; etc.) easier.</p>
 </div>
-<div class="section" id="the-goal-of-fivecentplots">
-<h3>The goal of fivecentplots<a class="headerlink" href="#the-goal-of-fivecentplots" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="what-issues-does-fivecentplots-solve">
+<h3>What issues does fivecentplots solve?<a class="headerlink" href="#what-issues-does-fivecentplots-solve" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic">
+<li><p class="first">Simplified syntax:</p>
+<p>All input parameters are specified as optional keyword arguments of one
+function call (for each plot type).  As an example, to generate an x-y plot
+with x and y labels, a plot title, and a legend in matplotlib, you would
+need at least five lines of code.  With fivecentplots, you would need a
+single function call with five arguments.</p>
+</li>
+</ol>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<ol class="arabic" start="2">
+<li><p class="first">Easy and repeatable look and feel:</p>
+<p>fivecentplots makes it easy to style plots with custom colors, sizes,
+marker themes, etc., and automate plot generation.  Unlike matplotlib
+which sets a size for the entire figure and adjusts elements to fit,
+fivecentplots starts with a fixed size for the plot window and allows the
+figure size to grow as needed to accommodate the contents.  This promotes
+consistency from plot to plot and eliminates the need to envoke
+matplotlib routines like <code class="docutils literal"><span class="pre">tight_layout</span></code> which sometimes has unexpected
+results.</p>
+</li>
+</ol>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<ol class="arabic" start="3">
+<li><p class="first">Simplified visualization of pandas DataFrames:</p>
+<p>fivecentplots is built to process multi-factor pandas DataFrames.
+Keyword arguments make it easy to legend a plot by another column or to
+group multiple plots in rows and/or columns based on other DataFrame
+columns.  It also accepts a conditional string to filter the DataFrame
+before plotting.</p>
+</li>
+</ol>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<ol class="arabic" start="4">
+<li><p class="first">Boxplots with grouping labels:</p>
+<p>Although matplotlib supports boxplot generation, it is not easy to group
+data into labeled, multi-factor subgroups.  Borrowing inspiration from
+the variability chart in JMP, fivecentplots extends matplotlib&#8217;s boxplot
+routine to make this possible.</p>
+</li>
+</ol>
 </div>
 </div>
 <div class="section" id="documentation">
 <h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="quick.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#plot-function"><code class="docutils literal"><span class="pre">plot</span></code> function</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="design.html">Figure Design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="defaults.html">Default Settings</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">Example Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Example Library</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#setup">Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#example-1-single-iv-curve-grouped-by-die">Example 1: Single IV curve grouped by die</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#example-2-facet-grid-by-boost-level-and-temperature">Example 2: Facet grid by boost level and temperature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#example-3-facet-grid-by-boost-level-and-temperature-no-axis-sharing">Example 3: Facet grid by boost level and temperature (no axis sharing)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#example-4-multiple-y-parameters-on-same-axis">Example 4: Multiple y parameters on same axis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#example-5-multiple-y-parameters-using-a-secondary-y-axis-broken">Example 5: Multiple y parameters using a secondary y-axis (Broken)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#module-fcp">fcp.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#module-design">design.py</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -162,7 +234,7 @@
 <li><a class="reference internal" href="py-modindex.html"><span>Module Index</span></a></li>
 <li><a class="reference internal" href="search.html"><span>Search Page</span></a></li>
 </ul>
-</div>
+<span class="target" id="module-fivecentplots"></span></div>
 </div>
 
 
@@ -172,7 +244,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="quick.html" class="btn btn-neutral float-right" title="Quick Start Guide" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="overview.html" class="btn btn-neutral float-right" title="Overview" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
     </div>

@@ -1,0 +1,548 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Modules &mdash; fivecentplots beta documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="fivecentplots beta documentation" href="index.html"/>
+        <link rel="prev" title="Example Library" href="examples.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> fivecentplots
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Figure Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="defaults.html">Default Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Example Library</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-fcp">fcp.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-design">design.py</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">fivecentplots</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Modules</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/modules.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="modules">
+<h1>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-fcp">
+<span id="fcp-py"></span><h2>fcp.py<a class="headerlink" href="#module-fcp" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="fcp.add_curves">
+<code class="descclassname">fcp.</code><code class="descname">add_curves</code><span class="sig-paren">(</span><em>plotter</em>, <em>x</em>, <em>y</em>, <em>color='k'</em>, <em>marker='o'</em>, <em>points=False</em>, <em>line=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.add_curves" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds curve data to an axes</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>plotter:
+x:
+y:
+color:
+marker:
+points:
+line:
+<a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs:</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fcp.add_label">
+<code class="descclassname">fcp.</code><code class="descname">add_label</code><span class="sig-paren">(</span><em>label</em>, <em>pos</em>, <em>axis</em>, <em>rotation</em>, <em>fillcolor='#ffffff'</em>, <em>edgecolor='#aaaaaa'</em>, <em>color='#666666'</em>, <em>weight='bold'</em>, <em>fontsize=14</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.add_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a label to the plot</p>
+<p>This function can be used for title labels or for group labels applied
+to rows and columns when plotting facet grid style plots.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><p class="first">label (str):
+pos (tuple): left, bottom, width, height
+axis (matplotlib.axes):
+rotation (int):</p>
+<blockquote>
+<div>label:</div></blockquote>
+<p class="last">pos:
+axis:
+rotation:
+fillcolor:
+edgecolor:
+color:
+weight:
+fontsize:</p>
+</dd>
+<dt>Returns:</dt>
+<dd>None</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="fcp.boxplot">
+<code class="descclassname">fcp.</code><code class="descname">boxplot</code><span class="sig-paren">(</span><em>df</em>, <em>y</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.boxplot" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>boxplot(self, x, notch=None, sym=None, vert=None, whis=None,</dt>
+<dd>positions=None, widths=None, patch_artist=False,
+bootstrap=None, usermedians=None, conf_intervals=None,
+meanline=False, showmeans=False, showcaps=True,
+showbox=True, showfliers=True, boxprops=None, labels=None,
+flierprops=None, medianprops=None, meanprops=None,
+capprops=None, whiskerprops=None, manage_xticks=True):</dd>
+<dt>Args:</dt>
+<dd>df:
+<a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs:</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fcp.df_filter">
+<code class="descclassname">fcp.</code><code class="descname">df_filter</code><span class="sig-paren">(</span><em>df</em>, <em>filt</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.df_filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter a DataFrame</p>
+<p>Due to limitations in pd.query, column names must not have spaces.  This
+function will temporarily replace spaces in the column names with
+underscores, but the supplied query string must contain column names
+without any spaces</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>df (DataFrame):  data set to be filtered
+filt (str):  query expression for filtering</dd>
+<dt>Returns:</dt>
+<dd>filtered DataFrame</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="fcp.filename_label">
+<code class="descclassname">fcp.</code><code class="descname">filename_label</code><span class="sig-paren">(</span><em>label</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.filename_label" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Args:</dt>
+<dd>label:</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fcp.get_unique_groups">
+<code class="descclassname">fcp.</code><code class="descname">get_unique_groups</code><span class="sig-paren">(</span><em>kw</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.get_unique_groups" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fcp.plot">
+<code class="descclassname">fcp.</code><code class="descname">plot</code><span class="sig-paren">(</span><em>df</em>, <em>x</em>, <em>y</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main plotting function</p>
+<p>This function wraps many variations of x-y plots from the matplotlib
+library.  At minimum, it requires a pandas DataFrame with at least two
+columns and two column names for the x and y axis.  Plots can be
+customized and enhanced by passing keyword arguments as defined below.
+Default values that must be defined in order to generate the plot are
+pulled from the fcp_params dictionary defined in defaults.py.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>df (DataFrame): DataFrame containing data to plot
+x (str):        name of x column in df
+y (str|list):   name or list of names of y column(s) in df</dd>
+<dt>Keyword Args:</dt>
+<dd><dl class="first docutils">
+<dt>ax_hlines (list):     list of y-values at which to add horizontal</dt>
+<dd>lines (default=[])</dd>
+</dl>
+<p>ax_label_pad (int):   label offset padding in pixels (default=0)
+ax_lim (list):        axes range values [xmin, xmax, ymin, ymax] (</p>
+<blockquote>
+<div>default=[])</div></blockquote>
+<dl class="docutils">
+<dt>ax_lim_pad (float):   in place of discrete axes limits,</dt>
+<dd>adds whitespace to the bottom|top and left|right
+of the axis by this amount as a percent/100 of
+the total axis range (default=0.05)</dd>
+<dt>ax_scale (None|str):  set the scale of an axis as linear or log</dt>
+<dd>(default=None &#8211;&gt; linear; options include
+&#8216;logx&#8217;|&#8217;semilogx&#8217; for the x-axis,
+&#8216;logy&#8217;|&#8217;semilogy&#8217; for the y-axis or &#8216;loglog&#8217; for
+both axes</dd>
+<dt>ax_scale2 (None|str): same as ax_scale but for secondary y-axis</dt>
+<dd>when twinx is True</dd>
+<dt>ax_size (list):       [width, height] of each plot window in pixels</dt>
+<dd>(default defined by fcp_params)</dd>
+<dt>ax_vlines (list):     list of x-values at which to add vertical</dt>
+<dd>lines (default=[])</dd>
+<dt>cmap (str):           name of color map to use for plotting (</dt>
+<dd>default=None &#8211;&gt; use color order defined in
+fcp_params</dd>
+<dt>col (str):            name of a column in df to use as a grouping</dt>
+<dd>variable for facet grid style plotting; each
+unique value from df[col] will represent a
+column of plots in the final figure
+(default=None &#8211;&gt; no column grouping)</dd>
+<dt>col_label (str):      a custom label to display for each column in</dt>
+<dd>the facet grid plot (default=None &#8211;&gt; use the
+value of kwargs[&#8216;col&#8217;]</dd>
+<dt>col_labels_on (bool): toggle on|off column labels in facet grid</dt>
+<dd>plot (default=True)</dd>
+<dt>col_label_size (int): label height in pixel for col labels in pixels</dt>
+<dd>(default from fcp_params)</dd>
+<dt>col_label_ws (int):   whitespace in pixels between axis and col</dt>
+<dd>labels in pixels (default from fcp_params)</dd>
+<dt>col_padding (int):    whitespace between facet columns in pixels</dt>
+<dd>(default in fcp_params)</dd>
+<dt>colors (list):        list of tuple values used to define colors</dt>
+<dd>for plotting using RGB/255 mpl style (default
+is palette from defaults.py)</dd>
+<dt>cols (list):          list used to manually define the columns to</dt>
+<dd>use in the facet grid (default=None). These
+values must actually be in df[col]</dd>
+</dl>
+<p>fig_groups (list):    &#8216;] = kwargs.get(&#8216;fig_groups&#8217;, None)
+<strong>*
+fig_group_path&#8217;] = kwargs.get(&#8216;fig_group_path&#8217;, False)
+*</strong>
+filename (str):       name of saved figure (default=None&#8211;&gt; custom</p>
+<blockquote>
+<div>filename will be built based on the data that
+is plotted</div></blockquote>
+<dl class="docutils">
+<dt>filter (str):         str to use in df.query to include or exclude</dt>
+<dd>certain data from df (default=None).  Note
+that df.query does not support spaces,
+parenthesis, or brackets. Spaces should be
+replaced by &#8216;_&#8217; and parenthesis/brackets
+should be dropped from the str.  Example:
+Temperature [C] &#8211;&gt; Temperature_C</dd>
+</dl>
+<p>grid_major (bool):    toggle major gridlines (default=True)
+grid_minor (bool):    toggle minor gridlines (default=False)
+label_font_size&#8217;] = kwargs.get(&#8216;label_font_size&#8217;,</p>
+<blockquote>
+<div>fcp_params[&#8216;label_font_size&#8217;])</div></blockquote>
+<dl class="docutils">
+<dt>label_style (str):    define the label style (default from</dt>
+<dd>fcp_params).  Use standard mpl styles like
+&#8216;italic&#8217;</dd>
+<dt>label_weight (str):   define the label weight (default from</dt>
+<dd>fcp_params).  Use standard mpl weights like
+&#8216;bold&#8217;</dd>
+<dt>leg_bkgrd (str):      hex-style color for legend background (default</dt>
+<dd>from fcp_params)</dd>
+<dt>leg_border (str):     hex-style color for legend border (default from</dt>
+<dd>fcp_params)</dd>
+<dt>leg_groups (str):     name of df column by which to legend the data</dt>
+<dd>(default=None)</dd>
+</dl>
+<p>leg_items (str):      &#8216;] = kwargs.get(&#8216;leg_items&#8217;, [])
+<a href="#id5"><span class="problematic" id="id6">**</span></a>*
+leg_on (bool):        toggle legend visibility (default=True) <a href="#id7"><span class="problematic" id="id8">**</span></a>DOESN&#8217;T WORK
+leg_title (str):      legend title (default=None &#8211;&gt; use</p>
+<blockquote>
+<div>kwargs[leg_groups])</div></blockquote>
+<p>line_color&#8217;] = kwargs.get(&#8216;line_color&#8217;, None)
+line_style&#8217;] = kwargs.get(&#8216;line_style&#8217;, &#8216;-&#8216;)
+line_width&#8217;] = kwargs.get(&#8216;line_width&#8217;, 1)
+<strong>* NEEDS REVISIT
+marker_size (int):    set marker size (default from fcp_params)
+marker_type (str):    set marker type (&#8216;] = kwargs.get(&#8216;marker_type&#8217;)
+*</strong> NEEDS REVISIT
+points (bool):        turn markers on|off (default=True)
+rc_label_edge_color (str):  hex-style color for row/column labels</p>
+<blockquote>
+<div>edges (default from fcp_params)</div></blockquote>
+<dl class="docutils">
+<dt>rc_label_fill_color (str):  hex-style color for row/column labels</dt>
+<dd>backgrounds (default from fcp_params)</dd>
+<dt>rc_label_font_size&#8217;] = kwargs.get(&#8216;rc_label_font_size&#8217;,</dt>
+<dd>fcp_params[&#8216;rc_label_font_size&#8217;])</dd>
+<dt>rc_label_text_color&#8217;] = kwargs.get(&#8216;rc_label_text_color&#8217;,</dt>
+<dd>fcp_params[&#8216;rc_label_text_color&#8217;])</dd>
+<dt>rc_label_text_style&#8217;] = kwargs.get(&#8216;rc_label_text_style&#8217;,</dt>
+<dd>fcp_params[&#8216;rc_label_text_style&#8217;])</dd>
+</dl>
+<p>row&#8217;] = kwargs.get(&#8216;row&#8217;, None)
+row_label&#8217;] = kwargs.get(&#8216;row_label&#8217;, None)
+row_labels_on&#8217;] = kwargs.get(&#8216;row_labels_on&#8217;, True)
+row_label_size&#8217;] = kwargs.get(&#8216;row_label_size&#8217;,</p>
+<blockquote>
+<div>fcp_params[&#8216;rc_label_size&#8217;])</div></blockquote>
+<p>row_label_ws&#8217;] = kwargs.get(&#8216;row_label_ws&#8217;, fcp_params[&#8216;rc_label_ws&#8217;])
+row_padding&#8217;] = kwargs.get(&#8216;row_padding&#8217;, fcp_params[&#8216;row_padding&#8217;])
+rows&#8217;] = kwargs.get(&#8216;rows&#8217;, None)
+save_ext (str)&#8217;] = kwargs.get(&#8216;save_ext&#8217;, &#8216;png&#8217;)
+save_name&#8217;] = kwargs.get(&#8216;save_name&#8217;, None)
+save_path&#8217;] = kwargs.get(&#8216;save_path&#8217;, None)
+sci_x&#8217;] = kwargs.get(&#8216;sci_x&#8217;, False)
+sci_y&#8217;] = kwargs.get(&#8216;sci_y&#8217;, False)
+sharex&#8217;] = kwargs.get(&#8216;sharex&#8217;, True)
+sharey&#8217;] = kwargs.get(&#8216;sharey&#8217;, True)
+show&#8217;] = kwargs.get(&#8216;show&#8217;, False)
+stat&#8217;] = kwargs.get(&#8216;stat&#8217;, None)
+stat_val&#8217;] = kwargs.get(&#8216;stat_val&#8217;, x)
+tick_font_size&#8217;] = kwargs.get(&#8216;tick_font_size&#8217;,</p>
+<blockquote>
+<div>fcp_params[&#8216;tick_font_size&#8217;])</div></blockquote>
+<p>title&#8217;] = kwargs.get(&#8216;title&#8217;, None)
+title_edge_color&#8217;] = kwargs.get(&#8216;title_edge_color&#8217;,</p>
+<blockquote>
+<div>fcp_params[&#8216;title_edge_color&#8217;])</div></blockquote>
+<dl class="docutils">
+<dt>title_fill_color&#8217;] = kwargs.get(&#8216;title_fill_color&#8217;,</dt>
+<dd>fcp_params[&#8216;title_fill_color&#8217;])</dd>
+<dt>title_text_color&#8217;] = kwargs.get(&#8216;title_text_color&#8217;,</dt>
+<dd>fcp_params[&#8216;title_text_color&#8217;])</dd>
+<dt>title_font_size&#8217;] = kwargs.get(&#8216;title_font_size&#8217;,</dt>
+<dd>fcp_params[&#8216;title_font_size&#8217;])</dd>
+<dt>title_text_style&#8217;] = kwargs.get(&#8216;title_text_style&#8217;,</dt>
+<dd>fcp_params[&#8216;title_text_style&#8217;])</dd>
+</dl>
+<p class="last">twinx&#8217;] = kwargs.get(&#8216;twinx&#8217;, False)
+twiny&#8217;] = kwargs.get(&#8216;twiny&#8217;, False)
+xlabel&#8217;] = kwargs.get(&#8216;xlabel&#8217;, x)
+xmax&#8217;] = kwargs.get(&#8216;xmax&#8217;, None)
+xmin&#8217;] = kwargs.get(&#8216;xmin&#8217;, None)
+xticks&#8217;] = kwargs.get(&#8216;xticks&#8217;, None)
+xtrans&#8217;] = kwargs.get(&#8216;xtrans&#8217;, None)
+ylabel&#8217;] = kwargs.get(&#8216;ylabel&#8217;, y)
+ymax&#8217;] = kwargs.get(&#8216;ymax&#8217;, None)
+ymin&#8217;] = kwargs.get(&#8216;ymin&#8217;, None)
+yticks&#8217;] = kwargs.get(&#8216;yticks&#8217;, None)
+ytrans&#8217;] = kwargs.get(&#8216;ytrans&#8217;, None)
+ylabel2&#8217;] = kwargs.get(&#8216;ylabel2&#8217;, y)
+ymax2&#8217;] = kwargs.get(&#8216;ymax2&#8217;, None)
+ymin2&#8217;] = kwargs.get(&#8216;ymin2&#8217;, None)
+yticks2&#8217;] = kwargs.get(&#8216;yticks2&#8217;, None)
+ytrans2&#8217;] = kwargs.get(&#8216;ytrans2&#8217;, None)</p>
+</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-design">
+<span id="design-py"></span><h2>design.py<a class="headerlink" href="#module-design" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="design.FigDesign">
+<em class="property">class </em><code class="descclassname">design.</code><code class="descname">FigDesign</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#design.FigDesign" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="design.FigDesign.get_figure_size">
+<code class="descname">get_figure_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#design.FigDesign.get_figure_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine the size of the mpl figure canvas in pixels and inches</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="design.FigDesign.get_label_position">
+<code class="descname">get_label_position</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#design.FigDesign.get_label_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get option group label positions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="design.FigDesign.get_legend_position">
+<code class="descname">get_legend_position</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#design.FigDesign.get_legend_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get legend position</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="design.FigDesign.get_legend_size">
+<code class="descname">get_legend_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#design.FigDesign.get_legend_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine the size of the legend by building a dummy figure and
+extracting its properties</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="design.FigDesign.get_subplots_adjust">
+<code class="descname">get_subplots_adjust</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#design.FigDesign.get_subplots_adjust" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the subplots_adjust parameters for the axes</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="design.FigDesign.get_title_position">
+<code class="descname">get_title_position</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#design.FigDesign.get_title_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the title position</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="design.FigDesign.see">
+<code class="descname">see</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#design.FigDesign.see" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints a readable list of class attributes</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="examples.html" class="btn btn-neutral" title="Example Library" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Steve Nicholes.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'beta',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
