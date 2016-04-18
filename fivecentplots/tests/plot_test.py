@@ -14,12 +14,12 @@ df_box = pd.read_csv(r'fake_data_box.csv')
 #         ]
 # d = fcp.plot(sub, 'Voltage', 'I [A]', leg_groups='Die')
 
-# # Facet grid by boost level and temperature
-# sub = df[(df.Substrate=='Si') &
-#          (df['Target Wavelength']==450)
-#         ]
-# d = fcp.plot(sub, 'Voltage', 'I [A]', leg_groups='Die', row='Boost Level',
-#              col='Temperature [C]', xticks=4)
+# Facet grid by boost level and temperature
+sub = df[(df.Substrate=='Si') &
+          (df['Target Wavelength']==450)
+         ].copy()
+d = fcp.plot(sub, 'Voltage', 'I [A]', leg_groups='Die', row='Boost Level',
+             col='Temperature [C]', xticks=4, show=True)
 #
 # # Facet grid by boost level and temperature (no axis sharing)
 # sub = df[(df.Substrate=='Si') &
@@ -30,12 +30,12 @@ df_box = pd.read_csv(r'fake_data_box.csv')
 #              ax_size=[200,300])
 
 # # Facet grid by boost level and temperature with transformation
-# sub = df[(df.Substrate=='Si') &
-#          (df['Target Wavelength']==450)
-#         ]
-# d = fcp.plot(sub, 'Voltage', 'I [A]', leg_groups='Die', row='Boost Level',
-#              col='Temperature [C]', ax_scale='logx', ytrans=('pow',4),
-#              ymin=1E-8, ymax=1E-2)  #issues here with ranges, ticks
+sub = df[(df.Substrate=='Si') &
+         (df['Target Wavelength']==450)
+        ]
+d = fcp.plot(sub, 'Voltage', 'I [A]', leg_groups='Die', row='Boost Level',
+             col='Temperature [C]', ax_scale='logx', ytrans=('pow',4),
+             ymin=1E-8, ymax=1E-2, show=True)  #issues here with ranges, ticks
 
 # # Multiple y on same axis with filter
 # filt = 'Substrate=="Si" & Target_Wavelength==450 & Boost_Level==0.2 & ' \

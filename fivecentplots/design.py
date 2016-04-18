@@ -68,6 +68,7 @@ class FigDesign:
                                           fcp_params['leg_font_size'])
         self.leg_items       = kwargs.get('leg_items',
                                           fcp_params['leg_items'])
+        self.leg_on          = kwargs.get('leg_on', True)
         self.leg_points      = kwargs.get('leg_points',
                                           fcp_params['leg_points'])
         self.leg_title       = kwargs.get('leg_title',
@@ -86,6 +87,7 @@ class FigDesign:
                                          fcp_params['title_ax_ws'])
         self.title_h        = kwargs.get('title_h',
                                          fcp_params['title_h'])
+        self.twinx          = kwargs.get('twinx', False)
 
         # Initialize other variables
         self.ax_h             = self.ax_size[1]
@@ -159,7 +161,7 @@ class FigDesign:
         extracting its properties
         """
 
-        if len(self.leg_items) > 0:
+        if len(self.leg_items) > 0 and self.leg_on:
             mpl.pylab.ioff()
             fig = mpl.pyplot.figure(dpi=self.dpi)
             ax = fig.add_subplot(111)
@@ -185,7 +187,14 @@ class FigDesign:
         Determine the size of the mpl figure canvas in pixels and inches
         """
 
-        self.fig_w_px = self.fig_ax_ws + self.ax_w*self.ncol + \
+        # Account for second y-axis
+        if self.twinx:
+            y2 = self.fig_ax_ws - self.ax_leg_ws
+        else:
+            y2 = 0
+
+        # Calculate the canvas size
+        self.fig_w_px = self.fig_ax_ws + self.ax_w*self.ncol + y2 + \
                         self.ax_leg_ws + self.leg_w + self.leg_fig_ws + \
                         self.col_padding*(self.ncol-1) + self.row_labels - \
                         self.fig_right_border + self.ax_label_pad*self.ncol
