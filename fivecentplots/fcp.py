@@ -9,7 +9,7 @@ __license__   = 'GPLv3'
 __version__   = '.1'
 __url__       = 'https://github.com/endangeredoxen/fivecentplots'
 
-import matplotlib as mpl
+import matplotlib.pyplot as mplp
 import matplotlib.patches as patches
 from fivecentplots.defaults import *
 from fivecentplots.design import FigDesign
@@ -111,7 +111,7 @@ def add_label(label, pos, axis, rotation, fillcolor='#ffffff',
               weight=weight, fontsize=fontsize)
 
 
-def boxplot(df, y, **kwargs):
+def boxplot(**kwargs):
     """
     boxplot(self, x, notch=None, sym=None, vert=None, whis=None,
         positions=None, widths=None, patch_artist=False,
@@ -129,6 +129,15 @@ def boxplot(df, y, **kwargs):
     """
 
     kw = {}
+    df = kwargs.get('df')
+    if df is None:
+        raise ValueError('Must provide a DataFrame called "df" for analysis!')
+
+    y = kwargs.get('y')
+    if y is None:
+        raise ValueError('Must provide a column name for "y"')
+
+
     kw['ax_fig_ws'] = kwargs.get('ax_fig_ws', fcp_params['ax_fig_ws'])
     kw['ax_hlines'] = kwargs.get('ax_hlines', [])
     kw['ax_label_pad'] = kwargs.get('ax_label_pad', 0)
@@ -207,19 +216,34 @@ def boxplot(df, y, **kwargs):
     kw['yticks'] = kwargs.get('yticks', None)
 
 
+    def add_points(x, y, ax, color, **kw):
+
+        if kw['jitter']:
+            x = np.random.normal(x+1, 0.04, size=len(y))
+        else:
+            x = np.array([x+1]*len(y))
+        ax.plot(x, y,
+                color=palette[1],
+                markersize=kw['marker_size'],
+                marker=kw['marker_type'],
+                markeredgecolor=palette[1],
+                markerfacecolor='none',
+                markeredgewidth=1.5,
+                linestyle='none')
+
     # Turn off interactive plotting
-    mpl.pylab.ioff()
+    mplp.ioff()
 
     # Clear out existing plot buffer
-    mpl.pyplot.close('all')
+    mplp.close('all')
 
     # Convert column types
     df[y] = df[y].astype(float)
 
     # Handle single level groupings
-    if type(kw['groups']) is not list:
+    if type(kw['groups']) is not list and kw['groups'] is not None:
             kw['groups'] = [kw['groups']]
-        
+
     # # Dummy-proof colors
     # if type(kw['colors'][0]) is not tuple:
     #     kw['colors'] = [kw['colors']]
@@ -270,9 +294,11 @@ def boxplot(df, y, **kwargs):
     design = FigDesign(**kw)
 
     # Make the figure and axes
-    fig, ax = mpl.pyplot.subplots(1, 1, figsize=[design.fig_w, design.fig_h],
+    fig, ax = mplp.subplots(1, 1, figsize=[design.fig_w, design.fig_h],
                                  dpi=design.dpi)
 
+    num_groups = 0
+    changes = None
     if kw['groups'] is not None:
         groups = df.groupby(kw['groups'])
         num_groups = groups.ngroups
@@ -287,7 +313,7 @@ def boxplot(df, y, **kwargs):
             indices[i] = [f for f in n]
         indices = indices.T
         changes = indices.copy()
-        
+
         for i in range(1, num_groups):
             for c in indices.columns:
                 if indices[c].iloc[i-1] == indices[c].iloc[i]:
@@ -315,29 +341,22 @@ def boxplot(df, y, **kwargs):
                 dividers += [i+0.5]
 
             if kw['points']:
-                if kw['jitter']:
-                    x = np.random.normal(i+1, 0.04, size=len(g[y]))
-                else:
-                    x = np.array([i+1]*len(g[y]))
-                ax.plot(x, g[y],
-                        color=palette[1],
-                        markersize=kw['marker_size'],
-                        marker=kw['marker_type'],
-                        markeredgecolor=palette[1],
-                        markerfacecolor='none',
-                        markeredgewidth=1.5,
-                        linestyle='none')
+                add_points(i, g[y], ax, palette[1], **kw)
 
     else:
         data = df[y]
-        labels = [y]
+        labels = ['']
+        if kw['points']:
+            add_points(0, data, ax, palette[1], **kw)
 
     # Plot
     if kw['points']:
         showfliers = False
     else:
         showfliers = True
-    
+
+    if type(data) is pd.Series:
+        data = data.values
     bp = ax.boxplot(data, labels=labels, showfliers=showfliers,
                     boxprops={'color': palette[0]},
                     whiskerprops={'color': palette[0]},
@@ -377,7 +396,7 @@ def boxplot(df, y, **kwargs):
     )
 
     # Add the x-axis grouping labels
-    if kw['bp_labels_on']:
+    if kw['bp_labels_on'] and changes is not None:
         num_cols = len(changes.columns)
         height = kw['bp_label_size']/kw['ax_size'][1]
         for i in range(0, num_cols):
@@ -390,7 +409,7 @@ def boxplot(df, y, **kwargs):
                 label = indices.loc[sub.index[j], num_cols-1-i]
                 add_label(label,
                           (sub.index[j]/len(changes), -height*(i+1), width/len(changes), height),
-                          ax, 
+                          ax,
                           0,
                           edgecolor=kw['bp_label_edge_color'],
                           fillcolor=kw['bp_label_fill_color'],
@@ -413,14 +432,15 @@ def boxplot(df, y, **kwargs):
     if kw['title'] is not None:
             if '@' in kw['title']:
                 r = re.search(r'\@(.*)\@', kw['title'])
-                val = r.group(1)
-                pos = r.span()
-                if val in df.columns:
-                    val = '%s' % df[val].iloc[0]
-                else:
-                    val = ''
-                kw['title'] = \
-                    kw['title'][0:pos[0]] + val + kw['title'][pos[1]:]
+                if r:
+                    val = r.group(1)
+                    pos = r.span()
+                    if val in df.columns:
+                        val = '%s' % df[val].iloc[0]
+                    else:
+                        val = ''
+                    kw['title'] = \
+                        kw['title'][0:pos[0]] + val + kw['title'][pos[1]:]
             add_label('%s' % kw['title'],
                       (design.title_left, design.title_bottom,
                        design.title_w, design.title_h),
@@ -452,7 +472,7 @@ def boxplot(df, y, **kwargs):
     fig.savefig(filename)
 
     if kw['show']:
-        # mpl.pyplot.show()
+        # mplp.show()
         os.startfile(filename)
 
 
@@ -526,7 +546,7 @@ def get_unique_groups(kw):
     return groups
 
 
-def plot(df, x, y, **kwargs):
+def plot(**kwargs):
     """ Main plotting function
 
     This function wraps many variations of x-y plots from the matplotlib
@@ -536,8 +556,8 @@ def plot(df, x, y, **kwargs):
     Default values that must be defined in order to generate the plot are
     pulled from the fcp_params dictionary defined in defaults.py.
     
-    Args:
-        df (DataFrame): data frame containing data to plot
+    Required Keyword Args:
+        df (DataFrame): DataFrame containing data to plot
         x (str):        name of x column in df
         y (str|list):   name or list of names of y column(s) in df  
         
@@ -608,7 +628,7 @@ def plot(df, x, y, **kwargs):
         label_style (str):    define the label style (default from
                               fcp_params).  Use standard mpl styles like
                               'italic'
-        label_weight (str):   define the label width (default from
+        label_weight (str):   define the label weight (default from
                               fcp_params).  Use standard mpl weights like
                               'bold'
         leg_bkgrd (str):      hex-style color for legend background (default
@@ -697,6 +717,18 @@ def plot(df, x, y, **kwargs):
     
     # Keyword-argument definition
     kw = {}
+    df = kwargs.get('df')
+    if df is None:
+        raise ValueError('Must provide a DataFrame called "df" for analysis!')
+
+    x = kwargs.get('x')
+    if x is None:
+        raise ValueError('Must provide a column name for "x"')
+
+    y = kwargs.get('y')
+    if y is None:
+        raise ValueError('Must provide a column name for "y"')
+
     kw['ax_hlines'] = kwargs.get('ax_hlines', [])
     kw['ax_label_pad'] = kwargs.get('ax_label_pad', 0)
     kw['ax_lim'] = kwargs.get('ax_lim', [])
@@ -820,7 +852,7 @@ def plot(df, x, y, **kwargs):
     if len(df) == 0:
         print('No data remains after filter.  Killing plot.')
         return None
-    
+
     # Handle multiple y-values
     if type(y) is not list:
         y = [y]
@@ -888,10 +920,10 @@ def plot(df, x, y, **kwargs):
         kw['ncol'] = ncol
         
         # Set up the legend grouping
-        if kw['leg_groups'] is not None and len(kw['leg_items'])==0:
+        if kw['leg_groups'] is not None and len(kw['leg_items']) == 0:
             df_fig[kw['leg_groups']] = df_fig[kw['leg_groups']].astype(str)
             kw['leg_items'] = natsorted(df_fig[kw['leg_groups']].unique())
-            if len(y) > 1 and not kw['twinx']:
+            if len(y) > 1: # and not kw['twinx']:
                 temp = list(itertools.product(kw['leg_items'], y))
                 kw['leg_items'] = ['%s: %s' % (f[0], f[1]) for f in temp]
         elif not kw['leg_groups'] and len(y) > 1:
@@ -1240,9 +1272,118 @@ def plot(df, x, y, **kwargs):
                                        linestyle=kw['line_style'],
                                        linewidth=kw['line_width'])
 
-                # NEED TO HANDLE BELOW FOR TWINX
-                # then need to add code to handle multiple labels, label
-                # colors, etc.
+                elif kw['leg_groups'] and kw['twinx']:
+                    # NEED TO ADJUST FOR LEG GROUPS FROM BELOW
+                    # Define color and marker types
+                    color = \
+                        kw['line_color'] if kw['line_color'] is not None \
+                                         else kw['colors'][0:2]
+                    marker = \
+                        kw['marker_type'] if kw['marker_type'] is not None\
+                                          else markers[0:2]
+                    # Plot
+                    ax2 = axes[ir, ic].twinx()
+                    ax2.grid(False, which='both')
+                    # Set the axes scale
+                    if kw['ax_scale2'] == 'semilogy' or kw['ax_scale2'] == 'logy':
+                        plotter2 = ax2.semilogy
+                    else:
+                        plotter2 = ax2.plot
+
+                    for ileg, leg_group in enumerate(kw['leg_items'][::2]):
+                        group = leg_group.split(': ')[0]
+                        subset = df_sub[kw['leg_groups']]==group
+                        if kw['stat'] is None:
+                            curves += add_curves(plotter,
+                                                 df_sub[x][subset],
+                                                 df_sub[y[0]][subset],
+                                                 kw['colors'][2*ileg],
+                                                 markers[2*ileg],
+                                                 True,
+                                                 markersize=kw['marker_size'],
+                                                 linestyle=kw['line_style'],
+                                                 linewidth=kw['line_width'])
+                            curves += add_curves(plotter2,
+                                                 df_sub[x][subset],
+                                                 df_sub[y[1]][subset],
+                                                 kw['colors'][2*ileg+1],
+                                                 markers[2*ileg+1],
+                                                 True,
+                                                 markersize=kw['marker_size'],
+                                                 linestyle=kw['line_style'],
+                                                 linewidth=kw['line_width'])
+                        else:
+                            if 'median' in kw['stat'].lower():
+                                df_stat = df_sub.groupby(kw['stat_val']).median()
+                            else:
+                                df_stat = df_sub.groupby(kw['stat_val']).mean()
+
+                            # Plot the points for each data set
+                            if 'only' not in kw['stat'].lower():
+                                curves += add_curves(plotter,
+                                                 df_sub[x][subset],
+                                                 df_sub[y[0]][subset],
+                                                 kw['colors'][2*ileg],
+                                                 markers[2*ileg],
+                                                 True,
+                                                 False,
+                                                 markersize=kw['marker_size'],
+                                                 linestyle='none',
+                                                 linewidth=0)
+                                curves += add_curves(plotter2,
+                                                 df_sub[x][subset],
+                                                 df_sub[y[1]][subset],
+                                                 kw['colors'][2*ileg+1],
+                                                 markers[2*ileg+1],
+                                                 True,
+                                                 False,
+                                                 markersize=kw['marker_size'],
+                                                 linestyle='none',
+                                                 linewidth=0)
+                            # Plot the lines
+                            if 'only' in kw['stat'].lower():
+                                curves += add_curves(plotter,
+                                             df_stat.reset_index()[x][subset],
+                                             df_stat[y[0]][subset],
+                                             kw['colors'][2*ileg],
+                                             markers[2*ileg],
+                                             True,
+                                             True,
+                                             markersize=kw['marker_size'],
+                                             linestyle=kw['line_style'],
+                                             linewidth=kw['line_width'])
+                                curves += add_curves(plotter,
+                                             df_stat.reset_index()[x][subset],
+                                             df_stat[y[1]][subset],
+                                             kw['colors'][2*ileg+1],
+                                             markers[2*ileg+1],
+                                             True,
+                                             True,
+                                             markersize=kw['marker_size'],
+                                             linestyle=kw['line_style'],
+                                             linewidth=kw['line_width'])
+                            else:
+                                add_curves(plotter,
+                                           df_stat.reset_index()[x][subset],
+                                           df_stat[y[0]][subset],
+                                           kw['colors'][2*ileg],
+                                           markers[2*ileg],
+                                           False,
+                                           True,
+                                           markersize=kw['marker_size'],
+                                           linestyle=kw['line_style'],
+                                           linewidth=kw['line_width'])
+                                add_curves(plotter2,
+                                           df_stat.reset_index()[x][subset],
+                                           df_stat[y[1]][subset],
+                                           kw['colors'][2*ileg+1],
+                                           markers[2*ileg+1],
+                                           False,
+                                           True,
+                                           markersize=kw['marker_size'],
+                                           linestyle=kw['line_style'],
+                                           linewidth=kw['line_width'])
+
                 else:
                     for ileg, leg_group in enumerate(kw['leg_items']):
 
@@ -1259,7 +1400,7 @@ def plot(df, x, y, **kwargs):
 
                         # Subset the data by legend group and plot
                         group = leg_group.split(': ')[0]
-                        if len(y) > 1:
+                        if len(y) > 1 and not kw['twinx']:
                             yy = leg_group.split(': ')[1]
                         else:
                             yy = y[0]
@@ -1446,7 +1587,7 @@ def plot(df, x, y, **kwargs):
                               fontsize=kw['rc_label_font_size'],
                               weight=kw['rc_label_text_style'])
         # Add the legend (wrong indent??)
-        if kw['leg_items'] is not None and len(kw['leg_items'])>0:
+        if kw['leg_items'] is not None and len(kw['leg_items'])>0 and kw['leg_on']:
             leg = fig.legend(curves,
                              kw['leg_items'],
                              loc='upper right',
