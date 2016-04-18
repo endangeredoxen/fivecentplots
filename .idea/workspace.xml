@@ -2,20 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9d4c2f01-dbce-4ddb-aa09-d7a2aef23aca" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/fivecentplots/doc/_static/theme_overrides.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/fivecentplots/doc/defaults.rst" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/fivecentplots/doc/design.rst" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/fivecentplots/doc/examples.rst" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/fivecentplots/doc/modules.rst" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/fivecentplots/doc/overview.rst" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/diagram.pptx" afterPath="$PROJECT_DIR$/fivecentplots/doc/diagram.pptx" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/defaults.py" afterPath="$PROJECT_DIR$/fivecentplots/defaults.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/design.py" afterPath="$PROJECT_DIR$/fivecentplots/design.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/conf.py" afterPath="$PROJECT_DIR$/fivecentplots/doc/conf.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/index.rst" afterPath="$PROJECT_DIR$/fivecentplots/doc/index.rst" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/fcp.py" afterPath="$PROJECT_DIR$/fivecentplots/fcp.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/tests/plot_test.py" afterPath="$PROJECT_DIR$/fivecentplots/tests/plot_test.py" />
     </list>
     <ignored path="fivecentplots.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -522,7 +509,13 @@
       <option name="project" value="LOCAL" />
       <updated>1459341529432</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="updated docs&#10;made all arguments to plot and boxplot kwargs&#10;cleaned up some lingering bugs&#10;added twinx with leg_groups plot">
+      <created>1460983646350</created>
+      <option name="number" value="00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1460983646350</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -531,6 +524,7 @@
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.095183484" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -538,7 +532,6 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -564,7 +557,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="updated with boxplot" />
     <MESSAGE value="updated boxplot function to fix bugs&#10;sorted leg_items&#10;added some line_fit options&#10;fixed axis&#10;fixed formatting issues with title and col label in design.py&#10;removed hardcoded reference in defaults.py for 'datapath' parameter" />
-    <option name="LAST_COMMIT_MESSAGE" value="updated boxplot function to fix bugs&#10;sorted leg_items&#10;added some line_fit options&#10;fixed axis&#10;fixed formatting issues with title and col label in design.py&#10;removed hardcoded reference in defaults.py for 'datapath' parameter" />
+    <MESSAGE value="updated docs&#10;made all arguments to plot and boxplot kwargs&#10;cleaned up some lingering bugs&#10;added twinx with leg_groups plot" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated docs&#10;made all arguments to plot and boxplot kwargs&#10;cleaned up some lingering bugs&#10;added twinx with leg_groups plot" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -628,7 +622,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="2" column="31" selection-start-line="2" selection-start-column="31" selection-end-line="2" selection-end-column="31" />
           <folding>
-            <element signature="e#0#36#0" expanded="true" />
+            <element signature="e#0#36#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -684,7 +678,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="2" column="31" selection-start-line="2" selection-start-column="31" selection-end-line="2" selection-end-column="31" />
           <folding>
-            <element signature="e#0#36#0" expanded="true" />
+            <element signature="e#0#36#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -740,7 +734,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="2" column="31" selection-start-line="2" selection-start-column="31" selection-end-line="2" selection-end-column="31" />
           <folding>
-            <element signature="e#0#36#0" expanded="true" />
+            <element signature="e#0#36#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -788,7 +782,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="2" column="31" selection-start-line="2" selection-start-column="31" selection-end-line="2" selection-end-column="31" />
           <folding>
-            <element signature="e#0#36#0" expanded="true" />
+            <element signature="e#0#36#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -836,7 +830,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#0#36#0" expanded="true" />
+            <element signature="e#0#36#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -868,7 +862,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="2" column="31" selection-start-line="2" selection-start-column="31" selection-end-line="2" selection-end-column="31" />
           <folding>
-            <element signature="e#0#36#0" expanded="true" />
+            <element signature="e#0#36#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -916,7 +910,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="19" selection-start-line="0" selection-start-column="5" selection-end-line="0" selection-end-column="19" />
           <folding>
-            <element signature="e#0#36#0" expanded="true" />
+            <element signature="e#0#36#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -956,7 +950,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#0#36#0" expanded="true" />
+            <element signature="e#0#36#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -995,7 +989,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="2" column="31" selection-start-line="2" selection-start-column="31" selection-end-line="2" selection-end-column="31" />
           <folding>
-            <element signature="e#0#36#0" expanded="true" />
+            <element signature="e#0#36#0" expanded="false" />
           </folding>
         </state>
       </provider>
