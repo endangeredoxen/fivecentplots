@@ -190,7 +190,7 @@ fontsize:</p>
 
 <dl class="function">
 <dt id="fcp.boxplot">
-<code class="descclassname">fcp.</code><code class="descname">boxplot</code><span class="sig-paren">(</span><em>df</em>, <em>y</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.boxplot" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fcp.</code><code class="descname">boxplot</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.boxplot" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
 <dt>boxplot(self, x, notch=None, sym=None, vert=None, whis=None,</dt>
 <dd>positions=None, widths=None, patch_artist=False,
@@ -240,7 +240,7 @@ filt (str):  query expression for filtering</dd>
 
 <dl class="function">
 <dt id="fcp.plot">
-<code class="descclassname">fcp.</code><code class="descname">plot</code><span class="sig-paren">(</span><em>df</em>, <em>x</em>, <em>y</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.plot" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fcp.</code><code class="descname">plot</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Main plotting function</p>
 <p>This function wraps many variations of x-y plots from the matplotlib
 library.  At minimum, it requires a pandas DataFrame with at least two
@@ -249,7 +249,7 @@ customized and enhanced by passing keyword arguments as defined below.
 Default values that must be defined in order to generate the plot are
 pulled from the fcp_params dictionary defined in defaults.py.</p>
 <dl class="docutils">
-<dt>Args:</dt>
+<dt>Required Keyword Args:</dt>
 <dd>df (DataFrame): DataFrame containing data to plot
 x (str):        name of x column in df
 y (str|list):   name or list of names of y column(s) in df</dd>

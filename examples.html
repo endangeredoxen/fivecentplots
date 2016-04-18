@@ -95,7 +95,11 @@
 <li class="toctree-l2"><a class="reference internal" href="#example-2-facet-grid-by-boost-level-and-temperature">Example 2: Facet grid by boost level and temperature</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#example-3-facet-grid-by-boost-level-and-temperature-no-axis-sharing">Example 3: Facet grid by boost level and temperature (no axis sharing)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#example-4-multiple-y-parameters-on-same-axis">Example 4: Multiple y parameters on same axis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#example-5-multiple-y-parameters-using-a-secondary-y-axis-broken">Example 5: Multiple y parameters using a secondary y-axis (Broken)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-5-multiple-y-parameters-using-a-secondary-y-axis">Example 5: Multiple y parameters using a secondary y-axis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-6-setting-axis-ranges">Example 6: Setting axis ranges</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-7-log-scale-axis">Example 7: Log scale axis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-8-simple-boxplot-without-grouping-factors">Example 8: Simple boxplot without grouping factors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-9-simple-boxplot-with-grouping-factors">Example 9: Simple boxplot with grouping factors</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
@@ -145,14 +149,16 @@
             
   <div class="section" id="example-library">
 <h1>Example Library<a class="headerlink" href="#example-library" title="Permalink to this headline">¶</a></h1>
-<p>All plot examples here use the provided fake data set found <a class="reference external" href="https://raw.githubusercontent.com/endangeredoxen/fivecentplots/master/fivecentplots/tests/fake_data.csv">here</a>.
-It consists of some made up semiconductor IV data.</p>
+<p>All x-y plot examples here use the provided fake data set found <a class="reference external" href="https://raw.githubusercontent.com/endangeredoxen/fivecentplots/master/fivecentplots/tests/fake_data.csv">here</a>.
+Boxplots use the fake data set found <a class="reference external" href="https://raw.githubusercontent.com/endangeredoxen/fivecentplots/master/fivecentplots/tests/fake_data_box.csv">here</a>.
+These data sets consist of made up semiconductor IV data.</p>
 <div class="section" id="setup">
 <h2>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">fivecentplots</span> <span class="kn">as</span> <span class="nn">fcp</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">r&#39;fake_data.csv&#39;</span><span class="p">)</span>
+<span class="n">df2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">r&#39;fake_data_box.csv&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -161,19 +167,19 @@ It consists of some made up semiconductor IV data.</p>
 <p>Assume we want to plot the IV curve for a single tested die.  Since this is
 xy data we will use the <code class="docutils literal"><span class="pre">fcp.plot</span></code> command.  First, let&#8217;s do this wrong
 without any filtering:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">leg_groups</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">leg_groups</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="_images/Ex1a.png" src="_images/Ex1a.png" />
 <p>Notice that we do not have discrete IV curves but a continuum of data points
 that connect back to the starting point each time.  This occurs because the
 original DataFrame contains data for multiple IV curves at multiple sites
-and conditions and our function
-call does not account for this.  Next, we will add some filtering to get the
-intended result:</p>
+and conditions and our function call does not account for this.  Next, we will
+add some filtering to get the intended result and add a figure title:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">filt</span> <span class="o">=</span> <span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target_Wavelength==450 &amp; Boost_Level==0.2 &amp; &#39;</span> \
        <span class="s1">&#39;Temperature_C==25&#39;</span>
-<span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">leg_groups</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="n">filt</span><span class="p">)</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">leg_groups</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="n">filt</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;My Favorite Plot Ever&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="_images/Ex1b.png" src="_images/Ex1b.png" />
@@ -184,7 +190,7 @@ intended result:</p>
 <p>Next, we will group the IV data into multiple plots based on the boost level
 and the temperature.  The various factors are separated by value into rows and
 columns instead of overlaying all the plots on one axis:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">leg_groups</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">leg_groups</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
          <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target_Wavelength==450&#39;</span><span class="p">,</span>
          <span class="n">xticks</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
@@ -198,7 +204,7 @@ columns instead of overlaying all the plots on one axis:</p>
 the outlier device of die (-1,2) at 75°C and 0.2V boost.  This occurs
 because axis sharing is enabled by default.  We can turn this off to get
 better clarity of the plot windows without the outlier as follows:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">leg_groups</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">leg_groups</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
          <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target_Wavelength==450&#39;</span><span class="p">,</span>
          <span class="n">sharex</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
@@ -214,23 +220,82 @@ this case, the legend will be updated to help us distinguish between the
 different curves.  This can be done as follows:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">filt</span> <span class="o">=</span> <span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target_Wavelength==450 &amp; Boost_Level==0.2 &amp; &#39;</span> \
        <span class="s1">&#39;Temperature_C==25&#39;</span>
-<span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="s1">&#39;Voltage&#39;</span><span class="p">],</span> <span class="n">leg_groups</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="s1">&#39;Voltage&#39;</span><span class="p">],</span> <span class="n">leg_groups</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="n">filt</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Values&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="_images/Ex4.png" src="_images/Ex4.png" />
 </div>
-<div class="section" id="example-5-multiple-y-parameters-using-a-secondary-y-axis-broken">
-<h2>Example 5: Multiple y parameters using a secondary y-axis (Broken)<a class="headerlink" href="#example-5-multiple-y-parameters-using-a-secondary-y-axis-broken" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="example-5-multiple-y-parameters-using-a-secondary-y-axis">
+<h2>Example 5: Multiple y parameters using a secondary y-axis<a class="headerlink" href="#example-5-multiple-y-parameters-using-a-secondary-y-axis" title="Permalink to this headline">¶</a></h2>
 <p>As an alternative to Example 4, we can force the second y-value to plot on a
 separate y-axis by &#8220;twinning&#8221; the x-axis as follows:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">filt</span> <span class="o">=</span> <span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target_Wavelength==450 &amp; Boost_Level==0.2 &amp; &#39;</span> \
        <span class="s1">&#39;Temperature_C==25&#39;</span>
-<span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">y2</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">twinx</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">leg_groups</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
-         <span class="nb">filter</span><span class="o">=</span><span class="n">filt</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">ylabel2</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="s1">&#39;Voltage&#39;</span><span class="p">],</span> <span class="n">twinx</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+         <span class="n">leg_groups</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="n">filt</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">ylabel2</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span>
+         <span class="n">show</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_static/images/Ex5.png" src="_static/images/Ex5.png" />
+<img alt="_images/Ex5.png" src="_images/Ex5.png" />
+</div>
+<div class="section" id="example-6-setting-axis-ranges">
+<h2>Example 6: Setting axis ranges<a class="headerlink" href="#example-6-setting-axis-ranges" title="Permalink to this headline">¶</a></h2>
+<p>Custom axis ranges can be specified by passing values for <code class="docutils literal"><span class="pre">xmin</span></code>, <code class="docutils literal"><span class="pre">xmax</span></code>,
+<code class="docutils literal"><span class="pre">ymin</span></code>, and/or <code class="docutils literal"><span class="pre">ymax</span></code> to the <code class="docutils literal"><span class="pre">fcp.plot</span></code> function.  Any range value not
+specifically specified will be determined automatically by an algorithm which
+will set the value slightly smaller (minima) or larger (maxima) than the data
+being plotted.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">filt</span> <span class="o">=</span> <span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target_Wavelength==450 &amp; Boost_Level==0.2 &amp; &#39;</span> \
+       <span class="s1">&#39;Temperature_C==25&#39;</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">leg_groups</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="n">filt</span><span class="p">,</span> <span class="n">xmin</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/Ex6.png" src="_images/Ex6.png" />
+</div>
+<div class="section" id="example-7-log-scale-axis">
+<h2>Example 7: Log scale axis<a class="headerlink" href="#example-7-log-scale-axis" title="Permalink to this headline">¶</a></h2>
+<p>x and y axes can be converted to log scale using the keyword <code class="docutils literal"><span class="pre">ax_scale</span></code>.
+Options include:</p>
+<blockquote>
+<div><ul class="simple">
+<li>x-only:  &#8216;logx&#8217;, &#8216;semilogx&#8217;</li>
+<li>y-only:  &#8216;logy&#8217;, &#8216;semilogy&#8217;</li>
+<li>both:  &#8216;loglog&#8217;</li>
+</ul>
+</div></blockquote>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">filt</span> <span class="o">=</span> <span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target_Wavelength==450 &amp; Boost_Level==0.2 &amp; &#39;</span> \
+       <span class="s1">&#39;Temperature_C==25&#39;</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">leg_groups</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="n">filt</span><span class="p">,</span> <span class="n">ax_scale</span><span class="o">=</span><span class="s1">&#39;logy&#39;</span><span class="p">,</span> <span class="n">xmin</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/Ex7.png" src="_images/Ex7.png" />
+</div>
+<div class="section" id="example-8-simple-boxplot-without-grouping-factors">
+<h2>Example 8: Simple boxplot without grouping factors<a class="headerlink" href="#example-8-simple-boxplot-without-grouping-factors" title="Permalink to this headline">¶</a></h2>
+<p>Using the <code class="docutils literal"><span class="pre">boxplot</span></code> module, we can create simple and complicate boxplots.
+The following code will generate a boxplot of the DataFrame column called
+<code class="docutils literal"><span class="pre">Value</span></code>, first without jittered points and then with jittered points.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df2</span><span class="p">,</span> <span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="s1">&#39;True&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/Ex8a.png" src="_images/Ex8a.png" />
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df2</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">jitter</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="s1">&#39;True&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/Ex8b.png" src="_images/Ex8b.png" />
+</div>
+<div class="section" id="example-9-simple-boxplot-with-grouping-factors">
+<h2>Example 9: Simple boxplot with grouping factors<a class="headerlink" href="#example-9-simple-boxplot-with-grouping-factors" title="Permalink to this headline">¶</a></h2>
+<p>To improve our understanding of the data, we can break the data for <code class="docutils literal"><span class="pre">Value</span></code>
+into groups and plot multiple boxplots for comparison:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df2</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">jitter</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="s1">&#39;True&#39;</span><span class="p">,</span>
+            <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Sample&#39;</span><span class="p">,</span> <span class="s1">&#39;Batch&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<img alt="_images/Ex9.png" src="_images/Ex9.png" />
 </div>
 </div>
 

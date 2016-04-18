@@ -261,7 +261,7 @@
 </tr>
 <tr class="row-odd"><td>col_labels_on</td>
 <td>bool</td>
-<td>toggle on|off column labels in facet grid</td>
+<td>toggle visibility of column labels in facet grid</td>
 <td>True</td>
 <td>NA</td>
 </tr>
@@ -368,10 +368,10 @@
 <td>Substrate</td>
 </tr>
 <tr class="row-odd"><td>leg_items</td>
-<td>str</td>
-<td>&nbsp;</td>
+<td>str|list</td>
+<td>explicit call of the legend items; ignores any values that are not listed</td>
 <td>[]</td>
-<td>&nbsp;</td>
+<td>[&#8216;(1,1), (-2,1)]</td>
 </tr>
 <tr class="row-even"><td>leg_on</td>
 <td>bool</td>
@@ -381,9 +381,9 @@
 </tr>
 <tr class="row-odd"><td>leg_title</td>
 <td>str</td>
-<td>&nbsp;</td>
+<td>title for the legend</td>
 <td>None</td>
-<td>&nbsp;</td>
+<td>My Legend</td>
 </tr>
 <tr class="row-even"><td>line_color</td>
 <td>&nbsp;</td>
@@ -392,19 +392,19 @@
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td>line_style</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
+<td>str</td>
+<td>set the default line style</td>
 <td><ul class="first last simple">
 <li></li>
 </ul>
 </td>
-<td>&nbsp;</td>
+<td>&#8211;</td>
 </tr>
 <tr class="row-even"><td>line_width</td>
 <td>int</td>
-<td>&nbsp;</td>
+<td>set the linewidth of curves</td>
 <td>1</td>
-<td>&nbsp;</td>
+<td>2</td>
 </tr>
 <tr class="row-odd"><td>marker_size</td>
 <td>int</td>
@@ -455,50 +455,50 @@
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td>row</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>None</td>
-<td>&nbsp;</td>
+<td>str</td>
+<td>name of a column in df to use as a grouping variable for facet grid style plotting; each unique value from df[row] will represent a row of plots in the final figure</td>
+<td>None &#8211;&gt; no column grouping</td>
+<td>Temperature [C]</td>
 </tr>
 <tr class="row-even"><td>row_label</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>None</td>
-<td>&nbsp;</td>
+<td>str</td>
+<td>a custom label to display for each row in the facet grid plot</td>
+<td>None &#8211;&gt; use the value of kwargs[&#8216;row&#8217;]</td>
+<td>Temp [C]</td>
 </tr>
 <tr class="row-odd"><td>row_labels_on</td>
 <td>bool</td>
-<td>&nbsp;</td>
+<td>toggle visibility of row grouping labels in facet grid</td>
 <td>True</td>
 <td>NA</td>
 </tr>
 <tr class="row-even"><td>row_label_size</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
+<td>int</td>
+<td>label height in pixel for row labels in pixels</td>
 <td>fcp_params</td>
-<td>&nbsp;</td>
+<td>45</td>
 </tr>
 <tr class="row-odd"><td>row_label_ws</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
+<td>int</td>
+<td>whitespace in pixels between axis and row labels in pixels</td>
 <td>fcp_params</td>
-<td>&nbsp;</td>
+<td>30</td>
 </tr>
 <tr class="row-even"><td>row_padding</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
+<td>int</td>
+<td>whitespace between facet rows in pixels</td>
 <td>fcp_params</td>
-<td>&nbsp;</td>
+<td>20</td>
 </tr>
 <tr class="row-odd"><td>rows</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
+<td>list</td>
+<td>list used to manually define the rows to use in the facet grid. These values must actually be in df[row]</td>
 <td>None</td>
-<td>&nbsp;</td>
+<td>[25, 75]</td>
 </tr>
 <tr class="row-even"><td>save_ext</td>
 <td>str</td>
-<td>&nbsp;</td>
+<td>filename extension for saved figures</td>
 <td>png</td>
 <td>&nbsp;</td>
 </tr>
@@ -527,16 +527,16 @@
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td>sharex</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
+<td>bool</td>
+<td>share plot range for x-axis</td>
 <td>True</td>
-<td>&nbsp;</td>
+<td>NA</td>
 </tr>
 <tr class="row-even"><td>sharey</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
+<td>bool</td>
+<td>share plot range for y-axis</td>
 <td>True</td>
-<td>&nbsp;</td>
+<td>NA</td>
 </tr>
 <tr class="row-odd"><td>show</td>
 <td>&nbsp;</td>
@@ -611,22 +611,22 @@
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td>xlabel</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>x</td>
+<td>str</td>
+<td>label for x-axis</td>
+<td>same as x</td>
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td>xmax</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
+<td>float</td>
+<td>maximum x-value on x-axis</td>
 <td>None</td>
-<td>&nbsp;</td>
+<td>100</td>
 </tr>
 <tr class="row-odd"><td>xmin</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
+<td>float</td>
+<td>minimum x-value of x-axis</td>
 <td>None</td>
-<td>&nbsp;</td>
+<td>-100</td>
 </tr>
 <tr class="row-even"><td>xticks</td>
 <td>&nbsp;</td>
@@ -641,22 +641,22 @@
 <td>&nbsp;</td>
 </tr>
 <tr class="row-even"><td>ylabel</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>y</td>
-<td>&nbsp;</td>
+<td>str</td>
+<td>label for primary y-axis</td>
+<td>same as y (or y[0])</td>
+<td>Current [A]</td>
 </tr>
 <tr class="row-odd"><td>ymax</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
+<td>float</td>
+<td>maximum y-value on y-axis</td>
 <td>None</td>
-<td>&nbsp;</td>
+<td>100</td>
 </tr>
 <tr class="row-even"><td>ymin</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
+<td>float</td>
+<td>minimum y-value of y-axis</td>
 <td>None</td>
-<td>&nbsp;</td>
+<td>-100</td>
 </tr>
 <tr class="row-odd"><td>yticks</td>
 <td>&nbsp;</td>
@@ -671,22 +671,22 @@
 <td>&nbsp;</td>
 </tr>
 <tr class="row-odd"><td>ylabel2</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>y</td>
-<td>&nbsp;</td>
+<td>str</td>
+<td>label for secondary y-axis</td>
+<td>same as y[1]</td>
+<td>Voltage [V]</td>
 </tr>
 <tr class="row-even"><td>ymax2</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
+<td>float</td>
+<td>maximum y-value on secondary y-axis</td>
 <td>None</td>
-<td>&nbsp;</td>
+<td>100</td>
 </tr>
 <tr class="row-odd"><td>ymin2</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
+<td>float</td>
+<td>minimum y-value on secondary y-axis</td>
 <td>None</td>
-<td>&nbsp;</td>
+<td>-100</td>
 </tr>
 <tr class="row-even"><td>yticks2</td>
 <td>&nbsp;</td>
