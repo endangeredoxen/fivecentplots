@@ -9,22 +9,36 @@ __license__   = 'GPLv3'
 __version__   = '.1'
 __url__       = 'https://github.com/endangeredoxen/fivecentplots'
 
+import os
 import matplotlib.pyplot as mplp
 import matplotlib.patches as patches
-from fivecentplots.defaults import *
+#from fivecentplots.defaults import *
 from fivecentplots.design import FigDesign
-import os
 import numpy as np
 import scipy.stats as stats
 import pandas as pd
 import pdb
 import re
 import itertools
+import shutil
+import sys
 try:
     from natsort import natsorted
 except:
     natsorted = sorted
 st = pdb.set_trace
+osjoin = os.path.join
+cur_dir = os.path.dirname(__file__)
+user_dir = os.path.expanduser('~')
+if not os.path.exists(osjoin(user_dir, '.fivecentplots')):
+    os.makedirs(osjoin(user_dir, '.fivecentplots'))
+if not os.path.exists(osjoin(user_dir, '.fivecentplots','defaults.py')):
+    shutil.copy2(osjoin(cur_dir, 'defaults.py'),
+                 osjoin(user_dir, '.fivecentplots', 'defaults.py'))
+sys.path = [osjoin(user_dir, '.fivecentplots')] + sys.path
+from defaults import *  # use local file
+### Need to have function to stomp existing defaults.py or use custom
+### Add some of the colors into fcp_params?
 
 
 def add_curves(plotter, x, y, color='k', marker='o', points=False, line=True,
@@ -475,6 +489,8 @@ def boxplot(**kwargs):
         # mplp.show()
         os.startfile(filename)
 
+    return design
+
 
 def df_filter(df, filt):
     """  Filter a DataFrame
@@ -501,6 +517,7 @@ def df_filter(df, filt):
                  .replace(']', '')
                  .replace('(', '')
                  .replace(')', '')
+                 .replace('-', '_')
                 for f in cols_orig.copy()]
     
     df2.columns = cols_new
@@ -1658,3 +1675,24 @@ def plot(**kwargs):
         
         
     return design
+
+
+def setup(dir):
+    """
+    Copy the defaults.py file to a user directory for manipulation
+
+    Args:
+        dir (str): directory of the new file
+
+    """
+
+    print('Transferring defaults.py file...', end='')
+    # Create directory if needed
+    if not os.path.exists(dir):
+        os.makedirs(dir)
+
+    shutil.copyfile(osjoin(cur_dir, 'defaults.py'), osjoin(dir, 'defaults.py'))
+    print('done!')
+
+
+ 

@@ -3,6 +3,30 @@
   <component name="ChangeListManager">
     <list default="true" id="9d4c2f01-dbce-4ddb-aa09-d7a2aef23aca" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_static/basic.css" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_static/basic.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_static/css/badge_only.css" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_static/css/badge_only.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_static/css/theme.css" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_static/css/theme.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_static/doctools.js" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_static/doctools.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_static/fonts/fontawesome-webfont.svg" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_static/fonts/fontawesome-webfont.svg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_static/jquery-1.11.1.js" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_static/jquery-1.11.1.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_static/jquery.js" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_static/jquery.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_static/js/modernizr.min.js" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_static/js/modernizr.min.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_static/js/theme.js" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_static/js/theme.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_static/searchtools.js" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_static/searchtools.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_static/underscore-1.3.1.js" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_static/underscore-1.3.1.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_static/underscore.js" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_static/underscore.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_static/websupport.js" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_static/websupport.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/defaults.html" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/defaults.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/design.html" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/design.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/examples.html" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/examples.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/genindex.html" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/genindex.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/index.html" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/modules.html" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/modules.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/overview.html" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/overview.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/py-modindex.html" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/py-modindex.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/quick.html" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/quick.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/search.html" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/search.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/fcp.py" afterPath="$PROJECT_DIR$/fivecentplots/fcp.py" />
     </list>
     <ignored path="fivecentplots.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -25,21 +49,11 @@
     <splitter split-orientation="horizontal" split-proportion="0.4867688">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="defaults.py" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/fivecentplots/defaults.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0">
-                  <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="overview.rst" pinned="false" current-in-tab="true">
+          <file leaf-file-name="overview.rst" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/fivecentplots/doc/overview.rst">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.9934037">
-                  <caret line="99" column="59" selection-start-line="99" selection-start-column="59" selection-end-line="99" selection-end-column="59" />
+                <state vertical-scroll-proportion="-0.39285713">
+                  <caret line="51" column="48" selection-start-line="51" selection-start-column="48" selection-end-line="51" selection-end-column="48" />
                   <folding />
                 </state>
               </provider>
@@ -49,7 +63,7 @@
             <entry file="file://$PROJECT_DIR$/fivecentplots/doc/index.rst">
               <provider selected="true" editor-type-id="text-editor">
                 <state vertical-scroll-proportion="0.0">
-                  <caret line="10" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+                  <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
                   <folding />
                 </state>
               </provider>
@@ -65,21 +79,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="design.rst" pinned="false" current-in-tab="false">
+          <file leaf-file-name="design.rst" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/fivecentplots/doc/design.rst">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0">
+                <state vertical-scroll-proportion="0.16033255">
                   <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="examples.rst" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/fivecentplots/doc/examples.rst">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0">
-                  <caret line="171" column="25" selection-start-line="171" selection-start-column="25" selection-end-line="171" selection-end-column="25" />
                   <folding />
                 </state>
               </provider>
@@ -102,7 +106,7 @@
           <file leaf-file-name="conf.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/fivecentplots/doc/conf.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="-17.103449">
+                <state vertical-scroll-proportion="-18.137932">
                   <caret line="147" column="5" selection-start-line="147" selection-start-column="5" selection-end-line="147" selection-end-column="5" />
                   <folding />
                 </state>
@@ -112,23 +116,9 @@
           <file leaf-file-name="fcp.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/fivecentplots/fcp.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.31488314">
-                  <caret line="1589" column="81" selection-start-line="1589" selection-start-column="81" selection-end-line="1589" selection-end-column="81" />
-                  <folding>
-                    <element signature="e#504#536#0" expanded="true" />
-                    <element signature="e#968#1804#0" expanded="false" />
-                    <element signature="e#968#1150#1" expanded="false" />
-                    <element signature="e#1195#1303#0" expanded="false" />
-                    <element signature="e#1969#3051#0" expanded="false" />
-                    <element signature="e#1969#2459#1" expanded="false" />
-                    <element signature="e#3081#17330#0" expanded="false" />
-                    <element signature="e#3081#3577#1" expanded="false" />
-                    <element signature="e#17362#18259#0" expanded="false" />
-                    <element signature="e#17362#17790#1" expanded="false" />
-                    <element signature="e#18293#18509#0" expanded="false" />
-                    <element signature="e#18293#18345#1" expanded="false" />
-                    <element signature="e#18548#18823#0" expanded="false" />
-                  </folding>
+                <state vertical-scroll-proportion="0.14760147">
+                  <caret line="11" column="9" selection-start-line="11" selection-start-column="9" selection-end-line="11" selection-end-column="9" />
+                  <folding />
                 </state>
               </provider>
             </entry>
@@ -141,6 +131,16 @@
                   <folding>
                     <element signature="e#0#36#0" expanded="true" />
                   </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="defaults.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/fivecentplots/defaults.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0">
+                  <caret line="12" column="24" selection-start-line="12" selection-start-column="24" selection-end-line="12" selection-end-column="24" />
+                  <folding />
                 </state>
               </provider>
             </entry>
@@ -178,10 +178,10 @@
         <option value="$PROJECT_DIR$/fivecentplots/doc/conf.py" />
         <option value="$PROJECT_DIR$/fivecentplots/tests/plot_test.py" />
         <option value="$PROJECT_DIR$/fivecentplots/defaults.py" />
-        <option value="$PROJECT_DIR$/fivecentplots/doc/examples.rst" />
         <option value="$PROJECT_DIR$/fivecentplots/design.py" />
-        <option value="$PROJECT_DIR$/fivecentplots/fcp.py" />
         <option value="$PROJECT_DIR$/fivecentplots/doc/overview.rst" />
+        <option value="$PROJECT_DIR$/fivecentplots/doc/examples.rst" />
+        <option value="$PROJECT_DIR$/fivecentplots/fcp.py" />
       </list>
     </option>
   </component>
@@ -528,19 +528,19 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24956971" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -565,12 +565,12 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/fivecentplots/fcp.py</url>
-          <line>67</line>
+          <line>81</line>
           <option name="timeStamp" value="5" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/fivecentplots/design.py</url>
-          <line>200</line>
+          <line>191</line>
           <option name="timeStamp" value="6" />
         </line-breakpoint>
       </breakpoints>
@@ -591,21 +591,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="211" column="8" selection-start-line="211" selection-start-column="8" selection-end-line="211" selection-end-column="8" />
-          <folding>
-            <element signature="e#504#536#0" expanded="true" />
-            <element signature="e#968#1804#0" expanded="false" />
-            <element signature="e#968#1150#1" expanded="false" />
-            <element signature="e#1195#1303#0" expanded="false" />
-            <element signature="e#1969#3051#0" expanded="false" />
-            <element signature="e#1969#2459#1" expanded="false" />
-            <element signature="e#3081#17330#0" expanded="false" />
-            <element signature="e#3081#3577#1" expanded="false" />
-            <element signature="e#17362#18259#0" expanded="false" />
-            <element signature="e#17362#17790#1" expanded="false" />
-            <element signature="e#18293#18509#0" expanded="false" />
-            <element signature="e#18293#18345#1" expanded="false" />
-            <element signature="e#18548#18823#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -631,21 +617,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="99" column="44" selection-start-line="99" selection-start-column="44" selection-end-line="99" selection-end-column="44" />
-          <folding>
-            <element signature="e#504#536#0" expanded="true" />
-            <element signature="e#968#1804#0" expanded="false" />
-            <element signature="e#968#1150#1" expanded="false" />
-            <element signature="e#1195#1303#0" expanded="false" />
-            <element signature="e#1969#3051#0" expanded="false" />
-            <element signature="e#1969#2459#1" expanded="false" />
-            <element signature="e#3081#17330#0" expanded="false" />
-            <element signature="e#3081#3577#1" expanded="false" />
-            <element signature="e#17362#18259#0" expanded="false" />
-            <element signature="e#17362#17790#1" expanded="false" />
-            <element signature="e#18293#18509#0" expanded="false" />
-            <element signature="e#18293#18345#1" expanded="false" />
-            <element signature="e#18548#18823#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -687,21 +659,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="249" column="24" selection-start-line="249" selection-start-column="24" selection-end-line="249" selection-end-column="24" />
-          <folding>
-            <element signature="e#504#536#0" expanded="true" />
-            <element signature="e#968#1804#0" expanded="false" />
-            <element signature="e#968#1150#1" expanded="false" />
-            <element signature="e#1195#1303#0" expanded="false" />
-            <element signature="e#1969#3051#0" expanded="false" />
-            <element signature="e#1969#2459#1" expanded="false" />
-            <element signature="e#3081#17330#0" expanded="false" />
-            <element signature="e#3081#3577#1" expanded="false" />
-            <element signature="e#17362#18259#0" expanded="false" />
-            <element signature="e#17362#17790#1" expanded="false" />
-            <element signature="e#18293#18509#0" expanded="false" />
-            <element signature="e#18293#18345#1" expanded="false" />
-            <element signature="e#18548#18823#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -743,21 +701,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="18" column="29" selection-start-line="18" selection-start-column="29" selection-end-line="18" selection-end-column="29" />
-          <folding>
-            <element signature="e#504#536#0" expanded="true" />
-            <element signature="e#968#1804#0" expanded="false" />
-            <element signature="e#968#1150#1" expanded="false" />
-            <element signature="e#1195#1303#0" expanded="false" />
-            <element signature="e#1969#3051#0" expanded="false" />
-            <element signature="e#1969#2459#1" expanded="false" />
-            <element signature="e#3081#17330#0" expanded="false" />
-            <element signature="e#3081#3577#1" expanded="false" />
-            <element signature="e#17362#18259#0" expanded="false" />
-            <element signature="e#17362#17790#1" expanded="false" />
-            <element signature="e#18293#18509#0" expanded="false" />
-            <element signature="e#18293#18345#1" expanded="false" />
-            <element signature="e#18548#18823#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -791,21 +735,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="18" column="29" selection-start-line="18" selection-start-column="29" selection-end-line="18" selection-end-column="29" />
-          <folding>
-            <element signature="e#504#536#0" expanded="true" />
-            <element signature="e#968#1804#0" expanded="false" />
-            <element signature="e#968#1150#1" expanded="false" />
-            <element signature="e#1195#1303#0" expanded="false" />
-            <element signature="e#1969#3051#0" expanded="false" />
-            <element signature="e#1969#2459#1" expanded="false" />
-            <element signature="e#3081#17330#0" expanded="false" />
-            <element signature="e#3081#3577#1" expanded="false" />
-            <element signature="e#17362#18259#0" expanded="false" />
-            <element signature="e#17362#17790#1" expanded="false" />
-            <element signature="e#18293#18509#0" expanded="false" />
-            <element signature="e#18293#18345#1" expanded="false" />
-            <element signature="e#18548#18823#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -839,21 +769,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="18" column="29" selection-start-line="18" selection-start-column="29" selection-end-line="18" selection-end-column="29" />
-          <folding>
-            <element signature="e#504#536#0" expanded="true" />
-            <element signature="e#968#1804#0" expanded="false" />
-            <element signature="e#968#1150#1" expanded="false" />
-            <element signature="e#1195#1303#0" expanded="false" />
-            <element signature="e#1969#3051#0" expanded="false" />
-            <element signature="e#1969#2459#1" expanded="false" />
-            <element signature="e#3081#17330#0" expanded="false" />
-            <element signature="e#3081#3577#1" expanded="false" />
-            <element signature="e#17362#18259#0" expanded="false" />
-            <element signature="e#17362#17790#1" expanded="false" />
-            <element signature="e#18293#18509#0" expanded="false" />
-            <element signature="e#18293#18345#1" expanded="false" />
-            <element signature="e#18548#18823#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -871,21 +787,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#504#536#0" expanded="true" />
-            <element signature="e#968#1804#0" expanded="false" />
-            <element signature="e#968#1150#1" expanded="false" />
-            <element signature="e#1195#1303#0" expanded="false" />
-            <element signature="e#1969#3051#0" expanded="false" />
-            <element signature="e#1969#2459#1" expanded="false" />
-            <element signature="e#3081#17330#0" expanded="false" />
-            <element signature="e#3081#3577#1" expanded="false" />
-            <element signature="e#17362#18259#0" expanded="false" />
-            <element signature="e#17362#17790#1" expanded="false" />
-            <element signature="e#18293#18509#0" expanded="false" />
-            <element signature="e#18293#18345#1" expanded="false" />
-            <element signature="e#18548#18823#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -919,21 +821,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#504#536#0" expanded="true" />
-            <element signature="e#968#1804#0" expanded="false" />
-            <element signature="e#968#1150#1" expanded="false" />
-            <element signature="e#1195#1303#0" expanded="false" />
-            <element signature="e#1969#3051#0" expanded="false" />
-            <element signature="e#1969#2459#1" expanded="false" />
-            <element signature="e#3081#17330#0" expanded="false" />
-            <element signature="e#3081#3577#1" expanded="false" />
-            <element signature="e#17362#18259#0" expanded="false" />
-            <element signature="e#17362#17790#1" expanded="false" />
-            <element signature="e#18293#18509#0" expanded="false" />
-            <element signature="e#18293#18345#1" expanded="false" />
-            <element signature="e#18548#18823#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -959,21 +847,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
-          <folding>
-            <element signature="e#504#536#0" expanded="true" />
-            <element signature="e#968#1804#0" expanded="false" />
-            <element signature="e#968#1150#1" expanded="false" />
-            <element signature="e#1195#1303#0" expanded="false" />
-            <element signature="e#1969#3051#0" expanded="false" />
-            <element signature="e#1969#2459#1" expanded="false" />
-            <element signature="e#3081#17330#0" expanded="false" />
-            <element signature="e#3081#3577#1" expanded="false" />
-            <element signature="e#17362#18259#0" expanded="false" />
-            <element signature="e#17362#17790#1" expanded="false" />
-            <element signature="e#18293#18509#0" expanded="false" />
-            <element signature="e#18293#18345#1" expanded="false" />
-            <element signature="e#18548#18823#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1024,14 +898,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/fivecentplots/doc/design.rst">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/fivecentplots/doc/_static/theme_overrides.css">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.195962">
@@ -1042,7 +908,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/fivecentplots/doc/conf.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-17.103449">
+        <state vertical-scroll-proportion="-18.137932">
           <caret line="147" column="5" selection-start-line="147" selection-start-column="5" selection-end-line="147" selection-end-column="5" />
           <folding />
         </state>
@@ -1064,18 +930,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/fivecentplots/defaults.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/fivecentplots/doc/index.rst">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="10" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+          <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -1096,10 +954,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/fivecentplots/doc/examples.rst">
+    <entry file="file://$PROJECT_DIR$/fivecentplots/doc/overview.rst">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="171" column="25" selection-start-line="171" selection-start-column="25" selection-end-line="171" selection-end-column="25" />
+        <state vertical-scroll-proportion="-0.39285713">
+          <caret line="51" column="48" selection-start-line="51" selection-start-column="48" selection-end-line="51" selection-end-column="48" />
           <folding />
         </state>
       </provider>
@@ -1114,32 +972,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/fivecentplots/fcp.py">
+    <entry file="file://$PROJECT_DIR$/fivecentplots/doc/examples.rst">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.31488314">
-          <caret line="1589" column="81" selection-start-line="1589" selection-start-column="81" selection-end-line="1589" selection-end-column="81" />
-          <folding>
-            <element signature="e#504#536#0" expanded="true" />
-            <element signature="e#968#1804#0" expanded="false" />
-            <element signature="e#968#1150#1" expanded="false" />
-            <element signature="e#1195#1303#0" expanded="false" />
-            <element signature="e#1969#3051#0" expanded="false" />
-            <element signature="e#1969#2459#1" expanded="false" />
-            <element signature="e#3081#17330#0" expanded="false" />
-            <element signature="e#3081#3577#1" expanded="false" />
-            <element signature="e#17362#18259#0" expanded="false" />
-            <element signature="e#17362#17790#1" expanded="false" />
-            <element signature="e#18293#18509#0" expanded="false" />
-            <element signature="e#18293#18345#1" expanded="false" />
-            <element signature="e#18548#18823#0" expanded="false" />
-          </folding>
+        <state vertical-scroll-proportion="1.4988123">
+          <caret line="164" column="0" selection-start-line="164" selection-start-column="0" selection-end-line="164" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/fivecentplots/doc/overview.rst">
+    <entry file="file://$PROJECT_DIR$/fivecentplots/defaults.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.9934037">
-          <caret line="99" column="59" selection-start-line="99" selection-start-column="59" selection-end-line="99" selection-end-column="59" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="12" column="24" selection-start-line="12" selection-start-column="24" selection-end-line="12" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fivecentplots/doc/design.rst">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.16033255">
+          <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fivecentplots/fcp.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.14760147">
+          <caret line="11" column="9" selection-start-line="11" selection-start-column="9" selection-end-line="11" selection-end-column="9" />
           <folding />
         </state>
       </provider>
