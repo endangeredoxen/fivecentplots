@@ -12,7 +12,7 @@ __url__       = 'https://github.com/endangeredoxen/fivecentplots'
 import os
 import matplotlib.pyplot as mplp
 import matplotlib.ticker as ticker
-import matplotlib.patches as patche
+import matplotlib.patches as patches
 import numpy as np
 import scipy.stats as stats
 import pandas as pd
@@ -337,12 +337,49 @@ def boxplot(**kwargs):
     means = []
     medians = []
 
+    # Account for scalar formatted axes
+    if kw['scalar_y']:
+        max_y = df[y].values.max()
+        max_y = int(10**(np.ceil(np.log10(df[y].values.max()))-3))
+        kw['fig_ax_ws'] += 10*len(str(max_y))
+    
     # Format the figure dimensions
     design = FigDesign(**kw)
 
     # Make the figure and axes
-    fig, ax = mplp.subplots(1, 1, figsize=[design.fig_w, design.fig_h],
-                                 dpi=design.dpi)
+    fig, ax = mplp.subplots(1, 1, 
+                            figsize=[design.fig_w, design.fig_h],
+                            dpi=design.dpi,
+                            facecolor=kw['fig_face_color'],
+                            edgecolor=kw['fig_edge_color'])
+    
+    # Set colors
+    ax.set_axis_bgcolor(kw['ax_face_color'])
+    ax.spines['bottom'].set_color(kw['ax_edge_color'])
+    ax.spines['top'].set_color(kw['ax_edge_color']) 
+    ax.spines['right'].set_color(kw['ax_edge_color'])
+    ax.spines['left'].set_color(kw['ax_edge_color'])
+    
+    # Style major gridlines
+    if kw['grid_major']:
+        ax.grid(b=True, which='major', zorder=3,
+                          color=kw['grid_major_color'], 
+                          linestyle=kw['grid_major_linestyle'])
+    
+    # Toggle minor gridlines
+    kw['grid_minor'] = str(kw['grid_minor'])
+    ax.minorticks_on()
+    if kw['grid_minor'] == 'True' or \
+        kw['grid_minor'].lower() == 'both':
+        ax.grid(b=True, 
+                          color=kw['grid_minor_color'], 
+                          which='minor', zorder=0,
+                          linestyle=kw['grid_minor_linestyle'])
+    elif kw['grid_minor'].lower() == 'y':
+        ax.yaxis.grid(b=True, 
+                            color=kw['grid_minor_color'],
+                            which='minor',
+                            linestyle=kw['grid_minor_linestyle'])
 
     num_groups = 0
     changes = None
