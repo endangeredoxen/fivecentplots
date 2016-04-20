@@ -865,7 +865,7 @@ def plot(**kwargs):
     kw['col_label_size'] = kwargs.get('col_label_size',
                                       fcp_params['rc_label_size'])
     kw['col_label_ws'] = kwargs.get('col_label_ws', fcp_params['rc_label_ws'])
-    kw['col_padding'] = kwargs.get('cow_padding', fcp_params['col_padding'])
+    kw['col_padding'] = kwargs.get('col_padding', fcp_params['col_padding'])
     kw['colors'] = kwargs.get('colors', palette)
     kw['cols'] = kwargs.get('cols', None)
     kw['fig_ax_ws'] = kwargs.get('fig_ax_ws', 
