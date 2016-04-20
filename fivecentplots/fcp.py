@@ -6,22 +6,29 @@
 __author__    = 'Steve Nicholes'
 __copyright__ = 'Copyright (C) 2016 Steve Nicholes'
 __license__   = 'GPLv3'
-__version__   = '.1'
+__version__   = '0.2.0'
 __url__       = 'https://github.com/endangeredoxen/fivecentplots'
 
 import os
 import matplotlib.pyplot as mplp
-import matplotlib.patches as patches
-#from fivecentplots.defaults import *
-from fivecentplots.design import FigDesign
+import matplotlib.ticker as ticker
+import matplotlib.patches as patche
 import numpy as np
 import scipy.stats as stats
 import pandas as pd
 import pdb
 import re
+import importlib
 import itertools
 import shutil
 import sys
+from fivecentplots.design import FigDesign
+import fivecentplots.fileio as fileio
+try:
+    import win32clipboard
+except:
+    print('Could not import win32clipboard.  Make sure pywin32 is installed '
+          'to use the paste from clipboard option.')
 try:
     from natsort import natsorted
 except:
@@ -37,8 +44,6 @@ if not os.path.exists(osjoin(user_dir, '.fivecentplots','defaults.py')):
                  osjoin(user_dir, '.fivecentplots', 'defaults.py'))
 sys.path = [osjoin(user_dir, '.fivecentplots')] + sys.path
 from defaults import *  # use local file
-### Need to have function to stomp existing defaults.py or use custom
-### Add some of the colors into fcp_params?
 
 
 def add_curves(plotter, x, y, color='k', marker='o', points=False, line=True,
@@ -95,8 +100,6 @@ def add_label(label, pos, axis, rotation, fillcolor='#ffffff',
         pos (tuple): left, bottom, width, height
         axis (matplotlib.axes):
         rotation (int):
-
-            label:
         pos:
         axis:
         rotation:
@@ -152,9 +155,13 @@ def boxplot(**kwargs):
         raise ValueError('Must provide a column name for "y"')
 
 
+    kw['ax_edge_color'] = kwargs.get('ax_edge_color',
+                                     fcp_params['ax_edge_color'])
+    kw['ax_face_color'] = kwargs.get('ax_face_color',
+                                     fcp_params['ax_face_color'])
     kw['ax_fig_ws'] = kwargs.get('ax_fig_ws', fcp_params['ax_fig_ws'])
     kw['ax_hlines'] = kwargs.get('ax_hlines', [])
-    kw['ax_label_pad'] = kwargs.get('ax_label_pad', 0)
+    kw['ax_label_pad'] = kwargs.get('ax_label_pad', fcp_params['ax_label_pad'])
     kw['ax_lim'] = kwargs.get('ax_lim', [])
     kw['ax_lim_pad'] = kwargs.get('ax_lim_pad', 0.05)
     kw['ax_scale'] = kwargs.get('ax_scale', None)
@@ -188,10 +195,26 @@ def boxplot(**kwargs):
     kw['colors'] = kwargs.get('colors', palette)
     kw['connect_means'] = kwargs.get('connect_means', False)
     kw['dividers'] = kwargs.get('dividers', True)
+    kw['fig_ax_ws'] = kwargs.get('fig_ax_ws',
+                                 fcp_params['fig_ax_ws'])
+    kw['fig_edge_color'] = kwargs.get('fig_edge_color',
+                                     fcp_params['fig_edge_color'])
+    kw['fig_face_color'] = kwargs.get('fig_face_color',
+                                     fcp_params['fig_face_color'])
     kw['fig_groups'] = kwargs.get('fig_groups', None)
     kw['fig_group_path'] = kwargs.get('fig_group_path', False)
     kw['filename'] = kwargs.get('filename', None)
     kw['filter'] = kwargs.get('filter', None)
+    kw['grid_major_color'] = kwargs.get('grid_major_color',
+                                        fcp_params['grid_major_color'])
+    kw['grid_major_linestyle'] = kwargs.get('grid_major_linestyle',
+                                        fcp_params['grid_major_linestyle'])
+    kw['grid_minor_color'] = kwargs.get('grid_minor_color',
+                                        fcp_params['grid_minor_color'])
+    kw['grid_minor_linestyle'] = kwargs.get('grid_minor_linestyle',
+                                        fcp_params['grid_minor_linestyle'])
+    kw['grid_major'] = kwargs.get('grid_major', True)
+    kw['grid_minor'] = kwargs.get('grid_minor', False)
     kw['groups'] = kwargs.get('groups', None)
     kw['jitter'] = kwargs.get('jitter', False)
     kw['label_font_size'] = kwargs.get('label_font_size',
@@ -204,15 +227,25 @@ def boxplot(**kwargs):
     kw['leg_items'] = kwargs.get('leg_items', [])
     kw['leg_on'] = kwargs.get('leg_on', True)
     kw['leg_title'] = kwargs.get('leg_title', None)
+    kw['line_width'] = kwargs.get('line_width', fcp_params['line_width'])
     kw['marker_size'] = kwargs.get('marker_size', fcp_params['marker_size'])
     kw['marker_type'] = kwargs.get('marker_type', fcp_params['marker_type'])
     kw['points'] = kwargs.get('points', True)
     kw['save_ext'] = kwargs.get('save_ext', 'png')
     kw['save_name'] = kwargs.get('save_name', None)
     kw['save_path'] = kwargs.get('save_path', None)
+    kw['scalar_y'] = kwargs.get('scalar_y', False)
     kw['show'] = kwargs.get('show', False)
+    kw['tick_major_color'] = kwargs.get('tick_major_color',
+                                        fcp_params['tick_major_color'])
+    kw['tick_minor_color'] = kwargs.get('tick_minor_color',
+                                        fcp_params['tick_minor_color'])
     kw['tick_font_size'] = kwargs.get('tick_font_size',
                                       fcp_params['tick_font_size'])
+    kw['tick_label_color'] = kwargs.get('tick_label_color',
+                                      fcp_params['tick_label_color'])
+    kw['tick_length'] = kwargs.get('tick_length', fcp_params['tick_length'])
+    kw['tick_width'] = kwargs.get('tick_width', fcp_params['tick_width'])
     kw['title'] = kwargs.get('title', None)
     kw['title_edge_color'] = kwargs.get('title_edge_color',
                                         fcp_params['title_edge_color'])
@@ -422,7 +455,8 @@ def boxplot(**kwargs):
                     width = sub.index[j+1] - sub.index[j]
                 label = indices.loc[sub.index[j], num_cols-1-i]
                 add_label(label,
-                          (sub.index[j]/len(changes), -height*(i+1), width/len(changes), height),
+                          (sub.index[j]/len(changes), -height*(i+1),
+                           width/len(changes), height),
                           ax,
                           0,
                           edgecolor=kw['bp_label_edge_color'],
@@ -561,6 +595,28 @@ def get_unique_groups(kw):
                 groups += [kw[v]]
                 
     return groups
+
+
+def paste_kwargs(kwargs):
+    """
+    Get the kwargs from contents of the clipboard in ini file format
+
+    Args:
+        kwargs (dict): originally inputted kwargs
+
+    Returns:
+        kwargs
+    """
+
+    # Read the pasted data using the ConfigFile class and convert to dict
+    config = fileio.ConfigFile(paste=True)
+    new_kw = list(config.config_dict.values())[0]
+
+    # Maintain any kwargs originally specified
+    for k, v in kwargs.items():
+        new_kw[k] = v
+
+    return new_kw
 
 
 def plot(**kwargs):
@@ -732,6 +788,13 @@ def plot(**kwargs):
 
     """
     
+    # Reload defaults
+    fcp_params, palette, markers = reload_defaults()
+    
+    # Check for pasted kwargs
+    if kwargs.get('paste'):
+        kwargs = paste_kwargs(kwargs)
+    
     # Keyword-argument definition
     kw = {}
     df = kwargs.get('df')
@@ -746,8 +809,12 @@ def plot(**kwargs):
     if y is None:
         raise ValueError('Must provide a column name for "y"')
 
+    kw['ax_edge_color'] = kwargs.get('ax_edge_color', 
+                                     fcp_params['ax_edge_color'])
+    kw['ax_face_color'] = kwargs.get('ax_face_color', 
+                                     fcp_params['ax_face_color'])
     kw['ax_hlines'] = kwargs.get('ax_hlines', [])
-    kw['ax_label_pad'] = kwargs.get('ax_label_pad', 0)
+    kw['ax_label_pad'] = kwargs.get('ax_label_pad', fcp_params['ax_label_pad'])
     kw['ax_lim'] = kwargs.get('ax_lim', [])
     kw['ax_lim_pad'] = kwargs.get('ax_lim_pad', 0.05)
     kw['ax_scale'] = kwargs.get('ax_scale', None)
@@ -764,10 +831,24 @@ def plot(**kwargs):
     kw['col_padding'] = kwargs.get('cow_padding', fcp_params['col_padding'])
     kw['colors'] = kwargs.get('colors', palette)
     kw['cols'] = kwargs.get('cols', None)
+    kw['fig_ax_ws'] = kwargs.get('fig_ax_ws', 
+                                 fcp_params['fig_ax_ws'])
+    kw['fig_edge_color'] = kwargs.get('fig_edge_color', 
+                                     fcp_params['fig_edge_color'])
+    kw['fig_face_color'] = kwargs.get('fig_face_color', 
+                                     fcp_params['fig_face_color'])
     kw['fig_groups'] = kwargs.get('fig_groups', None)
     kw['fig_group_path'] = kwargs.get('fig_group_path', False)
     kw['filename'] = kwargs.get('filename', None)
     kw['filter'] = kwargs.get('filter', None)
+    kw['grid_major_color'] = kwargs.get('grid_major_color', 
+                                        fcp_params['grid_major_color'])
+    kw['grid_major_linestyle'] = kwargs.get('grid_major_linestyle', 
+                                        fcp_params['grid_major_linestyle'])
+    kw['grid_minor_color'] = kwargs.get('grid_minor_color', 
+                                        fcp_params['grid_minor_color'])
+    kw['grid_minor_linestyle'] = kwargs.get('grid_minor_linestyle', 
+                                        fcp_params['grid_minor_linestyle'])
     kw['grid_major'] = kwargs.get('grid_major', True)
     kw['grid_minor'] = kwargs.get('grid_minor', False)
     kw['label_font_size'] = kwargs.get('label_font_size', 
@@ -783,7 +864,7 @@ def plot(**kwargs):
     kw['line_color'] = kwargs.get('line_color', None)
     kw['line_fit'] = kwargs.get('line_fit', None)
     kw['line_style'] = kwargs.get('line_style', '-')
-    kw['line_width'] = kwargs.get('line_width', 1)
+    kw['line_width'] = kwargs.get('line_width', fcp_params['line_width'])
     kw['lines'] = kwargs.get('lines', True)
     kw['marker_size'] = kwargs.get('marker_size', fcp_params['marker_size'])
     kw['marker_type'] = kwargs.get('marker_type')
@@ -809,6 +890,8 @@ def plot(**kwargs):
     kw['save_ext'] = kwargs.get('save_ext', 'png')
     kw['save_name'] = kwargs.get('save_name', None)
     kw['save_path'] = kwargs.get('save_path', None)
+    kw['scalar_x'] = kwargs.get('scalar_x', False)
+    kw['scalar_y'] = kwargs.get('scalar_y', False)
     kw['sci_x'] = kwargs.get('sci_x', False)
     kw['sci_y'] = kwargs.get('sci_y', False)
     kw['sharex'] = kwargs.get('sharex', True)
@@ -816,8 +899,16 @@ def plot(**kwargs):
     kw['show'] = kwargs.get('show', False)
     kw['stat'] = kwargs.get('stat', None)
     kw['stat_val'] = kwargs.get('stat_val', x)
+    kw['tick_major_color'] = kwargs.get('tick_major_color', 
+                                        fcp_params['tick_major_color'])
+    kw['tick_minor_color'] = kwargs.get('tick_minor_color', 
+                                        fcp_params['tick_minor_color'])
     kw['tick_font_size'] = kwargs.get('tick_font_size',
                                       fcp_params['tick_font_size'])
+    kw['tick_label_color'] = kwargs.get('tick_label_color',
+                                      fcp_params['tick_label_color'])
+    kw['tick_length'] = kwargs.get('tick_length', fcp_params['tick_length'])
+    kw['tick_width'] = kwargs.get('tick_width', fcp_params['tick_width'])
     kw['title'] = kwargs.get('title', None)
     kw['title_edge_color'] = kwargs.get('title_edge_color',
                                         fcp_params['title_edge_color'])
@@ -850,12 +941,17 @@ def plot(**kwargs):
     df = df.copy()
     
     # Turn off interactive plotting
-    mpl.pylab.ioff()
+    mplp.ioff()
     
     # Convert column types
-    df[x] = df[x].astype(float)
-    df[y] = df[y].astype(float)
-    
+    try:
+        df[x] = df[x].astype(float)
+    except:
+        raise ValueError('Could not convert x-column to float!')
+    try:
+        df[y] = df[y].astype(float)
+    except:
+        raise ValueError('Could not convert y-column to float!')
     # Dummy-proof colors
     if type(kw['colors'][0]) is not tuple:
         kw['colors'] = [kw['colors']]
@@ -878,7 +974,7 @@ def plot(**kwargs):
         
     
     # Clear out existing plot buffer
-    mpl.pyplot.close('all')
+    mplp.close('all')
 
     # Set up the figure grouping and iterate (each value corresponds to a
     #  separate figure)
@@ -938,6 +1034,9 @@ def plot(**kwargs):
         
         # Set up the legend grouping
         if kw['leg_groups'] is not None and len(kw['leg_items']) == 0:
+            if kw['leg_groups'] not in df_fig.columns:
+                print('\nError!  "%s" not in DataFrame.  '
+                      'Check reindex value' % kw['leg_groups'])
             df_fig[kw['leg_groups']] = df_fig[kw['leg_groups']].astype(str)
             kw['leg_items'] = natsorted(df_fig[kw['leg_groups']].unique())
             if len(y) > 1: # and not kw['twinx']:
@@ -958,15 +1057,23 @@ def plot(**kwargs):
             if 'col_padding' not in kwargs.keys():
                 kw['col_padding'] += kw['tick_font_size']
 
+        # Account for scalar formatted axes
+        if kw['scalar_y']:
+            max_y = df[y].values.max()
+            max_y = int(10**(np.ceil(np.log10(df[y].values.max()))-3))
+            kw['fig_ax_ws'] += 10*len(str(max_y))
+            
         # Format the figure dimensions
         design = FigDesign(**kw)
 
         # Make the figure and axes
-        fig, axes = mpl.pyplot.subplots(nrow, ncol,
-                                        figsize=[design.fig_w, design.fig_h],
-                                        sharex=kw['sharex'],
-                                        sharey=kw['sharey'],
-                                        dpi=design.dpi)
+        fig, axes = mplp.subplots(nrow, ncol,
+                                  figsize=[design.fig_w, design.fig_h],
+                                  sharex=kw['sharex'],
+                                  sharey=kw['sharey'],
+                                  dpi=design.dpi,
+                                  facecolor=kw['fig_face_color'],
+                                  edgecolor=kw['fig_edge_color'])
 
         # Reformat the axes variable if it is only one plot
         if not type(axes) is np.ndarray:
@@ -991,7 +1098,7 @@ def plot(**kwargs):
         if kw['cmap']=='jmp_spectral':
             cmap = jmp_spectral
         elif kw['cmap'] is not None:
-            cmap = mpl.pyplot.get_cmap(kw['cmap'])
+            cmap = mplp.get_cmap(kw['cmap'])
 
         # Make the plots by row and by column
         curves = []
@@ -999,14 +1106,38 @@ def plot(**kwargs):
         for ir, r in enumerate(rows):
             for ic, c in enumerate(cols):
 
+                # Set colors
+                axes[ir, ic].set_axis_bgcolor(kw['ax_face_color'])
+                axes[ir, ic].spines['bottom'].set_color(kw['ax_edge_color'])
+                axes[ir, ic].spines['top'].set_color(kw['ax_edge_color']) 
+                axes[ir, ic].spines['right'].set_color(kw['ax_edge_color'])
+                axes[ir, ic].spines['left'].set_color(kw['ax_edge_color'])
+                
+                # Style major gridlines
+                if kw['grid_major']:
+                    axes[ir, ic].grid(b=True, which='major', zorder=3,
+                                      color=kw['grid_major_color'], 
+                                      linestyle=kw['grid_major_linestyle'])
+                
                 # Toggle minor gridlines
                 kw['grid_minor'] = str(kw['grid_minor'])
-                if kw['grid_minor'] == 'True' or kw['grid_minor'].lower() == 'both':
-                    axes[ir, ic].grid(True, which='both')
+                axes[ir, ic].minorticks_on()
+                if kw['grid_minor'] == 'True' or \
+                    kw['grid_minor'].lower() == 'both':
+                    axes[ir, ic].grid(b=True, 
+                                      color=kw['grid_minor_color'], 
+                                      which='minor', zorder=0,
+                                      linestyle=kw['grid_minor_linestyle'])
                 elif kw['grid_minor'].lower() == 'y':
-                    axes[ir, ic].yaxis.grid(True, which='both')
+                    axes[ir, ic].yaxis.grid(b=True, 
+                                        color=kw['grid_minor_color'],
+                                        which='minor',
+                                        linestyle=kw['grid_minor_linestyle'])
                 elif kw['grid_minor'].lower() == 'x':
-                    axes[ir, ic].xaxis.grid(True, which='both')
+                    axes[ir, ic].xaxis.grid(b=True, 
+                                        color=kw['grid_minor_color'],
+                                        which='minor',
+                                        linestyle=kw['grid_minor_linestyle'])
                 
                 # Build the row/col filename labels
                 if kw['row_label']:
@@ -1077,7 +1208,7 @@ def plot(**kwargs):
                 
                 # Legend grouping
                 if kw['leg_groups'] is None and not kw['twinx']:
-                    for iy, yy in enumerate(y):
+                    for iy, yy in enumerate(natsorted(y)):
 
                         # Define color and marker types
                         color = \
@@ -1101,45 +1232,49 @@ def plot(**kwargs):
                         
                         else:
                             if 'median' in kw['stat'].lower():
-                                df_stat = df_sub.groupby(kw['stat_val']).median()
+                                df_stat = \
+                                    df_sub.groupby(kw['stat_val']).median()
                             else:
                                 df_stat = df_sub.groupby(kw['stat_val']).mean()
                             
                             if 'only' not in kw['stat'].lower():
                                 # Plot the points for each data set
-                                curves += add_curves(plotter,
-                                                     df_sub[x],
-                                                     df_sub[yy],
-                                                     color,
-                                                     marker,
-                                                     True,
-                                                     False,
-                                                     markersize=kw['marker_size'],
-                                                     linestyle='none',
-                                                     linewidth=0)
+                                curves += add_curves(
+                                             plotter,
+                                             df_sub[x],
+                                             df_sub[yy],
+                                             color,
+                                             marker,
+                                             True,
+                                             False,
+                                             markersize=kw['marker_size'],
+                                             linestyle='none',
+                                             linewidth=0)
                             # Plot the lines
                             if 'only' in kw['stat'].lower():
-                                curves += add_curves(plotter,
-                                                     df_stat.reset_index()[x],
-                                                     df_stat[yy],
-                                                     color,
-                                                     marker,
-                                                     True,
-                                                     True,
-                                                     markersize=kw['marker_size'],
-                                                     linestyle=kw['line_style'],
-                                                     linewidth=kw['line_width'])
+                                curves += add_curves(
+                                    plotter,
+                                    df_stat.reset_index()[x],
+                                    df_stat[yy],
+                                    color,
+                                    marker,
+                                    True,
+                                    True,
+                                    markersize=kw['marker_size'],
+                                    linestyle=kw['line_style'],
+                                    linewidth=kw['line_width'])
                             else:
-                                add_curves(plotter,
-                                           df_stat.index,
-                                           df_stat[yy],
-                                           color,
-                                           marker,
-                                           False,
-                                           True,
-                                           markersize=kw['marker_size'],
-                                           linestyle=kw['line_style'],
-                                           linewidth=kw['line_width'])
+                                add_curves(
+                                    plotter,
+                                    df_stat.index,
+                                    df_stat[yy],
+                                    color,
+                                    marker,
+                                    False,
+                                    True,
+                                    markersize=kw['marker_size'],
+                                    linestyle=kw['line_style'],
+                                    linewidth=kw['line_width'])
                         
                         if kw['line_fit'] is not None and kw['line_fit'] != False:
                             # Fit the polynomial
@@ -1158,7 +1293,8 @@ def plot(**kwargs):
                             r_sq = ssreg/sstot
                             
                             # Add fit line
-                            xval = np.linspace(0.9*xval.min(), 1.1*xval.max(), 10)
+                            xval = np.linspace(0.9*xval.min(),
+                                               1.1*xval.max(), 10)
                             yval = np.polyval(coeffs, xval)
                             add_curves(plotter,
                                        xval,
@@ -1169,16 +1305,17 @@ def plot(**kwargs):
                                        True,
                                        linestyle='--')
                             
-                            # Add fit equation (need to update for more than 1D and formatting)
+                            # Add fit equation (need to update for more than
+                            # 1D and formatting)
                             if coeffs[1] < 0:
                                 sign = '-'
                             else:
                                 sign = '+'
-                            axes[ir,ic].text(0.05, 0.9, 
-                                            'y=%.4f * x %s %.4f\nR^2=%.5f' % 
-                                            (coeffs[0], sign, abs(coeffs[1]), r_sq),
-                                             transform=axes[ir,ic].transAxes)
-                            
+                            axes[ir,ic].text(
+                                0.05, 0.9,
+                                'y=%.4f * x %s %.4f\nR^2=%.5f' %
+                                (coeffs[0], sign, abs(coeffs[1]), r_sq),
+                                transform=axes[ir,ic].transAxes)
                             
                 elif kw['leg_groups'] is None and kw['twinx']:
 
@@ -1193,7 +1330,8 @@ def plot(**kwargs):
                     ax2 = axes[ir, ic].twinx()
                     ax2.grid(False, which='both')
                     # Set the axes scale
-                    if kw['ax_scale2'] == 'semilogy' or kw['ax_scale2'] == 'logy':
+                    if kw['ax_scale2'] == 'semilogy' or \
+                       kw['ax_scale2'] == 'logy':
                         plotter2 = ax2.semilogy
                     else:
                         plotter2 = ax2.plot
@@ -1302,7 +1440,8 @@ def plot(**kwargs):
                     ax2 = axes[ir, ic].twinx()
                     ax2.grid(False, which='both')
                     # Set the axes scale
-                    if kw['ax_scale2'] == 'semilogy' or kw['ax_scale2'] == 'logy':
+                    if kw['ax_scale2'] == 'semilogy' or \
+                       kw['ax_scale2'] == 'logy':
                         plotter2 = ax2.semilogy
                     else:
                         plotter2 = ax2.plot
@@ -1331,13 +1470,15 @@ def plot(**kwargs):
                                                  linewidth=kw['line_width'])
                         else:
                             if 'median' in kw['stat'].lower():
-                                df_stat = df_sub.groupby(kw['stat_val']).median()
+                                df_stat = \
+                                    df_sub.groupby(kw['stat_val']).median()
                             else:
                                 df_stat = df_sub.groupby(kw['stat_val']).mean()
 
                             # Plot the points for each data set
                             if 'only' not in kw['stat'].lower():
-                                curves += add_curves(plotter,
+                                curves += add_curves(
+                                                 plotter,
                                                  df_sub[x][subset],
                                                  df_sub[y[0]][subset],
                                                  kw['colors'][2*ileg],
@@ -1347,7 +1488,8 @@ def plot(**kwargs):
                                                  markersize=kw['marker_size'],
                                                  linestyle='none',
                                                  linewidth=0)
-                                curves += add_curves(plotter2,
+                                curves += add_curves(
+                                                 plotter2,
                                                  df_sub[x][subset],
                                                  df_sub[y[1]][subset],
                                                  kw['colors'][2*ileg+1],
@@ -1359,7 +1501,8 @@ def plot(**kwargs):
                                                  linewidth=0)
                             # Plot the lines
                             if 'only' in kw['stat'].lower():
-                                curves += add_curves(plotter,
+                                curves += add_curves(
+                                             plotter,
                                              df_stat.reset_index()[x][subset],
                                              df_stat[y[0]][subset],
                                              kw['colors'][2*ileg],
@@ -1369,7 +1512,8 @@ def plot(**kwargs):
                                              markersize=kw['marker_size'],
                                              linestyle=kw['line_style'],
                                              linewidth=kw['line_width'])
-                                curves += add_curves(plotter,
+                                curves += add_curves(
+                                             plotter,
                                              df_stat.reset_index()[x][subset],
                                              df_stat[y[1]][subset],
                                              kw['colors'][2*ileg+1],
@@ -1435,53 +1579,94 @@ def plot(**kwargs):
                         else:
                             # Plot the points
                             if 'only' not in kw['stat'].lower():
-                                curves += add_curves(plotter,
-                                                     df_sub[x][subset],
-                                                     df_sub[yy][subset],
-                                                     color,
-                                                     marker,
-                                                     True,
-                                                     False,
-                                                     markersize=kw['marker_size'],
-                                                     linestyle='none',
-                                                     linewidth=0)
+                                curves += add_curves(
+                                    plotter,
+                                    df_sub[x][subset],
+                                    df_sub[yy][subset],
+                                    color,
+                                    marker,
+                                    True,
+                                    False,
+                                    markersize=kw['marker_size'],
+                                    linestyle='none',
+                                    linewidth=0)
                             
                             # Plot the lines
                             if 'median' in kw['stat'].lower():
                                 df_stat = \
-                                    df_sub[subset].groupby(kw['stat_val']).median().reset_index()
+                                    df_sub[subset].groupby(kw['stat_val'])\
+                                        .median().reset_index()
                             elif kw['stat'] is not None:
                                 df_stat = \
-                                    df_sub[subset].groupby(kw['stat_val']).mean().reset_index()
+                                    df_sub[subset].groupby(kw['stat_val'])\
+                                        .mean().reset_index()
                             
                             if 'only' in kw['stat'].lower():
-                                curves += add_curves(plotter,
-                                                     df_stat[x],
-                                                     df_stat[yy],
-                                                     color,
-                                                     marker,
-                                                     True,
-                                                     True,
-                                                     markersize=kw['marker_size'],
-                                                     linestyle=kw['line_style'],
-                                                     linewidth=kw['line_width'])
+                                curves += add_curves(
+                                    plotter,
+                                    df_stat[x],
+                                    df_stat[yy],
+                                    color,
+                                    marker,
+                                    True,
+                                    True,
+                                    markersize=kw['marker_size'],
+                                    linestyle=kw['line_style'],
+                                    linewidth=kw['line_width'])
                             else:                         
-                                add_curves(plotter,
-                                       df_stat.reset_index()[x],
-                                       df_stat[yy],
-                                       color,
-                                       marker,
-                                       False,
-                                       True,
-                                       markersize=kw['marker_size'],
-                                       linestyle=kw['line_style'],
-                                       linewidth=kw['line_width'])
+                                add_curves(
+                                    plotter,
+                                    df_stat.reset_index()[x],
+                                    df_stat[yy],
+                                    color,
+                                    marker,
+                                    False,
+                                    True,
+                                    markersize=kw['marker_size'],
+                                    linestyle=kw['line_style'],
+                                    linewidth=kw['line_width'])
 
                 # Adjust the tick marks
                 axes[ir, ic].tick_params(axis='both', which='major', 
                                          pad=kw['ax_label_pad'],
-                                         labelsize=kw['tick_font_size'])
-
+                                         labelsize=kw['tick_font_size'],
+                                         colors=kw['tick_label_color'],
+                                         )
+                for line in axes[ir, ic].xaxis.get_ticklines()[2:-2]:
+                    line.set_color(kw['tick_major_color']) 
+                    line.set_markersize(kw['tick_length'])
+                    line.set_markeredgewidth(kw['tick_width'])
+                for line in axes[ir, ic].xaxis.get_minorticklines():
+                    line.set_color(kw['tick_minor_color']) 
+                    line.set_markersize(kw['tick_length']*0.8)
+                    line.set_markeredgewidth(kw['tick_width'])
+                for line in axes[ir, ic].yaxis.get_ticklines()[2:-2]: 
+                    line.set_color(kw['tick_major_color']) 
+                    line.set_markersize(kw['tick_length'])
+                    line.set_markeredgewidth(kw['tick_width'])
+                for line in axes[ir, ic].yaxis.get_minorticklines():
+                    line.set_color(kw['tick_minor_color']) 
+                    line.set_markersize(kw['tick_length']*0.8)
+                    line.set_markeredgewidth(kw['tick_width'])
+                
+                # Handle tick formatting
+                if kw['scalar_x']:
+                    axes[ir, ic].xaxis\
+                                .set_major_formatter(ticker.ScalarFormatter())
+                    axes[ir, ic].get_xaxis().get_major_formatter()\
+                                .set_scientific(False)
+                if kw['scalar_y']:
+                    axes[ir, ic].yaxis\
+                                .set_major_formatter(ticker.ScalarFormatter())
+                    axes[ir, ic].get_yaxis().get_major_formatter()\
+                                .set_scientific(False)
+                #if kw['xticks'] is not None:
+                    #myLocator = ticker.MultipleLocator(kw['xticks'])
+                    #axes[ir, ic].xaxis.set_major_locator(myLocator)
+                #mplp.locator_params(axis='x',nbins=kw['xticks'])
+                #fsf = ticker.FormatStrFormatter
+                #axes[ir, ic].xaxis.set_major_formatter(fsf('%.2e'))
+                
                 # Axis ranges
                 if kw['sharex']:
                     dfx = df_fig
@@ -1510,25 +1695,26 @@ def plot(**kwargs):
                     axes[ir, ic].set_xlim(left=kw['xmin'])
                 else:
                     if kw['ax_scale'] in ['logx', 'loglog', 'semilogx']:
-                        xmin = np.log10(xmin) - \
-                               kw['ax_lim_pad']*np.log10(xdelta)/(1-2*kw['ax_lim_pad'])
+                        xmin = np.log10(xmin) - kw['ax_lim_pad']*\
+                               np.log10(xdelta)/(1-2*kw['ax_lim_pad'])
                         xmin = 10**xmin
                     else:
-                        xmin = xmin -kw['ax_lim_pad']*xdelta/(1-2*kw['ax_lim_pad'])
+                        xmin -= kw['ax_lim_pad']*xdelta/(1-2*kw['ax_lim_pad'])
                     axes[ir, ic].set_xlim(left=xmin)
                 if kw['xmax'] is not None:
-                    if kw['fig_groups'] is not None and type(kw['xmax']) is list:
+                    if kw['fig_groups'] is not None and \
+                       type(kw['xmax']) is list:
                         xmax = kw['xmax'][ifig]
                     else:
                         xmax = kw['xmax']
                     axes[ir, ic].set_xlim(right=xmax)
                 else:
                     if kw['ax_scale'] in ['logx', 'loglog', 'semilogx']:
-                        xmax = np.log10(xmax) + \
-                               kw['ax_lim_pad']*np.log10(xdelta)/(1-2*kw['ax_lim_pad'])
+                        xmax = np.log10(xmax) + kw['ax_lim_pad']*\
+                               np.log10(xdelta)/(1-2*kw['ax_lim_pad'])
                         xmax = 10**xmax
                     else:
-                        xmax = xmax + kw['ax_lim_pad']*xdelta/(1-2*kw['ax_lim_pad'])
+                        xmax += kw['ax_lim_pad']*xdelta/(1-2*kw['ax_lim_pad'])
                     axes[ir, ic].set_xlim(right=xmax)
 
                 ymin = dfy.min().min()
@@ -1537,24 +1723,24 @@ def plot(**kwargs):
                 
                 if kw['ymin'] is not None:
                     axes[ir, ic].set_ylim(bottom=kw['ymin'])
-                else:
-                    if kw['ax_scale'] in ['logy', 'loglog', 'semilogy']:
-                        ymin = np.log10(ymin) - \
-                               kw['ax_lim_pad']*np.log10(ydelta)/(1-2*kw['ax_lim_pad'])
-                        ymin = 10**ymin
-                    else:
-                        ymin = ymin -kw['ax_lim_pad']*ydelta/(1-2*kw['ax_lim_pad'])
-                    axes[ir, ic].set_ylim(bottom=ymin)
+                # else:
+                    # if kw['ax_scale'] in ['logy', 'loglog', 'semilogy']:
+                        # ymin = np.log10(ymin) - \
+                               # kw['ax_lim_pad']*np.log10(ydelta)/(1-2*kw['ax_lim_pad'])
+                        # ymin = 10**ymin
+                    # else:
+                        # ymin = ymin -kw['ax_lim_pad']*ydelta/(1-2*kw['ax_lim_pad'])
+                    # axes[ir, ic].set_ylim(bottom=ymin)
                 if kw['ymax'] is not None:
                     axes[ir, ic].set_ylim(top=kw['ymax'])
-                else:
-                    if kw['ax_scale'] in ['logy', 'loglog', 'semilogy']:
-                        ymax = np.log10(ymax) + \
-                               kw['ax_lim_pad']*np.log10(ydelta)/(1-2*kw['ax_lim_pad'])
-                        ymax = 10**ymax
-                    else:
-                        ymax = ymax + kw['ax_lim_pad']*ydelta/(1-2*kw['ax_lim_pad'])
-                    axes[ir, ic].set_ylim(top=ymax)
+                # else:
+                    # if kw['ax_scale'] in ['logy', 'loglog', 'semilogy']:
+                        # ymax = np.log10(ymax) + \
+                               # kw['ax_lim_pad']*np.log10(ydelta)/(1-2*kw['ax_lim_pad'])
+                        # ymax = 10**ymax
+                    # else:
+                        # ymax = ymax + kw['ax_lim_pad']*ydelta/(1-2*kw['ax_lim_pad'])
+                    # axes[ir, ic].set_ylim(top=ymax)
                 
                     
                 # Add labels
@@ -1569,7 +1755,8 @@ def plot(**kwargs):
                                             weight=kw['label_weight'],
                                             style=kw['label_style'])
                     axes[ir, ic].get_yaxis().get_offset_text().set_x(-0.12)
-                if kw['ylabel2'] is not None and ic == len(cols)-1 and kw['twinx']:
+                if kw['ylabel2'] is not None and \
+                   ic == len(cols)-1 and kw['twinx']:
                     ax2.set_ylabel(r'%s' % kw['ylabel2'], 
                                    rotation=270,
                                    labelpad=kw['label_font_size'],
@@ -1603,8 +1790,10 @@ def plot(**kwargs):
                               color=kw['rc_label_text_color'],
                               fontsize=kw['rc_label_font_size'],
                               weight=kw['rc_label_text_style'])
+                
         # Add the legend (wrong indent??)
-        if kw['leg_items'] is not None and len(kw['leg_items'])>0 and kw['leg_on']:
+        if kw['leg_items'] is not None and len(kw['leg_items'])>0 \
+            and kw['leg_on']:
             leg = fig.legend(curves,
                              kw['leg_items'],
                              loc='upper right',
@@ -1627,9 +1816,11 @@ def plot(**kwargs):
                     val = '%s' % df_fig[val].iloc[0]
                 else:
                     val = ''
-                kw['title'] = kw['title'][0:pos[0]] + val + kw['title'][pos[1]:]
+                kw['title'] = \
+                    kw['title'][0:pos[0]] + val + kw['title'][pos[1]:]
             add_label('%s' % kw['title'],
-                      (design.title_left, design.title_bottom, design.title_w, design.title_h), #pos (tuple): left, bottom, width, height
+                      (design.title_left, design.title_bottom,
+                       design.title_w, design.title_h),
                       axes[0, 0], 0, 
                       edgecolor=kw['title_edge_color'],
                       fillcolor=kw['title_fill_color'],
@@ -1648,7 +1839,8 @@ def plot(**kwargs):
             else:
                 figlabel = ''
             filename = filename_label(y[0]) + twinx + ' vs ' + \
-                        filename_label(x) + rc_name + figlabel + '.' + kw['save_ext']
+                       filename_label(x) + rc_name + figlabel + '.' + \
+                       kw['save_ext']
         else:
             filename = kw['filename'] + '.' + kw['save_ext']
         
@@ -1677,22 +1869,16 @@ def plot(**kwargs):
     return design
 
 
-def setup(dir):
+def reload_defaults():
     """
-    Copy the defaults.py file to a user directory for manipulation
-
-    Args:
-        dir (str): directory of the new file
-
+    Reload the fcp params
     """
-
-    print('Transferring defaults.py file...', end='')
-    # Create directory if needed
-    if not os.path.exists(dir):
-        os.makedirs(dir)
-
-    shutil.copyfile(osjoin(cur_dir, 'defaults.py'), osjoin(dir, 'defaults.py'))
-    print('done!')
-
-
- 
+    
+    #del fcp_params
+    import defaults
+    importlib.reload(defaults)
+    fcp_params = defaults.fcp_params
+    palette = defaults.palette
+    markers = defaults.markers
+    
+    return fcp_params, palette, markers

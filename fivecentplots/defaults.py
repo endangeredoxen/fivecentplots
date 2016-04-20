@@ -1,10 +1,13 @@
 import matplotlib as mpl
+from cycler import cycler
 
 
 #########################################################
 # Figure layout defaults
 #########################################################
-fcp_params = {'ax_fig_ws'            : 50,
+fcp_params = {'ax_edge_color'        : '#ffffff',
+              'ax_face_color'        : '#eaeaea',
+              'ax_fig_ws'            : 50,
               'ax_leg_fig_ws'        : 0,
               'ax_leg_ws'            : 20,
               'ax_label_pad'         : 4,
@@ -26,7 +29,13 @@ fcp_params = {'ax_fig_ws'            : 50,
               'cols'                 : 1,
               'dpi'                  : 100,
               'fig_ax_ws'            : 80,
+              'fig_edge_color'       : '#ffffff',
+              'fig_face_color'       : '#ffffff',
               'fig_title_ws'         : 10,
+              'grid_major_color'     : '#ffffff',
+              'grid_major_linestyle' : '-',
+              'grid_minor_color'     : '#ffffff',
+              'grid_minor_linestyle' : 'dotted',
               'label_font_size'      : 14,
               'label_style'          : 'italic',
               'label_weight'         : 'bold',
@@ -37,6 +46,7 @@ fcp_params = {'ax_fig_ws'            : 50,
               'leg_items'            : [],
               'leg_points'           : 1,
               'leg_title'            : '',
+              'line_width'           : 1,
               'marker_size'          : 7,
               'marker_type'          : 'o',
               'rc_label_edge_color'  : '#aaaaaa',
@@ -49,7 +59,12 @@ fcp_params = {'ax_fig_ws'            : 50,
               'rc_label_ws'          : 10,
               'row_padding'          : 30,
               'rows'                 : 1,
+              'tick_major_color'     : '#ffffff',
+              'tick_minor_color'     : '#ffffff',
               'tick_font_size'       : 12,
+              'tick_label_color'     : '#000000',
+              'tick_length'          : 4,
+              'tick_width'           : 1.5,
               'title_ax_ws'          : 20,
               'title_h'              : 40,
               'title_fill_color'     : '#ffffff',
@@ -186,16 +201,10 @@ jmp_spectral = mpl.colors.LinearSegmentedColormap(
 ####################################################
 # Default marker scheme
 ####################################################
-markers = ['o', '+', 's', 'x', 'd', 'Y', '^', 'Z', 'v', '\infty', '\#', '<', u'\u2B21', u'\u263A', '>', u'\u29C6',
-           '\$', u'\u2B14', u'\u2B1A', u'\u25A6', u'\u229E', u'\u22A0', u'\u22A1', u'\u20DF', '\gamma', '\sigma', '\star']
-
-# '\\alpha', '\\beta', '\gamma', '\sigma','\infty', \
-#             '\spadesuit', '\heartsuit', '\diamondsuit', '\clubsuit', \
-#             '\\bigodot', '\\bigotimes', '\\bigoplus', '\imath', '\\bowtie', \
-#             '\\bigtriangleup', '\\bigtriangledown', '\oslash' \
-#            '\ast', '\\times', '\circ', '\\bullet', '\star', '+', \
-#             '\Theta', '\Xi', '\Phi', \
-#'\$', '\#', '\%', '\S'
+markers = ['o', '+', 's', 'x', 'd', 'Z', '^', 'Y', 'v', '\infty', '\#', '<',
+           u'\u2B21', u'\u263A', '>', u'\u29C6', '\$', u'\u2B14', u'\u2B1A',
+           u'\u25A6', u'\u229E', u'\u22A0', u'\u22A1', u'\u20DF', '\gamma',
+           '\sigma', '\star']
 
 ####################################################
 # Matplotlib default overrides
@@ -215,7 +224,7 @@ rcParams = {'agg.path.chunksize': 0,
             'animation.mencoder_path': 'mencoder',
             'animation.writer': 'ffmpeg',
             'axes.axisbelow': True,
-            'axes.color_cycle': palette,
+            'axes.prop_cycle': cycler('color', palette),
             'axes.edgecolor': '#ffffff',
             'axes.facecolor': '#eaeaea',
             'axes.formatter.limits': [-4, 4],

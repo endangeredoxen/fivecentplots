@@ -1,5 +1,6 @@
 from fivecentplots.defaults import *
 import matplotlib as mpl
+import matplotlib.pyplot as mplp
 import os
 import pandas as pd
 import pdb
@@ -15,25 +16,24 @@ class FigDesign:
         Overall design is an alternative to the built-in tight_layout()
         function and isloosely modeled on the Overlay Plot in JMP
 
-        Args:
-            **kwargs:
-              * ax_leg_ws:
-              * ax_size:
-              * cols:
-              * dpi:
-              * leg_items:
-              * leg_fig_ws:
-              * leg_font_size:
-              * leg_points:
-              * leg_title:
-              * ax_fig_ws:
-              * fig_ax_ws:
-              * fig_title_ws:
-              * row_padding:
-              * rows:
-              * title_ax_ws:
-              * title_h:
-              * col_padding:
+        Keyword Args:
+            ax_leg_ws:
+            ax_size:
+            cols:
+            dpi:
+            leg_items:
+            leg_fig_ws:
+            leg_font_size:
+            leg_points:
+            leg_title:
+            ax_fig_ws:
+            fig_ax_ws:
+            fig_title_ws:
+            row_padding:
+            rows:
+            title_ax_ws:
+            title_h:
+            col_padding:
         Returns:
             self
         """
@@ -141,6 +141,7 @@ class FigDesign:
         """
         Get option group label positions
         """
+
         self.row_label_left = (self.ax_w + self.row_label_ws)/self.ax_w
         self.row_label_width = self.row_label_size/self.ax_w
         self.col_label_bottom = (self.ax_h + self.col_label_ws)/self.ax_h
@@ -162,7 +163,7 @@ class FigDesign:
         """
 
         if len(self.leg_items) > 0 and self.leg_on:
-            mpl.pylab.ioff()
+            mplp.ioff()
             fig = mpl.pyplot.figure(dpi=self.dpi)
             ax = fig.add_subplot(111)
             lines = []
@@ -226,8 +227,10 @@ class FigDesign:
         Calculate the title position
         """
 
-        self.title_bottom = 1+(self.title_ax_ws+self.col_labels+self.ax_label_pad*self.ncol)/self.ax_h
-        self.title_top = self.title_bottom+(self.title_ax_ws+self.title_h)/self.ax_h
+        self.title_bottom = 1+(self.title_ax_ws+self.col_labels+
+                            self.ax_label_pad*self.ncol)/self.ax_h
+        self.title_top = self.title_bottom+(self.title_ax_ws+
+                         self.title_h)/self.ax_h
         
         self.title_h_px = self.title_h
         self.title_w_px = self.fig_w_px
@@ -239,6 +242,7 @@ class FigDesign:
         """
         Prints a readable list of class attributes
         """
+
         df = pd.DataFrame({'Attribute':list(self.__dict__.copy().keys()),
              'Name':[str(f) for f in self.__dict__.copy().values()]})
         df = df.sort_values(by='Attribute').reset_index(drop=True)
