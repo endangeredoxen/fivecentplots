@@ -168,6 +168,8 @@ def boxplot(**kwargs):
     kw['ax_size'] = kwargs.get('ax_size', fcp_params['ax_size'])
     kw['bp_divider_color'] = kwargs.get('bp_divider_color',
                                         fcp_params['bp_divider_color'])
+    kw['bp_fill_color'] = kwargs.get('bp_fill_color',
+                                        fcp_params['bp_fill_color'])
     kw['bp_labels_on'] = kwargs.get('bp_labels_on', True)
     kw['bp_label_size'] = kwargs.get('bp_label_size',
                                      fcp_params['bp_label_size'])

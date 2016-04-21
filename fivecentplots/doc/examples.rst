@@ -14,12 +14,6 @@ Setup
 
 .. code-block:: python
 
-   import fivecentplots as fcp
-   import pandas as pd
-
-   df = pd.read_csv(r'fake_data.csv')
-   df2 = pd.read_csv(r'fake_data_box.csv')
-
 
 Example 1: Single IV curve grouped by die
 -----------------------------------------
