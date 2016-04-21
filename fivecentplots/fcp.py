@@ -446,8 +446,11 @@ def boxplot(**kwargs):
                     whiskerprops={'color': palette[0]},
                     capprops={'color': palette[0]},
                     medianprops={'color': palette[1]},
+                    patch_artist=True,
                     )
     ax.xaxis.grid(False)
+    for patch in bp['boxes']:
+        patch.set_facecolor(kw['bp_fill_color'])
     for flier in bp['fliers']:
         flier.set(marker='+', markeredgecolor=palette[0]) # can't set with flierprops
 
@@ -1104,6 +1107,10 @@ def plot(**kwargs):
         design = FigDesign(**kw)
 
         # Make the figure and axes
+        if ncol == 0:
+            raise ValueError('Cannot make subplot. Number of columns is 0')
+        if nrow == 0:
+            raise ValueError('Cannot make subplot. Number of rows is 0')
         fig, axes = mplp.subplots(nrow, ncol,
                                   figsize=[design.fig_w, design.fig_h],
                                   sharex=kw['sharex'],

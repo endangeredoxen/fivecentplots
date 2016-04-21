@@ -13,6 +13,7 @@ fcp_params = {'ax_edge_color'        : '#ffffff',
               'ax_label_pad'         : 4,
               'ax_size'              : [400,400],  # [width, height]
               'bp_divider_color'     : '#bbbbbb',
+              'bp_fill_color'        : '#ffffff',
               'bp_label_size'        : 25,
               'bp_label_edge_color'  : '#666666',
               'bp_label_fill_color'  : '#ffffff',
