@@ -46,25 +46,31 @@ sys.path = [osjoin(user_dir, '.fivecentplots')] + sys.path
 from defaults import *  # use local file
 
 
-def add_curves(plotter, x, y, color='k', marker='o', points=False, line=True,
-               **kwargs):
+def add_curves(plotter, x, y, color='#000000', marker='o', points=False,
+               line=True, **kwargs):
     """ Adds curve data to an axes
 
     Args:
-        plotter:
-        x:
-        y:
-        color:
-        marker:
-        points:
-        line:
-        **kwargs:
+        plotter (mpl plot obj):  plot, semilogx, semilogy, loglog
+        x (np.array):  x data to plot
+        y (np.array):  y data to plot
+        color (str):  hex color code for line color (default='#000000')
+        marker (str):  marker char string (default='o')
+        points (bool):  toggle points on|off (default=False)
+        line (bool):  toggle plot lines on|off (default=True)
+
+    Keyword Args:
+        any kwargs allowed by the plotter function selected
 
     Returns:
-
+        return the line plot object
     """
     
     def format_marker(marker):
+        """
+        Format the marker string to mathtext
+        """
+
         if marker in ['o', '+', 's', 'x', 'd', '^']:
             return marker
         else: return r'$%s$' % marker
@@ -96,22 +102,15 @@ def add_label(label, pos, axis, rotation, fillcolor='#ffffff',
     to rows and columns when plotting facet grid style plots.
 
     Args:
-        label (str):
-        pos (tuple): left, bottom, width, height
-        axis (matplotlib.axes):
-        rotation (int):
-        pos:
-        axis:
-        rotation:
-        fillcolor:
-        edgecolor:
-        color:
-        weight:
-        fontsize:
-
-
-    Returns:
-        None
+        label (str):  label text
+        pos (tuple): label position tuple of form (left, bottom, width, height)
+        axis (matplotlib.axes):  mpl axes object
+        rotation (int):  degrees of rotation
+        fillcolor (str):  hex color code for label fill (default='#ffffff')
+        edgecolor (str):  hex color code for label edge (default='#aaaaaa')
+        color (str):  hex color code for label text (default='#666666')
+        weight (str):  label font weight (use standard mpl weights like 'bold')
+        fontsize (int):  label font size (default=14)
     """
     
     # Define the label background
@@ -129,20 +128,164 @@ def add_label(label, pos, axis, rotation, fillcolor='#ffffff',
 
 
 def boxplot(**kwargs):
-    """
-    boxplot(self, x, notch=None, sym=None, vert=None, whis=None,
-        positions=None, widths=None, patch_artist=False,
-        bootstrap=None, usermedians=None, conf_intervals=None,
-        meanline=False, showmeans=False, showcaps=True,
-        showbox=True, showfliers=True, boxprops=None, labels=None,
-        flierprops=None, medianprops=None, meanprops=None,
-        capprops=None, whiskerprops=None, manage_xticks=True):
-    Args:
-        df:
-        **kwargs:
+    """ Main boxplot function
+
+    This function wraps the boxplot function from the matplotlib
+    library.  At minimum, it requires a pandas DataFrame with at least one
+    column and a column name for the y axis.  Plots can be
+    customized and enhanced by passing keyword arguments as defined below.
+    Default values that must be defined in order to generate the plot are
+    pulled from the fcp_params dictionary defined in defaults.py.
+
+    Required Keyword Args:
+        df (DataFrame): DataFrame containing data to plot
+        y (str|list):   name or list of names of y column in df
+
+    Keyword Args:
+        ax_edge_color (str):  hex color code for axis edge border color
+            (default from fcp_params)
+        ax_face_color (str):  hex color code for axis fill color (default from
+            fcp_params)
+        ax_fig_ws (int):  axis to figure right whitespace (default from
+            fcp_params)
+        ax_hlines (list):  list of y-values at which to add horizontal lines
+            (default=[])
+        ax_label_pad (int):  label offset padding in pixels (default=0)
+        ax_lim (list):  axes range values [xmin, xmax, ymin, ymax] (default=[])
+        ax_lim_pad (float):  in place of discrete axes limits, adds whitespace
+            to the bottom|top and left|right of the axis by this amount as a
+            percent/100 of the total axis range (default=0.05)
+        ax_scale (None|str):  set the scale of an axis as linear or log
+            (default=None --> linear; options include 'logx'|'semilogx' for the
+            x-axis, 'logy'|'semilogy' for the y-axis or 'loglog' for both axes
+        ax_size (list):  [width, height] of each plot window in pixels
+            (default defined by fcp_params)
+        bp_divider_color (str): hex color code for divider line color between
+            groups (default from fcp_params)
+        bp_fill_color (str):  hex color code for boxplot fill color (default
+            from fcp_params)
+        bp_labels_on (bool):  toggle on|off boxplot grouping labels
+            (default=True)
+        bp_label_size (int):  grouping label size (default from fcp_params)
+        bp_label_edge_color (str):  hex color code for boxplot grouping label
+            regions (default from fcp_params)
+        bp_label_fill_color (str):  hex color code for grouping labels (default
+            from fcp_params)
+        bp_label_font_size (int):  grouping label font size (default from
+            fcp_params)
+        bp_label_text_color (str):  hex color code for grouping label text
+            (default from fcp_params)
+        bp_label_text_style (str):  grouping label text style; use standard
+            mpl styles like 'italic' (default from fcp_params)
+        bp_label_text_weight (str):  grouping label text weight; use standard
+            mpl weights like 'bold' (default from fcp_params)
+        bp_name_font_size (str):  grouping label summary name font size
+            (default from fcp_params)
+        bp_name_text_color (str):  hex color code for grouping label summary
+            name (default from fcp_params)
+        bp_name_text_style (str):  grouping label summary name text style; use
+            standard mpl styles like 'italic' (default from fcp_params)
+        bp_name_text_weight (str):  grouping label summary name text weight;
+            use standard mpl weights like 'bold' (default from fcp_params)
+        bp_name_ws (int):  whitespace in pixels between grouping labels under
+            the boxplot and the summary names (default from fcp_params)
+        colors (list):  list of tuple values used to define colors for plotting
+            using RGB/255 mpl style (default is palette from defaults.py)
+        connect_means (bool):  draw a line connecting the mean value of each
+            group in the boxplot (default=False)
+        dividers (bool):  show vertical diveider lines between groups
+            (default=True)
+        fig_ax_ws (int):  number of pixels between the left figure edge and the
+            left axis edge (default from fcp_params)
+        fig_edge_color (str):  hex color code for figure edge color (default
+            from fcp_params)
+        fig_face_color (str):  hex color code for figure fill color (default
+            from fcp_params)
+        fig_groups (list|None):  name of df column by which to group the data
+            and make discrete figures based on the unique values in this column
+            (default=None)
+        fig_group_path (bool):  use the unique grouping item from fig_groups
+            in the plot filename (default=False)
+        filename (str):  name of saved figure (default=None--> custom filename
+            will be built based on the data that is plotted
+        filter (str):  str to use in df.query to include or exclude certain
+            data from df (default=None).  Note that df.query does not support
+            spaces, parenthesis, or brackets. Spaces should be replaced by '_'
+            and parenthesis/brackets should be dropped from the str.  Example:
+            Temperature [C] --> Temperature_C
+        grid_major (bool):  toggle major gridlines (default=True)
+        grid_major_color (str):  hex color code for major gridline color
+            (default from fcp_params)
+        grid_major_linestyle (str):  matplotlib str code for linestyle (default
+            from fcp_params)
+        grid_minor (bool):  toggle minor gridlines (default=False)
+        grid_minor_color (str):  hex color code for minor gridline color
+            (default from fcp_params)
+        grid_minor_linestyle (str):  matplotlib str code for linestyle (default
+            from fcp_params)
+        groups (list?):  (default=None)
+        jitter (bool):  jitter the data points (default=False)
+        label_font_size (int):  font size in pixels for the x and y labels
+            (default from fcp_params)
+        label_style (str):  define the label style (default from fcp_params).
+            Use standard mpl styles like 'italic'
+        label_weight (str):  define the label weight (default from fcp_params).
+            Use standard mpl weights like 'bold'
+        leg_bkgrd (str):  hex color code for legend background (default from
+            fcp_params)
+        leg_border (str):  hex color code for legend border (default from
+            fcp_params)
+        leg_groups (str):  name of df column by which to legend the data
+            (default=None)
+        leg_items (str):  explicit definition of the legend items; ignores any
+            values that are not listed (default=None)
+        leg_on (bool):  toggle legend visibility (default=True)
+        leg_title (str):  title for the legend (default=None)
+        line_width (int):  set the linewidth of connect means line (default=1)
+        lines (bool):  turn plot lines on|off (default=True)
+        marker_size (int):  set marker size (default from fcp_params)
+        marker_type (str):  set marker type (default==None)
+        points (bool):  turn markers on|off (default=True)
+        save_ext (str):  filename extension for saved figures (default='png')
+        save_path (str):  destination file folder for plots (default=None)
+        scalar_y (bool):  force scalar tick labels on the y-axis instead of
+            powers of ten (default=False)
+        show (bool):  pop open plot after it is generated.  Otherwise, the plot
+            is just saved (default=False)
+        tick_major_color (str):  hex color code for major tick marks (default
+            from fcp_params)
+        tick_minor_color (str):  hex color code for minor tick marks (default
+            from fcp_params)
+        tick_font_size (int):  font size for tick labels (default from
+            fcp_params)
+        tick_label_color (str):  hex color code for tick labels (default
+            from fcp_params)
+        tick_length (int):  length of the tick marks (default from fcp_params)
+        tick_width (int):  line width of the tick marks (default from
+            fcp_params)
+        title (str):  plot title (default=None)
+        title_edge_color (str):  hex color code for edge of a box around the
+            plot title (default from fcp_params)
+        title_fill_color (str):  hex color code for fill of a box around the
+            plot title (default from fcp_params)
+        title_text_color (str):  hex color code for title color (default from
+            fcp_params)
+        title_font_size (int):  font size of plot title (default from
+            fcp_params)
+        title_text_style (str):  define the title style. Use standard mpl
+            styles like 'italic' (default from fcp_params)
+        ylabel (str):  label for primary y-axis (default=kwargs['y'] or
+            kwargs['y'][0])
+        ymax (float):  maximum y-value on y-axis (default=None --> use mpl
+            defaults)
+        ymin (float):  minimum y-value of y-axis (default=None --> use mpl
+            defaults)
+        yticks (int):  specify the number of yticks (not currently supported)
+            (default=None --> use mpl defaults)
 
     Returns:
-
+        design (FigDesign obj):  contains all the spacing information used to
+            construct the figure
     """
 
     kw = {}
@@ -234,7 +377,6 @@ def boxplot(**kwargs):
     kw['marker_type'] = kwargs.get('marker_type', fcp_params['marker_type'])
     kw['points'] = kwargs.get('points', True)
     kw['save_ext'] = kwargs.get('save_ext', 'png')
-    kw['save_name'] = kwargs.get('save_name', None)
     kw['save_path'] = kwargs.get('save_path', None)
     kw['scalar_y'] = kwargs.get('scalar_y', False)
     kw['show'] = kwargs.get('show', False)
@@ -577,7 +719,7 @@ def df_filter(df, filt):
     without any spaces
 
     Args:
-        df (DataFrame):  data set to be filtered
+        df (pd.DataFrame):  data set to be filtered
         filt (str):  query expression for filtering
 
     Returns:
@@ -609,12 +751,13 @@ def df_filter(df, filt):
 
 def filename_label(label):
     """
+    Format filename to remove parentheses, brackets, leading/trailing spaces
 
     Args:
-        label:
+        label (str):  label to format
 
     Returns:
-
+        formatted label
     """
 
     label = str(label)
@@ -626,7 +769,16 @@ def filename_label(label):
 
 
 def get_unique_groups(kw):
-    
+    """
+    Get all unique values from several kwargs
+
+    Args:
+        kw (dict):  keyword args dict
+
+    Returns:
+        list of unique group values
+    """
+
     groups = []
     vals_2_chk = ['stat_val', 'leg_groups', 'col', 'row']
     for v in vals_2_chk:
@@ -662,7 +814,7 @@ def paste_kwargs(kwargs):
 
 
 def plot(**kwargs):
-    """ Main plotting function
+    """ Main x-y plotting function
 
     This function wraps many variations of x-y plots from the matplotlib
     library.  At minimum, it requires a pandas DataFrame with at least two
@@ -677,157 +829,207 @@ def plot(**kwargs):
         y (str|list):   name or list of names of y column(s) in df  
         
     Keyword Args:
-        ax_hlines (list):     list of y-values at which to add horizontal
-                              lines (default=[])
-        ax_label_pad (int):   label offset padding in pixels (default=0)
-        ax_lim (list):        axes range values [xmin, xmax, ymin, ymax] (
-                              default=[])
-        ax_lim_pad (float):   in place of discrete axes limits,
-                              adds whitespace to the bottom|top and left|right
-                              of the axis by this amount as a percent/100 of
-                              the total axis range (default=0.05)
+        ax_edge_color (str):  hex color code for axis edge border color
+            (default from fcp_params)
+        ax_face_color (str):  hex color code for axis fill color (default from
+            fcp_params)
+        ax_hlines (list):  list of y-values at which to add horizontal lines
+            (default=[])
+        ax_label_pad (int):  label offset padding in pixels (default=0)
+        ax_lim (list):  axes range values [xmin, xmax, ymin, ymax] (default=[])
+        ax_lim_pad (float):  in place of discrete axes limits, adds whitespace
+            to the bottom|top and left|right of the axis by this amount as a
+            percent/100 of the total axis range (default=0.05)
         ax_scale (None|str):  set the scale of an axis as linear or log
-                              (default=None --> linear; options include
-                              'logx'|'semilogx' for the x-axis,
-                              'logy'|'semilogy' for the y-axis or 'loglog' for
-                              both axes
+            (default=None --> linear; options include 'logx'|'semilogx' for the
+            x-axis, 'logy'|'semilogy' for the y-axis or 'loglog' for both axes
         ax_scale2 (None|str): same as ax_scale but for secondary y-axis
-                              when twinx is True
-        ax_size (list):       [width, height] of each plot window in pixels
-                              (default defined by fcp_params)
-        ax_vlines (list):     list of x-values at which to add vertical
-                              lines (default=[])
-        cmap (str):           name of color map to use for plotting (
-                              default=None --> use color order defined in
-                              fcp_params
-        col (str):            name of a column in df to use as a grouping
-                              variable for facet grid style plotting; each
-                              unique value from df[col] will represent a
-                              column of plots in the final figure
-                              (default=None --> no column grouping)
-        col_label (str):      a custom label to display for each column in
-                              the facet grid plot (default=None --> use the
-                              value of kwargs['col']
-        col_labels_on (bool): toggle on|off column labels in facet grid
-                              plot (default=True)
-        col_label_size (int): label height in pixel for col labels in pixels
-                              (default from fcp_params)
-        col_label_ws (int):   whitespace in pixels between axis and col
-                              labels in pixels (default from fcp_params)
-        col_padding (int):    whitespace between facet columns in pixels
-                              (default in fcp_params)
-        colors (list):        list of tuple values used to define colors
-                              for plotting using RGB/255 mpl style (default
-                              is palette from defaults.py)
-        cols (list):          list used to manually define the columns to
-                              use in the facet grid (default=None). These
-                              values must actually be in df[col]
-        fig_groups (list):    '] = kwargs.get('fig_groups', None)
-        ***
-        fig_group_path'] = kwargs.get('fig_group_path', False)
-        ***
-        filename (str):       name of saved figure (default=None--> custom
-                              filename will be built based on the data that
-                              is plotted
-        filter (str):         str to use in df.query to include or exclude
-                              certain data from df (default=None).  Note
-                              that df.query does not support spaces,
-                              parenthesis, or brackets. Spaces should be
-                              replaced by '_' and parenthesis/brackets
-                              should be dropped from the str.  Example:
-                              Temperature [C] --> Temperature_C
-        grid_major (bool):    toggle major gridlines (default=True)
-        grid_minor (bool):    toggle minor gridlines (default=False)
-        label_font_size'] = kwargs.get('label_font_size', 
-                                       fcp_params['label_font_size'])
-        label_style (str):    define the label style (default from
-                              fcp_params).  Use standard mpl styles like
-                              'italic'
-        label_weight (str):   define the label weight (default from
-                              fcp_params).  Use standard mpl weights like
-                              'bold'
-        leg_bkgrd (str):      hex-style color for legend background (default
-                              from fcp_params)
-        leg_border (str):     hex-style color for legend border (default from
-                              fcp_params)
-        leg_groups (str):     name of df column by which to legend the data
-                              (default=None)
-        leg_items (str):      '] = kwargs.get('leg_items', [])
-        ***
-        leg_on (bool):        toggle legend visibility (default=True) **DOESN'T WORK
-        leg_title (str):      legend title (default=None --> use
-                              kwargs[leg_groups])
-        line_color'] = kwargs.get('line_color', None)
-        line_style'] = kwargs.get('line_style', '-')
-        line_width'] = kwargs.get('line_width', 1)
-        *** NEEDS REVISIT
-        marker_size (int):    set marker size (default from fcp_params)
-        marker_type (str):    set marker type ('] = kwargs.get('marker_type')
-        *** NEEDS REVISIT
-        points (bool):        turn markers on|off (default=True)
-        rc_label_edge_color (str):  hex-style color for row/column labels
-                                    edges (default from fcp_params)
-        rc_label_fill_color (str):  hex-style color for row/column labels
-                                    backgrounds (default from fcp_params)
-
-
-        rc_label_font_size'] = kwargs.get('rc_label_font_size',
-                                          fcp_params['rc_label_font_size'])
-        rc_label_text_color'] = kwargs.get('rc_label_text_color',
-                                           fcp_params['rc_label_text_color'])
-        rc_label_text_style'] = kwargs.get('rc_label_text_style',
-                                           fcp_params['rc_label_text_style'])
-        row'] = kwargs.get('row', None)
-        row_label'] = kwargs.get('row_label', None)
-        row_labels_on'] = kwargs.get('row_labels_on', True)
-        row_label_size'] = kwargs.get('row_label_size',
-                                     fcp_params['rc_label_size'])
-        row_label_ws'] = kwargs.get('row_label_ws', fcp_params['rc_label_ws'])
-        row_padding'] = kwargs.get('row_padding', fcp_params['row_padding'])
-        rows'] = kwargs.get('rows', None)
-        save_ext (str)'] = kwargs.get('save_ext', 'png')
-        save_name'] = kwargs.get('save_name', None)
-        save_path'] = kwargs.get('save_path', None)
-        sci_x'] = kwargs.get('sci_x', False)
-        sci_y'] = kwargs.get('sci_y', False)
-        sharex'] = kwargs.get('sharex', True)
-        sharey'] = kwargs.get('sharey', True)
-        show'] = kwargs.get('show', False)
-        stat'] = kwargs.get('stat', None)
-        stat_val'] = kwargs.get('stat_val', x)
-        tick_font_size'] = kwargs.get('tick_font_size',
-                                      fcp_params['tick_font_size'])
-        title'] = kwargs.get('title', None)
-        title_edge_color'] = kwargs.get('title_edge_color',
-                                        fcp_params['title_edge_color'])
-        title_fill_color'] = kwargs.get('title_fill_color',
-                                        fcp_params['title_fill_color'])
-        title_text_color'] = kwargs.get('title_text_color',
-                                        fcp_params['title_text_color'])
-        title_font_size'] = kwargs.get('title_font_size',
-                                        fcp_params['title_font_size'])
-        title_text_style'] = kwargs.get('title_text_style',
-                                        fcp_params['title_text_style'])
-        twinx'] = kwargs.get('twinx', False)
-        twiny'] = kwargs.get('twiny', False)
-        xlabel'] = kwargs.get('xlabel', x)
-        xmax'] = kwargs.get('xmax', None)
-        xmin'] = kwargs.get('xmin', None)
-        xticks'] = kwargs.get('xticks', None)
-        xtrans'] = kwargs.get('xtrans', None)
-        ylabel'] = kwargs.get('ylabel', y)
-        ymax'] = kwargs.get('ymax', None)
-        ymin'] = kwargs.get('ymin', None)
-        yticks'] = kwargs.get('yticks', None)
-        ytrans'] = kwargs.get('ytrans', None)
-        ylabel2'] = kwargs.get('ylabel2', y)
-        ymax2'] = kwargs.get('ymax2', None)
-        ymin2'] = kwargs.get('ymin2', None)
-        yticks2'] = kwargs.get('yticks2', None)
-        ytrans2'] = kwargs.get('ytrans2', None)
+            when twinx is True
+        ax_size (list):  [width, height] of each plot window in pixels
+            (default defined by fcp_params)
+        ax_vlines (list):  list of x-values at which to add vertical lines
+            (default=[])
+        cmap (str): name of color map to use for plotting (default=None -->
+            use color order defined in fcp_params
+        col (str):  name of a column in df to use as a grouping variable for
+            facet grid style plotting; each unique value from df[col] will
+            represent a column of plots in the final figure (default=None -->
+            no column grouping)
+        col_label (str):  a custom label to display for each column in the
+            facet grid plot (default=None --> use the value of kwargs['col']
+        col_labels_on (bool):  toggle on|off column labels in facet grid plot
+            (default=True)
+        col_label_size (int):  label height in pixel for col labels in pixels
+            (default from fcp_params)
+        col_label_ws (int):  whitespace in pixels between axis and col labels
+            in pixels (default from fcp_params)
+        col_padding (int):  whitespace between facet columns in pixels (default
+            in fcp_params)
+        colors (list):  list of tuple values used to define colors for plotting
+            using RGB/255 mpl style (default is palette from defaults.py)
+        cols (list):  list used to manually define the columns to use in the
+            facet grid (default=None). These values must actually be in df[col]
+        fig_ax_ws (int):  number of pixels between the left figure edge and the
+            left axis edge (default from fcp_params)
+        fig_edge_color (str):  hex color code for figure edge color (default
+            from fcp_params)
+        fig_face_color (str):  hex color code for figure fill color (default
+            from fcp_params)
+        fig_groups (list|None):  name of df column by which to group the data
+            and make discrete figures based on the unique values in this column
+            (default=None)
+        fig_group_path (bool):  use the unique grouping item from fig_groups
+            in the plot filename (default=False)
+        filename (str):  name of saved figure (default=None--> custom filename 
+            will be built based on the data that is plotted
+        filter (str):  str to use in df.query to include or exclude certain 
+            data from df (default=None).  Note that df.query does not support 
+            spaces, parenthesis, or brackets. Spaces should be replaced by '_' 
+            and parenthesis/brackets should be dropped from the str.  Example:
+            Temperature [C] --> Temperature_C
+        grid_major (bool):  toggle major gridlines (default=True)
+        grid_major_color (str):  hex color code for major gridline color
+            (default from fcp_params)
+        grid_major_linestyle (str):  matplotlib str code for linestyle (default
+            from fcp_params)
+        grid_minor (bool):  toggle minor gridlines (default=False)
+        grid_minor_color (str):  hex color code for minor gridline color
+            (default from fcp_params)
+        grid_minor_linestyle (str):  matplotlib str code for linestyle (default
+            from fcp_params)
+        label_font_size (int):  font size in pixels for the x and y labels
+            (default from fcp_params)
+        label_style (str):  define the label style (default from fcp_params).  
+            Use standard mpl styles like 'italic'
+        label_weight (str):  define the label weight (default from fcp_params).  
+            Use standard mpl weights like 'bold'
+        leg_bkgrd (str):  hex color code for legend background (default from 
+            fcp_params)
+        leg_border (str):  hex color code for legend border (default from 
+            fcp_params)
+        leg_groups (str):  name of df column by which to legend the data 
+            (default=None)
+        leg_items (str):  explicit definition of the legend items; ignores any 
+            values that are not listed (default=None)
+        leg_on (bool):  toggle legend visibility (default=True)
+        leg_title (str):  title for the legend (default=None)
+        line_color (str):  hex color code to override the built-in line color
+            cycle (default=None)
+        line_fit (None|int):  adds a line fit to the data of polynomial order
+            ``line_fit`` (default=None)
+        line_style (str):  set the default line style (default="-")
+        line_width (int):  set the linewidth of curves (default=1)
+        lines (bool):  turn plot lines on|off (default=True)
+        marker_size (int):  set marker size (default from fcp_params)
+        marker_type (str):  set marker type (default==None)
+        points (bool):  turn markers on|off (default=True)
+        rc_label_edge_color (str):  hex color code for row/column labels border
+            edges (default from fcp_params)
+        rc_label_fill_color (str):  hex color code for row/column labels
+            background (default from fcp_params)
+        rc_label_font_size (int):  font size for row/column labels (default
+            from fcp_params)
+        rc_label_text_color (str):  hex color code for row/column label text
+            (default from fcp_params)
+        rc_label_text_style (str):  define the style row/column label text. Use
+            standard mpl styles like 'italic'" (default from fcp_params)
+        row (str):  name of a column in df to use as a grouping variable for
+            facet grid style plotting; each unique value from df[row] will
+            represent a row of plots in the final figure (default=None --> no
+            column grouping)
+        row_label (str):  a custom label to display for each row in the facet
+            grid plot (default=None --> use the value of kwargs['row'])
+        row_labels_on (bool):  toggle visibility of row grouping labels in
+            facet grid (default=True)
+        row_label_size (int):  label height in pixel for row labels in pixels
+            (default from fcp_params)
+        row_label_ws (int):  whitespace in pixels between axis and row labels
+            in pixels (default from fcp_params)
+        row_padding (int):  whitespace between facet rows in pixels (default
+            from fcp_params
+        rows (list):  list used to manually define the rows to use in the facet
+            grid. These values must actually be in df[row] (default=None)
+        save_ext (str):  filename extension for saved figures (default='png')
+        save_path (str):  destination file folder for plots (default=None)
+        scalar_x (bool):  force scalar tick labels on the x-axis instead of
+            powers of ten (default=False)
+        scalar_y (bool):  force scalar tick labels on the y-axis instead of
+            powers of ten (default=False)
+        sci_x (bool):  force scientific notation for tick labels on x-axis
+            (default=False)
+        sci_y (bool):  force scientific notation for tick labels on y-axis
+            (default=False)
+        sharex (bool):  share plot range for x-axis (default=True)
+        sharey (bool):  share plot range for y-axis (default=True)
+        show (bool):  pop open plot after it is generated.  Otherwise, the plot
+            is just saved (default=False)
+        stat (str):  statistic to apply to the y-data being plotted (default=
+            None)
+        stat_val (str):  column name to which the statistic should be applied.
+            Options include: 'median', 'median_only', 'mean_only', and 'mean'.
+            When 'only' is in the stat value, median lines and median/mean data
+            points are plotted.  Without 'only', median/mean lines and all raw
+            data points are plotted (default=kwargs['x'])
+        tick_major_color (str):  hex color code for major tick marks (default
+            from fcp_params)
+        tick_minor_color (str):  hex color code for minor tick marks (default
+            from fcp_params)
+        tick_font_size (int):  font size for tick labels (default from
+            fcp_params)
+        tick_label_color (str):  hex color code for tick labels (default
+            from fcp_params)
+        tick_length (int):  length of the tick marks (default from fcp_params)
+        tick_width (int):  line width of the tick marks (default from
+            fcp_params)
+        title (str):  plot title (default=None)
+        title_edge_color (str):  hex color code for edge of a box around the
+            plot title (default from fcp_params)
+        title_fill_color (str):  hex color code for fill of a box around the
+            plot title (default from fcp_params)
+        title_text_color (str):  hex color code for title color (default from
+            fcp_params)
+        title_font_size (int):  font size of plot title (default from
+            fcp_params)
+        title_text_style (str):  define the title style. Use standard mpl
+            styles like 'italic' (default from fcp_params)
+        twinx (bool):  allow for twinning of x-axis for secondary y-axis
+            (default=False)
+        twiny (bool):  allow for twinning of y-axis for secondary x-axis
+            (not currently supported) (default=False)
+        xlabel (str):  label for x-axis (default=kwargs['x'])
+        xmax (float):  maximum x-value on x-axis (default=None --> use mpl
+            defaults)
+        xmin (float):  minimum x-value of x-axis (default=None --> use mpl
+            defaults)
+        xticks (int):  specify the number of xticks (not currently supported)
+            (default=None --> use mpl defaults)
+        xtrans (str):  translate the x-axis data.  Options include: 'abs'
+            (absolute value), 'neg'/'negative' (negative value),
+            'inv'/'inverse' (1/data), or tuple of ('pow', int) (to raise to a
+            power) (default = None)
+        ylabel (str):  label for primary y-axis (default=kwargs['y'] or
+            kwargs['y'][0])
+        ymax (float):  maximum y-value on y-axis (default=None --> use mpl
+            defaults)
+        ymin (float):  minimum y-value of y-axis (default=None --> use mpl
+            defaults)
+        yticks (int):  specify the number of yticks (not currently supported)
+            (default=None --> use mpl defaults)
+        ytrans (str):  translate the y-axis data.  Options include: 'abs'
+            (absolute value), 'neg'/'negative' (negative value),
+            'inv'/'inverse' (1/data), or tuple of ('pow', int) (to raise to a
+            power) [won't work with ``twinx``] (default=None)
+        ylabel2 (str):  label for secondary y-axis (default=kwargs['y'][1])
+        ymax2 (float):  maximum y-value on secondary y-axis (default=None -->
+            use mpl defaults)
+        ymin2 (float):  minimum y-value on secondary y-axis (default=None -->
+            use mpl defaults)
+        yticks2 (int):  specify the number of yticks2 (not currently supported)
+            (default=None --> use mpl defaults)
 
     Returns:
-
+        design (FigDesign obj):  contains all the spacing information used to
+            construct the figure
     """
     
     # Reload defaults
@@ -883,17 +1085,17 @@ def plot(**kwargs):
     kw['fig_group_path'] = kwargs.get('fig_group_path', False)
     kw['filename'] = kwargs.get('filename', None)
     kw['filter'] = kwargs.get('filter', None)
-    kw['grid_major_color'] = kwargs.get('grid_major_color', 
+    kw['grid_major'] = kwargs.get('grid_major', True)
+    kw['grid_major_color'] = kwargs.get('grid_major_color',
                                         fcp_params['grid_major_color'])
     kw['grid_major_linestyle'] = kwargs.get('grid_major_linestyle', 
                                         fcp_params['grid_major_linestyle'])
-    kw['grid_minor_color'] = kwargs.get('grid_minor_color', 
+    kw['grid_minor'] = kwargs.get('grid_minor', False)
+    kw['grid_minor_color'] = kwargs.get('grid_minor_color',
                                         fcp_params['grid_minor_color'])
     kw['grid_minor_linestyle'] = kwargs.get('grid_minor_linestyle', 
                                         fcp_params['grid_minor_linestyle'])
-    kw['grid_major'] = kwargs.get('grid_major', True)
-    kw['grid_minor'] = kwargs.get('grid_minor', False)
-    kw['label_font_size'] = kwargs.get('label_font_size', 
+    kw['label_font_size'] = kwargs.get('label_font_size',
                                        fcp_params['label_font_size'])
     kw['label_style'] = kwargs.get('label_style', fcp_params['label_style'])
     kw['label_weight'] = kwargs.get('label_weight', fcp_params['label_weight'])
@@ -909,7 +1111,7 @@ def plot(**kwargs):
     kw['line_width'] = kwargs.get('line_width', fcp_params['line_width'])
     kw['lines'] = kwargs.get('lines', True)
     kw['marker_size'] = kwargs.get('marker_size', fcp_params['marker_size'])
-    kw['marker_type'] = kwargs.get('marker_type')
+    kw['marker_type'] = kwargs.get('marker_type', None)
     kw['points'] = kwargs.get('points', True)
     kw['rc_label_edge_color'] = kwargs.get('rc_label_edge_color',
                                            fcp_params['rc_label_edge_color'])
@@ -930,7 +1132,6 @@ def plot(**kwargs):
     kw['row_padding'] = kwargs.get('row_padding', fcp_params['row_padding'])
     kw['rows'] = kwargs.get('rows', None)
     kw['save_ext'] = kwargs.get('save_ext', 'png')
-    kw['save_name'] = kwargs.get('save_name', None)
     kw['save_path'] = kwargs.get('save_path', None)
     kw['scalar_x'] = kwargs.get('scalar_x', False)
     kw['scalar_y'] = kwargs.get('scalar_y', False)

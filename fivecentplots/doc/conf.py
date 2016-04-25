@@ -16,6 +16,7 @@
 import sys
 import os
 import shlex
+sys.path.insert(0, r'C:\GitHub\fivecentplots\fivecentplots')
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -32,6 +33,8 @@ import shlex
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinxcontrib.napoleon',
+    'sphinx.ext.doctest',
 ]
 
 # Add any paths that contain templates here, relative to this directory.

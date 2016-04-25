@@ -206,3 +206,5 @@ into groups and plot multiple boxplots for comparison:
 
 .. image:: _static/images/Ex9.png
 
+Example 10: Stats (median vs median_only)
+-----------------------------------------

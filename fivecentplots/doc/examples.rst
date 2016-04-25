@@ -14,6 +14,12 @@ Setup
 
 .. code-block:: python
 
+   import fivecentplots as fcp
+   import pandas as pd
+
+   df = pd.read_csv(r'fake_data.csv')
+   df2 = pd.read_csv(r'fake_data_box.csv')
+
 
 Example 1: Single IV curve grouped by die
 -----------------------------------------
@@ -200,3 +206,5 @@ into groups and plot multiple boxplots for comparison:
 
 .. image:: _static/images/Ex9.png
 
+Example 10: Stats (median vs median_only)
+-----------------------------------------

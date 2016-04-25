@@ -77,6 +77,7 @@ Documentation
    overview
    design
    defaults
+   keyword
    examples
    modules
 
