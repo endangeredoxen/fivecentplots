@@ -88,6 +88,7 @@
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="design.html">Figure Design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="defaults.html">Default Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Example Library</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">Modules</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#module-fcp">fcp.py</a></li>
@@ -144,20 +145,32 @@
 <span id="fcp-py"></span><h2>fcp.py<a class="headerlink" href="#module-fcp" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="fcp.add_curves">
-<code class="descclassname">fcp.</code><code class="descname">add_curves</code><span class="sig-paren">(</span><em>plotter</em>, <em>x</em>, <em>y</em>, <em>color='k'</em>, <em>marker='o'</em>, <em>points=False</em>, <em>line=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.add_curves" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fcp.</code><code class="descname">add_curves</code><span class="sig-paren">(</span><em>plotter</em>, <em>x</em>, <em>y</em>, <em>color='#000000'</em>, <em>marker='o'</em>, <em>points=False</em>, <em>line=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.add_curves" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds curve data to an axes</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>plotter:
-x:
-y:
-color:
-marker:
-points:
-line:
-<a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs:</dd>
-</dl>
-<p>Returns:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>plotter</strong> (<em>mpl plot obj</em>) &#8211; plot, semilogx, semilogy, loglog</li>
+<li><strong>x</strong> (<em>np.array</em>) &#8211; x data to plot</li>
+<li><strong>y</strong> (<em>np.array</em>) &#8211; y data to plot</li>
+<li><strong>color</strong> (<em>str</em>) &#8211; hex color code for line color (default=&#8217;#000000&#8217;)</li>
+<li><strong>marker</strong> (<em>str</em>) &#8211; marker char string (default=&#8217;o&#8217;)</li>
+<li><strong>points</strong> (<em>bool</em>) &#8211; toggle points on|off (default=False)</li>
+<li><strong>line</strong> (<em>bool</em>) &#8211; toggle plot lines on|off (default=True)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Keyword Arguments:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first"><strong>any kwargs allowed by the plotter function selected</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">return the line plot object</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -166,44 +179,205 @@ line:
 <dd><p>Add a label to the plot</p>
 <p>This function can be used for title labels or for group labels applied
 to rows and columns when plotting facet grid style plots.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><p class="first">label (str):
-pos (tuple): left, bottom, width, height
-axis (matplotlib.axes):
-rotation (int):</p>
-<blockquote>
-<div>label:</div></blockquote>
-<p class="last">pos:
-axis:
-rotation:
-fillcolor:
-edgecolor:
-color:
-weight:
-fontsize:</p>
-</dd>
-<dt>Returns:</dt>
-<dd>None</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>label</strong> (<em>str</em>) &#8211; label text</li>
+<li><strong>pos</strong> (<em>tuple</em>) &#8211; label position tuple of form (left, bottom, width, height)</li>
+<li><strong>axis</strong> (<em>matplotlib.axes</em>) &#8211; mpl axes object</li>
+<li><strong>rotation</strong> (<em>int</em>) &#8211; degrees of rotation</li>
+<li><strong>fillcolor</strong> (<em>str</em>) &#8211; hex color code for label fill (default=&#8217;#ffffff&#8217;)</li>
+<li><strong>edgecolor</strong> (<em>str</em>) &#8211; hex color code for label edge (default=&#8217;#aaaaaa&#8217;)</li>
+<li><strong>color</strong> (<em>str</em>) &#8211; hex color code for label text (default=&#8217;#666666&#8217;)</li>
+<li><strong>weight</strong> (<em>str</em>) &#8211; label font weight (use standard mpl weights like &#8216;bold&#8217;)</li>
+<li><strong>fontsize</strong> (<em>int</em>) &#8211; label font size (default=14)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="fcp.boxplot">
 <code class="descclassname">fcp.</code><code class="descname">boxplot</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.boxplot" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>boxplot(self, x, notch=None, sym=None, vert=None, whis=None,</dt>
-<dd>positions=None, widths=None, patch_artist=False,
-bootstrap=None, usermedians=None, conf_intervals=None,
-meanline=False, showmeans=False, showcaps=True,
-showbox=True, showfliers=True, boxprops=None, labels=None,
-flierprops=None, medianprops=None, meanprops=None,
-capprops=None, whiskerprops=None, manage_xticks=True):</dd>
-<dt>Args:</dt>
-<dd>df:
-<a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs:</dd>
+<dd><p>Main boxplot function</p>
+<p>This function wraps the boxplot function from the matplotlib
+library.  At minimum, it requires a pandas DataFrame with at least one
+column and a column name for the y axis.  Plots can be
+customized and enhanced by passing keyword arguments as defined below.
+Default values that must be defined in order to generate the plot are
+pulled from the fcp_params dictionary defined in defaults.py.</p>
+<dl class="docutils">
+<dt>Required Keyword Args:</dt>
+<dd>df (DataFrame): DataFrame containing data to plot
+y (str|list):   name or list of names of y column in df</dd>
 </dl>
-<p>Returns:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Keyword Arguments:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><ul class="first simple">
+<li><strong>ax_edge_color</strong> (<em>str</em>) &#8211; hex color code for axis edge border color
+(default from fcp_params)</li>
+<li><strong>ax_face_color</strong> (<em>str</em>) &#8211; hex color code for axis fill color (default from
+fcp_params)</li>
+<li><strong>ax_fig_ws</strong> (<em>int</em>) &#8211; axis to figure right whitespace (default from
+fcp_params)</li>
+<li><strong>ax_hlines</strong> (<em>list</em>) &#8211; list of y-values at which to add horizontal lines
+(default=[])</li>
+<li><strong>ax_label_pad</strong> (<em>int</em>) &#8211; label offset padding in pixels (default=0)</li>
+<li><strong>ax_lim</strong> (<em>list</em>) &#8211; axes range values [xmin, xmax, ymin, ymax] (default=[])</li>
+<li><strong>ax_lim_pad</strong> (<em>float</em>) &#8211; in place of discrete axes limits, adds whitespace
+to the bottom|top and left|right of the axis by this amount as a
+percent/100 of the total axis range (default=0.05)</li>
+<li><strong>ax_scale</strong> (<em>None|str</em>) &#8211; set the scale of an axis as linear or log
+(default=None &#8211;&gt; linear; options include &#8216;logx&#8217;|&#8217;semilogx&#8217; for the
+x-axis, &#8216;logy&#8217;|&#8217;semilogy&#8217; for the y-axis or &#8216;loglog&#8217; for both axes</li>
+<li><strong>ax_size</strong> (<em>list</em>) &#8211; [width, height] of each plot window in pixels
+(default defined by fcp_params)</li>
+<li><strong>bp_divider_color</strong> (<em>str</em>) &#8211; hex color code for divider line color between
+groups (default from fcp_params)</li>
+<li><strong>bp_fill_color</strong> (<em>str</em>) &#8211; hex color code for boxplot fill color (default
+from fcp_params)</li>
+<li><strong>bp_labels_on</strong> (<em>bool</em>) &#8211; toggle on|off boxplot grouping labels
+(default=True)</li>
+<li><strong>bp_label_size</strong> (<em>int</em>) &#8211; grouping label size (default from fcp_params)</li>
+<li><strong>bp_label_edge_color</strong> (<em>str</em>) &#8211; hex color code for boxplot grouping label
+regions (default from fcp_params)</li>
+<li><strong>bp_label_fill_color</strong> (<em>str</em>) &#8211; hex color code for grouping labels (default
+from fcp_params)</li>
+<li><strong>bp_label_font_size</strong> (<em>int</em>) &#8211; grouping label font size (default from
+fcp_params)</li>
+<li><strong>bp_label_text_color</strong> (<em>str</em>) &#8211; hex color code for grouping label text
+(default from fcp_params)</li>
+<li><strong>bp_label_text_style</strong> (<em>str</em>) &#8211; grouping label text style; use standard
+mpl styles like &#8216;italic&#8217; (default from fcp_params)</li>
+<li><strong>bp_label_text_weight</strong> (<em>str</em>) &#8211; grouping label text weight; use standard
+mpl weights like &#8216;bold&#8217; (default from fcp_params)</li>
+<li><strong>bp_name_font_size</strong> (<em>str</em>) &#8211; grouping label summary name font size
+(default from fcp_params)</li>
+<li><strong>bp_name_text_color</strong> (<em>str</em>) &#8211; hex color code for grouping label summary
+name (default from fcp_params)</li>
+<li><strong>bp_name_text_style</strong> (<em>str</em>) &#8211; grouping label summary name text style; use
+standard mpl styles like &#8216;italic&#8217; (default from fcp_params)</li>
+<li><strong>bp_name_text_weight</strong> (<em>str</em>) &#8211; grouping label summary name text weight;
+use standard mpl weights like &#8216;bold&#8217; (default from fcp_params)</li>
+<li><strong>bp_name_ws</strong> (<em>int</em>) &#8211; whitespace in pixels between grouping labels under
+the boxplot and the summary names (default from fcp_params)</li>
+<li><strong>colors</strong> (<em>list</em>) &#8211; list of tuple values used to define colors for plotting
+using RGB/255 mpl style (default is palette from defaults.py)</li>
+<li><strong>connect_means</strong> (<em>bool</em>) &#8211; draw a line connecting the mean value of each
+group in the boxplot (default=False)</li>
+<li><strong>dividers</strong> (<em>bool</em>) &#8211; show vertical diveider lines between groups
+(default=True)</li>
+<li><strong>fig_ax_ws</strong> (<em>int</em>) &#8211; number of pixels between the left figure edge and the
+left axis edge (default from fcp_params)</li>
+<li><strong>fig_edge_color</strong> (<em>str</em>) &#8211; hex color code for figure edge color (default
+from fcp_params)</li>
+<li><strong>fig_face_color</strong> (<em>str</em>) &#8211; hex color code for figure fill color (default
+from fcp_params)</li>
+<li><strong>fig_groups</strong> (<em>list|None</em>) &#8211; name of df column by which to group the data
+and make discrete figures based on the unique values in this column
+(default=None)</li>
+<li><strong>fig_group_path</strong> (<em>bool</em>) &#8211; use the unique grouping item from fig_groups
+in the plot filename (default=False)</li>
+<li><strong>filename</strong> (<em>str</em>) &#8211; name of saved figure (default=None&#8211;&gt; custom filename
+will be built based on the data that is plotted</li>
+<li><strong>filter</strong> (<em>str</em>) &#8211; str to use in df.query to include or exclude certain
+data from df (default=None).  Note that df.query does not support
+spaces, parenthesis, or brackets. Spaces should be replaced by &#8216;_&#8217;
+and parenthesis/brackets should be dropped from the str.  Example:
+Temperature [C] &#8211;&gt; Temperature_C</li>
+<li><strong>grid_major</strong> (<em>bool</em>) &#8211; toggle major gridlines (default=True)</li>
+<li><strong>grid_major_color</strong> (<em>str</em>) &#8211; hex color code for major gridline color
+(default from fcp_params)</li>
+<li><strong>grid_major_linestyle</strong> (<em>str</em>) &#8211; matplotlib str code for linestyle (default
+from fcp_params)</li>
+<li><strong>grid_minor</strong> (<em>bool</em>) &#8211; toggle minor gridlines (default=False)</li>
+<li><strong>grid_minor_color</strong> (<em>str</em>) &#8211; hex color code for minor gridline color
+(default from fcp_params)</li>
+<li><strong>grid_minor_linestyle</strong> (<em>str</em>) &#8211; matplotlib str code for linestyle (default
+from fcp_params)</li>
+<li><strong>groups</strong> (<em>list?</em>) &#8211; (default=None)</li>
+<li><strong>jitter</strong> (<em>bool</em>) &#8211; jitter the data points (default=False)</li>
+<li><strong>label_font_size</strong> (<em>int</em>) &#8211; font size in pixels for the x and y labels
+(default from fcp_params)</li>
+<li><strong>label_style</strong> (<em>str</em>) &#8211; define the label style (default from fcp_params).
+Use standard mpl styles like &#8216;italic&#8217;</li>
+<li><strong>label_weight</strong> (<em>str</em>) &#8211; define the label weight (default from fcp_params).
+Use standard mpl weights like &#8216;bold&#8217;</li>
+<li><strong>leg_bkgrd</strong> (<em>str</em>) &#8211; hex color code for legend background (default from
+fcp_params)</li>
+<li><strong>leg_border</strong> (<em>str</em>) &#8211; hex color code for legend border (default from
+fcp_params)</li>
+<li><strong>leg_groups</strong> (<em>str</em>) &#8211; name of df column by which to legend the data
+(default=None)</li>
+<li><strong>leg_items</strong> (<em>str</em>) &#8211; explicit definition of the legend items; ignores any
+values that are not listed (default=None)</li>
+<li><strong>leg_on</strong> (<em>bool</em>) &#8211; toggle legend visibility (default=True)</li>
+<li><strong>leg_title</strong> (<em>str</em>) &#8211; title for the legend (default=None)</li>
+<li><strong>line_width</strong> (<em>int</em>) &#8211; set the linewidth of connect means line (default=1)</li>
+<li><strong>lines</strong> (<em>bool</em>) &#8211; turn plot lines on|off (default=True)</li>
+<li><strong>marker_size</strong> (<em>int</em>) &#8211; set marker size (default from fcp_params)</li>
+<li><strong>marker_type</strong> (<em>str</em>) &#8211; set marker type (default==None)</li>
+<li><strong>points</strong> (<em>bool</em>) &#8211; turn markers on|off (default=True)</li>
+<li><strong>save_ext</strong> (<em>str</em>) &#8211; filename extension for saved figures (default=&#8217;png&#8217;)</li>
+<li><strong>save_path</strong> (<em>str</em>) &#8211; destination file folder for plots (default=None)</li>
+<li><strong>scalar_y</strong> (<em>bool</em>) &#8211; force scalar tick labels on the y-axis instead of
+powers of ten (default=False)</li>
+<li><strong>show</strong> (<em>bool</em>) &#8211; pop open plot after it is generated.  Otherwise, the plot
+is just saved (default=False)</li>
+<li><strong>tick_major_color</strong> (<em>str</em>) &#8211; hex color code for major tick marks (default
+from fcp_params)</li>
+<li><strong>tick_minor_color</strong> (<em>str</em>) &#8211; hex color code for minor tick marks (default
+from fcp_params)</li>
+<li><strong>tick_font_size</strong> (<em>int</em>) &#8211; font size for tick labels (default from
+fcp_params)</li>
+<li><strong>tick_label_color</strong> (<em>str</em>) &#8211; hex color code for tick labels (default
+from fcp_params)</li>
+<li><strong>tick_length</strong> (<em>int</em>) &#8211; length of the tick marks (default from fcp_params)</li>
+<li><strong>tick_width</strong> (<em>int</em>) &#8211; line width of the tick marks (default from
+fcp_params)</li>
+<li><strong>title</strong> (<em>str</em>) &#8211; plot title (default=None)</li>
+<li><strong>title_edge_color</strong> (<em>str</em>) &#8211; hex color code for edge of a box around the
+plot title (default from fcp_params)</li>
+<li><strong>title_fill_color</strong> (<em>str</em>) &#8211; hex color code for fill of a box around the
+plot title (default from fcp_params)</li>
+<li><strong>title_text_color</strong> (<em>str</em>) &#8211; hex color code for title color (default from
+fcp_params)</li>
+<li><strong>title_font_size</strong> (<em>int</em>) &#8211; font size of plot title (default from
+fcp_params)</li>
+<li><strong>title_text_style</strong> (<em>str</em>) &#8211; define the title style. Use standard mpl
+styles like &#8216;italic&#8217; (default from fcp_params)</li>
+<li><strong>ylabel</strong> (<em>str</em>) &#8211; label for primary y-axis (default=kwargs[&#8216;y&#8217;] or
+kwargs[&#8216;y&#8217;][0])</li>
+<li><strong>ymax</strong> (<em>float</em>) &#8211; maximum y-value on y-axis (default=None &#8211;&gt; use mpl
+defaults)</li>
+<li><strong>ymin</strong> (<em>float</em>) &#8211; minimum y-value of y-axis (default=None &#8211;&gt; use mpl
+defaults)</li>
+<li><strong>yticks</strong> (<em>int</em>) &#8211; specify the number of yticks (not currently supported)
+(default=None &#8211;&gt; use mpl defaults)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><p><strong>design</strong> &#8211;</p>
+<dl class="docutils">
+<dt>contains all the spacing information used to</dt>
+<dd><p class="first last">construct the figure</p>
+</dd>
+</dl>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">FigDesign obj</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -214,34 +388,75 @@ capprops=None, whiskerprops=None, manage_xticks=True):</dd>
 function will temporarily replace spaces in the column names with
 underscores, but the supplied query string must contain column names
 without any spaces</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>df (DataFrame):  data set to be filtered
-filt (str):  query expression for filtering</dd>
-<dt>Returns:</dt>
-<dd>filtered DataFrame</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>df</strong> (<em>pd.DataFrame</em>) &#8211; data set to be filtered</li>
+<li><strong>filt</strong> (<em>str</em>) &#8211; query expression for filtering</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">filtered DataFrame</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="fcp.filename_label">
 <code class="descclassname">fcp.</code><code class="descname">filename_label</code><span class="sig-paren">(</span><em>label</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.filename_label" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>Args:</dt>
-<dd>label:</dd>
-</dl>
-<p>Returns:</p>
+<dd><p>Format filename to remove parentheses, brackets, leading/trailing spaces</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>label</strong> (<em>str</em>) &#8211; label to format</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">formatted label</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="fcp.get_unique_groups">
 <code class="descclassname">fcp.</code><code class="descname">get_unique_groups</code><span class="sig-paren">(</span><em>kw</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.get_unique_groups" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get all unique values from several kwargs</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kw</strong> (<em>dict</em>) &#8211; keyword args dict</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of unique group values</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="fcp.paste_kwargs">
+<code class="descclassname">fcp.</code><code class="descname">paste_kwargs</code><span class="sig-paren">(</span><em>kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.paste_kwargs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the kwargs from contents of the clipboard in ini file format</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs</strong> (<em>dict</em>) &#8211; originally inputted kwargs</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">kwargs</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="fcp.plot">
 <code class="descclassname">fcp.</code><code class="descname">plot</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Main plotting function</p>
+<dd><p>Main x-y plotting function</p>
 <p>This function wraps many variations of x-y plots from the matplotlib
 library.  At minimum, it requires a pandas DataFrame with at least two
 columns and two column names for the x and y axis.  Plots can be
@@ -253,176 +468,233 @@ pulled from the fcp_params dictionary defined in defaults.py.</p>
 <dd>df (DataFrame): DataFrame containing data to plot
 x (str):        name of x column in df
 y (str|list):   name or list of names of y column(s) in df</dd>
-<dt>Keyword Args:</dt>
-<dd><dl class="first docutils">
-<dt>ax_hlines (list):     list of y-values at which to add horizontal</dt>
-<dd>lines (default=[])</dd>
 </dl>
-<p>ax_label_pad (int):   label offset padding in pixels (default=0)
-ax_lim (list):        axes range values [xmin, xmax, ymin, ymax] (</p>
-<blockquote>
-<div>default=[])</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Keyword Arguments:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><ul class="first simple">
+<li><strong>ax_edge_color</strong> (<em>str</em>) &#8211; hex color code for axis edge border color
+(default from fcp_params)</li>
+<li><strong>ax_face_color</strong> (<em>str</em>) &#8211; hex color code for axis fill color (default from
+fcp_params)</li>
+<li><strong>ax_hlines</strong> (<em>list</em>) &#8211; list of y-values at which to add horizontal lines
+(default=[])</li>
+<li><strong>ax_label_pad</strong> (<em>int</em>) &#8211; label offset padding in pixels (default=0)</li>
+<li><strong>ax_lim</strong> (<em>list</em>) &#8211; axes range values [xmin, xmax, ymin, ymax] (default=[])</li>
+<li><strong>ax_lim_pad</strong> (<em>float</em>) &#8211; in place of discrete axes limits, adds whitespace
+to the bottom|top and left|right of the axis by this amount as a
+percent/100 of the total axis range (default=0.05)</li>
+<li><strong>ax_scale</strong> (<em>None|str</em>) &#8211; set the scale of an axis as linear or log
+(default=None &#8211;&gt; linear; options include &#8216;logx&#8217;|&#8217;semilogx&#8217; for the
+x-axis, &#8216;logy&#8217;|&#8217;semilogy&#8217; for the y-axis or &#8216;loglog&#8217; for both axes</li>
+<li><strong>ax_scale2</strong> (<em>None|str</em>) &#8211; same as ax_scale but for secondary y-axis
+when twinx is True</li>
+<li><strong>ax_size</strong> (<em>list</em>) &#8211; [width, height] of each plot window in pixels
+(default defined by fcp_params)</li>
+<li><strong>ax_vlines</strong> (<em>list</em>) &#8211; list of x-values at which to add vertical lines
+(default=[])</li>
+<li><strong>cmap</strong> (<em>str</em>) &#8211; name of color map to use for plotting (default=None &#8211;&gt;
+use color order defined in fcp_params</li>
+<li><strong>col</strong> (<em>str</em>) &#8211; name of a column in df to use as a grouping variable for
+facet grid style plotting; each unique value from df[col] will
+represent a column of plots in the final figure (default=None &#8211;&gt;
+no column grouping)</li>
+<li><strong>col_label</strong> (<em>str</em>) &#8211; a custom label to display for each column in the
+facet grid plot (default=None &#8211;&gt; use the value of kwargs[&#8216;col&#8217;]</li>
+<li><strong>col_labels_on</strong> (<em>bool</em>) &#8211; toggle on|off column labels in facet grid plot
+(default=True)</li>
+<li><strong>col_label_size</strong> (<em>int</em>) &#8211; label height in pixel for col labels in pixels
+(default from fcp_params)</li>
+<li><strong>col_label_ws</strong> (<em>int</em>) &#8211; whitespace in pixels between axis and col labels
+in pixels (default from fcp_params)</li>
+<li><strong>col_padding</strong> (<em>int</em>) &#8211; whitespace between facet columns in pixels (default
+in fcp_params)</li>
+<li><strong>colors</strong> (<em>list</em>) &#8211; list of tuple values used to define colors for plotting
+using RGB/255 mpl style (default is palette from defaults.py)</li>
+<li><strong>cols</strong> (<em>list</em>) &#8211; list used to manually define the columns to use in the
+facet grid (default=None). These values must actually be in df[col]</li>
+<li><strong>fig_ax_ws</strong> (<em>int</em>) &#8211; number of pixels between the left figure edge and the
+left axis edge (default from fcp_params)</li>
+<li><strong>fig_edge_color</strong> (<em>str</em>) &#8211; hex color code for figure edge color (default
+from fcp_params)</li>
+<li><strong>fig_face_color</strong> (<em>str</em>) &#8211; hex color code for figure fill color (default
+from fcp_params)</li>
+<li><strong>fig_groups</strong> (<em>list|None</em>) &#8211; name of df column by which to group the data
+and make discrete figures based on the unique values in this column
+(default=None)</li>
+<li><strong>fig_group_path</strong> (<em>bool</em>) &#8211; use the unique grouping item from fig_groups
+in the plot filename (default=False)</li>
+<li><strong>filename</strong> (<em>str</em>) &#8211; name of saved figure (default=None&#8211;&gt; custom filename
+will be built based on the data that is plotted</li>
+<li><strong>filter</strong> (<em>str</em>) &#8211; str to use in df.query to include or exclude certain
+data from df (default=None).  Note that df.query does not support
+spaces, parenthesis, or brackets. Spaces should be replaced by &#8216;_&#8217;
+and parenthesis/brackets should be dropped from the str.  Example:
+Temperature [C] &#8211;&gt; Temperature_C</li>
+<li><strong>grid_major</strong> (<em>bool</em>) &#8211; toggle major gridlines (default=True)</li>
+<li><strong>grid_major_color</strong> (<em>str</em>) &#8211; hex color code for major gridline color
+(default from fcp_params)</li>
+<li><strong>grid_major_linestyle</strong> (<em>str</em>) &#8211; matplotlib str code for linestyle (default
+from fcp_params)</li>
+<li><strong>grid_minor</strong> (<em>bool</em>) &#8211; toggle minor gridlines (default=False)</li>
+<li><strong>grid_minor_color</strong> (<em>str</em>) &#8211; hex color code for minor gridline color
+(default from fcp_params)</li>
+<li><strong>grid_minor_linestyle</strong> (<em>str</em>) &#8211; matplotlib str code for linestyle (default
+from fcp_params)</li>
+<li><strong>label_font_size</strong> (<em>int</em>) &#8211; font size in pixels for the x and y labels
+(default from fcp_params)</li>
+<li><strong>label_style</strong> (<em>str</em>) &#8211; define the label style (default from fcp_params).
+Use standard mpl styles like &#8216;italic&#8217;</li>
+<li><strong>label_weight</strong> (<em>str</em>) &#8211; define the label weight (default from fcp_params).
+Use standard mpl weights like &#8216;bold&#8217;</li>
+<li><strong>leg_bkgrd</strong> (<em>str</em>) &#8211; hex color code for legend background (default from
+fcp_params)</li>
+<li><strong>leg_border</strong> (<em>str</em>) &#8211; hex color code for legend border (default from
+fcp_params)</li>
+<li><strong>leg_groups</strong> (<em>str</em>) &#8211; name of df column by which to legend the data
+(default=None)</li>
+<li><strong>leg_items</strong> (<em>str</em>) &#8211; explicit definition of the legend items; ignores any
+values that are not listed (default=None)</li>
+<li><strong>leg_on</strong> (<em>bool</em>) &#8211; toggle legend visibility (default=True)</li>
+<li><strong>leg_title</strong> (<em>str</em>) &#8211; title for the legend (default=None)</li>
+<li><strong>line_color</strong> (<em>str</em>) &#8211; hex color code to override the built-in line color
+cycle (default=None)</li>
+<li><strong>line_fit</strong> (<em>None|int</em>) &#8211; adds a line fit to the data of polynomial order
+<code class="docutils literal"><span class="pre">line_fit</span></code> (default=None)</li>
+<li><strong>line_style</strong> (<em>str</em>) &#8211; set the default line style (default=&#8221;-&#8221;)</li>
+<li><strong>line_width</strong> (<em>int</em>) &#8211; set the linewidth of curves (default=1)</li>
+<li><strong>lines</strong> (<em>bool</em>) &#8211; turn plot lines on|off (default=True)</li>
+<li><strong>marker_size</strong> (<em>int</em>) &#8211; set marker size (default from fcp_params)</li>
+<li><strong>marker_type</strong> (<em>str</em>) &#8211; set marker type (default==None)</li>
+<li><strong>points</strong> (<em>bool</em>) &#8211; turn markers on|off (default=True)</li>
+<li><strong>rc_label_edge_color</strong> (<em>str</em>) &#8211; hex color code for row/column labels border
+edges (default from fcp_params)</li>
+<li><strong>rc_label_fill_color</strong> (<em>str</em>) &#8211; hex color code for row/column labels
+background (default from fcp_params)</li>
+<li><strong>rc_label_font_size</strong> (<em>int</em>) &#8211; font size for row/column labels (default
+from fcp_params)</li>
+<li><strong>rc_label_text_color</strong> (<em>str</em>) &#8211; hex color code for row/column label text
+(default from fcp_params)</li>
+<li><strong>rc_label_text_style</strong> (<em>str</em>) &#8211; define the style row/column label text. Use
+standard mpl styles like &#8216;italic&#8217;&#8221; (default from fcp_params)</li>
+<li><strong>row</strong> (<em>str</em>) &#8211; name of a column in df to use as a grouping variable for
+facet grid style plotting; each unique value from df[row] will
+represent a row of plots in the final figure (default=None &#8211;&gt; no
+column grouping)</li>
+<li><strong>row_label</strong> (<em>str</em>) &#8211; a custom label to display for each row in the facet
+grid plot (default=None &#8211;&gt; use the value of kwargs[&#8216;row&#8217;])</li>
+<li><strong>row_labels_on</strong> (<em>bool</em>) &#8211; toggle visibility of row grouping labels in
+facet grid (default=True)</li>
+<li><strong>row_label_size</strong> (<em>int</em>) &#8211; label height in pixel for row labels in pixels
+(default from fcp_params)</li>
+<li><strong>row_label_ws</strong> (<em>int</em>) &#8211; whitespace in pixels between axis and row labels
+in pixels (default from fcp_params)</li>
+<li><strong>row_padding</strong> (<em>int</em>) &#8211; whitespace between facet rows in pixels (default
+from fcp_params</li>
+<li><strong>rows</strong> (<em>list</em>) &#8211; list used to manually define the rows to use in the facet
+grid. These values must actually be in df[row] (default=None)</li>
+<li><strong>save_ext</strong> (<em>str</em>) &#8211; filename extension for saved figures (default=&#8217;png&#8217;)</li>
+<li><strong>save_path</strong> (<em>str</em>) &#8211; destination file folder for plots (default=None)</li>
+<li><strong>scalar_x</strong> (<em>bool</em>) &#8211; force scalar tick labels on the x-axis instead of
+powers of ten (default=False)</li>
+<li><strong>scalar_y</strong> (<em>bool</em>) &#8211; force scalar tick labels on the y-axis instead of
+powers of ten (default=False)</li>
+<li><strong>sci_x</strong> (<em>bool</em>) &#8211; force scientific notation for tick labels on x-axis
+(default=False)</li>
+<li><strong>sci_y</strong> (<em>bool</em>) &#8211; force scientific notation for tick labels on y-axis
+(default=False)</li>
+<li><strong>sharex</strong> (<em>bool</em>) &#8211; share plot range for x-axis (default=True)</li>
+<li><strong>sharey</strong> (<em>bool</em>) &#8211; share plot range for y-axis (default=True)</li>
+<li><strong>show</strong> (<em>bool</em>) &#8211; pop open plot after it is generated.  Otherwise, the plot
+is just saved (default=False)</li>
+<li><strong>stat</strong> (<em>str</em>) &#8211; statistic to apply to the y-data being plotted (default=
+None)</li>
+<li><strong>stat_val</strong> (<em>str</em>) &#8211; column name to which the statistic should be applied.
+Options include: &#8216;median&#8217;, &#8216;median_only&#8217;, &#8216;mean_only&#8217;, and &#8216;mean&#8217;.
+When &#8216;only&#8217; is in the stat value, median lines and median/mean data
+points are plotted.  Without &#8216;only&#8217;, median/mean lines and all raw
+data points are plotted (default=kwargs[&#8216;x&#8217;])</li>
+<li><strong>tick_major_color</strong> (<em>str</em>) &#8211; hex color code for major tick marks (default
+from fcp_params)</li>
+<li><strong>tick_minor_color</strong> (<em>str</em>) &#8211; hex color code for minor tick marks (default
+from fcp_params)</li>
+<li><strong>tick_font_size</strong> (<em>int</em>) &#8211; font size for tick labels (default from
+fcp_params)</li>
+<li><strong>tick_label_color</strong> (<em>str</em>) &#8211; hex color code for tick labels (default
+from fcp_params)</li>
+<li><strong>tick_length</strong> (<em>int</em>) &#8211; length of the tick marks (default from fcp_params)</li>
+<li><strong>tick_width</strong> (<em>int</em>) &#8211; line width of the tick marks (default from
+fcp_params)</li>
+<li><strong>title</strong> (<em>str</em>) &#8211; plot title (default=None)</li>
+<li><strong>title_edge_color</strong> (<em>str</em>) &#8211; hex color code for edge of a box around the
+plot title (default from fcp_params)</li>
+<li><strong>title_fill_color</strong> (<em>str</em>) &#8211; hex color code for fill of a box around the
+plot title (default from fcp_params)</li>
+<li><strong>title_text_color</strong> (<em>str</em>) &#8211; hex color code for title color (default from
+fcp_params)</li>
+<li><strong>title_font_size</strong> (<em>int</em>) &#8211; font size of plot title (default from
+fcp_params)</li>
+<li><strong>title_text_style</strong> (<em>str</em>) &#8211; define the title style. Use standard mpl
+styles like &#8216;italic&#8217; (default from fcp_params)</li>
+<li><strong>twinx</strong> (<em>bool</em>) &#8211; allow for twinning of x-axis for secondary y-axis
+(default=False)</li>
+<li><strong>twiny</strong> (<em>bool</em>) &#8211; allow for twinning of y-axis for secondary x-axis
+(not currently supported) (default=False)</li>
+<li><strong>xlabel</strong> (<em>str</em>) &#8211; label for x-axis (default=kwargs[&#8216;x&#8217;])</li>
+<li><strong>xmax</strong> (<em>float</em>) &#8211; maximum x-value on x-axis (default=None &#8211;&gt; use mpl
+defaults)</li>
+<li><strong>xmin</strong> (<em>float</em>) &#8211; minimum x-value of x-axis (default=None &#8211;&gt; use mpl
+defaults)</li>
+<li><strong>xticks</strong> (<em>int</em>) &#8211; specify the number of xticks (not currently supported)
+(default=None &#8211;&gt; use mpl defaults)</li>
+<li><strong>xtrans</strong> (<em>str</em>) &#8211; translate the x-axis data.  Options include: &#8216;abs&#8217;
+(absolute value), &#8216;neg&#8217;/&#8217;negative&#8217; (negative value),
+&#8216;inv&#8217;/&#8217;inverse&#8217; (1/data), or tuple of (&#8216;pow&#8217;, int) (to raise to a
+power) (default = None)</li>
+<li><strong>ylabel</strong> (<em>str</em>) &#8211; label for primary y-axis (default=kwargs[&#8216;y&#8217;] or
+kwargs[&#8216;y&#8217;][0])</li>
+<li><strong>ymax</strong> (<em>float</em>) &#8211; maximum y-value on y-axis (default=None &#8211;&gt; use mpl
+defaults)</li>
+<li><strong>ymin</strong> (<em>float</em>) &#8211; minimum y-value of y-axis (default=None &#8211;&gt; use mpl
+defaults)</li>
+<li><strong>yticks</strong> (<em>int</em>) &#8211; specify the number of yticks (not currently supported)
+(default=None &#8211;&gt; use mpl defaults)</li>
+<li><strong>ytrans</strong> (<em>str</em>) &#8211; translate the y-axis data.  Options include: &#8216;abs&#8217;
+(absolute value), &#8216;neg&#8217;/&#8217;negative&#8217; (negative value),
+&#8216;inv&#8217;/&#8217;inverse&#8217; (1/data), or tuple of (&#8216;pow&#8217;, int) (to raise to a
+power) [won&#8217;t work with <code class="docutils literal"><span class="pre">twinx</span></code>] (default=None)</li>
+<li><strong>ylabel2</strong> (<em>str</em>) &#8211; label for secondary y-axis (default=kwargs[&#8216;y&#8217;][1])</li>
+<li><strong>ymax2</strong> (<em>float</em>) &#8211; maximum y-value on secondary y-axis (default=None &#8211;&gt;
+use mpl defaults)</li>
+<li><strong>ymin2</strong> (<em>float</em>) &#8211; minimum y-value on secondary y-axis (default=None &#8211;&gt;
+use mpl defaults)</li>
+<li><strong>yticks2</strong> (<em>int</em>) &#8211; specify the number of yticks2 (not currently supported)
+(default=None &#8211;&gt; use mpl defaults)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><p><strong>design</strong> &#8211;</p>
 <dl class="docutils">
-<dt>ax_lim_pad (float):   in place of discrete axes limits,</dt>
-<dd>adds whitespace to the bottom|top and left|right
-of the axis by this amount as a percent/100 of
-the total axis range (default=0.05)</dd>
-<dt>ax_scale (None|str):  set the scale of an axis as linear or log</dt>
-<dd>(default=None &#8211;&gt; linear; options include
-&#8216;logx&#8217;|&#8217;semilogx&#8217; for the x-axis,
-&#8216;logy&#8217;|&#8217;semilogy&#8217; for the y-axis or &#8216;loglog&#8217; for
-both axes</dd>
-<dt>ax_scale2 (None|str): same as ax_scale but for secondary y-axis</dt>
-<dd>when twinx is True</dd>
-<dt>ax_size (list):       [width, height] of each plot window in pixels</dt>
-<dd>(default defined by fcp_params)</dd>
-<dt>ax_vlines (list):     list of x-values at which to add vertical</dt>
-<dd>lines (default=[])</dd>
-<dt>cmap (str):           name of color map to use for plotting (</dt>
-<dd>default=None &#8211;&gt; use color order defined in
-fcp_params</dd>
-<dt>col (str):            name of a column in df to use as a grouping</dt>
-<dd>variable for facet grid style plotting; each
-unique value from df[col] will represent a
-column of plots in the final figure
-(default=None &#8211;&gt; no column grouping)</dd>
-<dt>col_label (str):      a custom label to display for each column in</dt>
-<dd>the facet grid plot (default=None &#8211;&gt; use the
-value of kwargs[&#8216;col&#8217;]</dd>
-<dt>col_labels_on (bool): toggle on|off column labels in facet grid</dt>
-<dd>plot (default=True)</dd>
-<dt>col_label_size (int): label height in pixel for col labels in pixels</dt>
-<dd>(default from fcp_params)</dd>
-<dt>col_label_ws (int):   whitespace in pixels between axis and col</dt>
-<dd>labels in pixels (default from fcp_params)</dd>
-<dt>col_padding (int):    whitespace between facet columns in pixels</dt>
-<dd>(default in fcp_params)</dd>
-<dt>colors (list):        list of tuple values used to define colors</dt>
-<dd>for plotting using RGB/255 mpl style (default
-is palette from defaults.py)</dd>
-<dt>cols (list):          list used to manually define the columns to</dt>
-<dd>use in the facet grid (default=None). These
-values must actually be in df[col]</dd>
-</dl>
-<p>fig_groups (list):    &#8216;] = kwargs.get(&#8216;fig_groups&#8217;, None)
-<strong>*
-fig_group_path&#8217;] = kwargs.get(&#8216;fig_group_path&#8217;, False)
-*</strong>
-filename (str):       name of saved figure (default=None&#8211;&gt; custom</p>
-<blockquote>
-<div>filename will be built based on the data that
-is plotted</div></blockquote>
-<dl class="docutils">
-<dt>filter (str):         str to use in df.query to include or exclude</dt>
-<dd>certain data from df (default=None).  Note
-that df.query does not support spaces,
-parenthesis, or brackets. Spaces should be
-replaced by &#8216;_&#8217; and parenthesis/brackets
-should be dropped from the str.  Example:
-Temperature [C] &#8211;&gt; Temperature_C</dd>
-</dl>
-<p>grid_major (bool):    toggle major gridlines (default=True)
-grid_minor (bool):    toggle minor gridlines (default=False)
-label_font_size&#8217;] = kwargs.get(&#8216;label_font_size&#8217;,</p>
-<blockquote>
-<div>fcp_params[&#8216;label_font_size&#8217;])</div></blockquote>
-<dl class="docutils">
-<dt>label_style (str):    define the label style (default from</dt>
-<dd>fcp_params).  Use standard mpl styles like
-&#8216;italic&#8217;</dd>
-<dt>label_weight (str):   define the label weight (default from</dt>
-<dd>fcp_params).  Use standard mpl weights like
-&#8216;bold&#8217;</dd>
-<dt>leg_bkgrd (str):      hex-style color for legend background (default</dt>
-<dd>from fcp_params)</dd>
-<dt>leg_border (str):     hex-style color for legend border (default from</dt>
-<dd>fcp_params)</dd>
-<dt>leg_groups (str):     name of df column by which to legend the data</dt>
-<dd>(default=None)</dd>
-</dl>
-<p>leg_items (str):      &#8216;] = kwargs.get(&#8216;leg_items&#8217;, [])
-<a href="#id5"><span class="problematic" id="id6">**</span></a>*
-leg_on (bool):        toggle legend visibility (default=True) <a href="#id7"><span class="problematic" id="id8">**</span></a>DOESN&#8217;T WORK
-leg_title (str):      legend title (default=None &#8211;&gt; use</p>
-<blockquote>
-<div>kwargs[leg_groups])</div></blockquote>
-<p>line_color&#8217;] = kwargs.get(&#8216;line_color&#8217;, None)
-line_style&#8217;] = kwargs.get(&#8216;line_style&#8217;, &#8216;-&#8216;)
-line_width&#8217;] = kwargs.get(&#8216;line_width&#8217;, 1)
-<strong>* NEEDS REVISIT
-marker_size (int):    set marker size (default from fcp_params)
-marker_type (str):    set marker type (&#8216;] = kwargs.get(&#8216;marker_type&#8217;)
-*</strong> NEEDS REVISIT
-points (bool):        turn markers on|off (default=True)
-rc_label_edge_color (str):  hex-style color for row/column labels</p>
-<blockquote>
-<div>edges (default from fcp_params)</div></blockquote>
-<dl class="docutils">
-<dt>rc_label_fill_color (str):  hex-style color for row/column labels</dt>
-<dd>backgrounds (default from fcp_params)</dd>
-<dt>rc_label_font_size&#8217;] = kwargs.get(&#8216;rc_label_font_size&#8217;,</dt>
-<dd>fcp_params[&#8216;rc_label_font_size&#8217;])</dd>
-<dt>rc_label_text_color&#8217;] = kwargs.get(&#8216;rc_label_text_color&#8217;,</dt>
-<dd>fcp_params[&#8216;rc_label_text_color&#8217;])</dd>
-<dt>rc_label_text_style&#8217;] = kwargs.get(&#8216;rc_label_text_style&#8217;,</dt>
-<dd>fcp_params[&#8216;rc_label_text_style&#8217;])</dd>
-</dl>
-<p>row&#8217;] = kwargs.get(&#8216;row&#8217;, None)
-row_label&#8217;] = kwargs.get(&#8216;row_label&#8217;, None)
-row_labels_on&#8217;] = kwargs.get(&#8216;row_labels_on&#8217;, True)
-row_label_size&#8217;] = kwargs.get(&#8216;row_label_size&#8217;,</p>
-<blockquote>
-<div>fcp_params[&#8216;rc_label_size&#8217;])</div></blockquote>
-<p>row_label_ws&#8217;] = kwargs.get(&#8216;row_label_ws&#8217;, fcp_params[&#8216;rc_label_ws&#8217;])
-row_padding&#8217;] = kwargs.get(&#8216;row_padding&#8217;, fcp_params[&#8216;row_padding&#8217;])
-rows&#8217;] = kwargs.get(&#8216;rows&#8217;, None)
-save_ext (str)&#8217;] = kwargs.get(&#8216;save_ext&#8217;, &#8216;png&#8217;)
-save_name&#8217;] = kwargs.get(&#8216;save_name&#8217;, None)
-save_path&#8217;] = kwargs.get(&#8216;save_path&#8217;, None)
-sci_x&#8217;] = kwargs.get(&#8216;sci_x&#8217;, False)
-sci_y&#8217;] = kwargs.get(&#8216;sci_y&#8217;, False)
-sharex&#8217;] = kwargs.get(&#8216;sharex&#8217;, True)
-sharey&#8217;] = kwargs.get(&#8216;sharey&#8217;, True)
-show&#8217;] = kwargs.get(&#8216;show&#8217;, False)
-stat&#8217;] = kwargs.get(&#8216;stat&#8217;, None)
-stat_val&#8217;] = kwargs.get(&#8216;stat_val&#8217;, x)
-tick_font_size&#8217;] = kwargs.get(&#8216;tick_font_size&#8217;,</p>
-<blockquote>
-<div>fcp_params[&#8216;tick_font_size&#8217;])</div></blockquote>
-<p>title&#8217;] = kwargs.get(&#8216;title&#8217;, None)
-title_edge_color&#8217;] = kwargs.get(&#8216;title_edge_color&#8217;,</p>
-<blockquote>
-<div>fcp_params[&#8216;title_edge_color&#8217;])</div></blockquote>
-<dl class="docutils">
-<dt>title_fill_color&#8217;] = kwargs.get(&#8216;title_fill_color&#8217;,</dt>
-<dd>fcp_params[&#8216;title_fill_color&#8217;])</dd>
-<dt>title_text_color&#8217;] = kwargs.get(&#8216;title_text_color&#8217;,</dt>
-<dd>fcp_params[&#8216;title_text_color&#8217;])</dd>
-<dt>title_font_size&#8217;] = kwargs.get(&#8216;title_font_size&#8217;,</dt>
-<dd>fcp_params[&#8216;title_font_size&#8217;])</dd>
-<dt>title_text_style&#8217;] = kwargs.get(&#8216;title_text_style&#8217;,</dt>
-<dd>fcp_params[&#8216;title_text_style&#8217;])</dd>
-</dl>
-<p class="last">twinx&#8217;] = kwargs.get(&#8216;twinx&#8217;, False)
-twiny&#8217;] = kwargs.get(&#8216;twiny&#8217;, False)
-xlabel&#8217;] = kwargs.get(&#8216;xlabel&#8217;, x)
-xmax&#8217;] = kwargs.get(&#8216;xmax&#8217;, None)
-xmin&#8217;] = kwargs.get(&#8216;xmin&#8217;, None)
-xticks&#8217;] = kwargs.get(&#8216;xticks&#8217;, None)
-xtrans&#8217;] = kwargs.get(&#8216;xtrans&#8217;, None)
-ylabel&#8217;] = kwargs.get(&#8216;ylabel&#8217;, y)
-ymax&#8217;] = kwargs.get(&#8216;ymax&#8217;, None)
-ymin&#8217;] = kwargs.get(&#8216;ymin&#8217;, None)
-yticks&#8217;] = kwargs.get(&#8216;yticks&#8217;, None)
-ytrans&#8217;] = kwargs.get(&#8216;ytrans&#8217;, None)
-ylabel2&#8217;] = kwargs.get(&#8216;ylabel2&#8217;, y)
-ymax2&#8217;] = kwargs.get(&#8216;ymax2&#8217;, None)
-ymin2&#8217;] = kwargs.get(&#8216;ymin2&#8217;, None)
-yticks2&#8217;] = kwargs.get(&#8216;yticks2&#8217;, None)
-ytrans2&#8217;] = kwargs.get(&#8216;ytrans2&#8217;, None)</p>
+<dt>contains all the spacing information used to</dt>
+<dd><p class="first last">construct the figure</p>
 </dd>
 </dl>
-<p>Returns:</p>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">FigDesign obj</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="fcp.reload_defaults">
+<code class="descclassname">fcp.</code><code class="descname">reload_defaults</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fcp.reload_defaults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reload the fcp params</p>
 </dd></dl>
 
 </div>
