@@ -377,6 +377,7 @@ def boxplot(**kwargs):
     kw['marker_type'] = kwargs.get('marker_type', fcp_params['marker_type'])
     kw['points'] = kwargs.get('points', True)
     kw['save_ext'] = kwargs.get('save_ext', 'png')
+    kw['save_name'] = kwargs.get('save_name', None)
     kw['save_path'] = kwargs.get('save_path', None)
     kw['scalar_y'] = kwargs.get('scalar_y', False)
     kw['show'] = kwargs.get('show', False)
@@ -446,7 +447,7 @@ def boxplot(**kwargs):
     if kw['filter']:
         df = df_filter(df, kw['filter'])
     if len(df) == 0:
-        print('\nNo data remains after filter.  Killing plot.')
+        print('No data remains after filter.  Killing plot.')
         return None
 
     # # Set up the figure grouping and iterate (each value corresponds to a
@@ -1132,6 +1133,7 @@ def plot(**kwargs):
     kw['row_padding'] = kwargs.get('row_padding', fcp_params['row_padding'])
     kw['rows'] = kwargs.get('rows', None)
     kw['save_ext'] = kwargs.get('save_ext', 'png')
+    kw['save_name'] = kwargs.get('save_name', None)
     kw['save_path'] = kwargs.get('save_path', None)
     kw['scalar_x'] = kwargs.get('scalar_x', False)
     kw['scalar_y'] = kwargs.get('scalar_y', False)
@@ -2082,7 +2084,7 @@ def plot(**kwargs):
             else:
                 twinx = ''
             if kw['fig_groups'] is not None and not kw['fig_group_path']:
-                figlabel = ' where' + kw['fig_groups'] + '=' + fig_item + ' '
+                figlabel = ' where ' + kw['fig_groups'] + '=' + str(fig_item) + ' '
             else:
                 figlabel = ''
             filename = filename_label(y[0]) + twinx + ' vs ' + \
@@ -2092,7 +2094,7 @@ def plot(**kwargs):
             filename = kw['filename'] + '.' + kw['save_ext']
         
         if kw['save_path'] and kw['fig_group_path'] and kw['fig_groups']:
-            filename = os.path.join(kw['save_path'], fig_item, filename)
+            filename = os.path.join(kw['save_path'], str(fig_item), filename)
         elif kw['save_path']:
             filename = os.path.join(kw['save_path'], filename)
         

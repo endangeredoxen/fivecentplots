@@ -2,38 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9d4c2f01-dbce-4ddb-aa09-d7a2aef23aca" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/fivecentplots/doc/keyword.rst" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/doctrees/defaults.doctree" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/doctrees/defaults.doctree" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/doctrees/design.doctree" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/doctrees/design.doctree" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/doctrees/environment.pickle" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/doctrees/environment.pickle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/doctrees/examples.doctree" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/doctrees/examples.doctree" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/doctrees/index.doctree" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/doctrees/index.doctree" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/doctrees/modules.doctree" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/doctrees/modules.doctree" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/doctrees/overview.doctree" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/doctrees/overview.doctree" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/objects.inv" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/objects.inv" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_sources/defaults.txt" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_sources/defaults.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_sources/design.txt" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_sources/design.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_sources/examples.txt" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_sources/examples.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_sources/index.txt" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_sources/index.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_sources/modules.txt" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_sources/modules.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_sources/overview.txt" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_sources/overview.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_static/theme_overrides.css" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/_static/theme_overrides.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/defaults.html" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/defaults.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/design.html" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/design.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/examples.html" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/examples.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/genindex.html" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/genindex.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/index.html" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/modules.html" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/modules.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/overview.html" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/overview.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/py-modindex.html" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/py-modindex.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/search.html" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/search.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/_build/html/searchindex.js" afterPath="$PROJECT_DIR$/fivecentplots/doc/_build/html/searchindex.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/conf.py" afterPath="$PROJECT_DIR$/fivecentplots/doc/conf.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/examples.rst" afterPath="$PROJECT_DIR$/fivecentplots/doc/examples.rst" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/index.rst" afterPath="$PROJECT_DIR$/fivecentplots/doc/index.rst" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/doc/overview.rst" afterPath="$PROJECT_DIR$/fivecentplots/doc/overview.rst" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/fcp.py" afterPath="$PROJECT_DIR$/fivecentplots/fcp.py" />
     </list>
     <ignored path="fivecentplots.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -99,7 +68,7 @@
           <file leaf-file-name="modules.rst" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/fivecentplots/doc/modules.rst">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.30678147">
+                <state vertical-scroll-proportion="0.37157756">
                   <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
                   <folding />
                 </state>
@@ -133,8 +102,8 @@
           <file leaf-file-name="conf.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/fivecentplots/doc/conf.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.15">
-                  <caret line="18" column="60" selection-start-line="18" selection-start-column="60" selection-end-line="18" selection-end-column="60" />
+                <state vertical-scroll-proportion="0.20325203">
+                  <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
                   <folding>
                     <element signature="e#449#459#0" expanded="true" />
                   </folding>
@@ -263,8 +232,9 @@
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="-7" />
-    <option name="width" value="1868" />
-    <option name="height" value="1067" />
+    <option name="y" value="1" />
+    <option name="width" value="1612" />
+    <option name="height" value="905" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -718,14 +688,20 @@
       <option name="project" value="LOCAL" />
       <updated>1461198785335</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="docstring update and added boxplot docs via sphinx">
+      <created>1461550498441</created>
+      <option name="number" value="00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1461550498441</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="0" width="1868" height="1067" extended-state="0" />
-    <editor active="true" />
+    <frame x="-7" y="1" width="1612" height="905" extended-state="0" />
+    <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.08963283" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.10401002" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
@@ -764,7 +740,8 @@
     <MESSAGE value="use local copy of defaults.py" />
     <MESSAGE value="add boxplot fill&#10;error handling" />
     <MESSAGE value="boxplot typo fixed" />
-    <option name="LAST_COMMIT_MESSAGE" value="boxplot typo fixed" />
+    <MESSAGE value="docstring update and added boxplot docs via sphinx" />
+    <option name="LAST_COMMIT_MESSAGE" value="docstring update and added boxplot docs via sphinx" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1367,7 +1344,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/fivecentplots/doc/modules.rst">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.30678147">
+        <state vertical-scroll-proportion="0.37157756">
           <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
           <folding />
         </state>
@@ -1375,8 +1352,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/fivecentplots/doc/conf.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.15">
-          <caret line="18" column="60" selection-start-line="18" selection-start-column="60" selection-end-line="18" selection-end-column="60" />
+        <state vertical-scroll-proportion="0.20325203">
+          <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
           <folding>
             <element signature="e#449#459#0" expanded="true" />
           </folding>

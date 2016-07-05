@@ -235,6 +235,7 @@ def str_2_dtype(val, ignore_list=False):
                     return v[0].rstrip().lstrip()
             else:
                 return val.rstrip().lstrip()
+  
 
 
 class ConfigFile():
@@ -266,6 +267,7 @@ class ConfigFile():
             self.read_file()
         elif self.paste:
             self.read_pasted()
+        
 
         else:
             raise ValueError('Could not find a config.ini file at the '
@@ -296,6 +298,7 @@ class ConfigFile():
         data = win32clipboard.GetClipboardData()
         win32clipboard.CloseClipboard()
         self.config.read_string(data)
+        
 
     def validate_file_path(self):
         """
@@ -652,6 +655,8 @@ class FileReader():
                     self.ext[i] = '.' + ext
 
         # Overrides
+        if type(self.split_char) is str:
+            self.split_char = self.split_char.replace('"', '').replace("'", '')
         if type(self.split_char) is not list:
             self.split_char = list(self.split_char)
         if self.split_values is None:
@@ -659,8 +664,10 @@ class FileReader():
 
         if self.concat:
             self.df = pd.DataFrame()
+            self.meta = {}
         else:
             self.df = []
+            self.meta = []
 
         self.get_files()
 
@@ -767,6 +774,7 @@ class FileReader():
 
         filename = filename.split(os.path.sep)[-1]  # remove the directory
         filename = os.path.splitext(filename)[0] # remove the extension
+        file_splits = []
 
         # Split tag values out of the filename as specified by split_values
         for i, sc in enumerate(self.split_char):
@@ -783,13 +791,17 @@ class FileReader():
             file_splits = [f.lstrip(' ') for f in file_splits]
 
         # Remove tag_char from split_values
+        tag_splits = file_splits.copy()
         for i, fs in enumerate(file_splits):
             if self.tag_char is not None and self.tag_char in fs:
+                tag_splits[i] = file_splits[i].split(self.tag_char)[0]
                 file_splits[i] = file_splits[i].split(self.tag_char)[1]
 
         # file_splits = filename.split(self.file_split)
+        if self.split_values[0].lower() == 'usetags':
+            self.split_values = tag_splits.copy()
         for i, f in enumerate(self.split_values):
-            if f is not None and i < len(file_splits):
+            if f is not None and i < len(file_splits) and f != file_splits[i]:
                 df[f] = str_2_dtype(file_splits[i], ignore_list=True)
 
         return df
@@ -823,6 +835,11 @@ class FileReader():
 
                 temp = self.read_func(f, **self.kwargs)
 
+                if type(temp) is tuple:
+                    temp, meta = temp
+                else:
+                    meta = None
+
             except:
                 raise ValueError('Could not read "%s".  Is it a valid data '
                                  'file?' % f)
@@ -849,8 +866,12 @@ class FileReader():
             # Add to master
             if self.concat:
                 self.df = pd.concat([self.df, temp])
+                if meta is not None:
+                    self.meta[f] = meta
             else:
                 self.df += [temp]
+                if meta is not None:
+                    self.meta += [meta]
 
     def walk_dir(self, path):
         """
