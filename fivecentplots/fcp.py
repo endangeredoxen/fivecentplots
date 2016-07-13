@@ -762,8 +762,8 @@ def filename_label(label):
     """
 
     label = str(label)
-    label = re.sub('\(.*?\)','', label)
-    label = re.sub('\[.*?\]','', label)
+    #label = re.sub('\(.*?\)','', label)
+    #label = re.sub('\[.*?\]','', label)
     label = label.lstrip(' ').rstrip(' ')
 
     return label
@@ -1230,6 +1230,13 @@ def plot(**kwargs):
             kw['fig_items'] = list(df[kw['fig_groups']].unique())
     else:
         kw['fig_items'] = [None]
+    if kw['fig_group_path'] is not None and \
+            type(kw['fig_group_path']) is str:
+        temp = list(df.groupby([kw['fig_groups'],
+                                kw['fig_group_path']]).groups.keys())
+        kw['fig_path_items'] = [f[-1] for f in temp]
+    else:
+        kw['fig_path_items'] = kw['fig_items']
 
     # Eliminate title buffer if no title is provided
     if not kw['title']:
@@ -2084,7 +2091,8 @@ def plot(**kwargs):
             else:
                 twinx = ''
             if kw['fig_groups'] is not None and not kw['fig_group_path']:
-                figlabel = ' where ' + kw['fig_groups'] + '=' + str(fig_item) + ' '
+                figlabel = ' where ' + kw['fig_groups'] + '=' + \
+                           str(fig_item) + ' '
             else:
                 figlabel = ''
             filename = filename_label(y[0]) + twinx + ' vs ' + \
@@ -2094,7 +2102,8 @@ def plot(**kwargs):
             filename = kw['filename'] + '.' + kw['save_ext']
         
         if kw['save_path'] and kw['fig_group_path'] and kw['fig_groups']:
-            filename = os.path.join(kw['save_path'], str(fig_item), filename)
+            filename = os.path.join(kw['save_path'],
+                                    str(kw['fig_path_items'][ifig]), filename)
         elif kw['save_path']:
             filename = os.path.join(kw['save_path'], filename)
         
