@@ -1126,6 +1126,7 @@ def plot(**kwargs):
             (default=False)
         sci_y (bool):  force scientific notation for tick labels on y-axis
             (default=False)
+        separate_labels (bool):  give each plot its own axes labels
         sharex (bool):  share plot range for x-axis (default=True)
         sharey (bool):  share plot range for y-axis (default=True)
         show (bool):  pop open plot after it is generated.  Otherwise, the plot
@@ -1224,6 +1225,7 @@ def plot(**kwargs):
                                      fcp_params['ax_edge_color'])
     kw['ax_face_color'] = kwargs.get('ax_face_color', 
                                      fcp_params['ax_face_color'])
+    kw['ax_fig_ws'] = kwargs.get('ax_fig_ws', fcp_params['ax_fig_ws'])
     kw['ax_hlines'] = kwargs.get('ax_hlines', [])
     kw['ax_label_pad'] = kwargs.get('ax_label_pad', fcp_params['ax_label_pad'])
     kw['ax_lim'] = kwargs.get('ax_lim', [])
@@ -1307,6 +1309,7 @@ def plot(**kwargs):
     kw['scalar_y'] = kwargs.get('scalar_y', False)
     kw['sci_x'] = kwargs.get('sci_x', False)
     kw['sci_y'] = kwargs.get('sci_y', False)
+    kw['separate_labels'] = kwargs.get('separate_labels', False)
     kw['sharex'] = kwargs.get('sharex', True)
     kw['sharey'] = kwargs.get('sharey', True)
     kw['show'] = kwargs.get('show', False)
@@ -1480,6 +1483,9 @@ def plot(**kwargs):
                 kw['row_padding'] += kw['tick_font_size']
             if 'col_padding' not in kwargs.keys():
                 kw['col_padding'] += kw['tick_font_size']
+        if kw['separate_labels']:
+            kw['col_padding'] = kw['fig_ax_ws']
+            kw['row_padding'] = kw['ax_fig_ws']
 
         # Account for scalar formatted axes
         if kw['scalar_y']:
@@ -1542,23 +1548,23 @@ def plot(**kwargs):
                 # Set colors
                 axes[ir, ic].set_axis_bgcolor(kw['ax_face_color'])
                 axes[ir, ic].spines['bottom'].set_color(kw['ax_edge_color'])
-                axes[ir, ic].spines['top'].set_color(kw['ax_edge_color']) 
+                axes[ir, ic].spines['top'].set_color(kw['ax_edge_color'])
                 axes[ir, ic].spines['right'].set_color(kw['ax_edge_color'])
                 axes[ir, ic].spines['left'].set_color(kw['ax_edge_color'])
-                
+
                 if ax2 is not None:
                     ax2.set_axis_bgcolor(kw['ax_face_color'])
                     ax2.spines['bottom'].set_color(kw['ax_edge_color'])
-                    ax2.spines['top'].set_color(kw['ax_edge_color']) 
+                    ax2.spines['top'].set_color(kw['ax_edge_color'])
                     ax2.spines['right'].set_color(kw['ax_edge_color'])
                     ax2.spines['left'].set_color(kw['ax_edge_color'])
-                
+
                 # Style major gridlines
                 if kw['grid_major']:
                     axes[ir, ic].grid(b=True, which='major', zorder=3,
-                                      color=kw['grid_major_color'], 
+                                      color=kw['grid_major_color'],
                                       linestyle=kw['grid_major_linestyle'])
-                
+
                 # Toggle minor gridlines
                 kw['grid_minor'] = str(kw['grid_minor'])
                 axes[ir, ic].minorticks_on()
@@ -1566,23 +1572,23 @@ def plot(**kwargs):
                     ax2.minorticks_on()
                 if kw['grid_minor'] == 'True' or \
                     kw['grid_minor'].lower() == 'both':
-                    axes[ir, ic].grid(b=True, 
-                                      color=kw['grid_minor_color'], 
+                    axes[ir, ic].grid(b=True,
+                                      color=kw['grid_minor_color'],
                                       which='minor', zorder=0,
                                       linestyle=kw['grid_minor_linestyle'])
                 elif kw['grid_minor'].lower() == 'y':
-                    axes[ir, ic].yaxis.grid(b=True, 
+                    axes[ir, ic].yaxis.grid(b=True,
                                         color=kw['grid_minor_color'],
                                         which='minor',
                                         linestyle=kw['grid_minor_linestyle'])
                 elif kw['grid_minor'].lower() == 'x':
-                    axes[ir, ic].xaxis.grid(b=True, 
+                    axes[ir, ic].xaxis.grid(b=True,
                                         color=kw['grid_minor_color'],
                                         which='minor',
                                         linestyle=kw['grid_minor_linestyle'])
                 if ax2 is not None:
                     ax2.grid(False, which='both')
-                                
+
                 # Build the row/col filename labels
                 if kw['row_label']:
                     fnrow = filename_label(kw['row_label'])
@@ -1607,7 +1613,7 @@ def plot(**kwargs):
                 else:
                     df_sub = df_fig.copy()
                     rc_name = ''
-                
+
                 # Set the axes scale
                 if kw['ax_scale'] == 'loglog':
                     plotter = axes[ir, ic].loglog
@@ -1617,7 +1623,7 @@ def plot(**kwargs):
                     plotter = axes[ir, ic].semilogy
                 else:
                     plotter = axes[ir, ic].plot
-                
+
                 # Apply any data transformations
                 if kw['xtrans'] == 'abs':
                     df_sub.loc[:, x] = abs(df_sub[x])
@@ -2091,37 +2097,41 @@ def plot(**kwargs):
                                     linewidth=kw['line_width'])
 
                 # Adjust the tick marks
-                axes[ir, ic].tick_params(axis='both', which='major', 
+                axes[ir, ic].tick_params(axis='both', which='major',
                                          pad=kw['ax_label_pad'],
                                          labelsize=kw['tick_font_size'],
                                          colors=kw['tick_label_color'],
                                          )
+                if kw['separate_labels']:
+                    mplp.setp(axes[ir, ic].get_xticklabels(), visible=True)
+                    mplp.setp(axes[ir, ic].get_yticklabels(), visible=True)
+
                 for line in axes[ir, ic].xaxis.get_ticklines()[2:-2]:
-                    line.set_color(kw['tick_major_color']) 
+                    line.set_color(kw['tick_major_color'])
                     line.set_markersize(kw['tick_length'])
                     line.set_markeredgewidth(kw['tick_width'])
                 for line in axes[ir, ic].xaxis.get_minorticklines():
-                    line.set_color(kw['tick_minor_color']) 
+                    line.set_color(kw['tick_minor_color'])
                     line.set_markersize(kw['tick_length']*0.8)
                     line.set_markeredgewidth(kw['tick_width'])
-                for line in axes[ir, ic].yaxis.get_ticklines()[2:-2]: 
-                    line.set_color(kw['tick_major_color']) 
+                for line in axes[ir, ic].yaxis.get_ticklines()[2:-2]:
+                    line.set_color(kw['tick_major_color'])
                     line.set_markersize(kw['tick_length'])
                     line.set_markeredgewidth(kw['tick_width'])
                 for line in axes[ir, ic].yaxis.get_minorticklines():
-                    line.set_color(kw['tick_minor_color']) 
+                    line.set_color(kw['tick_minor_color'])
                     line.set_markersize(kw['tick_length']*0.8)
                     line.set_markeredgewidth(kw['tick_width'])
                 if ax2 is not None:
-                    for line in ax2.yaxis.get_ticklines()[2:-2]: 
-                        line.set_color(kw['tick_major_color']) 
+                    for line in ax2.yaxis.get_ticklines()[2:-2]:
+                        line.set_color(kw['tick_major_color'])
                         line.set_markersize(kw['tick_length'])
                         line.set_markeredgewidth(kw['tick_width'])
                     for line in ax2.yaxis.get_minorticklines():
-                        line.set_color(kw['tick_minor_color']) 
+                        line.set_color(kw['tick_minor_color'])
                         line.set_markersize(kw['tick_length']*0.8)
                         line.set_markeredgewidth(kw['tick_width'])
-                
+
                 # Handle tick formatting
                 if kw['scalar_x']:
                     axes[ir, ic].xaxis\
@@ -2139,7 +2149,7 @@ def plot(**kwargs):
                 #mplp.locator_params(axis='x',nbins=kw['xticks'])
                 #fsf = ticker.FormatStrFormatter
                 #axes[ir, ic].xaxis.set_major_formatter(fsf('%.2e'))
-                
+
                 # Axis ranges
                 if kw['sharex']:
                     dfx = df_fig
@@ -2159,11 +2169,11 @@ def plot(**kwargs):
                         dfy = dfy.groupby(groups).mean().reset_index()
                 dfx = dfx[x]
                 dfy = dfy[y]
-                
+
                 xmin = dfx.min()
                 xmax = dfx.max()
                 xdelta = xmax-xmin
-                
+
                 if kw['xmin'] is not None:
                     axes[ir, ic].set_xlim(left=kw['xmin'])
                 else:
@@ -2193,7 +2203,7 @@ def plot(**kwargs):
                 ymin = dfy.min().min()
                 ymax = dfy.max().max()
                 ydelta = ymax-ymin
-                
+
                 if kw['ymin'] is not None:
                     axes[ir, ic].set_ylim(bottom=kw['ymin'])
                 # else:
@@ -2214,31 +2224,54 @@ def plot(**kwargs):
                     # else:
                         # ymax = ymax + kw['ax_lim_pad']*ydelta/(1-2*kw['ax_lim_pad'])
                     # axes[ir, ic].set_ylim(top=ymax)
-                
-                    
+
+
                 # Add labels
-                if kw['xlabel'] is not None and ir == len(rows)-1:
-                    axes[ir, ic].set_xlabel(r'%s' % kw['xlabel'],
-                                            fontsize=kw['label_font_size'],
-                                            weight=kw['label_weight'],
-                                            style=kw['label_style'],
-                                            color=kw['xlabel_color'])
-                if kw['ylabel'] is not None and ic == 0:
-                    axes[ir, ic].set_ylabel(r'%s' % kw['ylabel'],
-                                            fontsize=kw['label_font_size'],
-                                            weight=kw['label_weight'],
-                                            style=kw['label_style'],
-                                            color=kw['ylabel_color'])
-                    axes[ir, ic].get_yaxis().get_offset_text().set_x(-0.12)
-                if kw['ylabel2'] is not None and \
-                   ic == len(cols)-1 and kw['twinx']:
-                    ax2.set_ylabel(r'%s' % kw['ylabel2'], 
-                                   rotation=270,
-                                   labelpad=kw['label_font_size'],
-                                   fontsize=kw['label_font_size'],
-                                   weight=kw['label_weight'],
-                                   style=kw['label_style'],
-                                   color=kw['ylabel2_color'])
+                if not kw['separate_labels']:
+                    if kw['xlabel'] is not None and ir == len(rows)-1:
+                        axes[ir, ic].set_xlabel(r'%s' % kw['xlabel'],
+                                                fontsize=kw['label_font_size'],
+                                                weight=kw['label_weight'],
+                                                style=kw['label_style'],
+                                                color=kw['xlabel_color'])
+                    if kw['ylabel'] is not None and ic == 0:
+                        axes[ir, ic].set_ylabel(r'%s' % kw['ylabel'],
+                                                fontsize=kw['label_font_size'],
+                                                weight=kw['label_weight'],
+                                                style=kw['label_style'],
+                                                color=kw['ylabel_color'])
+                        axes[ir, ic].get_yaxis().get_offset_text().set_x(-0.12)
+                    if kw['ylabel2'] is not None and \
+                       ic == len(cols)-1 and kw['twinx']:
+                        ax2.set_ylabel(r'%s' % kw['ylabel2'],
+                                       rotation=270,
+                                       labelpad=kw['label_font_size'],
+                                       fontsize=kw['label_font_size'],
+                                       weight=kw['label_weight'],
+                                       style=kw['label_style'],
+                                       color=kw['ylabel2_color'])
+                else:
+                    if kw['xlabel'] is not None:
+                        axes[ir, ic].set_xlabel(r'%s' % kw['xlabel'],
+                                                fontsize=kw['label_font_size'],
+                                                weight=kw['label_weight'],
+                                                style=kw['label_style'],
+                                                color=kw['xlabel_color'])
+                    if kw['ylabel'] is not None:
+                        axes[ir, ic].set_ylabel(r'%s' % kw['ylabel'],
+                                                fontsize=kw['label_font_size'],
+                                                weight=kw['label_weight'],
+                                                style=kw['label_style'],
+                                                color=kw['ylabel_color'])
+                        axes[ir, ic].get_yaxis().get_offset_text().set_x(-0.12)
+                    if kw['ylabel2'] is not None and kw['twinx']:
+                        ax2.set_ylabel(r'%s' % kw['ylabel2'],
+                                       rotation=270,
+                                       labelpad=kw['label_font_size'],
+                                       fontsize=kw['label_font_size'],
+                                       weight=kw['label_weight'],
+                                       style=kw['label_style'],
+                                       color=kw['ylabel2_color'])
 
                 # Add row/column labels
                 if ic == len(cols)-1 and kw['row_labels_on']:
@@ -2247,7 +2280,7 @@ def plot(**kwargs):
                     add_label('%s=%s' % (kw['row_label'], r),
                               (design.row_label_left, 0,
                                design.row_label_width, 1),
-                              axes[ir, ic], 270, 
+                              axes[ir, ic], 270,
                               edgecolor=kw['rc_label_edge_color'],
                               fillcolor=kw['rc_label_fill_color'],
                               color=kw['rc_label_text_color'],
@@ -2260,13 +2293,13 @@ def plot(**kwargs):
                     add_label('%s=%s' % (kw['col_label'], c),
                               (0, design.col_label_bottom,
                                1, design.col_label_height),
-                              axes[ir, ic], 0, 
+                              axes[ir, ic], 0,
                               edgecolor=kw['rc_label_edge_color'],
                               fillcolor=kw['rc_label_fill_color'],
                               color=kw['rc_label_text_color'],
                               fontsize=kw['rc_label_font_size'],
                               weight=kw['rc_label_text_style'])
-                
+
         # Add the legend (wrong indent??)
         if kw['leg_items'] is not None and len(kw['leg_items'])>0 \
             and kw['leg_on']:
@@ -2280,7 +2313,7 @@ def plot(**kwargs):
                              prop={'size':12})
             leg.get_frame().set_facecolor(kw['leg_bkgrd'])
             leg.get_frame().set_edgecolor(kw['leg_border'])
-            
+
         # Add a figure title
         if kw['title'] is not None:
             title_bkup = '%s' % kw['title']
@@ -2297,7 +2330,7 @@ def plot(**kwargs):
             add_label('%s' % kw['title'],
                       (design.title_left, design.title_bottom,
                        design.title_w, design.title_h),
-                      axes[0, 0], 0, 
+                      axes[0, 0], 0,
                       edgecolor=kw['title_edge_color'],
                       fillcolor=kw['title_fill_color'],
                       color=kw['title_text_color'],
