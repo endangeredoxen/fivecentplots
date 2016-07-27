@@ -916,8 +916,20 @@ def filename_label(label):
     """
 
     label = str(label)
-    #label = re.sub('\(.*?\)','', label)
-    #label = re.sub('\[.*?\]','', label)
+    
+    brackets = re.findall('\[.*?\]',label)
+    for br in brackets:
+        if '*' in br:
+            label = label.replace(br, br.replace('*', '_'))
+        if '/' in br:
+            brs = br.split('/')
+            label = ''
+            for i in range(0, len(brs), 2):
+                if brs[i+1][-1] == ']':
+                    label = brs[i] + '_' + brs[i+1][0:-1] + '^-1' + ']'
+                else:
+                    label = brs[i] + '_' + brs[i+1] + '^-1'
+                
     label = label.lstrip(' ').rstrip(' ')
 
     return label
@@ -1238,19 +1250,21 @@ def plot(**kwargs):
                                      fcp_params['fig_face_color'])
     kw['fig_groups'] = kwargs.get('fig_groups', None)
     kw['fig_group_path'] = kwargs.get('fig_group_path', False)
+    kw['fig_label'] = kwargs.get('fig_label', True)
     kw['filename'] = kwargs.get('filename', None)
     kw['filter'] = kwargs.get('filter', None)
-    kw['grid_major'] = kwargs.get('grid_major', True)
-    kw['grid_major_color'] = kwargs.get('grid_major_color',
+    kw['grid_major_color'] = kwargs.get('grid_major_color', 
                                         fcp_params['grid_major_color'])
     kw['grid_major_linestyle'] = kwargs.get('grid_major_linestyle', 
                                         fcp_params['grid_major_linestyle'])
-    kw['grid_minor'] = kwargs.get('grid_minor', False)
-    kw['grid_minor_color'] = kwargs.get('grid_minor_color',
+
+    kw['grid_minor_color'] = kwargs.get('grid_minor_color', 
                                         fcp_params['grid_minor_color'])
     kw['grid_minor_linestyle'] = kwargs.get('grid_minor_linestyle', 
                                         fcp_params['grid_minor_linestyle'])
-    kw['label_font_size'] = kwargs.get('label_font_size',
+    kw['grid_major'] = kwargs.get('grid_major', True)
+    kw['grid_minor'] = kwargs.get('grid_minor', False)
+    kw['label_font_size'] = kwargs.get('label_font_size', 
                                        fcp_params['label_font_size'])
     kw['label_style'] = kwargs.get('label_style', fcp_params['label_style'])
     kw['label_weight'] = kwargs.get('label_weight', fcp_params['label_weight'])
@@ -1322,16 +1336,21 @@ def plot(**kwargs):
     kw['twinx'] = kwargs.get('twinx', False)
     kw['twiny'] = kwargs.get('twiny', False)
     kw['xlabel'] = kwargs.get('xlabel', x)
+    kw['xlabel_color'] = kwargs.get('xlabel_color', fcp_params['label_color'])
     kw['xmax'] = kwargs.get('xmax', None)
     kw['xmin'] = kwargs.get('xmin', None)
     kw['xticks'] = kwargs.get('xticks', None)
     kw['xtrans'] = kwargs.get('xtrans', None)
     kw['ylabel'] = kwargs.get('ylabel', y)
+    kw['ylabel_color'] = kwargs.get('ylabel_color', fcp_params['label_color'])
+    kw['yline'] = kwargs.get('yline', None)
     kw['ymax'] = kwargs.get('ymax', None)
     kw['ymin'] = kwargs.get('ymin', None)
     kw['yticks'] = kwargs.get('yticks', None)
     kw['ytrans'] = kwargs.get('ytrans', None)
     kw['ylabel2'] = kwargs.get('ylabel2', y)
+    kw['ylabel2_color'] = kwargs.get('ylabel2_color', 
+                                     fcp_params['label_color'])
     kw['ymax2'] = kwargs.get('ymax2', None)
     kw['ymin2'] = kwargs.get('ymin2', None)
     kw['yticks2'] = kwargs.get('yticks2', None)
@@ -1384,14 +1403,13 @@ def plot(**kwargs):
             kw['fig_items'] = list(df[kw['fig_groups']].unique())
     else:
         kw['fig_items'] = [None]
-    if kw['fig_group_path'] is not None and \
-            type(kw['fig_group_path']) is str:
-        temp = list(df.groupby([kw['fig_groups'],
+    if kw['fig_group_path'] is not None and type(kw['fig_group_path']) is str:
+        temp = list(df.groupby([kw['fig_groups'], 
                                 kw['fig_group_path']]).groups.keys())
-        kw['fig_path_items'] = [f[-1] for f in temp]
+        kw['fig_path_items'] = [f[1] for f in temp]
     else:
         kw['fig_path_items'] = kw['fig_items']
-
+    
     # Eliminate title buffer if no title is provided
     if not kw['title']:
         kw['title_h'] = 0
@@ -1516,12 +1534,24 @@ def plot(**kwargs):
         for ir, r in enumerate(rows):
             for ic, c in enumerate(cols):
 
+                # Twinning
+                if kw['twinx']:
+                    ax2 = axes[ir, ic].twinx()
+                else:
+                    ax2 = None
                 # Set colors
                 axes[ir, ic].set_axis_bgcolor(kw['ax_face_color'])
                 axes[ir, ic].spines['bottom'].set_color(kw['ax_edge_color'])
                 axes[ir, ic].spines['top'].set_color(kw['ax_edge_color']) 
                 axes[ir, ic].spines['right'].set_color(kw['ax_edge_color'])
                 axes[ir, ic].spines['left'].set_color(kw['ax_edge_color'])
+                
+                if ax2 is not None:
+                    ax2.set_axis_bgcolor(kw['ax_face_color'])
+                    ax2.spines['bottom'].set_color(kw['ax_edge_color'])
+                    ax2.spines['top'].set_color(kw['ax_edge_color']) 
+                    ax2.spines['right'].set_color(kw['ax_edge_color'])
+                    ax2.spines['left'].set_color(kw['ax_edge_color'])
                 
                 # Style major gridlines
                 if kw['grid_major']:
@@ -1532,6 +1562,8 @@ def plot(**kwargs):
                 # Toggle minor gridlines
                 kw['grid_minor'] = str(kw['grid_minor'])
                 axes[ir, ic].minorticks_on()
+                if ax2 is not None:
+                    ax2.minorticks_on()
                 if kw['grid_minor'] == 'True' or \
                     kw['grid_minor'].lower() == 'both':
                     axes[ir, ic].grid(b=True, 
@@ -1548,7 +1580,9 @@ def plot(**kwargs):
                                         color=kw['grid_minor_color'],
                                         which='minor',
                                         linestyle=kw['grid_minor_linestyle'])
-                
+                if ax2 is not None:
+                    ax2.grid(False, which='both')
+                                
                 # Build the row/col filename labels
                 if kw['row_label']:
                     fnrow = filename_label(kw['row_label'])
@@ -1619,7 +1653,13 @@ def plot(**kwargs):
                 # Legend grouping
                 if kw['leg_groups'] is None and not kw['twinx']:
                     for iy, yy in enumerate(natsorted(y)):
-
+                        if len(df[x].dropna()) == 0 or \
+                                len(df[yy].dropna()) == 0:
+                            continue
+                        if len(df_sub[x].dropna()) == 0 or \
+                                len(df_sub[yy].dropna()) == 0:
+                            continue
+                            
                         # Define color and marker types
                         color = \
                             kw['line_color'] if kw['line_color'] is not None \
@@ -1676,7 +1716,7 @@ def plot(**kwargs):
                             else:
                                 add_curves(
                                     plotter,
-                                    df_stat.index,
+                                    df_stat.reset_index()[x],
                                     df_stat[yy],
                                     color,
                                     marker,
@@ -1727,6 +1767,26 @@ def plot(**kwargs):
                                 (coeffs[0], sign, abs(coeffs[1]), r_sq),
                                 transform=axes[ir,ic].transAxes)
                             
+                    if kw['yline'] is not None:
+                        if ir==0 and ic==0:
+                            kw['leg_items'] += [kw['yline']]
+                            curves += add_curves(plotter,
+                                           df[x],
+                                            df[kw['yline']],
+                                           'k',
+                                           None,
+                                           False,
+                                           True,
+                                           linestyle='-')
+                        else:
+                            add_curves(plotter,
+                                       df[x],
+                                        df[kw['yline']],
+                                       'k',
+                                       None,
+                                       False,
+                                       True,
+                                       linestyle='-')
                 elif kw['leg_groups'] is None and kw['twinx']:
 
                     # Define color and marker types
@@ -1736,9 +1796,6 @@ def plot(**kwargs):
                     marker = \
                         kw['marker_type'] if kw['marker_type'] is not None\
                                           else markers[0:2]
-                    # Plot
-                    ax2 = axes[ir, ic].twinx()
-                    ax2.grid(False, which='both')
                     # Set the axes scale
                     if kw['ax_scale2'] == 'semilogy' or \
                        kw['ax_scale2'] == 'logy':
@@ -1846,9 +1903,6 @@ def plot(**kwargs):
                     marker = \
                         kw['marker_type'] if kw['marker_type'] is not None\
                                           else markers[0:2]
-                    # Plot
-                    ax2 = axes[ir, ic].twinx()
-                    ax2.grid(False, which='both')
                     # Set the axes scale
                     if kw['ax_scale2'] == 'semilogy' or \
                        kw['ax_scale2'] == 'logy':
@@ -2058,6 +2112,15 @@ def plot(**kwargs):
                     line.set_color(kw['tick_minor_color']) 
                     line.set_markersize(kw['tick_length']*0.8)
                     line.set_markeredgewidth(kw['tick_width'])
+                if ax2 is not None:
+                    for line in ax2.yaxis.get_ticklines()[2:-2]: 
+                        line.set_color(kw['tick_major_color']) 
+                        line.set_markersize(kw['tick_length'])
+                        line.set_markeredgewidth(kw['tick_width'])
+                    for line in ax2.yaxis.get_minorticklines():
+                        line.set_color(kw['tick_minor_color']) 
+                        line.set_markersize(kw['tick_length']*0.8)
+                        line.set_markeredgewidth(kw['tick_width'])
                 
                 # Handle tick formatting
                 if kw['scalar_x']:
@@ -2158,12 +2221,14 @@ def plot(**kwargs):
                     axes[ir, ic].set_xlabel(r'%s' % kw['xlabel'],
                                             fontsize=kw['label_font_size'],
                                             weight=kw['label_weight'],
-                                            style=kw['label_style'])
+                                            style=kw['label_style'],
+                                            color=kw['xlabel_color'])
                 if kw['ylabel'] is not None and ic == 0:
                     axes[ir, ic].set_ylabel(r'%s' % kw['ylabel'],
                                             fontsize=kw['label_font_size'],
                                             weight=kw['label_weight'],
-                                            style=kw['label_style'])
+                                            style=kw['label_style'],
+                                            color=kw['ylabel_color'])
                     axes[ir, ic].get_yaxis().get_offset_text().set_x(-0.12)
                 if kw['ylabel2'] is not None and \
                    ic == len(cols)-1 and kw['twinx']:
@@ -2172,7 +2237,8 @@ def plot(**kwargs):
                                    labelpad=kw['label_font_size'],
                                    fontsize=kw['label_font_size'],
                                    weight=kw['label_weight'],
-                                   style=kw['label_style'])
+                                   style=kw['label_style'],
+                                   color=kw['ylabel2_color'])
 
                 # Add row/column labels
                 if ic == len(cols)-1 and kw['row_labels_on']:
@@ -2239,28 +2305,33 @@ def plot(**kwargs):
                       weight=kw['title_text_style']
                       )
         
-        if not kw['filename']:
+        if kw['fig_label']:
             if kw['twinx']:
                 twinx = ' and %s' % filename_label(y[1])
             else:
                 twinx = ''
             if kw['fig_groups'] is not None and not kw['fig_group_path']:
                 figlabel = ' where ' + kw['fig_groups'] + '=' + \
-                           str(fig_item) + ' '
+                            str(kw['fig_path_items'][ifig]) + ' '
             else:
                 figlabel = ''
-            filename = filename_label(y[0]) + twinx + ' vs ' + \
-                       filename_label(x) + rc_name + figlabel + '.' + \
-                       kw['save_ext']
+            if not kw['filename']:
+                filename = filename_label(y[0]) + twinx + ' vs ' + \
+                    filename_label(x) + rc_name + figlabel.rstrip(' ') + \
+                    '.' + kw['save_ext']
+            else:
+                filename = kw['filename'] + figlabel.rstrip(' ') + \
+                           '.' + kw['save_ext']
         else:
             filename = kw['filename'] + '.' + kw['save_ext']
         
         if kw['save_path'] and kw['fig_group_path'] and kw['fig_groups']:
-            filename = os.path.join(kw['save_path'],
-                                    str(kw['fig_path_items'][ifig]), filename)
+            filename = os.path.join(kw['save_path'], 
+                       str(kw['fig_path_items'][ifig]), filename)
         elif kw['save_path']:
             filename = os.path.join(kw['save_path'], filename)
         
+        # Remove multiplication and divide signs
         try:
             fig.savefig(filename)
             
@@ -2268,9 +2339,8 @@ def plot(**kwargs):
                 os.startfile(filename)
         
         except:
-            raise NameError('%s is not a valid filename!' % filename)    
-        
-        
+            print(filename)
+            raise NameError('%s is not a valid filename!' % filename)
         
         # Reset values for next loop
         if kw['title'] is not None:
