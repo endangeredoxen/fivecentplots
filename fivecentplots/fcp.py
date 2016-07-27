@@ -891,6 +891,7 @@ def df_filter(df, filt):
                  .replace(')', '')
                  .replace('-', '_')
                  .replace('^', '')
+                 .replace('%', 'percent')
                 for f in cols_orig.copy()]
     
     df2.columns = cols_new
