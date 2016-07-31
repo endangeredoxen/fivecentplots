@@ -1,4 +1,4 @@
-from fivecentplots.defaults import *
+from fivecentplots.themes.gray import *
 import matplotlib as mpl
 import matplotlib.pyplot as mplp
 import os
@@ -48,6 +48,10 @@ class FigDesign:
                                           fcp_params['ax_leg_ws'])
         self.ax_size         = kwargs.get('ax_size',
                                           fcp_params['ax_size'])
+        self.cbar_ax_ws      = kwargs.get('cbar_ax_ws',
+                                          fcp_params['cbar_ax_ws'])
+        self.cbar_width      = kwargs.get('cbar_width',
+                                          fcp_params['cbar_width'])
         self.col_labels_on   = kwargs.get('col_labels_on',
                                           False)
         self.col_label_size  = kwargs.get('col_label_size',
@@ -137,6 +141,11 @@ class FigDesign:
         self.get_legend_position()
         self.get_title_position()
 
+        # Account for colorbars
+        if not kwargs['cbar']:
+            self.cbar_ax_ws = 0
+            self.cbar_width = 0
+
     def get_label_position(self):
         """
         Get option group label positions
@@ -198,7 +207,9 @@ class FigDesign:
         self.fig_w_px = self.fig_ax_ws + self.ax_w*self.ncol + y2 + \
                         self.ax_leg_ws + self.leg_w + self.leg_fig_ws + \
                         self.col_padding*(self.ncol-1) + self.row_labels - \
-                        self.fig_right_border + self.ax_label_pad*self.ncol
+                        self.fig_right_border + self.ax_label_pad*self.ncol + \
+                        self.cbar_ax_ws*self.ncol + self.cbar_width*self.ncol
+        st()
         self.fig_h_px = self.fig_title_ws + self.title_h + \
                         self.title_ax_ws + self.ax_h*self.nrow + \
                         self.ax_fig_ws + self.row_padding*(self.nrow-1) + \

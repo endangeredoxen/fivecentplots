@@ -13,6 +13,7 @@ import os
 import matplotlib.pyplot as mplp
 import matplotlib.ticker as ticker
 import matplotlib.patches as patches
+import matplotlib.mlab as mlab
 import numpy as np
 import scipy.stats as stats
 import pandas as pd
@@ -34,17 +35,17 @@ try:
 except:
     natsorted = sorted
 st = pdb.set_trace
-import wdb
-st = wdb.set_trace
+
 osjoin = os.path.join
 cur_dir = os.path.dirname(__file__)
 user_dir = os.path.expanduser('~')
 if not os.path.exists(osjoin(user_dir, '.fivecentplots')):
     os.makedirs(osjoin(user_dir, '.fivecentplots'))
-if not os.path.exists(osjoin(user_dir, '.fivecentplots','defaults.py')):
-    shutil.copy2(osjoin(cur_dir, 'defaults.py'),
+if not os.path.exists(osjoin(user_dir, '.fivecentplots', 'defaults.py')):
+    shutil.copy2(osjoin(cur_dir, 'themes', 'gray.py'),
                  osjoin(user_dir, '.fivecentplots', 'defaults.py'))
 sys.path = [osjoin(user_dir, '.fivecentplots')] + sys.path
+
 from defaults import *  # use local file
 
 
@@ -95,7 +96,7 @@ def add_curves(plotter, x, y, color='#000000', marker='o', points=False,
         return lines
 
 
-def add_label(label, pos, axis, rotation, fillcolor='#ffffff',
+def add_label(label, pos, axis, rotation, design, fillcolor='#ffffff',
               edgecolor='#aaaaaa', color='#666666', weight='bold',
               fontsize=14):
     """ Add a label to the plot
@@ -122,8 +123,18 @@ def add_label(label, pos, axis, rotation, fillcolor='#ffffff',
                              clip_on=False, zorder=-1)
     axis.add_patch(rect)
 
+    # Set slight text offset
+    if rotation == 270:
+        offsetx = -fontsize/design.fig_w_px/2
+    else:
+        offsetx = 0
+    if rotation == 0:
+        offsety = -fontsize/design.fig_h_px/2
+    else:
+        offsety = 0
+
     # Add the label text
-    axis.text(pos[0]+pos[2]/2, pos[1]+pos[3]/2, label,
+    axis.text(pos[0]+pos[2]/2+offsetx, pos[1]+pos[3]/2+offsety, label,
               transform=axis.transAxes, horizontalalignment='center',
               verticalalignment='center', rotation=rotation, color=color,
               weight=weight, fontsize=fontsize)
@@ -182,51 +193,17 @@ def add_lines(ax, kw):
     return ax
 
 
-def add_title(df, ax, kw, design):
-    """
-    Add a figure title
-
-    Args:
-        df (pd.DataFrame): figure dataframe
-        ax (mpl.axes): the 0,0 axes
-        kw (dict): kwargs dict
-        design (obj): figure design object
-    """
-
-    if kw['title'] is not None:
-        if '@' in kw['title']:
-            r = re.search(r'\@(.*)\@', kw['title'])
-            val = r.group(1)
-            pos = r.span()
-            if val in df.columns:
-                val = '%s' % df[val].iloc[0]
-            else:
-                val = ''
-            kw['title'] = \
-                kw['title'][0:pos[0]] + val + kw['title'][pos[1]:]
-        add_label('%s' % kw['title'],
-                  (design.title_left, design.title_bottom,
-                   design.title_w, design.title_h),
-                  ax, 0, edgecolor=kw['title_edge_color'],
-                  fillcolor=kw['title_fill_color'],
-                  fontsize=kw['title_font_size'],
-                  color=kw['title_text_color'], weight=kw['title_text_style'])
-
-
 def boxplot(**kwargs):
     """ Main boxplot function
-
     This function wraps the boxplot function from the matplotlib
     library.  At minimum, it requires a pandas DataFrame with at least one
     column and a column name for the y axis.  Plots can be
     customized and enhanced by passing keyword arguments as defined below.
     Default values that must be defined in order to generate the plot are
     pulled from the fcp_params dictionary defined in defaults.py.
-
     Required Keyword Args:
         df (DataFrame): DataFrame containing data to plot
         y (str|list):   name or list of names of y column in df
-
     Keyword Args:
         see get_defaults for definitions
 
@@ -236,17 +213,6 @@ def boxplot(**kwargs):
     """
 
     def add_points(x, y, ax, color=palette[1], **kw):
-        """
-        Add data points to the boxes
-
-        Args:
-            x:
-            y:
-            ax:
-            color:
-            **kw:
-
-        """
 
         if kw['jitter']:
             x = np.random.normal(x+1, 0.04, size=len(y))
@@ -256,7 +222,7 @@ def boxplot(**kwargs):
                 color=color,
                 markersize=kw['marker_size'],
                 marker=kw['marker_type'],
-                markeredgecolor=palette[1],
+                markeredgecolor=color,
                 markerfacecolor='none',
                 markeredgewidth=1.5,
                 linestyle='none')
@@ -264,21 +230,20 @@ def boxplot(**kwargs):
     # Init plot
     df, x, y, z, kw = init('boxplot', kwargs)
 
+    # Default markers
+    if kw['marker_type'] is None:
+        kw['marker_type'] = 'o'
+
     # Iterate over discrete figures
     for ifig, fig_item in enumerate(kw['fig_items']):
-        
+
         # Make a data subset and filter
-        df_fig = df.copy()
-        
-        if type(fig_item) is tuple:
-            for ig, g in enumerate(fig_item):
-                df_fig = df_fig[df_fig[kw['fig_groups'][ig]]==g]
-        elif kw['fig_groups'] is not None:
-            df_fig = df_fig[df_fig[kw['fig_groups']]==fig_item]
+        df_fig = get_df_figure(df, fig_item, kw)
 
         # Set up the row grouping
         rows, nrow, cols, ncol, kw = get_rc_groupings(df_fig, kw)
 
+        # Special boxplot spacing for labels
         if kw['bp_labels_on'] and kw['groups'] is not None:
             kw['row_padding'] = kw['bp_label_size']*(len(kw['groups'])+0.5) + 20
             kw['ax_fig_ws'] = kw['row_padding'] + 10
@@ -286,35 +251,9 @@ def boxplot(**kwargs):
             kw['ax_leg_fig_ws'] = max([len(gr) for gr in kw['groups']]) * \
                                   kw['bp_label_font_size'] + \
                                   kw['bp_name_ws']
-        
-        # Format the figure dimensions
-        design = FigDesign(**kw)
-        
-        # Make the figure and axes
-        fig, axes = mplp.subplots(nrow, ncol,
-                                  figsize=[design.fig_w, design.fig_h],
-                                  dpi=design.dpi,
-                                  facecolor=kw['fig_face_color'],
-                                  edgecolor=kw['fig_edge_color'])
 
-        # Reformat the axes variable if it is only one plot
-        if not type(axes) is np.ndarray:
-            axes = np.array([axes])
-        if len(axes.shape) == 1:
-            if nrow == 1:
-                axes = np.reshape(axes, (1, -1))
-            else:
-                axes = np.reshape(axes, (-1, 1))
-
-        # Format the subplot spacing
-        fig.subplots_adjust(
-            left=design.left,
-            right=design.right,
-            bottom=design.bottom,
-            top=design.top + kw['ax_fig_ws']/design.ax_h,
-            hspace=1.0*design.row_padding/design.ax_h,
-            wspace=1.0*design.col_padding/design.ax_w
-        )
+        # Make the plot figure and axes
+        design, fig, axes, kw = make_fig_and_ax(kw, nrow, ncol)
 
         for ir, r in enumerate(rows):
             for ic, c in enumerate(cols):
@@ -326,61 +265,14 @@ def boxplot(**kwargs):
                 medians = []
 
                 # Set colors
-                axes[ir,ic].set_axes_bgcolor(kw['ax_face_color'])
-                axes[ir,ic].spines['bottom'].set_color(kw['ax_edge_color'])
-                axes[ir,ic].spines['top'].set_color(kw['ax_edge_color']) 
-                axes[ir,ic].spines['right'].set_color(kw['ax_edge_color'])
-                axes[ir,ic].spines['left'].set_color(kw['ax_edge_color'])
-                
-                # Style major gridlines
-                if kw['grid_major']:
-                    axes[ir,ic].grid(b=True, which='major', zorder=3,
-                                      color=kw['grid_major_color'], 
-                                      linestyle=kw['grid_major_linestyle'])
-                
-                # Toggle minor gridlines
-                kw['grid_minor'] = str(kw['grid_minor'])
-                axes[ir,ic].minorticks_on()
-                if kw['grid_minor'] == 'True' or \
-                    kw['grid_minor'].lower() == 'both':
-                    axes[ir,ic].grid(b=True, 
-                                      color=kw['grid_minor_color'], 
-                                      which='minor', zorder=0,
-                                      linestyle=kw['grid_minor_linestyle'])
-                elif kw['grid_minor'].lower() == 'y':
-                    axes[ir,ic].yaxis.grid(b=True, 
-                                        color=kw['grid_minor_color'],
-                                        which='minor',
-                                        linestyle=kw['grid_minor_linestyle'])
-                
-                # Make the row/col filename label
-                rc_name = make_rc_filename_labels(kw, r, c)
+                axes[ir, ic] = set_axes_colors(axes[ir, ic], kw)
 
-                # Build the row/col filename labels
-                if kw['row_label']:
-                    fnrow = filename_label(kw['row_label'])
-                elif kw['row']:
-                    fnrow = filename_label(kw['row'])
-                if kw['col_label']:
-                    fncol = filename_label(kw['col_label'])
-                elif kw['col']:
-                    fncol = filename_label(kw['col'])
+                # Style gridlines
+                axes[ir, ic] = set_axes_grid_lines(axes[ir, ic], kw)
 
                 # Subset the data
-                if r is not None and c is not None:
-                    df_sub = df_fig[(df_fig[kw['row']]==r)&\
-                                    (df_fig[kw['col']]==c)].copy()
-                    rc_name = ' by %s by %s' % (fnrow, fncol)
-                elif r and not c:
-                    df_sub = df_fig[(df_fig[kw['row']]==r)].copy()
-                    rc_name = ' by %s' % (fnrow)
-                elif c and not r:
-                    df_sub = df_fig[(df_fig[kw['col']]==c)].copy()
-                    rc_name = ' by %s' % (fncol)
-                else:
-                    df_sub = df_fig.copy()
-                    rc_name = ''
-                
+                df_sub = get_rc_subset(df, r, c, kw)
+
                 num_groups = 0
                 changes = None
                 if kw['groups'] is not None:
@@ -424,13 +316,13 @@ def boxplot(**kwargs):
                             dividers += [i+0.5]
 
                         if kw['points']:
-                            add_points(i, g[y], axes[ir,ic], palette[1], **kw)
+                            add_points(i, g[y], axes[ir, ic], palette[1], **kw)
 
                 else:
                     data = df_sub[y]
                     labels = ['']
                     if kw['points']:
-                        add_points(0, data, axes[ir,ic], palette[1], **kw)
+                        add_points(0, data, axes[ir, ic], palette[1], **kw)
 
                 # Plot
                 if kw['points']:
@@ -440,27 +332,25 @@ def boxplot(**kwargs):
 
                 if type(data) is pd.Series:
                     data = data.values
-                bp = axes[ir,ic].boxplot(data, labels=labels, showfliers=showfliers,
-                                boxprops={'color': palette[0]},
-                                whiskerprops={'color': palette[0]},
-                                capprops={'color': palette[0]},
-                                medianprops={'color': palette[1]},
-                                patch_artist=True,
-                                )
+                bp = axes[ir,ic].boxplot(data, labels=labels,
+                                         showfliers=showfliers,
+                                         boxprops={'color': palette[0]},
+                                         whiskerprops={'color': palette[0]},
+                                         capprops={'color': palette[0]},
+                                         medianprops={'color': palette[1]},
+                                         patch_artist=True,
+                                         )
                 axes[ir,ic].xaxis.grid(False)
                 for patch in bp['boxes']:
                     patch.set_facecolor(kw['bp_fill_color'])
                 for flier in bp['fliers']:
-                    flier.set(marker='+', markeredgecolor=palette[0]) # can't set with flierprops
-
-
-
-
+                    flier.set(marker='+', markeredgecolor=palette[0])
 
                 # Add divider lines
                 if kw['dividers']:
                     for d in dividers:
-                        axes[ir,ic].axvline(d, linewidth=1, color=kw['bp_divider_color'])
+                        axes[ir,ic].axvline(d, linewidth=1,
+                                            color=kw['bp_divider_color'])
 
                 # Add mean/median connecting lines
                 if kw['connect_means']:
@@ -483,7 +373,7 @@ def boxplot(**kwargs):
                     hspace=(1.0*design.row_padding)/design.ax_h,
                     wspace=1.0*design.col_padding/design.ax_w
                 )
-                
+
                 # Add the x-axis grouping labels
                 if kw['bp_labels_on'] and changes is not None:
                     num_cols = len(changes.columns)
@@ -496,11 +386,12 @@ def boxplot(**kwargs):
                             else:
                                 width = sub.index[j+1] - sub.index[j]
                             label = indices.loc[sub.index[j], num_cols-1-i]
-                            add_label(label,
-                                      (sub.index[j]/len(changes), -height*(i+1),
-                                       width/len(changes), height),
+                            add_label(label, (sub.index[j]/len(changes),
+                                      -height*(i+1), width/len(changes),
+                                      height),
                                       axes[ir,ic],
                                       0,
+                                      design,
                                       edgecolor=kw['bp_label_edge_color'],
                                       fillcolor=kw['bp_label_fill_color'],
                                       color=kw['bp_label_text_color'],
@@ -509,7 +400,8 @@ def boxplot(**kwargs):
 
                     # Add the grouping label names
                     for i, gr in enumerate(kw['groups']):
-                        offset = (kw['bp_label_size']-kw['bp_label_font_size']) / \
+                        offset = (kw['bp_label_size'] - \
+                                  kw['bp_label_font_size']) / \
                                  (2*kw['ax_size'][1])
                         axes[ir,ic].text(1+kw['bp_name_ws']/kw['ax_size'][0],
                                 -height*(num_cols-i)+offset, gr,
@@ -518,80 +410,136 @@ def boxplot(**kwargs):
                                 style=kw['bp_name_text_style'],
                                 weight=kw['bp_name_text_weight'],
                                 transform=axes[ir,ic].transAxes)
+
+                # Adjust the tick marks
+                axes[ir, ic] = set_axes_ticks(axes[ir, ic], kw, True)
+
                 # Add row/column labels
-                if ic == len(cols)-1 and kw['row_labels_on']:
-                    if not kw['row_label']:
-                        kw['row_label'] = kw['row']
-                    add_label('%s=%s' % (kw['row_label'], r),
-                              (design.row_label_left, 0,
-                               design.row_label_width, 1),
-                              axes[ir, ic], 270, 
-                              edgecolor=kw['rc_label_edge_color'],
-                              fillcolor=kw['rc_label_fill_color'],
-                              color=kw['rc_label_text_color'],
-                              fontsize=kw['rc_label_font_size'],
-                              weight=kw['rc_label_text_style'])
+                axes[ir, ic] = \
+                    set_axes_rc_labels(axes[ir, ic], ir, ic, r, c, kw, design)
 
-                if ir == 0 and kw['col_labels_on']:
-                    if not kw['col_label']:
-                        kw['col_label'] = kw['col']
-                    add_label('%s=%s' % (kw['col_label'], c),
-                              (0, design.col_label_bottom,
-                               1, design.col_label_height),
-                              axes[ir, ic], 0, 
-                              edgecolor=kw['rc_label_edge_color'],
-                              fillcolor=kw['rc_label_fill_color'],
-                              color=kw['rc_label_text_color'],
-                              fontsize=kw['rc_label_font_size'],
-                              weight=kw['rc_label_text_style'])
-    if kw['title'] is not None:
-            if '@' in kw['title']:
-                r = re.search(r'\@(.*)\@', kw['title'])
-                if r:
-                    val = r.group(1)
-                    pos = r.span()
-                    if val in df.columns:
-                        val = '%s' % df[val].iloc[0]
-                    else:
-                        val = ''
-                    kw['title'] = \
-                        kw['title'][0:pos[0]] + val + kw['title'][pos[1]:]
-            add_label('%s' % kw['title'],
-                      (design.title_left, design.title_bottom,
-                       design.title_w, design.title_h),
-                      axes[0,0], 0,
-                      edgecolor=kw['title_edge_color'],
-                      fillcolor=kw['title_fill_color'],
-                      color=kw['title_text_color'],
-                      fontsize=kw['title_font_size'],
-                      weight=kw['title_text_style']
-                      )
+    # Add a figure title
+    set_figure_title(df_fig, axes[0,0], kw, design)
 
+    # Build the save filename
+    filename = set_save_filename(x, y, kw, ifig)
 
-    if not kw['filename']:
-        if kw['groups']:
-            groups = ' vs ' + \
-                     ', '.join([filename_label(f) for f in kw['groups']])
-        else:
-            groups = ''
-        filename = filename_label(y) + ' Boxplot' + \
-                   groups + '.' + kw['save_ext']
-    else:
-        filename = kw['filename'] + '.' + kw['save_ext']
-
-    if kw['save_path'] and kw['fig_group_path'] and kw['fig_groups']:
-        filename = os.path.join(kw['save_path'], fig_item, filename)
-    elif kw['save_path']:
-        filename = os.path.join(kw['save_path'], filename)
-
-    fig.savefig(filename)
-
-    if kw['show']:
-        # mplp.show()
-        os.startfile(filename)
+    # Save and optionally open
+    save(fig, filename, kw)
 
     return design
 
+
+def contour(**kwargs):
+    """
+
+    Args:
+        **kwargs:
+
+    Returns:
+
+    """
+
+    # Override some defaults
+    if kwargs.get('grid_major', None):
+        kwargs['grid_major'] = False
+
+    # Init plot
+    df, x, y, z, kw = init('plot', kwargs)
+
+    # Iterate over discrete figures
+    for ifig, fig_item in enumerate(kw['fig_items']):
+
+        # Make a data subset and filter
+        df_fig = get_df_figure(df, fig_item, kw)
+
+        # Set up the row grouping
+        rows, nrow, cols, ncol, kw = get_rc_groupings(df_fig, kw)
+
+        # Set up the legend grouping
+        kw = get_legend_groupings(df, y, kw)
+
+        # Make the plot figure and axes
+        design, fig, axes, kw = make_fig_and_ax(kw, nrow, ncol)
+        ax2 = None
+
+        # Make the plots by row and by column
+        for ir, r in enumerate(rows):
+            for ic, c in enumerate(cols):
+
+                # Set colors
+                axes[ir, ic] = set_axes_colors(axes[ir, ic], kw)
+
+                # Style gridlines
+                axes[ir, ic] = set_axes_grid_lines(axes[ir, ic], kw)
+
+                # Subset the data
+                df_sub = get_rc_subset(df, r, c, kw)
+
+                # Select the contour type
+                if kw['filled']:
+                    contour = axes[ir, ic].contourf
+                else:
+                    contour = axes[ir, ic].contour
+
+                # Change data type
+                xx = np.array(df_sub[x])
+                yy = np.array(df_sub[y[0]])
+                zz = np.array(df_sub[z])
+
+                # Make the grid
+                xi = np.linspace(min(xx), max(xx))
+                yi = np.linspace(min(yy), max(yy))
+                zi = mlab.griddata(xx, yy, zz, xi, yi, interp='linear')
+                c = contour(xi, yi, zi, kw['levels'],
+                            line_width=kw['line_width'])
+
+                # Adjust the tick marks
+                axes[ir, ic] = set_axes_ticks(axes[ir, ic], kw)
+
+                # Axis ranges
+                axes[ir, ic], ax = set_axes_ranges(df_fig, df_sub, x, y,
+                                                   axes[ir, ic], ax2, kw)
+
+                # Add labels
+                axes[ir, ic], ax2 = \
+                    set_axes_labels(axes[ir, ic], ax2, ir, ic, kw)
+
+                # Add row/column labels
+                axes[ir, ic] = \
+                    set_axes_rc_labels(axes[ir, ic], ir, ic, r, c, kw, design)
+
+                # Add the colorbar
+                if kw['cbar']:
+                    # Define colorbar position
+                    from mpl_toolkits.axes_grid1 import make_axes_locatable
+                    divider = make_axes_locatable(axes[ir, ic])
+                    width = kw['cbar_width']/design.fig_w_px
+                    pad = kw['cbar_ax_ws']/design.fig_w_px
+                    cax = divider.append_axes("right", size=width, pad=pad)
+
+                    # Add the colorbar and label
+                    cbar = mplp.colorbar(c, cax=cax)
+                    cbar.ax.set_ylabel(r'%s' % kw['cbar_label'], rotation=270,
+                                       labelpad=kw['label_font_size'],
+                                       style=kw['label_style'],
+                                       fontsize=kw['label_font_size'],
+                                       weight=kw['label_weight'],
+                                       color=kw['ylabel_color'])
+
+        # Add a figure title
+        set_figure_title(df_fig, axes[0,0], kw, design)
+
+        # Build the save filename
+        filename = set_save_filename(x, y, kw, ifig)
+
+        # Save and optionally open
+        save(fig, filename, kw)
+
+        # Reset values for next loop
+        kw['leg_items'] = []
+
+    return design
 
 def df_filter(df, filt):
     """  Filter a DataFrame
@@ -662,6 +610,167 @@ def filename_label(label):
     label = label.lstrip(' ').rstrip(' ')
 
     return label
+
+
+def get_df_figure(df, fig_item, kw):
+    """
+    Subset the main DataFrame based on fig_item grouping
+
+    Args:
+        df (pd.DataFrame): main DataFrame
+        fig_item (str): figure grouping value
+        kw (dict): kwargs dict
+
+    Returns:
+        DataFrame subset
+    """
+
+    df_fig = df.copy()
+
+    if type(fig_item) is tuple:
+        for ig, g in enumerate(fig_item):
+            df_fig = df_fig[df_fig[kw['fig_groups'][ig]] == g]
+    elif kw['fig_groups'] is not None:
+        df_fig = df_fig[df_fig[kw['fig_groups']] == fig_item]
+
+    return df_fig
+
+
+def get_legend_groupings(df, y, kw):
+    """
+    Determine the legend groupings
+    Args:
+        df (pd.DataFrame):  data being plotted
+        y (list): y-column name list
+        kw (dict): kwargs dict
+
+    Returns:
+        updated kwargs dict
+    """
+
+    if kw['leg_groups'] is not None and len(kw['leg_items']) == 0:
+        if kw['leg_groups'] not in df.columns:
+            print('\nError!  "%s" not in DataFrame.  '
+                  'Check reindex value' % kw['leg_groups'])
+        df[kw['leg_groups']] = df[kw['leg_groups']].astype(str)
+        kw['leg_items'] = natsorted(df[kw['leg_groups']].unique())
+        if len(y) > 1:
+            temp = list(itertools.product(kw['leg_items'], y))
+            kw['leg_items'] = ['%s: %s' % (f[0], f[1]) for f in temp]
+    elif not kw['leg_groups'] and len(y) > 1:
+        kw['leg_items'] = y
+    elif not kw['leg_groups']:
+        kw['leg_items'] = []
+    if not kw['leg_title']:
+        kw['leg_title'] = kw['leg_groups']
+    kw['leg_items'] = natsorted(kw['leg_items'])
+
+    return kw
+
+
+def get_rc_groupings(df, kw):
+    """
+    Determine the row and column facet grid groupings
+    Args:
+        df (pd.DataFrame):  data being plotted
+        kw (dict): kwargs dict
+
+    Returns:
+        rows (list of row labels),
+        nrow (number of plot rows),
+        cols (list of column labels),
+        ncol (number of columns)
+        kw (kwargs dict with updates)
+    """
+
+    if kw['row'] and not kw['rows']:
+        rows = natsorted(list(df[kw['row']].unique()))
+        nrow = len(rows)
+        kw['rows'] = rows
+    elif kw['rows']:
+        actual = df[kw['row']].unique()
+        rows = [f for f in kw['rows'] if f in actual]
+        nrow = len(rows)
+    else:
+        rows = [None]
+        kw['row_labels_on'] = False
+        kw['row_label_size'] = 0
+        nrow = 1
+        kw['rows'] = rows
+    kw['nrow'] = nrow
+
+    # Set up the column grouping
+    if kw['col'] and not kw['cols']:
+        cols = natsorted(list(df[kw['col']].unique()))
+        ncol = len(cols)
+        kw['cols'] = rows
+    elif kw['cols']:
+        actual = df[kw['col']].unique()
+        cols = [f for f in kw['cols'] if f in actual]
+        ncol = len(cols)
+    else:
+        cols = [None]
+        kw['col_labels_on'] = False
+        kw['col_label_size'] = 0
+        ncol = 1
+        kw['cols'] = cols
+    kw['ncol'] = ncol
+
+    if ncol == 0:
+        raise ValueError('Cannot make subplot. Number of columns is 0')
+    if nrow == 0:
+        raise ValueError('Cannot make subplot. Number of rows is 0')
+
+    return rows, nrow, cols, ncol, kw
+
+
+def get_rc_subset(df, r, c, kw):
+    """
+    Subset the data by the row/col values
+
+    Args:
+        df (pd.DataFrame): main DataFrame
+        r (int|None): row index
+        c (int|None): column index
+        kw (dict): kwargs dict
+
+    Returns:
+        subset DataFrame
+    """
+
+    if r is not None and c is not None:
+        df = df[(df[kw['row']]==r) & (df[kw['col']]==c)].copy()
+    elif r and not c:
+        df = df[(df[kw['row']]==r)].copy()
+    elif c and not r:
+        df = df[(df[kw['col']]==c)].copy()
+    else:
+        df = df.copy()
+
+    return df
+
+
+def get_unique_groups(kw):
+    """
+    Get all unique values from several kwargs
+
+    Args:
+        kw (dict):  keyword args dict
+
+    Returns:
+        list of unique group values
+    """
+
+    groups = []
+    vals_2_chk = ['stat_val', 'leg_groups', 'col', 'row']
+    for v in vals_2_chk:
+        if kw[v] is not None:
+            if type(v) is list:
+                groups += kw[v]
+            else:
+                groups += [kw[v]]
+                
+    return groups
 
 
 def init(plot, kwargs):
@@ -915,10 +1024,6 @@ def init(plot, kwargs):
         dictionary of keyword arguments
     """
 
-    # Turn off interactive plotting
-    mplp.ioff()
-    mplp.close('all')
-
     # Reload defaults
     fcp_params, palette, markers = reload_defaults()
 
@@ -962,6 +1067,7 @@ def init(plot, kwargs):
             raise ValueError('Could not convert z-column to float!')
 
     kw = dict()
+    kw['alpha'] = kwargs.get('alpha', 1)
     kw['ax_edge_color'] = kwargs.get('ax_edge_color',
                                      fcp_params['ax_edge_color'])
     kw['ax_face_color'] = kwargs.get('ax_face_color',
@@ -1003,6 +1109,10 @@ def init(plot, kwargs):
     kw['bp_name_text_weight'] = kwargs.get('bp_name_text_weight',
                                             fcp_params['bp_name_text_weight'])
     kw['bp_name_ws'] = kwargs.get('bp_name_ws', fcp_params['bp_name_ws'])
+    kw['cbar'] = kwargs.get('cbar', False)
+    kw['cbar_ax_ws'] = kwargs.get('cbar_ax_ws', fcp_params['cbar_ax_ws'])
+    kw['cbar_label'] = kwargs.get('cbar_label', z)
+    kw['cbar_width'] = kwargs.get('cbar_width', fcp_params['cbar_width'])
     kw['cmap'] = kwargs.get('cmap', None)
     kw['col'] = kwargs.get('col', None)
     kw['col_label'] = kwargs.get('col_label', None)
@@ -1025,6 +1135,7 @@ def init(plot, kwargs):
     kw['fig_group_path'] = kwargs.get('fig_group_path', False)
     kw['fig_label'] = kwargs.get('fig_label', True)
     kw['filename'] = kwargs.get('filename', None)
+    kw['filled'] = kwargs.get('filled', True)
     kw['filter'] = kwargs.get('filter', None)
     kw['grid_major_color'] = kwargs.get('grid_major_color',
                                         fcp_params['grid_major_color'])
@@ -1049,6 +1160,7 @@ def init(plot, kwargs):
     kw['leg_items'] = kwargs.get('leg_items', [])
     kw['leg_on'] = kwargs.get('leg_on', True)
     kw['leg_title'] = kwargs.get('leg_title', None)
+    kw['levels'] = kwargs.get('levels', 20)
     kw['line_color'] = kwargs.get('line_color', None)
     kw['line_fit'] = kwargs.get('line_fit', None)
     kw['line_style'] = kwargs.get('line_style', '-')
@@ -1056,6 +1168,7 @@ def init(plot, kwargs):
     kw['lines'] = kwargs.get('lines', True)
     kw['marker_size'] = kwargs.get('marker_size', fcp_params['marker_size'])
     kw['marker_type'] = kwargs.get('marker_type', None)
+    kw['normalize'] = kwargs.get('normalize', False)
     kw['points'] = kwargs.get('points', True)
     kw['rc_label_edge_color'] = kwargs.get('rc_label_edge_color',
                                            fcp_params['rc_label_edge_color'])
@@ -1186,168 +1299,11 @@ def init(plot, kwargs):
         max_y = int(10**(np.ceil(np.log10(df[y].values.max()))-3))
         kw['fig_ax_ws'] += 10*len(str(max_y))
 
+    # Turn off interactive plotting
+    mplp.ioff()
+    mplp.close('all')
+
     return df.copy(), x, y, z, kw
-
-
-def get_df_figure(df, fig_item, kw):
-    """
-    Subset the main DataFrame based on fig_item grouping
-
-    Args:
-        df (pd.DataFrame): main DataFrame
-        fig_item (str): figure grouping value
-        kw (dict): kwargs dict
-
-    Returns:
-        DataFrame subset
-    """
-
-    df_fig = df.copy()
-
-    if type(fig_item) is tuple:
-        for ig, g in enumerate(fig_item):
-            df_fig = df_fig[df_fig[kw['fig_groups'][ig]] == g]
-    elif kw['fig_groups'] is not None:
-        df_fig = df_fig[df_fig[kw['fig_groups']] == fig_item]
-
-    return df_fig
-
-
-def get_legend_groupings(df, y, kw):
-    """
-    Determine the legend groupings
-    Args:
-        df (pd.DataFrame):  data being plotted
-        y (list): y-column name list
-        kw (dict): kwargs dict
-
-    Returns:
-        updated kwargs dict
-    """
-
-    if kw['leg_groups'] is not None and len(kw['leg_items']) == 0:
-        if kw['leg_groups'] not in df.columns:
-            print('\nError!  "%s" not in DataFrame.  '
-                  'Check reindex value' % kw['leg_groups'])
-        df[kw['leg_groups']] = df[kw['leg_groups']].astype(str)
-        kw['leg_items'] = natsorted(df[kw['leg_groups']].unique())
-        if len(y) > 1:
-            temp = list(itertools.product(kw['leg_items'], y))
-            kw['leg_items'] = ['%s: %s' % (f[0], f[1]) for f in temp]
-    elif not kw['leg_groups'] and len(y) > 1:
-        kw['leg_items'] = y
-    elif not kw['leg_groups']:
-        kw['leg_items'] = []
-    if not kw['leg_title']:
-        kw['leg_title'] = kw['leg_groups']
-    kw['leg_items'] = natsorted(kw['leg_items'])
-
-    return kw
-
-
-def get_rc_groupings(df, kw):
-    """
-    Determine the row and column facet grid groupings
-    Args:
-        df (pd.DataFrame):  data being plotted
-        kw (dict): kwargs dict
-
-    Returns:
-        rows (list of row labels),
-        nrow (number of plot rows),
-        cols (list of column labels),
-        ncol (number of columns)
-        kw (kwargs dict with updates)
-    """
-
-    if kw['row'] and not kw['rows']:
-        rows = natsorted(list(df[kw['row']].unique()))
-        nrow = len(rows)
-        kw['rows'] = rows
-    elif kw['rows']:
-        actual = df[kw['row']].unique()
-        rows = [f for f in kw['rows'] if f in actual]
-        nrow = len(rows)
-    else:
-        rows = [None]
-        kw['row_labels_on'] = False
-        kw['row_label_size'] = 0
-        nrow = 1
-        kw['rows'] = rows
-    kw['nrow'] = nrow
-
-    # Set up the column grouping
-    if kw['col'] and not kw['cols']:
-        cols = natsorted(list(df[kw['col']].unique()))
-        ncol = len(cols)
-        kw['cols'] = rows
-    elif kw['cols']:
-        actual = df[kw['col']].unique()
-        cols = [f for f in kw['cols'] if f in actual]
-        ncol = len(cols)
-    else:
-        cols = [None]
-        kw['col_labels_on'] = False
-        kw['col_label_size'] = 0
-        ncol = 1
-        kw['cols'] = cols
-    kw['ncol'] = ncol
-
-    if ncol == 0:
-        raise ValueError('Cannot make subplot. Number of columns is 0')
-    if nrow == 0:
-        raise ValueError('Cannot make subplot. Number of rows is 0')
-
-    return rows, nrow, cols, ncol, kw
-
-
-def get_rc_subset(df, r, c, kw):
-    """
-    Subset the data by the row/col values
-
-    Args:
-        df (pd.DataFrame): main DataFrame
-        r (int|None): row index
-        c (int|None): column index
-        kw (dict): kwargs dict
-
-    Returns:
-        subset DataFrame
-    """
-
-    if r is not None and c is not None:
-        df = df[(df[kw['row']]==r) & (df[kw['col']]==c)].copy()
-    elif r and not c:
-        df = df[(df[kw['row']]==r)].copy()
-    elif c and not r:
-        df = df[(df[kw['col']]==c)].copy()
-    else:
-        df = df.copy()
-
-    return df
-
-
-def get_unique_groups(kw):
-    """
-    Get all unique values from several kwargs
-
-    Args:
-        kw (dict):  keyword args dict
-
-    Returns:
-        list of unique group values
-    """
-
-    groups = []
-    vals_2_chk = ['stat_val', 'leg_groups', 'col', 'row']
-    for v in vals_2_chk:
-        if kw[v] is not None:
-            if type(v) is list:
-                groups += kw[v]
-            else:
-                groups += [kw[v]]
-                
-    return groups
 
 
 def make_lists(val, check_type=list):
@@ -1445,39 +1401,6 @@ def make_rc_filename_labels(kw):
     return rc_name
 
 
-def make_save_filename(x, y, kw, ifig):
-
-    rc_name = make_rc_filename_labels(kw)
-
-    if kw['fig_label']:
-        if kw['twinx']:
-            twinx = ' and %s' % filename_label(y[1])
-        else:
-            twinx = ''
-        if kw['fig_groups'] is not None and not kw['fig_group_path']:
-            figlabel = ' where ' + kw['fig_groups'] + '=' + \
-                        str(kw['fig_path_items'][ifig]) + ' '
-        else:
-            figlabel = ''
-        if not kw['filename']:
-            filename = filename_label(y[0]) + twinx + ' vs ' + \
-                filename_label(x) + rc_name + figlabel.rstrip(' ') + \
-                '.' + kw['save_ext']
-        else:
-            filename = kw['filename'] + figlabel.rstrip(' ') + \
-                       '.' + kw['save_ext']
-    else:
-        filename = kw['filename'] + '.' + kw['save_ext']
-
-    if kw['save_path'] and kw['fig_group_path'] and kw['fig_groups']:
-        filename = os.path.join(kw['save_path'],
-                   str(kw['fig_path_items'][ifig]), filename)
-    elif kw['save_path']:
-        filename = os.path.join(kw['save_path'], filename)
-
-    return filename
-
-
 def paste_kwargs(kwargs):
     """
     Get the kwargs from contents of the clipboard in ini file format
@@ -1567,7 +1490,7 @@ def plot(**kwargs):
                 if ax2 is not None:
                     ax2 = set_axes_colors(ax2, kw)
 
-                # Style major gridlines
+                # Style gridlines
                 axes[ir, ic] = set_axes_grid_lines(axes[ir, ic], kw)
                 if ax2 is not None:
                     ax2 = set_axes_grid_lines(ax2, kw, True)
@@ -2045,10 +1968,10 @@ def plot(**kwargs):
         fig = add_legend(fig, curves, kw, design)
 
         # Add a figure title
-        add_title(df_fig, axes[0,0], kw, design)
+        set_figure_title(df_fig, axes[0,0], kw, design)
 
         # Build the save filename
-        filename = make_save_filename(x, y, kw, ifig)
+        filename = set_save_filename(x, y, kw, ifig)
 
         # Save and optionally open
         save(fig, filename, kw)
@@ -2353,7 +2276,7 @@ def set_axes_rc_labels(ax, ir, ic, r, c, kw, design):
             kw['row_label'] = kw['row']
         add_label('%s=%s' % (kw['row_label'], r),
                   (design.row_label_left, 0, design.row_label_width, 1),
-                  ax, 270, edgecolor=kw['rc_label_edge_color'],
+                  ax, 270, design, edgecolor=kw['rc_label_edge_color'],
                   fillcolor=kw['rc_label_fill_color'],
                   color=kw['rc_label_text_color'],
                   fontsize=kw['rc_label_font_size'],
@@ -2364,7 +2287,7 @@ def set_axes_rc_labels(ax, ir, ic, r, c, kw, design):
             kw['col_label'] = kw['col']
         add_label('%s=%s' % (kw['col_label'], c),
                   (0, design.col_label_bottom, 1, design.col_label_height),
-                  ax, 0, edgecolor=kw['rc_label_edge_color'],
+                  ax, 0, design, edgecolor=kw['rc_label_edge_color'],
                   fillcolor=kw['rc_label_fill_color'],
                   color=kw['rc_label_text_color'],
                   fontsize=kw['rc_label_font_size'],
@@ -2412,7 +2335,9 @@ def set_axes_ticks(ax, kw, y_only=False):
     
     # General tick parameters
     if not y_only:
-        ax.tick_params(axis='both', which='major', pad=kw['ax_label_pad'],
+        ax.tick_params(axis='both',
+                       which='major',
+                       pad=kw['ax_label_pad'],
                        labelsize=kw['tick_font_size'], 
                        colors=kw['tick_label_color'])
     
@@ -2432,7 +2357,10 @@ def set_axes_ticks(ax, kw, y_only=False):
             line.set_color(kw['tick_minor_color'])
             line.set_markersize(kw['tick_length']*0.8)
             line.set_markeredgewidth(kw['tick_width'])
-    for line in ax.yaxis.get_ticklines()[2:-2]:
+    for line in ax.yaxis.get_ticklines():
+        line.set_visible(False)
+    for line in ax.yaxis.get_ticklines()[2:-4]:
+        line.set_visible(True)
         line.set_color(kw['tick_major_color'])
         line.set_markersize(kw['tick_length'])
         line.set_markeredgewidth(kw['tick_width'])
@@ -2499,3 +2427,98 @@ def set_data_transformation(df, x, y, z, kw):
             df.loc[:, z] = df[z]**kw['ztrans'][1]
 
     return df
+
+
+def set_figure_title(df, ax, kw, design):
+    """
+    Add a figure title
+
+    Args:
+        df (pd.DataFrame): figure dataframe
+        ax (mpl.axes): the 0,0 axes
+        kw (dict): kwargs dict
+        design (obj): figure design object
+    """
+
+    if kw['title'] is not None:
+        if '@' in kw['title']:
+            r = re.search(r'\@(.*)\@', kw['title'])
+            val = r.group(1)
+            pos = r.span()
+            if val in df.columns:
+                val = '%s' % df[val].iloc[0]
+            else:
+                val = ''
+            kw['title'] = \
+                kw['title'][0:pos[0]] + val + kw['title'][pos[1]:]
+        add_label('%s' % kw['title'],
+                  (design.title_left, design.title_bottom,
+                   design.title_w, design.title_h),
+                  ax, 0, design, edgecolor=kw['title_edge_color'],
+                  fillcolor=kw['title_fill_color'],
+                  fontsize=kw['title_font_size'],
+                  color=kw['title_text_color'], weight=kw['title_text_style'])
+
+
+def set_save_filename(x, y, kw, ifig):
+
+    rc_name = make_rc_filename_labels(kw)
+
+    if kw['fig_label']:
+        if kw['twinx']:
+            twinx = ' and %s' % filename_label(y[1])
+        else:
+            twinx = ''
+        if kw['fig_groups'] is not None and not kw['fig_group_path']:
+            figlabel = ' where ' + kw['fig_groups'] + '=' + \
+                        str(kw['fig_path_items'][ifig]) + ' '
+        else:
+            figlabel = ''
+        if not kw['filename']:
+            if x is None:
+                xlabel = ''
+            else:
+                xlabel = ' vs ' + filename_label(x)
+            if kw['groups'] is not None:
+                grouplabel = ' vs ' + \
+                    ', '.join([filename_label(f) for f in kw['groups']])
+            else:
+                grouplabel = ''
+            filename = filename_label(y[0]) + twinx + xlabel + grouplabel + \
+                       rc_name + figlabel.rstrip(' ') + '.' + kw['save_ext']
+        else:
+            filename = kw['filename'] + figlabel.rstrip(' ') + \
+                       '.' + kw['save_ext']
+    else:
+        filename = kw['filename'] + '.' + kw['save_ext']
+
+    if kw['save_path'] and kw['fig_group_path'] and kw['fig_groups']:
+        filename = os.path.join(kw['save_path'],
+                   str(kw['fig_path_items'][ifig]), filename)
+    elif kw['save_path']:
+        filename = os.path.join(kw['save_path'], filename)
+
+    return filename
+
+
+def set_theme():
+    """
+    Select a "defaults" file and copy to the user directory
+    """
+
+    print('Select default styling theme:')
+    themes = [f for f in os.listdir(osjoin(cur_dir, 'themes')) if '.py' in f]
+    for i, th in enumerate(themes):
+        print('   %s) %s' % (i+1, th))
+    entry = input('Entry: ')
+
+
+    print('Copying %s >> %s...' %
+          (themes[int(entry)-1],
+           osjoin(user_dir, '.fivecentplots', 'defaults.py')), end='')
+    if not os.path.exists(osjoin(user_dir, '.fivecentplots')):
+        os.makedirs(osjoin(user_dir, '.fivecentplots'))
+    shutil.copy2(osjoin(cur_dir, 'themes', themes[int(entry)-1]),
+                 osjoin(user_dir, '.fivecentplots', 'defaults.py'))
+
+    print('done!')

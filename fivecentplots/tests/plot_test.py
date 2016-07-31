@@ -3,8 +3,9 @@ sys.path.append(r'C:\GitHub\fivecentplots')
 import fivecentplots as fcp
 import pandas as pd
 
-df = pd.read_csv(r'fake_data.csv')
-df_box = pd.read_csv(r'fake_data_box.csv')
+df = pd.read_csv(r'C:\GitHub\fivecentplots\fivecentplots\tests\fake_data.csv')
+df_box = pd.read_csv(r'C:\GitHub\fivecentplots\fivecentplots\tests\fake_data_box.csv')
+df_c = pd.read_csv(r'C:\GitHub\fivecentplots\fivecentplots\tests\fake_data_contour.csv')
 
 # Single IV curve grouped by die
 sub = df[(df.Substrate=='Si') &
@@ -48,3 +49,6 @@ d = fcp.plot(df=df, x='Voltage', y=['I [A]', 'Voltage'], filter=filt,
 
 # Boxplot test
 d = fcp.boxplot(df=df_box, y='Value', groups=['Batch', 'Sample'], show=True)
+
+# Contour test
+d = fcp.contour(df=df_c, x='X', y='Y', z='Value')
