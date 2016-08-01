@@ -514,9 +514,11 @@ def contour(**kwargs):
                     # Define colorbar position
                     from mpl_toolkits.axes_grid1 import make_axes_locatable
                     divider = make_axes_locatable(axes[ir, ic])
-                    width = kw['cbar_width']/design.fig_w_px
-                    pad = kw['cbar_ax_ws']/design.fig_w_px
-                    cax = divider.append_axes("right", size=width, pad=pad)
+                    width = kw['cbar_width']/design.ax_w
+                    pad = (kw['cbar_ax_ws'] + kw['row_label_size'] +
+                           kw['row_label_ws'])/design.ax_w
+                    # SPACING IS STILL OFF IN DESIGN
+                    cax = divider.append_axes("right", size=4*width, pad=4*pad)
 
                     # Add the colorbar and label
                     cbar = mplp.colorbar(c, cax=cax)

@@ -208,8 +208,8 @@ class FigDesign:
                         self.ax_leg_ws + self.leg_w + self.leg_fig_ws + \
                         self.col_padding*(self.ncol-1) + self.row_labels - \
                         self.fig_right_border + self.ax_label_pad*self.ncol + \
-                        self.cbar_ax_ws*self.ncol + self.cbar_width*self.ncol
-        st()
+                        self.cbar_ax_ws*self.ncol + \
+                        self.cbar_width*self.ncol
         self.fig_h_px = self.fig_title_ws + self.title_h + \
                         self.title_ax_ws + self.ax_h*self.nrow + \
                         self.ax_fig_ws + self.row_padding*(self.nrow-1) + \
@@ -220,6 +220,7 @@ class FigDesign:
         self.leg_overflow = max(self.leg_h-self.fig_only, 0)
         self.fig_w = self.fig_w_px/self.dpi
         self.fig_h = (self.fig_h_px+self.leg_overflow)/self.dpi
+        self.ax_w += self.cbar_ax_ws + self.cbar_width
 
     def get_subplots_adjust(self):
         """
