@@ -689,7 +689,7 @@ def get_rc_groupings(df, kw):
         rows = natsorted(list(df[kw['row']].unique()))
         nrow = len(rows)
         kw['rows'] = rows
-    elif kw['rows']:
+    elif kw['rows'] is not None and kw['rows'] != [None]:
         actual = df[kw['row']].unique()
         rows = [f for f in kw['rows'] if f in actual]
         nrow = len(rows)
@@ -706,7 +706,7 @@ def get_rc_groupings(df, kw):
         cols = natsorted(list(df[kw['col']].unique()))
         ncol = len(cols)
         kw['cols'] = rows
-    elif kw['cols']:
+    elif kw['cols'] is not None and kw['cols'] != [None]:
         actual = df[kw['col']].unique()
         cols = [f for f in kw['cols'] if f in actual]
         ncol = len(cols)
@@ -1042,6 +1042,8 @@ def init(plot, kwargs):
     if plot in ['contour', 'plot']:
         if x is None:
             raise ValueError('Must provide a column name for "x"')
+        if x not in df.columns:
+            raise ValueError('Column "%s" not found in DataFrame!' % x)
         try:
             df[x] = df[x].astype(float)
         except:
@@ -1053,6 +1055,8 @@ def init(plot, kwargs):
         if y is None:
             raise ValueError('Must provide a column name for "y"')
         for yy in y:
+            if yy not in df.columns:
+                raise ValueError('Column "%s" not found in DataFrame!' % yy)
             try:
                 df[yy] = df[yy].astype(float)
             except:
@@ -1063,6 +1067,8 @@ def init(plot, kwargs):
     if plot in ['contour']:
         if z is None:
             raise ValueError('Must provide a column name for "z"')
+        if z not in df.columns:
+            raise ValueError('Column "%s" not found in DataFrame!' % z)
         try:
             df[z] = df[z].astype(float)
         except:
@@ -1293,7 +1299,7 @@ def init(plot, kwargs):
             kw['col_padding'] += kw['tick_font_size']
     if kw['separate_labels']:
         kw['col_padding'] = kw['fig_ax_ws']
-        kw['row_padding'] = kw['ax_fig_ws']
+        kw['row_padding'] = kw['ax_fig_ws'] + 10
 
     # Account for scalar formatted axes
     if kw['scalar_y']:
@@ -1337,8 +1343,17 @@ def make_fig_and_ax(kw, nrow, ncol):
         design, fig, axes
     """
 
+    # Adjust leg is yline included
+    if kw['yline'] is not None:
+        leg_items = [f for f in kw['leg_items']]
+        kw['leg_items'] += [kw['yline']]
+
     # Format the figure dimensions
     design = FigDesign(**kw)
+
+    # Reset leg_items
+    if kw['yline'] is not None:
+        kw['leg_items'] = leg_items
 
     # Make the figure and axes
     fig, axes = mplp.subplots(nrow, ncol,
@@ -1465,7 +1480,7 @@ def plot(**kwargs):
         rows, nrow, cols, ncol, kw = get_rc_groupings(df_fig, kw)
         
         # Set up the legend grouping
-        kw = get_legend_groupings(df, y, kw)
+        kw = get_legend_groupings(df_fig, y, kw)
 
         # Make the plot figure and axes
         design, fig, axes, kw = make_fig_and_ax(kw, nrow, ncol)
@@ -1498,7 +1513,7 @@ def plot(**kwargs):
                     ax2 = set_axes_grid_lines(ax2, kw, True)
 
                 # Subset the data
-                df_sub = get_rc_subset(df, r, c, kw)
+                df_sub = get_rc_subset(df_fig, r, c, kw)
 
                 # Set the axes scale
                 plotter = set_axes_scale(axes[ir, ic], kw)
@@ -2142,9 +2157,10 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
             dfx = df_sub
 
         # Account for any applied stats
-        if kw['stat'] is not None and 'median' in kw['stat']:
+        if kw['stat'] is not None and 'only' in kw['stat'] \
+                and 'median' in kw['stat']:
             dfx = dfx.groupby(groups).median().reset_index()
-        elif kw['stat'] is not None:
+        elif kw['stat'] is not None and 'only' in kw['stat']:
             dfx = dfx.groupby(groups).mean().reset_index()
         dfx = dfx[x]
 
@@ -2185,26 +2201,27 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
             dfy = df_sub
 
         # Account for any applied stats
-        if kw['stat'] is not None and 'median' in kw['stat']:
+        if kw['stat'] is not None and 'median' in kw['stat'] \
+                and 'median' in kw['stat']:
             dfy = dfy.groupby(groups).median().reset_index()
-        elif kw['stat'] is not None:
+        elif kw['stat'] is not None and 'only' in kw['stat']:
             dfy = dfy.groupby(groups).mean().reset_index()
 
         # Get the range
         if kw['twinx']:
-            dfy = dfy[y[0]]
-            ymin = dfy.min()
-            ymax = dfy.max()
+            dfy_vals = dfy[y[0]]
+            ymin = dfy_vals.min()
+            ymax = dfy_vals.max()
             ydelta = ymax-ymin
         else:
-            dfy = dfy[y]
-            ymin = dfy.stack().min()
-            ymax = dfy.stack().max()
+            dfy_vals = dfy[y]
+            ymin = dfy_vals.stack().min()
+            ymax = dfy_vals.stack().max()
             ydelta = ymax-ymin
 
         # Set the subplot range
         if kw['ymin'] is not None:
-            ax.set_ylim(left=kw['ymin'])
+            ax.set_ylim(bottom=kw['ymin'])
         # else:
         #     if kw['ax_scale'] in ['logy', 'loglog', 'semilogy']:
         #         ymin = np.log10(ymin) - kw['ax_lim_pad']*\
@@ -2214,7 +2231,7 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
         #         ymin -= kw['ax_lim_pad']*ydelta/(1-2*kw['ax_lim_pad'])
         #     ax.set_ylim(left=ymin)
         if kw['ymax'] is not None:
-            ax.set_ylim(right=kw['ymax'])
+            ax.set_ylim(top=kw['ymax'])
         # else:
         #     if kw['ax_scale'] in ['logy', 'loglog', 'semilogy']:
         #         ymax = np.log10(ymax) + kw['ax_lim_pad']*\
@@ -2226,9 +2243,9 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
 
         # Handle the twinx case
         if kw['twinx']:
-            dfy = dfy[y[1]]
-            ymin2 = dfy.min()
-            ymax2 = dfy.max()
+            dfy_vals = dfy[y[1]]
+            ymin2 = dfy_vals.min()
+            ymax2 = dfy_vals.max()
             ydelta2 = ymax2-ymin2
 
         # Set the subplot range
@@ -2445,14 +2462,15 @@ def set_figure_title(df, ax, kw, design):
     if kw['title'] is not None:
         if '@' in kw['title']:
             r = re.search(r'\@(.*)\@', kw['title'])
-            val = r.group(1)
-            pos = r.span()
-            if val in df.columns:
-                val = '%s' % df[val].iloc[0]
-            else:
-                val = ''
-            kw['title'] = \
-                kw['title'][0:pos[0]] + val + kw['title'][pos[1]:]
+            if r is not None:
+                val = r.group(1)
+                pos = r.span()
+                if val in df.columns:
+                    val = '%s' % df[val].iloc[0]
+                else:
+                    val = ''
+                kw['title'] = \
+                    kw['title'][0:pos[0]] + val + kw['title'][pos[1]:]
         add_label('%s' % kw['title'],
                   (design.title_left, design.title_bottom,
                    design.title_w, design.title_h),

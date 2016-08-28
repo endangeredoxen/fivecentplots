@@ -114,6 +114,11 @@ class FigDesign:
         self.row_label_width  = 0
         self.top              = 0
 
+        # Account for colorbars
+        if not kwargs['cbar']:
+            self.cbar_ax_ws = 0
+            self.cbar_width = 0
+
         # Set label size
         if self.row_labels_on:
             self.row_labels = self.row_label_size + self.row_label_ws
@@ -140,11 +145,6 @@ class FigDesign:
         self.get_label_position()
         self.get_legend_position()
         self.get_title_position()
-
-        # Account for colorbars
-        if not kwargs['cbar']:
-            self.cbar_ax_ws = 0
-            self.cbar_width = 0
 
     def get_label_position(self):
         """
