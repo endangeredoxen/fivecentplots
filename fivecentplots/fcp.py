@@ -230,9 +230,11 @@ def boxplot(**kwargs):
     # Init plot
     df, x, y, z, kw = init('boxplot', kwargs)
 
-    # Default markers
+    # Default overrides
     if kw['marker_type'] is None:
         kw['marker_type'] = 'o'
+    if 'sharex' not in kwargs.keys():
+        kw['sharex'] = False
 
     # Iterate over discrete figures
     for ifig, fig_item in enumerate(kw['fig_items']):
@@ -302,9 +304,10 @@ def boxplot(**kwargs):
 
                     # Plot the groups
                     for i, (n,g) in enumerate(groups):
-                        data += [g[y]]
-                        means += [g[y].mean()]
-                        medians += [g[y].median()]
+                        temp = g(y).dropna()
+                        data += [temp]
+                        means += [temp.mean()]
+                        medians += [temp.mean()]
                         if type(n) is not tuple:
                             nn = [n]
                         else:
@@ -316,10 +319,10 @@ def boxplot(**kwargs):
                             dividers += [i+0.5]
 
                         if kw['points']:
-                            add_points(i, g[y], axes[ir, ic], palette[1], **kw)
+                            add_points(i, temp, axes[ir, ic], palette[1], **kw)
 
                 else:
-                    data = df_sub[y]
+                    data = df_sub[y].dropna()
                     labels = ['']
                     if kw['points']:
                         add_points(0, data, axes[ir, ic], palette[1], **kw)
@@ -332,6 +335,7 @@ def boxplot(**kwargs):
 
                 if type(data) is pd.Series:
                     data = data.values
+
                 bp = axes[ir,ic].boxplot(data, labels=labels,
                                          showfliers=showfliers,
                                          boxprops={'color': palette[0]},
@@ -380,6 +384,8 @@ def boxplot(**kwargs):
                     height = kw['bp_label_size']/kw['ax_size'][1]
                     for i in range(0, num_cols):
                         sub = changes[num_cols-1-i][changes[num_cols-1-i]==1]
+                        if len(sub) == 0:
+                            sub = changes[num_cols-1-i]
                         for j in range(0, len(sub)):
                             if j == len(sub) - 1:
                                 width = len(changes) - sub.index[j]
@@ -422,7 +428,7 @@ def boxplot(**kwargs):
     set_figure_title(df_fig, axes[0,0], kw, design)
 
     # Build the save filename
-    filename = set_save_filename(x, y, kw, ifig)
+    filename = set_save_filename(df_fig, x, y, kw, ifig)
 
     # Save and optionally open
     save(fig, filename, kw)
@@ -476,6 +482,9 @@ def contour(**kwargs):
                 # Subset the data
                 df_sub = get_rc_subset(df, r, c, kw)
 
+                # Apply any data transformations
+                df_sub = set_data_transformation(df_sub, x, y, z, kw)
+
                 # Select the contour type
                 if kw['filled']:
                     contour = axes[ir, ic].contourf
@@ -491,8 +500,8 @@ def contour(**kwargs):
                 xi = np.linspace(min(xx), max(xx))
                 yi = np.linspace(min(yy), max(yy))
                 zi = mlab.griddata(xx, yy, zz, xi, yi, interp='linear')
-                c = contour(xi, yi, zi, kw['levels'],
-                            line_width=kw['line_width'])
+                cc = contour(xi, yi, zi, kw['levels'],
+                             line_width=kw['line_width'])
 
                 # Adjust the tick marks
                 axes[ir, ic] = set_axes_ticks(axes[ir, ic], kw)
@@ -514,14 +523,12 @@ def contour(**kwargs):
                     # Define colorbar position
                     from mpl_toolkits.axes_grid1 import make_axes_locatable
                     divider = make_axes_locatable(axes[ir, ic])
-                    width = kw['cbar_width']/design.ax_w
-                    pad = (kw['cbar_ax_ws'] + kw['row_label_size'] +
-                           kw['row_label_ws'])/design.ax_w
-                    # SPACING IS STILL OFF IN DESIGN
-                    cax = divider.append_axes("right", size=4*width, pad=4*pad)
+                    size = '%s%%' % (100*kw['cbar_width']/design.ax_size[0])
+                    pad = kw['cbar_ax_ws']/100
+                    cax = divider.append_axes("right", size=size, pad=pad)
 
                     # Add the colorbar and label
-                    cbar = mplp.colorbar(c, cax=cax)
+                    cbar = mplp.colorbar(cc, cax=cax)
                     cbar.ax.set_ylabel(r'%s' % kw['cbar_label'], rotation=270,
                                        labelpad=kw['label_font_size'],
                                        style=kw['label_style'],
@@ -533,7 +540,7 @@ def contour(**kwargs):
         set_figure_title(df_fig, axes[0,0], kw, design)
 
         # Build the save filename
-        filename = set_save_filename(x, y, kw, ifig)
+        filename = set_save_filename(df_fig, x, y, kw, ifig)
 
         # Save and optionally open
         save(fig, filename, kw)
@@ -542,6 +549,7 @@ def contour(**kwargs):
         kw['leg_items'] = []
 
     return design
+
 
 def df_filter(df, filt):
     """  Filter a DataFrame
@@ -561,6 +569,9 @@ def df_filter(df, filt):
 
     df2 = df.copy()
     
+    # Parse the filter string
+    filt = get_current_values(df, filt)
+
     # Remove spaces from
     cols_orig = [f for f in df.columns]
     cols_new = [f.replace(' ', '_')
@@ -570,6 +581,8 @@ def df_filter(df, filt):
                  .replace(')', '')
                  .replace('-', '_')
                  .replace('^', '')
+                 .replace('/', '_')
+                 .replace('@', 'at')
                  .replace('%', 'percent')
                 for f in cols_orig.copy()]
     
@@ -613,6 +626,34 @@ def filename_label(label):
     label = label.lstrip(' ').rstrip(' ')
 
     return label
+
+
+def get_current_values(df, text, key='@'):
+    """
+    Parse a string looking for text enclosed by 'key' and replace with the
+    current value from the DataFrame
+
+    Args:
+        df (pd.DataFrame): DataFrame containing values we are looking for
+        text (str): string to parse
+        key (str): matching chars that enclose the value to replace from df
+
+    Returns:
+        updated string
+    """
+
+    if key in text:
+        r = re.search(r'\%s(.*)\%s' % (key, key), text)
+        if r is not None:
+            val = r.group(1)
+            pos = r.span()
+            if val in df.columns:
+                val = '%s' % df[val].iloc[0]
+            else:
+                val = ''
+            text = text[0:pos[0]] + val + text[pos[1:]]
+
+    return text
 
 
 def get_df_figure(df, fig_item, kw):
@@ -1253,6 +1294,7 @@ def init(plot, kwargs):
     kw['ymin2'] = kwargs.get('ymin2', None)
     kw['yticks2'] = kwargs.get('yticks2', None)
     kw['ytrans2'] = kwargs.get('ytrans2', None)
+    kw['ztrans'] = kwargs.get('ztrans', None)
 
     # Make lists
     vals = ['groups']
@@ -1299,8 +1341,8 @@ def init(plot, kwargs):
         if 'col_padding' not in kwargs.keys():
             kw['col_padding'] += kw['tick_font_size']
     if kw['separate_labels']:
-        kw['col_padding'] = kw['fig_ax_ws']
-        kw['row_padding'] = kw['ax_fig_ws'] + 10
+        kw['col_padding'] = max(kw['fig_ax_ws'], kw['col_padding'])
+        kw['row_padding'] = max(kw['ax_fig_ws'], kw['row_padding']) + 10
 
     # Account for scalar formatted axes
     if kw['scalar_y']:
@@ -1989,7 +2031,7 @@ def plot(**kwargs):
         set_figure_title(df_fig, axes[0,0], kw, design)
 
         # Build the save filename
-        filename = set_save_filename(x, y, kw, ifig)
+        filename = set_save_filename(df_fig, x, y, kw, ifig)
 
         # Save and optionally open
         save(fig, filename, kw)
@@ -2027,7 +2069,13 @@ def save(fig, filename, kw):
     """
 
     try:
-        fig.savefig(filename)
+
+        if kw['save_ext'] == 'html':
+            import mpld3
+            mpld3.save_html(fig, filename)
+
+        else:
+            fig.savefig(filename)
 
         if kw['show']:
             os.startfile(filename)
@@ -2202,7 +2250,7 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
             dfy = df_sub
 
         # Account for any applied stats
-        if kw['stat'] is not None and 'only' in kw['stat'] \
+        if kw['stat'] is not None and 'median' in kw['stat'] \
                 and 'median' in kw['stat']:
             dfy = dfy.groupby(groups).median().reset_index()
         elif kw['stat'] is not None and 'only' in kw['stat']:
@@ -2424,6 +2472,10 @@ def set_data_transformation(df, x, y, z, kw):
             df.loc[:, x] = 1/df[x]
         elif type(kw['xtrans']) is tuple and kw['xtrans'][0] == 'pow':
             df.loc[:, x] = df[x]**kw['xtrans'][1]
+        elif kw['xtrans'] == 'flip':
+            maxx = df.loc[:, x].max()
+            df.loc[:, x] -= maxx
+            df.loc[:, x] = abs(df[x])
 
     for yy in y:
         if yy is not None:
@@ -2435,7 +2487,10 @@ def set_data_transformation(df, x, y, z, kw):
                 df.loc[:, yy] = 1/df[yy]
             elif type(kw['ytrans']) is tuple and kw['ytrans'][0] == 'pow':
                 df.loc[:, yy] = df[yy]**kw['ytrans'][1]
-
+            elif kw['ytrans'] == 'flip':
+                maxy = df.loc[:, yy].max()
+                df.loc[:, yy] -= maxy
+                df.loc[:, yy] = abs(df[yy])
     if z is not None:
         if kw['ztrans'] == 'abs':
             df.loc[:, z] = abs(df[z])
@@ -2445,6 +2500,10 @@ def set_data_transformation(df, x, y, z, kw):
             df.loc[:, z] = 1/df[z]
         elif type(kw['ztrans']) is tuple and kw['ztrans'][0] == 'pow':
             df.loc[:, z] = df[z]**kw['ztrans'][1]
+        elif kw['ztrans'] == 'flip':
+            maxz = df.loc[:, z].max()
+            df.loc[:, z] -= maxz
+            df.loc[:, z] = abs(df[z])
 
     return df
 
@@ -2461,17 +2520,7 @@ def set_figure_title(df, ax, kw, design):
     """
 
     if kw['title'] is not None:
-        if '@' in kw['title']:
-            r = re.search(r'\@(.*)\@', kw['title'])
-            if r is not None:
-                val = r.group(1)
-                pos = r.span()
-                if val in df.columns:
-                    val = '%s' % df[val].iloc[0]
-                else:
-                    val = ''
-                kw['title'] = \
-                    kw['title'][0:pos[0]] + val + kw['title'][pos[1]:]
+        kw['title'] = get_current_values(df, kw['title'])
         add_label('%s' % kw['title'],
                   (design.title_left, design.title_bottom,
                    design.title_w, design.title_h),
@@ -2481,9 +2530,12 @@ def set_figure_title(df, ax, kw, design):
                   color=kw['title_text_color'], weight=kw['title_text_style'])
 
 
-def set_save_filename(x, y, kw, ifig):
+def set_save_filename(df, x, y, kw, ifig):
 
     rc_name = make_rc_filename_labels(kw)
+
+    if kw['filename'] is not None:
+        kw['filename'] = get_current_values(df, kw['filename'])
 
     if kw['fig_label']:
         if kw['twinx']:

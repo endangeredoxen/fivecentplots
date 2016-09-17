@@ -4,6 +4,7 @@ import matplotlib.pyplot as mplp
 import os
 import pandas as pd
 import pdb
+import datetime
 
 st = pdb.set_trace
 
@@ -118,6 +119,10 @@ class FigDesign:
         if not kwargs['cbar']:
             self.cbar_ax_ws = 0
             self.cbar_width = 0
+            self.cbar_label = 0
+        else:
+            self.leg_fig_ws = 100 # better solution?
+            self.cbar_label = self.leg_fig_ws
 
         # Set label size
         if self.row_labels_on:
@@ -151,7 +156,9 @@ class FigDesign:
         Get option group label positions
         """
 
-        self.row_label_left = (self.ax_w + self.row_label_ws)/self.ax_w
+        self.row_label_left = (self.ax_w + self.row_label_ws + \
+                               self.cbar_ax_ws + self.cbar_width + \
+                               self.cbar_label)/self.ax_w
         self.row_label_width = self.row_label_size/self.ax_w
         self.col_label_bottom = (self.ax_h + self.col_label_ws)/self.ax_h
         self.col_label_height = self.col_label_size/self.ax_h
@@ -172,6 +179,7 @@ class FigDesign:
         """
 
         if len(self.leg_items) > 0 and self.leg_on:
+            now = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
             mplp.ioff()
             fig = mpl.pyplot.figure(dpi=self.dpi)
             ax = fig.add_subplot(111)
@@ -184,11 +192,11 @@ class FigDesign:
                                     numpoints=self.leg_points,
                                     prop={'size':self.leg_font_size})
             fig.canvas.draw()
-            mpl.pyplot.savefig('dummy_legend.png')
+            mpl.pyplot.savefig('dummy_legend_%s.png' % now)
             self.leg_h = leg.get_window_extent().height + self.leg_border
             self.leg_w = leg.get_window_extent().width + self.leg_border
             mpl.pyplot.close(fig)
-            os.remove('dummy_legend.png')
+            os.remove('dummy_legend_%s.png' % now)
 
         self.leg_w = max(self.leg_w, self.ax_leg_fig_ws)
 
