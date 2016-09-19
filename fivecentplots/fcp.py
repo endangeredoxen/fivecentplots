@@ -307,7 +307,7 @@ def boxplot(**kwargs):
                         temp = g(y).dropna()
                         data += [temp]
                         means += [temp.mean()]
-                        medians += [temp.mean()]
+                        medians += [temp.median()]
                         if type(n) is not tuple:
                             nn = [n]
                         else:
