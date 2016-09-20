@@ -651,7 +651,7 @@ def get_current_values(df, text, key='@'):
                 val = '%s' % df[val].iloc[0]
             else:
                 val = ''
-            text = text[0:pos[0]] + val + text[pos[1:]]
+            text = text[0:pos[0]] + val + text[pos[1]:]
 
     return text
 
