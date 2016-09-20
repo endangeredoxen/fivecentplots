@@ -2250,7 +2250,7 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
             dfy = df_sub
 
         # Account for any applied stats
-        if kw['stat'] is not None and 'median' in kw['stat'] \
+        if kw['stat'] is not None and 'only' in kw['stat'] \
                 and 'median' in kw['stat']:
             dfy = dfy.groupby(groups).median().reset_index()
         elif kw['stat'] is not None and 'only' in kw['stat']:
