@@ -304,7 +304,7 @@ def boxplot(**kwargs):
 
                     # Plot the groups
                     for i, (n,g) in enumerate(groups):
-                        temp = g(y).dropna()
+                        temp = g[y].dropna()
                         data += [temp]
                         means += [temp.mean()]
                         medians += [temp.median()]
