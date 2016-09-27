@@ -218,14 +218,15 @@ def boxplot(**kwargs):
             x = np.random.normal(x+1, 0.04, size=len(y))
         else:
             x = np.array([x+1]*len(y))
-        ax.plot(x, y,
-                color=color,
-                markersize=kw['marker_size'],
-                marker=kw['marker_type'],
-                markeredgecolor=color,
-                markerfacecolor='none',
-                markeredgewidth=1.5,
-                linestyle='none')
+        if len(x) > 0 and len(y) > 0:
+            ax.plot(x, y,
+                    color=color,
+                    markersize=kw['marker_size'],
+                    marker=kw['marker_type'],
+                    markeredgecolor=color,
+                    markerfacecolor='none',
+                    markeredgewidth=1.5,
+                    linestyle='none')
 
     # Init plot
     df, x, y, z, kw = init('boxplot', kwargs)
