@@ -228,6 +228,33 @@ def boxplot(**kwargs):
                     markeredgewidth=1.5,
                     linestyle='none')
 
+    def index_changes(df, num_groups):
+        """
+        Make a DataFrame that shows when groups vals change; used for grouping labels
+        
+        Args:
+            df (pd.DataFrame): grouping values
+            num_groups (int): number of unique groups
+        
+        Returns:
+            new DataFrame with 1's showing where group levels change for each row of df
+        """
+        
+        changes = df.copy()
+        # Set initial level to 1
+        for c in df.columns:
+            changes.loc[0, c] = 1
+        # Determines values for all other rows
+        for i in range(1, num_groups):
+            for c in df.columns:
+                if df[c].iloc[i-1] == df[c].iloc[i]:
+                    changes.loc[i, c] = 0
+                else:
+                    changes.loc[i, c] = 1
+        
+        return changes
+        
+    
     # Init plot
     df, x, y, z, kw = init('boxplot', kwargs)
 
@@ -248,12 +275,36 @@ def boxplot(**kwargs):
 
         # Special boxplot spacing for labels
         if kw['bp_labels_on'] and kw['groups'] is not None:
+            # Get the changes df
+            groups = df.groupby(kwargs['groups'])
+            indices = pd.DataFrame(list(groups.indices.keys()))
+            indices = ind.sort_values(list(indices.columns)).reset_index(drop=True)
+            num_groups = groups.ngroups
+            changes = index_changes(indices, num_groups)
+            
+            # Determine if label should be aligned vertically or horizontally
+            align = {}
+            xs_height = 0
+            for ii, c in enumerate(ind.columns):
+                align[ii] = 0
+                vals = ind[c].unique()
+                uniq_vals = len(changes[changes[c]==1])
+                label_width = kw['axis_size'][0]/uniq_vals
+                for v in vals:
+                    val_width = kw['bp_name_font_size']*len(str(v))
+                    if val_width > label_width:
+                        align[ii] = max(align[ii], val_width)
+                        break
+                xs_height += align[ii]
+            
+            # Set padding and new sizes
             kw['row_padding'] = kw['bp_label_size']*(len(kw['groups'])+0.5) + 20
             kw['ax_fig_ws'] = kw['row_padding'] + 10
             kw['fig_ax_ws'] = 100
             kw['ax_leg_fig_ws'] = max([len(gr) for gr in kw['groups']]) * \
                                   kw['bp_label_font_size'] + \
                                   kw['bp_name_ws']
+            kw['ax_size'][1] += xs_height
 
         # Make the plot figure and axes
         design, fig, axes, kw = make_fig_and_ax(kw, nrow, ncol)
@@ -283,24 +334,24 @@ def boxplot(**kwargs):
                     num_groups = groups.ngroups
                     num_groupby = len(kw['groups'])
                     col = ['Level%s' % f for f in range(0, num_groupby)]
-                    indices = pd.DataFrame()
+                    #indices = pd.DataFrame()
 
-                    # Get the group indices in order
-                    for i, (n, g) in enumerate(groups):
-                        if type(n) is not tuple:
-                            n = [n]
-                        indices[i] = [f for f in n]
-                    indices = indices.T
-                    changes = indices.copy()
+                    ## Get the group indices in order
+                    #for i, (n, g) in enumerate(groups):
+                    #    if type(n) is not tuple:
+                    #        n = [n]
+                    #    indices[i] = [f for f in n]
+                    #indices = indices.T
+                    #changes = indices.copy()
 
-                    for i in range(1, num_groups):
-                        for c in indices.columns:
-                            if indices[c].iloc[i-1] == indices[c].iloc[i]:
-                                changes.loc[i, c] = 0
-                            else:
-                                changes.loc[i, c] = 1
-                            if i == 1:
-                                changes.loc[i-1, c] = 1
+                    #for i in range(1, num_groups):
+                    #    for c in indices.columns:
+                    #        if indices[c].iloc[i-1] == indices[c].iloc[i]:
+                    #            changes.loc[i, c] = 0
+                    #        else:
+                    #            changes.loc[i, c] = 1
+                    #        if i == 1:
+                    #            changes.loc[i-1, c] = 1
                     col = changes.columns
 
                     # Plot the groups
@@ -336,7 +387,9 @@ def boxplot(**kwargs):
 
                 if type(data) is pd.Series:
                     data = data.values
-
+                elif type(data) is pd.DataFrame and len(data.columns) == 1:
+                    data = data.values
+                    
                 bp = axes[ir,ic].boxplot(data, labels=labels,
                                          showfliers=showfliers,
                                          boxprops={'color': palette[0]},
@@ -382,8 +435,11 @@ def boxplot(**kwargs):
                 # Add the x-axis grouping labels
                 if kw['bp_labels_on'] and changes is not None:
                     num_cols = len(changes.columns)
-                    height = kw['bp_label_size']/kw['ax_size'][1]
+                    bottom = 0
                     for i in range(0, num_cols):
+                        if i > 0:
+                            bottom -= height
+                        k = num_cols-1-i
                         sub = changes[num_cols-1-i][changes[num_cols-1-i]==1]
                         if len(sub) == 0:
                             sub = changes[num_cols-1-i]
@@ -393,11 +449,19 @@ def boxplot(**kwargs):
                             else:
                                 width = sub.index[j+1] - sub.index[j]
                             label = indices.loc[sub.index[j], num_cols-1-i]
+                            if len(align.keys()) > 0 \
+                                    and k in align.keys() \
+                                    and align[k] > 0:
+                                orient = 90
+                                height = (align[k] + 10) / kw['ax_size'][1]
+                            else:
+                                orient = 0
+                                height = kw['bp_label_size']/kw['ax_size'][1]
                             add_label(label, (sub.index[j]/len(changes),
-                                      -height*(i+1), width/len(changes),
+                                      bottom-height, width/len(changes),
                                       height),
                                       axes[ir,ic],
-                                      0,
+                                      orient,
                                       design,
                                       edgecolor=kw['bp_label_edge_color'],
                                       fillcolor=kw['bp_label_fill_color'],
@@ -405,13 +469,10 @@ def boxplot(**kwargs):
                                       fontsize=kw['bp_label_font_size'],
                                       weight=kw['bp_label_text_style'])
 
-                    # Add the grouping label names
-                    for i, gr in enumerate(kw['groups']):
-                        offset = (kw['bp_label_size'] - \
-                                  kw['bp_label_font_size']) / \
-                                 (2*kw['ax_size'][1])
+                        # Add the grouping label names
+                        offset = kw['bp_label_font_size']/design.fig_h_px
                         axes[ir,ic].text(1+kw['bp_name_ws']/kw['ax_size'][0],
-                                -height*(num_cols-i)+offset, gr,
+                                bottom-height/2-offset, kw['groups'][k],
                                 fontsize=kw['bp_name_font_size'],
                                 color=kw['bp_name_text_color'],
                                 style=kw['bp_name_text_style'],
@@ -582,6 +643,8 @@ def df_filter(df, filt):
                  .replace(')', '')
                  .replace('-', '_')
                  .replace('^', '')
+                 .replace('>', '')
+                 .replace('<', '')
                  .replace('/', '_')
                  .replace('@', 'at')
                  .replace('%', 'percent')
@@ -728,11 +791,12 @@ def get_rc_groupings(df, kw):
         kw (kwargs dict with updates)
     """
 
-    if kw['row'] and not kw['rows']:
+    if kw['row'] and not kw['rows_orig']:
         rows = natsorted(list(df[kw['row']].unique()))
         nrow = len(rows)
         kw['rows'] = rows
-    elif kw['rows'] is not None and kw['rows'] != [None]:
+    elif kw['rows_orig'] is not None and kw['rows'] != [None]:
+        kw['rows'] = kw['rows_orig']
         actual = df[kw['row']].unique()
         rows = [f for f in kw['rows'] if f in actual]
         nrow = len(rows)
@@ -745,11 +809,12 @@ def get_rc_groupings(df, kw):
     kw['nrow'] = nrow
 
     # Set up the column grouping
-    if kw['col'] and not kw['cols']:
+    if kw['col'] and not kw['cols_orig']:
         cols = natsorted(list(df[kw['col']].unique()))
         ncol = len(cols)
-        kw['cols'] = rows
-    elif kw['cols'] is not None and kw['cols'] != [None]:
+        kw['cols'] = cols
+    elif kw['cols_orig'] is not None and kw['cols'] != [None]:
+        kw['cols'] = kw['cols_orig']
         actual = df[kw['col']].unique()
         cols = [f for f in kw['cols'] if f in actual]
         ncol = len(cols)
@@ -1174,6 +1239,7 @@ def init(plot, kwargs):
     kw['col_padding'] = kwargs.get('col_padding', fcp_params['col_padding'])
     kw['colors'] = kwargs.get('colors', palette)
     kw['cols'] = kwargs.get('cols', None)
+    kw['cols_orig'] = kw['cols']
     kw['connect_means'] = kwargs.get('connect_means', False)
     kw['dividers'] = kwargs.get('dividers', True)
     kw['fig_ax_ws'] = kwargs.get('fig_ax_ws',
@@ -1239,6 +1305,7 @@ def init(plot, kwargs):
     kw['row_label_ws'] = kwargs.get('row_label_ws', fcp_params['rc_label_ws'])
     kw['row_padding'] = kwargs.get('row_padding', fcp_params['row_padding'])
     kw['rows'] = kwargs.get('rows', None)
+    kw['rows_orig'] = kw['rows']
     kw['save_ext'] = kwargs.get('save_ext', 'png')
     kw['save_name'] = kwargs.get('save_name', None)
     kw['save_path'] = kwargs.get('save_path', None)
