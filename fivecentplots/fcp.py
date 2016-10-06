@@ -278,18 +278,18 @@ def boxplot(**kwargs):
             # Get the changes df
             groups = df.groupby(kwargs['groups'])
             indices = pd.DataFrame(list(groups.indices.keys()))
-            indices = ind.sort_values(list(indices.columns)).reset_index(drop=True)
+            indices = indices.sort_values(list(indices.columns)).reset_index(drop=True)
             num_groups = groups.ngroups
             changes = index_changes(indices, num_groups)
             
             # Determine if label should be aligned vertically or horizontally
             align = {}
             xs_height = 0
-            for ii, c in enumerate(ind.columns):
+            for ii, c in enumerate(indices.columns):
                 align[ii] = 0
-                vals = ind[c].unique()
+                vals = indices[c].unique()
                 uniq_vals = len(changes[changes[c]==1])
-                label_width = kw['axis_size'][0]/uniq_vals
+                label_width = kw['ax_size'][0]/uniq_vals
                 for v in vals:
                     val_width = kw['bp_name_font_size']*len(str(v))
                     if val_width > label_width:
@@ -328,7 +328,6 @@ def boxplot(**kwargs):
                 df_sub = get_rc_subset(df, r, c, kw)
 
                 num_groups = 0
-                changes = None
                 if kw['groups'] is not None:
                     groups = df_sub.groupby(kw['groups'])
                     num_groups = groups.ngroups
