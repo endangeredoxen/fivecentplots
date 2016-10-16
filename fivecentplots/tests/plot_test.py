@@ -35,6 +35,17 @@ d = fcp.plot(df=sub, x='Voltage', y='I [A]', leg_groups='Die',
              row='Boost Level', col='Temperature [C]', ax_scale='logx',
              ytrans=('pow',4), ymin=1E-8, ymax=1E-2, show=True)  #issues here with ranges, ticks
 
+# Fig groups example
+d = fcp.plot(df=df, x='Voltage', y='I [A]', leg_groups='Die',
+             fig_groups=['Substrate'],
+             row='Boost Level', col='Temperature [C]', ax_scale='logx',
+             ytrans=('pow',4), ymin=1E-8, ymax=1E-2, show=True)  #issues here with ranges, ticks
+d = fcp.plot(df=df, x='Voltage', y='I [A]', leg_groups='Die',
+             fig_groups=['Substrate', 'Target Wavelength'],
+             row='Boost Level', col='Temperature [C]', ax_scale='logx',
+             ytrans=('pow',4), ymin=1E-8, ymax=1E-2, show=True)  #issues here with ranges, ticks
+
+
 # Multiple y on same axis with filter
 filt = 'Substrate=="Si" & Target_Wavelength==450 & Boost_Level==0.2 & ' \
        'Temperature_C==25'
@@ -49,6 +60,8 @@ d = fcp.plot(df=df, x='Voltage', y=['I [A]', 'Voltage'], filter=filt,
 
 # Boxplot test
 d = fcp.boxplot(df=df_box, y='Value', groups=['Batch', 'Sample'], show=True)
+d = fcp.boxplot(df=df_box, y='Value', groups=['Batch', 'Region'], row='Sample',
+                show=True, ax_size=[300,300])
 
 # Contour test
 d = fcp.contour(df=df_c, x='X', y='Y', z='Value')

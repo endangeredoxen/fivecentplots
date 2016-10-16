@@ -78,6 +78,15 @@ def add_curves(plotter, x, y, color='#000000', marker='o', points=False,
             return marker
         else: return r'$%s$' % marker
     
+    # Filter out x/y data that is all nan
+    if (type(x) is np.ndarray and len(x[~np.isnan(x)])==0) \
+            or (type(y) is np.ndarray and len(y[~np.isnan(y)])==0):
+        return None
+    elif (type(x) is pd.Series and len(x.dropna())==0) \
+            or (type(y) is pd.Series and len(y.dropna())==0):
+        return None
+
+    # Make the points
     if points:
         kw = kwargs.copy()
         kw['linewidth'] = 0
@@ -86,10 +95,13 @@ def add_curves(plotter, x, y, color='#000000', marker='o', points=False,
                          markerfacecolor='none', markeredgecolor=color,
                          markeredgewidth=1.5, **kw)
         
+    # Make the line
     if line:
         kw = kwargs.copy()
         kw['markersize'] = 0
         lines = plotter(x, y, color=color, **kw)
+
+    # Return the curve
     if points:
         return points
     else:
@@ -298,7 +310,8 @@ def boxplot(**kwargs):
                 xs_height += align[ii]
             
             # Set padding and new sizes
-            kw['row_padding'] = kw['bp_label_size']*(len(kw['groups'])+0.5) + 20
+            kw['row_padding'] = kw['bp_label_size']*(len(kw['groups'])+0.5) + \
+                                20 + xs_height
             kw['ax_fig_ws'] = kw['row_padding'] + 10
             kw['fig_ax_ws'] = 100
             kw['ax_leg_fig_ws'] = max([len(gr) for gr in kw['groups']]) * \
@@ -332,25 +345,6 @@ def boxplot(**kwargs):
                     groups = df_sub.groupby(kw['groups'])
                     num_groups = groups.ngroups
                     num_groupby = len(kw['groups'])
-                    col = ['Level%s' % f for f in range(0, num_groupby)]
-                    #indices = pd.DataFrame()
-
-                    ## Get the group indices in order
-                    #for i, (n, g) in enumerate(groups):
-                    #    if type(n) is not tuple:
-                    #        n = [n]
-                    #    indices[i] = [f for f in n]
-                    #indices = indices.T
-                    #changes = indices.copy()
-
-                    #for i in range(1, num_groups):
-                    #    for c in indices.columns:
-                    #        if indices[c].iloc[i-1] == indices[c].iloc[i]:
-                    #            changes.loc[i, c] = 0
-                    #        else:
-                    #            changes.loc[i, c] = 1
-                    #        if i == 1:
-                    #            changes.loc[i-1, c] = 1
                     col = changes.columns
 
                     # Plot the groups
@@ -738,7 +732,10 @@ def get_df_figure(df, fig_item, kw):
         for ig, g in enumerate(fig_item):
             df_fig = df_fig[df_fig[kw['fig_groups'][ig]] == g]
     elif kw['fig_groups'] is not None:
-        df_fig = df_fig[df_fig[kw['fig_groups']] == fig_item]
+        if type(kw['fig_groups']) is list:
+            df_fig = df_fig[df_fig[kw['fig_groups'][0]] == fig_item]
+        else:
+            df_fig = df_fig[df_fig[kw['fig_groups']] == fig_item]
 
     return df_fig
 
@@ -1653,16 +1650,18 @@ def plot(**kwargs):
                                               else markers[iy]
                         # Plot
                         if kw['stat'] is None:
-                            curves += add_curves(plotter,
-                                                 df_sub[x],
-                                                 df_sub[yy],
-                                                 color,
-                                                 marker,
-                                                 kw['points'],
-                                                 kw['lines'],
-                                                 markersize=kw['marker_size'],
-                                                 linestyle=kw['line_style'],
-                                                 linewidth=kw['line_width'])
+                            curve = add_curves(plotter,
+                                                df_sub[x],
+                                                df_sub[yy],
+                                                color,
+                                                marker,
+                                                kw['points'],
+                                                kw['lines'],
+                                                markersize=kw['marker_size'],
+                                                linestyle=kw['line_style'],
+                                                linewidth=kw['line_width'])
+                            if curve is not None:
+                                curves += curve
 
                         else:
                             if 'median' in kw['stat'].lower():
@@ -1673,7 +1672,7 @@ def plot(**kwargs):
 
                             if 'only' not in kw['stat'].lower():
                                 # Plot the points for each data set
-                                curves += add_curves(
+                                curve = add_curves(
                                              plotter,
                                              df_sub[x],
                                              df_sub[yy],
@@ -1684,9 +1683,11 @@ def plot(**kwargs):
                                              markersize=kw['marker_size'],
                                              linestyle='none',
                                              linewidth=0)
+                                if curve is not None:
+                                    curves += curve
                             # Plot the lines
                             if 'only' in kw['stat'].lower():
-                                curves += add_curves(
+                                curve = add_curves(
                                     plotter,
                                     df_stat.reset_index()[x],
                                     df_stat[yy],
@@ -1697,6 +1698,8 @@ def plot(**kwargs):
                                     markersize=kw['marker_size'],
                                     linestyle=kw['line_style'],
                                     linewidth=kw['line_width'])
+                                if curve is not None:
+                                    curves += curve
                             else:
                                 add_curves(
                                     plotter,
@@ -1754,14 +1757,16 @@ def plot(**kwargs):
                     if kw['yline'] is not None:
                         if ir==0 and ic==0:
                             kw['leg_items'] += [kw['yline']]
-                            curves += add_curves(plotter,
-                                           df[x],
-                                            df[kw['yline']],
-                                           'k',
-                                           None,
-                                           False,
-                                           True,
-                                           linestyle='-')
+                            curve = add_curves(plotter,
+                                               df[x],
+                                                df[kw['yline']],
+                                               'k',
+                                               None,
+                                               False,
+                                               True,
+                                               linestyle='-')
+                            if curve is not None:
+                                curves += curve
                         else:
                             add_curves(plotter,
                                        df[x],
@@ -1788,24 +1793,28 @@ def plot(**kwargs):
                         plotter2 = ax2.plot
 
                     if kw['stat'] is None:
-                        curves += add_curves(plotter,
-                                             df_sub[x],
-                                             df_sub[y[0]],
-                                             color[0],
-                                             marker[0],
-                                             True,
-                                             markersize=kw['marker_size'],
-                                             linestyle=kw['line_style'],
-                                             linewidth=kw['line_width'])
-                        curves += add_curves(plotter2,
-                                             df_sub[x],
-                                             df_sub[y[1]],
-                                             color[1],
-                                             marker[1],
-                                             True,
-                                             markersize=kw['marker_size'],
-                                             linestyle=kw['line_style'],
-                                             linewidth=kw['line_width'])
+                        curve = add_curves(plotter,
+                                           df_sub[x],
+                                           df_sub[y[0]],
+                                           color[0],
+                                           marker[0],
+                                           True,
+                                           markersize=kw['marker_size'],
+                                           linestyle=kw['line_style'],
+                                           linewidth=kw['line_width'])
+                        if curve is not None:
+                            curves += curve
+                        curve = add_curves(plotter2,
+                                           df_sub[x],
+                                           df_sub[y[1]],
+                                           color[1],
+                                           marker[1],
+                                           True,
+                                           markersize=kw['marker_size'],
+                                           linestyle=kw['line_style'],
+                                           linewidth=kw['line_width'])
+                        if curve is not None:
+                            curves += curve
                     else:
                         if 'median' in kw['stat'].lower():
                             df_stat = df_sub.groupby(kw['stat_val']).median()
@@ -1814,48 +1823,56 @@ def plot(**kwargs):
 
                         # Plot the points for each data set
                         if 'only' not in kw['stat'].lower():
-                            curves += add_curves(plotter,
-                                                 df_sub[x],
-                                                 df_sub[y[0]],
-                                                 color[0],
-                                                 marker[0],
-                                                 True,
-                                                 False,
-                                                 markersize=kw['marker_size'],
-                                                 linestyle='none',
-                                                 linewidth=0)
-                            curves += add_curves(plotter2,
-                                                 df_sub[x],
-                                                 df_sub[y[1]],
-                                                 color[1],
-                                                 marker[1],
-                                                 True,
-                                                 False,
-                                                 markersize=kw['marker_size'],
-                                                 linestyle='none',
-                                                 linewidth=0)
+                            curve = add_curves(plotter,
+                                               df_sub[x],
+                                               df_sub[y[0]],
+                                               color[0],
+                                               marker[0],
+                                               True,
+                                               False,
+                                               markersize=kw['marker_size'],
+                                               linestyle='none',
+                                               linewidth=0)
+                            if curve is not None:
+                                curves += curve
+                            curve = add_curves(plotter2,
+                                               df_sub[x],
+                                               df_sub[y[1]],
+                                               color[1],
+                                               marker[1],
+                                               True,
+                                               False,
+                                               markersize=kw['marker_size'],
+                                               linestyle='none',
+                                               linewidth=0)
+                            if curve is not None:
+                                curves += curve
                         # Plot the lines
                         if 'only' in kw['stat'].lower():
-                            curves += add_curves(plotter,
-                                                 df_stat.reset_index()[x],
-                                                 df_stat[y[0]],
-                                                 color[0],
-                                                 marker[0],
-                                                 True,
-                                                 True,
-                                                 markersize=kw['marker_size'],
-                                                 linestyle=kw['line_style'],
-                                                 linewidth=kw['line_width'])
-                            curves += add_curves(plotter,
-                                                 df_stat.reset_index()[x],
-                                                 df_stat[y[1]],
-                                                 color[1],
-                                                 marker[1],
-                                                 True,
-                                                 True,
-                                                 markersize=kw['marker_size'],
-                                                 linestyle=kw['line_style'],
-                                                 linewidth=kw['line_width'])
+                            curve = add_curves(plotter,
+                                               df_stat.reset_index()[x],
+                                               df_stat[y[0]],
+                                               color[0],
+                                               marker[0],
+                                               True,
+                                               True,
+                                               markersize=kw['marker_size'],
+                                               linestyle=kw['line_style'],
+                                               linewidth=kw['line_width'])
+                            if curve is not None:
+                                curves += curve
+                            curve = add_curves(plotter,
+                                               df_stat.reset_index()[x],
+                                               df_stat[y[1]],
+                                               color[1],
+                                               marker[1],
+                                               True,
+                                               True,
+                                               markersize=kw['marker_size'],
+                                               linestyle=kw['line_style'],
+                                               linewidth=kw['line_width'])
+                            if curve is not None:
+                                curves += curve
                         else:
                             add_curves(plotter,
                                        df_stat.reset_index()[x],
@@ -1898,24 +1915,28 @@ def plot(**kwargs):
                         group = leg_group.split(': ')[0]
                         subset = df_sub[kw['leg_groups']]==group
                         if kw['stat'] is None:
-                            curves += add_curves(plotter,
-                                                 df_sub[x][subset],
-                                                 df_sub[y[0]][subset],
-                                                 kw['colors'][2*ileg],
-                                                 markers[2*ileg],
-                                                 True,
-                                                 markersize=kw['marker_size'],
-                                                 linestyle=kw['line_style'],
-                                                 linewidth=kw['line_width'])
-                            curves += add_curves(plotter2,
-                                                 df_sub[x][subset],
-                                                 df_sub[y[1]][subset],
-                                                 kw['colors'][2*ileg+1],
-                                                 markers[2*ileg+1],
-                                                 True,
-                                                 markersize=kw['marker_size'],
-                                                 linestyle=kw['line_style'],
-                                                 linewidth=kw['line_width'])
+                            curve = add_curves(plotter,
+                                               df_sub[x][subset],
+                                               df_sub[y[0]][subset],
+                                               kw['colors'][2*ileg],
+                                               markers[2*ileg],
+                                               True,
+                                               markersize=kw['marker_size'],
+                                               linestyle=kw['line_style'],
+                                               linewidth=kw['line_width'])
+                            if curve is not None:
+                                curves += curve
+                            curve = add_curves(plotter2,
+                                               df_sub[x][subset],
+                                               df_sub[y[1]][subset],
+                                               kw['colors'][2*ileg+1],
+                                               markers[2*ileg+1],
+                                               True,
+                                               markersize=kw['marker_size'],
+                                               linestyle=kw['line_style'],
+                                               linewidth=kw['line_width'])
+                            if curve is not None:
+                                curves += curve
                         else:
                             if 'median' in kw['stat'].lower():
                                 df_stat = \
@@ -1925,7 +1946,7 @@ def plot(**kwargs):
 
                             # Plot the points for each data set
                             if 'only' not in kw['stat'].lower():
-                                curves += add_curves(
+                                curve = add_curves(
                                                  plotter,
                                                  df_sub[x][subset],
                                                  df_sub[y[0]][subset],
@@ -1936,7 +1957,9 @@ def plot(**kwargs):
                                                  markersize=kw['marker_size'],
                                                  linestyle='none',
                                                  linewidth=0)
-                                curves += add_curves(
+                                if curve is not None:
+                                    curves += curve
+                                curve = add_curves(
                                                  plotter2,
                                                  df_sub[x][subset],
                                                  df_sub[y[1]][subset],
@@ -1947,9 +1970,11 @@ def plot(**kwargs):
                                                  markersize=kw['marker_size'],
                                                  linestyle='none',
                                                  linewidth=0)
+                                if curve is not None:
+                                    curves += curve
                             # Plot the lines
                             if 'only' in kw['stat'].lower():
-                                curves += add_curves(
+                                curve = add_curves(
                                              plotter,
                                              df_stat.reset_index()[x][subset],
                                              df_stat[y[0]][subset],
@@ -1960,7 +1985,9 @@ def plot(**kwargs):
                                              markersize=kw['marker_size'],
                                              linestyle=kw['line_style'],
                                              linewidth=kw['line_width'])
-                                curves += add_curves(
+                                if curve is not None:
+                                    curves += curve
+                                curve = add_curves(
                                              plotter,
                                              df_stat.reset_index()[x][subset],
                                              df_stat[y[1]][subset],
@@ -1971,6 +1998,8 @@ def plot(**kwargs):
                                              markersize=kw['marker_size'],
                                              linestyle=kw['line_style'],
                                              linewidth=kw['line_width'])
+                                if curve is not None:
+                                    curves += curve
                             else:
                                 add_curves(plotter,
                                            df_stat.reset_index()[x][subset],
@@ -2015,19 +2044,21 @@ def plot(**kwargs):
                             yy = y[0]
                         subset = df_sub[kw['leg_groups']]==group
                         if kw['stat'] is None:
-                            curves += add_curves(plotter,
-                                                 df_sub[x][subset],
-                                                 df_sub[yy][subset],
-                                                 color,
-                                                 marker,
-                                                 kw['points'],
-                                                 markersize=kw['marker_size'],
-                                                 linestyle=kw['line_style'],
-                                                 linewidth=kw['line_width'])
+                            curve = add_curves(plotter,
+                                               df_sub[x][subset],
+                                               df_sub[yy][subset],
+                                               color,
+                                               marker,
+                                               kw['points'],
+                                               markersize=kw['marker_size'],
+                                               linestyle=kw['line_style'],
+                                               linewidth=kw['line_width'])
+                            if curve is not None:
+                                curves += curve
                         else:
                             # Plot the points
                             if 'only' not in kw['stat'].lower():
-                                curves += add_curves(
+                                curve = add_curves(
                                     plotter,
                                     df_sub[x][subset],
                                     df_sub[yy][subset],
@@ -2038,6 +2069,8 @@ def plot(**kwargs):
                                     markersize=kw['marker_size'],
                                     linestyle='none',
                                     linewidth=0)
+                                if curve is not None:
+                                    curves += curve
 
                             # Plot the lines
                             if 'median' in kw['stat'].lower():
@@ -2050,7 +2083,7 @@ def plot(**kwargs):
                                         .mean().reset_index()
 
                             if 'only' in kw['stat'].lower():
-                                curves += add_curves(
+                                curve = add_curves(
                                     plotter,
                                     df_stat[x],
                                     df_stat[yy],
@@ -2061,6 +2094,8 @@ def plot(**kwargs):
                                     markersize=kw['marker_size'],
                                     linestyle=kw['line_style'],
                                     linewidth=kw['line_width'])
+                                if curve is not None:
+                                    curves += curve
                             else:
                                 add_curves(
                                     plotter,
@@ -2610,8 +2645,22 @@ def set_save_filename(df, x, y, kw, ifig):
         else:
             twinx = ''
         if kw['fig_groups'] is not None and not kw['fig_group_path']:
-            figlabel = ' where ' + kw['fig_groups'] + '=' + \
-                        str(kw['fig_path_items'][ifig]) + ' '
+            items = kw['fig_path_items'][ifig]
+            fig_groups = kw['fig_groups']
+            if type(items) is tuple:
+                items = list(items)
+            elif type(items) is not list:
+                items = [items]
+            if type(fig_groups) is not list:
+                fig_groups = [fig_groups]
+            figlabel = ''
+            for i in range(0, len(fig_groups)):
+                figlabel += ' where ' + str(fig_groups[i]) + '=' \
+                            + str(items[i])
+                if i < len(fig_groups) - 1:
+                    figlabel += ' and'
+                else:
+                    figlabel += ' '
         else:
             figlabel = ''
         if not kw['filename']:
