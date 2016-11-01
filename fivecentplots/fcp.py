@@ -1248,6 +1248,7 @@ def init(plot, kwargs):
     kw['fig_group_path'] = kwargs.get('fig_group_path', False)
     kw['fig_label'] = kwargs.get('fig_label', True)
     kw['filename'] = kwargs.get('filename', None)
+    kw['filename_orig'] = kwargs.get('filename', None)
     kw['filled'] = kwargs.get('filled', True)
     kw['filter'] = kwargs.get('filter', None)
     kw['grid_major_color'] = kwargs.get('grid_major_color',
@@ -1326,6 +1327,7 @@ def init(plot, kwargs):
     kw['tick_length'] = kwargs.get('tick_length', fcp_params['tick_length'])
     kw['tick_width'] = kwargs.get('tick_width', fcp_params['tick_width'])
     kw['title'] = kwargs.get('title', None)
+    kw['title_orig'] = kwargs.get('title', None)
     kw['title_edge_color'] = kwargs.get('title_edge_color',
                                         fcp_params['title_edge_color'])
     kw['title_fill_color'] = kwargs.get('title_fill_color',
@@ -2621,8 +2623,8 @@ def set_figure_title(df, ax, kw, design):
         design (obj): figure design object
     """
 
-    if kw['title'] is not None:
-        kw['title'] = get_current_values(df, kw['title'])
+    if kw['title_orig'] is not None:
+        kw['title'] = get_current_values(df, kw['title_orig'])
         add_label('%s' % kw['title'],
                   (design.title_left, design.title_bottom,
                    design.title_w, design.title_h),
@@ -2636,8 +2638,8 @@ def set_save_filename(df, x, y, kw, ifig):
 
     rc_name = make_rc_filename_labels(kw)
 
-    if kw['filename'] is not None:
-        kw['filename'] = get_current_values(df, kw['filename'])
+    if kw['filename_orig'] is not None:
+        kw['filename'] = get_current_values(df, kw['filename_orig'])
 
     if kw['fig_label']:
         if kw['twinx']:
