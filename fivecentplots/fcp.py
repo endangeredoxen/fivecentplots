@@ -383,7 +383,8 @@ def boxplot(**kwargs):
                 elif type(data) is pd.DataFrame and len(data.columns) == 1:
                     data = data.values
                     
-                bp = axes[ir,ic].boxplot(data, labels=labels,
+                if len(data) > 0:
+                    bp = axes[ir,ic].boxplot(data, labels=labels,
                                          showfliers=showfliers,
                                          boxprops={'color': palette[0]},
                                          whiskerprops={'color': palette[0]},
@@ -391,22 +392,22 @@ def boxplot(**kwargs):
                                          medianprops={'color': palette[1]},
                                          patch_artist=True,
                                          )
-                axes[ir,ic].xaxis.grid(False)
-                for patch in bp['boxes']:
-                    patch.set_facecolor(kw['bp_fill_color'])
-                for flier in bp['fliers']:
-                    flier.set(marker='+', markeredgecolor=palette[0])
+                    axes[ir,ic].xaxis.grid(False)
+                    for patch in bp['boxes']:
+                        patch.set_facecolor(kw['bp_fill_color'])
+                    for flier in bp['fliers']:
+                        flier.set(marker='+', markeredgecolor=palette[0])
 
-                # Add divider lines
-                if kw['dividers']:
-                    for d in dividers:
-                        axes[ir,ic].axvline(d, linewidth=1,
+                    # Add divider lines
+                    if kw['dividers']:
+                        for d in dividers:
+                            axes[ir,ic].axvline(d, linewidth=1,
                                             color=kw['bp_divider_color'])
 
-                # Add mean/median connecting lines
-                if kw['connect_means']:
-                    x = np.linspace(1, num_groups, num_groups)
-                    axes[ir,ic].plot(x, means, color=palette[2])
+                    # Add mean/median connecting lines
+                    if kw['connect_means']:
+                        x = np.linspace(1, num_groups, num_groups)
+                        axes[ir,ic].plot(x, means, color=palette[2])
 
                 # Add y-axis label
                 if kw['ylabel'] is not None:
