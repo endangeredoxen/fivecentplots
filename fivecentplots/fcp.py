@@ -480,14 +480,14 @@ def boxplot(**kwargs):
                 axes[ir, ic] = \
                     set_axes_rc_labels(axes[ir, ic], ir, ic, r, c, kw, design)
 
-    # Add a figure title
-    set_figure_title(df_fig, axes[0,0], kw, design)
+        # Add a figure title
+        set_figure_title(df_fig, axes[0,0], kw, design)
 
-    # Build the save filename
-    filename = set_save_filename(df_fig, x, y, kw, ifig)
+        # Build the save filename
+        filename = set_save_filename(df_fig, x, y, kw, ifig)
 
-    # Save and optionally open
-    save(fig, filename, kw)
+        # Save and optionally open
+        save(fig, filename, kw)
 
     return design
 
