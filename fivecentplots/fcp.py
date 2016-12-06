@@ -288,7 +288,7 @@ def boxplot(**kwargs):
         # Special boxplot spacing for labels
         if kw['bp_labels_on'] and kw['groups'] is not None:
             # Get the changes df
-            groups = df.groupby(kw['groups'])
+            groups = df_fig.groupby(kw['groups'])
             indices = pd.DataFrame(list(groups.indices.keys()))
             indices = indices.sort_values(list(indices.columns)).reset_index(drop=True)
             num_groups = groups.ngroups
@@ -338,7 +338,7 @@ def boxplot(**kwargs):
                 axes[ir, ic] = set_axes_grid_lines(axes[ir, ic], kw)
 
                 # Subset the data
-                df_sub = get_rc_subset(df, r, c, kw)
+                df_sub = get_rc_subset(df_fig, r, c, kw)
 
                 num_groups = 0
                 if kw['groups'] is not None:
