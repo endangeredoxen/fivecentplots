@@ -646,6 +646,10 @@ class FileReader():
         if type(self.contains) is not list:
             self.contains = [self.contains]
 
+        # Format the exclude values
+        if type(self.exclude) is not list:
+            self.exclude = [self.exclude]
+
         # Format ext
         if self.ext != '':
             if type(self.ext) is not list:
