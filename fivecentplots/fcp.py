@@ -631,6 +631,7 @@ def df_filter(df, filt):
     # Remove spaces from
     cols_orig = [f for f in df.columns]
     cols_new = [f.replace(' ', '_')
+                 .replace('.', '_')
                  .replace('[', '')
                  .replace(']', '')
                  .replace('(', '')
