@@ -8,7 +8,7 @@
 __author__    = 'Steve Nicholes'
 __copyright__ = 'Copyright (C) 2015 Steve Nicholes'
 __license__   = 'GPLv3'
-__version__   = '0.2'
+__version__   = '0.3'
 __url__       = 'https://github.com/endangeredoxen/pywebify'
 
 
@@ -90,13 +90,14 @@ def convert_rst(file_name, stylesheet=None):
     imgs = [f for f in rst if 'image::' in f]
 
     for img in imgs:
-        img = img.replace('.. figure:: ', '').replace('\n', '')
+        img = img.replace('.. image:: ', '').replace('\n', '')
         if ' ' in img:
-            img_idx = img.find('image:: ')
-            img = img[img_idx+8:]
             img_ns = img.replace(' ','')
-            idx = html.find(img_ns)
-            html = html[0:idx] + img + html[idx+len(img_ns):]
+            idx = html.find(img_ns) - 5
+            old = 'alt="%s" src="%s"' % (img_ns, img_ns)
+            new = 'alt="%s" src="%s"' % (img, img)
+            html = html[0:idx] + new + html[idx+len(old):]
+            
             with open(file_dest, 'w') as output:
                 output.write(html)
 
@@ -192,7 +193,7 @@ def str_2_dtype(val, ignore_list=False):
         v = []
         for t in val:
             k += [str_2_dtype(t.split(':')[0], ignore_list=True)]
-            v += [str_2_dtype(t.split(':')[1])]
+            v += [str_2_dtype(':'.join(t.split(':')[1:]))]
         return dict(zip(k,v))
     # tuple
     if val[0] == '(' and val[-1] == ')' and ',' in val:
@@ -237,7 +238,6 @@ def str_2_dtype(val, ignore_list=False):
                 return val.rstrip().lstrip()
   
 
-
 class ConfigFile():
     def __init__(self, path=None, paste=False):
         """
@@ -267,8 +267,6 @@ class ConfigFile():
             self.read_file()
         elif self.paste:
             self.read_pasted()
-        
-
         else:
             raise ValueError('Could not find a config.ini file at the '
                              'following location: %s' % self.config_path)
@@ -299,7 +297,6 @@ class ConfigFile():
         win32clipboard.CloseClipboard()
         self.config.read_string(data)
         
-
     def validate_file_path(self):
         """
         Make sure there is a valid config file at the location specified by
@@ -326,7 +323,7 @@ class Dir2HTML():
 
         Keyword Args:
             build_rst (bool): convert rst files to html
-            excludes (list): names of files to exclude from the UL
+            exclude (list): names of files to exclude from the UL
             from_file (bool): make the report from a text file containing a
                 list of directories and files or just scan the
                 base_path directory
@@ -343,7 +340,7 @@ class Dir2HTML():
 
         self.base_path = base_path
         self.build_rst = kwargs.get('build_rst', False)
-        self.excludes = kwargs.get('excludes',[])
+        self.exclude = kwargs.get('exclude',[])
         self.files = []
         self.from_file = kwargs.get('from_file', False)
         self.natsort = kwargs.get('natsort', True)
@@ -352,7 +349,8 @@ class Dir2HTML():
         self.rst = ''
         self.rst_css = kwargs.get('rst_css', None)
         self.show_ext = kwargs.get('show_ext', False)
-
+        self.use_relative = kwargs.get('use_relative', True)
+        
         self.ext = ext
         if self.ext is not None and type(self.ext) is not list:
             self.ext = self.ext.replace(' ','').split(',')
@@ -425,10 +423,11 @@ class Dir2HTML():
                     path_idx = current_path_list.index(n)
                     folder_path = \
                         os.path.sep.join(current_path_list[0:path_idx+1])
-                    try:
+                    if self.use_relative:
+                        folder_path = folder_path.replace(self.base_path + '\\', '')
+                        folder_path = folder_path.replace('\\', '/')
+                    else:
                         folder_path = pathlib.Path(folder_path).as_uri()
-                    except:
-                        st()
                     child = node_for_value(n, folder_path, node,
                                            parent_name, dir=True)
                     self.df_to_xml(g, child, n)
@@ -473,8 +472,13 @@ class Dir2HTML():
                     temp = {}
                     temp['full_path'] = \
                         os.path.abspath(osjoin(self.base_path,dirName,fname))
-                    temp['html_path'] = \
-                        pathlib.Path(temp['full_path']).as_uri()
+                    temp['rel_path'] = \
+                        temp['full_path'].replace(self.base_path+'\\', '')
+                    if self.use_relative:
+                        temp['html_path'] = temp['rel_path'].replace('\\', '/')
+                    else:
+                        temp['html_path'] = \
+                            pathlib.Path(temp['full_path']).as_uri()
                     temp['ext'] = fname.split('.')[-1]
                     if self.from_file:
                         top = self.base_path.split(os.sep)[-1]
@@ -515,7 +519,7 @@ class Dir2HTML():
         Filter out any files on the exclude list
         """
 
-        for ex in self.excludes:
+        for ex in self.exclude:
             self.files = \
                 self.files[~self.files.full_path.str.contains(ex, regex=False)]
 
@@ -539,6 +543,8 @@ class Dir2HTML():
                 self.files.iloc[i]['full_path'].replace('rst','html')
             self.files.iloc[i]['html_path'] = \
                 self.files.iloc[i]['html_path'].replace('rst','html')
+            self.files.iloc[i]['rel_path'] = \
+                self.files.iloc[i]['rel_path'].replace('rst','html')
 
             # Check for same-named images
             for ext in [v for v in self.ext if v != 'html']:
@@ -650,7 +656,7 @@ class FileReader():
         if type(self.exclude) is not list:
             self.exclude = [self.exclude]
 
-        # Format ext
+       # Format ext
         if self.ext != '':
             if type(self.ext) is not list:
                 self.ext = [self.ext]
@@ -693,7 +699,7 @@ class FileReader():
             self.file_list = self.path
 
         # If list of files is passed to FileReader with a scan option
-        elif type(self.path) is list and self.scan == True:
+        elif type(self.path) is list and self.scan:
             for p in self.path:
                 self.walk_dir(p)
 
@@ -802,7 +808,8 @@ class FileReader():
                 file_splits[i] = file_splits[i].split(self.tag_char)[1]
 
         # file_splits = filename.split(self.file_split)
-        if self.split_values[0].lower() == 'usetags':
+        if len(self.split_values)==0 or \
+                self.split_values[0].lower() == 'usetags':
             self.split_values = tag_splits.copy()
         for i, f in enumerate(self.split_values):
             if f is not None and i < len(file_splits) and f != file_splits[i]:
@@ -845,8 +852,10 @@ class FileReader():
                     meta = None
 
             except:
-                raise ValueError('Could not read "%s".  Is it a valid data '
-                                 'file?' % f)
+                raise ValueError('File Read Error:\n\nFilename: "%s"\n\n'
+                                 'Read function: "%s".\n\nIs the data file '
+                                 'valid or do you have the wrong read '
+                                 'function specified?' % (f, self.read_func))
 
             # Add optional info to the table
             if type(self.labels) is list and len(self.labels) > i:
@@ -887,4 +896,6 @@ class FileReader():
         """
 
         for dir_name, subdir_list, file_list in oswalk(path):
+            for exc in self.exclude:
+                subdir_list[:] = [s for s in subdir_list if exc not in s]
             self.file_list += [os.path.join(dir_name, f) for f in file_list]
