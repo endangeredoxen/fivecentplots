@@ -414,7 +414,7 @@ def boxplot(**kwargs):
                     for flier in bp['fliers']:
                         flier.set(marker='+', markeredgecolor=palette[0])
 
-                    if kw['ax_scale'].lower() in ['logy', 'semilogy', 'loglog']:
+                    if str(kw['ax_scale']).lower() in ['logy', 'semilogy', 'loglog']:
                         axes[ir, ic].set_yscale('log')
                     
                     # Add divider lines
