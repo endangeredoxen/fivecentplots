@@ -296,7 +296,7 @@ def boxplot(**kwargs):
             # Get the changes df
             groups = df_fig.groupby(kw['groups'])
             
-            # Order the group lables with natsorting
+            # Order the group labels with natsorting
             gidx = []
             for i, (n, g) in enumerate(groups):
                 gidx += [n]
@@ -361,7 +361,7 @@ def boxplot(**kwargs):
                     col = changes.columns
 
                     # Plot the groups
-                    for i, (n,g) in enumerate(gidx):
+                    for i, n in enumerate(gidx):
                         g = df_sub.copy().sort_values(by=kw['groups'])
                         g = g.set_index(kw['groups'])
                         g = g.loc[n].reset_index()
@@ -1394,7 +1394,6 @@ def init(plot, kwargs):
     vals = ['groups']
     for v in vals:
         kw[v] = make_lists(kw[v])
-
     if type(kw['ax_hlines']) is not list:
         kw['ax_hlines'] = [kw['ax_hlines']]
     if type(kw['ax_vlines']) is not list:
@@ -2063,7 +2062,7 @@ def plot(**kwargs):
                 else:
                     for ileg, leg_group in enumerate(kw['leg_items']):
 
-                        idx = kw['leg_items'].index(leg_groups)
+                        idx = kw['leg_items'].index(leg_group)
                         
                         # Define color and marker types
                         if kw['cmap']:
@@ -2158,7 +2157,7 @@ def plot(**kwargs):
                                 and kw['line_fit'] != False:
                             # Fit the polynomial
                             xval = df_sub[x][subset]
-                            yval = df_sub[y][subset]
+                            yval = df_sub[yy][subset]
                             coeffs = np.polyfit(np.array(xval),
                                                 np.array(yval),
                                                 kw['line_fit'])
