@@ -8,7 +8,7 @@
 __author__    = 'Steve Nicholes'
 __copyright__ = 'Copyright (C) 2015 Steve Nicholes'
 __license__   = 'GPLv3'
-__version__   = '0.3'
+__version__   = '0.3.1'
 __url__       = 'https://github.com/endangeredoxen/pywebify'
 
 
@@ -25,7 +25,10 @@ import re
 import sys
 import textwrap
 import ast
-import win32clipboard
+try:
+    import win32clipboard
+except Exception:
+    pass
 from xml.dom import minidom
 from xml.etree import ElementTree
 import numpy as np
@@ -97,7 +100,7 @@ def convert_rst(file_name, stylesheet=None):
             old = 'alt="%s" src="%s"' % (img_ns, img_ns)
             new = 'alt="%s" src="%s"' % (img, img)
             html = html[0:idx] + new + html[idx+len(old):]
-            
+
             with open(file_dest, 'w') as output:
                 output.write(html)
 
@@ -212,9 +215,22 @@ def str_2_dtype(val, ignore_list=False):
             if '=="' in v:
                 new += [v.rstrip().lstrip()]
             elif '"' in v:
-                new += [v.replace('"','').rstrip().lstrip()]
+                double_quoted = [f for f in re.findall(r'"([^"]*)"', v)
+                                 if f != '']
+                v = str(v.replace('"', ''))
+                for dq in double_quoted:
+                    v = v.replace(dq, '"%s"' % dq)
+                try:
+                    if type(ast.literal_eval(v.lstrip())) is str:
+                        v = ast.literal_eval(v.lstrip())
+                    new += [v]
+                except:
+                    new += [v.replace('"','').rstrip().lstrip()]
             else:
-                new += [str_2_dtype(v.replace('"','').rstrip().lstrip())]
+                try:
+                    new += [str_2_dtype(v.replace('"','').rstrip().lstrip())]
+                except RecursionError:
+                    pass
         if len(new) == 1:
             return new[0]
         return new
@@ -236,7 +252,7 @@ def str_2_dtype(val, ignore_list=False):
                     return v[0].rstrip().lstrip()
             else:
                 return val.rstrip().lstrip()
-  
+
 
 class ConfigFile():
     def __init__(self, path=None, paste=False):
@@ -296,7 +312,7 @@ class ConfigFile():
         data = win32clipboard.GetClipboardData()
         win32clipboard.CloseClipboard()
         self.config.read_string(data)
-        
+
     def validate_file_path(self):
         """
         Make sure there is a valid config file at the location specified by
@@ -350,7 +366,7 @@ class Dir2HTML():
         self.rst_css = kwargs.get('rst_css', None)
         self.show_ext = kwargs.get('show_ext', False)
         self.use_relative = kwargs.get('use_relative', True)
-        
+
         self.ext = ext
         if self.ext is not None and type(self.ext) is not list:
             self.ext = self.ext.replace(' ','').split(',')
@@ -628,6 +644,7 @@ class FileReader():
 
         self.path = path
         self.contains = kwargs.get('contains', '')
+        self.contains_OR = kwargs.get('contains_OR', [])
         self.header = kwargs.get('header', True)
         self.concat = kwargs.get('concat', True)
         self.exclude = kwargs.get('exclude', [])
@@ -651,6 +668,10 @@ class FileReader():
         # Format the contains value
         if type(self.contains) is not list:
             self.contains = [self.contains]
+
+        # Format the contains_OR value
+        if type(self.contains_OR) is not list:
+            self.contains_OR = [self.contains_OR]
 
         # Format the exclude values
         if type(self.exclude) is not list:
@@ -714,6 +735,11 @@ class FileReader():
         # Filter based on self.contains search string
         for c in self.contains:
             self.file_list = [f for f in self.file_list if c in f]
+        if len(self.contains_OR) > 0:
+            files = []
+            for c in self.contains_OR:
+                files += [f for f in self.file_list if c in f]
+            self.file_list = files
 
         # Filter out exclude
         for exc in self.exclude:
@@ -853,10 +879,10 @@ class FileReader():
 
             except:
                 raise ValueError('File Read Error:\n\nFilename: "%s"\n\n'
-                                 'Read function: "%s".\n\nIs the data file '
-                                 'valid or do you have the wrong read '
-                                 'function specified?' % (f, self.read_func))
-
+                                 'Read function: "%s".  \n\nIs the data file '
+                                 'valid and uncorrupted? Or do you have the '
+                                 'wrong read function specified?'
+                                 % (f, self.read_func))
             # Add optional info to the table
             if type(self.labels) is list and len(self.labels) > i:
                 temp['Label'] = self.labels[i]
