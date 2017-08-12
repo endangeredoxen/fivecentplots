@@ -68,7 +68,7 @@ def add_curves(plotter, x, y, color='#000000', marker='o', points=False,
     Returns:
         return the line plot object
     """
-    
+
     def format_marker(marker):
         """
         Format the marker string to mathtext
@@ -77,7 +77,7 @@ def add_curves(plotter, x, y, color='#000000', marker='o', points=False,
         if marker in ['o', '+', 's', 'x', 'd', '^']:
             return marker
         else: return r'$%s$' % marker
-    
+
     # Filter out x/y data that is all nan
     if (type(x) is np.ndarray and len(x[~np.isnan(x)])==0) \
             or (type(y) is np.ndarray and len(y[~np.isnan(y)])==0):
@@ -94,7 +94,7 @@ def add_curves(plotter, x, y, color='#000000', marker='o', points=False,
         points = plotter(x, y, color=color, marker=format_marker(marker),
                          markerfacecolor='none', markeredgecolor=color,
                          markeredgewidth=1.5, **kw)
-        
+
     # Make the line
     if line:
         kw = kwargs.copy()
@@ -127,7 +127,7 @@ def add_label(label, pos, axis, rotation, design, fillcolor='#ffffff',
         weight (str):  label font weight (use standard mpl weights like 'bold')
         fontsize (int):  label font size (default=14)
     """
-    
+
     # Define the label background
     rect = patches.Rectangle((pos[0], pos[1]), pos[2], pos[3],
                              fill=True, transform=axis.transAxes,
@@ -238,20 +238,21 @@ def boxplot(**kwargs):
                     markeredgecolor=color,
                     markerfacecolor='none',
                     markeredgewidth=1.5,
-                    linestyle='none')
+                    linestyle='none',
+                    zorder=2)
 
     def index_changes(df, num_groups):
         """
         Make a DataFrame that shows when groups vals change; used for grouping labels
-        
+
         Args:
             df (pd.DataFrame): grouping values
             num_groups (int): number of unique groups
-        
+
         Returns:
             new DataFrame with 1's showing where group levels change for each row of df
         """
-        
+
         changes = df.copy()
         # Set initial level to 1
         for c in df.columns:
@@ -263,12 +264,14 @@ def boxplot(**kwargs):
                     changes.loc[i, c] = 0
                 else:
                     changes.loc[i, c] = 1
-        
+
         return changes
-        
-    
+
+
     # Init plot
     df, x, y, z, kw = init('boxplot', kwargs)
+    if 'ax_fig_ws' not in kwargs.keys():
+        kw['ax_fig_ws'] = 15  # no standard y-axis ticks/label
 
     # Default overrides
     if kw['marker_type'] is None:
@@ -278,13 +281,13 @@ def boxplot(**kwargs):
 
     # Backup ax size
     kw['ax_size_orig'] = [kw['ax_size'][0], kw['ax_size'][1]]
-    
+
     # Iterate over discrete figures
     for ifig, fig_item in enumerate(kw['fig_items']):
 
         # Reset ax size
         kw['ax_size'] = [kw['ax_size_orig'][0], kw['ax_size_orig'][1]]
-        
+
         # Make a data subset and filter
         df_fig = get_df_figure(df, fig_item, kw)
 
@@ -295,18 +298,18 @@ def boxplot(**kwargs):
         if kw['bp_labels_on'] and kw['groups'] is not None:
             # Get the changes df
             groups = df_fig.groupby(kw['groups'])
-            
+
             # Order the group labels with natsorting
             gidx = []
             for i, (n, g) in enumerate(groups):
                 gidx += [n]
             gidx = natsorted(gidx)
-            
+
             # Make indices df
             indices = pd.DataFrame(gidx)
             num_groups = groups.ngroups
             changes = index_changes(indices, num_groups)
-            
+
             # Determine if label should be aligned vertically or horizontally
             align = {}
             xs_height = 0
@@ -321,16 +324,25 @@ def boxplot(**kwargs):
                         align[ii] = max(align[ii], val_width)
                         break
                 xs_height += align[ii]
-            
+
             # Set padding and new sizes
-            kw['row_padding'] = kw['bp_label_size']*(len(kw['groups'])+0.5) + \
-                                20 + xs_height
-            kw['ax_fig_ws'] = kw['row_padding'] + 10
-            kw['fig_ax_ws'] = 100
+            bp_labels = kw['bp_label_size']*(len(kw['groups'])+0.5)
+            kw['ax_fig_ws'] +=   bp_labels + xs_height
+            kw['ax_leg_ws'] = 0
+            kw['leg_fig_ws'] = 0
             kw['ax_leg_fig_ws'] = max([len(gr) for gr in kw['groups']]) * \
                                   kw['bp_label_font_size'] + \
                                   kw['bp_name_ws']
             kw['ax_size'][1] += xs_height
+            kw['col_padding'] += kw['ax_leg_fig_ws']
+            kw['row_padding'] += bp_labels
+            if kw['bp_label_font_size']*len(kw['ylabel']) > kw['ax_size'][1]:
+                kw['row_padding'] = \
+                    (kw['bp_label_font_size']*len(kw['ylabel']) - \
+                    kw['ax_size'][1])/2 + kw['row_padding']/2
+            if kw['rows'][0] is not None:
+                kw['ax_leg_fig_ws'] -= kw['row_label_size'] \
+                                       + kw['row_label_ws']
 
         # Make the plot figure and axes
         design, fig, axes, kw = make_fig_and_ax(kw, nrow, ncol)
@@ -364,7 +376,8 @@ def boxplot(**kwargs):
                     for i, n in enumerate(gidx):
                         g = df_sub.copy().sort_values(by=kw['groups'])
                         g = g.set_index(kw['groups'])
-                        g = g.loc[n].reset_index()
+                        if len(g) > 1:
+                            g = g.loc[n].reset_index()
                         temp = g[y].dropna()
                         data += [temp]
                         means += [temp.mean()]
@@ -398,16 +411,27 @@ def boxplot(**kwargs):
                     data = data.values
                 elif type(data) is pd.DataFrame and len(data.columns) == 1:
                     data = data.values
-                    
+
                 if len(data) > 0:
-                    bp = axes[ir,ic].boxplot(data, labels=labels,
-                                         showfliers=showfliers,
-                                         boxprops={'color': palette[0]},
-                                         whiskerprops={'color': palette[0]},
-                                         capprops={'color': palette[0]},
-                                         medianprops={'color': palette[1]},
-                                         patch_artist=True,
-                                         )
+                    try:
+                        bp = axes[ir,ic].boxplot(data, labels=labels,
+                                            showfliers=showfliers,
+                                            boxprops={'color': palette[0]},
+                                            whiskerprops={'color': palette[0]},
+                                            capprops={'color': palette[0]},
+                                            medianprops={'color': palette[1]},
+                                            patch_artist=True,
+                                            zorder=1,
+                                            )
+                    except:
+                        bp = axes[ir,ic].boxplot(data, labels=labels,
+                                            showfliers=showfliers,
+                                            boxprops={'color': palette[0]},
+                                            whiskerprops={'color': palette[0]},
+                                            capprops={'color': palette[0]},
+                                            medianprops={'color': palette[1]},
+                                            patch_artist=True,
+                                            )
                     axes[ir,ic].xaxis.grid(False)
                     for patch in bp['boxes']:
                         patch.set_facecolor(kw['bp_fill_color'])
@@ -416,7 +440,7 @@ def boxplot(**kwargs):
 
                     if str(kw['ax_scale']).lower() in ['logy', 'semilogy', 'loglog']:
                         axes[ir, ic].set_yscale('log')
-                    
+
                     # Add divider lines
                     if kw['dividers']:
                         for d in dividers:
@@ -434,7 +458,7 @@ def boxplot(**kwargs):
                                   fontsize=kw['label_font_size'],
                                   weight=kw['label_weight'],
                                   style=kw['label_style'])
-                                  
+
                 # Add axh/axv lines
                 axes[ir, ic] = add_lines(axes[ir, ic], kw)
 
@@ -501,7 +525,7 @@ def boxplot(**kwargs):
                 # Add row/column labels
                 axes[ir, ic] = \
                     set_axes_rc_labels(axes[ir, ic], ir, ic, r, c, kw, design)
-                    
+
                 # Axis ranges
                 axes[ir, ic], ax = set_axes_ranges(df_fig, df_sub, None, y,
                                                    axes[ir, ic], None, kw)
@@ -650,7 +674,7 @@ def df_filter(df, filt):
     """
 
     df2 = df.copy()
-    
+
     # Parse the filter string
     filt = get_current_values(df, filt)
 
@@ -670,15 +694,15 @@ def df_filter(df, filt):
                  .replace('@', 'at')
                  .replace('%', 'percent')
                 for f in cols_orig.copy()]
-    
+
     df2.columns = cols_new
-    
+
     # Apply the filter
     df2 = df2.query(filt)
 
     # Reset the columns
     df2.columns = cols_orig
-    
+
     return df2
 
 
@@ -694,7 +718,7 @@ def filename_label(label):
     """
 
     label = str(label)
-    
+
     brackets = re.findall('\[.*?\]',label)
     for br in brackets:
         if '*' in br:
@@ -707,7 +731,7 @@ def filename_label(label):
                     label = brs[i] + '_' + brs[i+1][0:-1] + '^-1' + ']'
                 else:
                     label = brs[i] + '_' + brs[i+1] + '^-1'
-                
+
     label = label.lstrip(' ').rstrip(' ')
 
     return label
@@ -903,7 +927,7 @@ def get_unique_groups(kw):
                 groups += kw[v]
             else:
                 groups += [kw[v]]
-                
+
     return groups
 
 
@@ -1398,7 +1422,7 @@ def init(plot, kwargs):
         kw['ax_hlines'] = [kw['ax_hlines']]
     if type(kw['ax_vlines']) is not list:
         kw['ax_vlines'] = [kw['ax_vlines']]
-    
+
     # Dummy-proof colors
     if type(kw['colors'][0]) is not tuple:
         kw['colors'] = [kw['colors']]
@@ -1440,7 +1464,8 @@ def init(plot, kwargs):
             kw['col_padding'] += kw['tick_font_size']
     if kw['separate_labels']:
         kw['col_padding'] = max(kw['fig_ax_ws'], kw['col_padding'])
-        kw['row_padding'] = max(kw['ax_fig_ws'], kw['row_padding']) + 10
+        if plot != 'boxplot':
+            kw['row_padding'] = max(kw['ax_fig_ws'], kw['row_padding']) + 10
 
     # Account for scalar formatted axes
     if kw['scalar_y']:
@@ -1590,11 +1615,11 @@ def plot(**kwargs):
     customized and enhanced by passing keyword arguments as defined below.
     Default values that must be defined in order to generate the plot are
     pulled from the fcp_params dictionary defined in defaults.py.
-    
+
     Args:
         df (DataFrame): DataFrame containing data to plot
         x (str):        name of x column in df
-        y (str|list):   name or list of names of y column(s) in df  
+        y (str|list):   name or list of names of y column(s) in df
 
     Keyword Args:
         see get_defaults for definitions
@@ -1603,7 +1628,7 @@ def plot(**kwargs):
         design (FigDesign obj):  contains all the spacing information used to
             construct the figure
     """
-    
+
     # Init plot
     df, x, y, z, kw = init('plot', kwargs)
 
@@ -1613,13 +1638,13 @@ def plot(**kwargs):
 
     # Iterate over discrete figures
     for ifig, fig_item in enumerate(kw['fig_items']):
-        
+
         # Make a data subset and filter
         df_fig = get_df_figure(df, fig_item, kw)
 
         # Set up the row grouping
         rows, nrow, cols, ncol, kw = get_rc_groupings(df_fig, kw)
-        
+
         # Set up the legend grouping
         kw = get_legend_groupings(df_fig, y, kw)
 
@@ -1812,7 +1837,7 @@ def plot(**kwargs):
                                        False,
                                        True,
                                        linestyle='-')
-                
+
                 elif kw['leg_groups'] is None and kw['twinx']:
 
                     # Define color and marker types
@@ -2063,7 +2088,7 @@ def plot(**kwargs):
                     for ileg, leg_group in enumerate(kw['leg_items']):
 
                         idx = kw['leg_items'].index(leg_group)
-                        
+
                         # Define color and marker types
                         if kw['cmap']:
                             color = cmap((ileg+1)/(len(kw['leg_items'])+1))
@@ -2082,7 +2107,7 @@ def plot(**kwargs):
                         else:
                             yy = y[0]
                         subset = df_sub[kw['leg_groups']]==group
-                        
+
                         if kw['stat'] is None:
                             curve = add_curves(plotter,
                                                df_sub[x][subset],
@@ -2152,7 +2177,7 @@ def plot(**kwargs):
                                     markersize=kw['marker_size'],
                                     linestyle=kw['line_style'],
                                     linewidth=kw['line_width'])
-                        
+
                         if kw['line_fit'] is not None \
                                 and kw['line_fit'] != False:
                             # Fit the polynomial
@@ -2161,10 +2186,10 @@ def plot(**kwargs):
                             coeffs = np.polyfit(np.array(xval),
                                                 np.array(yval),
                                                 kw['line_fit'])
-                                                
+
                             # Calculate the fit line
                             yval = np.polyval(coeffs, xval)
-                            
+
                             # Add fit line
                             xval = np.linspace(0.9*xval.min(),
                                                1.1*xval.max(), 10)
@@ -2177,7 +2202,7 @@ def plot(**kwargs):
                                        False,
                                        True,
                                        linestyle='--')
-                        
+
                 # Adjust the tick marks
                 axes[ir, ic] = set_axes_ticks(axes[ir, ic], kw)
                 if ax2 is not None:
@@ -2199,7 +2224,7 @@ def plot(**kwargs):
         if len(curve_dict.keys()) > 0:
             kw['leg_items'] = natsorted(list(curve_dict.keys()))
             curves = [curve_dict[f][0] for f in kw['leg_items']]
-        
+
         # Add the legend
         fig = add_legend(fig, curves, kw, design)
 
@@ -2438,6 +2463,11 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
             ymin = dfy_vals.min()
             ymax = dfy_vals.max()
             ydelta = ymax-ymin
+        elif kw['ax_scale'] in ['logy', 'loglog', 'semilogy']:
+            dfy_vals = dfy[y]
+            ymin = dfy_vals[dfy_vals>0].stack().min()
+            ymax = dfy_vals.stack().max()
+            ydelta = np.log10(ymax)-np.log10(ymin)
         else:
             dfy_vals = dfy[y]
             ymin = dfy_vals.stack().min()
@@ -2447,24 +2477,27 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
         # Set the subplot range
         if kw['ymin'] is not None:
             ax.set_ylim(bottom=kw['ymin'])
-        # else:
-        #     if kw['ax_scale'] in ['logy', 'loglog', 'semilogy']:
-        #         ymin = np.log10(ymin) - kw['ax_lim_pad']*\
-        #                np.log10(ydelta)/(1-2*kw['ax_lim_pad'])
-        #         ymin = 10**ymin
-        #     else:
+        else:
+            if kw['ax_scale'] in ['logy', 'loglog', 'semilogy']:
+                 #ymin = np.log10(ymin) - kw['ax_lim_pad']*\
+                 #       np.log10(ydelta)/(1-2*kw['ax_lim_pad'])
+                ymin = 10**(np.log10(ymin) - kw['ax_lim_pad'] * ydelta)
+            else:
         #         ymin -= kw['ax_lim_pad']*ydelta/(1-2*kw['ax_lim_pad'])
-        #     ax.set_ylim(left=ymin)
+                ymin -= kw['ax_lim_pad']*ydelta
+            ax.set_ylim(bottom=ymin)
         if kw['ymax'] is not None:
             ax.set_ylim(top=kw['ymax'])
-        # else:
-        #     if kw['ax_scale'] in ['logy', 'loglog', 'semilogy']:
-        #         ymax = np.log10(ymax) + kw['ax_lim_pad']*\
+        else:
+            if kw['ax_scale'] in ['logy', 'loglog', 'semilogy']:
+                 #ymax = np.log10(ymax) + kw['ax_lim_pad']*\
         #                np.log10(ydelta)/(1-2*kw['ax_lim_pad'])
         #         ymax = 10**ymax
-        #     else:
+                ymax = 10**(np.log10(ymax) + kw['ax_lim_pad'] * ydelta)
+            else:
         #         ymax += kw['ax_lim_pad']*ydelta/(1-2*kw['ax_lim_pad'])
-        #     ax.set_ylim(right=ymax)
+                ymax += kw['ax_lim_pad']*ydelta
+            ax.set_ylim(top=ymax)
 
         # Handle the twinx case
         if kw['twinx']:
@@ -2543,15 +2576,15 @@ def set_axes_rc_labels(ax, ir, ic, r, c, kw, design):
 def set_axes_scale(ax, kw):
     """
     Set the scale type of the axes
-    
+
     Args:
-        ax (mpl axes): current axes to scale 
+        ax (mpl axes): current axes to scale
         kw (dict): kwargs dict
 
     Returns:
         axes scale type
     """
-    
+
     if kw['ax_scale'] == 'loglog':
         plotter = ax.loglog
     elif kw['ax_scale'] == 'semilogx' or kw['ax_scale'] == 'logx':
@@ -2560,31 +2593,31 @@ def set_axes_scale(ax, kw):
         plotter = ax.semilogy
     else:
         plotter = ax.plot
-    
+
     return plotter
 
 
 def set_axes_ticks(ax, kw, y_only=False):
     """
     Configure the axes tick marks
-    
+
     Args:
-        ax (mpl axes): current axes to scale 
+        ax (mpl axes): current axes to scale
         kw (dict): kwargs dict
         y_only (bool): flag to access on the y-axis ticks
 
     Returns:
         axes scale type
     """
-    
+
     # General tick parameters
     if not y_only:
         ax.tick_params(axis='both',
                        which='major',
                        pad=kw['ax_label_pad'],
-                       labelsize=kw['tick_font_size'], 
+                       labelsize=kw['tick_font_size'],
                        colors=kw['tick_label_color'])
-    
+
     # Configure separate labels on each subplot case
     if kw['separate_labels']:
         if not y_only:
@@ -2627,9 +2660,9 @@ def set_axes_ticks(ax, kw, y_only=False):
 def set_data_transformation(df, x, y, z, kw):
     """
     Transform x, y, or z data
-    
+
     Args:
-        df (pd.DataFrame): current DataFrame 
+        df (pd.DataFrame): current DataFrame
         x (str): x column name
         y (list): y column names
         z (str): z column name
@@ -2638,7 +2671,7 @@ def set_data_transformation(df, x, y, z, kw):
     Returns:
         updated DataFrame
     """
-    
+
     if x is not None:
         if kw['xtrans'] == 'abs':
             df.loc[:, x] = abs(df[x])
