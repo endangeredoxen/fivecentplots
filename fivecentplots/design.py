@@ -133,11 +133,11 @@ class FigDesign:
             self.col_labels = self.col_label_size + self.col_label_ws
         else:
             self.col_labels = 0
-        
+
         # # Update title position
         # if self.col_labels > 0:
             # self.title_ax_ws += self.col_labels
-        
+
         # Weird spacing defaults out of our control
         self.fig_right_border = 6
         self.leg_top_offset = 8
@@ -234,13 +234,13 @@ class FigDesign:
         """
         Calculate the subplots_adjust parameters for the axes
         """
-        
+
         self.left = self.fig_ax_ws/self.fig_w_px
         self.right = (self.fig_ax_ws + self.ax_w*self.ncol + \
                       self.col_padding*(self.ncol-1))/self.fig_w_px
         self.top = 1 - (self.fig_title_ws + self.title_h + \
-                   self.title_ax_ws + self.col_labels)/self.fig_h_px
-        self.bottom = (self.leg_overflow + self.ax_fig_ws)/self.fig_h_px
+                   self.title_ax_ws + self.col_labels)/self.fig_h/self.dpi
+        self.bottom = (self.leg_overflow + self.ax_fig_ws)/self.fig_h/self.dpi
 
     def get_title_position(self):
         """
@@ -251,7 +251,7 @@ class FigDesign:
                             self.ax_label_pad*self.ncol)/self.ax_h
         self.title_top = self.title_bottom+(self.title_ax_ws+
                          self.title_h)/self.ax_h
-        
+
         self.title_h_px = self.title_h
         self.title_w_px = self.fig_w_px
         self.title_h = self.title_h/self.ax_h

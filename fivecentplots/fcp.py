@@ -365,6 +365,21 @@ def boxplot(**kwargs):
                 # Subset the data
                 df_sub = get_rc_subset(df_fig, r, c, kw)
 
+                # Get the changes df
+                groups = df_sub.groupby(kw['groups'])
+
+                # Order the group labels with natsorting
+                gidx = []
+                for i, (n, g) in enumerate(groups):
+                    gidx += [n]
+                gidx = natsorted(gidx)
+
+                # Make indices df
+                indices = pd.DataFrame(gidx)
+                num_groups = groups.ngroups
+                changes = index_changes(indices, num_groups)
+
+
                 num_groups = 0
                 if kw['groups'] is not None:
                     groups = df_sub.groupby(kw['groups'])
@@ -539,6 +554,8 @@ def boxplot(**kwargs):
         # Save and optionally open
         save(fig, filename, kw)
 
+    mplp.close('all')
+
     return design
 
 
@@ -575,6 +592,13 @@ def contour(**kwargs):
         design, fig, axes, kw = make_fig_and_ax(kw, nrow, ncol)
         ax2 = None
 
+        # Handle colormaps
+        if kw['cmap']=='jmp_spectral':
+            cmap = jmp_spectral
+        elif kw['cmap'] is not None:
+            cmap = mplp.get_cmap(kw['cmap'])
+
+
         # Make the plots by row and by column
         for ir, r in enumerate(rows):
             for ic, c in enumerate(cols):
@@ -602,12 +626,34 @@ def contour(**kwargs):
                 yy = np.array(df_sub[y[0]])
                 zz = np.array(df_sub[z])
 
+                # Handle colormaps
+                if kw['cmap'] == 'jmp_spectral':
+                    cmap = jmp_spectral
+                elif kw['cmap'] is not None:
+                    cmap = mplp.get_cmap(kw['cmap'])
+                elif fcp_params['cmap'] == 'jmp_spectral':
+                    cmap = jmp_spectral
+                elif fcp_params['cmap'] is not None:
+                    cmap = mplp.get_cmap(fcp_params['cmap'])
+                else:
+                    cmap = mplp.get_cmap('inferno')
+
                 # Make the grid
                 xi = np.linspace(min(xx), max(xx))
                 yi = np.linspace(min(yy), max(yy))
                 zi = mlab.griddata(xx, yy, zz, xi, yi, interp='linear')
                 cc = contour(xi, yi, zi, kw['levels'],
-                             line_width=kw['line_width'])
+                             line_width=kw['line_width'], cmap=cmap)
+
+                # Set the axes ranges
+                if kw['xmin'] is None:
+                    kw['xmin'] = min(xi)
+                if kw['xmax'] is None:
+                    kw['xmax'] = max(xi)
+                if kw['ymin'] is None:
+                    kw['ymin'] = min(yi)
+                if kw['ymax'] is None:
+                    kw['ymax'] = max(yi)
 
                 # Adjust the tick marks
                 axes[ir, ic] = set_axes_ticks(axes[ir, ic], kw)
@@ -680,6 +726,7 @@ def df_filter(df, filt):
 
     # Remove spaces from
     cols_orig = [f for f in df.columns]
+    cols_new = ['fCp%s' % f for f in cols_orig.copy()]
     cols_new = [f.replace(' ', '_')
                  .replace('.', 'dot')
                  .replace('[', '')
@@ -693,9 +740,59 @@ def df_filter(df, filt):
                  .replace('/', '_')
                  .replace('@', 'at')
                  .replace('%', 'percent')
-                for f in cols_orig.copy()]
+
+                for f in cols_new]
 
     df2.columns = cols_new
+
+    # Modify the filter
+    bool_ops = ['&', '|']
+    for ibo, bo in enumerate(bool_ops):
+        temp = filt.split(bo)
+        if ibo > 0 and len(temp) == 1:
+            continue
+        temp = [f.lstrip(' ').rstrip(' ') for f in temp]
+
+        operators = ['==', '<', '>', '!=']
+        for it, t in enumerate(temp):
+            # Temporarily remove any parentheses
+            parenStart = True if t[0] == '(' else False
+            parenEnd = True if t[-1] == ')' else False
+            t = t.replace('(', '').replace(')', '')
+            # Loop over the operators
+            for op in operators:
+                if op not in t:
+                    continue
+                vals = t.split(op)
+                if len(vals) == 2:
+                    idx = 0
+                elif len(vals) == 3:
+                    idx = 1
+                else:
+                    raise ValueError('Bad filter expression')
+                vals = [f.lstrip(' ').rstrip(' ').replace(' ', '_')
+                        for f in vals]
+                orig_val = vals[idx]
+                if ibo == 0 and vals[idx][0] != '=':
+                    vals[idx] = 'fCp%s' % vals[idx]
+                elif ibo == 0 and vals[idx][0] == '=':
+                    vals[idx] = '=fCp%s' % vals[idx][1:]
+                vals[idx] = vals[idx].replace('.', 'dot') \
+                                     .replace('[', '') \
+                                     .replace(']', '') \
+                                     .replace('-', '_') \
+                                     .replace('^', '') \
+                                     .replace('/', '_') \
+                                     .replace('@', 'at') \
+                                     .replace('%', 'percent')
+                if orig_val == vals[idx+1]:
+                    vals[idx+1] = vals[idx]
+                if parenStart:
+                    vals[0] = '(' + vals[0]
+                if parenEnd:
+                    vals[-1] = vals[-1] + ')'
+                temp[it] = op.join(vals)
+        filt = bo.join(temp)
 
     # Apply the filter
     df2 = df2.query(filt)
@@ -757,10 +854,10 @@ def get_current_values(df, text, key='@'):
             val = r.group(1)
             pos = r.span()
             if val in df.columns:
-                val = '%s' % df[val].iloc[0]
+                val = df[val].iloc[0]
             else:
                 val = ''
-            text = text[0:pos[0]] + val + text[pos[1]:]
+            text = text[0:pos[0]] + str(val) + text[pos[1]:]
 
     return text
 
@@ -2240,6 +2337,8 @@ def plot(**kwargs):
         # Reset values for next loop
         kw['leg_items'] = []
 
+    mplp.close('all')
+
     return design
 
 
@@ -2252,8 +2351,10 @@ def reload_defaults():
     import defaults
     importlib.reload(defaults)
     fcp_params = defaults.fcp_params
-    palette = defaults.palette
-    markers = defaults.markers
+    global palette
+    palette = 10*defaults.palette
+    global markers
+    markers = 10*defaults.markers
 
     return fcp_params, palette, markers
 
@@ -2298,7 +2399,10 @@ def set_axes_colors(ax, kw):
         updated axis
     """
 
-    ax.set_axis_bgcolor(kw['ax_face_color'])
+    try:
+        ax.set_facecolor(kw['ax_face_color'])
+    except:
+        ax.set_axis_bgcolor(kw['ax_face_color'])
     ax.spines['bottom'].set_color(kw['ax_edge_color'])
     ax.spines['top'].set_color(kw['ax_edge_color'])
     ax.spines['right'].set_color(kw['ax_edge_color'])

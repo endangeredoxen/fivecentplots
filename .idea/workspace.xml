@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9d4c2f01-dbce-4ddb-aa09-d7a2aef23aca" name="Default" comment="" />
+    <list default="true" id="9d4c2f01-dbce-4ddb-aa09-d7a2aef23aca" name="Default" comment="* cleaned out some rcparms that are depricated in matplotlib 2.0&#10;* fixed bug with really long legends; added more marker/color repeats&#10;* default cmap changed to inferno&#10;* fixed grouping bug in boxplot">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/design.py" afterPath="$PROJECT_DIR$/fivecentplots/design.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/fcp.py" afterPath="$PROJECT_DIR$/fivecentplots/fcp.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/themes/gray.py" afterPath="$PROJECT_DIR$/fivecentplots/themes/gray.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/themes/white.py" afterPath="$PROJECT_DIR$/fivecentplots/themes/white.py" />
+    </list>
     <ignored path="fivecentplots.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -27,63 +33,44 @@
             <entry file="file://$PROJECT_DIR$/fivecentplots/fcp.py">
               <provider selected="true" editor-type-id="text-editor">
                 <state vertical-scroll-proportion="0.0">
-                  <caret line="1180" column="48" selection-start-line="1180" selection-start-column="48" selection-end-line="1180" selection-end-column="48" />
+                  <caret line="1299" column="12" selection-start-line="1299" selection-start-column="12" selection-end-line="1299" selection-end-column="12" />
                   <folding>
-                    <element signature="e#1759#3054#0" expanded="false" />
-                    <element signature="e#1759#2330#1" expanded="false" />
-                    <element signature="e#2375#2553#0" expanded="false" />
-                    <element signature="e#2375#2435#1" expanded="false" />
-                    <element signature="e#3227#3976#1" expanded="false" />
-                    <element signature="e#4860#5571#0" expanded="false" />
-                    <element signature="e#4860#5098#1" expanded="false" />
-                    <element signature="e#5601#6175#0" expanded="false" />
-                    <element signature="e#5601#5764#1" expanded="false" />
-                    <element signature="e#6205#16013#0" expanded="false" />
-                    <element signature="e#6205#6985#1" expanded="false" />
-                    <element signature="e#7050#7465#0" expanded="false" />
-                    <element signature="e#16043#16098#1" expanded="false" />
-                    <element signature="e#19869#20840#0" expanded="false" />
-                    <element signature="e#19869#20300#1" expanded="false" />
-                    <element signature="e#20874#21619#0" expanded="false" />
-                    <element signature="e#20874#21049#1" expanded="false" />
-                    <element signature="e#21663#22182#0" expanded="false" />
-                    <element signature="e#21663#21900#1" expanded="false" />
-                    <element signature="e#22226#23225#0" expanded="false" />
-                    <element signature="e#22226#22439#1" expanded="false" />
-                    <element signature="e#23262#24833#0" expanded="false" />
-                    <element signature="e#23262#23609#1" expanded="false" />
-                    <element signature="e#24873#25399#0" expanded="false" />
-                    <element signature="e#24873#25116#1" expanded="false" />
-                    <element signature="e#25433#25870#0" expanded="false" />
-                    <element signature="e#25433#25589#1" expanded="false" />
-                    <element signature="e#25901#40407#1" expanded="false" />
-                    <element signature="e#54696#54993#0" expanded="false" />
-                    <element signature="e#54696#54886#1" expanded="false" />
-                    <element signature="e#55037#55267#1" expanded="false" />
-                    <element signature="e#56624#57364#0" expanded="false" />
-                    <element signature="e#56624#56755#1" expanded="false" />
-                    <element signature="e#57397#57856#0" expanded="false" />
-                    <element signature="e#57883#85861#0" expanded="false" />
-                    <element signature="e#85891#86140#0" expanded="false" />
-                    <element signature="e#85891#85928#1" expanded="false" />
-                    <element signature="e#86176#86533#0" expanded="false" />
-                    <element signature="e#86176#86331#1" expanded="false" />
-                    <element signature="e#86569#87004#0" expanded="false" />
-                    <element signature="e#86569#86729#1" expanded="false" />
-                    <element signature="e#87055#88252#0" expanded="false" />
-                    <element signature="e#87055#87288#1" expanded="false" />
-                    <element signature="e#88301#88567#1" expanded="false" />
-                    <element signature="e#89662#94532#0" expanded="false" />
-                    <element signature="e#89662#89747#1" expanded="false" />
-                    <element signature="e#94593#95992#0" expanded="false" />
-                    <element signature="e#94593#94927#1" expanded="false" />
-                    <element signature="e#96027#96203#1" expanded="false" />
-                    <element signature="e#96574#96807#1" expanded="false" />
-                    <element signature="e#98696#100293#0" expanded="false" />
-                    <element signature="e#98696#98964#1" expanded="false" />
-                    <element signature="e#100342#101389#0" expanded="false" />
-                    <element signature="e#100342#100541#1" expanded="false" />
-                    <element signature="e#101436#102838#0" expanded="false" />
+                    <marker date="1504894197958" expanded="false" signature="507:880" placeholder="import ..." />
+                    <marker date="1504894197958" expanded="true" signature="1754:3435" placeholder="..." />
+                    <marker date="1504894197958" expanded="false" signature="1759:2330" placeholder="&quot;&quot;&quot;Adds curve data to an axes...&quot;&quot;&quot;" />
+                    <marker date="1504894197958" expanded="true" signature="2362:2549" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="2371:2431" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+                    <marker date="1504894197958" expanded="true" signature="3603:5189" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="3608:4357" placeholder="&quot;&quot;&quot;Add a label to the plot...&quot;&quot;&quot;" />
+                    <marker date="1504894197958" expanded="true" signature="5232:5948" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="5237:5475" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+                    <marker date="1504894197958" expanded="true" signature="5973:6552" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="5978:6141" placeholder="&quot;&quot;&quot;Add axhlines and axvlines...&quot;&quot;&quot;" />
+                    <marker date="1504894197958" expanded="true" signature="6577:12351" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="6582:7362" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+                    <marker date="1504894197958" expanded="true" signature="7417:7942" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="7982:8741" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="7991:8314" placeholder="&quot;&quot;&quot;Make a DataFrame that shows when groups vals change; used for grouping labels...&quot;&quot;&quot;" />
+                    <marker date="1504894197958" expanded="true" signature="100386:100659" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="100705:101907" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="100710:100943" placeholder="&quot;&quot;&quot;Style the grid lines and toggle visibility...&quot;&quot;&quot;" />
+                    <marker date="1504894197958" expanded="true" signature="101951:103254" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="101956:102222" placeholder="&quot;&quot;&quot;Set the axes labels...&quot;&quot;&quot;" />
+                    <marker date="1504894197958" expanded="true" signature="103312:108615" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="103317:103402" placeholder="&quot;&quot;&quot;Set the axes ranges...&quot;&quot;&quot;" />
+                    <marker date="1504894197958" expanded="true" signature="108671:110075" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="108676:109010" placeholder="&quot;&quot;&quot;Add the row/column label boxes...&quot;&quot;&quot;" />
+                    <marker date="1504894197958" expanded="true" signature="110105:110595" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="110110:110281" placeholder="&quot;&quot;&quot;Set the scale type of the axes...&quot;&quot;&quot;" />
+                    <marker date="1504894197958" expanded="true" signature="110639:112699" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="110644:110872" placeholder="&quot;&quot;&quot;Configure the axes tick marks...&quot;&quot;&quot;" />
+                    <marker date="1504894197958" expanded="true" signature="112747:114797" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="112752:113015" placeholder="&quot;&quot;&quot;Transform x, y, or z data...&quot;&quot;&quot;" />
+                    <marker date="1504894197958" expanded="true" signature="113016:114797" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="114841:115543" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="114846:115045" placeholder="&quot;&quot;&quot;Add a figure title...&quot;&quot;&quot;" />
+                    <marker date="1504894197958" expanded="true" signature="115588:117631" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="117655:117726" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
                   </folding>
                 </state>
               </provider>
@@ -119,13 +106,25 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="design.py" pinned="false" current-in-tab="true">
+          <file leaf-file-name="design.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/fivecentplots/design.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.7627119">
-                  <caret line="147" column="0" selection-start-line="147" selection-start-column="0" selection-end-line="147" selection-end-column="0" />
+                <state vertical-scroll-proportion="0.0">
+                  <caret line="146" column="0" selection-start-line="146" selection-start-column="0" selection-end-line="146" selection-end-column="0" />
                   <folding>
                     <element signature="e#0#39#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="gray.py" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/fivecentplots/themes/gray.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.6734007">
+                  <caret line="412" column="12" selection-start-line="412" selection-start-column="12" selection-end-line="412" selection-end-column="12" />
+                  <folding>
+                    <element signature="e#0#24#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
@@ -135,63 +134,48 @@
       </split-first>
       <split-second>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="fcp.py" pinned="false" current-in-tab="true">
+          <file leaf-file-name="fcp.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/fivecentplots/fcp.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.37157756">
-                  <caret line="2466" column="30" selection-start-line="2466" selection-start-column="30" selection-end-line="2466" selection-end-column="30" />
+                <state vertical-scroll-proportion="0.0">
+                  <caret line="2614" column="30" selection-start-line="2614" selection-start-column="30" selection-end-line="2614" selection-end-column="30" />
                   <folding>
-                    <element signature="e#1759#3054#0" expanded="false" />
-                    <element signature="e#1759#2330#1" expanded="false" />
-                    <element signature="e#2375#2553#0" expanded="false" />
-                    <element signature="e#2375#2435#1" expanded="false" />
-                    <element signature="e#3227#3976#1" expanded="false" />
-                    <element signature="e#4860#5571#0" expanded="false" />
-                    <element signature="e#4860#5098#1" expanded="false" />
-                    <element signature="e#5601#6175#0" expanded="false" />
-                    <element signature="e#5601#5764#1" expanded="false" />
-                    <element signature="e#6205#16013#0" expanded="false" />
-                    <element signature="e#6205#6985#1" expanded="false" />
-                    <element signature="e#7050#7465#0" expanded="false" />
-                    <element signature="e#16043#16098#1" expanded="false" />
-                    <element signature="e#19869#20840#0" expanded="false" />
-                    <element signature="e#19869#20300#1" expanded="false" />
-                    <element signature="e#20874#21619#0" expanded="false" />
-                    <element signature="e#20874#21049#1" expanded="false" />
-                    <element signature="e#21663#22182#0" expanded="false" />
-                    <element signature="e#21663#21900#1" expanded="false" />
-                    <element signature="e#22226#23225#0" expanded="false" />
-                    <element signature="e#22226#22439#1" expanded="false" />
-                    <element signature="e#23262#23609#1" expanded="false" />
-                    <element signature="e#24873#25399#0" expanded="false" />
-                    <element signature="e#24873#25116#1" expanded="false" />
-                    <element signature="e#25433#25870#0" expanded="false" />
-                    <element signature="e#25433#25589#1" expanded="false" />
-                    <element signature="e#25901#40407#1" expanded="false" />
-                    <element signature="e#54696#54993#0" expanded="false" />
-                    <element signature="e#54696#54886#1" expanded="false" />
-                    <element signature="e#55037#55267#1" expanded="false" />
-                    <element signature="e#56624#57364#0" expanded="false" />
-                    <element signature="e#56624#56755#1" expanded="false" />
-                    <element signature="e#57397#57856#0" expanded="false" />
-                    <element signature="e#85891#86140#0" expanded="false" />
-                    <element signature="e#85891#85928#1" expanded="false" />
-                    <element signature="e#86176#86533#0" expanded="false" />
-                    <element signature="e#86176#86331#1" expanded="false" />
-                    <element signature="e#86569#87004#0" expanded="false" />
-                    <element signature="e#86569#86729#1" expanded="false" />
-                    <element signature="e#87055#88252#0" expanded="false" />
-                    <element signature="e#87055#87288#1" expanded="false" />
-                    <element signature="e#88301#88567#1" expanded="false" />
-                    <element signature="e#89662#89747#1" expanded="false" />
-                    <element signature="e#94593#95992#0" expanded="false" />
-                    <element signature="e#94593#94927#1" expanded="false" />
-                    <element signature="e#96027#96203#1" expanded="false" />
-                    <element signature="e#96574#96807#1" expanded="false" />
-                    <element signature="e#98696#100293#0" expanded="false" />
-                    <element signature="e#98696#98964#1" expanded="false" />
-                    <element signature="e#100342#100541#1" expanded="false" />
-                    <element signature="e#101436#102838#0" expanded="false" />
+                    <marker date="1504894197958" expanded="false" signature="507:880" placeholder="import ..." />
+                    <marker date="1504894197958" expanded="true" signature="1754:3435" placeholder="..." />
+                    <marker date="1504894197958" expanded="false" signature="1759:2330" placeholder="&quot;&quot;&quot;Adds curve data to an axes...&quot;&quot;&quot;" />
+                    <marker date="1504894197958" expanded="true" signature="2362:2549" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="2371:2431" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+                    <marker date="1504894197958" expanded="true" signature="3603:5189" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="3608:4357" placeholder="&quot;&quot;&quot;Add a label to the plot...&quot;&quot;&quot;" />
+                    <marker date="1504894197958" expanded="true" signature="5232:5948" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="5237:5475" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+                    <marker date="1504894197958" expanded="true" signature="5973:6552" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="5978:6141" placeholder="&quot;&quot;&quot;Add axhlines and axvlines...&quot;&quot;&quot;" />
+                    <marker date="1504894197958" expanded="true" signature="6577:12351" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="6582:7362" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+                    <marker date="1504894197958" expanded="true" signature="7417:7942" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="7982:8741" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="7991:8314" placeholder="&quot;&quot;&quot;Make a DataFrame that shows when groups vals change; used for grouping labels...&quot;&quot;&quot;" />
+                    <marker date="1504894197958" expanded="true" signature="100386:100659" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="100705:101907" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="100710:100943" placeholder="&quot;&quot;&quot;Style the grid lines and toggle visibility...&quot;&quot;&quot;" />
+                    <marker date="1504894197958" expanded="true" signature="101951:103254" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="101956:102222" placeholder="&quot;&quot;&quot;Set the axes labels...&quot;&quot;&quot;" />
+                    <marker date="1504894197958" expanded="true" signature="103312:108615" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="103317:103402" placeholder="&quot;&quot;&quot;Set the axes ranges...&quot;&quot;&quot;" />
+                    <marker date="1504894197958" expanded="true" signature="108671:110075" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="108676:109010" placeholder="&quot;&quot;&quot;Add the row/column label boxes...&quot;&quot;&quot;" />
+                    <marker date="1504894197958" expanded="true" signature="110105:110595" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="110110:110281" placeholder="&quot;&quot;&quot;Set the scale type of the axes...&quot;&quot;&quot;" />
+                    <marker date="1504894197958" expanded="true" signature="110639:112699" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="110644:110872" placeholder="&quot;&quot;&quot;Configure the axes tick marks...&quot;&quot;&quot;" />
+                    <marker date="1504894197958" expanded="true" signature="112747:114797" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="112752:113015" placeholder="&quot;&quot;&quot;Transform x, y, or z data...&quot;&quot;&quot;" />
+                    <marker date="1504894197958" expanded="true" signature="113016:114797" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="114841:115543" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="114846:115045" placeholder="&quot;&quot;&quot;Add a figure title...&quot;&quot;&quot;" />
+                    <marker date="1504894197958" expanded="true" signature="115588:117631" placeholder="..." />
+                    <marker date="1504894197958" expanded="true" signature="117655:117726" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
                   </folding>
                 </state>
               </provider>
@@ -209,23 +193,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="white.py" pinned="false" current-in-tab="false">
+          <file leaf-file-name="white.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/fivecentplots/themes/white.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0">
-                  <caret line="48" column="40" selection-start-line="48" selection-start-column="40" selection-end-line="48" selection-end-column="40" />
-                  <folding>
-                    <element signature="e#0#24#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="gray.py" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/fivecentplots/themes/gray.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0">
-                  <caret line="30" column="14" selection-start-line="30" selection-start-column="14" selection-end-line="30" selection-end-column="14" />
+                <state vertical-scroll-proportion="0.34802786">
+                  <caret line="323" column="34" selection-start-line="323" selection-start-column="34" selection-end-line="323" selection-end-column="34" />
                   <folding>
                     <element signature="e#0#24#0" expanded="true" />
                   </folding>
@@ -259,7 +231,7 @@
             <entry file="file://$PROJECT_DIR$/fivecentplots/design.py">
               <provider selected="true" editor-type-id="text-editor">
                 <state vertical-scroll-proportion="0.0">
-                  <caret line="211" column="49" selection-start-line="210" selection-start-column="24" selection-end-line="211" selection-end-column="49" />
+                  <caret line="210" column="13" selection-start-line="210" selection-start-column="13" selection-end-line="210" selection-end-column="13" />
                   <folding>
                     <element signature="e#0#39#0" expanded="true" />
                   </folding>
@@ -287,21 +259,16 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="dsf" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/fivecentplots/tests/dsf">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0">
-                  <caret line="100" column="13" selection-start-line="100" selection-start-column="13" selection-end-line="100" selection-end-column="13" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
         </leaf>
       </split-second>
     </splitter>
   </component>
   <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="Steve Nicholes" />
+      </list>
+    </option>
     <option name="UPDATE_TYPE" value="MERGE" />
     <option name="ROOT_SYNC" value="DONT_SYNC" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -336,18 +303,18 @@
         <option value="$PROJECT_DIR$/fivecentplots/doc/conf.py" />
         <option value="$PROJECT_DIR$/fivecentplots/__init__.py" />
         <option value="$PROJECT_DIR$/fivecentplots/tests/plot_test.py" />
-        <option value="$PROJECT_DIR$/fivecentplots/themes/gray.py" />
-        <option value="$PROJECT_DIR$/fivecentplots/themes/white.py" />
-        <option value="$PROJECT_DIR$/fivecentplots/fcp.py" />
         <option value="$PROJECT_DIR$/fivecentplots/design.py" />
+        <option value="$PROJECT_DIR$/fivecentplots/fcp.py" />
+        <option value="$PROJECT_DIR$/fivecentplots/themes/white.py" />
+        <option value="$PROJECT_DIR$/fivecentplots/themes/gray.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-2" />
-    <option name="y" value="2" />
-    <option name="width" value="1552" />
-    <option name="height" value="905" />
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1936" />
+    <option name="height" value="1056" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -451,7 +418,7 @@
   <component name="PropertiesComponent">
     <property name="settings.editor.selected.configurable" value="vcs.Git" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../pywebify" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -679,10 +646,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-2" y="2" width="1552" height="905" extended-state="0" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.108072914" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1078125" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -722,14 +689,15 @@
     <MESSAGE value="add boxplot fill&#10;error handling" />
     <MESSAGE value="boxplot typo fixed" />
     <MESSAGE value="docstring update and added boxplot docs via sphinx" />
-    <option name="LAST_COMMIT_MESSAGE" value="docstring update and added boxplot docs via sphinx" />
+    <MESSAGE value="* cleaned out some rcparms that are depricated in matplotlib 2.0&#10;* fixed bug with really long legends; added more marker/color repeats&#10;* default cmap changed to inferno&#10;* fixed grouping bug in boxplot" />
+    <option name="LAST_COMMIT_MESSAGE" value="* cleaned out some rcparms that are depricated in matplotlib 2.0&#10;* fixed bug with really long legends; added more marker/color repeats&#10;* default cmap changed to inferno&#10;* fixed grouping bug in boxplot" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/fivecentplots/design.py</url>
-          <line>201</line>
+          <line>200</line>
           <option name="timeStamp" value="6" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
@@ -743,66 +711,63 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/fivecentplots/doc/overview.rst">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fivecentplots/doc/keyword.rst">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/fivecentplots/fcp.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="1174" column="48" selection-start-line="1174" selection-start-column="48" selection-end-line="1174" selection-end-column="48" />
           <folding>
-            <element signature="e#1759#3054#0" expanded="false" />
-            <element signature="e#1759#2330#1" expanded="false" />
-            <element signature="e#2375#2553#0" expanded="false" />
-            <element signature="e#2375#2435#1" expanded="false" />
-            <element signature="e#3227#3976#1" expanded="false" />
-            <element signature="e#4860#5571#0" expanded="false" />
-            <element signature="e#4860#5098#1" expanded="false" />
-            <element signature="e#5601#6175#0" expanded="false" />
-            <element signature="e#5601#5764#1" expanded="false" />
-            <element signature="e#6205#16013#0" expanded="false" />
-            <element signature="e#6205#6985#1" expanded="false" />
-            <element signature="e#7050#7465#0" expanded="false" />
-            <element signature="e#16043#16098#1" expanded="false" />
-            <element signature="e#19869#20840#0" expanded="false" />
-            <element signature="e#19869#20300#1" expanded="false" />
-            <element signature="e#20874#21619#0" expanded="false" />
-            <element signature="e#20874#21049#1" expanded="false" />
-            <element signature="e#21663#22182#0" expanded="false" />
-            <element signature="e#21663#21900#1" expanded="false" />
-            <element signature="e#22226#23225#0" expanded="false" />
-            <element signature="e#22226#22439#1" expanded="false" />
-            <element signature="e#23262#24833#0" expanded="false" />
-            <element signature="e#23262#23609#1" expanded="false" />
-            <element signature="e#24873#25399#0" expanded="false" />
-            <element signature="e#24873#25116#1" expanded="false" />
-            <element signature="e#25433#25870#0" expanded="false" />
-            <element signature="e#25433#25589#1" expanded="false" />
-            <element signature="e#25901#40407#1" expanded="false" />
-            <element signature="e#54696#54993#0" expanded="false" />
-            <element signature="e#54696#54886#1" expanded="false" />
-            <element signature="e#55037#55267#1" expanded="false" />
-            <element signature="e#56624#57364#0" expanded="false" />
-            <element signature="e#56624#56755#1" expanded="false" />
-            <element signature="e#57397#57856#0" expanded="false" />
-            <element signature="e#57883#85861#0" expanded="false" />
-            <element signature="e#85891#86140#0" expanded="false" />
-            <element signature="e#85891#85928#1" expanded="false" />
-            <element signature="e#86176#86533#0" expanded="false" />
-            <element signature="e#86176#86331#1" expanded="false" />
-            <element signature="e#86569#87004#0" expanded="false" />
-            <element signature="e#86569#86729#1" expanded="false" />
-            <element signature="e#87055#88252#0" expanded="false" />
-            <element signature="e#87055#87288#1" expanded="false" />
-            <element signature="e#88301#88567#1" expanded="false" />
-            <element signature="e#89662#94532#0" expanded="false" />
-            <element signature="e#89662#89747#1" expanded="false" />
-            <element signature="e#94593#95992#0" expanded="false" />
-            <element signature="e#94593#94927#1" expanded="false" />
-            <element signature="e#96027#96203#1" expanded="false" />
-            <element signature="e#96574#96807#1" expanded="false" />
-            <element signature="e#98696#100293#0" expanded="false" />
-            <element signature="e#98696#98964#1" expanded="false" />
-            <element signature="e#100342#101389#0" expanded="false" />
-            <element signature="e#100342#100541#1" expanded="false" />
-            <element signature="e#101436#102838#0" expanded="false" />
+            <marker date="1504894197958" expanded="false" signature="507:880" placeholder="import ..." />
+            <marker date="1504894197958" expanded="true" signature="1754:3435" placeholder="..." />
+            <marker date="1504894197958" expanded="false" signature="1759:2330" placeholder="&quot;&quot;&quot;Adds curve data to an axes...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="2362:2549" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="2371:2431" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="3603:5189" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="3608:4357" placeholder="&quot;&quot;&quot;Add a label to the plot...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="5232:5948" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="5237:5475" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="5973:6552" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="5978:6141" placeholder="&quot;&quot;&quot;Add axhlines and axvlines...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="6577:12351" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="6582:7362" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="7417:7942" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="7982:8741" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="7991:8314" placeholder="&quot;&quot;&quot;Make a DataFrame that shows when groups vals change; used for grouping labels...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="100386:100659" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="100705:101907" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="100710:100943" placeholder="&quot;&quot;&quot;Style the grid lines and toggle visibility...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="101951:103254" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="101956:102222" placeholder="&quot;&quot;&quot;Set the axes labels...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="103312:108615" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="103317:103402" placeholder="&quot;&quot;&quot;Set the axes ranges...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="108671:110075" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="108676:109010" placeholder="&quot;&quot;&quot;Add the row/column label boxes...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="110105:110595" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="110110:110281" placeholder="&quot;&quot;&quot;Set the scale type of the axes...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="110639:112699" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="110644:110872" placeholder="&quot;&quot;&quot;Configure the axes tick marks...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="112747:114797" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="112752:113015" placeholder="&quot;&quot;&quot;Transform x, y, or z data...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="113016:114797" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="114841:115543" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="114846:115045" placeholder="&quot;&quot;&quot;Add a figure title...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="115588:117631" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="117655:117726" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
           </folding>
         </state>
       </provider>
@@ -881,14 +846,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/fivecentplots/tests/dsf">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="100" column="13" selection-start-line="100" selection-start-column="13" selection-end-line="100" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/fivecentplots/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -901,61 +858,42 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="99" column="44" selection-start-line="99" selection-start-column="44" selection-end-line="99" selection-end-column="44" />
           <folding>
-            <element signature="e#1759#3054#0" expanded="false" />
-            <element signature="e#1759#2330#1" expanded="false" />
-            <element signature="e#2375#2553#0" expanded="false" />
-            <element signature="e#2375#2435#1" expanded="false" />
-            <element signature="e#3227#3976#1" expanded="false" />
-            <element signature="e#4860#5571#0" expanded="false" />
-            <element signature="e#4860#5098#1" expanded="false" />
-            <element signature="e#5601#6175#0" expanded="false" />
-            <element signature="e#5601#5764#1" expanded="false" />
-            <element signature="e#6205#16013#0" expanded="false" />
-            <element signature="e#6205#6985#1" expanded="false" />
-            <element signature="e#7050#7465#0" expanded="false" />
-            <element signature="e#16043#16098#1" expanded="false" />
-            <element signature="e#19869#20840#0" expanded="false" />
-            <element signature="e#19869#20300#1" expanded="false" />
-            <element signature="e#20874#21619#0" expanded="false" />
-            <element signature="e#20874#21049#1" expanded="false" />
-            <element signature="e#21663#22182#0" expanded="false" />
-            <element signature="e#21663#21900#1" expanded="false" />
-            <element signature="e#22226#23225#0" expanded="false" />
-            <element signature="e#22226#22439#1" expanded="false" />
-            <element signature="e#23262#24833#0" expanded="false" />
-            <element signature="e#23262#23609#1" expanded="false" />
-            <element signature="e#24873#25399#0" expanded="false" />
-            <element signature="e#24873#25116#1" expanded="false" />
-            <element signature="e#25433#25870#0" expanded="false" />
-            <element signature="e#25433#25589#1" expanded="false" />
-            <element signature="e#25901#40407#1" expanded="false" />
-            <element signature="e#54696#54993#0" expanded="false" />
-            <element signature="e#54696#54886#1" expanded="false" />
-            <element signature="e#55037#55267#1" expanded="false" />
-            <element signature="e#56624#57364#0" expanded="false" />
-            <element signature="e#56624#56755#1" expanded="false" />
-            <element signature="e#57397#57856#0" expanded="false" />
-            <element signature="e#57883#85861#0" expanded="false" />
-            <element signature="e#85891#86140#0" expanded="false" />
-            <element signature="e#85891#85928#1" expanded="false" />
-            <element signature="e#86176#86533#0" expanded="false" />
-            <element signature="e#86176#86331#1" expanded="false" />
-            <element signature="e#86569#87004#0" expanded="false" />
-            <element signature="e#86569#86729#1" expanded="false" />
-            <element signature="e#87055#88252#0" expanded="false" />
-            <element signature="e#87055#87288#1" expanded="false" />
-            <element signature="e#88301#88567#1" expanded="false" />
-            <element signature="e#89662#94532#0" expanded="false" />
-            <element signature="e#89662#89747#1" expanded="false" />
-            <element signature="e#94593#95992#0" expanded="false" />
-            <element signature="e#94593#94927#1" expanded="false" />
-            <element signature="e#96027#96203#1" expanded="false" />
-            <element signature="e#96574#96807#1" expanded="false" />
-            <element signature="e#98696#100293#0" expanded="false" />
-            <element signature="e#98696#98964#1" expanded="false" />
-            <element signature="e#100342#101389#0" expanded="false" />
-            <element signature="e#100342#100541#1" expanded="false" />
-            <element signature="e#101436#102838#0" expanded="false" />
+            <marker date="1504894197958" expanded="false" signature="507:880" placeholder="import ..." />
+            <marker date="1504894197958" expanded="true" signature="1754:3435" placeholder="..." />
+            <marker date="1504894197958" expanded="false" signature="1759:2330" placeholder="&quot;&quot;&quot;Adds curve data to an axes...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="2362:2549" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="2371:2431" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="3603:5189" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="3608:4357" placeholder="&quot;&quot;&quot;Add a label to the plot...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="5232:5948" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="5237:5475" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="5973:6552" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="5978:6141" placeholder="&quot;&quot;&quot;Add axhlines and axvlines...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="6577:12351" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="6582:7362" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="7417:7942" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="7982:8741" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="7991:8314" placeholder="&quot;&quot;&quot;Make a DataFrame that shows when groups vals change; used for grouping labels...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="100386:100659" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="100705:101907" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="100710:100943" placeholder="&quot;&quot;&quot;Style the grid lines and toggle visibility...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="101951:103254" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="101956:102222" placeholder="&quot;&quot;&quot;Set the axes labels...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="103312:108615" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="103317:103402" placeholder="&quot;&quot;&quot;Set the axes ranges...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="108671:110075" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="108676:109010" placeholder="&quot;&quot;&quot;Add the row/column label boxes...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="110105:110595" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="110110:110281" placeholder="&quot;&quot;&quot;Set the scale type of the axes...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="110639:112699" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="110644:110872" placeholder="&quot;&quot;&quot;Configure the axes tick marks...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="112747:114797" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="112752:113015" placeholder="&quot;&quot;&quot;Transform x, y, or z data...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="113016:114797" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="114841:115543" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="114846:115045" placeholder="&quot;&quot;&quot;Add a figure title...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="115588:117631" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="117655:117726" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
           </folding>
         </state>
       </provider>
@@ -979,61 +917,42 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="249" column="24" selection-start-line="249" selection-start-column="24" selection-end-line="249" selection-end-column="24" />
           <folding>
-            <element signature="e#1759#3054#0" expanded="false" />
-            <element signature="e#1759#2330#1" expanded="false" />
-            <element signature="e#2375#2553#0" expanded="false" />
-            <element signature="e#2375#2435#1" expanded="false" />
-            <element signature="e#3227#3976#1" expanded="false" />
-            <element signature="e#4860#5571#0" expanded="false" />
-            <element signature="e#4860#5098#1" expanded="false" />
-            <element signature="e#5601#6175#0" expanded="false" />
-            <element signature="e#5601#5764#1" expanded="false" />
-            <element signature="e#6205#16013#0" expanded="false" />
-            <element signature="e#6205#6985#1" expanded="false" />
-            <element signature="e#7050#7465#0" expanded="false" />
-            <element signature="e#16043#16098#1" expanded="false" />
-            <element signature="e#19869#20840#0" expanded="false" />
-            <element signature="e#19869#20300#1" expanded="false" />
-            <element signature="e#20874#21619#0" expanded="false" />
-            <element signature="e#20874#21049#1" expanded="false" />
-            <element signature="e#21663#22182#0" expanded="false" />
-            <element signature="e#21663#21900#1" expanded="false" />
-            <element signature="e#22226#23225#0" expanded="false" />
-            <element signature="e#22226#22439#1" expanded="false" />
-            <element signature="e#23262#24833#0" expanded="false" />
-            <element signature="e#23262#23609#1" expanded="false" />
-            <element signature="e#24873#25399#0" expanded="false" />
-            <element signature="e#24873#25116#1" expanded="false" />
-            <element signature="e#25433#25870#0" expanded="false" />
-            <element signature="e#25433#25589#1" expanded="false" />
-            <element signature="e#25901#40407#1" expanded="false" />
-            <element signature="e#54696#54993#0" expanded="false" />
-            <element signature="e#54696#54886#1" expanded="false" />
-            <element signature="e#55037#55267#1" expanded="false" />
-            <element signature="e#56624#57364#0" expanded="false" />
-            <element signature="e#56624#56755#1" expanded="false" />
-            <element signature="e#57397#57856#0" expanded="false" />
-            <element signature="e#57883#85861#0" expanded="false" />
-            <element signature="e#85891#86140#0" expanded="false" />
-            <element signature="e#85891#85928#1" expanded="false" />
-            <element signature="e#86176#86533#0" expanded="false" />
-            <element signature="e#86176#86331#1" expanded="false" />
-            <element signature="e#86569#87004#0" expanded="false" />
-            <element signature="e#86569#86729#1" expanded="false" />
-            <element signature="e#87055#88252#0" expanded="false" />
-            <element signature="e#87055#87288#1" expanded="false" />
-            <element signature="e#88301#88567#1" expanded="false" />
-            <element signature="e#89662#94532#0" expanded="false" />
-            <element signature="e#89662#89747#1" expanded="false" />
-            <element signature="e#94593#95992#0" expanded="false" />
-            <element signature="e#94593#94927#1" expanded="false" />
-            <element signature="e#96027#96203#1" expanded="false" />
-            <element signature="e#96574#96807#1" expanded="false" />
-            <element signature="e#98696#100293#0" expanded="false" />
-            <element signature="e#98696#98964#1" expanded="false" />
-            <element signature="e#100342#101389#0" expanded="false" />
-            <element signature="e#100342#100541#1" expanded="false" />
-            <element signature="e#101436#102838#0" expanded="false" />
+            <marker date="1504894197958" expanded="false" signature="507:880" placeholder="import ..." />
+            <marker date="1504894197958" expanded="true" signature="1754:3435" placeholder="..." />
+            <marker date="1504894197958" expanded="false" signature="1759:2330" placeholder="&quot;&quot;&quot;Adds curve data to an axes...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="2362:2549" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="2371:2431" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="3603:5189" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="3608:4357" placeholder="&quot;&quot;&quot;Add a label to the plot...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="5232:5948" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="5237:5475" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="5973:6552" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="5978:6141" placeholder="&quot;&quot;&quot;Add axhlines and axvlines...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="6577:12351" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="6582:7362" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="7417:7942" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="7982:8741" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="7991:8314" placeholder="&quot;&quot;&quot;Make a DataFrame that shows when groups vals change; used for grouping labels...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="100386:100659" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="100705:101907" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="100710:100943" placeholder="&quot;&quot;&quot;Style the grid lines and toggle visibility...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="101951:103254" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="101956:102222" placeholder="&quot;&quot;&quot;Set the axes labels...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="103312:108615" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="103317:103402" placeholder="&quot;&quot;&quot;Set the axes ranges...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="108671:110075" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="108676:109010" placeholder="&quot;&quot;&quot;Add the row/column label boxes...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="110105:110595" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="110110:110281" placeholder="&quot;&quot;&quot;Set the scale type of the axes...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="110639:112699" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="110644:110872" placeholder="&quot;&quot;&quot;Configure the axes tick marks...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="112747:114797" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="112752:113015" placeholder="&quot;&quot;&quot;Transform x, y, or z data...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="113016:114797" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="114841:115543" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="114846:115045" placeholder="&quot;&quot;&quot;Add a figure title...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="115588:117631" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="117655:117726" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
           </folding>
         </state>
       </provider>
@@ -1057,61 +976,42 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="18" column="29" selection-start-line="18" selection-start-column="29" selection-end-line="18" selection-end-column="29" />
           <folding>
-            <element signature="e#1759#3054#0" expanded="false" />
-            <element signature="e#1759#2330#1" expanded="false" />
-            <element signature="e#2375#2553#0" expanded="false" />
-            <element signature="e#2375#2435#1" expanded="false" />
-            <element signature="e#3227#3976#1" expanded="false" />
-            <element signature="e#4860#5571#0" expanded="false" />
-            <element signature="e#4860#5098#1" expanded="false" />
-            <element signature="e#5601#6175#0" expanded="false" />
-            <element signature="e#5601#5764#1" expanded="false" />
-            <element signature="e#6205#16013#0" expanded="false" />
-            <element signature="e#6205#6985#1" expanded="false" />
-            <element signature="e#7050#7465#0" expanded="false" />
-            <element signature="e#16043#16098#1" expanded="false" />
-            <element signature="e#19869#20840#0" expanded="false" />
-            <element signature="e#19869#20300#1" expanded="false" />
-            <element signature="e#20874#21619#0" expanded="false" />
-            <element signature="e#20874#21049#1" expanded="false" />
-            <element signature="e#21663#22182#0" expanded="false" />
-            <element signature="e#21663#21900#1" expanded="false" />
-            <element signature="e#22226#23225#0" expanded="false" />
-            <element signature="e#22226#22439#1" expanded="false" />
-            <element signature="e#23262#24833#0" expanded="false" />
-            <element signature="e#23262#23609#1" expanded="false" />
-            <element signature="e#24873#25399#0" expanded="false" />
-            <element signature="e#24873#25116#1" expanded="false" />
-            <element signature="e#25433#25870#0" expanded="false" />
-            <element signature="e#25433#25589#1" expanded="false" />
-            <element signature="e#25901#40407#1" expanded="false" />
-            <element signature="e#54696#54993#0" expanded="false" />
-            <element signature="e#54696#54886#1" expanded="false" />
-            <element signature="e#55037#55267#1" expanded="false" />
-            <element signature="e#56624#57364#0" expanded="false" />
-            <element signature="e#56624#56755#1" expanded="false" />
-            <element signature="e#57397#57856#0" expanded="false" />
-            <element signature="e#57883#85861#0" expanded="false" />
-            <element signature="e#85891#86140#0" expanded="false" />
-            <element signature="e#85891#85928#1" expanded="false" />
-            <element signature="e#86176#86533#0" expanded="false" />
-            <element signature="e#86176#86331#1" expanded="false" />
-            <element signature="e#86569#87004#0" expanded="false" />
-            <element signature="e#86569#86729#1" expanded="false" />
-            <element signature="e#87055#88252#0" expanded="false" />
-            <element signature="e#87055#87288#1" expanded="false" />
-            <element signature="e#88301#88567#1" expanded="false" />
-            <element signature="e#89662#94532#0" expanded="false" />
-            <element signature="e#89662#89747#1" expanded="false" />
-            <element signature="e#94593#95992#0" expanded="false" />
-            <element signature="e#94593#94927#1" expanded="false" />
-            <element signature="e#96027#96203#1" expanded="false" />
-            <element signature="e#96574#96807#1" expanded="false" />
-            <element signature="e#98696#100293#0" expanded="false" />
-            <element signature="e#98696#98964#1" expanded="false" />
-            <element signature="e#100342#101389#0" expanded="false" />
-            <element signature="e#100342#100541#1" expanded="false" />
-            <element signature="e#101436#102838#0" expanded="false" />
+            <marker date="1504894197958" expanded="false" signature="507:880" placeholder="import ..." />
+            <marker date="1504894197958" expanded="true" signature="1754:3435" placeholder="..." />
+            <marker date="1504894197958" expanded="false" signature="1759:2330" placeholder="&quot;&quot;&quot;Adds curve data to an axes...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="2362:2549" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="2371:2431" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="3603:5189" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="3608:4357" placeholder="&quot;&quot;&quot;Add a label to the plot...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="5232:5948" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="5237:5475" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="5973:6552" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="5978:6141" placeholder="&quot;&quot;&quot;Add axhlines and axvlines...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="6577:12351" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="6582:7362" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="7417:7942" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="7982:8741" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="7991:8314" placeholder="&quot;&quot;&quot;Make a DataFrame that shows when groups vals change; used for grouping labels...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="100386:100659" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="100705:101907" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="100710:100943" placeholder="&quot;&quot;&quot;Style the grid lines and toggle visibility...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="101951:103254" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="101956:102222" placeholder="&quot;&quot;&quot;Set the axes labels...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="103312:108615" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="103317:103402" placeholder="&quot;&quot;&quot;Set the axes ranges...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="108671:110075" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="108676:109010" placeholder="&quot;&quot;&quot;Add the row/column label boxes...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="110105:110595" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="110110:110281" placeholder="&quot;&quot;&quot;Set the scale type of the axes...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="110639:112699" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="110644:110872" placeholder="&quot;&quot;&quot;Configure the axes tick marks...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="112747:114797" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="112752:113015" placeholder="&quot;&quot;&quot;Transform x, y, or z data...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="113016:114797" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="114841:115543" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="114846:115045" placeholder="&quot;&quot;&quot;Add a figure title...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="115588:117631" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="117655:117726" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
           </folding>
         </state>
       </provider>
@@ -1128,61 +1028,42 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="18" column="29" selection-start-line="18" selection-start-column="29" selection-end-line="18" selection-end-column="29" />
           <folding>
-            <element signature="e#1759#3054#0" expanded="false" />
-            <element signature="e#1759#2330#1" expanded="false" />
-            <element signature="e#2375#2553#0" expanded="false" />
-            <element signature="e#2375#2435#1" expanded="false" />
-            <element signature="e#3227#3976#1" expanded="false" />
-            <element signature="e#4860#5571#0" expanded="false" />
-            <element signature="e#4860#5098#1" expanded="false" />
-            <element signature="e#5601#6175#0" expanded="false" />
-            <element signature="e#5601#5764#1" expanded="false" />
-            <element signature="e#6205#16013#0" expanded="false" />
-            <element signature="e#6205#6985#1" expanded="false" />
-            <element signature="e#7050#7465#0" expanded="false" />
-            <element signature="e#16043#16098#1" expanded="false" />
-            <element signature="e#19869#20840#0" expanded="false" />
-            <element signature="e#19869#20300#1" expanded="false" />
-            <element signature="e#20874#21619#0" expanded="false" />
-            <element signature="e#20874#21049#1" expanded="false" />
-            <element signature="e#21663#22182#0" expanded="false" />
-            <element signature="e#21663#21900#1" expanded="false" />
-            <element signature="e#22226#23225#0" expanded="false" />
-            <element signature="e#22226#22439#1" expanded="false" />
-            <element signature="e#23262#24833#0" expanded="false" />
-            <element signature="e#23262#23609#1" expanded="false" />
-            <element signature="e#24873#25399#0" expanded="false" />
-            <element signature="e#24873#25116#1" expanded="false" />
-            <element signature="e#25433#25870#0" expanded="false" />
-            <element signature="e#25433#25589#1" expanded="false" />
-            <element signature="e#25901#40407#1" expanded="false" />
-            <element signature="e#54696#54993#0" expanded="false" />
-            <element signature="e#54696#54886#1" expanded="false" />
-            <element signature="e#55037#55267#1" expanded="false" />
-            <element signature="e#56624#57364#0" expanded="false" />
-            <element signature="e#56624#56755#1" expanded="false" />
-            <element signature="e#57397#57856#0" expanded="false" />
-            <element signature="e#57883#85861#0" expanded="false" />
-            <element signature="e#85891#86140#0" expanded="false" />
-            <element signature="e#85891#85928#1" expanded="false" />
-            <element signature="e#86176#86533#0" expanded="false" />
-            <element signature="e#86176#86331#1" expanded="false" />
-            <element signature="e#86569#87004#0" expanded="false" />
-            <element signature="e#86569#86729#1" expanded="false" />
-            <element signature="e#87055#88252#0" expanded="false" />
-            <element signature="e#87055#87288#1" expanded="false" />
-            <element signature="e#88301#88567#1" expanded="false" />
-            <element signature="e#89662#94532#0" expanded="false" />
-            <element signature="e#89662#89747#1" expanded="false" />
-            <element signature="e#94593#95992#0" expanded="false" />
-            <element signature="e#94593#94927#1" expanded="false" />
-            <element signature="e#96027#96203#1" expanded="false" />
-            <element signature="e#96574#96807#1" expanded="false" />
-            <element signature="e#98696#100293#0" expanded="false" />
-            <element signature="e#98696#98964#1" expanded="false" />
-            <element signature="e#100342#101389#0" expanded="false" />
-            <element signature="e#100342#100541#1" expanded="false" />
-            <element signature="e#101436#102838#0" expanded="false" />
+            <marker date="1504894197958" expanded="false" signature="507:880" placeholder="import ..." />
+            <marker date="1504894197958" expanded="true" signature="1754:3435" placeholder="..." />
+            <marker date="1504894197958" expanded="false" signature="1759:2330" placeholder="&quot;&quot;&quot;Adds curve data to an axes...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="2362:2549" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="2371:2431" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="3603:5189" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="3608:4357" placeholder="&quot;&quot;&quot;Add a label to the plot...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="5232:5948" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="5237:5475" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="5973:6552" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="5978:6141" placeholder="&quot;&quot;&quot;Add axhlines and axvlines...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="6577:12351" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="6582:7362" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="7417:7942" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="7982:8741" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="7991:8314" placeholder="&quot;&quot;&quot;Make a DataFrame that shows when groups vals change; used for grouping labels...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="100386:100659" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="100705:101907" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="100710:100943" placeholder="&quot;&quot;&quot;Style the grid lines and toggle visibility...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="101951:103254" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="101956:102222" placeholder="&quot;&quot;&quot;Set the axes labels...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="103312:108615" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="103317:103402" placeholder="&quot;&quot;&quot;Set the axes ranges...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="108671:110075" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="108676:109010" placeholder="&quot;&quot;&quot;Add the row/column label boxes...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="110105:110595" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="110110:110281" placeholder="&quot;&quot;&quot;Set the scale type of the axes...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="110639:112699" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="110644:110872" placeholder="&quot;&quot;&quot;Configure the axes tick marks...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="112747:114797" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="112752:113015" placeholder="&quot;&quot;&quot;Transform x, y, or z data...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="113016:114797" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="114841:115543" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="114846:115045" placeholder="&quot;&quot;&quot;Add a figure title...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="115588:117631" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="117655:117726" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
           </folding>
         </state>
       </provider>
@@ -1199,61 +1080,42 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="18" column="29" selection-start-line="18" selection-start-column="29" selection-end-line="18" selection-end-column="29" />
           <folding>
-            <element signature="e#1759#3054#0" expanded="false" />
-            <element signature="e#1759#2330#1" expanded="false" />
-            <element signature="e#2375#2553#0" expanded="false" />
-            <element signature="e#2375#2435#1" expanded="false" />
-            <element signature="e#3227#3976#1" expanded="false" />
-            <element signature="e#4860#5571#0" expanded="false" />
-            <element signature="e#4860#5098#1" expanded="false" />
-            <element signature="e#5601#6175#0" expanded="false" />
-            <element signature="e#5601#5764#1" expanded="false" />
-            <element signature="e#6205#16013#0" expanded="false" />
-            <element signature="e#6205#6985#1" expanded="false" />
-            <element signature="e#7050#7465#0" expanded="false" />
-            <element signature="e#16043#16098#1" expanded="false" />
-            <element signature="e#19869#20840#0" expanded="false" />
-            <element signature="e#19869#20300#1" expanded="false" />
-            <element signature="e#20874#21619#0" expanded="false" />
-            <element signature="e#20874#21049#1" expanded="false" />
-            <element signature="e#21663#22182#0" expanded="false" />
-            <element signature="e#21663#21900#1" expanded="false" />
-            <element signature="e#22226#23225#0" expanded="false" />
-            <element signature="e#22226#22439#1" expanded="false" />
-            <element signature="e#23262#24833#0" expanded="false" />
-            <element signature="e#23262#23609#1" expanded="false" />
-            <element signature="e#24873#25399#0" expanded="false" />
-            <element signature="e#24873#25116#1" expanded="false" />
-            <element signature="e#25433#25870#0" expanded="false" />
-            <element signature="e#25433#25589#1" expanded="false" />
-            <element signature="e#25901#40407#1" expanded="false" />
-            <element signature="e#54696#54993#0" expanded="false" />
-            <element signature="e#54696#54886#1" expanded="false" />
-            <element signature="e#55037#55267#1" expanded="false" />
-            <element signature="e#56624#57364#0" expanded="false" />
-            <element signature="e#56624#56755#1" expanded="false" />
-            <element signature="e#57397#57856#0" expanded="false" />
-            <element signature="e#57883#85861#0" expanded="false" />
-            <element signature="e#85891#86140#0" expanded="false" />
-            <element signature="e#85891#85928#1" expanded="false" />
-            <element signature="e#86176#86533#0" expanded="false" />
-            <element signature="e#86176#86331#1" expanded="false" />
-            <element signature="e#86569#87004#0" expanded="false" />
-            <element signature="e#86569#86729#1" expanded="false" />
-            <element signature="e#87055#88252#0" expanded="false" />
-            <element signature="e#87055#87288#1" expanded="false" />
-            <element signature="e#88301#88567#1" expanded="false" />
-            <element signature="e#89662#94532#0" expanded="false" />
-            <element signature="e#89662#89747#1" expanded="false" />
-            <element signature="e#94593#95992#0" expanded="false" />
-            <element signature="e#94593#94927#1" expanded="false" />
-            <element signature="e#96027#96203#1" expanded="false" />
-            <element signature="e#96574#96807#1" expanded="false" />
-            <element signature="e#98696#100293#0" expanded="false" />
-            <element signature="e#98696#98964#1" expanded="false" />
-            <element signature="e#100342#101389#0" expanded="false" />
-            <element signature="e#100342#100541#1" expanded="false" />
-            <element signature="e#101436#102838#0" expanded="false" />
+            <marker date="1504894197958" expanded="false" signature="507:880" placeholder="import ..." />
+            <marker date="1504894197958" expanded="true" signature="1754:3435" placeholder="..." />
+            <marker date="1504894197958" expanded="false" signature="1759:2330" placeholder="&quot;&quot;&quot;Adds curve data to an axes...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="2362:2549" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="2371:2431" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="3603:5189" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="3608:4357" placeholder="&quot;&quot;&quot;Add a label to the plot...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="5232:5948" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="5237:5475" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="5973:6552" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="5978:6141" placeholder="&quot;&quot;&quot;Add axhlines and axvlines...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="6577:12351" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="6582:7362" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="7417:7942" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="7982:8741" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="7991:8314" placeholder="&quot;&quot;&quot;Make a DataFrame that shows when groups vals change; used for grouping labels...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="100386:100659" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="100705:101907" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="100710:100943" placeholder="&quot;&quot;&quot;Style the grid lines and toggle visibility...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="101951:103254" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="101956:102222" placeholder="&quot;&quot;&quot;Set the axes labels...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="103312:108615" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="103317:103402" placeholder="&quot;&quot;&quot;Set the axes ranges...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="108671:110075" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="108676:109010" placeholder="&quot;&quot;&quot;Add the row/column label boxes...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="110105:110595" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="110110:110281" placeholder="&quot;&quot;&quot;Set the scale type of the axes...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="110639:112699" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="110644:110872" placeholder="&quot;&quot;&quot;Configure the axes tick marks...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="112747:114797" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="112752:113015" placeholder="&quot;&quot;&quot;Transform x, y, or z data...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="113016:114797" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="114841:115543" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="114846:115045" placeholder="&quot;&quot;&quot;Add a figure title...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="115588:117631" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="117655:117726" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
           </folding>
         </state>
       </provider>
@@ -1270,61 +1132,42 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#1759#3054#0" expanded="false" />
-            <element signature="e#1759#2330#1" expanded="false" />
-            <element signature="e#2375#2553#0" expanded="false" />
-            <element signature="e#2375#2435#1" expanded="false" />
-            <element signature="e#3227#3976#1" expanded="false" />
-            <element signature="e#4860#5571#0" expanded="false" />
-            <element signature="e#4860#5098#1" expanded="false" />
-            <element signature="e#5601#6175#0" expanded="false" />
-            <element signature="e#5601#5764#1" expanded="false" />
-            <element signature="e#6205#16013#0" expanded="false" />
-            <element signature="e#6205#6985#1" expanded="false" />
-            <element signature="e#7050#7465#0" expanded="false" />
-            <element signature="e#16043#16098#1" expanded="false" />
-            <element signature="e#19869#20840#0" expanded="false" />
-            <element signature="e#19869#20300#1" expanded="false" />
-            <element signature="e#20874#21619#0" expanded="false" />
-            <element signature="e#20874#21049#1" expanded="false" />
-            <element signature="e#21663#22182#0" expanded="false" />
-            <element signature="e#21663#21900#1" expanded="false" />
-            <element signature="e#22226#23225#0" expanded="false" />
-            <element signature="e#22226#22439#1" expanded="false" />
-            <element signature="e#23262#24833#0" expanded="false" />
-            <element signature="e#23262#23609#1" expanded="false" />
-            <element signature="e#24873#25399#0" expanded="false" />
-            <element signature="e#24873#25116#1" expanded="false" />
-            <element signature="e#25433#25870#0" expanded="false" />
-            <element signature="e#25433#25589#1" expanded="false" />
-            <element signature="e#25901#40407#1" expanded="false" />
-            <element signature="e#54696#54993#0" expanded="false" />
-            <element signature="e#54696#54886#1" expanded="false" />
-            <element signature="e#55037#55267#1" expanded="false" />
-            <element signature="e#56624#57364#0" expanded="false" />
-            <element signature="e#56624#56755#1" expanded="false" />
-            <element signature="e#57397#57856#0" expanded="false" />
-            <element signature="e#57883#85861#0" expanded="false" />
-            <element signature="e#85891#86140#0" expanded="false" />
-            <element signature="e#85891#85928#1" expanded="false" />
-            <element signature="e#86176#86533#0" expanded="false" />
-            <element signature="e#86176#86331#1" expanded="false" />
-            <element signature="e#86569#87004#0" expanded="false" />
-            <element signature="e#86569#86729#1" expanded="false" />
-            <element signature="e#87055#88252#0" expanded="false" />
-            <element signature="e#87055#87288#1" expanded="false" />
-            <element signature="e#88301#88567#1" expanded="false" />
-            <element signature="e#89662#94532#0" expanded="false" />
-            <element signature="e#89662#89747#1" expanded="false" />
-            <element signature="e#94593#95992#0" expanded="false" />
-            <element signature="e#94593#94927#1" expanded="false" />
-            <element signature="e#96027#96203#1" expanded="false" />
-            <element signature="e#96574#96807#1" expanded="false" />
-            <element signature="e#98696#100293#0" expanded="false" />
-            <element signature="e#98696#98964#1" expanded="false" />
-            <element signature="e#100342#101389#0" expanded="false" />
-            <element signature="e#100342#100541#1" expanded="false" />
-            <element signature="e#101436#102838#0" expanded="false" />
+            <marker date="1504894197958" expanded="false" signature="507:880" placeholder="import ..." />
+            <marker date="1504894197958" expanded="true" signature="1754:3435" placeholder="..." />
+            <marker date="1504894197958" expanded="false" signature="1759:2330" placeholder="&quot;&quot;&quot;Adds curve data to an axes...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="2362:2549" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="2371:2431" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="3603:5189" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="3608:4357" placeholder="&quot;&quot;&quot;Add a label to the plot...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="5232:5948" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="5237:5475" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="5973:6552" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="5978:6141" placeholder="&quot;&quot;&quot;Add axhlines and axvlines...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="6577:12351" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="6582:7362" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="7417:7942" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="7982:8741" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="7991:8314" placeholder="&quot;&quot;&quot;Make a DataFrame that shows when groups vals change; used for grouping labels...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="100386:100659" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="100705:101907" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="100710:100943" placeholder="&quot;&quot;&quot;Style the grid lines and toggle visibility...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="101951:103254" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="101956:102222" placeholder="&quot;&quot;&quot;Set the axes labels...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="103312:108615" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="103317:103402" placeholder="&quot;&quot;&quot;Set the axes ranges...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="108671:110075" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="108676:109010" placeholder="&quot;&quot;&quot;Add the row/column label boxes...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="110105:110595" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="110110:110281" placeholder="&quot;&quot;&quot;Set the scale type of the axes...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="110639:112699" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="110644:110872" placeholder="&quot;&quot;&quot;Configure the axes tick marks...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="112747:114797" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="112752:113015" placeholder="&quot;&quot;&quot;Transform x, y, or z data...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="113016:114797" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="114841:115543" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="114846:115045" placeholder="&quot;&quot;&quot;Add a figure title...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="115588:117631" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="117655:117726" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
           </folding>
         </state>
       </provider>
@@ -1341,61 +1184,42 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#1759#3054#0" expanded="false" />
-            <element signature="e#1759#2330#1" expanded="false" />
-            <element signature="e#2375#2553#0" expanded="false" />
-            <element signature="e#2375#2435#1" expanded="false" />
-            <element signature="e#3227#3976#1" expanded="false" />
-            <element signature="e#4860#5571#0" expanded="false" />
-            <element signature="e#4860#5098#1" expanded="false" />
-            <element signature="e#5601#6175#0" expanded="false" />
-            <element signature="e#5601#5764#1" expanded="false" />
-            <element signature="e#6205#16013#0" expanded="false" />
-            <element signature="e#6205#6985#1" expanded="false" />
-            <element signature="e#7050#7465#0" expanded="false" />
-            <element signature="e#16043#16098#1" expanded="false" />
-            <element signature="e#19869#20840#0" expanded="false" />
-            <element signature="e#19869#20300#1" expanded="false" />
-            <element signature="e#20874#21619#0" expanded="false" />
-            <element signature="e#20874#21049#1" expanded="false" />
-            <element signature="e#21663#22182#0" expanded="false" />
-            <element signature="e#21663#21900#1" expanded="false" />
-            <element signature="e#22226#23225#0" expanded="false" />
-            <element signature="e#22226#22439#1" expanded="false" />
-            <element signature="e#23262#24833#0" expanded="false" />
-            <element signature="e#23262#23609#1" expanded="false" />
-            <element signature="e#24873#25399#0" expanded="false" />
-            <element signature="e#24873#25116#1" expanded="false" />
-            <element signature="e#25433#25870#0" expanded="false" />
-            <element signature="e#25433#25589#1" expanded="false" />
-            <element signature="e#25901#40407#1" expanded="false" />
-            <element signature="e#54696#54993#0" expanded="false" />
-            <element signature="e#54696#54886#1" expanded="false" />
-            <element signature="e#55037#55267#1" expanded="false" />
-            <element signature="e#56624#57364#0" expanded="false" />
-            <element signature="e#56624#56755#1" expanded="false" />
-            <element signature="e#57397#57856#0" expanded="false" />
-            <element signature="e#57883#85861#0" expanded="false" />
-            <element signature="e#85891#86140#0" expanded="false" />
-            <element signature="e#85891#85928#1" expanded="false" />
-            <element signature="e#86176#86533#0" expanded="false" />
-            <element signature="e#86176#86331#1" expanded="false" />
-            <element signature="e#86569#87004#0" expanded="false" />
-            <element signature="e#86569#86729#1" expanded="false" />
-            <element signature="e#87055#88252#0" expanded="false" />
-            <element signature="e#87055#87288#1" expanded="false" />
-            <element signature="e#88301#88567#1" expanded="false" />
-            <element signature="e#89662#94532#0" expanded="false" />
-            <element signature="e#89662#89747#1" expanded="false" />
-            <element signature="e#94593#95992#0" expanded="false" />
-            <element signature="e#94593#94927#1" expanded="false" />
-            <element signature="e#96027#96203#1" expanded="false" />
-            <element signature="e#96574#96807#1" expanded="false" />
-            <element signature="e#98696#100293#0" expanded="false" />
-            <element signature="e#98696#98964#1" expanded="false" />
-            <element signature="e#100342#101389#0" expanded="false" />
-            <element signature="e#100342#100541#1" expanded="false" />
-            <element signature="e#101436#102838#0" expanded="false" />
+            <marker date="1504894197958" expanded="false" signature="507:880" placeholder="import ..." />
+            <marker date="1504894197958" expanded="true" signature="1754:3435" placeholder="..." />
+            <marker date="1504894197958" expanded="false" signature="1759:2330" placeholder="&quot;&quot;&quot;Adds curve data to an axes...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="2362:2549" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="2371:2431" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="3603:5189" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="3608:4357" placeholder="&quot;&quot;&quot;Add a label to the plot...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="5232:5948" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="5237:5475" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="5973:6552" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="5978:6141" placeholder="&quot;&quot;&quot;Add axhlines and axvlines...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="6577:12351" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="6582:7362" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="7417:7942" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="7982:8741" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="7991:8314" placeholder="&quot;&quot;&quot;Make a DataFrame that shows when groups vals change; used for grouping labels...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="100386:100659" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="100705:101907" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="100710:100943" placeholder="&quot;&quot;&quot;Style the grid lines and toggle visibility...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="101951:103254" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="101956:102222" placeholder="&quot;&quot;&quot;Set the axes labels...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="103312:108615" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="103317:103402" placeholder="&quot;&quot;&quot;Set the axes ranges...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="108671:110075" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="108676:109010" placeholder="&quot;&quot;&quot;Add the row/column label boxes...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="110105:110595" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="110110:110281" placeholder="&quot;&quot;&quot;Set the scale type of the axes...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="110639:112699" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="110644:110872" placeholder="&quot;&quot;&quot;Configure the axes tick marks...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="112747:114797" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="112752:113015" placeholder="&quot;&quot;&quot;Transform x, y, or z data...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="113016:114797" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="114841:115543" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="114846:115045" placeholder="&quot;&quot;&quot;Add a figure title...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="115588:117631" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="117655:117726" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
           </folding>
         </state>
       </provider>
@@ -1412,61 +1236,42 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
           <folding>
-            <element signature="e#1759#3054#0" expanded="false" />
-            <element signature="e#1759#2330#1" expanded="false" />
-            <element signature="e#2375#2553#0" expanded="false" />
-            <element signature="e#2375#2435#1" expanded="false" />
-            <element signature="e#3227#3976#1" expanded="false" />
-            <element signature="e#4860#5571#0" expanded="false" />
-            <element signature="e#4860#5098#1" expanded="false" />
-            <element signature="e#5601#6175#0" expanded="false" />
-            <element signature="e#5601#5764#1" expanded="false" />
-            <element signature="e#6205#16013#0" expanded="false" />
-            <element signature="e#6205#6985#1" expanded="false" />
-            <element signature="e#7050#7465#0" expanded="false" />
-            <element signature="e#16043#16098#1" expanded="false" />
-            <element signature="e#19869#20840#0" expanded="false" />
-            <element signature="e#19869#20300#1" expanded="false" />
-            <element signature="e#20874#21619#0" expanded="false" />
-            <element signature="e#20874#21049#1" expanded="false" />
-            <element signature="e#21663#22182#0" expanded="false" />
-            <element signature="e#21663#21900#1" expanded="false" />
-            <element signature="e#22226#23225#0" expanded="false" />
-            <element signature="e#22226#22439#1" expanded="false" />
-            <element signature="e#23262#24833#0" expanded="false" />
-            <element signature="e#23262#23609#1" expanded="false" />
-            <element signature="e#24873#25399#0" expanded="false" />
-            <element signature="e#24873#25116#1" expanded="false" />
-            <element signature="e#25433#25870#0" expanded="false" />
-            <element signature="e#25433#25589#1" expanded="false" />
-            <element signature="e#25901#40407#1" expanded="false" />
-            <element signature="e#54696#54993#0" expanded="false" />
-            <element signature="e#54696#54886#1" expanded="false" />
-            <element signature="e#55037#55267#1" expanded="false" />
-            <element signature="e#56624#57364#0" expanded="false" />
-            <element signature="e#56624#56755#1" expanded="false" />
-            <element signature="e#57397#57856#0" expanded="false" />
-            <element signature="e#57883#85861#0" expanded="false" />
-            <element signature="e#85891#86140#0" expanded="false" />
-            <element signature="e#85891#85928#1" expanded="false" />
-            <element signature="e#86176#86533#0" expanded="false" />
-            <element signature="e#86176#86331#1" expanded="false" />
-            <element signature="e#86569#87004#0" expanded="false" />
-            <element signature="e#86569#86729#1" expanded="false" />
-            <element signature="e#87055#88252#0" expanded="false" />
-            <element signature="e#87055#87288#1" expanded="false" />
-            <element signature="e#88301#88567#1" expanded="false" />
-            <element signature="e#89662#94532#0" expanded="false" />
-            <element signature="e#89662#89747#1" expanded="false" />
-            <element signature="e#94593#95992#0" expanded="false" />
-            <element signature="e#94593#94927#1" expanded="false" />
-            <element signature="e#96027#96203#1" expanded="false" />
-            <element signature="e#96574#96807#1" expanded="false" />
-            <element signature="e#98696#100293#0" expanded="false" />
-            <element signature="e#98696#98964#1" expanded="false" />
-            <element signature="e#100342#101389#0" expanded="false" />
-            <element signature="e#100342#100541#1" expanded="false" />
-            <element signature="e#101436#102838#0" expanded="false" />
+            <marker date="1504894197958" expanded="false" signature="507:880" placeholder="import ..." />
+            <marker date="1504894197958" expanded="true" signature="1754:3435" placeholder="..." />
+            <marker date="1504894197958" expanded="false" signature="1759:2330" placeholder="&quot;&quot;&quot;Adds curve data to an axes...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="2362:2549" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="2371:2431" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="3603:5189" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="3608:4357" placeholder="&quot;&quot;&quot;Add a label to the plot...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="5232:5948" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="5237:5475" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="5973:6552" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="5978:6141" placeholder="&quot;&quot;&quot;Add axhlines and axvlines...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="6577:12351" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="6582:7362" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="7417:7942" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="7982:8741" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="7991:8314" placeholder="&quot;&quot;&quot;Make a DataFrame that shows when groups vals change; used for grouping labels...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="100386:100659" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="100705:101907" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="100710:100943" placeholder="&quot;&quot;&quot;Style the grid lines and toggle visibility...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="101951:103254" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="101956:102222" placeholder="&quot;&quot;&quot;Set the axes labels...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="103312:108615" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="103317:103402" placeholder="&quot;&quot;&quot;Set the axes ranges...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="108671:110075" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="108676:109010" placeholder="&quot;&quot;&quot;Add the row/column label boxes...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="110105:110595" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="110110:110281" placeholder="&quot;&quot;&quot;Set the scale type of the axes...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="110639:112699" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="110644:110872" placeholder="&quot;&quot;&quot;Configure the axes tick marks...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="112747:114797" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="112752:113015" placeholder="&quot;&quot;&quot;Transform x, y, or z data...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="113016:114797" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="114841:115543" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="114846:115045" placeholder="&quot;&quot;&quot;Add a figure title...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="115588:117631" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="117655:117726" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
           </folding>
         </state>
       </provider>
@@ -1531,14 +1336,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="210" column="0" selection-start-line="210" selection-start-column="0" selection-end-line="210" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/fivecentplots/tests/dsf">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="100" column="13" selection-start-line="100" selection-start-column="13" selection-end-line="100" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1609,16 +1406,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/fivecentplots/themes/gray.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="30" column="14" selection-start-line="30" selection-start-column="14" selection-end-line="30" selection-end-column="14" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/fivecentplots/tests/plot_test.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1627,86 +1414,77 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/fivecentplots/themes/white.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="48" column="40" selection-start-line="48" selection-start-column="40" selection-end-line="48" selection-end-column="40" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/fivecentplots/fcp.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="1180" column="48" selection-start-line="1180" selection-start-column="48" selection-end-line="1180" selection-end-column="48" />
+          <caret line="1299" column="12" selection-start-line="1299" selection-start-column="12" selection-end-line="1299" selection-end-column="12" />
           <folding>
-            <element signature="e#1759#3054#0" expanded="false" />
-            <element signature="e#1759#2330#1" expanded="false" />
-            <element signature="e#2375#2553#0" expanded="false" />
-            <element signature="e#2375#2435#1" expanded="false" />
-            <element signature="e#3227#3976#1" expanded="false" />
-            <element signature="e#4860#5571#0" expanded="false" />
-            <element signature="e#4860#5098#1" expanded="false" />
-            <element signature="e#5601#6175#0" expanded="false" />
-            <element signature="e#5601#5764#1" expanded="false" />
-            <element signature="e#6205#16013#0" expanded="false" />
-            <element signature="e#6205#6985#1" expanded="false" />
-            <element signature="e#7050#7465#0" expanded="false" />
-            <element signature="e#16043#16098#1" expanded="false" />
-            <element signature="e#19869#20840#0" expanded="false" />
-            <element signature="e#19869#20300#1" expanded="false" />
-            <element signature="e#20874#21619#0" expanded="false" />
-            <element signature="e#20874#21049#1" expanded="false" />
-            <element signature="e#21663#22182#0" expanded="false" />
-            <element signature="e#21663#21900#1" expanded="false" />
-            <element signature="e#22226#23225#0" expanded="false" />
-            <element signature="e#22226#22439#1" expanded="false" />
-            <element signature="e#23262#24833#0" expanded="false" />
-            <element signature="e#23262#23609#1" expanded="false" />
-            <element signature="e#24873#25399#0" expanded="false" />
-            <element signature="e#24873#25116#1" expanded="false" />
-            <element signature="e#25433#25870#0" expanded="false" />
-            <element signature="e#25433#25589#1" expanded="false" />
-            <element signature="e#25901#40407#1" expanded="false" />
-            <element signature="e#54696#54993#0" expanded="false" />
-            <element signature="e#54696#54886#1" expanded="false" />
-            <element signature="e#55037#55267#1" expanded="false" />
-            <element signature="e#56624#57364#0" expanded="false" />
-            <element signature="e#56624#56755#1" expanded="false" />
-            <element signature="e#57397#57856#0" expanded="false" />
-            <element signature="e#57883#85861#0" expanded="false" />
-            <element signature="e#85891#86140#0" expanded="false" />
-            <element signature="e#85891#85928#1" expanded="false" />
-            <element signature="e#86176#86533#0" expanded="false" />
-            <element signature="e#86176#86331#1" expanded="false" />
-            <element signature="e#86569#87004#0" expanded="false" />
-            <element signature="e#86569#86729#1" expanded="false" />
-            <element signature="e#87055#88252#0" expanded="false" />
-            <element signature="e#87055#87288#1" expanded="false" />
-            <element signature="e#88301#88567#1" expanded="false" />
-            <element signature="e#89662#94532#0" expanded="false" />
-            <element signature="e#89662#89747#1" expanded="false" />
-            <element signature="e#94593#95992#0" expanded="false" />
-            <element signature="e#94593#94927#1" expanded="false" />
-            <element signature="e#96027#96203#1" expanded="false" />
-            <element signature="e#96574#96807#1" expanded="false" />
-            <element signature="e#98696#100293#0" expanded="false" />
-            <element signature="e#98696#98964#1" expanded="false" />
-            <element signature="e#100342#101389#0" expanded="false" />
-            <element signature="e#100342#100541#1" expanded="false" />
-            <element signature="e#101436#102838#0" expanded="false" />
+            <marker date="1504894197958" expanded="false" signature="507:880" placeholder="import ..." />
+            <marker date="1504894197958" expanded="true" signature="1754:3435" placeholder="..." />
+            <marker date="1504894197958" expanded="false" signature="1759:2330" placeholder="&quot;&quot;&quot;Adds curve data to an axes...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="2362:2549" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="2371:2431" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="3603:5189" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="3608:4357" placeholder="&quot;&quot;&quot;Add a label to the plot...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="5232:5948" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="5237:5475" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="5973:6552" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="5978:6141" placeholder="&quot;&quot;&quot;Add axhlines and axvlines...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="6577:12351" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="6582:7362" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="7417:7942" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="7982:8741" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="7991:8314" placeholder="&quot;&quot;&quot;Make a DataFrame that shows when groups vals change; used for grouping labels...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="100386:100659" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="100705:101907" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="100710:100943" placeholder="&quot;&quot;&quot;Style the grid lines and toggle visibility...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="101951:103254" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="101956:102222" placeholder="&quot;&quot;&quot;Set the axes labels...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="103312:108615" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="103317:103402" placeholder="&quot;&quot;&quot;Set the axes ranges...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="108671:110075" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="108676:109010" placeholder="&quot;&quot;&quot;Add the row/column label boxes...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="110105:110595" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="110110:110281" placeholder="&quot;&quot;&quot;Set the scale type of the axes...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="110639:112699" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="110644:110872" placeholder="&quot;&quot;&quot;Configure the axes tick marks...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="112747:114797" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="112752:113015" placeholder="&quot;&quot;&quot;Transform x, y, or z data...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="113016:114797" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="114841:115543" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="114846:115045" placeholder="&quot;&quot;&quot;Add a figure title...&quot;&quot;&quot;" />
+            <marker date="1504894197958" expanded="true" signature="115588:117631" placeholder="..." />
+            <marker date="1504894197958" expanded="true" signature="117655:117726" placeholder="&quot;&quot;&quot;...&quot;&quot;&quot;" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/fivecentplots/design.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7627119">
-          <caret line="147" column="0" selection-start-line="147" selection-start-column="0" selection-end-line="147" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="146" column="0" selection-start-line="146" selection-start-column="0" selection-end-line="146" selection-end-column="0" />
           <folding>
             <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fivecentplots/themes/white.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.34802786">
+          <caret line="323" column="34" selection-start-line="323" selection-start-column="34" selection-end-line="323" selection-end-column="34" />
+          <folding>
+            <element signature="e#0#24#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fivecentplots/themes/gray.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6734007">
+          <caret line="412" column="12" selection-start-line="412" selection-start-column="12" selection-end-line="412" selection-end-column="12" />
+          <folding>
+            <element signature="e#0#24#0" expanded="true" />
           </folding>
         </state>
       </provider>
