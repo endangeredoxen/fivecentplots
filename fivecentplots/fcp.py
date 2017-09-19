@@ -268,6 +268,8 @@ def boxplot(**kwargs):
         return changes
 
 
+    mplp.close('all')
+
     # Init plot
     df, x, y, z, kw = init('boxplot', kwargs)
     if 'ax_fig_ws' not in kwargs.keys():
@@ -554,9 +556,11 @@ def boxplot(**kwargs):
         # Save and optionally open
         save(fig, filename, kw)
 
-    mplp.close('all')
+    if not kw['inline']:
+        mplp.close('all')
 
-    return design
+    else:
+        return fig
 
 
 def contour(**kwargs):
@@ -568,6 +572,8 @@ def contour(**kwargs):
     Returns:
 
     """
+
+    mplp.close('all')
 
     # Override some defaults
     if kwargs.get('grid_major', None):
@@ -700,7 +706,11 @@ def contour(**kwargs):
         # Reset values for next loop
         kw['leg_items'] = []
 
-    return design
+    if not kw['inline']:
+        mplp.close('all')
+
+    else:
+        return fig
 
 
 def df_filter(df, filt):
@@ -1412,6 +1422,7 @@ def init(plot, kwargs):
     kw['grid_major'] = kwargs.get('grid_major', True)
     kw['grid_minor'] = kwargs.get('grid_minor', False)
     kw['groups'] = kwargs.get('groups', None)
+    kw['inline'] = kwargs.get('inline', fcp_params['inline'])
     kw['jitter'] = kwargs.get('jitter', False)
     kw['label_font_size'] = kwargs.get('label_font_size',
                                        fcp_params['label_font_size'])
@@ -1725,6 +1736,9 @@ def plot(**kwargs):
         design (FigDesign obj):  contains all the spacing information used to
             construct the figure
     """
+
+
+    mplp.close('all')
 
     # Init plot
     df, x, y, z, kw = init('plot', kwargs)
@@ -2337,9 +2351,11 @@ def plot(**kwargs):
         # Reset values for next loop
         kw['leg_items'] = []
 
-    mplp.close('all')
+    if not kw['inline']:
+        mplp.close('all')
 
-    return design
+    else:
+        return fig
 
 
 def reload_defaults():
@@ -2583,23 +2599,16 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
             ax.set_ylim(bottom=kw['ymin'])
         else:
             if kw['ax_scale'] in ['logy', 'loglog', 'semilogy']:
-                 #ymin = np.log10(ymin) - kw['ax_lim_pad']*\
-                 #       np.log10(ydelta)/(1-2*kw['ax_lim_pad'])
                 ymin = 10**(np.log10(ymin) - kw['ax_lim_pad'] * ydelta)
             else:
-        #         ymin -= kw['ax_lim_pad']*ydelta/(1-2*kw['ax_lim_pad'])
                 ymin -= kw['ax_lim_pad']*ydelta
             ax.set_ylim(bottom=ymin)
         if kw['ymax'] is not None:
             ax.set_ylim(top=kw['ymax'])
         else:
             if kw['ax_scale'] in ['logy', 'loglog', 'semilogy']:
-                 #ymax = np.log10(ymax) + kw['ax_lim_pad']*\
-        #                np.log10(ydelta)/(1-2*kw['ax_lim_pad'])
-        #         ymax = 10**ymax
                 ymax = 10**(np.log10(ymax) + kw['ax_lim_pad'] * ydelta)
             else:
-        #         ymax += kw['ax_lim_pad']*ydelta/(1-2*kw['ax_lim_pad'])
                 ymax += kw['ax_lim_pad']*ydelta
             ax.set_ylim(top=ymax)
 
@@ -2612,25 +2621,21 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
 
         # Set the subplot range
         if kw['ymin2'] is not None:
-            ax2.set_ylim(left=kw['ymin2'])
-        # else:
-        #     if kw['ax_scale'] in ['logy', 'loglog', 'semilogy']:
-        #         ymin2 = np.log10(ymin2) - kw['ax_lim_pad']*\
-        #                np.log10(ydelta2)/(1-2*kw['ax_lim_pad'])
-        #         ymin2 = 10**ymin2
-        #     else:
-        #         ymin2 -= kw['ax_lim_pad']*ydelta2/(1-2*kw['ax_lim_pad'])
-        #     ax2.set_ylim(left=ymin2)
+            ax2.set_ylim(bottom=kw['ymin2'])
+        else:
+            if kw['ax_scale2'] in ['logy', 'loglog', 'semilogy']:
+                ymin2 = 10**(np.log10(ymin2) - kw['ax_lim_pad'] * ydelta2)
+            else:
+                ymin2 -= kw['ax_lim_pad']*ydelta2
+            ax2.set_ylim(bottom=ymin2)
         if kw['ymax2'] is not None:
-            ax2.set_ylim(right=kw['ymax2'])
-        # else:
-        #     if kw['ax_scale'] in ['logy', 'loglog', 'semilogy']:
-        #         ymax2 = np.log10(ymax2) + kw['ax_lim_pad']*\
-        #                np.log10(ydelta2)/(1-2*kw['ax_lim_pad'])
-        #         ymax2 = 10**ymax2
-        #     else:
-        #         ymax2 += kw['ax_lim_pad']*ydelta2/(1-2*kw['ax_lim_pad'])
-        #     ax2.set_ylim(right=ymax2)
+            ax2.set_ylim(top=kw['ymax2'])
+        else:
+            if kw['ax_scale2'] in ['logy', 'loglog', 'semilogy']:
+                ymax2 = 10**(np.log10(ymax2) + kw['ax_lim_pad'] * ydelta2)
+            else:
+                ymax2 += kw['ax_lim_pad']*ydelta2
+            ax2.set_ylim(top=ymax2)
 
     return ax, ax2
 
