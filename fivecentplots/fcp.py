@@ -155,7 +155,7 @@ def add_label(label, pos, axis, rotation, design, fillcolor='#ffffff',
 def add_legend(fig, curves, kw, design):
     """
     Add a figure legend
-        TODO: add seperate_label support?
+        TODO: add separate_label support?
 
     Args:
         fig (mpl.Figure): current figure
@@ -1216,7 +1216,7 @@ def init(plot, kwargs):
             (default=False)
         sci_y (bool):  force scientific notation for tick labels on y-axis
             (default=False)
-        seperate_labels (bool):  give each plot its own axes labels
+        separate_labels (bool):  give each plot its own axes labels
         sharex (bool):  share plot range for x-axis (default=True)
         sharey (bool):  share plot range for y-axis (default=True)
         show (bool):  pop open plot after it is generated.  Otherwise, the plot
@@ -1470,7 +1470,7 @@ def init(plot, kwargs):
     kw['scalar_y'] = kwargs.get('scalar_y', False)
     kw['sci_x'] = kwargs.get('sci_x', False)
     kw['sci_y'] = kwargs.get('sci_y', False)
-    kw['seperate_labels'] = kwargs.get('seperate_labels', False)
+    kw['separate_labels'] = kwargs.get('separate_labels', False)
     kw['sharex'] = kwargs.get('sharex', True)
     kw['sharey'] = kwargs.get('sharey', True)
     kw['show'] = kwargs.get('show', False)
@@ -1549,7 +1549,7 @@ def init(plot, kwargs):
         kw['title_h'] = 0
 
     # Set up the figure grouping and iterate (each value corresponds to a
-    #  seperate figure)
+    #  separate figure)
     if kw['fig_groups'] is not None:
         if type(kw['fig_groups']) is list:
             kw['fig_items'] = list(df.groupby(kw['fig_groups']).groups.keys())
@@ -1564,13 +1564,13 @@ def init(plot, kwargs):
     else:
         kw['fig_path_items'] = kw['fig_items']
 
-    # Add padding if sharex|sharey or using seperate labels on all facet plots
+    # Add padding if sharex|sharey or using separate labels on all facet plots
     if not kw['sharex'] or not kw['sharey']:
         if 'row_padding' not in kwargs.keys():
             kw['row_padding'] += kw['tick_font_size']
         if 'col_padding' not in kwargs.keys():
             kw['col_padding'] += kw['tick_font_size']
-    if kw['seperate_labels']:
+    if kw['separate_labels']:
         kw['col_padding'] = max(kw['fig_ax_ws'], kw['col_padding'])
         if plot != 'boxplot':
             kw['row_padding'] = max(kw['ax_fig_ws'], kw['row_padding']) + 10
@@ -2318,7 +2318,7 @@ def plot(**kwargs):
                 axes[ir, ic] = set_axes_ticks(axes[ir, ic], kw)
                 if ax2 is not None:
                     ax2 = set_axes_ticks(ax2, kw, True)
-                    if ic != kw['ncol'] - 1 and not kw['seperate_labels']:
+                    if ic != kw['ncol'] - 1 and not kw['separate_labels']:
                         mplp.setp(ax2.get_yticklabels(), visible=False)
 
                 # Axis ranges
@@ -2483,19 +2483,19 @@ def set_axes_labels(ax, ax2, ir, ic, kw):
     """
 
     if kw['xlabel'] is not None and \
-            (ir == kw['nrow']-1 or kw['seperate_labels']):
+            (ir == kw['nrow']-1 or kw['separate_labels']):
         ax.set_xlabel(r'%s' % kw['xlabel'], fontsize=kw['label_font_size'],
                       weight=kw['label_weight'], style=kw['label_style'],
                       color=kw['xlabel_color'])
 
-    if kw['ylabel'] is not None and (ic == 0 or kw['seperate_labels']):
+    if kw['ylabel'] is not None and (ic == 0 or kw['separate_labels']):
         ax.set_ylabel(r'%s' % kw['ylabel'], fontsize=kw['label_font_size'],
                       weight=kw['label_weight'], style=kw['label_style'],
                       color=kw['ylabel_color'])
         ax.get_yaxis().get_offset_text().set_x(-0.12)
 
     if ax2 is not None and kw['ylabel2'] is not None and \
-            (ic == kw['ncol']-1 or kw['seperate_labels']):
+            (ic == kw['ncol']-1 or kw['separate_labels']):
         ax2.set_ylabel(r'%s' % kw['ylabel2'], rotation=270,
                        labelpad=kw['label_font_size'], style=kw['label_style'],
                        fontsize=kw['label_font_size'],
@@ -2621,23 +2621,23 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
             ymax2 = dfy_vals.max()
             ydelta2 = ymax2-ymin2
 
-        # Set the subplot range
-        if kw['ymin2'] is not None:
-            ax2.set_ylim(bottom=kw['ymin2'])
-        else:
-            if kw['ax_scale2'] in ['logy', 'loglog', 'semilogy']:
-                ymin2 = 10**(np.log10(ymin2) - kw['ax_lim_pad'] * ydelta2)
+            # Set the subplot range
+            if kw['ymin2'] is not None:
+                ax2.set_ylim(bottom=kw['ymin2'])
             else:
-                ymin2 -= kw['ax_lim_pad']*ydelta2
-            ax2.set_ylim(bottom=ymin2)
-        if kw['ymax2'] is not None:
-            ax2.set_ylim(top=kw['ymax2'])
-        else:
-            if kw['ax_scale2'] in ['logy', 'loglog', 'semilogy']:
-                ymax2 = 10**(np.log10(ymax2) + kw['ax_lim_pad'] * ydelta2)
+                if kw['ax_scale2'] in ['logy', 'loglog', 'semilogy']:
+                    ymin2 = 10**(np.log10(ymin2) - kw['ax_lim_pad'] * ydelta2)
+                else:
+                    ymin2 -= kw['ax_lim_pad']*ydelta2
+                ax2.set_ylim(bottom=ymin2)
+            if kw['ymax2'] is not None:
+                ax2.set_ylim(top=kw['ymax2'])
             else:
-                ymax2 += kw['ax_lim_pad']*ydelta2
-            ax2.set_ylim(top=ymax2)
+                if kw['ax_scale2'] in ['logy', 'loglog', 'semilogy']:
+                    ymax2 = 10**(np.log10(ymax2) + kw['ax_lim_pad'] * ydelta2)
+                else:
+                    ymax2 += kw['ax_lim_pad']*ydelta2
+                ax2.set_ylim(top=ymax2)
 
     return ax, ax2
 
@@ -2729,8 +2729,8 @@ def set_axes_ticks(ax, kw, y_only=False):
                        labelsize=kw['tick_font_size'],
                        colors=kw['tick_label_color'])
 
-    # Configure seperate labels on each subplot case
-    if kw['seperate_labels']:
+    # Configure separate labels on each subplot case
+    if kw['separate_labels']:
         if not y_only:
             mplp.setp(ax.get_xticklabels(), visible=True)
         mplp.setp(ax.get_yticklabels(), visible=True)
