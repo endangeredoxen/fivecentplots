@@ -70,9 +70,8 @@ setup(
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=['pandas', 'numpy', 'matplotlib','fileio'],
 
-    dependency_links = [
-        'git+ssh://git@github.com:endangeredoxen/fileio.git'
-    ],
+    dependency_links = ['https://github.com/endangeredoxen/fileio/zipball/master'],
+    
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
     # for example:
