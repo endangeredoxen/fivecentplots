@@ -24,7 +24,7 @@ import itertools
 import shutil
 import sys
 from fivecentplots.design import FigDesign
-import fivecentplots.fileio as fileio
+import fileio
 try:
     import win32clipboard
 except:
