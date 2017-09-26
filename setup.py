@@ -64,14 +64,14 @@ setup(
     # simple. Or you can use find_packages().
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
 
+    dependency_links = ['https://github.com/endangeredoxen/fileio/zipball/master#egg=fileio'],
+    
     # List run-time dependencies here.  These will be installed by pip when
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=['pandas', 'numpy', 'matplotlib','fileio'],
 
-    dependency_links = ['https://github.com/endangeredoxen/fileio/zipball/master'],
-    
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
     # for example:
