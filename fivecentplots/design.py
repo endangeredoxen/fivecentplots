@@ -191,7 +191,7 @@ class FigDesign:
                                     title=self.leg_title,
                                     numpoints=self.leg_points,
                                     prop={'size':self.leg_font_size})
-            fig.canvas.draw()
+            mpl.pyplot.draw()
             mpl.pyplot.savefig('dummy_legend_%s.png' % now)
             self.leg_h = leg.get_window_extent().height + self.leg_border
             self.leg_w = leg.get_window_extent().width + self.leg_border
