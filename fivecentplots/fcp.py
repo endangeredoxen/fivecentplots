@@ -755,54 +755,33 @@ def df_filter(df, filt):
 
     df2.columns = cols_new
 
-    # Modify the filter
-    bool_ops = ['&', '|']
-    for ibo, bo in enumerate(bool_ops):
-        temp = filt.split(bo)
-        if ibo > 0 and len(temp) == 1:
-            continue
-        temp = [f.lstrip(' ').rstrip(' ') for f in temp]
-
-        operators = ['==', '<', '>', '!=']
-        for it, t in enumerate(temp):
+    # Reformat the filter string for compatibility with pd.query
+    operators = ['==', '<', '>', '!=']
+    ands = filt.split('&')
+    for ia, aa in enumerate(ands):
+        ors = aa.split('|')
+        for io, oo in enumerate(ors):
             # Temporarily remove any parentheses
-            parenStart = True if t[0] == '(' else False
-            parenEnd = True if t[-1] == ')' else False
-            t = t.replace('(', '').replace(')', '')
-            # Loop over the operators
+            parenStart = True if oo[0] == '(' else False
+            parenEnd = True if oo[-1] == ')' else False
+            oo = oo.replace('(', '').replace(')', '')
             for op in operators:
-                if op not in t:
+                if op not in oo:
                     continue
-                vals = t.split(op)
-                if len(vals) == 2:
-                    idx = 0
-                elif len(vals) == 3:
-                    idx = 1
-                else:
-                    raise ValueError('Bad filter expression')
-                vals = [f.lstrip(' ').rstrip(' ').replace(' ', '_')
-                        for f in vals]
-                orig_val = vals[idx]
-                if ibo == 0 and vals[idx][0] != '=':
-                    vals[idx] = 'fCp%s' % vals[idx]
-                elif ibo == 0 and vals[idx][0] == '=':
-                    vals[idx] = '=fCp%s' % vals[idx][1:]
-                vals[idx] = vals[idx].replace('.', 'dot') \
-                                     .replace('[', '') \
-                                     .replace(']', '') \
-                                     .replace('-', '_') \
-                                     .replace('^', '') \
-                                     .replace('/', '_') \
-                                     .replace('@', 'at') \
-                                     .replace('%', 'percent')
-                if orig_val == vals[idx+1]:
-                    vals[idx+1] = vals[idx]
-                if parenStart:
-                    vals[0] = '(' + vals[0]
-                if parenEnd:
-                    vals[-1] = vals[-1] + ')'
-                temp[it] = op.join(vals)
-        filt = bo.join(temp)
+                vals = oo.split(op)
+                if vals[1].lstrip(' ').rstrip(' ') == \
+                        vals[0].lstrip(' ').rstrip(' '):
+                    vals[1] = 'fCp%s' % vals[1].lstrip(' ').rstrip(' ')
+                vals[0] = 'fCp%s' % vals[0].lstrip(' ').rstrip(' ')
+                ors[io] = op.join(vals)
+        if len(ors) > 1:
+            ands[ia] = '|'.join(ors)
+        else:
+            ands[ia] = ors[0]
+    if len(ands) > 1:
+        filt = '&'.join(ands)
+    else:
+        filt = ands[0]
 
     # Apply the filter
     df2 = df2.query(filt)
