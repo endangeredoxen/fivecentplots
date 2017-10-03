@@ -713,7 +713,7 @@ def contour(**kwargs):
         return fig
 
 
-def df_filter(df, filt):
+def df_filter(df, filt_orig):
     """  Filter a DataFrame
 
     Due to limitations in pd.query, column names must not have spaces.  This
@@ -723,35 +723,42 @@ def df_filter(df, filt):
 
     Args:
         df (pd.DataFrame):  data set to be filtered
-        filt (str):  query expression for filtering
+        filt_orig (str):  query expression for filtering
 
     Returns:
         filtered DataFrame
     """
 
+    def special_chars(text, skip=[]):
+        """
+        Replace special characters in a text string
+
+        Args:
+            text (str): input string
+            skip (list): characters to skip
+
+        Returns:
+            formatted string
+        """
+
+        chars = {' ': '_', '.': 'dot', '[': '',']': '', '(': '', ')': '',
+                 '-': '_', '^': '', '>': '', '<': '', '/': '_', '@': 'at',
+                 '%': 'percent'}
+        for sk in skip:
+            chars.pop(sk)
+        for k, v in chars.items():
+            text = text.replace(k, v).lstrip(' ').rstrip(' ')
+        return text
+
     df2 = df.copy()
 
     # Parse the filter string
-    filt = get_current_values(df, filt)
+    filt = get_current_values(df, filt_orig)
 
     # Remove spaces from
     cols_orig = [f for f in df.columns]
     cols_new = ['fCp%s' % f for f in cols_orig.copy()]
-    cols_new = [f.replace(' ', '_')
-                 .replace('.', 'dot')
-                 .replace('[', '')
-                 .replace(']', '')
-                 .replace('(', '')
-                 .replace(')', '')
-                 .replace('-', '_')
-                 .replace('^', '')
-                 .replace('>', '')
-                 .replace('<', '')
-                 .replace('/', '_')
-                 .replace('@', 'at')
-                 .replace('%', 'percent')
-
-                for f in cols_new]
+    cols_new = [special_chars(f) for f in cols_new]
 
     df2.columns = cols_new
 
@@ -771,8 +778,8 @@ def df_filter(df, filt):
                 vals = oo.split(op)
                 if vals[1].lstrip(' ').rstrip(' ') == \
                         vals[0].lstrip(' ').rstrip(' '):
-                    vals[1] = 'fCp%s' % vals[1].lstrip(' ').rstrip(' ')
-                vals[0] = 'fCp%s' % vals[0].lstrip(' ').rstrip(' ')
+                    vals[1] = 'fCp%s' % special_chars(vals[1])
+                vals[0] = 'fCp%s' % special_chars(vals[0])
                 ors[io] = op.join(vals)
         if len(ors) > 1:
             ands[ia] = '|'.join(ors)
@@ -784,12 +791,16 @@ def df_filter(df, filt):
         filt = ands[0]
 
     # Apply the filter
-    df2 = df2.query(filt)
+    try:
+        df2 = df2.query(filt)
+        df2.columns = cols_orig
 
-    # Reset the columns
-    df2.columns = cols_orig
+        return df2
 
-    return df2
+    except:
+        print('Could not filter data!\n   Original filter string: %s\n   '
+              'Modified filter string: %s' % (filt_orig, filt))
+        return df
 
 
 def filename_label(label):
@@ -2503,25 +2514,37 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
         #    sharex requires the whole figure data range
         #    no sharex requires a single subplot
         if kw['sharex']:
-            dfx = df_fig
+            dfxx = df_fig
         else:
-            dfx = df_sub
+            dfxx = df_sub
 
         # Account for any applied stats
         if kw['stat'] is not None and 'only' in kw['stat'] \
                 and 'median' in kw['stat']:
-            dfx = dfx.groupby(groups).median().reset_index()
+            dfxx = dfxx.groupby(groups).median().reset_index()
         elif kw['stat'] is not None and 'only' in kw['stat']:
-            dfx = dfx.groupby(groups).mean().reset_index()
-        dfx = dfx[x]
+            dfxx = dfxx.groupby(groups).mean().reset_index()
+        dfx = dfxx[x]
 
         # Get the range
-        xmin = dfx.min()
-        xmax = dfx.max()
-        xdelta = xmax-xmin
+        if kw['ax_scale'] in ['logx', 'loglog', 'semilogx']:
+            xmin = dfx[dfx>0].stack().min()
+            xmax = dfx.stack().max()
+            xdelta = np.log10(xmax)-np.log10(xmin)
+        else:
+            xmin = dfx.stack().min()
+            xmax = dfx.stack().max()
+            xdelta = xmax-xmin
+        if xdelta <= 0:
+            xmin -= 0.1*xmin
+            xmax += 0.1*xmax
 
         # Set the subplot range
-        if kw['xmin'] is not None:
+        if kw['xmin'] is not None and 'q' in str(kw['xmin']).lower():
+            xq = float(str(kw['xmin']).lower().replace('q', ''))/100
+            xmin = dfxx.groupby(kw['groups']).quantile(xq)[x].min()
+            ax.set_xlim(left=xmin)
+        elif kw['xmin'] is not None:
             ax.set_xlim(left=kw['xmin'])
         else:
             if kw['ax_scale'] in ['logx', 'loglog', 'semilogx']:
@@ -2531,7 +2554,11 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
             else:
                 xmin -= kw['ax_lim_pad']*xdelta/(1-2*kw['ax_lim_pad'])
             ax.set_xlim(left=xmin)
-        if kw['xmax'] is not None:
+        if kw['xmax'] is not None and 'q' in str(kw['xmax']).lower():
+            xq = float(str(kw['xmax']).lower().replace('q', ''))/100
+            xmax = dfx.groupby(kw['groups']).quantile(xq)[x].max()
+            ax.set_xlim(right=xmax)
+        elif kw['xmax'] is not None:
             ax.set_xlim(right=kw['xmax'])
         else:
             if kw['ax_scale'] in ['logx', 'loglog', 'semilogx']:
@@ -2547,36 +2574,46 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
         #    sharex requires the whole figure data range
         #    no sharex requires a single subplot
         if kw['sharey']:
-            dfy = df_fig
+            dfyy = df_fig
         else:
-            dfy = df_sub
+            dfyy = df_sub
 
         # Account for any applied stats
         if kw['stat'] is not None and 'only' in kw['stat'] \
                 and 'median' in kw['stat']:
-            dfy = dfy.groupby(groups).median().reset_index()
+            dfyy = dfyy.groupby(groups).median().reset_index()
         elif kw['stat'] is not None and 'only' in kw['stat']:
-            dfy = dfy.groupby(groups).mean().reset_index()
+            dfyy = dfyy.groupby(groups).mean().reset_index()
 
         # Get the range
         if kw['twinx']:
-            dfy_vals = dfy[y[0]]
-            ymin = dfy_vals.min()
-            ymax = dfy_vals.max()
+            yname = y[0]
+            dfy = dfyy[y[0]]
+            ymin = dfy.min()
+            ymax = dfy.max()
             ydelta = ymax-ymin
         elif kw['ax_scale'] in ['logy', 'loglog', 'semilogy']:
-            dfy_vals = dfy[y]
-            ymin = dfy_vals[dfy_vals>0].stack().min()
-            ymax = dfy_vals.stack().max()
+            yname = y
+            dfy = dfyy[y]
+            ymin = dfy[dfy>0].stack().min()
+            ymax = dfy.stack().max()
             ydelta = np.log10(ymax)-np.log10(ymin)
         else:
-            dfy_vals = dfy[y]
-            ymin = dfy_vals.stack().min()
-            ymax = dfy_vals.stack().max()
+            yname = y
+            dfy = dfyy[y]
+            ymin = dfy.stack().min()
+            ymax = dfy.stack().max()
             ydelta = ymax-ymin
+        if ydelta <= 0:
+            ymin -= 0.1*ymin
+            ymax += 0.1*ymax
 
         # Set the subplot range
-        if kw['ymin'] is not None:
+        if kw['ymin'] is not None and 'q' in str(kw['ymin']).lower():
+            yq = float(str(kw['ymin']).lower().replace('q', ''))/100
+            ymin = dfyy.groupby(kw['groups']).quantile(yq)[yname].min()
+            ax.set_ylim(bottom=ymin)
+        elif kw['ymin'] is not None:
             ax.set_ylim(bottom=kw['ymin'])
         else:
             if kw['ax_scale'] in ['logy', 'loglog', 'semilogy']:
@@ -2584,7 +2621,11 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
             else:
                 ymin -= kw['ax_lim_pad']*ydelta
             ax.set_ylim(bottom=ymin)
-        if kw['ymax'] is not None:
+        if kw['ymax'] is not None and 'q' in str(kw['ymax']).lower():
+            yq = float(str(kw['ymax']).lower().replace('q', ''))/100
+            ymax = dfyy.groupby(kw['groups']).quantile(yq)[yname].max()
+            ax.set_ylim(top=ymax)
+        elif kw['ymax'] is not None:
             ax.set_ylim(top=kw['ymax'])
         else:
             if kw['ax_scale'] in ['logy', 'loglog', 'semilogy']:
@@ -2595,13 +2636,21 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
 
         # Handle the twinx case
         if kw['twinx']:
-            dfy_vals = dfy[y[1]]
-            ymin2 = dfy_vals.min()
-            ymax2 = dfy_vals.max()
+            yname = y[1]
+            dfy = dfyy[y[1]]
+            ymin2 = dfy.min()
+            ymax2 = dfy.max()
             ydelta2 = ymax2-ymin2
+            if ydelta2 <= 0:
+                ymin2 -= 0.1*ymin2
+                ymax2 += 0.1*ymax2
 
             # Set the subplot range
-            if kw['ymin2'] is not None:
+            if kw['ymin2'] is not None and 'q' in str(kw['ymin2']).lower():
+                yq = float(str(kw['ymin2']).lower().replace('q', ''))/100
+                ymin2 = dfyy.groupby(kw['groups']).quantile(yq)[yname].min()
+                ax.set_ylim(bottom=ymin2)
+            elif kw['ymin2'] is not None:
                 ax2.set_ylim(bottom=kw['ymin2'])
             else:
                 if kw['ax_scale2'] in ['logy', 'loglog', 'semilogy']:
@@ -2609,7 +2658,11 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
                 else:
                     ymin2 -= kw['ax_lim_pad']*ydelta2
                 ax2.set_ylim(bottom=ymin2)
-            if kw['ymax2'] is not None:
+            if kw['ymax2'] is not None and 'q' in str(kw['ymax2']).lower():
+                yq = float(str(kw['ymax2']).lower().replace('q', ''))/100
+                ymax2 = dfyy.groupby(kw['groups']).quantile(yq)[yname].max()
+                ax.set_ylim(top=ymax2) 
+            elif kw['ymax2'] is not None:
                 ax2.set_ylim(top=kw['ymax2'])
             else:
                 if kw['ax_scale2'] in ['logy', 'loglog', 'semilogy']:
