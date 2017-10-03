@@ -2543,7 +2543,7 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
         if kw['xmin'] is not None and 'q' in str(kw['xmin']).lower():
             xq = float(str(kw['xmin']).lower().replace('q', ''))/100
             xmin = dfxx.groupby(kw['groups']).quantile(xq)[x].min()
-            ax.set_xlim(left=xmin)
+            ax.set_xlim(left=xmin.iloc[0])
         elif kw['xmin'] is not None:
             ax.set_xlim(left=kw['xmin'])
         else:
@@ -2557,7 +2557,7 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
         if kw['xmax'] is not None and 'q' in str(kw['xmax']).lower():
             xq = float(str(kw['xmax']).lower().replace('q', ''))/100
             xmax = dfx.groupby(kw['groups']).quantile(xq)[x].max()
-            ax.set_xlim(right=xmax)
+            ax.set_xlim(right=xmax.iloc[0])
         elif kw['xmax'] is not None:
             ax.set_xlim(right=kw['xmax'])
         else:
@@ -2612,7 +2612,7 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
         if kw['ymin'] is not None and 'q' in str(kw['ymin']).lower():
             yq = float(str(kw['ymin']).lower().replace('q', ''))/100
             ymin = dfyy.groupby(kw['groups']).quantile(yq)[yname].min()
-            ax.set_ylim(bottom=ymin)
+            ax.set_ylim(bottom=ymin.iloc[0])
         elif kw['ymin'] is not None:
             ax.set_ylim(bottom=kw['ymin'])
         else:
@@ -2624,7 +2624,7 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
         if kw['ymax'] is not None and 'q' in str(kw['ymax']).lower():
             yq = float(str(kw['ymax']).lower().replace('q', ''))/100
             ymax = dfyy.groupby(kw['groups']).quantile(yq)[yname].max()
-            ax.set_ylim(top=ymax)
+            ax.set_ylim(top=ymax.iloc[0])
         elif kw['ymax'] is not None:
             ax.set_ylim(top=kw['ymax'])
         else:
@@ -2649,7 +2649,7 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
             if kw['ymin2'] is not None and 'q' in str(kw['ymin2']).lower():
                 yq = float(str(kw['ymin2']).lower().replace('q', ''))/100
                 ymin2 = dfyy.groupby(kw['groups']).quantile(yq)[yname].min()
-                ax.set_ylim(bottom=ymin2)
+                ax.set_ylim(bottom=ymin2.iloc[0])
             elif kw['ymin2'] is not None:
                 ax2.set_ylim(bottom=kw['ymin2'])
             else:
@@ -2661,7 +2661,7 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
             if kw['ymax2'] is not None and 'q' in str(kw['ymax2']).lower():
                 yq = float(str(kw['ymax2']).lower().replace('q', ''))/100
                 ymax2 = dfyy.groupby(kw['groups']).quantile(yq)[yname].max()
-                ax.set_ylim(top=ymax2) 
+                ax.set_ylim(top=ymax2.iloc[0]) 
             elif kw['ymax2'] is not None:
                 ax2.set_ylim(top=kw['ymax2'])
             else:
