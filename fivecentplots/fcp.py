@@ -430,6 +430,18 @@ def boxplot(**kwargs):
                     data = data.values
 
                 if len(data) > 0:
+                    if kw['range_lines']:
+                        for id, dd in enumerate(data):
+                            axes[ir, ic].plot([id+1, id+1],
+                                [dd.min().iloc[0], dd.max().iloc[0]],
+                                linestyle='--', color='#dddddd',
+                                zorder=0)
+                            axes[ir, ic].plot([id+1-0.2, id+1+0.2],
+                                [dd.min().iloc[0], dd.min().iloc[0]],
+                                linestyle='-', color='#dddddd', zorder=0)
+                            axes[ir, ic].plot([id+1-0.2, id+1+0.2],
+                                [dd.max().iloc[0], dd.max().iloc[0]],
+                                linestyle='-', color='#dddddd', zorder=0)
                     try:
                         bp = axes[ir,ic].boxplot(data, labels=labels,
                                             showfliers=showfliers,
@@ -1170,6 +1182,7 @@ def init(plot, kwargs):
         marker_size (int):  set marker size (default from fcp_params)
         marker_type (str):  set marker type (default==None)
         points (bool):  turn markers on|off (default=True)
+        range_lines(bool):  add range lines on boxplot
         rc_label_edge_color (str):  hex color code for row/column labels border
             edges (default from fcp_params)
         rc_label_fill_color (str):  hex color code for row/column labels
@@ -1434,6 +1447,7 @@ def init(plot, kwargs):
     kw['marker_type'] = kwargs.get('marker_type', None)
     kw['normalize'] = kwargs.get('normalize', False)
     kw['points'] = kwargs.get('points', True)
+    kw['range_lines'] = kwargs.get('range_lines', True)
     kw['rc_label_edge_color'] = kwargs.get('rc_label_edge_color',
                                            fcp_params['rc_label_edge_color'])
     kw['rc_label_fill_color'] = kwargs.get('rc_label_fill_color',
@@ -2524,7 +2538,7 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
             dfxx = dfxx.groupby(groups).median().reset_index()
         elif kw['stat'] is not None and 'only' in kw['stat']:
             dfxx = dfxx.groupby(groups).mean().reset_index()
-        dfx = dfxx[x]
+        dfx = dfxx[[x]]
 
         # Get the range
         if kw['ax_scale'] in ['logx', 'loglog', 'semilogx']:
@@ -2540,9 +2554,29 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
             xmax += 0.1*xmax
 
         # Set the subplot range
-        if kw['xmin'] is not None and 'q' in str(kw['xmin']).lower():
+        if kw['xmin'] is not None and 'iqr' in str(kw['xmin']).lower():
+            factor = str(kw['xmin']).split('*')
+            if len(factor) == 1:
+                factor = 1
+            else:
+                factor = float(factor[0])
+            if kw['groups'] is None:
+                q1 = dfx.quantile(0.25)[x]
+                q3 = dfx.quantile(0.75)[x]
+                iqr = factor*(q3[x] - q1[x])
+                xmin = q1[x] - iqr[x]
+            else:
+                q1 = dfxx.groupby(kw['groups']).quantile(0.25)[x].reset_index()
+                q3 = dfxx.groupby(kw['groups']).quantile(0.75)[x].reset_index()
+                iqr = factor*(q3[x] - q1[x])
+                xmin = (q1[x] - iqr[x]).min().iloc[0]
+            ax.set_ylim(left=xmin.iloc[0])
+        elif kw['xmin'] is not None and 'q' in str(kw['xmin']).lower():
             xq = float(str(kw['xmin']).lower().replace('q', ''))/100
-            xmin = dfxx.groupby(kw['groups']).quantile(xq)[x].min()
+            if kw['groups'] is None:
+                xmin = dfx.quantile(xq)[x]
+            else:
+                xmin = dfxx.groupby(kw['groups']).quantile(xq)[x].min().iloc[0]
             ax.set_xlim(left=xmin)
         elif kw['xmin'] is not None:
             ax.set_xlim(left=kw['xmin'])
@@ -2554,9 +2588,29 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
             else:
                 xmin -= kw['ax_lim_pad']*xdelta/(1-2*kw['ax_lim_pad'])
             ax.set_xlim(left=xmin)
-        if kw['xmax'] is not None and 'q' in str(kw['xmax']).lower():
+        if kw['xmax'] is not None and 'iqr' in str(kw['xmax']).lower():
+            factor = str(kw['xmax']).split('*')
+            if len(factor) == 1:
+                factor = 1
+            else:
+                factor = float(factor[0])
+            if kw['groups'] is None:
+                q1 = dfx.quantile(0.25)[x]
+                q3 = dfx.quantile(0.75)[x]
+                iqr = factor*(q3[x] - q1[x])
+                xmax = q3[x] + iqr[x]
+            else:
+                q1 = dfxx.groupby(kw['groups']).quantile(0.25)[x].reset_index()
+                q3 = dfxx.groupby(kw['groups']).quantile(0.75)[x].reset_index()
+                iqr = factor*(q3[x] - q1[x])
+                xmax = (q3[x] + iqr[x]).max().iloc[0]
+            ax.set_ylim(right=xmax)
+        elif kw['xmax'] is not None and 'q' in str(kw['xmax']).lower():
             xq = float(str(kw['xmax']).lower().replace('q', ''))/100
-            xmax = dfx.groupby(kw['groups']).quantile(xq)[x].max()
+            if kw['groups'] is None:
+                xmax = dfx.quantile(xq)[x]
+            else:
+                xmax = dfxx.groupby(kw['groups']).quantile(xq)[x].max().iloc[0]
             ax.set_xlim(right=xmax)
         elif kw['xmax'] is not None:
             ax.set_xlim(right=kw['xmax'])
@@ -2609,9 +2663,29 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
             ymax += 0.1*ymax
 
         # Set the subplot range
-        if kw['ymin'] is not None and 'q' in str(kw['ymin']).lower():
+        if kw['ymin'] is not None and 'iqr' in str(kw['ymin']).lower():
+            factor = str(kw['ymin']).split('*')
+            if len(factor) == 1:
+                factor = 1
+            else:
+                factor = float(factor[0])
+            if kw['groups'] is None:
+                q1 = dfy.quantile(0.25)[yname]
+                q3 = dfy.quantile(0.75)[yname]
+                iqr = factor*(q3[x] - q1[x])
+                ymin = q1 - iqr
+            else:
+                q1 = dfyy.groupby(kw['groups']).quantile(0.25)[yname].reset_index()
+                q3 = dfyy.groupby(kw['groups']).quantile(0.75)[yname].reset_index()
+                iqr = factor*(q3[yname] - q1[yname])
+                ymin = (q1[yname] - iqr[yname]).min().iloc[0]
+            ax.set_ylim(bottom=ymin)
+        elif kw['ymin'] is not None and 'q' in str(kw['ymin']).lower():
             yq = float(str(kw['ymin']).lower().replace('q', ''))/100
-            ymin = dfyy.groupby(kw['groups']).quantile(yq)[yname].min()
+            if kw['groups'] is None:
+                ymin = dfy.quantile(yq)[yname]
+            else:
+                ymin = dfyy.groupby(kw['groups']).quantile(yq)[yname].min().iloc[0]
             ax.set_ylim(bottom=ymin)
         elif kw['ymin'] is not None:
             ax.set_ylim(bottom=kw['ymin'])
@@ -2621,9 +2695,29 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
             else:
                 ymin -= kw['ax_lim_pad']*ydelta
             ax.set_ylim(bottom=ymin)
-        if kw['ymax'] is not None and 'q' in str(kw['ymax']).lower():
+        if kw['ymax'] is not None and 'iqr' in str(kw['ymax']).lower():
+            factor = str(kw['ymax']).split('*')
+            if len(factor) == 1:
+                factor = 1
+            else:
+                factor = float(factor[0])
+            if kw['groups'] is None:
+                q1 = dfy.quantile(0.25)[yname]
+                q3 = dfy.quantile(0.75)[yname]
+                iqr = factor*(q3[x] - q1[x])
+                ymax = q3 + iqr
+            else:
+                q1 = dfyy.groupby(kw['groups']).quantile(0.25)[yname].reset_index()
+                q3 = dfyy.groupby(kw['groups']).quantile(0.75)[yname].reset_index()
+                qr = factor*(q3[yname] - q1[yname])
+                ymax = (q3[yname] + iqr[yname]).max().iloc[0]
+            ax.set_ylim(top=ymax)
+        elif kw['ymax'] is not None and 'q' in str(kw['ymax']).lower():
             yq = float(str(kw['ymax']).lower().replace('q', ''))/100
-            ymax = dfyy.groupby(kw['groups']).quantile(yq)[yname].max()
+            if kw['groups'] is None:
+                ymax = dfy.quantiles(yq)[yname]
+            else:
+                ymax = dfyy.groupby(kw['groups']).quantile(yq)[yname].max().iloc[0]
             ax.set_ylim(top=ymax)
         elif kw['ymax'] is not None:
             ax.set_ylim(top=kw['ymax'])
@@ -2646,9 +2740,29 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
                 ymax2 += 0.1*ymax2
 
             # Set the subplot range
-            if kw['ymin2'] is not None and 'q' in str(kw['ymin2']).lower():
+            if kw['ymin2'] is not None and 'iqr' in str(kw['ymin2']).lower():
+                factor = str(kw['ymin2']).split('*')
+                if len(factor) == 1:
+                    factor = 1
+                else:
+                    factor = float(factor[0])
+                if kw['groups'] is None:
+                    q1 = dfy.quantile(0.25)[yname]
+                    q3 = dfy.quantile(0.75)[yname]
+                    iqr = factor*(q3[x] - q1[x])
+                    ymin2 = q1 - iqr
+                else:
+                    q1 = dfyy.groupby(kw['groups']).quantile(0.25)[yname].reset_index()
+                    q3 = dfyy.groupby(kw['groups']).quantile(0.75)[yname].reset_index()
+                    iqr = factor*(q3[yname] - q1[yname])
+                    ymin2 = (q1[yname] - iqr[yname]).min().iloc[0]
+                ax.set_ylim(bottom=ymin2)
+            elif kw['ymin2'] is not None and 'q' in str(kw['ymin2']).lower():
                 yq = float(str(kw['ymin2']).lower().replace('q', ''))/100
-                ymin2 = dfyy.groupby(kw['groups']).quantile(yq)[yname].min()
+                if kw['groups'] is None:
+                    ymin2 = dfy.quantile(yq)[yname]
+                else:
+                    ymin2 = dfyy.groupby(kw['groups']).quantile(yq)[yname].min()
                 ax.set_ylim(bottom=ymin2)
             elif kw['ymin2'] is not None:
                 ax2.set_ylim(bottom=kw['ymin2'])
@@ -2658,10 +2772,30 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
                 else:
                     ymin2 -= kw['ax_lim_pad']*ydelta2
                 ax2.set_ylim(bottom=ymin2)
-            if kw['ymax2'] is not None and 'q' in str(kw['ymax2']).lower():
+            if kw['ymax2'] is not None and 'iqr' in str(kw['ymax2']).lower():
+                factor = str(kw['ymax2']).split('*')
+                if len(factor) == 1:
+                    factor = 1
+                else:
+                    factor = float(factor[0])
+                if kw['groups'] is None:
+                    q1 = dfy.quantile(0.25)[yname]
+                    q3 = dfy.quantile(0.75)[yname]
+                    iqr = factor*(q3[x] - q1[x])
+                    ymax2 = q3 + iqr
+                else:
+                    q1 = dfyy.groupby(kw['groups']).quantile(0.25)[yname].reset_index()
+                    q3 = dfyy.groupby(kw['groups']).quantile(0.75)[yname].reset_index()
+                    iqr = factor*(q3[yname] - q1[yname])
+                    ymax2 = (q3[yname] + iqr[yname]).max().iloc[0]
+                ax.set_ylim(top=ymax2)
+            elif kw['ymax2'] is not None and 'q' in str(kw['ymax2']).lower():
                 yq = float(str(kw['ymax2']).lower().replace('q', ''))/100
-                ymax2 = dfyy.groupby(kw['groups']).quantile(yq)[yname].max()
-                ax.set_ylim(top=ymax2) 
+                if kw['groups'] is None:
+                    ymax2 = dfy.quantile(yq)[yname]
+                else:
+                    ymax2 = dfyy.groupby(kw['groups']).quantile(yq)[yname].max().iloc[0]
+                ax.set_ylim(top=ymax2)
             elif kw['ymax2'] is not None:
                 ax2.set_ylim(top=kw['ymax2'])
             else:
