@@ -2709,7 +2709,7 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
             else:
                 q1 = dfyy.groupby(kw['groups']).quantile(0.25)[yname].reset_index()
                 q3 = dfyy.groupby(kw['groups']).quantile(0.75)[yname].reset_index()
-                qr = factor*(q3[yname] - q1[yname])
+                iqr = factor*(q3[yname] - q1[yname])
                 ymax = (q3[yname] + iqr[yname]).max().iloc[0]
             ax.set_ylim(top=ymax)
         elif kw['ymax'] is not None and 'q' in str(kw['ymax']).lower():
