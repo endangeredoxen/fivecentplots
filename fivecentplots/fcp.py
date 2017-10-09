@@ -303,8 +303,8 @@ def boxplot(**kwargs):
 
             # Order the group labels with natsorting
             gidx = []
-            for i, (n, g) in enumerate(groups):
-                gidx += [n]
+            for i, (nn, g) in enumerate(groups):
+                gidx += [nn]
             gidx = natsorted(gidx)
 
             # Make indices df
@@ -349,8 +349,8 @@ def boxplot(**kwargs):
         # Make the plot figure and axes
         design, fig, axes, kw = make_fig_and_ax(kw, nrow, ncol)
 
-        for ir, r in enumerate(rows):
-            for ic, c in enumerate(cols):
+        for ir, rr in enumerate(rows):
+            for ic, cc in enumerate(cols):
                 # Init arrays
                 data = []
                 labels = []
@@ -365,15 +365,15 @@ def boxplot(**kwargs):
                 axes[ir, ic] = set_axes_grid_lines(axes[ir, ic], kw)
 
                 # Subset the data
-                df_sub = get_rc_subset(df_fig, r, c, kw)
+                df_sub = get_rc_subset(df_fig, rr, cc, kw)
 
                 # Get the changes df
                 groups = df_sub.groupby(kw['groups'])
 
                 # Order the group labels with natsorting
                 gidx = []
-                for i, (n, g) in enumerate(groups):
-                    gidx += [n]
+                for i, (nn, g) in enumerate(groups):
+                    gidx += [nn]
                 gidx = natsorted(gidx)
 
                 # Make indices df
@@ -390,19 +390,23 @@ def boxplot(**kwargs):
                     col = changes.columns
 
                     # Plot the groups
-                    for i, n in enumerate(gidx):
+                    for i, nn in enumerate(gidx):
                         g = df_sub.copy().sort_values(by=kw['groups'])
                         g = g.set_index(kw['groups'])
                         if len(g) > 1:
-                            g = g.loc[n].reset_index()
+                            g = g.loc[nn]
+                        if type(g) == pd.Series:
+                            g = pd.DataFrame(g).T
+                        else:
+                            g = g.reset_index()
                         temp = g[y].dropna()
                         data += [temp]
                         means += [temp.mean()]
                         medians += [temp.median()]
-                        if type(n) is not tuple:
-                            nn = [n]
+                        if type(nn) is not tuple:
+                            nn = [nn]
                         else:
-                            nn = [str(f) for f in n]
+                            nn = [str(f) for f in nn]
                         labels += ['']
 
                         if len(changes.columns) > 1 and changes[col[-2]].iloc[i] == 1 \
@@ -553,7 +557,7 @@ def boxplot(**kwargs):
 
                 # Add row/column labels
                 axes[ir, ic] = \
-                    set_axes_rc_labels(axes[ir, ic], ir, ic, r, c, kw, design)
+                    set_axes_rc_labels(axes[ir, ic], ir, ic, rr, cc, kw, design)
 
                 # Axis ranges
                 axes[ir, ic], ax = set_axes_ranges(df_fig, df_sub, None, y,
@@ -3074,21 +3078,27 @@ def set_save_filename(df, x, y, kw, ifig):
     return filename
 
 
-def set_theme():
+def set_theme(theme=None):
     """
     Select a "defaults" file and copy to the user directory
     """
 
-    print('Select default styling theme:')
     themes = [f for f in os.listdir(osjoin(cur_dir, 'themes')) if '.py' in f]
-    for i, th in enumerate(themes):
-        print('   %s) %s' % (i+1, th))
-    entry = input('Entry: ')
+
+    if theme and '%s.py' % theme in themes:
+        entry = themes.index('%s.py' % theme) + 1
+
+    else:
+        print('Select default styling theme:')
+        for i, th in enumerate(themes):
+            print('   %s) %s' % (i+1, th))
+        entry = input('Entry: ')
 
 
-    print('Copying %s >> %s...' %
-          (themes[int(entry)-1],
-           osjoin(user_dir, '.fivecentplots', 'defaults.py')), end='')
+        print('Copying %s >> %s...' %
+              (themes[int(entry)-1],
+               osjoin(user_dir, '.fivecentplots', 'defaults.py')), end='')
+
     if not os.path.exists(osjoin(user_dir, '.fivecentplots')):
         os.makedirs(osjoin(user_dir, '.fivecentplots'))
     shutil.copy2(osjoin(cur_dir, 'themes', themes[int(entry)-1]),

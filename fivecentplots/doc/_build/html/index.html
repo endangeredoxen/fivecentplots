@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>fivecentplots &mdash; fivecentplots beta documentation</title>
+  <title>Why another plotting library? &mdash; fivecentplots beta documentation</title>
   
 
   
@@ -31,6 +31,8 @@
 
   
     <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
+  
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Archivo Black" type="text/css" />
   
 
   
@@ -121,7 +123,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="#">Docs</a> &raquo;</li>
       
-    <li>fivecentplots</li>
+    <li>Why another plotting library?</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -135,30 +137,30 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="fivecentplots">
-<h1>fivecentplots<a class="headerlink" href="#fivecentplots" title="Permalink to this headline">¶</a></h1>
-<img alt="_images/logo2.png" src="_images/logo2.png" />
-<p><em>Making multi-factor &amp; multi-axes Matplotlib manipulations more manageable</em></p>
-<div class="section" id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="why-another-plotting-library">
-<h3>Why another plotting library?<a class="headerlink" href="#why-another-plotting-library" title="Permalink to this headline">¶</a></h3>
-<p>Given that there is no shortage of quality Python plotting packages on the
-world wide web (matplotlib, bokeh, seaborn, etc.), it is fair to ask why we
-need another.  The answer is simple:  <em>you may not; I do.</em>  fivecentplots
-exists to make generation, customization, and automation of certain types of
-plots (i.e., facet grids with row and/or column grouping; boxplots with
-factor grouping labels; etc.) easier.</p>
+  <img alt="_images/index.png" src="_images/index.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
 </div>
-<div class="section" id="what-issues-does-fivecentplots-solve">
-<h3>What issues does fivecentplots solve?<a class="headerlink" href="#what-issues-does-fivecentplots-solve" title="Permalink to this headline">¶</a></h3>
+<p><span class="title">fivecentplots</span></p>
+<p><span class="tagline">A personal stylist for pandas- and matplotlib-based Python plotting</span></p>
+<hr class="docutils" />
+<div class="section" id="why-another-plotting-library">
+<h1>Why another plotting library?<a class="headerlink" href="#why-another-plotting-library" title="Permalink to this headline">¶</a></h1>
+<p>Given that there is no shortage of quality Python and non-Python plotting
+software packages on the world wide web (matplotlib, bokeh, seaborn, JMP,
+etc.), it is fair to ask why we need another.  The answer is simple:
+<em>you may not; I do.</em>  <strong>fivecentplots</strong> exists to simplify the generation,
+customization, and (most importantly to me) automation of certain types of
+plots in Python.</p>
+</div>
+<div class="section" id="what-issues-does-fivecentplots-address">
+<h1>What issues does fivecentplots address?<a class="headerlink" href="#what-issues-does-fivecentplots-address" title="Permalink to this headline">¶</a></h1>
 <ol class="arabic">
 <li><p class="first">Simplified syntax:</p>
-<p>All input parameters are specified as optional keyword arguments of one
-function call (for each plot type).  As an example, to generate an x-y plot
-with x and y labels, a plot title, and a legend in matplotlib, you would
-need at least five lines of code.  With fivecentplots, you would need a
-single function call with five arguments.</p>
+<p>Almost all input parameters are specified as optional keyword arguments of one
+function call (for each plot type). All data used for plotting is derived
+from pandas DataFrames so there is no direct management of numpy arrays.</p>
 </li>
 </ol>
 <div class="line-block">
@@ -169,9 +171,9 @@ single function call with five arguments.</p>
 <p>fivecentplots makes it easy to style plots with custom colors, sizes,
 marker themes, etc., and automate plot generation.  Unlike matplotlib
 which sets a size for the entire figure and adjusts elements to fit,
-fivecentplots starts with a fixed size for the plot window and allows the
-figure size to grow as needed to accommodate the contents.  This promotes
-consistency from plot to plot and eliminates the need to envoke
+fivecentplots starts with a fixed size for the plot or axis window and
+allows the figure size to grow as needed to accommodate the contents.  This
+promotes consistency from plot to plot and eliminates the need to invoke
 matplotlib routines like <code class="docutils literal"><span class="pre">tight_layout</span></code> which sometimes has unexpected
 results.</p>
 </li>
@@ -184,7 +186,7 @@ results.</p>
 <p>fivecentplots is built to process multi-factor pandas DataFrames.
 Keyword arguments make it easy to legend a plot by another column or to
 group multiple plots in rows and/or columns based on other DataFrame
-columns.  It also accepts a conditional string to filter the DataFrame
+columns.  It also accepts a conditional string to filter DataFrames
 before plotting.</p>
 </li>
 </ol>
@@ -194,13 +196,24 @@ before plotting.</p>
 <ol class="arabic" start="4">
 <li><p class="first">Boxplots with grouping labels:</p>
 <p>Although matplotlib supports boxplot generation, it is not easy to group
-data into labeled, multi-factor subgroups.  Borrowing inspiration from
-the variability chart in JMP, fivecentplots extends matplotlib&#8217;s boxplot
-routine to make this possible.</p>
+data into labeled, multi-factor subgroups.  Borrowing inspiration from the
+<a class="reference external" href="http://www.jmp.com/support/help/Variability_Gauge_Charts.shtml">variability chart in JMP</a>,
+fivecentplots extends matplotlib&#8217;s boxplot routine to make this possible.</p>
+</li>
+<li><p class="first">Automation!</p>
+<p>In addition to explicit function calls, <strong>fivecentplots</strong> can pull plotting
+parameters from ini-style config files.  This makes it very easy to
+manage and organize plot parameters for repeated and automated activities.</p>
+<p>For example, consider the case of an test system in a lab or a
+production facility that repeatedly generates data that needs to be plotted
+for quick analysis.  Traditionally, you might write a script that contains
+multiple function calls to style and create each plot but this can be
+cumbersome to maintain especially for someone with limited coding
+experience.  With the ini-style config file option in <strong>fivecentplots</strong>
+you could create a much more readable file that is easy to reuse or
+modify by anyone.</p>
 </li>
 </ol>
-</div>
-</div>
 <div class="section" id="documentation">
 <h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">

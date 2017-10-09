@@ -2,17 +2,21 @@
    sphinx-quickstart on Sat Apr 16 09:57:41 2016.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
-
-fivecentplots
-=============
-
-.. image:: _static/images/logo2.png
+.. role:: title
+.. role:: tagline
 
 
-*Making multi-factor & multi-axes Matplotlib manipulations more manageable*
+.. image:: _static/images/index.png
 
-Overview
-^^^^^^^^^^^^^^^^^^
+|
+|
+
+:title:`fivecentplots`
+
+
+:tagline:`A personal stylist for pandas- and matplotlib-based Python plotting`
+
+====
 
 Why another plotting library?
 -----------------------------
@@ -23,10 +27,8 @@ etc.), it is fair to ask why we need another.  The answer is simple:
 customization, and (most importantly to me) automation of certain types of
 plots in Python.
 
-**fivecenplots** is built on a framework of matplotlib and pandas.
-
-What issues does fivecentplots solve?
--------------------------------------
+What issues does fivecentplots address?
+---------------------------------------
 
 1) Simplified syntax:
 
