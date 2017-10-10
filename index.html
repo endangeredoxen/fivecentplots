@@ -1,0 +1,322 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>fivecentplots &mdash; fivecentplots beta documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
+  
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Archivo Black" type="text/css" />
+  
+
+  
+    <link rel="top" title="fivecentplots beta documentation" href="#"/>
+        <link rel="next" title="Overview" href="overview.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="#" class="icon icon-home"> fivecentplots
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Figure Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="defaults.html">Default Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Example Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="#">fivecentplots</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="#">Docs</a> &raquo;</li>
+      
+    <li><span class="title">fivecentplots</span></li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/index.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <img alt="_images/index.png" src="_images/index.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<div class="section" id="fivecentplots">
+<h1><span class="title">fivecentplots</span><a class="headerlink" href="#fivecentplots" title="Permalink to this headline">¶</a></h1>
+<p><span class="tagline">&#8211;Plot data bigly&#8211;</span></p>
+<div class="section" id="why-another-python-plotting-library">
+<h2>Why another Python plotting library?<a class="headerlink" href="#why-another-python-plotting-library" title="Permalink to this headline">¶</a></h2>
+<p>There is no shortage of quality Python plotting libraries on the world wide
+web (i.e., matplotlib, bokeh, seaborn, etc.).  Why add another?</p>
+<p>With the development of <strong>pandas</strong>, statistical analysis in Python can
+rival that of commercial software packages like JMP.  However, plotting those
+analyses is often more difficult.  <strong>fivecentplots</strong> builds upon <strong>pandas</strong>
+and <strong>matplotlib</strong> to make styling and formatting of plots easier and
+more consistent.</p>
+</div>
+<div class="section" id="what-issues-does-fivecentplots-address">
+<h2>What issues does fivecentplots address?<a class="headerlink" href="#what-issues-does-fivecentplots-address" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">Ease of Use</p>
+<ul class="simple">
+<li>All data come from pandas DataFrames eliminating direct management of
+numpy arrays</li>
+<li>All style and format parameters can be invoked in a single function call
+via optional keyword arguments</li>
+<li>Legend a plot or group multiple plots into rows and/or columns based on
+simply by DataFrame column names</li>
+<li>Quickly filter a DataFrame prior to plotting using simple notation instead
+of complex boolean operators</li>
+</ul>
+</li>
+<li><p class="first">Repeatability</p>
+<ul class="simple">
+<li>Figure sizes expand and contract to accommodate plot elements rather
+than shrinking elements to fit in a certain figure dimension (standard
+practice in matplotlib).  Plots of the same size stay the same size
+regardless of tick marks or legend contents</li>
+<li>All colors, sizes, marker themes, etc. can be specified from static set
+up files to preserve a custom look for all plots</li>
+</ul>
+</li>
+<li><p class="first">Automation</p>
+<ul class="simple">
+<li>In addition to explicit function calls, plots can be fully defined
+from ini-style config files making it easy create a batch of plots that are
+auto-generated from repeated calculations or data collection. These text
+files can be shared among and modified by multiple engineers and
+scientists without requiring a deep knowledge of Python syntax</li>
+</ul>
+</li>
+<li><p class="first">Extras (JMP-style plots that would be tedious to recreate every time in
+raw code)</p>
+<ul>
+<li><p class="first">Boxplots with grouping labels:</p>
+<blockquote>
+<div><p>Although matplotlib has a boxplot function, it is not easy to group
+data into multiple, labeled subgroups.  Borrowing inspiration from the
+<a class="reference external" href="http://www.jmp.com/support/help/Variability_Gauge_Charts.shtml">variability chart in JMP</a>,
+fivecentplots extends matplotlib&#8217;s boxplot routine to make this possible.</p>
+</div></blockquote>
+</li>
+<li><p class="first">Grouped facet grid plots:</p>
+<p>Like JMP&#8217;s <a class="reference external" href="http://www.jmp.com/support/help/Additional_Examples_of_the_Overlay_Plot_Platform.shtml#192569">grouped overlay plots</a>,
+take any multi-variate DataFrame and separate it into grids of plots,
+each represeting a unique combination of factors</p>
+</li>
+</ul>
+</li>
+</ol>
+<div class="section" id="documentation">
+<h3>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Figure Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="defaults.html">Default Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="keyword.html#boxplot-function"><code class="docutils literal"><span class="pre">boxplot</span></code> function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="keyword.html#plot-function"><code class="docutils literal"><span class="pre">plot</span></code> function</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Example Library</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#setup">Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#example-1-single-iv-curve-grouped-by-die">Example 1: Single IV curve grouped by die</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#example-2-facet-grid-by-boost-level-and-temperature">Example 2: Facet grid by boost level and temperature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#example-3-facet-grid-by-boost-level-and-temperature-no-axis-sharing">Example 3: Facet grid by boost level and temperature (no axis sharing)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#example-4-multiple-y-parameters-on-same-axis">Example 4: Multiple y parameters on same axis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#example-5-multiple-y-parameters-using-a-secondary-y-axis">Example 5: Multiple y parameters using a secondary y-axis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#example-6-setting-axis-ranges">Example 6: Setting axis ranges</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#example-7-log-scale-axis">Example 7: Log scale axis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#example-8-simple-boxplot-without-grouping-factors">Example 8: Simple boxplot without grouping factors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#example-9-simple-boxplot-with-grouping-factors">Example 9: Simple boxplot with grouping factors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#example-10-stats-median-vs-median-only">Example 10: Stats (median vs median_only)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#module-fcp">fcp.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#module-design">design.py</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h3>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span>Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span>Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span>Search Page</span></a></li>
+</ul>
+<span class="target" id="module-fivecentplots"></span></div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="overview.html" class="btn btn-neutral float-right" title="Overview" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Steve Nicholes.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'beta',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
