@@ -754,24 +754,6 @@ use mpl defaults)</li>
 </dd></dl>
 
 <dl class="function">
-<dt id="fcp.make_lists">
-<code class="descclassname">fcp.</code><code class="descname">make_lists</code><span class="sig-paren">(</span><em>val</em>, <em>check_type=&lt;class 'list'&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.make_lists" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert to list
-:param val: item to check type and possibly convert
-:type val: str|list
-:param check_type: type to check (list or tuple)
-:type check_type: dtype</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">list</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
 <dt id="fcp.make_rc_filename_labels">
 <code class="descclassname">fcp.</code><code class="descname">make_rc_filename_labels</code><span class="sig-paren">(</span><em>kw</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.make_rc_filename_labels" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make the row/column labels</p>
@@ -1076,6 +1058,43 @@ pulled from the fcp_params dictionary defined in defaults.py.</p>
 <dt id="fcp.set_theme">
 <code class="descclassname">fcp.</code><code class="descname">set_theme</code><span class="sig-paren">(</span><em>theme=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.set_theme" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select a &#8220;defaults&#8221; file and copy to the user directory</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fcp.validate_columns">
+<code class="descclassname">fcp.</code><code class="descname">validate_columns</code><span class="sig-paren">(</span><em>df</em>, <em>cols</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.validate_columns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check a DataFrame to verify grouping columns exists; warn if missing</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>df</strong> (<em>pd.DataFrame</em>) &#8211; DataFrame to check column names</li>
+<li><strong>cols</strong> (<em>str|list</em>) &#8211; column names that need to be checked in df</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">updated list of grouping columns</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="fcp.validate_list">
+<code class="descclassname">fcp.</code><code class="descname">validate_list</code><span class="sig-paren">(</span><em>items</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.validate_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure a list variable is actually a list and not a single string</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>items</strong> (<em>str|list</em>) &#8211; values to check dtype</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">items as a list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>

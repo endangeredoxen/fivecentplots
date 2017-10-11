@@ -12,84 +12,87 @@
 |
 
 :title:`fivecentplots`
+======================
+
+:tagline:`--Plot data bigly--`
 
 
-:tagline:`A personal stylist for pandas- and matplotlib-based Python plotting`
 
-====
+Why another Python plotting library?
+------------------------------------
+There is no shortage of quality Python plotting libraries on the world wide
+web (i.e., matplotlib, bokeh, seaborn, etc.).  Why add another?
 
-Why another plotting library?
------------------------------
-Given that there is no shortage of quality Python and non-Python plotting
-software packages on the world wide web (matplotlib, bokeh, seaborn, JMP,
-etc.), it is fair to ask why we need another.  The answer is simple:
-*you may not; I do.*  **fivecentplots** exists to simplify the generation,
-customization, and (most importantly to me) automation of certain types of
-plots in Python.
+With the development of **pandas**, statistical analysis in Python can
+rival that of commercial software packages like JMP.  However, plotting those
+analyses is often more difficult.  **fivecentplots** builds upon **pandas**
+and **matplotlib** to make styling and formatting of plots easier and
+more consistent.
+
 
 What issues does fivecentplots address?
 ---------------------------------------
 
-1) Simplified syntax:
+**1. Ease of Use**
 
-   Almost all input parameters are specified as optional keyword arguments of one
-   function call (for each plot type). All data used for plotting is derived
-   from pandas DataFrames so there is no direct management of numpy arrays.
+   * All data come from pandas DataFrames eliminating direct management of
+     numpy arrays
 
-|
+   * All style and format parameters can be invoked in a single function call
+     via optional keyword arguments
 
-2) Easy and repeatable look and feel:
+   * Legend a plot or group multiple plots into rows and/or columns based on
+     simply by DataFrame column names
 
-   fivecentplots makes it easy to style plots with custom colors, sizes,
-   marker themes, etc., and automate plot generation.  Unlike matplotlib
-   which sets a size for the entire figure and adjusts elements to fit,
-   fivecentplots starts with a fixed size for the plot or axis window and
-   allows the figure size to grow as needed to accommodate the contents.  This
-   promotes consistency from plot to plot and eliminates the need to invoke
-   matplotlib routines like ``tight_layout`` which sometimes has unexpected
-   results.
+   * Quickly filter a DataFrame prior to plotting using simple notation instead
+     of complex boolean operators
 
 |
 
-3) Simplified visualization of pandas DataFrames:
+**2. Repeatability**
 
-   fivecentplots is built to process multi-factor pandas DataFrames.
-   Keyword arguments make it easy to legend a plot by another column or to
-   group multiple plots in rows and/or columns based on other DataFrame
-   columns.  It also accepts a conditional string to filter DataFrames
-   before plotting.
+   * Figure sizes expand and contract to accommodate plot elements rather
+     than shrinking elements to fit in a certain figure dimension (standard
+     practice in matplotlib).  Plots of the same size stay the same size
+     regardless of tick marks or legend contents
+
+   * All colors, sizes, marker themes, etc. can be specified from static set
+     up files to preserve a custom look for all plots
 
 |
 
-4) Boxplots with grouping labels:
+**3. Automation**
 
-   Although matplotlib supports boxplot generation, it is not easy to group
-   data into labeled, multi-factor subgroups.  Borrowing inspiration from the
-   `variability chart in JMP <http://www.jmp.com/support/help/Variability_Gauge_Charts.shtml>`_,
-   fivecentplots extends matplotlib's boxplot routine to make this possible.
+   * In addition to explicit function calls, plots can be fully defined
+     from ini-style config files making it easy create a batch of plots that are
+     auto-generated from repeated calculations or data collection. These text
+     files can be shared among and modified by multiple engineers and
+     scientists without requiring a deep knowledge of Python syntax
 
-5) Automation!
+|
 
-   In addition to explicit function calls, **fivecentplots** can pull plotting
-   parameters from ini-style config files.  This makes it very easy to
-   manage and organize plot parameters for repeated and automated activities.
+**4. Extras (JMP-style plots that would be tedious to recreate every time in raw code)**
 
-   For example, consider the case of an test system in a lab or a
-   production facility that repeatedly generates data that needs to be plotted
-   for quick analysis.  Traditionally, you might write a script that contains
-   multiple function calls to style and create each plot but this can be
-   cumbersome to maintain especially for someone with limited coding
-   experience.  With the ini-style config file option in **fivecentplots**
-   you could create a much more readable file that is easy to reuse or
-   modify by anyone.
+   * Boxplots with grouping labels:
 
+      Although matplotlib has a boxplot function, it is not easy to group
+      data into multiple, labeled subgroups.  Borrowing inspiration from the
+      `variability chart in JMP <http://www.jmp.com/support/help/Variability_Gauge_Charts.shtml>`_,
+      fivecentplots extends matplotlib's boxplot routine to make this possible.
+
+   * Grouped facet grid plots:
+
+      Like JMP's `grouped overlay plots <http://www.jmp.com/support/help/Additional_Examples_of_the_Overlay_Plot_Platform.shtml#192569>`_,
+      take any multi-variate DataFrame and separate it into grids of plots,
+      each represeting a unique combination of factors
+
+|
 
 Documentation
 ^^^^^^^^^^^^^
 
-
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    overview
    design

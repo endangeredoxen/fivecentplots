@@ -272,6 +272,9 @@ def boxplot(**kwargs):
 
     # Init plot
     df, x, y, z, kw = init('boxplot', kwargs)
+    if type(df) is bool and not df:
+        return
+
     if 'ax_fig_ws' not in kwargs.keys():
         kw['ax_fig_ws'] = 15  # no standard y-axis ticks/label
 
@@ -299,7 +302,11 @@ def boxplot(**kwargs):
         # Special boxplot spacing for labels
         if kw['bp_labels_on'] and kw['groups'] is not None:
             # Get the changes df
-            groups = df_fig.groupby(kw['groups'])
+            kw['groups'] = validate_columns(df_fig, kw['groups'])
+            if kw['groups'] is None:
+                groups = df_fig.copy()
+            else:
+                groups = df_fig.groupby(kw['groups'])
 
             # Order the group labels with natsorting
             gidx = []
@@ -368,7 +375,11 @@ def boxplot(**kwargs):
                 df_sub = get_rc_subset(df_fig, rr, cc, kw)
 
                 # Get the changes df
-                groups = df_sub.groupby(kw['groups'])
+                kw['groups'] = validate_columns(df_sub, kw['groups'])
+                if kw['groups'] is not None:
+                    groups = df_sub.groupby(kw['groups'])
+                else:
+                    groups = df_sub.copy()
 
                 # Order the group labels with natsorting
                 gidx = []
@@ -380,8 +391,6 @@ def boxplot(**kwargs):
                 indices = pd.DataFrame(gidx)
                 num_groups = groups.ngroups
                 changes = index_changes(indices, num_groups)
-
-
                 num_groups = 0
                 if kw['groups'] is not None:
                     groups = df_sub.groupby(kw['groups'])
@@ -597,6 +606,8 @@ def contour(**kwargs):
 
     # Init plot
     df, x, y, z, kw = init('plot', kwargs)
+    if type(df) is bool and not df:
+        return
 
     # Iterate over discrete figures
     for ifig, fig_item in enumerate(kw['fig_items']):
@@ -1320,7 +1331,7 @@ def init(plot, kwargs):
             raise ValueError('Could not convert x-column "%s" to float!' % x)
 
     y = kwargs.get('y')
-    y = make_lists(y)
+    y = validate_list(y)
     if plot in ['boxplot', 'contour', 'plot']:
         if y is None:
             raise ValueError('Must provide a column name for "y"')
@@ -1345,200 +1356,215 @@ def init(plot, kwargs):
             raise ValueError('Could not convert z-column to float!')
 
     kw = dict()
-    kw['alpha'] = kwargs.get('alpha', 1)
-    kw['ax_edge_color'] = kwargs.get('ax_edge_color',
-                                     fcp_params['ax_edge_color'])
-    kw['ax_face_color'] = kwargs.get('ax_face_color',
-                                     fcp_params['ax_face_color'])
-    kw['ax_fig_ws'] = kwargs.get('ax_fig_ws', fcp_params['ax_fig_ws'])
-    kw['ax_hlines'] = kwargs.get('ax_hlines', [])
-    kw['ax_label_pad'] = kwargs.get('ax_label_pad', fcp_params['ax_label_pad'])
-    kw['ax_lim'] = kwargs.get('ax_lim', [])
-    kw['ax_lim_pad'] = kwargs.get('ax_lim_pad', 0.05)
-    kw['ax_scale'] = kwargs.get('ax_scale', None)
-    kw['ax_scale2'] = kwargs.get('ax_scale2', None)
-    kw['ax_size'] = kwargs.get('ax_size', fcp_params['ax_size'])
-    kw['ax_vlines'] = kwargs.get('ax_vlines', [])
-    kw['bp_divider_color'] = kwargs.get('bp_divider_color',
-                                        fcp_params['bp_divider_color'])
-    kw['bp_fill_color'] = kwargs.get('bp_fill_color',
-                                        fcp_params['bp_fill_color'])
-    kw['bp_labels_on'] = kwargs.get('bp_labels_on', True)
-    kw['bp_label_size'] = kwargs.get('bp_label_size',
-                                     fcp_params['bp_label_size'])
-    kw['bp_label_edge_color'] = kwargs.get('bp_label_edge_color',
-                                           fcp_params['bp_label_edge_color'])
-    kw['bp_label_fill_color'] = kwargs.get('bp_label_fill_color',
-                                           fcp_params['bp_label_fill_color'])
-    kw['bp_label_font_size'] = kwargs.get('bp_label_font_size',
-                                          fcp_params['bp_label_font_size'])
-    kw['bp_label_text_color'] = kwargs.get('bp_label_text_color',
-                                           fcp_params['bp_label_text_color'])
-    kw['bp_label_text_style'] = kwargs.get('bp_label_text_style',
-                                           fcp_params['bp_label_text_style'])
-    kw['bp_label_text_weight'] = kwargs.get('bp_label_text_weight',
-                                            fcp_params['bp_label_text_weight'])
-    kw['bp_name_font_size'] = kwargs.get('bp_name_font_size',
-                                          fcp_params['bp_name_font_size'])
-    kw['bp_name_text_color'] = kwargs.get('bp_name_text_color',
-                                           fcp_params['bp_name_text_color'])
-    kw['bp_name_text_style'] = kwargs.get('bp_name_text_style',
-                                           fcp_params['bp_name_text_style'])
-    kw['bp_name_text_weight'] = kwargs.get('bp_name_text_weight',
-                                            fcp_params['bp_name_text_weight'])
-    kw['bp_name_ws'] = kwargs.get('bp_name_ws', fcp_params['bp_name_ws'])
-    kw['cbar'] = kwargs.get('cbar', False)
-    kw['cbar_ax_ws'] = kwargs.get('cbar_ax_ws', fcp_params['cbar_ax_ws'])
-    kw['cbar_label'] = kwargs.get('cbar_label', z)
-    kw['cbar_width'] = kwargs.get('cbar_width', fcp_params['cbar_width'])
-    kw['cmap'] = kwargs.get('cmap', None)
-    kw['col'] = kwargs.get('col', None)
-    kw['col_label'] = kwargs.get('col_label', None)
-    kw['col_labels_on'] = kwargs.get('col_labels_on', True)
-    kw['col_label_size'] = kwargs.get('col_label_size',
-                                      fcp_params['rc_label_size'])
-    kw['col_label_ws'] = kwargs.get('col_label_ws', fcp_params['rc_label_ws'])
-    kw['col_padding'] = kwargs.get('col_padding', fcp_params['col_padding'])
-    kw['colors'] = kwargs.get('colors', palette)
-    kw['cols'] = kwargs.get('cols', None)
-    kw['cols_orig'] = kw['cols']
-    kw['connect_means'] = kwargs.get('connect_means', False)
-    kw['dividers'] = kwargs.get('dividers', True)
-    kw['fig_ax_ws'] = kwargs.get('fig_ax_ws',
-                                 fcp_params['fig_ax_ws'])
-    kw['fig_edge_color'] = kwargs.get('fig_edge_color',
-                                     fcp_params['fig_edge_color'])
-    kw['fig_face_color'] = kwargs.get('fig_face_color',
-                                     fcp_params['fig_face_color'])
-    kw['fig_groups'] = kwargs.get('fig_groups', None)
-    kw['fig_group_path'] = kwargs.get('fig_group_path', False)
-    kw['fig_label'] = kwargs.get('fig_label', True)
-    kw['filename'] = kwargs.get('filename', None)
-    kw['filename_orig'] = kwargs.get('filename', None)
-    kw['filled'] = kwargs.get('filled', True)
-    kw['filter'] = kwargs.get('filter', None)
-    kw['grid_major_color'] = kwargs.get('grid_major_color',
-                                        fcp_params['grid_major_color'])
-    kw['grid_major_linestyle'] = kwargs.get('grid_major_linestyle',
-                                        fcp_params['grid_major_linestyle'])
+    try:
+        kw['alpha'] = kwargs.get('alpha', 1)
+        kw['ax_edge_color'] = kwargs.get('ax_edge_color',
+                                         fcp_params['ax_edge_color'])
+        kw['ax_face_color'] = kwargs.get('ax_face_color',
+                                         fcp_params['ax_face_color'])
+        kw['ax_fig_ws'] = kwargs.get('ax_fig_ws', fcp_params['ax_fig_ws'])
+        kw['ax_hlines'] = validate_list(kwargs.get('ax_hlines', []))
+        kw['ax_label_pad'] = kwargs.get('ax_label_pad',
+                                        fcp_params['ax_label_pad'])
+        kw['ax_lim'] = kwargs.get('ax_lim', [])
+        kw['ax_lim_pad'] = kwargs.get('ax_lim_pad', 0.05)
+        kw['ax_scale'] = kwargs.get('ax_scale', None)
+        kw['ax_scale2'] = kwargs.get('ax_scale2', None)
+        kw['ax_size'] = kwargs.get('ax_size', fcp_params['ax_size'])
+        kw['ax_vlines'] = validate_list(kwargs.get('ax_vlines', []))
+        kw['bp_divider_color'] = kwargs.get('bp_divider_color',
+                                            fcp_params['bp_divider_color'])
+        kw['bp_fill_color'] = kwargs.get('bp_fill_color',
+                                            fcp_params['bp_fill_color'])
+        kw['bp_labels_on'] = kwargs.get('bp_labels_on', True)
+        kw['bp_label_size'] = kwargs.get('bp_label_size',
+                                         fcp_params['bp_label_size'])
+        kw['bp_label_edge_color'] = kwargs.get('bp_label_edge_color',
+                                               fcp_params['bp_label_edge_color'])
+        kw['bp_label_fill_color'] = kwargs.get('bp_label_fill_color',
+                                               fcp_params['bp_label_fill_color'])
+        kw['bp_label_font_size'] = kwargs.get('bp_label_font_size',
+                                              fcp_params['bp_label_font_size'])
+        kw['bp_label_text_color'] = kwargs.get('bp_label_text_color',
+                                               fcp_params['bp_label_text_color'])
+        kw['bp_label_text_style'] = kwargs.get('bp_label_text_style',
+                                               fcp_params['bp_label_text_style'])
+        kw['bp_label_text_weight'] = kwargs.get('bp_label_text_weight',
+                                                fcp_params['bp_label_text_weight'])
+        kw['bp_name_font_size'] = kwargs.get('bp_name_font_size',
+                                              fcp_params['bp_name_font_size'])
+        kw['bp_name_text_color'] = kwargs.get('bp_name_text_color',
+                                               fcp_params['bp_name_text_color'])
+        kw['bp_name_text_style'] = kwargs.get('bp_name_text_style',
+                                               fcp_params['bp_name_text_style'])
+        kw['bp_name_text_weight'] = kwargs.get('bp_name_text_weight',
+                                                fcp_params['bp_name_text_weight'])
+        kw['bp_name_ws'] = kwargs.get('bp_name_ws', fcp_params['bp_name_ws'])
+        kw['cbar'] = kwargs.get('cbar', False)
+        kw['cbar_ax_ws'] = kwargs.get('cbar_ax_ws', fcp_params['cbar_ax_ws'])
+        kw['cbar_label'] = kwargs.get('cbar_label', z)
+        kw['cbar_width'] = kwargs.get('cbar_width', fcp_params['cbar_width'])
+        kw['cmap'] = kwargs.get('cmap', None)
+        kw['col'] = kwargs.get('col', None)
+        kw['col_label'] = kwargs.get('col_label', None)
+        kw['col_labels_on'] = kwargs.get('col_labels_on', True)
+        kw['col_label_size'] = kwargs.get('col_label_size',
+                                          fcp_params['rc_label_size'])
+        kw['col_label_ws'] = kwargs.get('col_label_ws',
+                                        fcp_params['rc_label_ws'])
+        kw['col_padding'] = kwargs.get('col_padding',
+                                       fcp_params['col_padding'])
+        kw['colors'] = kwargs.get('colors', palette)
+        kw['cols'] = kwargs.get('cols', None)
+        kw['cols_orig'] = kw['cols']
+        kw['connect_means'] = kwargs.get('connect_means', False)
+        kw['dividers'] = kwargs.get('dividers', True)
+        kw['fig_ax_ws'] = kwargs.get('fig_ax_ws',
+                                     fcp_params['fig_ax_ws'])
+        kw['fig_edge_color'] = kwargs.get('fig_edge_color',
+                                         fcp_params['fig_edge_color'])
+        kw['fig_face_color'] = kwargs.get('fig_face_color',
+                                         fcp_params['fig_face_color'])
+        kw['fig_groups'] = kwargs.get('fig_groups', None)
+        kw['fig_group_path'] = kwargs.get('fig_group_path', False)
+        kw['fig_label'] = kwargs.get('fig_label', True)
+        kw['filename'] = kwargs.get('filename', None)
+        kw['filename_orig'] = kwargs.get('filename', None)
+        kw['filled'] = kwargs.get('filled', True)
+        kw['filter'] = kwargs.get('filter', None)
+        kw['grid_major_color'] = kwargs.get('grid_major_color',
+                                            fcp_params['grid_major_color'])
+        kw['grid_major_linestyle'] = kwargs.get('grid_major_linestyle',
+                                            fcp_params['grid_major_linestyle'])
 
-    kw['grid_minor_color'] = kwargs.get('grid_minor_color',
-                                        fcp_params['grid_minor_color'])
-    kw['grid_minor_linestyle'] = kwargs.get('grid_minor_linestyle',
-                                        fcp_params['grid_minor_linestyle'])
-    kw['grid_major'] = kwargs.get('grid_major', True)
-    kw['grid_minor'] = kwargs.get('grid_minor', False)
-    kw['groups'] = kwargs.get('groups', None)
-    kw['inline'] = kwargs.get('inline', fcp_params['inline'])
-    kw['jitter'] = kwargs.get('jitter', False)
-    kw['label_font_size'] = kwargs.get('label_font_size',
-                                       fcp_params['label_font_size'])
-    kw['label_style'] = kwargs.get('label_style', fcp_params['label_style'])
-    kw['label_weight'] = kwargs.get('label_weight', fcp_params['label_weight'])
-    kw['leg_bkgrd'] = kwargs.get('leg_bkgrd', fcp_params['leg_bkgrd'])
-    kw['leg_border'] = kwargs.get('leg_border', fcp_params['leg_border'])
-    kw['leg_groups'] = kwargs.get('leg_groups', None)
-    kw['leg_items'] = kwargs.get('leg_items', [])
-    kw['leg_on'] = kwargs.get('leg_on', True)
-    kw['leg_title'] = kwargs.get('leg_title', None)
-    kw['levels'] = kwargs.get('levels', 20)
-    kw['line_color'] = kwargs.get('line_color', None)
-    kw['line_fit'] = kwargs.get('line_fit', None)
-    kw['line_style'] = kwargs.get('line_style', '-')
-    kw['line_width'] = kwargs.get('line_width', fcp_params['line_width'])
-    kw['lines'] = kwargs.get('lines', True)
-    kw['marker_size'] = kwargs.get('marker_size', fcp_params['marker_size'])
-    kw['marker_type'] = kwargs.get('marker_type', None)
-    kw['normalize'] = kwargs.get('normalize', False)
-    kw['points'] = kwargs.get('points', True)
-    kw['range_lines'] = kwargs.get('range_lines', True)
-    kw['rc_label_edge_color'] = kwargs.get('rc_label_edge_color',
-                                           fcp_params['rc_label_edge_color'])
-    kw['rc_label_fill_color'] = kwargs.get('rc_label_fill_color',
-                                           fcp_params['rc_label_fill_color'])
-    kw['rc_label_font_size'] = kwargs.get('rc_label_font_size',
-                                          fcp_params['rc_label_font_size'])
-    kw['rc_label_text_color'] = kwargs.get('rc_label_text_color',
-                                           fcp_params['rc_label_text_color'])
-    kw['rc_label_text_style'] = kwargs.get('rc_label_text_style',
-                                           fcp_params['rc_label_text_style'])
-    kw['row'] = kwargs.get('row', None)
-    kw['row_label'] = kwargs.get('row_label', None)
-    kw['row_labels_on'] = kwargs.get('row_labels_on', True)
-    kw['row_label_size'] = kwargs.get('row_label_size',
-                                     fcp_params['rc_label_size'])
-    kw['row_label_ws'] = kwargs.get('row_label_ws', fcp_params['rc_label_ws'])
-    kw['row_padding'] = kwargs.get('row_padding', fcp_params['row_padding'])
-    kw['rows'] = kwargs.get('rows', None)
-    kw['rows_orig'] = kw['rows']
-    kw['save_ext'] = kwargs.get('save_ext', 'png')
-    kw['save_name'] = kwargs.get('save_name', None)
-    kw['save_path'] = kwargs.get('save_path', None)
-    kw['scalar_x'] = kwargs.get('scalar_x', False)
-    kw['scalar_y'] = kwargs.get('scalar_y', False)
-    kw['sci_x'] = kwargs.get('sci_x', False)
-    kw['sci_y'] = kwargs.get('sci_y', False)
-    kw['separate_labels'] = kwargs.get('separate_labels', False)
-    kw['sharex'] = kwargs.get('sharex', True)
-    kw['sharey'] = kwargs.get('sharey', True)
-    kw['show'] = kwargs.get('show', False)
-    kw['stat'] = kwargs.get('stat', None)
-    kw['stat_val'] = kwargs.get('stat_val', x)
-    kw['tick_major_color'] = kwargs.get('tick_major_color',
-                                        fcp_params['tick_major_color'])
-    kw['tick_minor_color'] = kwargs.get('tick_minor_color',
-                                        fcp_params['tick_minor_color'])
-    kw['tick_font_size'] = kwargs.get('tick_font_size',
-                                      fcp_params['tick_font_size'])
-    kw['tick_label_color'] = kwargs.get('tick_label_color',
-                                      fcp_params['tick_label_color'])
-    kw['tick_length'] = kwargs.get('tick_length', fcp_params['tick_length'])
-    kw['tick_width'] = kwargs.get('tick_width', fcp_params['tick_width'])
-    kw['title'] = kwargs.get('title', None)
-    kw['title_orig'] = kwargs.get('title', None)
-    kw['title_edge_color'] = kwargs.get('title_edge_color',
-                                        fcp_params['title_edge_color'])
-    kw['title_fill_color'] = kwargs.get('title_fill_color',
-                                        fcp_params['title_fill_color'])
-    kw['title_text_color'] = kwargs.get('title_text_color',
-                                        fcp_params['title_text_color'])
-    kw['title_font_size'] = kwargs.get('title_font_size',
-                                        fcp_params['title_font_size'])
-    kw['title_text_style'] = kwargs.get('title_text_style',
-                                        fcp_params['title_text_style'])
-    kw['twinx'] = kwargs.get('twinx', False)
-    kw['twiny'] = kwargs.get('twiny', False)
-    kw['xlabel'] = kwargs.get('xlabel', x)
-    kw['xlabel_color'] = kwargs.get('xlabel_color', fcp_params['label_color'])
-    kw['xmax'] = kwargs.get('xmax', None)
-    kw['xmin'] = kwargs.get('xmin', None)
-    kw['xticks'] = kwargs.get('xticks', None)
-    kw['xtrans'] = kwargs.get('xtrans', None)
-    kw['ylabel'] = kwargs.get('ylabel', ' + '.join(y))
-    kw['ylabel_color'] = kwargs.get('ylabel_color', fcp_params['label_color'])
-    kw['yline'] = kwargs.get('yline', None)
-    kw['ymax'] = kwargs.get('ymax', None)
-    kw['ymin'] = kwargs.get('ymin', None)
-    kw['yticks'] = kwargs.get('yticks', None)
-    kw['ytrans'] = kwargs.get('ytrans', None)
-    kw['ylabel2'] = kwargs.get('ylabel2', y)
-    kw['ylabel2_color'] = kwargs.get('ylabel2_color',
-                                     fcp_params['label_color'])
-    kw['ymax2'] = kwargs.get('ymax2', None)
-    kw['ymin2'] = kwargs.get('ymin2', None)
-    kw['yticks2'] = kwargs.get('yticks2', None)
-    kw['ytrans2'] = kwargs.get('ytrans2', None)
-    kw['ztrans'] = kwargs.get('ztrans', None)
+        kw['grid_minor_color'] = kwargs.get('grid_minor_color',
+                                            fcp_params['grid_minor_color'])
+        kw['grid_minor_linestyle'] = kwargs.get('grid_minor_linestyle',
+                                            fcp_params['grid_minor_linestyle'])
+        kw['grid_major'] = kwargs.get('grid_major', True)
+        kw['grid_minor'] = kwargs.get('grid_minor', False)
+        kw['groups'] = kwargs.get('groups', None)
+        kw['inline'] = kwargs.get('inline', fcp_params['inline'])
+        kw['jitter'] = kwargs.get('jitter', False)
+        kw['label_font_size'] = kwargs.get('label_font_size',
+                                           fcp_params['label_font_size'])
+        kw['label_style'] = kwargs.get('label_style',
+                                       fcp_params['label_style'])
+        kw['label_weight'] = kwargs.get('label_weight',
+                                        fcp_params['label_weight'])
+        kw['leg_bkgrd'] = kwargs.get('leg_bkgrd', fcp_params['leg_bkgrd'])
+        kw['leg_border'] = kwargs.get('leg_border', fcp_params['leg_border'])
+        kw['leg_groups'] = kwargs.get('leg_groups', None)
+        kw['leg_items'] = kwargs.get('leg_items', [])
+        kw['leg_on'] = kwargs.get('leg_on', True)
+        kw['leg_title'] = kwargs.get('leg_title', None)
+        kw['levels'] = kwargs.get('levels', 20)
+        kw['line_color'] = kwargs.get('line_color', None)
+        kw['line_fit'] = kwargs.get('line_fit', None)
+        kw['line_style'] = kwargs.get('line_style', '-')
+        kw['line_width'] = kwargs.get('line_width', fcp_params['line_width'])
+        kw['lines'] = kwargs.get('lines', True)
+        kw['marker_size'] = kwargs.get('marker_size', fcp_params['marker_size'])
+        kw['marker_type'] = kwargs.get('marker_type', None)
+        kw['normalize'] = kwargs.get('normalize', False)
+        kw['points'] = kwargs.get('points', True)
+        kw['range_lines'] = kwargs.get('range_lines', True)
+        kw['rc_label_edge_color'] = kwargs.get('rc_label_edge_color',
+                                               fcp_params['rc_label_edge_color'])
+        kw['rc_label_fill_color'] = kwargs.get('rc_label_fill_color',
+                                               fcp_params['rc_label_fill_color'])
+        kw['rc_label_font_size'] = kwargs.get('rc_label_font_size',
+                                              fcp_params['rc_label_font_size'])
+        kw['rc_label_text_color'] = kwargs.get('rc_label_text_color',
+                                               fcp_params['rc_label_text_color'])
+        kw['rc_label_text_style'] = kwargs.get('rc_label_text_style',
+                                               fcp_params['rc_label_text_style'])
+        kw['row'] = kwargs.get('row', None)
+        kw['row_label'] = kwargs.get('row_label', None)
+        kw['row_labels_on'] = kwargs.get('row_labels_on', True)
+        kw['row_label_size'] = kwargs.get('row_label_size',
+                                         fcp_params['rc_label_size'])
+        kw['row_label_ws'] = kwargs.get('row_label_ws',
+                                        fcp_params['rc_label_ws'])
+        kw['row_padding'] = kwargs.get('row_padding',
+                                       fcp_params['row_padding'])
+        kw['rows'] = kwargs.get('rows', None)
+        kw['rows_orig'] = kw['rows']
+        kw['save_ext'] = kwargs.get('save_ext', 'png')
+        kw['save_name'] = kwargs.get('save_name', None)
+        kw['save_path'] = kwargs.get('save_path', None)
+        kw['scalar_x'] = kwargs.get('scalar_x', False)
+        kw['scalar_y'] = kwargs.get('scalar_y', False)
+        kw['sci_x'] = kwargs.get('sci_x', False)
+        kw['sci_y'] = kwargs.get('sci_y', False)
+        kw['separate_labels'] = kwargs.get('separate_labels', False)
+        kw['sharex'] = kwargs.get('sharex', True)
+        kw['sharey'] = kwargs.get('sharey', True)
+        kw['show'] = kwargs.get('show', False)
+        kw['stat'] = kwargs.get('stat', None)
+        kw['stat_val'] = kwargs.get('stat_val', x)
+        kw['tick_major_color'] = kwargs.get('tick_major_color',
+                                            fcp_params['tick_major_color'])
+        kw['tick_minor_color'] = kwargs.get('tick_minor_color',
+                                            fcp_params['tick_minor_color'])
+        kw['tick_font_size'] = kwargs.get('tick_font_size',
+                                          fcp_params['tick_font_size'])
+        kw['tick_label_color'] = kwargs.get('tick_label_color',
+                                          fcp_params['tick_label_color'])
+        kw['tick_length'] = kwargs.get('tick_length',
+                                       fcp_params['tick_length'])
+        kw['tick_width'] = kwargs.get('tick_width', fcp_params['tick_width'])
+        kw['title'] = kwargs.get('title', None)
+        kw['title_orig'] = kwargs.get('title', None)
+        kw['title_edge_color'] = kwargs.get('title_edge_color',
+                                            fcp_params['title_edge_color'])
+        kw['title_fill_color'] = kwargs.get('title_fill_color',
+                                            fcp_params['title_fill_color'])
+        kw['title_text_color'] = kwargs.get('title_text_color',
+                                            fcp_params['title_text_color'])
+        kw['title_font_size'] = kwargs.get('title_font_size',
+                                            fcp_params['title_font_size'])
+        kw['title_text_style'] = kwargs.get('title_text_style',
+                                            fcp_params['title_text_style'])
+        kw['twinx'] = kwargs.get('twinx', False)
+        kw['twiny'] = kwargs.get('twiny', False)
+        kw['xlabel'] = kwargs.get('xlabel', x)
+        kw['xlabel_color'] = kwargs.get('xlabel_color',
+                                        fcp_params['label_color'])
+        kw['xmax'] = kwargs.get('xmax', None)
+        kw['xmin'] = kwargs.get('xmin', None)
+        kw['xticks'] = kwargs.get('xticks', None)
+        kw['xtrans'] = kwargs.get('xtrans', None)
+        kw['ylabel'] = kwargs.get('ylabel', ' + '.join(y))
+        kw['ylabel_color'] = kwargs.get('ylabel_color',
+                                        fcp_params['label_color'])
+        kw['yline'] = kwargs.get('yline', None)
+        kw['ymax'] = kwargs.get('ymax', None)
+        kw['ymin'] = kwargs.get('ymin', None)
+        kw['yticks'] = kwargs.get('yticks', None)
+        kw['ytrans'] = kwargs.get('ytrans', None)
+        kw['ylabel2'] = kwargs.get('ylabel2', y)
+        kw['ylabel2_color'] = kwargs.get('ylabel2_color',
+                                         fcp_params['label_color'])
+        kw['ymax2'] = kwargs.get('ymax2', None)
+        kw['ymin2'] = kwargs.get('ymin2', None)
+        kw['yticks2'] = kwargs.get('yticks2', None)
+        kw['ytrans2'] = kwargs.get('ytrans2', None)
+        kw['ztrans'] = kwargs.get('ztrans', None)
 
+    except KeyError as e:
+        print('fcp Param Error!\n'
+              '   Keyword %s was not found in your defaults.py file!\n'
+              '   Either manually add the value or run fcp.set_theme() to'
+              ' replace the entire file'
+              % e)
+        return False, False, False, False, False
+        
     # Make lists
     vals = ['groups']
     for v in vals:
-        kw[v] = make_lists(kw[v])
-    if type(kw['ax_hlines']) is not list:
-        kw['ax_hlines'] = [kw['ax_hlines']]
-    if type(kw['ax_vlines']) is not list:
-        kw['ax_vlines'] = [kw['ax_vlines']]
-
+        kw[v] = validate_list(kw[v])
+    
     # Dummy-proof colors
     if type(kw['colors'][0]) is not tuple:
         kw['colors'] = [kw['colors']]
@@ -1559,13 +1585,15 @@ def init(plot, kwargs):
     # Set up the figure grouping and iterate (each value corresponds to a
     #  separate figure)
     if kw['fig_groups'] is not None:
-        if type(kw['fig_groups']) is list:
+        kw['fig_groups'] = validate_columns(df, kw['fig_groups'])
+        if kw['fig_groups'] is not None and type(kw['fig_groups']) is list:
             kw['fig_items'] = list(df.groupby(kw['fig_groups']).groups.keys())
-        else:
+        elif kw['fig_groups'] is not None:
             kw['fig_items'] = list(df[kw['fig_groups']].unique())
     else:
         kw['fig_items'] = [None]
     if kw['fig_group_path'] is not None and type(kw['fig_group_path']) is str:
+        # needs groupby error handling
         temp = list(df.groupby([kw['fig_groups'],
                                 kw['fig_group_path']]).groups.keys())
         kw['fig_path_items'] = [f[1] for f in temp]
@@ -1594,23 +1622,6 @@ def init(plot, kwargs):
     mplp.close('all')
 
     return df.copy(), x, y, z, kw
-
-
-def make_lists(val, check_type=list):
-    """
-    Convert to list
-    Args:
-        val (str|list): item to check type and possibly convert
-        check_type (dtype): type to check (list or tuple)
-
-    Returns:
-        list
-    """
-
-    if type(val) is not check_type and val is not None:
-        return [val]
-    else:
-        return val
 
 
 def make_fig_and_ax(kw, nrow, ncol):
@@ -1750,6 +1761,8 @@ def plot(**kwargs):
 
     # Init plot
     df, x, y, z, kw = init('plot', kwargs)
+    if type(df) is bool and not df:
+        return
 
     # Handle multiple y-values
     if kw['twinx']:
@@ -1843,11 +1856,19 @@ def plot(**kwargs):
                                 curves += curve
 
                         else:
-                            if 'median' in kw['stat'].lower():
+                            kw['stat_val'] = \
+                                validate_columns(df_sub, kw['stat_val'])
+                            if 'median' in kw['stat'].lower() \
+                                    and kw['stat_val'] is not None:
                                 df_stat = \
                                     df_sub.groupby(kw['stat_val']).median()
+                            elif kw['stat_val'] is not None:
+                                df_stat = \
+                                    df_sub.groupby(kw['stat_val']).mean()
                             else:
-                                df_stat = df_sub.groupby(kw['stat_val']).mean()
+                                print('Could not group data by stat_val '
+                                      'columns.  Using full data set...')
+                                df_stat = df_sub
 
                             if 'only' not in kw['stat'].lower():
                                 # Plot the points for each data set
@@ -1997,10 +2018,17 @@ def plot(**kwargs):
                         if curve is not None:
                             curves += curve
                     else:
-                        if 'median' in kw['stat'].lower():
+                        kw['stat_val'] = \
+                                validate_columns(df_sub, kw['stat_val'])
+                        if 'median' in kw['stat'].lower()\
+                                and kw['stat_val'] is not None:
                             df_stat = df_sub.groupby(kw['stat_val']).median()
-                        else:
+                        elif kw['stat_val'] is not None:
                             df_stat = df_sub.groupby(kw['stat_val']).mean()
+                        else:
+                            print('Could not group data by stat_val '
+                                  'columns.  Using full data set...')
+                            df_stat = df_sub
 
                         # Plot the points for each data set
                         if 'only' not in kw['stat'].lower():
@@ -2119,11 +2147,17 @@ def plot(**kwargs):
                             if curve is not None:
                                 curves += curve
                         else:
-                            if 'median' in kw['stat'].lower():
-                                df_stat = \
-                                    df_sub.groupby(kw['stat_val']).median()
-                            else:
+                            kw['stat_val'] = \
+                                validate_columns(df_sub, kw['stat_val'])
+                            if 'median' in kw['stat'].lower()\
+                                    and kw['stat_val'] is not None:
+                                df_stat = df_sub.groupby(kw['stat_val']).median()
+                            elif kw['stat_val'] is not None:
                                 df_stat = df_sub.groupby(kw['stat_val']).mean()
+                            else:
+                                print('Could not group data by stat_val '
+                                      'columns.  Using full data set...')
+                                df_stat = df_sub
 
                             # Plot the points for each data set
                             if 'only' not in kw['stat'].lower():
@@ -2260,14 +2294,22 @@ def plot(**kwargs):
                                     curve_dict[leg_group] = curve
 
                             # Plot the lines
-                            if 'median' in kw['stat'].lower():
+                            kw['stat_val'] = \
+                                validate_columns(df_sub, kw['stat_val'])
+                            if 'median' in kw['stat'].lower()\
+                                    and kw['stat_val'] is not None:
                                 df_stat = \
                                     df_sub[subset].groupby(kw['stat_val'])\
                                         .median().reset_index()
-                            elif kw['stat'] is not None:
+                            elif kw['stat'] is not None\
+                                    and kw['stat_val'] is not None:
                                 df_stat = \
                                     df_sub[subset].groupby(kw['stat_val'])\
                                         .mean().reset_index()
+                            else:
+                                print('Could not group data by stat_val '
+                                      'columns.  Using full data set...')
+                                df_stat = df_sub
 
                             if 'only' in kw['stat'].lower():
                                 curve = add_curves(
@@ -3105,3 +3147,49 @@ def set_theme(theme=None):
                  osjoin(user_dir, '.fivecentplots', 'defaults.py'))
 
     print('done!')
+
+
+def validate_columns(df, cols):
+    """
+    Check a DataFrame to verify grouping columns exists; warn if missing
+
+    Args:
+        df (pd.DataFrame): DataFrame to check column names
+        cols (str|list): column names that need to be checked in df
+
+    Returns:
+        updated list of grouping columns
+    """
+
+    cols = validate_list(cols)
+    found = [f for f in cols if f in df.columns]
+    missing = [f for f in cols if f not in found]
+
+    if len(missing) > 0:
+        print('\nWarning! The following grouping columns are not in the data '
+              'and will be skipped:\n   %s' % ('\n   '.join(missing)))
+
+    if len(found) > 0:
+        return found
+
+    else:
+        return None
+
+
+def validate_list(items):
+    """
+    Make sure a list variable is actually a list and not a single string
+
+    Args:
+        items (str|list): values to check dtype
+
+    Return:
+        items as a list
+    """
+
+    if type(items) is not list:
+        return [items]
+    else:
+        return items
+
+

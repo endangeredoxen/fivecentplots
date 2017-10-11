@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Why another plotting library? &mdash; fivecentplots beta documentation</title>
+  <title>fivecentplots &mdash; fivecentplots beta documentation</title>
   
 
   
@@ -123,7 +123,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="#">Docs</a> &raquo;</li>
       
-    <li>Why another plotting library?</li>
+    <li><span class="title">fivecentplots</span></li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -142,120 +142,109 @@
 <div class="line"><br /></div>
 <div class="line"><br /></div>
 </div>
-<p><span class="title">fivecentplots</span></p>
-<p><span class="tagline">A personal stylist for pandas- and matplotlib-based Python plotting</span></p>
-<hr class="docutils" />
-<div class="section" id="why-another-plotting-library">
-<h1>Why another plotting library?<a class="headerlink" href="#why-another-plotting-library" title="Permalink to this headline">¶</a></h1>
-<p>Given that there is no shortage of quality Python and non-Python plotting
-software packages on the world wide web (matplotlib, bokeh, seaborn, JMP,
-etc.), it is fair to ask why we need another.  The answer is simple:
-<em>you may not; I do.</em>  <strong>fivecentplots</strong> exists to simplify the generation,
-customization, and (most importantly to me) automation of certain types of
-plots in Python.</p>
+<div class="section" id="fivecentplots">
+<h1><span class="title">fivecentplots</span><a class="headerlink" href="#fivecentplots" title="Permalink to this headline">¶</a></h1>
+<p><span class="tagline">&#8211;Plot data bigly&#8211;</span></p>
+<div class="section" id="why-another-python-plotting-library">
+<h2>Why another Python plotting library?<a class="headerlink" href="#why-another-python-plotting-library" title="Permalink to this headline">¶</a></h2>
+<p>There is no shortage of quality Python plotting libraries on the world wide
+web (i.e., matplotlib, bokeh, seaborn, etc.).  Why add another?</p>
+<p>With the development of <strong>pandas</strong>, statistical analysis in Python can
+rival that of commercial software packages like JMP.  However, plotting those
+analyses is often more difficult.  <strong>fivecentplots</strong> builds upon <strong>pandas</strong>
+and <strong>matplotlib</strong> to make styling and formatting of plots easier and
+more consistent.</p>
 </div>
 <div class="section" id="what-issues-does-fivecentplots-address">
-<h1>What issues does fivecentplots address?<a class="headerlink" href="#what-issues-does-fivecentplots-address" title="Permalink to this headline">¶</a></h1>
-<ol class="arabic">
-<li><p class="first">Simplified syntax:</p>
-<p>Almost all input parameters are specified as optional keyword arguments of one
-function call (for each plot type). All data used for plotting is derived
-from pandas DataFrames so there is no direct management of numpy arrays.</p>
-</li>
-</ol>
+<h2>What issues does fivecentplots address?<a class="headerlink" href="#what-issues-does-fivecentplots-address" title="Permalink to this headline">¶</a></h2>
+<p><strong>1. Ease of Use</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li>All data come from pandas DataFrames eliminating direct management of
+numpy arrays</li>
+<li>All style and format parameters can be invoked in a single function call
+via optional keyword arguments</li>
+<li>Legend a plot or group multiple plots into rows and/or columns based on
+simply by DataFrame column names</li>
+<li>Quickly filter a DataFrame prior to plotting using simple notation instead
+of complex boolean operators</li>
+</ul>
+</div></blockquote>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<ol class="arabic" start="2">
-<li><p class="first">Easy and repeatable look and feel:</p>
-<p>fivecentplots makes it easy to style plots with custom colors, sizes,
-marker themes, etc., and automate plot generation.  Unlike matplotlib
-which sets a size for the entire figure and adjusts elements to fit,
-fivecentplots starts with a fixed size for the plot or axis window and
-allows the figure size to grow as needed to accommodate the contents.  This
-promotes consistency from plot to plot and eliminates the need to invoke
-matplotlib routines like <code class="docutils literal"><span class="pre">tight_layout</span></code> which sometimes has unexpected
-results.</p>
-</li>
-</ol>
+<p><strong>2. Repeatability</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li>Figure sizes expand and contract to accommodate plot elements rather
+than shrinking elements to fit in a certain figure dimension (standard
+practice in matplotlib).  Plots of the same size stay the same size
+regardless of tick marks or legend contents</li>
+<li>All colors, sizes, marker themes, etc. can be specified from static set
+up files to preserve a custom look for all plots</li>
+</ul>
+</div></blockquote>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<ol class="arabic" start="3">
-<li><p class="first">Simplified visualization of pandas DataFrames:</p>
-<p>fivecentplots is built to process multi-factor pandas DataFrames.
-Keyword arguments make it easy to legend a plot by another column or to
-group multiple plots in rows and/or columns based on other DataFrame
-columns.  It also accepts a conditional string to filter DataFrames
-before plotting.</p>
-</li>
-</ol>
+<p><strong>3. Automation</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li>In addition to explicit function calls, plots can be fully defined
+from ini-style config files making it easy create a batch of plots that are
+auto-generated from repeated calculations or data collection. These text
+files can be shared among and modified by multiple engineers and
+scientists without requiring a deep knowledge of Python syntax</li>
+</ul>
+</div></blockquote>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<ol class="arabic" start="4">
+<p><strong>4. Extras (JMP-style plots that would be tedious to recreate every time in raw code)</strong></p>
+<blockquote>
+<div><ul>
 <li><p class="first">Boxplots with grouping labels:</p>
-<p>Although matplotlib supports boxplot generation, it is not easy to group
-data into labeled, multi-factor subgroups.  Borrowing inspiration from the
+<blockquote>
+<div><p>Although matplotlib has a boxplot function, it is not easy to group
+data into multiple, labeled subgroups.  Borrowing inspiration from the
 <a class="reference external" href="http://www.jmp.com/support/help/Variability_Gauge_Charts.shtml">variability chart in JMP</a>,
 fivecentplots extends matplotlib&#8217;s boxplot routine to make this possible.</p>
+</div></blockquote>
 </li>
-<li><p class="first">Automation!</p>
-<p>In addition to explicit function calls, <strong>fivecentplots</strong> can pull plotting
-parameters from ini-style config files.  This makes it very easy to
-manage and organize plot parameters for repeated and automated activities.</p>
-<p>For example, consider the case of an test system in a lab or a
-production facility that repeatedly generates data that needs to be plotted
-for quick analysis.  Traditionally, you might write a script that contains
-multiple function calls to style and create each plot but this can be
-cumbersome to maintain especially for someone with limited coding
-experience.  With the ini-style config file option in <strong>fivecentplots</strong>
-you could create a much more readable file that is easy to reuse or
-modify by anyone.</p>
+<li><p class="first">Grouped facet grid plots:</p>
+<blockquote>
+<div><p>Like JMP&#8217;s <a class="reference external" href="http://www.jmp.com/support/help/Additional_Examples_of_the_Overlay_Plot_Platform.shtml#192569">grouped overlay plots</a>,
+take any multi-variate DataFrame and separate it into grids of plots,
+each represeting a unique combination of factors</p>
+</div></blockquote>
 </li>
-</ol>
+</ul>
+</div></blockquote>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
 <div class="section" id="documentation">
-<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<h3>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h3>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="design.html">Figure Design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="defaults.html">Default Settings</a></li>
-<li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="keyword.html#boxplot-function"><code class="docutils literal"><span class="pre">boxplot</span></code> function</a></li>
-<li class="toctree-l2"><a class="reference internal" href="keyword.html#plot-function"><code class="docutils literal"><span class="pre">plot</span></code> function</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">Example Library</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#setup">Setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#example-1-single-iv-curve-grouped-by-die">Example 1: Single IV curve grouped by die</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#example-2-facet-grid-by-boost-level-and-temperature">Example 2: Facet grid by boost level and temperature</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#example-3-facet-grid-by-boost-level-and-temperature-no-axis-sharing">Example 3: Facet grid by boost level and temperature (no axis sharing)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#example-4-multiple-y-parameters-on-same-axis">Example 4: Multiple y parameters on same axis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#example-5-multiple-y-parameters-using-a-secondary-y-axis">Example 5: Multiple y parameters using a secondary y-axis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#example-6-setting-axis-ranges">Example 6: Setting axis ranges</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#example-7-log-scale-axis">Example 7: Log scale axis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#example-8-simple-boxplot-without-grouping-factors">Example 8: Simple boxplot without grouping factors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#example-9-simple-boxplot-with-grouping-factors">Example 9: Simple boxplot with grouping factors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#example-10-stats-median-vs-median-only">Example 10: Stats (median vs median_only)</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="modules.html#module-fcp">fcp.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules.html#module-design">design.py</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Example Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
 </ul>
 </div>
 </div>
 <div class="section" id="indices-and-tables">
-<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
+<h3>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><a class="reference internal" href="genindex.html"><span>Index</span></a></li>
 <li><a class="reference internal" href="py-modindex.html"><span>Module Index</span></a></li>
 <li><a class="reference internal" href="search.html"><span>Search Page</span></a></li>
 </ul>
 <span class="target" id="module-fivecentplots"></span></div>
+</div>
 </div>
 
 

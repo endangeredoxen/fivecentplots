@@ -40,16 +40,20 @@
     font-weight:normal;
     color:rgba(255,255,255,0.8)
     }
-.title{
+.wy-breadcrumbs .title{
     color: #555555;
+    font-size: 1pt;
+    font-family: 'Archivo Black';
+}
+.title{
+    color: #fbb61a;
     font-size: 28pt;
     font-family: 'Archivo Black';
-
-
 }
+
 .tagline{
     font-style: italic;
-    color: #888888;
+    color: #666666;
     font-size: 13pt;
-    font-family: "Courier New", Courier, monospace;
+    font-family: Verdana, Geneva, sans-serif;
 }
