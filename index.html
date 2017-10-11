@@ -157,9 +157,9 @@ more consistent.</p>
 </div>
 <div class="section" id="what-issues-does-fivecentplots-address">
 <h2>What issues does fivecentplots address?<a class="headerlink" href="#what-issues-does-fivecentplots-address" title="Permalink to this headline">¶</a></h2>
-<ol class="arabic">
-<li><p class="first">Ease of Use</p>
-<ul class="simple">
+<p><strong>1. Ease of Use</strong></p>
+<blockquote>
+<div><ul class="simple">
 <li>All data come from pandas DataFrames eliminating direct management of
 numpy arrays</li>
 <li>All style and format parameters can be invoked in a single function call
@@ -169,9 +169,13 @@ simply by DataFrame column names</li>
 <li>Quickly filter a DataFrame prior to plotting using simple notation instead
 of complex boolean operators</li>
 </ul>
-</li>
-<li><p class="first">Repeatability</p>
-<ul class="simple">
+</div></blockquote>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p><strong>2. Repeatability</strong></p>
+<blockquote>
+<div><ul class="simple">
 <li>Figure sizes expand and contract to accommodate plot elements rather
 than shrinking elements to fit in a certain figure dimension (standard
 practice in matplotlib).  Plots of the same size stay the same size
@@ -179,19 +183,26 @@ regardless of tick marks or legend contents</li>
 <li>All colors, sizes, marker themes, etc. can be specified from static set
 up files to preserve a custom look for all plots</li>
 </ul>
-</li>
-<li><p class="first">Automation</p>
-<ul class="simple">
+</div></blockquote>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p><strong>3. Automation</strong></p>
+<blockquote>
+<div><ul class="simple">
 <li>In addition to explicit function calls, plots can be fully defined
 from ini-style config files making it easy create a batch of plots that are
 auto-generated from repeated calculations or data collection. These text
 files can be shared among and modified by multiple engineers and
 scientists without requiring a deep knowledge of Python syntax</li>
 </ul>
-</li>
-<li><p class="first">Extras (JMP-style plots that would be tedious to recreate every time in
-raw code)</p>
-<ul>
+</div></blockquote>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p><strong>4. Extras (JMP-style plots that would be tedious to recreate every time in raw code)</strong></p>
+<blockquote>
+<div><ul>
 <li><p class="first">Boxplots with grouping labels:</p>
 <blockquote>
 <div><p>Although matplotlib has a boxplot function, it is not easy to group
@@ -201,13 +212,17 @@ fivecentplots extends matplotlib&#8217;s boxplot routine to make this possible.<
 </div></blockquote>
 </li>
 <li><p class="first">Grouped facet grid plots:</p>
-<p>Like JMP&#8217;s <a class="reference external" href="http://www.jmp.com/support/help/Additional_Examples_of_the_Overlay_Plot_Platform.shtml#192569">grouped overlay plots</a>,
+<blockquote>
+<div><p>Like JMP&#8217;s <a class="reference external" href="http://www.jmp.com/support/help/Additional_Examples_of_the_Overlay_Plot_Platform.shtml#192569">grouped overlay plots</a>,
 take any multi-variate DataFrame and separate it into grids of plots,
 each represeting a unique combination of factors</p>
+</div></blockquote>
 </li>
 </ul>
-</li>
-</ol>
+</div></blockquote>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
 <div class="section" id="documentation">
 <h3>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h3>
 <div class="toctree-wrapper compound">
@@ -215,30 +230,9 @@ each represeting a unique combination of factors</p>
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="design.html">Figure Design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="defaults.html">Default Settings</a></li>
-<li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="keyword.html#boxplot-function"><code class="docutils literal"><span class="pre">boxplot</span></code> function</a></li>
-<li class="toctree-l2"><a class="reference internal" href="keyword.html#plot-function"><code class="docutils literal"><span class="pre">plot</span></code> function</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">Example Library</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#setup">Setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#example-1-single-iv-curve-grouped-by-die">Example 1: Single IV curve grouped by die</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#example-2-facet-grid-by-boost-level-and-temperature">Example 2: Facet grid by boost level and temperature</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#example-3-facet-grid-by-boost-level-and-temperature-no-axis-sharing">Example 3: Facet grid by boost level and temperature (no axis sharing)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#example-4-multiple-y-parameters-on-same-axis">Example 4: Multiple y parameters on same axis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#example-5-multiple-y-parameters-using-a-secondary-y-axis">Example 5: Multiple y parameters using a secondary y-axis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#example-6-setting-axis-ranges">Example 6: Setting axis ranges</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#example-7-log-scale-axis">Example 7: Log scale axis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#example-8-simple-boxplot-without-grouping-factors">Example 8: Simple boxplot without grouping factors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#example-9-simple-boxplot-with-grouping-factors">Example 9: Simple boxplot with grouping factors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#example-10-stats-median-vs-median-only">Example 10: Stats (median vs median_only)</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="modules.html#module-fcp">fcp.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules.html#module-design">design.py</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Example Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
 </ul>
 </div>
 </div>
