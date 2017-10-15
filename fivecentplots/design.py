@@ -221,7 +221,7 @@ class FigDesign:
         self.fig_h_px = self.fig_title_ws + self.title_h + \
                         self.title_ax_ws + self.ax_h*self.nrow + \
                         self.ax_fig_ws + self.row_padding*(self.nrow-1) + \
-                        self.col_labels + self.ax_label_pad*self.ncol
+                        self.col_labels + self.ax_label_pad*self.nrow
         self.fig_only = self.ax_h*self.nrow + \
                         self.ax_fig_ws + self.row_padding*(self.nrow-1) + \
                         self.ax_label_pad*self.ncol
@@ -240,7 +240,8 @@ class FigDesign:
                       self.col_padding*(self.ncol-1))/self.fig_w_px
         self.top = 1 - (self.fig_title_ws + self.title_h + \
                    self.title_ax_ws + self.col_labels)/self.fig_h/self.dpi
-        self.bottom = (self.leg_overflow + self.ax_fig_ws)/self.fig_h/self.dpi
+        self.bottom = (self.leg_overflow + self.ax_fig_ws + \
+                       self.ax_label_pad)/self.fig_h/self.dpi
 
     def get_title_position(self):
         """

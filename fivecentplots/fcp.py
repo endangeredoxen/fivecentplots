@@ -322,29 +322,27 @@ def boxplot(**kwargs):
             # Determine if label should be aligned vertically or horizontally
             align = {}
             xs_height = 0
-            for ii, c in enumerate(indices.columns):
+            for ii, cc in enumerate(indices.columns):
                 align[ii] = 0
-                vals = indices[c].unique()
-                uniq_vals = len(changes[changes[c]==1])
+                vals = [str(f) for f in indices[cc].unique()]
+                longest = max(vals, key=len)
+                uniq_vals = len(changes[changes[cc]==1])
                 label_width = kw['ax_size'][0]/uniq_vals
-                for v in vals:
-                    val_width = kw['bp_name_font_size']*len(str(v))
-                    if val_width > label_width:
-                        align[ii] = max(align[ii], val_width)
-                        break
-                xs_height += align[ii]
+                val_width = kw['bp_name_font_size']*len(str(longest))
+                if val_width > label_width:
+                    align[ii] = max(align[ii], val_width)
+                    xs_height += align[ii]
 
             # Set padding and new sizes
             bp_labels = kw['bp_label_size']*(len(kw['groups'])+0.5)
-            kw['ax_fig_ws'] +=   bp_labels + xs_height
+            kw['ax_fig_ws'] +=  bp_labels + xs_height
             kw['ax_leg_ws'] = 0
             kw['leg_fig_ws'] = 0
             kw['ax_leg_fig_ws'] = max([len(gr) for gr in kw['groups']]) * \
                                   kw['bp_label_font_size'] + \
                                   kw['bp_name_ws']
-            kw['ax_size'][1] += xs_height
             kw['col_padding'] += kw['ax_leg_fig_ws']
-            kw['row_padding'] += bp_labels
+            kw['row_padding'] += bp_labels + xs_height
             if kw['bp_label_font_size']*len(kw['ylabel']) > kw['ax_size'][1]:
                 kw['row_padding'] = \
                     (kw['bp_label_font_size']*len(kw['ylabel']) - \
@@ -1047,7 +1045,7 @@ def get_unique_groups(kw):
     vals_2_chk = ['stat_val', 'leg_groups', 'col', 'row']
     for v in vals_2_chk:
         if kw[v] is not None:
-            if type(v) is list:
+            if type(kw[v]) is list:
                 groups += kw[v]
             else:
                 groups += [kw[v]]
@@ -1357,6 +1355,8 @@ def init(plot, kwargs):
 
     kw = dict()
     try:
+        kw['rc_label_size'] = \
+            kwargs.get('rc_label_size', fcp_params['rc_label_size'])
         kw['alpha'] = kwargs.get('alpha', 1)
         kw['ax_edge_color'] = kwargs.get('ax_edge_color',
                                          fcp_params['ax_edge_color'])
@@ -1409,7 +1409,7 @@ def init(plot, kwargs):
         kw['col_label'] = kwargs.get('col_label', None)
         kw['col_labels_on'] = kwargs.get('col_labels_on', True)
         kw['col_label_size'] = kwargs.get('col_label_size',
-                                          fcp_params['rc_label_size'])
+                                          kw['rc_label_size'])
         kw['col_label_ws'] = kwargs.get('col_label_ws',
                                         fcp_params['rc_label_ws'])
         kw['col_padding'] = kwargs.get('col_padding',
@@ -1483,7 +1483,7 @@ def init(plot, kwargs):
         kw['row_label'] = kwargs.get('row_label', None)
         kw['row_labels_on'] = kwargs.get('row_labels_on', True)
         kw['row_label_size'] = kwargs.get('row_label_size',
-                                         fcp_params['rc_label_size'])
+                                          kw['rc_label_size'])
         kw['row_label_ws'] = kwargs.get('row_label_ws',
                                         fcp_params['rc_label_ws'])
         kw['row_padding'] = kwargs.get('row_padding',
