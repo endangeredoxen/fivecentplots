@@ -15,7 +15,7 @@ import matplotlib.ticker as ticker
 import matplotlib.patches as patches
 import matplotlib.mlab as mlab
 import numpy as np
-import scipy.stats as stats
+import scipy.stats as ss
 import pandas as pd
 import pdb
 import re
@@ -584,6 +584,60 @@ def boxplot(**kwargs):
 
     else:
         return fig
+
+
+def conf_int(df, x, y, ax, color, kw):
+    """
+    Calculate and draw confidence intervals around a curve
+
+    Args:
+        df:
+        x:
+        y:
+        ax:
+        color:
+        kw:
+
+    Returns:
+
+    """
+
+    if kw['conf_int'] is None:
+        return
+
+    if kw['conf_int_fill_color'] is None:
+        color = color
+    else:
+        color = kw['conf_int_fill_color']
+
+    if str(kw['conf_int']).lower() == 'range':
+        ymin = df.groupby(x).min()[y]
+        xx = ymin.index
+        ymin = ymin.reset_index(drop=True)
+        ymax = df.groupby(x).max()[y].reset_index(drop=True)
+        ax.fill_between(xx, ymin, ymax, facecolor=color,
+                        alpha=kw['conf_int_alpha'])
+
+    else:
+        if float(kw['conf_int']) > 1:
+            kw['conf_int'] = float(kw['conf_int'])/100
+        stat = pd.DataFrame()
+        stat['mean'] = df.groupby(x).mean().reset_index()[y]
+        stat['count'] = df.groupby(x).count().reset_index()[y]
+        stat['std'] = df.groupby(x).std().reset_index()[y]
+        stat['ucl'] = np.nan
+        stat['lcl'] = np.nan
+        for irow, row in stat.iterrows():
+            if row['std'] == 0:
+                conf = [0, 0]
+            else:
+                conf = ss.t.interval(kw['conf_int'], int(row['count']),
+                                     loc=row['mean'], scale=row['std'])
+            stat.loc[irow, 'ucl'] = row['mean'] + conf[1]
+            stat.loc[irow, 'lcl'] = row['mean'] - conf[0]
+
+        ax.fill_between(df.groupby(x).mean().index, stat['lcl'], stat['ucl'],
+                        facecolor=color, alpha=kw['conf_int_alpha'])
 
 
 def contour(**kwargs):
@@ -1417,6 +1471,9 @@ def init(plot, kwargs):
         kw['colors'] = kwargs.get('colors', palette)
         kw['cols'] = kwargs.get('cols', None)
         kw['cols_orig'] = kw['cols']
+        kw['conf_int'] = kwargs.get('conf_int', None)
+        kw['conf_int_alpha'] = kwargs.get('conf_int_fill_color', 0.2)
+        kw['conf_int_fill_color'] = kwargs.get('conf_int_fill_color', None)
         kw['connect_means'] = kwargs.get('connect_means', False)
         kw['dividers'] = kwargs.get('dividers', True)
         kw['fig_ax_ws'] = kwargs.get('fig_ax_ws',
@@ -1439,7 +1496,7 @@ def init(plot, kwargs):
 
         kw['grid_minor_color'] = kwargs.get('grid_minor_color',
                                             fcp_params['grid_minor_color'])
-        kw['grid_minor_linestyle'] = kwargs.get('grid_minor_linestyle',
+        kw['grid_minor_linestyle'] = kwargs.get('grid_minor_l-nestyle',
                                             fcp_params['grid_minor_linestyle'])
         kw['grid_major'] = kwargs.get('grid_major', True)
         kw['grid_minor'] = kwargs.get('grid_minor', False)
@@ -2237,6 +2294,9 @@ def plot(**kwargs):
                                            linestyle=kw['line_style'],
                                            linewidth=kw['line_width'])
 
+                        # Draw confidence intervals
+                        conf_int(df_sub, x, y, axes[ir, ic], color, kw)
+
                 else:
                     for ileg, leg_group in enumerate(kw['leg_items']):
 
@@ -2363,6 +2423,9 @@ def plot(**kwargs):
                                        False,
                                        True,
                                        linestyle='--')
+
+                        # Draw confidence intervals
+                        conf_int(df_sub, x, yy, axes[ir, ic], color, kw)
 
                 # Adjust the tick marks
                 axes[ir, ic] = set_axes_ticks(axes[ir, ic], kw)
