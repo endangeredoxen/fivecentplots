@@ -625,17 +625,18 @@ def conf_int(df, x, y, ax, color, kw):
         stat['mean'] = df.groupby(x).mean().reset_index()[y]
         stat['count'] = df.groupby(x).count().reset_index()[y]
         stat['std'] = df.groupby(x).std().reset_index()[y]
+        stat['sderr'] = df.groupby(x).mean().reset_index()[y].sem()
         stat['ucl'] = np.nan
         stat['lcl'] = np.nan
         for irow, row in stat.iterrows():
             if row['std'] == 0:
                 conf = [0, 0]
             else:
-                conf = ss.t.interval(kw['conf_int'], int(row['count']),
-                                     loc=row['mean'], scale=row['std'])
-            stat.loc[irow, 'ucl'] = row['mean'] + conf[1]
-            stat.loc[irow, 'lcl'] = row['mean'] - conf[0]
-
+                conf = ss.t.interval(kw['conf_int'], int(row['count'])-1,
+                                     loc=row['mean'], scale=row['sderr'])
+            stat.loc[irow, 'ucl'] = conf[1]
+            stat.loc[irow, 'lcl'] = conf[0]
+            
         ax.fill_between(df.groupby(x).mean().index, stat['lcl'], stat['ucl'],
                         facecolor=color, alpha=kw['conf_int_alpha'])
 
