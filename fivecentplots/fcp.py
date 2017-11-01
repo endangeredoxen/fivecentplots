@@ -137,11 +137,11 @@ def add_label(label, pos, axis, rotation, design, fillcolor='#ffffff',
 
     # Set slight text offset
     if rotation == 270:
-        offsetx = -fontsize/design.fig_w_px/2
+        offsetx = -fontsize/design.fig_w_px/4
     else:
         offsetx = 0
     if rotation == 0:
-        offsety = -fontsize/design.fig_h_px/2
+        offsety = -fontsize/design.fig_h_px/4
     else:
         offsety = 0
 
@@ -622,10 +622,10 @@ def conf_int(df, x, y, ax, color, kw):
         if float(kw['conf_int']) > 1:
             kw['conf_int'] = float(kw['conf_int'])/100
         stat = pd.DataFrame()
-        stat['mean'] = df.groupby(x).mean().reset_index()[y]
-        stat['count'] = df.groupby(x).count().reset_index()[y]
-        stat['std'] = df.groupby(x).std().reset_index()[y]
-        stat['sderr'] = df.groupby(x).mean().reset_index()[y].sem()
+        stat['mean'] = df[[x,y]].groupby(x).mean().reset_index()[y]
+        stat['count'] = df[[x,y]].groupby(x).count().reset_index()[y]
+        stat['std'] = df[[x,y]].groupby(x).std().reset_index()[y]
+        stat['sderr'] = stat['std'] / np.sqrt(stat['count'])
         stat['ucl'] = np.nan
         stat['lcl'] = np.nan
         for irow, row in stat.iterrows():
@@ -844,9 +844,9 @@ def df_filter(df, filt_orig):
 
     # Reformat the filter string for compatibility with pd.query
     operators = ['==', '<', '>', '!=']
-    ands = filt.split('&')
+    ands = [f.lstrip() for f in filt.split('&')]
     for ia, aa in enumerate(ands):
-        ors = aa.split('|')
+        ors = [f.lstrip() for f in aa.split('|')]
         for io, oo in enumerate(ors):
             # Temporarily remove any parentheses
             parenStart = True if oo[0] == '(' else False
@@ -2296,7 +2296,7 @@ def plot(**kwargs):
                                            linewidth=kw['line_width'])
 
                         # Draw confidence intervals
-                        conf_int(df_sub, x, y, axes[ir, ic], color, kw)
+                        conf_int(df_sub[subset], x, y, axes[ir, ic], color, kw)
 
                 else:
                     for ileg, leg_group in enumerate(kw['leg_items']):
@@ -2426,7 +2426,7 @@ def plot(**kwargs):
                                        linestyle='--')
 
                         # Draw confidence intervals
-                        conf_int(df_sub, x, yy, axes[ir, ic], color, kw)
+                        conf_int(df_sub[subset], x, yy, axes[ir, ic], color, kw)
 
                 # Adjust the tick marks
                 axes[ir, ic] = set_axes_ticks(axes[ir, ic], kw)
