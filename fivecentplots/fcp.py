@@ -616,7 +616,7 @@ def conf_int(df, x, y, ax, color, kw):
         ymin = ymin.reset_index(drop=True)
         ymax = df.groupby(x).max()[y].reset_index(drop=True)
         ax.fill_between(xx, ymin, ymax, facecolor=color,
-                        alpha=kw['conf_int_alpha'])
+                        alpha=kw['conf_int_fill_alpha'])
 
     else:
         if float(kw['conf_int']) > 1:
@@ -638,7 +638,7 @@ def conf_int(df, x, y, ax, color, kw):
             stat.loc[irow, 'lcl'] = conf[0]
             
         ax.fill_between(df.groupby(x).mean().index, stat['lcl'], stat['ucl'],
-                        facecolor=color, alpha=kw['conf_int_alpha'])
+                        facecolor=color, alpha=kw['conf_int_fill_alpha'])
 
 
 def contour(**kwargs):
@@ -849,9 +849,10 @@ def df_filter(df, filt_orig):
         ors = [f.lstrip() for f in aa.split('|')]
         for io, oo in enumerate(ors):
             # Temporarily remove any parentheses
-            parenStart = True if oo[0] == '(' else False
-            parenEnd = True if oo[-1] == ')' else False
-            oo = oo.replace('(', '').replace(')', '')
+            if oo[0] == '(':
+                oo = oo[1:]
+            if oo[-1] == ')':
+                oo = oo[0:-1]
             for op in operators:
                 if op not in oo:
                     continue
@@ -1473,7 +1474,7 @@ def init(plot, kwargs):
         kw['cols'] = kwargs.get('cols', None)
         kw['cols_orig'] = kw['cols']
         kw['conf_int'] = kwargs.get('conf_int', None)
-        kw['conf_int_alpha'] = kwargs.get('conf_int_fill_color', 0.2)
+        kw['conf_int_fill_alpha'] = kwargs.get('conf_int_fill_alpha', 0.2)
         kw['conf_int_fill_color'] = kwargs.get('conf_int_fill_color', None)
         kw['connect_means'] = kwargs.get('connect_means', False)
         kw['dividers'] = kwargs.get('dividers', True)
@@ -2338,7 +2339,7 @@ def plot(**kwargs):
                                 curve_dict[leg_group] = curve
                         else:
                             # Plot the points
-                            if 'only' not in kw['stat'].lower():
+                            if kw['points']:
                                 curve = add_curves(
                                     plotter,
                                     df_sub[x][subset],
@@ -2372,14 +2373,14 @@ def plot(**kwargs):
                                       'columns.  Using full data set...')
                                 df_stat = df_sub
 
-                            if 'only' in kw['stat'].lower():
+                            if not kw['points']:
                                 curve = add_curves(
                                     plotter,
                                     df_stat[x],
                                     df_stat[yy],
                                     color,
                                     marker,
-                                    True,
+                                    False,
                                     True,
                                     markersize=kw['marker_size'],
                                     linestyle=kw['line_style'],
@@ -3039,6 +3040,12 @@ def set_axes_ticks(ax, kw, y_only=False):
         ax.get_xaxis().get_major_formatter().set_scientific(False)
     if kw['scalar_y']:
         ax.yaxis.set_major_formatter(ticker.ScalarFormatter())
+        ax.get_yaxis().get_major_formatter().set_scientific(False)
+
+    # Prevent scientific notation
+    if not kw['sci_x']:
+        ax.get_xaxis().get_major_formatter().set_scientific(False)
+    if not kw['sci_y']:
         ax.get_yaxis().get_major_formatter().set_scientific(False)
 
     return ax
