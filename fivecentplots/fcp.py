@@ -272,6 +272,7 @@ def boxplot(**kwargs):
 
     # Init plot
     df, x, y, z, kw = init('boxplot', kwargs)
+    kw['ptype'] = 'boxplot'
     if type(df) is bool and not df:
         return
 
@@ -659,6 +660,7 @@ def contour(**kwargs):
 
     # Init plot
     df, x, y, z, kw = init('plot', kwargs)
+    kw['ptype'] = 'contour'
     if type(df) is bool and not df:
         return
 
@@ -844,15 +846,19 @@ def df_filter(df, filt_orig):
 
     # Reformat the filter string for compatibility with pd.query
     operators = ['==', '<', '>', '!=']
-    ands = [f.lstrip() for f in filt.split('&')]
+    ands = [f.lstrip().rstrip() for f in filt.split('&')]
     for ia, aa in enumerate(ands):
         ors = [f.lstrip() for f in aa.split('|')]
         for io, oo in enumerate(ors):
             # Temporarily remove any parentheses
+            paramStart = False
+            paramEnd = False
             if oo[0] == '(':
                 oo = oo[1:]
+                paramStart = True
             if oo[-1] == ')':
                 oo = oo[0:-1]
+                paramEnd = True
             for op in operators:
                 if op not in oo:
                     continue
@@ -862,6 +868,10 @@ def df_filter(df, filt_orig):
                     vals[1] = 'fCp%s' % special_chars(vals[1])
                 vals[0] = 'fCp%s' % special_chars(vals[0])
                 ors[io] = op.join(vals)
+                if paramStart:
+                    ors[io] = '(' + ors[io]
+                if paramEnd:
+                    ors[io] = ors[io] + ')'
         if len(ors) > 1:
             ands[ia] = '|'.join(ors)
         else:
@@ -1820,6 +1830,7 @@ def plot(**kwargs):
 
     # Init plot
     df, x, y, z, kw = init('plot', kwargs)
+    kw['ptype'] = 'plot'
     if type(df) is bool and not df:
         return
 
@@ -3042,10 +3053,12 @@ def set_axes_ticks(ax, kw, y_only=False):
         ax.yaxis.set_major_formatter(ticker.ScalarFormatter())
         ax.get_yaxis().get_major_formatter().set_scientific(False)
 
-    # Prevent scientific notation
-    if not kw['sci_x']:
+    # Prevent scientific notation (not for log or box plots)
+    if not kw['sci_x'] and kw['ptype'] != 'boxplot' \
+            and kw['ax_scale'] not in ['logx', 'semilogx', 'loglog']:
         ax.get_xaxis().get_major_formatter().set_scientific(False)
-    if not kw['sci_y']:
+    if not kw['sci_y'] \
+            and kw['ax_scale'] not in ['logy', 'semilogy', 'loglog']:
         ax.get_yaxis().get_major_formatter().set_scientific(False)
 
     return ax
