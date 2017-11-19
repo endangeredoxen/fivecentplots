@@ -67,6 +67,7 @@ class FigDesign:
                                           fcp_params['fig_ax_ws'])
         self.fig_title_ws    = kwargs.get('fig_title_ws',
                                           fcp_params['fig_title_ws'])
+        self.group_labels    = kwargs.get('group_labels', 0)
         self.leg_fig_ws      = kwargs.get('leg_fig_ws',
                                           fcp_params['leg_fig_ws'])
         self.leg_font_size   = kwargs.get('leg_font_size',
@@ -82,38 +83,43 @@ class FigDesign:
         self.nrow            = kwargs.get('nrow', 1)
         self.row_labels_on   = kwargs.get('row_labels_on',
                                           False)
-        self.row_label_size = kwargs.get('row_label_size',
-                                        fcp_params['rc_label_size'])
-        self.row_label_ws   = kwargs.get('row_label_ws',
-                                        fcp_params['rc_label_ws'])
-        self.row_padding    = kwargs.get('row_padding',
-                                         fcp_params['row_padding'])
-        self.title_ax_ws    = kwargs.get('title_ax_ws',
-                                         fcp_params['title_ax_ws'])
-        self.title_h        = kwargs.get('title_h',
-                                         fcp_params['title_h'])
-        self.twinx          = kwargs.get('twinx', False)
+        self.row_label_size  = kwargs.get('row_label_size',
+                                         fcp_params['rc_label_size'])
+        self.row_label_ws    = kwargs.get('row_label_ws',
+                                         fcp_params['rc_label_ws'])
+        self.row_padding     = kwargs.get('row_padding',
+                                          fcp_params['row_padding'])
+        self.title_ax_ws     = kwargs.get('title_ax_ws',
+                                          fcp_params['title_ax_ws'])
+        self.title_h         = kwargs.get('title_h',
+                                          fcp_params['title_h'])
+        self.twinx           = kwargs.get('twinx', False)
+        self.wrap_title_size = kwargs.get('wrap_title_size',
+                                          fcp_params['wrap_title_size'])
+        self.wrap_title_ws   = kwargs.get('wrap_label_ws',
+                                          fcp_params['wrap_title_ws'])
 
         # Initialize other variables
-        self.ax_h             = self.ax_size[1]
-        self.ax_w             = self.ax_size[0]
-        self.bottom           = 0
-        self.col_label_bottom = 0
-        self.col_label_height = 0
-        self.leg_h            = 0
-        self.leg_overflow     = 0
-        self.leg_right        = 0
-        self.leg_top          = 0
-        self.leg_w            = 0
-        self.left             = 0
-        self.fig_h            = 0
-        self.fig_w            = 0
-        self.fig_h_px         = 0
-        self.fig_w_px         = 0
-        self.right            = 0
-        self.row_label_left   = 0
-        self.row_label_width  = 0
-        self.top              = 0
+        self.ax_h              = self.ax_size[1]
+        self.ax_w              = self.ax_size[0]
+        self.bottom            = 0
+        self.col_label_bottom  = 0
+        self.col_label_height  = 0
+        self.leg_h             = 0
+        self.leg_overflow      = 0
+        self.leg_right         = 0
+        self.leg_top           = 0
+        self.leg_w             = 0
+        self.left              = 0
+        self.fig_h             = 0
+        self.fig_w             = 0
+        self.fig_h_px          = 0
+        self.fig_w_px          = 0
+        self.right             = 0
+        self.row_label_left    = 0
+        self.row_label_width   = 0
+        self.top               = 0
+        self.wrap_title_bottom = 0
 
         # Account for colorbars
         if not kwargs['cbar']:
@@ -125,18 +131,24 @@ class FigDesign:
             self.cbar_label = self.leg_fig_ws
 
         # Set label size
-        if self.row_labels_on:
+        if self.row_labels_on and not kwargs['wrap']:
             self.row_labels = self.row_label_size + self.row_label_ws
         else:
             self.row_labels = 0
-        if self.col_labels_on:
+        if self.col_labels_on and not kwargs['wrap']:
             self.col_labels = self.col_label_size + self.col_label_ws
+        elif self.col_labels_on:
+            self.col_labels = (self.col_label_size + self.col_label_ws) * \
+                              max(1, kwargs['nrow']-1)
+            self.row_padding += self.col_label_size + self.col_label_ws
         else:
             self.col_labels = 0
 
-        # # Update title position
-        # if self.col_labels > 0:
-            # self.title_ax_ws += self.col_labels
+        # Add an optional column label for wrap plots
+        if kwargs['wrap_title']:
+            self.wrap_title = self.wrap_title_size + self.wrap_title_ws
+        else:
+            self.wrap_title = 0
 
         # Weird spacing defaults out of our control
         self.fig_right_border = 6
@@ -156,12 +168,14 @@ class FigDesign:
         Get option group label positions
         """
 
-        self.row_label_left = (self.ax_w + self.row_label_ws + \
-                               self.cbar_ax_ws + self.cbar_width + \
+        self.row_label_left = (self.ax_w + self.row_label_ws +
+                               self.cbar_ax_ws + self.cbar_width +
                                self.cbar_label)/self.ax_w
         self.row_label_width = self.row_label_size/self.ax_w
         self.col_label_bottom = (self.ax_h + self.col_label_ws)/self.ax_h
         self.col_label_height = self.col_label_size/self.ax_h
+        self.wrap_title_bottom = (self.ax_h + self.col_labels +
+                                  self.wrap_title_ws)/self.ax_h
 
     def get_legend_position(self):
         """
@@ -169,8 +183,8 @@ class FigDesign:
         """
 
         self.leg_top = self.top + self.leg_top_offset/self.fig_h_px
-        self.leg_right = 1 - \
-            (self.leg_fig_ws-self.fig_right_border)/self.fig_w_px
+        self.leg_right = 1 - (self.leg_fig_ws - self.fig_right_border -
+                              0*self.group_labels)/self.fig_w_px
 
     def get_legend_size(self):
         """
@@ -216,12 +230,13 @@ class FigDesign:
                         self.ax_leg_ws + self.leg_w + self.leg_fig_ws + \
                         self.col_padding*(self.ncol-1) + self.row_labels - \
                         self.fig_right_border + self.ax_label_pad*self.ncol + \
-                        self.cbar_ax_ws*self.ncol + \
-                        self.cbar_width*self.ncol
+                        self.group_labels + \
+                        self.cbar_ax_ws*self.ncol + self.cbar_width*self.ncol
         self.fig_h_px = self.fig_title_ws + self.title_h + \
                         self.title_ax_ws + self.ax_h*self.nrow + \
                         self.ax_fig_ws + self.row_padding*(self.nrow-1) + \
-                        self.col_labels + self.ax_label_pad*self.nrow
+                        self.col_labels + self.ax_label_pad*self.nrow + \
+                        self.wrap_title
         self.fig_only = self.ax_h*self.nrow + \
                         self.ax_fig_ws + self.row_padding*(self.nrow-1) + \
                         self.ax_label_pad*self.ncol
@@ -238,7 +253,7 @@ class FigDesign:
         self.left = self.fig_ax_ws/self.fig_w_px
         self.right = (self.fig_ax_ws + self.ax_w*self.ncol + \
                       self.col_padding*(self.ncol-1))/self.fig_w_px
-        self.top = 1 - (self.fig_title_ws + self.title_h + \
+        self.top = 1 - (self.fig_title_ws + self.title_h + self.wrap_title + \
                    self.title_ax_ws + self.col_labels)/self.fig_h/self.dpi
         self.bottom = (self.leg_overflow + self.ax_fig_ws + \
                        self.ax_label_pad)/self.fig_h/self.dpi
