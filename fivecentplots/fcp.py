@@ -1763,6 +1763,8 @@ def init(plot, kwargs):
             kw['col_padding'] = 0
         if 'col_label_ws' not in kwargs.keys():
             kw['col_label_ws'] = 0
+        kw['sharex'] = True
+        kw['sharey'] = True
 
     # Account for scalar formatted axes
     if kw['scalar_y']:
