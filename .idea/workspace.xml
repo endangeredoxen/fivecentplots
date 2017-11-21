@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9d4c2f01-dbce-4ddb-aa09-d7a2aef23aca" name="Default" comment="">
+    <list default="true" id="9d4c2f01-dbce-4ddb-aa09-d7a2aef23aca" name="Default" comment="- wrap label spacing">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/design.py" afterPath="$PROJECT_DIR$/fivecentplots/design.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fivecentplots/fcp.py" afterPath="$PROJECT_DIR$/fivecentplots/fcp.py" />
     </list>
     <ignored path="fivecentplots.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -27,31 +26,31 @@
     <splitter split-orientation="horizontal" split-proportion="0.47622067">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="fcp.py" pinned="false" current-in-tab="true">
+          <file leaf-file-name="fcp.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/fivecentplots/fcp.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="13.573086">
-                  <caret line="1656" column="48" selection-start-line="1656" selection-start-column="48" selection-end-line="1656" selection-end-column="48" />
+                <state vertical-scroll-proportion="0.0">
+                  <caret line="1626" column="32" selection-start-line="1626" selection-start-column="32" selection-end-line="1626" selection-end-column="32" />
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="design.py" pinned="false" current-in-tab="false">
+          <file leaf-file-name="design.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/fivecentplots/design.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="-18.344828">
-                  <caret line="209" column="29" selection-start-line="209" selection-start-column="29" selection-end-line="209" selection-end-column="29" />
+                <state vertical-scroll-proportion="0.39215687">
+                  <caret line="127" column="31" selection-start-line="127" selection-start-column="31" selection-end-line="127" selection-end-column="31" />
                   <folding>
                     <element signature="e#237#887#1" expanded="false" />
-                    <element signature="e#6816#6872#1" expanded="false" />
-                    <element signature="e#7431#7474#1" expanded="false" />
-                    <element signature="e#7721#7842#1" expanded="false" />
-                    <element signature="e#8965#9053#1" expanded="false" />
-                    <element signature="e#10420#10497#1" expanded="false" />
-                    <element signature="e#11000#11052#1" expanded="false" />
-                    <element signature="e#11553#11850#0" expanded="false" />
-                    <element signature="e#11553#11619#1" expanded="false" />
+                    <element signature="e#6755#6811#1" expanded="false" />
+                    <element signature="e#7370#7413#1" expanded="false" />
+                    <element signature="e#7660#7781#1" expanded="false" />
+                    <element signature="e#8904#8992#1" expanded="false" />
+                    <element signature="e#10359#10436#1" expanded="false" />
+                    <element signature="e#10939#10991#1" expanded="false" />
+                    <element signature="e#11492#11789#0" expanded="false" />
+                    <element signature="e#11492#11558#1" expanded="false" />
                   </folding>
                 </state>
               </provider>
@@ -84,8 +83,8 @@
           <file leaf-file-name="fcp.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/fivecentplots/fcp.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="7.679415">
-                  <caret line="1065" column="0" selection-start-line="1065" selection-start-column="0" selection-end-line="1065" selection-end-column="0" />
+                <state vertical-scroll-proportion="13.222222">
+                  <caret line="1023" column="7" selection-start-line="1023" selection-start-column="7" selection-end-line="1023" selection-end-column="7" />
                   <folding />
                 </state>
               </provider>
@@ -215,9 +214,9 @@
         <option value="$PROJECT_DIR$/fivecentplots/themes/white.py" />
         <option value="$PROJECT_DIR$/fivecentplots/themes/gray.py" />
         <option value="$PROJECT_DIR$/fivecentplots/tests/fake_data_box.csv" />
-        <option value="$PROJECT_DIR$/fivecentplots/design.py" />
         <option value="$USER_HOME$/.fivecentplots/defaults.py" />
         <option value="$PROJECT_DIR$/fivecentplots/fcp.py" />
+        <option value="$PROJECT_DIR$/fivecentplots/design.py" />
       </list>
     </option>
   </component>
@@ -252,6 +251,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
@@ -389,7 +389,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -733,7 +732,13 @@
       <option name="project" value="LOCAL" />
       <updated>1511123557275</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="- boxplot and wrap bug fixes&#10;">
+      <created>1511245318403</created>
+      <option name="number" value="00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1511245318403</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -742,21 +747,21 @@
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17819707" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32875264" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32980973" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24956971" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32875264" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
     </layout>
@@ -773,7 +778,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="updated with boxplot" />
     <MESSAGE value="updated boxplot function to fix bugs&#10;sorted leg_items&#10;added some line_fit options&#10;fixed axis&#10;fixed formatting issues with title and col label in design.py&#10;removed hardcoded reference in defaults.py for 'datapath' parameter" />
     <MESSAGE value="updated docs&#10;made all arguments to plot and boxplot kwargs&#10;cleaned up some lingering bugs&#10;added twinx with leg_groups plot" />
     <MESSAGE value="use local copy of defaults.py" />
@@ -798,14 +802,15 @@
     <MESSAGE value="- option to turn off scientific notation&#10;- minor bug fixes&#10;- change conf_int alpha param name" />
     <MESSAGE value="- limit option to turn off scientific notation to only linear scale plots&#10;- fix parenthesis bug in filter" />
     <MESSAGE value="- plot wrap function (like jmp)&#10;- add legend support to boxplot&#10;- theme updates" />
-    <option name="LAST_COMMIT_MESSAGE" value="- plot wrap function (like jmp)&#10;- add legend support to boxplot&#10;- theme updates" />
+    <MESSAGE value="- boxplot and wrap bug fixes&#10;" />
+    <option name="LAST_COMMIT_MESSAGE" value="- boxplot and wrap bug fixes&#10;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/fivecentplots/design.py</url>
-          <line>202</line>
+          <line>201</line>
           <option name="timeStamp" value="6" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
@@ -841,14 +846,14 @@
           <caret line="222" column="15" selection-start-line="222" selection-start-column="15" selection-end-line="222" selection-end-column="15" />
           <folding>
             <element signature="e#237#887#1" expanded="false" />
-            <element signature="e#6816#6872#1" expanded="false" />
-            <element signature="e#7431#7474#1" expanded="false" />
-            <element signature="e#7721#7842#1" expanded="false" />
-            <element signature="e#8965#9053#1" expanded="false" />
-            <element signature="e#10420#10497#1" expanded="false" />
-            <element signature="e#11000#11052#1" expanded="false" />
-            <element signature="e#11553#11850#0" expanded="false" />
-            <element signature="e#11553#11619#1" expanded="false" />
+            <element signature="e#6755#6811#1" expanded="false" />
+            <element signature="e#7370#7413#1" expanded="false" />
+            <element signature="e#7660#7781#1" expanded="false" />
+            <element signature="e#8904#8992#1" expanded="false" />
+            <element signature="e#10359#10436#1" expanded="false" />
+            <element signature="e#10939#10991#1" expanded="false" />
+            <element signature="e#11492#11789#0" expanded="false" />
+            <element signature="e#11492#11558#1" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1140,7 +1145,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="57" column="44" selection-start-line="57" selection-start-column="44" selection-end-line="57" selection-end-column="44" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1164,7 +1168,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.08417509">
           <caret line="5" column="63" selection-start-line="5" selection-start-column="63" selection-end-line="5" selection-end-column="63" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1180,7 +1183,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.95098037">
           <caret line="59" column="9" selection-start-line="59" selection-start-column="9" selection-end-line="59" selection-end-column="9" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1202,29 +1204,29 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/fivecentplots/design.py">
+    <entry file="file://$PROJECT_DIR$/fivecentplots/fcp.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-18.344828">
-          <caret line="209" column="29" selection-start-line="209" selection-start-column="29" selection-end-line="209" selection-end-column="29" />
-          <folding>
-            <element signature="e#237#887#1" expanded="false" />
-            <element signature="e#6816#6872#1" expanded="false" />
-            <element signature="e#7431#7474#1" expanded="false" />
-            <element signature="e#7721#7842#1" expanded="false" />
-            <element signature="e#8965#9053#1" expanded="false" />
-            <element signature="e#10420#10497#1" expanded="false" />
-            <element signature="e#11000#11052#1" expanded="false" />
-            <element signature="e#11553#11850#0" expanded="false" />
-            <element signature="e#11553#11619#1" expanded="false" />
-          </folding>
+        <state vertical-scroll-proportion="0.0">
+          <caret line="1626" column="32" selection-start-line="1626" selection-start-column="32" selection-end-line="1626" selection-end-column="32" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/fivecentplots/fcp.py">
+    <entry file="file://$PROJECT_DIR$/fivecentplots/design.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="7.679415">
-          <caret line="1065" column="0" selection-start-line="1065" selection-start-column="0" selection-end-line="1065" selection-end-column="0" />
-          <folding />
+        <state vertical-scroll-proportion="0.39215687">
+          <caret line="127" column="31" selection-start-line="127" selection-start-column="31" selection-end-line="127" selection-end-column="31" />
+          <folding>
+            <element signature="e#237#887#1" expanded="false" />
+            <element signature="e#6755#6811#1" expanded="false" />
+            <element signature="e#7370#7413#1" expanded="false" />
+            <element signature="e#7660#7781#1" expanded="false" />
+            <element signature="e#8904#8992#1" expanded="false" />
+            <element signature="e#10359#10436#1" expanded="false" />
+            <element signature="e#10939#10991#1" expanded="false" />
+            <element signature="e#11492#11789#0" expanded="false" />
+            <element signature="e#11492#11558#1" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>

@@ -138,8 +138,7 @@ class FigDesign:
         if self.col_labels_on and not kwargs['wrap']:
             self.col_labels = self.col_label_size + self.col_label_ws
         elif self.col_labels_on:
-            self.col_labels = (self.col_label_size + self.col_label_ws) * \
-                              max(1, kwargs['nrow']-1)
+            self.col_labels = self.col_label_size + self.col_label_ws
             self.row_padding += self.col_label_size + self.col_label_ws
         else:
             self.col_labels = 0
