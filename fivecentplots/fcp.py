@@ -1058,7 +1058,7 @@ def get_rc_groupings(df, kw):
 
     # Set up wrapping
     if kw['wrap']:
-        kw['wrap'] = natsorted(list(df.groupby(kw['wrap']).groups.keys()))
+        kw['wrap'] = natsorted(list(df.groupby(kw['wrap_orig']).groups.keys()))
         rcnum = int(np.ceil(np.sqrt(len(kw['wrap']))))
         kw['ncol'] = rcnum
         kw['nrow'] = int(np.ceil(len(kw['wrap'])/rcnum))
