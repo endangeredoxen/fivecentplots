@@ -211,8 +211,10 @@ class FigDesign:
             self.leg_w = leg.get_window_extent().width + self.leg_border
             mpl.pyplot.close(fig)
             os.remove('dummy_legend_%s.png' % now)
-
-        self.leg_w = max(self.leg_w, self.ax_leg_fig_ws)
+            self.leg_w = max(self.leg_w, self.ax_leg_fig_ws)
+        else:
+            self.leg_h = 0
+            self.leg_w = 0
 
     def get_figure_size(self):
         """

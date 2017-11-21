@@ -240,7 +240,7 @@ def boxplot(**kwargs):
                           markeredgewidth=1.5,
                           linestyle='none',
                           zorder=2)
-        return pts
+            return pts
 
     def index_changes(df, num_groups):
         """
@@ -288,6 +288,11 @@ def boxplot(**kwargs):
 
     # Backup ax size
     kw['ax_size_orig'] = [kw['ax_size'][0], kw['ax_size'][1]]
+
+    # Get initial values
+    ax_fig_ws0 = kw['ax_fig_ws']
+    col_padding0 = kw['col_padding']
+    row_padding0 = kw['row_padding']
 
     # Iterate over discrete figures
     for ifig, fig_item in enumerate(kw['fig_items']):
@@ -337,15 +342,15 @@ def boxplot(**kwargs):
 
             # Set padding and new sizes
             bp_labels = kw['bp_label_size']*len(kw['groups'])#+0.5)
-            kw['ax_fig_ws'] +=  bp_labels + xs_height
+            kw['ax_fig_ws'] =  ax_fig_ws0 + bp_labels + xs_height
             kw['ax_leg_ws'] = 0
             kw['leg_fig_ws'] = 0
             kw['ax_leg_fig_ws'] = max([len(gr) for gr in kw['groups']]) * \
                                   kw['bp_label_font_size'] + \
                                   kw['bp_name_ws']
             if kw['wrap'] is None:
-                kw['col_padding'] += kw['ax_leg_fig_ws']
-            kw['row_padding'] += bp_labels + xs_height
+                kw['col_padding'] = col_padding0 + kw['ax_leg_fig_ws']
+            kw['row_padding'] = row_padding0 + bp_labels + xs_height
             if kw['bp_label_font_size']*len(kw['ylabel']) > kw['ax_size'][1]:
                 kw['row_padding'] = \
                     (kw['bp_label_font_size']*len(kw['ylabel']) - \
@@ -663,7 +668,7 @@ def conf_int(df, x, y, ax, color, kw):
                                      loc=row['mean'], scale=row['sderr'])
             stat.loc[irow, 'ucl'] = conf[1]
             stat.loc[irow, 'lcl'] = conf[0]
-            
+
         ax.fill_between(df.groupby(x).mean().index, stat['lcl'], stat['ucl'],
                         facecolor=color, alpha=kw['conf_int_fill_alpha'])
 
@@ -1121,7 +1126,8 @@ def get_rc_subset(df, ir, ic, kw):
     """
 
     if kw['wrap'] is not None:
-        wrap = dict(zip(kw['wrap_orig'], validate_list(kw['wrap'][ir+ic])))
+        wrap = dict(zip(kw['wrap_orig'],
+                        validate_list(kw['wrap'][ir*kw['ncol'] + ic])))
         df = df.loc[(df[list(wrap)] == pd.Series(wrap)).all(axis=1)]
 
     else:
@@ -1700,12 +1706,12 @@ def init(plot, kwargs):
               ' replace the entire file'
               % e)
         return False, False, False, False, False
-        
+
     # Make lists
     vals = ['groups']
     for v in vals:
         kw[v] = validate_list(kw[v])
-    
+
     # Dummy-proof colors
     if type(kw['colors'][0]) is not tuple:
         kw['colors'] = [kw['colors']]
@@ -1763,6 +1769,8 @@ def init(plot, kwargs):
             kw['col_padding'] = 0
         if 'col_label_ws' not in kwargs.keys():
             kw['col_label_ws'] = 0
+        kw['sharex'] = True
+        kw['sharey'] = True
 
     # Account for scalar formatted axes
     if kw['scalar_y']:
@@ -2540,7 +2548,7 @@ def plot(**kwargs):
                 # Add row/column labels
                 axes[ir, ic] = \
                     set_axes_rc_labels(axes[ir, ic], ir, ic, kw, design)
-                
+
                 # Adjust the tick marks
                 axes[ir, ic] = set_axes_ticks(axes[ir, ic], kw)
                 if ax2 is not None:
