@@ -22,9 +22,13 @@ import re
 import importlib
 import itertools
 import shutil
+import datetime
 import sys
 from fivecentplots.design import FigDesign
-import fileio
+try:
+    import fileio
+except:
+    pass
 try:
     import win32clipboard
 except:
@@ -335,10 +339,11 @@ def boxplot(**kwargs):
                 longest = max(vals, key=len)
                 uniq_vals = len(changes[changes[cc]==1])
                 label_width = kw['ax_size'][0]/uniq_vals
-                val_width = kw['bp_name_font_size']*len(str(longest))
+                val_width = get_font_to_px(longest, kw['bp_label_font_size'], 
+                                           kw['dpi'])[1]
                 if val_width > label_width:
-                    align[ii] = max(align[ii], val_width)
-                    xs_height += align[ii]
+                    align[ii] = max(align[ii], val_width + 10)
+                    xs_height += align[ii] - kw['bp_label_size']
 
             # Set padding and new sizes
             bp_labels = kw['bp_label_size']*len(kw['groups'])#+0.5)
@@ -351,7 +356,13 @@ def boxplot(**kwargs):
             if kw['wrap'] is None:
                 kw['col_padding'] = col_padding0 + kw['ax_leg_fig_ws']
             kw['row_padding'] = row_padding0 + bp_labels + xs_height
-            if kw['bp_label_font_size']*len(kw['ylabel']) > kw['ax_size'][1]:
+
+            ylabel_height = get_font_to_px(kw['ylabel'], 
+                                          kw['label_font_size'], 
+                                          kw['dpi'], kw['label_weight'],
+                                          kw['label_style'],
+                                          'vertical')[0]
+            if ylabel_height > kw['ax_size'][1] + kw['row_padding'] + bp_labels:
                 kw['row_padding'] = \
                     (kw['bp_label_font_size']*len(kw['ylabel']) - \
                     kw['ax_size'][1])/2 + kw['row_padding']/2
@@ -560,7 +571,7 @@ def boxplot(**kwargs):
                                     and k in align.keys() \
                                     and align[k] > 0:
                                 orient = 90
-                                height = (align[k] + 10) / kw['ax_size'][1]
+                                height = align[k]/ kw['ax_size'][1]
                             else:
                                 orient = 0
                                 height = kw['bp_label_size']/kw['ax_size'][1]
@@ -721,6 +732,12 @@ def contour(**kwargs):
         # Make the plots by row and by column
         for ir in range(0, kw['nrow']):
             for ic in range(0, kw['ncol']):
+
+                # Handle missing wrap plots
+                if kw['wrap'] is not None:
+                    if ir*kw['ncol'] + ic > len(kw['wrap']) - 1:
+                        axes[ir, ic].axis('off')
+                        continue
 
                 # Set colors
                 axes[ir, ic] = set_axes_colors(axes[ir, ic], kw)
@@ -894,8 +911,9 @@ def df_filter(df, filt_orig):
                 if op not in oo:
                     continue
                 vals = oo.split(op)
-                if vals[1].lstrip(' ').rstrip(' ') == \
-                        vals[0].lstrip(' ').rstrip(' '):
+                vals[0] = vals[0].rstrip()
+                vals[1] = vals[1].lstrip()
+                if vals[1] == vals[0]:
                     vals[1] = 'fCp%s' % special_chars(vals[1])
                 vals[0] = 'fCp%s' % special_chars(vals[0])
                 ors[io] = op.join(vals)
@@ -1011,6 +1029,32 @@ def get_df_figure(df, fig_item, kw):
     return df_fig
 
 
+def get_font_to_px(text, font_size, dpi, weight='normal', style='normal',
+                   rotation='horizontal'):
+    """
+    Get the actual pixel size of a text box
+    """
+
+    now = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+    mplp.ioff()
+    fig = mpl.pyplot.figure(dpi=dpi)
+    ax = fig.add_subplot(111)
+    text = fig.text(0,0, text, fontsize=font_size, weight=weight, style=style,
+                    rotation=rotation)
+    mpl.pyplot.draw()
+    mpl.pyplot.savefig('dummy_text_%s.png' % now)
+    text_h = text.get_window_extent().height
+    text_w = text.get_window_extent().width
+    #from matplotlib.patches import Rectangle
+    #rect = Rectangle([0, 0], text.get_window_extent().width, text.get_window_extent().height, color = [0,0,0], fill = False)
+    #fig.patches.append(rect)
+    #mpl.pyplot.show()
+    mpl.pyplot.close(fig)
+    os.remove('dummy_text_%s.png' % now)
+
+    return text_h, text_w
+
+
 def get_legend_groupings(df, y, kw):
     """
     Determine the legend groupings
@@ -1058,7 +1102,7 @@ def get_rc_groupings(df, kw):
 
     # Set up wrapping
     if kw['wrap']:
-        kw['wrap'] = natsorted(list(df.groupby(kw['wrap']).groups.keys()))
+        kw['wrap'] = natsorted(list(df.groupby(kw['wrap_orig']).groups.keys()))
         rcnum = int(np.ceil(np.sqrt(len(kw['wrap']))))
         kw['ncol'] = rcnum
         kw['nrow'] = int(np.ceil(len(kw['wrap'])/rcnum))
@@ -1534,6 +1578,7 @@ def init(plot, kwargs):
         kw['conf_int_fill_color'] = kwargs.get('conf_int_fill_color', None)
         kw['connect_means'] = kwargs.get('connect_means', False)
         kw['dividers'] = kwargs.get('dividers', True)
+        kw['dpi'] = kwargs.get('dpi', fcp_params['dpi'])
         kw['fig_ax_ws'] = kwargs.get('fig_ax_ws',
                                      fcp_params['fig_ax_ws'])
         kw['fig_edge_color'] = kwargs.get('fig_edge_color',
@@ -1882,14 +1927,20 @@ def paste_kwargs(kwargs):
     """
 
     # Read the pasted data using the ConfigFile class and convert to dict
-    config = fileio.ConfigFile(paste=True)
-    new_kw = list(config.config_dict.values())[0]
+    try:
+        fileio.ConfigFile
+        config = fileio.ConfigFile(paste=True)
+        new_kw = list(config.config_dict.values())[0]
 
-    # Maintain any kwargs originally specified
-    for k, v in kwargs.items():
-        new_kw[k] = v
+        # Maintain any kwargs originally specified
+        for k, v in kwargs.items():
+            new_kw[k] = v
 
-    return new_kw
+        return new_kw
+
+    except:
+        print('This feature requires the fileio package '
+              '(download @ https://github.com/endangeredoxen/fileio)')
 
 
 def plot(**kwargs):
