@@ -1323,6 +1323,7 @@ def init(plot, kwargs):
             (default from fcp_params)
         grid_minor_linestyle (str):  matplotlib str code for linestyle (default
             from fcp_params)
+        grid_minor_linewidth (float, 1.5): minor grid line width (not available in rcparams)
         groups (list):  (default=None)
         jitter (bool):  jitter the data points (default=False)
         label_font_size (int):  font size in pixels for the x and y labels
@@ -1599,8 +1600,9 @@ def init(plot, kwargs):
 
         kw['grid_minor_color'] = kwargs.get('grid_minor_color',
                                             fcp_params['grid_minor_color'])
-        kw['grid_minor_linestyle'] = kwargs.get('grid_minor_l-nestyle',
+        kw['grid_minor_linestyle'] = kwargs.get('grid_minor_linestyle',
                                             fcp_params['grid_minor_linestyle'])
+        kw['grid_minor_linewidth'] = kwargs.get('grid_minor_linewidth', 1.5)
         kw['grid_major'] = kwargs.get('grid_major', True)
         kw['grid_minor'] = kwargs.get('grid_minor', False)
         kw['groups'] = kwargs.get('groups', None)
@@ -2730,13 +2732,13 @@ def set_axes_grid_lines(ax, kw, off=False):
         ax.grid(False, which='minor')
     elif kw['grid_minor'] == 'True' or kw['grid_minor'].lower() == 'both':
         ax.grid(b=True, color=kw['grid_minor_color'], which='minor', zorder=0,
-                linestyle=kw['grid_minor_linestyle'])
+                linestyle=kw['grid_minor_linestyle'], linewidth=kw['grid_minor_linewidth'])
     elif kw['grid_minor'].lower() == 'y':
         ax.yaxis.grid(b=True, color=kw['grid_minor_color'], which='minor',
-                      linestyle=kw['grid_minor_linestyle'])
+                      linestyle=kw['grid_minor_linestyle'], linewidth=kw['grid_minor_linewidth'])
     elif kw['grid_minor'].lower() == 'x':
         ax.xaxis.grid(b=True, color=kw['grid_minor_color'], which='minor',
-                      linestyle=kw['grid_minor_linestyle'])
+                      linestyle=kw['grid_minor_linestyle'], linewidth=kw['grid_minor_linewidth'])
 
     return ax
 
