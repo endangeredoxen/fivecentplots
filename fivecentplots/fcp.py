@@ -195,16 +195,22 @@ def add_lines(ax, kw):
     """
 
     for h in kw['ax_hlines']:
-        if type(h) is tuple and len(h) == 3:
-            ax.axhline(h[0], color=h[1], linestyle=h[2])
+        if type(h) is tuple:
+            color = h[1] if len(h) > 1 else 'k'
+            linewidth = h[2] if len(h) > 2 else 0.5
+            linestyle = h[3] if len(h) > 3 else '-'
+            ax.axhline(h[0], color=color, linewidth=linewidth, linestyle=linestyle)
         else:
-            ax.axhline(h, color='k', linewidth=0.5)
+            ax.axhline(h, color='k', linewidth=0.5, linestyle='-')
 
     for v in kw['ax_vlines']:
-        if type(v) is tuple and len(v)==3:
-            ax.axvline(v[0], color=v[1], linestyle=v[2])
+        if type(v) is tuple:
+            color = v[1] if len(v) > 1 else 'k'
+            linewidth = v[2] if len(v) > 2 else 0.5
+            linestyle = v[3] if len(v) > 3 else '-'
+            ax.axvline(v[0], color=color, linewidth=linewidth, linestyle=linestyle)
         else:
-            ax.axvline(v, color='k', linewidth=0.5)
+            ax.axvline(v, color='k', linewidth=0.5, linestyle='-')
 
     return ax
 
