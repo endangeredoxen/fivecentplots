@@ -61,7 +61,7 @@ author = 'Steve Nicholes'
 # built documents.
 #
 # The short X.Y version.
-version = 'v0.2'
+version = '0.3.0'
 # The full version, including alpha/beta/rc tags.
 release = 'beta'
 
