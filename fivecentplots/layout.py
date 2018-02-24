@@ -49,6 +49,41 @@ LEGEND_LOCATION = defaultdict(int,
                    'center': 10, 10: 10})
 
 
+def mpl_get_ticks(ax):
+    """
+    Divine a bunch of tick and label parameters for mpl layouts
+
+    Args:
+        ax (mpl.axes)
+
+    Returns:
+        dict of x and y ax tick parameters
+
+    """
+
+    tp = {}
+    xy = ['x', 'y']
+
+    for vv in xy:
+        tp[vv] = {}
+        tp[vv]['min'], tp[vv]['max'] = getattr(ax, 'get_%slim' % vv)()
+        tp[vv]['ticks'] = getattr(ax, 'get_%sticks' % vv)()
+        tp[vv]['labels'] = [f for f in getattr(ax, '%saxis' % vv).iter_ticks()]
+        tp[vv]['label_text'] = [f[2] for f in tp[vv]['labels']]
+        try:
+            tp[vv]['first'] = [i for i, f in enumerate(tp[vv]['labels'])
+                       if f[1] >= tp[vv]['min'] and f[2] != ''][0]
+        except:
+            tp[vv]['first'] = -999
+        try:
+            tp[vv]['last'] = [i for i, f in enumerate(tp[vv]['labels'])
+                      if f[1] <= tp[vv]['max'] and f[2] != ''][-1]
+        except:
+            tp[vv]['last'] = -999
+
+    return tp
+
+
 class BaseLayout:
     def __init__(self, **kwargs):
         """
@@ -302,7 +337,7 @@ class BaseLayout:
                                           self.ticks_minor.padding),
                         size=self.ticks_minor.size,
                         ))
-        
+
         if 'tick_labels' in kwargs.keys() and 'tick_labels_minor' not in kwargs.keys():
             kwargs['tick_labels_minor'] = kwargs['tick_labels']
         self.tick_labels_minor = \
@@ -2071,6 +2106,11 @@ class LayoutMPL(BaseLayout):
 
         for ia, aa in enumerate(axes):
 
+            if ia == 0:
+                lab = ''
+            else:
+                lab = '2'
+
             # Turn off scientific (how do we force it?)
             if not self.axes.sci_x \
                     and self.ptype != 'boxplot' \
@@ -2083,159 +2123,136 @@ class LayoutMPL(BaseLayout):
                     and (not self.axes.sharey or ir==0 and ic==0):
                 axes[ia].get_yaxis().get_major_formatter().set_scientific(False)
 
-            # Set custom tick increment
-            if ia==0:
-                lab = ''
-            else:
-                lab = '2'
-            xinc = getattr(self, 'ticks_major_x%s' % lab).increment
-            if xinc is not None:
-                xmin, xmax = axes[ia].get_xlim()
-                axes[ia].set_yticks(np.arange(xmin, xmax, xinc))
-            yinc = getattr(self, 'ticks_major_y%s' % lab).increment
-            if yinc is not None:
-                ymin, ymax = axes[ia].get_ylim()
-                axes[ia].set_yticks(np.arange(ymin, ymax, yinc))
-
             # General tick params
-            # TODO: change the twin part since the axes is different here
-            axes[ia].tick_params(axis='both',
-                                 which='major',
-                                 pad=self.ws_ticks_ax,
-                                 colors=self.ticks_major.color,
-                                 labelcolor=self.tick_labels_major.font_color,
-                                 labelsize=self.tick_labels_major.font_size,
-                                 top=self.ticks_major_x2.on if self.axes.twiny else self.ticks_major_x.on,
-                                 bottom=self.ticks_major_x.on,
-                                 right=self.ticks_major_y2.on if self.axes.twinx else self.ticks_major_y.on,
-                                 left=self.ticks_major_y.on,
-                                 length=self.ticks_major.size[0],
-                                 width=self.ticks_major.size[1],
-                                 )
-            axes[ia].tick_params(axis='both',
-                                 which='minor',
-                                 pad=self.ws_ticks_ax,
-                                 colors=self.ticks_minor.color,
-                                 labelcolor=self.tick_labels_minor.font_color,
-                                 labelsize=self.tick_labels_minor.font_size,
-                                 top=self.ticks_minor_x2.on if self.axes.twiny else self.ticks_major_x.on,
-                                 bottom=self.ticks_major_x.on,
-                                 right=self.ticks_major_y2.on if self.axes.twinx else self.ticks_major_y.on,
-                                 left=self.ticks_major_y.on,
-                                 length=self.ticks_minor.size[0],
-                                 width=self.ticks_minor.size[1],
-                                 )
+            if ia == 0:
+                axes[ia].tick_params(axis='both',
+                                     which='major',
+                                     pad=self.ws_ticks_ax,
+                                     colors=self.ticks_major.color,
+                                     labelcolor=self.tick_labels_major.font_color,
+                                     labelsize=self.tick_labels_major.font_size,
+                                     top=self.ticks_major_x2.on \
+                                         if self.axes.twiny
+                                         else self.ticks_major_x.on,
+                                     bottom=self.ticks_major_x.on,
+                                     right=self.ticks_major_y2.on \
+                                           if self.axes.twinx
+                                           else self.ticks_major_y.on,
+                                     left=self.ticks_major_y.on,
+                                     length=self.ticks_major.size[0],
+                                     width=self.ticks_major.size[1],
+                                     )
+                axes[ia].tick_params(axis='both',
+                                     which='minor',
+                                     pad=self.ws_ticks_ax,
+                                     colors=self.ticks_minor.color,
+                                     labelcolor=self.tick_labels_minor.font_color,
+                                     labelsize=self.tick_labels_minor.font_size,
+                                     top=self.ticks_minor_x2.on \
+                                         if self.axes.twiny
+                                         else self.ticks_minor_x.on,
+                                     bottom=self.ticks_minor_x.on,
+                                     right=self.ticks_minor_y2.on \
+                                           if self.axes.twinx
+                                           else self.ticks_minor_y.on,
+                                     left=self.ticks_minor_y.on,
+                                     length=self.ticks_minor.size[0],
+                                     width=self.ticks_minor.size[1],
+                                     )
             if self.ticks_minor.on:
                 axes[ia].minorticks_on()
+
+            tp = mpl_get_ticks(axes[ia])
+
+            # Set custom tick increment
+            redo = True
+            xinc = getattr(self, 'ticks_major_x%s' % lab).increment
+            if xinc is not None:
+                axes[ia].set_yticks(np.arange(tp['x']['min'], tp['x']['max'], xinc))
+                redo = True
+            yinc = getattr(self, 'ticks_major_y%s' % lab).increment
+            if yinc is not None:
+                axes[ia].set_yticks(np.arange(tp['y']['min'], tp['y']['max'], yinc))
+                redo = True
+            if redo:
+                tp = mpl_get_ticks(axes[ia])
 
             # Force ticks
             if self.separate_ticks:
                 mplp.setp(axes[ia].get_xticklabels(), visible=True)
                 mplp.setp(axes[ia].get_yticklabels(), visible=True)
 
+            # Tick label shorthand
+            tlmajx = getattr(self, 'tick_labels_major_x%s' % lab)
+            tlmajy = getattr(self, 'tick_labels_major_y%s' % lab)
+
             # Check for overlapping major tick labels
-            if self.tick_labels_major.on and self.tick_cleanup:
-                xmin, xmax = axes[ia].get_xlim()
-                xticks = axes[ia].get_xticks()
-                xlabels = [f for f in axes[ia].xaxis.iter_ticks()]
-                xlabel_text = [f[2] for f in xlabels]
-                try:
-                    x_first = [i for i, f in enumerate(xlabels)
-                               if f[1] >= xmin and f[2] != ''][0]
-                except:
-                    x_first = -999
-                try:
-                    x_last = [i for i, f in enumerate(xlabels)
-                              if f[1] <= xmax and f[2] != ''][-1]
-                except:
-                    x_last = -999
-
-                ymin, ymax = axes[ia].get_ylim()
-                yticks = axes[ia].get_yticks()
-                ylabels = [f for f in axes[ia].yaxis.iter_ticks()]
-                ylabel_text = [f[2] for f in ylabels]
-                try:
-                    y_first = [i for i, f in enumerate(ylabels)
-                               if f[1] >= ymin and f[2] != ''][0]
-                except:
-                    y_first = -999
-                try:
-                    y_last = [i for i, f in enumerate(ylabels)
-                              if f[1] <= ymax and f[2] != ''][-1]
-                except:
-                    y_last = -999
-
-                xc = [0, -self.tick_labels_major_x.size[1]/2-self.ws_ticks_ax]
-                yc = [-self.tick_labels_major_y.size[0]/2-self.ws_ticks_ax, 0]
+            if self.tick_cleanup and tlmajx.on and tlmajy.on:
+                xc = [0, -tlmajx.size[1]/2-self.ws_ticks_ax]
+                yc = [-tlmajy.size[0]/2-self.ws_ticks_ax, 0]
                 buf = 6
-                delx = self.axes.size[0]/(len(xticks)-2)
-                dely = self.axes.size[1]/(len(yticks)-2)
+                delx = self.axes.size[0]/(len(tp['x']['ticks'])-2)
+                dely = self.axes.size[1]/(len(tp['y']['ticks'])-2)
                 x2x, y2y = [], []
-                if ia == 0:
-                    lab = ''
-                else:
-                    lab = '2'
-                xw, xh = getattr(self, 'tick_labels_major_x%s' % lab).size
-                yw, yh = getattr(self, 'tick_labels_major_y%s' % lab).size
+                xw, xh = tlmajx.size
+                yw, yh = tlmajy.size
 
                 x0y0 = utl.rectangle_overlap([xw+2*buf, xh+2*buf, xc],
                                              [yw+2*buf, yh+2*buf, yc])
 
-                for ix in range(0, len(xticks) - 1):
-                    xwh = self.tick_labels_major_x.size
+                for ix in range(0, len(tp['x']['ticks']) - 1):
                     x2x += [utl.rectangle_overlap([xw+2*buf, xh+2*buf, [delx*ix,0]],
                                                   [xw+2*buf, xh+2*buf, [delx*(ix+1), 0]])]
-                for iy in range(0, len(yticks) - 1):
-                    ywh = self.tick_labels_major_y.size
+                for iy in range(0, len(tp['y']['ticks']) - 1):
                     y2y += [utl.rectangle_overlap([yw+2*buf, yh+2*buf, [0,dely*iy]],
                                                   [yw+2*buf, yh+2*buf, [0,dely*(iy+1)]])]
 
                 # x and y at the origin
-                if x0y0 and y_first==0:
+                if x0y0 and tp['y']['first']==0:
                     # what if the first tick is missing?  need to add buffer
                     # like in case below xc and yc are not necessarily correct
-                    ylabel_text[y_first] = ''
+                    tp['y']['label_text'][tp['y']['first']] = ''
 
                 # x overlapping x
                 if any(x2x) and (not (self.axes.sharex and ir > 0 or ic > 0)) \
-                        and x_first != -999 and x_last != -999:
-                    for i in range(x_first, x_last, 2):
-                        xlabel_text[i] = ''
+                        and tp['x']['first'] != -999 and tp['x']['last'] != -999:
+                    for i in range(tp['x']['first'], tp['x']['last'], 2):
+                        tp['x']['label_text'][i] = ''
 
                 # y overlapping y
                 if any(y2y) and (not (self.axes.sharey and ir > 0 or ic > 0)) \
-                        and y_first != -999 and y_last != -999:
-                    for i in range(y_first, y_last, 2):
-                        ylabel_text[i] = ''
+                        and tp['y']['first'] != -999 and tp['y']['last'] != -999:
+                    for i in range(tp['y']['first'], tp['y']['last'], 2):
+                        tp['y']['label_text'][i] = ''
 
                 # overlapping labels between row, col, and wrap plots
-                if x_last != -999:
-                    last_x = xlabels[x_last][1]
-                    last_x_pos = last_x/(xmax-xmin)
+                if tp['x']['last'] != -999:
+                    last_x = tp['x']['labels'][tp['x']['last']][1]
+                    last_x_pos = last_x/(tp['x']['max']-tp['x']['min'])
                     last_x_px = (1-last_x_pos)*self.axes.size[0]
                     if self.ncol > 1 and \
                             xw > last_x_px + self.ws_col - self.ws_tick_tick_minimum and \
                             ic < self.ncol - 1:
-                        xlabel_text[x_last] = ''
+                        tp['x']['label_text'][tp['x']['last']] = ''
 
-                if y_last != -999:
-                    last_y = ylabels[y_last][1]
-                    last_y_pos = last_y/(ymax-ymin)
+                if tp['y']['last'] != -999:
+                    last_y = tp['y']['labels'][tp['y']['last']][1]
+                    last_y_pos = last_y/(tp['y']['max']-tp['y']['min'])
                     last_y_px = (1-last_y_pos)*self.axes.size[1]
                     if self.nrow > 1 and \
                             yh > last_y_px + self.ws_col - self.ws_tick_tick_minimum and \
                             ir < self.nrow - 1:
-                        ylabel_text[y_last] = ''
+                        tp['y']['label_text'][tp['y']['last']] = ''
 
                 # overlapping last y and first x between row, col, and wraps
                 if self.nrow > 1 and ir < self.nrow-1:
                     x2y = utl.rectangle_overlap([xw, xh, xc],
                                                 [yw, yh, [yc[0], yc[1]-self.ws_row]])
                     if x2y:
-                        xlabel_text[0] = ''
+                        tp['x']['label_text'][0] = ''
 
-                axes[ia].set_xticklabels(xlabel_text)
-                axes[ia].set_yticklabels(ylabel_text)
+                axes[ia].set_xticklabels(tp['x']['label_text'])
+                axes[ia].set_yticklabels(tp['y']['label_text'])
 
             # Disable major tick labels
             elif not self.tick_labels_major.on:
@@ -2243,32 +2260,39 @@ class LayoutMPL(BaseLayout):
                                      labelbottom='off', labelleft='off',
                                      labelright='off', labeltop='off')
 
-            # Set minor tick labels
-            if self.tick_labels_minor.on:
-                # does this need to be axis specific?  probably to deal
-                # with log on one axis only OR do you just ignore with log?
-                if self.ticks_minor.number is not None:
-                    pass
+            # Turn on minor tick labels
+            ax = ['x', 'y']
+            sides = {}
+            sides['x'] = {'labelbottom': 'off'}
+            sides['x2'] = {'labeltop': 'off'}
+            sides['y'] = {'labelleft': 'off'}
+            sides['y2'] = {'labelright': 'off'}
 
-                else:
-                    xinc = (xlabels[x_last][1]-xlabels[x_first][1]) \
-                           / (x_last-x_first)
-                    decimals = utl.get_decimals(xinc)
-                    axes[ia].xaxis.set_minor_formatter(
+            for axx in ax:
+                axl = '%s%s' % (axx, lab)
+                tlmin = getattr(self, 'tick_labels_minor_%s' % axl)
+
+                if getattr(self, 'ticks_minor_%s' % axl).number is not None:
+                    from matplotlib.ticker import AutoMinorLocator
+                    getattr(axes[ia], '%saxis' % axx).set_minor_locator(AutoMinorLocator(getattr(self, 'ticks_minor_%s' % axl).number+1))
+
+                if not self.separate_labels and axl == 'x' and ir != self.nrow - 1 or \
+                        not self.separate_labels and axl == 'x2' and ir != 0 or \
+                        not self.separate_labels and axl == 'y' and ic != 0 or \
+                        not self.separate_labels and axl == 'y2' and ic != self.ncol - 1:
+                    axes[ia].tick_params(which='minor', **sides[axl])
+
+                elif tlmin.on:
+                    inc = (tp[axl]['labels'][tp[axl]['last']][1] -
+                           tp[axl]['labels'][tp[axl]['first']][1]) \
+                           / (tp[axl]['last']-tp[axl]['first'])
+                    decimals = utl.get_decimals(inc)
+                    getattr(axes[ia], '%saxis' % axx).set_minor_formatter(
                         ticker.FormatStrFormatter('%%.%sf' % (decimals+1)))
 
-                    yinc = (ylabels[y_last][1]-ylabels[y_first][1]) \
-                           / (y_last-y_first)
-                    decimals = utl.get_decimals(yinc)
-                    axes[ia].yaxis.set_minor_formatter(
-                        ticker.FormatStrFormatter('%%.%sf' % (decimals+1)))
 
-            # Disable minor tick labels
-            elif not self.tick_labels_minor.on:
-                axes[ia].tick_params(which='minor',
-                                     labelbottom='off', labelleft='off',
-                                     labelright='off', labeltop='off')
-
+            # Minor tick overlap cleanup
+            # TODO
 
     def set_figure_title(self):
         """
