@@ -3,6 +3,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as mplp
 import matplotlib.ticker as ticker
 import matplotlib.patches as patches
+from matplotlib.ticker import AutoMinorLocator
 import matplotlib.mlab as mlab
 import importlib
 import os, sys
@@ -1400,31 +1401,48 @@ class LayoutMPL(BaseLayout):
             if aa is None:
                 continue
             axes[ia] = self.set_scientific(aa)
-            axes[ia].tick_params(axis='both',
-                                 which='major',
-                                 pad=self.ws_ticks_ax,
-                                 labelsize=self.tick_labels_major.font_size,
-                                 colors=self.tick_labels_major.font_color,
-                                 top=self.ticks_major_x2.on if self.axes.twiny else self.ticks_major_x.on,
-                                 bottom=self.ticks_major_x.on,
-                                 right=self.ticks_major_y2.on if self.axes.twinx else self.ticks_major_y.on,
-                                 left=self.ticks_major_y.on,
-                                 )
-            # TODO: adjust for minor
-            axes[ia].tick_params(axis='both',
-                                 which='minor',
-                                 pad=self.ws_ticks_ax,
-                                 labelsize=self.tick_labels_minor.font_size,
-                                 colors=self.tick_labels_minor.font_color,
-                                 top=self.ticks_minor_x2.on if self.axes.twiny else self.ticks_minor_x.on,
-                                 bottom=self.ticks_minor_x.on,
-                                 right=self.ticks_minor_y2.on if self.axes.twinx else self.ticks_minor_y.on,
-                                 left=self.ticks_minor_y.on,
-                                 )
+            axes[ia].minorticks_on()
+            if ia == 0:
+                axes[ia].tick_params(axis='both',
+                                     which='major',
+                                     pad=self.ws_ticks_ax,
+                                     colors=self.ticks_major.color,
+                                     labelcolor=self.tick_labels_major.font_color,
+                                     labelsize=self.tick_labels_major.font_size,
+                                     top=self.ticks_major_x2.on \
+                                         if self.axes.twiny
+                                         else self.ticks_major_x.on,
+                                     bottom=self.ticks_major_x.on,
+                                     right=self.ticks_major_y2.on \
+                                           if self.axes.twinx
+                                           else self.ticks_major_y.on,
+                                     left=self.ticks_major_y.on,
+                                     length=self.ticks_major.size[0],
+                                     width=self.ticks_major.size[1],
+                                     )
+                axes[ia].tick_params(axis='both',
+                                     which='minor',
+                                     pad=self.ws_ticks_ax,
+                                     colors=self.ticks_minor.color,
+                                     labelcolor=self.tick_labels_minor.font_color,
+                                     labelsize=self.tick_labels_minor.font_size,
+                                     top=self.ticks_minor_x2.on \
+                                         if self.axes.twiny
+                                         else self.ticks_minor_x.on,
+                                     bottom=self.ticks_minor_x.on,
+                                     right=self.ticks_minor_y2.on \
+                                           if self.axes.twinx
+                                           else self.ticks_minor_y.on,
+                                     left=self.ticks_minor_y.on,
+                                     length=self.ticks_minor.size[0],
+                                     width=self.ticks_minor.size[1],
+                                     )
 
         # Define label variables
         xticks, x2ticks, yticks, y2ticks = [], [], [], []
+        xticksmin, x2ticksmin, yticksmin, y2ticksmin = [], [], [], []
         xticklabels, x2ticklabels, yticklabels, y2ticklabels = [], [], [], []
+        xticklabelsmin, x2ticklabelsmin, yticklabelsmin, y2ticklabelsmin = [], [], [], []
         wrap_labels = np.array([[None]*self.ncol]*self.nrow)
         row_labels = np.array([[None]*self.ncol]*self.nrow)
         col_labels = np.array([[None]*self.ncol]*self.nrow)
@@ -1432,8 +1450,12 @@ class LayoutMPL(BaseLayout):
         for ir, ic, df in data.get_rc_subset(data.df_fig):
 
             if data.twinx:
+                yticks += [f[2] for f in axes[1].yaxis.iter_ticks()
+                           if f[2] != '']
                 st()
             elif data.twiny:
+                x2ticks += [f[2] for f in axes[2].xaxis.iter_ticks()
+                            if f[2] != '']
                 st()
             else:
                 for xy in zip(data.x, data.y):
@@ -1446,11 +1468,25 @@ class LayoutMPL(BaseLayout):
                     axes[0].set_ylim(bottom=data.ranges[ir, ic]['ymin'])
                 if data.ranges[ir, ic]['ymax'] is not None:
                     axes[0].set_ylim(top=data.ranges[ir, ic]['ymax'])
+                xiter_ticks = [f for f in axes[0].xaxis.iter_ticks()]
+                yiter_ticks = [f for f in axes[0].yaxis.iter_ticks()]
+                if self.ticks_minor_x.number is not None:
+                    axes[0].xaxis.set_minor_locator(AutoMinorLocator(self.ticks_minor_x.number+1))
+                if self.ticks_minor_y.number is not None:
+                    axes[0].yaxis.set_minor_locator(AutoMinorLocator(self.ticks_minor_y.number+1))
+                xticksmaj = [f[1] for f in xiter_ticks if f[2] != '']
+                yticksmaj = [f[1] for f in yiter_ticks if f[2] != '']
+                incx = (xticksmaj[-1] - xticksmaj[0])/(len(xticksmaj)-1)
+                incy = (yticksmaj[-1] - yticksmaj[0])/(len(yticksmaj)-1)
+                decimalx = utl.get_decimals(incx)
+                decimaly = utl.get_decimals(incy)
+                axes[0].xaxis.set_minor_formatter(ticker.FormatStrFormatter('%%.%sf' % (decimalx+1)))
+                axes[0].yaxis.set_minor_formatter(ticker.FormatStrFormatter('%%.%sf' % (decimaly+1)))
 
-                xticks += [f[2] for f in axes[0].xaxis.iter_ticks()
-                           if f[2] != '']
-                yticks += [f[2] for f in axes[0].yaxis.iter_ticks()
-                           if f[2] != '']
+                xticks += [f[2] for f in xiter_ticks if f[2] != '']
+                yticks += [f[2] for f in yiter_ticks if f[2] != '']
+                xticksmin += [f[2] for f in axes[0].xaxis.iter_ticks()][len(xticksmaj):]
+                yticksmin += [f[2] for f in axes[0].yaxis.iter_ticks()][len(yticksmaj):]
 
             ww, rr, cc = self.set_axes_rc_labels(ir, ic, axes[0])
             wrap_labels[ir, ic] = ww
@@ -1478,20 +1514,34 @@ class LayoutMPL(BaseLayout):
         else:
             leg = None
 
-        # Write out tick labels
+        # Write out major tick labels
         for ix, xtick in enumerate(xticks):
             xticklabels += [fig.text(ix*20, 20, xtick,
-                                     fontsize=self.ticks_major.font_size)]
+                                     fontsize=self.tick_labels_major_x.font_size)]
         for ix, x2tick in enumerate(x2ticks):
             x2ticklabels += [fig.text(ix*20, 20, x2tick,
-                                     fontsize=self.ticks_major.font_size)]
+                                     fontsize=self.tick_labels_major_x2.font_size)]
         for iy, ytick in enumerate(yticks):
             yticklabels += [fig.text(20, iy*20, ytick,
-                                     fontsize=self.ticks_major.font_size)]
+                                     fontsize=self.tick_labels_major_y.font_size)]
         for iy, y2tick in enumerate(y2ticks):
             y2ticklabels += [fig.text(20, iy*20, y2tick,
-                                      fontsize=self.ticks_major.font_size)]
+                                      fontsize=self.tick_labels_major_y2.font_size)]
 
+        # Write out minor tick labels
+        for ix, xtick in enumerate(xticksmin):
+            xticklabelsmin += [fig.text(ix*20, 20, xtick,
+                                        fontsize=self.tick_labels_minor_x.font_size)]
+        for ix, x2tick in enumerate(x2ticksmin):
+            x2ticklabelsmin += [fig.text(ix*20, 20, x2tick,
+                                        fontsize=self.tick_labels_minor_x2.font_size)]
+        for iy, ytick in enumerate(yticksmin):
+            yticklabelsmin += [fig.text(20, iy*20, ytick,
+                                        fontsize=self.tick_labels_minor_y.font_size)]
+        for iy, y2tick in enumerate(y2ticksmin):
+            y2ticklabelsmin += [fig.text(20, iy*20, y2tick,
+                                         fontsize=self.tick_labels_minor_y2.font_size)]
+        
         # Write out axes labels
         if self.label_x.text:
             label_x = fig.text(0, 0, r'%s' % self.label_x.text,
@@ -1532,21 +1582,40 @@ class LayoutMPL(BaseLayout):
         mpl.pyplot.draw()
 
         # Get actual sizes
-        if self.tick_labels_major.on:
+        if self.tick_labels_major_x.on and len(xticklabels) > 0:
             self.tick_labels_major_x.size = \
                 [np.nanmax([t.get_window_extent().width for t in xticklabels]),
                  np.nanmax([t.get_window_extent().height for t in xticklabels])]
+        if self.tick_labels_major_x2.on and len(x2ticklabels) > 0:
+            self.tick_labels_major_x2.size = \
+                [np.nanmax([t.get_window_extent().width for t in x2ticklabels]),
+                 np.nanmax([t.get_window_extent().height for t in x2ticklabels])]
+        if self.tick_labels_major_y.on and len(yticklabels) > 0:
             self.tick_labels_major_y.size = \
                 [np.nanmax([t.get_window_extent().width for t in yticklabels]),
                  np.nanmax([t.get_window_extent().height for t in yticklabels])]
-        else:
-            self.tick_labels_major_x.size = \
-                [np.nanmax([0 for t in xticklabels]),
-                 np.nanmax([0 for t in xticklabels])]
-            self.tick_labels_major_y.size = \
-                [np.nanmax([0 for t in yticklabels]),
-                 np.nanmax([0 for t in yticklabels])]
-        
+        if self.tick_labels_major_y2.on and len(y2ticklabels) > 0:
+            self.tick_labels_major_y2.size = \
+                [np.nanmax([t.get_window_extent().width for t in y2ticklabels]),
+                 np.nanmax([t.get_window_extent().height for t in y2ticklabels])]
+
+        if self.tick_labels_minor_x.on and len(xticklabelsmin) > 0:
+            self.tick_labels_minor_x.size = \
+                [np.nanmax([t.get_window_extent().width for t in xticklabelsmin]),
+                 np.nanmax([t.get_window_extent().height for t in xticklabelsmin])]
+        if self.tick_labels_minor_x2.on and len(x2ticklabelsmin) > 0:
+            self.tick_labels_minor_x2.size = \
+                [np.nanmax([t.get_window_extent().width for t in x2ticklabelsmin]),
+                 np.nanmax([t.get_window_extent().height for t in x2ticklabelsmin])]
+        if self.tick_labels_minor_y.on and len(yticklabelsmin) > 0:
+            self.tick_labels_minor_y.size = \
+                [np.nanmax([t.get_window_extent().width for t in yticklabelsmin]),
+                 np.nanmax([t.get_window_extent().height for t in yticklabelsmin])]
+        if self.tick_labels_minor_y2.on and len(y2ticklabelsmin) > 0:
+            self.tick_labels_minor_y2.size = \
+                [np.nanmax([t.get_window_extent().width for t in y2ticklabelsmin]),
+                 np.nanmax([t.get_window_extent().height for t in y2ticklabelsmin])]
+
         if self.axes.twinx and self.tick_labels_major.on:
             self.ticks_major_y2.size = \
                 [np.nanmax([t.get_window_extent().width for t in y2ticklabels]),
@@ -2125,6 +2194,7 @@ class LayoutMPL(BaseLayout):
 
             # General tick params
             if ia == 0:
+                axes[ia].minorticks_on()
                 axes[ia].tick_params(axis='both',
                                      which='major',
                                      pad=self.ws_ticks_ax,
@@ -2159,8 +2229,6 @@ class LayoutMPL(BaseLayout):
                                      length=self.ticks_minor.size[0],
                                      width=self.ticks_minor.size[1],
                                      )
-            if self.ticks_minor.on:
-                axes[ia].minorticks_on()
 
             tp = mpl_get_ticks(axes[ia])
 
@@ -2269,11 +2337,11 @@ class LayoutMPL(BaseLayout):
             sides['y2'] = {'labelright': 'off'}
 
             for axx in ax:
+                tlminon = False
                 axl = '%s%s' % (axx, lab)
                 tlmin = getattr(self, 'tick_labels_minor_%s' % axl)
 
                 if getattr(self, 'ticks_minor_%s' % axl).number is not None:
-                    from matplotlib.ticker import AutoMinorLocator
                     getattr(axes[ia], '%saxis' % axx).set_minor_locator(AutoMinorLocator(getattr(self, 'ticks_minor_%s' % axl).number+1))
 
                 if not self.separate_labels and axl == 'x' and ir != self.nrow - 1 or \
@@ -2283,16 +2351,28 @@ class LayoutMPL(BaseLayout):
                     axes[ia].tick_params(which='minor', **sides[axl])
 
                 elif tlmin.on:
-                    inc = (tp[axl]['labels'][tp[axl]['last']][1] -
-                           tp[axl]['labels'][tp[axl]['first']][1]) \
-                           / (tp[axl]['last']-tp[axl]['first'])
-                    decimals = utl.get_decimals(inc)
+                    inc = tp[axl]['labels'][1][1] - tp[axl]['labels'][0][1]
+                    minor_ticks = [f[1] for f in
+                                   tp['x']['labels']][len(tp['x']['ticks']):]
+                    number = len([f for f in minor_ticks if f < inc])
+                    decimals = utl.get_decimals(inc/number)
                     getattr(axes[ia], '%saxis' % axx).set_minor_formatter(
-                        ticker.FormatStrFormatter('%%.%sf' % (decimals+1)))
+                        ticker.FormatStrFormatter('%%.%sf' % (decimals)))
+                    tlminon = True
 
+                    # for text in axes[ia].get_xminorticklabels():
+                    #    text.set_rotation(90)
 
-            # Minor tick overlap cleanup
-            # TODO
+                # Minor tick overlap cleanup
+                if self.tick_cleanup and tlminon:
+                    tp = mpl_get_ticks(axes[ia])  # need to update
+
+                    # minor minor overlap
+                    labels = tp[axl]['label_text'][len(tp[axl]['ticks']):]
+
+                    # TODO
+
+                # major minor overap
 
     def set_figure_title(self):
         """
