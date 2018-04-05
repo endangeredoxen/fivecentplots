@@ -1185,9 +1185,9 @@ def get_rc_subset(df, ir, ic, kw):
         col = kw['cols'][ic]
         if row is not None and col is not None:
             df = df[(df[kw['row']]==row) & (df[kw['col']]==col)].copy()
-        elif row and not col:
+        elif row is not None and not col:
             df = df[(df[kw['row']]==row)].copy()
-        elif col and not row:
+        elif col is not None and not row:
             df = df[(df[kw['col']]==col)].copy()
         else:
             df = df.copy()
