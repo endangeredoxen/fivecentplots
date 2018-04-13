@@ -1629,6 +1629,10 @@ def init(plot, kwargs):
         kw['levels'] = kwargs.get('levels', 20)
         kw['line_color'] = kwargs.get('line_color', None)
         kw['line_fit'] = kwargs.get('line_fit', None)
+        kw['line_fit_color'] = kwargs.get('line_fit_color', 'k')
+        kw['line_fit_eqn'] = kwargs.get('line_fit_eqn', False)
+        kw['line_fit_location'] = kwargs.get('line_fit_location', [0.05, 0.9])
+        kw['line_fit_style'] = kwargs.get('line_fit_style', '--')
         kw['line_style'] = kwargs.get('line_style', '-')
         kw['line_width'] = kwargs.get('line_width', fcp_params['line_width'])
         kw['lines'] = kwargs.get('lines', True)
@@ -1739,6 +1743,8 @@ def init(plot, kwargs):
         kw['ylabel_color'] = kwargs.get('ylabel_color',
                                         fcp_params['label_color'])
         kw['yline'] = kwargs.get('yline', None)
+        if kw['yline']:
+            kw['yline'] = validate_list(kw['yline'])
         kw['ymax'] = kwargs.get('ymax', None)
         kw['ymin'] = kwargs.get('ymin', None)
         kw['yticks'] = kwargs.get('yticks', None)
@@ -1838,6 +1844,45 @@ def init(plot, kwargs):
     return df.copy(), x, y, z, kw
 
 
+def linear_fit(x, y, plotter, ax, kw, draw=True, eqn=True):
+    """
+    Fit a line through the data subset
+
+    Args:
+        x ([type]): [description]
+        y ([type]): [description]
+    """
+
+    # Fit the line
+    coeffs = np.polyfit(np.array(x), np.array(y), 1)
+
+    # Find R^2
+    yval = np.polyval(coeffs, x)
+    ybar = y.sum()/len(y)
+    ssreg = np.sum((yval-ybar)**2)
+    sstot = np.sum((y-ybar)**2)
+    r_sq = ssreg/sstot
+
+    # Add fit line
+    xval = np.linspace(0.9*x.min(), 1.1*x.max(), 10)
+    yval = np.polyval(coeffs, xval)
+    if draw:
+        add_curves(plotter, xval, yval, kw['line_fit_color'], '',
+                   False, True,
+                   linestyle=kw['line_fit_style'])
+
+    # Add fit equation
+    if eqn:
+        if coeffs[1] < 0:
+            sign = '-'
+        else:
+            sign = '+'
+        ax.text(
+            kw['line_fit_location'][0], kw['line_fit_location'][1],
+            'y=%.4f * x %s %.4f\nR^2=%.5f' %
+            (coeffs[0], sign, abs(coeffs[1]), r_sq),
+            transform=ax.transAxes)
+
 def make_fig_and_ax(kw):
     """
     Created the mpl figure and axes and set the sizing
@@ -1849,7 +1894,7 @@ def make_fig_and_ax(kw):
     """
 
     # Adjust leg is yline included
-    if kw['yline'] is not None:
+    if kw['yline'] and len(kw['yline']) > 0:
         leg_items = [f for f in kw['leg_items']]
         kw['leg_items'] += [kw['yline']]
 
@@ -2142,51 +2187,15 @@ def plot(**kwargs):
                         if kw['line_fit'] is not None \
                                 and kw['line_fit'] != False:
                             # Fit the polynomial
-                            coeffs = np.polyfit(np.array(df_sub[x]),
-                                                np.array(df_sub[yy]),
-                                                kw['line_fit'])
-
-                            # Calculate the fit line
-                            xval = df_sub[x]
-                            yval = np.polyval(coeffs, xval)
-
-                            # Find r^2
-                            ybar = df_sub[yy].sum()/len(df_sub[yy])
-                            ssreg = np.sum((yval-ybar)**2)
-                            sstot = np.sum((df_sub[y]-ybar)**2)
-                            r_sq = ssreg/sstot
-
-                            # Add fit line
-                            xval = np.linspace(0.9*xval.min(),
-                                               1.1*xval.max(), 10)
-                            yval = np.polyval(coeffs, xval)
-                            add_curves(plotter,
-                                       xval,
-                                       yval,
-                                       'k',
-                                       marker,
-                                       False,
-                                       True,
-                                       linestyle='--')
-
-                            # Add fit equation (need to update for more than
-                            # 1D and formatting)
-                            if coeffs[1] < 0:
-                                sign = '-'
-                            else:
-                                sign = '+'
-                            axes[ir,ic].text(
-                                0.05, 0.9,
-                                'y=%.4f * x %s %.4f\nR^2=%.5f' %
-                                (coeffs[0], sign, abs(coeffs[1]), r_sq),
-                                transform=axes[ir,ic].transAxes)
-
+                            linear_fit(df_sub[x], df_sub[yy], plotter,
+                                       axes[ir, ic], kw, eqn=kw['line_fit_eqn'])
+                            
                     if kw['yline'] is not None:
                         if ir==0 and ic==0:
                             kw['leg_items'] += [kw['yline']]
                             curve = add_curves(plotter,
                                                df[x],
-                                                df[kw['yline']],
+                                               df[kw['yline']],
                                                'k',
                                                None,
                                                False,
@@ -2197,7 +2206,7 @@ def plot(**kwargs):
                         else:
                             add_curves(plotter,
                                        df[x],
-                                        df[kw['yline']],
+                                       df[kw['yline']],
                                        'k',
                                        None,
                                        False,
@@ -2571,30 +2580,33 @@ def plot(**kwargs):
                         if kw['line_fit'] is not None \
                                 and kw['line_fit'] != False:
                             # Fit the polynomial
-                            xval = df_sub[x][subset]
-                            yval = df_sub[yy][subset]
-                            coeffs = np.polyfit(np.array(xval),
-                                                np.array(yval),
-                                                kw['line_fit'])
-
-                            # Calculate the fit line
-                            yval = np.polyval(coeffs, xval)
-
-                            # Add fit line
-                            xval = np.linspace(0.9*xval.min(),
-                                               1.1*xval.max(), 10)
-                            yval = np.polyval(coeffs, xval)
-                            add_curves(plotter,
-                                       xval,
-                                       yval,
-                                       color,
-                                       marker,
-                                       False,
-                                       True,
-                                       linestyle='--')
-
+                            linear_fit(df_sub[x], df_sub[yy], plotter,
+                                       ir, ic, kw, eqn=False)
+                            
                         # Draw confidence intervals
                         conf_int(df_sub[subset], x, yy, axes[ir, ic], color, kw)
+                        
+                        # yline 
+                        if kw['yline'] is not None:
+                            for yline in kw['yline']:
+                                curve = add_curves(plotter,
+                                                df_sub[x][subset],
+                                                df_sub[yline][subset],
+                                                'k',
+                                                None,
+                                                False,
+                                                True,
+                                                linestyle='-')
+                                if curve is not None:
+                                    curves += curve
+                                    curve_dict[yline] = curve
+
+                                if kw['line_fit_eqn']:
+                                    linear_fit(df_sub[x][subset],
+                                               df_sub[yline][subset],
+                                               plotter, ir, ic, kw,
+                                               draw=False,
+                                               eqn=True)
 
                 # Axis ranges
                 axes[ir, ic], ax = set_axes_ranges(df_fig, df_sub, x, y,
