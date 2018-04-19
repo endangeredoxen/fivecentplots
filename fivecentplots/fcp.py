@@ -6,7 +6,7 @@
 __author__    = 'Steve Nicholes'
 __copyright__ = 'Copyright (C) 2016 Steve Nicholes'
 __license__   = 'GPLv3'
-__version__   = '0.2.1'
+__version__   = '0.2.2'
 __url__       = 'https://github.com/endangeredoxen/fivecentplots'
 
 import os
@@ -320,7 +320,7 @@ def boxplot(**kwargs):
         if kw['bp_labels_on'] and kw['groups'] is not None:
             # Get the changes df
             kw['groups'] = validate_columns(df_fig, kw['groups'])
-            if kw['groups'] is None:
+            if kw['groups'] == [None]:
                 groups = df_fig.copy()
             else:
                 groups = df_fig.groupby(kw['groups'])
@@ -345,7 +345,7 @@ def boxplot(**kwargs):
                 longest = max(vals, key=len)
                 uniq_vals = len(changes[changes[cc]==1])
                 label_width = kw['ax_size'][0]/uniq_vals
-                val_width = get_font_to_px(longest, kw['bp_label_font_size'], 
+                val_width = get_font_to_px(longest, kw['bp_label_font_size'],
                                            kw['dpi'])[1]
                 if val_width > label_width:
                     align[ii] = max(align[ii], val_width + 10)
@@ -363,8 +363,8 @@ def boxplot(**kwargs):
                 kw['col_padding'] = col_padding0 + kw['ax_leg_fig_ws']
             kw['row_padding'] = row_padding0 + bp_labels + xs_height
 
-            ylabel_height = get_font_to_px(kw['ylabel'], 
-                                          kw['label_font_size'], 
+            ylabel_height = get_font_to_px(kw['ylabel'],
+                                          kw['label_font_size'],
                                           kw['dpi'], kw['label_weight'],
                                           kw['label_style'],
                                           'vertical')[0]
@@ -1877,11 +1877,15 @@ def linear_fit(x, y, plotter, ax, kw, draw=True, eqn=True):
             sign = '-'
         else:
             sign = '+'
-        ax.text(
-            kw['line_fit_location'][0], kw['line_fit_location'][1],
-            'y=%.4f * x %s %.4f\nR^2=%.5f' %
-            (coeffs[0], sign, abs(coeffs[1]), r_sq),
-            transform=ax.transAxes)
+        if eqn == 'rsq_off':
+            text = 'y=%.4f * x %s %.4f' % (coeffs[0], sign, abs(coeffs[1]))
+            offy = 0.05
+        else:
+            text = 'y=%.4f * x %s %.4f\nR^2=%.5f' % \
+                    (coeffs[0], sign, abs(coeffs[1]), r_sq)
+            offy = 0
+        ax.text(kw['line_fit_location'][0], kw['line_fit_location'][1] + offy,
+                text, transform=ax.transAxes)
 
 def make_fig_and_ax(kw):
     """
@@ -1894,9 +1898,9 @@ def make_fig_and_ax(kw):
     """
 
     # Adjust leg is yline included
-    if kw['yline'] and len(kw['yline']) > 0:
+    if kw['yline'] is not None:
         leg_items = [f for f in kw['leg_items']]
-        kw['leg_items'] += [kw['yline']]
+        kw['leg_items'] += kw['yline']
 
     # Format the figure dimensions
     design = FigDesign(**kw)
@@ -2096,6 +2100,7 @@ def plot(**kwargs):
 
                 # Legend grouping plots
                 if kw['leg_groups'] is None and not kw['twinx']:
+                    ylines = []
                     for iy, yy in enumerate(natsorted(y)):
                         if len(df[x].dropna()) == 0 or \
                                 len(df[yy].dropna()) == 0:
@@ -2189,29 +2194,39 @@ def plot(**kwargs):
                             # Fit the polynomial
                             linear_fit(df_sub[x], df_sub[yy], plotter,
                                        axes[ir, ic], kw, eqn=kw['line_fit_eqn'])
-                            
-                    if kw['yline'] is not None:
-                        if ir==0 and ic==0:
-                            kw['leg_items'] += [kw['yline']]
-                            curve = add_curves(plotter,
-                                               df[x],
-                                               df[kw['yline']],
-                                               'k',
-                                               None,
-                                               False,
-                                               True,
-                                               linestyle='-')
-                            if curve is not None:
-                                curves += curve
-                        else:
-                            add_curves(plotter,
-                                       df[x],
-                                       df[kw['yline']],
-                                       'k',
-                                       None,
-                                       False,
-                                       True,
-                                       linestyle='-')
+
+                        if kw['yline'] is not None:
+                            if kw['yline'][0] not in kw['leg_items']:
+                                kw['leg_items'] += kw['yline']
+                                for yline in kw['yline']:
+                                    curve = add_curves(plotter,
+                                                       df_sub[x],
+                                                       df_sub[kw['yline']],
+                                                       'k',
+                                                       None,
+                                                       False,
+                                                       True,
+                                                       linestyle='-')
+                                    if curve is not None:
+                                        ylines += curve
+                            else:
+                                add_curves(plotter,
+                                           df_sub[x],
+                                           df_sub[kw['yline']],
+                                           'k',
+                                           None,
+                                           False,
+                                           True,
+                                           linestyle='-')
+                            if kw['line_fit_eqn']:
+                                linear_fit(df_sub[x],
+                                            df_sub[yline],
+                                            plotter, axes[ir,ic], kw,
+                                            draw=False,
+                                            eqn='rsq_off')
+
+                    for yl in ylines:
+                        curves += [yl]
 
                 elif kw['leg_groups'] is None and kw['twinx']:
 
@@ -2582,12 +2597,34 @@ def plot(**kwargs):
                             # Fit the polynomial
                             linear_fit(df_sub[x], df_sub[yy], plotter,
                                        ir, ic, kw, eqn=False)
-                            
+                            # xval = df_sub[x][subset]
+                            # yval = df_sub[yy][subset]
+                            # coeffs = np.polyfit(np.array(xval),
+                            #                     np.array(yval),
+                            #                     kw['line_fit'])
+
+                            # # Calculate the fit line
+                            # yval = np.polyval(coeffs, xval)
+
+                            # # Add fit line
+                            # xval = np.linspace(0.9*xval.min(),
+                            #                    1.1*xval.max(), 10)
+                            # yval = np.polyval(coeffs, xval)
+                            # add_curves(plotter,
+                            #            xval,
+                            #            yval,
+                            #            color,
+                            #            marker,
+                            #            False,
+                            #            True,
+                            #            linestyle='--')
+
                         # Draw confidence intervals
                         conf_int(df_sub[subset], x, yy, axes[ir, ic], color, kw)
-                        
-                        # yline 
+
                         if kw['yline'] is not None:
+                            # if ir==0 and ic==0:
+                            # kw['leg_items'] += [kw['yline']]
                             for yline in kw['yline']:
                                 curve = add_curves(plotter,
                                                 df_sub[x][subset],
@@ -2604,9 +2641,9 @@ def plot(**kwargs):
                                 if kw['line_fit_eqn']:
                                     linear_fit(df_sub[x][subset],
                                                df_sub[yline][subset],
-                                               plotter, ir, ic, kw,
+                                               plotter, axes[ir,ic], kw,
                                                draw=False,
-                                               eqn=True)
+                                               eqn='rsq_off')
 
                 # Axis ranges
                 axes[ir, ic], ax = set_axes_ranges(df_fig, df_sub, x, y,
@@ -2850,7 +2887,7 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
                 factor = 1
             else:
                 factor = float(factor[0])
-            if kw['groups'] is None:
+            if kw['groups'] == [None]:
                 q1 = dfx.quantile(0.25)[x]
                 q3 = dfx.quantile(0.75)[x]
                 iqr = factor*(q3[x] - q1[x])
@@ -2863,7 +2900,7 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
             ax.set_ylim(left=xmin.iloc[0])
         elif kw['xmin'] is not None and 'q' in str(kw['xmin']).lower():
             xq = float(str(kw['xmin']).lower().replace('q', ''))/100
-            if kw['groups'] is None:
+            if kw['groups'] == [None]:
                 xmin = dfx.quantile(xq)[x]
             else:
                 xmin = dfxx.groupby(kw['groups']).quantile(xq)[x].min().iloc[0]
@@ -2884,7 +2921,7 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
                 factor = 1
             else:
                 factor = float(factor[0])
-            if kw['groups'] is None:
+            if kw['groups'] == [None]:
                 q1 = dfx.quantile(0.25)[x]
                 q3 = dfx.quantile(0.75)[x]
                 iqr = factor*(q3[x] - q1[x])
@@ -2897,7 +2934,7 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
             ax.set_ylim(right=xmax)
         elif kw['xmax'] is not None and 'q' in str(kw['xmax']).lower():
             xq = float(str(kw['xmax']).lower().replace('q', ''))/100
-            if kw['groups'] is None:
+            if kw['groups'] == [None]:
                 xmax = dfx.quantile(xq)[x]
             else:
                 xmax = dfxx.groupby(kw['groups']).quantile(xq)[x].max().iloc[0]
@@ -2959,7 +2996,7 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
                 factor = 1
             else:
                 factor = float(factor[0])
-            if kw['groups'] is None:
+            if kw['groups'] == [None]:
                 q1 = dfy.quantile(0.25)[yname]
                 q3 = dfy.quantile(0.75)[yname]
                 iqr = factor*(q3[x] - q1[x])
@@ -2972,8 +3009,8 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
             ax.set_ylim(bottom=ymin)
         elif kw['ymin'] is not None and 'q' in str(kw['ymin']).lower():
             yq = float(str(kw['ymin']).lower().replace('q', ''))/100
-            if kw['groups'] is None:
-                ymin = dfy.quantile(yq)[yname]
+            if kw['groups'] == [None]:
+                ymin = dfy.quantile(yq)[yname].iloc[0]
             else:
                 ymin = dfyy.groupby(kw['groups']).quantile(yq)[yname].min().iloc[0]
             ax.set_ylim(bottom=ymin)
@@ -2991,7 +3028,7 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
                 factor = 1
             else:
                 factor = float(factor[0])
-            if kw['groups'] is None:
+            if kw['groups'] == [None]:
                 q1 = dfy.quantile(0.25)[yname]
                 q3 = dfy.quantile(0.75)[yname]
                 iqr = factor*(q3[x] - q1[x])
@@ -3004,8 +3041,8 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
             ax.set_ylim(top=ymax)
         elif kw['ymax'] is not None and 'q' in str(kw['ymax']).lower():
             yq = float(str(kw['ymax']).lower().replace('q', ''))/100
-            if kw['groups'] is None:
-                ymax = dfy.quantiles(yq)[yname]
+            if kw['groups'] == [None]:
+                ymax = dfy.quantile(yq)[yname].iloc[0]
             else:
                 ymax = dfyy.groupby(kw['groups']).quantile(yq)[yname].max().iloc[0]
             ax.set_ylim(top=ymax)
@@ -3036,7 +3073,7 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
                     factor = 1
                 else:
                     factor = float(factor[0])
-                if kw['groups'] is None:
+                if kw['groups'] == [None]:
                     q1 = dfy.quantile(0.25)[yname]
                     q3 = dfy.quantile(0.75)[yname]
                     iqr = factor*(q3[x] - q1[x])
@@ -3049,8 +3086,8 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
                 ax.set_ylim(bottom=ymin2)
             elif kw['ymin2'] is not None and 'q' in str(kw['ymin2']).lower():
                 yq = float(str(kw['ymin2']).lower().replace('q', ''))/100
-                if kw['groups'] is None:
-                    ymin2 = dfy.quantile(yq)[yname]
+                if kw['groups'] == [None]:
+                    ymin2 = dfy.quantile(yq)[yname].iloc[0]
                 else:
                     ymin2 = dfyy.groupby(kw['groups']).quantile(yq)[yname].min()
                 ax.set_ylim(bottom=ymin2)
@@ -3068,7 +3105,7 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
                     factor = 1
                 else:
                     factor = float(factor[0])
-                if kw['groups'] is None:
+                if kw['groups'] == [None]:
                     q1 = dfy.quantile(0.25)[yname]
                     q3 = dfy.quantile(0.75)[yname]
                     iqr = factor*(q3[x] - q1[x])
@@ -3081,8 +3118,8 @@ def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
                 ax.set_ylim(top=ymax2)
             elif kw['ymax2'] is not None and 'q' in str(kw['ymax2']).lower():
                 yq = float(str(kw['ymax2']).lower().replace('q', ''))/100
-                if kw['groups'] is None:
-                    ymax2 = dfy.quantile(yq)[yname]
+                if kw['groups'] == [None]:
+                    ymax2 = dfy.quantile(yq)[yname].iloc[0]
                 else:
                     ymax2 = dfyy.groupby(kw['groups']).quantile(yq)[yname].max().iloc[0]
                 ax.set_ylim(top=ymax2)
