@@ -348,7 +348,7 @@ def boxplot(**kwargs):
                 longest = max(vals, key=len)
                 uniq_vals = len(changes[changes[cc]==1])
                 label_width = kw['ax_size'][0]/uniq_vals
-                val_width = get_font_to_px(longest, kw['bp_label_font_size'], 
+                val_width = get_font_to_px(longest, kw['bp_label_font_size'],
                                            kw['dpi'])[1]
                 if val_width > label_width:
                     align[ii] = max(align[ii], val_width + 10)
@@ -365,8 +365,8 @@ def boxplot(**kwargs):
                 kw['ws_col'] = ws_col0 + kw['ws_fig_leg']
             kw['ws_row'] = ws_row0 + bp_labels + xs_height
 
-            ylabel_height = get_font_to_px(kw['ylabel'], 
-                                          kw['label_font_size'], 
+            ylabel_height = get_font_to_px(kw['ylabel'],
+                                          kw['label_font_size'],
                                           kw['dpi'], kw['label_weight'],
                                           kw['label_style'],
                                           'vertical')[0]
@@ -848,6 +848,31 @@ def contour(**kwargs):
 
     else:
         return fig
+
+
+def deprecated(kwargs):
+    """
+    Fix deprecated keyword args
+    """
+
+    # leg_groups
+    if kwargs.get('leg_groups'):
+            kwargs['legend'] = kwargs['leg_groups']
+            print('"leg_groups" is deprecated. Please use "legend" instead')
+
+    # labels
+    labels = ['x', 'x2', 'y', 'y2', 'z']
+    for ilab, lab in enumerate(labels):
+        # Deprecated style
+        keys = [f for f in kwargs.keys() if '%slabel' % lab in f]
+        if len(keys) > 0:
+            print('"%slabel" is deprecated. Please use "label_%s" instead'
+                    % (lab, lab))
+            for k in keys:
+                kwargs[k.replace('%slabel' % lab, 'label_%s' % lab)] = kwargs[k]
+                kwargs.pop(k)
+
+    return kwargs
 
 
 def df_filter(df, filt_orig):
@@ -2076,6 +2101,9 @@ def plot(**kwargs):
         layout (LayoutMPL obj):  contains all the spacing information used to
             construct the figure
     """
+
+    # Check for deprecated kwargs
+    kwargs = deprecated(kwargs)
 
     # Set the plotting engine
     engine = kwargs.get('engine', 'mpl').lower()

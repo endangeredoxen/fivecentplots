@@ -47,6 +47,8 @@ class Data:
         self.ax_scale = kwargs.get('ax_scale', None)
         self.ax_limit_padding = utl.kwget(kwargs, self.fcpp,
                                           'ax_limit_padding', 0)
+        self.legend = None
+        self.legend_vals = None
         self.ranges = None
         self.sharex = utl.kwget(kwargs, self.fcpp, 'sharex', True)
         self.sharex2 = utl.kwget(kwargs, self.fcpp, 'sharex2', True)
@@ -111,14 +113,11 @@ class Data:
 
         # Define legend grouping column names (legends are common to a figure,
         #   not an rc subplot)
-        if 'leg_groups' in kwargs.keys():
-            self.legend = self.check_group_columns('leg_groups',
-                                                kwargs.get('leg_groups', None))
-        else:
-            self.legend = self.check_group_columns('leg', kwargs.get('leg', None))
-        self.legend = self.legend[0]
-        self.legend_vals = None
-        
+        if 'legend' in kwargs.keys():
+            self.legend = self.check_group_columns('legend',
+                                                   kwargs.get('legend', None))
+            self.legend = self.legend[0]
+
         # Define figure grouping column names
         if 'fig_groups' in kwargs.keys():
             self.fig = self.check_group_columns('fig',
@@ -231,32 +230,32 @@ class Data:
 
     def df_filter(self, df, filt_orig):
         """  Filter the DataFrame
-    
+
         Due to limitations in pd.query, column names must not have spaces.  This
         function will temporarily replace spaces in the column names with
         underscores, but the supplied query string must contain column names
         without any spaces
-    
+
         Args:
             df (pd.DataFrame):  data set to be filtered
             filt_orig (str):  query expression for filtering
-    
+
         Returns:
             filtered DataFrame
         """
-    
+
         def special_chars(text, skip=[]):
             """
             Replace special characters in a text string
-    
+
             Args:
                 text (str): input string
                 skip (list): characters to skip
-    
+
             Returns:
                 formatted string
             """
-    
+
             chars = {' ': '_', '.': 'dot', '[': '',']': '', '(': '', ')': '',
                      '-': '_', '^': '', '>': '', '<': '', '/': '_', '@': 'at',
                      '%': 'percent'}
@@ -265,19 +264,19 @@ class Data:
             for k, v in chars.items():
                 text = text.replace(k, v).lstrip(' ').rstrip(' ')
             return text
-    
+
         df2 = df.copy()
-    
+
         # Parse the filter string
         filt = utl.get_current_values(df2, filt_orig)
-    
+
         # Remove spaces from
         cols_orig = [f for f in self.df_all.columns]
         cols_new = ['fCp%s' % f for f in cols_orig.copy()]
         cols_new = [special_chars(f) for f in cols_new]
-    
+
         df2.columns = cols_new
-    
+
         # Reformat the filter string for compatibility with pd.query
         operators = ['==', '<', '>', '!=']
         ands = [f.lstrip().rstrip() for f in filt.split('&')]
@@ -315,12 +314,12 @@ class Data:
             filt = '&'.join(ands)
         else:
             filt = ands[0]
-    
+
         # Apply the filter
         try:
             df2 = df2.query(filt)
             df2.columns = cols_orig
-    
+
             return df2
 
         except:
@@ -328,7 +327,7 @@ class Data:
                   'Modified filter string: %s' % (filt_orig, filt))
 
             return df
-    
+
     def get_all_groups(self, df):
         """
         Generator to get all possible allowed groups of data
@@ -601,8 +600,8 @@ class Data:
         # if more than one y axis and leg specified
         if len(leg_df.y.unique()) > 1 and not (leg_df.Leg==None).all():
             leg_df['names'] = leg_df.Leg.map(str) + ': ' + leg_df.y.map(str)
-        elif self.twinx:
-            leg_df['names'] = leg_df.y
+        # elif self.twinx:
+        #     leg_df['names'] = leg_df.y
 
         # if more than one x and leg specified
         if 'names' not in leg_df.columns:
@@ -610,13 +609,13 @@ class Data:
         elif len(leg_df.x.unique()) > 1 and not self.twinx:
             leg_df['names'] = \
                 leg_df['names'].map(str) + ' / ' + leg_df.x.map(str)
-        elif self.twinx:
-            leg_df['names'] = leg_df.x.map(str)
+        # elif self.twinx:
+        #     leg_df['names'] = leg_df.x.map(str)
 
         new_index = natsorted(leg_df['names'])
         leg_df = leg_df.set_index('names')
-        leg_df = leg_df.loc[new_index].reset_index()
-        self.legend_vals = leg_df
+        # leg_df = leg_df.loc[new_index].reset_index() # why is this here??
+        self.legend_vals = leg_df.reset_index()
 
     def get_plot_data(self, df):
         """
@@ -629,22 +628,33 @@ class Data:
             subset
         """
 
-        for irow, row in self.legend_vals.iterrows():
-            if row['Leg'] is not None:
-                df2 = df[df[self.legend]==row['Leg']].copy()
+        if type(self.legend_vals) != pd.DataFrame:
+            vals = pd.DataFrame({'x':self.x, 'y':self.y})
+            for irow, row in vals.iterrows():
+                # Set twin ax status
+                twin = False
+                if (row['x'] != vals.loc[0, 'x'] and self.twiny) \
+                        or (row['y'] != vals.loc[0, 'y'] and self.twinx):
+                    twin = True
+                yield irow, df, row['x'], row['y'], None, twin
 
-            # Filter out all nan data
-            if len(df2[row['x']].dropna()) == 0 \
-                    or len(df2[row['y']].dropna()) == 0:
-                continue
+        else:
+            for irow, row in self.legend_vals.iterrows():
+                if row['Leg'] is not None:
+                    df2 = df[df[self.legend]==row['Leg']].copy()
 
-            # Set twin ax status
-            twin = False
-            if (row['x'] != self.legend_vals.loc[0, 'x'] and self.twiny) \
-                    or (row['y'] != self.legend_vals.loc[0, 'y'] and self.twinx):
-                twin = True
+                # Filter out all nan data
+                if len(df2[row['x']].dropna()) == 0 \
+                        or len(df2[row['y']].dropna()) == 0:
+                    continue
 
-            yield irow, df2, row['x'], row['y'], row['names'], twin
+                # Set twin ax status
+                twin = False
+                if (row['x'] != self.legend_vals.loc[0, 'x'] and self.twiny) \
+                        or (row['y'] != self.legend_vals.loc[0, 'y'] and self.twinx):
+                    twin = True
+
+                yield irow, df2, row['x'], row['y'], row['names'], twin
 
     def get_plot_data2(self, df):
         """
@@ -691,7 +701,7 @@ class Data:
             self.ncol = rcnum
             self.nrow = int(np.ceil(len(self.wrap_vals)/rcnum))
             self.nwrap = len(self.wrap_vals)
-    
+
         # Non-wrapping option
         else:
             # Set up the row grouping
@@ -720,14 +730,14 @@ class Data:
     def get_rc_subset(self, df, ranges=False):
         """
         Subset the data by the row/col values
-    
+
         Args:
             df (pd.DataFrame): main DataFrame
 
         Returns:
             subset DataFrame
         """
-        
+
         transform = any([self.xtrans, self.x2trans, self.ytrans, self.y2trans,
                          self.ztrans])
 
@@ -771,7 +781,7 @@ class Data:
                 yield ir, ic, self.df_rc
 
         self.df_sub = None
-    
+
     def see(self):
         """
         Prints a readable list of class attributes
@@ -786,7 +796,7 @@ class Data:
     def transform(self, df):
         """
         Transform x, y, or z data
-    
+
         Args:
             df (pd.DataFrame): current DataFrame
             x (str): x column name
@@ -796,11 +806,11 @@ class Data:
         Returns:
             updated DataFrame
         """
-    
+
         df = df.copy()
 
         axis = ['x', 'y', 'z']
-        
+
         for ax in axis:
             vals = getattr(self, ax)
             if not vals:
