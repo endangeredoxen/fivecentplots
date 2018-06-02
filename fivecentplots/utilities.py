@@ -55,7 +55,7 @@ def get_decimals(value, max_places=10):
     last = np.nan
     for i in range(0, max_places+1):
         current = round(value, i)
-        if current == last:
+        if current == last and current > 0:
             break
         else:
             last = current

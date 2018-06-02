@@ -50,11 +50,16 @@ class Data:
         self.legend = None
         self.legend_vals = None
         self.ranges = None
-        self.sharex = utl.kwget(kwargs, self.fcpp, 'sharex', True)
-        self.sharex2 = utl.kwget(kwargs, self.fcpp, 'sharex2', True)
-        self.sharey = utl.kwget(kwargs, self.fcpp, 'sharey', True)
-        self.sharey2 = utl.kwget(kwargs, self.fcpp, 'sharey2', True)
-        self.sharez = utl.kwget(kwargs, self.fcpp, 'sharez', True)
+        self.share_col = utl.kwget(kwargs, self.fcpp, 'share_col', False)
+        self.share_row = utl.kwget(kwargs, self.fcpp, 'share_row', False)
+        self.share_x = utl.kwget(kwargs, self.fcpp, 'share_x', True)
+        self.share_x2 = utl.kwget(kwargs, self.fcpp, 'share_x2', True)
+        self.share_y = utl.kwget(kwargs, self.fcpp, 'share_y', True)
+        self.share_y2 = utl.kwget(kwargs, self.fcpp, 'share_y2', True)
+        self.share_z = utl.kwget(kwargs, self.fcpp, 'share_z', True)
+        if self.share_row or self.share_col:
+            self.share_x = False
+            self.share_y = False
         self.twinx = kwargs.get('twinx', False)
         self.twiny = kwargs.get('twiny', False)
         if self.twinx == self.twiny and self.twinx:
@@ -498,11 +503,11 @@ class Data:
         axs = ['x', 'x2', 'y', 'y2', 'z']
 
         for ax in axs:
-            if getattr(self, 'share%s' % ax) and ir==0 and ic==0:
+            if getattr(self, 'share_%s' % ax) and ir==0 and ic==0:
                 vals = self.get_data_range(ax, self.df_fig)
                 self.ranges[ir, ic]['%smin' % ax] = vals[0]
                 self.ranges[ir, ic]['%smax' % ax] = vals[1]
-            elif not getattr(self, 'share%s' % ax):
+            elif not getattr(self, 'share_%s' % ax):
                 vals = self.get_data_range(ax, self.df_rc)
                 self.ranges[ir, ic]['%smin' % ax] = vals[0]
                 self.ranges[ir, ic]['%smax' % ax] = vals[1]

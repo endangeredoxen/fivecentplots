@@ -15,6 +15,12 @@ import copy
 import fivecentplots.utilities as utl
 from collections import defaultdict
 import warnings
+def custom_formatwarning(msg, *args, **kwargs):
+    # ignore everything except the message
+    return 'Warning: ' + str(msg) + '\n'
+
+warnings.formatwarning = custom_formatwarning
+#warnings.filterwarnings("ignore")  # do it with kwargs?
 try:
     from natsort import natsorted
 except:
@@ -123,8 +129,13 @@ class BaseLayout:
                             scale=kwargs.get('ax_scale', None),
                             sci_x=utl.kwget(kwargs, self.fcpp, 'sci_x', False),
                             sci_y=utl.kwget(kwargs, self.fcpp, 'sci_y', False),
-                            sharex=kwargs.get('sharex', True),
-                            sharey=kwargs.get('sharey', True),
+                            share_x=kwargs.get('share_x', True),
+                            share_y=kwargs.get('share_y', True),
+                            share_z=kwargs.get('share_z', True),
+                            share_x2=kwargs.get('share_x2', True),  #placeholders
+                            share_y2=kwargs.get('share_y2', True),
+                            share_col = kwargs.get('share_col', False),
+                            share_row = kwargs.get('share_row', False),
                             twinx=kwargs.get('twinx', False),
                             twiny=kwargs.get('twiny', False),
                             xmin=kwargs.get('xmin', None),
@@ -134,6 +145,9 @@ class BaseLayout:
                             )
         if self.axes.scale:
             self.axes.scale = self.axes.scale.lower()
+        if self.axes.share_row or self.axes.share_col:
+            self.axes.share_x = False
+            self.axes.share_y = False
 
         twinned = kwargs.get('twinx', False) or kwargs.get('twiny', False)
         self.axes2 = Element(on=True if twinned else False,
@@ -334,13 +348,13 @@ class BaseLayout:
                                                    '#ffffff'),
                                    number=utl.kwget(kwargs, self.fcpp,
                                                     'ticks_minor_number',
-                                                    None),
+                                                    3),
                                    padding=utl.kwget(kwargs, self.fcpp,
                                                      'ticks_minor_padding',
                                                      4),
                                    size=[utl.kwget(kwargs, self.fcpp,
                                                    'ticks_minor_length_minor',
-                                                   ticks_length*0.8),
+                                                   ticks_length*0.67),
                                          utl.kwget(kwargs, self.fcpp,
                                                    'ticks_minor_width',
                                                    ticks_width*0.7)]
@@ -399,25 +413,25 @@ class BaseLayout:
                                      'tick_labels_minor_%s' % ax,
                                      self.tick_labels_minor.on),
                         font=utl.kwget(kwargs, self.fcpp,
-                                       'tick_labels_minor_font_%s' % ax,
+                                       'tick_labels_minor_%s_font' % ax,
                                        self.tick_labels_minor.font),
                         font_color=utl.kwget(kwargs, self.fcpp,
-                                             'tick_labels_minor_font_color',
+                                             'tick_labels_minor_%s_font_color' % ax,
                                              self.tick_labels_minor.font_color),
                         font_size=utl.kwget(kwargs, self.fcpp,
-                                            'tick_labels_minor_font_size_%s' % ax,
+                                            'tick_labels_minor_%s_font_size' % ax,
                                             self.tick_labels_minor.font_size),
                         font_style=utl.kwget(kwargs, self.fcpp,
-                                             'tick_labels_minor_font_style_%s' % ax,
+                                             'tick_labels_minor_%s_font_style' % ax,
                                              self.tick_labels_minor.font_style),
                         font_weight=utl.kwget(kwargs, self.fcpp,
-                                              'tick_labels_minor_font_weight_%s' % ax,
+                                              'tick_labels_minor_%s_font_weight' % ax,
                                               self.tick_labels_minor.font_weight),
                         padding=utl.kwget(kwargs, self.fcpp,
-                                          'tick_labels_minor_padding_%s' % ax,
+                                          'tick_labels_minor_%s_padding' % ax,
                                           self.tick_labels_minor.padding),
                         rotation=utl.kwget(kwargs, self.fcpp,
-                                           'tick_labels_minor_rotation_%s' % ax,
+                                           'tick_labels_minor_%s_rotation' % ax,
                                            self.tick_labels_minor.rotation),
                         size=[0, 0],
                         ))
@@ -858,7 +872,7 @@ class BaseLayout:
                                          'separate_labels', False)
         self.separate_ticks = utl.kwget(kwargs, self.fcpp,
                                         'separate_ticks', False)
-        if not self.axes.sharex or not self.axes.sharey:
+        if not self.axes.share_x or not self.axes.share_y:
             self.separate_ticks = True
         self.tick_cleanup = utl.kwget(kwargs, self.fcpp, 'tick_cleanup', True)
 
@@ -1216,7 +1230,7 @@ class LayoutMPL(BaseLayout):
         self.wrap_title_bottom = 0
 
         # Weird spacing defaults out of our control
-        self.fig_right_border = 6
+        self.fig_right_border = 6  # extra border on right side that shows up by default
         self.legend_top_offset = 8
         self.legend_border = 3
 
@@ -1729,7 +1743,7 @@ class LayoutMPL(BaseLayout):
         if self.axes.twinx:
             self.label_y2.size = (label_y2.get_window_extent().width,
                                   label_y2.get_window_extent().height)
-        print(self.label_x.size)
+
         for ir in range(0, self.nrow):
             for ic in range(0, self.ncol):
                 if wrap_labels[ir, ic] is not None:
@@ -1776,33 +1790,36 @@ class LayoutMPL(BaseLayout):
             self.ws_row += max(self.tick_labels_major_x.size[1],
                                self.tick_labels_minor_x.size[1])
 
+        y2 = self.label_y2.size[0] + 2*self.ws_label_tick + \
+             max(self.tick_labels_major_y2.size[0],
+                 self.tick_labels_minor_y2.size[0])
+        tick_labels_major_x = max(self.tick_labels_major_x.size[1],
+                                  self.tick_labels_minor_x.size[1]) + \
+                              max(self.tick_labels_major_x2.size[1],
+                                  self.tick_labels_minor_x2.size[1])
+        tick_labels_major_y = max(self.tick_labels_major_y.size[0],
+                                  self.tick_labels_minor_y.size[0])
+        ws_leg_ax = max(0, self.ws_leg_ax - y2) if self.legend.text is not None else 0
+        ws_leg_fig = self.ws_leg_fig if self.legend.text is not None else 0
+        cbar = self.cbar.size[0] + self.ws_cbar_ax if self.cbar.on else 0
+
         self.fig.size_px[0] = \
             self.ws_label_fig + self.label_y.size[0] + 2*self.ws_label_tick + \
-             max(self.tick_labels_major_y.size[0],
-                 self.tick_labels_minor_y.size[0]) + \
-             self.ws_ticks_ax + \
+            tick_labels_major_y + self.ws_ticks_ax + \
             self.axes.size[0] * self.ncol + self.ws_col * (self.ncol - 1) +  \
-            (self.ws_leg_ax if self.legend.text is not None else 0) + \
-            self.legend.size[0] + \
-            (self.ws_leg_fig if self.legend.text is not None else 0) + \
-            (self.label_y2.size[0] + 2*self.ws_label_tick + \
-             max(self.tick_labels_major_y2.size[0],
-                 self.tick_labels_minor_y2.size[0]) + \
-             self.ws_ticks_ax) * int(self.axes.twinx) + \
-            self.label_row.size[0] + self.ws_row_label + \
-            (self.cbar.size[0] + self.ws_cbar_ax if self.cbar.on else 0) * \
-            self.ncol
+            ws_leg_ax + self.legend.size[0] + ws_leg_fig + \
+            (y2 + self.ws_ticks_ax) * int(self.axes.twinx) + \
+            self.label_row.size[0] + self.ws_row_label * self.label_row.on + \
+            cbar * self.ncol
+
         self.fig.size_px[1] = \
             self.ws_fig_title * self.title.on + self.title.size[1] + \
             self.ws_title_ax + self.label_col.size[1] + \
             self.ws_col_label * self.label_col.on + \
             self.axes.size[1]*self.nrow + 2*self.ws_label_tick + \
             self.ws_ticks_ax + self.label_x.size[1] + self.ws_label_fig + \
-            max(self.tick_labels_major_x.size[1],
-                self.tick_labels_minor_x.size[1]) + \
-            max(self.tick_labels_major_x2.size[1],
-                self.tick_labels_minor_x2.size[1]) + \
-            self.title_wrap.size[1] + self.ws_row * (self.nrow - 1)  # leg_overflow?
+            tick_labels_major_x + self.title_wrap.size[1] + \
+            self.ws_row * (self.nrow - 1)  # leg_overflow?
 
         fig_only = self.axes.size[1]*self.nrow + (self.ws_ticks_ax +
                    self.label_x.size[1] + self.ws_label_fig +
@@ -1905,8 +1922,8 @@ class LayoutMPL(BaseLayout):
         fig, axes = \
             mplp.subplots(data.nrow, data.ncol,
                           figsize=[self.fig.size[0], self.fig.size[1]],
-                          sharex=self.axes.sharex,
-                          sharey=self.axes.sharey,
+                          sharex=self.axes.share_x,
+                          sharey=self.axes.share_y,
                           dpi=self.fig.dpi,
                           facecolor=self.fig.fill_color,
                           edgecolor=self.fig.edge_color)
@@ -2273,7 +2290,7 @@ class LayoutMPL(BaseLayout):
             if not self.axes.sci_x \
                     and self.ptype != 'boxplot' \
                     and self.axes.scale not in ['logx', 'semilogx', 'loglog'] \
-                    and (not self.axes.sharex or ir==0 and ic==0):
+                    and (not self.axes.share_x or ir==0 and ic==0):
                 try:
                     axes[ia].get_xaxis().get_major_formatter().set_scientific(False)
                 except:
@@ -2281,7 +2298,7 @@ class LayoutMPL(BaseLayout):
 
             if not self.axes.sci_y \
                     and self.axes.scale not in ['logy', 'semilogy', 'loglog'] \
-                    and (not self.axes.sharey or ir==0 and ic==0):
+                    and (not self.axes.share_y or ir==0 and ic==0):
                 axes[ia].get_yaxis().get_major_formatter().set_scientific(False)
 
             # General tick params
@@ -2418,13 +2435,13 @@ class LayoutMPL(BaseLayout):
                     tp['y']['label_text'][tp['y']['first']] = ''
 
                 # x overlapping x
-                if any(x2x) and (not (self.axes.sharex and ir > 0 or ic > 0)) \
+                if any(x2x) and (not (self.axes.share_x and ir > 0 or ic > 0)) \
                         and tp['x']['first'] != -999 and tp['x']['last'] != -999:
                     for i in range(tp['x']['first'], tp['x']['last'], 2):
                         tp['x']['label_text'][i] = ''
 
                 # y overlapping y
-                if any(y2y) and (not (self.axes.sharey and ir > 0 or ic > 0)) \
+                if any(y2y) and (not (self.axes.share_y and ir > 0 or ic > 0)) \
                         and tp['y']['first'] != -999 and tp['y']['last'] != -999:
                     for i in range(tp['y']['first'], tp['y']['last'], 2):
                         tp['y']['label_text'][i] = ''
@@ -2525,17 +2542,42 @@ class LayoutMPL(BaseLayout):
                         labels = tp[axx]['label_text'][len(tp[axx]['ticks']):]
                         delmin = delmaj/number
 
-                        # Check overlap with first and last major
+                        # Check overlap with first and last major label
                         wipe = []
                         m0 = len(tp[axx]['ticks'])
                         majw = getattr(self, 'tick_labels_major_%s' % axl).size[wh]/2
-                        if majw > delmin - tlmin.size[wh]/2 - buf:
+                        if delmaj - 2*majw < tlmin.size[wh] + buf:
+                            # No room for any ticks
+                            warnings.warn('Insufficient space between %s major tick labels for minor tick labels. Skipping...' % axx)
+                            wipe = list(range(0, number-1))
+                        elif majw > delmin - tlmin.size[wh]/2 - buf:
                             wipe += [0, number - 2]
+
+                        # There is a weird bug where a tick can be both major and minor; need to remove
+                        dups = [i+m0 for i, f in enumerate(minor_ticks) if f in tp[axx]['ticks']]
+                        if len(dups) == 0:
+                            dups = [-1, len(tp[axx]['label_text'])]
+                        if dups[0] != -1:
+                            dups = [-1] + dups
+                        if dups[len(dups)-1] != len(dups):
+                            dups = dups + [len(tp[axx]['label_text'])]
+                        temp = []
+                        for j in range(1, len(dups)):
+                            temp += tp[axx]['label_text'][dups[j-1]+1:dups[j]]
+
+                        # Disable ticks
                         for i, text in enumerate(getattr(axes[ia], 'get_%sminorticklabels' % axx)()):
                             if i in wipe:
-                                vals = tp[axx]['label_text'][m0+i::number-1]
-                                tp[axx]['label_text'][m0+i::number-1] = ['']*len(vals)
+                                vals = temp[m0+i::number-1]
+                                temp[m0+i::number-1] = ['']*len(vals)
 
+                        # Put back in duplicates
+                        tp[axx]['label_text'] = []
+                        dups[0] = 0
+                        for j in range(1, len(dups)):
+                            tp[axx]['label_text'] += temp[dups[j-1]:dups[j]]
+                            if j < len(dups) - 1:
+                                tp[axx]['label_text'] += ['']
 
                         # Check minor to minor overlap
                         if tlmin.size[wh] + buf > delmin:

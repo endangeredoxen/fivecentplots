@@ -1,4 +1,4 @@
-# original .gitignore items 
+# original .gitignore items
 *.xml
 .idea/codeStyleSettings.xml
 *.xml
@@ -108,3 +108,6 @@ ENV/
 
 # mypy
 .mypy_cache/
+fivecentplots/tests/test.png
+.idea/workspace.xml
+fivecentplots/tests/test.png
