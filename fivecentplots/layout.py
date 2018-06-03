@@ -898,6 +898,7 @@ class BaseLayout:
         # figure
         self.ws_label_fig = utl.kwget(kwargs, self.fcpp, 'ws_label_fig', 10)
         self.ws_leg_fig = utl.kwget(kwargs, self.fcpp, 'ws_leg_fig', 10)
+        self.ws_fig_ax = utl.kwget(kwargs, self.fcpp, 'ws_fig_ax', 20)
         self.ws_fig_title = utl.kwget(kwargs, self.fcpp, 'ws_fig_title', 10)
 
         # axes
@@ -1531,6 +1532,8 @@ class LayoutMPL(BaseLayout):
             elif data.twiny:
                 x2ticks = [f[2] for f in axes[2].xaxis.iter_ticks()
                            if f[2] != '']
+                x2iter_ticks = [f for f in axes[2].xaxis.iter_ticks()]
+                x2ticksmaj += [f[2] for f in x2iter_ticks[0:len(x2ticks)]]
             for xy in zip(data.x, data.y):
                 plotter(df[xy[0]], df[xy[1]], 'o-')
             if data.ranges[ir, ic]['xmin'] is not None:
@@ -1726,12 +1729,12 @@ class LayoutMPL(BaseLayout):
 
         if self.axes.twiny and self.tick_labels_major.on:
             self.ticks_major_x2.size = \
-                [np.nanmax([t.get_window_extent().width for t in x2ticklabels]),
-                 np.nanmax([t.get_window_extent().height for t in x2ticklabels])]
+                [np.nanmax([t.get_window_extent().width for t in x2ticklabelsmaj]),
+                 np.nanmax([t.get_window_extent().height for t in x2ticklabelsmaj])]
         elif self.axes.twiny and not self.tick_labels_major.on:
             self.ticks_major_x2.size = \
-                [np.nanmax([0 for t in x2ticklabels]),
-                 np.nanmax([0 for t in x2ticklabels])]
+                [np.nanmax([0 for t in x2ticklabelsmaj]),
+                 np.nanmax([0 for t in x2ticklabelsmaj])]
 
         self.label_x.size = (label_x.get_window_extent().width,
                              label_x.get_window_extent().height)
@@ -1790,32 +1793,35 @@ class LayoutMPL(BaseLayout):
             self.ws_row += max(self.tick_labels_major_x.size[1],
                                self.tick_labels_minor_x.size[1])
 
-        y2 = self.label_y2.size[0] + 2*self.ws_label_tick + \
-             max(self.tick_labels_major_y2.size[0],
-                 self.tick_labels_minor_y2.size[0])
+        x2 = (self.label_x2.size[0] + self.ws_ticks_ax + \
+              max(self.tick_labels_major_x2.size[0],
+                  self.tick_labels_minor_x2.size[0])) * self.axes.twiny
+        y2 = (self.label_y2.size[0] + 2*self.ws_label_tick + self.ws_ticks_ax + \
+              max(self.tick_labels_major_y2.size[0],
+                  self.tick_labels_minor_y2.size[0])) * self.axes.twinx
         tick_labels_major_x = max(self.tick_labels_major_x.size[1],
-                                  self.tick_labels_minor_x.size[1]) + \
-                              max(self.tick_labels_major_x2.size[1],
-                                  self.tick_labels_minor_x2.size[1])
+                                  self.tick_labels_minor_x.size[1])
         tick_labels_major_y = max(self.tick_labels_major_y.size[0],
                                   self.tick_labels_minor_y.size[0])
         ws_leg_ax = max(0, self.ws_leg_ax - y2) if self.legend.text is not None else 0
         ws_leg_fig = self.ws_leg_fig if self.legend.text is not None else 0
+        if self.title.on:
+            self.ws_title = self.ws_fig_title + self.title.size[1] + self.ws_title_ax
+        else:
+            self.ws_title = self.ws_fig_ax
         cbar = self.cbar.size[0] + self.ws_cbar_ax if self.cbar.on else 0
 
         self.fig.size_px[0] = \
             self.ws_label_fig + self.label_y.size[0] + 2*self.ws_label_tick + \
             tick_labels_major_y + self.ws_ticks_ax + \
             self.axes.size[0] * self.ncol + self.ws_col * (self.ncol - 1) +  \
-            ws_leg_ax + self.legend.size[0] + ws_leg_fig + \
-            (y2 + self.ws_ticks_ax) * int(self.axes.twinx) + \
+            ws_leg_ax + self.legend.size[0] + ws_leg_fig + y2 + \
             self.label_row.size[0] + self.ws_row_label * self.label_row.on + \
             cbar * self.ncol
 
         self.fig.size_px[1] = \
-            self.ws_fig_title * self.title.on + self.title.size[1] + \
-            self.ws_title_ax + self.label_col.size[1] + \
-            self.ws_col_label * self.label_col.on + \
+            self.ws_title + self.label_col.size[1] + \
+            self.ws_col_label * self.label_col.on + x2 + \
             self.axes.size[1]*self.nrow + 2*self.ws_label_tick + \
             self.ws_ticks_ax + self.label_x.size[1] + self.ws_label_fig + \
             tick_labels_major_x + self.title_wrap.size[1] + \
@@ -1878,10 +1884,11 @@ class LayoutMPL(BaseLayout):
              self.ws_col * (self.ncol - 1)) / self.fig.size_px[0]
 
         self.axes.position[2] = \
-            1 - (self.ws_fig_title * self.title.on + self.title.size[1] + \
-            self.ws_title_ax + self.title_wrap.size[1] + \
-            (self.label_col.size[1] + self.ws_col_label) * self.label_col.on) \
-            / self.fig.size_px[1]
+            1 - (self.ws_title + self.title_wrap.size[1] + \
+            (self.label_col.size[1] + self.ws_col_label) * self.label_col.on + \
+            (self.label_x2.size[0] + self.ws_ticks_ax + \
+            max(self.tick_labels_major_x2.size[0],
+                self.tick_labels_minor_x2.size[0])) * self.axes.twiny) / self.fig.size_px[1]
 
         self.axes.position[3] = \
             (self.ws_ticks_ax + self.label_x.size[1] + self.ws_label_fig + \
@@ -2299,7 +2306,10 @@ class LayoutMPL(BaseLayout):
             if not self.axes.sci_y \
                     and self.axes.scale not in ['logy', 'semilogy', 'loglog'] \
                     and (not self.axes.share_y or ir==0 and ic==0):
-                axes[ia].get_yaxis().get_major_formatter().set_scientific(False)
+                try:
+                    axes[ia].get_yaxis().get_major_formatter().set_scientific(False)
+                except:
+                    print('bah2: axes[ia].get_xaxis().get_major_formatter().set_scientific(False)')
 
             # General tick params
             if ia == 0:
@@ -2411,8 +2421,9 @@ class LayoutMPL(BaseLayout):
 
             # Check for overlapping major tick labels
             if self.tick_cleanup and tlmajx.on and tlmajy.on:
-                xc = [0, -tlmajx.size[1]/2-self.ws_ticks_ax]
+                xc = [0, -tlmajx.size[1]/2-self.ws_ticks_ax + ia*self.axes.size[1]]
                 yc = [-tlmajy.size[0]/2-self.ws_ticks_ax, 0]
+                yf = [-tlmajy.size[0]/2-self.ws_ticks_ax, self.axes.size[1]]
                 buf = 6
                 delx = self.axes.size[0]/(len(tp['x']['ticks'])-2)
                 dely = self.axes.size[1]/(len(tp['y']['ticks'])-2)
@@ -2422,6 +2433,8 @@ class LayoutMPL(BaseLayout):
 
                 x0y0 = utl.rectangle_overlap([xw+2*buf, xh+2*buf, xc],
                                              [yw+2*buf, yh+2*buf, yc])
+                x0yf = utl.rectangle_overlap([xw+2*buf, xh+2*buf, xc],
+                                             [yw+2*buf, yh+2*buf, yf])
 
                 for ix in range(0, len(tp['x']['ticks']) - 1):
                     x2x += [utl.rectangle_overlap([xw+2*buf, xh+2*buf, [delx*ix,0]],
@@ -2433,6 +2446,8 @@ class LayoutMPL(BaseLayout):
                 # x and y at the origin
                 if x0y0 and tp['y']['first']==0:
                     tp['y']['label_text'][tp['y']['first']] = ''
+                if x0yf and self.axes.twiny:
+                    tp['y']['label_text'][tp['y']['last']] = ''
 
                 # x overlapping x
                 if any(x2x) and (not (self.axes.share_x and ir > 0 or ic > 0)) \
@@ -2515,7 +2530,7 @@ class LayoutMPL(BaseLayout):
                     # THE DECIMAL THING WONT WORK FOR LOG!
 
                     tp = mpl_get_ticks(axes[ia])
-                    inc = tp[axl]['labels'][1][1] - tp[axl]['labels'][0][1]
+                    inc = tp[axx]['labels'][1][1] - tp[axx]['labels'][0][1]
                     minor_ticks = [f[1] for f in
                                    tp[axx]['labels']][len(tp[axx]['ticks']):]
                     number = len([f for f in minor_ticks if f < inc]) + 1
@@ -2538,7 +2553,7 @@ class LayoutMPL(BaseLayout):
                             wh = 0
                         else:
                             wh = 1
-                        delmaj = self.axes.size[wh]/(len(tp[axl]['ticks'])-2)
+                        delmaj = self.axes.size[wh]/(len(tp[axx]['ticks'])-2)
                         labels = tp[axx]['label_text'][len(tp[axx]['ticks']):]
                         delmin = delmaj/number
 

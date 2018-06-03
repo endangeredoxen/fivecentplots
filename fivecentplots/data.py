@@ -603,8 +603,8 @@ class Data:
             leg_df['names'] = list(leg_df.Leg)
 
         # if more than one y axis and leg specified
-        if len(leg_df.y.unique()) > 1 and not (leg_df.Leg==None).all():
-            leg_df['names'] = leg_df.Leg.map(str) + ': ' + leg_df.y.map(str)
+        if len(leg_df.y.unique()) > 1 and not (leg_df.Leg==None).all() and len(leg_df.x.unique()) == 1:
+            leg_df['names'] = leg_df.Leg.map(str) + ' | ' + leg_df.y.map(str)
         # elif self.twinx:
         #     leg_df['names'] = leg_df.y
 
@@ -613,7 +613,7 @@ class Data:
             leg_df['names'] = leg_df.x
         elif len(leg_df.x.unique()) > 1 and not self.twinx:
             leg_df['names'] = \
-                leg_df['names'].map(str) + ' / ' + leg_df.x.map(str)
+                leg_df['names'].map(str) + ' | ' + leg_df.y.map(str) + ' / ' + leg_df.x.map(str)
         # elif self.twinx:
         #     leg_df['names'] = leg_df.x.map(str)
 
