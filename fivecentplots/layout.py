@@ -788,7 +788,7 @@ class BaseLayout:
                                      column=kwargs.get('wrap'),
                                      size=[self.axes.size[0],
                                            utl.kwget(kwargs, self.fcpp,
-                                           'wrap_label_size', rc_label.size)],
+                                           'wrap_label_size', 30)],
                                      edge_color=utl.kwget(kwargs, self.fcpp,
                                                           'wrap_label_edge_color',
                                                           rc_label.edge_color),
@@ -815,6 +815,7 @@ class BaseLayout:
                                                            rc_label.font_weight),
                                      text_size=None,
                                      )
+
         if type(self.label_wrap.size) is not list:
             self.label_wrap.size = [self.label_wrap.size, self.axes.size[1]]
 
@@ -850,6 +851,7 @@ class BaseLayout:
                                                         rc_label.font_weight),
                                   text=kwargs.get('wrap_title', None),
                                   )
+
         if type(self.title_wrap.size) is not list:
             self.title_wrap.size = [self.axes.size[0], self.title_wrap.size]
         if self.title_wrap.on and not self.title_wrap.text:
@@ -906,7 +908,6 @@ class BaseLayout:
         self.ws_leg_ax = utl.kwget(kwargs, self.fcpp, 'ws_leg_ax', 20)
         self.ws_ticks_ax = utl.kwget(kwargs, self.fcpp, 'ws_ticks_ax', 3)
         self.ws_title_ax = utl.kwget(kwargs, self.fcpp, 'ws_title_ax', 20)
-        self.ws_wrap_title = utl.kwget(kwargs, self.fcpp, 'wrap_label_ws', 0)
 
         # ticks
         self.ws_tick_tick_minimum = utl.kwget(kwargs, self.fcpp,
@@ -1027,11 +1028,16 @@ class BaseLayout:
                 getattr(self, 'label_y2').text = \
                     lab_text if lab_text is not None else dd[1]
             else:
+                if lab == 'wrap':
+                    # special case
+                    val = 'title_wrap'
+                else:
+                    val = 'label_%s' % lab
                 if type(dd) is list:
-                    getattr(self, 'label_%s' % lab).text = \
+                    getattr(self, val).text = \
                         lab_text if lab_text is not None else ' + '.join(dd)
                 else:
-                    getattr(self, 'label_%s' % lab).text = dd
+                    getattr(self, val).text = dd
                 if lab != 'z' and hasattr(self, 'label_%s2' % lab):
                     getattr(self, 'label_%s2' % lab).text = \
                         lab_text2 if lab_text2 is not None else ' + '.join(dd)
@@ -1820,12 +1826,12 @@ class LayoutMPL(BaseLayout):
             cbar * self.ncol
 
         self.fig.size_px[1] = \
-            self.ws_title + self.label_col.size[1] + \
-            self.ws_col_label * self.label_col.on + x2 + \
+            self.ws_title + (self.label_col.size[1] + \
+            self.ws_col_label) * self.label_col.on + \
+            self.title_wrap.size[1] + self.label_wrap.size[1] + x2 + \
             self.axes.size[1]*self.nrow + 2*self.ws_label_tick + \
             self.ws_ticks_ax + self.label_x.size[1] + self.ws_label_fig + \
-            tick_labels_major_x + self.title_wrap.size[1] + \
-            self.ws_row * (self.nrow - 1)  # leg_overflow?
+            tick_labels_major_x + self.ws_row * (self.nrow - 1)  # leg_overflow?
 
         fig_only = self.axes.size[1]*self.nrow + (self.ws_ticks_ax +
                    self.label_x.size[1] + self.ws_label_fig +
@@ -1857,13 +1863,15 @@ class LayoutMPL(BaseLayout):
              (self.ws_cbar_ax if self.cbar.on else 0) + self.cbar.size[0] +
              self.label_z.size[0])/self.axes.size[0]
 
-        #self.label_row.siz = self.row_label_size/self.ax_w
         self.label_col.position[3] = \
             (self.axes.size[1] + self.ws_col_label)/self.axes.size[1]
-        #self.col_label_height = self.col_label_size/self.ax_h
-        #self.wrap_title_bottom = (self.ax_h + self.col_labels +
-        #                          self.ws_wrap_title)/self.ax_h
 
+        self.label_wrap.position[3] = 1
+        self.title_wrap.size[0] = self.ncol * self.title_wrap.size[0]
+        self.title_wrap.position[3] = \
+            1 + (25+self.label_wrap.size[1] + self.title_wrap.size[1])/self.fig.size_px[1]
+        # the 25 in here makes no sense and the self.ws_label_fig is only 10 but showing up as 20
+        #st()
     def get_subplots_adjust(self):
         """
         Calculate the subplots_adjust parameters for the axes
@@ -1886,7 +1894,7 @@ class LayoutMPL(BaseLayout):
         self.axes.position[2] = \
             1 - (self.ws_title + self.title_wrap.size[1] + \
             (self.label_col.size[1] + self.ws_col_label) * self.label_col.on + \
-            (self.label_x2.size[0] + self.ws_ticks_ax + \
+            self.label_wrap.size[1] + (self.label_x2.size[0] + self.ws_ticks_ax + \
             max(self.tick_labels_major_x2.size[0],
                 self.tick_labels_minor_x2.size[0])) * self.axes.twiny) / self.fig.size_px[1]
 
@@ -1917,6 +1925,11 @@ class LayoutMPL(BaseLayout):
 
         self.nrow = data.nrow
         self.ncol = data.ncol
+
+        if data.wrap:
+            self.separate_labels = kwargs.get('separate_labels', False)
+            self.ws_row = kwargs.get('ws_row', self.label_wrap._size[1])
+            self.ws_col = kwargs.get('ws_col', 0)
 
         self.set_labels(data)
         self.get_element_sizes(data)
@@ -2242,8 +2255,8 @@ class LayoutMPL(BaseLayout):
 
         # Wrap title  --> this guy's text size is not defined in get_elements_size
         if ir == 0 and ic == 0 and self.title_wrap.on:
-            wrap = self.add_label(ax, self.title_wrap.text,
-                                  **self.make_kwargs(self.title_wrap))
+            title = self.add_label(ax, self.title_wrap.text,
+                                   **self.make_kwargs(self.title_wrap))
 
         # Row labels
         if ic == self.ncol-1 and self.label_row.on and not self.label_wrap.on:
@@ -2256,7 +2269,7 @@ class LayoutMPL(BaseLayout):
                                 **self.make_kwargs(self.label_row))
 
         # Col/wrap labels
-        if (ir == 0 or self.label_wrap.on) and self.label_col.on:
+        if (ir == 0 and self.label_col.on) or self.label_wrap.on:
             if self.label_row.text_size is not None:
                 text_size = self.label_col.text_size[ir, ic]
             else:
@@ -2264,7 +2277,7 @@ class LayoutMPL(BaseLayout):
             if self.label_wrap.on:
                 text = ' | '.join([str(f) for f in utl.validate_list(
                     self.label_wrap.values[ir*self.ncol + ic])])
-                col = self.add_label(ax, text,
+                scol = self.add_label(ax, text,
                                      **self.make_kwargs(self.label_wrap))
             else:
                 text = '%s=%s' % (self.label_col.text, self.label_col.values[ic])
@@ -2424,41 +2437,42 @@ class LayoutMPL(BaseLayout):
                 xc = [0, -tlmajx.size[1]/2-self.ws_ticks_ax + ia*self.axes.size[1]]
                 yc = [-tlmajy.size[0]/2-self.ws_ticks_ax, 0]
                 yf = [-tlmajy.size[0]/2-self.ws_ticks_ax, self.axes.size[1]]
-                buf = 6
+                buf = 3
                 delx = self.axes.size[0]/(len(tp['x']['ticks'])-2)
                 dely = self.axes.size[1]/(len(tp['y']['ticks'])-2)
                 x2x, y2y = [], []
                 xw, xh = tlmajx.size
                 yw, yh = tlmajy.size
 
+                # Calculate overlaps
                 x0y0 = utl.rectangle_overlap([xw+2*buf, xh+2*buf, xc],
                                              [yw+2*buf, yh+2*buf, yc])
                 x0yf = utl.rectangle_overlap([xw+2*buf, xh+2*buf, xc],
                                              [yw+2*buf, yh+2*buf, yf])
-
                 for ix in range(0, len(tp['x']['ticks']) - 1):
                     x2x += [utl.rectangle_overlap([xw+2*buf, xh+2*buf, [delx*ix,0]],
                                                   [xw+2*buf, xh+2*buf, [delx*(ix+1), 0]])]
                 for iy in range(0, len(tp['y']['ticks']) - 1):
                     y2y += [utl.rectangle_overlap([yw+2*buf, yh+2*buf, [0,dely*iy]],
                                                   [yw+2*buf, yh+2*buf, [0,dely*(iy+1)]])]
-
                 # x and y at the origin
                 if x0y0 and tp['y']['first']==0:
                     tp['y']['label_text'][tp['y']['first']] = ''
                 if x0yf and self.axes.twiny:
                     tp['y']['label_text'][tp['y']['last']] = ''
 
-                # x overlapping x
-                if any(x2x) and (not (self.axes.share_x and ir > 0 or ic > 0)) \
+                # x overlapping x (this will fail if plot is so small that odd elements overlap)
+                if any(x2x) and ((self.axes.share_x and ir==0 and ic==0) \
+                        or not self.axes.share_x) \
                         and tp['x']['first'] != -999 and tp['x']['last'] != -999:
-                    for i in range(tp['x']['first'], tp['x']['last'], 2):
+                    for i in range(tp['x']['first'] + 1, tp['x']['last'] + 1, 2):
                         tp['x']['label_text'][i] = ''
 
                 # y overlapping y
-                if any(y2y) and (not (self.axes.share_y and ir > 0 or ic > 0)) \
+                if any(y2y) and ((self.axes.share_y and ir==0 and ic==0) \
+                        or not self.axes.share_y) \
                         and tp['y']['first'] != -999 and tp['y']['last'] != -999:
-                    for i in range(tp['y']['first'], tp['y']['last'], 2):
+                    for i in range(tp['y']['first'], tp['y']['last'] + 1, 2):
                         tp['y']['label_text'][i] = ''
 
                 # overlapping labels between row, col, and wrap plots

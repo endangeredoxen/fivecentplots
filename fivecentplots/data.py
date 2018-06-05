@@ -46,7 +46,7 @@ class Data:
         self.independent = None
         self.ax_scale = kwargs.get('ax_scale', None)
         self.ax_limit_padding = utl.kwget(kwargs, self.fcpp,
-                                          'ax_limit_padding', 0)
+                                          'ax_limit_padding', 0.05)
         self.legend = None
         self.legend_vals = None
         self.ranges = None
@@ -60,6 +60,9 @@ class Data:
         if self.share_row or self.share_col:
             self.share_x = False
             self.share_y = False
+        if kwargs.get('wrap', None) is not None:
+            self.share_x = True
+            self.share_y = True
         self.twinx = kwargs.get('twinx', False)
         self.twiny = kwargs.get('twiny', False)
         if self.twinx == self.twiny and self.twinx:
@@ -507,6 +510,18 @@ class Data:
                 vals = self.get_data_range(ax, self.df_fig)
                 self.ranges[ir, ic]['%smin' % ax] = vals[0]
                 self.ranges[ir, ic]['%smax' % ax] = vals[1]
+            elif self.share_row:
+                vals = self.get_data_range(
+                           ax,
+                           self.df_fig[self.df_fig[self.row]==self.row_vals[ir]])
+                self.ranges[ir, ic]['%smin' % ax] = vals[0]
+                self.ranges[ir, ic]['%smax' % ax] = vals[1]
+            elif self.share_col and ir==0:
+                vals = self.get_data_range(
+                           ax,
+                           self.df_fig[self.df_fig[self.col]==self.col_vals[ic]])
+                self.ranges[ir, ic]['%smin' % ax] = vals[0]
+                self.ranges[ir, ic]['%smax' % ax] = vals[1]
             elif not getattr(self, 'share_%s' % ax):
                 vals = self.get_data_range(ax, self.df_rc)
                 self.ranges[ir, ic]['%smin' % ax] = vals[0]
@@ -752,8 +767,8 @@ class Data:
                     if ir*self.ncol + ic > self.nwrap-1:
                         self.df_rc = None
                     else:
-                        wrap = dict(zip(self.wrap_orig,
-                                    utl.validate_list(self.wrap[ir*self.ncol + ic])))
+                        wrap = dict(zip(self.wrap,
+                                    utl.validate_list(self.wrap_vals[ir*self.ncol + ic])))
                         self.df_rc = df.loc[(df[list(wrap)] == pd.Series(wrap)).all(axis=1)].copy()
                 else:
                     if self.row is not None and self.col is not None:
