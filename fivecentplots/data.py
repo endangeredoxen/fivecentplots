@@ -236,7 +236,7 @@ class Data:
 
         return vals
 
-    def df_filter(self, df, filt_orig):
+    def df_filter(self, filt_orig):
         """  Filter the DataFrame
 
         Due to limitations in pd.query, column names must not have spaces.  This
@@ -245,7 +245,6 @@ class Data:
         without any spaces
 
         Args:
-            df (pd.DataFrame):  data set to be filtered
             filt_orig (str):  query expression for filtering
 
         Returns:
@@ -273,7 +272,7 @@ class Data:
                 text = text.replace(k, v).lstrip(' ').rstrip(' ')
             return text
 
-        df2 = df.copy()
+        df2 = self.df_all.copy()
 
         # Parse the filter string
         filt = utl.get_current_values(df2, filt_orig)
@@ -551,13 +550,13 @@ class Data:
             self.df_fig = self.df_all
             for ir, ic, df_rc in self.get_rc_subset(self.df_fig, True):
                 continue
-            yield None, None, self.df_fig
+            yield None, None, None, self.df_fig
 
         else:
             for ifig, fig_val in enumerate(self.fig_vals):
                 if type(fig_val) is tuple:
                     for ig, gg in enumerate(fig_val):
-                        self.df_fig = self.df_all[self.df_all[self.fig_groups][ig] == gg].copy()
+                        self.df_fig = self.df_all[self.df_all[self.fig_groups[ig]] == gg].copy()
                 elif self.fig_groups is not None:
                     if type(self.fig_groups) is list:
                         self.df_fig = self.df_all[self.df_all[self.fig_groups[0]] == fig_val].copy()
@@ -570,7 +569,7 @@ class Data:
                 self.get_rc_groupings(self.df_fig)
                 for ir, ic, df_rc in self.get_rc_subset(self.df_fig, True):
                     continue
-                yield ifig, fig_val, self.df_fig
+                yield ifig, fig_val, self.fig, self.df_fig
 
         self.df_fig = None
 

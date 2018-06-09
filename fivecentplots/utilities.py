@@ -125,6 +125,46 @@ def reload_defaults():
     return fcp_params, colors, markers
 
 
+def set_save_filename(df, fig_item, fig_cols, layout, kwargs):
+    """
+    Build a filename based on the plot setup parameters
+
+    Args:
+        df (pd.DataFrame): input data used for the plot
+        fig_item (None | str): unique figure item
+        fig_cols (None | str | list): names of columns used to generate fi
+        layout (obj): plot layout object
+        kwargs (dict): input keyword args
+
+    Returns:
+        str filename
+    """
+
+    if 'filename' in kwargs.keys():
+        return kwargs['filename'] + kwargs.get('save_ext', '.png')
+
+    # Build a filename
+    x = ' and '.join(validate_list(layout.label_x.text))
+    y = ' and '.join(validate_list(layout.label_y.text))
+    row, col, wrap, fig = '', '', '', ''
+    if layout.label_row.text is not None:
+        row = ' by ' + layout.label_row.text
+    if layout.label_col.text is not None:
+        col = ' by ' + layout.label_col.text
+    if layout.label_wrap.text is not None:
+        wrap = ' by ' + layout.title_wrap.text
+    if fig_item is not None:
+        fig_items = validate_list(fig_item)
+        for icol, col in enumerate(fig_cols):
+            if icol > 0:
+                fig += ' and'
+            fig += ' where %s=%s' % (col, fig_items[icol])
+
+    filename = '%s vs %s%s%s%s%s' % (x, y, row, col, wrap, fig)
+
+    return filename + kwargs.get('save_ext', '.png')
+
+
 def validate_list(items):
     """
     Make sure a list variable is actually a list and not a single string

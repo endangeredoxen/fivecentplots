@@ -873,7 +873,7 @@ class BaseLayout:
         self.separate_labels = utl.kwget(kwargs, self.fcpp,
                                          'separate_labels', False)
         self.separate_ticks = utl.kwget(kwargs, self.fcpp,
-                                        'separate_ticks', False)
+                                        'separate_ticks', self.separate_labels)
         if not self.axes.share_x or not self.axes.share_y:
             self.separate_ticks = True
         self.tick_cleanup = utl.kwget(kwargs, self.fcpp, 'tick_cleanup', True)
@@ -1461,19 +1461,41 @@ class LayoutMPL(BaseLayout):
             ax2 = ax.twinx()
         if self.axes.twiny:
             ax3 = ax.twiny()
-        if self.axes.scale in ['logy', 'semilogy']:
-            plottype = 'semilogy'
-        elif self.axes.scale in ['logx', 'semilogx']:
-            plottype = 'semilogx'
-        elif self.axes.scale in ['loglog']:
-            plottype = 'loglog'
-        else:
-            plottype = 'plot'
-        plotter = getattr(ax, plottype)
+        plotter = getattr(ax, 'plot')
+        if self.axes.scale in ['logy', 'semilogy', 'loglog', 'log']:
+            ax.set_yscale('log')
+        elif self.axes.scale in ['logx', 'semilogx', 'loglog', 'log']:
+            ax.set_xscale('log')
+        elif self.axes.scale in ['symlog']:
+            ax.set_xscale('symlog')
+            ax.set_yscale('symlog')
+        elif self.axes.scale in ['logit']:
+            ax.set_xscale('logit')
+            ax.set_yscale('logit')
         if self.axes.twinx:
-            plotter2 = getattr(ax2, plottype)
+            plotter2 = getattr(ax2, 'plot')
+            if self.axes.scale in ['logy', 'semilogy', 'loglog', 'log']:
+                ax2.set_yscale('log')
+            elif self.axes.scale in ['logx', 'semilogx', 'loglog', 'log']:
+                ax2.set_xscale('log')
+            elif self.axes.scale in ['symlog']:
+                ax2.set_xscale('symlog')
+                ax2.set_yscale('symlog')
+            elif self.axes.scale in ['logit']:
+                ax2.set_xscale('logit')
+                ax2.set_yscale('logit')
         if self.axes.twiny:
-            plotter3 = getattr(ax3, plottype)
+            plotter3 = getattr(ax3, 'plot')
+            if self.axes.scale in ['logy', 'semilogy', 'loglog', 'log']:
+                ax3.set_yscale('log')
+            elif self.axes.scale in ['logx', 'semilogx', 'loglog', 'log']:
+                ax3.set_xscale('log')
+            elif self.axes.scale in ['symlog']:
+                ax3.set_xscale('symlog')
+                ax3.set_yscale('symlog')
+            elif self.axes.scale in ['logit']:
+                ax3.set_xscale('logit')
+                ax3.set_yscale('logit')
 
         # Set tick and scale properties
         axes = [ax, ax2, ax3]
@@ -1554,13 +1576,13 @@ class LayoutMPL(BaseLayout):
             # Major ticks
             xticks = axes[0].get_xticks()
             yticks = axes[0].get_yticks()
-            xiter_ticks = [f for f in axes[0].xaxis.iter_ticks()]
+            xiter_ticks = [f for f in axes[0].xaxis.iter_ticks()] # fails for symlog in 1.5.1
             yiter_ticks = [f for f in axes[0].yaxis.iter_ticks()]
             xticksmaj += [f[2] for f in xiter_ticks[0:len(xticks)]]
             yticksmaj += [f[2] for f in yiter_ticks[0:len(yticks)]]
 
             # Minor ticks
-            if self.axes.scale in ['logx', 'semilogx', 'loglog'] and \
+            if self.axes.scale in ['logx', 'semilogx', 'loglog', 'log'] and \
                     self.tick_labels_minor_x.on:
                 axes[0].xaxis.set_minor_locator(LogLocator())
             elif self.tick_labels_minor_x.on:
@@ -1572,7 +1594,7 @@ class LayoutMPL(BaseLayout):
                 decimalx = utl.get_decimals(incx/number_x)
                 axes[0].xaxis.set_minor_formatter(ticker.FormatStrFormatter('%%.%sf' % (decimalx+1)))
 
-            if self.axes.scale in ['logy', 'semilogy', 'loglog'] and \
+            if self.axes.scale in ['logy', 'semilogy', 'loglog', 'log'] and \
                     self.tick_labels_minor_y.on:
                 axes[0].xaxis.set_minor_locator(LogLocator())
             elif self.tick_labels_minor_y.on:
@@ -1868,10 +1890,8 @@ class LayoutMPL(BaseLayout):
 
         self.label_wrap.position[3] = 1
         self.title_wrap.size[0] = self.ncol * self.title_wrap.size[0]
-        self.title_wrap.position[3] = \
-            1 + (25+self.label_wrap.size[1] + self.title_wrap.size[1])/self.fig.size_px[1]
-        # the 25 in here makes no sense and the self.ws_label_fig is only 10 but showing up as 20
-        #st()
+        self.title_wrap.position[3] = 1 + self.label_wrap.size[1] / self.axes.size[1]
+
     def get_subplots_adjust(self):
         """
         Calculate the subplots_adjust parameters for the axes
@@ -2201,10 +2221,18 @@ class LayoutMPL(BaseLayout):
             if ax.scale is None:
                 continue
             else:
-                if str(ax.scale).lower() in ['loglog', 'semilogx', 'logx']:
+                if str(ax.scale).lower() in ['loglog', 'semilogx', 'logx', 'log']:
                     ax.obj[ir, ic].set_xscale('log')
-                if str(ax.scale).lower() in ['loglog', 'semilogy', 'logy']:
+                elif str(ax.scale).lower() in ['symlog']:
+                    ax.obj[ir, ic].set_xscale('symlog')
+                elif str(ax.scale).lower() in ['logit']:
+                    ax.obj[ir, ic].set_xscale('logit')
+                if str(ax.scale).lower() in ['loglog', 'semilogy', 'logy', 'log']:
                     ax.obj[ir, ic].set_yscale('log')
+                elif str(ax.scale).lower() in ['symlog']:
+                    ax.obj[ir, ic].set_yscale('symlog')
+                elif str(ax.scale).lower() in ['logit']:
+                    ax.obj[ir, ic].set_yscale('logit')
 
     def set_axes_ranges(self, ir, ic, ranges):
         """
@@ -2298,7 +2326,6 @@ class LayoutMPL(BaseLayout):
         """
 
         axes = [f.obj[ir, ic] for f in [self.axes, self.axes2] if f.on]
-
         for ia, aa in enumerate(axes):
 
             if ia == 0:
@@ -2309,7 +2336,7 @@ class LayoutMPL(BaseLayout):
             # Turn off scientific (how do we force it?)
             if not self.axes.sci_x \
                     and self.ptype != 'boxplot' \
-                    and self.axes.scale not in ['logx', 'semilogx', 'loglog'] \
+                    and self.axes.scale not in ['logx', 'semilogx', 'loglog', 'log'] \
                     and (not self.axes.share_x or ir==0 and ic==0):
                 try:
                     axes[ia].get_xaxis().get_major_formatter().set_scientific(False)
@@ -2317,7 +2344,7 @@ class LayoutMPL(BaseLayout):
                     print('bah: axes[ia].get_xaxis().get_major_formatter().set_scientific(False)')
 
             if not self.axes.sci_y \
-                    and self.axes.scale not in ['logy', 'semilogy', 'loglog'] \
+                    and self.axes.scale not in ['logy', 'semilogy', 'loglog', 'log'] \
                     and (not self.axes.share_y or ir==0 and ic==0):
                 try:
                     axes[ia].get_yaxis().get_major_formatter().set_scientific(False)
@@ -2438,8 +2465,14 @@ class LayoutMPL(BaseLayout):
                 yc = [-tlmajy.size[0]/2-self.ws_ticks_ax, 0]
                 yf = [-tlmajy.size[0]/2-self.ws_ticks_ax, self.axes.size[1]]
                 buf = 3
-                delx = self.axes.size[0]/(len(tp['x']['ticks'])-2)
-                dely = self.axes.size[1]/(len(tp['y']['ticks'])-2)
+                if len(tp['x']['ticks']) > 2:
+                    delx = self.axes.size[0]/(len(tp['x']['ticks'])-2)
+                else:
+                    delx = self.axes.size[0] - tlmajx.size[0]
+                if len(tp['y']['ticks']) > 2:
+                    dely = self.axes.size[1]/(len(tp['y']['ticks'])-2)
+                else:
+                    dely = self.axes.size[1] - tlmajy.size[1]
                 x2x, y2y = [], []
                 xw, xh = tlmajx.size
                 yw, yh = tlmajy.size
@@ -2524,15 +2557,16 @@ class LayoutMPL(BaseLayout):
                 axl = '%s%s' % (axx, lab)
                 tlmin = getattr(self, 'tick_labels_minor_%s' % axl)
 
-                if getattr(self, 'ticks_minor_%s' % axl).number is not None:
-                    num_minor = getattr(self, 'ticks_minor_%s' % axl).number
-                    if axx=='x' and self.axes.scale in ['logx', 'semilogx', 'loglog']:
-                        loc = LogLocator()
-                    elif axx=='y' and self.axes.scale in ['logy', 'semilogy', 'loglog']:
-                        loc = LogLocator()
-                    else:
-                        loc = AutoMinorLocator(num_minor+1)
-                    getattr(axes[ia], '%saxis' % axx).set_minor_locator(loc)
+                # this is failing in 2.0.2 and I'm not sure what it is solving in 1.5.1
+                # if getattr(self, 'ticks_minor_%s' % axl).number is not None:
+                #     num_minor = getattr(self, 'ticks_minor_%s' % axl).number
+                #     if axx=='x' and self.axes.scale in ['logx', 'semilogx', 'loglog', 'log']:
+                #         loc = LogLocator()
+                #     elif axx=='y' and self.axes.scale in ['logy', 'semilogy', 'loglog', 'log']:
+                #         loc = LogLocator()
+                #     else:
+                #         loc = AutoMinorLocator(num_minor+1)
+                #     getattr(axes[ia], '%saxis' % axx).set_minor_locator(loc)
 
                 if not self.separate_labels and axl == 'x' and ir != self.nrow - 1 or \
                         not self.separate_labels and axl == 'x2' and ir != 0 or \
@@ -2640,10 +2674,10 @@ class LayoutMPL(BaseLayout):
         """
 
         if not self.axes.sci_x and self.ptype != 'boxplot' \
-                and self.axes.scale not in ['logx', 'semilogx', 'loglog']:
+                and self.axes.scale not in ['logx', 'semilogx', 'loglog', 'symlog', 'logit', 'log']:
             ax.get_xaxis().get_major_formatter().set_scientific(False)
         if not self.axes.sci_y \
-                and self.axes.scale not in ['logy', 'semilogy', 'loglog']:
+                and self.axes.scale not in ['logy', 'semilogy', 'loglog', 'symlog', 'logit', 'log']:
             ax.get_yaxis().get_major_formatter().set_scientific(False)
 
         return ax

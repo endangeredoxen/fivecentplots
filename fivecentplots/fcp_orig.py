@@ -1972,6 +1972,64 @@ def make_rc_filename_labels(kw):
     return rc_name
 
 
+def set_save_filename(df, x, y, kw, ifig):
+
+    rc_name = make_rc_filename_labels(kw)
+
+    if kw['filename_orig'] is not None:
+        kw['filename'] = get_current_values(df, kw['filename_orig'])
+
+    if kw['fig_label']:
+        if kw['twinx']:
+            twinx = ' and %s' % filename_label(y[1])
+        else:
+            twinx = ''
+        if kw['fig_groups'] is not None and not kw['fig_group_path']:
+            items = kw['fig_path_items'][ifig]
+            fig_groups = kw['fig_groups']
+            if type(items) is tuple:
+                items = list(items)
+            elif type(items) is not list:
+                items = [items]
+            if type(fig_groups) is not list:
+                fig_groups = [fig_groups]
+            figlabel = ''
+            for i in range(0, len(fig_groups)):
+                figlabel += ' where ' + str(fig_groups[i]) + '=' \
+                            + str(items[i])
+                if i < len(fig_groups) - 1:
+                    figlabel += ' and'
+                else:
+                    figlabel += ' '
+        else:
+            figlabel = ''
+        if not kw['filename']:
+            if x is None:
+                xlabel = ''
+            else:
+                xlabel = ' vs ' + filename_label(x)
+            if kw['groups'] is not None:
+                grouplabel = ' vs ' + \
+                    ', '.join([filename_label(f) for f in kw['groups']])
+            else:
+                grouplabel = ''
+            filename = filename_label(y[0]) + twinx + xlabel + grouplabel + \
+                       rc_name + figlabel.rstrip(' ') + '.' + kw['save_ext']
+        else:
+            filename = kw['filename'] + figlabel.rstrip(' ') + \
+                       '.' + kw['save_ext']
+    else:
+        filename = kw['filename'] + '.' + kw['save_ext']
+
+    if kw['save_path'] and kw['fig_group_path'] and kw['fig_groups']:
+        filename = os.path.join(kw['save_path'],
+                   str(kw['fig_path_items'][ifig]), filename)
+    elif kw['save_path']:
+        filename = os.path.join(kw['save_path'], filename)
+
+    return filename
+
+
 def paste_kwargs(kwargs):
     """
     Get the kwargs from contents of the clipboard in ini file format
