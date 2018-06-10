@@ -13,7 +13,7 @@ __license__   = 'GPLv3'
 __version__   = '0.3.0'
 __url__       = 'https://github.com/endangeredoxen/fivecentplots'
 import os
-import matplotlib.pyplot as mplp
+import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import matplotlib.patches as patches
 import matplotlib.mlab as mlab
@@ -282,7 +282,7 @@ def boxplot(**kwargs):
         return changes
 
 
-    mplp.close('all')
+    plt.close('all')
 
     # Init plot
     df, x, y, z, kw = init('boxplot', kwargs)
@@ -630,7 +630,7 @@ def boxplot(**kwargs):
         save(fig, filename, kw)
 
     if not kw['inline']:
-        mplp.close('all')
+        plt.close('all')
 
     else:
         return fig
@@ -701,7 +701,7 @@ def contour(**kwargs):
 
     """
 
-    mplp.close('all')
+    plt.close('all')
 
     # Override some defaults
     if kwargs.get('grid_major', None):
@@ -733,7 +733,7 @@ def contour(**kwargs):
         if kw['cmap']=='jmp_spectral':
             cmap = jmp_spectral
         elif kw['cmap'] is not None:
-            cmap = mplp.get_cmap(kw['cmap'])
+            cmap = plt.get_cmap(kw['cmap'])
 
 
         # Make the plots by row and by column
@@ -773,13 +773,13 @@ def contour(**kwargs):
                 if kw['cmap'] == 'jmp_spectral':
                     cmap = jmp_spectral
                 elif kw['cmap'] is not None:
-                    cmap = mplp.get_cmap(kw['cmap'])
+                    cmap = plt.get_cmap(kw['cmap'])
                 elif fcp_params['cmap'] == 'jmp_spectral':
                     cmap = jmp_spectral
                 elif fcp_params['cmap'] is not None:
-                    cmap = mplp.get_cmap(fcp_params['cmap'])
+                    cmap = plt.get_cmap(fcp_params['cmap'])
                 else:
-                    cmap = mplp.get_cmap('inferno')
+                    cmap = plt.get_cmap('inferno')
 
                 # Make the grid
                 xi = np.linspace(min(xx), max(xx))
@@ -823,7 +823,7 @@ def contour(**kwargs):
                     cax = divider.append_axes("right", size=size, pad=pad)
 
                     # Add the colorbar and label
-                    cbar = mplp.colorbar(cc, cax=cax)
+                    cbar = plt.colorbar(cc, cax=cax)
                     cbar.ax.set_ylabel(r'%s' % kw['cbar_label'], rotation=270,
                                        labelpad=kw['label_font_size'],
                                        style=kw['label_style'],
@@ -844,7 +844,7 @@ def contour(**kwargs):
         kw['leg_items'] = []
 
     if not kw['inline']:
-        mplp.close('all')
+        plt.close('all')
 
     else:
         return fig
@@ -1040,7 +1040,7 @@ def get_font_to_px(text, font_size, dpi, weight='normal', style='normal',
     """
 
     now = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
-    mplp.ioff()
+    plt.ioff()
     fig = mpl.pyplot.figure(dpi=dpi)
     ax = fig.add_subplot(111)
     text = fig.text(0,0, text, fontsize=font_size, weight=weight, style=style,
@@ -1086,7 +1086,7 @@ def get_label_sizes(df, x, y, kw, z=None):
               if kw[f] is not None]
 
     now = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
-    mplp.ioff()
+    plt.ioff()
     fig = mpl.pyplot.figure(dpi=kw['dpi'])
     ax = fig.add_subplot(111)
     if kw['twinx']:
@@ -1960,8 +1960,8 @@ def init(plot, kwargs):
         kw['fig_ax_ws'] += 10*len(str(max_y))
 
     # Turn off interactive plotting
-    mplp.ioff()
-    mplp.close('all')
+    plt.ioff()
+    plt.close('all')
 
     return df.copy(), x, y, z, kw
 
@@ -1989,7 +1989,7 @@ def make_fig_and_ax(kw):
         kw['leg_items'] = leg_items
 
     # Make the figure and axes
-    fig, axes = mplp.subplots(kw['nrow'], kw['ncol'],
+    fig, axes = plt.subplots(kw['nrow'], kw['ncol'],
                               figsize=[layout.fig_w, layout.fig_h],
                               sharex=kw['sharex'],
                               sharey=kw['sharey'],
@@ -2107,19 +2107,26 @@ def plot(**kwargs):
 
     # Set the plotting engine
     engine = kwargs.get('engine', 'mpl').lower()
-    layout = LAYOUT[engine](**kwargs)
 
     # Build the data object
     dd = Data('xy', **kwargs)
 
     # Iterate of discrete figures
     for ifig, fig_item, fig_cols, df_fig in dd.get_df_figure():
+        # Create a layout object
+        layout = LAYOUT[engine](**kwargs)
 
         # Make the figure
         layout.make_figure(dd, **kwargs)
 
         # Make the subplots
         for ir, ic, df_rc in dd.get_rc_subset(df_fig):
+
+            if len(df_rc) == 0:
+                if dd.wrap is None:
+                    layout.set_axes_rc_labels(ir, ic)
+                layout.axes.obj[ir, ic].axis('off')
+                continue
 
             # Set the axes colors
             layout.set_axes_colors(ir, ic)
@@ -2132,7 +2139,11 @@ def plot(**kwargs):
 
             # Plot the curves on main axis
             for iline, df, x, y, leg_name, twin in dd.get_plot_data(df_rc):
-                layout.plot_data(ir, ic, iline, df, x, y, leg_name, twin)
+                if kwargs.get('groups', False):
+                    for nn, gg in df.groupby(utl.validate_list(kwargs['groups'])):
+                        layout.plot_data(ir, ic, iline, gg, x, y, leg_name, twin)
+                else:
+                    layout.plot_data(ir, ic, iline, df, x, y, leg_name, twin)
 
             # Set linear or log axes scaling
             layout.set_axes_scale(ir, ic)
@@ -2164,13 +2175,16 @@ def plot(**kwargs):
             layout.fig.obj.savefig(filename)
 
             if kwargs.get('show', False):
-                os.startfile('test.png')
+                os.startfile(filename)
 
         # Return inline
         if not kwargs.get('inline', True):
-            mpl.close('all')
+            plt.close('all')
         else:
-            return layout.fig.obj
+            print(filename)
+            plt.show()#return layout.fig.obj
+            plt.close('all')
+
 
 def save(fig, filename, kw):
     """
@@ -2708,8 +2722,8 @@ def set_axes_ticks(ax, kw, y_only=False):
     # Configure separate labels on each subplot case
     if kw['separate_labels']:
         if not y_only:
-            mplp.setp(ax.get_xticklabels(), visible=True)
-        mplp.setp(ax.get_yticklabels(), visible=True)
+            plt.setp(ax.get_xticklabels(), visible=True)
+        plt.setp(ax.get_yticklabels(), visible=True)
 
     # Style the tick lines
     if not y_only:

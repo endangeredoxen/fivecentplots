@@ -146,13 +146,16 @@ def set_save_filename(df, fig_item, fig_cols, layout, kwargs):
     # Build a filename
     x = ' and '.join(validate_list(layout.label_x.text))
     y = ' and '.join(validate_list(layout.label_y.text))
-    row, col, wrap, fig = '', '', '', ''
+    row, col, wrap, groups, fig = '', '', '', '', ''
     if layout.label_row.text is not None:
         row = ' by ' + layout.label_row.text
     if layout.label_col.text is not None:
         col = ' by ' + layout.label_col.text
     if layout.label_wrap.text is not None:
         wrap = ' by ' + layout.title_wrap.text
+    # this one may need to change with box plot
+    if kwargs.get('groups', False):
+        groups = ' by ' + ' + '.join(validate_list(kwargs['groups']))
     if fig_item is not None:
         fig_items = validate_list(fig_item)
         for icol, col in enumerate(fig_cols):
@@ -160,7 +163,7 @@ def set_save_filename(df, fig_item, fig_cols, layout, kwargs):
                 fig += ' and'
             fig += ' where %s=%s' % (col, fig_items[icol])
 
-    filename = '%s vs %s%s%s%s%s' % (x, y, row, col, wrap, fig)
+    filename = '%s vs %s%s%s%s%s%s' % (x, y, row, col, wrap, groups, fig)
 
     return filename + kwargs.get('save_ext', '.png')
 

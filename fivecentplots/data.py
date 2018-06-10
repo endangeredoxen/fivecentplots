@@ -567,6 +567,7 @@ class Data:
 
                 self.get_legend_groupings(self.df_fig)
                 self.get_rc_groupings(self.df_fig)
+
                 for ir, ic, df_rc in self.get_rc_subset(self.df_fig, True):
                     continue
                 yield ifig, fig_val, self.fig, self.df_fig
@@ -598,6 +599,14 @@ class Data:
         leg_all = []
 
         if self.legend:
+            if type(self.legend) is list:
+                for ileg, leg in enumerate(self.legend):
+                    if ileg == 0:
+                        temp = df[leg].copy()
+                    else:
+                        temp = temp.map(str) + ' | ' + df[leg].map(str)
+                self.legend = ' | '.join(self.legend)
+                df[self.legend] = temp
             legend_vals = \
                 natsorted(list(df.groupby(self.legend).groups.keys()))
             self.nleg = len(legend_vals)
@@ -764,7 +773,7 @@ class Data:
             for ic in range(0, self.ncol):
                 if self.wrap is not None:
                     if ir*self.ncol + ic > self.nwrap-1:
-                        self.df_rc = None
+                        self.df_rc = pd.DataFrame()
                     else:
                         wrap = dict(zip(self.wrap,
                                     utl.validate_list(self.wrap_vals[ir*self.ncol + ic])))
@@ -790,7 +799,7 @@ class Data:
 
                 # Deal with empty dfs
                 if len(self.df_rc) == 0:
-                    self.df_rc = None
+                    self.df_rc = pd.DataFrame()
 
                 # Calculate axis ranges
                 if ranges:

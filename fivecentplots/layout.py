@@ -530,9 +530,12 @@ class BaseLayout:
                                 )
 
         # Legend
+        kwargs['legend'] = kwargs.get('legend', None)
+        if kwargs['legend'] is not None:
+            kwargs['legend'] = ' | '.join(utl.validate_list(kwargs['legend']))
         self.legend = DF_Element(on=True if (kwargs.get('legend') and
                                  kwargs.get('legend_on', True)) else False,
-                                 column=kwargs.get('legend', None),
+                                 column=kwargs['legend'],
                                  edge_color=utl.kwget(kwargs, self.fcpp,
                                                       'legend_edge_color',
                                                       '#ffffff'),
@@ -908,6 +911,7 @@ class BaseLayout:
         self.ws_leg_ax = utl.kwget(kwargs, self.fcpp, 'ws_leg_ax', 20)
         self.ws_ticks_ax = utl.kwget(kwargs, self.fcpp, 'ws_ticks_ax', 3)
         self.ws_title_ax = utl.kwget(kwargs, self.fcpp, 'ws_title_ax', 20)
+        self.ws_ax_fig = utl.kwget(kwargs, self.fcpp, 'ws_ax_fig', 30)
 
         # ticks
         self.ws_tick_tick_minimum = utl.kwget(kwargs, self.fcpp,
@@ -1552,6 +1556,8 @@ class LayoutMPL(BaseLayout):
         col_labels = np.array([[None]*self.ncol]*self.nrow)
 
         for ir, ic, df in data.get_rc_subset(data.df_fig):
+            if len(df) == 0:
+                continue
             if data.twinx:
                 y2ticks = [f[2] for f in axes[1].yaxis.iter_ticks()
                           if f[2] != '']
@@ -1832,7 +1838,7 @@ class LayoutMPL(BaseLayout):
         tick_labels_major_y = max(self.tick_labels_major_y.size[0],
                                   self.tick_labels_minor_y.size[0])
         ws_leg_ax = max(0, self.ws_leg_ax - y2) if self.legend.text is not None else 0
-        ws_leg_fig = self.ws_leg_fig if self.legend.text is not None else 0
+        ws_leg_fig = self.ws_leg_fig if self.legend.text is not None else self.ws_ax_fig
         if self.title.on:
             self.ws_title = self.ws_fig_title + self.title.size[1] + self.ws_title_ax
         else:
@@ -1945,6 +1951,7 @@ class LayoutMPL(BaseLayout):
 
         self.nrow = data.nrow
         self.ncol = data.ncol
+        self.nwrap = data.nwrap
 
         if data.wrap:
             self.separate_labels = kwargs.get('separate_labels', False)
@@ -2177,7 +2184,7 @@ class LayoutMPL(BaseLayout):
 
             # Toggle label visibility
             if not self.separate_labels:
-                if ax == 'x' and ir != self.nrow - 1: continue
+                if ax == 'x' and ir != self.nrow - 1 and self.nwrap == 0: continue
                 if ax == 'x2' and ir != 0: continue
                 if ax == 'y' and ic != 0: continue
                 if ax == 'y2' and ic != self.ncol - 1: continue
@@ -2326,6 +2333,7 @@ class LayoutMPL(BaseLayout):
         """
 
         axes = [f.obj[ir, ic] for f in [self.axes, self.axes2] if f.on]
+
         for ia, aa in enumerate(axes):
 
             if ia == 0:
@@ -2441,8 +2449,9 @@ class LayoutMPL(BaseLayout):
                 tp = mpl_get_ticks(axes[ia])
 
             # Force ticks
-            if self.separate_ticks:
+            if self.separate_ticks or self.nwrap > 0:
                 mplp.setp(axes[ia].get_xticklabels(), visible=True)
+            if self.separate_ticks:
                 mplp.setp(axes[ia].get_yticklabels(), visible=True)
 
             # Major rotation
@@ -2524,7 +2533,7 @@ class LayoutMPL(BaseLayout):
                     last_y_px = (1-last_y_pos)*self.axes.size[1]
                     if self.nrow > 1 and \
                             yh > last_y_px + self.ws_col - self.ws_tick_tick_minimum and \
-                            ir < self.nrow - 1:
+                            ir < self.nrow - 1 and self.nwrap == 0:
                         tp['y']['label_text'][tp['y']['last']] = ''
 
                 # overlapping last y and first x between row, col, and wraps
@@ -2568,7 +2577,7 @@ class LayoutMPL(BaseLayout):
                 #         loc = AutoMinorLocator(num_minor+1)
                 #     getattr(axes[ia], '%saxis' % axx).set_minor_locator(loc)
 
-                if not self.separate_labels and axl == 'x' and ir != self.nrow - 1 or \
+                if not self.separate_labels and axl == 'x' and ir != self.nrow - 1 and self.nwrap == 0 or \
                         not self.separate_labels and axl == 'x2' and ir != 0 or \
                         not self.separate_labels and axl == 'y' and ic != 0 or \
                         not self.separate_labels and axl == 'y2' and ic != self.ncol - 1:
