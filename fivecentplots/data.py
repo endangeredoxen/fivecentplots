@@ -12,8 +12,8 @@ except:
 import pdb
 st = pdb.set_trace
 
-REQUIRED_VALS = {'xy': ['x', 'y'],
-                 'boxplot': ['y'],
+REQUIRED_VALS = {'plot_xy': ['x', 'y'],
+                 'plot_box': ['y'],
                  'contour': ['x', 'y', 'z']}
 # utl.kwget = utilities.utl.kwget
 # reload_defaults = utilities.reload_defaults
@@ -229,10 +229,6 @@ class Data:
         #     raise AxisError('too many axes! Number of x and y axes specified '
         #                     'must match OR at least one axis must contain '
         #                     'only one value')
-
-        # not sure if this is relevant anymore!
-        self.independent = 'x' if len(self.y) >= len(self.x) else 'y'
-        self.dependent = 'y' if len(self.y) >= len(self.x) else 'x'
 
         return vals
 
@@ -544,6 +540,7 @@ class Data:
         """
 
         self.get_fig_groupings()
+
         if not self.fig_vals:
             self.get_legend_groupings(self.df_all)
             self.get_rc_groupings(self.df_all)

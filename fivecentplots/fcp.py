@@ -61,164 +61,33 @@ LAYOUT = {'mpl': LayoutMPL,
           'bokeh': LayoutBokeh}
 
 
-def add_curves(plotter, x, y, color='#000000', marker='o', points=False,
-               line=True, **kwargs):
-    """ Adds curve data to an axes
+def boxplot(**kwargs):
+    """ Main boxplot plotting function
+
+    At minimum, it requires a pandas DataFrame with at
+    least two columns and two column names for the x and y axis.  Plots can be
+    customized and enhanced by passing keyword arguments as defined below.
+    Default values that must be defined in order to generate the plot are
+    pulled from the fcp_params default dictionary
 
     Args:
-        plotter (mpl plot obj):  plot, semilogx, semilogy, loglog
-        x (np.array):  x data to plot
-        y (np.array):  y data to plot
-        color (str):  hex color code for line color (default='#000000')
-        marker (str):  marker char string (default='o')
-        points (bool):  toggle points on|off (default=False)
-        line (bool):  toggle plot lines on|off (default=True)
+        df (DataFrame): DataFrame containing data to plot
+        x (str):        name of x column in df
+        y (str|list):   name or list of names of y column(s) in df
 
     Keyword Args:
-        any kwargs allowed by the plotter function selected
+        UPDATE
 
     Returns:
-        return the line plot object
+        plots
     """
 
-    def format_marker(marker):
-        """
-        Format the marker string to mathtext
-        """
-
-        if marker in ['o', '+', 's', 'x', 'd', '^']:
-            return marker
-        else: return r'$%s$' % marker
-
-    # Filter out x/y data that is all nan
-    if (type(x) is np.ndarray and len(x[~np.isnan(x)])==0) \
-            or (type(y) is np.ndarray and len(y[~np.isnan(y)])==0):
-        return None
-    elif (type(x) is pd.Series and len(x.dropna())==0) \
-            or (type(y) is pd.Series and len(y.dropna())==0):
-        return None
-
-    # Make the points
-    if points:
-        kw = kwargs.copy()
-        kw['linewidth'] = 0
-        kw['linestyle'] = 'none'
-        points = plotter(x, y, color=color, marker=format_marker(marker),
-                         markerfacecolor='none', markeredgecolor=color,
-                         markeredgewidth=1.5, **kw)
-
-    # Make the line
-    if line:
-        kw = kwargs.copy()
-        kw['markersize'] = 0
-        lines = plotter(x, y, color=color, **kw)
-
-    # Return the curve
-    if points:
-        return points
-    else:
-        return lines
+    return plotter('plot_box', **kwargs)
 
 
-def add_label(label, pos, axis, rotation, layout, fillcolor='#ffffff',
-              edgecolor='#aaaaaa', color='#666666', weight='bold',
-              fontsize=14):
-    """ Add a label to the plot
-
-    This function can be used for title labels or for group labels applied
-    to rows and columns when plotting facet grid style plots.
-
-    Args:
-        label (str):  label text
-        pos (tuple): label position tuple of form (left, bottom, width, height)
-        axis (matplotlib.axes):  mpl axes object
-        rotation (int):  degrees of rotation
-        fillcolor (str):  hex color code for label fill (default='#ffffff')
-        edgecolor (str):  hex color code for label edge (default='#aaaaaa')
-        color (str):  hex color code for label text (default='#666666')
-        weight (str):  label font weight (use standard mpl weights like 'bold')
-        fontsize (int):  label font size (default=14)
-    """
-
-    # Define the label background
-    rect = patches.Rectangle((pos[0], pos[1]), pos[2], pos[3],
-                             fill=True, transform=axis.transAxes,
-                             facecolor=fillcolor, edgecolor=edgecolor,
-                             clip_on=False, zorder=-1)
-
-    axis.add_patch(rect)
-
-    # Set slight text offset
-    if rotation == 270:
-        offsetx = -fontsize/layout.ax_w/4
-    else:
-        offsetx = 0
-    if rotation == 0:
-        offsety = -fontsize/layout.ax_h/4
-    else:
-        offsety = 0
-
-    # Add the label text
-    axis.text(pos[0]+pos[2]/2+offsetx, pos[1]+pos[3]/2+offsety, label,
-              transform=axis.transAxes, horizontalalignment='center',
-              verticalalignment='center', rotation=rotation, color=color,
-              weight=weight, fontsize=fontsize)
 
 
-def add_legend(fig, curves, kw, layout):
-    """
-    Add a figure legend
-        TODO: add separate_label support?
-
-    Args:
-        fig (mpl.Figure): current figure
-        curves (list):  list of mpl line objects
-        kw (dict): kwargs dict
-
-    Returns:
-        figure
-    """
-
-    if kw['leg_items'] is not None and len(kw['leg_items']) > 0 \
-            and kw['leg_on']:
-        leg = fig.legend(curves, kw['leg_items'], loc='upper right',
-                         title=kw['leg_title'],
-                         bbox_to_anchor=(layout.leg_right, layout.leg_top),
-                         numpoints=1, prop={'size':12})
-        leg.get_frame().set_facecolor(kw['leg_bkgrd'])
-        leg.get_frame().set_edgecolor(kw['leg_border'])
-
-    return fig
-
-
-def add_lines(ax, kw):
-    """
-    Add axhlines and axvlines
-
-    Args:
-        ax (mpl.axes): current axes to style
-        kw (dict): kwargs dict
-
-    Returns:
-        updated axis
-    """
-
-    for h in kw['ax_hlines']:
-        if type(h) is tuple and len(h) == 3:
-            ax.axhline(h[0], color=h[1], linestyle=h[2])
-        else:
-            ax.axhline(h, color='k', linewidth=0.5)
-
-    for v in kw['ax_vlines']:
-        if type(v) is tuple and len(v)==3:
-            ax.axvline(v[0], color=v[1], linestyle=v[2])
-        else:
-            ax.axvline(v, color='k', linewidth=0.5)
-
-    return ax
-
-
-def boxplot(**kwargs):
+def boxplot_old(**kwargs):
     """ Main boxplot function
     This function wraps the boxplot function from the matplotlib
     library.  At minimum, it requires a pandas DataFrame with at least one
@@ -339,6 +208,7 @@ def boxplot(**kwargs):
             num_groups = groups.ngroups
             changes = index_changes(indices, num_groups)
 
+            ## LAYOUT
             # Determine if label should be aligned vertically or horizontally
             align = {}
             xs_height = 0
@@ -875,475 +745,31 @@ def deprecated(kwargs):
     return kwargs
 
 
-def df_filter(df, filt_orig):
-    """  Filter a DataFrame
-
-    Due to limitations in pd.query, column names must not have spaces.  This
-    function will temporarily replace spaces in the column names with
-    underscores, but the supplied query string must contain column names
-    without any spaces
+def index_changes(df, num_groups):
+    """
+    Make a DataFrame that shows when groups vals change; used for grouping labels
 
     Args:
-        df (pd.DataFrame):  data set to be filtered
-        filt_orig (str):  query expression for filtering
+        df (pd.DataFrame): grouping values
+        num_groups (int): number of unique groups
 
     Returns:
-        filtered DataFrame
+        new DataFrame with 1's showing where group levels change for each row of df
     """
 
-    def special_chars(text, skip=[]):
-        """
-        Replace special characters in a text string
-
-        Args:
-            text (str): input string
-            skip (list): characters to skip
-
-        Returns:
-            formatted string
-        """
-
-        chars = {' ': '_', '.': 'dot', '[': '',']': '', '(': '', ')': '',
-                 '-': '_', '^': '', '>': '', '<': '', '/': '_', '@': 'at',
-                 '%': 'percent'}
-        for sk in skip:
-            chars.pop(sk)
-        for k, v in chars.items():
-            text = text.replace(k, v).lstrip(' ').rstrip(' ')
-        return text
-
-    df2 = df.copy()
-
-    # Parse the filter string
-    filt = get_current_values(df, filt_orig)
-
-    # Remove spaces from
-    cols_orig = [f for f in df.columns]
-    cols_new = ['fCp%s' % f for f in cols_orig.copy()]
-    cols_new = [special_chars(f) for f in cols_new]
-
-    df2.columns = cols_new
-
-    # Reformat the filter string for compatibility with pd.query
-    operators = ['==', '<', '>', '!=']
-    ands = [f.lstrip().rstrip() for f in filt.split('&')]
-    for ia, aa in enumerate(ands):
-        ors = [f.lstrip() for f in aa.split('|')]
-        for io, oo in enumerate(ors):
-            # Temporarily remove any parentheses
-            paramStart = False
-            paramEnd = False
-            if oo[0] == '(':
-                oo = oo[1:]
-                paramStart = True
-            if oo[-1] == ')':
-                oo = oo[0:-1]
-                paramEnd = True
-            for op in operators:
-                if op not in oo:
-                    continue
-                vals = oo.split(op)
-                vals[0] = vals[0].rstrip()
-                vals[1] = vals[1].lstrip()
-                if vals[1] == vals[0]:
-                    vals[1] = 'fCp%s' % special_chars(vals[1])
-                vals[0] = 'fCp%s' % special_chars(vals[0])
-                ors[io] = op.join(vals)
-                if paramStart:
-                    ors[io] = '(' + ors[io]
-                if paramEnd:
-                    ors[io] = ors[io] + ')'
-        if len(ors) > 1:
-            ands[ia] = '|'.join(ors)
-        else:
-            ands[ia] = ors[0]
-    if len(ands) > 1:
-        filt = '&'.join(ands)
-    else:
-        filt = ands[0]
-
-    # Apply the filter
-    try:
-        df2 = df2.query(filt)
-        df2.columns = cols_orig
-
-        return df2
-
-    except:
-        print('Could not filter data!\n   Original filter string: %s\n   '
-              'Modified filter string: %s' % (filt_orig, filt))
-        return df
-
-
-def filename_label(label):
-    """
-    Format filename to remove parentheses, brackets, leading/trailing spaces
-
-    Args:
-        label (str):  label to format
-
-    Returns:
-        formatted label
-    """
-
-    label = str(label)
-
-    brackets = re.findall('\[.*?\]',label)
-    for br in brackets:
-        if '*' in br:
-            label = label.replace(br, br.replace('*', '_'))
-        if '/' in br:
-            brs = br.split('/')
-            label = ''
-            for i in range(0, len(brs), 2):
-                if brs[i+1][-1] == ']':
-                    label = brs[i] + '_' + brs[i+1][0:-1] + '^-1' + ']'
-                else:
-                    label = brs[i] + '_' + brs[i+1] + '^-1'
-
-    label = label.lstrip(' ').rstrip(' ')
-
-    return label
-
-
-def get_df_figure(df, fig_item, kw):
-    """
-    Subset the main DataFrame based on fig_item grouping
-
-    Args:
-        df (pd.DataFrame): main DataFrame
-        fig_item (str): figure grouping value
-        kw (dict): kwargs dict
-
-    Returns:
-        DataFrame subset
-    """
-
-    df_fig = df.copy()
-
-    if type(fig_item) is tuple:
-        for ig, g in enumerate(fig_item):
-            df_fig = df_fig[df_fig[kw['fig_groups'][ig]] == g]
-    elif kw['fig_groups'] is not None:
-        if type(kw['fig_groups']) is list:
-            df_fig = df_fig[df_fig[kw['fig_groups'][0]] == fig_item]
-        else:
-            df_fig = df_fig[df_fig[kw['fig_groups']] == fig_item]
-
-    return df_fig
-
-
-def get_font_to_px(text, font_size, dpi, weight='normal', style='normal',
-                   rotation='horizontal'):
-    """
-    Get the actual pixel size of a text box
-    """
-
-    now = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
-    plt.ioff()
-    fig = mpl.pyplot.figure(dpi=dpi)
-    ax = fig.add_subplot(111)
-    text = fig.text(0,0, text, fontsize=font_size, weight=weight, style=style,
-                    rotation=rotation)
-    mpl.pyplot.draw()
-    mpl.pyplot.savefig('dummy_text_%s.png' % now)
-    text_h = text.get_window_extent().height
-    text_w = text.get_window_extent().width
-    #from matplotlib.patches import Rectangle
-    #rect = Rectangle([0, 0], text.get_window_extent().width, text.get_window_extent().height, color = [0,0,0], fill = False)
-    #fig.patches.append(rect)
-    #mpl.pyplot.show()
-    mpl.pyplot.close(fig)
-    os.remove('dummy_text_%s.png' % now)
-
-    return text_h, text_w
-
-
-def get_label_sizes(df, x, y, kw, z=None):
-    """
-    Get the maximum size of the axes and tick labels (x- and y- ranges not
-    currently accounted for)
-
-    Args:
-        df (pd.DataFrame): input dataframe
-        x (str): x-axis column name
-        y (str): y-axis column name
-        kw (dict): kwargs
-
-    Returns:
-        updated kwargs dict
-    """
-
-
-    # doesn't handle scientific?
-    #
-    # 2) need to include y2 dimensions and calc
-    # 3) can we move the leg dimension calc here
-    # 4) rename layout to layout?
-
-    start = datetime.datetime.now()
-    groups = [kw[f] for f in ['row', 'col', 'wrap', 'leg_groups']
-              if kw[f] is not None]
-
-    now = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
-    plt.ioff()
-    fig = mpl.pyplot.figure(dpi=kw['dpi'])
-    ax = fig.add_subplot(111)
-    if kw['twinx']:
-        ax2 = ax.twinx()
-    else:
-        ax2 = None
-
-    if kw['ax_scale'] in ['logy', 'semilogy']:
-        plotter = ax.semilogy
-        if kw['twinx']:
-            plotter2 = ax2.semilogy
-    elif kw['ax_scale'] in ['logx', 'semilogx']:
-        plotter = ax.semilogx
-        if kw['twinx']:
-            plotter2 = ax2.semilogx
-    elif kw['ax_scale'] in ['loglog']:
-        plotter = ax.loglog
-        if kw['twinx']:
-            plotter2 = ax2.loglog
-    else:
-        plotter = ax.plot
-        if kw['twinx']:
-            plotter2 = ax2.plot
-    ax = set_scientific(ax, kw)
-
-    ax.tick_params(axis='both',
-                   which='major',
-                   pad=kw['ws_tick_ax'],
-                   labelsize=kw['tick_font_size'],
-                   colors=kw['tick_label_color'])
-
-    # Add tick labels
-    xticks = []
-    yticks = []
-    y2ticks = []
-    for i, (nn, gg) in enumerate(df.groupby(groups)):
-        gg = set_data_transformation(gg.copy(), x, y, z, kw)
-        for yy in y:
-            ax = fig.add_subplot(111)
-            pt = plotter(gg[x], gg[yy], 'o-')
-            ax, ax2 = set_axes_ranges(gg, None, x, y, ax, ax2, kw)
-            xticks += [f[2] for f in ax.xaxis.iter_ticks() if f[2] != '']
-            yticks += [f[2] for f in ax.yaxis.iter_ticks() if f[2] != '']
-            if kw['twinx']:
-                y2ticks += [f[2] for f in ax2.yaxis.iter_ticks() if f[2] != '']
-
-    xticklabels = []
-    for ix, xtick in enumerate(xticks):
-        xticklabels += [fig.text(i*20, 20, xtick,
-                                 fontsize=kw['tick_font_size'])]
-    yticklabels = []
-    for iy, ytick in enumerate(yticks):
-        yticklabels += [fig.text(20, i*20, ytick,
-                                 fontsize=kw['tick_font_size'])]
-    y2ticklabels = []
-    for iy, y2tick in enumerate(y2ticks):
-        y2ticklabels += [fig.text(20, i*20, y2tick,
-                                  fontsize=kw['tick_font_size'])]
-
-    # Add axes labels
-    if kw['xlabel'] is not None:
-        xlabel = fig.text(0, 0, r'%s' % kw['xlabel'],
-                          fontsize=kw['label_font_size'],
-                          weight=kw['label_weight'], style=kw['label_style'],
-                          color=kw['xlabel_color'])
-
-    if kw['ylabel'] is not None:
-        ylabel = fig.text(0, 0, r'%s' % kw['ylabel'],
-                          fontsize=kw['label_font_size'],
-                          weight=kw['label_weight'], style=kw['label_style'],
-                          color=kw['ylabel_color'], rotation=270)
-
-    # Draw dummy figure
-    mpl.pyplot.draw()
-    mpl.pyplot.savefig('dummy_text_%s.png' % now)
-
-    kw['xtick_size'] = (np.nanmax([t.get_window_extent().width
-                                   for t in xticklabels]),
-                        np.nanmax([t.get_window_extent().height
-                                   for t in xticklabels]))
-    kw['ytick_size'] = (np.nanmax([t.get_window_extent().width
-                                   for t in yticklabels]),
-                        np.nanmax([t.get_window_extent().height
-                                   for t in yticklabels]))
-    if kw['twinx']:
-        kw['y2tick_size'] = (np.nanmax([t.get_window_extent().width
-                                        for t in y2ticklabels]),
-                             np.nanmax([t.get_window_extent().height
-                                        for t in y2ticklabels]))
-    else:
-        kw['y2tick_size'] = (0, 0)
-    kw['xlabel_size'] = (xlabel.get_window_extent().width,
-                         xlabel.get_window_extent().height)
-    kw['ylabel_size'] = (ylabel.get_window_extent().width,
-                         ylabel.get_window_extent().height)
-    mpl.pyplot.close(fig)
-    os.remove('dummy_text_%s.png' % now)
-
-    return kw
-
-
-def get_legend_groupings(df, y, kw):
-    """
-    Determine the legend groupings
-    Args:
-        df (pd.DataFrame):  data being plotted
-        y (list): y-column name list
-        kw (dict): kwargs dict
-
-    Returns:
-        updated kwargs dict
-    """
-
-    if kw['leg_groups'] is not None and len(kw['leg_items']) == 0:
-        if kw['leg_groups'] not in df.columns:
-            print('\nError!  "%s" not in DataFrame.  '
-                  'Check reindex value' % kw['leg_groups'])
-        df[kw['leg_groups']] = df[kw['leg_groups']].astype(str)
-        kw['leg_items'] = natsorted(df[kw['leg_groups']].unique())
-        if len(y) > 1:
-            temp = list(itertools.product(kw['leg_items'], y))
-            kw['leg_items'] = ['%s: %s' % (f[0], f[1]) for f in temp]
-    elif not kw['leg_groups'] and len(y) > 1:
-        kw['leg_items'] = y
-    elif not kw['leg_groups']:
-        kw['leg_items'] = []
-    if not kw['leg_title']:
-        kw['leg_title'] = kw['leg_groups']
-    kw['leg_items'] = natsorted(kw['leg_items'])
-
-    return kw
-
-
-def get_rc_groupings(df, kw):
-    """
-    Determine the row and column facet grid groupings
-    Args:
-        df (pd.DataFrame):  data being plotted
-        kw (dict): kwargs dict
-
-    Returns:
-        nrow (number of plot rows),
-        ncol (number of columns)
-        kw (kwargs dict with updates)
-    """
-
-    # Set up wrapping
-    if kw['wrap']:
-        kw['wrap'] = natsorted(list(df.groupby(kw['wrap_orig']).groups.keys()))
-        rcnum = int(np.ceil(np.sqrt(len(kw['wrap']))))
-        kw['ncol'] = rcnum
-        kw['nrow'] = int(np.ceil(len(kw['wrap'])/rcnum))
-
-    # Non-wrapping option
-    else:
-        kw['wrap'] = None
-
-        # Set up the row grouping
-        if kw['row'] and not kw['rows_orig']:
-            rows = natsorted(list(df[kw['row']].unique()))
-            nrow = len(rows)
-            kw['rows'] = rows
-        elif kw['rows_orig'] is not None and kw['rows'] != [None]:
-            kw['rows'] = kw['rows_orig']
-            actual = df[kw['row']].unique()
-            rows = [f for f in kw['rows'] if f in actual]
-            nrow = len(rows)
-        else:
-            rows = [None]
-            kw['row_labels_on'] = False
-            kw['row_label_size'] = 0
-            nrow = 1
-            kw['rows'] = rows
-        kw['nrow'] = nrow
-
-        # Set up the column grouping
-        if kw['col'] and not kw['cols_orig']:
-            cols = natsorted(list(df[kw['col']].unique()))
-            ncol = len(cols)
-            kw['cols'] = cols
-        elif kw['cols_orig'] is not None and kw['cols'] != [None]:
-            kw['cols'] = kw['cols_orig']
-            actual = df[kw['col']].unique()
-            cols = [f for f in kw['cols'] if f in actual]
-            ncol = len(cols)
-        else:
-            cols = [None]
-            kw['col_labels_on'] = False
-            kw['col_label_size'] = 0
-            ncol = 1
-            kw['cols'] = cols
-        kw['ncol'] = ncol
-
-    if kw['ncol'] == 0:
-        raise ValueError('Cannot make subplot. Number of columns is 0')
-    if kw['nrow'] == 0:
-        raise ValueError('Cannot make subplot. Number of rows is 0')
-
-    return kw
-
-
-def get_rc_subset(df, ir, ic, kw):
-    """
-    Subset the data by the row/col values
-
-    Args:
-        df (pd.DataFrame): main DataFrame
-        ir (int|None): row index
-        ic (int|None): column index
-        kw (dict): kwargs dict
-
-    Returns:
-        subset DataFrame
-    """
-
-    if kw['wrap'] is not None:
-        wrap = dict(zip(kw['wrap_orig'],
-                        validate_list(kw['wrap'][ir*kw['ncol'] + ic])))
-        df = df.loc[(df[list(wrap)] == pd.Series(wrap)).all(axis=1)]
-
-    else:
-        row = kw['rows'][ir]
-        col = kw['cols'][ic]
-        if row is not None and col is not None:
-            df = df[(df[kw['row']]==row) & (df[kw['col']]==col)].copy()
-        elif row and not col:
-            df = df[(df[kw['row']]==row)].copy()
-        elif col and not row:
-            df = df[(df[kw['col']]==col)].copy()
-        else:
-            df = df.copy()
-
-    return df
-
-
-def get_unique_groups(kw):
-    """
-    Get all unique values from several kwargs
-
-    Args:
-        kw (dict):  keyword args dict
-
-    Returns:
-        list of unique group values
-    """
-
-    groups = []
-    vals_2_chk = ['stat_val', 'leg_groups', 'col', 'row']
-    for v in vals_2_chk:
-        if kw[v] is not None:
-            if type(kw[v]) is list:
-                groups += kw[v]
+    changes = df.copy()
+    # Set initial level to 1
+    for col in df.columns:
+        changes.loc[0, col] = 1
+    # Determines values for all other rows
+    for i in range(1, num_groups):
+        for col in df.columns:
+            if df[col].iloc[i-1] == df[col].iloc[i]:
+                changes.loc[i, col] = 0
             else:
-                groups += [kw[v]]
+                changes.loc[i, col] = 1
 
-    return groups
-
+    return changes
 
 def init(plot, kwargs):
     """
@@ -1966,91 +1392,6 @@ def init(plot, kwargs):
     return df.copy(), x, y, z, kw
 
 
-def make_fig_and_ax(kw):
-    """
-    Created the mpl figure and axes and set the sizing
-
-    Args:
-        kw (dict): kwargs dict
-    Returns:
-        layout, fig, axes
-    """
-
-    # Adjust leg is yline included
-    if kw['yline'] is not None:
-        leg_items = [f for f in kw['leg_items']]
-        kw['leg_items'] += [kw['yline']]
-
-    # Format the figure dimensions
-    layout = LayoutMPL(**kw)
-
-    # Reset leg_items
-    if kw['yline'] is not None:
-        kw['leg_items'] = leg_items
-
-    # Make the figure and axes
-    fig, axes = plt.subplots(kw['nrow'], kw['ncol'],
-                              figsize=[layout.fig_w, layout.fig_h],
-                              sharex=kw['sharex'],
-                              sharey=kw['sharey'],
-                              dpi=layout.dpi,
-                              facecolor=kw['fig_face_color'],
-                              edgecolor=kw['fig_edge_color'])
-
-    # Reformat the axes variable if it is only one plot
-    if not type(axes) is np.ndarray:
-        axes = np.array([axes])
-    if len(axes.shape) == 1:
-        if kw['nrow'] == 1:
-            axes = np.reshape(axes, (1, -1))
-        else:
-            axes = np.reshape(axes, (-1, 1))
-
-    # Format the subplot spacing
-    fig.subplots_adjust(
-        left=layout.left,
-        right=layout.right,
-        bottom=layout.bottom,
-        top=layout.top,
-        hspace=1.0*layout.ws_row/layout.ax_h,
-        wspace=1.0*layout.ws_col/layout.ax_w
-    )
-
-    return layout, fig, axes, kw
-
-
-def make_rc_filename_labels(kw):
-    """
-    Make the row/column labels
-
-    Args:
-        kw (dict): kwargs dict
-
-    Returns:
-        row/column filname label
-    """
-
-    if kw['row_label']:
-        fnrow = filename_label(kw['row_label'])
-    elif kw['row']:
-        fnrow = filename_label(kw['row'])
-    if kw['col_label']:
-        fncol = filename_label(kw['col_label'])
-    elif kw['col']:
-        fncol = filename_label(kw['col'])
-
-    if kw['row'] is not None and kw['col'] is not None:
-        rc_name = ' by %s by %s' % (fnrow, fncol)
-    elif kw['row'] is not None and kw['col'] is None:
-        rc_name = ' by %s' % (fnrow)
-    elif kw['col'] is not None and kw['row'] is None:
-        rc_name = ' by %s' % (fncol)
-    else:
-        rc_name = ''
-
-    return rc_name
-
-
 def paste_kwargs(kwargs):
     """
     Get the kwargs from contents of the clipboard in ini file format
@@ -2080,14 +1421,147 @@ def paste_kwargs(kwargs):
 
 
 def plot(**kwargs):
-    """ Main x-y plotting function
 
-    This function wraps many variations of x-y plots from the matplotlib
-    library.  At minimum, it requires a pandas DataFrame with at least two
-    columns and two column names for the x and y axis.  Plots can be
+    return plotter('plot_xy', **kwargs)
+
+
+def plot_box(dd, layout, ir, ic, df_rc, kwargs):
+    """
+    Plot data as boxplot
+
+    Args:
+        dd (obj): Data object
+        layout (obj): layout object
+        ir (int): current subplot row number
+        ic (int): current subplot column number
+        df_rc (pd.DataFrame): data subset
+        kwargs (dict): keyword args
+
+    """
+
+    # Init arrays
+    data = []
+    labels = []
+    dividers = []
+    means = []
+    medians = []
+
+    # Get the changes df
+    kwargs['groups'] = kwargs.get('groups', None)
+    if kwargs['groups'] is not None:
+        kwargs['groups'] = utl.validate_list(kwargs['groups'])
+        groups = df_rc.groupby(kwargs['groups'])
+    else:
+        groups = df_rc.copy()
+
+    # Order the group labels with natsorting
+    gidx = []
+    for i, (nn, g) in enumerate(groups):
+        gidx += [nn]
+    gidx = natsorted(gidx)
+
+    # Make indices df
+    indices = pd.DataFrame(gidx)
+    num_groups = groups.ngroups
+    changes = index_changes(indices, num_groups)
+    num_groups = 0
+    if kwargs['groups'] is not None:
+        groups = df_rc.groupby(kwargs['groups'])
+        num_groups = groups.ngroups
+        num_groupby = len(kwargs['groups'])
+        col = changes.columns
+
+        # Plot the groups
+        for i, nn in enumerate(gidx):
+            gg = df_rc.copy().sort_values(by=kwargs['groups'])
+            gg = gg.set_index(kwargs    ['groups'])
+            if len(gg) > 1:
+                gg = gg.loc[nn]
+            if type(gg) == pd.Series:
+                gg = pd.DataFrame(gg).T
+            else:
+                gg = gg.reset_index()
+            temp = gg[dd.y].dropna()
+            temp['x'] = i + 1
+            data += [temp]
+            means += [temp.mean()]
+            medians += [temp.median()]
+            if type(nn) is not tuple:
+                nn = [nn]
+            else:
+                nn = [str(f) for f in nn]
+            labels += ['']
+
+            if len(changes.columns) > 1 and changes[col[-2]].iloc[i] == 1 \
+                    and len(kwargs['groups']) > 1:
+                dividers += [i+0.5]
+
+            # Plot points
+            if dd.legend_vals:
+                for ileg, leg_name in enumerate(dd.legend_vals):
+                    temp = gg.loc[gg[dd.legend==leg_item]][dd.y].dropna()
+                    temp['x'] = i + 1
+                    layout.plot_xy(ir, ic, ileg, temp, 'x', dd.y[0], leg_name, False)
+            else:
+                layout.plot_xy(ir, ic, 0, temp, 'x', dd.y[0], None, False)
+
+            # point_curves = []
+            # if kw['points'] and len(kw['leg_items'])==0:
+            #     layout.add_points(ir, ic, x, y)
+
+            #     add_points(ir, ic, i, temp)
+            # else:
+            #     for ileg, leg_item in enumerate(kw['leg_items']):
+            #         temp = g.loc[g[kw['leg_groups']]==leg_item][y].dropna()
+            #         kw['marker_type'] = markers[ileg]
+            #         point_curves += add_points(i, temp, axes[ir, ic],
+            #                                     palette[ileg+1], **kw)
+
+    else:
+        data = df_rc[dd.y].dropna()
+        labels = ['']
+        data['x'] = 1
+        layout.plot_xy(ir, ic, 0, data, 'x', dd.y[0], None, False)
+
+    if type(data) is pd.Series:
+        data = data.values
+    elif type(data) is pd.DataFrame and len(data.columns) == 1:
+        data = data.values
+
+    if len(data) > 0:
+        st()
+
+
+def plot_xy(data, layout, ir, ic, df_rc, kwargs):
+    """
+    Plot xy data
+
+    Args:
+        data (obj): Data object
+        layout (obj): layout object
+        ir (int): current subplot row number
+        ic (int): current subplot column number
+        df_rc (pd.DataFrame): data subset
+        kwargs (dict): keyword args
+
+    """
+
+    for iline, df, x, y, leg_name, twin in data.get_plot_data(df_rc):
+        if kwargs.get('groups', False):
+            for nn, gg in df.groupby(utl.validate_list(kwargs['groups'])):
+                layout.plot_xy(ir, ic, iline, gg, x, y, leg_name, twin)
+        else:
+            layout.plot_xy(ir, ic, iline, df, x, y, leg_name, twin)
+
+
+def plotter(plot_func, **kwargs):
+    """ Main plotting function
+
+    UPDATE At minimum, it requires a pandas DataFrame with at
+    least two columns and two column names for the x and y axis.  Plots can be
     customized and enhanced by passing keyword arguments as defined below.
     Default values that must be defined in order to generate the plot are
-    pulled from the fcp_params dictionary defined in defaults.py.
+    pulled from the fcp_params default dictionary
 
     Args:
         df (DataFrame): DataFrame containing data to plot
@@ -2095,11 +1569,10 @@ def plot(**kwargs):
         y (str|list):   name or list of names of y column(s) in df
 
     Keyword Args:
-        see get_defaults for definitions
+        UPDATE
 
     Returns:
-        layout (LayoutMPL obj):  contains all the spacing information used to
-            construct the figure
+        plots
     """
 
     # Check for deprecated kwargs
@@ -2109,12 +1582,12 @@ def plot(**kwargs):
     engine = kwargs.get('engine', 'mpl').lower()
 
     # Build the data object
-    dd = Data('xy', **kwargs)
+    dd = Data(plot_func, **kwargs)
 
-    # Iterate of discrete figures
+    # Iterate over discrete figures
     for ifig, fig_item, fig_cols, df_fig in dd.get_df_figure():
         # Create a layout object
-        layout = LAYOUT[engine](**kwargs)
+        layout = LAYOUT[engine](plot_func, **kwargs)
 
         # Make the figure
         layout.make_figure(dd, **kwargs)
@@ -2137,13 +1610,8 @@ def plot(**kwargs):
             # Add horizontal and vertical lines
             layout.add_hvlines(ir, ic)
 
-            # Plot the curves on main axis
-            for iline, df, x, y, leg_name, twin in dd.get_plot_data(df_rc):
-                if kwargs.get('groups', False):
-                    for nn, gg in df.groupby(utl.validate_list(kwargs['groups'])):
-                        layout.plot_data(ir, ic, iline, gg, x, y, leg_name, twin)
-                else:
-                    layout.plot_data(ir, ic, iline, df, x, y, leg_name, twin)
+            # Plot the data
+            globals()[plot_func](dd, layout, ir, ic, df_rc, kwargs)
 
             # Set linear or log axes scaling
             layout.set_axes_scale(ir, ic)
@@ -2214,719 +1682,6 @@ def save(fig, filename, kw):
         raise NameError('%s is not a valid filename!' % filename)
 
 
-def set_axes_colors(ax, kw):
-    """
-    Format the axes colors
-
-    Args:
-        ax (mpl.axes): current axes to style
-        kw (dict): kwargs dict
-
-    Returns:
-        updated axis
-    """
-
-    try:
-        ax.set_facecolor(kw['ax_face_color'])
-    except:
-        ax.set_axis_bgcolor(kw['ax_face_color'])
-    ax.spines['bottom'].set_color(kw['ax_edge_color'])
-    ax.spines['top'].set_color(kw['ax_edge_color'])
-    ax.spines['right'].set_color(kw['ax_edge_color'])
-    ax.spines['left'].set_color(kw['ax_edge_color'])
-
-    return ax
-
-
-def set_axes_grid_lines(ax, kw, off=False):
-    """
-    Style the grid lines and toggle visibility
-
-    Args:
-        ax (mpl.axes): current axes to style
-        kw (dict): kwargs dict
-        off (bool):  flag to turn off all grid lines
-
-    Returns:
-        updated axis
-    """
-
-    # Style major gridlines
-    if off:
-        ax.grid(False, which='major')
-    elif kw['grid_major']:
-        ax.grid(b=True, which='major', zorder=3, color=kw['grid_major_color'],
-                linestyle=kw['grid_major_line_style'],
-                linewidth=kw['grid_major_line_width'])
-
-    # Toggle minor gridlines
-    kw['grid_minor'] = str(kw['grid_minor'])
-    ax.minorticks_on()
-    if off:
-        ax.grid(False, which='minor')
-    elif kw['grid_minor'] == 'True' or kw['grid_minor'].lower() == 'both':
-        ax.grid(b=True, color=kw['grid_minor_color'], which='minor', zorder=0,
-                linestyle=kw['grid_minor_line_style'],
-                linewidth=kw['grid_minor_line_width'])
-    elif kw['grid_minor'].lower() == 'y':
-        ax.yaxis.grid(b=True, color=kw['grid_minor_color'], which='minor',
-                      linestyle=kw['grid_minor_line_style'],
-                      linewidth=kw['grid_minor_line_width'])
-    elif kw['grid_minor'].lower() == 'x':
-        ax.xaxis.grid(b=True, color=kw['grid_minor_color'], which='minor',
-                      linestyle=kw['grid_minor_line_style'],
-                      linewidth=kw['grid_minor_line_width'])
-
-    return ax
-
-
-def set_axes_labels(ax, ax2, ir, ic, kw):
-    """
-    Set the axes labels
-
-    Args:
-        ax (mpl.axes): current axes
-        ax2 (mpl.axes): current axes twinx
-        ir (int): current row index
-        ic (int): current column index
-        kw (dict): kwargs dict
-
-    Returns:
-        updated axes
-    """
-
-    if kw['xlabel'] is not None and \
-            (ir == kw['nrow']-1 or kw['separate_labels']):
-        ax.set_xlabel(r'%s' % kw['xlabel'], fontsize=kw['label_font_size'],
-                      weight=kw['label_weight'], style=kw['label_style'],
-                      color=kw['xlabel_color'])
-
-    if kw['ylabel'] is not None and (ic == 0 or kw['separate_labels']):
-        ax.set_ylabel(r'%s' % kw['ylabel'], fontsize=kw['label_font_size'],
-                      weight=kw['label_weight'], style=kw['label_style'],
-                      color=kw['ylabel_color'])
-
-    if ax2 is not None and kw['ylabel2'] is not None and \
-            (ic == kw['ncol']-1 or kw['separate_labels']):
-        ax2.set_ylabel(r'%s' % kw['ylabel2'], rotation=270,
-                       labelpad=kw['label_font_size'], style=kw['label_style'],
-                       fontsize=kw['label_font_size'],
-                       weight=kw['label_weight'], color=kw['ylabel2_color'])
-
-    return ax, ax2
-
-
-def set_axes_ranges(df_fig, df_sub, x, y, ax, ax2, kw):
-    """
-    Set the axes ranges
-
-    Args:
-        ax:
-        kw:
-
-    Returns:
-
-    """
-
-    if kw['stat'] is not None and 'only' in kw['stat']:
-        groups = get_unique_groups(kw)
-
-    if x is not None:
-        # Select the DataFrame to use for getting the data range
-        #    sharex requires the whole figure data range
-        #    no sharex requires a single subplot
-        if df_sub is None or kw['sharex']:
-            dfxx = df_fig
-        else:
-            dfxx = df_sub
-
-        # Account for any applied stats
-        if kw['stat'] is not None and 'only' in kw['stat'] \
-                and 'median' in kw['stat']:
-            dfxx = dfxx.groupby(groups).median().reset_index()
-        elif kw['stat'] is not None and 'only' in kw['stat']:
-            dfxx = dfxx.groupby(groups).mean().reset_index()
-        dfx = dfxx[[x]]
-
-        # Get the range
-        if kw['ax_scale'] in ['logx', 'loglog', 'semilogx']:
-            xmin = dfx[dfx>0].stack().min()
-            xmax = dfx.stack().max()
-            xdelta = np.log10(xmax)-np.log10(xmin)
-        else:
-            xmin = dfx.stack().min()
-            xmax = dfx.stack().max()
-            xdelta = xmax-xmin
-        if xdelta <= 0:
-            xmin -= 0.1*xmin
-            xmax += 0.1*xmax
-
-        # Set the subplot range
-        if kw['xmin'] is not None and 'iqr' in str(kw['xmin']).lower():
-            factor = str(kw['xmin']).split('*')
-            if len(factor) == 1:
-                factor = 1
-            else:
-                factor = float(factor[0])
-            if kw['groups'] is None:
-                q1 = dfx.quantile(0.25)[x]
-                q3 = dfx.quantile(0.75)[x]
-                iqr = factor*(q3[x] - q1[x])
-                xmin = q1[x] - iqr[x]
-            else:
-                q1 = dfxx.groupby(kw['groups']).quantile(0.25)[x].reset_index()
-                q3 = dfxx.groupby(kw['groups']).quantile(0.75)[x].reset_index()
-                iqr = factor*(q3[x] - q1[x])
-                xmin = (q1[x] - iqr[x]).min().iloc[0]
-            ax.set_ylim(left=xmin.iloc[0])
-        elif kw['xmin'] is not None and 'q' in str(kw['xmin']).lower():
-            xq = float(str(kw['xmin']).lower().replace('q', ''))/100
-            if kw['groups'] is None:
-                xmin = dfx.quantile(xq)[x]
-            else:
-                xmin = dfxx.groupby(kw['groups']).quantile(xq)[x].min().iloc[0]
-            ax.set_xlim(left=xmin)
-        elif kw['xmin'] is not None:
-            ax.set_xlim(left=kw['xmin'])
-        else:
-            if kw['ax_scale'] in ['logx', 'loglog', 'semilogx']:
-                xmin = np.log10(xmin) - kw['ax_lim_pad']*\
-                       np.log10(xdelta)/(1-2*kw['ax_lim_pad'])
-                xmin = 10**xmin
-            else:
-                xmin -= kw['ax_lim_pad']*xdelta/(1-2*kw['ax_lim_pad'])
-            ax.set_xlim(left=xmin)
-        if kw['xmax'] is not None and 'iqr' in str(kw['xmax']).lower():
-            factor = str(kw['xmax']).split('*')
-            if len(factor) == 1:
-                factor = 1
-            else:
-                factor = float(factor[0])
-            if kw['groups'] is None:
-                q1 = dfx.quantile(0.25)[x]
-                q3 = dfx.quantile(0.75)[x]
-                iqr = factor*(q3[x] - q1[x])
-                xmax = q3[x] + iqr[x]
-            else:
-                q1 = dfxx.groupby(kw['groups']).quantile(0.25)[x].reset_index()
-                q3 = dfxx.groupby(kw['groups']).quantile(0.75)[x].reset_index()
-                iqr = factor*(q3[x] - q1[x])
-                xmax = (q3[x] + iqr[x]).max().iloc[0]
-            ax.set_ylim(right=xmax)
-        elif kw['xmax'] is not None and 'q' in str(kw['xmax']).lower():
-            xq = float(str(kw['xmax']).lower().replace('q', ''))/100
-            if kw['groups'] is None:
-                xmax = dfx.quantile(xq)[x]
-            else:
-                xmax = dfxx.groupby(kw['groups']).quantile(xq)[x].max().iloc[0]
-            ax.set_xlim(right=xmax)
-        elif kw['xmax'] is not None:
-            ax.set_xlim(right=kw['xmax'])
-        else:
-            if kw['ax_scale'] in ['logx', 'loglog', 'semilogx']:
-                xmax = np.log10(xmax) + kw['ax_lim_pad']*\
-                       np.log10(xdelta)/(1-2*kw['ax_lim_pad'])
-                xmax = 10**xmax
-            else:
-                xmax += kw['ax_lim_pad']*xdelta/(1-2*kw['ax_lim_pad'])
-            ax.set_xlim(right=xmax)
-
-    if len(y) > 0:
-        # Select the DataFrame to use for getting the data range
-        #    sharex requires the whole figure data range
-        #    no sharex requires a single subplot
-        if df_sub is None or kw['sharey']:
-            dfyy = df_fig
-        else:
-            dfyy = df_sub
-
-        # Account for any applied stats
-        if kw['stat'] is not None and 'only' in kw['stat'] \
-                and 'median' in kw['stat']:
-            dfyy = dfyy.groupby(groups).median().reset_index()
-        elif kw['stat'] is not None and 'only' in kw['stat']:
-            dfyy = dfyy.groupby(groups).mean().reset_index()
-
-        # Get the range
-        if kw['twinx']:
-            yname = y[0]
-            dfy = dfyy[y[0]]
-            ymin = dfy.min()
-            ymax = dfy.max()
-            ydelta = ymax-ymin
-        elif kw['ax_scale'] in ['logy', 'loglog', 'semilogy']:
-            yname = y
-            dfy = dfyy[y]
-            ymin = dfy[dfy>0].stack().min()
-            ymax = dfy.stack().max()
-            ydelta = np.log10(ymax)-np.log10(ymin)
-        else:
-            yname = y
-            dfy = dfyy[y]
-            ymin = dfy.stack().min()
-            ymax = dfy.stack().max()
-            ydelta = ymax-ymin
-        if ydelta <= 0:
-            ymin -= 0.1*ymin
-            ymax += 0.1*ymax
-
-        # Set the subplot range
-        if kw['ymin'] is not None and 'iqr' in str(kw['ymin']).lower():
-            factor = str(kw['ymin']).split('*')
-            if len(factor) == 1:
-                factor = 1
-            else:
-                factor = float(factor[0])
-            if kw['groups'] is None:
-                q1 = dfy.quantile(0.25)[yname]
-                q3 = dfy.quantile(0.75)[yname]
-                iqr = factor*(q3[x] - q1[x])
-                ymin = q1 - iqr
-            else:
-                q1 = dfyy.groupby(kw['groups']).quantile(0.25)[yname].reset_index()
-                q3 = dfyy.groupby(kw['groups']).quantile(0.75)[yname].reset_index()
-                iqr = factor*(q3[yname] - q1[yname])
-                ymin = (q1[yname] - iqr[yname]).min().iloc[0]
-            ax.set_ylim(bottom=ymin)
-        elif kw['ymin'] is not None and 'q' in str(kw['ymin']).lower():
-            yq = float(str(kw['ymin']).lower().replace('q', ''))/100
-            if kw['groups'] is None:
-                ymin = dfy.quantile(yq)[yname]
-            else:
-                ymin = dfyy.groupby(kw['groups']).quantile(yq)[yname].min().iloc[0]
-            ax.set_ylim(bottom=ymin)
-        elif kw['ymin'] is not None:
-            ax.set_ylim(bottom=kw['ymin'])
-        else:
-            if kw['ax_scale'] in ['logy', 'loglog', 'semilogy']:
-                ymin = 10**(np.log10(ymin) - kw['ax_lim_pad'] * ydelta)
-            else:
-                ymin -= kw['ax_lim_pad']*ydelta
-            ax.set_ylim(bottom=ymin)
-        if kw['ymax'] is not None and 'iqr' in str(kw['ymax']).lower():
-            factor = str(kw['ymax']).split('*')
-            if len(factor) == 1:
-                factor = 1
-            else:
-                factor = float(factor[0])
-            if kw['groups'] is None:
-                q1 = dfy.quantile(0.25)[yname]
-                q3 = dfy.quantile(0.75)[yname]
-                iqr = factor*(q3[x] - q1[x])
-                ymax = q3 + iqr
-            else:
-                q1 = dfyy.groupby(kw['groups']).quantile(0.25)[yname].reset_index()
-                q3 = dfyy.groupby(kw['groups']).quantile(0.75)[yname].reset_index()
-                iqr = factor*(q3[yname] - q1[yname])
-                ymax = (q3[yname] + iqr[yname]).max().iloc[0]
-            ax.set_ylim(top=ymax)
-        elif kw['ymax'] is not None and 'q' in str(kw['ymax']).lower():
-            yq = float(str(kw['ymax']).lower().replace('q', ''))/100
-            if kw['groups'] is None:
-                ymax = dfy.quantiles(yq)[yname]
-            else:
-                ymax = dfyy.groupby(kw['groups']).quantile(yq)[yname].max().iloc[0]
-            ax.set_ylim(top=ymax)
-        elif kw['ymax'] is not None:
-            ax.set_ylim(top=kw['ymax'])
-        else:
-            if kw['ax_scale'] in ['logy', 'loglog', 'semilogy']:
-                ymax = 10**(np.log10(ymax) + kw['ax_lim_pad'] * ydelta)
-            else:
-                ymax += kw['ax_lim_pad']*ydelta
-            ax.set_ylim(top=ymax)
-
-        # Handle the twinx case
-        if kw['twinx']:
-            yname = y[1]
-            dfy = dfyy[y[1]]
-            ymin2 = dfy.min()
-            ymax2 = dfy.max()
-            ydelta2 = ymax2-ymin2
-            if ydelta2 <= 0:
-                ymin2 -= 0.1*ymin2
-                ymax2 += 0.1*ymax2
-
-            # Set the subplot range
-            if kw['ymin2'] is not None and 'iqr' in str(kw['ymin2']).lower():
-                factor = str(kw['ymin2']).split('*')
-                if len(factor) == 1:
-                    factor = 1
-                else:
-                    factor = float(factor[0])
-                if kw['groups'] is None:
-                    q1 = dfy.quantile(0.25)[yname]
-                    q3 = dfy.quantile(0.75)[yname]
-                    iqr = factor*(q3[x] - q1[x])
-                    ymin2 = q1 - iqr
-                else:
-                    q1 = dfyy.groupby(kw['groups']).quantile(0.25)[yname].reset_index()
-                    q3 = dfyy.groupby(kw['groups']).quantile(0.75)[yname].reset_index()
-                    iqr = factor*(q3[yname] - q1[yname])
-                    ymin2 = (q1[yname] - iqr[yname]).min().iloc[0]
-                ax.set_ylim(bottom=ymin2)
-            elif kw['ymin2'] is not None and 'q' in str(kw['ymin2']).lower():
-                yq = float(str(kw['ymin2']).lower().replace('q', ''))/100
-                if kw['groups'] is None:
-                    ymin2 = dfy.quantile(yq)[yname]
-                else:
-                    ymin2 = dfyy.groupby(kw['groups']).quantile(yq)[yname].min()
-                ax.set_ylim(bottom=ymin2)
-            elif kw['ymin2'] is not None:
-                ax2.set_ylim(bottom=kw['ymin2'])
-            else:
-                if kw['ax_scale2'] in ['logy', 'loglog', 'semilogy']:
-                    ymin2 = 10**(np.log10(ymin2) - kw['ax_lim_pad'] * ydelta2)
-                else:
-                    ymin2 -= kw['ax_lim_pad']*ydelta2
-                ax2.set_ylim(bottom=ymin2)
-            if kw['ymax2'] is not None and 'iqr' in str(kw['ymax2']).lower():
-                factor = str(kw['ymax2']).split('*')
-                if len(factor) == 1:
-                    factor = 1
-                else:
-                    factor = float(factor[0])
-                if kw['groups'] is None:
-                    q1 = dfy.quantile(0.25)[yname]
-                    q3 = dfy.quantile(0.75)[yname]
-                    iqr = factor*(q3[x] - q1[x])
-                    ymax2 = q3 + iqr
-                else:
-                    q1 = dfyy.groupby(kw['groups']).quantile(0.25)[yname].reset_index()
-                    q3 = dfyy.groupby(kw['groups']).quantile(0.75)[yname].reset_index()
-                    iqr = factor*(q3[yname] - q1[yname])
-                    ymax2 = (q3[yname] + iqr[yname]).max().iloc[0]
-                ax.set_ylim(top=ymax2)
-            elif kw['ymax2'] is not None and 'q' in str(kw['ymax2']).lower():
-                yq = float(str(kw['ymax2']).lower().replace('q', ''))/100
-                if kw['groups'] is None:
-                    ymax2 = dfy.quantile(yq)[yname]
-                else:
-                    ymax2 = dfyy.groupby(kw['groups']).quantile(yq)[yname].max().iloc[0]
-                ax.set_ylim(top=ymax2)
-            elif kw['ymax2'] is not None:
-                ax2.set_ylim(top=kw['ymax2'])
-            else:
-                if kw['ax_scale2'] in ['logy', 'loglog', 'semilogy']:
-                    ymax2 = 10**(np.log10(ymax2) + kw['ax_lim_pad'] * ydelta2)
-                else:
-                    ymax2 += kw['ax_lim_pad']*ydelta2
-                ax2.set_ylim(top=ymax2)
-
-    return ax, ax2
-
-
-def set_axes_rc_labels(ax, ir, ic, kw, layout):
-    """
-    Add the row/column label boxes and wrap titles
-
-    Args:
-        ax (mpl.axes): current axes
-        ir (int): current row index
-        ic (int): current column index
-        kw (dict): kwargs dict
-        layout (obj): figure layout object
-
-    Returns:
-        updated axes
-    """
-
-    if ir == 0 and ic == 0 and kw['wrap'] is not None and kw['wrap_title']:
-        label = ' | '.join(kw['wrap_orig'])
-        # need to add new values for title region in layout (use title_h)?
-        add_label(label,
-                  (0, layout.wrap_title_bottom, kw['ncol'], layout.col_label_height),
-                  ax, 0, layout, edgecolor=kw['wrap_title_edge_color'],
-                  fillcolor=kw['wrap_title_fill_color'],
-                  color=kw['wrap_title_text_color'],
-                  fontsize=kw['wrap_title_font_size'],
-                  weight=kw['wrap_title_text_style'])
-
-    if ic == kw['ncol']-1 and kw['row_labels_on'] and kw['wrap'] is None:
-        if not kw['row_label']:
-            kw['row_label'] = kw['row']
-        row = kw['rows'][ir]
-        add_label('%s=%s' % (kw['row_label'], row),
-                  (layout.row_label_left, 0, layout.row_label_width, 1),
-                  ax, 270, layout, edgecolor=kw['rc_label_edge_color'],
-                  fillcolor=kw['rc_label_fill_color'],
-                  color=kw['rc_label_text_color'],
-                  fontsize=kw['rc_label_font_size'],
-                  weight=kw['rc_label_text_style'])
-
-    if (ir == 0 or kw['wrap'] is not None) and kw['col_labels_on']:
-        if not kw['col_label']:
-            kw['col_label'] = kw['col']
-        if not kw['wrap']:
-            label = kw['cols'][ic]
-            label = '%s=%s' % (kw['col_label'], label)
-        else:
-            label = ' | '.join([str(f) for f in
-                                validate_list(kw['wrap'][ir*kw['ncol'] + ic])])
-        add_label(label,
-                  (0, layout.col_label_bottom, 1, layout.col_label_height),
-                  ax, 0, layout, edgecolor=kw['rc_label_edge_color'],
-                  fillcolor=kw['rc_label_fill_color'],
-                  color=kw['rc_label_text_color'],
-                  fontsize=kw['rc_label_font_size'],
-                  weight=kw['rc_label_text_style'])
-
-    return ax
-
-
-def set_axes_scale(ax, kw):
-    """
-    Set the scale type of the axes
-
-    Args:
-        ax (mpl axes): current axes to scale
-        kw (dict): kwargs dict
-
-    Returns:
-        axes scale type
-    """
-
-    if kw['ax_scale'] == 'loglog':
-        plotter = ax.loglog
-    elif kw['ax_scale'] == 'semilogx' or kw['ax_scale'] == 'logx':
-        plotter = ax.semilogx
-    elif kw['ax_scale'] == 'semilogy' or kw['ax_scale'] == 'logy':
-        plotter = ax.semilogy
-    else:
-        plotter = ax.plot
-
-    return plotter
-
-
-def set_axes_ticks(ax, kw, y_only=False):
-    """
-    Configure the axes tick marks
-
-    Args:
-        ax (mpl axes): current axes to scale
-        kw (dict): kwargs dict
-        y_only (bool): flag to access on the y-axis ticks
-
-    Returns:
-        axes scale type
-    """
-
-    # General tick parameters
-    if not y_only:
-        ax.tick_params(axis='both',
-                       which='major',
-                       pad=kw['ws_tick_ax'],
-                       labelsize=kw['tick_font_size'],
-                       colors=kw['tick_label_color'])
-
-    # Configure separate labels on each subplot case
-    if kw['separate_labels']:
-        if not y_only:
-            plt.setp(ax.get_xticklabels(), visible=True)
-        plt.setp(ax.get_yticklabels(), visible=True)
-
-    # Style the tick lines
-    if not y_only:
-        if kw['ticks_major']:
-            for line in ax.xaxis.get_ticklines()[2:-2]:
-                line.set_color(kw['tick_color_major'])
-                line.set_markersize(kw['tick_length_major'])
-                line.set_markeredgewidth(kw['tick_width'])
-        if kw['ticks_minor']:
-            for line in ax.xaxis.get_minorticklines():
-                line.set_color(kw['tick_color_minor'])
-                line.set_markersize(kw['tick_length_minor'])
-                line.set_markeredgewidth(kw['tick_width'])
-    for line in ax.yaxis.get_ticklines():
-        line.set_visible(False)
-    if kw['ticks_major']:
-        for line in ax.yaxis.get_ticklines()[2:-4]:
-            line.set_visible(True)
-            line.set_color(kw['tick_color_major'])
-            line.set_markersize(kw['tick_length_major'])
-            line.set_markeredgewidth(kw['tick_width'])
-    if kw['ticks_minor']:
-        for line in ax.yaxis.get_minorticklines():
-            line.set_color(kw['tick_color_minor'])
-            line.set_markersize(kw['tick_length_minor'])
-            line.set_markeredgewidth(kw['tick_width'])
-
-    # Handle tick formatting
-    if kw['scalar_x'] and not y_only:
-        ax.xaxis.set_major_formatter(ticker.ScalarFormatter())
-        ax.get_xaxis().get_major_formatter().set_scientific(False)
-    if kw['scalar_y']:
-        ax.yaxis.set_major_formatter(ticker.ScalarFormatter())
-        ax.get_yaxis().get_major_formatter().set_scientific(False)
-
-    # Prevent scientific notation (not for log or box plots)
-    ax = set_scientific(ax, kw)
-
-    return ax
-
-
-def set_data_transformation(df, x, y, z, kw):
-    """
-    Transform x, y, or z data
-
-    Args:
-        df (pd.DataFrame): current DataFrame
-        x (str): x column name
-        y (list): y column names
-        z (str): z column name
-        kw (dict): kwargs dict
-
-    Returns:
-        updated DataFrame
-    """
-
-    if x is not None:
-        if kw['xtrans'] == 'abs':
-            df.loc[:, x] = abs(df[x])
-        elif kw['xtrans'] == 'negative' or kw['xtrans'] == 'neg':
-            df.loc[:, x] = -df[x]
-        elif kw['xtrans'] == 'inverse' or kw['xtrans'] == 'inv':
-            df.loc[:, x] = 1/df[x]
-        elif type(kw['xtrans']) is tuple and kw['xtrans'][0] == 'pow':
-            df.loc[:, x] = df[x]**kw['xtrans'][1]
-        elif kw['xtrans'] == 'flip':
-            maxx = df.loc[:, x].max()
-            df.loc[:, x] -= maxx
-            df.loc[:, x] = abs(df[x])
-
-    for yy in y:
-        if yy is not None:
-            if kw['ytrans'] == 'abs':
-                df.loc[:, yy] = abs(df[yy])
-            elif kw['ytrans'] == 'negative' or kw['ytrans'] == 'neg':
-                df.loc[:, yy] = -df[yy]
-            elif kw['ytrans'] == 'inverse' or kw['ytrans'] == 'inv':
-                df.loc[:, yy] = 1/df[yy]
-            elif type(kw['ytrans']) is tuple and kw['ytrans'][0] == 'pow':
-                df.loc[:, yy] = df[yy]**kw['ytrans'][1]
-            elif kw['ytrans'] == 'flip':
-                maxy = df.loc[:, yy].max()
-                df.loc[:, yy] -= maxy
-                df.loc[:, yy] = abs(df[yy])
-    if z is not None:
-        if kw['ztrans'] == 'abs':
-            df.loc[:, z] = abs(df[z])
-        elif kw['ztrans'] == 'negative' or kw['ztrans'] == 'neg':
-            df.loc[:, z] = -df[z]
-        elif kw['ztrans'] == 'inverse' or kw['ztrans'] == 'inv':
-            df.loc[:, z] = 1/df[z]
-        elif type(kw['ztrans']) is tuple and kw['ztrans'][0] == 'pow':
-            df.loc[:, z] = df[z]**kw['ztrans'][1]
-        elif kw['ztrans'] == 'flip':
-            maxz = df.loc[:, z].max()
-            df.loc[:, z] -= maxz
-            df.loc[:, z] = abs(df[z])
-
-    return df
-
-
-def set_figure_title(df, ax, kw, layout):
-    """
-    Add a figure title
-
-    Args:
-        df (pd.DataFrame): figure dataframe
-        ax (mpl.axes): the 0,0 axes
-        kw (dict): kwargs dict
-        layout (obj): figure layout object
-    """
-
-    if kw['title_orig'] is not None:
-        kw['title'] = get_current_values(df, kw['title_orig'])
-        add_label('%s' % kw['title'],
-                  (layout.title_left, layout.title_bottom,
-                   layout.title_w, layout.title_h),
-                  ax, 0, layout, edgecolor=kw['title_edge_color'],
-                  fillcolor=kw['title_fill_color'],
-                  fontsize=kw['title_font_size'],
-                  color=kw['title_text_color'], weight=kw['title_text_style'])
-
-
-def set_save_filename(df, x, y, kw, ifig):
-
-    rc_name = make_rc_filename_labels(kw)
-
-    if kw['filename_orig'] is not None:
-        kw['filename'] = get_current_values(df, kw['filename_orig'])
-
-    if kw['fig_label']:
-        if kw['twinx']:
-            twinx = ' and %s' % filename_label(y[1])
-        else:
-            twinx = ''
-        if kw['fig_groups'] is not None and not kw['fig_group_path']:
-            items = kw['fig_path_items'][ifig]
-            fig_groups = kw['fig_groups']
-            if type(items) is tuple:
-                items = list(items)
-            elif type(items) is not list:
-                items = [items]
-            if type(fig_groups) is not list:
-                fig_groups = [fig_groups]
-            figlabel = ''
-            for i in range(0, len(fig_groups)):
-                figlabel += ' where ' + str(fig_groups[i]) + '=' \
-                            + str(items[i])
-                if i < len(fig_groups) - 1:
-                    figlabel += ' and'
-                else:
-                    figlabel += ' '
-        else:
-            figlabel = ''
-        if not kw['filename']:
-            if x is None:
-                xlabel = ''
-            else:
-                xlabel = ' vs ' + filename_label(x)
-            if kw['groups'] is not None:
-                grouplabel = ' vs ' + \
-                    ', '.join([filename_label(f) for f in kw['groups']])
-            else:
-                grouplabel = ''
-            filename = filename_label(y[0]) + twinx + xlabel + grouplabel + \
-                       rc_name + figlabel.rstrip(' ') + '.' + kw['save_ext']
-        else:
-            filename = kw['filename'] + figlabel.rstrip(' ') + \
-                       '.' + kw['save_ext']
-    else:
-        filename = kw['filename'] + '.' + kw['save_ext']
-
-    if kw['save_path'] and kw['fig_group_path'] and kw['fig_groups']:
-        filename = os.path.join(kw['save_path'],
-                   str(kw['fig_path_items'][ifig]), filename)
-    elif kw['save_path']:
-        filename = os.path.join(kw['save_path'], filename)
-
-    return filename
-
-
-def set_scientific(ax, kw):
-    """
-    Turn off scientific notation
-
-    Args:
-        ax:
-        kw:
-
-    Returns:
-        ax
-    """
-
-    if not kw['sci_x'] and kw['ptype'] != 'boxplot' \
-            and kw['ax_scale'] not in ['logx', 'semilogx', 'loglog']:
-        ax.get_xaxis().get_major_formatter().set_scientific(False)
-    if not kw['sci_y'] \
-            and kw['ax_scale'] not in ['logy', 'semilogy', 'loglog']:
-        ax.get_yaxis().get_major_formatter().set_scientific(False)
-
-    return ax
-
-
 def set_theme(theme=None):
     """
     Select a "defaults" file and copy to the user directory
@@ -2960,33 +1715,5 @@ def set_theme(theme=None):
                  osjoin(user_dir, '.fivecentplots', 'defaults.py'))
 
     print('done!')
-
-
-def validate_columns(df, cols):
-    """
-    Check a DataFrame to verify grouping columns exists; warn if missing
-
-    Args:
-        df (pd.DataFrame): DataFrame to check column names
-        cols (str|list): column names that need to be checked in df
-
-    Returns:
-        updated list of grouping columns
-    """
-
-    cols = validate_list(cols)
-    found = [f for f in cols if f in df.columns]
-    missing = [f for f in cols if f not in found]
-
-    if len(missing) > 0:
-        print('\nWarning! The following grouping columns are not in the data '
-              'and will be skipped:\n   %s' % ('\n   '.join(missing)))
-
-    if len(found) > 0:
-        return found
-
-    else:
-        return None
-
 
 
