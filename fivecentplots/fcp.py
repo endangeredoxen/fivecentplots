@@ -1484,8 +1484,8 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
             temp = gg[dd.y].dropna()
             temp['x'] = i + 1
             data += [temp]
-            means += [temp.mean()]
-            medians += [temp.median()]
+            means += [temp.mean().iloc[0]]
+            medians += [temp.median().iloc[0]]
             if type(nn) is not tuple:
                 nn = [nn]
             else:
@@ -1523,13 +1523,41 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
         data['x'] = 1
         layout.plot_xy(ir, ic, 0, data, 'x', dd.y[0], None, False)
 
+    # Remove temporary 'x' column
+    for dd in data:
+        del dd['x']
+
     if type(data) is pd.Series:
         data = data.values
     elif type(data) is pd.DataFrame and len(data.columns) == 1:
         data = data.values
 
-    if len(data) > 0:
-        st()
+    if len(data) > 0:  # needed?
+        for id, dd in enumerate(data):
+            # Range lines
+            kwargs = layout.box_range_lines.kwargs.copy()
+            layout.plot_line(ir, ic, id+1-0.2, dd.max().iloc[0],
+                             x1=id+1+0.2, y1=dd.max().iloc[0], **kwargs)
+            layout.plot_line(ir, ic, id+1-0.2, dd.min().iloc[0],
+                             x1=id+1+0.2, y1=dd.min().iloc[0], **kwargs)
+            kwargs['style'] = kwargs['style2']
+            layout.plot_line(ir, ic, id+1, dd.min().iloc[0],
+                             x1=id+1, y1=dd.max().iloc[0], **kwargs)
+
+        # Add boxes
+        bp = layout.plot_box(ir, ic, data, **kwargs)
+
+        # Add divider lines
+        if layout.box_dividers.on and len(dividers) > 0:
+            layout.ax_vlines = layout.box_dividers
+            layout.ax_vlines.values = dividers
+            layout.add_hvlines(ir, ic)
+
+        # Add mean/median connecting lines
+        if layout.box_connect_means.on and len(means) > 0:
+            x = np.linspace(1, num_groups, num_groups)
+            layout.plot_line(ir, ic, x, means, **layout.box_connect_means.kwargs)
+
 
 
 def plot_xy(data, layout, ir, ic, df_rc, kwargs):

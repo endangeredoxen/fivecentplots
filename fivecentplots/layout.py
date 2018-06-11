@@ -363,7 +363,7 @@ class BaseLayout:
 
         # Boxplot labels
         self.box_item_label = Element('box_item_label', self.fcpp,
-                                     on=kwargs.get('box_labels_on', True),
+                                     on=True if 'box' in self.plot_func and kwargs.get('box_labels_on', True) else False,
                                      size=utl.kwget(kwargs, self.fcpp,
                                                     'box_label_size', 25),
                                      edge_color='#aaaaaa',
@@ -371,25 +371,41 @@ class BaseLayout:
                                      font_size=13,
                                      **kwargs)
         self.box_group_label = Element('box_group_label', self.fcpp,
-                                      on=kwargs.get('box_labels_on', True),
-                                      font_color='#666666',
-                                      font_size=12,
-                                      **kwargs)
+                                       on=True if 'box' in self.plot_func and kwargs.get('box_labels_on', True) else False,
+                                       font_color='#666666',
+                                       font_size=12,
+                                       **kwargs)
 
         # Boxplot boxes '#4b72b0', '#c34e52'
-        self.box_boxes = Element('box_boxes', self.fcpp,
-                                 edge_color='#4b72b0',
-                                 color=utl.kwget(kwargs, self.fcpp,
-                                                 'box_boxes_median_line_color',
+        self.box = Element('box', self.fcpp,
+                           on=True if 'box' in self.plot_func and kwargs.get('box_on', True) else False,
+                           edge_color='#4b72b0',
+                           median_color=utl.kwget(kwargs, self.fcpp,
+                                                 'box_median_line_color',
                                                  '#c34e52'),
-                                 **kwargs)
-        self.box_divider = Element('box_divider', self.fcpp,
-                                   color='#bbbbbb',
-                                   **kwargs)
-        self.box_range_line = Element('box_range_line', self.fcpp,
-                                color='#dddddd',
-                                style='--',
-                                **kwargs)
+                           notch=utl.kwget(kwargs, self.fcpp, 'box_notch', False),
+                           **kwargs)
+        self.box_connect_means = \
+            Element('box_connect_means', self.fcpp,
+                    on=True if 'box' in self.plot_func and \
+                        kwargs.get('connect_means', True) else False,
+                    color=DEFAULT_COLORS[2],
+                    zorder=utl.kwget(kwargs, self.fcpp,
+                                     'box_connect_means_zorder', 2),
+                    **kwargs)
+        self.box_dividers = Element('box_dividers', self.fcpp,
+                                    on=True if 'box' in self.plot_func else False,
+                                    color='#bbbbbb',
+                                    **kwargs)
+        self.box_range_lines = Element('box_range_lines', self.fcpp,
+                                       on=True if 'box' in self.plot_func else False,
+                                       color='#dddddd',
+                                       style='-',
+                                       style2='--',
+                                       zorder=utl.kwget(kwargs, self.fcpp,
+                                                        'box_range_lines',
+                                                        0),
+                                       **kwargs)
 
         # Legend
         kwargs['legend'] = kwargs.get('legend', None)
@@ -506,9 +522,9 @@ class BaseLayout:
             setattr(self, axline,
                     Element(on=True if val in kwargs.keys() else False,
                             values=utl.validate_list(vals[0]),
-                            line_color=vals[1] if len(vals) > 1 else None,
-                            line_style=vals[2] if len(vals) > 2 else None,
-                            line_width=vals[3] if len(vals) > 3 else None,
+                            color=vals[1] if len(vals) > 1 else None,
+                            style=vals[2] if len(vals) > 2 else None,
+                            width=vals[3] if len(vals) > 3 else None,
                            ))
 
         # Gridlines
@@ -519,6 +535,7 @@ class BaseLayout:
                                                   '#ffffff'),
                                   width=1.3,
                                   **kwargs)
+
         for ax in ['x', 'y']:
             # secondary axes cannot get the grid
             setattr(self, 'grid_major_%s' %ax,
@@ -669,6 +686,14 @@ class BaseLayout:
             self.title_wrap.size = [self.axes.size[0], self.title_wrap.size]
         if self.title_wrap.on and not self.title_wrap.text:
             self.title_wrap.text = ' | '.join(self.label_wrap.values)
+
+        # Disable x axis grids for boxplot
+        if 'box' in self.plot_func:
+            self.grid_major_x.on = False
+            self.grid_minor_x.on = False
+            self.ticks_major_x.on = False
+            self.ticks_minor_x.on = False
+            self.label_x.on = False
 
         # Confidence interval
         self.conf_int = Element(on=kwargs.get('conf_int', None),
@@ -925,6 +950,14 @@ class Element:
                 pass
 
     @property
+    def kwargs(self):
+
+        temp = self.__dict__
+        if 'df' in temp.keys():
+            temp.pop('df')
+        return temp
+
+    @property
     def on(self):
 
         return self._on
@@ -1108,8 +1141,8 @@ class LayoutMPL(BaseLayout):
         # Set default line attributes
         for line in ['ax_hlines', 'ax_vlines', 'ax2_hlines', 'ax2_vlines']:
             line = getattr(self, line)
-            if not line.line_color:
-                line.line_color = 'k'
+            if not line.color:
+                line.color = 'k'
             if not line.style:
                 line.style = '-'
             if not line.width:
@@ -1119,31 +1152,31 @@ class LayoutMPL(BaseLayout):
         # Add lines
         if self.ax_hlines.on:
             for val in self.ax_hlines.values:
-                self.axes[ir, ic].axhline(val,
-                                          color=line.line_color,
-                                          linestyle=line.style,
-                                          linewidth=line.width)
+                self.axes.obj[ir, ic].axhline(val,
+                                              color=line.color,
+                                              linestyle=line.style,
+                                              linewidth=line.width)
 
         if self.ax_vlines.on:
             for val in self.ax_vlines.values:
-                self.axes[ir, ic].axvline(val,
-                                          color=line.line_color,
-                                          linestyle=line.style,
-                                          linewidth=line.width)
+                self.axes.obj[ir, ic].axvline(val,
+                                              color=line.color,
+                                              linestyle=line.style,
+                                              linewidth=line.width)
 
         if self.ax2_hlines.on:
             for val in self.ax2_hlines.values:
-                self.axes2[ir, ic].axhline(val,
-                                           color=line.line_color,
-                                           linestyle=line.style,
-                                           linewidth=line.width)
+                self.axes2.obj[ir, ic].axhline(val,
+                                               color=line.color,
+                                               linestyle=line.style,
+                                               linewidth=line.width)
 
         if self.ax2_vlines.on:
             for val in self.ax_vlines.values:
-                self.axes2[ir, ic].axvline(val,
-                                           color=line.line_color,
-                                           linestyle=line.style,
-                                           linewidth=line.width)
+                self.axes2.obj[ir, ic].axvline(val,
+                                               color=line.color,
+                                               linestyle=line.style,
+                                               linewidth=line.width)
 
     def add_label(self, axis, text='', position=None, rotation=0, size=None,
                   fill_color='#ffffff', edge_color='#aaaaaa', edge_alpha=1,
@@ -1256,7 +1289,7 @@ class LayoutMPL(BaseLayout):
         else:
             x = np.array([x+1]*len(y))
         if len(x) > 0 and len(y) > 0:
-            pts = self.axes[ir,ic].plot(
+            pts = self.axes[ir, ic].plot(
                           x, y,
                           color=self.box_marker.fill_color,
                           markersize=self.box_marker.size,
@@ -1816,7 +1849,7 @@ class LayoutMPL(BaseLayout):
             self.ws_col = kwargs.get('ws_col', 0)
 
         self.set_labels(data)
-        self.get_element_sizes(data)
+        #self.get_element_sizes(data)
         self.get_figure_size()
         self.get_subplots_adjust()
         self.get_rc_label_position()
@@ -1875,25 +1908,40 @@ class LayoutMPL(BaseLayout):
 
         #self.format_axes()
 
-    def plot_box(self, ir, ic, iline, df, x, y, leg_name, twin):
+    def plot_box(self, ir, ic, data, **kwargs):
         """ Plot boxplot data
 
         Args:
-            x (np.array):  x data to plot
-            y (np.array):  y data to plot
-            color (str):  hex color code for line color (default='#000000')
-            marker (str):  marker char string (default='o')
-            points (bool):  toggle points on|off (default=False)
-            line (bool):  toggle plot lines on|off (default=True)
+            ir (int): subplot row index
+            ic (int): subplot column index
+            data (pd.DataFrame): data to plot
 
         Keyword Args:
             any kwargs allowed by the plotter function selected
 
         Returns:
-            return the line plot object
+            return the box plot object
         """
 
-    def plot_line(self, ir, ic, x0, x1, y0, y1, **kwargs):
+        if not self.box.on:
+            return None
+
+        bp = self.axes.obj[ir, ic].boxplot(data,
+                                           labels=[''] * len(data),
+                                           showfliers=False,
+                                           boxprops={'color': self.box.edge_color,
+                                                     'facecolor': self.box.fill_color},
+                                           notch=self.box.notch,
+                                           whiskerprops={'color': self.box.edge_color},
+                                           capprops={'color': self.box.edge_color},
+                                           #medianprops={'color': self.box.median_color, 'linewidth': 2.5},
+                                           patch_artist=True,
+                                           zorder=1)
+
+        return bp
+
+
+    def plot_line(self, ir, ic, x0, y0, x1=None, y1=None, **kwargs):
         """
         Plot a simple line
 
@@ -1907,9 +1955,13 @@ class LayoutMPL(BaseLayout):
             kwargs: keyword args
         """
 
-        self.axes.obj[ir, ic].plot([x0, x1], [y0, y1],
-                                   linestyle=kwargs.get('line_style', '-'),
-                                   linewidth=kwargs.get('line_width', 1),
+        if x1:
+            x0 = [x0, x1]
+        if y1:
+            y0 = [y0, y1]
+        self.axes.obj[ir, ic].plot(x0, y0,
+                                   linestyle=kwargs.get('style', '-'),
+                                   linewidth=kwargs.get('width', 1),
                                    color=kwargs.get('color', '#000000'),
                                    zorder=kwargs.get('zorder', 0))
 
