@@ -362,21 +362,22 @@ class BaseLayout:
                         ))
 
         # Boxplot labels
-        self.box_item_label = Element('box_item_label', self.fcpp,
-                                     on=True if 'box' in self.plot_func and kwargs.get('box_labels_on', True) else False,
-                                     size=utl.kwget(kwargs, self.fcpp,
-                                                    'box_label_size', 25),
-                                     edge_color='#aaaaaa',
-                                     font_color='#666666',
-                                     font_size=13,
-                                     **kwargs)
+        self.box_group_title = Element('box_group_title', self.fcpp,
+                                      on=True if 'box' in self.plot_func and kwargs.get('box_labels_on', True) else False,
+                                      font_color='#666666',
+                                      font_size=12,
+                                      **kwargs)
         self.box_group_label = Element('box_group_label', self.fcpp,
+                                       align={},
                                        on=True if 'box' in self.plot_func and kwargs.get('box_labels_on', True) else False,
+                                       edge_color='#aaaaaa',
                                        font_color='#666666',
-                                       font_size=12,
+                                       font_size=13,
+                                       padding=15,  # percent
+                                       rotation=0,
                                        **kwargs)
 
-        # Boxplot boxes '#4b72b0', '#c34e52'
+        # Other boxplot elements
         self.box = Element('box', self.fcpp,
                            on=True if 'box' in self.plot_func and kwargs.get('box_on', True) else False,
                            edge_color='#4b72b0',
@@ -752,6 +753,9 @@ class BaseLayout:
         self.ws_tick_tick_minimum = utl.kwget(kwargs, self.fcpp,
                                               'ws_tick_tick_minimum', 10)
 
+        # box
+        self.ws_ax_box_title = utl.kwget(kwargs, self.fcpp, 'ws_ax_box_title', 10)
+
     def format_legend_values(self):
         """
         Reformat legend values
@@ -815,7 +819,7 @@ class BaseLayout:
     def make_figure(self, data, **kwargs):
         pass
 
-    def make_kwargs(self, element):
+    def make_kwargs(self, element, pop=[]):
         kwargs = {}
         kwargs['position'] = element.position
         kwargs['size'] = element.size
@@ -833,6 +837,9 @@ class BaseLayout:
         kwargs['alpha'] = element.alpha
         kwargs['width'] = element.width
         kwargs['style'] = element.style
+        for pp in pop:
+            if pp in kwargs.keys():
+                kwargs.pop(pp)
 
         return kwargs
 
@@ -1112,6 +1119,71 @@ class LayoutMPL(BaseLayout):
         self.legend_top_offset = 8
         self.legend_border = 3
 
+    def add_box_labels(self, ir, ic, data):
+
+        num_cols = len(data.changes.columns)
+        bottom = 0
+        for i in range(0, num_cols):
+            if i > 0:
+                bottom -= height
+            k = num_cols-1-i
+            sub = data.changes[num_cols-1-i][data.changes[num_cols-1-i]==1]
+            if len(sub) == 0:
+                sub = data.changes[num_cols-1-i]
+
+            # Group labels
+            if self.box_group_label.on:
+                for j in range(0, len(sub)):
+                    if j == len(sub) - 1:
+                        width = len(data.changes) - sub.index[j]
+                    else:
+                        width = sub.index[j+1] - sub.index[j]
+                    width = width * self.axes.size[0] / len(data.changes)
+                    label = data.indices.loc[sub.index[j], num_cols-1-i]
+                    height = self.box_group_label.size[i][1] * \
+                                (1 + 2 * self.box_group_label.padding / 100)
+                    self.add_label(self.axes.obj[ir, ic], label,
+                                    (sub.index[j]/len(data.changes),
+                                    0, 0,
+                                    (bottom - height) / self.axes.size[1]),
+                                    rotation=self.box_group_label.rotation[i],
+                                    size=[width, height],
+                                    **self.make_kwargs(self.box_group_label,
+                                                        ['size', 'rotation', 'position']))
+
+            # Group titles
+            if self.box_group_title.on:
+                self.add_label(self.axes.obj[ir, ic], data.groups[k],
+                                (1 + self.ws_ax_box_title / self.axes.size[0],
+                                0, 0,
+                                (bottom - height) / self.axes.size[1]),
+                                size=self.box_group_title.size[k],
+                                **self.make_kwargs(self.box_group_title,
+                                ['position', 'size']))
+
+
+    def add_box_points(self, ir, ic, x, y):#, ax, color=palette[1], **kw):
+        """
+        Plot x y points with or without jitter
+        """
+
+        if self.box_points.jitter:
+            x = np.random.normal(x+1, 0.04, size=len(y))
+        else:
+            x = np.array([x+1]*len(y))
+        if len(x) > 0 and len(y) > 0:
+            pts = self.axes[ir, ic].plot(
+                          x, y,
+                          color=self.box_marker.fill_color,
+                          markersize=self.box_marker.size,
+                          marker=self.box_marker.type,
+                          markeredgecolor=self.box_points.edge_color,
+                          markerfacecolor='none',
+                          markeredgewidth=self.box_marker.edge_width,
+                          linestyle='none',
+                          zorder=2)
+            return pts
+
     def add_cbar(self):
         # Define colorbar position
         from mpl_toolkits.axes_grid1 import make_axes_locatable
@@ -1180,7 +1252,7 @@ class LayoutMPL(BaseLayout):
 
     def add_label(self, axis, text='', position=None, rotation=0, size=None,
                   fill_color='#ffffff', edge_color='#aaaaaa', edge_alpha=1,
-                  edge_width=1, font='',
+                  edge_width=1, font='sans-serif',
                   font_weight='normal', font_style='normal',
                   font_color='#666666', font_size=14, **kwargs):
         """ Add a label to the plot
@@ -1190,7 +1262,8 @@ class LayoutMPL(BaseLayout):
 
         Args:
             label (str):  label text
-            pos (tuple): label position tuple of form (left, bottom, width, height)
+            pos (tuple): label position tuple of form (left, right, top, bottom)
+            old is (left, bottom, width, height)
             axis (matplotlib.axes):  mpl axes object
             rotation (int):  degrees of rotation
             fillcolor (str):  hex color code for label fill (default='#ffffff')
@@ -1211,16 +1284,16 @@ class LayoutMPL(BaseLayout):
         axis.add_patch(rect)
 
         # Set slight text offset
-        # if rotation == 270:
-        #     offsetx = -2/self.axes.size[0]#-font_size/self.axes.size[0]/4
-        # else:
-        #     offsetx = 0
-        # if rotation == 0:
-        #     offsety = -2/self.axes.size[1]#-font_size/self.axes.size[1]/4
-        # else:
-        #     offsety = 0
+        if rotation == 270:
+            offsetx = -2/self.axes.size[0]#-font_size/self.axes.size[0]/4
+        else:
+            offsetx = 0
+        if rotation == 0:
+            offsety = -2/self.axes.size[1]#-font_size/self.axes.size[1]/4
+        else:
+            offsety = 0
         # print(offsetx, offsety)
-        offsetx, offsety = 0, 0
+        #offsetx, offsety = 0, 0
 
         # Add the label text
         text = axis.text(position[0]+size[0]/self.axes.size[0]/2+offsetx,
@@ -1279,28 +1352,6 @@ class LayoutMPL(BaseLayout):
             self.legend.obj.get_frame().set_facecolor(self.legend.fill_color)
             self.legend.obj.get_frame().set_edgecolor(self.legend.edge_color)
 
-    def add_box_points(self, ir, ic, x, y):#, ax, color=palette[1], **kw):
-        """
-        Plot x y points with or without jitter
-        """
-
-        if self.box_points.jitter:
-            x = np.random.normal(x+1, 0.04, size=len(y))
-        else:
-            x = np.array([x+1]*len(y))
-        if len(x) > 0 and len(y) > 0:
-            pts = self.axes[ir, ic].plot(
-                          x, y,
-                          color=self.box_marker.fill_color,
-                          markersize=self.box_marker.size,
-                          marker=self.box_marker.type,
-                          markeredgecolor=self.box_points.edge_color,
-                          markerfacecolor='none',
-                          markeredgewidth=self.box_marker.edge_width,
-                          linestyle='none',
-                          zorder=2)
-            return pts
-
     def format_axes(self):
         """
         Format the axes colors and gridlines
@@ -1347,6 +1398,11 @@ class LayoutMPL(BaseLayout):
         now = start.strftime('%Y-%m-%d-%H-%M-%S')
 
         # Make a dummy figure
+        data = copy.deepcopy(data)
+        if 'box' in self.plot_func:
+            data.x = 'x'
+            data.df_fig['x'] = 1
+
         mplp.ioff()
         fig = mpl.pyplot.figure(dpi=self.fig.dpi)
         ax = fig.add_subplot(111)
@@ -1600,12 +1656,42 @@ class LayoutMPL(BaseLayout):
                                color=self.label_y2.font_color,
                                rotation=self.label_y2.rotation)
 
-        # what about z text?  this is cbar?
+        # Write out boxplot group labels
+        if 'box' in self.plot_func and self.box_group_label.on \
+                and data.groups is not None:
+            box_group_label = []
+            for ii, cc in enumerate(data.indices.columns):
+                vals = [str(f) for f in data.indices[cc].unique()]
+                box_group_label_row = []
+                for val in vals:
+                    box_group_label_row += \
+                        [fig.text(0, 0, r'%s' % val,
+                                  fontsize=self.box_group_label.font_size,
+                                  weight=self.box_group_label.font_weight,
+                                  style=self.box_group_label.font_style,
+                                  color=self.box_group_label.font_color,
+                                  rotation=self.box_group_label.rotation,
+                                  )]
+                box_group_label += [box_group_label_row]
+        if 'box' in self.plot_func and self.box_group_title.on \
+                and data.groups != [None]:
+            box_group_title = []
+            for group in data.groups:
+                box_group_title += \
+                    [fig.text(0, 0, r'%s' % group,
+                              fontsize=self.box_group_title.font_size,
+                              weight=self.box_group_title.font_weight,
+                              style=self.box_group_title.font_style,
+                              color=self.box_group_title.font_color,
+                              rotation=self.box_group_title.rotation,
+                              )]
 
+        # Cbar
+        # fill in later
 
         # Render dummy figure
         mpl.pyplot.draw()
-        #mpl.pyplot.savefig(r'C:\data\test.png')
+        # mpl.pyplot.savefig(r'C:\data\test.png')
 
         # Get actual sizes
         if self.tick_labels_major_x.on and len(xticklabelsmaj) > 0:
@@ -1660,7 +1746,8 @@ class LayoutMPL(BaseLayout):
                 [np.nanmax([0 for t in x2ticklabelsmaj]),
                  np.nanmax([0 for t in x2ticklabelsmaj])]
 
-        self.label_x.size = (label_x.get_window_extent().width,
+        if self.label_x.on:
+            self.label_x.size = (label_x.get_window_extent().width,
                              label_x.get_window_extent().height)
         if self.axes.twiny:
             self.label_x2.size = (label_x2.get_window_extent().width,
@@ -1697,6 +1784,31 @@ class LayoutMPL(BaseLayout):
         else:
             self.legend.size = [0, 0]
 
+        # box labels
+        if 'box' in self.plot_func and self.box_group_label.on \
+                and data.groups != [None]:
+            # Get the size of group labels and adjust the rotation if needed
+            rotations = []
+            sizes = []
+            max_label_width = self.axes.size[0]/len(data.indices)
+            for row in box_group_label:
+                widest = max([f.get_window_extent().width for f in row])
+                tallest = max([f.get_window_extent().height for f in row])
+                if widest > max_label_width:
+                    rotations += [90]
+                    sizes += [(tallest, widest)]
+                else:
+                    rotations += [0]
+                    sizes += [(widest, tallest)]
+            self.box_group_label._size = sizes
+            self.box_group_label.rotation = rotations
+
+        if 'box' in self.plot_func and self.box_group_title.on \
+                and data.groups != [None]:
+            self.box_group_title._size = [(f.get_window_extent().width,
+                                           f.get_window_extent().height)
+                                           for f in box_group_title]
+
         # Destroy the dummy figure
         mpl.pyplot.close(fig)
 
@@ -1729,6 +1841,8 @@ class LayoutMPL(BaseLayout):
                                   self.tick_labels_minor_y.size[0])
         ws_leg_ax = max(0, self.ws_leg_ax - y2) if self.legend.text is not None else 0
         ws_leg_fig = self.ws_leg_fig if self.legend.text is not None else self.ws_ax_fig
+        box_title = max(self.box_group_title.size)[0] if self.box_group_title.on else 0
+
         if self.title.on:
             self.ws_title = self.ws_fig_title + self.title.size[1] + self.ws_title_ax
         else:
@@ -1741,7 +1855,7 @@ class LayoutMPL(BaseLayout):
             self.axes.size[0] * self.ncol + self.ws_col * (self.ncol - 1) +  \
             ws_leg_ax + self.legend.size[0] + ws_leg_fig + y2 + \
             self.label_row.size[0] + self.ws_row_label * self.label_row.on + \
-            cbar * self.ncol
+            cbar * self.ncol + box_title * self.ncol
 
         self.fig.size_px[1] = \
             self.ws_title + (self.label_col.size[1] + \
@@ -1849,7 +1963,7 @@ class LayoutMPL(BaseLayout):
             self.ws_col = kwargs.get('ws_col', 0)
 
         self.set_labels(data)
-        #self.get_element_sizes(data)
+        self.get_element_sizes(data)
         self.get_figure_size()
         self.get_subplots_adjust()
         self.get_rc_label_position()
@@ -1940,7 +2054,6 @@ class LayoutMPL(BaseLayout):
 
         return bp
 
-
     def plot_line(self, ir, ic, x0, y0, x1=None, y1=None, **kwargs):
         """
         Plot a simple line
@@ -1964,7 +2077,6 @@ class LayoutMPL(BaseLayout):
                                    linewidth=kwargs.get('width', 1),
                                    color=kwargs.get('color', '#000000'),
                                    zorder=kwargs.get('zorder', 0))
-
 
     def plot_xy(self, ir, ic, iline, df, x, y, leg_name, twin):
         """ Plot xy data

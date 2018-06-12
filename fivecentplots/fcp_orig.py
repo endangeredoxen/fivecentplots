@@ -581,6 +581,7 @@ def boxplot(**kwargs):
                             else:
                                 orient = 0
                                 height = kw['bp_label_size']/kw['ax_size'][1]
+                            st()
                             add_label(label, (sub.index[j]/len(changes),
                                       bottom-height, width/len(changes),
                                       height),

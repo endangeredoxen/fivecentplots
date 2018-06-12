@@ -8,7 +8,7 @@ user_dir = os.path.expanduser('~')
 default_path = os.path.join(user_dir, '.fivecentplots')
 if os.path.exists(default_path) and default_path not in sys.path:
     sys.path = [default_path] + sys.path
-    from defaults import *
+    from defaults_dev import *
 
 
 def get_current_values(df, text, key='@'):

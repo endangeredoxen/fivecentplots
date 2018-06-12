@@ -15,9 +15,6 @@ st = pdb.set_trace
 REQUIRED_VALS = {'plot_xy': ['x', 'y'],
                  'plot_box': ['y'],
                  'contour': ['x', 'y', 'z']}
-# utl.kwget = utilities.utl.kwget
-# reload_defaults = utilities.reload_defaults
-# validate_list = utilities.validate_list
 
 
 class AxisError(Exception):
@@ -87,6 +84,8 @@ class Data:
         self.df_all = self.check_df(kwargs.get('df'))
         self.df_fig = None
         self.df_sub = None
+        self.changes = pd.DataFrame()  # used with boxplots
+        self.indices = pd.DataFrame()  # used with boxplots
 
         # Get the x, y, and (optional) axis column names and error check
         self.x = utl.validate_list(kwargs.get('x'))
@@ -98,9 +97,6 @@ class Data:
 
         # Stats
         self.stat = kwargs.get('stat', None)
-
-        # Boxplot specifid
-        self.bp_groups = None
 
         # Apply an optional filter to the data
         self.filter = kwargs.get('filter', None)
@@ -114,10 +110,12 @@ class Data:
         self.row_vals = None
         self.wrap = self.check_group_columns('wrap', kwargs.get('wrap', None))
         self.wrap_vals = None
+        self.groups = self.check_group_columns('groups', kwargs.get('groups', None))
         self.ncol = 1
         self.nleg = 0
         self.nrow = 1
         self.nwrap = 0
+        self.ngroups = 0
 
         # Define legend grouping column names (legends are common to a figure,
         #   not an rc subplot)
@@ -136,7 +134,7 @@ class Data:
 
         # Other kwargs
         for k, v in kwargs.items():
-            if k not in ['df', 'plot_type', 'x', 'y', 'z']:
+            if not hasattr(self, k): #k not in ['df', 'plot_type', 'x', 'y', 'z']:
                 setattr(self, k, v)
 
     def check_df(self, df):
@@ -348,6 +346,46 @@ class Data:
 
         for i, (nn, gg) in enumerate(df.groupby(groups)):
             yield i, nn, self.transform(gg.copy())
+
+    def get_box_index_changes(self):
+        """
+        Make a DataFrame that shows when groups vals change; used for grouping labels
+
+        Args:
+            df (pd.DataFrame): grouping values
+            num_groups (int): number of unique groups
+
+        Returns:
+            new DataFrame with 1's showing where group levels change for each row of df
+        """
+
+        # Get the changes df
+        if self.groups == [None]:
+            groups = self.df_fig.copy()
+        else:
+            groups = self.df_fig.groupby(self.groups)
+
+        # Order the group labels with natsorting
+        gidx = []
+        for i, (nn, g) in enumerate(groups):
+            gidx += [nn]
+        gidx = natsorted(gidx)
+
+        self.indices = pd.DataFrame(gidx)
+        self.changes = self.indices.copy()
+        self.ngroups = groups.ngroups
+
+        # Set initial level to 1
+        for col in self.changes.columns:
+            self.changes.loc[0, col] = 1
+
+        # Determines values for all other rows
+        for i in range(1, self.ngroups):
+            for col in self.changes.columns:
+                if self.changes[col].iloc[i-1] == self.changes[col].iloc[i]:
+                    self.changes.loc[i, col] = 0
+                else:
+                    self.changes.loc[i, col] = 1
 
     def get_data_range(self, ax, df):
         """
@@ -612,7 +650,11 @@ class Data:
             self.nleg = 0
 
         for leg in legend_vals:
-            for xx in self.x:
+            if not self.x:
+                selfx = [None]
+            else:
+                selfx = self.x
+            for xx in selfx:
                 for yy in self.y:
                     leg_all += [(leg, xx, yy)]
 
@@ -801,6 +843,10 @@ class Data:
                 # Calculate axis ranges
                 if ranges:
                     self.get_data_ranges(ir, ic)
+
+                # Get boxplot changes DataFrame
+                if 'box' in self.plot_type:
+                    self.get_box_index_changes()
 
                 # Yield the subset
                 yield ir, ic, self.df_rc

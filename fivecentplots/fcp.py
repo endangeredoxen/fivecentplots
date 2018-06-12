@@ -50,12 +50,12 @@ cur_dir = os.path.dirname(__file__)
 user_dir = os.path.expanduser('~')
 if not os.path.exists(osjoin(user_dir, '.fivecentplots')):
     os.makedirs(osjoin(user_dir, '.fivecentplots'))
-if not os.path.exists(osjoin(user_dir, '.fivecentplots', 'defaults.py')):
+if not os.path.exists(osjoin(user_dir, '.fivecentplots', 'defaults_dev.py')):
     shutil.copy2(osjoin(cur_dir, 'themes', 'gray.py'),
-                 osjoin(user_dir, '.fivecentplots', 'defaults.py'))
+                 osjoin(user_dir, '.fivecentplots', 'defaults_dev.py'))
 sys.path = [osjoin(user_dir, '.fivecentplots')] + sys.path
 
-from defaults import *  # use local file
+from defaults_dev import *  # use local file
 
 LAYOUT = {'mpl': LayoutMPL,
           'bokeh': LayoutBokeh}
@@ -63,447 +63,22 @@ LAYOUT = {'mpl': LayoutMPL,
 
 def boxplot(**kwargs):
     """ Main boxplot plotting function
-
     At minimum, it requires a pandas DataFrame with at
     least two columns and two column names for the x and y axis.  Plots can be
     customized and enhanced by passing keyword arguments as defined below.
     Default values that must be defined in order to generate the plot are
     pulled from the fcp_params default dictionary
-
     Args:
         df (DataFrame): DataFrame containing data to plot
         x (str):        name of x column in df
         y (str|list):   name or list of names of y column(s) in df
-
     Keyword Args:
         UPDATE
-
     Returns:
         plots
     """
 
     return plotter('plot_box', **kwargs)
-
-
-
-
-def boxplot_old(**kwargs):
-    """ Main boxplot function
-    This function wraps the boxplot function from the matplotlib
-    library.  At minimum, it requires a pandas DataFrame with at least one
-    column and a column name for the y axis.  Plots can be
-    customized and enhanced by passing keyword arguments as defined below.
-    Default values that must be defined in order to generate the plot are
-    pulled from the fcp_params dictionary defined in defaults.py.
-    Required Keyword Args:
-        df (DataFrame): DataFrame containing data to plot
-        y (str|list):   name or list of names of y column in df
-    Keyword Args:
-        see get_defaults for definitions
-
-    Returns:
-        layout (LayoutMPL obj):  contains all the spacing information used to
-            construct the figure
-    """
-
-    def add_points(x, y, ax, color=palette[1], **kw):
-
-        if kw['jitter']:
-            x = np.random.normal(x+1, 0.04, size=len(y))
-        else:
-            x = np.array([x+1]*len(y))
-        if len(x) > 0 and len(y) > 0:
-            pts = ax.plot(x, y,
-                          color=color,
-                          markersize=kw['marker_size'],
-                          marker=kw['marker_type'],
-                          markeredgecolor=color,
-                          markerfacecolor='none',
-                          markeredgewidth=1.5,
-                          linestyle='none',
-                          zorder=2)
-            return pts
-
-    def index_changes(df, num_groups):
-        """
-        Make a DataFrame that shows when groups vals change; used for grouping labels
-
-        Args:
-            df (pd.DataFrame): grouping values
-            num_groups (int): number of unique groups
-
-        Returns:
-            new DataFrame with 1's showing where group levels change for each row of df
-        """
-
-        changes = df.copy()
-        # Set initial level to 1
-        for col in df.columns:
-            changes.loc[0, col] = 1
-        # Determines values for all other rows
-        for i in range(1, num_groups):
-            for col in df.columns:
-                if df[col].iloc[i-1] == df[col].iloc[i]:
-                    changes.loc[i, col] = 0
-                else:
-                    changes.loc[i, col] = 1
-
-        return changes
-
-
-    plt.close('all')
-
-    # Init plot
-    df, x, y, z, kw = init('boxplot', kwargs)
-    kw['ptype'] = 'boxplot'
-    if type(df) is bool and not df:
-        return
-
-    if 'ax_fig_ws' not in kwargs.keys():
-        kw['ax_fig_ws'] = 15  # no standard y-axis ticks/label
-
-    # Default overrides
-    if kw['marker_type'] is None:
-        kw['marker_type'] = 'o'
-    if 'sharex' not in kwargs.keys():
-        kw['sharex'] = False
-
-    # Backup ax size
-    kw['ax_size_orig'] = [kw['ax_size'][0], kw['ax_size'][1]]
-
-    # Get initial values
-    ax_fig_ws0 = kw['ax_fig_ws']
-    ws_col0 = kw['ws_col']
-    ws_row0 = kw['ws_row']
-
-    # Iterate over discrete figures
-    for ifig, fig_item, fig_cols in enumerate(kw['fig_items']):
-
-        # Reset ax size
-        kw['ax_size'] = [kw['ax_size_orig'][0], kw['ax_size_orig'][1]]
-
-        # Make a data subset and filter
-        df_fig = get_df_figure(df, fig_item, kw)
-
-        # Set up the row grouping
-        kw = get_rc_groupings(df_fig, kw)
-
-        # Special boxplot spacing for labels
-        if kw['bp_labels_on'] and kw['groups'] is not None:
-            # Get the changes df
-            kw['groups'] = validate_columns(df_fig, kw['groups'])
-            if kw['groups'] is None:
-                groups = df_fig.copy()
-            else:
-                groups = df_fig.groupby(kw['groups'])
-
-            # Order the group labels with natsorting
-            gidx = []
-            for i, (nn, g) in enumerate(groups):
-                gidx += [nn]
-            gidx = natsorted(gidx)
-
-            # Make indices df
-            indices = pd.DataFrame(gidx)
-            num_groups = groups.ngroups
-            changes = index_changes(indices, num_groups)
-
-            ## LAYOUT
-            # Determine if label should be aligned vertically or horizontally
-            align = {}
-            xs_height = 0
-            for ii, cc in enumerate(indices.columns):
-                align[ii] = 0
-                vals = [str(f) for f in indices[cc].unique()]
-                longest = max(vals, key=len)
-                uniq_vals = len(changes[changes[cc]==1])
-                label_width = kw['ax_size'][0]/uniq_vals
-                val_width = get_font_to_px(longest, kw['bp_label_font_size'],
-                                           kw['dpi'])[1]
-                if val_width > label_width:
-                    align[ii] = max(align[ii], val_width + 10)
-                    xs_height += align[ii] - kw['bp_label_size']
-
-            # Set padding and new sizes
-            bp_labels = kw['bp_label_size']*len(kw['groups'])#+0.5)
-            kw['ax_fig_ws'] =  ax_fig_ws0 + bp_labels + xs_height
-            kw['ws_leg_ax'] = 0
-            kw['ws_fig_leg'] = max([len(gr) for gr in kw['groups']]) * \
-                                  kw['bp_label_font_size'] + \
-                                  kw['ws_bp_name']
-            if kw['wrap'] is None:
-                kw['ws_col'] = ws_col0 + kw['ws_fig_leg']
-            kw['ws_row'] = ws_row0 + bp_labels + xs_height
-
-            ylabel_height = get_font_to_px(kw['ylabel'],
-                                          kw['label_font_size'],
-                                          kw['dpi'], kw['label_weight'],
-                                          kw['label_style'],
-                                          'vertical')[0]
-            if ylabel_height > kw['ax_size'][1] + kw['ws_row'] + bp_labels:
-                kw['ws_row'] = \
-                    (kw['bp_label_font_size']*len(kw['ylabel']) - \
-                    kw['ax_size'][1])/2 + kw['ws_row']/2
-            if kw['rows'] is not None and kw['rows'][0] is not None:
-                kw['ws_fig_leg'] -= kw['row_label_size'] + kw['ws_row_label']
-            kw['group_labels'] = len(max(kw['groups']))*kw['bp_label_font_size']
-
-        # Set up the legend grouping
-        kw = get_legend_groupings(df_fig, y, kw)
-
-        # Make the plot figure and axes
-        layout, fig, axes, kw = make_fig_and_ax(kw)
-
-        for ir in range(0, kw['nrow']):
-            for ic in range(0, kw['ncol']):
-
-                # Handle missing wrap plots
-                if kw['wrap'] is not None:
-                    if ir*kw['ncol'] + ic > len(kw['wrap'])-1:
-                        axes[ir, ic].axis('off')
-                        continue
-
-                # Init arrays
-                data = []
-                labels = []
-                dividers = []
-                means = []
-                medians = []
-
-                # Set colors
-                axes[ir, ic] = set_axes_colors(axes[ir, ic], kw)
-
-                # Style gridlines
-                axes[ir, ic] = set_axes_grid_lines(axes[ir, ic], kw)
-
-                # Subset the data
-                df_sub = get_rc_subset(df_fig, ir, ic, kw)
-
-                # Get the changes df
-                kw['groups'] = validate_columns(df_sub, kw['groups'])
-                if kw['groups'] is not None:
-                    groups = df_sub.groupby(kw['groups'])
-                else:
-                    groups = df_sub.copy()
-
-                # Order the group labels with natsorting
-                gidx = []
-                for i, (nn, g) in enumerate(groups):
-                    gidx += [nn]
-                gidx = natsorted(gidx)
-
-                # Make indices df
-                indices = pd.DataFrame(gidx)
-                num_groups = groups.ngroups
-                changes = index_changes(indices, num_groups)
-                num_groups = 0
-                if kw['groups'] is not None:
-                    groups = df_sub.groupby(kw['groups'])
-                    num_groups = groups.ngroups
-                    num_groupby = len(kw['groups'])
-                    col = changes.columns
-
-                    # Plot the groups
-                    for i, nn in enumerate(gidx):
-                        g = df_sub.copy().sort_values(by=kw['groups'])
-                        g = g.set_index(kw['groups'])
-                        if len(g) > 1:
-                            g = g.loc[nn]
-                        if type(g) == pd.Series:
-                            g = pd.DataFrame(g).T
-                        else:
-                            g = g.reset_index()
-                        temp = g[y].dropna()
-                        data += [temp]
-                        means += [temp.mean()]
-                        medians += [temp.median()]
-                        if type(nn) is not tuple:
-                            nn = [nn]
-                        else:
-                            nn = [str(f) for f in nn]
-                        labels += ['']
-
-                        if len(changes.columns) > 1 and changes[col[-2]].iloc[i] == 1 \
-                                and len(kw['groups']) > 1:
-                            dividers += [i+0.5]
-
-                        point_curves = []
-                        if kw['points'] and len(kw['leg_items'])==0:
-                            add_points(i, temp, axes[ir, ic], palette[1], **kw)
-                        else:
-                            for ileg, leg_item in enumerate(kw['leg_items']):
-                                temp = g.loc[g[kw['leg_groups']]==leg_item][y].dropna()
-                                kw['marker_type'] = markers[ileg]
-                                point_curves += add_points(i, temp, axes[ir, ic],
-                                                            palette[ileg+1], **kw)
-
-                else:
-                    data = df_sub[y].dropna()
-                    labels = ['']
-                    if kw['points']:
-                        add_points(0, data, axes[ir, ic], palette[1], **kw)
-
-                # Plot
-                if kw['points']:
-                    showfliers = False
-                else:
-                    showfliers = True
-
-                if type(data) is pd.Series:
-                    data = data.values
-                elif type(data) is pd.DataFrame and len(data.columns) == 1:
-                    data = data.values
-
-                if len(data) > 0:
-                    if kw['range_lines']:
-                        for id, dd in enumerate(data):
-                            axes[ir, ic].plot([id+1, id+1],
-                                [dd.min().iloc[0], dd.max().iloc[0]],
-                                linestyle='--', color='#dddddd',
-                                zorder=0)
-                            axes[ir, ic].plot([id+1-0.2, id+1+0.2],
-                                [dd.min().iloc[0], dd.min().iloc[0]],
-                                linestyle='-', color='#dddddd', zorder=0)
-                            axes[ir, ic].plot([id+1-0.2, id+1+0.2],
-                                [dd.max().iloc[0], dd.max().iloc[0]],
-                                linestyle='-', color='#dddddd', zorder=0)
-                    try:
-                        bp = axes[ir,ic].boxplot(data, labels=labels,
-                                            showfliers=showfliers,
-                                            boxprops={'color': palette[0]},
-                                            whiskerprops={'color': palette[0]},
-                                            capprops={'color': palette[0]},
-                                            medianprops={'color': palette[1]},
-                                            patch_artist=True,
-                                            zorder=1,
-                                            )
-                    except:
-                        bp = axes[ir,ic].boxplot(data, labels=labels,
-                                            showfliers=showfliers,
-                                            boxprops={'color': palette[0]},
-                                            whiskerprops={'color': palette[0]},
-                                            capprops={'color': palette[0]},
-                                            medianprops={'color': palette[1]},
-                                            patch_artist=True,
-                                            )
-                    axes[ir,ic].xaxis.grid(False)
-                    for patch in bp['boxes']:
-                        patch.set_facecolor(kw['bp_fill_color'])
-                    for flier in bp['fliers']:
-                        flier.set(marker='+', markeredgecolor=palette[0])
-
-                    if str(kw['ax_scale']).lower() in ['logy', 'semilogy', 'loglog']:
-                        axes[ir, ic].set_yscale('log')
-
-                    # Add divider lines
-                    if kw['dividers']:
-                        for d in dividers:
-                            axes[ir,ic].axvline(d, linewidth=1,
-                                            color=kw['bp_divider_color'])
-
-                    # Add mean/median connecting lines
-                    if kw['connect_means']:
-                        x = np.linspace(1, num_groups, num_groups)
-                        axes[ir,ic].plot(x, means, color=palette[2])
-
-                # Add y-axis label
-                if kw['ylabel'] is not None and not(kw['wrap'] is not None
-                                                    and ic != 0):
-                    axes[ir,ic].set_ylabel(r'%s' % kw['ylabel'],
-                                  fontsize=kw['label_font_size'],
-                                  weight=kw['label_weight'],
-                                  style=kw['label_style'])
-
-                # Add axh/axv lines
-                axes[ir, ic] = add_lines(axes[ir, ic], kw)
-
-                # Format the subplot spacing
-                fig.subplots_adjust(
-                    left=layout.left,
-                    right=layout.right,
-                    bottom=layout.bottom,
-                    top=layout.top,
-                    hspace=(1.0*layout.ws_row)/layout.ax_h,
-                    wspace=1.0*layout.ws_col/layout.ax_w
-                )
-
-                # Add the x-axis grouping labels
-                if kw['bp_labels_on'] and changes is not None:
-                    num_cols = len(changes.columns)
-                    bottom = 0
-                    for i in range(0, num_cols):
-                        if i > 0:
-                            bottom -= height
-                        k = num_cols-1-i
-                        sub = changes[num_cols-1-i][changes[num_cols-1-i]==1]
-                        if len(sub) == 0:
-                            sub = changes[num_cols-1-i]
-                        for j in range(0, len(sub)):
-                            if j == len(sub) - 1:
-                                width = len(changes) - sub.index[j]
-                            else:
-                                width = sub.index[j+1] - sub.index[j]
-                            label = indices.loc[sub.index[j], num_cols-1-i]
-                            if len(align.keys()) > 0 \
-                                    and k in align.keys() \
-                                    and align[k] > 0:
-                                orient = 90
-                                height = align[k]/ kw['ax_size'][1]
-                            else:
-                                orient = 0
-                                height = kw['bp_label_size']/kw['ax_size'][1]
-                            add_label(label, (sub.index[j]/len(changes),
-                                      bottom-height, width/len(changes),
-                                      height),
-                                      axes[ir,ic],
-                                      orient,
-                                      layout,
-                                      edgecolor=kw['bp_label_edge_color'],
-                                      fillcolor=kw['bp_label_fill_color'],
-                                      color=kw['bp_label_text_color'],
-                                      fontsize=kw['bp_label_font_size'],
-                                      weight=kw['bp_label_text_style'])
-
-                        # Add the grouping label names
-                        if not(kw['wrap'] is not None and ic != kw['ncol']-1) \
-                                or (ir*kw['ncol'] + ic == len(kw['wrap'])-1):
-                            offset = kw['bp_label_font_size']/layout.fig_h_px
-                            axes[ir,ic].text(1+kw['ws_bp_name']/kw['ax_size'][0],
-                                    bottom-height/2-offset, kw['groups'][k],
-                                    fontsize=kw['bp_name_font_size'],
-                                    color=kw['bp_name_text_color'],
-                                    style=kw['bp_name_text_style'],
-                                    weight=kw['bp_name_text_weight'],
-                                    transform=axes[ir,ic].transAxes)
-
-                # Adjust the tick marks
-                axes[ir, ic] = set_axes_ticks(axes[ir, ic], kw, True)
-
-                # Add row/column labels
-                axes[ir, ic] = \
-                    set_axes_rc_labels(axes[ir, ic], ir, ic, kw, layout)
-
-                # Axis ranges
-                axes[ir, ic], ax = set_axes_ranges(df_fig, df_sub, None, y,
-                                                   axes[ir, ic], None, kw)
-
-        # Add the legend
-        fig = add_legend(fig, point_curves, kw, layout)
-
-        # Add a figure title
-        set_figure_title(df_fig, axes[0,0], kw, layout)
-
-        # Build the save filename
-        filename = utl.set_save_filename(df_fig, x, y, kw, ifig)
-
-        # Save and optionally open
-        save(fig, filename, kw)
-
-    if not kw['inline']:
-        plt.close('all')
-
-    else:
-        return fig
 
 
 def conf_int(df, x, y, ax, color, kw):
@@ -744,32 +319,6 @@ def deprecated(kwargs):
 
     return kwargs
 
-
-def index_changes(df, num_groups):
-    """
-    Make a DataFrame that shows when groups vals change; used for grouping labels
-
-    Args:
-        df (pd.DataFrame): grouping values
-        num_groups (int): number of unique groups
-
-    Returns:
-        new DataFrame with 1's showing where group levels change for each row of df
-    """
-
-    changes = df.copy()
-    # Set initial level to 1
-    for col in df.columns:
-        changes.loc[0, col] = 1
-    # Determines values for all other rows
-    for i in range(1, num_groups):
-        for col in df.columns:
-            if df[col].iloc[i-1] == df[col].iloc[i]:
-                changes.loc[i, col] = 0
-            else:
-                changes.loc[i, col] = 1
-
-    return changes
 
 def init(plot, kwargs):
     """
@@ -1446,76 +995,43 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
     means = []
     medians = []
 
-    # Get the changes df
-    kwargs['groups'] = kwargs.get('groups', None)
-    if kwargs['groups'] is not None:
-        kwargs['groups'] = utl.validate_list(kwargs['groups'])
-        groups = df_rc.groupby(kwargs['groups'])
-    else:
-        groups = df_rc.copy()
-
-    # Order the group labels with natsorting
-    gidx = []
-    for i, (nn, g) in enumerate(groups):
-        gidx += [nn]
-    gidx = natsorted(gidx)
-
-    # Make indices df
-    indices = pd.DataFrame(gidx)
-    num_groups = groups.ngroups
-    changes = index_changes(indices, num_groups)
-    num_groups = 0
-    if kwargs['groups'] is not None:
-        groups = df_rc.groupby(kwargs['groups'])
-        num_groups = groups.ngroups
-        num_groupby = len(kwargs['groups'])
-        col = changes.columns
+    if dd.groups is not None:
+        col = dd.changes.columns
 
         # Plot the groups
-        for i, nn in enumerate(gidx):
-            gg = df_rc.copy().sort_values(by=kwargs['groups'])
-            gg = gg.set_index(kwargs    ['groups'])
+        for irow, row in dd.indices.iterrows():
+            gg = df_rc.copy().sort_values(by=dd.groups)
+            gg = gg.set_index(dd.groups)
             if len(gg) > 1:
-                gg = gg.loc[nn]
+                gg = gg.loc[row]
             if type(gg) == pd.Series:
                 gg = pd.DataFrame(gg).T
             else:
                 gg = gg.reset_index()
             temp = gg[dd.y].dropna()
-            temp['x'] = i + 1
+            temp['x'] = irow + 1
             data += [temp]
             means += [temp.mean().iloc[0]]
             medians += [temp.median().iloc[0]]
-            if type(nn) is not tuple:
-                nn = [nn]
+            if type(row) is not tuple:
+                row = [row]
             else:
-                nn = [str(f) for f in nn]
+                row = [str(f) for f in row]
             labels += ['']
 
-            if len(changes.columns) > 1 and changes[col[-2]].iloc[i] == 1 \
+            if len(dd.changes.columns) > 1 and \
+                    dd.changes[col[-2]].iloc[irow] == 1 \
                     and len(kwargs['groups']) > 1:
-                dividers += [i+0.5]
+                dividers += [irow + 0.5]
 
             # Plot points
-            if dd.legend_vals:
-                for ileg, leg_name in enumerate(dd.legend_vals):
-                    temp = gg.loc[gg[dd.legend==leg_item]][dd.y].dropna()
-                    temp['x'] = i + 1
-                    layout.plot_xy(ir, ic, ileg, temp, 'x', dd.y[0], leg_name, False)
+            if type(dd.legend_vals) is pd.DataFrame:
+                for jj, jrow in dd.legend_vals.iterrows():
+                    temp = gg.loc[gg[dd.legend]==jrow['names']][dd.y].dropna()
+                    temp['x'] = irow + 1
+                    layout.plot_xy(ir, ic, jj, temp, 'x', dd.y[0], jrow['names'], False)
             else:
                 layout.plot_xy(ir, ic, 0, temp, 'x', dd.y[0], None, False)
-
-            # point_curves = []
-            # if kw['points'] and len(kw['leg_items'])==0:
-            #     layout.add_points(ir, ic, x, y)
-
-            #     add_points(ir, ic, i, temp)
-            # else:
-            #     for ileg, leg_item in enumerate(kw['leg_items']):
-            #         temp = g.loc[g[kw['leg_groups']]==leg_item][y].dropna()
-            #         kw['marker_type'] = markers[ileg]
-            #         point_curves += add_points(i, temp, axes[ir, ic],
-            #                                     palette[ileg+1], **kw)
 
     else:
         data = df_rc[dd.y].dropna()
@@ -1524,8 +1040,8 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
         layout.plot_xy(ir, ic, 0, data, 'x', dd.y[0], None, False)
 
     # Remove temporary 'x' column
-    for dd in data:
-        del dd['x']
+    for dat in data:
+        del dat['x']
 
     if type(data) is pd.Series:
         data = data.values
@@ -1533,16 +1049,16 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
         data = data.values
 
     if len(data) > 0:  # needed?
-        for id, dd in enumerate(data):
+        for id, dat in enumerate(data):
             # Range lines
             kwargs = layout.box_range_lines.kwargs.copy()
-            layout.plot_line(ir, ic, id+1-0.2, dd.max().iloc[0],
-                             x1=id+1+0.2, y1=dd.max().iloc[0], **kwargs)
-            layout.plot_line(ir, ic, id+1-0.2, dd.min().iloc[0],
-                             x1=id+1+0.2, y1=dd.min().iloc[0], **kwargs)
+            layout.plot_line(ir, ic, id+1-0.2, dat.max().iloc[0],
+                             x1=id+1+0.2, y1=dat.max().iloc[0], **kwargs)
+            layout.plot_line(ir, ic, id+1-0.2, dat.min().iloc[0],
+                             x1=id+1+0.2, y1=dat.min().iloc[0], **kwargs)
             kwargs['style'] = kwargs['style2']
-            layout.plot_line(ir, ic, id+1, dd.min().iloc[0],
-                             x1=id+1, y1=dd.max().iloc[0], **kwargs)
+            layout.plot_line(ir, ic, id+1, dat.min().iloc[0],
+                             x1=id+1, y1=dat.max().iloc[0], **kwargs)
 
         # Add boxes
         bp = layout.plot_box(ir, ic, data, **kwargs)
@@ -1555,9 +1071,8 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
 
         # Add mean/median connecting lines
         if layout.box_connect_means.on and len(means) > 0:
-            x = np.linspace(1, num_groups, num_groups)
+            x = np.linspace(1, dd.ngroups, dd.ngroups)
             layout.plot_line(ir, ic, x, means, **layout.box_connect_means.kwargs)
-
 
 
 def plot_xy(data, layout, ir, ic, df_rc, kwargs):
@@ -1658,6 +1173,9 @@ def plotter(plot_func, **kwargs):
 
         # Make the legend
         layout.add_legend()
+
+        # Add box labels
+        layout.add_box_labels(ir, ic, dd)
 
         # Add a figure title
         layout.set_figure_title()
