@@ -386,17 +386,18 @@ class BaseLayout:
                                                  '#c34e52'),
                            notch=utl.kwget(kwargs, self.fcpp, 'box_notch', False),
                            **kwargs)
-        self.box_connect_means = \
-            Element('box_connect_means', self.fcpp,
+        self.box_connect = \
+            Element('box_connect', self.fcpp,
                     on=True if 'box' in self.plot_func and \
-                        kwargs.get('connect_means', True) else False,
-                    color=DEFAULT_COLORS[2],
+                        kwargs.get('box_connect_stat', True) else False,
+                    color='#666666',
+                    stat=kwargs.get('box_connect_stat', 'mean'),
                     zorder=utl.kwget(kwargs, self.fcpp,
-                                     'box_connect_means_zorder', 2),
+                                     'box_connect_zorder', 7),
                     **kwargs)
         self.box_dividers = Element('box_dividers', self.fcpp,
                                     on=True if 'box' in self.plot_func else False,
-                                    color='#bbbbbb',
+                                    color='#bbbbbb', zorder=1,
                                     **kwargs)
         self.box_range_lines = Element('box_range_lines', self.fcpp,
                                        on=True if 'box' in self.plot_func else False,
@@ -520,13 +521,35 @@ class BaseLayout:
         for axline in axlines:
             val = kwargs.get(axline, False)
             vals = utl.validate_list(val)
+            colors = []
+            styles = []
+            widths = []
+            alphas = []
+            for ival, val in enumerate(vals):
+                if type(val) is list or type(val) is tuple and len(val) > 1:
+                    colors += [val[1]]
+                else:
+                    colors += [utl.kwget(kwargs, self.fcpp, '%s_color' % axline, '#000000')]
+                if type(val) is list or type(val) is tuple and len(val) > 2:
+                    styles += [val[2]]
+                else:
+                    styles += [utl.kwget(kwargs, self.fcpp, '%s_style' % axline, '-')]
+                if type(val) is list or type(val) is tuple and len(val) > 3:
+                    widths += [val[3]]
+                else:
+                    widths += [utl.kwget(kwargs, self.fcpp, '%s_width' % axline, 1)]
+                if type(val) is list or type(val) is tuple and len(val) > 4:
+                    alphas += [val[4]]
+                else:
+                    alphas += [utl.kwget(kwargs, self.fcpp, '%s_alpha' % axline, 1)]
+
             setattr(self, axline,
-                    Element(on=True if val in kwargs.keys() else False,
-                            values=utl.validate_list(vals[0]),
-                            color=vals[1] if len(vals) > 1 else None,
-                            style=vals[2] if len(vals) > 2 else None,
-                            width=vals[3] if len(vals) > 3 else None,
-                           ))
+                    Element(axlines, self.fcpp,
+                            on=True if axline in kwargs.keys() else False,
+                            values=vals, color=colors, style=styles,
+                            width=widths, alpha=alphas,
+                            zorder=utl.kwget(kwargs, self.fcpp, '%s_zorder' % axline, 1),
+                            **kwargs))
 
         # Gridlines
         self.grid_major = Element('grid_major', self.fcpp,
@@ -670,10 +693,10 @@ class BaseLayout:
                                   size=utl.kwget(kwargs, self.fcpp,
                                                  'wrap_title_size',
                                                  rc_label.size),
-                                  edge_color=rc_label.edge_color,
+                                  edge_color='#5f5f5f',
                                   edge_width=rc_label.edge_width,
                                   edge_alpha=rc_label.edge_alpha,
-                                  fill_color=rc_label.fill_color,
+                                  fill_color='#5f5f5f',
                                   fill_alpha=rc_label.fill_alpha,
                                   font=rc_label.font,
                                   font_color=rc_label.font_color,
@@ -1034,7 +1057,7 @@ class Element:
 
 class DF_Element(Element):
     def __init__(self, label='None', fcpp={}, **kwargs):
-        Element.__init__(self, label='None', fcpp={}, **kwargs)
+        Element.__init__(self, label=label, fcpp=fcpp, **kwargs)
 
         if not hasattr(self, 'column'):
             self.column = None
@@ -1115,8 +1138,9 @@ class LayoutMPL(BaseLayout):
         self.wrap_title_bottom = 0
 
         # Weird spacing defaults out of our control
+        # These seem to be different for inline and saved plots!  WHY?
         self.fig_right_border = 6  # extra border on right side that shows up by default
-        self.legend_top_offset = 8
+        self.legend_top_offset = 8 # this is messing up inline; do we need to toggle with show?
         self.legend_border = 3
 
     def add_box_labels(self, ir, ic, data):
@@ -1147,12 +1171,12 @@ class LayoutMPL(BaseLayout):
                                     0, 0,
                                     (bottom - height) / self.axes.size[1]),
                                     rotation=self.box_group_label.rotation[i],
-                                    size=[width, height],
+                                    size=[width, height], offset=True,
                                     **self.make_kwargs(self.box_group_label,
                                                         ['size', 'rotation', 'position']))
 
             # Group titles
-            if self.box_group_title.on:
+            if self.box_group_title.on and ic == data.ncol - 1:
                 self.add_label(self.axes.obj[ir, ic], data.groups[k],
                                 (1 + self.ws_ax_box_title / self.axes.size[0],
                                 0, 0,
@@ -1211,50 +1235,21 @@ class LayoutMPL(BaseLayout):
         """
 
         # Set default line attributes
-        for line in ['ax_hlines', 'ax_vlines', 'ax2_hlines', 'ax2_vlines']:
-            line = getattr(self, line)
-            if not line.color:
-                line.color = 'k'
-            if not line.style:
-                line.style = '-'
-            if not line.width:
-                line.width = \
-                    1 if not self.lines.width else self.lines.width
-
-        # Add lines
-        if self.ax_hlines.on:
-            for val in self.ax_hlines.values:
-                self.axes.obj[ir, ic].axhline(val,
-                                              color=line.color,
-                                              linestyle=line.style,
-                                              linewidth=line.width)
-
-        if self.ax_vlines.on:
-            for val in self.ax_vlines.values:
-                self.axes.obj[ir, ic].axvline(val,
-                                              color=line.color,
-                                              linestyle=line.style,
-                                              linewidth=line.width)
-
-        if self.ax2_hlines.on:
-            for val in self.ax2_hlines.values:
-                self.axes2.obj[ir, ic].axhline(val,
-                                               color=line.color,
-                                               linestyle=line.style,
-                                               linewidth=line.width)
-
-        if self.ax2_vlines.on:
-            for val in self.ax_vlines.values:
-                self.axes2.obj[ir, ic].axvline(val,
-                                               color=line.color,
-                                               linestyle=line.style,
-                                               linewidth=line.width)
+        for axline in ['ax_hlines', 'ax_vlines', 'ax2_hlines', 'ax2_vlines']:
+            ll = getattr(self, axline)
+            func = self.axes.obj[ir, ic].axhline if 'hline' in axline \
+                   else self.axes.obj[ir, ic].axvline
+            if ll.on:
+                for ival, val in enumerate(ll.values):
+                    func(val, color=ll.color[ival], linestyle=ll.style[ival],
+                         linewidth=ll.width[ival], alpha=ll.alpha[ival],
+                         zorder=ll.zorder)
 
     def add_label(self, axis, text='', position=None, rotation=0, size=None,
                   fill_color='#ffffff', edge_color='#aaaaaa', edge_alpha=1,
                   edge_width=1, font='sans-serif',
                   font_weight='normal', font_style='normal',
-                  font_color='#666666', font_size=14, **kwargs):
+                  font_color='#666666', font_size=14, offset=False, **kwargs):
         """ Add a label to the plot
 
         This function can be used for title labels or for group labels applied
@@ -1284,16 +1279,14 @@ class LayoutMPL(BaseLayout):
         axis.add_patch(rect)
 
         # Set slight text offset
-        if rotation == 270:
+        if rotation == 270 and offset:
             offsetx = -2/self.axes.size[0]#-font_size/self.axes.size[0]/4
         else:
             offsetx = 0
-        if rotation == 0:
+        if rotation == 0 and offset:
             offsety = -2/self.axes.size[1]#-font_size/self.axes.size[1]/4
         else:
             offsety = 0
-        # print(offsetx, offsety)
-        #offsetx, offsety = 0, 0
 
         # Add the label text
         text = axis.text(position[0]+size[0]/self.axes.size[0]/2+offsetx,
@@ -1800,6 +1793,8 @@ class LayoutMPL(BaseLayout):
                 else:
                     rotations += [0]
                     sizes += [(widest, tallest)]
+            sizes.reverse()
+            rotations.reverse()
             self.box_group_label._size = sizes
             self.box_group_label.rotation = rotations
 
@@ -1829,6 +1824,10 @@ class LayoutMPL(BaseLayout):
             self.ws_row += max(self.tick_labels_major_x.size[1],
                                self.tick_labels_minor_x.size[1])
 
+        if self.box_group_label.on:
+            for size in self.box_group_label.size:
+                self.ws_row += size[1]
+
         x2 = (self.label_x2.size[0] + self.ws_ticks_ax + \
               max(self.tick_labels_major_x2.size[0],
                   self.tick_labels_minor_x2.size[0])) * self.axes.twiny
@@ -1855,7 +1854,7 @@ class LayoutMPL(BaseLayout):
             self.axes.size[0] * self.ncol + self.ws_col * (self.ncol - 1) +  \
             ws_leg_ax + self.legend.size[0] + ws_leg_fig + y2 + \
             self.label_row.size[0] + self.ws_row_label * self.label_row.on + \
-            cbar * self.ncol + box_title * self.ncol
+            cbar * self.ncol + box_title
 
         self.fig.size_px[1] = \
             self.ws_title + (self.label_col.size[1] + \
@@ -1880,8 +1879,14 @@ class LayoutMPL(BaseLayout):
         Get legend position
         """
 
+        offset_x = 0
+        if self.box_group_title.on and self.legend.size[1] < self.axes.size[1]:
+            offset_x = max(self.box_group_title.size)[0]
+
         self.legend.position[1] = \
-            1 - (self.ws_leg_fig - self.fig_right_border)/self.fig.size_px[0]
+            1 - (self.ws_leg_fig - self.fig_right_border + \
+            offset_x) / self.fig.size_px[0]
+        # something weird here
         self.legend.position[2] = \
             self.axes.position[2] + self.legend_top_offset/self.fig.size_px[1]
 
@@ -2050,7 +2055,7 @@ class LayoutMPL(BaseLayout):
                                            capprops={'color': self.box.edge_color},
                                            #medianprops={'color': self.box.median_color, 'linewidth': 2.5},
                                            patch_artist=True,
-                                           zorder=1)
+                                           zorder=5)
 
         return bp
 
@@ -2078,7 +2083,7 @@ class LayoutMPL(BaseLayout):
                                    color=kwargs.get('color', '#000000'),
                                    zorder=kwargs.get('zorder', 0))
 
-    def plot_xy(self, ir, ic, iline, df, x, y, leg_name, twin):
+    def plot_xy(self, ir, ic, iline, df, x, y, leg_name, twin, zorder=1):
         """ Plot xy data
 
         Args:
@@ -2126,7 +2131,8 @@ class LayoutMPL(BaseLayout):
                              markeredgecolor=self.markers.edge_color.get(iline),
                              markeredgewidth=self.markers.edge_width,
                              linewidth=0,
-                             markersize=self.markers.size)
+                             markersize=self.markers.size,
+                             zorder=zorder)
 
         # Make the line
         lines = None

@@ -376,13 +376,13 @@ class Data:
         self.ngroups = groups.ngroups
 
         # Set initial level to 1
-        for col in self.changes.columns:
+        for col in self.indices.columns:
             self.changes.loc[0, col] = 1
 
         # Determines values for all other rows
         for i in range(1, self.ngroups):
-            for col in self.changes.columns:
-                if self.changes[col].iloc[i-1] == self.changes[col].iloc[i]:
+            for col in self.indices.columns:
+                if self.indices[col].iloc[i-1] == self.indices[col].iloc[i]:
                     self.changes.loc[i, col] = 0
                 else:
                     self.changes.loc[i, col] = 1
@@ -821,14 +821,14 @@ class Data:
                     if self.row is not None and self.col is not None:
                         row = self.row_vals[ir]
                         col = self.col_vals[ic]
-                        self.df_rc = df[(df[self.row]==row) &
-                                        (df[self.col]==col)].copy()
+                        self.df_rc = df[(df[self.row[0]]==row) &
+                                        (df[self.col[0]]==col)].copy()
                     elif self.row and not self.col:
                         row = self.row_vals[ir]
-                        self.df_rc = df[(df[self.row]==row)].copy()
+                        self.df_rc = df[(df[self.row[0]]==row)].copy()
                     elif self.col and not self.row:
                         col = self.col_vals[ic]
-                        self.df_rc = df[(df[self.col]==col)].copy()
+                        self.df_rc = df[(df[self.col[0]]==col)].copy()
                     else:
                         self.df_rc = df
 

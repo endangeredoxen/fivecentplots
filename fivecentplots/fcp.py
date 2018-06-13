@@ -22,6 +22,7 @@ import scipy.stats as ss
 import pandas as pd
 import pdb
 import re
+import copy
 import importlib
 import itertools
 import shutil
@@ -992,7 +993,7 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
     data = []
     labels = []
     dividers = []
-    means = []
+    stats = []
     medians = []
 
     if dd.groups is not None:
@@ -1003,7 +1004,7 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
             gg = df_rc.copy().sort_values(by=dd.groups)
             gg = gg.set_index(dd.groups)
             if len(gg) > 1:
-                gg = gg.loc[row]
+                gg = gg.loc[tuple(row)]
             if type(gg) == pd.Series:
                 gg = pd.DataFrame(gg).T
             else:
@@ -1011,8 +1012,18 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
             temp = gg[dd.y].dropna()
             temp['x'] = irow + 1
             data += [temp]
-            means += [temp.mean().iloc[0]]
-            medians += [temp.median().iloc[0]]
+            ss = layout.box_connect.stat.lower()
+            if ss == 'median':
+                stats += [temp.median().iloc[0]]
+            elif ss == 'std':
+                stats += [temp.std().iloc[0]]
+            elif 'q' in ss:
+                if float(ss.strip('q')) < 1:
+                    stats += [temp.quantile(float(ss.strip('q'))).iloc[0]]
+                else:
+                    stats += [temp.quantile(float(ss.strip('q'))/100).iloc[0]]
+            else:
+                stats += [temp.mean().iloc[0]]
             if type(row) is not tuple:
                 row = [row]
             else:
@@ -1020,7 +1031,7 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
             labels += ['']
 
             if len(dd.changes.columns) > 1 and \
-                    dd.changes[col[-2]].iloc[irow] == 1 \
+                    dd.changes[col[0]].iloc[irow] == 1 \
                     and len(kwargs['groups']) > 1:
                 dividers += [irow + 0.5]
 
@@ -1029,9 +1040,10 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
                 for jj, jrow in dd.legend_vals.iterrows():
                     temp = gg.loc[gg[dd.legend]==jrow['names']][dd.y].dropna()
                     temp['x'] = irow + 1
-                    layout.plot_xy(ir, ic, jj, temp, 'x', dd.y[0], jrow['names'], False)
+                    layout.plot_xy(ir, ic, jj, temp, 'x', dd.y[0],
+                                   jrow['names'], False, zorder=10)
             else:
-                layout.plot_xy(ir, ic, 0, temp, 'x', dd.y[0], None, False)
+                layout.plot_xy(ir, ic, 0, temp, 'x', dd.y[0], None, False, zorder=10)
 
     else:
         data = df_rc[dd.y].dropna()
@@ -1065,14 +1077,18 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
 
         # Add divider lines
         if layout.box_dividers.on and len(dividers) > 0:
-            layout.ax_vlines = layout.box_dividers
+            layout.ax_vlines = copy.deepcopy(layout.box_dividers)
             layout.ax_vlines.values = dividers
+            layout.ax_vlines.color = [layout.box_dividers.color] * len(dividers)
+            layout.ax_vlines.style = [layout.box_dividers.style] * len(dividers)
+            layout.ax_vlines.width = [layout.box_dividers.width] * len(dividers)
+            layout.ax_vlines.alpha = [layout.box_dividers.alpha] * len(dividers)
             layout.add_hvlines(ir, ic)
 
         # Add mean/median connecting lines
-        if layout.box_connect_means.on and len(means) > 0:
+        if layout.box_connect.on and len(stats) > 0:
             x = np.linspace(1, dd.ngroups, dd.ngroups)
-            layout.plot_line(ir, ic, x, means, **layout.box_connect_means.kwargs)
+            layout.plot_line(ir, ic, x, stats, **layout.box_connect.kwargs,)
 
 
 def plot_xy(data, layout, ir, ic, df_rc, kwargs):
@@ -1171,11 +1187,11 @@ def plotter(plot_func, **kwargs):
             # Adjust tick marks
             layout.set_axes_ticks(ir, ic)
 
+            # Add box labels
+            layout.add_box_labels(ir, ic, dd)
+
         # Make the legend
         layout.add_legend()
-
-        # Add box labels
-        layout.add_box_labels(ir, ic, dd)
 
         # Add a figure title
         layout.set_figure_title()
