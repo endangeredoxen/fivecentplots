@@ -1138,9 +1138,8 @@ class LayoutMPL(BaseLayout):
         self.wrap_title_bottom = 0
 
         # Weird spacing defaults out of our control
-        # These seem to be different for inline and saved plots!  WHY?
         self.fig_right_border = 6  # extra border on right side that shows up by default
-        self.legend_top_offset = 8 # this is messing up inline; do we need to toggle with show?
+        self.legend_top_offset = 8 # this is differnt for inline; do we need to toggle on/off with show?
         self.legend_border = 3
 
     def add_box_labels(self, ir, ic, data):
@@ -1841,6 +1840,7 @@ class LayoutMPL(BaseLayout):
         ws_leg_ax = max(0, self.ws_leg_ax - y2) if self.legend.text is not None else 0
         ws_leg_fig = self.ws_leg_fig if self.legend.text is not None else self.ws_ax_fig
         box_title = max(self.box_group_title.size)[0] if self.box_group_title.on else 0
+        box_labels = sum([f[1] if self.box_group_label.on else 0 for f in self.box_group_label.size])
 
         if self.title.on:
             self.ws_title = self.ws_fig_title + self.title.size[1] + self.ws_title_ax
@@ -1862,7 +1862,8 @@ class LayoutMPL(BaseLayout):
             self.title_wrap.size[1] + self.label_wrap.size[1] + x2 + \
             self.axes.size[1]*self.nrow + 2*self.ws_label_tick + \
             self.ws_ticks_ax + self.label_x.size[1] + self.ws_label_fig + \
-            tick_labels_major_x + self.ws_row * (self.nrow - 1)  # leg_overflow?
+            tick_labels_major_x + self.ws_row * (self.nrow - 1) + box_labels
+            # leg_overflow?
 
         fig_only = self.axes.size[1]*self.nrow + (self.ws_ticks_ax +
                    self.label_x.size[1] + self.ws_label_fig +
@@ -1886,7 +1887,7 @@ class LayoutMPL(BaseLayout):
         self.legend.position[1] = \
             1 - (self.ws_leg_fig - self.fig_right_border + \
             offset_x) / self.fig.size_px[0]
-        # something weird here
+
         self.legend.position[2] = \
             self.axes.position[2] + self.legend_top_offset/self.fig.size_px[1]
 
@@ -1936,6 +1937,7 @@ class LayoutMPL(BaseLayout):
         self.axes.position[3] = \
             (self.ws_ticks_ax + self.label_x.size[1] + self.ws_label_fig + \
              2*self.ws_label_tick + \
+             sum([f[1] if self.box_group_label.on else 0 for f in self.box_group_label.size]) + \
              max(self.tick_labels_major_x.size[1],
                  self.tick_labels_minor_x.size[1])) / self.fig.size_px[1]
 
