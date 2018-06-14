@@ -51,12 +51,12 @@ cur_dir = os.path.dirname(__file__)
 user_dir = os.path.expanduser('~')
 if not os.path.exists(osjoin(user_dir, '.fivecentplots')):
     os.makedirs(osjoin(user_dir, '.fivecentplots'))
-if not os.path.exists(osjoin(user_dir, '.fivecentplots', 'defaults_dev.py')):
+if not os.path.exists(osjoin(user_dir, '.fivecentplots', 'defaults.py')):
     shutil.copy2(osjoin(cur_dir, 'themes', 'gray.py'),
-                 osjoin(user_dir, '.fivecentplots', 'defaults_dev.py'))
+                 osjoin(user_dir, '.fivecentplots', 'defaults.py'))
 sys.path = [osjoin(user_dir, '.fivecentplots')] + sys.path
 
-from defaults_dev import *  # use local file
+from defaults import *  # use local file
 
 LAYOUT = {'mpl': LayoutMPL,
           'bokeh': LayoutBokeh}
@@ -1043,13 +1043,14 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
                     layout.plot_xy(ir, ic, jj, temp, 'x', dd.y[0],
                                    jrow['names'], False, zorder=10)
             else:
-                layout.plot_xy(ir, ic, 0, temp, 'x', dd.y[0], None, False, zorder=10)
+                layout.plot_xy(ir, ic, 0, temp, 'x', dd.y[0], None, False,
+                               zorder=10)
 
     else:
-        data = df_rc[dd.y].dropna()
+        data = [df_rc[dd.y].dropna()]
         labels = ['']
-        data['x'] = 1
-        layout.plot_xy(ir, ic, 0, data, 'x', dd.y[0], None, False)
+        data[0]['x'] = 1
+        layout.plot_xy(ir, ic, 0, data[0], 'x', dd.y[0], None, False, zorder=10)
 
     # Remove temporary 'x' column
     for dat in data:

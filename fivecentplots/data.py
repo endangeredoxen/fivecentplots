@@ -111,6 +111,7 @@ class Data:
         self.wrap = self.check_group_columns('wrap', kwargs.get('wrap', None))
         self.wrap_vals = None
         self.groups = self.check_group_columns('groups', kwargs.get('groups', None))
+        self.check_group_errors()
         self.ncol = 1
         self.nleg = 0
         self.nrow = 1
@@ -180,6 +181,36 @@ class Data:
                                 (group_type, ', '.join(col_names)))
 
         return values
+
+    def check_group_errors(self):
+        """
+        Check for common errors related to grouping keywords
+        """
+
+        if self.row and len(self.row) > 1 or self.col and len(self.col) > 1:
+            error = 'Only one value can be specified for "%s"' % ('row' if self.row else 'col')
+            raise GroupingError(error)
+
+        if self.row is not None and self.row == self.col:
+            raise GroupingError('Row and column values must be different!')
+
+        if self.wrap and (self.col or self.row):
+            error = 'Cannot combine "wrap" grouping with "%s"' % ('col' if self.col else 'row')
+            raise GroupingError(error)
+
+        if self.groups is not None and \
+                ((self.row and self.row[0] in self.groups) or \
+                 (self.col and self.col[0] in self.groups)):
+            error = '"%s" value cannot also be specified as a "group" value' % \
+                    ('col' if self.col else 'row')
+            raise GroupingError(error)
+
+        if self.groups is not None and self.wrap is not None:
+            if len(list(set(self.wrap) & set(self.groups))) > 0:
+                error = '"%s" value cannot also be specified as a "group" value' % \
+                        ('col' if self.col else 'row')
+                raise GroupingError(error)
+
 
     def check_xyz(self, xyz):
         """
@@ -360,10 +391,12 @@ class Data:
         """
 
         # Get the changes df
-        if self.groups == [None]:
-            groups = self.df_fig.copy()
+        if self.groups is None:
+            groups = [(None, self.df_fig.copy())]
+            self.ngroups = 0
         else:
             groups = self.df_fig.groupby(self.groups)
+            self.ngroups = groups.ngroups
 
         # Order the group labels with natsorting
         gidx = []
@@ -373,7 +406,6 @@ class Data:
 
         self.indices = pd.DataFrame(gidx)
         self.changes = self.indices.copy()
-        self.ngroups = groups.ngroups
 
         # Set initial level to 1
         for col in self.indices.columns:

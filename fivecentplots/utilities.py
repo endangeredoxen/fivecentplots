@@ -8,7 +8,7 @@ user_dir = os.path.expanduser('~')
 default_path = os.path.join(user_dir, '.fivecentplots')
 if os.path.exists(default_path) and default_path not in sys.path:
     sys.path = [default_path] + sys.path
-    from defaults_dev import *
+    from defaults import *
 
 
 def get_current_values(df, text, key='@'):
@@ -144,7 +144,11 @@ def set_save_filename(df, fig_item, fig_cols, layout, kwargs):
         return kwargs['filename'] + kwargs.get('save_ext', '.png')
 
     # Build a filename
-    x = ' and '.join(validate_list(layout.label_x.text))
+    if 'x' in kwargs.keys():
+        x = ' and '.join(validate_list(layout.label_x.text))
+        x = x + ' vs '
+    else:
+        x = ''
     y = ' and '.join(validate_list(layout.label_y.text))
     row, col, wrap, groups, fig = '', '', '', '', ''
     if layout.label_row.text is not None:
@@ -163,7 +167,7 @@ def set_save_filename(df, fig_item, fig_cols, layout, kwargs):
                 fig += ' and'
             fig += ' where %s=%s' % (col, fig_items[icol])
 
-    filename = '%s vs %s%s%s%s%s%s' % (x, y, row, col, wrap, groups, fig)
+    filename = '%s%s%s%s%s%s%s' % (x, y, row, col, wrap, groups, fig)
 
     return filename + kwargs.get('save_ext', '.png')
 
