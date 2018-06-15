@@ -56,7 +56,7 @@ LEGEND_LOCATION = defaultdict(int,
                    'center': 10, 10: 10})
 
 
-def mpl_get_ticks(ax, xon, yon):
+def mpl_get_ticks(ax, xon=True, yon=True):
     """
     Divine a bunch of tick and label parameters for mpl layouts
 
@@ -70,6 +70,10 @@ def mpl_get_ticks(ax, xon, yon):
 
     tp = {}
     xy = []
+    if xon:
+        xy += ['x']
+    if yon:
+        xy += ['y']
 
     for vv in xy:
         tp[vv] = {}
@@ -719,6 +723,7 @@ class BaseLayout:
             self.ticks_major_x.on = False
             self.ticks_minor_x.on = False
             self.tick_labels_major_x.on = False
+            self.tick_labels_minor_x.on = False
             self.label_x.on = False
 
         # Confidence interval
@@ -2415,8 +2420,7 @@ class LayoutMPL(BaseLayout):
         """
 
         axes = [f.obj[ir, ic] for f in [self.axes, self.axes2] if f.on]
-        axes[0].minorticks_on()
-        return
+
         for ia, aa in enumerate(axes):
 
             if ia == 0:
@@ -2445,7 +2449,7 @@ class LayoutMPL(BaseLayout):
 
             # General tick params
             if ia == 0:
-                axes[ia].minorticks_on()
+                #axes[ia].minorticks_on()
                 axes[ia].tick_params(axis='both',
                                      which='major',
                                      pad=self.ws_ticks_ax,
