@@ -31,6 +31,7 @@ import sys
 from . data import Data
 from . layout import LayoutMPL, LayoutBokeh
 import utilities as utl
+import warnings
 try:
     import fileio
 except:
@@ -138,162 +139,23 @@ def conf_int(df, x, y, ax, color, kw):
 
 
 def contour(**kwargs):
-    """
-
+    """ Main boxplot plotting function
+    At minimum, it requires a pandas DataFrame with at
+    least two columns and two column names for the x and y axis.  Plots can be
+    customized and enhanced by passing keyword arguments as defined below.
+    Default values that must be defined in order to generate the plot are
+    pulled from the fcp_params default dictionary
     Args:
-        **kwargs:
-
+        df (DataFrame): DataFrame containing data to plot
+        x (str):        name of x column in df
+        y (str|list):   name or list of names of y column(s) in df
+    Keyword Args:
+        UPDATE
     Returns:
-
+        plots
     """
 
-    plt.close('all')
-
-    # Override some defaults
-    if kwargs.get('grid_major', None):
-        kwargs['grid_major'] = False
-
-    # Init plot
-    df, x, y, z, kw = init('plot', kwargs)
-    kw['ptype'] = 'contour'
-    if type(df) is bool and not df:
-        return
-
-    # Iterate over discrete figures
-    for ifig, fig_item in enumerate(kw['fig_items']):
-
-        # Make a data subset and filter
-        df_fig = get_df_figure(df, fig_item, kw)
-
-        # Set up the row grouping
-        kw = get_rc_groupings(df_fig, kw)
-
-        # Set up the legend grouping
-        kw = get_legend_groupings(df, y, kw)
-
-        # Make the plot figure and axes
-        layout, fig, axes, kw = make_fig_and_ax(kw)
-        ax2 = None
-
-        # Handle colormaps
-        if kw['cmap']=='jmp_spectral':
-            cmap = jmp_spectral
-        elif kw['cmap'] is not None:
-            cmap = plt.get_cmap(kw['cmap'])
-
-
-        # Make the plots by row and by column
-        for ir in range(0, kw['nrow']):
-            for ic in range(0, kw['ncol']):
-
-                # Handle missing wrap plots
-                if kw['wrap'] is not None:
-                    if ir*kw['ncol'] + ic > len(kw['wrap']) - 1:
-                        axes[ir, ic].axis('off')
-                        continue
-
-                # Set colors
-                axes[ir, ic] = set_axes_colors(axes[ir, ic], kw)
-
-                # Style gridlines
-                axes[ir, ic] = set_axes_grid_lines(axes[ir, ic], kw)
-
-                # Subset the data
-                df_sub = get_rc_subset(df, ir, ic, kw)
-
-                # Apply any data transformations
-                df_sub = set_data_transformation(df_sub, x, y, z, kw)
-
-                # Select the contour type
-                if kw['filled']:
-                    contour = axes[ir, ic].contourf
-                else:
-                    contour = axes[ir, ic].contour
-
-                # Change data type
-                xx = np.array(df_sub[x])
-                yy = np.array(df_sub[y[0]])
-                zz = np.array(df_sub[z])
-
-                # Handle colormaps
-                if kw['cmap'] == 'jmp_spectral':
-                    cmap = jmp_spectral
-                elif kw['cmap'] is not None:
-                    cmap = plt.get_cmap(kw['cmap'])
-                elif fcp_params['cmap'] == 'jmp_spectral':
-                    cmap = jmp_spectral
-                elif fcp_params['cmap'] is not None:
-                    cmap = plt.get_cmap(fcp_params['cmap'])
-                else:
-                    cmap = plt.get_cmap('inferno')
-
-                # Make the grid
-                xi = np.linspace(min(xx), max(xx))
-                yi = np.linspace(min(yy), max(yy))
-                zi = mlab.griddata(xx, yy, zz, xi, yi, interp='linear')
-                cc = contour(xi, yi, zi, kw['levels'],
-                             line_width=kw['line_width'], cmap=cmap)
-
-                # Set the axes ranges
-                if kw['xmin'] is None:
-                    kw['xmin'] = min(xi)
-                if kw['xmax'] is None:
-                    kw['xmax'] = max(xi)
-                if kw['ymin'] is None:
-                    kw['ymin'] = min(yi)
-                if kw['ymax'] is None:
-                    kw['ymax'] = max(yi)
-
-                # Adjust the tick marks
-                axes[ir, ic] = set_axes_ticks(axes[ir, ic], kw)
-
-                # Axis ranges
-                axes[ir, ic], ax = set_axes_ranges(df_fig, df_sub, x, y,
-                                                   axes[ir, ic], ax2, kw)
-
-                # Add labels
-                axes[ir, ic], ax2 = \
-                    set_axes_labels(axes[ir, ic], ax2, ir, ic, kw)
-
-                # Add row/column labels
-                axes[ir, ic] = \
-                    set_axes_rc_labels(axes[ir, ic], ir, ic, kw, layout)
-
-                # Add the colorbar
-                if kw['cbar']:
-                    # Define colorbar position
-                    from mpl_toolkits.axes_grid1 import make_axes_locatable
-                    divider = make_axes_locatable(axes[ir, ic])
-                    size = '%s%%' % (100*kw['cbar_width']/layout.ax_size[0])
-                    pad = kw['ws_cbar_ax']/100
-                    cax = divider.append_axes("right", size=size, pad=pad)
-
-                    # Add the colorbar and label
-                    cbar = plt.colorbar(cc, cax=cax)
-                    cbar.ax.set_ylabel(r'%s' % kw['cbar_label'], rotation=270,
-                                       labelpad=kw['label_font_size'],
-                                       style=kw['label_style'],
-                                       fontsize=kw['label_font_size'],
-                                       weight=kw['label_weight'],
-                                       color=kw['ylabel_color'])
-
-        # Add a figure title
-        set_figure_title(df_fig, axes[0,0], kw, layout)
-
-        # Build the save filename
-        filename = set_save_filename(df_fig, x, y, kw, ifig)
-
-        # Save and optionally open
-        save(fig, filename, kw)
-
-        # Reset values for next loop
-        kw['leg_items'] = []
-
-    if not kw['inline']:
-        plt.close('all')
-
-    else:
-        return fig
+    return plotter('plot_contour', **kwargs)
 
 
 def deprecated(kwargs):
@@ -1092,6 +954,24 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
             layout.plot_line(ir, ic, x, stats, **layout.box_connect.kwargs,)
 
 
+def plot_contour(data, layout, ir, ic, df_rc, kwargs):
+    """
+    Plot contour data
+
+    Args:
+        data (obj): Data object
+        layout (obj): layout object
+        ir (int): current subplot row number
+        ic (int): current subplot column number
+        df_rc (pd.DataFrame): data subset
+        kwargs (dict): keyword args
+
+    """
+
+    for iline, df, x, y, z, leg_name, twin in data.get_plot_data(df_rc):
+        layout.plot_contour(ir, ic, iline, df, x, y, z)
+
+
 def plot_xy(data, layout, ir, ic, df_rc, kwargs):
     """
     Plot xy data
@@ -1106,7 +986,7 @@ def plot_xy(data, layout, ir, ic, df_rc, kwargs):
 
     """
 
-    for iline, df, x, y, leg_name, twin in data.get_plot_data(df_rc):
+    for iline, df, x, y, z, leg_name, twin in data.get_plot_data(df_rc):
         if kwargs.get('groups', False):
             for nn, gg in df.groupby(utl.validate_list(kwargs['groups'])):
                 layout.plot_xy(ir, ic, iline, gg, x, y, leg_name, twin)

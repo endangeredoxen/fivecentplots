@@ -14,7 +14,7 @@ st = pdb.set_trace
 
 REQUIRED_VALS = {'plot_xy': ['x', 'y'],
                  'plot_box': ['y'],
-                 'contour': ['x', 'y', 'z']}
+                 'plot_contour': ['x', 'y', 'z']}
 
 
 class AxisError(Exception):
@@ -728,14 +728,15 @@ class Data:
         """
 
         if type(self.legend_vals) != pd.DataFrame:
-            vals = pd.DataFrame({'x':self.x, 'y':self.y})
+            vals = pd.DataFrame({'x': self.x, 'y': self.y})
             for irow, row in vals.iterrows():
                 # Set twin ax status
                 twin = False
                 if (row['x'] != vals.loc[0, 'x'] and self.twiny) \
                         or (row['y'] != vals.loc[0, 'y'] and self.twinx):
                     twin = True
-                yield irow, df, row['x'], row['y'], None, twin
+
+                yield irow, df, row['x'], row['y'], self.z[0], None, twin
 
         else:
             for irow, row in self.legend_vals.iterrows():
@@ -753,7 +754,7 @@ class Data:
                         or (row['y'] != self.legend_vals.loc[0, 'y'] and self.twinx):
                     twin = True
 
-                yield irow, df2, row['x'], row['y'], row['names'], twin
+                yield irow, df2, row['x'], row['y'], self.z[0], row['names'], twin
 
     def get_plot_data2(self, df):
         """

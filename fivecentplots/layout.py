@@ -20,7 +20,8 @@ def custom_formatwarning(msg, *args, **kwargs):
     return 'Warning: ' + str(msg) + '\n'
 
 warnings.formatwarning = custom_formatwarning
-#warnings.filterwarnings("ignore")  # do it with kwargs?
+warnings.filterwarnings("ignore", "invalid value encountered in double_scalars")  # weird error in boxplot with no groups
+
 try:
     from natsort import natsorted
 except:
@@ -439,7 +440,19 @@ class BaseLayout:
                             size=[utl.kwget(kwargs, self.fcpp,
                                            'cbar_width', 30),
                                   self.axes.size[1]],
+                            title='',
                             )
+
+        # Contours
+        self.contour = Element('contour', self.fcpp, kwargs,
+                               on=True,
+                               cmap=utl.kwget(kwargs, self.fcpp,
+                                              'cmap', 'inferno'),
+                               filled=utl.kwget(kwargs, self.fcpp,
+                                                'filled', True),
+                               levels=utl.kwget(kwargs, self.fcpp,
+                                                'levels', 20),
+                              )
 
         # Line fit
         self.line_fit = Element('line_fit', self.fcpp, kwargs,
@@ -1820,7 +1833,7 @@ class LayoutMPL(BaseLayout):
         # Destroy the dummy figure
         mpl.pyplot.close(fig)
 
-    def get_figure_size(self):
+    def get_figure_size(self, **kwargs):
         """
         Determine the size of the mpl figure canvas in pixels and inches
         """
@@ -1837,10 +1850,6 @@ class LayoutMPL(BaseLayout):
             self.ws_row += max(self.tick_labels_major_x.size[1],
                                self.tick_labels_minor_x.size[1])
 
-        if self.box_group_label.on:
-            for size in self.box_group_label.size:
-                self.ws_row += size[1]
-
         x2 = (self.label_x2.size[0] + self.ws_ticks_ax + \
               max(self.tick_labels_major_x2.size[0],
                   self.tick_labels_minor_x2.size[0])) * self.axes.twiny
@@ -1853,8 +1862,21 @@ class LayoutMPL(BaseLayout):
                                   self.tick_labels_minor_y.size[0])
         ws_leg_ax = max(0, self.ws_leg_ax - y2) if self.legend.text is not None else 0
         ws_leg_fig = self.ws_leg_fig if self.legend.text is not None else self.ws_ax_fig
+
         box_title = max(self.box_group_title.size)[0] if self.box_group_title.on else 0
-        box_labels = sum([f[1] if self.box_group_label.on else 0 for f in self.box_group_label.size])
+        if self.box_group_label.on:
+            if type(self.box_group_label.size[0]) is tuple:
+                box_label = max([f[1] for f in self.box_group_label.size])
+            else:
+                box_label = f[1]
+        else:
+            box_label = 0
+        self.box_labels = len(self.groups) if self.groups is not None else 0 * \
+                          (box_label * (1 + 2 * self.box_group_label.padding / 100))
+        if self.box_group_label.on and self.label_wrap.on and 'ws_row' not in kwargs.keys():
+            self.ws_row = self.box_labels + self.title_wrap.size[1]
+        else:
+            self.ws_row += self.box_labels
 
         if self.title.on:
             self.ws_title = self.ws_fig_title + self.title.size[1] + self.ws_title_ax
@@ -1876,7 +1898,7 @@ class LayoutMPL(BaseLayout):
             self.title_wrap.size[1] + self.label_wrap.size[1] + x2 + \
             self.axes.size[1]*self.nrow + 2*self.ws_label_tick + \
             self.ws_ticks_ax + self.label_x.size[1] + self.ws_label_fig + \
-            tick_labels_major_x + self.ws_row * (self.nrow - 1) + box_labels
+            tick_labels_major_x + self.ws_row * (self.nrow - 1) + self.box_labels
             # leg_overflow?
 
         fig_only = self.axes.size[1]*self.nrow + (self.ws_ticks_ax +
@@ -1950,8 +1972,7 @@ class LayoutMPL(BaseLayout):
 
         self.axes.position[3] = \
             (self.ws_ticks_ax + self.label_x.size[1] + self.ws_label_fig + \
-             2*self.ws_label_tick + \
-             sum([f[1] if self.box_group_label.on else 0 for f in self.box_group_label.size]) + \
+             2*self.ws_label_tick + self.box_labels + \
              max(self.tick_labels_major_x.size[1],
                  self.tick_labels_minor_x.size[1])) / self.fig.size_px[1]
 
@@ -1974,8 +1995,10 @@ class LayoutMPL(BaseLayout):
         Make the figure and axes objects
         """
 
-        self.nrow = data.nrow
+        self.groups = data.groups
         self.ncol = data.ncol
+        self.ngroups = data.ngroups
+        self.nrow = data.nrow
         self.nwrap = data.nwrap
 
         if data.wrap:
@@ -1985,7 +2008,7 @@ class LayoutMPL(BaseLayout):
 
         self.set_labels(data)
         self.get_element_sizes(data)
-        self.get_figure_size()
+        self.get_figure_size(**kwargs)
         self.get_subplots_adjust()
         self.get_rc_label_position()
         self.get_legend_position()
@@ -2074,6 +2097,53 @@ class LayoutMPL(BaseLayout):
                                            zorder=5)
 
         return bp
+
+    def plot_contour(self, ir, ic, iline, df, x, y, z):
+        """
+        Plot a contour plot
+        """
+
+        # Convert data type
+        xx = np.array(df[x])
+        yy = np.array(df[y])
+        zz = np.array(df[z])
+
+        # Make the grid
+        xi = np.linspace(min(xx), max(xx))
+        yi = np.linspace(min(yy), max(yy))
+        zi = mlab.griddata(xx, yy, zz, xi, yi, interp='linear')
+
+        if self.contour.filled:
+            contour = self.axes.obj[ir,ic].contourf
+        else:
+            contour = self.axes.obj[ir,ic].contour
+        cc = contour(xi, yi, zi, self.contour.levels, line_width=self.contour.width,
+                    cmap=self.contour.cmap)
+
+        if self.cbar.on:
+            from mpl_toolkits.axes_grid1 import make_axes_locatable
+            divider = make_axes_locatable(self.axes.obj[ir, ic])
+            size = '%s%%' % (10)#0*kw['cbar_width']/design.ax_size[0])
+            pad = 0#kw['cbar_ax_ws']/100
+            cax = divider.append_axes("right", size=size, pad=pad)
+
+            # Add the colorbar and label
+            cbar = mplp.colorbar(cc, cax=cax)
+            cbar.ax.set_ylabel(r'%s' % self.cbar.title)#, rotation=270,
+                                #labelpad=kw['label_font_size'],
+                                #style=kw['label_style'],
+                                #fontsize=kw['label_font_size'],
+                                #weight=kw['label_weight'],
+                                #color=kw['ylabel_color'])
+
+            # if self.cbar.on: #ir, ic??
+            # self.cbar.obj.ax.set_ylabel(fontsize=self.label_z.font_size,
+            #                             weight=self.label_z.font_weight,
+            #                             style=self.label_z.font_style,
+            #                             color=self.label_z.font_color,
+            #                             rotation=self.label_z.rotation,
+            #                             fontname=self.label_z.font,
+            #                             )
 
     def plot_line(self, ir, ic, x0, y0, x1=None, y1=None,**kwargs):
         """
@@ -2287,16 +2357,6 @@ class LayoutMPL(BaseLayout):
                                                  labelpad=pad,
                                                  )
 
-        # Add cbars for contour
-        if self.cbar.on: #ir, ic??
-            self.cbar.obj.ax.set_ylabel(fontsize=self.label_z.font_size,
-                                        weight=self.label_z.font_weight,
-                                        style=self.label_z.font_style,
-                                        color=self.label_z.font_color,
-                                        rotation=self.label_z.rotation,
-                                        fontname=self.label_z.font,
-                                        )
-
     def set_axes_scale(self, ir, ic):
         """
         Set the scale type of the axes
@@ -2356,10 +2416,10 @@ class LayoutMPL(BaseLayout):
                 self.axes.obj[ir, ic].set_ylim(top=v)
             elif k == 'y2max' and v is not None:
                 self.axes2.obj[ir, ic].set_ylim(top=v)
-            elif k == 'zmin' and v is not None:
-                self.cbar.obj[ir, ic].set_clim(bottom=v)
-            elif k == 'zmax' and v is not None:
-                self.cbar.obj[ir, ic].set_clim(top=v)
+            # elif k == 'zmin' and v is not None and self.cbar.on:
+            #     self.cbar.obj[ir, ic].set_clim(bottom=v)
+            # elif k == 'zmax' and v is not None and self.cbar.on:
+            #     self.cbar.obj[ir, ic].set_clim(top=v)
 
     def set_axes_rc_labels(self, ir, ic, ax=None):
         """
@@ -2434,10 +2494,8 @@ class LayoutMPL(BaseLayout):
                     and self.plot_func != 'boxplot' \
                     and self.axes.scale not in ['logx', 'semilogx', 'loglog', 'log'] \
                     and (not self.axes.share_x or ir==0 and ic==0):
-                try:
+                if 'box' not in self.plot_func:
                     axes[ia].get_xaxis().get_major_formatter().set_scientific(False)
-                except:
-                    print('bah: axes[ia].get_xaxis().get_major_formatter().set_scientific(False)')
 
             if not self.axes.sci_y \
                     and self.axes.scale not in ['logy', 'semilogy', 'loglog', 'log'] \
@@ -2449,7 +2507,7 @@ class LayoutMPL(BaseLayout):
 
             # General tick params
             if ia == 0:
-                #axes[ia].minorticks_on()
+                axes[ia].minorticks_on()
                 axes[ia].tick_params(axis='both',
                                      which='major',
                                      pad=self.ws_ticks_ax,
@@ -2678,7 +2736,9 @@ class LayoutMPL(BaseLayout):
                 elif tlmin.on:
                     # THE DECIMAL THING WONT WORK FOR LOG!
 
-                    tp = mpl_get_ticks(axes[ia])
+                    tp = mpl_get_ticks(axes[ia],
+                                       getattr(self, 'ticks_major_x%s' % lab).on,
+                                       getattr(self, 'ticks_major_y%s' % lab).on)
                     inc = tp[axx]['labels'][1][1] - tp[axx]['labels'][0][1]
                     minor_ticks = [f[1] for f in
                                    tp[axx]['labels']][len(tp[axx]['ticks']):]
@@ -2694,9 +2754,10 @@ class LayoutMPL(BaseLayout):
                             text.set_rotation(tlmin.rotation)
 
                     # Minor tick overlap cleanup
-                    if axx=='y': st()
                     if self.tick_cleanup and tlminon:
-                        tp = mpl_get_ticks(axes[ia])  # need to update
+                        tp = mpl_get_ticks(axes[ia],
+                                           getattr(self, 'ticks_major_x%s' % lab).on,
+                                           getattr(self, 'ticks_major_y%s' % lab).on)  # need to update
                         buf = 1.99
                         if axx == 'x':
                             wh = 0
