@@ -176,7 +176,7 @@ class BaseLayout:
                         font_weight='bold',
                         )
         labels = ['x', 'x2', 'y', 'y2', 'z']
-        rotations = [0, 0, 90, 270, 0]
+        rotations = [0, 0, 90, 270, 270]
         for ilab, lab in enumerate(labels):
             # Copy base label object and set default rotation
             setattr(self, 'label_%s' % lab, copy.deepcopy(label))
@@ -277,7 +277,7 @@ class BaseLayout:
                                 ['font', 'font_color', 'font_size',
                                  'font_style', 'font_weight', 'padding',
                                  'rotation'], 'tick_labels_major', kwargs)
-        for ax in self.ax:
+        for ax in self.ax + ['z']:
             setattr(self, 'tick_labels_major_%s' %ax,
                     Element('tick_labels_major_%s' %ax, self.fcpp, kwargs,
                         on=utl.kwget(kwargs, self.fcpp,
@@ -435,10 +435,10 @@ class BaseLayout:
                                  values={} if not kwargs.get('legend') else {'NaN': None},
                                  )
         # Color bar
+        cbar_size = utl.kwget(kwargs, self.fcpp, 'cbar_size', 30)
         self.cbar = Element('cbar', self.fcpp, kwargs,
                             on=kwargs.get('cbar', False),
-                            size=[utl.kwget(kwargs, self.fcpp,
-                                           'cbar_width', 30),
+                            size=[cbar_size if type(cbar_size) is not list else cbar_size[0],
                                   self.axes.size[1]],
                             title='',
                             )
@@ -769,7 +769,10 @@ class BaseLayout:
         """
 
         # cbar
-        self.ws_cbar_ax = utl.kwget(kwargs, self.fcpp, 'ws_cbar_ax', 10)
+        if self.cbar.on:
+            self.ws_ax_cbar = utl.kwget(kwargs, self.fcpp, 'ws_ax_cbar', 10)
+        else:
+            self.ws_ax_cbar = 0
 
         # rc labels
         ws_rc_label = utl.kwget(kwargs, self.fcpp, 'ws_rc_label', 10)
@@ -887,7 +890,7 @@ class BaseLayout:
 
         return kwargs
 
-    def set_labels(self, data, **kwargs):
+    def set_label_text(self, data, **kwargs):
         """
         Set the default label text
 
@@ -1233,22 +1236,33 @@ class LayoutMPL(BaseLayout):
                           zorder=2)
             return pts
 
-    def add_cbar(self):
-        # Define colorbar position
+    def add_cbar(self, ax, contour):
+        """
+        Add a color bar
+        """
+
         from mpl_toolkits.axes_grid1 import make_axes_locatable
-        divider = make_axes_locatable(axes[ir, ic])
-        size = '%s%%' % (100*kw['cbar_width']/layout.ax_size[0])
-        pad = kw['ws_cbar_ax']/100
+        divider = make_axes_locatable(ax)
+        size = '%s%%' % (100*self.cbar.size[0]/self.axes.size[0])
+        pad = self.ws_ax_cbar/100
         cax = divider.append_axes("right", size=size, pad=pad)
 
-        # Add the colorbar and label
-        cbar = mplp.colorbar(cc, cax=cax)
-        cbar.ax.set_ylabel(r'%s' % kw['cbar_label'], rotation=270,
-                           labelpad=kw['label_font_size'],
-                           style=kw['label_style'],
-                           fontsize=kw['label_font_size'],
-                           weight=kw['label_weight'],
-                           color=kw['ylabel_color'])
+        # Add the colorbar
+        cbar = mplp.colorbar(contour, cax=cax)
+
+        # Add the label
+        if self.label_z.on:
+            cbar.ax.set_ylabel(r'%s' % self.label_z.text,
+                               fontsize=self.label_z.font_size,
+                               weight=self.label_z.font_weight,
+                               style=self.label_z.font_style,
+                               color=self.label_z.font_color,
+                               rotation=self.label_z.rotation,
+                               fontname=self.label_z.font,
+                               labelpad=self.ws_label_tick,
+                               )
+
+        return cbar
 
     def add_hvlines(self, ir, ic):
         """
@@ -1425,11 +1439,10 @@ class LayoutMPL(BaseLayout):
         fig = mpl.pyplot.figure(dpi=self.fig.dpi)
         ax = fig.add_subplot(111)
         ax2, ax3 = None, None
-        if self.axes.twinx:
+        if self.axes.twinx or data.z is not None:
             ax2 = ax.twinx()
         if self.axes.twiny:
             ax3 = ax.twiny()
-        plotter = getattr(ax, 'plot')
         if self.axes.scale in ['logy', 'semilogy', 'loglog', 'log']:
             ax.set_yscale('log')
         elif self.axes.scale in ['logx', 'semilogx', 'loglog', 'log']:
@@ -1441,7 +1454,6 @@ class LayoutMPL(BaseLayout):
             ax.set_xscale('logit')
             ax.set_yscale('logit')
         if self.axes.twinx:
-            plotter2 = getattr(ax2, 'plot')
             if self.axes.scale in ['logy', 'semilogy', 'loglog', 'log']:
                 ax2.set_yscale('log')
             elif self.axes.scale in ['logx', 'semilogx', 'loglog', 'log']:
@@ -1453,7 +1465,6 @@ class LayoutMPL(BaseLayout):
                 ax2.set_xscale('logit')
                 ax2.set_yscale('logit')
         if self.axes.twiny:
-            plotter3 = getattr(ax3, 'plot')
             if self.axes.scale in ['logy', 'semilogy', 'loglog', 'log']:
                 ax3.set_yscale('log')
             elif self.axes.scale in ['logx', 'semilogx', 'loglog', 'log']:
@@ -1509,12 +1520,12 @@ class LayoutMPL(BaseLayout):
                                      )
 
         # Define label variables
-        xticksmaj, x2ticksmaj, yticksmaj, y2ticksmaj = [], [], [], []
+        xticksmaj, x2ticksmaj, yticksmaj, y2ticksmaj, zticksmaj = [], [], [], [], []
         xticksmin, x2ticksmin, yticksmin, y2ticksmin = [], [], [], []
         xticklabelsmaj, x2ticklabelsmaj, yticklabelsmaj, y2ticklabelsmaj = \
             [], [], [], []
-        xticklabelsmin, x2ticklabelsmin, yticklabelsmin, y2ticklabelsmin = \
-            [], [], [], []
+        xticklabelsmin, x2ticklabelsmin, yticklabelsmin, y2ticklabelsmin, zticklabelsmaj = \
+            [], [], [], [], []
         wrap_labels = np.array([[None]*self.ncol]*self.nrow)
         row_labels = np.array([[None]*self.ncol]*self.nrow)
         col_labels = np.array([[None]*self.ncol]*self.nrow)
@@ -1522,18 +1533,24 @@ class LayoutMPL(BaseLayout):
         for ir, ic, df in data.get_rc_subset(data.df_fig):
             if len(df) == 0:
                 continue
-            if data.twinx:
-                y2ticks = [f[2] for f in axes[1].yaxis.iter_ticks()
-                          if f[2] != '']
-                y2iter_ticks = [f for f in axes[1].yaxis.iter_ticks()]
-                y2ticksmaj += [f[2] for f in y2iter_ticks[0:len(y2ticks)]]
-            elif data.twiny:
-                x2ticks = [f[2] for f in axes[2].xaxis.iter_ticks()
-                           if f[2] != '']
-                x2iter_ticks = [f for f in axes[2].xaxis.iter_ticks()]
-                x2ticksmaj += [f[2] for f in x2iter_ticks[0:len(x2ticks)]]
+            # Twinx
+            if self.axes.twinx:
+                pp = ax.plot(df[data.x[0]], df[data.y[0]], 'o-')
+                pp2 = ax2.plot(df[data.x[0]], df[data.y[1]], 'o-')
+            # Twiny
+            if self.axes.twiny:
+                pp = ax.plot(df[data.x[0]], df[data.y[0]], 'o-')
+                pp2 = ax3.plot(df[data.x[1]], df[data.y[0]], 'o-')
+            # Z axis
+            if data.z is not None:
+                pp = ax.plot(df[data.x[0]], df[data.y[0]], 'o-')
+                pp2 = ax2.plot(df[data.x[0]], df[data.z[0]], 'o-')
+            # Regular
+            else:
+                for xy in zip(data.x, data.y):
+                    pp = ax.plot(df[xy[0]], df[xy[1]], 'o-')
             for xy in zip(data.x, data.y):
-                plotter(df[xy[0]], df[xy[1]], 'o-')
+                pp = ax.plot(df[xy[0]], df[xy[1]], 'o-')
             if data.ranges[ir, ic]['xmin'] is not None:
                 axes[0].set_xlim(left=data.ranges[ir, ic]['xmin'])
             if data.ranges[ir, ic]['xmax'] is not None:
@@ -1550,6 +1567,20 @@ class LayoutMPL(BaseLayout):
             yiter_ticks = [f for f in axes[0].yaxis.iter_ticks()]
             xticksmaj += [f[2] for f in xiter_ticks[0:len(xticks)]]
             yticksmaj += [f[2] for f in yiter_ticks[0:len(yticks)]]
+            if data.twinx:
+                y2ticks = [f[2] for f in axes[1].yaxis.iter_ticks()
+                          if f[2] != '']
+                y2iter_ticks = [f for f in axes[1].yaxis.iter_ticks()]
+                y2ticksmaj += [f[2] for f in y2iter_ticks[0:len(y2ticks)]]
+            elif data.twiny:
+                x2ticks = [f[2] for f in axes[2].xaxis.iter_ticks()
+                           if f[2] != '']
+                x2iter_ticks = [f for f in axes[2].xaxis.iter_ticks()]
+                x2ticksmaj += [f[2] for f in x2iter_ticks[0:len(x2ticks)]]
+            if data.z is not None:
+                zticks = axes[1].get_xticks()
+                ziter_ticks = [f for f in axes[1].yaxis.iter_ticks()]
+                zticksmaj += [f[2] for f in ziter_ticks[0:len(zticks)]]
 
             # Minor ticks
             if self.axes.scale in ['logx', 'semilogx', 'loglog', 'log'] and \
@@ -1612,16 +1643,22 @@ class LayoutMPL(BaseLayout):
                                         rotation=self.tick_labels_major_x.rotation)]
         for ix, x2tick in enumerate(x2ticksmaj):
             x2ticklabelsmaj += [fig.text(ix*20, 20, x2tick,
-                                     fontsize=self.tick_labels_major_x2.font_size,
+                                        fontsize=self.tick_labels_major_x2.font_size,
                                         rotation=self.tick_labels_major_x2.rotation)]
         for iy, ytick in enumerate(yticksmaj):
             yticklabelsmaj += [fig.text(20, iy*20, ytick,
-                                     fontsize=self.tick_labels_major_y.font_size,
+                                        fontsize=self.tick_labels_major_y.font_size,
                                         rotation=self.tick_labels_major_y.rotation)]
         for iy, y2tick in enumerate(y2ticksmaj):
             y2ticklabelsmaj += [fig.text(20, iy*20, y2tick,
-                                      fontsize=self.tick_labels_major_y2.font_size,
-                                        rotation=self.tick_labels_major_y2.rotation)]
+                                         fontsize=self.tick_labels_major_y2.font_size,
+                                         rotation=self.tick_labels_major_y2.rotation)]
+        if data.z is not None:
+            for iz, ztick in enumerate(zticksmaj):
+                zticklabelsmaj += [fig.text(20, iz*20, ztick,
+                                            fontsize=self.tick_labels_major_z.font_size,
+                                            rotation=self.tick_labels_major_z.rotation)]
+
 
         # Write out minor tick labels
         for ix, xtick in enumerate(xticksmin):
@@ -1674,6 +1711,14 @@ class LayoutMPL(BaseLayout):
                                color=self.label_y2.font_color,
                                rotation=self.label_y2.rotation)
 
+        if self.label_z.text:
+            label_z = fig.text(0, 0, r'%s' % self.label_z.text,
+                               fontsize=self.label_z.font_size,
+                               weight=self.label_z.font_weight,
+                               style=self.label_z.font_style,
+                               color=self.label_z.font_color,
+                               rotation=self.label_z.rotation)
+
         # Write out boxplot group labels
         box_group_label = []
         box_group_title = []
@@ -1705,12 +1750,9 @@ class LayoutMPL(BaseLayout):
                             rotation=self.box_group_title.rotation,
                             )]
 
-        # Cbar
-        # fill in later
-
         # Render dummy figure
         mpl.pyplot.draw()
-        # mpl.pyplot.savefig(r'C:\data\test.png')
+        # mpl.pyplot.savefig(r'test.png')  # turn on for debugging
 
         # Get actual sizes
         if self.tick_labels_major_x.on and len(xticklabelsmaj) > 0:
@@ -1729,6 +1771,10 @@ class LayoutMPL(BaseLayout):
             self.tick_labels_major_y2.size = \
                 [np.nanmax([t.get_window_extent().width for t in y2ticklabelsmaj]),
                  np.nanmax([t.get_window_extent().height for t in y2ticklabelsmaj])]
+        if self.tick_labels_major_z.on and len(zticklabelsmaj) > 0:
+            self.tick_labels_major_z.size = \
+                [np.nanmax([t.get_window_extent().width for t in zticklabelsmaj]),
+                 np.nanmax([t.get_window_extent().height for t in zticklabelsmaj])]
 
         if self.tick_labels_minor_x.on and len(xticklabelsmin) > 0:
             self.tick_labels_minor_x.size = \
@@ -1767,7 +1813,7 @@ class LayoutMPL(BaseLayout):
 
         if self.label_x.on:
             self.label_x.size = (label_x.get_window_extent().width,
-                             label_x.get_window_extent().height)
+                                 label_x.get_window_extent().height)
         if self.axes.twiny:
             self.label_x2.size = (label_x2.get_window_extent().width,
                                   label_x2.get_window_extent().height)
@@ -1776,6 +1822,9 @@ class LayoutMPL(BaseLayout):
         if self.axes.twinx:
             self.label_y2.size = (label_y2.get_window_extent().width,
                                   label_y2.get_window_extent().height)
+        if self.label_z.on:
+            self.label_z.size = (label_z.get_window_extent().width,
+                                 label_z.get_window_extent().height)
 
         for ir in range(0, self.nrow):
             for ic in range(0, self.ncol):
@@ -1882,15 +1931,19 @@ class LayoutMPL(BaseLayout):
             self.ws_title = self.ws_fig_title + self.title.size[1] + self.ws_title_ax
         else:
             self.ws_title = self.ws_fig_ax
-        cbar = self.cbar.size[0] + self.ws_cbar_ax if self.cbar.on else 0
+
+        if self.cbar.on:
+            self.ws_col = self.label_z.size[0] + self.tick_labels_major_z.size[0]
 
         self.fig.size_px[0] = \
             self.ws_label_fig + self.label_y.size[0] + 2*self.ws_label_tick + \
             tick_labels_major_y + self.ws_ticks_ax + \
-            self.axes.size[0] * self.ncol + self.ws_col * (self.ncol - 1) +  \
-            ws_leg_ax + self.legend.size[0] + ws_leg_fig + y2 + \
+            (self.axes.size[0] + self.cbar.size[0] + self.ws_ax_cbar) * self.ncol + \
+            self.ws_col * (self.ncol - 1) +  \
+            ws_leg_ax + self.legend.size[0] + ws_leg_fig * (self.ncol - 1) + y2 + \
             self.label_row.size[0] + self.ws_row_label * self.label_row.on + \
-            cbar * self.ncol + box_title
+            (self.label_z.size[0] + self.tick_labels_major_z.size[0]) * (self.ncol - 1) + \
+            box_title
 
         self.fig.size_px[1] = \
             self.ws_title + (self.label_col.size[1] + \
@@ -1934,8 +1987,8 @@ class LayoutMPL(BaseLayout):
 
         self.label_row.position[0] = \
             (self.axes.size[0] + self.ws_row_label +
-             (self.ws_cbar_ax if self.cbar.on else 0) + self.cbar.size[0] +
-             self.label_z.size[0])/self.axes.size[0]
+             (self.ws_ax_cbar if self.cbar.on else 0) + self.cbar.size[0] +
+             self.label_z.size[0] + self.tick_labels_major_z.size[0])/self.axes.size[0]
 
         self.label_col.position[3] = \
             (self.axes.size[1] + self.ws_col_label)/self.axes.size[1]
@@ -1960,8 +2013,12 @@ class LayoutMPL(BaseLayout):
             (self.ws_label_fig + self.label_y.size[0] + 2*self.ws_label_tick + \
              max(self.tick_labels_major_y.size[0],
                  self.tick_labels_minor_y.size[0]) + \
-             self.ws_ticks_ax + self.axes.size[0] * self.ncol + \
-             self.ws_col * (self.ncol - 1)) / self.fig.size_px[0]
+             self.ws_ticks_ax + \
+             self.axes.size[0] * self.ncol + \
+             (self.cbar.size[0] + self.ws_ax_cbar) * (self.ncol - 1) + \
+             self.ws_col * (self.ncol - 1) + \
+             (self.label_z.size[0] + self.tick_labels_major_z.size[0]) * \
+             (self.ncol - 1)) / self.fig.size_px[0]
 
         self.axes.position[2] = \
             1 - (self.ws_title + self.title_wrap.size[1] + \
@@ -2006,7 +2063,7 @@ class LayoutMPL(BaseLayout):
             self.ws_row = kwargs.get('ws_row', self.label_wrap._size[1])
             self.ws_col = kwargs.get('ws_col', 0)
 
-        self.set_labels(data)
+        self.set_label_text(data)
         self.get_element_sizes(data)
         self.get_figure_size(**kwargs)
         self.get_subplots_adjust()
@@ -2098,7 +2155,7 @@ class LayoutMPL(BaseLayout):
 
         return bp
 
-    def plot_contour(self, ir, ic, iline, df, x, y, z):
+    def plot_contour(self, ax, df, x, y, z):
         """
         Plot a contour plot
         """
@@ -2114,36 +2171,18 @@ class LayoutMPL(BaseLayout):
         zi = mlab.griddata(xx, yy, zz, xi, yi, interp='linear')
 
         if self.contour.filled:
-            contour = self.axes.obj[ir,ic].contourf
+            contour = ax.contourf
         else:
-            contour = self.axes.obj[ir,ic].contour
+            contour = ax.contour
         cc = contour(xi, yi, zi, self.contour.levels, line_width=self.contour.width,
-                    cmap=self.contour.cmap)
+                     cmap=self.contour.cmap)
 
         if self.cbar.on:
-            from mpl_toolkits.axes_grid1 import make_axes_locatable
-            divider = make_axes_locatable(self.axes.obj[ir, ic])
-            size = '%s%%' % (10)#0*kw['cbar_width']/design.ax_size[0])
-            pad = 0#kw['cbar_ax_ws']/100
-            cax = divider.append_axes("right", size=size, pad=pad)
+            cbar = self.add_cbar(ax, cc)
+        else:
+            cbar = None
 
-            # Add the colorbar and label
-            cbar = mplp.colorbar(cc, cax=cax)
-            cbar.ax.set_ylabel(r'%s' % self.cbar.title)#, rotation=270,
-                                #labelpad=kw['label_font_size'],
-                                #style=kw['label_style'],
-                                #fontsize=kw['label_font_size'],
-                                #weight=kw['label_weight'],
-                                #color=kw['ylabel_color'])
-
-            # if self.cbar.on: #ir, ic??
-            # self.cbar.obj.ax.set_ylabel(fontsize=self.label_z.font_size,
-            #                             weight=self.label_z.font_weight,
-            #                             style=self.label_z.font_style,
-            #                             color=self.label_z.font_color,
-            #                             rotation=self.label_z.rotation,
-            #                             fontname=self.label_z.font,
-            #                             )
+        return cc, cbar
 
     def plot_line(self, ir, ic, x0, y0, x1=None, y1=None,**kwargs):
         """
@@ -2489,9 +2528,8 @@ class LayoutMPL(BaseLayout):
                 lab = '2'
 
             # Turn off scientific (how do we force it?)
-            #AttributeError: 'FixedFormatter' object has no attribute 'set_scientific'
             if not self.axes.sci_x \
-                    and self.plot_func != 'boxplot' \
+                    and self.plot_func != 'plot_box' \
                     and self.axes.scale not in ['logx', 'semilogx', 'loglog', 'log'] \
                     and (not self.axes.share_x or ir==0 and ic==0):
                 if 'box' not in self.plot_func:

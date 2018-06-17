@@ -969,7 +969,7 @@ def plot_contour(data, layout, ir, ic, df_rc, kwargs):
     """
 
     for iline, df, x, y, z, leg_name, twin in data.get_plot_data(df_rc):
-        layout.plot_contour(ir, ic, iline, df, x, y, z)
+        layout.plot_contour(layout.axes.obj[ir, ic], df, x, y, z)
 
 
 def plot_xy(data, layout, ir, ic, df_rc, kwargs):
