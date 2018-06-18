@@ -736,7 +736,8 @@ class Data:
                         or (row['y'] != vals.loc[0, 'y'] and self.twinx):
                     twin = True
 
-                yield irow, df, row['x'], row['y'], self.z[0], None, twin
+                yield irow, df, row['x'], row['y'], \
+                      None if self.z is None else self.z[0], None, twin
 
         else:
             for irow, row in self.legend_vals.iterrows():
@@ -754,7 +755,8 @@ class Data:
                         or (row['y'] != self.legend_vals.loc[0, 'y'] and self.twinx):
                     twin = True
 
-                yield irow, df2, row['x'], row['y'], self.z[0], row['names'], twin
+                yield irow, df2, row['x'], row['y'], \
+                      None if self.z is None else self.z[0], row['names'], twin
 
     def get_plot_data2(self, df):
         """

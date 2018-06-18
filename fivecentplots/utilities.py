@@ -144,12 +144,20 @@ def set_save_filename(df, fig_item, fig_cols, layout, kwargs):
         return kwargs['filename'] + kwargs.get('save_ext', '.png')
 
     # Build a filename
+    if 'z' in kwargs.keys():
+        z = layout.label_z.text + ' vs '
+    else:
+        z = ''
+    y = ' and '.join(validate_list(layout.label_y.text))
+    if layout.axes.twinx:
+        y += ' + ' + layout.label_y2.text
     if 'x' in kwargs.keys():
+        y += ' vs '
         x = ' and '.join(validate_list(layout.label_x.text))
-        x = x + ' vs '
     else:
         x = ''
-    y = ' and '.join(validate_list(layout.label_y.text))
+    if layout.axes.twiny:
+        x += ' + ' + layout.label_x2.text
     row, col, wrap, groups, fig = '', '', '', '', ''
     if layout.label_row.text is not None:
         row = ' by ' + layout.label_row.text
@@ -167,7 +175,7 @@ def set_save_filename(df, fig_item, fig_cols, layout, kwargs):
                 fig += ' and'
             fig += ' where %s=%s' % (col, fig_items[icol])
 
-    filename = '%s%s%s%s%s%s%s' % (x, y, row, col, wrap, groups, fig)
+    filename = '%s%s%s%s%s%s%s%s' % (z, y, x, row, col, wrap, groups, fig)
 
     return filename + kwargs.get('save_ext', '.png')
 

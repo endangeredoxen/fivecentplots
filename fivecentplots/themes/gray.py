@@ -84,7 +84,7 @@ fcp_params = {'ax_edge_color'         : '#d2d2d2',
               'ws_tick_ax'            : 3,  # prevents overlap of tick labels with axis
               'ws_rc_label'           : 10,
               'ws_rows'               : 30,
-              'ws_title_ax'           : 20,
+              'ws_title_ax'           : 10,
               'ws_wrap_title'         : 0,
               }
 
