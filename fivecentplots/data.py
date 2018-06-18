@@ -3,6 +3,7 @@ import numpy as np
 import itertools
 import datetime
 import fivecentplots.utilities as utl
+import scipy.stats as ss
 
 try:
     from natsort import natsorted
@@ -44,6 +45,8 @@ class Data:
         self.ax_scale = kwargs.get('ax_scale', None)
         self.ax_limit_padding = utl.kwget(kwargs, self.fcpp,
                                           'ax_limit_padding', 0.05)
+        self.conf_int = kwargs.get('conf_int', False)
+        self.fit = kwargs.get('fit', False)
         self.legend = None
         self.legend_vals = None
         self.ranges = None
@@ -97,6 +100,9 @@ class Data:
 
         # Stats
         self.stat = kwargs.get('stat', None)
+        self.stat_idx = []
+        self.lcl = []
+        self.ucl = []
 
         # Apply an optional filter to the data
         self.filter = kwargs.get('filter', None)
@@ -210,7 +216,6 @@ class Data:
                 error = '"%s" value cannot also be specified as a "group" value' % \
                         ('col' if self.col else 'row')
                 raise GroupingError(error)
-
 
     def check_xyz(self, xyz):
         """
@@ -418,6 +423,54 @@ class Data:
                     self.changes.loc[i, col] = 0
                 else:
                     self.changes.loc[i, col] = 1
+
+    def get_conf_int(self, df, x, y, **kwargs):
+        """
+        Calculate and draw confidence intervals around a curve
+
+        Args:
+            df:
+            x:
+            y:
+            ax:
+            color:
+            kw:
+
+        Returns:
+
+        """
+
+        if not self.conf_int:
+            return
+
+        if str(self.conf_int).lower() == 'range':
+            ymin = df.groupby(x).min()[y]
+            self.stat_idx = ymin.index
+            self.lcl = ymin.reset_index(drop=True)
+            self.ucl = df.groupby(x).max()[y].reset_index(drop=True)
+
+        else:
+            if float(self.conf_int) > 1:
+                self.conf_int = float(self.conf_int)/100
+            stat = pd.DataFrame()
+            stat['mean'] = df[[x, y]].groupby(x).mean().reset_index()[y]
+            stat['count'] = df[[x, y]].groupby(x).count().reset_index()[y]
+            stat['std'] = df[[x, y]].groupby(x).std().reset_index()[y]
+            stat['sderr'] = stat['std'] / np.sqrt(stat['count'])
+            stat['ucl'] = np.nan
+            stat['lcl'] = np.nan
+            for irow, row in stat.iterrows():
+                if row['std'] == 0:
+                    conf = [0, 0]
+                else:
+                    conf = ss.t.interval(self.conf_int, int(row['count'])-1,
+                                        loc=row['mean'], scale=row['sderr'])
+                stat.loc[irow, 'ucl'] = conf[1]
+                stat.loc[irow, 'lcl'] = conf[0]
+
+            self.stat_idx = df.groupby(x).mean().index
+            self.lcl = stat['lcl']
+            self.ucl = stat['ucl']
 
     def get_data_range(self, ax, df):
         """
@@ -648,6 +701,52 @@ class Data:
 
         if self.fig:
             self.fig_vals = list(self.df_all.groupby(self.fig).groups.keys())
+
+    def get_fit_data(self, df, x, y):
+        """
+        Make columns of fitted data
+
+        Args:
+            df (pd.DataFrame): main DataFrame
+            x (str): x-column name
+            y (str): y-column name
+
+        Returns:
+            updated DataFrame and rsq (for poly fit only)
+        """
+
+        df['%s Fit' % x] = np.nan
+        df['%s Fit' % y] = np.nan
+
+        if not self.fit:
+            return df, np.nan
+
+        if self.fit == True or type(self.fit) is int:
+
+            xx = np.array(df[x])
+            yy = np.array(df[y])
+
+            # Fit the polynomial
+            coeffs = np.polyfit(xx, yy, int(self.fit))
+
+            # Find R^2
+            yval = np.polyval(coeffs, xx)
+            ybar = yy.sum()/len(yy)
+            ssreg = np.sum((yval-ybar)**2)
+            sstot = np.sum((yy-ybar)**2)
+            rsq = ssreg/sstot
+
+            # Add fit line
+            df['%s Fit' % x] = np.linspace(0.9*xx.min(), 1.1*xx.max(), len(df))
+            df['%s Fit' % y] = np.polyval(coeffs, df['%s Fit' % x])
+
+            return df, coeffs, rsq
+
+        if str(self.fit).lower() == 'spline':
+
+            # PUT SPLINE CODE HERE
+
+            return df, [], np.nan
 
     def get_legend_groupings(self, df):
         """

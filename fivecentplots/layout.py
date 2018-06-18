@@ -455,9 +455,18 @@ class BaseLayout:
 
         # Line fit
         self.line_fit = Element('line_fit', self.fcpp, kwargs,
-                                on=kwargs.get('line_fit', False),
+                                on=True if kwargs.get('fit', False) else False,
+                                color=kwargs.get('fit_color', RepeatedList(['k'], 'line_colors')),
+                                eqn=kwargs.get('fit_eqn', False),
                                 font_size=12,
+                                padding=kwargs.get('fit_padding', 10),
+                                rsq=kwargs.get('fit_rsq', False),
+                                size=[0,0],
                                 )
+        self.line_fit.position[0] = self.line_fit.padding / self.axes.size[0]
+        self.line_fit.position[3] = 1 - (self.line_fit.padding + \
+                                    self.line_fit.font_size)/ self.axes.size[1]
+
         # Lines
         line_colors = RepeatedList(color_list, 'line_colors')
         self.lines = Element('lines', self.fcpp, kwargs,
@@ -740,7 +749,7 @@ class BaseLayout:
 
         # Confidence interval
         self.conf_int = Element('conf_int', self.fcpp, kwargs,
-                                on=kwargs.get('conf_int', None),
+                                on=True if kwargs.get('conf_int', False) else False,
                                 fill_color=utl.kwget(kwargs, self.fcpp,
                                                      'conf_int_fill_color',
                                                      None),
@@ -1257,18 +1266,6 @@ class LayoutMPL(BaseLayout):
         # Add the colorbar
         cbar = mplp.colorbar(contour, cax=cax)
 
-        # Add the label
-        # if self.label_z.on:
-        #     cbar.ax.set_ylabel(r'%s' % self.label_z.text,
-        #                        fontsize=self.label_z.font_size,
-        #                        weight=self.label_z.font_weight,
-        #                        style=self.label_z.font_style,
-        #                        color=self.label_z.font_color,
-        #                        rotation=self.label_z.rotation,
-        #                        fontname=self.label_z.font,
-        #                        labelpad=self.ws_label_tick*2,
-        #                        )
-
         return cbar
 
     def add_hvlines(self, ir, ic):
@@ -1391,6 +1388,21 @@ class LayoutMPL(BaseLayout):
             self.legend.obj.get_frame().set_facecolor(self.legend.fill_color)
             self.legend.obj.get_frame().set_edgecolor(self.legend.edge_color)
 
+    def add_text(self, ir, ic, text, element, offsetx=0, offsety=0):
+        """
+        Add a text box
+        """
+
+        obj = getattr(self, element)
+        kwargs = self.make_kwargs(obj, pop=['size'])
+
+        ax = self.axes.obj[ir, ic]
+        ax.text(obj.position[0] + offsetx, obj.position[3] + offsety, text,
+                transform=ax.transAxes,
+                rotation=kwargs['rotation'], color=kwargs['font_color'],
+                fontname=kwargs['font'], style=kwargs['font_style'],
+                weight=kwargs['font_weight'], size=kwargs['font_size'])
+
     def format_axes(self):
         """
         Format the axes colors and gridlines
@@ -1422,6 +1434,7 @@ class LayoutMPL(BaseLayout):
     def get_axes_label_position(self):
         """
         Get the position of the axes labels
+            self.label_@.position --> [left, right, top, bottom]
         """
 
         self.label_x.position[0] = (self.axes.size[0] - self.label_x.size[0]) \
@@ -2273,7 +2286,8 @@ class LayoutMPL(BaseLayout):
                                    color=kwargs.get('color', '#000000'),
                                    zorder=kwargs.get('zorder', 0))
 
-    def plot_xy(self, ir, ic, iline, df, x, y, leg_name, twin, zorder=1):
+    def plot_xy(self, ir, ic, iline, df, x, y, leg_name, twin, zorder=1,
+                line_obj=None, marker_disable=False):
         """ Plot xy data
 
         Args:
@@ -2303,6 +2317,9 @@ class LayoutMPL(BaseLayout):
 
         df = df.copy()
 
+        if not line_obj:
+            line_obj = self.lines
+
         # Select the axes
         if twin:
             ax = self.axes2.obj[ir, ic]
@@ -2311,7 +2328,7 @@ class LayoutMPL(BaseLayout):
 
         # Make the points
         points = None
-        if self.markers.on:
+        if self.markers.on and not marker_disable:
             if self.markers.jitter:
                 df[x] = np.random.normal(df[x], 0.03, size=len(df[y]))
             points = ax.plot(df[x], df[y],
@@ -2326,15 +2343,16 @@ class LayoutMPL(BaseLayout):
 
         # Make the line
         lines = None
-        if self.lines.on:
+        if line_obj.on:
             lines = ax.plot(df[x], df[y],
-                            color=self.lines.color.get(iline),
-                            linestyle='-' if self.lines.style is None \
-                                      else self.lines.style,
-                            linewidth=self.lines.width)
+                            color=line_obj.color.get(iline),
+                            linestyle='-' if line_obj.style is None \
+                                      else line_obj.style,
+                            linewidth=line_obj.width)
 
         # Add a reference to the line to self.lines
-        self.legend.values[leg_name] = points if points is not None else lines
+        if leg_name:
+            self.legend.values[leg_name] = points if points is not None else lines
 
     def see(self):
         """

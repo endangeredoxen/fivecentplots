@@ -83,61 +83,6 @@ def boxplot(**kwargs):
     return plotter('plot_box', **kwargs)
 
 
-def conf_int(df, x, y, ax, color, kw):
-    """
-    Calculate and draw confidence intervals around a curve
-
-    Args:
-        df:
-        x:
-        y:
-        ax:
-        color:
-        kw:
-
-    Returns:
-
-    """
-
-    if kw['conf_int'] is None:
-        return
-
-    if kw['conf_int_fill_color'] is None:
-        color = color
-    else:
-        color = kw['conf_int_fill_color']
-
-    if str(kw['conf_int']).lower() == 'range':
-        ymin = df.groupby(x).min()[y]
-        xx = ymin.index
-        ymin = ymin.reset_index(drop=True)
-        ymax = df.groupby(x).max()[y].reset_index(drop=True)
-        ax.fill_between(xx, ymin, ymax, facecolor=color,
-                        alpha=kw['conf_int_fill_alpha'])
-
-    else:
-        if float(kw['conf_int']) > 1:
-            kw['conf_int'] = float(kw['conf_int'])/100
-        stat = pd.DataFrame()
-        stat['mean'] = df[[x,y]].groupby(x).mean().reset_index()[y]
-        stat['count'] = df[[x,y]].groupby(x).count().reset_index()[y]
-        stat['std'] = df[[x,y]].groupby(x).std().reset_index()[y]
-        stat['sderr'] = stat['std'] / np.sqrt(stat['count'])
-        stat['ucl'] = np.nan
-        stat['lcl'] = np.nan
-        for irow, row in stat.iterrows():
-            if row['std'] == 0:
-                conf = [0, 0]
-            else:
-                conf = ss.t.interval(kw['conf_int'], int(row['count'])-1,
-                                     loc=row['mean'], scale=row['sderr'])
-            stat.loc[irow, 'ucl'] = conf[1]
-            stat.loc[irow, 'lcl'] = conf[0]
-
-        ax.fill_between(df.groupby(x).mean().index, stat['lcl'], stat['ucl'],
-                        facecolor=color, alpha=kw['conf_int_fill_alpha'])
-
-
 def contour(**kwargs):
     """ Main boxplot plotting function
     At minimum, it requires a pandas DataFrame with at
@@ -954,6 +899,18 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
             layout.plot_line(ir, ic, x, stats, **layout.box_connect.kwargs,)
 
 
+def plot_conf_int(data, layout, df, x, y):
+    """
+    """
+
+    if not layout.conf_int.on:
+        return
+
+    data.get_conf_int(df, x, y)
+
+    # need to add the fill between
+
+
 def plot_contour(data, layout, ir, ic, df_rc, kwargs):
     """
     Plot contour data
@@ -970,6 +927,53 @@ def plot_contour(data, layout, ir, ic, df_rc, kwargs):
 
     for iline, df, x, y, z, leg_name, twin in data.get_plot_data(df_rc):
         layout.plot_contour(layout.axes.obj[ir, ic], df, x, y, z)
+
+
+def plot_fit(data, layout, ir, ic, iline, df, x, y, twin):
+    """
+    Plot a fit line
+
+    Args:
+        data (obj): Data object
+        layout (obj): layout object
+        ir (int): current subplot row number
+        ic (int): current subplot column number
+        iline (int): iterator
+        df (pd.DataFrame): input data
+        x (str): x-column name
+        y (str): y-column name
+        twin (bool): denote twin axis
+
+    """
+
+    if not layout.line_fit.on:
+        return
+
+    df, coeffs, rsq = data.get_fit_data(df, x, y)
+    layout.plot_xy(ir, ic, iline, df, '%s Fit' % x, '%s Fit' %y,
+                    None, twin, line_obj=layout.line_fit,
+                    marker_disable=True)
+
+    if layout.line_fit.eqn:
+        eqn = 'y='
+        for ico, coeff in enumerate(coeffs[0:-1]):
+            if coeff > 0 and ico > 0:
+                eqn += '+'
+            if len(coeffs)-1 > 1:
+                power = '^%s' % str(len(coeffs)-1)
+            else:
+                power = ''
+            eqn += '%s*x%s' % (round(coeff,3), power)
+        if coeffs[-1] > 0:
+            eqn += '+'
+        eqn += '%s' % round(coeffs[-1], 3)
+
+        layout.add_text(ir, ic, eqn, 'line_fit')
+
+    if layout.line_fit.rsq:
+        offsety = (5 + layout.line_fit.font_size) / layout.axes.size[1]
+        layout.add_text(ir, ic, 'R^2=%s' % round(rsq, 4), 'line_fit',
+                        offsety=-offsety)
 
 
 def plot_xy(data, layout, ir, ic, df_rc, kwargs):
@@ -990,9 +994,13 @@ def plot_xy(data, layout, ir, ic, df_rc, kwargs):
         if kwargs.get('groups', False):
             for nn, gg in df.groupby(utl.validate_list(kwargs['groups'])):
                 layout.plot_xy(ir, ic, iline, gg, x, y, leg_name, twin)
+                plot_fit(data, layout, ir, ic, iline, gg, x, y, twin)
+
         else:
             layout.plot_xy(ir, ic, iline, df, x, y, leg_name, twin)
+            plot_fit(data, layout, ir, ic, iline, df, x, y, twin)
 
+        plot_conf_int(data, layout, df, x, y)
 
 def plotter(plot_func, **kwargs):
     """ Main plotting function
