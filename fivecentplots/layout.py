@@ -471,7 +471,7 @@ class BaseLayout:
         line_colors = RepeatedList(color_list, 'line_colors')
         self.lines = Element('lines', self.fcpp, kwargs,
                              on=kwargs.get('lines', True),
-                             color=line_colors,
+                             color=copy.copy(line_colors),
                              values=[],
                              )
 
@@ -570,7 +570,7 @@ class BaseLayout:
                     alphas += [utl.kwget(kwargs, self.fcpp, '%s_alpha' % axline, 1)]
 
             setattr(self, axline,
-                    Element(axlines, self.fcpp, kwargs,
+                    Element(axline, self.fcpp, kwargs,
                             on=True if axline in kwargs.keys() else False,
                             values=vals, color=colors, style=styles,
                             width=widths, alpha=alphas,
@@ -750,9 +750,15 @@ class BaseLayout:
         # Confidence interval
         self.conf_int = Element('conf_int', self.fcpp, kwargs,
                                 on=True if kwargs.get('conf_int', False) else False,
+                                edge_color=utl.kwget(kwargs, self.fcpp,
+                                                     'conf_int_edge_color',
+                                                     copy.copy(line_colors)),
+                                edge_alpha=utl.kwget(kwargs, self.fcpp,
+                                                     'conf_int_edge_alpha',
+                                                     0.25),
                                 fill_color=utl.kwget(kwargs, self.fcpp,
                                                      'conf_int_fill_color',
-                                                     None),
+                                                     copy.copy(line_colors)),
                                 fill_alpha=utl.kwget(kwargs, self.fcpp,
                                                      'conf_int_fill_alpha',
                                                      0.2),
@@ -882,14 +888,12 @@ class BaseLayout:
         kwargs['fill_color'] = element.fill_color
         kwargs['edge_color'] = element.edge_color
         kwargs['edge_width'] = element.edge_width
-        kwargs['edge_alpha'] = element.edge_alpha
         kwargs['font'] = element.font
         kwargs['font_weight'] = element.font_weight
         kwargs['font_style'] = element.font_style
         kwargs['font_color'] = element.font_color
         kwargs['font_size'] = element.font_size
         kwargs['color'] = element.color
-        kwargs['alpha'] = element.alpha
         kwargs['width'] = element.width
         kwargs['style'] = element.style
         for pp in pop:
@@ -977,17 +981,30 @@ class Element:
         self.rotation = utl.kwget(kwargs, fcpp, '%s_rotation' % label,
                                   kwargs.get('rotation', 0))
 
-        # colors
-        self.edge_color = utl.kwget(kwargs, fcpp, '%s_edge_color' % label,
-                                    kwargs.get('edge_color', '#ffffff'))
+        # fill an edge colors
+        self.fill_alpha = utl.kwget(kwargs, fcpp, '%s_fill_alpha' % label,
+                                    kwargs.get('fill_alpha', 1))
+        self.fill_color = utl.kwget(kwargs, fcpp, '%s_fill_color' % label,
+                                    kwargs.get('fill_color', '#ffffff'))
+        if type(self.fill_color) is RepeatedList:
+            self.fill_color.values = [f[0:7] + str(hex(int(self.fill_alpha*255)))[-2:] \
+                                      for f in self.fill_color.values]
+        else:
+            self.fill_color = self.fill_color[0:7] + \
+                              str(hex(int(self.fill_alpha*255)))[-2:]
+
         self.edge_width = utl.kwget(kwargs, fcpp, '%s_edge_width' % label,
                                     kwargs.get('edge_width', 1))
         self.edge_alpha = utl.kwget(kwargs, fcpp, '%s_edge_alpha' % label,
                                     kwargs.get('edge_alpha', 1))
-        self.fill_color = utl.kwget(kwargs, fcpp, '%s_fill_color' % label,
-                                    kwargs.get('fill_color', '#ffffff'))
-        self.fill_alpha = utl.kwget(kwargs, fcpp, '%s_fill_alpha' % label,
-                                    kwargs.get('fill_alpha', 1))
+        self.edge_color = utl.kwget(kwargs, fcpp, '%s_edge_color' % label,
+                                    kwargs.get('edge_color', '#ffffff'))
+        if type(self.edge_color) is RepeatedList:
+            self.edge_color.values = [f[0:7] + str(hex(int(self.edge_alpha*255)))[-2:] \
+                                      for f in self.edge_color.values]
+        else:
+            self.edge_color = self.edge_color[0:7] + \
+                              str(hex(int(self.edge_alpha*255)))[-2:]
 
         # fonts
         self.font = utl.kwget(kwargs, fcpp, '%s_font' % label,
@@ -1002,10 +1019,21 @@ class Element:
                                    kwargs.get('font_weight', 'normal'))
 
         # lines
-        self.color = utl.kwget(kwargs, fcpp, '%s_color' % label,
-                               kwargs.get('color', '#000000'))
         self.alpha = utl.kwget(kwargs, fcpp, '%s_alpha' % label,
                                kwargs.get('alpha', 1))
+        self.color = utl.kwget(kwargs, fcpp, '%s_color' % label,
+                               kwargs.get('color', '#000000'))
+        if type(self.color) is list and type(self.alpha) is list:
+            self.color = [f[0:7] + str(hex(int(self.alpha[i]*255)))[-2:] \
+                          for i, f in enumerate(self.color)]
+        elif type(self.color) is RepeatedList:
+            self.color.values = [f[0:7] + str(hex(int(self.alpha*255)))[-2:] \
+                                 for f in self.color.values]
+        elif type(self.color) is list:
+            self.color = [f[0:7] + str(hex(int(self.alpha*255)))[-2:] \
+                          for f in self.color]
+        else:
+            self.color = self.color[0:7] + str(hex(int(self.alpha*255)))[-2:]
         self.width = utl.kwget(kwargs, fcpp, '%s_width' % label,
                                kwargs.get('width', 1))
         self.style = utl.kwget(kwargs, fcpp, '%s_style' % label,
@@ -1151,6 +1179,7 @@ class RepeatedList:
 
         # can we make this a next??
 
+        if type(self.values) is tuple: st()
         return self.values[(idx + self.shift) % len(self.values)]
 
 
@@ -1284,14 +1313,14 @@ class LayoutMPL(BaseLayout):
                    else self.axes.obj[ir, ic].axvline
             if ll.on:
                 for ival, val in enumerate(ll.values):
-                    func(val, color=ll.color[ival], linestyle=ll.style[ival],
-                         linewidth=ll.width[ival], alpha=ll.alpha[ival],
+                    func(val, color=ll.color[ival] + ll.alpha,
+                         linestyle=ll.style[ival],
+                         linewidth=ll.width[ival],
                          zorder=ll.zorder)
 
     def add_label(self, axis, text='', position=None, rotation=0, size=None,
-                  fill_color='#ffffff', edge_color='#aaaaaa', edge_alpha=1,
-                  edge_width=1, font='sans-serif',
-                  font_weight='normal', font_style='normal',
+                  fill_color='#ffffff', edge_color='#aaaaaa', edge_width=1,
+                  font='sans-serif', font_weight='normal', font_style='normal',
                   font_color='#666666', font_size=14, offset=False,**kwargs):
         """ Add a label to the plot
 
@@ -1316,7 +1345,8 @@ class LayoutMPL(BaseLayout):
                                  size[0]/self.axes.size[0],
                                  size[1]/self.axes.size[1],
                                  fill=True, transform=axis.transAxes,
-                                 facecolor=fill_color, edgecolor=edge_color,
+                                 facecolor=fill_color,
+                                 edgecolor=edge_color,
                                  clip_on=False, zorder=-1)
 
         axis.add_patch(rect)
@@ -1402,6 +1432,22 @@ class LayoutMPL(BaseLayout):
                 rotation=kwargs['rotation'], color=kwargs['font_color'],
                 fontname=kwargs['font'], style=kwargs['font_style'],
                 weight=kwargs['font_weight'], size=kwargs['font_size'])
+
+    def fill_between_lines(self, ir, ic, iline, x, lcl, ucl, obj):
+        """
+        Shade a region between two curves
+
+        Args:
+
+        """
+
+        ax = self.axes.obj[ir, ic]
+        obj = getattr(self, obj)
+        fc = obj.fill_color
+        ec = obj.edge_color
+        ax.fill_between(x, lcl, ucl,
+                        facecolor=fc.get(iline) if type(fc) is RepeatedList else fc,
+                        edgecolor=ec.get(iline) if type(ec) is RepeatedList else ec)
 
     def format_axes(self):
         """
@@ -2287,7 +2333,7 @@ class LayoutMPL(BaseLayout):
                                    zorder=kwargs.get('zorder', 0))
 
     def plot_xy(self, ir, ic, iline, df, x, y, leg_name, twin, zorder=1,
-                line_obj=None, marker_disable=False):
+                line_type=None, marker_disable=False):
         """ Plot xy data
 
         Args:
@@ -2317,8 +2363,10 @@ class LayoutMPL(BaseLayout):
 
         df = df.copy()
 
-        if not line_obj:
-            line_obj = self.lines
+        if not line_type:
+            line_type = self.lines
+        else:
+            line_type = getattr(self, line_type)
 
         # Select the axes
         if twin:
@@ -2343,12 +2391,12 @@ class LayoutMPL(BaseLayout):
 
         # Make the line
         lines = None
-        if line_obj.on:
+        if line_type.on:
             lines = ax.plot(df[x], df[y],
-                            color=line_obj.color.get(iline),
-                            linestyle='-' if line_obj.style is None \
-                                      else line_obj.style,
-                            linewidth=line_obj.width)
+                            color=line_type.color.get(iline),
+                            linestyle='-' if line_type.style is None \
+                                      else line_type.style,
+                            linewidth=line_type.width)
 
         # Add a reference to the line to self.lines
         if leg_name:
@@ -2382,7 +2430,6 @@ class LayoutMPL(BaseLayout):
             axes[-1].obj[ir, ic].set_facecolor(axes[-1].fill_color)
         except:
             axes[-1].obj[ir, ic].set_axis_bgcolor(axes[-1].fill_color)
-        axes[-1].obj[ir, ic].set_alpha(axes[-1].fill_alpha)
         try:
             axes[-1].obj[ir, ic].set_edgecolor(axes[-1].edge_color)
         except:

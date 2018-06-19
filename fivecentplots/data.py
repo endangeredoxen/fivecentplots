@@ -100,6 +100,7 @@ class Data:
 
         # Stats
         self.stat = kwargs.get('stat', None)
+        self.stat_val = kwargs.get('stat_val', None)
         self.stat_idx = []
         self.lcl = []
         self.ucl = []

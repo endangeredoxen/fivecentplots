@@ -899,7 +899,7 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
             layout.plot_line(ir, ic, x, stats, **layout.box_connect.kwargs,)
 
 
-def plot_conf_int(data, layout, df, x, y):
+def plot_conf_int(ir, ic, iline, data, layout, df, x, y):
     """
     """
 
@@ -908,7 +908,8 @@ def plot_conf_int(data, layout, df, x, y):
 
     data.get_conf_int(df, x, y)
 
-    # need to add the fill between
+    layout.fill_between_lines(ir, ic, iline, data.stat_idx, data.lcl, data.ucl,
+                              'conf_int')
 
 
 def plot_contour(data, layout, ir, ic, df_rc, kwargs):
@@ -951,7 +952,7 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin):
 
     df, coeffs, rsq = data.get_fit_data(df, x, y)
     layout.plot_xy(ir, ic, iline, df, '%s Fit' % x, '%s Fit' %y,
-                    None, twin, line_obj=layout.line_fit,
+                    None, twin, line_type='line_fit',
                     marker_disable=True)
 
     if layout.line_fit.eqn:
@@ -1000,7 +1001,8 @@ def plot_xy(data, layout, ir, ic, df_rc, kwargs):
             layout.plot_xy(ir, ic, iline, df, x, y, leg_name, twin)
             plot_fit(data, layout, ir, ic, iline, df, x, y, twin)
 
-        plot_conf_int(data, layout, df, x, y)
+        plot_conf_int(ir, ic, iline, data, layout, df, x, y)
+
 
 def plotter(plot_func, **kwargs):
     """ Main plotting function
