@@ -864,34 +864,6 @@ class Data:
                 yield irow, df2, row['x'], row['y'], \
                       None if self.z is None else self.z[0], row['names'], twin
 
-    def get_plot_data2(self, df):
-        """
-        Generator to subset into discrete sets of data for each curve
-
-        Args:
-            df (pd.DataFrame): main DataFrame
-
-        Returns:
-            subset
-        """
-
-        if self.legend_vals:
-            leg_df = []
-            #for ileg, (nleg, gleg) in enumerate(df.groupby(self.legend)):
-            #    leg_df += [(ileg, nleg, gleg)]
-            for ival, val in enumerate(self.legend_vals):
-                leg_df += [(ival, val, df[df[self.legend]==val])]
-        else:
-            leg_df = [(0, None, df)]
-
-        for ileg, nleg, gleg in leg_df:
-            for ix, nx in enumerate(self.x):
-                gx = gleg[nx]
-                for iy, ny in enumerate(self.y):
-                    gy = gleg[ny]
-                    idx = ileg*len(self.x)*len(self.y) + ix*len(self.y) + iy
-                    yield (ileg, ix, iy, idx), (nleg, nx, ny), gx, gy
-
     def get_rc_groupings(self, df):
         """
         Determine the row and column or wrap grid groupings

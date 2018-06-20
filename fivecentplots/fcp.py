@@ -368,6 +368,7 @@ def plot_stat(ir, ic, iline, data, layout, df, x, y):
     layout.lines.on = True
     layout.plot_xy(ir, ic, iline, df_stat, x, y, None, False)
 
+
 def plot_xy(data, layout, ir, ic, df_rc, kwargs):
     """
     Plot xy data
