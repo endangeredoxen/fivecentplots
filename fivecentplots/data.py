@@ -396,6 +396,13 @@ class Data:
             new DataFrame with 1's showing where group levels change for each row of df
         """
 
+        # Check for nan columns
+        if self.groups is not None:
+            for group in self.groups:
+                if len(self.df_fig[group].dropna()) == 0:
+                    self.groups.remove(group)
+                    print('Column "%s" is all NaN and will be excluded from plot' % group)
+
         # Get the changes df
         if self.groups is None:
             groups = [(None, self.df_fig.copy())]
@@ -409,7 +416,6 @@ class Data:
         for i, (nn, g) in enumerate(groups):
             gidx += [nn]
         gidx = natsorted(gidx)
-
         self.indices = pd.DataFrame(gidx)
         self.changes = self.indices.copy()
 
@@ -987,6 +993,27 @@ class Data:
                 yield ir, ic, self.df_rc
 
         self.df_sub = None
+
+    def get_stat_data(self, df, x, y):
+        """
+        Get a stat subset from input data
+
+        Args:
+            df (pd.DataFrame): input data
+            x (str): x-column name
+            y (str): y-column name
+
+        """
+
+        if not self.stat:
+            return pd.DataFrame()
+
+        df_stat = df.groupby(x if not self.stat_val else self.stat_val)
+        try:
+            return getattr(df_stat, self.stat)().reset_index()
+        except:
+            print('stat "%s" is not supported...skipping stat calculation' % self.stat)
+            return None
 
     def see(self):
         """

@@ -386,19 +386,20 @@ class BaseLayout:
                                                  '#c34e52'),
                            notch=utl.kwget(kwargs, self.fcpp, 'box_notch', False),
                            )
-        self.box_connect = \
-            Element('box_connect', self.fcpp, kwargs,
+        self.box_stat_line = \
+            Element('box_stat_line', self.fcpp, kwargs,
                     on=True if 'box' in self.plot_func and \
-                        kwargs.get('box_connect_stat', True) else False,
+                        kwargs.get('box_stat_line', True) else False,
                     color='#666666',
-                    stat=kwargs.get('box_connect_stat', 'mean'),
+                    stat=kwargs.get('box_stat_line', 'mean'),
                     zorder=utl.kwget(kwargs, self.fcpp,
-                                     'box_connect_zorder', 7),
+                                     'box_stat_line_zorder', 7),
                     )
-        self.box_dividers = Element('box_dividers', self.fcpp, kwargs,
-                                    on=True if 'box' in self.plot_func else False,
-                                    color='#bbbbbb', zorder=1,
-                                    )
+        self.box_divider = Element('box_divider', self.fcpp, kwargs,
+                                   on=True if 'box' in self.plot_func else False,
+                                   color='#bbbbbb',
+                                   zorder=1,
+                                   )
         self.box_range_lines = Element('box_range_lines', self.fcpp, kwargs,
                                        on=True if 'box' in self.plot_func else False,
                                        color='#dddddd',
@@ -423,8 +424,8 @@ class BaseLayout:
                                  marker_size=utl.kwget(kwargs, self.fcpp,
                                                        'legend_marker_size',
                                                        None),
-                                 num_points=utl.kwget(kwargs, self.fcpp,
-                                                      'legend_points', 1),
+                                 points=utl.kwget(kwargs, self.fcpp,
+                                                  'legend_points', 1),
                                  overflow=0,
                                  text=kwargs.get('legend_title', kwargs.get('legend', '')),
                                  values={} if not kwargs.get('legend') else {'NaN': None},
@@ -1041,7 +1042,8 @@ class Element:
 
         for k, v in kwargs.items():
             try:
-                setattr(self, k, v)
+                if not hasattr(self, k):
+                    setattr(self, k, v)
             except:
                 pass
 
@@ -1259,7 +1261,7 @@ class LayoutMPL(BaseLayout):
                                 **self.make_kwargs(self.box_group_title,
                                 ['position', 'size']))
 
-    def add_box_points(self, ir, ic, x, y):#, ax, color=palette[1], **kw):
+    def add_box_points(self, ir, ic, x, y):
         """
         Plot x y points with or without jitter
         """
@@ -1313,7 +1315,7 @@ class LayoutMPL(BaseLayout):
                    else self.axes.obj[ir, ic].axvline
             if ll.on:
                 for ival, val in enumerate(ll.values):
-                    func(val, color=ll.color[ival] + ll.alpha,
+                    func(val, color=ll.color[ival],
                          linestyle=ll.style[ival],
                          linewidth=ll.width[ival],
                          zorder=ll.zorder)
@@ -1402,14 +1404,14 @@ class LayoutMPL(BaseLayout):
                                         title=self.legend.text,
                                         bbox_to_anchor=(self.legend.position[1],
                                                         self.legend.position[2]),
-                                        numpoints=self.legend.num_points,
+                                        numpoints=self.legend.points,
                                         prop=fontp)
 
             else:
                 self.legend.obj = \
                     self.fig.obj.legend(lines, keys, loc=self.legend.position,
                                         title = self.legend.text,
-                                        numpoints=self.legend.num_points,
+                                        numpoints=self.legend.points,
                                         prop=fontp)
 
             for text in self.legend.obj.get_texts():
@@ -1722,7 +1724,7 @@ class LayoutMPL(BaseLayout):
                 leg_vals += [self.yline.text]
             leg = mpl.pyplot.legend(lines, leg_vals,
                                     title=self.legend.text,
-                                    numpoints=self.legend.num_points,
+                                    numpoints=self.legend.points,
                                     fontsize=self.legend.font_size)
             if self.legend.marker_size:
                 for i in data.legend_vals:
@@ -2177,7 +2179,7 @@ class LayoutMPL(BaseLayout):
 
         col_label = (self.label_col.size[1] + \
                      self.ws_col_label * self.label_col.on)
-        self.title.position[0] = 0
+        self.title.position[0] = (self.axes.size[0] - self.title.size[0])/2/self.axes.size[0]
         self.title.position[3] = 1+(self.ws_title_ax + col_label) \
                                  /self.axes.size[1]
         self.title.position[2] = self.title.position[3] + (self.ws_title_ax +
@@ -2199,7 +2201,7 @@ class LayoutMPL(BaseLayout):
             self.ws_row = kwargs.get('ws_row', self.label_wrap._size[1])
             self.ws_col = kwargs.get('ws_col', 0)
 
-        self.set_label_text(data)
+        self.set_label_text(data, **kwargs)
         self.get_element_sizes(data)
         self.get_figure_size(**kwargs)
         self.get_subplots_adjust()
@@ -2273,7 +2275,6 @@ class LayoutMPL(BaseLayout):
                                            notch=self.box.notch,
                                            whiskerprops={'color': self.box.edge_color},
                                            capprops={'color': self.box.edge_color},
-                                           #medianprops={'color': self.box.median_color, 'linewidth': 2.5},
                                            patch_artist=True,
                                            zorder=5)
 

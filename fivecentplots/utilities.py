@@ -141,7 +141,10 @@ def set_save_filename(df, fig_item, fig_cols, layout, kwargs):
     """
 
     if 'filename' in kwargs.keys():
-        return kwargs['filename'] + kwargs.get('save_ext', '.png')
+        filename = kwargs['filename']
+        ext = kwargs.get('save_ext', '.png')
+        filename += ext if ext not in filename else ''
+        return filename
 
     # Build a filename
     if 'z' in kwargs.keys():
@@ -163,7 +166,7 @@ def set_save_filename(df, fig_item, fig_cols, layout, kwargs):
         row = ' by ' + layout.label_row.text
     if layout.label_col.text is not None:
         col = ' by ' + layout.label_col.text
-    if layout.label_wrap.text is not None:
+    if layout.title_wrap.text is not None:
         wrap = ' by ' + layout.title_wrap.text
     # this one may need to change with box plot
     if kwargs.get('groups', False):
@@ -176,6 +179,11 @@ def set_save_filename(df, fig_item, fig_cols, layout, kwargs):
             fig += ' where %s=%s' % (col, fig_items[icol])
 
     filename = '%s%s%s%s%s%s%s%s' % (z, y, x, row, col, wrap, groups, fig)
+
+    # Cleanup forbidden symbols
+    bad_char = ['\\', '/', ':', '*', '?', '"', '<', '>', '|']
+    for bad in bad_char:
+        filename = filename.replace(bad, '_')
 
     return filename + kwargs.get('save_ext', '.png')
 
