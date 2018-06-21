@@ -1,7 +1,5 @@
 import pandas as pd
 import numpy as np
-import itertools
-import datetime
 import fivecentplots.utilities as utl
 import scipy.stats as ss
 
@@ -29,7 +27,7 @@ class GroupingError(Exception):
 
 
 class Data:
-    def __init__(self, plot_type='xy', **kwargs):
+    def __init__(self, plot_func='xy', **kwargs):
 
         #from fivecentplots.fcp import utl.kwget, reload_defaults
 
@@ -37,7 +35,7 @@ class Data:
         self.fcpp, dummy, dummy2 = utl.reload_defaults()
 
         # Set the plot type
-        self.plot_type = plot_type
+        self.plot_func = plot_func
 
         # Default axis attributes
         self.dependent = None
@@ -142,7 +140,7 @@ class Data:
 
         # Other kwargs
         for k, v in kwargs.items():
-            if not hasattr(self, k): #k not in ['df', 'plot_type', 'x', 'y', 'z']:
+            if not hasattr(self, k):  # k not in ['df', 'plot_func', 'x', 'y', 'z']:
                 setattr(self, k, v)
 
     def check_df(self, df):
@@ -227,7 +225,7 @@ class Data:
             add option to recast non-float/datetime column as categorical str
         """
 
-        if xyz not in REQUIRED_VALS[self.plot_type]:
+        if xyz not in REQUIRED_VALS[self.plot_func]:
             return
 
         vals = getattr(self, xyz)
@@ -537,27 +535,25 @@ class Data:
                 factor = 1
             else:
                 factor = float(factor[0])
-            if self.box_groups is None:
+            if 'box' not in self.plot_func or self.groups is None:
                 q1 = dfax.quantile(0.25).min()
                 q3 = dfax.quantile(0.75).max()
                 iqr = factor*(q3 - q1)
                 vmin = q1 - iqr
             else:
-                st()
-                q1 = dfax.groupby(self.box_groups) \
-                          .quantile(0.25)[cols[iax]].reset_index()
-                q3 = dfax.groupby(self.box_groups) \
-                         .quantile(0.75)[cols[iax]].reset_index()
-                iqr = factor*(q3[cols[iax]] - q1[cols[iax]])
-                vmin = (q1[cols[iax]] - iqr[cols[iax]]).min().iloc[0]
+                q1 = df.groupby(self.groups) \
+                          .quantile(0.25)[cols].reset_index()
+                q3 = df.groupby(self.groups) \
+                         .quantile(0.75)[cols].reset_index()
+                iqr = factor*(q3[cols] - q1[cols])
+                vmin = (q1[cols] - iqr[cols]).min().iloc[0]
         elif vmin is not None and 'q' in str(vmin).lower():
             xq = float(str(vmin).lower().replace('q', ''))/100
-            if self.box_groups is None:
+            if self.groups is None:
                 vmin = dfax.quantile(xq).min()
             else:
-                st()
-                vmin = dfax.groupby(self.box_groups) \
-                        .quantile(xq)[cols[iax]].min().iloc[0]
+                vmin = df.groupby(self.groups) \
+                        .quantile(xq)[cols].min().iloc[0]
         elif vmin is not None:
             vmin = vmin
         elif self.ax_limit_padding is not None:
@@ -575,33 +571,31 @@ class Data:
 
         # Check user-specified max values
         vmax = getattr(self, '%smax' % ax)
-        if vmax is not None and 'iqr' in str(vmin).lower():
+        if vmax is not None and 'iqr' in str(vmax).lower():
             factor = str(vmax).split('*')
             if len(factor) == 1:
                 factor = 1
             else:
                 factor = float(factor[0])
-            if self.box_groups is None:
+            if 'box' not in self.plot_func or self.groups is None:
                 q1 = dfax.quantile(0.25).min()
                 q3 = dfax.quantile(0.75).max()
                 iqr = factor*(q3 - q1)
                 vmax = q3 + iqr
             else:
-                st()
-                q1 = dfax.groupby(self.box_groups) \
-                          .quantile(0.25)[cols[iax]].reset_index()
-                q3 = dfax.groupby(self.box_groups) \
-                         .quantile(0.75)[cols[iax]].reset_index()
-                iqr = factor*(q3[cols[iax]] - q1[cols[iax]])
-                vmax = (q3[cols[iax]] + iqr[cols[iax]]).max().iloc[0]
+                q1 = df.groupby(self.groups) \
+                          .quantile(0.25)[cols].reset_index()
+                q3 = df.groupby(self.groups) \
+                         .quantile(0.75)[cols].reset_index()
+                iqr = factor*(q3[cols] - q1[cols])
+                vmax = (q3[cols] + iqr[cols]).max().iloc[0]  # should this be referred to median?
         elif vmax is not None and 'q' in str(vmax).lower():
             xq = float(str(vmax).lower().replace('q', ''))/100
-            if self.box_groups is None:
+            if self.groups is None:
                 vmax = dfax.quantile(xq).max()
             else:
-                st()
-                vmax = dfax.groupby(self.box_groups) \
-                        .quantile(xq)[cols[iax]].max().iloc[0]
+                vmax = df.groupby(self.groups) \
+                        .quantile(xq)[cols].max().iloc[0]
         elif vmax is not None:
             vmax = vmax
         elif self.ax_limit_padding is not None:
@@ -958,7 +952,7 @@ class Data:
                     self.get_data_ranges(ir, ic)
 
                 # Get boxplot changes DataFrame
-                if 'box' in self.plot_type:
+                if 'box' in self.plot_func:
                     self.get_box_index_changes()
 
                 # Yield the subset

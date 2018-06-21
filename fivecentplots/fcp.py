@@ -14,7 +14,6 @@ __version__   = '0.3.0'
 __url__       = 'https://github.com/endangeredoxen/fivecentplots'
 import os
 import matplotlib.pyplot as plt
-import matplotlib.ticker as ticker
 import matplotlib.patches as patches
 import matplotlib.mlab as mlab
 import numpy as np
