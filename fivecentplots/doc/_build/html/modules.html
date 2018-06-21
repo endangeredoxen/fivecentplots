@@ -15,6 +15,8 @@
   
     <link rel="shortcut icon" href="_static/favicon.ico"/>
   
+  
+  
 
   
 
@@ -36,7 +38,11 @@
   
 
   
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="fivecentplots beta documentation" href="index.html"/>
+        <link rel="next" title="boxplot" href="boxplot.html"/>
         <link rel="prev" title="Example Library" href="examples.html"/> 
 
   
@@ -46,6 +52,7 @@
 
 <body class="wy-body-for-nav" role="document">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -65,7 +72,7 @@
             
             
               <div class="version">
-                v0.2
+                0.3.0
               </div>
             
           
@@ -86,17 +93,21 @@
           
             
             
-                <ul class="current">
+              
+            
+            
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="design.html">Figure Design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="defaults.html">Default Settings</a></li>
 <li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Example Library</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">Modules</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-fcp">fcp.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-design">design.py</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#fcp-py">fcp.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#design-py">design.py</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
 </ul>
 
             
@@ -109,8 +120,10 @@
 
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="index.html">fivecentplots</a>
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">fivecentplots</a>
+        
       </nav>
 
 
@@ -123,1043 +136,84 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="index.html">Docs</a> &raquo;</li>
-      
-    <li>Modules</li>
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Modules</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
-            <a href="_sources/modules.txt" rel="nofollow"> View page source</a>
+            
+            <a href="_sources/modules.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="modules">
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+</style>
+<div class="section" id="modules">
 <h1>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-fcp">
-<span id="fcp-py"></span><h2>fcp.py<a class="headerlink" href="#module-fcp" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="fcp.add_curves">
-<code class="descclassname">fcp.</code><code class="descname">add_curves</code><span class="sig-paren">(</span><em>plotter</em>, <em>x</em>, <em>y</em>, <em>color='#000000'</em>, <em>marker='o'</em>, <em>points=False</em>, <em>line=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.add_curves" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adds curve data to an axes</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>plotter</strong> (<em>mpl plot obj</em>) &#8211; plot, semilogx, semilogy, loglog</li>
-<li><strong>x</strong> (<em>np.array</em>) &#8211; x data to plot</li>
-<li><strong>y</strong> (<em>np.array</em>) &#8211; y data to plot</li>
-<li><strong>color</strong> (<em>str</em>) &#8211; hex color code for line color (default=&#8217;#000000&#8217;)</li>
-<li><strong>marker</strong> (<em>str</em>) &#8211; marker char string (default=&#8217;o&#8217;)</li>
-<li><strong>points</strong> (<em>bool</em>) &#8211; toggle points on|off (default=False)</li>
-<li><strong>line</strong> (<em>bool</em>) &#8211; toggle plot lines on|off (default=True)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name" colspan="2">Keyword Arguments:</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first"><strong>kwargs allowed by the plotter function selected</strong> (<em>any</em>) &#8211; </p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">return the line plot object</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.add_label">
-<code class="descclassname">fcp.</code><code class="descname">add_label</code><span class="sig-paren">(</span><em>label</em>, <em>pos</em>, <em>axis</em>, <em>rotation</em>, <em>design</em>, <em>fillcolor='#ffffff'</em>, <em>edgecolor='#aaaaaa'</em>, <em>color='#666666'</em>, <em>weight='bold'</em>, <em>fontsize=14</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.add_label" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a label to the plot</p>
-<p>This function can be used for title labels or for group labels applied
-to rows and columns when plotting facet grid style plots.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>label</strong> (<em>str</em>) &#8211; label text</li>
-<li><strong>pos</strong> (<em>tuple</em>) &#8211; label position tuple of form (left, bottom, width, height)</li>
-<li><strong>axis</strong> (<em>matplotlib.axes</em>) &#8211; mpl axes object</li>
-<li><strong>rotation</strong> (<em>int</em>) &#8211; degrees of rotation</li>
-<li><strong>fillcolor</strong> (<em>str</em>) &#8211; hex color code for label fill (default=&#8217;#ffffff&#8217;)</li>
-<li><strong>edgecolor</strong> (<em>str</em>) &#8211; hex color code for label edge (default=&#8217;#aaaaaa&#8217;)</li>
-<li><strong>color</strong> (<em>str</em>) &#8211; hex color code for label text (default=&#8217;#666666&#8217;)</li>
-<li><strong>weight</strong> (<em>str</em>) &#8211; label font weight (use standard mpl weights like &#8216;bold&#8217;)</li>
-<li><strong>fontsize</strong> (<em>int</em>) &#8211; label font size (default=14)</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.add_legend">
-<code class="descclassname">fcp.</code><code class="descname">add_legend</code><span class="sig-paren">(</span><em>fig</em>, <em>curves</em>, <em>kw</em>, <em>design</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.add_legend" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>Add a figure legend</dt>
-<dd>TODO: add separate_label support?</dd>
-</dl>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>fig</strong> (<em>mpl.Figure</em>) &#8211; current figure</li>
-<li><strong>curves</strong> (<em>list</em>) &#8211; list of mpl line objects</li>
-<li><strong>kw</strong> (<em>dict</em>) &#8211; kwargs dict</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">figure</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.add_lines">
-<code class="descclassname">fcp.</code><code class="descname">add_lines</code><span class="sig-paren">(</span><em>ax</em>, <em>kw</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.add_lines" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add axhlines and axvlines</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ax</strong> (<em>mpl.axes</em>) &#8211; current axes to style</li>
-<li><strong>kw</strong> (<em>dict</em>) &#8211; kwargs dict</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">updated axis</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.boxplot">
-<code class="descclassname">fcp.</code><code class="descname">boxplot</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.boxplot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Main boxplot function
-This function wraps the boxplot function from the matplotlib
-library.  At minimum, it requires a pandas DataFrame with at least one
-column and a column name for the y axis.  Plots can be
-customized and enhanced by passing keyword arguments as defined below.
-Default values that must be defined in order to generate the plot are
-pulled from the fcp_params dictionary defined in defaults.py.
-Required Keyword Args:</p>
-<blockquote>
-<div>df (DataFrame): DataFrame containing data to plot
-y (str|list):   name or list of names of y column in df</div></blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name" colspan="2">Keyword Arguments:</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><strong>get_defaults for definitions</strong> (<a class="reference internal" href="#design.FigDesign.see" title="design.FigDesign.see"><em>see</em></a>) &#8211; </td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
-<dt>contains all the spacing information used to</dt>
-<dd>construct the figure</dd>
-</dl>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">design (FigDesign obj)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.contour">
-<code class="descclassname">fcp.</code><code class="descname">contour</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.contour" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>**kwargs</strong> &#8211; </td>
-</tr>
-</tbody>
-</table>
-<p>Returns:</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.df_filter">
-<code class="descclassname">fcp.</code><code class="descname">df_filter</code><span class="sig-paren">(</span><em>df</em>, <em>filt_orig</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.df_filter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Filter a DataFrame</p>
-<p>Due to limitations in pd.query, column names must not have spaces.  This
-function will temporarily replace spaces in the column names with
-underscores, but the supplied query string must contain column names
-without any spaces</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>df</strong> (<em>pd.DataFrame</em>) &#8211; data set to be filtered</li>
-<li><strong>filt_orig</strong> (<em>str</em>) &#8211; query expression for filtering</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">filtered DataFrame</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.filename_label">
-<code class="descclassname">fcp.</code><code class="descname">filename_label</code><span class="sig-paren">(</span><em>label</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.filename_label" title="Permalink to this definition">¶</a></dt>
-<dd><p>Format filename to remove parentheses, brackets, leading/trailing spaces</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>label</strong> (<em>str</em>) &#8211; label to format</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">formatted label</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.get_current_values">
-<code class="descclassname">fcp.</code><code class="descname">get_current_values</code><span class="sig-paren">(</span><em>df</em>, <em>text</em>, <em>key='&#64;'</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.get_current_values" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parse a string looking for text enclosed by &#8216;key&#8217; and replace with the
-current value from the DataFrame</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>df</strong> (<em>pd.DataFrame</em>) &#8211; DataFrame containing values we are looking for</li>
-<li><strong>text</strong> (<em>str</em>) &#8211; string to parse</li>
-<li><strong>key</strong> (<em>str</em>) &#8211; matching chars that enclose the value to replace from df</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">updated string</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.get_df_figure">
-<code class="descclassname">fcp.</code><code class="descname">get_df_figure</code><span class="sig-paren">(</span><em>df</em>, <em>fig_item</em>, <em>kw</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.get_df_figure" title="Permalink to this definition">¶</a></dt>
-<dd><p>Subset the main DataFrame based on fig_item grouping</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>df</strong> (<em>pd.DataFrame</em>) &#8211; main DataFrame</li>
-<li><strong>fig_item</strong> (<em>str</em>) &#8211; figure grouping value</li>
-<li><strong>kw</strong> (<em>dict</em>) &#8211; kwargs dict</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">DataFrame subset</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.get_legend_groupings">
-<code class="descclassname">fcp.</code><code class="descname">get_legend_groupings</code><span class="sig-paren">(</span><em>df</em>, <em>y</em>, <em>kw</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.get_legend_groupings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determine the legend groupings
-:param df: data being plotted
-:type df: pd.DataFrame
-:param y: y-column name list
-:type y: list
-:param kw: kwargs dict
-:type kw: dict</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">updated kwargs dict</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.get_rc_groupings">
-<code class="descclassname">fcp.</code><code class="descname">get_rc_groupings</code><span class="sig-paren">(</span><em>df</em>, <em>kw</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.get_rc_groupings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determine the row and column facet grid groupings
-:param df: data being plotted
-:type df: pd.DataFrame
-:param kw: kwargs dict
-:type kw: dict</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">rows (list of row labels),
-nrow (number of plot rows),
-cols (list of column labels),
-ncol (number of columns)
-kw (kwargs dict with updates)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.get_rc_subset">
-<code class="descclassname">fcp.</code><code class="descname">get_rc_subset</code><span class="sig-paren">(</span><em>df</em>, <em>r</em>, <em>c</em>, <em>kw</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.get_rc_subset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Subset the data by the row/col values</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>df</strong> (<em>pd.DataFrame</em>) &#8211; main DataFrame</li>
-<li><strong>r</strong> (<em>int|None</em>) &#8211; row index</li>
-<li><strong>c</strong> (<em>int|None</em>) &#8211; column index</li>
-<li><strong>kw</strong> (<em>dict</em>) &#8211; kwargs dict</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">subset DataFrame</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.get_unique_groups">
-<code class="descclassname">fcp.</code><code class="descname">get_unique_groups</code><span class="sig-paren">(</span><em>kw</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.get_unique_groups" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get all unique values from several kwargs</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kw</strong> (<em>dict</em>) &#8211; keyword args dict</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of unique group values</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.init">
-<code class="descclassname">fcp.</code><code class="descname">init</code><span class="sig-paren">(</span><em>plot</em>, <em>kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.init" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>Initialize plotting</dt>
-<dd><ul class="first last simple">
-<li>init matplotlib</li>
-<li>Extract params from kwargs</li>
-<li>Convert data column types</li>
-<li>Filter data</li>
-</ul>
-</dd>
-</dl>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>plot</strong> (<em>str</em>) &#8211; plot type (&#8216;boxplot&#8217;, &#8216;contour&#8217;, or &#8216;plot&#8217;)</li>
-<li><strong>kwargs</strong> (<em>dict</em>) &#8211; keyword args</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name" colspan="2">Keyword Arguments:</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><ul class="first simple">
-<li><strong>ax_edge_color</strong> (<em>str</em>) &#8211; hex color code for axis edge border color
-(default from fcp_params)</li>
-<li><strong>ax_face_color</strong> (<em>str</em>) &#8211; hex color code for axis fill color (default from
-fcp_params)</li>
-<li><strong>ax_hlines</strong> (<em>list</em>) &#8211; list of y-values at which to add horizontal lines
-(default=[])</li>
-<li><strong>ax_label_pad</strong> (<em>int</em>) &#8211; label offset padding in pixels (default=0)</li>
-<li><strong>ax_lim</strong> (<em>list</em>) &#8211; axes range values [xmin, xmax, ymin, ymax] (default=[])</li>
-<li><strong>ax_lim_pad</strong> (<em>float</em>) &#8211; in place of discrete axes limits, adds whitespace
-to the bottom|top and left|right of the axis by this amount as a
-percent/100 of the total axis range (default=0.05)</li>
-<li><strong>ax_scale</strong> (<em>None|str</em>) &#8211; set the scale of an axis as linear or log
-(default=None &#8211;&gt; linear; options include &#8216;logx&#8217;|&#8217;semilogx&#8217; for the
-x-axis, &#8216;logy&#8217;|&#8217;semilogy&#8217; for the y-axis or &#8216;loglog&#8217; for both axes</li>
-<li><strong>ax_scale2</strong> (<em>None|str</em>) &#8211; same as ax_scale but for secondary y-axis
-when twinx is True</li>
-<li><strong>ax_size</strong> (<em>list</em>) &#8211; [width, height] of each plot window in pixels
-(default defined by fcp_params)</li>
-<li><strong>ax_vlines</strong> (<em>list</em>) &#8211; list of x-values at which to add vertical lines
-(default=[])</li>
-<li><strong>bp_divider_color</strong> (<em>str</em>) &#8211; hex color code for divider line color between
-groups (default from fcp_params)</li>
-<li><strong>bp_fill_color</strong> (<em>str</em>) &#8211; hex color code for boxplot fill color (default
-from fcp_params)</li>
-<li><strong>bp_labels_on</strong> (<em>bool</em>) &#8211; toggle on|off boxplot grouping labels
-(default=True)</li>
-<li><strong>bp_label_size</strong> (<em>int</em>) &#8211; grouping label size (default from fcp_params)</li>
-<li><strong>bp_label_edge_color</strong> (<em>str</em>) &#8211; hex color code for boxplot grouping label
-regions (default from fcp_params)</li>
-<li><strong>bp_label_fill_color</strong> (<em>str</em>) &#8211; hex color code for grouping labels (default
-from fcp_params)</li>
-<li><strong>bp_label_font_size</strong> (<em>int</em>) &#8211; grouping label font size (default from
-fcp_params)</li>
-<li><strong>bp_label_text_color</strong> (<em>str</em>) &#8211; hex color code for grouping label text
-(default from fcp_params)</li>
-<li><strong>bp_label_text_style</strong> (<em>str</em>) &#8211; grouping label text style; use standard
-mpl styles like &#8216;italic&#8217; (default from fcp_params)</li>
-<li><strong>bp_label_text_weight</strong> (<em>str</em>) &#8211; grouping label text weight; use standard
-mpl weights like &#8216;bold&#8217; (default from fcp_params)</li>
-<li><strong>bp_name_font_size</strong> (<em>str</em>) &#8211; grouping label summary name font size
-(default from fcp_params)</li>
-<li><strong>bp_name_text_color</strong> (<em>str</em>) &#8211; hex color code for grouping label summary
-name (default from fcp_params)</li>
-<li><strong>bp_name_text_style</strong> (<em>str</em>) &#8211; grouping label summary name text style; use
-standard mpl styles like &#8216;italic&#8217; (default from fcp_params)</li>
-<li><strong>bp_name_text_weight</strong> (<em>str</em>) &#8211; grouping label summary name text weight;
-use standard mpl weights like &#8216;bold&#8217; (default from fcp_params)</li>
-<li><strong>bp_name_ws</strong> (<em>int</em>) &#8211; whitespace in pixels between grouping labels under
-the boxplot and the summary names (default from fcp_params)</li>
-<li><strong>cmap</strong> (<em>str</em>) &#8211; name of color map to use for plotting (default=None &#8211;&gt;
-use color order defined in fcp_params</li>
-<li><strong>col</strong> (<em>str</em>) &#8211; name of a column in df to use as a grouping variable for
-facet grid style plotting; each unique value from df[col] will
-represent a column of plots in the final figure (default=None &#8211;&gt;
-no column grouping)</li>
-<li><strong>col_label</strong> (<em>str</em>) &#8211; a custom label to display for each column in the
-facet grid plot (default=None &#8211;&gt; use the value of kwargs[&#8216;col&#8217;]</li>
-<li><strong>col_labels_on</strong> (<em>bool</em>) &#8211; toggle on|off column labels in facet grid plot
-(default=True)</li>
-<li><strong>col_label_size</strong> (<em>int</em>) &#8211; label height in pixel for col labels in pixels
-(default from fcp_params)</li>
-<li><strong>col_label_ws</strong> (<em>int</em>) &#8211; whitespace in pixels between axis and col labels
-in pixels (default from fcp_params)</li>
-<li><strong>col_padding</strong> (<em>int</em>) &#8211; whitespace between facet columns in pixels (default
-in fcp_params)</li>
-<li><strong>colors</strong> (<em>list</em>) &#8211; list of tuple values used to define colors for plotting
-using RGB/255 mpl style (default is palette from defaults.py)</li>
-<li><strong>cols</strong> (<em>list</em>) &#8211; list used to manually define the columns to use in the
-facet grid (default=None). These values must actually be in df[col]</li>
-<li><strong>connect_means</strong> (<em>bool</em>) &#8211; draw a line connecting the mean value of each
-group in the boxplot (default=False)</li>
-<li><strong>dividers</strong> (<em>bool</em>) &#8211; show vertical diveider lines between groups
-(default=True)</li>
-<li><strong>fig_ax_ws</strong> (<em>int</em>) &#8211; number of pixels between the left figure edge and the
-left axis edge (default from fcp_params)</li>
-<li><strong>fig_edge_color</strong> (<em>str</em>) &#8211; hex color code for figure edge color (default
-from fcp_params)</li>
-<li><strong>fig_face_color</strong> (<em>str</em>) &#8211; hex color code for figure fill color (default
-from fcp_params)</li>
-<li><strong>fig_groups</strong> (<em>list|None</em>) &#8211; name of df column by which to group the data
-and make discrete figures based on the unique values in this column
-(default=None)</li>
-<li><strong>fig_group_path</strong> (<em>bool</em>) &#8211; use the unique grouping item from fig_groups
-in the plot filename (default=False)</li>
-<li><strong>filename</strong> (<em>str</em>) &#8211; name of saved figure (default=None&#8211;&gt; custom filename
-will be built based on the data that is plotted</li>
-<li><strong>filter</strong> (<em>str</em>) &#8211; str to use in df.query to include or exclude certain
-data from df (default=None).  Note that df.query does not support
-spaces, parenthesis, or brackets. Spaces should be replaced by &#8216;_&#8217;
-and parenthesis/brackets should be dropped from the str.  Example:
-Temperature [C] &#8211;&gt; Temperature_C</li>
-<li><strong>grid_major</strong> (<em>bool</em>) &#8211; toggle major gridlines (default=True)</li>
-<li><strong>grid_major_color</strong> (<em>str</em>) &#8211; hex color code for major gridline color
-(default from fcp_params)</li>
-<li><strong>grid_major_linestyle</strong> (<em>str</em>) &#8211; matplotlib str code for linestyle (default
-from fcp_params)</li>
-<li><strong>grid_minor</strong> (<em>bool</em>) &#8211; toggle minor gridlines (default=False)</li>
-<li><strong>grid_minor_color</strong> (<em>str</em>) &#8211; hex color code for minor gridline color
-(default from fcp_params)</li>
-<li><strong>grid_minor_linestyle</strong> (<em>str</em>) &#8211; matplotlib str code for linestyle (default
-from fcp_params)</li>
-<li><strong>groups</strong> (<em>list</em>) &#8211; (default=None)</li>
-<li><strong>jitter</strong> (<em>bool</em>) &#8211; jitter the data points (default=False)</li>
-<li><strong>label_font_size</strong> (<em>int</em>) &#8211; font size in pixels for the x and y labels
-(default from fcp_params)</li>
-<li><strong>label_style</strong> (<em>str</em>) &#8211; define the label style (default from fcp_params).
-Use standard mpl styles like &#8216;italic&#8217;</li>
-<li><strong>label_weight</strong> (<em>str</em>) &#8211; define the label weight (default from fcp_params).
-Use standard mpl weights like &#8216;bold&#8217;</li>
-<li><strong>leg_bkgrd</strong> (<em>str</em>) &#8211; hex color code for legend background (default from
-fcp_params)</li>
-<li><strong>leg_border</strong> (<em>str</em>) &#8211; hex color code for legend border (default from
-fcp_params)</li>
-<li><strong>leg_groups</strong> (<em>str</em>) &#8211; name of df column by which to legend the data
-(default=None)</li>
-<li><strong>leg_items</strong> (<em>str</em>) &#8211; explicit definition of the legend items; ignores any
-values that are not listed (default=None)</li>
-<li><strong>leg_on</strong> (<em>bool</em>) &#8211; toggle legend visibility (default=True)</li>
-<li><strong>leg_title</strong> (<em>str</em>) &#8211; title for the legend (default=None)</li>
-<li><strong>line_color</strong> (<em>str</em>) &#8211; hex color code to override the built-in line color
-cycle (default=None)</li>
-<li><strong>line_fit</strong> (<em>None|int</em>) &#8211; adds a line fit to the data of polynomial order
-<code class="docutils literal"><span class="pre">line_fit</span></code> (default=None)</li>
-<li><strong>line_style</strong> (<em>str</em>) &#8211; set the default line style (default=&#8221;-&#8221;)</li>
-<li><strong>line_width</strong> (<em>int</em>) &#8211; set the linewidth of curves (default=1)</li>
-<li><strong>lines</strong> (<em>bool</em>) &#8211; turn plot lines on|off (default=True)</li>
-<li><strong>marker_size</strong> (<em>int</em>) &#8211; set marker size (default from fcp_params)</li>
-<li><strong>marker_type</strong> (<em>str</em>) &#8211; set marker type (default==None)</li>
-<li><strong>points</strong> (<em>bool</em>) &#8211; turn markers on|off (default=True)</li>
-<li><strong>range_lines</strong> (<em>bool</em>) &#8211; add range lines on boxplot</li>
-<li><strong>rc_label_edge_color</strong> (<em>str</em>) &#8211; hex color code for row/column labels border
-edges (default from fcp_params)</li>
-<li><strong>rc_label_fill_color</strong> (<em>str</em>) &#8211; hex color code for row/column labels
-background (default from fcp_params)</li>
-<li><strong>rc_label_font_size</strong> (<em>int</em>) &#8211; font size for row/column labels (default
-from fcp_params)</li>
-<li><strong>rc_label_text_color</strong> (<em>str</em>) &#8211; hex color code for row/column label text
-(default from fcp_params)</li>
-<li><strong>rc_label_text_style</strong> (<em>str</em>) &#8211; define the style row/column label text. Use
-standard mpl styles like &#8216;italic&#8217;&#8221; (default from fcp_params)</li>
-<li><strong>row</strong> (<em>str</em>) &#8211; name of a column in df to use as a grouping variable for
-facet grid style plotting; each unique value from df[row] will
-represent a row of plots in the final figure (default=None &#8211;&gt; no
-column grouping)</li>
-<li><strong>row_label</strong> (<em>str</em>) &#8211; a custom label to display for each row in the facet
-grid plot (default=None &#8211;&gt; use the value of kwargs[&#8216;row&#8217;])</li>
-<li><strong>row_labels_on</strong> (<em>bool</em>) &#8211; toggle visibility of row grouping labels in
-facet grid (default=True)</li>
-<li><strong>row_label_size</strong> (<em>int</em>) &#8211; label height in pixel for row labels in pixels
-(default from fcp_params)</li>
-<li><strong>row_label_ws</strong> (<em>int</em>) &#8211; whitespace in pixels between axis and row labels
-in pixels (default from fcp_params)</li>
-<li><strong>row_padding</strong> (<em>int</em>) &#8211; whitespace between facet rows in pixels (default
-from fcp_params</li>
-<li><strong>rows</strong> (<em>list</em>) &#8211; list used to manually define the rows to use in the facet
-grid. These values must actually be in df[row] (default=None)</li>
-<li><strong>save_ext</strong> (<em>str</em>) &#8211; filename extension for saved figures (default=&#8217;png&#8217;)</li>
-<li><strong>save_path</strong> (<em>str</em>) &#8211; destination file folder for plots (default=None)</li>
-<li><strong>scalar_x</strong> (<em>bool</em>) &#8211; force scalar tick labels on the x-axis instead of
-powers of ten (default=False)</li>
-<li><strong>scalar_y</strong> (<em>bool</em>) &#8211; force scalar tick labels on the y-axis instead of
-powers of ten (default=False)</li>
-<li><strong>sci_x</strong> (<em>bool</em>) &#8211; force scientific notation for tick labels on x-axis
-(default=False)</li>
-<li><strong>sci_y</strong> (<em>bool</em>) &#8211; force scientific notation for tick labels on y-axis
-(default=False)</li>
-<li><strong>separate_labels</strong> (<em>bool</em>) &#8211; give each plot its own axes labels</li>
-<li><strong>sharex</strong> (<em>bool</em>) &#8211; share plot range for x-axis (default=True)</li>
-<li><strong>sharey</strong> (<em>bool</em>) &#8211; share plot range for y-axis (default=True)</li>
-<li><strong>show</strong> (<em>bool</em>) &#8211; pop open plot after it is generated.  Otherwise, the plot
-is just saved (default=False)</li>
-<li><strong>stat</strong> (<em>str</em>) &#8211; statistic to apply to the y-data being plotted (default=
-None)</li>
-<li><strong>stat_val</strong> (<em>str</em>) &#8211; column name to which the statistic should be applied.
-Options include: &#8216;median&#8217;, &#8216;median_only&#8217;, &#8216;mean_only&#8217;, and &#8216;mean&#8217;.
-When &#8216;only&#8217; is in the stat value, median lines and median/mean data
-points are plotted.  Without &#8216;only&#8217;, median/mean lines and all raw
-data points are plotted (default=kwargs[&#8216;x&#8217;])</li>
-<li><strong>tick_major_color</strong> (<em>str</em>) &#8211; hex color code for major tick marks (default
-from fcp_params)</li>
-<li><strong>tick_minor_color</strong> (<em>str</em>) &#8211; hex color code for minor tick marks (default
-from fcp_params)</li>
-<li><strong>tick_font_size</strong> (<em>int</em>) &#8211; font size for tick labels (default from
-fcp_params)</li>
-<li><strong>tick_label_color</strong> (<em>str</em>) &#8211; hex color code for tick labels (default
-from fcp_params)</li>
-<li><strong>tick_length</strong> (<em>int</em>) &#8211; length of the tick marks (default from fcp_params)</li>
-<li><strong>tick_width</strong> (<em>int</em>) &#8211; line width of the tick marks (default from
-fcp_params)</li>
-<li><strong>title</strong> (<em>str</em>) &#8211; plot title (default=None)</li>
-<li><strong>title_edge_color</strong> (<em>str</em>) &#8211; hex color code for edge of a box around the
-plot title (default from fcp_params)</li>
-<li><strong>title_fill_color</strong> (<em>str</em>) &#8211; hex color code for fill of a box around the
-plot title (default from fcp_params)</li>
-<li><strong>title_text_color</strong> (<em>str</em>) &#8211; hex color code for title color (default from
-fcp_params)</li>
-<li><strong>title_font_size</strong> (<em>int</em>) &#8211; font size of plot title (default from
-fcp_params)</li>
-<li><strong>title_text_style</strong> (<em>str</em>) &#8211; define the title style. Use standard mpl
-styles like &#8216;italic&#8217; (default from fcp_params)</li>
-<li><strong>twinx</strong> (<em>bool</em>) &#8211; allow for twinning of x-axis for secondary y-axis
-(default=False)</li>
-<li><strong>twiny</strong> (<em>bool</em>) &#8211; allow for twinning of y-axis for secondary x-axis
-(not currently supported) (default=False)</li>
-<li><strong>xlabel</strong> (<em>str</em>) &#8211; label for x-axis (default=kwargs[&#8216;x&#8217;])</li>
-<li><strong>xmax</strong> (<em>float</em>) &#8211; maximum x-value on x-axis (default=None &#8211;&gt; use mpl
-defaults)</li>
-<li><strong>xmin</strong> (<em>float</em>) &#8211; minimum x-value of x-axis (default=None &#8211;&gt; use mpl
-defaults)</li>
-<li><strong>xticks</strong> (<em>int</em>) &#8211; specify the number of xticks (not currently supported)
-(default=None &#8211;&gt; use mpl defaults)</li>
-<li><strong>xtrans</strong> (<em>str</em>) &#8211; translate the x-axis data.  Options include: &#8216;abs&#8217;
-(absolute value), &#8216;neg&#8217;/&#8217;negative&#8217; (negative value),
-&#8216;inv&#8217;/&#8217;inverse&#8217; (1/data), or tuple of (&#8216;pow&#8217;, int) (to raise to a
-power) (default = None)</li>
-<li><strong>ylabel</strong> (<em>str</em>) &#8211; label for primary y-axis (default=kwargs[&#8216;y&#8217;] or
-kwargs[&#8216;y&#8217;][0])</li>
-<li><strong>ymax</strong> (<em>float</em>) &#8211; maximum y-value on y-axis (default=None &#8211;&gt; use mpl
-defaults)</li>
-<li><strong>ymin</strong> (<em>float</em>) &#8211; minimum y-value of y-axis (default=None &#8211;&gt; use mpl
-defaults)</li>
-<li><strong>yticks</strong> (<em>int</em>) &#8211; specify the number of yticks (not currently supported)
-(default=None &#8211;&gt; use mpl defaults)</li>
-<li><strong>ytrans</strong> (<em>str</em>) &#8211; translate the y-axis data.  Options include: &#8216;abs&#8217;
-(absolute value), &#8216;neg&#8217;/&#8217;negative&#8217; (negative value),
-&#8216;inv&#8217;/&#8217;inverse&#8217; (1/data), or tuple of (&#8216;pow&#8217;, int) (to raise to a
-power) [won&#8217;t work with <code class="docutils literal"><span class="pre">twinx</span></code>] (default=None)</li>
-<li><strong>ylabel2</strong> (<em>str</em>) &#8211; label for secondary y-axis (default=kwargs[&#8216;y&#8217;][1])</li>
-<li><strong>ymax2</strong> (<em>float</em>) &#8211; maximum y-value on secondary y-axis (default=None &#8211;&gt;
-use mpl defaults)</li>
-<li><strong>ymin2</strong> (<em>float</em>) &#8211; minimum y-value on secondary y-axis (default=None &#8211;&gt;
-use mpl defaults)</li>
-<li><strong>yticks2</strong> (<em>int</em>) &#8211; specify the number of yticks2 (not currently supported)
-(default=None &#8211;&gt; use mpl defaults)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">dictionary of keyword arguments</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.make_fig_and_ax">
-<code class="descclassname">fcp.</code><code class="descname">make_fig_and_ax</code><span class="sig-paren">(</span><em>kw</em>, <em>nrow</em>, <em>ncol</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.make_fig_and_ax" title="Permalink to this definition">¶</a></dt>
-<dd><p>Created the mpl figure and axes and set the sizing</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>kw</strong> (<em>dict</em>) &#8211; kwargs dict</li>
-<li><strong>nrow</strong> (<em>int</em>) &#8211; number of plot rows</li>
-<li><strong>ncol</strong> (<em>int</em>) &#8211; number of plot columns</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">design, fig, axes</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.make_rc_filename_labels">
-<code class="descclassname">fcp.</code><code class="descname">make_rc_filename_labels</code><span class="sig-paren">(</span><em>kw</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.make_rc_filename_labels" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make the row/column labels</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kw</strong> (<em>dict</em>) &#8211; kwargs dict</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">row/column filname label</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.paste_kwargs">
-<code class="descclassname">fcp.</code><code class="descname">paste_kwargs</code><span class="sig-paren">(</span><em>kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.paste_kwargs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the kwargs from contents of the clipboard in ini file format</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs</strong> (<em>dict</em>) &#8211; originally inputted kwargs</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">kwargs</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.plot">
-<code class="descclassname">fcp.</code><code class="descname">plot</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Main x-y plotting function</p>
-<p>This function wraps many variations of x-y plots from the matplotlib
-library.  At minimum, it requires a pandas DataFrame with at least two
-columns and two column names for the x and y axis.  Plots can be
-customized and enhanced by passing keyword arguments as defined below.
-Default values that must be defined in order to generate the plot are
-pulled from the fcp_params dictionary defined in defaults.py.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>df</strong> (<em>DataFrame</em>) &#8211; DataFrame containing data to plot</li>
-<li><strong>x</strong> (<em>str</em>) &#8211; name of x column in df</li>
-<li><strong>y</strong> (<em>str|list</em>) &#8211; name or list of names of y column(s) in df</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name" colspan="2">Keyword Arguments:</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first"><strong>get_defaults for definitions</strong> (<a class="reference internal" href="#design.FigDesign.see" title="design.FigDesign.see"><em>see</em></a>) &#8211; </p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
-<dt>contains all the spacing information used to</dt>
-<dd><p class="first last">construct the figure</p>
-</dd>
-</dl>
-</p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">design (FigDesign obj)</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.reload_defaults">
-<code class="descclassname">fcp.</code><code class="descname">reload_defaults</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fcp.reload_defaults" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reload the fcp params</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.save">
-<code class="descclassname">fcp.</code><code class="descname">save</code><span class="sig-paren">(</span><em>fig</em>, <em>filename</em>, <em>kw</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.save" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save the figure</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>fig</strong> (<em>mpl.Figure</em>) &#8211; current figure</li>
-<li><strong>filename</strong> (<em>str</em>) &#8211; output filename</li>
-<li><strong>kw</strong> (<em>dict</em>) &#8211; kwargs dict</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.set_axes_colors">
-<code class="descclassname">fcp.</code><code class="descname">set_axes_colors</code><span class="sig-paren">(</span><em>ax</em>, <em>kw</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.set_axes_colors" title="Permalink to this definition">¶</a></dt>
-<dd><p>Format the axes colors</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ax</strong> (<em>mpl.axes</em>) &#8211; current axes to style</li>
-<li><strong>kw</strong> (<em>dict</em>) &#8211; kwargs dict</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">updated axis</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.set_axes_grid_lines">
-<code class="descclassname">fcp.</code><code class="descname">set_axes_grid_lines</code><span class="sig-paren">(</span><em>ax</em>, <em>kw</em>, <em>off=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.set_axes_grid_lines" title="Permalink to this definition">¶</a></dt>
-<dd><p>Style the grid lines and toggle visibility</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ax</strong> (<em>mpl.axes</em>) &#8211; current axes to style</li>
-<li><strong>kw</strong> (<em>dict</em>) &#8211; kwargs dict</li>
-<li><strong>off</strong> (<em>bool</em>) &#8211; flag to turn off all grid lines</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">updated axis</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.set_axes_labels">
-<code class="descclassname">fcp.</code><code class="descname">set_axes_labels</code><span class="sig-paren">(</span><em>ax</em>, <em>ax2</em>, <em>ir</em>, <em>ic</em>, <em>kw</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.set_axes_labels" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the axes labels</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ax</strong> (<em>mpl.axes</em>) &#8211; current axes</li>
-<li><strong>ax2</strong> (<em>mpl.axes</em>) &#8211; current axes twinx</li>
-<li><strong>ir</strong> (<em>int</em>) &#8211; current row index</li>
-<li><strong>ic</strong> (<em>int</em>) &#8211; current column index</li>
-<li><strong>kw</strong> (<em>dict</em>) &#8211; kwargs dict</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">updated axes</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.set_axes_ranges">
-<code class="descclassname">fcp.</code><code class="descname">set_axes_ranges</code><span class="sig-paren">(</span><em>df_fig</em>, <em>df_sub</em>, <em>x</em>, <em>y</em>, <em>ax</em>, <em>ax2</em>, <em>kw</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.set_axes_ranges" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the axes ranges</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>ax</strong> &#8211; </li>
-<li><strong>kw</strong> &#8211; </li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p>Returns:</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.set_axes_rc_labels">
-<code class="descclassname">fcp.</code><code class="descname">set_axes_rc_labels</code><span class="sig-paren">(</span><em>ax</em>, <em>ir</em>, <em>ic</em>, <em>r</em>, <em>c</em>, <em>kw</em>, <em>design</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.set_axes_rc_labels" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add the row/column label boxes</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ax</strong> (<em>mpl.axes</em>) &#8211; current axes</li>
-<li><strong>ir</strong> (<em>int</em>) &#8211; current row index</li>
-<li><strong>ic</strong> (<em>int</em>) &#8211; current column index</li>
-<li><strong>r</strong> (<em>str</em>) &#8211; row label</li>
-<li><strong>c</strong> (<em>str</em>) &#8211; column label</li>
-<li><strong>kw</strong> (<em>dict</em>) &#8211; kwargs dict</li>
-<li><strong>design</strong> (<em>obj</em>) &#8211; figure design object</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">updated axes</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.set_axes_scale">
-<code class="descclassname">fcp.</code><code class="descname">set_axes_scale</code><span class="sig-paren">(</span><em>ax</em>, <em>kw</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.set_axes_scale" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the scale type of the axes</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ax</strong> (<em>mpl axes</em>) &#8211; current axes to scale</li>
-<li><strong>kw</strong> (<em>dict</em>) &#8211; kwargs dict</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">axes scale type</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.set_axes_ticks">
-<code class="descclassname">fcp.</code><code class="descname">set_axes_ticks</code><span class="sig-paren">(</span><em>ax</em>, <em>kw</em>, <em>y_only=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.set_axes_ticks" title="Permalink to this definition">¶</a></dt>
-<dd><p>Configure the axes tick marks</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ax</strong> (<em>mpl axes</em>) &#8211; current axes to scale</li>
-<li><strong>kw</strong> (<em>dict</em>) &#8211; kwargs dict</li>
-<li><strong>y_only</strong> (<em>bool</em>) &#8211; flag to access on the y-axis ticks</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">axes scale type</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.set_data_transformation">
-<code class="descclassname">fcp.</code><code class="descname">set_data_transformation</code><span class="sig-paren">(</span><em>df</em>, <em>x</em>, <em>y</em>, <em>z</em>, <em>kw</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.set_data_transformation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Transform x, y, or z data</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>df</strong> (<em>pd.DataFrame</em>) &#8211; current DataFrame</li>
-<li><strong>x</strong> (<em>str</em>) &#8211; x column name</li>
-<li><strong>y</strong> (<em>list</em>) &#8211; y column names</li>
-<li><strong>z</strong> (<em>str</em>) &#8211; z column name</li>
-<li><strong>kw</strong> (<em>dict</em>) &#8211; kwargs dict</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">updated DataFrame</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.set_figure_title">
-<code class="descclassname">fcp.</code><code class="descname">set_figure_title</code><span class="sig-paren">(</span><em>df</em>, <em>ax</em>, <em>kw</em>, <em>design</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.set_figure_title" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a figure title</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>df</strong> (<em>pd.DataFrame</em>) &#8211; figure dataframe</li>
-<li><strong>ax</strong> (<em>mpl.axes</em>) &#8211; the 0,0 axes</li>
-<li><strong>kw</strong> (<em>dict</em>) &#8211; kwargs dict</li>
-<li><strong>design</strong> (<em>obj</em>) &#8211; figure design object</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.set_save_filename">
-<code class="descclassname">fcp.</code><code class="descname">set_save_filename</code><span class="sig-paren">(</span><em>df</em>, <em>x</em>, <em>y</em>, <em>kw</em>, <em>ifig</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.set_save_filename" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="fcp.set_theme">
-<code class="descclassname">fcp.</code><code class="descname">set_theme</code><span class="sig-paren">(</span><em>theme=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.set_theme" title="Permalink to this definition">¶</a></dt>
-<dd><p>Select a &#8220;defaults&#8221; file and copy to the user directory</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.validate_columns">
-<code class="descclassname">fcp.</code><code class="descname">validate_columns</code><span class="sig-paren">(</span><em>df</em>, <em>cols</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.validate_columns" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check a DataFrame to verify grouping columns exists; warn if missing</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>df</strong> (<em>pd.DataFrame</em>) &#8211; DataFrame to check column names</li>
-<li><strong>cols</strong> (<em>str|list</em>) &#8211; column names that need to be checked in df</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">updated list of grouping columns</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="fcp.validate_list">
-<code class="descclassname">fcp.</code><code class="descname">validate_list</code><span class="sig-paren">(</span><em>items</em><span class="sig-paren">)</span><a class="headerlink" href="#fcp.validate_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make sure a list variable is actually a list and not a single string</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>items</strong> (<em>str|list</em>) &#8211; values to check dtype</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">items as a list</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
+<div class="section" id="fcp-py">
+<h2>fcp.py<a class="headerlink" href="#fcp-py" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-design">
-<span id="design-py"></span><h2>design.py<a class="headerlink" href="#module-design" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="design.FigDesign">
-<em class="property">class </em><code class="descclassname">design.</code><code class="descname">FigDesign</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#design.FigDesign" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
-<dt id="design.FigDesign.get_figure_size">
-<code class="descname">get_figure_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#design.FigDesign.get_figure_size" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determine the size of the mpl figure canvas in pixels and inches</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="design.FigDesign.get_label_position">
-<code class="descname">get_label_position</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#design.FigDesign.get_label_position" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get option group label positions</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="design.FigDesign.get_legend_position">
-<code class="descname">get_legend_position</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#design.FigDesign.get_legend_position" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get legend position</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="design.FigDesign.get_legend_size">
-<code class="descname">get_legend_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#design.FigDesign.get_legend_size" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determine the size of the legend by building a dummy figure and
-extracting its properties</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="design.FigDesign.get_subplots_adjust">
-<code class="descname">get_subplots_adjust</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#design.FigDesign.get_subplots_adjust" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the subplots_adjust parameters for the axes</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="design.FigDesign.get_title_position">
-<code class="descname">get_title_position</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#design.FigDesign.get_title_position" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the title position</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="design.FigDesign.see">
-<code class="descname">see</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#design.FigDesign.see" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prints a readable list of class attributes</p>
-</dd></dl>
-
-</dd></dl>
-
+<div class="section" id="design-py">
+<h2>design.py<a class="headerlink" href="#design-py" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
 
+           </div>
+           <div class="articleComments">
+            
            </div>
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
+        <a href="boxplot.html" class="btn btn-neutral float-right" title="boxplot" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-        <a href="examples.html" class="btn btn-neutral" title="Example Library" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+        <a href="examples.html" class="btn btn-neutral" title="Example Library" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -1193,7 +247,8 @@ extracting its properties</p>
             VERSION:'beta',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="_static/jquery.js"></script>

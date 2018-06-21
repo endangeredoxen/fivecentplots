@@ -383,7 +383,7 @@ class BaseLayout:
                            edge_color='#4b72b0',
                            median_color=utl.kwget(kwargs, self.fcpp,
                                                  'box_median_line_color',
-                                                 '#c34e52'),
+                                                 '#ff7f0e'),
                            notch=utl.kwget(kwargs, self.fcpp, 'box_notch', False),
                            )
         self.box_stat_line = \
@@ -395,19 +395,20 @@ class BaseLayout:
                     zorder=utl.kwget(kwargs, self.fcpp,
                                      'box_stat_line_zorder', 7),
                     )
+
         self.box_divider = Element('box_divider', self.fcpp, kwargs,
-                                   on=True if 'box' in self.plot_func else False,
+                                   on=kwargs.get('box_divider', kwargs.get('box', True)),
                                    color='#bbbbbb',
-                                   zorder=1,
+                                   zorder=2,
                                    )
         self.box_range_lines = Element('box_range_lines', self.fcpp, kwargs,
-                                       on=True if 'box' in self.plot_func else False,
-                                       color='#dddddd',
+                                       on=kwargs.get('box_range_lines', kwargs.get('box', True)),
+                                       color='#cccccc',
                                        style='-',
                                        style2='--',
                                        zorder=utl.kwget(kwargs, self.fcpp,
                                                         'box_range_lines',
-                                                        0),
+                                                        3),
                                        )
 
         # Legend
@@ -2018,14 +2019,10 @@ class LayoutMPL(BaseLayout):
         self.ws_leg_fig = self.ws_leg_fig if self.legend.text is not None else self.ws_ax_fig
         self.box_title = max(self.box_group_title.size)[0] if self.box_group_title.on else 0
         if self.box_group_label.on:
-            if type(self.box_group_label.size[0]) is tuple:
-                box_label = max([f[1] for f in self.box_group_label.size])
-            else:
-                box_label = f[1]
+            self.box_labels = sum(f[1] * (1 + 2 * self.box_group_label.padding / 100) \
+                                  for f in self.box_group_label.size)
         else:
-            box_label = 0
-        self.box_labels = (len(self.groups) if self.groups is not None else 0) * \
-                          (box_label * (1 + 2 * self.box_group_label.padding / 100))
+            self.box_labels = 0
 
         # Adjust the column and row whitespace
         if self.box_group_label.on and self.label_wrap.on and 'ws_row' not in kwargs.keys():
@@ -2272,6 +2269,7 @@ class LayoutMPL(BaseLayout):
                                            showfliers=False,
                                            boxprops={'color': self.box.edge_color,
                                                      'facecolor': self.box.fill_color},
+                                           medianprops={'color': self.box.median_color},
                                            notch=self.box.notch,
                                            whiskerprops={'color': self.box.edge_color},
                                            capprops={'color': self.box.edge_color},

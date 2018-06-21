@@ -5,7 +5,7 @@ from cycler import cycler
 #########################################################
 # Figure layout defaults
 #########################################################
-fcp_params = {'ax_edge_color': '#d2d2d2',
+fcp_params = {'ax_edge_color': '#aaaaaa',
               'ax_fill_color': '#eaeaea',
               'ax_size': [400,400],  # [width, height]
               'box_divider_color': '#bbbbbb',
@@ -16,7 +16,7 @@ fcp_params = {'ax_edge_color': '#d2d2d2',
               'box_group_title_font_color': '#666666',
               'box_group_title_font_style': 'normal',
               'box_group_title_font_weight': 'normal',
-              'box_group_label_edge_color': '#555555',
+              'box_group_label_edge_color': '#aaaaaa',
               'box_group_label_font_size': 12,
               'box_group_label_font_color': '#666666',
               'box_group_label_font_style': 'normal',

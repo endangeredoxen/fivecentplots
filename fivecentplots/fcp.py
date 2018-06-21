@@ -250,14 +250,15 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
     if len(data) > 0:  # needed?
         for id, dat in enumerate(data):
             # Range lines
-            kwargs = layout.box_range_lines.kwargs.copy()
-            layout.plot_line(ir, ic, id+1-0.2, dat.max().iloc[0],
-                             x1=id+1+0.2, y1=dat.max().iloc[0], **kwargs)
-            layout.plot_line(ir, ic, id+1-0.2, dat.min().iloc[0],
-                             x1=id+1+0.2, y1=dat.min().iloc[0], **kwargs)
-            kwargs['style'] = kwargs['style2']
-            layout.plot_line(ir, ic, id+1, dat.min().iloc[0],
-                             x1=id+1, y1=dat.max().iloc[0], **kwargs)
+            if layout.box_range_lines.on:
+                kwargs = layout.box_range_lines.kwargs.copy()
+                layout.plot_line(ir, ic, id+1-0.2, dat.max().iloc[0],
+                                x1=id+1+0.2, y1=dat.max().iloc[0], **kwargs)
+                layout.plot_line(ir, ic, id+1-0.2, dat.min().iloc[0],
+                                x1=id+1+0.2, y1=dat.min().iloc[0], **kwargs)
+                kwargs['style'] = kwargs['style2']
+                layout.plot_line(ir, ic, id+1, dat.min().iloc[0],
+                                x1=id+1, y1=dat.max().iloc[0], **kwargs)
 
         # Add boxes
         bp = layout.plot_box(ir, ic, data, **kwargs)
