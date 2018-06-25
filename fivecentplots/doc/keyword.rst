@@ -159,7 +159,142 @@ of any optional secondary axes begin with the prefix
 
 Boxplots
 ^^^^^^^^
+.. image:: _static/images/element_box.png
 
+Boxplots have several unique ``Element`` objects that can be styled:
+
+    * **Boxes:**  the actual boxes of the box plot (shown in white with a blue border above)
+
+      .. raw:: html
+
+         <div class="admonition note">
+         <p class="first admonition-title">Keyword Prefix</p>
+         <p class="last"><b>box_</b></p>
+         </div>
+
+      +------------------+-----------+------------------------------------------------------+---------+-------------------------------------------+
+      | Keyword          | Data Type | Description                                          | Default | Example                                   |
+      +==================+===========+======================================================+=========+===========================================+
+      | box_on           | boolean   | toggle box visibility                                | True    | `box plot <boxplot.html#multipe-groups>`_ |
+      +------------------+-----------+------------------------------------------------------+---------+                                           +
+      | box_edge_color   | str       | edge color of the boxes                              | #4b72b0 |                                           |
+      +------------------+-----------+------------------------------------------------------+---------+                                           +
+      | box_fill_color   | str       | fill color of the boxes                              | #ffffff |                                           |
+      +------------------+-----------+------------------------------------------------------+---------+                                           +
+      | box_median_color | str       | color of the median line within the boxes            | #ff7f0e |                                           |
+      +------------------+-----------+------------------------------------------------------+---------+                                           +
+      | notch            | boolean   | use a notched-style box instead of a rectangular box | False   |                                           |
+      +------------------+-----------+------------------------------------------------------+---------+-------------------------------------------+
+
+|
+
+    * **Divider lines:**  optional vertical divider lines between groups
+
+      .. raw:: html
+
+         <div class="admonition note">
+         <p class="first admonition-title">Keyword Prefix</p>
+         <p class="last"><b>box_divider_</b></p>
+         </div>
+
+      These lines are styled using the `default <keyword.html#default-attributes>`_
+      attributes for lines of the ``Element`` object.  They are enabled by default
+      but can be turned off with ``box_divider=False``.  (Default ``zorder`` = 2)
+
+      +----------------+-----------+--------------------------------------------+---------+
+      | Keyword        | Data Type | Description                                | Default |
+      +================+===========+============================================+=========+
+      | box_divider_on | boolean   | toggle divider lines between groups on/off | True    |
+      +----------------+-----------+--------------------------------------------+---------+
+      | color          | str       | line color                                 | #bbbbbb |
+      +----------------+-----------+--------------------------------------------+---------+
+      | zorder         | int       | relative z-height of line in plot          | 2       |
+      +----------------+-----------+--------------------------------------------+---------+
+
+|
+
+    * **Group labels:** labels directly under each box that indicate the unique group values
+      of the given box (shown in yellow above).
+
+      .. raw:: html
+
+         <div class="admonition note">
+         <p class="first admonition-title">Keyword Prefix</p>
+         <p class="last"><b>box_group_label_</b></p>
+         </div>
+
+
+      These labels are styled using the `default <keyword.html#default-attributes>`_ label
+      attributes of the ``Element`` object.
+
+|
+
+    * **Group titles:** labels to the right of the group labels that indicate the DataFrame
+      column name of each grouping column (shown in salmon above).
+
+      .. raw:: html
+
+         <div class="admonition note">
+         <p class="first admonition-title">Keyword Prefix</p>
+         <p class="last"><b>box_group_title_</b></p>
+         </div>
+
+
+      These labels are styled using the `default <keyword.html#default-attributes>`_ label
+      attributes of the ``Element`` object.
+
+|
+
+    * **Range lines:** optional lines within a single box that span the entire range of the
+      data set.  These are useful for visualization of outlier points that may be
+      outside of the selected ymin/ymax Range (Default ``zorder`` = 3)
+
+      .. raw:: html
+
+         <div class="admonition note">
+         <p class="first admonition-title">Keyword Prefix</p>
+         <p class="last"><b>box_range_lines</b></p>
+         </div>
+
+      +--------------------+-----------+------------------------------------------------------------------------+---------+
+      | Keyword            | Data Type | Description                                                            | Default |
+      +====================+===========+========================================================================+=========+
+      | box_range_lines_on | boolean   | toggle range lines on/off                                              | True    |
+      +--------------------+-----------+------------------------------------------------------------------------+---------+
+      | color              | str       | line color                                                             | #cccccc |
+      +--------------------+-----------+------------------------------------------------------------------------+---------+
+      | style              | str       | horizontal lines at the end of the range                               | -       |
+      +--------------------+-----------+------------------------------------------------------------------------+---------+
+      | style2             | str       | vertical lines connecting the horizontal lines at the end of the range | --      |
+      +--------------------+-----------+------------------------------------------------------------------------+---------+
+      | zorder             | int       | relative z-height of line in plot                                      | 3       |
+      +--------------------+-----------+------------------------------------------------------------------------+---------+
+
+|
+
+    * **Stat lines:** optional connecting line between each box at some statistical
+      value calculated from the data for a single box.  Options include any stat that
+      can be computed via the ``groupby`` command on a pandas DataFrame (i.e., "mean",
+      "median", "std", etc.) (Default ``zorder`` = 7 to be on top of the boxes)
+
+      .. raw:: html
+
+         <div class="admonition note">
+         <p class="first admonition-title">Keyword Prefix</p>
+         <p class="last"><b>box_stat_line_</b></p>
+         </div>
+
+      +------------------+-----------+--------------------------------------------+---------+
+      | Keyword          | Data Type | Description                                | Default |
+      +==================+===========+============================================+=========+
+      | box_stat_line_on | boolean   | toggle divider lines between groups on/off | True    |
+      +------------------+-----------+--------------------------------------------+---------+
+      | box_stat_line    | str       | set the statistic for the connecting line  | mean    |
+      +------------------+-----------+--------------------------------------------+---------+
+      | color            | str       | line color                                 | #666666 |
+      +------------------+-----------+--------------------------------------------+---------+
+      | zorder           | int       | relative z-height of line in plot          | 7       |
+      +------------------+-----------+--------------------------------------------+---------+
 
 Color Bar
 ^^^^^^^^^
@@ -222,29 +357,78 @@ Labels
 
 The following types of ``label`` elements can exist in a plot:
 
-    * axis labels:  ``label_x``, ``label_y``, ``label_z`` (colored in salmon above)
+    * axis labels (colored in salmon above)
 
-      .. note::
+      .. raw:: html
 
-         All axis labels can be styled together using only the prefix ``label`` with no axis designation
+         <div class="admonition note">
+         <p class="first admonition-title">Keyword Prefix</p>
+         <ul>
+            <li>Single axis:
+                <ul>
+                    <li><p class="last"><b>label_x_</b></p></li>
+                    <li><p class="last"><b>label_y_</b></p></li>
+                    <li><p class="last"><b>label_z_</b> (aka colorbar title)</p></li>
+                </ul>
+            </li>
+            <li>All axes together:
+                <ul>
+                    <li><p class="last"><b>label_</b></p></li>
+                </ul>
+            </li>
+        </ul>
+        </div>
 
-    * row, column, and wrap labels:  ``label_row``, ``label_col``, ``label_wrap`` (colored in yellow above)
+      The default text for axes labels is pulled from the corresponding
+      DataFrame column names used to define these values (i.e., the ``label_x`` text
+      will match the value of ``x``).  However, axes label text can be overriden by
+      setting a value for the label such as ``label_x='New Name'``.
 
-      .. note::
 
-         All row, column, and wrap labels can be styled together using only the prefix ``rc_label``
+    * row, column, and wrap labels (colored in yellow above)
+
+      .. raw:: html
+
+         <div class="admonition note">
+         <p class="first admonition-title">Keyword Prefix</p>
+         <ul>
+            <li>Single grouping type:
+                <ul>
+                    <li><p class="last"><b>label_row_</b></p></li>
+                    <li><p class="last"><b>label_col_</b></p></li>
+                    <li><p class="last"><b>label_wrap_</b></p></li>
+                </ul>
+            </li>
+            <li>All row/column labels together:
+                <ul>
+                    <li><p class="last"><b>rc_label_</b></p></li>
+                </ul>
+            </li>
+        </ul>
+        </div>
+
+      The text for row and column labels is
+      "<the DataFrame column name specified for ``row`` or ``col``> =
+      <one of the unique values of that DataFrame column>".  The text for wrap labels
+      will be a tuple of the unique values of the DataFrame columns specified for
+      the ``wrap`` keyword. Unlike axes label text, row, column, or wrap label text
+      cannot be overriden by the user but depends on the information in the DataFrame
+      being plotted.
+
 
     * wrap titles: ``wrap_title`` (colored in cyan above)
 
-All ``label`` elements are styled using the default ``Element`` class attributes for
-color and font.
+      .. raw:: html
 
-For axis labels, the default text is pulled from the corresponding
-DataFrame column names used to define these values (i.e., the ``label_x`` text will
-match the value of ``x``).  However, axes label text can be overriden by setting a
-value for the label such as ``label_x='New Name'``.
+         <div class="admonition note">
+         <p class="first admonition-title">Keyword Prefix</p>
+         <p class="last"><b>wrap_title_</b></p>
+         </div>
 
-Row, column, and wrap...
+      The text for wrap titles is the column names specified for the ``wrap`` keyword.
+
+All ``label`` elements are styled using the `default <keyword.html#default-attributes>`_
+``Element`` class attributes for color and font.
 
 Legend
 ^^^^^^

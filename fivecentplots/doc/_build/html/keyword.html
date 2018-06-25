@@ -125,7 +125,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#whitespace">Whitespace</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id1">Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#other">Other</a></li>
 </ul>
 </li>
@@ -388,7 +388,7 @@ also contains the base attributes of the <code class="docutils literal notransla
 <h3>Axes<a class="headerlink" href="#axes" title="Permalink to this headline">¶</a></h3>
 <img alt="_images/element_axes.png" src="_images/element_axes.png" />
 <p>The <code class="docutils literal notranslate"><span class="pre">axes</span></code> element consists of the actual plotting window shown in yellow above.
-Keywords for the primary <code class="docutils literal notranslate"><span class="pre">axes</span></code> object begin with the prefix “<a href="#id2"><span class="problematic" id="id3">ax_</span></a>”.  Properties
+Keywords for the primary <code class="docutils literal notranslate"><span class="pre">axes</span></code> object begin with the prefix “<a href="#id5"><span class="problematic" id="id6">ax_</span></a>”.  Properties
 of any optional secondary axes begin with the prefix</p>
 <div class="admonition note">
 <p class="first admonition-title">Keyword Prefix</p>
@@ -503,6 +503,250 @@ of any optional secondary axes begin with the prefix</p>
 </div>
 <div class="section" id="boxplots">
 <h3>Boxplots<a class="headerlink" href="#boxplots" title="Permalink to this headline">¶</a></h3>
+<img alt="_images/element_box.png" src="_images/element_box.png" />
+<p>Boxplots have several unique <code class="docutils literal notranslate"><span class="pre">Element</span></code> objects that can be styled:</p>
+<blockquote>
+<div><ul>
+<li><p class="first"><strong>Boxes:</strong>  the actual boxes of the box plot (shown in white with a blue border above)</p>
+<div class="admonition note">
+<p class="first admonition-title">Keyword Prefix</p>
+<p class="last"><b>box_</b></p>
+</div><table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="8%" />
+<col width="40%" />
+<col width="7%" />
+<col width="32%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Keyword</th>
+<th class="head">Data Type</th>
+<th class="head">Description</th>
+<th class="head">Default</th>
+<th class="head">Example</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>box_on</td>
+<td>boolean</td>
+<td>toggle box visibility</td>
+<td>True</td>
+<td rowspan="5"><a class="reference external" href="boxplot.html#multipe-groups">box plot</a></td>
+</tr>
+<tr class="row-odd"><td>box_edge_color</td>
+<td>str</td>
+<td>edge color of the boxes</td>
+<td>#4b72b0</td>
+</tr>
+<tr class="row-even"><td>box_fill_color</td>
+<td>str</td>
+<td>fill color of the boxes</td>
+<td>#ffffff</td>
+</tr>
+<tr class="row-odd"><td>box_median_color</td>
+<td>str</td>
+<td>color of the median line within the boxes</td>
+<td>#ff7f0e</td>
+</tr>
+<tr class="row-even"><td>notch</td>
+<td>boolean</td>
+<td>use a notched-style box instead of a rectangular box</td>
+<td>False</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+</div></blockquote>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<blockquote>
+<div><ul>
+<li><p class="first"><strong>Divider lines:</strong>  optional vertical divider lines between groups</p>
+<div class="admonition note">
+<p class="first admonition-title">Keyword Prefix</p>
+<p class="last"><b>box_divider_</b></p>
+</div><p>These lines are styled using the <a class="reference external" href="keyword.html#default-attributes">default</a>
+attributes for lines of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> object.  They are enabled by default
+but can be turned off with <code class="docutils literal notranslate"><span class="pre">box_divider=False</span></code>.  (Default <code class="docutils literal notranslate"><span class="pre">zorder</span></code> = 2)</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="14%" />
+<col width="55%" />
+<col width="11%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Keyword</th>
+<th class="head">Data Type</th>
+<th class="head">Description</th>
+<th class="head">Default</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>box_divider_on</td>
+<td>boolean</td>
+<td>toggle divider lines between groups on/off</td>
+<td>True</td>
+</tr>
+<tr class="row-odd"><td>color</td>
+<td>str</td>
+<td>line color</td>
+<td>#bbbbbb</td>
+</tr>
+<tr class="row-even"><td>zorder</td>
+<td>int</td>
+<td>relative z-height of line in plot</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+</div></blockquote>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<blockquote>
+<div><ul>
+<li><p class="first"><strong>Group labels:</strong> labels directly under each box that indicate the unique group values
+of the given box (shown in yellow above).</p>
+<div class="admonition note">
+<p class="first admonition-title">Keyword Prefix</p>
+<p class="last"><b>box_group_label_</b></p>
+</div><p>These labels are styled using the <a class="reference external" href="keyword.html#default-attributes">default</a> label
+attributes of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> object.</p>
+</li>
+</ul>
+</div></blockquote>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<blockquote>
+<div><ul>
+<li><p class="first"><strong>Group titles:</strong> labels to the right of the group labels that indicate the DataFrame
+column name of each grouping column (shown in salmon above).</p>
+<div class="admonition note">
+<p class="first admonition-title">Keyword Prefix</p>
+<p class="last"><b>box_group_title_</b></p>
+</div><p>These labels are styled using the <a class="reference external" href="keyword.html#default-attributes">default</a> label
+attributes of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> object.</p>
+</li>
+</ul>
+</div></blockquote>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<blockquote>
+<div><ul>
+<li><p class="first"><strong>Range lines:</strong> optional lines within a single box that span the entire range of the
+data set.  These are useful for visualization of outlier points that may be
+outside of the selected ymin/ymax Range (Default <code class="docutils literal notranslate"><span class="pre">zorder</span></code> = 3)</p>
+<div class="admonition note">
+<p class="first admonition-title">Keyword Prefix</p>
+<p class="last"><b>box_range_lines</b></p>
+</div><table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="10%" />
+<col width="64%" />
+<col width="8%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Keyword</th>
+<th class="head">Data Type</th>
+<th class="head">Description</th>
+<th class="head">Default</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>box_range_lines_on</td>
+<td>boolean</td>
+<td>toggle range lines on/off</td>
+<td>True</td>
+</tr>
+<tr class="row-odd"><td>color</td>
+<td>str</td>
+<td>line color</td>
+<td>#cccccc</td>
+</tr>
+<tr class="row-even"><td>style</td>
+<td>str</td>
+<td>horizontal lines at the end of the range</td>
+<td><ul class="first last simple">
+<li></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td>style2</td>
+<td>str</td>
+<td>vertical lines connecting the horizontal lines at the end of the range</td>
+<td>–</td>
+</tr>
+<tr class="row-even"><td>zorder</td>
+<td>int</td>
+<td>relative z-height of line in plot</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+</div></blockquote>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<blockquote>
+<div><ul>
+<li><p class="first"><strong>Stat lines:</strong> optional connecting line between each box at some statistical
+value calculated from the data for a single box.  Options include any stat that
+can be computed via the <code class="docutils literal notranslate"><span class="pre">groupby</span></code> command on a pandas DataFrame (i.e., “mean”,
+“median”, “std”, etc.) (Default <code class="docutils literal notranslate"><span class="pre">zorder</span></code> = 7 to be on top of the boxes)</p>
+<div class="admonition note">
+<p class="first admonition-title">Keyword Prefix</p>
+<p class="last"><b>box_stat_line_</b></p>
+</div><table border="1" class="docutils">
+<colgroup>
+<col width="22%" />
+<col width="13%" />
+<col width="54%" />
+<col width="11%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Keyword</th>
+<th class="head">Data Type</th>
+<th class="head">Description</th>
+<th class="head">Default</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>box_stat_line_on</td>
+<td>boolean</td>
+<td>toggle divider lines between groups on/off</td>
+<td>True</td>
+</tr>
+<tr class="row-odd"><td>box_stat_line</td>
+<td>str</td>
+<td>set the statistic for the connecting line</td>
+<td>mean</td>
+</tr>
+<tr class="row-even"><td>color</td>
+<td>str</td>
+<td>line color</td>
+<td>#666666</td>
+</tr>
+<tr class="row-odd"><td>zorder</td>
+<td>int</td>
+<td>relative z-height of line in plot</td>
+<td>7</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+</div></blockquote>
 </div>
 <div class="section" id="color-bar">
 <h3>Color Bar<a class="headerlink" href="#color-bar" title="Permalink to this headline">¶</a></h3>
@@ -573,24 +817,63 @@ elements it contains.  It cannot be set directly.</p>
 <p>The following types of <code class="docutils literal notranslate"><span class="pre">label</span></code> elements can exist in a plot:</p>
 <blockquote>
 <div><ul>
-<li><p class="first">axis labels:  <code class="docutils literal notranslate"><span class="pre">label_x</span></code>, <code class="docutils literal notranslate"><span class="pre">label_y</span></code>, <code class="docutils literal notranslate"><span class="pre">label_z</span></code> (colored in salmon above)</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">All axis labels can be styled together using only the prefix <code class="docutils literal notranslate"><span class="pre">label</span></code> with no axis designation</p>
-</div>
+<li><p class="first">axis labels (colored in salmon above)</p>
+ <div class="admonition note">
+ <p class="first admonition-title">Keyword Prefix</p>
+ <ul>
+    <li>Single axis:
+        <ul>
+            <li><p class="last"><b>label_x_</b></p></li>
+            <li><p class="last"><b>label_y_</b></p></li>
+            <li><p class="last"><b>label_z_</b> (aka colorbar title)</p></li>
+        </ul>
+    </li>
+    <li>All axes together:
+        <ul>
+            <li><p class="last"><b>label_</b></p></li>
+        </ul>
+    </li>
+</ul>
+</div><p>The default text for axes labels is pulled from the corresponding
+DataFrame column names used to define these values (i.e., the <code class="docutils literal notranslate"><span class="pre">label_x</span></code> text
+will match the value of <code class="docutils literal notranslate"><span class="pre">x</span></code>).  However, axes label text can be overriden by
+setting a value for the label such as <code class="docutils literal notranslate"><span class="pre">label_x='New</span> <span class="pre">Name'</span></code>.</p>
 </li>
-<li><p class="first">row, column, and wrap labels:  <code class="docutils literal notranslate"><span class="pre">label_row</span></code>, <code class="docutils literal notranslate"><span class="pre">label_col</span></code>, <code class="docutils literal notranslate"><span class="pre">label_wrap</span></code> (colored in yellow above)</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">All row, column, and wrap labels can be styled together using only the prefix <code class="docutils literal notranslate"><span class="pre">rc_label</span></code></p>
-</div>
+<li><p class="first">row, column, and wrap labels (colored in yellow above)</p>
+ <div class="admonition note">
+ <p class="first admonition-title">Keyword Prefix</p>
+ <ul>
+    <li>Single grouping type:
+        <ul>
+            <li><p class="last"><b>label_row_</b></p></li>
+            <li><p class="last"><b>label_col_</b></p></li>
+            <li><p class="last"><b>label_wrap_</b></p></li>
+        </ul>
+    </li>
+    <li>All row/column labels together:
+        <ul>
+            <li><p class="last"><b>rc_label_</b></p></li>
+        </ul>
+    </li>
+</ul>
+</div><p>The text for row and column labels is
+“&lt;the DataFrame column name specified for <code class="docutils literal notranslate"><span class="pre">row</span></code> or <code class="docutils literal notranslate"><span class="pre">col</span></code>&gt; =
+&lt;one of the unique values of that DataFrame column&gt;”.  The text for wrap labels
+will be a tuple of the unique values of the DataFrame columns specified for
+the <code class="docutils literal notranslate"><span class="pre">wrap</span></code> keyword. Unlike axes label text, row, column, or wrap label text
+cannot be overriden by the user but depends on the information in the DataFrame
+being plotted.</p>
 </li>
 <li><p class="first">wrap titles: <code class="docutils literal notranslate"><span class="pre">wrap_title</span></code> (colored in cyan above)</p>
+<div class="admonition note">
+<p class="first admonition-title">Keyword Prefix</p>
+<p class="last"><b>wrap_title_</b></p>
+</div><p>The text for wrap titles is the column names specified for the <code class="docutils literal notranslate"><span class="pre">wrap</span></code> keyword.</p>
 </li>
 </ul>
 </div></blockquote>
-<p>label for label_x</p>
-<p>rc_label vs label_row, label_col, label_wrap</p>
+<p>All <code class="docutils literal notranslate"><span class="pre">label</span></code> elements are styled using the <a class="reference external" href="keyword.html#default-attributes">default</a>
+<code class="docutils literal notranslate"><span class="pre">Element</span></code> class attributes for color and font.</p>
 </div>
 <div class="section" id="legend">
 <h3>Legend<a class="headerlink" href="#legend" title="Permalink to this headline">¶</a></h3>
@@ -622,8 +905,8 @@ The title text is added directly via the <code class="docutils literal notransla
 <img alt="_images/figure_design.png" src="_images/figure_design.png" />
 <img alt="_images/figure_design_rc.png" src="_images/figure_design_rc.png" />
 </div>
-<div class="section" id="id1">
-<h2>Data<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id4">
+<h2>Data<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="other">
 <h2>Other<a class="headerlink" href="#other" title="Permalink to this headline">¶</a></h2>
