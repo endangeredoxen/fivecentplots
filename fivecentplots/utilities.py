@@ -152,14 +152,14 @@ def set_save_filename(df, fig_item, fig_cols, layout, kwargs):
     else:
         z = ''
     y = ' and '.join(validate_list(layout.label_y.text))
-    if layout.axes.twinx:
+    if layout.axes.twin_x:
         y += ' + ' + layout.label_y2.text
     if 'x' in kwargs.keys():
         y += ' vs '
         x = ' and '.join(validate_list(layout.label_x.text))
     else:
         x = ''
-    if layout.axes.twiny:
+    if layout.axes.twin_y:
         x += ' + ' + layout.label_x2.text
     row, col, wrap, groups, fig = '', '', '', '', ''
     if layout.label_row.text is not None:

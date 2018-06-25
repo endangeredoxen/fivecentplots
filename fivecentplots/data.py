@@ -61,9 +61,9 @@ class Data:
         if kwargs.get('wrap', None) is not None:
             self.share_x = True
             self.share_y = True
-        self.twinx = kwargs.get('twinx', False)
-        self.twiny = kwargs.get('twiny', False)
-        if self.twinx == self.twiny and self.twinx:
+        self.twin_x = kwargs.get('twin_x', False)
+        self.twin_y = kwargs.get('twin_y', False)
+        if self.twin_x == self.twin_y and self.twin_x:
             raise AxisError('cannot simultaneously twin x and y axes')
         self.xtrans = kwargs.get('xtrans', None)
         self.x2trans = kwargs.get('x2trans', None)
@@ -185,6 +185,11 @@ class Data:
                                 'the "%s=[%s]" is 0' %
                                 (group_type, ', '.join(col_names)))
 
+        # Check for wrap with twiny
+        if group_type == 'wrap' and col_names is not None and self.twin_y:
+            raise GroupingError('Wrap plots do not support twinning of the y-axis. '
+                                'Please consider a row vs column plot instead.')
+
         return values
 
     def check_group_errors(self):
@@ -248,16 +253,16 @@ class Data:
                                  'datetime.' % val)
 
         # Check for axis errors
-        if self.twinx and len(self.y) != 2:
-            raise AxisError('twinx error! %s y values were specified but'
+        if self.twin_x and len(self.y) != 2:
+            raise AxisError('twin_x error! %s y values were specified but'
                             ' two are required' % len(self.y))
-        if self.twinx and len(self.x) > 1:
-            raise AxisError('twinx error! only one x value can be specified')
-        if self.twiny and len(self.x) != 2:
-            raise AxisError('twiny error! %s x values were specified but'
+        if self.twin_x and len(self.x) > 1:
+            raise AxisError('twin_x error! only one x value can be specified')
+        if self.twin_y and len(self.x) != 2:
+            raise AxisError('twin_y error! %s x values were specified but'
                             ' two are required' % len(self.x))
-        if self.twiny and len(self.y) > 1:
-            raise AxisError('twiny error! only one y value can be specified')
+        if self.twin_y and len(self.y) > 1:
+            raise AxisError('twin_y error! only one y value can be specified')
         # if len(self.y) > 1 and len(self.x) > 1 and len(self.y) != len(self.x):
         #     raise AxisError('too many axes! Number of x and y axes specified '
         #                     'must match OR at least one axis must contain '
@@ -799,16 +804,16 @@ class Data:
         # if more than one y axis and leg specified
         if len(leg_df.y.unique()) > 1 and not (leg_df.Leg==None).all() and len(leg_df.x.unique()) == 1:
             leg_df['names'] = leg_df.Leg.map(str) + ' | ' + leg_df.y.map(str)
-        # elif self.twinx:
+        # elif self.twin_x:
         #     leg_df['names'] = leg_df.y
 
         # if more than one x and leg specified
         if 'names' not in leg_df.columns:
             leg_df['names'] = leg_df.x
-        elif len(leg_df.x.unique()) > 1 and not self.twinx:
+        elif len(leg_df.x.unique()) > 1 and not self.twin_x:
             leg_df['names'] = \
                 leg_df['names'].map(str) + ' | ' + leg_df.y.map(str) + ' / ' + leg_df.x.map(str)
-        # elif self.twinx:
+        # elif self.twin_x:
         #     leg_df['names'] = leg_df.x.map(str)
 
         new_index = natsorted(leg_df['names'])
@@ -832,8 +837,8 @@ class Data:
             for irow, row in vals.iterrows():
                 # Set twin ax status
                 twin = False
-                if (row['x'] != vals.loc[0, 'x'] and self.twiny) \
-                        or (row['y'] != vals.loc[0, 'y'] and self.twinx):
+                if (row['x'] != vals.loc[0, 'x'] and self.twin_y) \
+                        or (row['y'] != vals.loc[0, 'y'] and self.twin_x):
                     twin = True
 
                 yield irow, df, row['x'], row['y'], \
@@ -851,8 +856,8 @@ class Data:
 
                 # Set twin ax status
                 twin = False
-                if (row['x'] != self.legend_vals.loc[0, 'x'] and self.twiny) \
-                        or (row['y'] != self.legend_vals.loc[0, 'y'] and self.twinx):
+                if (row['x'] != self.legend_vals.loc[0, 'x'] and self.twin_y) \
+                        or (row['y'] != self.legend_vals.loc[0, 'y'] and self.twin_x):
                     twin = True
 
                 yield irow, df2, row['x'], row['y'], \

@@ -29,7 +29,7 @@ import datetime
 import sys
 from . data import Data
 from . layout import LayoutMPL, LayoutBokeh
-import utilities as utl
+from . utilities import set_save_filename, validate_list
 import warnings
 try:
     import fileio
@@ -123,6 +123,14 @@ def deprecated(kwargs):
             for k in keys:
                 kwargs[k.replace('%slabel' % lab, 'label_%s' % lab)] = kwargs[k]
                 kwargs.pop(k)
+
+    # twin + share
+    vals = ['sharex', 'sharey', 'twinx', 'twiny']
+    for val in vals:
+        if val in kwargs:
+            print('"%s" is deprecated.  Please use "%s_%s" instead' % \
+                  (val, val[0:-1], val[-1]))
+            kwargs['%s_%s' % (val[0:-1], val[-1])] = kwargs[val]
 
     return kwargs
 
@@ -387,7 +395,7 @@ def plot_xy(data, layout, ir, ic, df_rc, kwargs):
         if data.stat is not None:
             layout.lines.on = False
         if kwargs.get('groups', False):
-            for nn, gg in df.groupby(utl.validate_list(kwargs['groups'])):
+            for nn, gg in df.groupby(validate_list(kwargs['groups'])):
                 layout.plot_xy(ir, ic, iline, gg, x, y, leg_name, twin)
                 plot_fit(data, layout, ir, ic, iline, gg, x, y, twin)
 
@@ -444,6 +452,8 @@ def plotter(plot_func, **kwargs):
                 if dd.wrap is None:
                     layout.set_axes_rc_labels(ir, ic)
                 layout.axes.obj[ir, ic].axis('off')
+                if layout.axes2.obj[ir, ic] is not None:
+                    layout.axes2.obj[ir, ic].axis('off')
                 continue
 
             # Set the axes colors
@@ -483,8 +493,8 @@ def plotter(plot_func, **kwargs):
         layout.set_figure_title()
 
         # Build the save filename
-        filename = utl.set_save_filename(df_fig, fig_item, fig_cols,
-                                         layout, kwargs)
+        filename = set_save_filename(df_fig, fig_item, fig_cols,
+                                     layout, kwargs)
 
         # Save and optionally open
         if kwargs.get('save', True):
@@ -498,7 +508,7 @@ def plotter(plot_func, **kwargs):
             plt.close('all')
         else:
             print(filename)
-            plt.show()#return layout.fig.obj
+            plt.show()
             plt.close('all')
 
 

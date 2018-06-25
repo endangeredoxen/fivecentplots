@@ -98,16 +98,40 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="design.html">Figure Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Plot Layout</a></li>
 <li class="toctree-l1"><a class="reference internal" href="defaults.html">Default Settings</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Keyword Arguments</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#boxplot-function"><code class="docutils literal notranslate"><span class="pre">boxplot</span></code> function</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#plot-function"><code class="docutils literal notranslate"><span class="pre">plot</span></code> function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data">Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#elements">Elements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#nomenclature">Nomenclature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#default-attributes">Default attributes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#specific-elements">Specific Elements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#axes">Axes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#boxplots">Boxplots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#color-bar">Color Bar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#confidence-intervals">Confidence Intervals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#contour">Contour</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#figure">Figure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gridlines">Gridlines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#labels">Labels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#legend">Legend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#line-fit">Line Fit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lines">Lines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#markers">Markers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ticks">Ticks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#title">Title</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#whitespace">Whitespace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#other">Other</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Example Library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot() Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
 </ul>
 
             
@@ -192,559 +216,191 @@
 </style>
 <div class="section" id="keyword-arguments">
 <h1>Keyword Arguments<a class="headerlink" href="#keyword-arguments" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="boxplot-function">
-<h2><code class="docutils literal notranslate"><span class="pre">boxplot</span></code> function<a class="headerlink" href="#boxplot-function" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="colwidths-given docutils" id="id1">
-<caption><span class="caption-text">Required keyword arguments</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<p>All inputs to <strong>fivecentplots</strong> are treated as keyword arguments.  The only mandatory
+inputs are:</p>
+<p>All other keywords that can be used for grouping data, setting axis limits, and
+styling the look of the plot have built-in defaults that can be overriden by explicitly
+setting them in the plot function call or by saving them in a
+<a class="reference external" href="themes.html">user theme file</a>.</p>
+<div class="section" id="data">
+<h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="elements">
+<h2>Elements<a class="headerlink" href="#elements" title="Permalink to this headline">¶</a></h2>
+<p>Each item in a plot (axis, labels, legend, etc.) consists of an <code class="docutils literal notranslate"><span class="pre">Element</span></code> object
+that contains various attributes (color, size, style, etc.) that
+describe the element.  Depending on the element, these base attributes
+can be:</p>
+<blockquote>
+<div><ul class="simple">
+<li>overriden with new values</li>
+<li>not used at all (i.e., a label has a <code class="docutils literal notranslate"><span class="pre">fill_color</span></code> but not a plot line <code class="docutils literal notranslate"><span class="pre">width</span></code>)</li>
+<li>joined with unique attributes that only pertain to the element at hand (i.e., an x-axis range can be shared across all subplots with the <code class="docutils literal notranslate"><span class="pre">share_x</span></code> keyword, but this attribute would be meaningless for a label)</li>
+</ul>
+</div></blockquote>
+<div class="section" id="nomenclature">
+<h3>Nomenclature<a class="headerlink" href="#nomenclature" title="Permalink to this headline">¶</a></h3>
+<p>Some attributes and their keyword arguements are unique to a given element.
+However, many keywords inputs are similar in nature between many different
+elements (like fill or edge color) and can be accessed using a standard nomenclature:</p>
+<div class="admonition note">
+<p class="first admonition-title">Keyword Naming Scheme</p>
+<p class="last">&lt;element name&gt;_&lt;major|minor axis type (if any)&gt;_&lt;x|y|z axis (if any)&gt;_&lt;element attribute name&gt;</p>
+</div><p>Consider the following examples:</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p class="first">Change the x label font color to red:</p>
+<blockquote>
+<div><p><strong>label_x_font_color = ‘#FF0000’</strong></p>
+</div></blockquote>
+</li>
+<li><p class="first">Change the y-axis minor gridline width:</p>
+<blockquote>
+<div><p><strong>grid_major_y_width = 2</strong></p>
+</div></blockquote>
+</li>
+<li><p class="first">Change the axes edge color to black:</p>
+<blockquote>
+<div><p><strong>ax_edge_color = ‘#000000’</strong></p>
+</div></blockquote>
+</li>
+</ol>
+</div></blockquote>
+</div>
+<div class="section" id="default-attributes">
+<h3>Default attributes<a class="headerlink" href="#default-attributes" title="Permalink to this headline">¶</a></h3>
+<p>The base attributes of each <code class="docutils literal notranslate"><span class="pre">Element</span></code> are:</p>
+<table border="1" class="docutils">
 <colgroup>
-<col width="22%" />
-<col width="11%" />
-<col width="44%" />
-<col width="22%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Keyword</th>
-<th class="head">Data Type</th>
-<th class="head">Description</th>
-<th class="head">Example</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>df</td>
-<td>pandas.DataFrame</td>
-<td>DataFrame containing data to plot</td>
-<td>NA</td>
-</tr>
-<tr class="row-odd"><td>y</td>
-<td>str|list</td>
-<td>name or list of names of y column in df</td>
-<td>‘I [A]’</td>
-</tr>
-</tbody>
-</table>
-<table border="1" class="colwidths-given docutils" id="id2">
-<caption><span class="caption-text">Optional keyword arguments</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
-<colgroup>
-<col width="18%" />
+<col width="7%" />
+<col width="10%" />
+<col width="60%" />
 <col width="9%" />
-<col width="36%" />
-<col width="18%" />
-<col width="18%" />
+<col width="13%" />
 </colgroup>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head">Keyword</th>
-<th class="head">Data Type</th>
+<tr class="row-odd"><th class="head">Category</th>
+<th class="head">Keyword</th>
 <th class="head">Description</th>
 <th class="head">Default</th>
 <th class="head">Example</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>ax_edge_color</td>
-<td>str</td>
-<td>hex color code for axis edge border color</td>
-<td>fcp_params</td>
-<td>#3b3b3b</td>
+<tr class="row-even"><td rowspan="2">Fill</td>
+<td>fill_alpha</td>
+<td>fill color opacity [0 (fully transparent) - 1 (opaque)]</td>
+<td>1</td>
+<td><a class="reference external" href="https://test.org">https://test.org</a></td>
 </tr>
-<tr class="row-odd"><td>ax_face_color</td>
-<td>str</td>
-<td>hex color code for axis fill color</td>
-<td>fcp_params</td>
-<td>#3b3b3b</td>
-</tr>
-<tr class="row-even"><td>ax_fig_ws</td>
-<td>int</td>
-<td>axis to figure right whitespace in pixels</td>
-<td>fcp_params</td>
-<td>30</td>
-</tr>
-<tr class="row-odd"><td>ax_hlines</td>
-<td>list</td>
-<td>list of y-values at which to add horizontal lines</td>
-<td>[]</td>
-<td>[0, 1.4]</td>
-</tr>
-<tr class="row-even"><td>ws_tick_ax</td>
-<td>int</td>
-<td>label to plot offset padding in pixels</td>
-<td>0</td>
-<td>30</td>
-</tr>
-<tr class="row-odd"><td>ax_lim</td>
-<td>list</td>
-<td>axes range values [xmin, xmax, ymin, ymax]</td>
-<td>[]</td>
-<td>[0, 100, 0, 200]</td>
-</tr>
-<tr class="row-even"><td>ax_lim_pad</td>
-<td>float</td>
-<td>in place of discrete axes limits, adds whitespace to the bottom/top and left/right of the axis by this amount as a percent/100 of the total axis range</td>
-<td>0.05</td>
-<td>NA</td>
-</tr>
-<tr class="row-odd"><td>ax_scale</td>
-<td>None|str</td>
-<td>set the scale of an axis as linear or log</td>
-<td>None –&gt; linear</td>
-<td>‘logx’|’semilogx’ for the x-axis, ‘logy’|’semilogy’ for the y-axis or ‘loglog’ for both axes</td>
-</tr>
-<tr class="row-even"><td>ax_size</td>
-<td>list</td>
-<td>[width, height] of each plot window in pixels</td>
-<td>fcp_params</td>
-<td>[400, 200]</td>
-</tr>
-<tr class="row-odd"><td>bp_divider_color</td>
-<td>str</td>
-<td>hex color code for divider line color between groups</td>
-<td>fcp_params</td>
-<td>#000000</td>
-</tr>
-<tr class="row-even"><td>bp_fill_color</td>
-<td>str</td>
-<td>hex color code for boxplot fill color</td>
-<td>fcp_params</td>
+<tr class="row-odd"><td>fill_color</td>
+<td>fill color (hex color code)</td>
 <td>#ffffff</td>
+<td><a class="reference external" href="https://test.org">https://test.org</a></td>
 </tr>
-<tr class="row-odd"><td>bp_labels_on</td>
-<td>bool</td>
-<td>toggle on|off boxplot grouping labels</td>
-<td>True</td>
-<td>NA</td>
+<tr class="row-even"><td rowspan="3">Edges</td>
+<td>edge_alpha</td>
+<td>edge color opacity  [0 (fully transparent) - 1 (opaque)]</td>
+<td>1</td>
+<td><a class="reference external" href="https://test.org">https://test.org</a></td>
 </tr>
-<tr class="row-even"><td>bp_label_size</td>
-<td>int</td>
-<td>grouping label size</td>
-<td>fcp_params</td>
-<td>12</td>
+<tr class="row-odd"><td>edge_width</td>
+<td>width in pixels of the element border</td>
+<td>1</td>
+<td><a class="reference external" href="https://test.org">https://test.org</a></td>
 </tr>
-<tr class="row-odd"><td>bp_label_edge_color</td>
-<td>str</td>
-<td>hex color code for boxplot grouping label regions</td>
-<td>fcp_params</td>
-<td>#aaaaaa</td>
-</tr>
-<tr class="row-even"><td>bp_label_fill_color</td>
-<td>str</td>
-<td>hex color code for grouping labels</td>
-<td>fcp_params</td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td>bp_label_font_size</td>
-<td>int</td>
-<td>grouping label font size</td>
-<td>fcp_params</td>
-<td>12</td>
-</tr>
-<tr class="row-even"><td>bp_label_text_color</td>
-<td>str</td>
-<td>hex color code for grouping label text</td>
-<td>fcp_params</td>
-<td>#ff0000</td>
-</tr>
-<tr class="row-odd"><td>bp_label_text_style</td>
-<td>str</td>
-<td>grouping label text style; use standard mpl styles like ‘italic’</td>
-<td>fcp_params</td>
-<td>‘italic’</td>
-</tr>
-<tr class="row-even"><td>bp_label_text_weight</td>
-<td>str</td>
-<td>grouping label text weight; use standard mpl weights like ‘bold’</td>
-<td>fcp_params</td>
-<td>‘normal’</td>
-</tr>
-<tr class="row-odd"><td>bp_name_font_size</td>
-<td>str</td>
-<td>grouping label summary name font size</td>
-<td>fcp_params</td>
-<td>12</td>
-</tr>
-<tr class="row-even"><td>bp_name_text_color</td>
-<td>str</td>
-<td>hex color code for grouping label summary name</td>
-<td>fcp_params</td>
-<td>#000000</td>
-</tr>
-<tr class="row-odd"><td>bp_name_text_style</td>
-<td>str</td>
-<td>grouping label summary name text style; use standard mpl styles like ‘italic’</td>
-<td>fcp_params</td>
-<td>‘italic’</td>
-</tr>
-<tr class="row-even"><td>bp_name_text_weight</td>
-<td>str</td>
-<td>grouping label summary name text weight; use standard mpl weights like ‘bold’</td>
-<td>fcp_params</td>
-<td>‘normal’</td>
-</tr>
-<tr class="row-odd"><td>ws_bp_name</td>
-<td>int</td>
-<td>whitespace in pixels between grouping labels under the boxplot and the summary names</td>
-<td>fcp_params</td>
-<td>30</td>
-</tr>
-<tr class="row-even"><td>colors</td>
-<td>list</td>
-<td>list of tuple values used to define colors for plotting using RGB/255 mpl style</td>
-<td>palette from defaults.py</td>
-<td>[(0.32, 0.11, 0.33), (0.95, 0.75, 0.55)]</td>
-</tr>
-<tr class="row-odd"><td>connect_means</td>
-<td>bool</td>
-<td>draw a line connecting the mean value of each group in the boxplot</td>
-<td>False</td>
-<td>NA</td>
-</tr>
-<tr class="row-even"><td>dividers</td>
-<td>bool</td>
-<td>show vertical diveider lines between groups</td>
-<td>True</td>
-<td>NA</td>
-</tr>
-<tr class="row-odd"><td>fig_ax_ws</td>
-<td>int</td>
-<td>number of pixels between the left figure edge and the left axis edge</td>
-<td>fcp_params</td>
-<td>30</td>
-</tr>
-<tr class="row-even"><td>fig_edge_color</td>
-<td>str</td>
-<td>hex color code for figure edge color</td>
-<td>fcp_params</td>
+<tr class="row-even"><td>edge_color</td>
+<td>edge color (hex color code)</td>
 <td>#ffffff</td>
+<td><a class="reference external" href="https://test.org">https://test.org</a></td>
 </tr>
-<tr class="row-odd"><td>fig_face_color</td>
-<td>str</td>
-<td>hex color code for figure fill color</td>
-<td>fcp_params</td>
+<tr class="row-odd"><td rowspan="5">Fonts</td>
+<td>font</td>
+<td>font name for element text</td>
+<td>sans-serif</td>
+<td><a class="reference external" href="https://test.org">https://test.org</a></td>
+</tr>
+<tr class="row-even"><td>font_color</td>
+<td>font color (hex color code)</td>
 <td>#000000</td>
+<td><a class="reference external" href="https://test.org">https://test.org</a></td>
 </tr>
-<tr class="row-even"><td>fig_groups</td>
-<td>list|None</td>
-<td>name of df column by which to group the data and make discrete figures based on the unique values in this column</td>
-<td>None</td>
-<td>Temperature [C]</td>
+<tr class="row-odd"><td>font_size</td>
+<td>font size in pixels</td>
+<td>14</td>
+<td><a class="reference external" href="https://test.org">https://test.org</a></td>
 </tr>
-<tr class="row-odd"><td>fig_group_path</td>
-<td>bool</td>
-<td>use the unique grouping item from fig_groups in the plot filename</td>
-<td>False</td>
-<td>NA</td>
+<tr class="row-even"><td>font_style</td>
+<td>font style [‘normal’, ‘italic’, ‘oblique’]</td>
+<td>normal</td>
+<td><a class="reference external" href="https://test.org">https://test.org</a></td>
 </tr>
-<tr class="row-even"><td>filename</td>
-<td>str</td>
-<td>name of saved figure; in None, custom filename will be built based on the data that is plotted</td>
-<td>None</td>
-<td>NA</td>
+<tr class="row-odd"><td>font_weight</td>
+<td>font weight [‘light’, ‘normal’, ‘medium’, ‘semibold’, ‘bold’, ‘heavy’, ‘black’]</td>
+<td>normal</td>
+<td><a class="reference external" href="https://test.org">https://test.org</a></td>
 </tr>
-<tr class="row-odd"><td>filter</td>
-<td>str</td>
-<td>str to use in df.query to include or exclude certain data from df.  Note that df.query does not support spaces, parenthesis, or brackets. Spaces should be replaced by ‘_’ and parenthesis/brackets should be dropped from the str.  Example: Temperature [C] –&gt; Temperature_C</td>
-<td>None</td>
-<td>‘Substrate==”Si” &amp; Temperature_C==25’</td>
+<tr class="row-even"><td rowspan="4">Lines</td>
+<td>alpha</td>
+<td>line opacity</td>
+<td>1</td>
+<td><a class="reference external" href="https://test.org">https://test.org</a></td>
 </tr>
-<tr class="row-even"><td>grid_major</td>
-<td>bool</td>
-<td>turn on|off major gridline visibility</td>
-<td>True</td>
-<td>NA</td>
+<tr class="row-odd"><td>color</td>
+<td>line color (hex color code)</td>
+<td>#000000</td>
+<td><a class="reference external" href="https://test.org">https://test.org</a></td>
 </tr>
-<tr class="row-odd"><td>grid_major_color</td>
-<td>str</td>
-<td>hex color code for major gridline color</td>
-<td>fcp_params</td>
-<td>#aaaaaa</td>
-</tr>
-<tr class="row-even"><td>grid_major_linestyle</td>
-<td>str</td>
-<td>matplotlib str code for linestyle</td>
-<td>fcp_params</td>
+<tr class="row-even"><td>style</td>
+<td>line style [‘-‘, ‘–’, ‘-.’, ‘:’]</td>
 <td><ul class="first last simple">
 <li></li>
 </ul>
 </td>
+<td><a class="reference external" href="https://test.org">https://test.org</a></td>
 </tr>
-<tr class="row-odd"><td>grid_minor</td>
-<td>bool</td>
-<td>turn on|off major gridline visibility</td>
-<td>False</td>
-<td>NA</td>
-</tr>
-<tr class="row-even"><td>grid_minor_color</td>
-<td>str</td>
-<td>hex color code for minor gridline color</td>
-<td>fcp_params</td>
-<td>#aaaaaa</td>
-</tr>
-<tr class="row-odd"><td>grid_major_linestyle</td>
-<td>str</td>
-<td>matplotlib str code for linestyle</td>
-<td>fcp_params</td>
-<td>–</td>
-</tr>
-<tr class="row-even"><td>label_font_size</td>
-<td>int</td>
-<td>font size in pixels for the x and y labels</td>
-<td>fcp_params</td>
-<td>14</td>
-</tr>
-<tr class="row-odd"><td>label_style</td>
-<td>str</td>
-<td>define the label style. Use standard mpl styles like ‘italic’</td>
-<td>fcp_params</td>
-<td>‘italic’</td>
-</tr>
-<tr class="row-even"><td>label_weight</td>
-<td>str</td>
-<td>define the label weight.  Use standard mpl weights like ‘bold’</td>
-<td>fcp_params</td>
-<td>‘bold’</td>
-</tr>
-<tr class="row-odd"><td>leg_bkgrd</td>
-<td>str</td>
-<td>hex color code for legend background</td>
-<td>fcp_params</td>
-<td>#ffffff</td>
-</tr>
-<tr class="row-even"><td>leg_border</td>
-<td>str</td>
-<td>hex color code for legend border</td>
-<td>fcp_params</td>
-<td>#000000</td>
-</tr>
-<tr class="row-odd"><td>leg_groups</td>
-<td>str</td>
-<td>name of df column by which to legend the data</td>
-<td>None</td>
-<td>Substrate</td>
-</tr>
-<tr class="row-even"><td>leg_items</td>
-<td>list</td>
-<td>explicit definition of the legend items; ignores any values that are not listed</td>
-<td>[]</td>
-<td>[‘(1,1), (-2,1)]</td>
-</tr>
-<tr class="row-odd"><td>leg_on</td>
-<td>bool</td>
-<td>toggle legend visibility</td>
-<td>True</td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td>leg_title</td>
-<td>str</td>
-<td>title for the legend</td>
-<td>None</td>
-<td>My Legend</td>
-</tr>
-<tr class="row-odd"><td>line_width</td>
-<td>int</td>
-<td>set the linewidth of connect means line</td>
+<tr class="row-odd"><td>width</td>
+<td>line width in pixels</td>
 <td>1</td>
-<td>2</td>
+<td><a class="reference external" href="https://test.org">https://test.org</a></td>
 </tr>
-<tr class="row-even"><td>lines</td>
-<td>bool</td>
-<td>turn plot lines on|off</td>
-<td>True</td>
-<td>NA</td>
+<tr class="row-even"><td rowspan="3">Other</td>
+<td>on</td>
+<td>toggle visibility of the element</td>
+<td rowspan="3">depends</td>
+<td rowspan="3"><a class="reference external" href="https://test.org">https://test.org</a></td>
 </tr>
-<tr class="row-odd"><td>marker_size</td>
-<td>int</td>
-<td>set marker size</td>
-<td>fcp_params</td>
-<td>14</td>
+<tr class="row-odd"><td>size</td>
+<td>[width, height] of the object</td>
 </tr>
-<tr class="row-even"><td>marker_type</td>
-<td>str</td>
-<td>set marker type</td>
-<td>None</td>
-<td>o</td>
-</tr>
-<tr class="row-odd"><td>points</td>
-<td>bool</td>
-<td>turn markers on|off</td>
-<td>True</td>
-<td>NA</td>
-</tr>
-<tr class="row-even"><td>save_ext</td>
-<td>str</td>
-<td>filename extension for saved figures</td>
-<td>png</td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td>save_path</td>
-<td>str</td>
-<td>destination file folder for plots</td>
-<td>None</td>
-<td>C:data</td>
-</tr>
-<tr class="row-even"><td>scalar_y</td>
-<td>bool</td>
-<td>force scalar tick labels on the y-axis instead of powers of ten</td>
-<td>False</td>
-<td>NA</td>
-</tr>
-<tr class="row-odd"><td>show</td>
-<td>bool</td>
-<td>pop open plot after it is generated.  Otherwise, the plot is just saved</td>
-<td>False</td>
-<td>NA</td>
-</tr>
-<tr class="row-even"><td>stat</td>
-<td>str</td>
-<td>statistic to apply to the y-data being plotted.</td>
-<td>None</td>
-<td>median</td>
-</tr>
-<tr class="row-odd"><td>stat_val</td>
-<td>str</td>
-<td>column name to which the statistic should be applied.  Options include: ‘median’, ‘median_only’, ‘mean_only’, and ‘mean’.  When ‘only’ is in the stat value, median lines and median/mean data points are plotted.  Without ‘only’, median/mean lines and all raw data points are plotted.</td>
-<td>kwargs[‘x’]</td>
-<td>‘Voltage’</td>
-</tr>
-<tr class="row-even"><td>tick_major_color</td>
-<td>str</td>
-<td>hex color code for major tick marks</td>
-<td>fcp_params</td>
-<td>#000000</td>
-</tr>
-<tr class="row-odd"><td>tick_minor_color</td>
-<td>str</td>
-<td>hex color code for minor tick marks</td>
-<td>fcp_params</td>
-<td>#bbbbbb</td>
-</tr>
-<tr class="row-even"><td>tick_font_size</td>
-<td>int</td>
-<td>font size for tick labels</td>
-<td>fcp_params</td>
-<td>12</td>
-</tr>
-<tr class="row-odd"><td>tick_label_color</td>
-<td>str</td>
-<td>hex color code for tick labels</td>
-<td>fcp_params</td>
-<td>#bbbbbb</td>
-</tr>
-<tr class="row-even"><td>tick_length</td>
-<td>int</td>
-<td>length of the tick marks</td>
-<td>fcp_params</td>
-<td>10</td>
-</tr>
-<tr class="row-odd"><td>tick_width</td>
-<td>int</td>
-<td>line width of the tick marks</td>
-<td>fcp_params</td>
-<td>3</td>
-</tr>
-<tr class="row-even"><td>title</td>
-<td>str</td>
-<td>plot title</td>
-<td>None</td>
-<td>Sweet Plot</td>
-</tr>
-<tr class="row-odd"><td>title_edge_color</td>
-<td>str</td>
-<td>hex color code for edge of a box around the plot title</td>
-<td>fcp_params</td>
-<td>#ffffff</td>
-</tr>
-<tr class="row-even"><td>title_fill_color</td>
-<td>str</td>
-<td>hex color code for fill of a box around the plot title</td>
-<td>fcp_params</td>
-<td>#ffffff</td>
-</tr>
-<tr class="row-odd"><td>title_text_color</td>
-<td>str</td>
-<td>hex color code for title color</td>
-<td>fcp_params</td>
-<td>#000000</td>
-</tr>
-<tr class="row-even"><td>title_font_size</td>
-<td>int</td>
-<td>font size of plot title</td>
-<td>fcp_params</td>
-<td>16</td>
-</tr>
-<tr class="row-odd"><td>title_text_style</td>
-<td>str</td>
-<td>define the title style. Use standard mpl styles like ‘italic’</td>
-<td>fcp_params</td>
-<td>‘normal’</td>
-</tr>
-<tr class="row-even"><td>ylabel</td>
-<td>str</td>
-<td>label for primary y-axis</td>
-<td>kwargs[‘y’] or kwargs[‘y’][0]</td>
-<td>Current [A]</td>
-</tr>
-<tr class="row-odd"><td>ymax</td>
-<td>float</td>
-<td>maximum y-value on y-axis</td>
-<td>None</td>
-<td>100</td>
-</tr>
-<tr class="row-even"><td>ymin</td>
-<td>float</td>
-<td>minimum y-value of y-axis</td>
-<td>None</td>
-<td>-100</td>
-</tr>
-<tr class="row-odd"><td>yticks</td>
-<td>int</td>
-<td>specify the number of yticks (not currently supported)</td>
-<td>None (use default)</td>
-<td>4</td>
+<tr class="row-even"><td>text</td>
+<td>label text associated with the object</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div class="section" id="plot-function">
-<h2><code class="docutils literal notranslate"><span class="pre">plot</span></code> function<a class="headerlink" href="#plot-function" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="colwidths-given docutils" id="id3">
-<caption><span class="caption-text">Required keyword arguments</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
+</div>
+<div class="section" id="specific-elements">
+<h2>Specific Elements<a class="headerlink" href="#specific-elements" title="Permalink to this headline">¶</a></h2>
+<p>Listed below are the <em>additional</em> keyword arguments of specific elements (each element
+also contains the base attributes of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> class and can be used if applicable.</p>
+<div class="section" id="axes">
+<h3>Axes<a class="headerlink" href="#axes" title="Permalink to this headline">¶</a></h3>
+<img alt="_images/element_axes.png" src="_images/element_axes.png" />
+<p>The <code class="docutils literal notranslate"><span class="pre">axes</span></code> element consists of the actual plotting window shown in yellow above.
+Keywords for the primary <code class="docutils literal notranslate"><span class="pre">axes</span></code> object begin with the prefix “<a href="#id2"><span class="problematic" id="id3">ax_</span></a>”.  Properties
+of any optional secondary axes begin with the prefix</p>
+<div class="admonition note">
+<p class="first admonition-title">Keyword Prefix</p>
+<p class="last"><b>Primary axis: ax_</b></p>
+<p class="last"><b>Secondary axis: ax2_</b></p>
+</div><table border="1" class="docutils">
 <colgroup>
-<col width="22%" />
-<col width="11%" />
-<col width="44%" />
-<col width="22%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Keyword</th>
-<th class="head">Data Type</th>
-<th class="head">Description</th>
-<th class="head">Example</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>df</td>
-<td>pandas.DataFrame</td>
-<td>DataFrame containing data to plot</td>
-<td>NA</td>
-</tr>
-<tr class="row-odd"><td>x</td>
-<td>str</td>
-<td>name of x column in df</td>
-<td>‘Voltage’</td>
-</tr>
-<tr class="row-even"><td>y</td>
-<td>str|list</td>
-<td>name or list of names of y column(s) in df</td>
-<td>‘I [A]’ or [‘I [A]’, ‘R [ohm]’]</td>
-</tr>
-</tbody>
-</table>
-<table border="1" class="colwidths-given docutils" id="id4">
-<caption><span class="caption-text">Optional keyword arguments</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
-<colgroup>
-<col width="18%" />
-<col width="9%" />
-<col width="36%" />
-<col width="18%" />
-<col width="18%" />
+<col width="8%" />
+<col width="8%" />
+<col width="50%" />
+<col width="7%" />
+<col width="27%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Keyword</th>
@@ -755,614 +411,223 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>ax_edge_color</td>
-<td>str</td>
-<td>hex color code for axis edge border color</td>
-<td>fcp_params</td>
-<td>#3b3b3b</td>
-</tr>
-<tr class="row-odd"><td>ax_face_color</td>
-<td>str</td>
-<td>hex color code for axis fill color</td>
-<td>fcp_params</td>
-<td>#3b3b3b</td>
-</tr>
-<tr class="row-even"><td>ax_hlines</td>
-<td>list</td>
-<td>list of y-values at which to add horizontal lines</td>
-<td>[]</td>
-<td>[0, 1.4]</td>
-</tr>
-<tr class="row-odd"><td>ws_tick_ax</td>
-<td>int</td>
-<td>label to plot offset padding in pixels</td>
-<td>0</td>
-<td>30</td>
-</tr>
-<tr class="row-even"><td>ax_lim</td>
-<td>list</td>
-<td>axes range values [xmin, xmax, ymin, ymax]</td>
-<td>[]</td>
-<td>[0, 100, 0, 200]</td>
-</tr>
-<tr class="row-odd"><td>ax_lim_pad</td>
-<td>float</td>
-<td>in place of discrete axes limits, adds whitespace to the bottom/top and left/right of the axis by this amount as a percent/100 of the total axis range</td>
-<td>0.05</td>
-<td>NA</td>
-</tr>
-<tr class="row-even"><td>ax_scale</td>
-<td>None|str</td>
-<td>set the scale of an axis as linear or log</td>
-<td>None –&gt; linear</td>
-<td>‘logx’|’semilogx’ for the x-axis, ‘logy’|’semilogy’ for the y-axis or ‘loglog’ for both axes</td>
-</tr>
-<tr class="row-odd"><td>ax_scale2</td>
-<td>None|str</td>
-<td>same as ax_scale but for secondary y-axis when twinx is True</td>
+<tr class="row-even"><td>size</td>
+<td>list of ints</td>
+<td>width, height of plot area</td>
+<td>[400, 400]</td>
 <td>None</td>
-<td>NA</td>
 </tr>
-<tr class="row-even"><td>ax_size</td>
-<td>list</td>
-<td>[width, height] of each plot window in pixels</td>
-<td>fcp_params</td>
-<td>[400, 200]</td>
-</tr>
-<tr class="row-odd"><td>ax_vlines</td>
-<td>list</td>
-<td>list of x-values at which to add vertical lines</td>
-<td>[]</td>
-<td>NA</td>
-</tr>
-<tr class="row-even"><td>cmap</td>
+<tr class="row-odd"><td>ax_edge_color</td>
 <td>str</td>
-<td>name of color map to use for plotting</td>
-<td>None –&gt; use color order defined in fcp_params</td>
-<td>jet</td>
-</tr>
-<tr class="row-odd"><td>col</td>
-<td>str</td>
-<td>name of a column in df to use as a grouping variable for facet grid style plotting; each unique value from df[col] will represent a column of plots in the final figure</td>
-<td>None –&gt; no column grouping</td>
-<td>Temperature [C]</td>
-</tr>
-<tr class="row-even"><td>col_label</td>
-<td>str</td>
-<td>a custom label to display for each column in the facet grid plot</td>
-<td>None –&gt; use the value of kwargs[‘col’]</td>
-<td>Temp [C]</td>
-</tr>
-<tr class="row-odd"><td>col_labels_on</td>
-<td>bool</td>
-<td>toggle visibility of column labels in facet grid</td>
-<td>True</td>
-<td>NA</td>
-</tr>
-<tr class="row-even"><td>col_label_size</td>
-<td>int</td>
-<td>label height in pixel for col labels in pixels</td>
-<td>fcp_params</td>
-<td>45</td>
-</tr>
-<tr class="row-odd"><td>col_label_ws</td>
-<td>int</td>
-<td>whitespace in pixels between axis and col labels in pixels</td>
-<td>fcp_params</td>
-<td>30</td>
-</tr>
-<tr class="row-even"><td>ws_col</td>
-<td>int</td>
-<td>whitespace between facet columns in pixels</td>
-<td>fcp_params</td>
-<td>20</td>
-</tr>
-<tr class="row-odd"><td>colors</td>
-<td>list</td>
-<td>list of tuple values used to define colors for plotting using RGB/255 mpl style</td>
-<td>palette from defaults.py</td>
-<td>[(0.32, 0.11, 0.33), (0.95, 0.75, 0.55)]</td>
-</tr>
-<tr class="row-even"><td>cols</td>
-<td>list</td>
-<td>list used to manually define the columns to use in the facet grid. These values must actually be in df[col]</td>
-<td>None</td>
-<td>[25, 75]</td>
-</tr>
-<tr class="row-odd"><td>fig_ax_ws</td>
-<td>int</td>
-<td>number of pixels between the left figure edge and the left axis edge</td>
-<td>fcp_params</td>
-<td>30</td>
-</tr>
-<tr class="row-even"><td>fig_edge_color</td>
-<td>str</td>
-<td>hex color code for figure edge color</td>
-<td>fcp_params</td>
-<td>#ffffff</td>
-</tr>
-<tr class="row-odd"><td>fig_face_color</td>
-<td>str</td>
-<td>hex color code for figure fill color</td>
-<td>fcp_params</td>
-<td>#000000</td>
-</tr>
-<tr class="row-even"><td>fig_groups</td>
-<td>list|None</td>
-<td>name of df column by which to group the data and make discrete figures based on the unique values in this column</td>
-<td>None</td>
-<td>Temperature [C]</td>
-</tr>
-<tr class="row-odd"><td>fig_group_path</td>
-<td>bool</td>
-<td>use the unique grouping item from fig_groups in the plot filename</td>
-<td>False</td>
-<td>NA</td>
-</tr>
-<tr class="row-even"><td>filename</td>
-<td>str</td>
-<td>name of saved figure; in None, custom filename will be built based on the data that is plotted</td>
-<td>None</td>
-<td>NA</td>
-</tr>
-<tr class="row-odd"><td>filter</td>
-<td>str</td>
-<td>str to use in df.query to include or exclude certain data from df.  Note that df.query does not support spaces, parenthesis, or brackets. Spaces should be replaced by ‘_’ and parenthesis/brackets should be dropped from the str.  Example: Temperature [C] –&gt; Temperature_C</td>
-<td>None</td>
-<td>‘Substrate==”Si” &amp; Temperature_C==25’</td>
-</tr>
-<tr class="row-even"><td>grid_major</td>
-<td>bool</td>
-<td>turn on|off major gridline visibility</td>
-<td>True</td>
-<td>NA</td>
-</tr>
-<tr class="row-odd"><td>grid_major_color</td>
-<td>str</td>
-<td>hex color code for major gridline color</td>
-<td>fcp_params</td>
+<td>outer edge color of plot area</td>
 <td>#aaaaaa</td>
-</tr>
-<tr class="row-even"><td>grid_major_linestyle</td>
-<td>str</td>
-<td>matplotlib str code for linestyle</td>
-<td>fcp_params</td>
-<td><ul class="first last simple">
-<li></li>
-</ul>
-</td>
-</tr>
-<tr class="row-odd"><td>grid_minor</td>
-<td>bool</td>
-<td>turn on|off major gridline visibility</td>
-<td>False</td>
-<td>NA</td>
-</tr>
-<tr class="row-even"><td>grid_minor_color</td>
-<td>str</td>
-<td>hex color code for minor gridline color</td>
-<td>fcp_params</td>
-<td>#aaaaaa</td>
-</tr>
-<tr class="row-odd"><td>grid_major_linestyle</td>
-<td>str</td>
-<td>matplotlib str code for linestyle</td>
-<td>fcp_params</td>
-<td>–</td>
-</tr>
-<tr class="row-even"><td>label_font_size</td>
-<td>int</td>
-<td>font size in pixels for the x and y labels</td>
-<td>fcp_params</td>
-<td>14</td>
-</tr>
-<tr class="row-odd"><td>label_style</td>
-<td>str</td>
-<td>define the label style. Use standard mpl styles like ‘italic’</td>
-<td>fcp_params</td>
-<td>‘italic’</td>
-</tr>
-<tr class="row-even"><td>label_weight</td>
-<td>str</td>
-<td>define the label weight.  Use standard mpl weights like ‘bold’</td>
-<td>fcp_params</td>
-<td>‘bold’</td>
-</tr>
-<tr class="row-odd"><td>leg_bkgrd</td>
-<td>str</td>
-<td>hex color code for legend background</td>
-<td>fcp_params</td>
-<td>#ffffff</td>
-</tr>
-<tr class="row-even"><td>leg_border</td>
-<td>str</td>
-<td>hex color code for legend border</td>
-<td>fcp_params</td>
-<td>#000000</td>
-</tr>
-<tr class="row-odd"><td>leg_groups</td>
-<td>str</td>
-<td>name of df column by which to legend the data</td>
 <td>None</td>
-<td>Substrate</td>
 </tr>
-<tr class="row-even"><td>leg_items</td>
-<td>list</td>
-<td>explicit definition of the legend items; ignores any values that are not listed</td>
-<td>[]</td>
-<td>[‘(1,1), (-2,1)]</td>
+<tr class="row-even"><td>ax_fill_color</td>
+<td>str</td>
+<td>inner fill color of plot area</td>
+<td rowspan="6">#eaeaea</td>
+<td>None</td>
 </tr>
-<tr class="row-odd"><td>leg_on</td>
-<td>bool</td>
-<td>toggle legend visibility</td>
+<tr class="row-odd"><td rowspan="5">ax_scale</td>
+<td rowspan="5">str</td>
+<td>enable linear vs log scaling of axis</td>
+<td rowspan="5"><a class="reference external" href="plot.html#Log-scale">log scale plot</a></td>
+</tr>
+<tr class="row-even"><td>x-axis: [‘linear’, ‘logx’, ‘semilogx’]</td>
+</tr>
+<tr class="row-odd"><td>y-axis: [‘linear’, ‘logx’, ‘semilogx’]</td>
+</tr>
+<tr class="row-even"><td>both: [‘loglog’, ‘log’]</td>
+</tr>
+<tr class="row-odd"><td>other: [‘symlog’, ‘logit’]</td>
+</tr>
+<tr class="row-even"><td>share_x</td>
+<td>boolean</td>
+<td>enable/disable primary x-axis range sharing across all subplots</td>
 <td>True</td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td>leg_title</td>
-<td>str</td>
-<td>title for the legend</td>
 <td>None</td>
-<td>My Legend</td>
 </tr>
-<tr class="row-odd"><td>line_color</td>
-<td>str</td>
-<td>hex color code to override the built-in line color cycle</td>
-<td>None</td>
-<td>#112233</td>
-</tr>
-<tr class="row-even"><td>line_fit</td>
-<td>None|int</td>
-<td>adds a line fit to the data of polynomial order <code class="docutils literal notranslate"><span class="pre">line_fit</span></code></td>
-<td>None</td>
-<td>1</td>
-</tr>
-<tr class="row-odd"><td>line_style</td>
-<td>str</td>
-<td>set the default line style</td>
-<td><ul class="first last simple">
-<li></li>
-</ul>
-</td>
-<td>–</td>
-</tr>
-<tr class="row-even"><td>line_width</td>
-<td>int</td>
-<td>set the linewidth of curves</td>
-<td>1</td>
-<td>2</td>
-</tr>
-<tr class="row-odd"><td>lines</td>
-<td>bool</td>
-<td>turn plot lines on|off</td>
+<tr class="row-odd"><td>share_y</td>
+<td>boolean</td>
+<td>enable/disable primary y-axis range sharing across all subplots</td>
 <td>True</td>
-<td>NA</td>
-</tr>
-<tr class="row-even"><td>marker_size</td>
-<td>int</td>
-<td>set marker size</td>
-<td>fcp_params</td>
-<td>14</td>
-</tr>
-<tr class="row-odd"><td>marker_type</td>
-<td>str</td>
-<td>set marker type</td>
 <td>None</td>
-<td>o</td>
 </tr>
-<tr class="row-even"><td>points</td>
-<td>bool</td>
-<td>turn markers on|off</td>
+<tr class="row-even"><td>share_z</td>
+<td>boolean</td>
+<td>enable/disable primary z-axis range sharing across all subplots</td>
 <td>True</td>
-<td>NA</td>
+<td>None</td>
 </tr>
-<tr class="row-odd"><td>rc_label_edge_color</td>
-<td>str</td>
-<td>hex color code for row/column labels border edges</td>
-<td>fcp_params</td>
-<td>#11aadd</td>
-</tr>
-<tr class="row-even"><td>rc_label_fill_color</td>
-<td>str</td>
-<td>hex color code for row/column labels background</td>
-<td>fcp_params</td>
-<td>3232aa</td>
-</tr>
-<tr class="row-odd"><td>rc_label_font_size</td>
-<td>int</td>
-<td>font size for row/column labels</td>
-<td>fcp_params</td>
-<td>12</td>
-</tr>
-<tr class="row-even"><td>rc_label_text_color</td>
-<td>str</td>
-<td>hex color code for row/column label text</td>
-<td>fcp_params</td>
-<td>#ffffff</td>
-</tr>
-<tr class="row-odd"><td>rc_label_text_style</td>
-<td>str</td>
-<td>define the style row/column label text. Use standard mpl styles like ‘italic’</td>
-<td>fcp_params</td>
-<td>‘normal’</td>
-</tr>
-<tr class="row-even"><td>row</td>
-<td>str</td>
-<td>name of a column in df to use as a grouping variable for facet grid style plotting; each unique value from df[row] will represent a row of plots in the final figure</td>
-<td>None –&gt; no column grouping</td>
-<td>Temperature [C]</td>
-</tr>
-<tr class="row-odd"><td>row_label</td>
-<td>str</td>
-<td>a custom label to display for each row in the facet grid plot</td>
-<td>None –&gt; use the value of kwargs[‘row’]</td>
-<td>Temp [C]</td>
-</tr>
-<tr class="row-even"><td>row_labels_on</td>
-<td>bool</td>
-<td>toggle visibility of row grouping labels in facet grid</td>
+<tr class="row-odd"><td>share_x2</td>
+<td>boolean</td>
+<td>enable/disable secondary x-axis range sharing across all subplots</td>
 <td>True</td>
-<td>NA</td>
-</tr>
-<tr class="row-odd"><td>row_label_size</td>
-<td>int</td>
-<td>label height in pixel for row labels in pixels</td>
-<td>fcp_params</td>
-<td>45</td>
-</tr>
-<tr class="row-even"><td>row_label_ws</td>
-<td>int</td>
-<td>whitespace in pixels between axis and row labels in pixels</td>
-<td>fcp_params</td>
-<td>30</td>
-</tr>
-<tr class="row-odd"><td>ws_row</td>
-<td>int</td>
-<td>whitespace between facet rows in pixels</td>
-<td>fcp_params</td>
-<td>20</td>
-</tr>
-<tr class="row-even"><td>rows</td>
-<td>list</td>
-<td>list used to manually define the rows to use in the facet grid. These values must actually be in df[row]</td>
 <td>None</td>
-<td>[25, 75]</td>
 </tr>
-<tr class="row-odd"><td>save_ext</td>
-<td>str</td>
-<td>filename extension for saved figures</td>
-<td>png</td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td>save_path</td>
-<td>str</td>
-<td>destination file folder for plots</td>
-<td>None</td>
-<td>C:data</td>
-</tr>
-<tr class="row-odd"><td>scalar_x</td>
-<td>bool</td>
-<td>force scalar tick labels on the x-axis instead of powers of ten</td>
-<td>False</td>
-<td>NA</td>
-</tr>
-<tr class="row-even"><td>scalar_y</td>
-<td>bool</td>
-<td>force scalar tick labels on the y-axis instead of powers of ten</td>
-<td>False</td>
-<td>NA</td>
-</tr>
-<tr class="row-odd"><td>sci_x</td>
-<td>bool</td>
-<td>force scientific notation for tick labels on x-axis</td>
-<td>False</td>
-<td>NA</td>
-</tr>
-<tr class="row-even"><td>sci_y</td>
-<td>bool</td>
-<td>force scientific notation for tick labels on y-axis</td>
-<td>False</td>
-<td>NA</td>
-</tr>
-<tr class="row-odd"><td>sharex</td>
-<td>bool</td>
-<td>share plot range for x-axis</td>
+<tr class="row-even"><td>share_y2</td>
+<td>boolean</td>
+<td>enable/disable secondary y-axis range sharing across all subplots</td>
 <td>True</td>
-<td>NA</td>
+<td>None</td>
 </tr>
-<tr class="row-even"><td>sharey</td>
-<td>bool</td>
-<td>share plot range for y-axis</td>
-<td>True</td>
-<td>NA</td>
-</tr>
-<tr class="row-odd"><td>show</td>
-<td>bool</td>
-<td>pop open plot after it is generated.  Otherwise, the plot is just saved</td>
+<tr class="row-odd"><td>share_col</td>
+<td>boolean</td>
+<td>enable/disable axis range sharing for all subplots in a column of subplots</td>
 <td>False</td>
-<td>NA</td>
-</tr>
-<tr class="row-even"><td>stat</td>
-<td>str</td>
-<td>statistic to apply to the y-data being plotted.</td>
 <td>None</td>
-<td>median</td>
 </tr>
-<tr class="row-odd"><td>stat_val</td>
-<td>str</td>
-<td>column name to which the statistic should be applied.  Options include: ‘median’, ‘median_only’, ‘mean_only’, and ‘mean’.  When ‘only’ is in the stat value, median lines and median/mean data points are plotted.  Without ‘only’, median/mean lines and all raw data points are plotted.</td>
-<td>kwargs[‘x’]</td>
-<td>‘Voltage’</td>
-</tr>
-<tr class="row-even"><td>tick_major_color</td>
-<td>str</td>
-<td>hex color code for major tick marks</td>
-<td>fcp_params</td>
-<td>#000000</td>
-</tr>
-<tr class="row-odd"><td>tick_minor_color</td>
-<td>str</td>
-<td>hex color code for minor tick marks</td>
-<td>fcp_params</td>
-<td>#bbbbbb</td>
-</tr>
-<tr class="row-even"><td>tick_font_size</td>
-<td>int</td>
-<td>font size for tick labels</td>
-<td>fcp_params</td>
-<td>12</td>
-</tr>
-<tr class="row-odd"><td>tick_label_color</td>
-<td>str</td>
-<td>hex color code for tick labels</td>
-<td>fcp_params</td>
-<td>#bbbbbb</td>
-</tr>
-<tr class="row-even"><td>tick_length</td>
-<td>int</td>
-<td>length of the tick marks</td>
-<td>fcp_params</td>
-<td>10</td>
-</tr>
-<tr class="row-odd"><td>tick_width</td>
-<td>int</td>
-<td>line width of the tick marks</td>
-<td>fcp_params</td>
-<td>3</td>
-</tr>
-<tr class="row-even"><td>title</td>
-<td>str</td>
-<td>plot title</td>
-<td>None</td>
-<td>Sweet Plot</td>
-</tr>
-<tr class="row-odd"><td>title_edge_color</td>
-<td>str</td>
-<td>hex color code for edge of a box around the plot title</td>
-<td>fcp_params</td>
-<td>#ffffff</td>
-</tr>
-<tr class="row-even"><td>title_fill_color</td>
-<td>str</td>
-<td>hex color code for fill of a box around the plot title</td>
-<td>fcp_params</td>
-<td>#ffffff</td>
-</tr>
-<tr class="row-odd"><td>title_text_color</td>
-<td>str</td>
-<td>hex color code for title color</td>
-<td>fcp_params</td>
-<td>#000000</td>
-</tr>
-<tr class="row-even"><td>title_font_size</td>
-<td>int</td>
-<td>font size of plot title</td>
-<td>fcp_params</td>
-<td>16</td>
-</tr>
-<tr class="row-odd"><td>title_text_style</td>
-<td>str</td>
-<td>define the title style. Use standard mpl styles like ‘italic’</td>
-<td>fcp_params</td>
-<td>‘normal’</td>
-</tr>
-<tr class="row-even"><td>twinx</td>
-<td>bool</td>
-<td>allow for twinning of x-axis for secondary y-axis</td>
+<tr class="row-even"><td>share_row</td>
+<td>boolean</td>
+<td>enable/disable axis range sharing for all subplots in a row of subplots</td>
 <td>False</td>
-<td>NA</td>
+<td>None</td>
 </tr>
-<tr class="row-odd"><td>twiny</td>
-<td>bool</td>
-<td>allow for twinning of y-axis for secondary x-axis (not currently supported)</td>
+<tr class="row-odd"><td>twin_x</td>
+<td>boolean</td>
+<td>enable/disable a secondary y-axis (x-axis is “twinned” or duplicated across two y-axes)</td>
 <td>False</td>
-<td>NA</td>
+<td><a class="reference external" href="plot.html#Shared-x-axis-twin_x">twin_x plot</a></td>
 </tr>
-<tr class="row-even"><td>xlabel</td>
-<td>str</td>
-<td>label for x-axis</td>
-<td>kwargs[‘x’]</td>
-<td>&#160;</td>
+<tr class="row-even"><td rowspan="2">twin_y</td>
+<td rowspan="2">boolean</td>
+<td>enable/disable a secondary x-axis (y-axis is “twinned” or duplicated across two x-axes)</td>
+<td rowspan="2">False</td>
+<td rowspan="2"><a class="reference external" href="plot.html#Shared-y-axis-twin_y">twin_y plot</a></td>
 </tr>
-<tr class="row-odd"><td>xmax</td>
-<td>float</td>
-<td>maximum x-value on x-axis</td>
-<td>None</td>
-<td>100</td>
-</tr>
-<tr class="row-even"><td>xmin</td>
-<td>float</td>
-<td>minimum x-value of x-axis</td>
-<td>None</td>
-<td>-100</td>
-</tr>
-<tr class="row-odd"><td>xticks</td>
-<td>int</td>
-<td>specify the number of xticks (not currently supported)</td>
-<td>None (use default)</td>
-<td>4</td>
-</tr>
-<tr class="row-even"><td>xtrans</td>
-<td>str</td>
-<td>translate the x-axis data.  Options include: ‘abs’ (absolute value), ‘neg’/’negative’ (negative value), ‘inv’/’inverse’ (1/data), or tuple of (‘pow’, int) (to raise to a power)</td>
-<td>None</td>
-<td>(‘pow’, 2)</td>
-</tr>
-<tr class="row-odd"><td>ylabel</td>
-<td>str</td>
-<td>label for primary y-axis</td>
-<td>kwargs[‘y’] or kwargs[‘y’][0]</td>
-<td>Current [A]</td>
-</tr>
-<tr class="row-even"><td>ymax</td>
-<td>float</td>
-<td>maximum y-value on y-axis</td>
-<td>None</td>
-<td>100</td>
-</tr>
-<tr class="row-odd"><td>ymin</td>
-<td>float</td>
-<td>minimum y-value of y-axis</td>
-<td>None</td>
-<td>-100</td>
-</tr>
-<tr class="row-even"><td>yticks</td>
-<td>int</td>
-<td>specify the number of yticks (not currently supported)</td>
-<td>None (use default)</td>
-<td>4</td>
-</tr>
-<tr class="row-odd"><td>ytrans</td>
-<td>str</td>
-<td>translate the y-axis data.  Options include: ‘abs’ (absolute value), ‘neg’/’negative’ (negative value), ‘inv’/’inverse’ (1/data), or tuple of (‘pow’, int) (to raise to a power) [won’t work with <code class="docutils literal notranslate"><span class="pre">twinx</span></code>]</td>
-<td>None</td>
-<td>(‘pow’, 2)</td>
-</tr>
-<tr class="row-even"><td>ylabel2</td>
-<td>str</td>
-<td>label for secondary y-axis</td>
-<td>same as y[1]</td>
-<td>Voltage [V]</td>
-</tr>
-<tr class="row-odd"><td>ymax2</td>
-<td>float</td>
-<td>maximum y-value on secondary y-axis</td>
-<td>None</td>
-<td>100</td>
-</tr>
-<tr class="row-even"><td>ymin2</td>
-<td>float</td>
-<td>minimum y-value on secondary y-axis</td>
-<td>None</td>
-<td>-100</td>
-</tr>
-<tr class="row-odd"><td>yticks2</td>
-<td>int</td>
-<td>specify the number of yticks2 (not currently supported)</td>
-<td>None (use default)</td>
-<td>4</td>
+<tr class="row-odd"><td>Note:  wrap plots cannot be used when <code class="docutils literal notranslate"><span class="pre">twin_y</span> <span class="pre">==</span> <span class="pre">True</span></code></td>
 </tr>
 </tbody>
 </table>
+</div>
+<div class="section" id="boxplots">
+<h3>Boxplots<a class="headerlink" href="#boxplots" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="color-bar">
+<h3>Color Bar<a class="headerlink" href="#color-bar" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="confidence-intervals">
+<h3>Confidence Intervals<a class="headerlink" href="#confidence-intervals" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="contour">
+<h3>Contour<a class="headerlink" href="#contour" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="figure">
+<h3>Figure<a class="headerlink" href="#figure" title="Permalink to this headline">¶</a></h3>
+<img alt="_images/element_fig.png" src="_images/element_fig.png" />
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>To style the figure region in yellow for this example, the following keywords were
+used in the <code class="docutils literal notranslate"><span class="pre">fcp.plot</span></code> command:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig_edge_color</span><span class="o">=</span><span class="s1">&#39;#000000&#39;</span><span class="p">,</span> <span class="n">fig_fill_color</span><span class="o">=</span><span class="s1">&#39;#fffd75&#39;</span><span class="p">,</span> <span class="n">fig_fill_alpha</span><span class="o">=</span><span class="mf">0.5</span>
+</pre></div>
+</div>
+<p class="last">Notice, we are just accessing default <code class="docutils literal notranslate"><span class="pre">Element</span></code> class attributes and prepending
+the keywords with the element name, <code class="docutils literal notranslate"><span class="pre">fig_</span></code> in this case.</p>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">figure</span></code> element is the full window in which other elements are rendered.
+Most of the <code class="docutils literal notranslate"><span class="pre">figure</span></code> region is covered by these other elements but the visible
+portion (shown in yellow above) can be styled.  <code class="docutils literal notranslate"><span class="pre">figure</span></code> elements can also
+be subdivided into multiple subplots to display more data.  Unlike matplotlib,
+size of the figure window is caluculated automatically by the sizes of the discrete
+elements it contains.  It cannot be set directly.</p>
+<div class="admonition note">
+<p class="first admonition-title">Keyword Prefix</p>
+<p class="last"><b>fig_</b></p>
+</div><table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="15%" />
+<col width="37%" />
+<col width="36%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Keyword</th>
+<th class="head">Data Type</th>
+<th class="head">Description</th>
+<th class="head">Default</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>dpi</td>
+<td>int</td>
+<td>dots per inch</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>size</td>
+<td>list</td>
+<td>size of the figure window</td>
+<td>calculated automatically</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="gridlines">
+<h3>Gridlines<a class="headerlink" href="#gridlines" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="labels">
+<h3>Labels<a class="headerlink" href="#labels" title="Permalink to this headline">¶</a></h3>
+<img alt="_images/element_label.png" src="_images/element_label.png" />
+<img alt="_images/element_label2.png" src="_images/element_label2.png" />
+<p>The following types of <code class="docutils literal notranslate"><span class="pre">label</span></code> elements can exist in a plot:</p>
+<blockquote>
+<div><ul>
+<li><p class="first">axis labels:  <code class="docutils literal notranslate"><span class="pre">label_x</span></code>, <code class="docutils literal notranslate"><span class="pre">label_y</span></code>, <code class="docutils literal notranslate"><span class="pre">label_z</span></code> (colored in salmon above)</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">All axis labels can be styled together using only the prefix <code class="docutils literal notranslate"><span class="pre">label</span></code> with no axis designation</p>
+</div>
+</li>
+<li><p class="first">row, column, and wrap labels:  <code class="docutils literal notranslate"><span class="pre">label_row</span></code>, <code class="docutils literal notranslate"><span class="pre">label_col</span></code>, <code class="docutils literal notranslate"><span class="pre">label_wrap</span></code> (colored in yellow above)</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">All row, column, and wrap labels can be styled together using only the prefix <code class="docutils literal notranslate"><span class="pre">rc_label</span></code></p>
+</div>
+</li>
+<li><p class="first">wrap titles: <code class="docutils literal notranslate"><span class="pre">wrap_title</span></code> (colored in cyan above)</p>
+</li>
+</ul>
+</div></blockquote>
+<p>label for label_x</p>
+<p>rc_label vs label_row, label_col, label_wrap</p>
+</div>
+<div class="section" id="legend">
+<h3>Legend<a class="headerlink" href="#legend" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="line-fit">
+<h3>Line Fit<a class="headerlink" href="#line-fit" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="lines">
+<h3>Lines<a class="headerlink" href="#lines" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="markers">
+<h3>Markers<a class="headerlink" href="#markers" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="ticks">
+<h3>Ticks<a class="headerlink" href="#ticks" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="title">
+<h3>Title<a class="headerlink" href="#title" title="Permalink to this headline">¶</a></h3>
+<img alt="_images/element_title.png" src="_images/element_title.png" />
+<p>The <code class="docutils literal notranslate"><span class="pre">title</span></code> element (shown above in yellow) adds a title to the top of the figure.
+The title text is added directly via the <code class="docutils literal notranslate"><span class="pre">title</span></code> keyword:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;IV Data&#39;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="whitespace">
+<h2>Whitespace<a class="headerlink" href="#whitespace" title="Permalink to this headline">¶</a></h2>
+<img alt="_images/figure_design.png" src="_images/figure_design.png" />
+<img alt="_images/figure_design_rc.png" src="_images/figure_design_rc.png" />
+</div>
+<div class="section" id="id1">
+<h2>Data<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="other">
+<h2>Other<a class="headerlink" href="#other" title="Permalink to this headline">¶</a></h2>
+<p>show</p>
 </div>
 </div>
 
