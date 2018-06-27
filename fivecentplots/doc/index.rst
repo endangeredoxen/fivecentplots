@@ -95,12 +95,13 @@ Documentation
    :maxdepth: 1
 
    overview
+   installation
    design
    defaults
    keyword
-   examples
-   modules
+   plot.ipynb
    boxplot.ipynb
+   modules
 
 
 Indices and tables

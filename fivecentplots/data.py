@@ -78,6 +78,7 @@ class Data:
         self.y2min = kwargs.get('y2min', None)
         self.ymax = kwargs.get('ymax', None)
         self.y2max = kwargs.get('y2max', None)
+        # y2 limits not working!
         self.zmin = kwargs.get('zmin', None)
         self.zmax = kwargs.get('zmax', None)
 
@@ -95,6 +96,14 @@ class Data:
         self.x = self.check_xyz('x')
         self.y = self.check_xyz('y')
         self.z = self.check_xyz('z')
+        if self.twin_x:
+            if len(self.y) < 2:
+                raise AxisError('twin_x requires two y-axis columns')
+            self.y2 = [self.y[1]]
+        if self.twin_y:
+            if len(self.x) < 2:
+                raise AxisError('twin_y requires two x-axis columns')
+            self.x2 = [self.x[1]]
 
         # Stats
         self.stat = kwargs.get('stat', None)

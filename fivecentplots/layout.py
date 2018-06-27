@@ -117,8 +117,14 @@ class BaseLayout:
         # Color list
         if 'line_color' in kwargs.keys():
             color_list = kwargs['line_color']
+        elif kwargs.get('colors'):
+            colors = utl.validate_list(kwargs.get('colors'))
+            for icolor, color in enumerate(colors):
+                if type(color) is int:
+                    colors[icolor] = DEFAULT_COLORS[icolor]
+            color_list = colors
         else:
-            color_list = utl.validate_list(kwargs.get('colors', DEFAULT_COLORS))
+            color_list = DEFAULT_COLORS
 
         # Axis
         self.ax = ['x', 'y', 'x2', 'y2']

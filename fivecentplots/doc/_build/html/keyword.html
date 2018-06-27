@@ -42,7 +42,7 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="fivecentplots beta documentation" href="index.html"/>
-        <link rel="next" title="Example Library" href="examples.html"/>
+        <link rel="next" title="boxplot" href="boxplot.html"/>
         <link rel="prev" title="Default Settings" href="defaults.html"/> 
 
   
@@ -129,9 +129,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#other">Other</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">Example Library</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
 </ul>
 
             
@@ -218,12 +217,51 @@
 <h1>Keyword Arguments<a class="headerlink" href="#keyword-arguments" title="Permalink to this headline">¶</a></h1>
 <p>All inputs to <strong>fivecentplots</strong> are treated as keyword arguments.  The only mandatory
 inputs are:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="8%" />
+<col width="15%" />
+<col width="61%" />
+<col width="17%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Keyword</th>
+<th class="head">Data Type</th>
+<th class="head">Description</th>
+<th class="head">Required?</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>df</td>
+<td>pandas DataFrame</td>
+<td>DataFrame containing all data to be plotted including grouping columns</td>
+<td>always</td>
+</tr>
+<tr class="row-odd"><td>x</td>
+<td>str</td>
+<td>Column name of the x-axis data</td>
+<td>all except boxplot</td>
+</tr>
+<tr class="row-even"><td>y</td>
+<td>str</td>
+<td>Column name of the y-axis data</td>
+<td>always</td>
+</tr>
+<tr class="row-odd"><td>z</td>
+<td>str</td>
+<td>Column name of the z-axis data</td>
+<td>contour only</td>
+</tr>
+</tbody>
+</table>
 <p>All other keywords that can be used for grouping data, setting axis limits, and
 styling the look of the plot have built-in defaults that can be overriden by explicitly
 setting them in the plot function call or by saving them in a
 <a class="reference external" href="themes.html">user theme file</a>.</p>
 <div class="section" id="data">
 <h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
+<p>All DataFrame releated operations in <strong>fivecentplots</strong> are handled using a special
+<code class="docutils literal notranslate"><span class="pre">Data</span></code> object.  This object takes input regarding process and stores data-related information</p>
 </div>
 <div class="section" id="elements">
 <h2>Elements<a class="headerlink" href="#elements" title="Permalink to this headline">¶</a></h2>
@@ -924,7 +962,7 @@ The title text is added directly via the <code class="docutils literal notransla
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="examples.html" class="btn btn-neutral float-right" title="Example Library" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="boxplot.html" class="btn btn-neutral float-right" title="boxplot" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="defaults.html" class="btn btn-neutral" title="Default Settings" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
