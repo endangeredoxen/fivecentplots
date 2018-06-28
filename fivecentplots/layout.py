@@ -330,7 +330,7 @@ class BaseLayout:
                         padding=utl.kwget(kwargs, self.fcpp,
                                           'ticks_minor_padding_%s' % ax,
                                           self.ticks_minor.padding),
-                        size=self.ticks_minor.size,
+                        size=self.ticks_minor._size,
                         ))
 
         if 'tick_labels' in kwargs.keys() and 'tick_labels_minor' not in kwargs.keys():
@@ -415,10 +415,11 @@ class BaseLayout:
 
         # Legend
         kwargs['legend'] = kwargs.get('legend', None)
-        if kwargs['legend'] is not None:
+        if type(kwargs['legend']) is str:
             kwargs['legend'] = ' | '.join(utl.validate_list(kwargs['legend']))
+
         self.legend = DF_Element('legend', self.fcpp, kwargs,
-                                 on=True if (kwargs.get('legend') and
+                                 on=True if (kwargs.get('legend') or
                                     kwargs.get('legend_on', True)) else False,
                                  column=kwargs['legend'],
                                  font_size=12,
@@ -430,7 +431,8 @@ class BaseLayout:
                                  points=utl.kwget(kwargs, self.fcpp,
                                                   'legend_points', 1),
                                  overflow=0,
-                                 text=kwargs.get('legend_title', kwargs.get('legend', '')),
+                                 text=kwargs.get('legend_title',
+                                                 kwargs.get('legend') if kwargs.get('legend') != True else ''),
                                  values={} if not kwargs.get('legend') else {'NaN': None},
                                  )
 
@@ -632,6 +634,7 @@ class BaseLayout:
                             style=self.grid_minor.style,
                             width=self.grid_minor.width,
                             ))
+
 
         # Row column label
         rc_label = DF_Element('rc_label', self.fcpp, kwargs,
@@ -980,9 +983,9 @@ class Element:
         self.obj = None  # plot object reference
         self.position = [0, 0, 0, 0]  # left, right, top, bottom
         self._size = kwargs.get('size', [0, 0])  # width, height
-        self.size_orig = None
+        self._size_orig = kwargs.get('size')
         self._text = kwargs.get('text', True)  # text label
-        self.text_orig = None  # text label
+        self._text_orig = kwargs.get('text')
         self.rotation = utl.kwget(kwargs, fcpp, '%s_rotation' % label,
                                   kwargs.get('rotation', 0))
 
@@ -1046,9 +1049,10 @@ class Element:
         self.style = utl.kwget(kwargs, fcpp, '%s_style' % label,
                                kwargs.get('style', '-'))
 
+        skip_keys = ['df', 'x', 'y', 'z']
         for k, v in kwargs.items():
             try:
-                if not hasattr(self, k):
+                if not hasattr(self, k) and k not in skip_keys:
                     setattr(self, k, v)
             except:
                 pass
@@ -1076,8 +1080,8 @@ class Element:
             self._text = None
 
         else:
-            self._size = self.size_orig
-            self._text = self.text_orig
+            self._size = self._size_orig
+            self._text = self._text_orig
 
     @property
     def size(self):
@@ -1090,8 +1094,8 @@ class Element:
     @size.setter
     def size(self, value):
 
-        if self.size_orig is None and value is not None:
-            self.size_orig = value
+        if self._size_orig is None and value is not None:
+            self._size_orig = value
 
         self._size = value
 
@@ -1111,8 +1115,8 @@ class Element:
     @text.setter
     def text(self, value):
 
-        if self.text_orig is None and value is not None:
-            self.text_orig = value
+        if self._text_orig is None and value is not None:
+            self._text_orig = value
 
         self._text = value
 
@@ -1161,8 +1165,8 @@ class DF_Element(Element):
             self._text = None
 
         else:
-            self._size = self.size_orig
-            self._text = self.text_orig
+            self._size = self._size_orig
+            self._text = self._text_orig
 
 
 class RepeatedList:
@@ -1411,7 +1415,7 @@ class LayoutMPL(BaseLayout):
             if self.legend.location == 0:
                 self.legend.obj = \
                     self.fig.obj.legend(lines, keys, loc='upper right',
-                                        title=self.legend.text,
+                                        title=self.legend.text if self.legend is not True else '',
                                         bbox_to_anchor=(self.legend.position[1],
                                                         self.legend.position[2]),
                                         numpoints=self.legend.points,
@@ -1420,7 +1424,7 @@ class LayoutMPL(BaseLayout):
             else:
                 self.legend.obj = \
                     self.fig.obj.legend(lines, keys, loc=self.legend.position,
-                                        title = self.legend.text,
+                                        title = self.legend.text if self.legend is not True else '',
                                         numpoints=self.legend.points,
                                         prop=fontp)
 
@@ -1721,12 +1725,17 @@ class LayoutMPL(BaseLayout):
             col_labels[ir, ic] = cc
 
         # Make a dummy legend --> move to add_legend???
-        if type(data.legend_vals) == pd.DataFrame and len(data.legend_vals) > 0:
+        if data.legend_vals is not None and len(data.legend_vals) > 0:
             lines = []
             leg_vals = []
-            for irow, row in data.legend_vals.iterrows():
-                lines += ax.plot([1, 2, 3])
-                leg_vals += [row['names']]
+            if type(data.legend_vals) == pd.DataFrame:
+                for irow, row in data.legend_vals.iterrows():
+                    lines += ax.plot([1, 2, 3])
+                    leg_vals += [row['names']]
+            else:
+                for val in data.legend_vals:
+                    lines += ax.plot([1, 2, 3])
+                    leg_vals += [val]
             if self.yline.on:
                 lines += axes[0].plot([1, 2, 3])
                 leg_vals += [self.yline.text]

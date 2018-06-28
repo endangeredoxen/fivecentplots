@@ -135,9 +135,14 @@ class Data:
         # Define legend grouping column names (legends are common to a figure,
         #   not an rc subplot)
         if 'legend' in kwargs.keys():
-            self.legend = self.check_group_columns('legend',
-                                                   kwargs.get('legend', None))
-            self.legend = self.legend[0]
+            if kwargs['legend'] == True:
+                self.legend = True
+            elif kwargs['legend'] == False:
+                self.legend = False
+            else:
+                self.legend = self.check_group_columns('legend',
+                                                       kwargs.get('legend', None))
+                self.legend = self.legend[0]
 
         # Define figure grouping column names
         if 'fig_groups' in kwargs.keys():
@@ -774,6 +779,15 @@ class Data:
             updated kwargs dict
         """
 
+        if self.legend == True and self.twin_x:
+            self.legend_vals = self.y
+            self.nleg = len(self.y)
+            return
+        elif self.legend == True and self.twin_y:
+            self.legend_vals = self.x
+            self.nleg = len(self.x)
+            return
+
         if not self.legend:
             return
 
@@ -842,7 +856,9 @@ class Data:
         """
 
         if type(self.legend_vals) != pd.DataFrame:
-            vals = pd.DataFrame({'x': self.x, 'y': self.y})
+            vals = pd.DataFrame({'x': self.x*len(self.y),
+                                 'y': self.y*len(self.x)})
+
             for irow, row in vals.iterrows():
                 # Set twin ax status
                 twin = False
@@ -850,8 +866,15 @@ class Data:
                         or (row['y'] != vals.loc[0, 'y'] and self.twin_x):
                     twin = True
 
+                if self.legend_vals is not None and self.twin_y:
+                    leg = row['x']
+                elif self.legend_vals is not None:
+                    leg = row['y']
+                else:
+                    leg = None
+
                 yield irow, df, row['x'], row['y'], \
-                      None if self.z is None else self.z[0], None, twin
+                      None if self.z is None else self.z[0], leg, twin
 
         else:
             for irow, row in self.legend_vals.iterrows():
