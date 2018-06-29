@@ -57,6 +57,24 @@ LEGEND_LOCATION = defaultdict(int,
                    'center': 10, 10: 10})
 
 
+def mplc_to_hex(color, alpha=True):
+    """
+    Convert mpl color to hex
+
+    Args:
+        color (tuple): matplotlib style color code
+        alpha (boolean): include or exclude the alpha value
+    """
+
+    hexc = '#'
+    for ic, cc in enumerate(color):
+        if not alpha and ic == 3:
+            continue
+        hexc += '%s' % hex(int(cc * 255))[2:].zfill(2)
+
+    return hexc
+
+
 def mpl_get_ticks(ax, xon=True, yon=True):
     """
     Divine a bunch of tick and label parameters for mpl layouts
@@ -125,6 +143,9 @@ class BaseLayout:
             color_list = colors
         else:
             color_list = DEFAULT_COLORS
+        self.cmap = kwargs.get('cmap', None)
+        if 'contour' in self.plot_func:
+            self.cmap = utl.kwget(kwargs, self.fcpp, 'cmap', None)
 
         # Axis
         self.ax = ['x', 'y', 'x2', 'y2']
@@ -775,7 +796,6 @@ class BaseLayout:
                                 )
 
         # Extras
-        self.cmap = utl.kwget(kwargs, self.fcpp, 'cmap', None)
         self.inline = utl.kwget(kwargs, self.fcpp, 'inline', None)
         self.separate_labels = utl.kwget(kwargs, self.fcpp,
                                          'separate_labels', False)
@@ -1985,8 +2005,12 @@ class LayoutMPL(BaseLayout):
             # Get the size of group labels and adjust the rotation if needed
             rotations = []
             sizes = []
-            max_label_width = self.axes.size[0]/len(data.indices)
-            for row in box_group_label:
+            for irow, row in enumerate(box_group_label):
+                # Find the smallest group label box in the row
+                labidx = list(data.changes[irow][data.changes[irow]>0].index) + \
+                              [len(data.changes)]
+                smallest = min(np.diff(labidx))
+                max_label_width = self.axes.size[0]/len(data.changes) * smallest
                 widest = max([f.get_window_extent().width for f in row])
                 tallest = max([f.get_window_extent().height for f in row])
                 if widest > max_label_width:
@@ -2217,6 +2241,7 @@ class LayoutMPL(BaseLayout):
             self.ws_row = kwargs.get('ws_row', self.label_wrap._size[1])
             self.ws_col = kwargs.get('ws_col', 0)
 
+        self.set_colormap(data)
         self.set_label_text(data, **kwargs)
         self.get_element_sizes(data)
         self.get_figure_size(**kwargs)
@@ -3016,6 +3041,49 @@ class LayoutMPL(BaseLayout):
                         # Set the labels
                         getattr(axes[ia], 'set_%sticklabels' % axx) \
                             (tp[axx]['label_text'][m0:], minor=True)
+
+    def set_colormap(self, data, **kwargs):
+        """
+        Replace the color list with discrete values from a colormap
+
+        Args:
+            data (Data object)
+        """
+
+        if not self.cmap:
+            return
+
+        try:
+            # Conver the color map into discrete colors
+            cmap = mplp.get_cmap(self.cmap)
+            color_list = []
+            for i in range(0, len(data.legend_vals)):
+                color_list += \
+                    [mplc_to_hex(cmap((i+1)/(len(data.legend_vals)+1)), False)]
+
+            # Reset colors
+            if self.axes.twin_x and 'label_y_font_color' not in kwargs.keys():
+                self.label_y.font_color = color_list[0]
+            if self.axes.twin_x and 'label_y2_font_color' not in kwargs.keys():
+                self.label_y2.font_color = color_list[1]
+            if self.axes.twin_y and 'label_x_font_color' not in kwargs.keys():
+                self.label_x.font_color = color_list[0]
+            if self.axes.twin_y and 'label_x_font_color' not in kwargs.keys():
+                self.label_x2.font_color = color_list[1]
+
+            line_colors = RepeatedList(color_list, 'line_colors')
+            self.lines.color = copy.copy(line_colors)
+
+            marker_edge_color = RepeatedList(color_list, 'marker_edge_color')
+            marker_edge_color.shift = 0
+            marker_fill_color = RepeatedList(color_list, 'marker_fill_color')
+            marker_fill_color.shift = 0
+            self.markers.edge_color = copy.copy(marker_edge_color)
+            self.markers.fill_color = copy.copy(marker_fill_color)
+
+        except:
+            print('Could not find a colormap called "%s". '
+                  'Using default colors...' % self.cmap)
 
     def set_figure_title(self):
         """
