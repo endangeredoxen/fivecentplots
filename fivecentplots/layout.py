@@ -515,13 +515,15 @@ class BaseLayout:
         if 'box' in self.plot_func:
             self.lines.on = False
             marker_edge_color = utl.kwget(kwargs, self.fcpp, 'box_marker_edge_color', None)
-            marker_edge_color = DEFAULT_COLORS if marker_edge_color is None else marker_edge_color
+            marker_edge_color = color_list if marker_edge_color is None else marker_edge_color
             marker_edge_color = RepeatedList(marker_edge_color, 'marker_edge_color')
-            marker_edge_color.shift = 1
+            if not kwargs.get('colors'):
+                marker_edge_color.shift = 1
             marker_fill_color = utl.kwget(kwargs, self.fcpp, 'marker_fill_color', None)
-            marker_fill_color = DEFAULT_COLORS if marker_fill_color is None else marker_fill_color
+            marker_fill_color = color_list if marker_fill_color is None else marker_fill_color
             marker_fill_color = RepeatedList(marker_fill_color, 'marker_fill_color')
-            marker_fill_color.shift = 1
+            if not kwargs.get('colors'):
+                marker_fill_color.shift = 1
             self.markers.filled = utl.kwget(kwargs, self.fcpp,
                                             'box_marker_fill',
                                             self.markers.filled)

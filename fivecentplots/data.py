@@ -21,6 +21,11 @@ class AxisError(Exception):
         Exception.__init__(self, *args, **kwargs)
 
 
+class DataError(Exception):
+    def __init__(self, *args, **kwargs):
+        Exception.__init__(self, *args, **kwargs)
+
+
 class GroupingError(Exception):
     def __init__(self, *args, **kwargs):
         Exception.__init__(self, *args, **kwargs)
@@ -116,7 +121,8 @@ class Data:
         self.filter = kwargs.get('filter', None)
         if self.filter:
             self.df_all = self.df_filter(self.filter)
-
+            if len(self.df_all) == 0:
+                raise DataError('DataFrame is empty after applying filter')
         # Define rc grouping column names
         self.col = self.check_group_columns('col', kwargs.get('col', None))
         self.col_vals = None
@@ -163,11 +169,11 @@ class Data:
         """
 
         if df is None:
-            raise ValueError('Must provide a DataFrame called "df" '
+            raise DataError('Must provide a DataFrame called "df" '
                              'for plotting!')
 
         if len(df) == 0:
-            raise ValueError('DataFrame is empty.  Nothing to plot!')
+            raise DataError('DataFrame is empty.  Nothing to plot!')
 
         return df.copy()
 
@@ -253,6 +259,9 @@ class Data:
             raise AxisError('Must provide a column name for "%s"' % xyz)
 
         for val in vals:
+            if val not in self.df_all.columns:
+                raise DataError('No column named "%s" found in DataFrame' % val)
+
             # Check case
             try:
                 self.df_all[val] = self.df_all[val].astype(float)
@@ -578,12 +587,10 @@ class Data:
         elif self.ax_limit_padding is not None:
             if self.ax_scale in ['log%s' % ax, 'loglog',
                                  'semilog%s' % ax]:
-                axmin = np.log10(axmin) - self.ax_limit_padding * \
-                        np.log10(axdelta)/(1-2*self.ax_limit_padding)
+                axmin = np.log10(axmin) - self.ax_limit_padding * axdelta
                 vmin = 10**axmin
             else:
-                axmin -= self.ax_limit_padding*axdelta / \
-                         (1-2*self.ax_limit_padding)
+                axmin -= self.ax_limit_padding * axdelta
                 vmin = axmin
         else:
             vmin = None
@@ -620,8 +627,7 @@ class Data:
         elif self.ax_limit_padding is not None:
             if self.ax_scale in ['log%s' % ax, 'loglog',
                                  'semilog%s' % ax]:
-                axmax = np.log10(axmax) + self.ax_limit_padding * \
-                        np.log10(axdelta)/(1-2*self.ax_limit_padding)
+                axmax = np.log10(axmax) + self.ax_limit_padding * axdelta
                 vmax = 10**axmax
             else:
                 axmax += self.ax_limit_padding*axdelta
@@ -644,20 +650,20 @@ class Data:
         axs = ['x', 'x2', 'y', 'y2', 'z']
 
         for ax in axs:
-            if getattr(self, 'share_%s' % ax) and ir==0 and ic==0:
+            if getattr(self, 'share_%s' % ax) and ir == 0 and ic == 0:
                 vals = self.get_data_range(ax, self.df_fig)
                 self.ranges[ir, ic]['%smin' % ax] = vals[0]
                 self.ranges[ir, ic]['%smax' % ax] = vals[1]
             elif self.share_row:
                 vals = self.get_data_range(
                            ax,
-                           self.df_fig[self.df_fig[self.row]==self.row_vals[ir]])
+                           self.df_fig[self.df_fig[self.row[0]] == self.row_vals[ir]])
                 self.ranges[ir, ic]['%smin' % ax] = vals[0]
                 self.ranges[ir, ic]['%smax' % ax] = vals[1]
-            elif self.share_col and ir==0:
+            elif self.share_col:
                 vals = self.get_data_range(
                            ax,
-                           self.df_fig[self.df_fig[self.col]==self.col_vals[ic]])
+                           self.df_fig[self.df_fig[self.col[0]] == self.col_vals[ic]])
                 self.ranges[ir, ic]['%smin' % ax] = vals[0]
                 self.ranges[ir, ic]['%smax' % ax] = vals[1]
             elif not getattr(self, 'share_%s' % ax):
@@ -779,7 +785,8 @@ class Data:
             updated kwargs dict
         """
 
-        if self.legend == True and self.twin_x:
+        if self.legend == True and self.twin_x \
+                or self.legend == True and len(self.y) > 1:
             self.legend_vals = self.y
             self.nleg = len(self.y)
             return
