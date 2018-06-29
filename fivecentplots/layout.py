@@ -436,7 +436,7 @@ class BaseLayout:
 
         # Legend
         kwargs['legend'] = kwargs.get('legend', None)
-        if type(kwargs['legend']) is str:
+        if type(kwargs['legend']) is list:
             kwargs['legend'] = ' | '.join(utl.validate_list(kwargs['legend']))
 
         self.legend = DF_Element('legend', self.fcpp, kwargs,
@@ -1453,6 +1453,7 @@ class LayoutMPL(BaseLayout):
             for text in self.legend.obj.get_texts():
                 text.set_color(self.legend.font_color)
 
+            self.legend.obj.get_title().set_fontsize(self.legend.font_size)
             self.legend.obj.get_frame().set_facecolor(self.legend.fill_color)
             self.legend.obj.get_frame().set_edgecolor(self.legend.edge_color)
 
@@ -1765,6 +1766,7 @@ class LayoutMPL(BaseLayout):
                                     title=self.legend.text,
                                     numpoints=self.legend.points,
                                     fontsize=self.legend.font_size)
+            leg.get_title().set_fontsize(self.legend.font_size)
             if self.legend.marker_size:
                 for i in data.legend_vals:
                     leg.legendHandles[0]._legmarker\

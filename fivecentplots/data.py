@@ -141,14 +141,13 @@ class Data:
         # Define legend grouping column names (legends are common to a figure,
         #   not an rc subplot)
         if 'legend' in kwargs.keys():
-            if kwargs['legend'] == True:
+            if kwargs['legend'] is True:
                 self.legend = True
-            elif kwargs['legend'] == False:
+            elif kwargs['legend'] is False:
                 self.legend = False
             else:
                 self.legend = self.check_group_columns('legend',
                                                        kwargs.get('legend', None))
-                self.legend = self.legend[0]
 
         # Define figure grouping column names
         if 'fig_groups' in kwargs.keys():
