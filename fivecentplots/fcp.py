@@ -333,15 +333,15 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin):
 
     """
 
-    if not layout.line_fit.on:
+    if not layout.fit.on:
         return
 
     df, coeffs, rsq = data.get_fit_data(df, x, y)
     layout.plot_xy(ir, ic, iline, df, '%s Fit' % x, '%s Fit' %y,
-                    None, twin, line_type='line_fit',
+                    None, twin, line_type='fit',
                     marker_disable=True)
 
-    if layout.line_fit.eqn:
+    if layout.fit.eqn:
         eqn = 'y='
         for ico, coeff in enumerate(coeffs[0:-1]):
             if coeff > 0 and ico > 0:
@@ -355,11 +355,11 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin):
             eqn += '+'
         eqn += '%s' % round(coeffs[-1], 3)
 
-        layout.add_text(ir, ic, eqn, 'line_fit')
+        layout.add_text(ir, ic, eqn, 'fit')
 
-    if layout.line_fit.rsq:
-        offsety = (5 + layout.line_fit.font_size) / layout.axes.size[1]
-        layout.add_text(ir, ic, 'R^2=%s' % round(rsq, 4), 'line_fit',
+    if layout.fit.rsq:
+        offsety = (2.2*layout.fit.font_size) / layout.axes.size[1]
+        layout.add_text(ir, ic, 'R^2=%s' % round(rsq, 4), 'fit',
                         offsety=-offsety)
 
 

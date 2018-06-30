@@ -1,4 +1,4 @@
-Substrate,Target Wavelength,Boost Level,Temperature [C],Die,Voltage,I Base,I [A]
+Substrate,Target Wavelength,Boost Level,Temperature [C],Die,Voltage,I Set,I [A]
 Si,450,0.2,25,"(1,1)",0,0,0
 Si,450,0.2,25,"(1,1)",0.1,0,0
 Si,450,0.2,25,"(1,1)",0.2,0,0

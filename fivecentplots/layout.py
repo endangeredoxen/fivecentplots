@@ -481,18 +481,19 @@ class BaseLayout:
                               )
 
         # Line fit
-        self.line_fit = Element('line_fit', self.fcpp, kwargs,
-                                on=True if kwargs.get('fit', False) else False,
-                                color=kwargs.get('fit_color', RepeatedList(['k'], 'line_colors')),
-                                eqn=kwargs.get('fit_eqn', False),
-                                font_size=12,
-                                padding=kwargs.get('fit_padding', 10),
-                                rsq=kwargs.get('fit_rsq', False),
-                                size=[0,0],
-                                )
-        self.line_fit.position[0] = self.line_fit.padding / self.axes.size[0]
-        self.line_fit.position[3] = 1 - (self.line_fit.padding + \
-                                    self.line_fit.font_size)/ self.axes.size[1]
+        self.fit = Element('line_fit', self.fcpp, kwargs,
+                           on=True if kwargs.get('fit', False) else False,
+                           color=kwargs.get('fit_color',
+                                            RepeatedList(['#000000'], 'line_colors')),
+                           eqn=kwargs.get('fit_eqn', False),
+                           font_size=12,
+                           padding=kwargs.get('fit_padding', 10),
+                           rsq=kwargs.get('fit_rsq', False),
+                           size=[0,0],
+                           )
+        self.fit.position[0] = self.fit.padding / self.axes.size[0]
+        self.fit.position[3] = 1 - (self.fit.padding + \
+                                    self.fit.font_size)/ self.axes.size[1]
 
         # Lines
         line_colors = RepeatedList(color_list, 'line_colors')

@@ -113,6 +113,8 @@ class Data:
         # Stats
         self.stat = kwargs.get('stat', None)
         self.stat_val = kwargs.get('stat_val', None)
+        if self.stat_val is not None and self.stat_val not in self.df_all.columns:
+            raise DataError('stat_val column "%s" not in DataFrame' % self.stat_val)
         self.stat_idx = []
         self.lcl = []
         self.ucl = []
