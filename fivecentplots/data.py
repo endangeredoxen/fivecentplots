@@ -110,6 +110,11 @@ class Data:
                 raise AxisError('twin_y requires two x-axis columns')
             self.x2 = [self.x[1]]
 
+        # Ref line
+        self.ref_line = kwargs.get('ref_line', None)
+        if type(self.ref_line) is pd.Series:
+            self.df_all['Ref Line'] = self.ref_line
+
         # Stats
         self.stat = kwargs.get('stat', None)
         self.stat_val = kwargs.get('stat_val', None)

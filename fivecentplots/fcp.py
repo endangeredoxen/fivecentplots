@@ -346,8 +346,8 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin):
         for ico, coeff in enumerate(coeffs[0:-1]):
             if coeff > 0 and ico > 0:
                 eqn += '+'
-            if len(coeffs)-1 > 1:
-                power = '^%s' % str(len(coeffs)-1)
+            if len(coeffs) - 1 - ico > 1:
+                power = '^%s' % str(len(coeffs) - 1 - ico)
             else:
                 power = ''
             eqn += '%s*x%s' % (round(coeff,3), power)
@@ -361,6 +361,18 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin):
         offsety = (2.2*layout.fit.font_size) / layout.axes.size[1]
         layout.add_text(ir, ic, 'R^2=%s' % round(rsq, 4), 'fit',
                         offsety=-offsety)
+
+
+def plot_ref(ir, ic, iline, data, layout, df, x, y):
+    """
+    Plot a reference line
+    """
+
+    if type(data.ref_line) != pd.Series:
+        return
+
+    layout.plot_xy(ir, ic, iline, df, x, 'Ref Line', 'ref_line',
+                   False, line_type='ref_line', marker_disable=True)
 
 
 def plot_stat(ir, ic, iline, data, layout, df, x, y):
@@ -403,6 +415,7 @@ def plot_xy(data, layout, ir, ic, df_rc, kwargs):
             layout.plot_xy(ir, ic, iline, df, x, y, leg_name, twin)
             plot_fit(data, layout, ir, ic, iline, df, x, y, twin)
 
+        plot_ref(ir, ic, iline, data, layout, df, x, y)
         plot_stat(ir, ic, iline, data, layout, df, x, y)
         plot_conf_int(ir, ic, iline, data, layout, df, x, y)
 

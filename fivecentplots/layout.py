@@ -130,7 +130,8 @@ class BaseLayout:
         self.fcpp, color_list, marker_list = utl.reload_defaults()
 
         # Figure
-        self.fig = Element('fig', self.fcpp, kwargs)
+        self.fig = Element('fig', self.fcpp, kwargs,
+                           edge_width=3)
 
         # Color list
         if 'line_color' in kwargs.keys():
@@ -485,15 +486,24 @@ class BaseLayout:
                            on=True if kwargs.get('fit', False) else False,
                            color=kwargs.get('fit_color',
                                             RepeatedList(['#000000'], 'line_colors')),
-                           eqn=kwargs.get('fit_eqn', False),
-                           font_size=12,
-                           padding=kwargs.get('fit_padding', 10),
-                           rsq=kwargs.get('fit_rsq', False),
+                           eqn=utl.kwget(kwargs, self.fcpp, 'fit_eqn', False),
+                           font_size=utl.kwget(kwargs, self.fcpp, 'fit_font_size', 12),
+                           padding=utl.kwget(kwargs, self.fcpp, 'fit_padding', 10),
+                           rsq=utl.kwget(kwargs, self.fcpp, 'fit_rsq', False),
                            size=[0,0],
                            )
         self.fit.position[0] = self.fit.padding / self.axes.size[0]
         self.fit.position[3] = 1 - (self.fit.padding + \
                                     self.fit.font_size)/ self.axes.size[1]
+
+        # Reference line
+        self.ref_line = Element('ref_line', self.fcpp, kwargs,
+                                on=True if type(kwargs.get('ref_line', False)) is pd.Series else False,
+                                color=kwargs.get('ref_line_color',
+                                                 RepeatedList(['#000000'], 'line_colors')),
+                                size=[0,0],
+                                text=utl.kwget(kwargs, self.fcpp, 'ref_line_text', 'Ref Line'),
+                                )
 
         # Lines
         line_colors = RepeatedList(color_list, 'line_colors')
@@ -1425,8 +1435,17 @@ class LayoutMPL(BaseLayout):
             # Sort the legend keys
             if 'NaN' in self.legend.values.keys():
                 del self.legend.values['NaN']
+            if 'ref_line' in self.legend.values.keys():
+                ref_line = self.legend.values['ref_line']
+                del self.legend.values['ref_line']
+            else:
+                ref_line = None
+
             keys = natsorted(list(self.legend.values.keys()))
             lines = [self.legend.values[f][0] for f in keys]
+            if ref_line is not None:
+                keys = [self.ref_line.text] + keys
+                lines = ref_line + lines
 
             # Set the font properties
             fontp = {}
@@ -1456,6 +1475,7 @@ class LayoutMPL(BaseLayout):
 
             self.legend.obj.get_title().set_fontsize(self.legend.font_size)
             self.legend.obj.get_frame().set_facecolor(self.legend.fill_color)
+            self.legend.obj.get_frame().set_alpha(self.legend.fill_alpha)
             self.legend.obj.get_frame().set_edgecolor(self.legend.edge_color)
 
     def add_text(self, ir, ic, text, element, offsetx=0, offsety=0):
@@ -1760,9 +1780,9 @@ class LayoutMPL(BaseLayout):
                 for val in data.legend_vals:
                     lines += ax.plot([1, 2, 3])
                     leg_vals += [val]
-            if self.yline.on:
+            if self.ref_line.on:
                 lines += axes[0].plot([1, 2, 3])
-                leg_vals += [self.yline.text]
+                leg_vals += [self.ref_line.text]
             leg = mpl.pyplot.legend(lines, leg_vals,
                                     title=self.legend.text,
                                     numpoints=self.legend.points,
@@ -2103,7 +2123,7 @@ class LayoutMPL(BaseLayout):
             self.ws_leg_ax + self.legend.size[0] + self.ws_leg_fig + \
             self.labtick_y2 + \
             self.label_row.size[0] + self.ws_row_label * self.label_row.on + \
-            self.labtick_z * (self.ncol - 1) + \
+            self.labtick_z * (self.ncol - 1 if self.ncol > 1 else 1) + \
             self.box_title
 
         # Figure height
@@ -3053,7 +3073,7 @@ class LayoutMPL(BaseLayout):
             data (Data object)
         """
 
-        if not self.cmap:
+        if not self.cmap or self.plot_func == 'plot_contour':
             return
 
         try:
