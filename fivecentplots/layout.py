@@ -3,6 +3,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as mplp
 import matplotlib.ticker as ticker
 import matplotlib.patches as patches
+import matplotlib.font_manager as font_manager
 from matplotlib.ticker import AutoMinorLocator, LogLocator
 import matplotlib.mlab as mlab
 import importlib
@@ -2855,14 +2856,26 @@ class LayoutMPL(BaseLayout):
                 mplp.setp(axes[ia].get_xticklabels(), visible=False)
 
             # Major rotation
-            if self.tick_labels_major_x.on \
-                    and self.tick_labels_major_x.rotation != 0:
+            if self.tick_labels_major_x.on:
+                ticks_font = \
+                    font_manager.FontProperties(family=self.tick_labels_major_x.font,
+                                                size=self.tick_labels_major_x.font_size,
+                                                style=self.tick_labels_major_x.font_style,
+                                                weight=self.tick_labels_major_x.font_weight)
                 for text in axes[ia].get_xticklabels():
-                    text.set_rotation(self.tick_labels_major_x.rotation)
-            if self.tick_labels_major_y.on \
-                    and self.tick_labels_major_y.rotation != 0:
+                    if self.tick_labels_major_x.rotation != 0:
+                        text.set_rotation(self.tick_labels_major_x.rotation)
+                    text.set_fontproperties(ticks_font)
+            if self.tick_labels_major_y.on:
+                ticks_font = \
+                    font_manager.FontProperties(family=self.tick_labels_major_x.font,
+                                                size=self.tick_labels_major_x.font_size,
+                                                style=self.tick_labels_major_x.font_style,
+                                                weight=self.tick_labels_major_x.font_weight)
                 for text in axes[ia].get_yticklabels():
-                    text.set_rotation(self.tick_labels_major_y.rotation)
+                    if self.tick_labels_major_y.rotation != 0:
+                        text.set_rotation(self.tick_labels_major_y.rotation)
+                    text.set_fontproperties(ticks_font)
 
             # Tick label shorthand
             tlmajx = getattr(self, 'tick_labels_major_x%s' % lab)

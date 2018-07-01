@@ -42,7 +42,8 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="fivecentplots beta documentation" href="index.html"/>
-        <link rel="prev" title="boxplot" href="boxplot.html"/> 
+        <link rel="next" title="plot" href="plot.html"/>
+        <link rel="prev" title="Data Ranges" href="ranges.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -95,17 +96,28 @@
               
             
             
-              <ul class="current">
+              <p class="caption"><span class="caption-text">Basics</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="design.html">Plot Layout</a></li>
-<li class="toctree-l1"><a class="reference internal" href="defaults.html">Default Settings</a></li>
 <li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="grouping.html">Grouping data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="styles.html">Styles and formatting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ranges.html">Data Ranges</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Modules</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#fcp-py">fcp.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#design-py">design.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-py">data.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#layout-py">layout.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-utilities">utilities.py</a></li>
 </ul>
 </li>
+</ul>
+<p class="caption"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="plot.html">plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
 </ul>
 
             
@@ -193,8 +205,150 @@
 <div class="section" id="fcp-py">
 <h2>fcp.py<a class="headerlink" href="#fcp-py" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="design-py">
-<h2>design.py<a class="headerlink" href="#design-py" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="data-py">
+<h2>data.py<a class="headerlink" href="#data-py" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="layout-py">
+<h2>layout.py<a class="headerlink" href="#layout-py" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-utilities">
+<span id="utilities-py"></span><h2>utilities.py<a class="headerlink" href="#module-utilities" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="utilities.get_current_values">
+<code class="descclassname">utilities.</code><code class="descname">get_current_values</code><span class="sig-paren">(</span><em>df</em>, <em>text</em>, <em>key='&#64;'</em><span class="sig-paren">)</span><a class="headerlink" href="#utilities.get_current_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse a string looking for text enclosed by ‘key’ and replace with the
+current value from the DataFrame</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>df</strong> (<em>pd.DataFrame</em>) – DataFrame containing values we are looking for</li>
+<li><strong>text</strong> (<em>str</em>) – string to parse</li>
+<li><strong>key</strong> (<em>str</em>) – matching chars that enclose the value to replace from df</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">updated string</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="utilities.get_decimals">
+<code class="descclassname">utilities.</code><code class="descname">get_decimals</code><span class="sig-paren">(</span><em>value</em>, <em>max_places=10</em><span class="sig-paren">)</span><a class="headerlink" href="#utilities.get_decimals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of decimal places of a float number excluding
+rounding errors</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>value</strong> (<em>int|float</em>) – value to check</li>
+<li><strong>max_places</strong> (<em>int</em>) – maximum number of decimal places to check</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">number of decimal places</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="utilities.kwget">
+<code class="descclassname">utilities.</code><code class="descname">kwget</code><span class="sig-paren">(</span><em>dict1</em>, <em>dict2</em>, <em>val</em>, <em>default</em><span class="sig-paren">)</span><a class="headerlink" href="#utilities.kwget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Augmented kwargs.get function</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dict1</strong> (<em>dict</em>) – first dictionary to check for the value</li>
+<li><strong>dict2</strong> (<em>dict</em>) – second dictionary to check for the value</li>
+<li><strong>val</strong> (<em>str</em>) – value to look for</li>
+<li><strong>default</strong> (<em>multiple</em>) – default value if not found in
+dict1 or dict2 keys</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">value to use</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="utilities.rectangle_overlap">
+<code class="descclassname">utilities.</code><code class="descname">rectangle_overlap</code><span class="sig-paren">(</span><em>r1</em>, <em>r2</em><span class="sig-paren">)</span><a class="headerlink" href="#utilities.rectangle_overlap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if the bounds of two rectangles overlap</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r1</strong> (<em>list|tuple</em>) – width, height, center point (x, y) of left rectangle</li>
+<li><strong>r2</strong> (<em>list|tuple</em>) – width, height, center point (x, y) of right rectangle</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">True if overlap | False if not</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="utilities.reload_defaults">
+<code class="descclassname">utilities.</code><code class="descname">reload_defaults</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#utilities.reload_defaults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reload the fcp params</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utilities.set_save_filename">
+<code class="descclassname">utilities.</code><code class="descname">set_save_filename</code><span class="sig-paren">(</span><em>df</em>, <em>fig_item</em>, <em>fig_cols</em>, <em>layout</em>, <em>kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#utilities.set_save_filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a filename based on the plot setup parameters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>df</strong> (<em>pd.DataFrame</em>) – input data used for the plot</li>
+<li><strong>fig_item</strong> (<em>None | str</em>) – unique figure item</li>
+<li><strong>fig_cols</strong> (<em>None | str | list</em>) – names of columns used to generate fi</li>
+<li><strong>layout</strong> (<em>obj</em>) – plot layout object</li>
+<li><strong>kwargs</strong> (<em>dict</em>) – input keyword args</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">str filename</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="utilities.validate_list">
+<code class="descclassname">utilities.</code><code class="descname">validate_list</code><span class="sig-paren">(</span><em>items</em><span class="sig-paren">)</span><a class="headerlink" href="#utilities.validate_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure a list variable is actually a list and not a single string</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>items</strong> (<em>str|list</em>) – values to check dtype</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">items as a list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 </div>
 
@@ -208,8 +362,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
+        <a href="plot.html" class="btn btn-neutral float-right" title="plot" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-        <a href="boxplot.html" class="btn btn-neutral" title="boxplot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+        <a href="ranges.html" class="btn btn-neutral" title="Data Ranges" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

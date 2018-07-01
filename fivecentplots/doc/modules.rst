@@ -10,10 +10,23 @@ fcp.py
  :members:
  :undoc-members:
 
-design.py
----------
+data.py
+-------
 
-.. automodule:: design
+.. automodule:: data
  :members:
  :undoc-members:
 
+layout.py
+---------
+
+.. automodule:: layout
+ :members:
+ :undoc-members:
+
+utilities.py
+------------
+
+.. automodule:: utilities
+ :members:
+ :undoc-members:

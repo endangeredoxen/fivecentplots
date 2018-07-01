@@ -20,14 +20,12 @@
 
 Why another Python plotting library?
 ------------------------------------
-There is no shortage of quality Python plotting libraries on the world wide
-web (i.e., matplotlib, bokeh, seaborn, etc.).  Why add another?
-
-With the development of **pandas**, statistical analysis in Python can
-rival that of commercial software packages like JMP.  However, plotting those
-analyses is often more difficult.  **fivecentplots** builds upon **pandas**
-and **matplotlib** to make styling and formatting of plots easier and
-more consistent.
+**fivecentplots** exists to simplify data visualization of **pandas** DataFrames.
+While there is no shortage of quality Python plotting libraries on the
+world wide web (i.e., matplotlib, bokeh, seaborn, etc.), the APIs can
+be overly complicated and require multiple lines of code to get the plot
+to look just right.  This complexity can discourage new Python users and
+turn them back to inferior yet simplar data tools like Excel for plotting.
 
 
 What issues does fivecentplots address?
@@ -35,29 +33,28 @@ What issues does fivecentplots address?
 
 **1. Ease of Use**
 
-   * All data come from pandas DataFrames eliminating direct management of
+   * Data come from pandas DataFrames eliminating direct management of
      numpy arrays
 
-   * All style and format parameters can be invoked in a single function call
+   * Style and format parameters can be invoked in a single function call
      via optional keyword arguments
 
-   * Legend a plot or group multiple plots into rows and/or columns based on
-     simply by DataFrame column names
-
-   * Quickly filter a DataFrame prior to plotting using simple notation instead
-     of complex boolean operators
+   * Data can be quickly grouped into subplots (row x column grid, wrapped
+     by unique value, legend coloring) by simply specifying DataFrame column names
 
 |
 
 **2. Repeatability**
 
    * Figure sizes expand and contract to accommodate plot elements rather
-     than shrinking elements to fit in a certain figure dimension (standard
-     practice in matplotlib).  Plots of the same size stay the same size
-     regardless of tick marks or legend contents
+     than shrinking elements like the axis in unexpected ways to fit
+     labels, ticks, etc. (as is the standard
+     practice in matplotlib).  In **fivecentplots** the axes window size
+     is king so plots of the same size stay the same size
+     regardless of everything surrounding them.
 
-   * All colors, sizes, marker themes, etc. can be specified from static set
-     up files to preserve a custom look for all plots
+   * All colors, sizes, marker themes, etc. can be specified from input keywords
+     or from a theme file
 
 |
 
@@ -71,20 +68,27 @@ What issues does fivecentplots address?
 
 |
 
-**4. Extras (JMP-style plots that would be tedious to recreate every time in raw code)**
+**4. JMP-style plots that would be tedious to create every time in raw code**
 
-   * Boxplots with grouping labels:
+   With the development of **pandas**, statistical analysis in Python can rival or surpass that of
+   popular commercial software packages like JMP. However, JMP has several plotting platforms
+   that are very useful and would be tedious to create from scratch in Python.  **fivecentplot**
+   handles all of this work so you don't have to, allowing you to create beautiful
+   *and often more flexible* JMP-style plots with a single function call.  Examples include:
 
-      Although matplotlib has a boxplot function, it is not easy to group
-      data into multiple, labeled subgroups.  Borrowing inspiration from the
+   * Boxplots with grouping labels (i.e., variability charts):
+
+      While there are boxplot functions in Python plotting libraries, it is not easy to group
+      data into multiple, *labeled* subgroups.  Borrowing inspiration from the
       `variability chart in JMP <http://www.jmp.com/support/help/Variability_Gauge_Charts.shtml>`_,
-      fivecentplots extends matplotlib's boxplot routine to make this possible.
+      **fivecentplots** makes this possible.
 
    * Grouped facet grid plots:
 
       Like JMP's `grouped overlay plots <http://www.jmp.com/support/help/Additional_Examples_of_the_Overlay_Plot_Platform.shtml#192569>`_,
       take any multi-variate DataFrame and separate it into grids of plots,
       each represeting a unique combination of factors
+
 
 |
 
@@ -93,16 +97,29 @@ Documentation
 
 .. toctree::
    :maxdepth: 1
+   :caption: Basics
 
    overview
-   installation
+   install
    design
-   defaults
    keyword
-   plot.ipynb
-   boxplot.ipynb
+   grouping
+   styles
+   ranges
    modules
 
+.. toctree::
+   :maxdepth: 1
+   :caption: Examples
+
+   plot.ipynb
+   boxplot.ipynb
+   contour.ipynb
+
+.. toctree::
+   :maxdepth: 1
+
+   older
 
 Indices and tables
 ^^^^^^^^^^^^^^^^^^
