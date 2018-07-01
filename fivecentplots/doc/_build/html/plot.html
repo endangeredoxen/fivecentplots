@@ -43,7 +43,7 @@
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="fivecentplots beta documentation" href="index.html"/>
         <link rel="next" title="boxplot" href="boxplot.html"/>
-        <link rel="prev" title="Modules" href="modules.html"/> 
+        <link rel="prev" title="Data Ranges" href="ranges.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -101,9 +101,10 @@
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="design.html">Plot Layout</a></li>
-<li class="toctree-l1"><a class="reference internal" href="defaults.html">Default Settings</a></li>
 <li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="grouping.html">Grouping data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="styles.html">Styles and formatting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ranges.html">Data Ranges</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Examples</span></p>
 <ul class="current">
@@ -154,6 +155,11 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Other</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="older.html">Older Versions</a></li>
 </ul>
 
             
@@ -402,13 +408,19 @@ div.nboutput div.output_area.stderr {
 </style>
 <div class="section" id="plot">
 <h1>plot<a class="headerlink" href="#plot" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">plot</span></code> function is the primary vehicle for visualizing x-y data.
+At a minimum, the <code class="docutils literal notranslate"><span class="pre">plot</span></code> function requires the following keywords: *
+<code class="docutils literal notranslate"><span class="pre">df</span></code>: a pandas DataFrame * <code class="docutils literal notranslate"><span class="pre">x</span></code>: the name of the DataFrame column
+containing the x-axis data * <code class="docutils literal notranslate"><span class="pre">y</span></code>: the name of the DataFrame column
+containing the y-axis data</p>
+<p>Other optional keywords are described in Keyword Arguments.</p>
 <div class="section" id="Setup">
 <h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="Imports">
 <h3>Imports<a class="headerlink" href="#Imports" title="Permalink to this headline">¶</a></h3>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [3]:
+<span></span>In [1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -424,27 +436,113 @@ div.nboutput div.output_area.stderr {
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-The autoreload extension is already loaded. To reload it, use:
-  %reload_ext autoreload
-</pre></div></div>
-</div>
 </div>
 <div class="section" id="Sample-data">
 <h3>Sample data<a class="headerlink" href="#Sample-data" title="Permalink to this headline">¶</a></h3>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [4]:
+<span></span>In [2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">osjoin</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;tests&#39;</span><span class="p">,</span> <span class="s1">&#39;fake_data.csv&#39;</span><span class="p">))</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>Out[2]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Substrate</th>
+      <th>Target Wavelength</th>
+      <th>Boost Level</th>
+      <th>Temperature [C]</th>
+      <th>Die</th>
+      <th>Voltage</th>
+      <th>I Set</th>
+      <th>I [A]</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Si</td>
+      <td>450</td>
+      <td>0.2</td>
+      <td>25</td>
+      <td>(1,1)</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Si</td>
+      <td>450</td>
+      <td>0.2</td>
+      <td>25</td>
+      <td>(1,1)</td>
+      <td>0.1</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Si</td>
+      <td>450</td>
+      <td>0.2</td>
+      <td>25</td>
+      <td>(1,1)</td>
+      <td>0.2</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Si</td>
+      <td>450</td>
+      <td>0.2</td>
+      <td>25</td>
+      <td>(1,1)</td>
+      <td>0.3</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Si</td>
+      <td>450</td>
+      <td>0.2</td>
+      <td>25</td>
+      <td>(1,1)</td>
+      <td>0.4</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
 </div>
 </div>
 <div class="section" id="Set-theme">
@@ -452,7 +550,7 @@ The autoreload extension is already loaded. To reload it, use:
 <p>(Only needs to be run once)</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [5]:
+<span></span>In [3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -466,7 +564,7 @@ The autoreload extension is already loaded. To reload it, use:
 <h3>Other<a class="headerlink" href="#Other" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [46]:
+<span></span>In [4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -483,7 +581,7 @@ The autoreload extension is already loaded. To reload it, use:
 <p>A simple XY plot with no lines or legend</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [6]:
+<span></span>In [5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -504,7 +602,7 @@ I [A] vs Voltage.png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_14_1.png" src="_images/plot_14_1.png" />
+<img alt="_images/plot_15_1.png" src="_images/plot_15_1.png" />
 </div>
 </div>
 </div>
@@ -513,7 +611,7 @@ I [A] vs Voltage.png
 <p>Add a legend by the column “Die”</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [7]:
+<span></span>In [6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -534,7 +632,7 @@ I [A] vs Voltage.png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_17_1.png" src="_images/plot_17_1.png" />
+<img alt="_images/plot_18_1.png" src="_images/plot_18_1.png" />
 </div>
 </div>
 </div>
@@ -546,7 +644,7 @@ both: loglog | log * symlog: symlog (doesn’t work in matploblib 1.5.1)
 * logit: logit</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [9]:
+<span></span>In [7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -567,7 +665,7 @@ I [A] vs Voltage.png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_20_1.png" src="_images/plot_20_1.png" />
+<img alt="_images/plot_21_1.png" src="_images/plot_21_1.png" />
 </div>
 </div>
 </div>
@@ -578,7 +676,7 @@ I [A] vs Voltage.png
 <h3>Shared x-axis (twin_x)<a class="headerlink" href="#Shared-x-axis-(twin_x)" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [55]:
+<span></span>In [8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -599,7 +697,7 @@ Voltage + I [A] vs Voltage.png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_23_1.png" src="_images/plot_23_1.png" />
+<img alt="_images/plot_24_1.png" src="_images/plot_24_1.png" />
 </div>
 </div>
 </div>
@@ -607,7 +705,7 @@ Voltage + I [A] vs Voltage.png
 <h3>Shared y-axis (twin_y)<a class="headerlink" href="#Shared-y-axis-(twin_y)" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [56]:
+<span></span>In [9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -629,7 +727,7 @@ Voltage vs Voltage + I [A].png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_25_1.png" src="_images/plot_25_1.png" />
+<img alt="_images/plot_26_1.png" src="_images/plot_26_1.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -637,7 +735,7 @@ Voltage vs Voltage + I [A].png
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Wall time: 1.25 s
+Wall time: 1.23 s
 </pre></div></div>
 </div>
 </div>
@@ -649,7 +747,7 @@ Wall time: 1.25 s
 <h3>Multiple y only<a class="headerlink" href="#Multiple-y-only" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [11]:
+<span></span>In [10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -670,7 +768,7 @@ Boost Level + I [A] vs Voltage.png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_29_1.png" src="_images/plot_29_1.png" />
+<img alt="_images/plot_30_1.png" src="_images/plot_30_1.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -678,7 +776,7 @@ Boost Level + I [A] vs Voltage.png
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Wall time: 1.25 s
+Wall time: 881 ms
 </pre></div></div>
 </div>
 </div>
@@ -686,7 +784,7 @@ Wall time: 1.25 s
 <h3>Multiple x only<a class="headerlink" href="#Multiple-x-only" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [12]:
+<span></span>In [11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -707,7 +805,7 @@ Voltage vs Boost Level + I [A].png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_31_1.png" src="_images/plot_31_1.png" />
+<img alt="_images/plot_32_1.png" src="_images/plot_32_1.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -715,7 +813,7 @@ Voltage vs Boost Level + I [A].png
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Wall time: 1.28 s
+Wall time: 984 ms
 </pre></div></div>
 </div>
 </div>
@@ -723,7 +821,7 @@ Wall time: 1.28 s
 <h3>Both<a class="headerlink" href="#Both" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [13]:
+<span></span>In [12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -744,7 +842,7 @@ Voltage + Temperature [C] vs Boost Level + I [A].png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_33_1.png" src="_images/plot_33_1.png" />
+<img alt="_images/plot_34_1.png" src="_images/plot_34_1.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -752,7 +850,7 @@ Voltage + Temperature [C] vs Boost Level + I [A].png
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Wall time: 1.93 s
+Wall time: 1.21 s
 </pre></div></div>
 </div>
 </div>
@@ -767,7 +865,7 @@ Each row contains a label indicating the unique value of the “row”
 column.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [14]:
+<span></span>In [13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -788,7 +886,7 @@ I [A] vs Voltage by Boost Level.png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_37_1.png" src="_images/plot_37_1.png" />
+<img alt="_images/plot_38_1.png" src="_images/plot_38_1.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -796,7 +894,7 @@ I [A] vs Voltage by Boost Level.png
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Wall time: 1.92 s
+Wall time: 1.48 s
 </pre></div></div>
 </div>
 </div>
@@ -808,7 +906,7 @@ column. Each column contains a label indicating the unique value of the
 “col” column.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [15]:
+<span></span>In [14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -829,7 +927,7 @@ I [A] vs Voltage by Boost Level.png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_40_1.png" src="_images/plot_40_1.png" />
+<img alt="_images/plot_41_1.png" src="_images/plot_41_1.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -837,7 +935,7 @@ I [A] vs Voltage by Boost Level.png
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Wall time: 1.64 s
+Wall time: 1.46 s
 </pre></div></div>
 </div>
 </div>
@@ -848,7 +946,7 @@ plots for each unique combination of “row” and “col” values. Both “row
 and “col” labels are included.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [16]:
+<span></span>In [15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -869,7 +967,7 @@ I [A] vs Voltage by Temperature [C] by Boost Level.png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_43_1.png" src="_images/plot_43_1.png" />
+<img alt="_images/plot_44_1.png" src="_images/plot_44_1.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -877,7 +975,7 @@ I [A] vs Voltage by Temperature [C] by Boost Level.png
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Wall time: 2.46 s
+Wall time: 2.41 s
 </pre></div></div>
 </div>
 </div>
@@ -891,7 +989,7 @@ by the square root of the total number of plot windows. x and y axes
 ranges are shared.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [17]:
+<span></span>In [16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -912,7 +1010,7 @@ I [A] vs Voltage by Temperature [C] + Boost Level.png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_46_1.png" src="_images/plot_46_1.png" />
+<img alt="_images/plot_47_1.png" src="_images/plot_47_1.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -920,7 +1018,7 @@ I [A] vs Voltage by Temperature [C] + Boost Level.png
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Wall time: 3.7 s
+Wall time: 2.59 s
 </pre></div></div>
 </div>
 </div>
@@ -934,7 +1032,7 @@ keyword <code class="docutils literal notranslate"><span class="pre">line_fit</s
 value:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [15]:
+<span></span>In [17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -956,7 +1054,7 @@ I [A] vs Voltage.png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_50_1.png" src="_images/plot_50_1.png" />
+<img alt="_images/plot_51_1.png" src="_images/plot_51_1.png" />
 </div>
 </div>
 </div>
@@ -977,7 +1075,7 @@ measurement, the x-values for each data set are not identical. The
 there may only be a single data point. The result is ugly and useful.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [17]:
+<span></span>In [18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -999,14 +1097,14 @@ Voltage vs I [A].png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_53_1.png" src="_images/plot_53_1.png" />
+<img alt="_images/plot_54_1.png" src="_images/plot_54_1.png" />
 </div>
 </div>
 <p>Instead, add the column name for the column containing the set point
 value of I [A] to the keyword <code class="docutils literal notranslate"><span class="pre">stat_val</span></code>:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [23]:
+<span></span>In [19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1028,7 +1126,7 @@ Voltage vs I [A].png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_55_1.png" src="_images/plot_55_1.png" />
+<img alt="_images/plot_56_1.png" src="_images/plot_56_1.png" />
 </div>
 </div>
 </div>
@@ -1043,7 +1141,7 @@ the data at a given point. The example below shows a 95% confidence
 interval:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [27]:
+<span></span>In [20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1065,7 +1163,7 @@ I [A] vs Voltage.png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_58_1.png" src="_images/plot_58_1.png" />
+<img alt="_images/plot_59_1.png" src="_images/plot_59_1.png" />
 </div>
 </div>
 </div>
@@ -1080,7 +1178,7 @@ create a new column in the DataFrame that is plotted vs the value of
 <h4>y=x reference<a class="headerlink" href="#y=x-reference" title="Permalink to this headline">¶</a></h4>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [43]:
+<span></span>In [21]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1102,7 +1200,7 @@ I [A] vs Voltage.png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_62_1.png" src="_images/plot_62_1.png" />
+<img alt="_images/plot_63_1.png" src="_images/plot_63_1.png" />
 </div>
 </div>
 </div>
@@ -1112,7 +1210,7 @@ I [A] vs Voltage.png
 a reference line:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [45]:
+<span></span>In [22]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1134,7 +1232,7 @@ I [A] vs Voltage.png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_65_1.png" src="_images/plot_65_1.png" />
+<img alt="_images/plot_66_1.png" src="_images/plot_66_1.png" />
 </div>
 </div>
 </div>
@@ -1155,7 +1253,7 @@ I [A] vs Voltage.png
         <a href="boxplot.html" class="btn btn-neutral float-right" title="boxplot" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="modules.html" class="btn btn-neutral" title="Modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="ranges.html" class="btn btn-neutral" title="Data Ranges" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

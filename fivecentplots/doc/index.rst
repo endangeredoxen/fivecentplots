@@ -106,7 +106,6 @@ Documentation
    grouping
    styles
    ranges
-   modules
 
 .. toctree::
    :maxdepth: 1
@@ -118,7 +117,9 @@ Documentation
 
 .. toctree::
    :maxdepth: 1
+   :caption: Other
 
+   modules
    older
 
 Indices and tables
