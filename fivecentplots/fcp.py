@@ -236,7 +236,7 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
                     layout.plot_xy(ir, ic, jj, temp, 'x', dd.y[0],
                                    jrow['names'], False, zorder=10)
             else:
-                layout.plot_xy(ir, ic, 0, temp, 'x', dd.y[0], None, False,
+                layout.plot_xy(ir, ic, irow, temp, 'x', dd.y[0], None, False,
                                zorder=10)
 
     else:
@@ -254,35 +254,33 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
     elif type(data) is pd.DataFrame and len(data.columns) == 1:
         data = data.values
 
-    if len(data) > 0:  # needed?
-        for id, dat in enumerate(data):
-            # Range lines
-            if layout.box_range_lines.on:
-                kwargs = layout.box_range_lines.kwargs.copy()
-                layout.plot_line(ir, ic, id+1-0.2, dat.max().iloc[0],
-                                x1=id+1+0.2, y1=dat.max().iloc[0], **kwargs)
-                layout.plot_line(ir, ic, id+1-0.2, dat.min().iloc[0],
-                                x1=id+1+0.2, y1=dat.min().iloc[0], **kwargs)
-                kwargs['style'] = kwargs['style2']
-                layout.plot_line(ir, ic, id+1, dat.min().iloc[0],
-                                x1=id+1, y1=dat.max().iloc[0], **kwargs)
+    for id, dat in enumerate(data):
+        # Range lines
+        if layout.box_range_lines.on:
+            kwargs = layout.box_range_lines.kwargs.copy()
+            layout.plot_line(ir, ic, id+1-0.2, dat.max().iloc[0],
+                            x1=id+1+0.2, y1=dat.max().iloc[0], **kwargs)
+            layout.plot_line(ir, ic, id+1-0.2, dat.min().iloc[0],
+                            x1=id+1+0.2, y1=dat.min().iloc[0], **kwargs)
+            kwargs['style'] = kwargs['style2']
+            layout.plot_line(ir, ic, id+1, dat.min().iloc[0],
+                            x1=id+1, y1=dat.max().iloc[0], **kwargs)
 
-        # Add boxes
-        bp = layout.plot_box(ir, ic, data, **kwargs)
+    # Add boxes
+    bp = layout.plot_box(ir, ic, data, **kwargs)
 
-        # Add divider lines
-        if layout.box_divider.on and len(dividers) > 0:
-            layout.ax_vlines = copy.deepcopy(layout.box_divider)
-            layout.ax_vlines.values = dividers
-            layout.ax_vlines.color = [layout.box_divider.color] * len(dividers)
-            layout.ax_vlines.style = [layout.box_divider.style] * len(dividers)
-            layout.ax_vlines.width = [layout.box_divider.width] * len(dividers)
-            layout.add_hvlines(ir, ic)
+    # Add divider lines
+    if layout.box_divider.on and len(dividers) > 0:
+        layout.ax_vlines = copy.deepcopy(layout.box_divider)
+        layout.ax_vlines.values = dividers
+        layout.ax_vlines.style = [layout.box_divider.style] * len(dividers)
+        layout.ax_vlines.width = [layout.box_divider.width] * len(dividers)
+        layout.add_hvlines(ir, ic)
 
-        # Add mean/median connecting lines
-        if layout.box_stat_line.on and len(stats) > 0:
-            x = np.linspace(1, dd.ngroups, dd.ngroups)
-            layout.plot_line(ir, ic, x, stats, **layout.box_stat_line.kwargs,)
+    # Add mean/median connecting lines
+    if layout.box_stat_line.on and len(stats) > 0:
+        x = np.linspace(1, dd.ngroups, dd.ngroups)
+        layout.plot_line(ir, ic, x, stats, **layout.box_stat_line.kwargs,)
 
 
 def plot_conf_int(ir, ic, iline, data, layout, df, x, y):

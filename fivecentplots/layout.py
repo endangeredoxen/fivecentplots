@@ -143,8 +143,8 @@ class BaseLayout:
                 if type(color) is int:
                     colors[icolor] = DEFAULT_COLORS[icolor]
             color_list = colors
-        else:
-            color_list = DEFAULT_COLORS
+        elif not color_list:
+            color_list = copy.copy(DEFAULT_COLORS)
         self.cmap = kwargs.get('cmap', None)
         if 'contour' in self.plot_func:
             self.cmap = utl.kwget(kwargs, self.fcpp, 'cmap', None)
@@ -243,9 +243,7 @@ class BaseLayout:
         self.ticks_major = Element('ticks_major', self.fcpp, kwargs,
                                    on=utl.kwget(kwargs, self.fcpp,
                                                 'ticks_major', True),
-                                   color=utl.kwget(kwargs, self.fcpp,
-                                                   'ticks_major_color',
-                                                   '#ffffff'),
+                                   color='#ffffff',
                                    increment=utl.kwget(kwargs, self.fcpp,
                                                        'ticks_major_increment',
                                                        None),
@@ -267,9 +265,7 @@ class BaseLayout:
                     Element('ticks_major_%s' %ax, self.fcpp, kwargs,
                             on=utl.kwget(kwargs, self.fcpp,
                                          'ticks_major_%s' % ax, self.ticks_major.on),
-                            color=utl.kwget(kwargs, self.fcpp,
-                                            'ticks_major_color_%s' % ax,
-                                            self.ticks_major.color),
+                            color=copy.copy(self.ticks_major.color),
                             increment=utl.kwget(kwargs, self.fcpp,
                                                 'ticks_major_increment_%s' % ax,
                                                 self.ticks_major.increment),
@@ -320,9 +316,7 @@ class BaseLayout:
         self.ticks_minor = Element('ticks_minor', self.fcpp, kwargs,
                                    on=utl.kwget(kwargs, self.fcpp,
                                                 'ticks_minor', False),
-                                   color=utl.kwget(kwargs, self.fcpp,
-                                                   'ticks_minor_color',
-                                                   '#ffffff'),
+                                   color='#ffffff',
                                    number=utl.kwget(kwargs, self.fcpp,
                                                     'ticks_minor_number',
                                                     3),
@@ -344,9 +338,7 @@ class BaseLayout:
                     Element('ticks_minor_%s' % ax, self.fcpp, kwargs,
                         on=utl.kwget(kwargs, self.fcpp,
                                      'ticks_minor_%s' % ax, self.ticks_minor.on),
-                        color=utl.kwget(kwargs, self.fcpp,
-                                        'ticks_minor_color_%s' % ax,
-                                        self.ticks_minor.color),
+                        color=copy.copy(self.ticks_minor.color),
                         number=utl.kwget(kwargs, self.fcpp,
                                          'ticks_minor_number_%s' % ax,
                                          self.ticks_minor.number),
@@ -403,14 +395,20 @@ class BaseLayout:
                                        )
 
         # Other boxplot elements
+        box_edge_color = utl.kwget(kwargs, self.fcpp, 'box_edge_color', '#aaaaaa') #['#4b72b0'])
+        box_fill_color = utl.kwget(kwargs, self.fcpp, 'box_fill_color', '#ffffff')
         self.box = Element('box', self.fcpp, kwargs,
                            on=True if 'box' in self.plot_func and kwargs.get('box_on', True) else False,
-                           edge_color='#4b72b0',
+                           edge_color=box_edge_color,
+                           edge_width=0.5,
+                           fill_color=box_fill_color,
                            median_color=utl.kwget(kwargs, self.fcpp,
                                                  'box_median_line_color',
                                                  '#ff7f0e'),
-                           notch=utl.kwget(kwargs, self.fcpp, 'box_notch', False),
+                           notch=utl.kwget(kwargs, self.fcpp, 'notch', False),
+                           violin=utl.kwget(kwargs, self.fcpp, 'violin', False),
                            )
+
         self.box_stat_line = \
             Element('box_stat_line', self.fcpp, kwargs,
                     on=True if 'box' in self.plot_func and \
@@ -427,7 +425,8 @@ class BaseLayout:
                                    zorder=2,
                                    )
         self.box_range_lines = Element('box_range_lines', self.fcpp, kwargs,
-                                       on=kwargs.get('box_range_lines', kwargs.get('box', True)),
+                                       on=kwargs.get('box_range_lines',
+                                                     not kwargs.get('violin', False)),
                                        color='#cccccc',
                                        style='-',
                                        style2='--',
@@ -485,8 +484,7 @@ class BaseLayout:
         # Line fit
         self.fit = Element('line_fit', self.fcpp, kwargs,
                            on=True if kwargs.get('fit', False) else False,
-                           color=kwargs.get('fit_color',
-                                            RepeatedList(['#000000'], 'line_colors')),
+                           color='#000000',
                            eqn=utl.kwget(kwargs, self.fcpp, 'fit_eqn', False),
                            font_size=utl.kwget(kwargs, self.fcpp, 'fit_font_size', 12),
                            padding=utl.kwget(kwargs, self.fcpp, 'fit_padding', 10),
@@ -500,17 +498,15 @@ class BaseLayout:
         # Reference line
         self.ref_line = Element('ref_line', self.fcpp, kwargs,
                                 on=True if type(kwargs.get('ref_line', False)) is pd.Series else False,
-                                color=kwargs.get('ref_line_color',
-                                                 RepeatedList(['#000000'], 'line_colors')),
+                                color='#000000',
                                 size=[0,0],
                                 text=utl.kwget(kwargs, self.fcpp, 'ref_line_text', 'Ref Line'),
                                 )
 
         # Lines
-        line_colors = RepeatedList(color_list, 'line_colors')
         self.lines = Element('lines', self.fcpp, kwargs,
                              on=kwargs.get('lines', True),
-                             color=copy.copy(line_colors),
+                             color=color_list,
                              values=[],
                              )
 
@@ -520,13 +516,8 @@ class BaseLayout:
         else:
             marker_list = utl.validate_list(kwargs.get('markers', DEFAULT_MARKERS))
         markers = RepeatedList(marker_list, 'markers')
-        marker_colors = utl.validate_list(kwargs.get('marker_colors', color_list))
-        marker_edge_color = utl.kwget(kwargs, self.fcpp, 'marker_edge_color', None)
-        marker_edge_color = marker_colors if marker_edge_color is None else marker_edge_color
-        marker_edge_color = RepeatedList(marker_edge_color, 'marker_edge_color')
-        marker_fill_color = utl.kwget(kwargs, self.fcpp, 'marker_fill_color', None)
-        marker_fill_color = marker_colors if marker_fill_color is None else marker_fill_color
-        marker_fill_color = RepeatedList(marker_fill_color, 'marker_fill_color')
+        marker_edge_color = utl.kwget(kwargs, self.fcpp, 'marker_edge_color', color_list)
+        marker_fill_color = utl.kwget(kwargs, self.fcpp, 'marker_fill_color', color_list)
         self.markers = Element('marker', self.fcpp, kwargs,
                                on=utl.kwget(kwargs, self.fcpp,
                                             'markers', True),
@@ -547,40 +538,39 @@ class BaseLayout:
                                )
         if 'box' in self.plot_func:
             self.lines.on = False
-            marker_edge_color = utl.kwget(kwargs, self.fcpp, 'box_marker_edge_color', None)
-            marker_edge_color = color_list if marker_edge_color is None else marker_edge_color
-            marker_edge_color = RepeatedList(marker_edge_color, 'marker_edge_color')
-            if not kwargs.get('colors'):
-                marker_edge_color.shift = 1
-            marker_fill_color = utl.kwget(kwargs, self.fcpp, 'marker_fill_color', None)
-            marker_fill_color = color_list if marker_fill_color is None else marker_fill_color
-            marker_fill_color = RepeatedList(marker_fill_color, 'marker_fill_color')
-            if not kwargs.get('colors'):
-                marker_fill_color.shift = 1
-            self.markers.filled = utl.kwget(kwargs, self.fcpp,
-                                            'box_marker_fill',
-                                            self.markers.filled)
-            self.markers.edge_color = marker_edge_color
-            self.markers.edge_alpha = utl.kwget(kwargs, self.fcpp,
-                                                'box_edge_alpha',
-                                                self.markers.edge_alpha)
-            self.markers.edge_width = utl.kwget(kwargs, self.fcpp,
-                                                'box_edge_width',
-                                                self.markers.edge_width)
-            self.markers.fill_color = marker_fill_color
-            self.markers.fill_alpha = utl.kwget(kwargs, self.fcpp,
-                                                'box_marker_fill_alpha',
-                                                self.markers.fill_alpha)
-            self.markers.jitter = utl.kwget(kwargs, self.fcpp,
-                                            'jitter', True)
-            self.markers.size = utl.kwget(kwargs, self.fcpp,
-                                          'box_marker_size',
-                                          kwargs.get('marker_size', 4))
-            self.markers.type = utl.kwget(kwargs, self.fcpp,
-                                          'box_marker_type', self.markers.type)
-            self.markers.zorder = utl.kwget(kwargs, self.fcpp,
-                                            'box_marker_zorder',
-                                            self.markers.zorder)
+            if not kwargs.get('colors') and not kwargs.get('marker_edge_color'):
+                self.markers.edge_color = DEFAULT_COLORS[1]
+                self.markers.color_alpha('edge_color', 'edge_alpha')
+            if not kwargs.get('colors') and not kwargs.get('marker_fill_color'):
+                self.markers.fill_color = DEFAULT_COLORS[1]
+                self.markers.color_alpha('fill_color', 'fill_alpha')
+            if 'box_marker_edge_alpha' in self.fcpp.keys():
+                self.markers.edge_alpha = self.fcpp['box_marker_edge_alpha']
+            if 'box_marker_edge_color' in self.fcpp.keys():
+                self.markers.edge_color = self.fcpp['box_marker_edge_color']
+                self.markers.color_alpha('edge_color', 'edge_alpha')
+            if 'box_marker_fill_alpha' in self.fcpp.keys():
+                self.markers.fill_alpha = self.fcpp['box_marker_fill_alpha']
+            if 'box_marker_fill_color' in self.fcpp.keys():
+                self.markers.fill_color = self.fcpp['box_marker_fill_color']
+                self.markers.color_alpha('fill_color', 'fill_alpha')
+            self.markers.filled = self.fcpp.get('box_marker_fill', self.markers.filled)
+            self.markers.edge_width = self.fcpp.get('box_marker_edge_width', self.markers.edge_width)
+            self.markers.jitter = utl.kwget(kwargs, self.fcpp, 'jitter', True)
+            if 'box_marker_jitter' in self.fcpp.keys():
+                self.markers.jitter = self.fcpp['box_marker_jitter']
+            if 'box_marker_size' in self.fcpp.keys():
+                self.markers.size = self.fcpp['box_marker_size']
+            else:
+                self.markers.size = kwargs.get('marker_size', 4)
+            if 'marker_type' in kwargs.keys():
+                self.markers.type = RepeatedList(kwargs['marker_type'], 'marker_type')
+            elif 'box_marker_type' in self.fcpp.keys():
+                self.markers.type = RepeatedList(self.fcpp['box_marker_type'], 'marker_type')
+            else:
+                self.markers.type = RepeatedList('o', 'marker_type')
+            if 'box_marker_zorder' in self.fcpp.keys():
+                self.markers.zorder = self.fcpp['box_marker_zorder']
 
         # Axhlines/axvlines
         axlines = ['ax_hlines', 'ax_vlines', 'yline',
@@ -795,13 +785,13 @@ class BaseLayout:
                                 on=True if kwargs.get('conf_int', False) else False,
                                 edge_color=utl.kwget(kwargs, self.fcpp,
                                                      'conf_int_edge_color',
-                                                     copy.copy(line_colors)),
+                                                     copy.copy(color_list)),
                                 edge_alpha=utl.kwget(kwargs, self.fcpp,
                                                      'conf_int_edge_alpha',
                                                      0.25),
                                 fill_color=utl.kwget(kwargs, self.fcpp,
                                                      'conf_int_fill_color',
-                                                     copy.copy(line_colors)),
+                                                     copy.copy(color_list)),
                                 fill_alpha=utl.kwget(kwargs, self.fcpp,
                                                      'conf_int_fill_alpha',
                                                      0.2),
@@ -1028,12 +1018,8 @@ class Element:
                                     kwargs.get('fill_alpha', 1))
         self.fill_color = utl.kwget(kwargs, fcpp, '%s_fill_color' % label,
                                     kwargs.get('fill_color', '#ffffff'))
-        if type(self.fill_color) is RepeatedList:
-            self.fill_color.values = [f[0:7] + str(hex(int(self.fill_alpha*255)))[-2:] \
-                                      for f in self.fill_color.values]
-        else:
-            self.fill_color = self.fill_color[0:7] + \
-                              str(hex(int(self.fill_alpha*255)))[-2:]
+        if type(self.fill_color) is not RepeatedList:
+            self.color_alpha('fill_color', 'fill_alpha')
 
         self.edge_width = utl.kwget(kwargs, fcpp, '%s_edge_width' % label,
                                     kwargs.get('edge_width', 1))
@@ -1041,14 +1027,8 @@ class Element:
                                     kwargs.get('edge_alpha', 1))
         self.edge_color = utl.kwget(kwargs, fcpp, '%s_edge_color' % label,
                                     kwargs.get('edge_color', '#ffffff'))
-        self.edge_width = utl.kwget(kwargs, fcpp, '%s_edge_width' % label,
-                                    kwargs.get('edge_width', 1))
-        if type(self.edge_color) is RepeatedList:
-            self.edge_color.values = [f[0:7] + str(hex(int(self.edge_alpha*255)))[-2:] \
-                                      for f in self.edge_color.values]
-        else:
-            self.edge_color = self.edge_color[0:7] + \
-                              str(hex(int(self.edge_alpha*255)))[-2:]
+        if type(self.edge_color) is not RepeatedList:
+            self.color_alpha('edge_color', 'edge_alpha')
 
         # fonts
         self.font = utl.kwget(kwargs, fcpp, '%s_font' % label,
@@ -1067,17 +1047,9 @@ class Element:
                                kwargs.get('alpha', 1))
         self.color = utl.kwget(kwargs, fcpp, '%s_color' % label,
                                kwargs.get('color', '#000000'))
-        if type(self.color) is list and type(self.alpha) is list:
-            self.color = [f[0:7] + str(hex(int(self.alpha[i]*255)))[-2:] \
-                          for i, f in enumerate(self.color)]
-        elif type(self.color) is RepeatedList:
-            self.color.values = [f[0:7] + str(hex(int(self.alpha*255)))[-2:] \
-                                 for f in self.color.values]
-        elif type(self.color) is list:
-            self.color = [f[0:7] + str(hex(int(self.alpha*255)))[-2:] \
-                          for f in self.color]
-        else:
-            self.color = self.color[0:7] + str(hex(int(self.alpha*255)))[-2:]
+        if type(self.color) is not RepeatedList:
+            self.color_alpha('color', 'alpha')
+
         self.width = utl.kwget(kwargs, fcpp, '%s_width' % label,
                                kwargs.get('width', 1))
         self.style = utl.kwget(kwargs, fcpp, '%s_style' % label,
@@ -1154,6 +1126,26 @@ class Element:
 
         self._text = value
 
+    def color_alpha(self, attr, alpha):
+        """
+        Parse input color lists
+        """
+
+        color_list = utl.validate_list(getattr(self, attr))
+        alpha = RepeatedList(getattr(self, alpha), 'temp')
+
+        for ic, color in enumerate(color_list):
+            if type(color) is int:
+                color = DEFAULT_COLORS[color]
+            if color[0] != '#':
+                color = '#' + color
+            try:
+                color_list[ic] = color[0:7].lower() + \
+                                 str(hex(int(alpha.get(ic)*255)))[-2:]
+            except:st()
+
+        setattr(self, attr, RepeatedList(color_list, attr))
+
     def see(self):
         """
         Prints a readable list of class attributes
@@ -1214,7 +1206,7 @@ class RepeatedList:
             name (str): label to describe contents of class
         """
 
-        self.values = values
+        self.values = utl.validate_list(values)
         self.shift = 0
 
         if type(self.values) is not list and len(self.values) < 1:
@@ -1286,24 +1278,24 @@ class LayoutMPL(BaseLayout):
                     label = data.indices.loc[sub.index[j], num_cols-1-i]
                     height = self.box_group_label.size[i][1] * \
                                 (1 + 2 * self.box_group_label.padding / 100)
-                    self.add_label(self.axes.obj[ir, ic], label,
-                                    (sub.index[j]/len(data.changes),
-                                    0, 0,
-                                    (bottom - height) / self.axes.size[1]),
-                                    rotation=self.box_group_label.rotation[i],
-                                    size=[width, height], offset=True,
-                                    **self.make_kwargs(self.box_group_label,
-                                                        ['size', 'rotation', 'position']))
+                    self.add_label(ir, ic, label,
+                                   (sub.index[j]/len(data.changes),
+                                   0, 0,
+                                   (bottom - height) / self.axes.size[1]),
+                                   rotation=self.box_group_label.rotation[i],
+                                   size=[width, height], offset=True,
+                                   **self.make_kwargs(self.box_group_label,
+                                                      ['size', 'rotation', 'position']))
 
             # Group titles
             if self.box_group_title.on and ic == data.ncol - 1:
-                self.add_label(self.axes.obj[ir, ic], data.groups[k],
-                                (1 + self.ws_ax_box_title / self.axes.size[0],
-                                0, 0,
-                                (bottom - height) / self.axes.size[1]),
-                                size=self.box_group_title.size[k],
-                                **self.make_kwargs(self.box_group_title,
-                                ['position', 'size']))
+                self.add_label(ir, ic, data.groups[k],
+                               (1 + self.ws_ax_box_title / self.axes.size[0],
+                               0, 0,
+                               (bottom - height) / self.axes.size[1]),
+                               size=self.box_group_title.size[k],
+                               **self.make_kwargs(self.box_group_title,
+                               ['position', 'size']))
 
     def add_box_points(self, ir, ic, x, y):
         """
@@ -1363,15 +1355,15 @@ class LayoutMPL(BaseLayout):
                    else self.axes.obj[ir, ic].axvline
             if ll.on:
                 for ival, val in enumerate(ll.values):
-                    func(val, color=ll.color[ival],
+                    func(val, color=ll.color.get(ival),
                          linestyle=ll.style[ival],
                          linewidth=ll.width[ival],
                          zorder=ll.zorder)
 
-    def add_label(self, axis, text='', position=None, rotation=0, size=None,
+    def add_label(self, ir, ic, text='', position=None, rotation=0, size=None,
                   fill_color='#ffffff', edge_color='#aaaaaa', edge_width=1,
                   font='sans-serif', font_weight='normal', font_style='normal',
-                  font_color='#666666', font_size=14, offset=False,**kwargs):
+                  font_color='#666666', font_size=14, offset=False, **kwargs):
         """ Add a label to the plot
 
         This function can be used for title labels or for group labels applied
@@ -1392,14 +1384,17 @@ class LayoutMPL(BaseLayout):
 
         # Define the label background
         rect = patches.Rectangle((position[0], position[3]),
-                                 size[0]/self.axes.size[0],
-                                 size[1]/self.axes.size[1],
-                                 fill=True, transform=axis.transAxes,
-                                 facecolor=fill_color,
-                                 edgecolor=edge_color,
-                                 clip_on=False, zorder=-1)
+                                size[0]/self.axes.size[0],
+                                size[1]/self.axes.size[1],
+                                fill=True,
+                                transform=self.axes.obj[ir, ic].transAxes,
+                                facecolor=fill_color if type(fill_color) is str \
+                                        else fill_color.get(2 * ir + ic + 1),
+                                edgecolor=edge_color if type(edge_color) is str \
+                                        else edge_color.get(2 * ir + ic + 1),
+                                clip_on=False, zorder=-1)
 
-        axis.add_patch(rect)
+        self.axes.obj[ir, ic].add_patch(rect)
 
         # Set slight text offset
         if rotation == 270 and offset:
@@ -1412,12 +1407,14 @@ class LayoutMPL(BaseLayout):
             offsety = 0
 
         # Add the label text
-        text = axis.text(position[0]+size[0]/self.axes.size[0]/2+offsetx,
-                         position[3]+size[1]/self.axes.size[1]/2+offsety, text,
-                         transform=axis.transAxes, horizontalalignment='center',
-                         verticalalignment='center', rotation=rotation,
-                         color=font_color, fontname=font, style=font_style,
-                         weight=font_weight, size=font_size)
+        text = self.axes.obj[ir, ic].text(
+            position[0]+size[0]/self.axes.size[0]/2+offsetx,
+            position[3]+size[1]/self.axes.size[1]/2+offsety, text,
+            transform=self.axes.obj[ir, ic].transAxes,
+            horizontalalignment='center',
+            verticalalignment='center', rotation=rotation,
+            color=font_color, fontname=font, style=font_style,
+            weight=font_weight, size=font_size)
 
         return text
 
@@ -1475,9 +1472,9 @@ class LayoutMPL(BaseLayout):
                 text.set_color(self.legend.font_color)
 
             self.legend.obj.get_title().set_fontsize(self.legend.font_size)
-            self.legend.obj.get_frame().set_facecolor(self.legend.fill_color)
+            self.legend.obj.get_frame().set_facecolor(self.legend.fill_color.get(0))
             self.legend.obj.get_frame().set_alpha(self.legend.fill_alpha)
-            self.legend.obj.get_frame().set_edgecolor(self.legend.edge_color)
+            self.legend.obj.get_frame().set_edgecolor(self.legend.edge_color.get(0))
 
     def add_text(self, ir, ic, text, element, offsetx=0, offsety=0):
         """
@@ -1643,7 +1640,7 @@ class LayoutMPL(BaseLayout):
                 axes[ia].tick_params(axis='both',
                                      which='major',
                                      pad=self.ws_ticks_ax,
-                                     colors=self.ticks_major.color,
+                                     colors=self.ticks_major.color.get(0),
                                      labelcolor=self.tick_labels_major.font_color,
                                      labelsize=self.tick_labels_major.font_size,
                                      top=False,
@@ -1658,7 +1655,7 @@ class LayoutMPL(BaseLayout):
                 axes[ia].tick_params(axis='both',
                                      which='minor',
                                      pad=self.ws_ticks_ax,
-                                     colors=self.ticks_minor.color,
+                                     colors=self.ticks_minor.color.get(0),
                                      labelcolor=self.tick_labels_minor.font_color,
                                      labelsize=self.tick_labels_minor.font_size,
                                      top=self.ticks_minor_x2.on \
@@ -1764,10 +1761,13 @@ class LayoutMPL(BaseLayout):
             xticksmin += [f[2] for f in axes[0].xaxis.iter_ticks()][len(xticks):]
             yticksmin += [f[2] for f in axes[0].yaxis.iter_ticks()][len(xticks):]
 
-            ww, rr, cc = self.set_axes_rc_labels(ir, ic, axes[0])
+            self.axes.obj = np.array([[None]*self.ncol]*self.nrow)
+            self.axes.obj[ir, ic] = axes[0]
+            ww, rr, cc = self.set_axes_rc_labels(ir, ic)
             wrap_labels[ir, ic] = ww
             row_labels[ir, ic] = rr
             col_labels[ir, ic] = cc
+            self.axes.obj = None
 
         # Make a dummy legend --> move to add_legend???
         if data.legend_vals is not None and len(data.legend_vals) > 0:
@@ -1826,8 +1826,8 @@ class LayoutMPL(BaseLayout):
                                         rotation=self.tick_labels_minor_x.rotation)]
         for ix, x2tick in enumerate(x2ticksmin):
             x2ticklabelsmin += [fig.text(ix*20, 20, x2tick,
-                                        fontsize=self.tick_labels_minor_x2.font_size,
-                                        rotation=self.tick_labels_minor_x2.rotation)]
+                                         fontsize=self.tick_labels_minor_x2.font_size,
+                                         rotation=self.tick_labels_minor_x2.rotation)]
         for iy, ytick in enumerate(yticksmin):
             yticklabelsmin += [fig.text(20, iy*20, ytick,
                                         fontsize=self.tick_labels_minor_y.font_size,
@@ -1835,7 +1835,7 @@ class LayoutMPL(BaseLayout):
         for iy, y2tick in enumerate(y2ticksmin):
             y2ticklabelsmin += [fig.text(20, iy*20, y2tick,
                                          fontsize=self.tick_labels_minor_y2.font_size,
-                                        rotation=self.tick_labels_minor_y2.rotation)]
+                                         rotation=self.tick_labels_minor_y2.rotation)]
 
         # Write out axes labels
         if type(self.label_x.text) is str:
@@ -2280,8 +2280,8 @@ class LayoutMPL(BaseLayout):
                           sharex=self.axes.share_x,
                           sharey=self.axes.share_y,
                           dpi=self.fig.dpi,
-                          facecolor=self.fig.fill_color,
-                          edgecolor=self.fig.edge_color,
+                          facecolor=self.fig.fill_color.get(0),
+                          edgecolor=self.fig.edge_color.get(0),
                           linewidth=self.fig.edge_width,
                           )
         self.fig.obj = fig
@@ -2331,20 +2331,43 @@ class LayoutMPL(BaseLayout):
             return the box plot object
         """
 
-        if not self.box.on:
-            return None
+        bp = None
 
-        bp = self.axes.obj[ir, ic].boxplot(data,
-                                           labels=[''] * len(data),
-                                           showfliers=False,
-                                           boxprops={'color': self.box.edge_color,
-                                                     'facecolor': self.box.fill_color},
-                                           medianprops={'color': self.box.median_color},
-                                           notch=self.box.notch,
-                                           whiskerprops={'color': self.box.edge_color},
-                                           capprops={'color': self.box.edge_color},
-                                           patch_artist=True,
-                                           zorder=5)
+        if self.box.violin:
+            bp = self.axes.obj[ir, ic].violinplot(data,
+                                                  showmeans=False,
+                                                  showextrema=False,
+                                                  showmedians=True,
+                                                 )
+            for ipatch, patch in enumerate(bp['bodies']):
+                patch.set_facecolor(self.box.fill_color.get(ipatch))
+                patch.set_edgecolor(self.box.edge_color.get(ipatch))
+                patch.set_alpha(self.box.fill_alpha)
+                patch.set_zorder(2)
+                patch.set_lw(self.box.edge_width)
+
+            bp['cmedians'].set_edgecolor(self.box.median_color)
+
+        elif self.box.on:
+            bp = self.axes.obj[ir, ic].boxplot(data,
+                                               labels=[''] * len(data),
+                                               showfliers=False,
+                                               medianprops={'color': self.box.median_color},
+                                               notch=self.box.notch,
+                                               patch_artist=True,
+                                               zorder=3)
+            for ipatch, patch in enumerate(bp['boxes']):
+                patch.set_edgecolor(self.box.edge_color.get(ipatch))
+                patch.set_facecolor(self.box.fill_color.get(ipatch))
+                patch.set_alpha(self.box.fill_alpha)
+                patch.set_lw(self.box.edge_width)
+            for ipatch, patch in enumerate(bp['whiskers']):
+                patch.set_color(self.box.edge_color.get(int(ipatch/2)))
+            for ipatch, patch in enumerate(bp['caps']):
+                patch.set_color(self.box.edge_color.get(int(ipatch/2)))
+
+        self.axes.obj[ir, ic].set_xticklabels([''])
+        self.axes.obj[ir, ic].set_xlim(0.5, len(data) + 0.5)
 
         return bp
 
@@ -2395,10 +2418,11 @@ class LayoutMPL(BaseLayout):
             x0 = [x0, x1]
         if y1:
             y0 = [y0, y1]
+
         self.axes.obj[ir, ic].plot(x0, y0,
                                    linestyle=kwargs.get('style', '-'),
                                    linewidth=kwargs.get('width', 1),
-                                   color=kwargs.get('color', '#000000'),
+                                   color=kwargs.get('color', '#000000').get(2 * ir + ic + 1),
                                    zorder=kwargs.get('zorder', 0))
 
     def plot_xy(self, ir, ic, iline, df, x, y, leg_name, twin, zorder=1,
@@ -2496,14 +2520,14 @@ class LayoutMPL(BaseLayout):
 
         #for ax in axes:
         try:
-            axes[0].obj[ir, ic].set_facecolor(axes[0].fill_color)
+            axes[0].obj[ir, ic].set_facecolor(axes[0].fill_color.get(2 * ir + ic + 1))
         except:
-            axes[0].obj[ir, ic].set_axis_bgcolor(axes[0].fill_color)
+            axes[0].obj[ir, ic].set_axis_bgcolor(axes[0].fill_color.get(2 * ir + ic + 1))
         try:
-            axes[-1].obj[ir, ic].set_edgecolor(axes[-1].edge_color)
+            axes[-1].obj[ir, ic].set_edgecolor(axes[-1].edge_color.get(2 * ir + ic + 1))
         except:
             for f in ['bottom', 'top', 'right', 'left']:
-                axes[-1].obj[ir, ic].spines[f].set_color(axes[-1].edge_color)
+                axes[-1].obj[ir, ic].spines[f].set_color(axes[-1].edge_color.get(2 * ir + ic + 1))
 
     def set_axes_grid_lines(self, ir, ic):
         """
@@ -2527,14 +2551,14 @@ class LayoutMPL(BaseLayout):
             # Set major grid
             if self.grid_major_x.on:
                 ax.obj[ir, ic].xaxis.grid(b=True, which='major', zorder=0,
-                                          color=self.grid_major.color,
+                                          color=self.grid_major.color.get(0),
                                           linestyle=self.grid_major.style,
                                           linewidth=self.grid_major.width)
             else:
                 ax.obj[ir, ic].xaxis.grid(b=False, which='major')
             if self.grid_major_y.on:
                 ax.obj[ir, ic].yaxis.grid(b=True, which='major', zorder=0,
-                                          color=self.grid_major.color,
+                                          color=self.grid_major.color.get(0),
                                           linestyle=self.grid_major.style,
                                           linewidth=self.grid_major.width)
             else:
@@ -2543,12 +2567,12 @@ class LayoutMPL(BaseLayout):
             # Set minor grid
             if self.grid_minor_x.on:
                 ax.obj[ir, ic].xaxis.grid(b=True, which='minor', zorder=0,
-                                          color=self.grid_minor_x.color,
+                                          color=self.grid_minor_x.color.get(0),
                                           linestyle=self.grid_minor_x.style,
                                           linewidth=self.grid_minor_x.width)
             if self.grid_minor_y.on:
                 ax.obj[ir, ic].yaxis.grid(b=True, which='minor', zorder=0,
-                                          color=self.grid_minor_y.color,
+                                          color=self.grid_minor_y.color.get(0),
                                           linestyle=self.grid_minor_y.style,
                                           linewidth=self.grid_minor_y.width)
 
@@ -2583,29 +2607,10 @@ class LayoutMPL(BaseLayout):
                 if ax == 'x' and ir != self.nrow - 1 and self.nwrap == 0: continue
                 if ax == 'x2' and ir != 0: continue
                 if ax == 'y' and ic != 0: continue
-                if ax == 'y2' and ic != self.ncol - 1 and (2*ir + ic + 1) != self.nwrap: continue
+                if ax == 'y2' and ic != self.ncol - 1 and (2 * ir + ic + 1) != self.nwrap: continue
 
             # Add the label
-            # getattr(axes, 'set_%slabel' % ax[0])(label.text,
-            #                                      fontsize=label.font_size,
-            #                                      weight=label.font_weight,
-            #                                      style=label.font_style,
-            #                                      color=label.font_color,
-            #                                      rotation=label.rotation,
-            #                                      fontname=label.font,
-            #                                      labelpad=pad,
-            #                                      )
-            self.add_label(axes, label.text, **self.make_kwargs(label))
-
-            # if ax == 'y':
-            #     # self.label_y.position[0] = (-self.tick_labels_major_y.size[0] - self.label_y.size[1]) / self.axes.size[0]
-            #     # self.label_y.position[3] = (self.axes.size[1] - self.label_y.size[1]) / (2 * self.axes.size[1])
-            #     # self.add_label(axes, self.label_y.text, **self.make_kwargs(self.label_y))
-
-            #     self.label_y.position[0] = -np.floor(self.labtick_y) / self.axes.size[0]
-            #     self.label_y.position[3] = (self.axes.size[1] - self.label_y.size[1]) / (2 * self.axes.size[1])
-            #     self.add_label(axes, 'Y1', **self.make_kwargs(self.label_y))
-            #     st()
+            self.add_label(ir, ic, label.text, **self.make_kwargs(label))
 
     def set_axes_scale(self, ir, ic):
         """
@@ -2671,7 +2676,7 @@ class LayoutMPL(BaseLayout):
             # elif k == 'zmax' and v is not None and self.cbar.on:
             #     self.cbar.obj[ir, ic].set_clim(top=v)
 
-    def set_axes_rc_labels(self, ir, ic, ax=None):
+    def set_axes_rc_labels(self, ir, ic):
         """
         Add the row/column label boxes and wrap titles
 
@@ -2682,12 +2687,10 @@ class LayoutMPL(BaseLayout):
         """
 
         wrap, row, col = None, None, None
-        if not ax:
-            ax = self.axes.obj[ir, ic]
 
         # Wrap title  --> this guy's text size is not defined in get_elements_size
         if ir == 0 and ic == 0 and self.title_wrap.on:
-            title = self.add_label(ax, self.title_wrap.text,
+            title = self.add_label(ir, ic, self.title_wrap.text,
                                    **self.make_kwargs(self.title_wrap))
 
         # Row labels
@@ -2696,7 +2699,7 @@ class LayoutMPL(BaseLayout):
                 text_size = self.label_row.text_size[ir, ic]
             else:
                 text_size = None
-            row = self.add_label(ax, '%s=%s' %
+            row = self.add_label(ir, ic, '%s=%s' %
                                 (self.label_row.text, self.label_row.values[ir]),
                                 offset=True, **self.make_kwargs(self.label_row))
 
@@ -2709,11 +2712,11 @@ class LayoutMPL(BaseLayout):
             if self.label_wrap.on:
                 text = ' | '.join([str(f) for f in utl.validate_list(
                     self.label_wrap.values[ir*self.ncol + ic])])
-                scol = self.add_label(ax, text,
+                scol = self.add_label(ir, ic, text,
                                      **self.make_kwargs(self.label_wrap))
             else:
                 text = '%s=%s' % (self.label_col.text, self.label_col.values[ic])
-                col = self.add_label(ax, text,
+                col = self.add_label(ir, ic, text,
                                      **self.make_kwargs(self.label_col))
 
         return wrap, row, col
@@ -2760,7 +2763,7 @@ class LayoutMPL(BaseLayout):
                 axes[ia].tick_params(axis='both',
                                      which='major',
                                      pad=self.ws_ticks_ax,
-                                     colors=self.ticks_major.color,
+                                     colors=self.ticks_major.color.get(0),
                                      labelcolor=self.tick_labels_major.font_color,
                                      labelsize=self.tick_labels_major.font_size,
                                      top=False,
@@ -2774,7 +2777,7 @@ class LayoutMPL(BaseLayout):
                 axes[ia].tick_params(axis='both',
                                      which='minor',
                                      pad=self.ws_ticks_ax,
-                                     colors=self.ticks_minor.color,
+                                     colors=self.ticks_minor.color.get(0),
                                      labelcolor=self.tick_labels_minor.font_color,
                                      labelsize=self.tick_labels_minor.font_size,
                                      top=False,
@@ -2789,7 +2792,7 @@ class LayoutMPL(BaseLayout):
                 axes[ia].minorticks_on()
                 axes[ia].tick_params(which='major',
                                      pad=self.ws_ticks_ax,
-                                     colors=self.ticks_major.color,
+                                     colors=self.ticks_major.color.get(0),
                                      labelcolor=self.tick_labels_major.font_color,
                                      labelsize=self.tick_labels_major.font_size,
                                      right=self.ticks_major_y2.on,
@@ -2798,7 +2801,7 @@ class LayoutMPL(BaseLayout):
                                      )
                 axes[ia].tick_params(which='minor',
                                      pad=self.ws_ticks_ax,
-                                     colors=self.ticks_minor.color,
+                                     colors=self.ticks_minor.color.get(0),
                                      labelcolor=self.tick_labels_minor.font_color,
                                      labelsize=self.tick_labels_minor.font_size,
                                      right=self.ticks_minor_y2.on,
@@ -2809,7 +2812,7 @@ class LayoutMPL(BaseLayout):
                 axes[ia].minorticks_on()
                 axes[ia].tick_params(which='major',
                                      pad=self.ws_ticks_ax,
-                                     colors=self.ticks_major.color,
+                                     colors=self.ticks_major.color.get(0),
                                      labelcolor=self.tick_labels_major.font_color,
                                      labelsize=self.tick_labels_major.font_size,
                                      top=self.ticks_major_x2.on,
@@ -2818,7 +2821,7 @@ class LayoutMPL(BaseLayout):
                                      )
                 axes[ia].tick_params(which='minor',
                                      pad=self.ws_ticks_ax,
-                                     colors=self.ticks_minor.color,
+                                     colors=self.ticks_minor.color.get(0),
                                      labelcolor=self.tick_labels_minor.font_color,
                                      labelsize=self.tick_labels_minor.font_size,
                                      top=self.ticks_minor_x2.on,
@@ -2850,7 +2853,7 @@ class LayoutMPL(BaseLayout):
                 mplp.setp(axes[ia].get_xticklabels(), visible=True)
             if self.separate_ticks:
                 mplp.setp(axes[ia].get_yticklabels(), visible=True)
-            if not self.separate_ticks and (ic != self.ncol - 1 and (2*ir + ic + 1) != self.nwrap) and self.axes.twin_x and ia == 1:
+            if not self.separate_ticks and (ic != self.ncol - 1 and (2 * ir + ic + 1) != self.nwrap) and self.axes.twin_x and ia == 1:
                 mplp.setp(axes[ia].get_yticklabels(), visible=False)
             if not self.separate_ticks and ir != 0 and self.axes.twin_y and ia == 1:
                 mplp.setp(axes[ia].get_xticklabels(), visible=False)
@@ -2994,7 +2997,7 @@ class LayoutMPL(BaseLayout):
                         not self.separate_labels and axl == 'y2' and ic != self.ncol - 1 and self.nwrap == 0 or \
                         not self.separate_labels and axl == 'x2' and ir != 0 or \
                         not self.separate_labels and axl == 'y' and ic != 0 or \
-                        not self.separate_labels and axl == 'y2' and ic != self.ncol - 1 and (2*ir + ic + 1) != self.nwrap:
+                        not self.separate_labels and axl == 'y2' and ic != self.ncol - 1 and (2 * ir + ic + 1) != self.nwrap:
                     axes[ia].tick_params(which='minor', **sides[axl])
 
                 elif tlmin.on:
@@ -3107,15 +3110,12 @@ class LayoutMPL(BaseLayout):
             if self.axes.twin_y and 'label_x_font_color' not in kwargs.keys():
                 self.label_x2.font_color = color_list[1]
 
-            line_colors = RepeatedList(color_list, 'line_colors')
-            self.lines.color = copy.copy(line_colors)
-
-            marker_edge_color = RepeatedList(color_list, 'marker_edge_color')
-            marker_edge_color.shift = 0
-            marker_fill_color = RepeatedList(color_list, 'marker_fill_color')
-            marker_fill_color.shift = 0
-            self.markers.edge_color = copy.copy(marker_edge_color)
-            self.markers.fill_color = copy.copy(marker_fill_color)
+            self.lines.color = copy.copy(color_list)
+            self.lines.color_alpha('color', 'alpha')
+            self.markers.edge_color = color_list
+            self.markers.color_alpha('edge_color', 'edge_alpha')
+            self.markers.fill_color = color_list
+            self.markers.color_alpha('fill_color', 'fill_alpha')
 
         except:
             print('Could not find a colormap called "%s". '
@@ -3128,7 +3128,7 @@ class LayoutMPL(BaseLayout):
 
         if self.title.on:
             self.get_title_position()
-            self.add_label(self.axes.obj[0, 0], self.title.text, offset=True,
+            self.add_label(0, 0, self.title.text, offset=True,
                            **self.make_kwargs(self.title))
 
     def set_scientific(self, ax):
