@@ -112,6 +112,15 @@ def mpl_get_ticks(ax, xon=True, yon=True):
         except:
             tp[vv]['last'] = -999
 
+    missing = [f for f in ['x', 'y'] if f not in tp.keys()]
+    for mm in missing:
+        tp[mm] = {}
+        tp[mm]['ticks'] = []
+        tp[mm]['labels'] = []
+        tp[mm]['label_text'] = []
+        tp[mm]['first'] = -999
+        tp[mm]['last'] = -999
+
     return tp
 
 
@@ -481,6 +490,23 @@ class BaseLayout:
                                                 'levels', 20),
                               )
 
+        # Heatmaps
+        self.heatmap = Element('heatmap', self.fcpp, kwargs,
+                               on=True if self.plot_func=='plot_heatmap'
+                                  else False,
+                               edge_width=0,
+                               font_color='#ffffff',
+                               text=utl.kwget(kwargs, self.fcpp,
+                                              'heatmap_labels', False),
+                               )
+        if self.heatmap.on:
+            grids = [f for f in kwargs.keys() if f in
+                     ['grid_major', 'grid_major_x', 'grid_major_y',
+                      'grid_minor', 'grid_minor_x', 'grid_minor_y']]
+            if len(grids) == 0:
+                kwargs['grid_major'] = False
+                kwargs['grid_minor'] = False
+
         # Line fit
         self.fit = Element('line_fit', self.fcpp, kwargs,
                            on=True if kwargs.get('fit', False) else False,
@@ -617,7 +643,6 @@ class BaseLayout:
                                                   '#ffffff'),
                                   width=1.3,
                                   )
-
         for ax in ['x', 'y']:
             # secondary axes cannot get the grid
             setattr(self, 'grid_major_%s' %ax,
@@ -659,7 +684,6 @@ class BaseLayout:
                             style=self.grid_minor.style,
                             width=self.grid_minor.width,
                             ))
-
 
         # Row column label
         rc_label = DF_Element('rc_label', self.fcpp, kwargs,
@@ -779,6 +803,15 @@ class BaseLayout:
             self.tick_labels_major_x.on = False
             self.tick_labels_minor_x.on = False
             self.label_x.on = False
+        if 'heatmap' in self.plot_func:
+            self.grid_major_x.on = False
+            self.grid_major_y.on = False
+            self.grid_minor_x.on = False
+            self.grid_minor_y.on = False
+            self.ticks_minor_x.on = False
+            self.ticks_minor_y.on = False
+            self.tick_labels_minor_x.on = False
+            self.tick_labels_minor_y.on = False
 
         # Confidence interval
         self.conf_int = Element('conf_int', self.fcpp, kwargs,
@@ -1332,7 +1365,7 @@ class LayoutMPL(BaseLayout):
 
         # Add the colorbar
         cbar = mplp.colorbar(contour, cax=cax)
-        cbar.outline.set_edgecolor(self.cbar.edge_color)
+        cbar.outline.set_edgecolor(self.cbar.edge_color.get(0))
         cbar.outline.set_linewidth(self.cbar.edge_width)
         #cbar.dividers.set_color('white')  # could enable
         #cbar.dividers.set_linewidth(2)
@@ -1689,19 +1722,29 @@ class LayoutMPL(BaseLayout):
                 pp = ax.plot(df[data.x[0]], df[data.y[0]], 'o-')
                 pp2 = ax2.plot(df[data.x[0]], df[data.y[1]], 'o-')
             # twin_y
-            if self.axes.twin_y:
+            elif self.axes.twin_y:
                 pp = ax.plot(df[data.x[0]], df[data.y[0]], 'o-')
                 pp2 = ax3.plot(df[data.x[1]], df[data.y[0]], 'o-')
             # Z axis
-            if data.z is not None:
+            elif data.z is not None and self.plot_func == 'plot_heatmap':
+                pp = ax.imshow(df)
+                ax.set_yticks(np.arange(len(df)))
+                ax.set_xticks(np.arange(len(df.columns)))
+                ax.set_yticklabels(df.index)
+                ax.set_xticklabels(df.columns)
+                if len(df) > len(df.columns):
+                    self.axes.size[0] = self.axes.size[0] * len(df.columns) / len(df)
+                    self.label_col.size[0] = self.axes.size[0]
+                elif len(df) < len(df.columns):
+                    self.axes.size[1] = self.axes.size[1] * len(df) / len(df.columns)
+                    self.label_row.size[1] = self.axes.size[1]
+            elif data.z is not None:
                 pp = ax.plot(df[data.x[0]], df[data.y[0]], 'o-')
                 pp2 = ax2.plot(df[data.x[0]], df[data.z[0]], 'o-')
             # Regular
             else:
                 for xy in zip(data.x, data.y):
                     pp = ax.plot(df[xy[0]], df[xy[1]], 'o-')
-            for xy in zip(data.x, data.y):
-                pp = ax.plot(df[xy[0]], df[xy[1]], 'o-')
             if data.ranges[ir, ic]['xmin'] is not None:
                 axes[0].set_xlim(left=data.ranges[ir, ic]['xmin'])
             if data.ranges[ir, ic]['xmax'] is not None:
@@ -2400,6 +2443,45 @@ class LayoutMPL(BaseLayout):
 
         return cc, cbar
 
+    def plot_heatmap(self, ax, df):
+        """
+        Plot a heatmap
+        """
+
+        # Make the heatmap
+        im = ax.imshow(df)
+
+        # Set the axes
+        ax.set_yticks(np.arange(len(df)))
+        ax.set_xticks(np.arange(len(df.columns)))
+        ax.set_yticklabels(df.index)
+        ax.set_xticklabels(df.columns)
+
+        if self.cbar.on:
+            cbar = self.add_cbar(ax, im)
+        else:
+            cbar = None
+
+        if self.heatmap.text:
+            # Loop over data dimensions and create text annotations.
+            for iy, yy in enumerate(df.index):
+                for ix, xx in enumerate(df.columns):
+                    if type(df.loc[yy, xx]) in [float, np.float32, np.float64] and \
+                            np.isnan(df.loc[yy, xx]):
+                        continue
+                    text = ax.text(ix, iy, df.loc[yy, xx],
+                                   ha="center", va="center",
+                                   color=self.heatmap.font_color)
+
+        ax.set_xticks(np.arange(df.shape[1]+1)-.5, minor=True)
+        ax.set_yticks(np.arange(df.shape[0]+1)-.5, minor=True)
+        ax.grid(which="minor", color=self.heatmap.edge_color.get(0),
+                linestyle='-', linewidth=self.heatmap.edge_width)
+        ax.tick_params(which="minor", bottom=False, left=False)
+
+
+        return im
+
     def plot_line(self, ir, ic, x0, y0, x1=None, y1=None,**kwargs):
         """
         Plot a simple line
@@ -2654,6 +2736,9 @@ class LayoutMPL(BaseLayout):
 
         """
 
+        if self.plot_func == 'plot_heatmap':
+            return
+
         for k, v in ranges.items():
             if k == 'xmin' and v is not None:
                 self.axes.obj[ir, ic].set_xlim(left=v)
@@ -2671,10 +2756,6 @@ class LayoutMPL(BaseLayout):
                 self.axes.obj[ir, ic].set_ylim(top=v)
             elif k == 'y2max' and v is not None:
                 self.axes2.obj[ir, ic].set_ylim(top=v)
-            # elif k == 'zmin' and v is not None and self.cbar.on:
-            #     self.cbar.obj[ir, ic].set_clim(bottom=v)
-            # elif k == 'zmax' and v is not None and self.cbar.on:
-            #     self.cbar.obj[ir, ic].set_clim(top=v)
 
     def set_axes_rc_labels(self, ir, ic):
         """
@@ -2743,13 +2824,14 @@ class LayoutMPL(BaseLayout):
 
             # Turn off scientific (how do we force it?)
             if not self.tick_labels_major_x.sci \
-                    and self.plot_func != 'plot_box' \
+                    and self.plot_func not in ['plot_box', 'plot_heatmap'] \
                     and self.axes.scale not in ['logx', 'semilogx', 'loglog', 'log'] \
                     and (not self.axes.share_x or ir==0 and ic==0):
-                if 'box' not in self.plot_func and (ia == 0 or self.axes.twin_y):
+                if ia == 0 or self.axes.twin_y:
                     axes[ia].get_xaxis().get_major_formatter().set_scientific(False)
 
             if not self.tick_labels_major_y.sci \
+                    and self.plot_func not in ['plot_heatmap'] \
                     and self.axes.scale not in ['logy', 'semilogy', 'loglog', 'log'] \
                     and (not self.axes.share_y or ir==0 and ic==0):
                 try:
@@ -2759,7 +2841,8 @@ class LayoutMPL(BaseLayout):
 
             # General tick params
             if ia == 0:
-                axes[ia].minorticks_on()
+                if self.ticks_minor_x.on or self.ticks_minor_y.on:
+                    axes[ia].minorticks_on()
                 axes[ia].tick_params(axis='both',
                                      which='major',
                                      pad=self.ws_ticks_ax,
@@ -2789,7 +2872,8 @@ class LayoutMPL(BaseLayout):
                                      width=self.ticks_minor.size[1],
                                      )
             elif self.axes.twin_x:
-                axes[ia].minorticks_on()
+                if self.ticks_minor_y2.on:
+                    axes[ia].minorticks_on()
                 axes[ia].tick_params(which='major',
                                      pad=self.ws_ticks_ax,
                                      colors=self.ticks_major.color.get(0),
@@ -2809,7 +2893,8 @@ class LayoutMPL(BaseLayout):
                                      width=self.ticks_minor.size[1],
                                      )
             elif self.axes.twin_y:
-                axes[ia].minorticks_on()
+                if self.ticks_minor_x2.on:
+                    axes[ia].minorticks_on()
                 axes[ia].tick_params(which='major',
                                      pad=self.ws_ticks_ax,
                                      colors=self.ticks_major.color.get(0),

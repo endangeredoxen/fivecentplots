@@ -13,7 +13,9 @@ st = pdb.set_trace
 
 REQUIRED_VALS = {'plot_xy': ['x', 'y'],
                  'plot_box': ['y'],
-                 'plot_contour': ['x', 'y', 'z']}
+                 'plot_contour': ['x', 'y', 'z'],
+                 'plot_heatmap': ['x', 'y', 'z'],
+                }
 
 
 class AxisError(Exception):
@@ -48,6 +50,12 @@ class Data:
         self.ax_scale = kwargs.get('ax_scale', None)
         self.ax_limit_padding = utl.kwget(kwargs, self.fcpp,
                                           'ax_limit_padding', 0.05)
+        if self.plot_func in ['plot_contour', 'plot_heatmap']:
+            self.ax_limit_padding = kwargs.get('ax_limit_padding', 0)
+        self.ax_limit_offset = utl.kwget(kwargs, self.fcpp,
+                                         'ax_limit_offset', 0)
+        if self.plot_func in ['plot_heatmap']:
+            self.ax_limit_offset = kwargs.get('ax_limit_offset', 0.5)
         self.conf_int = kwargs.get('conf_int', False)
         self.fit = kwargs.get('fit', False)
         self.legend = None
@@ -992,6 +1000,15 @@ class Data:
                 # Perform any axis transformations
                 if transform:
                     self.df_rc = self.transform(self.df_rc)
+
+                # Reshaping
+                if self.plot_func == 'plot_heatmap':
+                    self.df_rc = pd.pivot_table(self.df_rc, values=self.z[0],
+                                                index=self.y[0], columns=self.x[0])
+                    self.xmin = -0.5
+                    self.ymax = -0.5
+                    self.xmax = len(self.df_rc.columns) - 0.5
+                    self.ymin = len(self.df_rc) - 0.5
 
                 # Deal with empty dfs
                 if len(self.df_rc) == 0:

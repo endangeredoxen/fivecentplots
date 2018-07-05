@@ -83,18 +83,19 @@ def boxplot(**kwargs):
 
 
 def contour(**kwargs):
-    """ Main boxplot plotting function
+    """ Main contour plotting function
     At minimum, it requires a pandas DataFrame with at
-    least two columns and two column names for the x and y axis.  Plots can be
-    customized and enhanced by passing keyword arguments as defined below.
-    Default values that must be defined in order to generate the plot are
-    pulled from the fcp_params default dictionary
+    least three columns and three column names for the x, y, and z axis.
+    Plots can be customized and enhanced by passing keyword arguments as
+    defined below. Default values that must be defined in order to
+    generate the plot are pulled from the fcp_params default dictionary
     Args:
         df (DataFrame): DataFrame containing data to plot
-        x (str):        name of x column in df
+        x (str|list):   name of list of names of x column in df
         y (str|list):   name or list of names of y column(s) in df
+        z (str):   name of z column(s) in df
     Keyword Args:
-        UPDATE
+        see online docs
     Returns:
         plots
     """
@@ -133,6 +134,27 @@ def deprecated(kwargs):
             kwargs['%s_%s' % (val[0:-1], val[-1])] = kwargs[val]
 
     return kwargs
+
+
+def heatmap(**kwargs):
+    """ Main heatmap plotting function
+    At minimum, it requires a pandas DataFrame with at
+    least three columns and three column names for the x, y, and z axis.
+    Plots can be customized and enhanced by passing keyword arguments as
+    defined below. Default values that must be defined in order to
+    generate the plot are pulled from the fcp_params default dictionary
+    Args:
+        df (DataFrame): DataFrame containing data to plot
+        x (str|list):   name of list of names of x column in df
+        y (str|list):   name or list of names of y column(s) in df
+        z (str):   name of z column(s) in df
+    Keyword Args:
+        see online docs
+    Returns:
+        plots
+    """
+
+    return plotter('plot_heatmap', **kwargs)
 
 
 def paste_kwargs(kwargs):
@@ -359,6 +381,26 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin):
         offsety = (2.2*layout.fit.font_size) / layout.axes.size[1]
         layout.add_text(ir, ic, 'R^2=%s' % round(rsq, 4), 'fit',
                         offsety=-offsety)
+
+
+def plot_heatmap(data, layout, ir, ic, df_rc, kwargs):
+    """
+    Plot heatmap data data
+
+    Args:
+        data (obj): Data object
+        layout (obj): layout object
+        ir (int): current subplot row number
+        ic (int): current subplot column number
+        df_rc (pd.DataFrame): data subset
+        kwargs (dict): keyword args
+
+    """
+
+    for iline, df, x, y, z, leg_name, twin in data.get_plot_data(df_rc):
+
+        # Make the plot
+        layout.plot_heatmap(layout.axes.obj[ir, ic], df)
 
 
 def plot_ref(ir, ic, iline, data, layout, df, x, y):
