@@ -2423,7 +2423,7 @@ class LayoutMPL(BaseLayout):
 
         return bp
 
-    def plot_contour(self, ax, df, x, y, z):
+    def plot_contour(self, ax, df, x, y, z, ranges):
         """
         Plot a contour plot
         """
@@ -2443,7 +2443,7 @@ class LayoutMPL(BaseLayout):
         else:
             contour = ax.contour
         cc = contour(xi, yi, zi, self.contour.levels, line_width=self.contour.width,
-                     cmap=self.contour.cmap, zorder=2)
+                     cmap=self.contour.cmap, zorder=2, vmin=ranges['zmin'], vmax=ranges['zmax'])
 
         if self.cbar.on:
             cbar = self.add_cbar(ax, cc)
@@ -2452,13 +2452,19 @@ class LayoutMPL(BaseLayout):
 
         return cc, cbar
 
-    def plot_heatmap(self, ax, df):
+    def plot_heatmap(self, ax, df, ranges):
         """
         Plot a heatmap
+
+        Args:
+            ax (mpl.axes): current axes obj
+            df (pd.DataFrame):  data to plot
+            range (dict):  z-limits
+
         """
 
         # Make the heatmap
-        im = ax.imshow(df, self.heatmap.cmap)
+        im = ax.imshow(df, self.heatmap.cmap, vmin=ranges['zmin'], vmax=ranges['zmax'])
 
         # Set the axes
         ax.set_yticks(np.arange(len(df)))

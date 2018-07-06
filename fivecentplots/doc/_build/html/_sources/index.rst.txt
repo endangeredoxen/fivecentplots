@@ -114,6 +114,7 @@ Documentation
    plot.ipynb
    boxplot.ipynb
    contour.ipynb
+   heatmap.ipynb
 
 .. toctree::
    :maxdepth: 1

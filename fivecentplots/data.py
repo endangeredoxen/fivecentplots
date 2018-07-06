@@ -541,7 +541,7 @@ class Data:
             cols = getattr(self, ax)
 
         # Categorical
-        if self.plot_func == 'plot_heatmap':
+        if self.plot_func == 'plot_heatmap' and ax != 'z':
             vmin = 0
             vmax = len(df[getattr(self, ax)].drop_duplicates())
             return vmin, vmax

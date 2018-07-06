@@ -155,6 +155,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heatmap.html">heatmap</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Other</span></p>
 <ul>
@@ -409,11 +410,11 @@ div.nboutput div.output_area.stderr {
 <div class="section" id="plot">
 <h1>plot<a class="headerlink" href="#plot" title="Permalink to this headline">¶</a></h1>
 <p>The <code class="docutils literal notranslate"><span class="pre">plot</span></code> function is the primary vehicle for visualizing x-y data.
-At a minimum, the <code class="docutils literal notranslate"><span class="pre">plot</span></code> function requires the following keywords: *
-<code class="docutils literal notranslate"><span class="pre">df</span></code>: a pandas DataFrame * <code class="docutils literal notranslate"><span class="pre">x</span></code>: the name of the DataFrame column
-containing the x-axis data * <code class="docutils literal notranslate"><span class="pre">y</span></code>: the name of the DataFrame column
-containing the y-axis data</p>
-<p>Other optional keywords are described in Keyword Arguments.</p>
+At a minimum, the <code class="docutils literal notranslate"><span class="pre">plot</span></code> function requires the following keywords:</p>
+<ul><li><p><code class="docutils literal notranslate"><span class="pre">df</span></code>: a pandas DataFrame</p>
+</li><li><p><code class="docutils literal notranslate"><span class="pre">x</span></code>: the name of the DataFrame column containing the x-axis data</p>
+</li><li><p><code class="docutils literal notranslate"><span class="pre">y</span></code>: the name of the DataFrame column containing the y-axis data</p>
+</li></ul><p>Other optional keywords are described in Keyword Arguments.</p>
 <div class="section" id="Setup">
 <h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="Imports">
@@ -735,7 +736,7 @@ Voltage vs Voltage + I [A].png
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Wall time: 1.23 s
+Wall time: 1.27 s
 </pre></div></div>
 </div>
 </div>
@@ -776,7 +777,7 @@ Boost Level + I [A] vs Voltage.png
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Wall time: 881 ms
+Wall time: 948 ms
 </pre></div></div>
 </div>
 </div>
@@ -813,7 +814,7 @@ Voltage vs Boost Level + I [A].png
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Wall time: 984 ms
+Wall time: 965 ms
 </pre></div></div>
 </div>
 </div>
@@ -850,7 +851,7 @@ Voltage + Temperature [C] vs Boost Level + I [A].png
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Wall time: 1.21 s
+Wall time: 1.41 s
 </pre></div></div>
 </div>
 </div>
@@ -894,7 +895,7 @@ I [A] vs Voltage by Boost Level.png
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Wall time: 1.48 s
+Wall time: 2.13 s
 </pre></div></div>
 </div>
 </div>
@@ -935,7 +936,7 @@ I [A] vs Voltage by Boost Level.png
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Wall time: 1.46 s
+Wall time: 2.13 s
 </pre></div></div>
 </div>
 </div>
@@ -975,7 +976,7 @@ I [A] vs Voltage by Temperature [C] by Boost Level.png
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Wall time: 2.41 s
+Wall time: 5.69 s
 </pre></div></div>
 </div>
 </div>
@@ -1018,7 +1019,7 @@ I [A] vs Voltage by Temperature [C] + Boost Level.png
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Wall time: 2.59 s
+Wall time: 2.45 s
 </pre></div></div>
 </div>
 </div>
