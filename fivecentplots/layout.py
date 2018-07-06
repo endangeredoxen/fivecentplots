@@ -97,7 +97,8 @@ def mpl_get_ticks(ax, xon=True, yon=True):
 
     for vv in xy:
         tp[vv] = {}
-        tp[vv]['min'], tp[vv]['max'] = getattr(ax, 'get_%slim' % vv)()
+        tp[vv]['min'] = min(getattr(ax, 'get_%slim' % vv)())
+        tp[vv]['max'] = max(getattr(ax, 'get_%slim' % vv)())
         tp[vv]['ticks'] = getattr(ax, 'get_%sticks' % vv)()
         tp[vv]['labels'] = [f for f in getattr(ax, '%saxis' % vv).iter_ticks()]
         tp[vv]['label_text'] = [f[2] for f in tp[vv]['labels']]
@@ -155,7 +156,7 @@ class BaseLayout:
         elif not color_list:
             color_list = copy.copy(DEFAULT_COLORS)
         self.cmap = kwargs.get('cmap', None)
-        if 'contour' in self.plot_func:
+        if self.plot_func in ['plot_contour', 'plot_heatmap']:
             self.cmap = utl.kwget(kwargs, self.fcpp, 'cmap', None)
 
         # Axis
@@ -374,18 +375,18 @@ class BaseLayout:
         for ax in self.ax:
             setattr(self, 'tick_labels_minor_%s' %ax,
                     Element('tick_labels_minor_%s' %ax, self.fcpp, kwargs,
-                        on=utl.kwget(kwargs, self.fcpp,
-                                     'tick_labels_minor_%s' % ax,
-                                     self.tick_labels_minor.on),
-                        font=self.tick_labels_minor.font,
-                        font_color=self.tick_labels_minor.font_color,
-                        font_size=self.tick_labels_minor.font_size,
-                        font_style=self.tick_labels_minor.font_style,
-                        font_weight=self.tick_labels_minor.font_weight,
-                        padding=self.tick_labels_minor.padding,
-                        rotation=self.tick_labels_minor.rotation,
-                        size=[0, 0],
-                        ))
+                            on=utl.kwget(kwargs, self.fcpp,
+                                         'tick_labels_minor_%s' % ax,
+                                         self.tick_labels_minor.on),
+                            font=self.tick_labels_minor.font,
+                            font_color=self.tick_labels_minor.font_color,
+                            font_size=self.tick_labels_minor.font_size,
+                            font_style=self.tick_labels_minor.font_style,
+                            font_weight=self.tick_labels_minor.font_weight,
+                            padding=self.tick_labels_minor.padding,
+                            rotation=self.tick_labels_minor.rotation,
+                            size=[0, 0],
+                            ))
 
         # Boxplot labels
         self.box_group_title = Element('box_group_title', self.fcpp, kwargs,
@@ -494,10 +495,12 @@ class BaseLayout:
         self.heatmap = Element('heatmap', self.fcpp, kwargs,
                                on=True if self.plot_func=='plot_heatmap'
                                   else False,
+                               cmap=utl.kwget(kwargs, self.fcpp,
+                                              'cmap', 'inferno'),
                                edge_width=0,
                                font_color='#ffffff',
                                text=utl.kwget(kwargs, self.fcpp,
-                                              'heatmap_labels', False),
+                                              'data_labels', False),
                                )
         if self.heatmap.on:
             grids = [f for f in kwargs.keys() if f in
@@ -506,6 +509,11 @@ class BaseLayout:
             if len(grids) == 0:
                 kwargs['grid_major'] = False
                 kwargs['grid_minor'] = False
+            if 'ax_edge_width' not in kwargs.keys():
+                self.axes.edge_width = 0
+            self.tick_labels_major_x.rotation = \
+                utl.kwget(kwargs, self.fcpp, 'tick_labels_major_x', 90)
+            kwargs['tick_cleanup'] = False
 
         # Line fit
         self.fit = Element('line_fit', self.fcpp, kwargs,
@@ -1732,10 +1740,10 @@ class LayoutMPL(BaseLayout):
                 ax.set_xticks(np.arange(len(df.columns)))
                 ax.set_yticklabels(df.index)
                 ax.set_xticklabels(df.columns)
-                if len(df) > len(df.columns):
+                if len(df) > len(df.columns) and self.axes.size[0] == self.axes.size[1]:
                     self.axes.size[0] = self.axes.size[0] * len(df.columns) / len(df)
                     self.label_col.size[0] = self.axes.size[0]
-                elif len(df) < len(df.columns):
+                elif len(df) < len(df.columns) and self.axes.size[0] == self.axes.size[1]:
                     self.axes.size[1] = self.axes.size[1] * len(df) / len(df.columns)
                     self.label_row.size[1] = self.axes.size[1]
             elif data.z is not None:
@@ -2307,6 +2315,7 @@ class LayoutMPL(BaseLayout):
             self.separate_labels = kwargs.get('separate_labels', False)
             self.ws_row = kwargs.get('ws_row', self.label_wrap._size[1])
             self.ws_col = kwargs.get('ws_col', 0)
+            self.cbar.on = False  # may want to address this someday
 
         self.set_colormap(data)
         self.set_label_text(data, **kwargs)
@@ -2449,7 +2458,7 @@ class LayoutMPL(BaseLayout):
         """
 
         # Make the heatmap
-        im = ax.imshow(df)
+        im = ax.imshow(df, self.heatmap.cmap)
 
         # Set the axes
         ax.set_yticks(np.arange(len(df)))
@@ -2610,6 +2619,8 @@ class LayoutMPL(BaseLayout):
         except:
             for f in ['bottom', 'top', 'right', 'left']:
                 axes[-1].obj[ir, ic].spines[f].set_color(axes[-1].edge_color.get(2 * ir + ic + 1))
+        for axis in ['top','bottom','left','right']:
+            axes[-1].obj[ir, ic].spines[axis].set_linewidth(self.axes.edge_width)
 
     def set_axes_grid_lines(self, ir, ic):
         """
@@ -2998,6 +3009,7 @@ class LayoutMPL(BaseLayout):
                 for iy in range(0, len(tp['y']['ticks']) - 1):
                     y2y += [utl.rectangle_overlap([yw+2*buf, yh+2*buf, [0,dely*iy]],
                                                   [yw+2*buf, yh+2*buf, [0,dely*(iy+1)]])]
+
                 # x and y at the origin
                 if x0y0 and tp['y']['first']==0:
                     tp['y']['label_text'][tp['y']['first']] = ''
@@ -3041,9 +3053,9 @@ class LayoutMPL(BaseLayout):
                 if self.nrow > 1 and ir < self.nrow-1:
                     x2y = utl.rectangle_overlap([xw, xh, xc],
                                                 [yw, yh, [yc[0], yc[1]-self.ws_row]])
-                    if x2y and \
-                            tp['y']['min'] == tp['y']['ticks'][tp['y']['first']]:
-                        tp['x']['label_text'][0] = ''
+                    # if x2y and \
+                    #         tp['y']['min'] == tp['y']['ticks'][tp['y']['first']]:
+                    #     tp['x']['label_text'][0] = ''
 
                 axes[ia].set_xticklabels(tp['x']['label_text'])
                 axes[ia].set_yticklabels(tp['y']['label_text'])
@@ -3174,16 +3186,20 @@ class LayoutMPL(BaseLayout):
             data (Data object)
         """
 
-        if not self.cmap or self.plot_func == 'plot_contour':
+        if not self.cmap or self.plot_func in ['plot_contour', 'plot_heatmap']:
             return
 
         try:
             # Conver the color map into discrete colors
             cmap = mplp.get_cmap(self.cmap)
             color_list = []
-            for i in range(0, len(data.legend_vals)):
+            if data.legend_vals is None or len(data.legend_vals) == 0:
+                maxx = 1
+            else:
+                maxx = len(data.legend_vals)
+            for i in range(0, maxx):
                 color_list += \
-                    [mplc_to_hex(cmap((i+1)/(len(data.legend_vals)+1)), False)]
+                    [mplc_to_hex(cmap((i+1)/(maxx+1)), False)]
 
             # Reset colors
             if self.axes.twin_x and 'label_y_font_color' not in kwargs.keys():

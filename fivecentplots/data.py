@@ -277,6 +277,8 @@ class Data:
                 raise DataError('No column named "%s" found in DataFrame' % val)
 
             # Check case
+            if self.plot_func == 'plot_heatmap':
+                continue
             try:
                 self.df_all[val] = self.df_all[val].astype(float)
                 continue
@@ -537,6 +539,12 @@ class Data:
             return None, None
         else:
             cols = getattr(self, ax)
+
+        # Categorical
+        if self.plot_func == 'plot_heatmap':
+            vmin = 0
+            vmax = len(df[getattr(self, ax)].drop_duplicates())
+            return vmin, vmax
 
         # Groupby for stats
         if self.stat is not None and 'only' in self.stat:
@@ -1005,6 +1013,9 @@ class Data:
                 if self.plot_func == 'plot_heatmap':
                     self.df_rc = pd.pivot_table(self.df_rc, values=self.z[0],
                                                 index=self.y[0], columns=self.x[0])
+                    cols = natsorted(self.df_rc.columns)
+                    self.df_rc = self.df_rc[cols]
+                    self.df_rc = self.df_rc.sort_index(ascending=False)
                     self.xmin = -0.5
                     self.ymax = -0.5
                     self.xmax = len(self.df_rc.columns) - 0.5
