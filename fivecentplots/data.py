@@ -196,7 +196,7 @@ class Data:
             self.ax_limit_padding_y_max = kwargs.get('ax_limit_padding', 0.05)
         else:
             self.ax_limit_padding = utl.kwget(kwargs, self.fcpp, 'ax_limit_padding', 0.05)
-        for ax in ['x', 'x2', 'y', 'y2']:
+        for ax in ['x', 'x2', 'y', 'y2', 'z']:
             if not hasattr(self, 'ax_limit_padding_%s_min' % ax):
                 setattr(self, 'ax_limit_padding_%s_min' % ax,
                         utl.kwget(kwargs, self.fcpp,

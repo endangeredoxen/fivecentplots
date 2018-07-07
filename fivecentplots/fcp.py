@@ -344,7 +344,7 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
         x = np.linspace(1, dd.ngroups, dd.ngroups)
         layout.plot_line(ir, ic, x, stats, **layout.box_stat_line.kwargs,)
 
-    return data
+    return dd
 
 
 def plot_conf_int(ir, ic, iline, data, layout, df, x, y):

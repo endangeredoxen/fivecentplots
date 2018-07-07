@@ -2617,10 +2617,19 @@ class LayoutMPL(BaseLayout):
         if y1:
             y0 = [y0, y1]
 
+        if 'color' in kwargs.keys():
+            if type(kwargs['color']) is RepeatedList:
+                color = kwargs['color'].get(0)
+            elif type(kwargs['color']) is list:
+                color = kwargs['color'][0]
+            else:
+                color = kwargs['color']
+        else:
+            color = '#000000'
         line = self.axes.obj[ir, ic].plot(x0, y0,
                                           linestyle=kwargs.get('style', '-'),
                                           linewidth=kwargs.get('width', 1),
-                                          color=kwargs.get('color', '#000000'),
+                                          color=color,
                                           zorder=kwargs.get('zorder', 1))
 
         return line
