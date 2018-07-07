@@ -62,19 +62,37 @@ LAYOUT = {'mpl': LayoutMPL,
           'bokeh': LayoutBokeh}
 
 
-def boxplot(**kwargs):
-    """ Main boxplot plotting function
+def bar(**kwargs):
+    """ Main bar chart plotting function
     At minimum, it requires a pandas DataFrame with at
-    least two columns and two column names for the x and y axis.  Plots can be
-    customized and enhanced by passing keyword arguments as defined below.
-    Default values that must be defined in order to generate the plot are
-    pulled from the fcp_params default dictionary
+    least one column for the y axis.  Plots can be customized and enhanced by
+    passing keyword arguments.  Default values that must be defined in order to
+    generate the plot are pulled from the fcp_params default dictionary
     Args:
         df (DataFrame): DataFrame containing data to plot
         x (str):        name of x column in df
         y (str|list):   name or list of names of y column(s) in df
     Keyword Args:
-        UPDATE
+        see online docs
+    Returns:
+        plots
+    """
+
+    return plotter('plot_bar', **kwargs)
+
+
+def boxplot(**kwargs):
+    """ Main boxplot plotting function
+    At minimum, it requires a pandas DataFrame with at
+    least one column for the y axis.  Plots can be customized and enhanced by
+    passing keyword arguments.  Default values that must be defined in order to
+    generate the plot are pulled from the fcp_params default dictionary
+    Args:
+        df (DataFrame): DataFrame containing data to plot
+        x (str):        name of x column in df
+        y (str|list):   name or list of names of y column(s) in df
+    Keyword Args:
+        see online docs
     Returns:
         plots
     """
@@ -157,6 +175,11 @@ def heatmap(**kwargs):
     return plotter('plot_heatmap', **kwargs)
 
 
+def hist(**kwargs):
+
+    return plotter('plot_hist', **kwargs)
+
+
 def paste_kwargs(kwargs):
     """
     Get the kwargs from contents of the clipboard in ini file format
@@ -188,6 +211,23 @@ def paste_kwargs(kwargs):
 def plot(**kwargs):
 
     return plotter('plot_xy', **kwargs)
+
+
+def plot_bar(data, layout, ir, ic, df_rc, kwargs):
+    """
+    Plot data as boxplot
+
+    Args:
+        data (obj): Data object
+        layout (obj): layout object
+        ir (int): current subplot row number
+        ic (int): current subplot column number
+        df_rc (pd.DataFrame): data subset
+        kwargs (dict): keyword args
+
+    """
+
+    pass
 
 
 def plot_box(dd, layout, ir, ic, df_rc, kwargs):
@@ -304,6 +344,8 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
         x = np.linspace(1, dd.ngroups, dd.ngroups)
         layout.plot_line(ir, ic, x, stats, **layout.box_stat_line.kwargs,)
 
+    return data
+
 
 def plot_conf_int(ir, ic, iline, data, layout, df, x, y):
     """
@@ -316,6 +358,8 @@ def plot_conf_int(ir, ic, iline, data, layout, df, x, y):
 
     layout.fill_between_lines(ir, ic, iline, data.stat_idx, data.lcl, data.ucl,
                               'conf_int')
+
+    return data
 
 
 def plot_contour(data, layout, ir, ic, df_rc, kwargs):
@@ -334,6 +378,8 @@ def plot_contour(data, layout, ir, ic, df_rc, kwargs):
 
     for iline, df, x, y, z, leg_name, twin in data.get_plot_data(df_rc):
         layout.plot_contour(layout.axes.obj[ir, ic], df, x, y, z, data.ranges[ir, ic])
+
+    return data
 
 
 def plot_fit(data, layout, ir, ic, iline, df, x, y, twin):
@@ -382,6 +428,8 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin):
         layout.add_text(ir, ic, 'R^2=%s' % round(rsq, 4), 'fit',
                         offsety=-offsety)
 
+    return data
+
 
 def plot_heatmap(data, layout, ir, ic, df_rc, kwargs):
     """
@@ -402,6 +450,35 @@ def plot_heatmap(data, layout, ir, ic, df_rc, kwargs):
         # Make the plot
         layout.plot_heatmap(layout.axes.obj[ir, ic], df, data.ranges[ir, ic])
 
+    return data
+
+
+def plot_hist(data, layout, ir, ic, df_rc, kwargs):
+    """
+    Plot data as histogram
+
+    Args:
+        data (obj): Data object
+        layout (obj): layout object
+        ir (int): current subplot row number
+        ic (int): current subplot column number
+        df_rc (pd.DataFrame): data subset
+        kwargs (dict): keyword args
+
+    """
+
+    for iline, df, x, y, z, leg_name, twin in data.get_plot_data(df_rc):
+        if data.stat is not None:
+            layout.lines.on = False
+        if kwargs.get('groups', False):
+            for nn, gg in df.groupby(validate_list(kwargs['groups'])):
+                hist, data =layout.plot_hist(ir, ic, iline, gg, x, y, leg_name, data)
+
+        else:
+            hist, data = layout.plot_hist(ir, ic, iline, df, x, y, leg_name, data)
+
+    return data
+
 
 def plot_ref(ir, ic, iline, data, layout, df, x, y):
     """
@@ -413,6 +490,8 @@ def plot_ref(ir, ic, iline, data, layout, df, x, y):
 
     layout.plot_xy(ir, ic, iline, df, x, 'Ref Line', 'ref_line',
                    False, line_type='ref_line', marker_disable=True)
+
+    return data
 
 
 def plot_stat(ir, ic, iline, data, layout, df, x, y):
@@ -427,6 +506,8 @@ def plot_stat(ir, ic, iline, data, layout, df, x, y):
 
     layout.lines.on = True
     layout.plot_xy(ir, ic, iline, df_stat, x, y, None, False)
+
+    return data
 
 
 def plot_xy(data, layout, ir, ic, df_rc, kwargs):
@@ -458,6 +539,8 @@ def plot_xy(data, layout, ir, ic, df_rc, kwargs):
         plot_ref(ir, ic, iline, data, layout, df, x, y)
         plot_stat(ir, ic, iline, data, layout, df, x, y)
         plot_conf_int(ir, ic, iline, data, layout, df, x, y)
+
+    return data
 
 
 def plotter(plot_func, **kwargs):
@@ -519,7 +602,7 @@ def plotter(plot_func, **kwargs):
             layout.add_hvlines(ir, ic)
 
             # Plot the data
-            globals()[plot_func](dd, layout, ir, ic, df_rc, kwargs)
+            dd = globals()[plot_func](dd, layout, ir, ic, df_rc, kwargs)
 
             # Set linear or log axes scaling
             layout.set_axes_scale(ir, ic)

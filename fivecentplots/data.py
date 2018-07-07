@@ -13,6 +13,7 @@ st = pdb.set_trace
 
 REQUIRED_VALS = {'plot_xy': ['x', 'y'],
                  'plot_box': ['y'],
+                 'plot_hist': ['y'],
                  'plot_contour': ['x', 'y', 'z'],
                  'plot_heatmap': ['x', 'y', 'z'],
                 }
@@ -48,14 +49,13 @@ class Data:
         self.dependent = None
         self.independent = None
         self.ax_scale = kwargs.get('ax_scale', None)
-        self.ax_limit_padding = utl.kwget(kwargs, self.fcpp,
-                                          'ax_limit_padding', 0.05)
-        if self.plot_func in ['plot_contour', 'plot_heatmap']:
-            self.ax_limit_padding = kwargs.get('ax_limit_padding', 0)
-        self.ax_limit_offset = utl.kwget(kwargs, self.fcpp,
-                                         'ax_limit_offset', 0)
-        if self.plot_func in ['plot_heatmap']:
-            self.ax_limit_offset = kwargs.get('ax_limit_offset', 0.5)
+        self.ax_limit_pad(**kwargs)
+
+        # self.ax_limit_offset = utl.kwget(kwargs, self.fcpp,
+        #                                  'ax_limit_offset', 0)
+        # if self.plot_func in ['plot_heatmap']:
+        #     self.ax_limit_offset = kwargs.get('ax_limit_offset', 0.5)
+
         self.conf_int = kwargs.get('conf_int', False)
         self.fit = kwargs.get('fit', False)
         self.legend = None
@@ -91,7 +91,6 @@ class Data:
         self.y2min = kwargs.get('y2min', None)
         self.ymax = kwargs.get('ymax', None)
         self.y2max = kwargs.get('y2max', None)
-        # y2 limits not working!
         self.zmin = kwargs.get('zmin', None)
         self.zmax = kwargs.get('zmax', None)
 
@@ -131,6 +130,14 @@ class Data:
         self.stat_idx = []
         self.lcl = []
         self.ucl = []
+
+        # Normalize
+        normalize=utl.kwget(kwargs, self.fcpp, 'hist_normalize', kwargs.get('normalize', False))
+        kde=utl.kwget(kwargs, self.fcpp, 'hist_kde', kwargs.get('kde', False))
+        if normalize or kde:
+            self.norm = True
+        else:
+            self.norm = False
 
         # Apply an optional filter to the data
         self.filter = kwargs.get('filter', None)
@@ -176,6 +183,30 @@ class Data:
         for k, v in kwargs.items():
             if not hasattr(self, k):  # k not in ['df', 'plot_func', 'x', 'y', 'z']:
                 setattr(self, k, v)
+
+    def ax_limit_pad(self, **kwargs):
+        """
+        Set padding limits for axis
+        """
+
+        if self.plot_func in ['plot_contour', 'plot_heatmap', 'plot_hist']:
+            self.ax_limit_padding = kwargs.get('ax_limit_padding', 0)
+        else:
+            self.ax_limit_padding = utl.kwget(kwargs, self.fcpp, 'ax_limit_padding', 0.05)
+        for ax in ['x', 'x2', 'y', 'y2']:
+            setattr(self, 'ax_limit_padding_%s_min' % ax,
+                    utl.kwget(kwargs, self.fcpp,
+                              'ax_limit_padding_%s_min' % ax, self.ax_limit_padding))
+            setattr(self, 'ax_limit_padding_%s_max' % ax,
+                    utl.kwget(kwargs, self.fcpp,
+                              'ax_limit_padding_%s_max' % ax, self.ax_limit_padding))
+        if self.plot_func in ['plot_hist']:
+            if utl.kwget(kwargs, self.fcpp, 'hist_vertical', kwargs.get('vertical', True)):
+                self.ax_limit_padding_y_max = utl.kwget(kwargs, self.fcpp,
+                                                        'ax_limit_padding', 0.05)
+            else:
+                self.ax_limit_padding_x_max = utl.kwget(kwargs, self.fcpp,
+                                                        'ax_limit_padding', 0.05)
 
     def check_df(self, df):
         """
@@ -606,13 +637,15 @@ class Data:
                         .quantile(xq)[cols].min().iloc[0]
         elif vmin is not None:
             vmin = vmin
-        elif self.ax_limit_padding is not None:
+        elif getattr(self, 'ax_limit_padding_%s_min' % ax) is not None \
+                and getattr(self, 'ax_limit_padding_%s_min' % ax) > 0:
             if self.ax_scale in ['log%s' % ax, 'loglog',
                                  'semilog%s' % ax]:
-                axmin = np.log10(axmin) - self.ax_limit_padding * axdelta
+                axmin = np.log10(axmin) - \
+                        getattr(self, 'ax_limit_padding_%s_min' % ax) * axdelta
                 vmin = 10**axmin
             else:
-                axmin -= self.ax_limit_padding * axdelta
+                axmin -= getattr(self, 'ax_limit_padding_%s_min' % ax) * axdelta
                 vmin = axmin
         else:
             vmin = None
@@ -646,13 +679,15 @@ class Data:
                         .quantile(xq)[cols].max().iloc[0]
         elif vmax is not None:
             vmax = vmax
-        elif self.ax_limit_padding is not None:
+        elif getattr(self, 'ax_limit_padding_%s_max' % ax) is not None \
+                and getattr(self, 'ax_limit_padding_%s_max' % ax) > 0:
             if self.ax_scale in ['log%s' % ax, 'loglog',
                                  'semilog%s' % ax]:
-                axmax = np.log10(axmax) + self.ax_limit_padding * axdelta
+                axmax = np.log10(axmax) + \
+                        getattr(self, 'ax_limit_padding_%s_max' % ax) * axdelta
                 vmax = 10**axmax
             else:
-                axmax += self.ax_limit_padding*axdelta
+                axmax += getattr(self, 'ax_limit_padding_%s_max' % ax) * axdelta
                 vmax = axmax
         else:
             vmax = None
@@ -885,8 +920,8 @@ class Data:
         """
 
         if type(self.legend_vals) != pd.DataFrame:
-            vals = pd.DataFrame({'x': self.x*len(self.y),
-                                 'y': self.y*len(self.x)})
+            vals = pd.DataFrame({'x': None if not self.x else self.x*len(self.y),
+                                 'y': self.y if not self.x else self.y*len(self.x)})
 
             for irow, row in vals.iterrows():
                 # Set twin ax status
@@ -894,7 +929,6 @@ class Data:
                 if (row['x'] != vals.loc[0, 'x'] and self.twin_y) \
                         or (row['y'] != vals.loc[0, 'y'] and self.twin_x):
                     twin = True
-
                 if self.legend_vals is not None and self.twin_y:
                     leg = row['x']
                 elif self.legend_vals is not None:
@@ -911,8 +945,8 @@ class Data:
                     df2 = df[df[self.legend]==row['Leg']].copy()
 
                 # Filter out all nan data
-                if len(df2[row['x']].dropna()) == 0 \
-                        or len(df2[row['y']].dropna()) == 0:
+                if row['x'] and len(df2[row['x']].dropna()) == 0 \
+                        or row['y'] and len(df2[row['y']].dropna()) == 0:
                     continue
 
                 # Set twin ax status

@@ -103,9 +103,9 @@ Documentation
    install
    design
    keyword
-   grouping
-   styles
-   ranges
+   grouping.ipynb
+   styles.ipynb
+   ranges.ipynb
 
 .. toctree::
    :maxdepth: 1

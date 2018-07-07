@@ -10,6 +10,7 @@ import importlib
 import os, sys
 import pandas as pd
 import pdb
+import scipy.stats
 import datetime
 import numpy as np
 import copy
@@ -161,6 +162,7 @@ class BaseLayout:
 
         # Axis
         self.ax = ['x', 'y', 'x2', 'y2']
+        spines = utl.kwget(kwargs, self.fcpp, 'spines', True)
         self.axes = Element('ax', self.fcpp, kwargs,
                             size=utl.kwget(kwargs, self.fcpp,
                                        'ax_size', [400, 400]),
@@ -175,6 +177,14 @@ class BaseLayout:
                             share_y2=kwargs.get('share_y2', True),
                             share_col = kwargs.get('share_col', False),
                             share_row = kwargs.get('share_row', False),
+                            spine_bottom = utl.kwget(kwargs, self.fcpp,
+                                                     'spine_bottom', spines),
+                            spine_left = utl.kwget(kwargs, self.fcpp,
+                                                   'spine_left', spines),
+                            spine_right = utl.kwget(kwargs, self.fcpp,
+                                                    'spine_right', spines),
+                            spine_top = utl.kwget(kwargs, self.fcpp,
+                                                  'spine_top', spines),
                             twin_x=kwargs.get('twin_x', False),
                             twin_y=kwargs.get('twin_y', False),
                             )
@@ -387,6 +397,32 @@ class BaseLayout:
                             rotation=self.tick_labels_minor.rotation,
                             size=[0, 0],
                             ))
+
+        # Histogram
+        self.hist = Element('hist', self.fcpp, kwargs,
+                            on=True if 'hist' in self.plot_func and kwargs.get('hist_on', True) else False,
+                            align=utl.kwget(kwargs, self.fcpp, 'hist_align', 'mid'),
+                            bins=utl.kwget(kwargs, self.fcpp, 'hist_bins', kwargs.get('bins', 20)),
+                            edge_color=copy.copy(color_list),
+                            edge_width=0,
+                            fill_alpha=0.5,
+                            fill_color=copy.copy(color_list),
+                            cumulative=utl.kwget(kwargs, self.fcpp, 'hist_cumulative', kwargs.get('cumulative', False)),
+                            kde=utl.kwget(kwargs, self.fcpp, 'hist_kde', kwargs.get('kde', False)),
+                            normalize=utl.kwget(kwargs, self.fcpp, 'hist_normalize', kwargs.get('normalize', False)),
+                            rwidth=utl.kwget(kwargs, self.fcpp, 'hist_width', None),
+                            stacked=utl.kwget(kwargs, self.fcpp, 'hist_stacked', kwargs.get('stacked', False)),
+                            type=utl.kwget(kwargs, self.fcpp, 'hist_type', 'bar'),
+                            vertical=utl.kwget(kwargs, self.fcpp, 'hist_vertical', kwargs.get('vertical', True)),
+                            )
+        self.kde = Element('kde', self.fcpp, kwargs,
+                           on=utl.kwget(kwargs, self.fcpp, 'hist_kde', kwargs.get('kde', False)),
+                           color=copy.copy(color_list),
+                           width=1.5,
+                           zorder=5,
+                           )
+        if self.kde.on:
+            self.hist.normalize = True
 
         # Boxplot labels
         self.box_group_title = Element('box_group_title', self.fcpp, kwargs,
@@ -802,25 +838,6 @@ class BaseLayout:
         if self.title_wrap.on and not self.title_wrap.text:
             self.title_wrap.text = ' | '.join(self.label_wrap.values)
 
-        # Disable x axis grids for boxplot
-        if 'box' in self.plot_func:
-            self.grid_major_x.on = False
-            self.grid_minor_x.on = False
-            self.ticks_major_x.on = False
-            self.ticks_minor_x.on = False
-            self.tick_labels_major_x.on = False
-            self.tick_labels_minor_x.on = False
-            self.label_x.on = False
-        if 'heatmap' in self.plot_func:
-            self.grid_major_x.on = False
-            self.grid_major_y.on = False
-            self.grid_minor_x.on = False
-            self.grid_minor_y.on = False
-            self.ticks_minor_x.on = False
-            self.ticks_minor_y.on = False
-            self.tick_labels_minor_x.on = False
-            self.tick_labels_minor_y.on = False
-
         # Confidence interval
         self.conf_int = Element('conf_int', self.fcpp, kwargs,
                                 on=True if kwargs.get('conf_int', False) else False,
@@ -847,6 +864,25 @@ class BaseLayout:
         if not self.axes.share_x or not self.axes.share_y:
             self.separate_ticks = True
         self.tick_cleanup = utl.kwget(kwargs, self.fcpp, 'tick_cleanup', True)
+
+        # Plot overrides
+        if 'box' in self.plot_func:
+            self.grid_major_x.on = False
+            self.grid_minor_x.on = False
+            self.ticks_major_x.on = False
+            self.ticks_minor_x.on = False
+            self.tick_labels_major_x.on = False
+            self.tick_labels_minor_x.on = False
+            self.label_x.on = False
+        if 'heatmap' in self.plot_func:
+            self.grid_major_x.on = False
+            self.grid_major_y.on = False
+            self.grid_minor_x.on = False
+            self.grid_minor_y.on = False
+            self.ticks_minor_x.on = False
+            self.ticks_minor_y.on = False
+            self.tick_labels_minor_x.on = False
+            self.tick_labels_minor_y.on = False
 
     def init_white_space(self, **kwargs):
         """
@@ -969,6 +1005,7 @@ class BaseLayout:
         kwargs['color'] = element.color
         kwargs['width'] = element.width
         kwargs['style'] = element.style
+        kwargs['zorder'] = element.zorder
         for pp in pop:
             if pp in kwargs.keys():
                 kwargs.pop(pp)
@@ -1030,6 +1067,13 @@ class BaseLayout:
                 getattr(self, 'label_%s' % lab).values = \
                     getattr(data, '%s_vals' % lab)
 
+        if 'hist' in self.plot_func:
+            self.label_x.on = kwargs.get('label_x_on', True)
+            self.label_x.text = '%s' % self.label_y.text
+            if self.hist.normalize:
+                self.label_y.text = kwargs.get('label_y_text', 'Normalized Counts')
+            else:
+                self.label_y.text = kwargs.get('label_y_text', 'Counts')
 
 class Element:
     def __init__(self, label='None', fcpp={}, others={}, **kwargs):
@@ -1053,6 +1097,8 @@ class Element:
         self._text_orig = kwargs.get('text')
         self.rotation = utl.kwget(kwargs, fcpp, '%s_rotation' % label,
                                   kwargs.get('rotation', 0))
+        self.zorder = utl.kwget(kwargs, fcpp, '%s_zorder' % label,
+                                kwargs.get('zorder', 0))
 
         # fill an edge colors
         self.fill_alpha = utl.kwget(kwargs, fcpp, '%s_fill_alpha' % label,
@@ -1749,6 +1795,16 @@ class LayoutMPL(BaseLayout):
             elif data.z is not None:
                 pp = ax.plot(df[data.x[0]], df[data.y[0]], 'o-')
                 pp2 = ax2.plot(df[data.x[0]], df[data.z[0]], 'o-')
+            # hist
+            elif self.plot_func == 'plot_hist':
+                pp = ax.hist(df[data.y[0]], bins=self.hist.bins, normed=self.hist.normalize)
+                if self.hist.normalize:
+                    if self.hist.vertical:
+                        data.ranges[ir, ic]['ymax'] = \
+                            max(pp[0]) * (1 + data.ax_limit_padding_y_max)
+                    elif not self.hist.vertical:
+                        data.ranges[ir, ic]['xmax'] = \
+                            max(pp[0]) * (1 + data.ax_limit_padding_x_max)
             # Regular
             else:
                 for xy in zip(data.x, data.y):
@@ -2030,21 +2086,22 @@ class LayoutMPL(BaseLayout):
                 [np.nanmax([0 for t in x2ticklabelsmaj]),
                  np.nanmax([0 for t in x2ticklabelsmaj])]
 
-        if self.label_x.on:
+        if self.label_x.on and type(self.label_x.text) is str:
             self.label_x.size = (label_x.get_window_extent().width,
                                  label_x.get_window_extent().height)
-        if self.axes.twin_y:
+        if self.axes.twin_y and type(self.label_x2.text) is str:
             self.label_x2.size = (label_x2.get_window_extent().width,
                                   label_x2.get_window_extent().height)
-        self.label_y.size = (label_y.get_window_extent().width,
-                             label_y.get_window_extent().height)
-        if self.axes.twin_x:
+        if type(self.label_y.text) is str:
+            self.label_y.size = (label_y.get_window_extent().width,
+                                 label_y.get_window_extent().height)
+        if self.axes.twin_x and type(self.label_y2.text) is str:
             self.label_y2.size = (label_y2.get_window_extent().width,
                                   label_y2.get_window_extent().height)
-        if self.label_z.on:
+        if self.label_z.on and type(self.label_z.text) is str:
             self.label_z.size = (label_z.get_window_extent().width,
                                  label_z.get_window_extent().height)
-        if self.title.on:
+        if self.title.on and type(self.title.text) is str:
             self.title.size[0] = self.axes.size[0]
             self.title.size[1] = title.get_window_extent().height
 
@@ -2497,6 +2554,47 @@ class LayoutMPL(BaseLayout):
 
         return im
 
+    def plot_hist(self, ir, ic, iline, df, x, y, leg_name, data, zorder=1,
+                line_type=None, marker_disable=False):
+
+        hist = self.axes.obj[ir, ic].hist(df[y], bins=self.hist.bins,
+                                          color=self.hist.fill_color.get(iline),
+                                          ec=self.hist.edge_color.get(iline),
+                                          lw=self.hist.edge_width,
+                                          zorder=3, align=self.hist.align,
+                                          cumulative=self.hist.cumulative,
+                                          normed=self.hist.normalize,
+                                          rwidth=self.hist.rwidth,
+                                          stacked=self.hist.stacked,
+                                          #type=self.hist.type,
+                                          orientation='vertical' if self.hist.vertical else 'horizontal',
+                                          )
+
+        # Add a kde
+        if self.kde.on:
+            kde = scipy.stats.gaussian_kde(df[y])
+            x0 = np.linspace(0, df[y].max(), 1000)
+            y0 = kde(x0)
+            kwargs = self.make_kwargs(self.kde)
+            kwargs['color'] = kwargs['color'].get(iline)
+            kde = self.plot_line(ir, ic, x0, y0, **kwargs)
+
+        # Add a reference to the line to self.lines
+        if leg_name:
+            handle = [patches.Rectangle((0,0),1,1,color=self.hist.fill_color.get(iline))]
+            self.legend.values[leg_name] = handle
+
+        # Update data ranges if normalized
+        if self.hist.normalize:
+            if self.hist.vertical:
+                data.ranges[ir, ic]['ymax'] = \
+                    max(hist[0]) * (1 + data.ax_limit_padding_y_max)
+            elif not self.hist.vertical:
+                data.ranges[ir, ic]['xmax'] = \
+                    max(hist[0]) * (1 + data.ax_limit_padding_x_max)
+
+        return hist, data
+
     def plot_line(self, ir, ic, x0, y0, x1=None, y1=None,**kwargs):
         """
         Plot a simple line
@@ -2516,11 +2614,13 @@ class LayoutMPL(BaseLayout):
         if y1:
             y0 = [y0, y1]
 
-        self.axes.obj[ir, ic].plot(x0, y0,
-                                   linestyle=kwargs.get('style', '-'),
-                                   linewidth=kwargs.get('width', 1),
-                                   color=kwargs.get('color', '#000000').get(2 * ir + ic + 1),
-                                   zorder=kwargs.get('zorder', 0))
+        line = self.axes.obj[ir, ic].plot(x0, y0,
+                                          linestyle=kwargs.get('style', '-'),
+                                          linewidth=kwargs.get('width', 1),
+                                          color=kwargs.get('color', '#000000'),
+                                          zorder=kwargs.get('zorder', 1))
+
+        return line
 
     def plot_xy(self, ir, ic, iline, df, x, y, leg_name, twin, zorder=1,
                 line_type=None, marker_disable=False):
@@ -2620,11 +2720,11 @@ class LayoutMPL(BaseLayout):
             axes[0].obj[ir, ic].set_facecolor(axes[0].fill_color.get(2 * ir + ic + 1))
         except:
             axes[0].obj[ir, ic].set_axis_bgcolor(axes[0].fill_color.get(2 * ir + ic + 1))
-        try:
-            axes[-1].obj[ir, ic].set_edgecolor(axes[-1].edge_color.get(2 * ir + ic + 1))
-        except:
-            for f in ['bottom', 'top', 'right', 'left']:
+        for f in ['bottom', 'top', 'right', 'left']:
+            if getattr(self.axes, 'spine_%s' % f):
                 axes[-1].obj[ir, ic].spines[f].set_color(axes[-1].edge_color.get(2 * ir + ic + 1))
+            else:
+                axes[-1].obj[ir, ic].spines[f].set_color(self.fig.fill_color.get(1))
         for axis in ['top','bottom','left','right']:
             axes[-1].obj[ir, ic].spines[axis].set_linewidth(self.axes.edge_width)
 
@@ -2691,7 +2791,7 @@ class LayoutMPL(BaseLayout):
         axis = ['x', 'x2', 'y', 'y2', 'z']
         for ax in axis:
             label = getattr(self, 'label_%s' % ax)
-            if not label.on:
+            if not label.on or type(label.text) is not str:
                 continue
 
             if '2' in ax:
