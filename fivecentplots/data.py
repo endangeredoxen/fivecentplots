@@ -13,7 +13,7 @@ st = pdb.set_trace
 
 REQUIRED_VALS = {'plot_xy': ['x', 'y'],
                  'plot_box': ['y'],
-                 'plot_hist': ['y'],
+                 'plot_hist': ['x'],
                  'plot_contour': ['x', 'y', 'z'],
                  'plot_heatmap': ['x', 'y', 'z'],
                 }
@@ -189,24 +189,22 @@ class Data:
         Set padding limits for axis
         """
 
-        if self.plot_func in ['plot_contour', 'plot_heatmap', 'plot_hist']:
+        if self.plot_func in ['plot_contour', 'plot_heatmap']:
+            self.ax_limit_padding = kwargs.get('ax_limit_padding', None)
+        elif self.plot_func in ['plot_hist']:
             self.ax_limit_padding = kwargs.get('ax_limit_padding', 0)
+            self.ax_limit_padding_y_max = kwargs.get('ax_limit_padding', 0.05)
         else:
             self.ax_limit_padding = utl.kwget(kwargs, self.fcpp, 'ax_limit_padding', 0.05)
         for ax in ['x', 'x2', 'y', 'y2']:
-            setattr(self, 'ax_limit_padding_%s_min' % ax,
-                    utl.kwget(kwargs, self.fcpp,
-                              'ax_limit_padding_%s_min' % ax, self.ax_limit_padding))
-            setattr(self, 'ax_limit_padding_%s_max' % ax,
-                    utl.kwget(kwargs, self.fcpp,
-                              'ax_limit_padding_%s_max' % ax, self.ax_limit_padding))
-        if self.plot_func in ['plot_hist']:
-            if utl.kwget(kwargs, self.fcpp, 'hist_vertical', kwargs.get('vertical', True)):
-                self.ax_limit_padding_y_max = utl.kwget(kwargs, self.fcpp,
-                                                        'ax_limit_padding', 0.05)
-            else:
-                self.ax_limit_padding_x_max = utl.kwget(kwargs, self.fcpp,
-                                                        'ax_limit_padding', 0.05)
+            if not hasattr(self, 'ax_limit_padding_%s_min' % ax):
+                setattr(self, 'ax_limit_padding_%s_min' % ax,
+                        utl.kwget(kwargs, self.fcpp,
+                                  'ax_limit_padding_%s_min' % ax, self.ax_limit_padding))
+            if not hasattr(self, 'ax_limit_padding_%s_max' % ax):
+                setattr(self, 'ax_limit_padding_%s_max' % ax,
+                        utl.kwget(kwargs, self.fcpp,
+                                  'ax_limit_padding_%s_max' % ax, self.ax_limit_padding))
 
     def check_df(self, df):
         """
@@ -637,8 +635,7 @@ class Data:
                         .quantile(xq)[cols].min().iloc[0]
         elif vmin is not None:
             vmin = vmin
-        elif getattr(self, 'ax_limit_padding_%s_min' % ax) is not None \
-                and getattr(self, 'ax_limit_padding_%s_min' % ax) > 0:
+        elif getattr(self, 'ax_limit_padding_%s_min' % ax) is not None:
             if self.ax_scale in ['log%s' % ax, 'loglog',
                                  'semilog%s' % ax]:
                 axmin = np.log10(axmin) - \
@@ -679,8 +676,7 @@ class Data:
                         .quantile(xq)[cols].max().iloc[0]
         elif vmax is not None:
             vmax = vmax
-        elif getattr(self, 'ax_limit_padding_%s_max' % ax) is not None \
-                and getattr(self, 'ax_limit_padding_%s_max' % ax) > 0:
+        elif getattr(self, 'ax_limit_padding_%s_max' % ax) is not None:
             if self.ax_scale in ['log%s' % ax, 'loglog',
                                  'semilog%s' % ax]:
                 axmax = np.log10(axmax) + \
@@ -878,8 +874,12 @@ class Data:
                 selfx = [None]
             else:
                 selfx = self.x
+            if not self.y:
+                selfy = [None]
+            else:
+                selfy = self.y
             for xx in selfx:
-                for yy in self.y:
+                for yy in selfy:
                     leg_all += [(leg, xx, yy)]
 
         leg_df = pd.DataFrame(leg_all, columns=['Leg', 'x', 'y'])
@@ -920,8 +920,10 @@ class Data:
         """
 
         if type(self.legend_vals) != pd.DataFrame:
-            vals = pd.DataFrame({'x': None if not self.x else self.x*len(self.y),
-                                 'y': self.y if not self.x else self.y*len(self.x)})
+            lenx = 1 if not self.x else len(self.x)
+            leny = 1 if not self.y else len(self.y)
+            vals = pd.DataFrame({'x': self.x if not self.x else self.x*leny,
+                                 'y': self.y if not self.y else self.y*lenx})
 
             for irow, row in vals.iterrows():
                 # Set twin ax status
@@ -1064,7 +1066,7 @@ class Data:
                     self.get_data_ranges(ir, ic)
 
                 # Get boxplot changes DataFrame
-                if 'box' in self.plot_func:
+                if 'box' in self.plot_func:  # think we are doing this twice
                     self.get_box_index_changes()
 
                 # Yield the subset

@@ -413,7 +413,7 @@ class BaseLayout:
                             rwidth=utl.kwget(kwargs, self.fcpp, 'hist_width', None),
                             stacked=utl.kwget(kwargs, self.fcpp, 'hist_stacked', kwargs.get('stacked', False)),
                             type=utl.kwget(kwargs, self.fcpp, 'hist_type', 'bar'),
-                            vertical=utl.kwget(kwargs, self.fcpp, 'hist_vertical', kwargs.get('vertical', True)),
+                            horizontal=utl.kwget(kwargs, self.fcpp, 'hist_horizontal', kwargs.get('horizontal', False)),
                             )
         self.kde = Element('kde', self.fcpp, kwargs,
                            on=utl.kwget(kwargs, self.fcpp, 'hist_kde', kwargs.get('kde', False)),
@@ -1068,12 +1068,11 @@ class BaseLayout:
                     getattr(data, '%s_vals' % lab)
 
         if 'hist' in self.plot_func:
-            self.label_x.on = kwargs.get('label_x_on', True)
-            self.label_x.text = '%s' % self.label_y.text
             if self.hist.normalize:
                 self.label_y.text = kwargs.get('label_y_text', 'Normalized Counts')
             else:
                 self.label_y.text = kwargs.get('label_y_text', 'Counts')
+            self.tick_cleanup = False
 
 class Element:
     def __init__(self, label='None', fcpp={}, others={}, **kwargs):
@@ -1797,14 +1796,9 @@ class LayoutMPL(BaseLayout):
                 pp2 = ax2.plot(df[data.x[0]], df[data.z[0]], 'o-')
             # hist
             elif self.plot_func == 'plot_hist':
-                pp = ax.hist(df[data.y[0]], bins=self.hist.bins, normed=self.hist.normalize)
-                if self.hist.normalize:
-                    if self.hist.vertical:
-                        data.ranges[ir, ic]['ymax'] = \
-                            max(pp[0]) * (1 + data.ax_limit_padding_y_max)
-                    elif not self.hist.vertical:
-                        data.ranges[ir, ic]['xmax'] = \
-                            max(pp[0]) * (1 + data.ax_limit_padding_x_max)
+                pp = ax.hist(df[data.x[0]], bins=self.hist.bins, normed=self.hist.normalize)
+                data = self.set_axes_ranges_hist(ir, ic, data, pp, 0)
+
             # Regular
             else:
                 for xy in zip(data.x, data.y):
@@ -2557,7 +2551,7 @@ class LayoutMPL(BaseLayout):
     def plot_hist(self, ir, ic, iline, df, x, y, leg_name, data, zorder=1,
                 line_type=None, marker_disable=False):
 
-        hist = self.axes.obj[ir, ic].hist(df[y], bins=self.hist.bins,
+        hist = self.axes.obj[ir, ic].hist(df[x], bins=self.hist.bins,
                                           color=self.hist.fill_color.get(iline),
                                           ec=self.hist.edge_color.get(iline),
                                           lw=self.hist.edge_width,
@@ -2567,31 +2561,40 @@ class LayoutMPL(BaseLayout):
                                           rwidth=self.hist.rwidth,
                                           stacked=self.hist.stacked,
                                           #type=self.hist.type,
-                                          orientation='vertical' if self.hist.vertical else 'horizontal',
+                                          orientation='vertical' if not self.hist.horizontal else 'horizontal',
                                           )
-
-        # Add a kde
-        if self.kde.on:
-            kde = scipy.stats.gaussian_kde(df[y])
-            x0 = np.linspace(0, df[y].max(), 1000)
-            y0 = kde(x0)
-            kwargs = self.make_kwargs(self.kde)
-            kwargs['color'] = kwargs['color'].get(iline)
-            kde = self.plot_line(ir, ic, x0, y0, **kwargs)
 
         # Add a reference to the line to self.lines
         if leg_name:
             handle = [patches.Rectangle((0,0),1,1,color=self.hist.fill_color.get(iline))]
             self.legend.values[leg_name] = handle
 
+        # Swap labels
+        if self.hist.horizontal:
+            ylab = self.label_y.text
+            self.label_y.text = self.label_x.text
+            self.label_x.text = ylab
+            self.label_x.size = [self.label_y.size[1], self.label_y.size[0]]
+            self.label_y.size = [self.label_x.size[1], self.label_x.size[0]]
+
         # Update data ranges if normalized
-        if self.hist.normalize:
-            if self.hist.vertical:
-                data.ranges[ir, ic]['ymax'] = \
-                    max(hist[0]) * (1 + data.ax_limit_padding_y_max)
-            elif not self.hist.vertical:
-                data.ranges[ir, ic]['xmax'] = \
-                    max(hist[0]) * (1 + data.ax_limit_padding_x_max)
+        data = self.set_axes_ranges_hist(ir, ic, data, hist, iline)
+
+        # Add a kde
+        if self.kde.on:
+            kde = scipy.stats.gaussian_kde(df[x])
+            if not self.hist.horizontal:
+                x0 = np.linspace(data.ranges[ir, ic]['xmin'],
+                                 data.ranges[ir, ic]['xmax'], 1000)
+                y0 = kde(x0)
+            else:
+                st()
+                y0 = np.linspace(data.ranges[ir, ic]['ymin'],
+                                 data.ranges[ir, ic]['ymax'], 1000)
+                x0 = kde(y0)
+            kwargs = self.make_kwargs(self.kde)
+            kwargs['color'] = kwargs['color'].get(iline)
+            kde = self.plot_line(ir, ic, x0, y0, **kwargs)
 
         return hist, data
 
@@ -2873,6 +2876,58 @@ class LayoutMPL(BaseLayout):
                 self.axes.obj[ir, ic].set_ylim(top=v)
             elif k == 'y2max' and v is not None:
                 self.axes2.obj[ir, ic].set_ylim(top=v)
+
+    def set_axes_ranges_hist(self, ir, ic, data, hist, iline):
+        """
+        Special range overrides for histogram plot
+            Needed to deal with the late computation of bin counts
+
+        Args:
+            ir (int): subplot row index
+            ic (int): subplot col index
+            data (Data obj): current data object
+            hist (mpl.hist obj): result of hist plot
+
+        """
+
+        if not self.hist.horizontal:
+            if data.ymin:
+                data.ranges[ir, ic]['ymin'] = data.ymin
+            else:
+                data.ranges[ir, ic]['ymin'] = None
+            if data.ymax:
+                data.ranges[ir, ic]['ymax'] = data.ymax
+            elif data.ranges[ir, ic]['ymax'] is None:
+                data.ranges[ir, ic]['ymax'] = \
+                    max(hist[0]) * (1 + data.ax_limit_padding_y_max)
+            else:
+                data.ranges[ir, ic]['ymax'] = \
+                    max(data.ranges[ir, ic]['ymax'], max(hist[0]) * \
+                        (1 + data.ax_limit_padding_y_max))
+        elif self.hist.horizontal:
+            if data.ymin:
+                data.ranges[ir, ic]['ymin'] = data.ymin
+            elif iline == 0:
+                data.ranges[ir, ic]['ymin'] = data.ranges[ir, ic]['xmin']
+            if data.ymax:
+                data.ranges[ir, ic]['ymax'] = data.ymax
+            elif iline == 0:
+                data.ranges[ir, ic]['ymax'] = data.ranges[ir, ic]['xmax']
+            if data.xmin:
+                data.ranges[ir, ic]['xmin'] = data.xmin
+            else:
+                data.ranges[ir, ic]['xmin'] = None
+            if data.xmax:
+                data.ranges[ir, ic]['xmax'] = data.xmax
+            elif iline == 0:
+                data.ranges[ir, ic]['xmax'] = \
+                    max(hist[0]) * (1 + data.ax_limit_padding_y_max)
+            else:
+                data.ranges[ir, ic]['xmax'] = \
+                    max(data.ranges[ir, ic]['xmax'], max(hist[0]) * \
+                        (1 + data.ax_limit_padding_x_max))
+
+        return data
 
     def set_axes_rc_labels(self, ir, ic):
         """
@@ -3171,6 +3226,7 @@ class LayoutMPL(BaseLayout):
                 axes[ia].tick_params(which='major',
                                      labelbottom='off', labelleft='off',
                                      labelright='off', labeltop='off')
+
 
             # Turn on minor tick labels
             ax = ['x', 'y']
