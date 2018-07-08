@@ -50,12 +50,6 @@ class Data:
         self.independent = None
         self.ax_scale = kwargs.get('ax_scale', None)
         self.ax_limit_pad(**kwargs)
-
-        # self.ax_limit_offset = utl.kwget(kwargs, self.fcpp,
-        #                                  'ax_limit_offset', 0)
-        # if self.plot_func in ['plot_heatmap']:
-        #     self.ax_limit_offset = kwargs.get('ax_limit_offset', 0.5)
-
         self.conf_int = kwargs.get('conf_int', False)
         self.fit = kwargs.get('fit', False)
         self.legend = None
@@ -131,13 +125,14 @@ class Data:
         self.lcl = []
         self.ucl = []
 
-        # Normalize
-        normalize=utl.kwget(kwargs, self.fcpp, 'hist_normalize', kwargs.get('normalize', False))
+        # Special for hist
+        normalize = utl.kwget(kwargs, self.fcpp, 'hist_normalize', kwargs.get('normalize', False))
         kde=utl.kwget(kwargs, self.fcpp, 'hist_kde', kwargs.get('kde', False))
         if normalize or kde:
             self.norm = True
         else:
             self.norm = False
+        self.bins = utl.kwget(kwargs, self.fcpp, 'hist_bins', kwargs.get('bins', 20))
 
         # Apply an optional filter to the data
         self.filter = kwargs.get('filter', None)
@@ -695,28 +690,29 @@ class Data:
         Get the data ranges
 
         Args:
-            ir:
-            ic:
+            ir (int): subplot row index
+            ic (int): subplot col index
 
         """
 
         axs = ['x', 'x2', 'y', 'y2', 'z']
 
         for ax in axs:
+            if ax == 'y' and self.plot_func == 'plot_hist':
+                self.get_data_ranges_hist(ir, ic)
+                continue
             if getattr(self, 'share_%s' % ax) and ir == 0 and ic == 0:
                 vals = self.get_data_range(ax, self.df_fig)
                 self.ranges[ir, ic]['%smin' % ax] = vals[0]
                 self.ranges[ir, ic]['%smax' % ax] = vals[1]
             elif self.share_row:
-                vals = self.get_data_range(
-                           ax,
-                           self.df_fig[self.df_fig[self.row[0]] == self.row_vals[ir]])
+                vals = self.get_data_range(ax,
+                    self.df_fig[self.df_fig[self.row[0]] == self.row_vals[ir]])
                 self.ranges[ir, ic]['%smin' % ax] = vals[0]
                 self.ranges[ir, ic]['%smax' % ax] = vals[1]
             elif self.share_col:
-                vals = self.get_data_range(
-                           ax,
-                           self.df_fig[self.df_fig[self.col[0]] == self.col_vals[ic]])
+                vals = self.get_data_range(ax,
+                    self.df_fig[self.df_fig[self.col[0]] == self.col_vals[ic]])
                 self.ranges[ir, ic]['%smin' % ax] = vals[0]
                 self.ranges[ir, ic]['%smax' % ax] = vals[1]
             elif not getattr(self, 'share_%s' % ax):
@@ -728,6 +724,59 @@ class Data:
                     self.ranges[0, 0]['%smin' % ax]
                 self.ranges[ir, ic]['%smax' % ax] = \
                     self.ranges[0, 0]['%smax' % ax]
+
+    def get_data_ranges_hist(self, ir, ic):
+        """
+        Get the data ranges
+
+        Args:
+            ir (int): subplot row index
+            ic (int): subplot col index
+
+        """
+
+        self.y = ['Counts']
+        df_hist = pd.DataFrame()
+
+        if self.share_y and ir == 0 and ic == 0:
+            for iir, iic, df_rc in self.get_rc_subset(self.df_fig, False):
+                if len(df_rc) == 0:
+                    break
+                for iline, df, x, y, z, leg_name, twin in self.get_plot_data(df_rc):
+                    counts = np.histogram(df[self.x[0]], bins=self.bins, normed=self.norm)[0]
+                    df_hist = pd.concat([df_hist, pd.DataFrame({self.y[0]: counts})])
+            vals = self.get_data_range('y', df_hist)
+            self.ranges[ir, ic]['ymin'] = vals[0]
+            self.ranges[ir, ic]['ymax'] = vals[1]
+        elif self.share_row:
+            for iir, iic, df_rc in self.get_rc_subset(self.df_fig, False):
+                df_row = df_rc[df_rc[self.row[0]] == self.row_vals[ir]].copy()
+                for iline, df, x, y, z, leg_name, twin in self.get_plot_data(df_row):
+                    counts = np.histogram(df[self.x[0]], bins=self.bins, normed=self.norm)[0]
+                    df_hist = pd.concat([df_hist, pd.DataFrame({self.y[0]: counts})])
+            vals = self.get_data_range('y', df_hist)
+            self.ranges[ir, ic]['ymin'] = vals[0]
+            self.ranges[ir, ic]['ymax'] = vals[1]
+        elif self.share_col:
+            for iir, iic, df_rc in self.get_rc_subset(self.df_fig, False):
+                df_col = df_rc[df_rc[self.col[0]] == self.col_vals[ic]]
+                for iline, df, x, y, z, leg_name, twin in self.get_plot_data(df_col):
+                    counts = np.histogram(df[self.x[0]], bins=self.bins, normed=self.norm)[0]
+                    df_hist = pd.concat([df_hist, pd.DataFrame({self.y[0]: counts})])
+            vals = self.get_data_range('y', df_hist)
+            self.ranges[ir, ic]['ymin'] = vals[0]
+            self.ranges[ir, ic]['ymax'] = vals[1]
+        elif not self.share_y:
+            for iline, df, x, y, z, leg_name, twin in self.get_plot_data(self.df_rc):
+                counts = np.histogram(df[self.x[0]], bins=self.bins, normed=self.norm)[0]
+                df_hist = pd.concat([df_hist, pd.DataFrame({self.y[0]: counts})])
+            vals = self.get_data_range('y', df_hist)
+            self.ranges[ir, ic]['ymin'] = vals[0]
+            self.ranges[ir, ic]['ymax'] = vals[1]
+        else:
+            self.ranges[ir, ic]['ymin'] = self.ranges[0, 0]['ymin']
+            self.ranges[ir, ic]['ymax'] = self.ranges[0, 0]['ymax']
+        self.y = None
 
     def get_df_figure(self):
         """

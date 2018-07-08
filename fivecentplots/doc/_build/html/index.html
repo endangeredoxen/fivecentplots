@@ -111,6 +111,7 @@
 <li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
 <li class="toctree-l1"><a class="reference internal" href="heatmap.html">heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hist.html">hist</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Other</span></p>
 <ul>
@@ -208,24 +209,28 @@
 <p><span class="tagline">–Plot data bigly–</span></p>
 <div class="section" id="why-another-python-plotting-library">
 <h2>Why another Python plotting library?<a class="headerlink" href="#why-another-python-plotting-library" title="Permalink to this headline">¶</a></h2>
-<p><strong>fivecentplots</strong> exists to simplify data visualization of <strong>pandas</strong> DataFrames.
+<p><strong>fivecentplots</strong> exists to simplify plotting of <strong>pandas</strong> DataFrames.
 While there is no shortage of quality Python plotting libraries on the
 world wide web (i.e., matplotlib, bokeh, seaborn, etc.), the APIs can
-be overly complicated and require multiple lines of code to get the plot
-to look just right.  This complexity can discourage new Python users and
-turn them back to inferior yet simplar data tools like Excel for plotting.</p>
+be overly complicated and require multiple lines of code to make the plot
+look just right.  This complexity is especially discouraging to new
+or casual Python users and often results in them giving up on Python plotting
+in favor of inferior yet simplar plotting tools like Excel.</p>
 </div>
 <div class="section" id="what-issues-does-fivecentplots-address">
 <h2>What issues does fivecentplots address?<a class="headerlink" href="#what-issues-does-fivecentplots-address" title="Permalink to this headline">¶</a></h2>
 <p><strong>1. Ease of Use</strong></p>
 <blockquote>
 <div><ul class="simple">
+<li>Plots require <em>a single function call</em>.  All needed inputs from the data to plot
+to any style and/or formatting parameters are specified as optional keyword
+arguments in this single function call.</li>
 <li>Data come from pandas DataFrames eliminating direct management of
 numpy arrays</li>
-<li>Style and format parameters can be invoked in a single function call
-via optional keyword arguments</li>
-<li>Data can be quickly grouped into subplots (row x column grid, wrapped
-by unique value, legend coloring) by simply specifying DataFrame column names</li>
+<li>Data can be quickly grouped into subsets and visualized.  This includes
+creating grids of subplots and legending by color and/or marker.  All of these
+options are invoked simply by specifying DataFrame column names as appropriate
+keyword arugments</li>
 </ul>
 </div></blockquote>
 <div class="line-block">
@@ -235,11 +240,13 @@ by unique value, legend coloring) by simply specifying DataFrame column names</l
 <blockquote>
 <div><ul class="simple">
 <li>Figure sizes expand and contract to accommodate plot elements rather
-than shrinking elements like the axis in unexpected ways to fit
-labels, ticks, etc. (as is the standard
-practice in matplotlib).  In <strong>fivecentplots</strong> the axes window size
-is king so plots of the same size stay the same size
-regardless of everything surrounding them.</li>
+than remaining fixed and shrinking the internal elements often in unexpected
+ways (as is the standard practice in matplotlib).  In <strong>fivecentplots</strong> the
+axes window size is king so plot areas of the same size stay the same size
+regardless of everything surrounding them.  Because element sizes are
+measured before the plot is generated and the figure size is not fixed,
+<strong>fivecentplots</strong> can adjust the layout to prevent elements from overlapping
+unexpectedly.</li>
 <li>All colors, sizes, marker themes, etc. can be specified from input keywords
 or from a theme file</li>
 </ul>
@@ -309,6 +316,7 @@ each represeting a unique combination of factors</p>
 <li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
 <li class="toctree-l1"><a class="reference internal" href="heatmap.html">heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hist.html">hist</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">

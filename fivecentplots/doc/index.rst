@@ -20,12 +20,13 @@
 
 Why another Python plotting library?
 ------------------------------------
-**fivecentplots** exists to simplify data visualization of **pandas** DataFrames.
+**fivecentplots** exists to simplify plotting of **pandas** DataFrames.
 While there is no shortage of quality Python plotting libraries on the
 world wide web (i.e., matplotlib, bokeh, seaborn, etc.), the APIs can
-be overly complicated and require multiple lines of code to get the plot
-to look just right.  This complexity can discourage new Python users and
-turn them back to inferior yet simplar data tools like Excel for plotting.
+be overly complicated and require multiple lines of code to make the plot
+look just right.  This complexity is especially discouraging to new
+or casual Python users and often results in them giving up on Python plotting
+in favor of inferior yet simplar plotting tools like Excel.
 
 
 What issues does fivecentplots address?
@@ -33,25 +34,30 @@ What issues does fivecentplots address?
 
 **1. Ease of Use**
 
+   * Plots require *a single function call*.  All needed inputs from the data to plot
+     to any style and/or formatting parameters are specified as optional keyword
+     arguments in this single function call.
+
    * Data come from pandas DataFrames eliminating direct management of
      numpy arrays
 
-   * Style and format parameters can be invoked in a single function call
-     via optional keyword arguments
-
-   * Data can be quickly grouped into subplots (row x column grid, wrapped
-     by unique value, legend coloring) by simply specifying DataFrame column names
+   * Data can be quickly grouped into subsets and visualized.  This includes
+     creating grids of subplots and legending by color and/or marker.  All of these
+     options are invoked simply by specifying DataFrame column names as appropriate
+     keyword arugments
 
 |
 
 **2. Repeatability**
 
    * Figure sizes expand and contract to accommodate plot elements rather
-     than shrinking elements like the axis in unexpected ways to fit
-     labels, ticks, etc. (as is the standard
-     practice in matplotlib).  In **fivecentplots** the axes window size
-     is king so plots of the same size stay the same size
-     regardless of everything surrounding them.
+     than remaining fixed and shrinking the internal elements often in unexpected
+     ways (as is the standard practice in matplotlib).  In **fivecentplots** the
+     axes window size is king so plot areas of the same size stay the same size
+     regardless of everything surrounding them.  Because element sizes are
+     measured before the plot is generated and the figure size is not fixed,
+     **fivecentplots** can adjust the layout to prevent elements from overlapping
+     unexpectedly.
 
    * All colors, sizes, marker themes, etc. can be specified from input keywords
      or from a theme file
@@ -115,6 +121,7 @@ Documentation
    boxplot.ipynb
    contour.ipynb
    heatmap.ipynb
+   hist.ipynb
 
 .. toctree::
    :maxdepth: 1

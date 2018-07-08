@@ -1430,8 +1430,8 @@ class LayoutMPL(BaseLayout):
         Add axhlines and axvlines
 
         Args:
-            ir (int): row index
-            ic (int): col index
+            ir (int): subplot row index
+            ic (int): subplot col index
         """
 
         # Set default line attributes
@@ -1475,9 +1475,9 @@ class LayoutMPL(BaseLayout):
                                 fill=True,
                                 transform=self.axes.obj[ir, ic].transAxes,
                                 facecolor=fill_color if type(fill_color) is str \
-                                        else fill_color.get(2 * ir + ic + 1),
+                                        else fill_color.get(ic + ir * self.ncol + 1),
                                 edgecolor=edge_color if type(edge_color) is str \
-                                        else edge_color.get(2 * ir + ic + 1),
+                                        else edge_color.get(ic + ir * self.ncol + 1),
                                 clip_on=False, zorder=-1)
 
         self.axes.obj[ir, ic].add_patch(rect)
@@ -1797,8 +1797,6 @@ class LayoutMPL(BaseLayout):
             # hist
             elif self.plot_func == 'plot_hist':
                 pp = ax.hist(df[data.x[0]], bins=self.hist.bins, normed=self.hist.normalize)
-                data = self.set_axes_ranges_hist(ir, ic, data, pp, 0)
-
             # Regular
             else:
                 for xy in zip(data.x, data.y):
@@ -2569,16 +2567,24 @@ class LayoutMPL(BaseLayout):
             handle = [patches.Rectangle((0,0),1,1,color=self.hist.fill_color.get(iline))]
             self.legend.values[leg_name] = handle
 
-        # Swap labels
+        # Horizontal adjustments
         if self.hist.horizontal:
-            ylab = self.label_y.text
-            self.label_y.text = self.label_x.text
-            self.label_x.text = ylab
-            self.label_x.size = [self.label_y.size[1], self.label_y.size[0]]
-            self.label_y.size = [self.label_x.size[1], self.label_x.size[0]]
+            # Swap labels
+            if iline == 0 and ir == 0 and ic == 0:
+                ylab = self.label_y.text
+                self.label_y.text = self.label_x.text
+                self.label_x.text = ylab
+                self.label_x.size = [self.label_y.size[1], self.label_y.size[0]]
+                self.label_y.size = [self.label_x.size[1], self.label_x.size[0]]
 
-        # Update data ranges if normalized
-        data = self.set_axes_ranges_hist(ir, ic, data, hist, iline)
+            # Rotate ranges
+            if iline == 0:
+                ymin = data.ranges[ir, ic]['ymin']
+                ymax = data.ranges[ir, ic]['ymax']
+                data.ranges[ir, ic]['ymin'] = data.ranges[ir, ic]['xmin']
+                data.ranges[ir, ic]['ymax'] = data.ranges[ir, ic]['xmax']
+                data.ranges[ir, ic]['xmin'] = ymin
+                data.ranges[ir, ic]['xmax'] = ymax
 
         # Add a kde
         if self.kde.on:
@@ -2588,7 +2594,6 @@ class LayoutMPL(BaseLayout):
                                  data.ranges[ir, ic]['xmax'], 1000)
                 y0 = kde(x0)
             else:
-                st()
                 y0 = np.linspace(data.ranges[ir, ic]['ymin'],
                                  data.ranges[ir, ic]['ymax'], 1000)
                 x0 = kde(y0)
@@ -2720,8 +2725,8 @@ class LayoutMPL(BaseLayout):
         Set axes colors (fill, alpha, edge)
 
         Args:
-            ir (int): row index
-            ic (int): col index
+            ir (int): subplot row index
+            ic (int): subplot col index
 
         """
 
@@ -2729,12 +2734,12 @@ class LayoutMPL(BaseLayout):
 
         #for ax in axes:
         try:
-            axes[0].obj[ir, ic].set_facecolor(axes[0].fill_color.get(2 * ir + ic + 1))
+            axes[0].obj[ir, ic].set_facecolor(axes[0].fill_color.get(ic + ir * self.ncol + 1))
         except:
-            axes[0].obj[ir, ic].set_axis_bgcolor(axes[0].fill_color.get(2 * ir + ic + 1))
+            axes[0].obj[ir, ic].set_axis_bgcolor(axes[0].fill_color.get(ic + ir * self.ncol + 1))
         for f in ['bottom', 'top', 'right', 'left']:
             if getattr(self.axes, 'spine_%s' % f):
-                axes[-1].obj[ir, ic].spines[f].set_color(axes[-1].edge_color.get(2 * ir + ic + 1))
+                axes[-1].obj[ir, ic].spines[f].set_color(axes[-1].edge_color.get(ic + ir * self.ncol + 1))
             else:
                 axes[-1].obj[ir, ic].spines[f].set_color(self.fig.fill_color.get(1))
         for axis in ['top','bottom','left','right']:
@@ -2818,7 +2823,7 @@ class LayoutMPL(BaseLayout):
                 if ax == 'x' and ir != self.nrow - 1 and self.nwrap == 0: continue
                 if ax == 'x2' and ir != 0: continue
                 if ax == 'y' and ic != 0: continue
-                if ax == 'y2' and ic != self.ncol - 1 and (2 * ir + ic + 1) != self.nwrap: continue
+                if ax == 'y2' and ic != self.ncol - 1 and (ic + ir * self.ncol + 1) != self.nwrap: continue
 
             # Add the label
             self.add_label(ir, ic, label.text, **self.make_kwargs(label))
@@ -3009,7 +3014,10 @@ class LayoutMPL(BaseLayout):
                     and self.axes.scale not in ['logx', 'semilogx', 'loglog', 'log'] \
                     and (not self.axes.share_x or ir==0 and ic==0):
                 if ia == 0 or self.axes.twin_y:
-                    axes[ia].get_xaxis().get_major_formatter().set_scientific(False)
+                    try:
+                        axes[ia].get_xaxis().get_major_formatter().set_scientific(False)
+                    except:
+                        pass
 
             if not self.tick_labels_major_y.sci \
                     and self.plot_func not in ['plot_heatmap'] \
@@ -3018,7 +3026,7 @@ class LayoutMPL(BaseLayout):
                 try:
                     axes[ia].get_yaxis().get_major_formatter().set_scientific(False)
                 except:
-                    print('bah2: axes[ia].get_xaxis().get_major_formatter().set_scientific(False)')
+                    pass
 
             # General tick params
             if ia == 0:
@@ -3115,11 +3123,13 @@ class LayoutMPL(BaseLayout):
                                    getattr(self, 'ticks_major_y%s' % lab).on)
 
             # Force ticks
-            if self.separate_ticks or self.nwrap > 0:
+            if self.separate_ticks:
                 mplp.setp(axes[ia].get_xticklabels(), visible=True)
             if self.separate_ticks:
                 mplp.setp(axes[ia].get_yticklabels(), visible=True)
-            if not self.separate_ticks and (ic != self.ncol - 1 and (2 * ir + ic + 1) != self.nwrap) and self.axes.twin_x and ia == 1:
+            if self.nwrap > 0 and (ic + (ir + 1) * self.ncol + 1) > self.nwrap:
+                mplp.setp(axes[ia].get_xticklabels()[1:], visible=True)
+            if not self.separate_ticks and (ic != self.ncol - 1 and (ic + ir * self.ncol + 1) != self.nwrap) and self.axes.twin_x and ia == 1:
                 mplp.setp(axes[ia].get_yticklabels(), visible=False)
             if not self.separate_ticks and ir != 0 and self.axes.twin_y and ia == 1:
                 mplp.setp(axes[ia].get_xticklabels(), visible=False)
@@ -3265,7 +3275,7 @@ class LayoutMPL(BaseLayout):
                         not self.separate_labels and axl == 'y2' and ic != self.ncol - 1 and self.nwrap == 0 or \
                         not self.separate_labels and axl == 'x2' and ir != 0 or \
                         not self.separate_labels and axl == 'y' and ic != 0 or \
-                        not self.separate_labels and axl == 'y2' and ic != self.ncol - 1 and (2 * ir + ic + 1) != self.nwrap:
+                        not self.separate_labels and axl == 'y2' and ic != self.ncol - 1 and (ic + ir * self.ncol + 1) != self.nwrap:
                     axes[ia].tick_params(which='minor', **sides[axl])
 
                 elif tlmin.on:

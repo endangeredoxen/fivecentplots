@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>heatmap &mdash; fivecentplots beta documentation</title>
+  <title>hist &mdash; fivecentplots beta documentation</title>
   
 
   
@@ -42,8 +42,8 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="fivecentplots beta documentation" href="index.html"/>
-        <link rel="next" title="hist" href="hist.html"/>
-        <link rel="prev" title="contour" href="contour.html"/> 
+        <link rel="next" title="Modules" href="modules.html"/>
+        <link rel="prev" title="heatmap" href="heatmap.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -111,7 +111,8 @@
 <li class="toctree-l1"><a class="reference internal" href="plot.html">plot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">heatmap</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="heatmap.html">heatmap</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">hist</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#Setup">Setup</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Imports">Imports</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Sample-data">Sample data</a></li>
@@ -119,15 +120,17 @@
 <li class="toctree-l3"><a class="reference internal" href="#Other">Other</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#Categorical-heatmap">Categorical heatmap</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#No-data-labels">No data labels</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#With-data-labels">With data labels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Simple-histogram">Simple histogram</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Vertical-bars">Vertical bars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Horizontal-bars">Horizontal bars</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#Non-uniform-data">Non-uniform data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Legend">Legend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Kernal-density-estimator">Kernal density estimator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Row/column-plot">Row/column plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Wrap-plot">Wrap plot</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="hist.html">hist</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Other</span></p>
 <ul>
@@ -177,13 +180,13 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>heatmap</li>
+      <li>hist</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/heatmap.ipynb.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/hist.ipynb.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -379,16 +382,13 @@ div.nboutput div.output_area.stderr {
     margin-right: 4px;  /* make room for the exclamation icon */
 }
 </style>
-<div class="section" id="heatmap">
-<h1>heatmap<a class="headerlink" href="#heatmap" title="Permalink to this headline">¶</a></h1>
-<p>This section provides examples of how to use the heatmap function. At a
-minimum, the <code class="docutils literal notranslate"><span class="pre">heatmap</span></code> function requires the following keywords:</p>
+<div class="section" id="hist">
+<h1>hist<a class="headerlink" href="#hist" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">hist</span></code> function allows histogram visualizing DataFrame data. At a
+minimum, the <code class="docutils literal notranslate"><span class="pre">hist</span></code> function requires the following keywords:</p>
 <ul><li><p><code class="docutils literal notranslate"><span class="pre">df</span></code>: a pandas DataFrame</p>
-</li><li><p><code class="docutils literal notranslate"><span class="pre">x</span></code>: the name of the DataFrame column containing the x-axis data</p>
 </li><li><p><code class="docutils literal notranslate"><span class="pre">y</span></code>: the name of the DataFrame column containing the y-axis data</p>
-</li><li><p><code class="docutils literal notranslate"><span class="pre">z</span></code>: the name of the DataFrame column containing the z-axis data</p>
-</li></ul><p>Heatmaps in fivecentplots can display both categorical and
-non-categorical data on either a uniform or non-uniform grid.</p>
+</li></ul><p>Other optional keywords are described in Keyword Arguments.</p>
 <div class="section" id="Setup">
 <h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="Imports">
@@ -420,7 +420,7 @@ non-categorical data on either a uniform or non-uniform grid.</p>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">osjoin</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;tests&#39;</span><span class="p">,</span> <span class="s1">&#39;fake_data_heatmap.csv&#39;</span><span class="p">))</span>
+<span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">osjoin</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;tests&#39;</span><span class="p">,</span> <span class="s1">&#39;fake_data_box.csv&#39;</span><span class="p">))</span>
 <span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -449,41 +449,53 @@ non-categorical data on either a uniform or non-uniform grid.</p>
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>Player</th>
-      <th>Category</th>
-      <th>Average</th>
+      <th>Batch</th>
+      <th>Sample</th>
+      <th>Region</th>
+      <th>Value</th>
+      <th>ID</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
-      <td>Lebron James</td>
-      <td>Points</td>
-      <td>27.5</td>
+      <td>101</td>
+      <td>1</td>
+      <td>Alpha123</td>
+      <td>3.5</td>
+      <td>ID701223A</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>Lebron James</td>
-      <td>Assists</td>
-      <td>9.1</td>
+      <td>101</td>
+      <td>1</td>
+      <td>Alpha123</td>
+      <td>2.1</td>
+      <td>ID7700-1222B</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>Lebron James</td>
-      <td>Rebounds</td>
-      <td>8.6</td>
+      <td>101</td>
+      <td>1</td>
+      <td>Alpha123</td>
+      <td>3.3</td>
+      <td>ID701223A</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>Lebron James</td>
-      <td>Blocks</td>
-      <td>0.9</td>
+      <td>101</td>
+      <td>1</td>
+      <td>Alpha123</td>
+      <td>3.2</td>
+      <td>ID7700-1222B</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>James Harden</td>
-      <td>Points</td>
-      <td>30.4</td>
+      <td>101</td>
+      <td>1</td>
+      <td>Alpha123</td>
+      <td>4.0</td>
+      <td>ID701223A</td>
     </tr>
   </tbody>
 </table>
@@ -492,6 +504,7 @@ non-categorical data on either a uniform or non-uniform grid.</p>
 </div>
 <div class="section" id="Set-theme">
 <h3>Set theme<a class="headerlink" href="#Set-theme" title="Permalink to this headline">¶</a></h3>
+<p>(Only needs to be run once)</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
 <span></span>In [3]:
@@ -518,19 +531,18 @@ non-categorical data on either a uniform or non-uniform grid.</p>
 </div>
 </div>
 </div>
-<div class="section" id="Categorical-heatmap">
-<h2>Categorical heatmap<a class="headerlink" href="#Categorical-heatmap" title="Permalink to this headline">¶</a></h2>
-<p>First consider a case where both the <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> DataFrame columns
-contain categorical data values:</p>
-<div class="section" id="No-data-labels">
-<h3>No data labels<a class="headerlink" href="#No-data-labels" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="Simple-histogram">
+<h2>Simple histogram<a class="headerlink" href="#Simple-histogram" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="Vertical-bars">
+<h3>Vertical bars<a class="headerlink" href="#Vertical-bars" title="Permalink to this headline">¶</a></h3>
+<p>A simple histogram with default bin size of 20:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
 <span></span>In [5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Category&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Player&#39;</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="s1">&#39;Average&#39;</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -539,29 +551,27 @@ contain categorical data values:</p>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Average vs Player vs Category.png
+Counts vs Value.png
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/heatmap_14_1.png" src="_images/heatmap_14_1.png" />
+<img alt="_images/hist_15_1.png" src="_images/hist_15_1.png" />
 </div>
 </div>
-<p>Note that for heatmaps the <code class="docutils literal notranslate"><span class="pre">x</span></code> tick labels are rotated 90° by default.
-This can be overridden via the keyword <code class="docutils literal notranslate"><span class="pre">tick_labels_major_x_rotation</span></code>.</p>
 </div>
-<div class="section" id="With-data-labels">
-<h3>With data labels<a class="headerlink" href="#With-data-labels" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="Horizontal-bars">
+<h3>Horizontal bars<a class="headerlink" href="#Horizontal-bars" title="Permalink to this headline">¶</a></h3>
+<p>Same data as above but with histogram bars oriented horizontally:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
 <span></span>In [6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Category&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Player&#39;</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="s1">&#39;Average&#39;</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">data_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">heatmap_font_color</span><span class="o">=</span><span class="s1">&#39;#aaaaaa&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">horizontal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -570,45 +580,56 @@ This can be overridden via the keyword <code class="docutils literal notranslate
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Average vs Player vs Category.png
+Value vs Counts.png
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/heatmap_17_1.png" src="_images/heatmap_17_1.png" />
+<img alt="_images/hist_18_1.png" src="_images/hist_18_1.png" />
 </div>
 </div>
 </div>
 </div>
-<div class="section" id="Non-uniform-data">
-<h2>Non-uniform data<a class="headerlink" href="#Non-uniform-data" title="Permalink to this headline">¶</a></h2>
-<p>A major difference between heatmaps and contour plots is that contour
-plots assume that the <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> DataFrame column values are
-numerical and continuous. With a heatmap, we can cast numerical data
-into categorical form. Note that any missing values get mapped as
-<code class="docutils literal notranslate"><span class="pre">nan</span></code> values are not not plotted.</p>
-<div class="nbinput nblast docutils container">
+<div class="section" id="Legend">
+<h2>Legend<a class="headerlink" href="#Legend" title="Permalink to this headline">¶</a></h2>
+<p>Add a legend:</p>
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
 <span></span>In [7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Read the contour DataFrame</span>
-<span class="n">df2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">osjoin</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;tests&#39;</span><span class="p">,</span> <span class="s1">&#39;fake_data_contour.csv&#39;</span><span class="p">))</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Region&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Counts vs Value.png
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hist_21_1.png" src="_images/hist_21_1.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Kernal-density-estimator">
+<h2>Kernal density estimator<a class="headerlink" href="#Kernal-density-estimator" title="Permalink to this headline">¶</a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
 <span></span>In [8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df2</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Experiment&#39;</span><span class="p">,</span>
-            <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">share_z</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span>
-            <span class="n">data_labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">rc_label_font_size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Batch==103&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Region&#39;</span><span class="p">,</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kde_width</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -617,21 +638,73 @@ into categorical form. Note that any missing values get mapped as
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Value vs Y vs X by Batch by Experiment.png
+Normalized Counts vs Value.png
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/heatmap_21_1.png" src="_images/heatmap_21_1.png" />
+<img alt="_images/hist_23_1.png" src="_images/hist_23_1.png" />
 </div>
 </div>
-<p>Note that the x-axis width is not 400px as specified by the keyword
-<code class="docutils literal notranslate"><span class="pre">ax_scale</span></code>. This occurs because the data set does not have as many
-values on the x-axis as on the y-axis. fivecentplots applies the axis
-size to the axis with the most items and scales the other axis
-accordingly.</p>
+</div>
+<div class="section" id="Row/column-plot">
+<h2>Row/column plot<a class="headerlink" href="#Row/column-plot" title="Permalink to this headline">¶</a></h2>
+<p>Make multiple subplots with different row/column values:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Region&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Sample&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">250</span><span class="p">,</span> <span class="mi">250</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Counts vs Value by Sample by Batch.png
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hist_26_1.png" src="_images/hist_26_1.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Wrap-plot">
+<h2>Wrap plot<a class="headerlink" href="#Wrap-plot" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Region&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">250</span><span class="p">,</span> <span class="mi">250</span><span class="p">],</span> <span class="n">horizontal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Value vs Counts by Batch.png
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hist_28_1.png" src="_images/hist_28_1.png" />
+</div>
+</div>
 </div>
 </div>
 
@@ -645,10 +718,10 @@ accordingly.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="hist.html" class="btn btn-neutral float-right" title="hist" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="modules.html" class="btn btn-neutral float-right" title="Modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="contour.html" class="btn btn-neutral" title="contour" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="heatmap.html" class="btn btn-neutral" title="heatmap" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

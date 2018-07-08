@@ -43,7 +43,7 @@
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="fivecentplots beta documentation" href="index.html"/>
         <link rel="next" title="Older Versions" href="older.html"/>
-        <link rel="prev" title="heatmap" href="heatmap.html"/> 
+        <link rel="prev" title="hist" href="hist.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -112,6 +112,7 @@
 <li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
 <li class="toctree-l1"><a class="reference internal" href="heatmap.html">heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hist.html">hist</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Other</span></p>
 <ul class="current">
@@ -221,6 +222,12 @@
 <dt id="data.Data">
 <em class="property">class </em><code class="descclassname">data.</code><code class="descname">Data</code><span class="sig-paren">(</span><em>plot_func='xy'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="method">
+<dt id="data.Data.ax_limit_pad">
+<code class="descname">ax_limit_pad</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.ax_limit_pad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set padding limits for axis</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="data.Data.check_df">
 <code class="descname">check_df</code><span class="sig-paren">(</span><em>df</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.check_df" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate the dataframe</p>
@@ -367,8 +374,26 @@ without any spaces</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>ir</strong> – </li>
-<li><strong>ic</strong> – </li>
+<li><strong>ir</strong> (<em>int</em>) – subplot row index</li>
+<li><strong>ic</strong> (<em>int</em>) – subplot col index</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.get_data_ranges_hist">
+<code class="descname">get_data_ranges_hist</code><span class="sig-paren">(</span><em>ir</em>, <em>ic</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.get_data_ranges_hist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the data ranges</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ir</strong> (<em>int</em>) – subplot row index</li>
+<li><strong>ic</strong> (<em>int</em>) – subplot col index</li>
 </ul>
 </td>
 </tr>
@@ -706,7 +731,7 @@ dict1 or dict2 keys</li>
         <a href="older.html" class="btn btn-neutral float-right" title="Older Versions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="heatmap.html" class="btn btn-neutral" title="heatmap" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="hist.html" class="btn btn-neutral" title="hist" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
