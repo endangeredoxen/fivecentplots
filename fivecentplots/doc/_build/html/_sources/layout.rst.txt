@@ -1,0 +1,40 @@
+Layout and Elements
+===================
+
+All plots consist of a number of different "elements" arranged in a specific
+spatial "layout".  In **fivecentplots**, each plot component (such as the
+axes window, labels, legends, etc.) is defined as an
+``Element`` class (or object) that contains all of the attributes that define
+its style (i.e., color, font, size, etc).  The placement of these ``Element``
+objects is handled by a ``Layout`` class.  ``Element`` objects are spaced
+by either a user-defined or default whitespace.  The specifics
+of the ``Layout`` class depend on the python plotting engine being used.
+Currently, only ``matplotlib`` is available as a plotting engine, but additional
+engines will be added in the future.
+
+An example x-y plot and a schematic blueprint of its underlying layout
+is shown below.  All ``Element`` attributes
+and whitespace parameters can be controlled via keyword arguments in the plot
+function call or from a predifined "theme" file that consists of dictionaries
+of preferred values.
+
+**Example Plot:**
+
+.. image:: _static/images/my_favorite_ever.png
+
+
+**Layout Schematic:**
+
+.. image:: _static/images/layout.png
+
+We can extend the simple single-axis plot and make a grid of subplots.
+An example of the featured ``Element`` objects in this case is shown below:
+
+**Layout Schematic with Grid:**
+
+.. image:: _static/images/layout_grid.png
+
+All keyword arguments for ``Element`` attributes and whitespace are defined
+in the `next section <keyword.html>`_ of the guide.
+
+

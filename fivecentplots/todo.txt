@@ -8,3 +8,8 @@ notebook fig plot example one is clearly peaking through
 * style and formatting notebook needs new name and intro
   marker figure is not showing
 
+* rename rc_label | wrap_label etc to label_rc and label_wrap for consistancy
+
+* complete docs
+
+* spell check

@@ -730,107 +730,107 @@ class BaseLayout:
                             ))
 
         # Row column label
-        rc_label = DF_Element('rc_label', self.fcpp, kwargs,
+        label_rc = DF_Element('label_rc', self.fcpp, kwargs,
                               on=True,
                               size=utl.kwget(kwargs, self.fcpp,
-                                             'rc_label_size', 30),
+                                             'label_rc_size', 30),
                               edge_color='#8c8c8c',
                               fill_color='#8c8c8c',
                               font_color='#ffffff',
                               font_size=16,
                               font_weight='bold',
                               )
-        self.label_row = copy.deepcopy(rc_label)
+        self.label_row = copy.deepcopy(label_rc)
         self.label_row.on = \
-            utl.kwget(kwargs, self.fcpp, 'row_label_on', True) if kwargs.get('row') else False
+            utl.kwget(kwargs, self.fcpp, 'label_row_on', True) if kwargs.get('row') else False
         self.label_row.column = kwargs.get('row')
         self.label_row.size = [utl.kwget(kwargs, self.fcpp,
-                                         'row_label_size', rc_label._size),
+                                         'label_row_size', label_rc._size),
                                self.axes.size[1]]
         self.label_row.text_size = None
         self.label_row.edge_color = utl.kwget(kwargs, self.fcpp,
-                                              'row_label_edge_color',
-                                              rc_label.edge_color)
+                                              'label_row_edge_color',
+                                              label_rc.edge_color)
         self.label_row.edge_alpha = utl.kwget(kwargs, self.fcpp,
-                                              'row_label_edge_alpha',
-                                              rc_label.edge_alpha)
+                                              'label_row_edge_alpha',
+                                              label_rc.edge_alpha)
         self.label_row.edge_width = utl.kwget(kwargs, self.fcpp,
-                                              'row_label_edge_width',
-                                              rc_label.edge_width)
+                                              'label_row_edge_width',
+                                              label_rc.edge_width)
         self.label_row.fill_color = utl.kwget(kwargs, self.fcpp,
-                                              'row_label_fill_color',
-                                              rc_label.fill_color)
+                                              'label_row_fill_color',
+                                              label_rc.fill_color)
         self.label_row.font_color = utl.kwget(kwargs, self.fcpp,
-                                              'row_label_font_color',
-                                              rc_label.font_color)
+                                              'label_row_font_color',
+                                              label_rc.font_color)
         self.label_row.rotation = 270
 
-        self.label_col = copy.deepcopy(rc_label)
+        self.label_col = copy.deepcopy(label_rc)
         self.label_col.on = \
-            utl.kwget(kwargs, self.fcpp, 'col_label_on', True) if kwargs.get('col') else False
+            utl.kwget(kwargs, self.fcpp, 'label_col_on', True) if kwargs.get('col') else False
         self.label_row.column = kwargs.get('col')
         self.label_col.size = [self.axes.size[0],
                                utl.kwget(kwargs, self.fcpp,
-                                         'col_label_size', rc_label._size)]
+                                         'label_col_size', label_rc._size)]
         self.label_col.text_size = None
         self.label_col.edge_color = utl.kwget(kwargs, self.fcpp,
-                                              'col_label_edge_color',
-                                              rc_label.edge_color)
+                                              'label_col_edge_color',
+                                              label_rc.edge_color)
         self.label_col.edge_width = utl.kwget(kwargs, self.fcpp,
-                                              'col_label_edge_width',
-                                              rc_label.edge_width)
+                                              'label_col_edge_width',
+                                              label_rc.edge_width)
         self.label_col.edge_alpha = utl.kwget(kwargs, self.fcpp,
-                                              'col_label_edge_alpha',
-                                              rc_label.edge_alpha)
+                                              'label_col_edge_alpha',
+                                              label_rc.edge_alpha)
         self.label_col.fill_color = utl.kwget(kwargs, self.fcpp,
-                                              'col_label_fill_color',
-                                              rc_label.fill_color)
+                                              'label_col_fill_color',
+                                              label_rc.fill_color)
         self.label_col.font_color = utl.kwget(kwargs, self.fcpp,
-                                              'col_label_font_color',
-                                              rc_label.font_color)
+                                              'label_col_font_color',
+                                              label_rc.font_color)
         # Wrap label
-        self.label_wrap = DF_Element('wrap_label', self.fcpp, kwargs,
+        self.label_wrap = DF_Element('label_wrap', self.fcpp, kwargs,
                                      on=utl.kwget(kwargs, self.fcpp,
-                                                  'wrap_label_on', True)
+                                                  'label_wrap_on', True)
                                                    if kwargs.get('wrap') else False,
                                      column=kwargs.get('wrap'),
                                      size=[self.axes.size[0],
                                            utl.kwget(kwargs, self.fcpp,
-                                           'wrap_label_size', 30)],
-                                     edge_color=rc_label.edge_color,
-                                     edge_width=rc_label.edge_width,
-                                     edge_alpha=rc_label.edge_alpha,
-                                     fill_color=rc_label.fill_color,
-                                     fill_alpha=rc_label.fill_alpha,
-                                     font=rc_label.font,
-                                     font_color=rc_label.font_color,
-                                     font_size=rc_label.font_size,
-                                     font_style=rc_label.font_style,
-                                     font_weight=rc_label.font_weight,
+                                           'label_wrap_size', 30)],
+                                     edge_color=label_rc.edge_color,
+                                     edge_width=label_rc.edge_width,
+                                     edge_alpha=label_rc.edge_alpha,
+                                     fill_color=label_rc.fill_color,
+                                     fill_alpha=label_rc.fill_alpha,
+                                     font=label_rc.font,
+                                     font_color=label_rc.font_color,
+                                     font_size=label_rc.font_size,
+                                     font_style=label_rc.font_style,
+                                     font_weight=label_rc.font_weight,
                                      text_size=None,
                                      )
 
         if type(self.label_wrap.size) is not list:
             self.label_wrap.size = [self.label_wrap.size, self.axes.size[1]]
 
-        self.title_wrap = Element('wrap_title', self.fcpp, kwargs,
+        self.title_wrap = Element('title_wrap', self.fcpp, kwargs,
                                   on=utl.kwget(kwargs, self.fcpp,
-                                               'wrap_title_on', True)
+                                               'title_wrap_on', True)
                                                if kwargs.get('wrap') else False,
                                   size=utl.kwget(kwargs, self.fcpp,
-                                                 'wrap_title_size',
-                                                 rc_label.size),
+                                                 'title_wrap_size',
+                                                 label_rc.size),
                                   edge_color='#5f5f5f',
-                                  edge_width=rc_label.edge_width,
-                                  edge_alpha=rc_label.edge_alpha,
+                                  edge_width=label_rc.edge_width,
+                                  edge_alpha=label_rc.edge_alpha,
                                   fill_color='#5f5f5f',
-                                  fill_alpha=rc_label.fill_alpha,
-                                  font=rc_label.font,
-                                  font_color=rc_label.font_color,
-                                  font_size=rc_label.font_size,
-                                  font_style=rc_label.font_style,
-                                  font_weight=rc_label.font_weight,
-                                  text=kwargs.get('wrap_title', None),
+                                  fill_alpha=label_rc.fill_alpha,
+                                  font=label_rc.font,
+                                  font_color=label_rc.font_color,
+                                  font_size=label_rc.font_size,
+                                  font_style=label_rc.font_style,
+                                  font_weight=label_rc.font_weight,
+                                  text=kwargs.get('title_wrap', None),
                                   )
 
         if type(self.title_wrap.size) is not list:
@@ -898,11 +898,11 @@ class BaseLayout:
             self.ws_ax_cbar = 0
 
         # rc labels
-        ws_rc_label = utl.kwget(kwargs, self.fcpp, 'ws_rc_label', 10)
-        self.ws_col_label = utl.kwget(kwargs, self.fcpp,
-                                  'ws_col_label', ws_rc_label)
-        self.ws_row_label = utl.kwget(kwargs, self.fcpp,
-                                  'ws_row_label', ws_rc_label)
+        ws_label_rc = utl.kwget(kwargs, self.fcpp, 'ws_label_rc', 10)
+        self.ws_label_col = utl.kwget(kwargs, self.fcpp,
+                                  'ws_label_col', ws_label_rc)
+        self.ws_label_row = utl.kwget(kwargs, self.fcpp,
+                                  'ws_label_row', ws_label_rc)
         self.ws_col = utl.kwget(kwargs, self.fcpp, 'ws_col', 30)
         self.ws_row = utl.kwget(kwargs, self.fcpp, 'ws_row', 30)
 
@@ -1331,10 +1331,10 @@ class LayoutMPL(BaseLayout):
         self.init_white_space(**kwargs)
 
         # Initialize other class variables
-        self.col_label_height  = 0
-        self.row_label_left    = 0
-        self.row_label_width   = 0
-        self.wrap_title_bottom = 0
+        self.label_col_height  = 0
+        self.label_row_left    = 0
+        self.label_row_width   = 0
+        self.title_wrap_bottom = 0
 
         # Weird spacing defaults out of our control
         self.fig_right_border = 6  # extra border on right side that shows up by default
@@ -2223,14 +2223,14 @@ class LayoutMPL(BaseLayout):
             self.ws_col * (self.ncol - 1) +  \
             self.ws_leg_ax + self.legend.size[0] + self.ws_leg_fig + \
             self.labtick_y2 + \
-            self.label_row.size[0] + self.ws_row_label * self.label_row.on + \
+            self.label_row.size[0] + self.ws_label_row * self.label_row.on + \
             self.labtick_z * (self.ncol - 1 if self.ncol > 1 else 1) + \
             self.box_title
 
         # Figure height
         self.fig.size[1] = \
             self.ws_title + \
-            (self.label_col.size[1] + self.ws_col_label) * self.label_col.on + \
+            (self.label_col.size[1] + self.ws_label_col) * self.label_col.on + \
             self.title_wrap.size[1] + self.label_wrap.size[1] + \
             self.labtick_x2 + \
             self.axes.size[1]*self.nrow + \
@@ -2246,7 +2246,7 @@ class LayoutMPL(BaseLayout):
                     'tick_labels_minor_y', 'ws_ticks_ax', 'axes', 'cbar', 'ws_ax_cbar',
                     'ws_col', 'ws_leg_ax', 'legend', 'ws_leg_fig', 'label_y2',
                     'ws_label_tick', 'ws_ticks_ax', 'tick_labels_major_y2', 'label_row',
-                    'ws_row_label', 'label_z', 'tick_labels_major_z', 'box_title',
+                    'ws_label_row', 'label_z', 'tick_labels_major_z', 'box_title',
                     'ncol', 'labtick_y', 'labtick_y2', 'labtick_z']
             for val in vals:
                 if isinstance(getattr(self, val), Element):
@@ -2255,7 +2255,7 @@ class LayoutMPL(BaseLayout):
                     print('   %s = %s' % (val, getattr(self, val)))
             print('self.fig.size[1] = %s' % self.fig.size[1])
             vals = ['ws_fig_title', 'title', 'ws_title_ax', 'ws_fig_ax',
-                    'label_col', 'ws_col_label', 'title_wrap',
+                    'label_col', 'ws_label_col', 'title_wrap',
                     'label_wrap', 'label_x2', 'ws_ticks_ax', 'tick_labels_major_x2',
                     'axes', 'label_x', 'ws_label_tick', 'tick_labels_major_x', 'ws_ticks_ax',
                     'ws_fig_label', 'ws_row', 'box_labels',
@@ -2299,11 +2299,11 @@ class LayoutMPL(BaseLayout):
         """
 
         self.label_row.position[0] = \
-            (self.axes.size[0] + self.labtick_y2 + self.ws_row_label +
+            (self.axes.size[0] + self.labtick_y2 + self.ws_label_row +
              (self.ws_ax_cbar if self.cbar.on else 0) + self.cbar.size[0] +
              self.labtick_z)/self.axes.size[0]
 
-        self.label_col.position[3] = (self.axes.size[1] + self.ws_col_label +
+        self.label_col.position[3] = (self.axes.size[1] + self.ws_label_col +
                                       self.labtick_x2)/self.axes.size[1]
 
         self.label_wrap.position[3] = 1
@@ -2329,7 +2329,7 @@ class LayoutMPL(BaseLayout):
 
         self.axes.position[2] = \
             1 - (self.ws_title + self.title_wrap.size[1] + \
-            (self.label_col.size[1] + self.ws_col_label) * self.label_col.on + \
+            (self.label_col.size[1] + self.ws_label_col) * self.label_col.on + \
             self.label_wrap.size[1] + self.labtick_x2) / self.fig.size[1]
 
         self.axes.position[3] = \
@@ -2342,7 +2342,7 @@ class LayoutMPL(BaseLayout):
         """
 
         col_label = (self.label_col.size[1] + \
-                     self.ws_col_label * self.label_col.on)
+                     self.ws_label_col * self.label_col.on)
         self.title.position[0] = (self.axes.size[0] - self.title.size[0])/2/self.axes.size[0]
         self.title.position[3] = 1+(self.ws_title_ax + col_label) \
                                  /self.axes.size[1]

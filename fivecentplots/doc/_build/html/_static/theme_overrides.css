@@ -56,6 +56,50 @@
     color: #fbb61a;
 }
 
+.dataframe {
+    border-collapse: collapse;
+    border-spacing: 0;
+    empty-cells: show;
+    margin-bottom: 24px
+}
+
+.dataframe td,
+.dataframe th {
+    font-size: 90%;
+    margin: 0;
+    overflow: visible;
+    padding: 8px 16px
+}
+
+.dataframe td:first-child,
+.dataframe th:first-child,
+border-left-width: 0
+}
+.dataframe thead {
+    color: #000;
+    text-align: left;
+    vertical-align: bottom;
+    white-space: nowrap
+}
+.dataframe thead th {
+    font-weight: bold;
+    border-bottom: solid 2px #e1e4e5
+}
+.dataframe td {
+    background-color: transparent;
+    vertical-align: middle
+}
+.dataframe td p {
+    line-height: 18px
+}
+.dataframe td p:last-child {
+    margin-bottom: 0
+}
+.dataframe {
+    width: 1%;
+    padding-right: 0;
+    margin: 0
+}
 .wy-alert.wy-alert-info .wy-alert-title,
 .rst-content .note .wy-alert-title,
 .rst-content .wy-alert-info.attention .wy-alert-title,
@@ -83,7 +127,6 @@
 .rst-content .wy-alert-info.admonition-todo .admonition-title {
     background: #aeb6bf
 }
-
 .wy-alert.wy-alert-info,
 .rst-content .note,
 .rst-content .wy-alert-info.attention,
@@ -98,13 +141,11 @@
 .rst-content .wy-alert-info.admonition-todo {
     background: #d8d9db
 }
-
 .title {
     color: #fbb61a;
     font-size: 28pt;
     font-family: 'Archivo Black';
 }
-
 .tagline {
     font-style: italic;
     color: #666666;

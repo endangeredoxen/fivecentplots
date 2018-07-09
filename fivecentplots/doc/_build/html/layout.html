@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Plot Layout &mdash; fivecentplots beta documentation</title>
+  <title>Layout and Elements &mdash; fivecentplots beta documentation</title>
   
 
   
@@ -98,12 +98,8 @@
             
               <p class="caption"><span class="caption-text">Basics</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Plot Layout</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#elements">Elements</a></li>
-</ul>
-</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Layout and Elements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="grouping.html">Grouping data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="styles.html">Styles and formatting</a></li>
@@ -165,13 +161,13 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Plot Layout</li>
+      <li>Layout and Elements</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/design.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/layout.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -203,18 +199,33 @@
     margin-right: 4px;  /* make room for the exclamation icon */
 }
 </style>
-<div class="section" id="plot-layout">
-<h1>Plot Layout<a class="headerlink" href="#plot-layout" title="Permalink to this headline">¶</a></h1>
-<img alt="_images/figure_design.png" src="_images/figure_design.png" />
-<div class="section" id="elements">
-<h2>Elements<a class="headerlink" href="#elements" title="Permalink to this headline">¶</a></h2>
-<p>Each item in a plot (axis, labels, legend, etc.) consists of an <code class="docutils literal notranslate"><span class="pre">Element</span></code> object.
-This class stores all the attributes like color, size, style, and position, that define how
-the object should be rendered in the plot.</p>
-<p>The figure below illustrates some of the possible <code class="docutils literal notranslate"><span class="pre">Element</span></code> objects that are defined
-in <strong>fivecentplots</strong>.</p>
-<img alt="_static/images/elements.png" src="_static/images/elements.png" />
-</div>
+<div class="section" id="layout-and-elements">
+<h1>Layout and Elements<a class="headerlink" href="#layout-and-elements" title="Permalink to this headline">¶</a></h1>
+<p>All plots consist of a number of different “elements” arranged in a specific
+spatial “layout”.  In <strong>fivecentplots</strong>, each plot component (such as the
+axes window, labels, legends, etc.) is defined as an
+<code class="docutils literal notranslate"><span class="pre">Element</span></code> class (or object) that contains all of the attributes that define
+its style (i.e., color, font, size, etc).  The placement of these <code class="docutils literal notranslate"><span class="pre">Element</span></code>
+objects is handled by a <code class="docutils literal notranslate"><span class="pre">Layout</span></code> class.  <code class="docutils literal notranslate"><span class="pre">Element</span></code> objects are spaced
+by either a user-defined or default whitespace.  The specifics
+of the <code class="docutils literal notranslate"><span class="pre">Layout</span></code> class depend on the python plotting engine being used.
+Currently, only <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> is available as a plotting engine, but additional
+engines will be added in the future.</p>
+<p>An example x-y plot and a schematic blueprint of its underlying layout
+is shown below.  All <code class="docutils literal notranslate"><span class="pre">Element</span></code> attributes
+and whitespace parameters can be controlled via keyword arguments in the plot
+function call or from a predifined “theme” file that consists of dictionaries
+of preferred values.</p>
+<p><strong>Example Plot:</strong></p>
+<img alt="_images/my_favorite_ever.png" src="_images/my_favorite_ever.png" />
+<p><strong>Layout Schematic:</strong></p>
+<img alt="_images/layout.png" src="_images/layout.png" />
+<p>We can extend the simple single-axis plot and make a grid of subplots.
+An example of the featured <code class="docutils literal notranslate"><span class="pre">Element</span></code> objects in this case is shown below:</p>
+<p><strong>Layout Schematic with Grid:</strong></p>
+<img alt="_images/layout_grid.png" src="_images/layout_grid.png" />
+<p>All keyword arguments for <code class="docutils literal notranslate"><span class="pre">Element</span></code> attributes and whitespace are defined
+in the <a class="reference external" href="keyword.html">next section</a> of the guide.</p>
 </div>
 
 

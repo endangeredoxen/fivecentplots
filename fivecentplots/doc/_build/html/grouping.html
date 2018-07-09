@@ -98,9 +98,8 @@
             
               <p class="caption"><span class="caption-text">Basics</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="design.html">Plot Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layout.html">Layout and Elements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Grouping data</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#Setup">Setup</a><ul>
@@ -613,6 +612,35 @@ I [A] vs Voltage by Die.png
 </div>
 <div class="section" id="boxplots">
 <h3>boxplots<a class="headerlink" href="#boxplots" title="Permalink to this headline">¶</a></h3>
+<p>Boxplots are another case where we can benefit by grouping data into
+subsets. As with x-y plots, we supply a list of column names to the
+<code class="docutils literal notranslate"><span class="pre">groups</span></code> keyword:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">df_box</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">osjoin</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;tests&#39;</span><span class="p">,</span> <span class="s1">&#39;fake_data_box.csv&#39;</span><span class="p">))</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df_box</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Region&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Value by Batch + Sample.png
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/grouping_25_1.png" src="_images/grouping_25_1.png" />
+</div>
+</div>
 </div>
 </div>
 <div class="section" id="row-|-col-subplots">
@@ -624,7 +652,7 @@ columns we are using. In this case, we remove the “Temperature [C]” and
 and column commands, respectively.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [8]:
+<span></span>In [9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -645,7 +673,7 @@ I [A] vs Voltage by Temperature [C] by Boost Level.png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_26_1.png" src="_images/grouping_26_1.png" />
+<img alt="_images/grouping_28_1.png" src="_images/grouping_28_1.png" />
 </div>
 </div>
 </div>
@@ -656,7 +684,7 @@ single header by passing the “Temperature [C]” and “Boost Level” column
 names as a list to the wrap keyword.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [9]:
+<span></span>In [10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -677,7 +705,7 @@ I [A] vs Voltage by Temperature [C] + Boost Level.png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_29_1.png" src="_images/grouping_29_1.png" />
+<img alt="_images/grouping_31_1.png" src="_images/grouping_31_1.png" />
 </div>
 </div>
 </div>
@@ -689,7 +717,7 @@ created for each unique value in the DataFrame column(s) listed in the
 fig_groups keyword.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [10]:
+<span></span>In [11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -710,7 +738,7 @@ I [A] vs VoltageDie by Temperature [C] + Boost Level where Die=(-1,2).png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_32_1.png" src="_images/grouping_32_1.png" />
+<img alt="_images/grouping_34_1.png" src="_images/grouping_34_1.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
@@ -725,7 +753,7 @@ I [A] vs VoltageDie by Temperature [C] + Boost Level where Die=(1,1).png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_32_3.png" src="_images/grouping_32_3.png" />
+<img alt="_images/grouping_34_3.png" src="_images/grouping_34_3.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
@@ -740,7 +768,7 @@ I [A] vs VoltageDie by Temperature [C] + Boost Level where Die=(2,-1).png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_32_5.png" src="_images/grouping_32_5.png" />
+<img alt="_images/grouping_34_5.png" src="_images/grouping_34_5.png" />
 </div>
 </div>
 </div>
