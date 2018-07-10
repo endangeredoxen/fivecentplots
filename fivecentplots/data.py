@@ -46,8 +46,7 @@ class Data:
         self.plot_func = plot_func
 
         # Default axis attributes
-        self.dependent = None
-        self.independent = None
+        self.auto_scale = utl.kwget(kwargs, self.fcpp, 'auto_scale', True)
         self.ax_scale = kwargs.get('ax_scale', None)
         self.ax_limit_pad(**kwargs)
         self.conf_int = kwargs.get('conf_int', False)
@@ -695,28 +694,59 @@ class Data:
 
         """
 
-        axs = ['x', 'x2', 'y', 'y2', 'z']
+        df_fig = self.df_fig.copy()
+        df_rc = self.df_rc.copy()
 
+        if self.auto_scale:
+            # Filter down by axis limits that have been specified by the user
+            limits = ['xmin', 'xmax', 'x2min', 'x2max', 'ymin', 'ymax',
+                      'y2min', 'y2max']
+
+            fixed = [f for f in limits if getattr(self, f) is not None]
+
+            for f in fixed:
+                ax = f[0:-3]
+                side = f[-3:]
+                if '2' in ax and (self.twin_x or self.twin_y):
+                    ax = [getattr(self, ax[0])[1]]
+                elif self.twin_x and ax == 'y' or self.twin_y and ax == 'x':
+                    ax = [getattr(self, ax[0])[0]]
+                else:
+                    ax = getattr(self, ax)
+
+                for axx in ax:
+                    if side == 'min':
+                        df_fig = df_fig[df_fig[axx]>=getattr(self, f)]
+                        df_rc = df_rc[df_rc[axx]>=getattr(self, f)]
+                    else:
+                        df_fig = df_fig[df_fig[axx]<=getattr(self, f)]
+                        df_rc = df_rc[df_rc[axx]<=getattr(self, f)]
+
+        # Iterate over axis
+        axs = ['x', 'x2', 'y', 'y2', 'z']
         for ax in axs:
+            if ax == 'z':
+                df_fig = self.df_fig.copy()
+                df_rc = self.df_rc.copy()
             if ax == 'y' and self.plot_func == 'plot_hist':
                 self.get_data_ranges_hist(ir, ic)
                 continue
             if getattr(self, 'share_%s' % ax) and ir == 0 and ic == 0:
-                vals = self.get_data_range(ax, self.df_fig)
+                vals = self.get_data_range(ax, df_fig)
                 self.ranges[ir, ic]['%smin' % ax] = vals[0]
                 self.ranges[ir, ic]['%smax' % ax] = vals[1]
             elif self.share_row:
                 vals = self.get_data_range(ax,
-                    self.df_fig[self.df_fig[self.row[0]] == self.row_vals[ir]])
+                    df_fig[df_fig[self.row[0]] == self.row_vals[ir]])
                 self.ranges[ir, ic]['%smin' % ax] = vals[0]
                 self.ranges[ir, ic]['%smax' % ax] = vals[1]
             elif self.share_col:
                 vals = self.get_data_range(ax,
-                    self.df_fig[self.df_fig[self.col[0]] == self.col_vals[ic]])
+                    df_fig[df_fig[self.col[0]] == self.col_vals[ic]])
                 self.ranges[ir, ic]['%smin' % ax] = vals[0]
                 self.ranges[ir, ic]['%smax' % ax] = vals[1]
             elif not getattr(self, 'share_%s' % ax):
-                vals = self.get_data_range(ax, self.df_rc)
+                vals = self.get_data_range(ax, df_rc)
                 self.ranges[ir, ic]['%smin' % ax] = vals[0]
                 self.ranges[ir, ic]['%smax' % ax] = vals[1]
             else:

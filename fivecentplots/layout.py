@@ -259,11 +259,14 @@ class BaseLayout:
         if 'ticks' in kwargs.keys() and 'ticks_major' not in kwargs.keys():
             kwargs['ticks_major'] = kwargs['ticks']
         ticks_length = utl.kwget(kwargs, self.fcpp, 'ticks_length', 6)
-        ticks_width = utl.kwget(kwargs, self.fcpp, 'ticks_width', 2.5)
+        ticks_width = utl.kwget(kwargs, self.fcpp, 'ticks_width', 2)
         self.ticks_major = Element('ticks_major', self.fcpp, kwargs,
                                    on=utl.kwget(kwargs, self.fcpp,
                                                 'ticks_major', True),
                                    color='#ffffff',
+                                   direction=utl.kwget(kwargs, self.fcpp,
+                                                       'ticks_major_direction',
+                                                       'in'),
                                    increment=utl.kwget(kwargs, self.fcpp,
                                                        'ticks_major_increment',
                                                        None),
@@ -337,6 +340,9 @@ class BaseLayout:
                                    on=utl.kwget(kwargs, self.fcpp,
                                                 'ticks_minor', False),
                                    color='#ffffff',
+                                   direction=utl.kwget(kwargs, self.fcpp,
+                                                       'ticks_minor_direction',
+                                                       'in'),
                                    number=utl.kwget(kwargs, self.fcpp,
                                                     'ticks_minor_number',
                                                     3),
@@ -738,6 +744,7 @@ class BaseLayout:
                               fill_color='#8c8c8c',
                               font_color='#ffffff',
                               font_size=16,
+                              font_style='normal',
                               font_weight='bold',
                               )
         self.label_row = copy.deepcopy(label_rc)
@@ -1525,7 +1532,10 @@ class LayoutMPL(BaseLayout):
             else:
                 ref_line = None
 
-            keys = natsorted(list(self.legend.values.keys()))
+            if self.axes.twin_x or self.axes.twin_y:
+                keys = self.legend.values.keys()
+            else:
+                keys = natsorted(list(self.legend.values.keys()))
             lines = [self.legend.values[f][0] for f in keys]
             if ref_line is not None:
                 keys = [self.ref_line.text] + keys
@@ -1801,6 +1811,7 @@ class LayoutMPL(BaseLayout):
             else:
                 for xy in zip(data.x, data.y):
                     pp = ax.plot(df[xy[0]], df[xy[1]], 'o-')
+
             if data.ranges[ir, ic]['xmin'] is not None:
                 axes[0].set_xlim(left=data.ranges[ir, ic]['xmin'])
             if data.ranges[ir, ic]['xmax'] is not None:
@@ -1809,6 +1820,14 @@ class LayoutMPL(BaseLayout):
                 axes[0].set_ylim(bottom=data.ranges[ir, ic]['ymin'])
             if data.ranges[ir, ic]['ymax'] is not None:
                 axes[0].set_ylim(top=data.ranges[ir, ic]['ymax'])
+            if data.ranges[ir, ic]['x2min'] is not None and data.twin_y:
+                axes[1].set_xlim(left=data.ranges[ir, ic]['x2min'])
+            if data.ranges[ir, ic]['x2max'] is not None and data.twin_y:
+                axes[1].set_xlim(right=data.ranges[ir, ic]['x2max'])
+            if data.ranges[ir, ic]['y2min'] is not None and data.twin_x:
+                axes[1].set_ylim(bottom=data.ranges[ir, ic]['y2min'])
+            if data.ranges[ir, ic]['y2max'] is not None and data.twin_x:
+                axes[1].set_ylim(top=data.ranges[ir, ic]['y2max'])
 
             # Major ticks
             xticks = axes[0].get_xticks()
@@ -1817,6 +1836,7 @@ class LayoutMPL(BaseLayout):
             yiter_ticks = [f for f in axes[0].yaxis.iter_ticks()]
             xticksmaj += [f[2] for f in xiter_ticks[0:len(xticks)]]
             yticksmaj += [f[2] for f in yiter_ticks[0:len(yticks)]]
+
             if data.twin_x:
                 y2ticks = [f[2] for f in axes[1].yaxis.iter_ticks()
                           if f[2] != '']
@@ -3031,8 +3051,8 @@ class LayoutMPL(BaseLayout):
             # General tick params
             if ia == 0:
                 if self.ticks_minor_x.on or self.ticks_minor_y.on:
-                    axes[ia].minorticks_on()
-                axes[ia].tick_params(axis='both',
+                    axes[0].minorticks_on()
+                axes[0].tick_params(axis='both',
                                      which='major',
                                      pad=self.ws_ticks_ax,
                                      colors=self.ticks_major.color.get(0),
@@ -3045,8 +3065,9 @@ class LayoutMPL(BaseLayout):
                                      left=self.ticks_major_y.on,
                                      length=self.ticks_major.size[0],
                                      width=self.ticks_major.size[1],
+                                     direction=self.ticks_major.direction,
                                      )
-                axes[ia].tick_params(axis='both',
+                axes[0].tick_params(axis='both',
                                      which='minor',
                                      pad=self.ws_ticks_ax,
                                      colors=self.ticks_minor.color.get(0),
@@ -3059,49 +3080,55 @@ class LayoutMPL(BaseLayout):
                                      left=self.ticks_minor_y.on,
                                      length=self.ticks_minor.size[0],
                                      width=self.ticks_minor.size[1],
+                                     direction=self.ticks_minor.direction,
                                      )
-            elif self.axes.twin_x:
-                if self.ticks_minor_y2.on:
-                    axes[ia].minorticks_on()
-                axes[ia].tick_params(which='major',
-                                     pad=self.ws_ticks_ax,
-                                     colors=self.ticks_major.color.get(0),
-                                     labelcolor=self.tick_labels_major.font_color,
-                                     labelsize=self.tick_labels_major.font_size,
-                                     right=self.ticks_major_y2.on,
-                                     length=self.ticks_major.size[0],
-                                     width=self.ticks_major.size[1],
-                                     )
-                axes[ia].tick_params(which='minor',
-                                     pad=self.ws_ticks_ax,
-                                     colors=self.ticks_minor.color.get(0),
-                                     labelcolor=self.tick_labels_minor.font_color,
-                                     labelsize=self.tick_labels_minor.font_size,
-                                     right=self.ticks_minor_y2.on,
-                                     length=self.ticks_minor.size[0],
-                                     width=self.ticks_minor.size[1],
-                                     )
-            elif self.axes.twin_y:
-                if self.ticks_minor_x2.on:
-                    axes[ia].minorticks_on()
-                axes[ia].tick_params(which='major',
-                                     pad=self.ws_ticks_ax,
-                                     colors=self.ticks_major.color.get(0),
-                                     labelcolor=self.tick_labels_major.font_color,
-                                     labelsize=self.tick_labels_major.font_size,
-                                     top=self.ticks_major_x2.on,
-                                     length=self.ticks_major.size[0],
-                                     width=self.ticks_major.size[1],
-                                     )
-                axes[ia].tick_params(which='minor',
-                                     pad=self.ws_ticks_ax,
-                                     colors=self.ticks_minor.color.get(0),
-                                     labelcolor=self.tick_labels_minor.font_color,
-                                     labelsize=self.tick_labels_minor.font_size,
-                                     top=self.ticks_minor_x2.on,
-                                     length=self.ticks_minor.size[0],
-                                     width=self.ticks_minor.size[1],
-                                     )
+                if self.axes.twin_x:
+                    if self.ticks_minor_y2.on:
+                        axes[1].minorticks_on()
+                    axes[1].tick_params(which='major',
+                                        pad=self.ws_ticks_ax,
+                                        colors=self.ticks_major.color.get(0),
+                                        labelcolor=self.tick_labels_major.font_color,
+                                        labelsize=self.tick_labels_major.font_size,
+                                        right=self.ticks_major_y2.on,
+                                        length=self.ticks_major.size[0],
+                                        width=self.ticks_major.size[1],
+                                        direction=self.ticks_major.direction,
+                                        )
+                    axes[1].tick_params(which='minor',
+                                        pad=self.ws_ticks_ax,
+                                        colors=self.ticks_minor.color.get(0),
+                                        labelcolor=self.tick_labels_minor.font_color,
+                                        labelsize=self.tick_labels_minor.font_size,
+                                        right=self.ticks_minor_y2.on,
+                                        length=self.ticks_minor.size[0],
+                                        width=self.ticks_minor.size[1],
+                                        direction=self.ticks_minor.direction,
+                                        )
+
+                elif self.axes.twin_y:
+                    if self.ticks_minor_x2.on:
+                        axes[1].minorticks_on()
+                    axes[1].tick_params(which='major',
+                                        pad=self.ws_ticks_ax,
+                                        colors=self.ticks_major.color.get(0),
+                                        labelcolor=self.tick_labels_major.font_color,
+                                        labelsize=self.tick_labels_major.font_size,
+                                        top=self.ticks_major_x2.on,
+                                        length=self.ticks_major.size[0],
+                                        width=self.ticks_major.size[1],
+                                        direction=self.ticks_major.direction,
+                                        )
+                    axes[1].tick_params(which='minor',
+                                        pad=self.ws_ticks_ax,
+                                        colors=self.ticks_minor.color.get(0),
+                                        labelcolor=self.tick_labels_minor.font_color,
+                                        labelsize=self.tick_labels_minor.font_size,
+                                        top=self.ticks_minor_x2.on,
+                                        length=self.ticks_minor.size[0],
+                                        width=self.ticks_minor.size[1],
+                                        direction=self.ticks_minor.direction,
+                                        )
 
             tp = mpl_get_ticks(axes[ia],
                                getattr(self, 'ticks_major_x%s' % lab).on,
@@ -3256,7 +3283,6 @@ class LayoutMPL(BaseLayout):
             sides['y2'] = {'labelright': 'off'}
 
             tlminon = False  # "tick label min"
-
             for axx in ax:
                 axl = '%s%s' % (axx, lab)
                 tlmin = getattr(self, 'tick_labels_minor_%s' % axl)
