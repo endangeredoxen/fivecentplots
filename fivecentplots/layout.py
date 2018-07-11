@@ -702,6 +702,7 @@ class BaseLayout:
                             color=self.grid_major.color,
                             style=self.grid_major.style,
                             width=self.grid_major.width,
+                            zorder=self.grid_major.zorder,
                             ))
             if getattr(getattr(self, 'grid_major_%s' % ax), 'on') and \
                     ('ticks' not in kwargs.keys() or kwargs['ticks'] != False) and \
@@ -733,6 +734,7 @@ class BaseLayout:
                                             self.grid_minor.color),
                             style=self.grid_minor.style,
                             width=self.grid_minor.width,
+                            zorder=self.grid_minor.zorder,
                             ))
 
         # Row column label
@@ -1081,6 +1083,7 @@ class BaseLayout:
                 self.label_y.text = kwargs.get('label_y_text', 'Counts')
             self.tick_cleanup = False
 
+
 class Element:
     def __init__(self, label='None', fcpp={}, others={}, **kwargs):
         """
@@ -1329,6 +1332,7 @@ class LayoutMPL(BaseLayout):
             **kwargs: input args from user
         """
 
+        mplp.style.use('classic')
         mplp.close('all')
 
         # Inherit the base layout properties
@@ -2757,13 +2761,16 @@ class LayoutMPL(BaseLayout):
             axes[0].obj[ir, ic].set_facecolor(axes[0].fill_color.get(ic + ir * self.ncol + 1))
         except:
             axes[0].obj[ir, ic].set_axis_bgcolor(axes[0].fill_color.get(ic + ir * self.ncol + 1))
+
         for f in ['bottom', 'top', 'right', 'left']:
+            if len(axes) > 1:
+                axes[-1].obj[ir, ic].spines[f].set_visible(False)
             if getattr(self.axes, 'spine_%s' % f):
-                axes[-1].obj[ir, ic].spines[f].set_color(axes[-1].edge_color.get(ic + ir * self.ncol + 1))
+                axes[0].obj[ir, ic].spines[f].set_color(axes[0].edge_color.get(ic + ir * self.ncol + 1))
             else:
-                axes[-1].obj[ir, ic].spines[f].set_color(self.fig.fill_color.get(1))
+                axes[0].obj[ir, ic].spines[f].set_color(self.fig.fill_color.get(0))
         for axis in ['top','bottom','left','right']:
-            axes[-1].obj[ir, ic].spines[axis].set_linewidth(self.axes.edge_width)
+            axes[0].obj[ir, ic].spines[axis].set_linewidth(self.axes.edge_width)
 
     def set_axes_grid_lines(self, ir, ic):
         """
@@ -2785,29 +2792,34 @@ class LayoutMPL(BaseLayout):
                 continue
 
             # Set major grid
+            ax.obj[ir, ic].set_axisbelow(True)
             if self.grid_major_x.on:
-                ax.obj[ir, ic].xaxis.grid(b=True, which='major', zorder=0,
-                                          color=self.grid_major.color.get(0),
-                                          linestyle=self.grid_major.style,
-                                          linewidth=self.grid_major.width)
+                ax.obj[ir, ic].xaxis.grid(b=True, which='major',
+                                          #zorder=self.grid_major_x.zorder,
+                                          color=self.grid_major_x.color.get(0),
+                                          linestyle=self.grid_major_x.style,
+                                          linewidth=self.grid_major_x.width)
             else:
                 ax.obj[ir, ic].xaxis.grid(b=False, which='major')
             if self.grid_major_y.on:
-                ax.obj[ir, ic].yaxis.grid(b=True, which='major', zorder=0,
-                                          color=self.grid_major.color.get(0),
-                                          linestyle=self.grid_major.style,
-                                          linewidth=self.grid_major.width)
+                ax.obj[ir, ic].yaxis.grid(b=True, which='major',
+                                          #zorder=self.grid_major_y.zorder,
+                                          color=self.grid_major_y.color.get(0),
+                                          linestyle=self.grid_major_y.style,
+                                          linewidth=self.grid_major_y.width)
             else:
                 ax.obj[ir, ic].yaxis.grid(b=False, which='major')
 
             # Set minor grid
             if self.grid_minor_x.on:
-                ax.obj[ir, ic].xaxis.grid(b=True, which='minor', zorder=0,
+                ax.obj[ir, ic].xaxis.grid(b=True, which='minor',
+                                          #zorder=self.grid_minor_x.zorder,
                                           color=self.grid_minor_x.color.get(0),
                                           linestyle=self.grid_minor_x.style,
                                           linewidth=self.grid_minor_x.width)
             if self.grid_minor_y.on:
-                ax.obj[ir, ic].yaxis.grid(b=True, which='minor', zorder=0,
+                ax.obj[ir, ic].yaxis.grid(b=True, which='minor',
+                                          #zorder=self.grid_minor_y.zorder,
                                           color=self.grid_minor_y.color.get(0),
                                           linestyle=self.grid_minor_y.style,
                                           linewidth=self.grid_minor_y.width)
@@ -3240,7 +3252,7 @@ class LayoutMPL(BaseLayout):
                 # overlapping labels between row, col, and wrap plots
                 if tp['x']['last'] != -999:
                     last_x = tp['x']['labels'][tp['x']['last']][1]
-                    last_x_pos = last_x/(tp['x']['max']-tp['x']['min'])
+                    last_x_pos = (last_x - tp['x']['min'])/(tp['x']['max'] - tp['x']['min'])
                     last_x_px = (1-last_x_pos)*self.axes.size[0]
                     if self.ncol > 1 and \
                             xw > last_x_px + self.ws_col - self.ws_tick_tick_minimum and \
