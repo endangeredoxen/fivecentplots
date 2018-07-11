@@ -1696,10 +1696,13 @@ class LayoutMPL(BaseLayout):
             ax2 = ax.twinx()
         if self.axes.twin_y:
             ax3 = ax.twiny()
-        if self.axes.scale in ['logy', 'semilogy', 'loglog', 'log']:
+        if self.axes.scale in ['logy', 'semilogy']:
             ax.set_yscale('log')
-        elif self.axes.scale in ['logx', 'semilogx', 'loglog', 'log']:
+        elif self.axes.scale in ['logx', 'semilogx']:
             ax.set_xscale('log')
+        elif self.axes.scale in ['loglog', 'log']:
+            ax.set_xscale('log')
+            ax.set_yscale('log')
         elif self.axes.scale in ['symlog']:
             ax.set_xscale('symlog')
             ax.set_yscale('symlog')
@@ -1825,9 +1828,9 @@ class LayoutMPL(BaseLayout):
             if data.ranges[ir, ic]['ymax'] is not None:
                 axes[0].set_ylim(top=data.ranges[ir, ic]['ymax'])
             if data.ranges[ir, ic]['x2min'] is not None and data.twin_y:
-                axes[1].set_xlim(left=data.ranges[ir, ic]['x2min'])
+                axes[2].set_xlim(left=data.ranges[ir, ic]['x2min'])
             if data.ranges[ir, ic]['x2max'] is not None and data.twin_y:
-                axes[1].set_xlim(right=data.ranges[ir, ic]['x2max'])
+                axes[2].set_xlim(right=data.ranges[ir, ic]['x2max'])
             if data.ranges[ir, ic]['y2min'] is not None and data.twin_x:
                 axes[1].set_ylim(bottom=data.ranges[ir, ic]['y2min'])
             if data.ranges[ir, ic]['y2max'] is not None and data.twin_x:
@@ -2194,14 +2197,13 @@ class LayoutMPL(BaseLayout):
                          max(self.tick_labels_major_x.size[1],
                              self.tick_labels_minor_x.size[1]) + \
                          self.ws_ticks_ax * self.tick_labels_major_x.on
-        self.labtick_x2 = (self.label_x2.size[1] + self.ws_label_tick + \
-                           self.ws_ticks_ax + \
+        self.labtick_x2 = (self.label_x2.size[1] + self.ws_label_tick + 2*self.ws_ticks_ax + \
                            max(self.tick_labels_major_x2.size[1],
                                self.tick_labels_minor_x2.size[1])) * self.axes.twin_y
         self.labtick_y = self.label_y.size[0] + self.ws_label_tick + \
                          max(self.tick_labels_major_y.size[0],
                              self.tick_labels_minor_y.size[0]) + self.ws_ticks_ax
-        self.labtick_y2 = (self.label_y2.size[0] + self.ws_label_tick + self.ws_ticks_ax + \
+        self.labtick_y2 = (self.label_y2.size[0] + self.ws_label_tick + 2*self.ws_ticks_ax + \
                            max(self.tick_labels_major_y2.size[0],
                                self.tick_labels_minor_y2.size[0])) * self.axes.twin_x
         self.labtick_z = (self.ws_ticks_ax + self.ws_label_tick) * self.label_z.on + \
@@ -3040,25 +3042,9 @@ class LayoutMPL(BaseLayout):
             else:
                 lab = '2'
 
-            # Turn off scientific (how do we force it?)
-            if not self.tick_labels_major_x.sci \
-                    and self.plot_func not in ['plot_box', 'plot_heatmap'] \
-                    and self.axes.scale not in ['logx', 'semilogx', 'loglog', 'log'] \
-                    and (not self.axes.share_x or ir==0 and ic==0):
-                if ia == 0 or self.axes.twin_y:
-                    try:
-                        axes[ia].get_xaxis().get_major_formatter().set_scientific(False)
-                    except:
-                        pass
-
-            if not self.tick_labels_major_y.sci \
-                    and self.plot_func not in ['plot_heatmap'] \
-                    and self.axes.scale not in ['logy', 'semilogy', 'loglog', 'log'] \
-                    and (not self.axes.share_y or ir==0 and ic==0):
-                try:
-                    axes[ia].get_yaxis().get_major_formatter().set_scientific(False)
-                except:
-                    pass
+            # Turn off scientific
+            if ia == 0 or self.axes.twin_y or self.axes.twin_x:
+                self.set_scientific(axes[ia])
 
             # General tick params
             if ia == 0:
@@ -3098,7 +3084,7 @@ class LayoutMPL(BaseLayout):
                     if self.ticks_minor_y2.on:
                         axes[1].minorticks_on()
                     axes[1].tick_params(which='major',
-                                        pad=self.ws_ticks_ax,
+                                        pad=self.ws_ticks_ax*2,
                                         colors=self.ticks_major.color.get(0),
                                         labelcolor=self.tick_labels_major.font_color,
                                         labelsize=self.tick_labels_major.font_size,
@@ -3108,7 +3094,7 @@ class LayoutMPL(BaseLayout):
                                         direction=self.ticks_major.direction,
                                         )
                     axes[1].tick_params(which='minor',
-                                        pad=self.ws_ticks_ax,
+                                        pad=self.ws_ticks_ax*2,
                                         colors=self.ticks_minor.color.get(0),
                                         labelcolor=self.tick_labels_minor.font_color,
                                         labelsize=self.tick_labels_minor.font_size,
@@ -3122,7 +3108,7 @@ class LayoutMPL(BaseLayout):
                     if self.ticks_minor_x2.on:
                         axes[1].minorticks_on()
                     axes[1].tick_params(which='major',
-                                        pad=self.ws_ticks_ax,
+                                        pad=self.ws_ticks_ax*2,
                                         colors=self.ticks_major.color.get(0),
                                         labelcolor=self.tick_labels_major.font_color,
                                         labelsize=self.tick_labels_major.font_size,
@@ -3132,7 +3118,7 @@ class LayoutMPL(BaseLayout):
                                         direction=self.ticks_major.direction,
                                         )
                     axes[1].tick_params(which='minor',
-                                        pad=self.ws_ticks_ax,
+                                        pad=self.ws_ticks_ax*2,
                                         colors=self.ticks_minor.color.get(0),
                                         labelcolor=self.tick_labels_minor.font_color,
                                         labelsize=self.tick_labels_minor.font_size,
@@ -3174,26 +3160,30 @@ class LayoutMPL(BaseLayout):
                 mplp.setp(axes[ia].get_xticklabels(), visible=False)
 
             # Major rotation
-            if self.tick_labels_major_x.on:
+            if getattr(self, 'tick_labels_major_x%s' % lab).on:
                 ticks_font = \
-                    font_manager.FontProperties(family=self.tick_labels_major_x.font,
-                                                size=self.tick_labels_major_x.font_size,
-                                                style=self.tick_labels_major_x.font_style,
-                                                weight=self.tick_labels_major_x.font_weight)
+                    font_manager.FontProperties(family=getattr(self, 'tick_labels_major_x%s' % lab).font,
+                                                size=getattr(self, 'tick_labels_major_x%s' % lab).font_size,
+                                                style=getattr(self, 'tick_labels_major_x%s' % lab).font_style,
+                                                weight=getattr(self, 'tick_labels_major_x%s' % lab).font_weight)
                 for text in axes[ia].get_xticklabels():
-                    if self.tick_labels_major_x.rotation != 0:
-                        text.set_rotation(self.tick_labels_major_x.rotation)
+                    if getattr(self, 'tick_labels_major_x%s' % lab).rotation != 0:
+                        text.set_rotation(getattr(self, 'tick_labels_major_x%s' % lab).rotation)
                     text.set_fontproperties(ticks_font)
-            if self.tick_labels_major_y.on:
+                    text.set_bbox(dict(edgecolor=getattr(self, 'tick_labels_major_x%s' % lab).edge_color.get(0),
+                                       facecolor=getattr(self, 'tick_labels_major_x%s' % lab).fill_color.get(0)))
+            if getattr(self, 'tick_labels_major_y%s' % lab).on:
                 ticks_font = \
-                    font_manager.FontProperties(family=self.tick_labels_major_x.font,
-                                                size=self.tick_labels_major_x.font_size,
-                                                style=self.tick_labels_major_x.font_style,
-                                                weight=self.tick_labels_major_x.font_weight)
+                    font_manager.FontProperties(family=getattr(self, 'tick_labels_major_y%s' % lab).font,
+                                                size=getattr(self, 'tick_labels_major_y%s' % lab).font_size,
+                                                style=getattr(self, 'tick_labels_major_y%s' % lab).font_style,
+                                                weight=getattr(self, 'tick_labels_major_y%s' % lab).font_weight)
                 for text in axes[ia].get_yticklabels():
-                    if self.tick_labels_major_y.rotation != 0:
-                        text.set_rotation(self.tick_labels_major_y.rotation)
+                    if getattr(self, 'tick_labels_major_y%s' % lab).rotation != 0:
+                        text.set_rotation(getattr(self, 'tick_labels_major_y%s' % lab).rotation)
                     text.set_fontproperties(ticks_font)
+                    text.set_bbox(dict(edgecolor=getattr(self, 'tick_labels_major_y%s' % lab).edge_color.get(0),
+                                       facecolor=getattr(self, 'tick_labels_major_y%s' % lab).fill_color.get(0)))
 
             # Tick label shorthand
             tlmajx = getattr(self, 'tick_labels_major_x%s' % lab)
@@ -3462,12 +3452,21 @@ class LayoutMPL(BaseLayout):
             updated axise
         """
 
-        if not self.tick_labels_major_x.sci and self.plot_func != 'boxplot' \
+        if not self.tick_labels_major_x.sci \
+                and self.plot_func not in ['plot_box', 'plot_heatmap'] \
                 and self.axes.scale not in ['logx', 'semilogx', 'loglog', 'symlog', 'logit', 'log']:
-            ax.get_xaxis().get_major_formatter().set_scientific(False)
+            try:
+                ax.get_xaxis().get_major_formatter().set_scientific(False)
+            except:
+                pass
+
         if not self.tick_labels_major_y.sci \
+                and self.plot_func not in ['plot_heatmap'] \
                 and self.axes.scale not in ['logy', 'semilogy', 'loglog', 'symlog', 'logit', 'log']:
-            ax.get_yaxis().get_major_formatter().set_scientific(False)
+            try:
+                ax.get_yaxis().get_major_formatter().set_scientific(False)
+            except:
+                pass
 
         return ax
 
