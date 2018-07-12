@@ -1064,8 +1064,12 @@ class BaseLayout:
                 else:
                     val = 'label_%s' % lab
                 if type(dd) is list:
-                    getattr(self, val).text = \
-                        lab_text if lab_text is not None else ' + '.join(dd)
+                    if data.wrap == 'y' and lab == 'y' \
+                            or data.wrap == 'x' and lab == 'x':
+                        getattr(self, val).text = data.wrap_vals
+                    else:
+                        getattr(self, val).text = \
+                            lab_text if lab_text is not None else ' + '.join(dd)
                 else:
                     getattr(self, val).text = dd
                 if lab != 'z' and hasattr(self, 'label_%s2' % lab):
@@ -1685,7 +1689,7 @@ class LayoutMPL(BaseLayout):
         # Make a dummy figure
         data = copy.deepcopy(data)
         if 'box' in self.plot_func:
-            data.x = 'x'
+            data.x = ['x']
             data.df_fig['x'] = 1
 
         mplp.ioff()
@@ -1964,45 +1968,70 @@ class LayoutMPL(BaseLayout):
                                          rotation=self.tick_labels_minor_y2.rotation)]
 
         # Write out axes labels
+        label_x = []
+        label_x2 = []
+        label_y = []
+        label_y2 = []
+        label_z = []
         if type(self.label_x.text) is str:
-            label_x = fig.text(0, 0, r'%s' % self.label_x.text,
-                               fontsize=self.label_x.font_size,
-                               weight=self.label_x.font_weight,
-                               style=self.label_x.font_style,
-                               color=self.label_x.font_color,
-                               rotation=self.label_x.rotation)
+            label_x = [fig.text(0, 0, r'%s' % self.label_x.text,
+                                fontsize=self.label_x.font_size,
+                                weight=self.label_x.font_weight,
+                                style=self.label_x.font_style,
+                                color=self.label_x.font_color,
+                                rotation=self.label_x.rotation)]
+
+        if type(self.label_x.text) is list:
+            label_x = []
+            for text in self.label_x.text:
+                label_x += [fig.text(0, 0, r'%s' % text,
+                                     fontsize=self.label_x.font_size,
+                                     weight=self.label_x.font_weight,
+                                     style=self.label_x.font_style,
+                                     color=self.label_x.font_color,
+                                     rotation=self.label_x.rotation)]
 
         if type(self.label_x2.text) is str:
-            label_x2 = fig.text(0, 0, r'%s' % self.label_x2.text,
+            label_x2 = [fig.text(0, 0, r'%s' % self.label_x2.text,
                                fontsize=self.label_x2.font_size,
                                weight=self.label_x2.font_weight,
                                style=self.label_x2.font_style,
                                color=self.label_x2.font_color,
-                               rotation=self.label_x2.rotation)
+                               rotation=self.label_x2.rotation)]
 
         if type(self.label_y.text) is str:
-            label_y = fig.text(0, 0, r'%s' % self.label_y.text,
+            label_y = [fig.text(0, 0, r'%s' % self.label_y.text,
                                fontsize=self.label_y.font_size,
                                weight=self.label_y.font_weight,
                                style=self.label_y.font_style,
                                color=self.label_y.font_color,
-                               rotation=self.label_y.rotation)
+                               rotation=self.label_y.rotation)]
+
+        if type(self.label_y.text) is list:
+            label_y = []
+            for text in self.label_y.text:
+                label_y += [fig.text(0, 0, r'%s' % text,
+                                     fontsize=self.label_y.font_size,
+                                     weight=self.label_y.font_weight,
+                                     style=self.label_y.font_style,
+                                     color=self.label_y.font_color,
+                                     rotation=self.label_y.rotation)]
 
         if type(self.label_y2.text) is str:
-            label_y2 = fig.text(0, 0, r'%s' % self.label_y2.text,
+            label_y2 = [fig.text(0, 0, r'%s' % self.label_y2.text,
                                fontsize=self.label_y2.font_size,
                                weight=self.label_y2.font_weight,
                                style=self.label_y2.font_style,
                                color=self.label_y2.font_color,
-                               rotation=self.label_y2.rotation)
+                               rotation=self.label_y2.rotation)]
 
         if type(self.label_z.text) is str:
-            label_z = fig.text(0, 0, r'%s' % self.label_z.text,
+            label_z = [fig.text(0, 0, r'%s' % self.label_z.text,
                                fontsize=self.label_z.font_size,
                                weight=self.label_z.font_weight,
                                style=self.label_z.font_style,
                                color=self.label_z.font_color,
-                               rotation=self.label_z.rotation)
+                               rotation=self.label_z.rotation)]
 
         # Write out title
         if type(self.title.text) is str:
@@ -2105,21 +2134,21 @@ class LayoutMPL(BaseLayout):
                 [np.nanmax([0 for t in x2ticklabelsmaj]),
                  np.nanmax([0 for t in x2ticklabelsmaj])]
 
-        if self.label_x.on and type(self.label_x.text) is str:
-            self.label_x.size = (label_x.get_window_extent().width,
-                                 label_x.get_window_extent().height)
-        if self.axes.twin_y and type(self.label_x2.text) is str:
-            self.label_x2.size = (label_x2.get_window_extent().width,
-                                  label_x2.get_window_extent().height)
-        if type(self.label_y.text) is str:
-            self.label_y.size = (label_y.get_window_extent().width,
-                                 label_y.get_window_extent().height)
-        if self.axes.twin_x and type(self.label_y2.text) is str:
-            self.label_y2.size = (label_y2.get_window_extent().width,
-                                  label_y2.get_window_extent().height)
-        if self.label_z.on and type(self.label_z.text) is str:
-            self.label_z.size = (label_z.get_window_extent().width,
-                                 label_z.get_window_extent().height)
+        if len(label_x) > 0:
+            self.label_x.size = (max([f.get_window_extent().width for f in label_x]),
+                                 max([f.get_window_extent().height for f in label_x]))
+        if len(label_x2) > 0:
+            self.label_x2.size = (max([f.get_window_extent().width for f in label_x2]),
+                                 max([f.get_window_extent().height for f in label_x2]))
+        if len(label_y) > 0:
+            self.label_y.size = (max([f.get_window_extent().width for f in label_y]),
+                                 max([f.get_window_extent().height for f in label_y]))
+        if len(label_y2) > 0:
+            self.label_y2.size = (max([f.get_window_extent().width for f in label_y2]),
+                                 max([f.get_window_extent().height for f in label_y2]))
+        if len(label_z) > 0:
+            self.label_z.size = (max([f.get_window_extent().width for f in label_z]),
+                                 max([f.get_window_extent().height for f in label_z]))
         if self.title.on and type(self.title.text) is str:
             self.title.size[0] = self.axes.size[0]
             self.title.size[1] = title.get_window_extent().height
@@ -2386,8 +2415,14 @@ class LayoutMPL(BaseLayout):
         self.nrow = data.nrow
         self.nwrap = data.nwrap
 
-        if data.wrap:
+        if data.wrap == 'y' or data.wrap == 'x':
+            self.title_wrap.on = False
+            self.label_wrap.on = False
+            self.separate_labels = kwargs.get('separate_labels', True)
+            self.separate_ticks = kwargs.get('separate_ticks', True)
+        elif data.wrap:
             self.separate_labels = kwargs.get('separate_labels', False)
+            self.separate_ticks = kwargs.get('separate_ticks', False)
             self.ws_row = kwargs.get('ws_row', self.label_wrap._size[1])
             self.ws_col = kwargs.get('ws_col', 0)
             self.cbar.on = False  # may want to address this someday
@@ -2842,8 +2877,14 @@ class LayoutMPL(BaseLayout):
         axis = ['x', 'x2', 'y', 'y2', 'z']
         for ax in axis:
             label = getattr(self, 'label_%s' % ax)
-            if not label.on or type(label.text) is not str:
+            if not label.on:
                 continue
+            if type(label.text) not in [str, list]:
+                continue
+            if type(label.text) is str:
+                labeltext = label.text
+            if type(label.text) is list:
+                labeltext = label.text[ic + ir * self.ncol]
 
             if '2' in ax:
                 axes = self.axes2.obj[ir, ic]
@@ -2860,7 +2901,7 @@ class LayoutMPL(BaseLayout):
                 if ax == 'y2' and ic != self.ncol - 1 and (ic + ir * self.ncol + 1) != self.nwrap: continue
 
             # Add the label
-            self.add_label(ir, ic, label.text, **self.make_kwargs(label))
+            self.add_label(ir, ic, labeltext, **self.make_kwargs(label))
 
     def set_axes_scale(self, ir, ic):
         """
@@ -3469,6 +3510,3 @@ class LayoutMPL(BaseLayout):
                 pass
 
         return ax
-
-
-

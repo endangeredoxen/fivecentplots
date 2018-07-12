@@ -144,10 +144,18 @@ class Data:
         self.col_vals = None
         self.row = self.check_group_columns('row', kwargs.get('row', None))
         self.row_vals = None
-        self.wrap = self.check_group_columns('wrap', kwargs.get('wrap', None))
+        self.wrap = kwargs.get('wrap', None)
         self.wrap_vals = None
+        if self.wrap is not None:
+            if self.wrap == 'y':
+                self.wrap_vals = [f for f in self.y]
+            elif self.wrap == 'x':
+                self.wrap_vals = [f for f in self.x]
+            else:
+                self.wrap = self.check_group_columns('wrap', self.wrap)
         self.groups = self.check_group_columns('groups', kwargs.get('groups', None))
         self.check_group_errors()
+        self.ncols = kwargs.get('ncol', 0)
         self.ncol = 1
         self.nleg = 0
         self.nrow = 1
@@ -968,7 +976,11 @@ class Data:
             leg_df['names'] = list(leg_df.Leg)
 
         # if more than one y axis and leg specified
-        if len(leg_df.y.unique()) > 1 and not (leg_df.Leg==None).all() and len(leg_df.x.unique()) == 1:
+        if self.wrap == 'y' or self.wrap == 'x':
+            leg_df = leg_df.drop(self.wrap, axis=1).drop_duplicates()
+            leg_df[self.wrap] = self.wrap
+
+        elif len(leg_df.y.unique()) > 1 and not (leg_df.Leg==None).all() and len(leg_df.x.unique()) == 1:
             leg_df['names'] = leg_df.Leg.map(str) + ' | ' + leg_df.y.map(str)
         # elif self.twin_x:
         #     leg_df['names'] = leg_df.y
@@ -1022,12 +1034,19 @@ class Data:
 
         else:
             for irow, row in self.legend_vals.iterrows():
+                # Fix unique wrap vals
+                if self.wrap == 'y' or self.wrap == 'x':
+                    wrap_col = list(set(df.columns) & set(getattr(self, self.wrap)))[0]
+                    df = df.rename(columns={self.wrap: wrap_col})
+                    row[self.wrap] = wrap_col
+
+                # Subset by legend value
                 if row['Leg'] is not None:
                     df2 = df[df[self.legend]==row['Leg']].copy()
 
                 # Filter out all nan data
-                if row['x'] and len(df2[row['x']].dropna()) == 0 \
-                        or row['y'] and len(df2[row['y']].dropna()) == 0:
+                if row['x'] and row['x'] in df2.columns and len(df2[row['x']].dropna()) == 0 \
+                        or row['y'] and row['y'] in df2.columns and len(df2[row['y']].dropna()) == 0:
                     continue
 
                 # Set twin ax status
@@ -1050,9 +1069,14 @@ class Data:
 
         # Set up wrapping (wrap option overrides row/col)
         if self.wrap:
-            self.wrap_vals = \
-                natsorted(list(df.groupby(self.wrap).groups.keys()))
-            rcnum = int(np.ceil(np.sqrt(len(self.wrap_vals))))
+            if self.wrap_vals is None:
+                self.wrap_vals = \
+                    natsorted(list(df.groupby(self.wrap).groups.keys()))
+            if self.ncols == 0:
+                rcnum = int(np.ceil(np.sqrt(len(self.wrap_vals))))
+            else:
+                rcnum = self.ncols if self.ncols <= len(self.wrap_vals) \
+                        else len(self.wrap_vals)
             self.ncol = rcnum
             self.nrow = int(np.ceil(len(self.wrap_vals)/rcnum))
             self.nwrap = len(self.wrap_vals)
@@ -1093,6 +1117,8 @@ class Data:
             subset DataFrame
         """
 
+        df = df.copy()
+
         transform = any([self.xtrans, self.x2trans, self.ytrans, self.y2trans,
                          self.ztrans])
 
@@ -1101,6 +1127,18 @@ class Data:
                 if self.wrap is not None:
                     if ir*self.ncol + ic > self.nwrap-1:
                         self.df_rc = pd.DataFrame()
+                    elif self.wrap == 'y':
+                        self.y = utl.validate_list(self.wrap_vals[ic + ir * self.ncol])
+                        cols = (utl.validate_list(self.x) if self.x is not None else []) + \
+                               (utl.validate_list(self.y) if self.y is not None else []) + \
+                               (utl.validate_list(self.legend) if self.legend is not None else [])
+                        self.df_rc = df[cols]
+                    elif self.wrap == 'x':
+                        self.x = utl.validate_list(self.wrap_vals[ic + ir * self.ncol])
+                        cols = (utl.validate_list(self.x) if self.x is not None else []) + \
+                               (utl.validate_list(self.y) if self.y is not None else []) + \
+                               (utl.validate_list(self.legend) if self.legend is not None else [])
+                        self.df_rc = df[cols]
                     else:
                         wrap = dict(zip(self.wrap,
                                     utl.validate_list(self.wrap_vals[ir*self.ncol + ic])))
