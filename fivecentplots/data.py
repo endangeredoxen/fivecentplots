@@ -47,6 +47,8 @@ class Data:
 
         # Default axis attributes
         self.auto_scale = utl.kwget(kwargs, self.fcpp, 'auto_scale', True)
+        if self.plot_func in ['plot_heatmap']:
+            self.auto_scale = False
         self.ax_scale = kwargs.get('ax_scale', None)
         self.ax_limit_pad(**kwargs)
         self.conf_int = kwargs.get('conf_int', False)
@@ -723,12 +725,13 @@ class Data:
                     ax = getattr(self, ax)
 
                 for axx in ax:
+                    # Adjust the dataframe by the limits
                     if side == 'min':
-                        df_fig = df_fig[df_fig[axx]>=getattr(self, f)]
-                        df_rc = df_rc[df_rc[axx]>=getattr(self, f)]
+                        df_fig = df_fig[df_fig[axx] >= getattr(self, f)]
+                        df_rc = df_rc[df_rc[axx] >= getattr(self, f)]
                     else:
-                        df_fig = df_fig[df_fig[axx]<=getattr(self, f)]
-                        df_rc = df_rc[df_rc[axx]<=getattr(self, f)]
+                        df_fig = df_fig[df_fig[axx] <= getattr(self, f)]
+                        df_rc = df_rc[df_rc[axx] <= getattr(self, f)]
 
         # Iterate over axis
         axs = ['x', 'x2', 'y', 'y2', 'z']
@@ -754,6 +757,10 @@ class Data:
                 self.ranges[ir, ic]['%smin' % ax] = vals[0]
                 self.ranges[ir, ic]['%smax' % ax] = vals[1]
             elif not getattr(self, 'share_%s' % ax):
+                vals = self.get_data_range(ax, df_rc)
+                self.ranges[ir, ic]['%smin' % ax] = vals[0]
+                self.ranges[ir, ic]['%smax' % ax] = vals[1]
+            elif self.wrap is not None and self.wrap == 'y' or self.wrap == 'x':
                 vals = self.get_data_range(ax, df_rc)
                 self.ranges[ir, ic]['%smin' % ax] = vals[0]
                 self.ranges[ir, ic]['%smax' % ax] = vals[1]
@@ -1131,12 +1138,14 @@ class Data:
                         self.y = utl.validate_list(self.wrap_vals[ic + ir * self.ncol])
                         cols = (utl.validate_list(self.x) if self.x is not None else []) + \
                                (utl.validate_list(self.y) if self.y is not None else []) + \
+                               (utl.validate_list(self.groups) if self.groups is not None else []) + \
                                (utl.validate_list(self.legend) if self.legend is not None else [])
                         self.df_rc = df[cols]
                     elif self.wrap == 'x':
                         self.x = utl.validate_list(self.wrap_vals[ic + ir * self.ncol])
                         cols = (utl.validate_list(self.x) if self.x is not None else []) + \
                                (utl.validate_list(self.y) if self.y is not None else []) + \
+                               (utl.validate_list(self.groups) if self.groups is not None else []) + \
                                (utl.validate_list(self.legend) if self.legend is not None else [])
                         self.df_rc = df[cols]
                     else:

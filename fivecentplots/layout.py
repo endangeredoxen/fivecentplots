@@ -541,6 +541,9 @@ class BaseLayout:
                                               'cmap', 'inferno'),
                                edge_width=0,
                                font_color='#ffffff',
+                               interpolation=utl.kwget(kwargs, self.fcpp,
+                                              'heatmap_interpolation',
+                                              kwargs.get('interpolation', 'none')),
                                text=utl.kwget(kwargs, self.fcpp,
                                               'data_labels', False),
                                )
@@ -888,6 +891,8 @@ class BaseLayout:
             self.grid_major_y.on = False
             self.grid_minor_x.on = False
             self.grid_minor_y.on = False
+            self.ticks_major_x.on = False
+            self.ticks_major_y.on = False
             self.ticks_minor_x.on = False
             self.ticks_minor_y.on = False
             self.tick_labels_minor_x.on = False
@@ -924,7 +929,7 @@ class BaseLayout:
         # axes
         self.ws_label_tick = utl.kwget(kwargs, self.fcpp, 'ws_label_tick', 10)
         self.ws_leg_ax = utl.kwget(kwargs, self.fcpp, 'ws_leg_ax', 20)
-        self.ws_ticks_ax = utl.kwget(kwargs, self.fcpp, 'ws_ticks_ax', 3)
+        self.ws_ticks_ax = utl.kwget(kwargs, self.fcpp, 'ws_ticks_ax', 5)
         self.ws_title_ax = utl.kwget(kwargs, self.fcpp, 'ws_title_ax', 10)
         self.ws_ax_fig = utl.kwget(kwargs, self.fcpp, 'ws_ax_fig', 30)
 
@@ -1493,7 +1498,7 @@ class LayoutMPL(BaseLayout):
                                         else fill_color.get(ic + ir * self.ncol + 1),
                                 edgecolor=edge_color if type(edge_color) is str \
                                         else edge_color.get(ic + ir * self.ncol + 1),
-                                clip_on=False, zorder=-1)
+                                clip_on=False, zorder=1)
 
         self.axes.obj[ir, ic].add_patch(rect)
 
@@ -2574,7 +2579,9 @@ class LayoutMPL(BaseLayout):
         """
 
         # Make the heatmap
-        im = ax.imshow(df, self.heatmap.cmap, vmin=ranges['zmin'], vmax=ranges['zmax'])
+        im = ax.imshow(df, self.heatmap.cmap, vmin=ranges['zmin'],
+                       vmax=ranges['zmax'],
+                       interpolation=self.heatmap.interpolation)
 
         # Set the axes
         ax.set_yticks(np.arange(len(df)))
@@ -3092,20 +3099,21 @@ class LayoutMPL(BaseLayout):
                 if self.ticks_minor_x.on or self.ticks_minor_y.on:
                     axes[0].minorticks_on()
                 axes[0].tick_params(axis='both',
-                                     which='major',
-                                     pad=self.ws_ticks_ax,
-                                     colors=self.ticks_major.color.get(0),
-                                     labelcolor=self.tick_labels_major.font_color,
-                                     labelsize=self.tick_labels_major.font_size,
-                                     top=False,
-                                     bottom=self.ticks_major_x.on,
-                                     right=False if self.axes.twin_x
-                                           else self.ticks_major_y.on,
-                                     left=self.ticks_major_y.on,
-                                     length=self.ticks_major.size[0],
-                                     width=self.ticks_major.size[1],
-                                     direction=self.ticks_major.direction,
-                                     )
+                                    which='major',
+                                    pad=self.ws_ticks_ax,
+                                    colors=self.ticks_major.color.get(0),
+                                    labelcolor=self.tick_labels_major.font_color,
+                                    labelsize=self.tick_labels_major.font_size,
+                                    top=False,
+                                    bottom=self.ticks_major_x.on,
+                                    right=False if self.axes.twin_x
+                                          else self.ticks_major_y.on,
+                                    left=self.ticks_major_y.on,
+                                    length=self.ticks_major.size[0],
+                                    width=self.ticks_major.size[1],
+                                    direction=self.ticks_major.direction,
+                                    )
+
                 axes[0].tick_params(axis='both',
                                      which='minor',
                                      pad=self.ws_ticks_ax,
@@ -3212,7 +3220,8 @@ class LayoutMPL(BaseLayout):
                         text.set_rotation(getattr(self, 'tick_labels_major_x%s' % lab).rotation)
                     text.set_fontproperties(ticks_font)
                     text.set_bbox(dict(edgecolor=getattr(self, 'tick_labels_major_x%s' % lab).edge_color.get(0),
-                                       facecolor=getattr(self, 'tick_labels_major_x%s' % lab).fill_color.get(0)))
+                                       facecolor=getattr(self, 'tick_labels_major_x%s' % lab).fill_color.get(0),
+                                       linewidth=getattr(self, 'tick_labels_major_x%s' % lab).edge_width))
             if getattr(self, 'tick_labels_major_y%s' % lab).on:
                 ticks_font = \
                     font_manager.FontProperties(family=getattr(self, 'tick_labels_major_y%s' % lab).font,
@@ -3224,7 +3233,8 @@ class LayoutMPL(BaseLayout):
                         text.set_rotation(getattr(self, 'tick_labels_major_y%s' % lab).rotation)
                     text.set_fontproperties(ticks_font)
                     text.set_bbox(dict(edgecolor=getattr(self, 'tick_labels_major_y%s' % lab).edge_color.get(0),
-                                       facecolor=getattr(self, 'tick_labels_major_y%s' % lab).fill_color.get(0)))
+                                       facecolor=getattr(self, 'tick_labels_major_y%s' % lab).fill_color.get(0),
+                                       linewidth=getattr(self, 'tick_labels_major_y%s' % lab).edge_width))
 
             # Tick label shorthand
             tlmajx = getattr(self, 'tick_labels_major_x%s' % lab)
