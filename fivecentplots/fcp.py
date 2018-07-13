@@ -608,7 +608,7 @@ def plotter(plot_func, **kwargs):
             layout.set_axes_scale(ir, ic)
 
             # Set axis ranges
-            layout.set_axes_ranges(ir, ic, dd.ranges[ir, ic])
+            layout.set_axes_ranges(ir, ic, dd.ranges)
 
             # Add axis labels
             layout.set_axes_labels(ir, ic)

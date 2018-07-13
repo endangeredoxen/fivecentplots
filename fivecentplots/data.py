@@ -69,6 +69,9 @@ class Data:
         if kwargs.get('wrap', None) is not None:
             self.share_x = True
             self.share_y = True
+        if kwargs.get('wrap', None) == 'y' or kwargs.get('wrap', None) == 'x':
+            self.share_x = kwargs.get('share_x', True)
+            self.share_y = kwargs.get('share_y', True)
         self.twin_x = kwargs.get('twin_x', False)
         self.twin_y = kwargs.get('twin_y', False)
         if self.twin_x == self.twin_y and self.twin_x:
@@ -1147,6 +1150,8 @@ class Data:
                                (utl.validate_list(self.y) if self.y is not None else []) + \
                                (utl.validate_list(self.groups) if self.groups is not None else []) + \
                                (utl.validate_list(self.legend) if self.legend is not None else [])
+                        if self.plot_func == 'plot_hist':
+                            cols = [f for f in cols if f != 'Counts']
                         self.df_rc = df[cols]
                     else:
                         wrap = dict(zip(self.wrap,
