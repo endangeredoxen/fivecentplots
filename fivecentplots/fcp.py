@@ -681,21 +681,49 @@ def set_theme(theme=None):
     Select a "defaults" file and copy to the user directory
     """
 
-    themes = [f for f in os.listdir(osjoin(cur_dir, 'themes')) if '.py' in f]
+    if theme is not None:
+        theme = theme.replace('.py', '')
+    themes = [f.replace('.py', '')
+              for f in os.listdir(osjoin(cur_dir, 'themes')) if '.py' in f]
+    mythemes = [f.replace('.py', '')
+                for f in os.listdir(osjoin(user_dir, '.fivecentplots'))
+                if '.py' in f and 'defaults' not in f]
 
-    if theme and '%s.py' % theme in themes:
-        entry = themes.index('%s.py' % theme) + 1
+    if theme in themes:
+        entry = themes.index('%s' % theme) + 1
+
+    elif theme in mythemes:
+        entry = mythemes.index('%s' % theme) + 1 + len(themes)
 
     else:
         print('Select default styling theme:')
+        print('   Built-in theme list:')
         for i, th in enumerate(themes):
-            print('   %s) %s' % (i+1, th))
+            print('      %s) %s' % (i+1, th))
+        if len(themes) > 0:
+            print('   User theme list:')
+            for i, th in enumerate(mythemes):
+                print('      %s) %s' % (i + 1 + len(themes), th))
         entry = input('Entry: ')
 
+        try:
+            int(entry)
+        except:
+            print('Invalid selection!  Please try again')
+            return
 
-        print('Copying %s >> %s...' %
-              (themes[int(entry)-1],
-               osjoin(user_dir, '.fivecentplots', 'defaults.py')), end='')
+        if int(entry) > len(themes) + len(mythemes) or int(entry) <= 0:
+            print('Invalid selection!  Please try again')
+            return
+
+        if int(entry) <= len(themes):
+            print('Copying %s >> %s' %
+                (themes[int(entry)-1],
+                osjoin(user_dir, '.fivecentplots', 'defaults.py')))
+        else:
+            print('Copying %s >> %s' %
+                (mythemes[int(entry) - 1 - len(themes)],
+                osjoin(user_dir, '.fivecentplots', 'defaults.py')))
 
     if os.path.exists(osjoin(user_dir, '.fivecentplots', 'defaults.py')):
         print('Previous theme file found! Renaming to "defaults_old.py" and '
@@ -705,8 +733,13 @@ def set_theme(theme=None):
 
     if not os.path.exists(osjoin(user_dir, '.fivecentplots')):
         os.makedirs(osjoin(user_dir, '.fivecentplots'))
-    shutil.copy2(osjoin(cur_dir, 'themes', themes[int(entry)-1]),
-                 osjoin(user_dir, '.fivecentplots', 'defaults.py'))
+
+    if entry is not None and int(entry) <= len(themes):
+        shutil.copy2(osjoin(cur_dir, 'themes', themes[int(entry)-1] + '.py'),
+                     osjoin(user_dir, '.fivecentplots', 'defaults.py'))
+    else:
+        shutil.copy2(osjoin(user_dir, '.fivecentplots', mythemes[int(entry)-1-len(themes)] + '.py'),
+                     osjoin(user_dir, '.fivecentplots', 'defaults.py'))
 
     print('done!')
 

@@ -186,6 +186,14 @@ class Data:
             self.fig = self.check_group_columns('fig', kwargs.get('fig', None))
         self.fig_vals = None
 
+        # Make sure groups, legend, and fig_groups are not the same
+        if self.legend and self.groups:
+            self.check_group_matching('legend', 'groups')
+        if self.legend and self.fig:
+            self.check_group_matching('legend', 'fig')
+        if self.groups and self.fig:
+            self.check_group_matching('groups', 'fig')
+
         # Other kwargs
         for k, v in kwargs.items():
             if not hasattr(self, k):  # k not in ['df', 'plot_func', 'x', 'y', 'z']:
@@ -261,6 +269,22 @@ class Data:
                                 'Please consider a row vs column plot instead.')
 
         return values
+
+    def check_group_matching(self, group1, group2):
+        """
+        Check to make sure certain group column values are not the same
+
+        Args:
+            group1 (str): attr name of first grouping column
+            group2 (str): attr name of second grouping column
+
+        """
+
+        equal = set(getattr(self, group1)) == set(getattr(self, group2))
+
+        if equal:
+            raise GroupingError('%s and %s grouping columns cannot be the same!'
+                                % (group1, group2))
 
     def check_group_errors(self):
         """
@@ -992,6 +1016,7 @@ class Data:
 
         elif len(leg_df.y.unique()) > 1 and not (leg_df.Leg==None).all() and len(leg_df.x.unique()) == 1:
             leg_df['names'] = leg_df.Leg.map(str) + ' | ' + leg_df.y.map(str)
+
         # elif self.twin_x:
         #     leg_df['names'] = leg_df.y
 

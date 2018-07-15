@@ -102,6 +102,7 @@ def mpl_get_ticks(ax, xon=True, yon=True):
         tp[vv]['max'] = max(getattr(ax, 'get_%slim' % vv)())
         tp[vv]['ticks'] = getattr(ax, 'get_%sticks' % vv)()
         tp[vv]['labels'] = [f for f in getattr(ax, '%saxis' % vv).iter_ticks()]
+        tp[vv]['label_vals'] = [f[1] for f in tp[vv]['labels']]
         tp[vv]['label_text'] = [f[2] for f in tp[vv]['labels']]
         try:
             tp[vv]['first'] = [i for i, f in enumerate(tp[vv]['labels'])
@@ -152,7 +153,7 @@ class BaseLayout:
             colors = utl.validate_list(kwargs.get('colors'))
             for icolor, color in enumerate(colors):
                 if type(color) is int:
-                    colors[icolor] = DEFAULT_COLORS[icolor]
+                    colors[icolor] = DEFAULT_COLORS[color]
             color_list = colors
         elif not color_list:
             color_list = copy.copy(DEFAULT_COLORS)
@@ -226,6 +227,10 @@ class BaseLayout:
             for k in keys:
                 setattr(getattr(self, 'label_%s' % lab),
                         k.replace('label_%s_' % lab, ''), kwargs[k])
+
+            # Update alphas
+            getattr(self, 'label_%s' % lab).color_alpha('fill_color', 'fill_alpha')
+            getattr(self, 'label_%s' % lab).color_alpha('edge_color', 'edge_alpha')
 
         # Turn off secondary labels
         if not self.axes.twin_y:
@@ -314,21 +319,37 @@ class BaseLayout:
                                 ['font', 'font_color', 'font_size',
                                  'font_style', 'font_weight', 'padding',
                                  'rotation'], 'tick_labels_major', kwargs)
+
         for ax in self.ax + ['z']:
             setattr(self, 'tick_labels_major_%s' %ax,
                     Element('tick_labels_major_%s' %ax, self.fcpp, kwargs,
                         on=utl.kwget(kwargs, self.fcpp,
                                      'tick_labels_major_%s' % ax,
                                      self.tick_labels_major.on),
-                        font=self.tick_labels_major.font,
-                        font_color=self.tick_labels_major.font_color,
-                        font_size=self.tick_labels_major.font_size,
-                        font_style=self.tick_labels_major.font_style,
-                        font_weight=self.tick_labels_major.font_weight,
-                        padding=utl.kwget(kwargs, self.fcpp,
-                                          'tick_labels_major_padding_%s' % ax,
-                                          self.tick_labels_major.padding),
-                        rotation=self.tick_labels_major.rotation,
+                        edge_color=kwargs.get('tick_labels_major.edge_color',
+                                              self.tick_labels_major.edge_color),
+                        edge_alpha=kwargs.get('tick_labels_major_edge_alpha',
+                                       self.tick_labels_major.edge_alpha),
+                        edge_width=kwargs.get('tick_labels_major_edge_width',
+                                       self.tick_labels_major.edge_width),
+                        fill_color=kwargs.get('tick_labels_major_fill_color',
+                                       self.tick_labels_major.fill_color),
+                        fill_alpha=kwargs.get('tick_labels_major_fill_alpha',
+                                       self.tick_labels_major.fill_alpha),
+                        font=kwargs.get('tick_labels_major_font',
+                                       self.tick_labels_major.font),
+                        font_color=kwargs.get('tick_labels_major_font_color',
+                                       self.tick_labels_major.font_color),
+                        font_size=kwargs.get('tick_labels_major_font_size',
+                                       self.tick_labels_major.font_size),
+                        font_style=kwargs.get('tick_labels_major_font_style',
+                                       self.tick_labels_major.font_style),
+                        font_weight=kwargs.get('tick_labels_major_font_style',
+                                       self.tick_labels_major.font_style),
+                        padding=kwargs.get('tick_labels_major_padding',
+                                       self.tick_labels_major.padding),
+                        rotation=kwargs.get('tick_labels_major_rotation',
+                                       self.tick_labels_major.rotation),
                         size=[0, 0],
                         sci=utl.kwget(kwargs, self.fcpp, 'sci_%s' % ax, False) or \
                             utl.kwget(kwargs, self.fcpp, 'ticks_major_sci_%s' % ax, False),
@@ -376,7 +397,7 @@ class BaseLayout:
             Element('tick_labels_minor', self.fcpp, kwargs,
                     on=utl.kwget(kwargs, self.fcpp,
                                  'tick_labels_minor',
-                                 self.ticks_minor),
+                                 False),
                     font_size=10,
                     padding=utl.kwget(kwargs, self.fcpp,
                                       'tick_labels_minor_padding', 3),
@@ -388,19 +409,39 @@ class BaseLayout:
         for ax in self.ax:
             setattr(self, 'tick_labels_minor_%s' %ax,
                     Element('tick_labels_minor_%s' %ax, self.fcpp, kwargs,
-                            on=utl.kwget(kwargs, self.fcpp,
-                                         'tick_labels_minor_%s' % ax,
-                                         kwargs.get('ticks_minor',
-                                         getattr(self, 'ticks_minor_%s' % ax).on)),
-                            font=self.tick_labels_minor.font,
-                            font_color=self.tick_labels_minor.font_color,
-                            font_size=self.tick_labels_minor.font_size,
-                            font_style=self.tick_labels_minor.font_style,
-                            font_weight=self.tick_labels_minor.font_weight,
-                            padding=self.tick_labels_minor.padding,
-                            rotation=self.tick_labels_minor.rotation,
-                            size=[0, 0],
-                            ))
+                        on=utl.kwget(kwargs, self.fcpp,
+                                     'tick_labels_minor_%s' % ax,
+                                     self.tick_labels_minor.on),
+                        edge_color=kwargs.get('tick_labels_minor.edge_color',
+                                              self.tick_labels_minor.edge_color),
+                        edge_alpha=kwargs.get('tick_labels_minor_edge_alpha',
+                                       self.tick_labels_minor.edge_alpha),
+                        edge_width=kwargs.get('tick_labels_minor_edge_width',
+                                       self.tick_labels_minor.edge_width),
+                        fill_color=kwargs.get('tick_labels_minor_fill_color',
+                                       self.tick_labels_minor.fill_color),
+                        fill_alpha=kwargs.get('tick_labels_minor_fill_alpha',
+                                       self.tick_labels_minor.fill_alpha),
+                        font=kwargs.get('tick_labels_minor_font',
+                                       self.tick_labels_minor.font),
+                        font_color=kwargs.get('tick_labels_minor_font_color',
+                                       self.tick_labels_minor.font_color),
+                        font_size=kwargs.get('tick_labels_minor_font_size',
+                                       self.tick_labels_minor.font_size),
+                        font_style=kwargs.get('tick_labels_minor_font_style',
+                                       self.tick_labels_minor.font_style),
+                        font_weight=kwargs.get('tick_labels_minor_font_style',
+                                       self.tick_labels_minor.font_style),
+                        padding=kwargs.get('tick_labels_minor_padding',
+                                       self.tick_labels_minor.padding),
+                        rotation=kwargs.get('tick_labels_minor_rotation',
+                                       self.tick_labels_minor.rotation),
+                        size=[0, 0],
+                        sci=utl.kwget(kwargs, self.fcpp, 'sci_%s' % ax, False) or \
+                            utl.kwget(kwargs, self.fcpp, 'ticks_minor_sci_%s' % ax, False),
+                        ))
+            if getattr(self, 'tick_labels_minor_%s' % ax).on:
+                getattr(self, 'ticks_minor_%s' % ax).on = True
 
         # Histogram
         self.hist = Element('hist', self.fcpp, kwargs,
@@ -491,7 +532,7 @@ class BaseLayout:
             kwargs['legend'] = ' | '.join(utl.validate_list(kwargs['legend']))
 
         self.legend = DF_Element('legend', self.fcpp, kwargs,
-                                 on=True if (kwargs.get('legend') or
+                                 on=True if (kwargs.get('legend') and
                                     kwargs.get('legend_on', True)) else False,
                                  column=kwargs['legend'],
                                  font_size=12,
@@ -583,7 +624,7 @@ class BaseLayout:
         # Lines
         self.lines = Element('lines', self.fcpp, kwargs,
                              on=kwargs.get('lines', True),
-                             color=color_list,
+                             color=copy.copy(color_list),
                              values=[],
                              )
 
@@ -595,16 +636,18 @@ class BaseLayout:
         markers = RepeatedList(marker_list, 'markers')
         marker_edge_color = utl.kwget(kwargs, self.fcpp, 'marker_edge_color', color_list)
         marker_fill_color = utl.kwget(kwargs, self.fcpp, 'marker_fill_color', color_list)
+        if kwargs.get('marker_fill_color'):
+            kwargs['marker_fill'] = True
         self.markers = Element('marker', self.fcpp, kwargs,
                                on=utl.kwget(kwargs, self.fcpp,
                                             'markers', True),
                                filled=utl.kwget(kwargs, self.fcpp,
                                                 'marker_fill', False),
-                               edge_color=marker_edge_color,
+                               edge_color=copy.copy(marker_edge_color),
                                edge_width=utl.kwget(kwargs, self.fcpp,
                                                     'marker_edge_width',
                                                      1.5),
-                               fill_color=marker_fill_color,
+                               fill_color=copy.copy(marker_fill_color),
                                jitter=utl.kwget(kwargs, self.fcpp,
                                                 'jitter', False),
                                size=utl.kwget(kwargs, self.fcpp,
@@ -720,10 +763,6 @@ class BaseLayout:
                                   color='#ffffff',
                                   width=0.5,
                                   )
-        if self.grid_minor.on and \
-                ('ticks' not in kwargs.keys() or kwargs['ticks'] != False) and \
-                ('ticks_minor' not in kwargs.keys() or kwargs['ticks_minor'] != False):
-            self.ticks_minor.on = True
         for ax in ['x', 'y']:
             # secondary axes cannot get the grid
             setattr(self, 'grid_minor_%s' %ax,
@@ -737,6 +776,11 @@ class BaseLayout:
                             width=self.grid_minor.width,
                             zorder=self.grid_minor.zorder,
                             ))
+            if getattr(self, 'grid_minor_%s' % ax).on and \
+                    ('ticks' not in kwargs.keys() or kwargs['ticks'] != False) and \
+                    ('ticks_minor' not in kwargs.keys() or kwargs['ticks_minor'] != False) and \
+                    ('ticks_minor_%s' % ax not in kwargs.keys() or kwargs['ticks_minor_%s' % ax] != False):
+                getattr(self, 'ticks_minor_%s' % ax).on = True
 
         # Row column label
         label_rc = DF_Element('label_rc', self.fcpp, kwargs,
@@ -1115,13 +1159,12 @@ class Element:
         self.zorder = utl.kwget(kwargs, fcpp, '%s_zorder' % label,
                                 kwargs.get('zorder', 0))
 
-        # fill an edge colors
+        # fill and edge colors
         self.fill_alpha = utl.kwget(kwargs, fcpp, '%s_fill_alpha' % label,
                                     kwargs.get('fill_alpha', 1))
         self.fill_color = utl.kwget(kwargs, fcpp, '%s_fill_color' % label,
                                     kwargs.get('fill_color', '#ffffff'))
-        if type(self.fill_color) is not RepeatedList:
-            self.color_alpha('fill_color', 'fill_alpha')
+        self.color_alpha('fill_color', 'fill_alpha')
 
         self.edge_width = utl.kwget(kwargs, fcpp, '%s_edge_width' % label,
                                     kwargs.get('edge_width', 1))
@@ -1230,23 +1273,32 @@ class Element:
 
     def color_alpha(self, attr, alpha):
         """
-        Parse input color lists
+        Add alpha to each color in the color list and make it a RepeatedList
         """
 
-        color_list = utl.validate_list(getattr(self, attr))
         alpha = RepeatedList(getattr(self, alpha), 'temp')
 
-        for ic, color in enumerate(color_list):
-            if type(color) is int:
-                color = DEFAULT_COLORS[color]
-            if color[0] != '#':
-                color = '#' + color
-            try:
-                color_list[ic] = color[0:7].lower() + \
-                                 str(hex(int(alpha.get(ic)*255)))[-2:]
-            except:st()
+        if type(getattr(self, attr)) is not RepeatedList:
+            color_list = utl.validate_list(getattr(self, attr))
 
-        setattr(self, attr, RepeatedList(color_list, attr))
+            for ic, color in enumerate(color_list):
+                if type(color) is int:
+                    color = DEFAULT_COLORS[color]
+                if color[0] != '#':
+                    color = '#' + color
+                color_list[ic] = color[0:7].lower() + \
+                    str(hex(int(alpha.get(ic)*255)))[-2:].replace('x', '0')
+
+            setattr(self, attr, RepeatedList(color_list, attr))
+
+        else:
+            # Update existing RepeatedList alphas
+            setattr(self, attr, copy.copy(getattr(self, attr)))
+            new_vals = []
+            for ival, val in enumerate(getattr(self, attr).values):
+                new_vals += [val[0:-2] + \
+                    str(hex(int(alpha.get(ival)*255)))[-2:].replace('x', '0')]
+            getattr(self, attr).values = new_vals
 
     def see(self):
         """
@@ -1636,8 +1688,8 @@ class LayoutMPL(BaseLayout):
         """
 
         axes = [f for f in [self.axes, self.axes2] if f.on]
-        if self.axes2.on:
-            axes += [self.axes2]
+        #if self.axes2.on:
+        #    axes += [self.axes2]
 
         return axes
 
@@ -3425,13 +3477,13 @@ class LayoutMPL(BaseLayout):
 
         for f in ['bottom', 'top', 'right', 'left']:
             if len(axes) > 1:
-                axes[-1].obj[ir, ic].spines[f].set_visible(False)
+                axes[0].obj[ir, ic].spines[f].set_visible(False)
             if getattr(self.axes, 'spine_%s' % f):
-                axes[0].obj[ir, ic].spines[f].set_color(axes[0].edge_color.get(ic + ir * self.ncol + 1))
+                axes[-1].obj[ir, ic].spines[f].set_color(axes[0].edge_color.get(ic + ir * self.ncol + 1))
             else:
-                axes[0].obj[ir, ic].spines[f].set_color(self.fig.fill_color.get(0))
-        for axis in ['top','bottom','left','right']:
-            axes[0].obj[ir, ic].spines[axis].set_linewidth(self.axes.edge_width)
+                axes[-1].obj[ir, ic].spines[f].set_color(self.fig.fill_color.get(0))
+            axes[-1].obj[ir, ic].spines[f].set_linewidth(self.axes.edge_width)
+
 
     def set_axes_grid_lines(self, ir, ic):
         """
@@ -3448,6 +3500,7 @@ class LayoutMPL(BaseLayout):
         for ax in axes:
             # Turn off secondary gridlines
             if not ax.primary:
+                ax.obj[ir, ic].set_axisbelow(True)
                 ax.obj[ir, ic].grid(False, which='major')
                 ax.obj[ir, ic].grid(False, which='minor')
                 continue
@@ -3768,6 +3821,41 @@ class LayoutMPL(BaseLayout):
 
         """
 
+        def get_tick_position(ax, tp, xy, loc='first'):
+            """
+            Find the position of a tick given the actual range
+
+            Args:
+                ax (mpl.axes): the axis of interest
+                tp (dict): tick location dictionary
+                xy (str): which axis to calculate ('x' or 'y')
+                loc (str): tick location ('first' or 'last')
+
+            Returns:
+                the actual x-position of an xtick or the y-position of a ytick
+
+            """
+
+            size = 0 if xy == 'x' else 1
+            if type(loc) is str:
+                tick = tp[xy]['label_vals'][tp[xy][loc]]
+            else:
+                tick = tp[xy]['label_vals'][loc]
+            lim = getattr(ax, 'get_%slim' % xy)()
+            if tick > lim[1]:
+                pos = self.axes.size[size]
+            elif tick < lim[0]:
+                pos = -999  # push it far away from axis
+            elif self.axes.scale in ['log%s' % xy, 'semilog%s' % xy,
+                                     'loglog', 'log']:
+                pos = (np.log10(tick) - np.log10(lim[0])) / \
+                      (np.log10(lim[1]) - np.log10(lim[0])) * \
+                       self.axes.size[size]
+            else:
+                pos = (tick - lim[0]) / (lim[1] - lim[0]) * self.axes.size[size]
+
+            return pos
+
         axes = [f.obj[ir, ic] for f in [self.axes, self.axes2] if f.on]
 
         for ia, aa in enumerate(axes):
@@ -3799,6 +3887,7 @@ class LayoutMPL(BaseLayout):
                                     length=self.ticks_major.size[0],
                                     width=self.ticks_major.size[1],
                                     direction=self.ticks_major.direction,
+                                    zorder=100,
                                     )
 
                 axes[0].tick_params(axis='both',
@@ -3828,6 +3917,7 @@ class LayoutMPL(BaseLayout):
                                         length=self.ticks_major.size[0],
                                         width=self.ticks_major.size[1],
                                         direction=self.ticks_major.direction,
+                                        zorder=0,
                                         )
                     axes[1].tick_params(which='minor',
                                         pad=self.ws_ticks_ax*2,
@@ -3838,6 +3928,7 @@ class LayoutMPL(BaseLayout):
                                         length=self.ticks_minor.size[0],
                                         width=self.ticks_minor.size[1],
                                         direction=self.ticks_minor.direction,
+                                        zorder=0,
                                         )
 
                 elif self.axes.twin_y:
@@ -3929,9 +4020,17 @@ class LayoutMPL(BaseLayout):
 
             # Check for overlapping major tick labels
             if self.tick_cleanup and tlmajx.on and tlmajy.on:
-                xc = [0, -tlmajx.size[1]/2-self.ws_ticks_ax + ia*self.axes.size[1]]
-                yc = [-tlmajy.size[0]/2-self.ws_ticks_ax, 0]
-                yf = [-tlmajy.size[0]/2-self.ws_ticks_ax, self.axes.size[1]]
+                # Get the position of the first major x tick
+                xcx = get_tick_position(axes[ia], tp, 'x', 'first')
+                xc = [xcx, -tlmajx.size[1]/2-self.ws_ticks_ax + ia*self.axes.size[1]]
+
+                # Get the position of the first and last major y tick
+                ycy = get_tick_position(axes[ia], tp, 'y', 'first')
+                yfy = get_tick_position(axes[ia], tp, 'y', 'last')
+                yc = [-tlmajy.size[0]/2-self.ws_ticks_ax, ycy]
+                yf = [-tlmajy.size[0]/2-self.ws_ticks_ax, yfy]
+
+                # Get spacings
                 buf = 3
                 if len(tp['x']['ticks']) > 2:
                     delx = self.axes.size[0]/(len(tp['x']['ticks'])-2)
@@ -4025,7 +4124,6 @@ class LayoutMPL(BaseLayout):
             for axx in ax:
                 axl = '%s%s' % (axx, lab)
                 tlmin = getattr(self, 'tick_labels_minor_%s' % axl)
-
                 if not self.separate_labels and axl == 'x' and ir != self.nrow - 1 and self.nwrap == 0 or \
                         not self.separate_labels and axl == 'y2' and ic != self.ncol - 1 and self.nwrap == 0 or \
                         not self.separate_labels and axl == 'x2' and ir != 0 or \
@@ -4034,8 +4132,6 @@ class LayoutMPL(BaseLayout):
                     axes[ia].tick_params(which='minor', **sides[axl])
 
                 elif tlmin.on:
-                    # THE DECIMAL THING WONT WORK FOR LOG!
-
                     if axx == 'x':
                         add = 2 if self.axes.scale in ['logx', 'semilogx', 'loglog', 'log'] else 1
                     if axx == 'y':
@@ -4044,10 +4140,15 @@ class LayoutMPL(BaseLayout):
                     tp = mpl_get_ticks(axes[ia],
                                        getattr(self, 'ticks_major_x%s' % lab).on,
                                        getattr(self, 'ticks_major_y%s' % lab).on)
-                    inc = tp[axx]['labels'][1][1] - tp[axx]['labels'][0][1]
+                    lim = getattr(axes[ia], 'get_%slim' % axx)()
+                    vals = [f for f in tp[axx]['ticks'] if f < lim[0]]
+                    inc = tp[axx]['label_vals'][len(vals)] - \
+                          tp[axx]['label_vals'][len(vals) - 1]
                     minor_ticks = [f[1] for f in
                                    tp[axx]['labels']][len(tp[axx]['ticks']):]
-                    number = len([f for f in minor_ticks if f < inc]) + add
+                    min_val = vals[-1] if len(vals) == 1 else vals[1]
+                    number = len([f for f in minor_ticks if f > min_val
+                                  and f < tp[axx]['label_vals'][len(vals)]]) + 1
                     decimals = utl.get_decimals(inc/number)
                     getattr(axes[ia], '%saxis' % axx).set_minor_formatter(
                         ticker.FormatStrFormatter('%%.%sf' % (decimals)))
@@ -4068,46 +4169,65 @@ class LayoutMPL(BaseLayout):
                             wh = 0
                         else:
                             wh = 1
-                        delmaj = self.axes.size[wh]/(len(tp[axx]['ticks'])-2)
-                        labels = tp[axx]['label_text'][len(tp[axx]['ticks']):]
-                        delmin = delmaj/number
 
-                        # Check overlap with first and last major label
-                        wipe = []
+                        # Check overlap with major tick labels
                         m0 = len(tp[axx]['ticks'])
                         majw = getattr(self, 'tick_labels_major_%s' % axl).size[wh]/2
-                        if delmaj - 2*majw < tlmin.size[wh] + buf:
-                            # No room for any ticks
-                            warnings.warn('Insufficient space between %s major tick labels for minor tick labels. Skipping...' % axx)
-                            wipe = list(range(0, number-1))
-                        elif majw > delmin - tlmin.size[wh]/2 - buf:
-                            wipe += [ number - 2]
+                        delmaj = self.axes.size[wh]
+                        lim = getattr(axes[ia], 'get_%slim' % axx)()
+                        ticks = [f for f in tp[axx]['ticks'] if f >= lim[0] and f <= lim[1]]
+                        if len(ticks) > 0:
+                            delmaj = self.axes.size[wh]/(len(tp[axx]['ticks'])-2)
+                            labels = tp[axx]['label_text'][len(tp[axx]['ticks']):]
+                            delmin = delmaj/number
 
-                        # There is a weird bug where a tick can be both major and minor; need to remove
-                        dups = [i+m0 for i, f in enumerate(minor_ticks) if f in tp[axx]['ticks']]
-                        if len(dups) == 0:
-                            dups = [-1, len(tp[axx]['label_text'])]
-                        if dups[0] != -1:
-                            dups = [-1] + dups
-                        if dups[len(dups)-1] != len(dups):
-                            dups = dups + [len(tp[axx]['label_text'])]
-                        temp = []
-                        for j in range(1, len(dups)):
-                            temp += tp[axx]['label_text'][dups[j-1]+1:dups[j]]
+                            wipe = []
+                            if delmaj - 2*majw < tlmin.size[wh] + buf:
+                                # No room for any ticks
+                                warnings.warn('Insufficient space between %s major tick labels for minor tick labels. Skipping...' % axx)
+                                wipe = list(range(0, number-1))
+                            elif majw > delmin - tlmin.size[wh]/2 - buf:
+                                wipe += [ number - 2]
 
-                        # Disable ticks
-                        for i, text in enumerate(getattr(axes[ia], 'get_%sminorticklabels' % axx)()):
-                            if i in wipe:
-                                vals = temp[m0+i::number-1]
-                                temp[m0+i::number-1] = ['']*len(vals)
+                            # There is a weird bug where a tick can be both major and minor; need to remove
+                            dups = [i+m0 for i, f in enumerate(minor_ticks) if f in tp[axx]['ticks']]
+                            if len(dups) == 0:
+                                dups = [-1, len(tp[axx]['label_text'])]
+                            if dups[0] != -1:
+                                dups = [-1] + dups
+                            if dups[len(dups)-1] != len(dups):
+                                dups = dups + [len(tp[axx]['label_text'])]
+                            temp = []
+                            for j in range(1, len(dups)):
+                                temp += tp[axx]['label_text'][dups[j-1]+1:dups[j]]
 
-                        # Put back in duplicates
-                        tp[axx]['label_text'] = []
-                        dups[0] = 0
-                        for j in range(1, len(dups)):
-                            tp[axx]['label_text'] += temp[dups[j-1]:dups[j]]
-                            if j < len(dups) - 1:
-                                tp[axx]['label_text'] += ['']
+                            # Disable ticks
+                            for i, text in enumerate(getattr(axes[ia], 'get_%sminorticklabels' % axx)()):
+                                if i in wipe:
+                                    vals = temp[m0+i::number-1]
+                                    temp[m0+i::number-1] = ['']*len(vals)
+
+                            # Put back in duplicates
+                            tp[axx]['label_text'] = []
+                            dups[0] = 0
+                            for j in range(1, len(dups)):
+                                tp[axx]['label_text'] += temp[dups[j-1]:dups[j]]
+                                if j < len(dups) - 1:
+                                    tp[axx]['label_text'] += ['']
+
+                        # Check for overlap of first minor with opposite major axis (need to account for twin_x?)
+                        if len(tp['x']['ticks']) > 0:
+                            minor = tp['x']['label_vals'][m0:]
+                            lim = getattr(axes[ia], 'get_%slim' % axx)()
+                            first = [i for i, f in enumerate(minor) if f > lim[0]][0]
+                            xwmin, xhmin = tlmajx.size
+                            ywmin, yhmin = tlmajy.size
+                            xcxmin = get_tick_position(axes[ia], tp, axx, first+m0)
+                            xcmin = [xcxmin, -tlmin.size[1]/2-self.ws_ticks_ax + ia*self.axes.size[1]]
+                            x0miny0 = utl.rectangle_overlap([xwmin+2*buf, xhmin+2*buf, xcmin],
+                                                            [yw+2*buf, yh+2*buf, yc])
+                            if x0miny0:
+                                tp[axx]['label_text'][m0+first] = ''
 
                         # Check minor to minor overlap
                         if axx == 'x' and self.axes.scale in ['logx', 'semilogx', 'loglog', 'log'] or \
@@ -4115,9 +4235,12 @@ class LayoutMPL(BaseLayout):
                             for itick, t0 in enumerate(tp[axx]['label_text'][m0+1:-1]):
                                 if t0 == '':
                                     continue
-                                t0 = np.log10(float(t0)) % 1
+                                t0 = float(t0)
+                                if t0 == 0:
+                                    continue
+                                t0 = np.log10(t0) % 1
 
-                                # Check overlap with major first
+                                # Check overlap with major on same axis
                                 if delmaj - majw/2 < t0*delmaj + tlmin.size[wh]/2 + buf:
                                     tp[axx]['label_text'][m0+itick+1] = ''
 
