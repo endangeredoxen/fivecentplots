@@ -753,6 +753,8 @@ class Data:
 
                 for axx in ax:
                     # Adjust the dataframe by the limits
+                    if type(getattr(self, f)) is str:
+                        continue
                     if side == 'min':
                         df_fig = df_fig[df_fig[axx] >= getattr(self, f)]
                         df_rc = df_rc[df_rc[axx] >= getattr(self, f)]
