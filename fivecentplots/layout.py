@@ -1407,6 +1407,7 @@ class LayoutMPL(BaseLayout):
             **kwargs: input args from user
         """
 
+        #if kwargs.get('tick_cleanup', True):
         mplp.style.use('classic')
         mplp.close('all')
 
@@ -3800,7 +3801,6 @@ class LayoutMPL(BaseLayout):
                                 continue
                             tp[axx]['label_text'][m0 + itick] = \
                                 str(decimal.Decimal(tick).normalize())
-                        if ia==1 and axx=='y':st()
                         getattr(axes[ia], 'set_%sticklabels' % axx) \
                             (tp[axx]['label_text'][m0:], minor=True)
 

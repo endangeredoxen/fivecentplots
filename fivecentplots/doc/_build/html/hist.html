@@ -99,11 +99,14 @@
               <p class="caption"><span class="caption-text">Basics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html#dependencies">Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layout.html">Layout and Elements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layout.html#engine">Engine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="grouping.html">Grouping data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="styles.html">Styles and formatting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ranges.html">Data Ranges</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ranges.html">Data ranges</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ticks.html">Grids and ticks</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Examples</span></p>
 <ul class="current">
@@ -127,7 +130,11 @@
 <li class="toctree-l2"><a class="reference internal" href="#Legend">Legend</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Kernal-density-estimator">Kernal density estimator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Row/column-plot">Row/column plot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Wrap-plot">Wrap plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Wrap-plot">Wrap plot</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#By-column-values">By column values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#By-column-names">By column names</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -681,6 +688,8 @@ Counts vs Value by Sample by Batch.png
 </div>
 <div class="section" id="Wrap-plot">
 <h2>Wrap plot<a class="headerlink" href="#Wrap-plot" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="By-column-values">
+<h3>By column values<a class="headerlink" href="#By-column-values" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
 <span></span>In [10]:
@@ -703,7 +712,38 @@ Value vs Counts by Batch.png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_28_1.png" src="_images/hist_28_1.png" />
+<img alt="_images/hist_29_1.png" src="_images/hist_29_1.png" />
+</div>
+</div>
+</div>
+<div class="section" id="By-column-names">
+<h3>By column names<a class="headerlink" href="#By-column-names" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Value*2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Value&#39;</span><span class="p">]</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;Value*3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span><span class="o">*</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Value&#39;</span><span class="p">]</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="s1">&#39;Value*2&#39;</span><span class="p">,</span> <span class="s1">&#39;Value*3&#39;</span><span class="p">],</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">250</span><span class="p">,</span> <span class="mi">250</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Counts vs Value and Value_2 and Value_3 by x.png
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hist_31_1.png" src="_images/hist_31_1.png" />
+</div>
 </div>
 </div>
 </div>

@@ -127,7 +127,6 @@ Documentation
    styles.ipynb
    ranges.ipynb
    ticks.ipynb
-   fitler.ipynb
 
 .. toctree::
    :maxdepth: 1

@@ -126,6 +126,7 @@ Documentation
    grouping.ipynb
    styles.ipynb
    ranges.ipynb
+   ticks.ipynb
 
 .. toctree::
    :maxdepth: 1

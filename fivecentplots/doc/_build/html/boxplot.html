@@ -99,11 +99,14 @@
               <p class="caption"><span class="caption-text">Basics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html#dependencies">Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layout.html">Layout and Elements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layout.html#engine">Engine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="grouping.html">Grouping data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="styles.html">Styles and formatting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ranges.html">Data Ranges</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ranges.html">Data ranges</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ticks.html">Grids and ticks</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Examples</span></p>
 <ul class="current">
@@ -123,8 +126,9 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#Grid-plots">Grid plots</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#Column-plot">Column plot</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Wrap-plot">Wrap plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Column-plots">Column plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Row-plots">Row plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Wrap-plots">Wrap plots</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#Other-options">Other options</a><ul>
@@ -398,10 +402,11 @@ div.nboutput div.output_area.stderr {
 <div class="section" id="boxplot">
 <h1>boxplot<a class="headerlink" href="#boxplot" title="Permalink to this headline">¶</a></h1>
 <p>Boxplots in fivecentplots are modeled after the “Variability Chart” in
-JMP. Data can be broken into multiple subsets for easy visualization by
-simply listing the DataFrame column names of interest in the groups
-keyword. At a minimum, the <code class="docutils literal notranslate"><span class="pre">boxplot</span></code> function requires the following
-keywords:</p>
+JMP which provides convenient, multi-level group labels automatically
+along the x-axis. Data can be broken into multiple subsets for easy
+visualization by simply listing the DataFrame column names of interest
+in the groups keyword. At a minimum, the <code class="docutils literal notranslate"><span class="pre">boxplot</span></code> function requires
+the following keywords:</p>
 <ul><li><p><code class="docutils literal notranslate"><span class="pre">df</span></code>: a pandas DataFrame</p>
 </li><li><p><code class="docutils literal notranslate"><span class="pre">y</span></code>: the name of the DataFrame column containing the y-axis data</p>
 </li></ul><div class="section" id="Setup">
@@ -669,8 +674,8 @@ Value by Batch + Sample.png
 <h2>Grid plots<a class="headerlink" href="#Grid-plots" title="Permalink to this headline">¶</a></h2>
 <p>Like the plot function, boxplots can be broken into subplots based on
 “row” and/or “col” values or “wrap” values.</p>
-<div class="section" id="Column-plot">
-<h3>Column plot<a class="headerlink" href="#Column-plot" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="Column-plots">
+<h3>Column plots<a class="headerlink" href="#Column-plots" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
 <span></span>In [9]:
@@ -697,11 +702,39 @@ Value by Region by Batch + Sample.png
 </div>
 </div>
 </div>
-<div class="section" id="Wrap-plot">
-<h3>Wrap plot<a class="headerlink" href="#Wrap-plot" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="Row-plots">
+<h3>Row plots<a class="headerlink" href="#Row-plots" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
 <span></span>In [10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Region&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Value by Region by Batch + Sample.png
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/boxplot_30_1.png" src="_images/boxplot_30_1.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Wrap-plots">
+<h3>Wrap plots<a class="headerlink" href="#Wrap-plots" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -721,7 +754,66 @@ Value by Batch by Sample + Region.png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/boxplot_30_1.png" src="_images/boxplot_30_1.png" />
+<img alt="_images/boxplot_32_1.png" src="_images/boxplot_32_1.png" />
+</div>
+</div>
+<p>Alternatively, we can wrap multiple <code class="docutils literal notranslate"><span class="pre">y</span></code> column values and create a
+unique subplot for each column:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Make a new y column</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;Value*2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Value&#39;</span><span class="p">]</span>
+
+<span class="c1"># Plot</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="s1">&#39;Value*2&#39;</span><span class="p">],</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">,</span> <span class="s1">&#39;Region&#39;</span><span class="p">],</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span>
+            <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Value and Value_2 by y by Batch + Sample + Region.png
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/boxplot_34_1.png" src="_images/boxplot_34_1.png" />
+</div>
+</div>
+<p>Or if we disable y-axis range sharing:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="s1">&#39;Value*2&#39;</span><span class="p">],</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">,</span> <span class="s1">&#39;Region&#39;</span><span class="p">],</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span>
+            <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">],</span> <span class="n">share_y</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Value and Value_2 by y by Batch + Sample + Region.png
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/boxplot_36_1.png" src="_images/boxplot_36_1.png" />
 </div>
 </div>
 </div>
@@ -735,7 +827,7 @@ estimates of the data distrubution. Style attributes for the boxes will
 be applied to the violin plots.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [11]:
+<span></span>In [14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -756,7 +848,7 @@ Value by Batch + Sample.png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/boxplot_34_1.png" src="_images/boxplot_34_1.png" />
+<img alt="_images/boxplot_40_1.png" src="_images/boxplot_40_1.png" />
 </div>
 </div>
 </div>
@@ -773,7 +865,7 @@ the typical styling keywords of any line object with the prefix
 <h4>Mean<a class="headerlink" href="#Mean" title="Permalink to this headline">¶</a></h4>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [12]:
+<span></span>In [15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -793,7 +885,7 @@ Value by Batch + Sample.png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/boxplot_38_1.png" src="_images/boxplot_38_1.png" />
+<img alt="_images/boxplot_44_1.png" src="_images/boxplot_44_1.png" />
 </div>
 </div>
 </div>
@@ -801,7 +893,7 @@ Value by Batch + Sample.png
 <h4>Median<a class="headerlink" href="#Median" title="Permalink to this headline">¶</a></h4>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [13]:
+<span></span>In [16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -821,7 +913,7 @@ Value by Batch + Sample.png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/boxplot_40_1.png" src="_images/boxplot_40_1.png" />
+<img alt="_images/boxplot_46_1.png" src="_images/boxplot_46_1.png" />
 </div>
 </div>
 </div>
@@ -829,7 +921,7 @@ Value by Batch + Sample.png
 <h4>Std dev<a class="headerlink" href="#Std-dev" title="Permalink to this headline">¶</a></h4>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [14]:
+<span></span>In [17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -849,7 +941,7 @@ Value by Batch + Sample.png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/boxplot_42_1.png" src="_images/boxplot_42_1.png" />
+<img alt="_images/boxplot_48_1.png" src="_images/boxplot_48_1.png" />
 </div>
 </div>
 </div>
@@ -861,7 +953,7 @@ visually segrate main groups of boxes. These lines are enabled by
 default but can be turned off easily:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [15]:
+<span></span>In [18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -881,7 +973,7 @@ Value by Batch + Sample.png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/boxplot_45_1.png" src="_images/boxplot_45_1.png" />
+<img alt="_images/boxplot_51_1.png" src="_images/boxplot_51_1.png" />
 </div>
 </div>
 </div>
@@ -895,7 +987,7 @@ but can be disabled or styled through keywords with the prefix
 <code class="docutils literal notranslate"><span class="pre">box_range_lines_</span></code>:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [16]:
+<span></span>In [19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -915,7 +1007,7 @@ Value by Batch + Sample.png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/boxplot_48_1.png" src="_images/boxplot_48_1.png" />
+<img alt="_images/boxplot_54_1.png" src="_images/boxplot_54_1.png" />
 </div>
 </div>
 </div>

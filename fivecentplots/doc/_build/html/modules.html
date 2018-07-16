@@ -99,11 +99,14 @@
               <p class="caption"><span class="caption-text">Basics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html#dependencies">Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layout.html">Layout and Elements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layout.html#engine">Engine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="grouping.html">Grouping data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="styles.html">Styles and formatting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ranges.html">Data Ranges</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ranges.html">Data ranges</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ticks.html">Grids and ticks</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Examples</span></p>
 <ul>
@@ -254,6 +257,24 @@
 <dt id="data.Data.check_group_errors">
 <code class="descname">check_group_errors</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.check_group_errors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check for common errors related to grouping keywords</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.Data.check_group_matching">
+<code class="descname">check_group_matching</code><span class="sig-paren">(</span><em>group1</em>, <em>group2</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.check_group_matching" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check to make sure certain group column values are not the same</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>group1</strong> (<em>str</em>) – attr name of first grouping column</li>
+<li><strong>group2</strong> (<em>str</em>) – attr name of second grouping column</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">

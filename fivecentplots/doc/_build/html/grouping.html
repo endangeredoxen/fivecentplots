@@ -99,7 +99,9 @@
               <p class="caption"><span class="caption-text">Basics</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html#dependencies">Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layout.html">Layout and Elements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layout.html#engine">Engine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Grouping data</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#Setup">Setup</a><ul>
@@ -108,8 +110,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#legend">legend</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#Using-filter">Using filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Pre-filtering-using-boolean-masks">Pre-filtering using boolean masks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Single-legend-column">Single legend column</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Multiple-legend-columns">Multiple legend columns</a></li>
 </ul>
 </li>
@@ -119,12 +120,17 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#row-|-col-subplots">row | col subplots</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#wrap-subplots">wrap subplots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wrap-subplots">wrap subplots</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#By-column-values">By column values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#By-column-names">By column names</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#figure-plots">figure plots</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="styles.html">Styles and formatting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ranges.html">Data Ranges</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ranges.html">Data ranges</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ticks.html">Grids and ticks</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Examples</span></p>
 <ul>
@@ -388,18 +394,24 @@ div.nboutput div.output_area.stderr {
 <h1>Grouping data<a class="headerlink" href="#Grouping-data" title="Permalink to this headline">¶</a></h1>
 <p>A single pandas DataFrame can often be decomposed into smaller subsets
 of data that need to be visualized. fivecentplots contains multiple
-grouping levels to expose unique subsets of data: * legend: color lines
-and markers according to unique values in a DataFrame column * groups:
-* for xy plots: separates unique subsets so plot lines are not
-continuously looped back to the origin (useful for replicates of similar
-data) * for boxplots: groups boxes by unique values in one or more
-DataFrame columns * row | column: makes a grid of subplots for each
-unique value of the DataFrame column names specified for these keyword
-arguments within a single figure * wrap: similar to row and column
-grouping, wrap makes a grid of subplots for each unique value of the
-DataFrame column names specified for these keyword arguments within a
-single figure * figure: makes a unique figure for each unique value of
-a DataFrame column</p>
+grouping levels to expose unique subsets of data:</p>
+<ul><li><p>legend: color lines and markers according to unique values in a
+DataFrame column</p>
+</li><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;li&gt;&lt;font style=&quot;font-family:&#39;Courier New&#39;&quot;&gt;groups&lt;/font&gt;:&lt;/li&gt;
+&lt;ul&gt;
+&lt;li&gt;for xy plots: separates unique subsets so plot lines are not continuously looped back to the origin (useful for replicates of similar data)&lt;/li&gt;
+    &lt;li&gt;for boxplots: groups boxes by unique values in one or more DataFrame columns&lt;/li&gt;
+&lt;/ul&gt;
+&lt;li&gt;&lt;font style=&quot;font-family:&#39;Courier New&#39;&quot;&gt;row | column&lt;/font&gt;: makes a grid of subplots for each unique value of the DataFrame column names specified for these keyword arguments within a single figure&lt;/li&gt;
+&lt;li&gt;&lt;font style=&quot;font-family:&#39;Courier New&#39;&quot;&gt;wrap&lt;/font&gt;:
+    &lt;ul&gt;
+        &lt;li&gt;Option 1: similar to row and column grouping, wrap makes a grid of subplots for each &lt;i&gt;unique value&lt;/i&gt; of the DataFrame column names specified for these keyword arguments within a single figure&lt;/li&gt;
+        &lt;li&gt;Option 2: wrap by `x` or `y` to create a uniqe subplot for each &lt;i&gt;column name&lt;/i&gt; listed&lt;/li&gt;
+    &lt;/ul&gt;
+&lt;li&gt;&lt;font style=&quot;font-family:&#39;Courier New&#39;&quot;&gt;figure&lt;/font&gt;:  makes a unique figure for each unique value of a DataFrame column&lt;/li&gt;
+&lt;/ul&gt;
+</pre></div>
+</div>
 <p>It is also possible to filter data inline sets via the keyword filter.</p>
 <div class="section" id="Setup">
 <h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this headline">¶</a></h2>
@@ -441,12 +453,18 @@ a DataFrame column</p>
 </div>
 <div class="section" id="legend">
 <h2>legend<a class="headerlink" href="#legend" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="Using-filter">
-<h3>Using filter<a class="headerlink" href="#Using-filter" title="Permalink to this headline">¶</a></h3>
-<p>In this data set, we have repeats of the same current vs. voltage
-measurement at three different “Die” locations. By setting the legend
-keyword equal to the name of the DataFrame column containing the “Die”
-value, we can distinctly visualize the measurement for each site.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">legend</span></code> keyword can be a single DataFrame column name or a list
+of column names. The data set will then be grouped according to each
+unique value of the <code class="docutils literal notranslate"><span class="pre">legend</span></code> column and a separate plot for each value
+will be added to the figure. A different color and marker type will be
+used to display each value.</p>
+<div class="section" id="Single-legend-column">
+<h3>Single legend column<a class="headerlink" href="#Single-legend-column" title="Permalink to this headline">¶</a></h3>
+<p>In our sample data set, we have repeats of the same current vs. voltage
+measurement at three different “Die” locations. By setting the
+<code class="docutils literal notranslate"><span class="pre">legend</span></code> keyword equal to the name of the DataFrame column containing
+the “Die” value, we can distinctly visualize the measurement for each
+site.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
 <span></span>In [3]:
@@ -470,55 +488,19 @@ I [A] vs Voltage.png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_10_1.png" src="_images/grouping_10_1.png" />
-</div>
-</div>
-</div>
-<div class="section" id="Pre-filtering-using-boolean-masks">
-<h3>Pre-filtering using boolean masks<a class="headerlink" href="#Pre-filtering-using-boolean-masks" title="Permalink to this headline">¶</a></h3>
-<p>Notice the DataFrame supplied to the plot function above used the filter
-keyword to help subset the data. We can also pre-filter via boolean
-operations applied directly to the main DataFrame.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [4]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">sub</span> <span class="o">=</span> <span class="n">df1</span><span class="p">[(</span><span class="n">df1</span><span class="o">.</span><span class="n">Substrate</span><span class="o">==</span><span class="s1">&#39;Si&#39;</span><span class="p">)</span> <span class="o">&amp;</span>
-          <span class="p">(</span><span class="n">df1</span><span class="p">[</span><span class="s1">&#39;Target Wavelength&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">450</span><span class="p">)</span> <span class="o">&amp;</span>
-          <span class="p">(</span><span class="n">df1</span><span class="p">[</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">]</span><span class="o">==</span><span class="mf">0.2</span><span class="p">)</span> <span class="o">&amp;</span>
-          <span class="p">(</span><span class="n">df1</span><span class="p">[</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">25</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-         <span class="p">]</span>
-<span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">sub</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-I [A] vs Voltage.png
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/grouping_13_1.png" src="_images/grouping_13_1.png" />
+<img alt="_images/grouping_11_1.png" src="_images/grouping_11_1.png" />
 </div>
 </div>
 </div>
 <div class="section" id="Multiple-legend-columns">
 <h3>Multiple legend columns<a class="headerlink" href="#Multiple-legend-columns" title="Permalink to this headline">¶</a></h3>
 <p>fivecentplots also supports legending by multiple DataFrame columns.
-When a list of column names is passed to the legend keyword, a new
-column is created that concatenates each column in the list. This new
-column is used for legending.</p>
+When a list of column names is passed to the <code class="docutils literal notranslate"><span class="pre">legend</span></code> keyword, a dummy
+column is created in the DataFrame that concatenates the values from
+each column listed in <code class="docutils literal notranslate"><span class="pre">legend</span></code>. This new column is used for legending.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [5]:
+<span></span>In [4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -539,13 +521,17 @@ I [A] vs Voltage.png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_16_1.png" src="_images/grouping_16_1.png" />
+<img alt="_images/grouping_14_1.png" src="_images/grouping_14_1.png" />
 </div>
 </div>
 </div>
 </div>
 <div class="section" id="groups">
 <h2>groups<a class="headerlink" href="#groups" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">groups</span></code> keyword requires a column name or list of column names
+from the DataFrame. These columns are used to identify subsets in the
+data and make sure they are properly visualize in the plot. Unlike
+<code class="docutils literal notranslate"><span class="pre">legend</span></code>, group values are not added to a legend on the plot.</p>
 <div class="section" id="xy-plots">
 <h3>xy plots<a class="headerlink" href="#xy-plots" title="Permalink to this headline">¶</a></h3>
 <p>Some data sets contain multiple sets of similar data. Consider the
@@ -555,7 +541,7 @@ back to the begining for each “group” of the data. This occurs because
 we have provided no information about how to segment the data set.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [6]:
+<span></span>In [5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -576,16 +562,17 @@ I [A] vs Voltage.png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_20_1.png" src="_images/grouping_20_1.png" />
+<img alt="_images/grouping_19_1.png" src="_images/grouping_19_1.png" />
 </div>
 </div>
-<p>To handle cases like this, we can add the keyword “groups” and specify
+<p>To handle cases like this, we can add the keyword <code class="docutils literal notranslate"><span class="pre">groups</span></code> and specify
 another DataFrame column name that indicates how the data are grouped
 (in this case by “Die”). Now we get distinct lines for each instance of
-the measurement data.</p>
+the measurement data. The <code class="docutils literal notranslate"><span class="pre">groups</span></code> keyword can still be combined with
+a legend from a different DataFrame column.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [7]:
+<span></span>In [6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -606,18 +593,18 @@ I [A] vs Voltage by Die.png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_22_1.png" src="_images/grouping_22_1.png" />
+<img alt="_images/grouping_21_1.png" src="_images/grouping_21_1.png" />
 </div>
 </div>
 </div>
 <div class="section" id="boxplots">
 <h3>boxplots<a class="headerlink" href="#boxplots" title="Permalink to this headline">¶</a></h3>
-<p>Boxplots are another case where we can benefit by grouping data into
-subsets. As with x-y plots, we supply a list of column names to the
-<code class="docutils literal notranslate"><span class="pre">groups</span></code> keyword:</p>
+<p>Like x-y plots, the <code class="docutils literal notranslate"><span class="pre">groups</span></code> keyword is used to break the data set
+into subsets. However, for boxplots the group column names and values
+are actually displayed along the x-axis:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [8]:
+<span></span>In [7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -638,7 +625,7 @@ Value by Batch + Sample.png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_25_1.png" src="_images/grouping_25_1.png" />
+<img alt="_images/grouping_24_1.png" src="_images/grouping_24_1.png" />
 </div>
 </div>
 </div>
@@ -652,12 +639,12 @@ columns we are using. In this case, we remove the “Temperature [C]” and
 and column commands, respectively.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [9]:
+<span></span>In [8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> \
-         <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450&#39;</span><span class="p">)</span>
+         <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450&#39;</span><span class="p">,</span> <span class="n">label_rc_font_size</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -673,18 +660,25 @@ I [A] vs Voltage by Temperature [C] by Boost Level.png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_28_1.png" src="_images/grouping_28_1.png" />
+<img alt="_images/grouping_27_1.png" src="_images/grouping_27_1.png" />
 </div>
 </div>
 </div>
 <div class="section" id="wrap-subplots">
 <h2>wrap subplots<a class="headerlink" href="#wrap-subplots" title="Permalink to this headline">¶</a></h2>
-<p>Alternatively, we can combine the unique row and column values into a
-single header by passing the “Temperature [C]” and “Boost Level” column
-names as a list to the wrap keyword.</p>
+<div class="section" id="By-column-values">
+<h3>By column values<a class="headerlink" href="#By-column-values" title="Permalink to this headline">¶</a></h3>
+<p>We can create a plot similar to the row/column plot above using the
+<code class="docutils literal notranslate"><span class="pre">wrap</span></code> keyword. The key differences are that spacing and ticks between
+subplots is removed by default (can be changed via keywords), axis
+sharing is forced (cannot override), and the row/column value labels are
+condensed to a single label above each subplot. To do this, remove the
+<code class="docutils literal notranslate"><span class="pre">row</span></code> and <code class="docutils literal notranslate"><span class="pre">column</span></code> keywords from the previous function call and pass
+the “Temperature [C]” and “Boost Level” column names as a list to the
+<code class="docutils literal notranslate"><span class="pre">wrap</span></code> keyword.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [10]:
+<span></span>In [9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -708,16 +702,88 @@ I [A] vs Voltage by Temperature [C] + Boost Level.png
 <img alt="_images/grouping_31_1.png" src="_images/grouping_31_1.png" />
 </div>
 </div>
+<p>By default, wrap plots will be arranged in a square grid. If the number
+of subplots does not match a perfectly square grid, you will have an
+incomplete row of subplots in the grid. All tick and axes labels are
+handled appropriately for this case. If you want to override the default
+grid size, specify the keyword <code class="docutils literal notranslate"><span class="pre">ncol</span></code> which sets the number of
+columns. The number of rows will be automatically determined from the
+number of subplots.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> <span class="s1">&#39;Boost Level&#39;</span><span class="p">],</span> \
+         <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450&#39;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+I [A] vs Voltage by Temperature [C] + Boost Level.png
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/grouping_33_1.png" src="_images/grouping_33_1.png" />
+</div>
+</div>
+</div>
+<div class="section" id="By-column-names">
+<h3>By column names<a class="headerlink" href="#By-column-names" title="Permalink to this headline">¶</a></h3>
+<p>We can also “wrap” by column names instead of unique column values. In
+this case we list the columns to plot in the <code class="docutils literal notranslate"><span class="pre">x</span></code> or <code class="docutils literal notranslate"><span class="pre">y</span></code> keywords as
+usual but we add “x” or “y” to the <code class="docutils literal notranslate"><span class="pre">wrap</span></code> keyword. This will create a
+unique subplot in a grid for each <code class="docutils literal notranslate"><span class="pre">wrap</span></code> value. Unlike the case of
+wrapping column values, this plot will not have wrap labels and axis
+sharing can be overriden. As before, used <code class="docutils literal notranslate"><span class="pre">ncol</span></code> to override the
+default gridding.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;I Set&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span>
+         <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="s1">&#39;Temperature [C]&#39;</span><span class="p">],</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">325</span><span class="p">,</span> <span class="mi">325</span><span class="p">],</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+I Set and I [A] vs Voltage by y by Boost Level + Temperature [C].png
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/grouping_36_1.png" src="_images/grouping_36_1.png" />
+</div>
+</div>
+</div>
 </div>
 <div class="section" id="figure-plots">
 <h2>figure plots<a class="headerlink" href="#figure-plots" title="Permalink to this headline">¶</a></h2>
 <p>To add another dimension of grouping, fivecentplots supports grouping by
 figure. In this case, a separate figure (i.e., a separate png) is
 created for each unique value in the DataFrame column(s) listed in the
-fig_groups keyword.</p>
+<code class="docutils literal notranslate"><span class="pre">fig_groups</span></code> keyword. Here we will plot a single figure for each value
+of the “Die” column.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [11]:
+<span></span>In [12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -738,7 +804,7 @@ I [A] vs VoltageDie by Temperature [C] + Boost Level where Die=(-1,2).png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_34_1.png" src="_images/grouping_34_1.png" />
+<img alt="_images/grouping_39_1.png" src="_images/grouping_39_1.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
@@ -753,7 +819,7 @@ I [A] vs VoltageDie by Temperature [C] + Boost Level where Die=(1,1).png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_34_3.png" src="_images/grouping_34_3.png" />
+<img alt="_images/grouping_39_3.png" src="_images/grouping_39_3.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
@@ -768,7 +834,7 @@ I [A] vs VoltageDie by Temperature [C] + Boost Level where Die=(2,-1).png
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_34_5.png" src="_images/grouping_34_5.png" />
+<img alt="_images/grouping_39_5.png" src="_images/grouping_39_5.png" />
 </div>
 </div>
 </div>
