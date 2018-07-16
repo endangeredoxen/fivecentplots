@@ -15,6 +15,8 @@
   
     <link rel="shortcut icon" href="_static/favicon.ico"/>
   
+  
+  
 
   
 
@@ -36,8 +38,11 @@
   
 
   
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="fivecentplots beta documentation" href="#"/>
-        <link rel="next" title="Overview" href="overview.html"/> 
+        <link rel="next" title="Installation" href="install.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -46,6 +51,7 @@
 
 <body class="wy-body-for-nav" role="document">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -65,7 +71,7 @@
             
             
               <div class="version">
-                v0.2
+                0.3.0
               </div>
             
           
@@ -86,13 +92,33 @@
           
             
             
-                <ul>
-<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="design.html">Figure Design</a></li>
-<li class="toctree-l1"><a class="reference internal" href="defaults.html">Default Settings</a></li>
+              
+            
+            
+              <p class="caption"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html#dependencies">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layout.html">Layout and Elements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layout.html#engine">Engine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">Example Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="grouping.html">Grouping data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="styles.html">Styles and formatting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ranges.html">Data ranges</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ticks.html">Grids and ticks</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="plot.html">plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heatmap.html">heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hist.html">hist</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Other</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="older.html">Older Versions</a></li>
 </ul>
 
             
@@ -105,8 +131,10 @@
 
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="#">fivecentplots</a>
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">fivecentplots</a>
+        
       </nav>
 
 
@@ -119,55 +147,92 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="#">Docs</a> &raquo;</li>
-      
-    <li><span class="title">fivecentplots</span></li>
+    
+      <li><a href="#">Docs</a> &raquo;</li>
+        
+      <li><span class="title">fivecentplots</span></li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
-            <a href="_sources/index.txt" rel="nofollow"> View page source</a>
+            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <img alt="_images/index.png" src="_images/index.png" />
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+</style>
+<img alt="_images/index.png" src="_images/index.png" />
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><br /></div>
 </div>
 <div class="section" id="fivecentplots">
 <h1><span class="title">fivecentplots</span><a class="headerlink" href="#fivecentplots" title="Permalink to this headline">¶</a></h1>
-<p><span class="tagline">&#8211;Plot data bigly&#8211;</span></p>
+<p><span class="tagline">–Plot data bigly–</span></p>
 <div class="section" id="why-another-python-plotting-library">
 <h2>Why another Python plotting library?<a class="headerlink" href="#why-another-python-plotting-library" title="Permalink to this headline">¶</a></h2>
-<p>There is no shortage of quality Python plotting libraries on the world wide
-web (i.e., matplotlib, bokeh, seaborn, etc.).  Why add another?</p>
-<p>With the development of <strong>pandas</strong>, statistical analysis in Python can
-rival that of commercial software packages like JMP.  However, plotting those
-analyses is often more difficult.  <strong>fivecentplots</strong> builds upon <strong>pandas</strong>
-and <strong>matplotlib</strong> to make styling and formatting of plots easier and
-more consistent.</p>
+<p><strong>fivecentplots</strong> exists to simplify plotting of <strong>pandas</strong> DataFrames.
+While there is no shortage of quality Python plotting libraries on the
+world wide web (i.e., matplotlib, bokeh, seaborn, etc.), the APIs can
+be overly complicated and require multiple lines of code to make the plot
+look just right.  This complexity is especially discouraging to new
+or casual Python users and often results in them giving up on Python plotting
+in favor of inferior yet simplar plotting tools like Excel.</p>
 </div>
 <div class="section" id="what-issues-does-fivecentplots-address">
 <h2>What issues does fivecentplots address?<a class="headerlink" href="#what-issues-does-fivecentplots-address" title="Permalink to this headline">¶</a></h2>
 <p><strong>1. Ease of Use</strong></p>
 <blockquote>
 <div><ul class="simple">
-<li>All data come from pandas DataFrames eliminating direct management of
+<li>Plots require <em>a single function call</em>.  All needed inputs from the data to plot
+to any style and/or formatting parameters are specified as optional keyword
+arguments in this single function call.</li>
+<li>Data come from pandas DataFrames eliminating direct management of
 numpy arrays</li>
-<li>All style and format parameters can be invoked in a single function call
-via optional keyword arguments</li>
-<li>Legend a plot or group multiple plots into rows and/or columns based on
-simply by DataFrame column names</li>
-<li>Quickly filter a DataFrame prior to plotting using simple notation instead
-of complex boolean operators</li>
+<li>Data can be quickly grouped into subsets and visualized.  This includes
+creating grids of subplots and legending by color and/or marker.  All of these
+options are invoked simply by specifying DataFrame column names as appropriate
+keyword arugments</li>
 </ul>
 </div></blockquote>
 <div class="line-block">
@@ -177,11 +242,15 @@ of complex boolean operators</li>
 <blockquote>
 <div><ul class="simple">
 <li>Figure sizes expand and contract to accommodate plot elements rather
-than shrinking elements to fit in a certain figure dimension (standard
-practice in matplotlib).  Plots of the same size stay the same size
-regardless of tick marks or legend contents</li>
-<li>All colors, sizes, marker themes, etc. can be specified from static set
-up files to preserve a custom look for all plots</li>
+than remaining fixed and shrinking the internal elements often in unexpected
+ways (as is the standard practice in matplotlib).  In <strong>fivecentplots</strong> the
+axes window size is king so plot areas of the same size stay the same size
+regardless of everything surrounding them.  Because element sizes are
+measured before the plot is generated and the figure size is not fixed,
+<strong>fivecentplots</strong> can adjust the layout to prevent elements from overlapping
+unexpectedly.</li>
+<li>All colors, sizes, marker themes, etc. can be specified from input keywords
+or from a theme file</li>
 </ul>
 </div></blockquote>
 <div class="line-block">
@@ -200,20 +269,25 @@ scientists without requiring a deep knowledge of Python syntax</li>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<p><strong>4. Extras (JMP-style plots that would be tedious to recreate every time in raw code)</strong></p>
+<p><strong>4. JMP-style plots that would be tedious to create every time in raw code</strong></p>
 <blockquote>
-<div><ul>
-<li><p class="first">Boxplots with grouping labels:</p>
+<div><p>With the development of <strong>pandas</strong>, statistical analysis in Python can rival or surpass that of
+popular commercial software packages like JMP. However, JMP has several plotting platforms
+that are very useful and would be tedious to create from scratch in Python.  <strong>fivecentplot</strong>
+handles all of this work so you don’t have to, allowing you to create beautiful
+<em>and often more flexible</em> JMP-style plots with a single function call.  Examples include:</p>
+<ul>
+<li><p class="first">Boxplots with grouping labels (i.e., variability charts):</p>
 <blockquote>
-<div><p>Although matplotlib has a boxplot function, it is not easy to group
-data into multiple, labeled subgroups.  Borrowing inspiration from the
+<div><p>While there are boxplot functions in Python plotting libraries, it is not easy to group
+data into multiple, <em>labeled</em> subgroups.  Borrowing inspiration from the
 <a class="reference external" href="http://www.jmp.com/support/help/Variability_Gauge_Charts.shtml">variability chart in JMP</a>,
-fivecentplots extends matplotlib&#8217;s boxplot routine to make this possible.</p>
+<strong>fivecentplots</strong> makes this possible.</p>
 </div></blockquote>
 </li>
 <li><p class="first">Grouped facet grid plots:</p>
 <blockquote>
-<div><p>Like JMP&#8217;s <a class="reference external" href="http://www.jmp.com/support/help/Additional_Examples_of_the_Overlay_Plot_Platform.shtml#192569">grouped overlay plots</a>,
+<div><p>Like JMP’s <a class="reference external" href="http://www.jmp.com/support/help/Additional_Examples_of_the_Overlay_Plot_Platform.shtml#192569">grouped overlay plots</a>,
 take any multi-variate DataFrame and separate it into grids of plots,
 each represeting a unique combination of factors</p>
 </div></blockquote>
@@ -223,25 +297,61 @@ each represeting a unique combination of factors</p>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
+</div>
+<div class="section" id="current-options">
+<h2>Current Options<a class="headerlink" href="#current-options" title="Permalink to this headline">¶</a></h2>
+<p>The following plot types are supported in <strong>fivecentplots</strong>:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><a class="reference external" href="plot.html">XY plots</a></li>
+<li><a class="reference external" href="boxplot.html">box plots</a></li>
+<li><a class="reference external" href="contour.html">contour plots</a></li>
+<li><a class="reference external" href="heatmap.html">heatmaps</a></li>
+<li><a class="reference external" href="hist.html">histograms</a></li>
+</ol>
+</div></blockquote>
+<p>Follow the links to the example section to see the many options
+available within each plot category.</p>
 <div class="section" id="documentation">
 <h3>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h3>
 <div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Basics</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="design.html">Figure Design</a></li>
-<li class="toctree-l1"><a class="reference internal" href="defaults.html">Default Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html#dependencies">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layout.html">Layout and Elements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layout.html#engine">Engine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">Example Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="grouping.html">Grouping data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="styles.html">Styles and formatting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ranges.html">Data ranges</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ticks.html">Grids and ticks</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="plot.html">plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heatmap.html">heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hist.html">hist</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Other</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="older.html">Older Versions</a></li>
 </ul>
 </div>
 </div>
 <div class="section" id="indices-and-tables">
 <h3>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><a class="reference internal" href="genindex.html"><span>Index</span></a></li>
-<li><a class="reference internal" href="py-modindex.html"><span>Module Index</span></a></li>
-<li><a class="reference internal" href="search.html"><span>Search Page</span></a></li>
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
 </ul>
 <span class="target" id="module-fivecentplots"></span></div>
 </div>
@@ -249,12 +359,15 @@ each represeting a unique combination of factors</p>
 
 
            </div>
+           <div class="articleComments">
+            
+           </div>
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="overview.html" class="btn btn-neutral float-right" title="Overview" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="install.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
     </div>
@@ -289,7 +402,8 @@ each represeting a unique combination of factors</p>
             VERSION:'beta',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="_static/jquery.js"></script>
