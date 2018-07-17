@@ -167,12 +167,12 @@
    "source": [
     "In many cases we want to plot data over a specific data range.  This is accomplished by passing set limit values as keywords in the plot command.  The following axis can be specified:\n",
     "<ul>\n",
-    "    <li>`x` (primary x-axis)</li>\n",
-    "    <li>`x2` (secondary x-axis when `twin_y=True`)</li>\n",
-    "    <li>`y` (primary y-axis)</li>\n",
-    "    <li>`y2` (secondary y-axis when `twin_x=True)</li>\n",
-    "    <li>`x` (primary z-axis [for heatmaps and contours this is the colorbar axis])</li>\n",
-    "    \n",
+    "<li>`x` (primary x-axis)</li>\n",
+    "<li>`x2` (secondary x-axis when `twin_y=True`)</li>\n",
+    "<li>`y` (primary y-axis)</li>\n",
+    "<li>`y2` (secondary y-axis when `twin_x=True)</li>\n",
+    "<li>`x` (primary z-axis [for heatmaps and contours this is the colorbar axis])</li>\n",
+    "</ul>   \n",
     "Each axis has a `min` or a `max` value that can be specified.  "
    ]
   },
@@ -671,11 +671,11 @@
    "source": [
     "Axes sharing applies when using `row`, `col`, or `wrap` grouping to split the plot into multiple subplots.  The boolean keywords of interest are:\n",
     "<ul>\n",
-    "    <li>`share_x`</li>\n",
-    "    <li>`share_x2`</li>\n",
-    "    <li>`share_y`</li>\n",
-    "    <li>`share_y2`</li>\n",
-    "    <li>`share_z`</li>\n",
+    "<li>`share_x`</li>\n",
+    "<li>`share_x2`</li>\n",
+    "<li>`share_y`</li>\n",
+    "<li>`share_y2`</li>\n",
+    "<li>`share_z`</li>\n",
     "</ul>\n"
    ]
   },

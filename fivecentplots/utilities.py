@@ -39,7 +39,7 @@ def get_current_values(df, text, key='@'):
     return text
 
 
-def get_decimals(value, max_places=10):
+def get_decimals(value, max_places=4):
     """
     Get the number of decimal places of a float number excluding
     rounding errors

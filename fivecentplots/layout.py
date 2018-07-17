@@ -15,6 +15,7 @@ import datetime
 import numpy as np
 import copy
 import decimal
+import math
 import fivecentplots.utilities as utl
 from collections import defaultdict
 import warnings
@@ -1407,8 +1408,8 @@ class LayoutMPL(BaseLayout):
             **kwargs: input args from user
         """
 
-        #if kwargs.get('tick_cleanup', True):
-        mplp.style.use('classic')
+        if kwargs.get('tick_cleanup', True):
+            mplp.style.use('classic')
         mplp.close('all')
 
         # Inherit the base layout properties
@@ -2029,8 +2030,10 @@ class LayoutMPL(BaseLayout):
                 axes[1].yaxis.set_minor_formatter(ticker.FormatStrFormatter('%%.%sf' % (decimals)))
                 yiter_ticks = [f for f in axes[1].yaxis.iter_ticks()]
 
-            x2ticksmin += [f[2] for f in axes[1].xaxis.iter_ticks()][len(xticks):]
-            y2ticksmin += [f[2] for f in axes[1].yaxis.iter_ticks()][len(yticks):]
+            if ax3 is not None:
+                x2ticksmin += [f[2] for f in axes[2].xaxis.iter_ticks()][len(xticks):]
+            if ax2 is not None:
+                y2ticksmin += [f[2] for f in axes[1].yaxis.iter_ticks()][len(yticks):]
 
             self.axes.obj = np.array([[None]*self.ncol]*self.nrow)
             self.axes.obj[ir, ic] = axes[0]
@@ -3662,13 +3665,23 @@ class LayoutMPL(BaseLayout):
                     tp = mpl_get_ticks(axes[ia],
                                       getattr(self, 'ticks_major_x%s' % lab).on,
                                       getattr(self, 'ticks_major_y%s' % lab).on)
+                    m0 = len(tp[axx]['ticks'])
                     lim = getattr(axes[ia], 'get_%slim' % axx)()
                     vals = [f for f in tp[axx]['ticks'] if f > lim[0]]
                     label_vals = [f for f in tp[axx]['label_vals'] if f > lim[0]]
                     inc = label_vals[1] - label_vals[0]
-                    minor_ticks = [f[1] for f in
-                                   tp[axx]['labels']][len(tp[axx]['ticks']):]
-                    number = len([f for f in minor_ticks if f > vals[0] and f < vals[1]]) + 1
+                    minor_ticks = [f[1] for f in tp[axx]['labels']][m0:]
+
+                    # Remove any major tick labels from the list of minor ticks
+                    dups = []
+                    dups_idx = []
+                    for imt, mt in enumerate(minor_ticks):
+                        for majt in tp[axx]['ticks']:
+                            if math.isclose(mt, majt):
+                                dups += [mt]
+                                dups_idx += [m0 + imt]
+                    minor_ticks2 = [f for f in minor_ticks if f not in dups]
+                    number = len([f for f in minor_ticks2 if f > vals[0] and f < vals[1]]) + 1
                     decimals = utl.get_decimals(inc/number)
 
                     # Check for minor ticks below the first major tick for log axes
@@ -3683,13 +3696,13 @@ class LayoutMPL(BaseLayout):
                         ticker.FormatStrFormatter('%%.%sf' % (decimals)))
 
                     # Rotation
-                    if tlmin.rotation != 0:
+                    tlminlab = getattr(self, 'tick_labels_minor_%s' % axl)
+                    if tlminlab.rotation != 0:
                         for text in getattr(axes[ia], 'get_%sminorticklabels' % axx)():
-                            text.set_rotation(tlmin.rotation)
+                            text.set_rotation(tlminlab.rotation)
 
                     # Minor tick overlap cleanup
                     if self.tick_cleanup and tlminon:
-                        tlminlab = getattr(self, 'tick_labels_minor_%s' % axl)
                         tp = mpl_get_ticks(axes[ia],
                                            getattr(self, 'ticks_major_x%s' % lab).on,
                                            getattr(self, 'ticks_major_y%s' % lab).on)  # need to update
@@ -3700,7 +3713,6 @@ class LayoutMPL(BaseLayout):
                             wh = 1
 
                         # Check overlap with major tick labels
-                        m0 = len(tp[axx]['ticks'])
                         majw = getattr(self, 'tick_labels_major_%s' % axl).size[wh]/2
                         delmaj = self.axes.size[wh]
                         lim = getattr(axes[ia], 'get_%slim' % axx)()
@@ -3717,8 +3729,11 @@ class LayoutMPL(BaseLayout):
 
                             ## need to calc log position within delmaj
                             if delmaj - 2*majw < tlminlab.size[wh] + buf:
+                                st()
                                 # No room for any ticks
-                                warnings.warn('Insufficient space between %s major tick labels for minor tick labels. Skipping...' % axx)
+                                warnings.warn('Insufficient space between %s '
+                                              'major tick labels for minor '
+                                              'tick labels. Skipping...' % axx)
                                 wipe = list(range(0, number-1))
                             else:
                                 for i in range(0, number - 1):
@@ -3730,32 +3745,39 @@ class LayoutMPL(BaseLayout):
                                     if majw > pos - tlminlab.size[wh]/2 - buf or \
                                             delmaj - majw < pos + tlminlab.size[wh]/2 + buf:
                                         wipe += [i]
+                            offset = len([f for f in minor_ticks if f < ticks[0]])
 
                             # There is a weird bug where a tick can be both major and minor; need to remove
-                            dups = [i+m0 for i, f in enumerate(minor_ticks) if f in tp[axx]['ticks']]
-                            if len(dups) == 0:
-                                dups = [-1, len(tp[axx]['label_text'])]
-                            if dups[0] != -1:
-                                dups = [-1] + dups
-                            if dups[len(dups)-1] != len(dups):
-                                dups = dups + [len(tp[axx]['label_text'])]
+                            # dups = [i+m0 for i, f in enumerate(minor_ticks)
+                            #         if f in tp[axx]['ticks']]
+                            if len(dups_idx) == 0:
+                                dups_idx = [-1, len(tp[axx]['label_text'])]
+                            if dups_idx[0] != -1:
+                                dups_idx = [-1] + dups_idx
+                            if dups_idx[len(dups_idx)-1] != len(dups_idx):
+                                dups_idx = dups_idx + [len(tp[axx]['label_text'])]
                             temp = []
-                            for j in range(1, len(dups)):
-                                temp += tp[axx]['label_text'][dups[j-1]+1:dups[j]]
+                            for j in range(1, len(dups_idx)):
+                                temp += tp[axx]['label_text'][dups_idx[j-1]+1:dups_idx[j]]
 
-                            # Disable ticks
-                            for i, text in enumerate(getattr(axes[ia], 'get_%sminorticklabels' % axx)()):
+                            # Disable ticks above first major tick
+                            for i, text in enumerate(tp[axx]['label_text']):
+                                # above first major tick
                                 if i in wipe:
-                                    vals = temp[m0+i::number-1]
-                                    temp[m0+i::number-1] = ['']*len(vals)
+                                    vals = temp[m0+i+offset::number-1]
+                                    temp[m0+i+offset::number-1] = ['']*len(vals)
+                            # Disable ticks below first major tick
+                            rwipe = [number - 1 - f for f in wipe]
+                            rticks = list(reversed(temp[m0:m0+offset]))
+                            for i, tick in enumerate(rticks):
+                                if i + 1 in rwipe:
+                                    rticks[i] = ''
+                            temp[m0:m0+offset] = list(reversed(rticks))
 
                             # Put back in duplicates
-                            tp[axx]['label_text'] = []
-                            dups[0] = 0
-                            for j in range(1, len(dups)):
-                                tp[axx]['label_text'] += temp[dups[j-1]:dups[j]]
-                                if j < len(dups) - 1:
-                                    tp[axx]['label_text'] += ['']
+                            for jj in dups_idx[1:]:
+                                temp.insert(jj, '')
+                            tp[axx]['label_text'] = temp
 
                         # Check for overlap of first minor with opposite major axis (need to account for twin_x?)
                         if len(tp['x']['ticks']) > 0:

@@ -83,7 +83,8 @@ border-left-width: 0
 }
 .dataframe thead th {
     font-weight: bold;
-    border-bottom: solid 2px #e1e4e5
+    background: #eeeeee;
+    border-bottom: 1px solid #aaaaaa
 }
 .dataframe td {
     background-color: transparent;
@@ -151,4 +152,15 @@ border-left-width: 0
     color: #666666;
     font-size: 13pt;
     font-family: Verdana, Geneva, sans-serif;
+}
+div[class^='highlight'] pre {
+    font-family: monospace !important;
+    font-size: 10pt !important;
+}
+div.nbinput div.input_area {
+    background: #efefef !important;
+    border: 1px solid #e1e4e5 !important;
+}
+.s1 {
+    color: #32a44d !important;
 }

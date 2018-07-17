@@ -520,14 +520,12 @@ axis name and min/max target in the keyword (such as
 <p>In many cases we want to plot data over a specific data range. This is
 accomplished by passing set limit values as keywords in the plot
 command. The following axis can be specified:</p>
-<ul><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;li&gt;`x` (primary x-axis)&lt;/li&gt;
-&lt;li&gt;`x2` (secondary x-axis when `twin_y=True`)&lt;/li&gt;
-&lt;li&gt;`y` (primary y-axis)&lt;/li&gt;
-&lt;li&gt;`y2` (secondary y-axis when `twin_x=True)&lt;/li&gt;
-&lt;li&gt;`x` (primary z-axis [for heatmaps and contours this is the colorbar axis])&lt;/li&gt;
-</pre></div>
-</div>
-<p>Each axis has a <code class="docutils literal notranslate"><span class="pre">min</span></code> or a <code class="docutils literal notranslate"><span class="pre">max</span></code> value that can be specified.</p>
+<ul><li><p><code class="docutils literal notranslate"><span class="pre">x</span></code> (primary x-axis)</p>
+</li><li><p><code class="docutils literal notranslate"><span class="pre">x2</span></code> (secondary x-axis when <code class="docutils literal notranslate"><span class="pre">twin_y=True</span></code>)</p>
+</li><li><p><code class="docutils literal notranslate"><span class="pre">y</span></code> (primary y-axis)</p>
+</li><li><p><code class="docutils literal notranslate"><span class="pre">y2</span></code> (secondary y-axis when
+<code class="docutils literal notranslate"><span class="pre">twin_x=True)&lt;/li&gt;</span> <span class="pre">&lt;li&gt;</span></code>x<code class="docutils literal notranslate"><span class="pre">(primary</span> <span class="pre">z-axis</span> <span class="pre">[for</span> <span class="pre">heatmaps</span> <span class="pre">and</span> <span class="pre">contours</span> <span class="pre">this</span> <span class="pre">is</span> <span class="pre">the</span> <span class="pre">colorbar</span> <span class="pre">axis])&lt;/li&gt;</span> <span class="pre">&lt;/ul&gt;</span>&#160;&#160;&#160; <span class="pre">Each</span> <span class="pre">axis</span> <span class="pre">has</span> <span class="pre">a</span></code>min<code class="docutils literal notranslate"><span class="pre">or</span> <span class="pre">a</span></code>max`
+value that can be specified.</p>
 <div class="section" id="Primary-axes-only">
 <h3>Primary axes only<a class="headerlink" href="#Primary-axes-only" title="Permalink to this headline">¶</a></h3>
 <p>Let’s take the plot from above and zoom in to exclude most of the region
@@ -917,14 +915,12 @@ Value by Batch + Sample.png
 <p>Axes sharing applies when using <code class="docutils literal notranslate"><span class="pre">row</span></code>, <code class="docutils literal notranslate"><span class="pre">col</span></code>, or <code class="docutils literal notranslate"><span class="pre">wrap</span></code> grouping
 to split the plot into multiple subplots. The boolean keywords of
 interest are:</p>
-<ul><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;li&gt;`share_x`&lt;/li&gt;
-&lt;li&gt;`share_x2`&lt;/li&gt;
-&lt;li&gt;`share_y`&lt;/li&gt;
-&lt;li&gt;`share_y2`&lt;/li&gt;
-&lt;li&gt;`share_z`&lt;/li&gt;
-</pre></div>
-</div>
-</ul><div class="section" id="Shared-axes">
+<ul><li><p><code class="docutils literal notranslate"><span class="pre">share_x</span></code></p>
+</li><li><p><code class="docutils literal notranslate"><span class="pre">share_x2</span></code></p>
+</li><li><p><code class="docutils literal notranslate"><span class="pre">share_y</span></code></p>
+</li><li><p><code class="docutils literal notranslate"><span class="pre">share_y2</span></code></p>
+</li><li><p><code class="docutils literal notranslate"><span class="pre">share_z</span></code></p>
+</li></ul><div class="section" id="Shared-axes">
 <h3>Shared axes<a class="headerlink" href="#Shared-axes" title="Permalink to this headline">¶</a></h3>
 <p>By default, gridded plots share axes ranges (and tick labels) for all
 axes. Because axes are shared, the tick labels and axis labels only

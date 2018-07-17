@@ -397,22 +397,24 @@ of data that need to be visualized. fivecentplots contains multiple
 grouping levels to expose unique subsets of data:</p>
 <ul><li><p>legend: color lines and markers according to unique values in a
 DataFrame column</p>
-</li><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;li&gt;&lt;font style=&quot;font-family:&#39;Courier New&#39;&quot;&gt;groups&lt;/font&gt;:&lt;/li&gt;
-&lt;ul&gt;
-&lt;li&gt;for xy plots: separates unique subsets so plot lines are not continuously looped back to the origin (useful for replicates of similar data)&lt;/li&gt;
-    &lt;li&gt;for boxplots: groups boxes by unique values in one or more DataFrame columns&lt;/li&gt;
-&lt;/ul&gt;
-&lt;li&gt;&lt;font style=&quot;font-family:&#39;Courier New&#39;&quot;&gt;row | column&lt;/font&gt;: makes a grid of subplots for each unique value of the DataFrame column names specified for these keyword arguments within a single figure&lt;/li&gt;
-&lt;li&gt;&lt;font style=&quot;font-family:&#39;Courier New&#39;&quot;&gt;wrap&lt;/font&gt;:
-    &lt;ul&gt;
-        &lt;li&gt;Option 1: similar to row and column grouping, wrap makes a grid of subplots for each &lt;i&gt;unique value&lt;/i&gt; of the DataFrame column names specified for these keyword arguments within a single figure&lt;/li&gt;
-        &lt;li&gt;Option 2: wrap by `x` or `y` to create a uniqe subplot for each &lt;i&gt;column name&lt;/i&gt; listed&lt;/li&gt;
-    &lt;/ul&gt;
-&lt;li&gt;&lt;font style=&quot;font-family:&#39;Courier New&#39;&quot;&gt;figure&lt;/font&gt;:  makes a unique figure for each unique value of a DataFrame column&lt;/li&gt;
-&lt;/ul&gt;
-</pre></div>
-</div>
-<p>It is also possible to filter data inline sets via the keyword filter.</p>
+</li><li><p>groups:</p>
+</li><ul><li><p>for xy plots: separates unique subsets so plot lines are not
+continuously looped back to the origin (useful for replicates of similar
+data)</p>
+</li><li><p>for boxplots: groups boxes by unique values in one or more DataFrame
+columns</p>
+</li></ul><li><p>row | column: makes a grid of subplots for each unique value of the
+DataFrame column names specified for these keyword arguments within a
+single figure</p>
+</li><li><p>wrap:</p>
+<ul><li><p>Option 1: similar to row and column grouping, wrap makes a grid of
+subplots for each unique value of the DataFrame column names specified
+for these keyword arguments within a single figure</p>
+</li><li><p>Option 2: wrap by <code class="docutils literal notranslate"><span class="pre">x</span></code> or <code class="docutils literal notranslate"><span class="pre">y</span></code> to create a uniqe subplot for each
+column name listed</p>
+</li></ul><li><p>figure: makes a unique figure for each unique value of a DataFrame
+column</p>
+</li></ul><p>It is also possible to filter data inline sets via the keyword filter.</p>
 <div class="section" id="Setup">
 <h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="Imports">
