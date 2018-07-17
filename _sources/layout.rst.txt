@@ -1,5 +1,5 @@
-Layout and Elements
-===================
+Layout
+======
 
 All plots consist of a number of different "elements" arranged in a specific
 spatial "layout".  In **fivecentplots**, each plot component (such as the
@@ -38,6 +38,6 @@ All keyword arguments for ``Element`` attributes and whitespace are defined
 in the `next section <keyword.html>`_ of the guide.
 
 Engine
-======
+------
 
 
