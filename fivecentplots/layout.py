@@ -2824,9 +2824,9 @@ class LayoutMPL(BaseLayout):
             kwargs: keyword args
         """
 
-        if x1:
+        if x1 is not None:
             x0 = [x0, x1]
-        if y1:
+        if y1 is not None:
             y0 = [y0, y1]
 
         if 'color' in kwargs.keys():
