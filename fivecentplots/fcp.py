@@ -316,9 +316,9 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
     elif type(data) is pd.DataFrame and len(data.columns) == 1:
         data = data.values
 
-    for id, dat in enumerate(data):
-        # Range lines
-        if layout.box_range_lines.on:
+    # Range lines
+    if layout.box_range_lines.on:
+        for id, dat in enumerate(data):
             kwargs = layout.box_range_lines.kwargs.copy()
             layout.plot_line(ir, ic, id+1-0.2, dat.max().iloc[0],
                             x1=id+1+0.2, y1=dat.max().iloc[0], **kwargs)
