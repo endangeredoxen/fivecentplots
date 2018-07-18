@@ -2219,7 +2219,8 @@ class LayoutMPL(BaseLayout):
 
         # Render dummy figure
         mpl.pyplot.draw()
-        #mpl.pyplot.savefig(r'test.png')  # turn on for debugging
+        # mpl.pyplot.savefig(r'test.png')  # turn on for debugging
+        # should we time it?
 
         # Get actual sizes
         if self.tick_labels_major_x.on and len(xticklabelsmaj) > 0:

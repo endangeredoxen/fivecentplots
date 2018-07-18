@@ -43,7 +43,7 @@ setup(
         #   3 - Alpha
         #   4 - Beta
         #   5 - Production/Stable
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
 
         # Indicate who your project is intended for
         'Intended Audience :: Engineers/Scientists',
@@ -54,7 +54,7 @@ setup(
 
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
-        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3',
     ],
 
     # What does your project relate to?
@@ -65,7 +65,7 @@ setup(
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
 
     dependency_links = ['https://github.com/endangeredoxen/fileio/zipball/master#egg=fileio-0.2.2'],
-    
+
     # List run-time dependencies here.  These will be installed by pip when
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:

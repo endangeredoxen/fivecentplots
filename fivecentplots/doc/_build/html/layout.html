@@ -99,7 +99,6 @@
               <p class="caption"><span class="caption-text">Basics</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="install.html#dependencies">Dependencies</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Layout</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#engine">Engine</a></li>
 </ul>
@@ -233,6 +232,13 @@ An example of the featured <code class="docutils literal notranslate"><span clas
 in the <a class="reference external" href="keyword.html">next section</a> of the guide.</p>
 <div class="section" id="engine">
 <h2>Engine<a class="headerlink" href="#engine" title="Permalink to this headline">¶</a></h2>
+<p>In order to actually create a plot, <strong>fivecentplots</strong> must tap into a plotting “engine”.
+This engine is a Python package like <strong>matplotlib</strong> or <strong>bokeh</strong>.  The keyword-argument-based
+api for <strong>fivecentplots</strong> is not tied to a particular package but is sufficiently general
+to be used with multiple plotting engines.</p>
+<p>In version 0.3.0, only <strong>matplotlib</strong> is supported.  However, future versions will include
+the ability to switch to other plotting engines depending on the desired result.  More to
+come…</p>
 </div>
 </div>
 
