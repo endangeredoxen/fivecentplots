@@ -501,16 +501,16 @@ class Data:
         # Check for nan columns
         if self.groups is not None:
             for group in self.groups:
-                if len(self.df_fig[group].dropna()) == 0:
+                if len(self.df_rc[group].dropna()) == 0:
                     self.groups.remove(group)
                     print('Column "%s" is all NaN and will be excluded from plot' % group)
 
         # Get the changes df
         if self.groups is None:
-            groups = [(None, self.df_fig.copy())]
+            groups = [(None, self.df_rc.copy())]
             self.ngroups = 0
         else:
-            groups = self.df_fig.groupby(self.groups)
+            groups = self.df_rc.groupby(self.groups)
             self.ngroups = groups.ngroups
 
         # Order the group labels with natsorting
@@ -1224,7 +1224,7 @@ class Data:
                     self.get_data_ranges(ir, ic)
 
                 # Get boxplot changes DataFrame
-                if 'box' in self.plot_func:  # think we are doing this twice
+                if 'box' in self.plot_func and len(self.df_rc) > 0:  # think we are doing this twice
                     self.get_box_index_changes()
 
                 # Yield the subset
