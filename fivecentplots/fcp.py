@@ -29,7 +29,7 @@ import datetime
 import sys
 from . data import Data
 from . layout import LayoutMPL, LayoutBokeh
-from . utilities import set_save_filename, validate_list
+from . utilities import dfkwarg, set_save_filename, validate_list
 import warnings
 try:
     import fileio
@@ -208,9 +208,9 @@ def paste_kwargs(kwargs):
               '(download @ https://github.com/endangeredoxen/fileio)')
 
 
-def plot(**kwargs):
+def plot(*args, **kwargs):
 
-    return plotter('plot_xy', **kwargs)
+    return plotter('plot_xy', **dfkwarg(args, kwargs))
 
 
 def plot_bar(data, layout, ir, ic, df_rc, kwargs):
@@ -298,8 +298,9 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
                     layout.plot_xy(ir, ic, jj, temp, 'x', dd.y[0],
                                    jrow['names'], False, zorder=10)
             else:
-                layout.plot_xy(ir, ic, irow, temp, 'x', dd.y[0], None, False,
-                               zorder=10)
+                if len(temp) > 0:
+                    layout.plot_xy(ir, ic, irow, temp, 'x', dd.y[0], None, False,
+                                   zorder=10)
 
     else:
         data = [df_rc[dd.y].dropna()]

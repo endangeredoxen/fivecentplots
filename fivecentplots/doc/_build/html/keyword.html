@@ -231,13 +231,13 @@
 <div class="section" id="keyword-arguments">
 <h1>Keyword Arguments<a class="headerlink" href="#keyword-arguments" title="Permalink to this headline">¶</a></h1>
 <p>All inputs to <strong>fivecentplots</strong> are treated as keyword arguments.  The only mandatory
-inputs are:</p>
+inputs (depending on the plot type) are:</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="8%" />
+<col width="7%" />
 <col width="15%" />
-<col width="61%" />
-<col width="17%" />
+<col width="60%" />
+<col width="18%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Keyword</th>
@@ -260,19 +260,19 @@ inputs are:</p>
 <tr class="row-even"><td>y</td>
 <td>str</td>
 <td>Column name of the y-axis data</td>
-<td>always</td>
+<td>all except histogram</td>
 </tr>
 <tr class="row-odd"><td>z</td>
 <td>str</td>
 <td>Column name of the z-axis data</td>
-<td>contour only</td>
+<td>contour and heatmap</td>
 </tr>
 </tbody>
 </table>
 <p>All other keywords that can be used for grouping data, setting axis limits, and
 styling the look of the plot have built-in defaults that can be overriden by explicitly
 setting them in the plot function call or by saving them in a
-<a class="reference external" href="themes.html">user theme file</a>.</p>
+<a class="reference external" href="styles.html#Themes">user theme file</a>.</p>
 <div class="section" id="data">
 <h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
 <p>All DataFrame releated operations in <strong>fivecentplots</strong> are handled using a special

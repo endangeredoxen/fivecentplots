@@ -514,6 +514,12 @@ class BaseLayout:
                            violin=utl.kwget(kwargs, self.fcpp, 'violin', False),
                            )
 
+        self.box_whisker = Element('box_whisker', self.fcpp, kwargs,
+                                   on=self.box.on,
+                                   color=self.box.edge_color,
+                                   style=self.box.style,
+                                   width=self.box.edge_width)
+
         self.box_stat_line = \
             Element('box_stat_line', self.fcpp, kwargs,
                     on=True if 'box' in self.plot_func and \
@@ -540,6 +546,69 @@ class BaseLayout:
                                                         3),
                                        )
 
+        # Markers/points
+        if 'marker_type' in kwargs.keys():
+            marker_list = kwargs['marker_type']
+        else:
+            marker_list = utl.validate_list(kwargs.get('markers', DEFAULT_MARKERS))
+        markers = RepeatedList(marker_list, 'markers')
+        marker_edge_color = utl.kwget(kwargs, self.fcpp, 'marker_edge_color', color_list)
+        marker_fill_color = utl.kwget(kwargs, self.fcpp, 'marker_fill_color', color_list)
+        if kwargs.get('marker_fill_color'):
+            kwargs['marker_fill'] = True
+        self.markers = Element('marker', self.fcpp, kwargs,
+                               on=utl.kwget(kwargs, self.fcpp,
+                                            'markers', True),
+                               filled=utl.kwget(kwargs, self.fcpp,
+                                                'marker_fill', False),
+                               edge_color=copy.copy(marker_edge_color),
+                               edge_width=utl.kwget(kwargs, self.fcpp,
+                                                    'marker_edge_width',
+                                                     1.5),
+                               fill_color=copy.copy(marker_fill_color),
+                               jitter=utl.kwget(kwargs, self.fcpp,
+                                                'jitter', False),
+                               size=utl.kwget(kwargs, self.fcpp,
+                                              'marker_size', 7),
+                               type=markers,
+                               zorder=utl.kwget(kwargs, self.fcpp,
+                                                'zorder', 2),
+                               )
+        if 'box' in self.plot_func:
+            if not kwargs.get('colors') and not kwargs.get('marker_edge_color'):
+                self.markers.edge_color = DEFAULT_COLORS[1]
+                self.markers.color_alpha('edge_color', 'edge_alpha')
+            if not kwargs.get('colors') and not kwargs.get('marker_fill_color'):
+                self.markers.fill_color = DEFAULT_COLORS[1]
+                self.markers.color_alpha('fill_color', 'fill_alpha')
+            if 'box_marker_edge_alpha' in self.fcpp.keys():
+                self.markers.edge_alpha = self.fcpp['box_marker_edge_alpha']
+            if 'box_marker_edge_color' in self.fcpp.keys():
+                self.markers.edge_color = self.fcpp['box_marker_edge_color']
+                self.markers.color_alpha('edge_color', 'edge_alpha')
+            if 'box_marker_fill_alpha' in self.fcpp.keys():
+                self.markers.fill_alpha = self.fcpp['box_marker_fill_alpha']
+            if 'box_marker_fill_color' in self.fcpp.keys():
+                self.markers.fill_color = self.fcpp['box_marker_fill_color']
+                self.markers.color_alpha('fill_color', 'fill_alpha')
+            self.markers.filled = self.fcpp.get('box_marker_fill', self.markers.filled)
+            self.markers.edge_width = self.fcpp.get('box_marker_edge_width', self.markers.edge_width)
+            self.markers.jitter = utl.kwget(kwargs, self.fcpp, 'jitter', True)
+            if 'box_marker_jitter' in self.fcpp.keys():
+                self.markers.jitter = self.fcpp['box_marker_jitter']
+            if 'box_marker_size' in self.fcpp.keys():
+                self.markers.size = self.fcpp['box_marker_size']
+            else:
+                self.markers.size = kwargs.get('marker_size', 4)
+            if 'marker_type' in kwargs.keys():
+                self.markers.type = RepeatedList(kwargs['marker_type'], 'marker_type')
+            elif 'box_marker_type' in self.fcpp.keys():
+                self.markers.type = RepeatedList(self.fcpp['box_marker_type'], 'marker_type')
+            else:
+                self.markers.type = RepeatedList('o', 'marker_type')
+            if 'box_marker_zorder' in self.fcpp.keys():
+                self.markers.zorder = self.fcpp['box_marker_zorder']
+
         # Legend
         kwargs['legend'] = kwargs.get('legend', None)
         if type(kwargs['legend']) is list:
@@ -552,9 +621,12 @@ class BaseLayout:
                                  font_size=12,
                                  location=LEGEND_LOCATION[utl.kwget(kwargs,
                                           self.fcpp, 'legend_location', 0)],
+                                 marker_alpha=utl.kwget(kwargs, self.fcpp,
+                                                        'legend_marker_alpha',
+                                                        None),
                                  marker_size=utl.kwget(kwargs, self.fcpp,
                                                        'legend_marker_size',
-                                                       None),
+                                                       self.markers.size),
                                  points=utl.kwget(kwargs, self.fcpp,
                                                   'legend_points', 1),
                                  overflow=0,
@@ -641,6 +713,8 @@ class BaseLayout:
                              color=copy.copy(color_list),
                              values=[],
                              )
+        if 'box' in self.plot_func:
+            self.lines.on = False
 
         # Markers/points
         if 'marker_type' in kwargs.keys():
@@ -1466,7 +1540,9 @@ class LayoutMPL(BaseLayout):
                 self.add_label(ir, ic, data.groups[k],
                                (1 + self.ws_ax_box_title / self.axes.size[0],
                                0, 0,
-                               (bottom - height) / self.axes.size[1]),
+                               (bottom - height/2 - \
+                                self.box_group_title.size[k][1]/2) / \
+                                self.axes.size[1]),
                                size=self.box_group_title.size[k],
                                **self.make_kwargs(self.box_group_title,
                                ['position', 'size']))
@@ -1645,8 +1721,14 @@ class LayoutMPL(BaseLayout):
                                         numpoints=self.legend.points,
                                         prop=fontp)
 
-            for text in self.legend.obj.get_texts():
+            for itext, text in enumerate(self.legend.obj.get_texts()):
                 text.set_color(self.legend.font_color)
+                if self.plot_func != 'plot_hist':
+                    self.legend.obj.legendHandles[itext]. \
+                        _legmarker.set_markersize(self.legend.marker_size)
+                    if self.legend.marker_alpha is not None:
+                        self.legend.obj.legendHandles[itext]. \
+                            _legmarker.set_alpha(self.legend.marker_alpha)
 
             self.legend.obj.get_title().set_fontsize(self.legend.font_size)
             self.legend.obj.get_frame().set_facecolor(self.legend.fill_color.get(0))
@@ -2064,8 +2146,8 @@ class LayoutMPL(BaseLayout):
                                     fontsize=self.legend.font_size)
             leg.get_title().set_fontsize(self.legend.font_size)
             if self.legend.marker_size:
-                for i in data.legend_vals:
-                    leg.legendHandles[0]._legmarker\
+                for irow, row in data.legend_vals.iterrows():
+                    leg.legendHandles[irow]._legmarker\
                         .set_markersize(self.legend.marker_size)
         else:
             leg = None
@@ -2295,7 +2377,8 @@ class LayoutMPL(BaseLayout):
             self.label_z.size = (max([f.get_window_extent().width for f in label_z]),
                                  max([f.get_window_extent().height for f in label_z]))
         if self.title.on and type(self.title.text) is str:
-            self.title.size[0] = self.axes.size[0]
+            self.title.size[0] = max(self.axes.size[0],
+                                     title.get_window_extent().width)
             self.title.size[1] = title.get_window_extent().height
 
         for ir in range(0, self.nrow):
@@ -2401,7 +2484,6 @@ class LayoutMPL(BaseLayout):
             self.ws_title = self.ws_fig_title + self.title.size[1] + self.ws_title_ax
         else:
             self.ws_title = self.ws_fig_ax
-
         if self.cbar.on:
             self.ws_col = self.labtick_z #- self.label_z.size[0]
 
@@ -2426,6 +2508,7 @@ class LayoutMPL(BaseLayout):
             self.label_row.size[0] + self.ws_label_row * self.label_row.on + \
             self.labtick_z * (self.ncol - 1 if self.ncol > 1 else 1) + \
             self.box_title
+        self.fig.size[0] = max(self.fig.size[0], self.title.size[0])
 
         # Figure height
         self.fig.size[1] = \
@@ -2543,9 +2626,11 @@ class LayoutMPL(BaseLayout):
 
         col_label = (self.label_col.size[1] + \
                      self.ws_label_col * self.label_col.on)
-        self.title.position[0] = (self.axes.size[0] - self.title.size[0])/2/self.axes.size[0]
-        self.title.position[3] = 1+(self.ws_title_ax + col_label) \
-                                 /self.axes.size[1]
+        self.title.position[0] = (self.axes.size[0] * self.ncol + \
+                                  self.ws_col * (self.ncol - 1) - \
+                                  self.title.size[0])/2/self.axes.size[0]
+        self.title.position[3] = 1+(self.ws_title_ax + col_label + self.label_wrap.size[1] + \
+                                    self.title_wrap.size[1]) / self.axes.size[1]
         self.title.position[2] = self.title.position[3] + (self.ws_title_ax +
                                  self.title.size[1])/self.axes.size[1]
 
@@ -2668,10 +2753,15 @@ class LayoutMPL(BaseLayout):
                 patch.set_facecolor(self.box.fill_color.get(ipatch))
                 patch.set_alpha(self.box.fill_alpha)
                 patch.set_lw(self.box.edge_width)
+                patch.set_ls(self.box.style)
             for ipatch, patch in enumerate(bp['whiskers']):
-                patch.set_color(self.box.edge_color.get(int(ipatch/2)))
+                patch.set_color(self.box_whisker.color.get(int(ipatch/2)))
+                patch.set_lw(self.box_whisker.width)
+                patch.set_ls(self.box_whisker.style)
             for ipatch, patch in enumerate(bp['caps']):
-                patch.set_color(self.box.edge_color.get(int(ipatch/2)))
+                patch.set_color(self.box_whisker.color.get(int(ipatch/2)))
+                patch.set_lw(self.box_whisker.width)
+                patch.set_ls(self.box_whisker.style)
 
         self.axes.obj[ir, ic].set_xticklabels([''])
         self.axes.obj[ir, ic].set_xlim(0.5, len(data) + 0.5)

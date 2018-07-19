@@ -11,6 +11,25 @@ if os.path.exists(default_path) and default_path not in sys.path:
     from defaults import *
 
 
+def dfkwarg(args, kwargs):
+    """
+    Add the DataFrame to kwargs
+
+    Args:
+        args (tuple):  *args sent to plot
+        kwargs (dict):  **kwargs sent to plot
+
+    Returns:
+        updated kwargs
+
+    """
+
+    if len(args) > 0:
+        kwargs['df'] = args[0]
+
+    return kwargs
+
+
 def get_current_values(df, text, key='@'):
     """
     Parse a string looking for text enclosed by 'key' and replace with the
