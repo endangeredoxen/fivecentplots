@@ -99,9 +99,11 @@
               <p class="caption"><span class="caption-text">Basics</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="install.html#dependencies">Dependencies</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Layout</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#engine">Engine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#engine">Engine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#matplotlib"><strong>matplotlib</strong></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a></li>
@@ -233,6 +235,25 @@ An example of the featured <code class="docutils literal notranslate"><span clas
 in the <a class="reference external" href="keyword.html">next section</a> of the guide.</p>
 <div class="section" id="engine">
 <h2>Engine<a class="headerlink" href="#engine" title="Permalink to this headline">¶</a></h2>
+<p>In order to actually create a plot, <strong>fivecentplots</strong> must tap into a plotting “engine”.
+This engine is a Python package like <strong>matplotlib</strong> or <strong>bokeh</strong>.  The keyword-argument-based
+api for <strong>fivecentplots</strong> is not tied to a particular package but is sufficiently general
+to be used with multiple plotting engines.</p>
+<p>Each engine inherits a unique <code class="docutils literal notranslate"><span class="pre">Layout</span></code> class that converts the inputs from <strong>fivecentplots</strong>
+into methods and attributes unique to that plotting package.  In version 0.3.0, only <strong>matplotlib</strong> is supported.  However, future versions will include
+the ability to switch to other plotting engines depending on the desired result.</p>
+<div class="section" id="matplotlib">
+<h3><strong>matplotlib</strong><a class="headerlink" href="#matplotlib" title="Permalink to this headline">¶</a></h3>
+<p>When using the <strong>matplotlib</strong> engine, in order to consistently define the layout and
+spacing of a plot, only static figures are generated.  All figures are saved to disk
+by default upon creation.  Options to display the figure are controlled via keywords:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">show</span></code> (default = <code class="docutils literal notranslate"><span class="pre">False</span></code>):  figures are popped open from disk</li>
+<li><code class="docutils literal notranslate"><span class="pre">inline</span></code> (default = <code class="docutils literal notranslate"><span class="pre">True</span></code>):  figures are returned</li>
+</ul>
+</div></blockquote>
+</div>
 </div>
 </div>
 

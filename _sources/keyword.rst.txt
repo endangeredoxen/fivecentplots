@@ -2,24 +2,24 @@ Keyword Arguments
 =================
 
 All inputs to **fivecentplots** are treated as keyword arguments.  The only mandatory
-inputs are:
+inputs (depending on the plot type) are:
 
-+---------+------------------+------------------------------------------------------------------------+--------------------+
-| Keyword | Data Type        | Description                                                            | Required?          |
-+=========+==================+========================================================================+====================+
-| df      | pandas DataFrame | DataFrame containing all data to be plotted including grouping columns | always             |
-+---------+------------------+------------------------------------------------------------------------+--------------------+
-| x       | str              | Column name of the x-axis data                                         | all except boxplot |
-+---------+------------------+------------------------------------------------------------------------+--------------------+
-| y       | str              | Column name of the y-axis data                                         | always             |
-+---------+------------------+------------------------------------------------------------------------+--------------------+
-| z       | str              | Column name of the z-axis data                                         | contour only       |
-+---------+------------------+------------------------------------------------------------------------+--------------------+
++---------+------------------+------------------------------------------------------------------------+----------------------+
+| Keyword | Data Type        | Description                                                            | Required?            |
++=========+==================+========================================================================+======================+
+| df      | pandas DataFrame | DataFrame containing all data to be plotted including grouping columns | always               |
++---------+------------------+------------------------------------------------------------------------+----------------------+
+| x       | str              | Column name of the x-axis data                                         | all except boxplot   |
++---------+------------------+------------------------------------------------------------------------+----------------------+
+| y       | str              | Column name of the y-axis data                                         | all except histogram |
++---------+------------------+------------------------------------------------------------------------+----------------------+
+| z       | str              | Column name of the z-axis data                                         | contour and heatmap  |
++---------+------------------+------------------------------------------------------------------------+----------------------+
 
 All other keywords that can be used for grouping data, setting axis limits, and
 styling the look of the plot have built-in defaults that can be overriden by explicitly
 setting them in the plot function call or by saving them in a
-`user theme file <themes.html>`_.
+`user theme file <styles.html#Themes>`_.
 
 Data
 ----

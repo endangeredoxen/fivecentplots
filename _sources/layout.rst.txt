@@ -39,5 +39,21 @@ in the `next section <keyword.html>`_ of the guide.
 
 Engine
 ------
+In order to actually create a plot, **fivecentplots** must tap into a plotting "engine".
+This engine is a Python package like **matplotlib** or **bokeh**.  The keyword-argument-based
+api for **fivecentplots** is not tied to a particular package but is sufficiently general
+to be used with multiple plotting engines.
 
+Each engine inherits a unique ``Layout`` class that converts the inputs from **fivecentplots**
+into methods and attributes unique to that plotting package.  In version 0.3.0, only **matplotlib** is supported.  However, future versions will include
+the ability to switch to other plotting engines depending on the desired result.
+
+**matplotlib**
+^^^^^^^^^^^^^^
+When using the **matplotlib** engine, in order to consistently define the layout and
+spacing of a plot, only static figures are generated.  All figures are saved to disk
+by default upon creation.  Options to display the figure are controlled via keywords:
+
+    * ``show`` (default = ``False``):  figures are popped open from disk
+    * ``inline`` (default = ``True``):  figures are returned
 
