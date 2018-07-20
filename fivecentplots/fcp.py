@@ -81,7 +81,7 @@ def bar(**kwargs):
     return plotter('plot_bar', **kwargs)
 
 
-def boxplot(**kwargs):
+def boxplot(*args, **kwargs):
     """ Main boxplot plotting function
     At minimum, it requires a pandas DataFrame with at
     least one column for the y axis.  Plots can be customized and enhanced by
@@ -97,10 +97,10 @@ def boxplot(**kwargs):
         plots
     """
 
-    return plotter('plot_box', **kwargs)
+    return plotter('plot_box', , **dfkwarg(args, kwargs))
 
 
-def contour(**kwargs):
+def contour(*args, **kwargs):
     """ Main contour plotting function
     At minimum, it requires a pandas DataFrame with at
     least three columns and three column names for the x, y, and z axis.
@@ -118,7 +118,7 @@ def contour(**kwargs):
         plots
     """
 
-    return plotter('plot_contour', **kwargs)
+    return plotter('plot_contour', , **dfkwarg(args, kwargs))
 
 
 def deprecated(kwargs):
@@ -154,7 +154,7 @@ def deprecated(kwargs):
     return kwargs
 
 
-def heatmap(**kwargs):
+def heatmap(*args, **kwargs):
     """ Main heatmap plotting function
     At minimum, it requires a pandas DataFrame with at
     least three columns and three column names for the x, y, and z axis.
@@ -172,12 +172,12 @@ def heatmap(**kwargs):
         plots
     """
 
-    return plotter('plot_heatmap', **kwargs)
+    return plotter('plot_heatmap', , **dfkwarg(args, kwargs))
 
 
-def hist(**kwargs):
+def hist(*args, **kwargs):
 
-    return plotter('plot_hist', **kwargs)
+    return plotter('plot_hist', , **dfkwarg(args, kwargs))
 
 
 def paste_kwargs(kwargs):
@@ -673,7 +673,8 @@ def save(fig, filename, kw):
             os.startfile(filename)
 
     except:
-        print(filename)
+        if kwargs.get('show_filename', False):
+            print(filename)
         raise NameError('%s is not a valid filename!' % filename)
 
 
