@@ -97,7 +97,7 @@ def boxplot(*args, **kwargs):
         plots
     """
 
-    return plotter('plot_box', , **dfkwarg(args, kwargs))
+    return plotter('plot_box', **dfkwarg(args, kwargs))
 
 
 def contour(*args, **kwargs):
@@ -118,7 +118,7 @@ def contour(*args, **kwargs):
         plots
     """
 
-    return plotter('plot_contour', , **dfkwarg(args, kwargs))
+    return plotter('plot_contour', **dfkwarg(args, kwargs))
 
 
 def deprecated(kwargs):
@@ -172,12 +172,12 @@ def heatmap(*args, **kwargs):
         plots
     """
 
-    return plotter('plot_heatmap', , **dfkwarg(args, kwargs))
+    return plotter('plot_heatmap', **dfkwarg(args, kwargs))
 
 
 def hist(*args, **kwargs):
 
-    return plotter('plot_hist', , **dfkwarg(args, kwargs))
+    return plotter('plot_hist', **dfkwarg(args, kwargs))
 
 
 def paste_kwargs(kwargs):
