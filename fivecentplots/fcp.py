@@ -644,7 +644,8 @@ def plotter(plot_func, **kwargs):
         if not kwargs.get('inline', True):
             plt.close('all')
         else:
-            print(filename)
+            if kwargs.get('show_filename', False):
+                print(filename)
             plt.show()
             plt.close('all')
 
@@ -744,5 +745,3 @@ def set_theme(theme=None):
                      osjoin(user_dir, '.fivecentplots', 'defaults.py'))
 
     print('done!')
-
-

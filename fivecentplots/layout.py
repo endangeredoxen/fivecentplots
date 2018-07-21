@@ -12,11 +12,13 @@ import pandas as pd
 import pdb
 import scipy.stats
 import datetime
+import time
 import numpy as np
 import copy
 import decimal
 import math
 import fivecentplots.utilities as utl
+from random import randint
 from collections import defaultdict
 import warnings
 def custom_formatwarning(msg, *args, **kwargs):
@@ -457,6 +459,140 @@ class BaseLayout:
             if getattr(self, 'tick_labels_minor_%s' % ax).on:
                 getattr(self, 'ticks_minor_%s' % ax).on = True
 
+        # Markers/points
+        if 'marker_type' in kwargs.keys():
+            marker_list = kwargs['marker_type']
+        else:
+            marker_list = utl.validate_list(kwargs.get('markers', DEFAULT_MARKERS))
+        markers = RepeatedList(marker_list, 'markers')
+        marker_edge_color = utl.kwget(kwargs, self.fcpp, 'marker_edge_color', color_list)
+        marker_fill_color = utl.kwget(kwargs, self.fcpp, 'marker_fill_color', color_list)
+        if kwargs.get('marker_fill_color'):
+            kwargs['marker_fill'] = True
+        self.markers = Element('marker', self.fcpp, kwargs,
+                               on=utl.kwget(kwargs, self.fcpp,
+                                            'markers', True),
+                               filled=utl.kwget(kwargs, self.fcpp,
+                                                'marker_fill', False),
+                               edge_color=copy.copy(marker_edge_color),
+                               edge_width=utl.kwget(kwargs, self.fcpp,
+                                                    'marker_edge_width',
+                                                     1.5),
+                               fill_color=copy.copy(marker_fill_color),
+                               jitter=utl.kwget(kwargs, self.fcpp,
+                                                'jitter', False),
+                               size=utl.kwget(kwargs, self.fcpp,
+                                              'marker_size', 7),
+                               type=markers,
+                               zorder=utl.kwget(kwargs, self.fcpp,
+                                                'zorder', 2),
+                               )
+
+        # Lines
+        self.lines = Element('lines', self.fcpp, kwargs,
+                             on=kwargs.get('lines', True),
+                             color=copy.copy(color_list),
+                             values=[],
+                             )
+
+        # Line fit
+        self.fit = Element('line_fit', self.fcpp, kwargs,
+                           on=True if kwargs.get('fit', False) else False,
+                           color='#000000',
+                           eqn=utl.kwget(kwargs, self.fcpp, 'fit_eqn', False),
+                           font_size=utl.kwget(kwargs, self.fcpp, 'fit_font_size', 12),
+                           padding=utl.kwget(kwargs, self.fcpp, 'fit_padding', 10),
+                           rsq=utl.kwget(kwargs, self.fcpp, 'fit_rsq', False),
+                           size=[0,0],
+                           )
+        self.fit.position[0] = self.fit.padding / self.axes.size[0]
+        self.fit.position[3] = 1 - (self.fit.padding + \
+                                    self.fit.font_size)/ self.axes.size[1]
+
+        # Reference line
+        self.ref_line = Element('ref_line', self.fcpp, kwargs,
+                                on=True if type(kwargs.get('ref_line', False)) is pd.Series else False,
+                                color='#000000',
+                                size=[0,0],
+                                text=utl.kwget(kwargs, self.fcpp, 'ref_line_text', 'Ref Line'),
+                                )
+
+        # Legend
+        kwargs['legend'] = kwargs.get('legend', None)
+        if type(kwargs['legend']) is list:
+            kwargs['legend'] = ' | '.join(utl.validate_list(kwargs['legend']))
+
+        self.legend = DF_Element('legend', self.fcpp, kwargs,
+                                 on=True if (kwargs.get('legend') and
+                                    kwargs.get('legend_on', True)) else False,
+                                 column=kwargs['legend'],
+                                 font_size=12,
+                                 location=LEGEND_LOCATION[utl.kwget(kwargs,
+                                          self.fcpp, 'legend_location', 0)],
+                                 marker_alpha=utl.kwget(kwargs, self.fcpp,
+                                                        'legend_marker_alpha',
+                                                        None),
+                                 marker_size=utl.kwget(kwargs, self.fcpp,
+                                                       'legend_marker_size',
+                                                       self.markers.size),
+                                 points=utl.kwget(kwargs, self.fcpp,
+                                                  'legend_points', 1),
+                                 overflow=0,
+                                 text=kwargs.get('legend_title',
+                                                 kwargs.get('legend') if kwargs.get('legend') != True else ''),
+                                 values={} if not kwargs.get('legend') else {'NaN': None},
+                                 )
+
+        # Color bar
+        cbar_size = utl.kwget(kwargs, self.fcpp, 'cbar_size', 30)
+        self.cbar = Element('cbar', self.fcpp, kwargs,
+                            on=kwargs.get('cbar', False),
+                            size=[cbar_size if type(cbar_size) is not list else cbar_size[0],
+                                  self.axes.size[1]],
+                            title='',
+                            )
+        if not self.cbar.on:
+            self.label_z.on = False
+            self.tick_labels_major_z.on = False
+
+        # Contours
+        self.contour = Element('contour', self.fcpp, kwargs,
+                               on=True,
+                               cmap=utl.kwget(kwargs, self.fcpp,
+                                              'cmap', 'inferno'),
+                               filled=utl.kwget(kwargs, self.fcpp,
+                                                'filled', True),
+                               levels=utl.kwget(kwargs, self.fcpp,
+                                                'levels', 20),
+                              )
+
+        # Heatmaps
+        self.heatmap = Element('heatmap', self.fcpp, kwargs,
+                               on=True if self.plot_func=='plot_heatmap'
+                                  else False,
+                               cmap=utl.kwget(kwargs, self.fcpp,
+                                              'cmap', 'inferno'),
+                               edge_width=0,
+                               font_color='#ffffff',
+                               interpolation=utl.kwget(kwargs, self.fcpp,
+                                              'heatmap_interpolation',
+                                              kwargs.get('interpolation', 'none')),
+                               text=utl.kwget(kwargs, self.fcpp,
+                                              'data_labels', False),
+                               )
+        if self.heatmap.on:
+            grids = [f for f in kwargs.keys() if f in
+                     ['grid_major', 'grid_major_x', 'grid_major_y',
+                      'grid_minor', 'grid_minor_x', 'grid_minor_y']]
+            if len(grids) == 0:
+                kwargs['grid_major'] = False
+                kwargs['grid_minor'] = False
+            if 'ax_edge_width' not in kwargs.keys():
+                self.axes.edge_width = 0
+            self.tick_labels_major_x.rotation = \
+                utl.kwget(kwargs, self.fcpp, 'tick_labels_major_x', 90)
+            kwargs['tick_cleanup'] = False
+
         # Histogram
         self.hist = Element('hist', self.fcpp, kwargs,
                             on=True if 'hist' in self.plot_func and kwargs.get('hist_on', True) else False,
@@ -545,41 +681,24 @@ class BaseLayout:
                                                         'box_range_lines',
                                                         3),
                                        )
-
-        # Markers/points
-        if 'marker_type' in kwargs.keys():
-            marker_list = kwargs['marker_type']
-        else:
-            marker_list = utl.validate_list(kwargs.get('markers', DEFAULT_MARKERS))
-        markers = RepeatedList(marker_list, 'markers')
-        marker_edge_color = utl.kwget(kwargs, self.fcpp, 'marker_edge_color', color_list)
-        marker_fill_color = utl.kwget(kwargs, self.fcpp, 'marker_fill_color', color_list)
-        if kwargs.get('marker_fill_color'):
-            kwargs['marker_fill'] = True
-        self.markers = Element('marker', self.fcpp, kwargs,
-                               on=utl.kwget(kwargs, self.fcpp,
-                                            'markers', True),
-                               filled=utl.kwget(kwargs, self.fcpp,
-                                                'marker_fill', False),
-                               edge_color=copy.copy(marker_edge_color),
-                               edge_width=utl.kwget(kwargs, self.fcpp,
-                                                    'marker_edge_width',
-                                                     1.5),
-                               fill_color=copy.copy(marker_fill_color),
-                               jitter=utl.kwget(kwargs, self.fcpp,
-                                                'jitter', False),
-                               size=utl.kwget(kwargs, self.fcpp,
-                                              'marker_size', 7),
-                               type=markers,
-                               zorder=utl.kwget(kwargs, self.fcpp,
-                                                'zorder', 2),
-                               )
         if 'box' in self.plot_func:
-            if not kwargs.get('colors') and not kwargs.get('marker_edge_color'):
+            self.lines.on = False
+        if 'box' in self.plot_func:
+            if not kwargs.get('colors') \
+                    and not kwargs.get('marker_edge_color') \
+                    and not self.legend.on:
                 self.markers.edge_color = DEFAULT_COLORS[1]
                 self.markers.color_alpha('edge_color', 'edge_alpha')
-            if not kwargs.get('colors') and not kwargs.get('marker_fill_color'):
+            else:
+                self.markers.edge_color = color_list[1:] + [color_list[0]]
+                self.markers.color_alpha('edge_color', 'edge_alpha')
+            if not kwargs.get('colors') \
+                    and not kwargs.get('marker_fill_color') \
+                    and not self.legend.on:
                 self.markers.fill_color = DEFAULT_COLORS[1]
+                self.markers.color_alpha('fill_color', 'fill_alpha')
+            else:
+                self.markers.fill_color = color_list[1:] + [color_list[0]]
                 self.markers.color_alpha('fill_color', 'fill_alpha')
             if 'box_marker_edge_alpha' in self.fcpp.keys():
                 self.markers.edge_alpha = self.fcpp['box_marker_edge_alpha']
@@ -604,181 +723,75 @@ class BaseLayout:
                 self.markers.type = RepeatedList(kwargs['marker_type'], 'marker_type')
             elif 'box_marker_type' in self.fcpp.keys():
                 self.markers.type = RepeatedList(self.fcpp['box_marker_type'], 'marker_type')
-            else:
+            elif not self.legend.on:
                 self.markers.type = RepeatedList('o', 'marker_type')
             if 'box_marker_zorder' in self.fcpp.keys():
                 self.markers.zorder = self.fcpp['box_marker_zorder']
 
-        # Legend
-        kwargs['legend'] = kwargs.get('legend', None)
-        if type(kwargs['legend']) is list:
-            kwargs['legend'] = ' | '.join(utl.validate_list(kwargs['legend']))
 
-        self.legend = DF_Element('legend', self.fcpp, kwargs,
-                                 on=True if (kwargs.get('legend') and
-                                    kwargs.get('legend_on', True)) else False,
-                                 column=kwargs['legend'],
-                                 font_size=12,
-                                 location=LEGEND_LOCATION[utl.kwget(kwargs,
-                                          self.fcpp, 'legend_location', 0)],
-                                 marker_alpha=utl.kwget(kwargs, self.fcpp,
-                                                        'legend_marker_alpha',
-                                                        None),
-                                 marker_size=utl.kwget(kwargs, self.fcpp,
-                                                       'legend_marker_size',
-                                                       self.markers.size),
-                                 points=utl.kwget(kwargs, self.fcpp,
-                                                  'legend_points', 1),
-                                 overflow=0,
-                                 text=kwargs.get('legend_title',
-                                                 kwargs.get('legend') if kwargs.get('legend') != True else ''),
-                                 values={} if not kwargs.get('legend') else {'NaN': None},
-                                 )
-
-        # Color bar
-        cbar_size = utl.kwget(kwargs, self.fcpp, 'cbar_size', 30)
-        self.cbar = Element('cbar', self.fcpp, kwargs,
-                            on=kwargs.get('cbar', False),
-                            size=[cbar_size if type(cbar_size) is not list else cbar_size[0],
-                                  self.axes.size[1]],
-                            title='',
-                            )
-        if not self.cbar.on:
-            self.label_z.on = False
-            self.tick_labels_major_z.on = False
-
-        # Contours
-        self.contour = Element('contour', self.fcpp, kwargs,
-                               on=True,
-                               cmap=utl.kwget(kwargs, self.fcpp,
-                                              'cmap', 'inferno'),
-                               filled=utl.kwget(kwargs, self.fcpp,
-                                                'filled', True),
-                               levels=utl.kwget(kwargs, self.fcpp,
-                                                'levels', 20),
-                              )
-
-        # Heatmaps
-        self.heatmap = Element('heatmap', self.fcpp, kwargs,
-                               on=True if self.plot_func=='plot_heatmap'
-                                  else False,
-                               cmap=utl.kwget(kwargs, self.fcpp,
-                                              'cmap', 'inferno'),
-                               edge_width=0,
-                               font_color='#ffffff',
-                               interpolation=utl.kwget(kwargs, self.fcpp,
-                                              'heatmap_interpolation',
-                                              kwargs.get('interpolation', 'none')),
-                               text=utl.kwget(kwargs, self.fcpp,
-                                              'data_labels', False),
-                               )
-        if self.heatmap.on:
-            grids = [f for f in kwargs.keys() if f in
-                     ['grid_major', 'grid_major_x', 'grid_major_y',
-                      'grid_minor', 'grid_minor_x', 'grid_minor_y']]
-            if len(grids) == 0:
-                kwargs['grid_major'] = False
-                kwargs['grid_minor'] = False
-            if 'ax_edge_width' not in kwargs.keys():
-                self.axes.edge_width = 0
-            self.tick_labels_major_x.rotation = \
-                utl.kwget(kwargs, self.fcpp, 'tick_labels_major_x', 90)
-            kwargs['tick_cleanup'] = False
-
-        # Line fit
-        self.fit = Element('line_fit', self.fcpp, kwargs,
-                           on=True if kwargs.get('fit', False) else False,
-                           color='#000000',
-                           eqn=utl.kwget(kwargs, self.fcpp, 'fit_eqn', False),
-                           font_size=utl.kwget(kwargs, self.fcpp, 'fit_font_size', 12),
-                           padding=utl.kwget(kwargs, self.fcpp, 'fit_padding', 10),
-                           rsq=utl.kwget(kwargs, self.fcpp, 'fit_rsq', False),
-                           size=[0,0],
-                           )
-        self.fit.position[0] = self.fit.padding / self.axes.size[0]
-        self.fit.position[3] = 1 - (self.fit.padding + \
-                                    self.fit.font_size)/ self.axes.size[1]
-
-        # Reference line
-        self.ref_line = Element('ref_line', self.fcpp, kwargs,
-                                on=True if type(kwargs.get('ref_line', False)) is pd.Series else False,
-                                color='#000000',
-                                size=[0,0],
-                                text=utl.kwget(kwargs, self.fcpp, 'ref_line_text', 'Ref Line'),
-                                )
-
-        # Lines
-        self.lines = Element('lines', self.fcpp, kwargs,
-                             on=kwargs.get('lines', True),
-                             color=copy.copy(color_list),
-                             values=[],
-                             )
-        if 'box' in self.plot_func:
-            self.lines.on = False
-
-        # Markers/points
-        if 'marker_type' in kwargs.keys():
-            marker_list = kwargs['marker_type']
-        else:
-            marker_list = utl.validate_list(kwargs.get('markers', DEFAULT_MARKERS))
-        markers = RepeatedList(marker_list, 'markers')
-        marker_edge_color = utl.kwget(kwargs, self.fcpp, 'marker_edge_color', color_list)
-        marker_fill_color = utl.kwget(kwargs, self.fcpp, 'marker_fill_color', color_list)
-        if kwargs.get('marker_fill_color'):
-            kwargs['marker_fill'] = True
-        self.markers = Element('marker', self.fcpp, kwargs,
-                               on=utl.kwget(kwargs, self.fcpp,
-                                            'markers', True),
-                               filled=utl.kwget(kwargs, self.fcpp,
-                                                'marker_fill', False),
-                               edge_color=copy.copy(marker_edge_color),
-                               edge_width=utl.kwget(kwargs, self.fcpp,
-                                                    'marker_edge_width',
-                                                     1.5),
-                               fill_color=copy.copy(marker_fill_color),
-                               jitter=utl.kwget(kwargs, self.fcpp,
-                                                'jitter', False),
-                               size=utl.kwget(kwargs, self.fcpp,
-                                              'marker_size', 7),
-                               type=markers,
-                               zorder=utl.kwget(kwargs, self.fcpp,
-                                                'zorder', 2),
-                               )
-        if 'box' in self.plot_func:
-            self.lines.on = False
-            if not kwargs.get('colors') and not kwargs.get('marker_edge_color'):
-                self.markers.edge_color = DEFAULT_COLORS[1]
-                self.markers.color_alpha('edge_color', 'edge_alpha')
-            if not kwargs.get('colors') and not kwargs.get('marker_fill_color'):
-                self.markers.fill_color = DEFAULT_COLORS[1]
-                self.markers.color_alpha('fill_color', 'fill_alpha')
-            if 'box_marker_edge_alpha' in self.fcpp.keys():
-                self.markers.edge_alpha = self.fcpp['box_marker_edge_alpha']
-            if 'box_marker_edge_color' in self.fcpp.keys():
-                self.markers.edge_color = self.fcpp['box_marker_edge_color']
-                self.markers.color_alpha('edge_color', 'edge_alpha')
-            if 'box_marker_fill_alpha' in self.fcpp.keys():
-                self.markers.fill_alpha = self.fcpp['box_marker_fill_alpha']
-            if 'box_marker_fill_color' in self.fcpp.keys():
-                self.markers.fill_color = self.fcpp['box_marker_fill_color']
-                self.markers.color_alpha('fill_color', 'fill_alpha')
-            self.markers.filled = self.fcpp.get('box_marker_fill', self.markers.filled)
-            self.markers.edge_width = self.fcpp.get('box_marker_edge_width', self.markers.edge_width)
-            self.markers.jitter = utl.kwget(kwargs, self.fcpp, 'jitter', True)
-            if 'box_marker_jitter' in self.fcpp.keys():
-                self.markers.jitter = self.fcpp['box_marker_jitter']
-            if 'box_marker_size' in self.fcpp.keys():
-                self.markers.size = self.fcpp['box_marker_size']
-            else:
-                self.markers.size = kwargs.get('marker_size', 4)
-            if 'marker_type' in kwargs.keys():
-                self.markers.type = RepeatedList(kwargs['marker_type'], 'marker_type')
-            elif 'box_marker_type' in self.fcpp.keys():
-                self.markers.type = RepeatedList(self.fcpp['box_marker_type'], 'marker_type')
-            else:
-                self.markers.type = RepeatedList('o', 'marker_type')
-            if 'box_marker_zorder' in self.fcpp.keys():
-                self.markers.zorder = self.fcpp['box_marker_zorder']
+        # # Markers/points
+        # if 'marker_type' in kwargs.keys():
+        #     marker_list = kwargs['marker_type']
+        # else:
+        #     marker_list = utl.validate_list(kwargs.get('markers', DEFAULT_MARKERS))
+        # markers = RepeatedList(marker_list, 'markers')
+        # marker_edge_color = utl.kwget(kwargs, self.fcpp, 'marker_edge_color', color_list)
+        # marker_fill_color = utl.kwget(kwargs, self.fcpp, 'marker_fill_color', color_list)
+        # if kwargs.get('marker_fill_color'):
+        #     kwargs['marker_fill'] = True
+        # self.markers = Element('marker', self.fcpp, kwargs,
+        #                        on=utl.kwget(kwargs, self.fcpp,
+        #                                     'markers', True),
+        #                        filled=utl.kwget(kwargs, self.fcpp,
+        #                                         'marker_fill', False),
+        #                        edge_color=copy.copy(marker_edge_color),
+        #                        edge_width=utl.kwget(kwargs, self.fcpp,
+        #                                             'marker_edge_width',
+        #                                              1.5),
+        #                        fill_color=copy.copy(marker_fill_color),
+        #                        jitter=utl.kwget(kwargs, self.fcpp,
+        #                                         'jitter', False),
+        #                        size=utl.kwget(kwargs, self.fcpp,
+        #                                       'marker_size', 7),
+        #                        type=markers,
+        #                        zorder=utl.kwget(kwargs, self.fcpp,
+        #                                         'zorder', 2),
+        #                        )
+        # if 'box' in self.plot_func:
+        #     self.lines.on = False
+        #     if not kwargs.get('colors') and not kwargs.get('marker_edge_color'):
+        #         self.markers.edge_color = DEFAULT_COLORS[1]
+        #         self.markers.color_alpha('edge_color', 'edge_alpha')
+        #     if not kwargs.get('colors') and not kwargs.get('marker_fill_color'):
+        #         self.markers.fill_color = DEFAULT_COLORS[1]
+        #         self.markers.color_alpha('fill_color', 'fill_alpha')
+        #     if 'box_marker_edge_alpha' in self.fcpp.keys():
+        #         self.markers.edge_alpha = self.fcpp['box_marker_edge_alpha']
+        #     if 'box_marker_edge_color' in self.fcpp.keys():
+        #         self.markers.edge_color = self.fcpp['box_marker_edge_color']
+        #         self.markers.color_alpha('edge_color', 'edge_alpha')
+        #     if 'box_marker_fill_alpha' in self.fcpp.keys():
+        #         self.markers.fill_alpha = self.fcpp['box_marker_fill_alpha']
+        #     if 'box_marker_fill_color' in self.fcpp.keys():
+        #         self.markers.fill_color = self.fcpp['box_marker_fill_color']
+        #         self.markers.color_alpha('fill_color', 'fill_alpha')
+        #     self.markers.filled = self.fcpp.get('box_marker_fill', self.markers.filled)
+        #     self.markers.edge_width = self.fcpp.get('box_marker_edge_width', self.markers.edge_width)
+        #     self.markers.jitter = utl.kwget(kwargs, self.fcpp, 'jitter', True)
+        #     if 'box_marker_jitter' in self.fcpp.keys():
+        #         self.markers.jitter = self.fcpp['box_marker_jitter']
+        #     if 'box_marker_size' in self.fcpp.keys():
+        #         self.markers.size = self.fcpp['box_marker_size']
+        #     else:
+        #         self.markers.size = kwargs.get('marker_size', 4)
+        #     if 'marker_type' in kwargs.keys():
+        #         self.markers.type = RepeatedList(kwargs['marker_type'], 'marker_type')
+        #     elif 'box_marker_type' in self.fcpp.keys():
+        #         self.markers.type = RepeatedList(self.fcpp['box_marker_type'], 'marker_type')
+        #     else:
+        #         self.markers.type = RepeatedList('o', 'marker_type')
+        #     if 'box_marker_zorder' in self.fcpp.keys():
+        #         self.markers.zorder = self.fcpp['box_marker_zorder']
 
         # Axhlines/axvlines
         axlines = ['ax_hlines', 'ax_vlines', 'yline',
@@ -2300,9 +2313,16 @@ class LayoutMPL(BaseLayout):
                             )]
 
         # Render dummy figure
+        saved = False
         mpl.pyplot.draw()
+        try:
+            [t.get_window_extent().width for t in xticklabelsmaj]
+        except:
+            saved = True
+            filename = '%s%s' % (int(round(time.time() * 1000)), randint(0, 99))
+            mpl.pyplot.savefig(filename + '.png')
+
         # mpl.pyplot.savefig(r'test.png')  # turn on for debugging
-        # should we time it?
 
         # Get actual sizes
         if self.tick_labels_major_x.on and len(xticklabelsmaj) > 0:
@@ -2440,6 +2460,8 @@ class LayoutMPL(BaseLayout):
 
         # Destroy the dummy figure
         mpl.pyplot.close(fig)
+        if saved:
+            os.remove(filename + '.png')
 
     def get_figure_size(self, **kwargs):
         """
