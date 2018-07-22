@@ -101,31 +101,29 @@
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layout.html">Layout</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Keyword Arguments</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#data">Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mandatory">Mandatory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#elements">Elements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#base-attributes">Base attributes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#nomenclature">Nomenclature</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#default-attributes">Default attributes</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#specific-elements">Specific Elements</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#axes">Axes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#boxplots">Boxplots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#color-bar">Color Bar</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#confidence-intervals">Confidence Intervals</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#contour">Contour</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#figure">Figure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fit">Fit</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#gridlines">Gridlines</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#labels">Labels</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#legend">Legend</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#line-fit">Line Fit</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#lines">Lines</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#markers">Markers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ticks">Ticks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tick-labels">Tick Labels</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#title">Title</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#whitespace">Whitespace</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id4">Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data">Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#other">Other</a></li>
 </ul>
 </li>
@@ -230,14 +228,18 @@
 </style>
 <div class="section" id="keyword-arguments">
 <h1>Keyword Arguments<a class="headerlink" href="#keyword-arguments" title="Permalink to this headline">¶</a></h1>
-<p>All inputs to <strong>fivecentplots</strong> are treated as keyword arguments.  The only mandatory
-inputs (depending on the plot type) are:</p>
+<div class="section" id="mandatory">
+<h2>Mandatory<a class="headerlink" href="#mandatory" title="Permalink to this headline">¶</a></h2>
+<p>All inputs to <strong>fivecentplots</strong> are treated as keyword arguments.  The function call (<code class="docutils literal notranslate"><span class="pre">plot</span></code>, <code class="docutils literal notranslate"><span class="pre">boxplot</span></code>, <code class="docutils literal notranslate"><span class="pre">hist</span></code>, etc.)
+determines the <em>kind</em> of plot, but keywords determine what data is included and how the plot is styled and arranged.
+Most keywords are completely optional or can be loaded automatically from a <a class="reference external" href="styles.html#Themes">user theme file</a>.  The
+only mandatory inputs to plot functions involve the basics of the data that should be plotted:</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="7%" />
-<col width="15%" />
-<col width="60%" />
-<col width="18%" />
+<col width="4%" />
+<col width="8%" />
+<col width="33%" />
+<col width="54%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Keyword</th>
@@ -250,7 +252,7 @@ inputs (depending on the plot type) are:</p>
 <tr class="row-even"><td>df</td>
 <td>pandas DataFrame</td>
 <td>DataFrame containing all data to be plotted including grouping columns</td>
-<td>always</td>
+<td>always (<strong>note:</strong> <code class="docutils literal notranslate"><span class="pre">df</span></code> can also be specified as the first function argument withouth the keyword name of <code class="docutils literal notranslate"><span class="pre">df==</span></code>)</td>
 </tr>
 <tr class="row-odd"><td>x</td>
 <td>str</td>
@@ -265,64 +267,22 @@ inputs (depending on the plot type) are:</p>
 <tr class="row-odd"><td>z</td>
 <td>str</td>
 <td>Column name of the z-axis data</td>
-<td>contour and heatmap</td>
+<td>only for contour and heatmap</td>
 </tr>
 </tbody>
 </table>
-<p>All other keywords that can be used for grouping data, setting axis limits, and
-styling the look of the plot have built-in defaults that can be overriden by explicitly
-setting them in the plot function call or by saving them in a
-<a class="reference external" href="styles.html#Themes">user theme file</a>.</p>
-<div class="section" id="data">
-<h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
-<p>All DataFrame releated operations in <strong>fivecentplots</strong> are handled using a special
-<code class="docutils literal notranslate"><span class="pre">Data</span></code> object.  This object takes input regarding process and stores data-related information</p>
 </div>
 <div class="section" id="elements">
 <h2>Elements<a class="headerlink" href="#elements" title="Permalink to this headline">¶</a></h2>
-<p>Each item in a plot (axis, labels, legend, etc.) consists of an <code class="docutils literal notranslate"><span class="pre">Element</span></code> object
-that contains various attributes (color, size, style, etc.) that
-describe the element.  Depending on the element, these base attributes
-can be:</p>
-<blockquote>
-<div><ul class="simple">
-<li>overriden with new values</li>
-<li>not used at all (i.e., a label has a <code class="docutils literal notranslate"><span class="pre">fill_color</span></code> but not a plot line <code class="docutils literal notranslate"><span class="pre">width</span></code>)</li>
-<li>joined with unique attributes that only pertain to the element at hand (i.e., an x-axis range can be shared across all subplots with the <code class="docutils literal notranslate"><span class="pre">share_x</span></code> keyword, but this attribute would be meaningless for a label)</li>
-</ul>
-</div></blockquote>
-<div class="section" id="nomenclature">
-<h3>Nomenclature<a class="headerlink" href="#nomenclature" title="Permalink to this headline">¶</a></h3>
-<p>Some attributes and their keyword arguements are unique to a given element.
-However, many keywords inputs are similar in nature between many different
-elements (like fill or edge color) and can be accessed using a standard nomenclature:</p>
-<div class="admonition note">
-<p class="first admonition-title">Keyword Naming Scheme</p>
-<p class="last">&lt;element name&gt;_&lt;major|minor axis type (if any)&gt;_&lt;x|y|z axis (if any)&gt;_&lt;element attribute name&gt;</p>
-</div><p>Consider the following examples:</p>
-<blockquote>
-<div><ol class="arabic">
-<li><p class="first">Change the x label font color to red:</p>
-<blockquote>
-<div><p><strong>label_x_font_color = ‘#FF0000’</strong></p>
-</div></blockquote>
-</li>
-<li><p class="first">Change the y-axis minor gridline width:</p>
-<blockquote>
-<div><p><strong>grid_major_y_width = 2</strong></p>
-</div></blockquote>
-</li>
-<li><p class="first">Change the axes edge color to black:</p>
-<blockquote>
-<div><p><strong>ax_edge_color = ‘#000000’</strong></p>
-</div></blockquote>
-</li>
-</ol>
-</div></blockquote>
-</div>
-<div class="section" id="default-attributes">
-<h3>Default attributes<a class="headerlink" href="#default-attributes" title="Permalink to this headline">¶</a></h3>
-<p>The base attributes of each <code class="docutils literal notranslate"><span class="pre">Element</span></code> are:</p>
+<p>Each item in a plot layout (axis, labels, legend, etc.) is represented by an
+<code class="docutils literal notranslate"><span class="pre">Element</span></code> object that contains important attributes like edge color, fill color,
+size, font, etc., that fully describe the <a class="reference external" href="layout.html">element</a>.  All the
+base attributes of a particular <code class="docutils literal notranslate"><span class="pre">Element</span></code> can be overriden by keywords provided
+either in a user theme file or at the time of the plot function call.</p>
+<div class="section" id="base-attributes">
+<h3>Base attributes<a class="headerlink" href="#base-attributes" title="Permalink to this headline">¶</a></h3>
+<p>Each <code class="docutils literal notranslate"><span class="pre">Element</span></code> object contains a basic set of attributes which may or may not be used
+depending on the specifics of the element:</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="7%" />
@@ -432,28 +392,92 @@ elements (like fill or edge color) and can be accessed using a standard nomencla
 </tbody>
 </table>
 </div>
+<div class="section" id="nomenclature">
+<h3>Nomenclature<a class="headerlink" href="#nomenclature" title="Permalink to this headline">¶</a></h3>
+<p>Keywords that access the attributes of an element <em>mostly</em> follow a specific formula:</p>
+<div class="admonition note">
+<p class="first admonition-title">Keyword Naming Scheme</p>
+<p class="last">&lt;element name&gt;_&lt;major|minor axis type (if any)&gt;_&lt;x|y|z axis (if any)&gt;_&lt;element attribute name&gt;</p>
+</div><p>Consider the following examples:</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p class="first">Change the x label font color to red:</p>
+<blockquote>
+<div><p><strong>label_x_font_color = ‘#FF0000’</strong></p>
+</div></blockquote>
+</li>
+<li><p class="first">Change the y-axis minor gridline width:</p>
+<blockquote>
+<div><p><strong>grid_major_y_width = 2</strong></p>
+</div></blockquote>
+</li>
+<li><p class="first">Change the axes edge color to black:</p>
+<blockquote>
+<div><p><strong>ax_edge_color = ‘#000000’</strong></p>
+</div></blockquote>
+</li>
+<li><p class="first">Change the whisker color in a box plot:</p>
+<blockquote>
+<div><p><strong>box_whisker_color = #FF00FF</strong></p>
+</div></blockquote>
+</li>
+</ol>
+</div></blockquote>
+<p>Some elements have attributes that fall outside of the scope of the
+<a class="reference external" href="keyword.html#default-attributes">Default Attributes</a>.  These still
+follow the general nomenclature found above.  For example:</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p class="first">Display the fit equation and rsq value of a line fit:</p>
+<blockquote>
+<div><p><strong>fit_eqn = True</strong>
+<strong>fit_rsq = True</strong></p>
+</div></blockquote>
+</li>
+<li><p class="first">Set a different marker size just for the legend</p>
+<blockquote>
+<div><p><strong>legend_marker_size = 8</strong></p>
+</div></blockquote>
+</li>
+<li><p class="first">Change the statistic of the connecting line on a boxplot:</p>
+<blockquote>
+<div><p><strong>box_stat_line = ‘std’</strong></p>
+</div></blockquote>
+</li>
+</ol>
+</div></blockquote>
+<p>There are also a handful of keywords that allow a shorthand notation when
+defining them in the function call.  For example, if you are calling <code class="docutils literal notranslate"><span class="pre">boxplot</span></code>
+and want to convert the box to a violin, you can use either <code class="docutils literal notranslate"><span class="pre">box_violin=True</span></code>
+or <code class="docutils literal notranslate"><span class="pre">violin=True</span></code>.  However, the long form of such values is still required in
+theme files.</p>
+<p>Listed below are the keyword arguments of specific elements. Keyword names that
+deviate from the standard nomenclature are highlighted in cyan.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">We only list the base <code class="docutils literal notranslate"><span class="pre">Element</span></code> attributes below which have a
+default value different than what is specified in the table
+<a class="reference external" href="keyword.html#base-attributes">above</a> for base attributes.  Base attributes that
+do not apply to a given <code class="docutils literal notranslate"><span class="pre">Element</span></code> are also listed.</p>
 </div>
-<div class="section" id="specific-elements">
-<h2>Specific Elements<a class="headerlink" href="#specific-elements" title="Permalink to this headline">¶</a></h2>
-<p>Listed below are the <em>additional</em> keyword arguments of specific elements (each element
-also contains the base attributes of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> class and can be used if applicable.</p>
+</div>
 <div class="section" id="axes">
 <h3>Axes<a class="headerlink" href="#axes" title="Permalink to this headline">¶</a></h3>
 <img alt="_images/element_axes.png" src="_images/element_axes.png" />
 <p>The <code class="docutils literal notranslate"><span class="pre">axes</span></code> element consists of the actual plotting window shown in yellow above.
-Keywords for the primary <code class="docutils literal notranslate"><span class="pre">axes</span></code> object begin with the prefix “<a href="#id5"><span class="problematic" id="id6">ax_</span></a>”.  Properties
-of any optional secondary axes begin with the prefix</p>
+Keywords for the primary <code class="docutils literal notranslate"><span class="pre">axes</span></code> object begin with the prefix “<a href="#id10"><span class="problematic" id="id11">ax_</span></a>”.  Properties
+of any optional secondary axes begin with the prefix “<a href="#id12"><span class="problematic" id="id13">ax2_</span></a>”.</p>
 <div class="admonition note">
 <p class="first admonition-title">Keyword Prefix</p>
 <p class="last"><b>Primary axis: ax_</b></p>
 <p class="last"><b>Secondary axis: ax2_</b></p>
 </div><table border="1" class="docutils">
 <colgroup>
-<col width="8%" />
-<col width="8%" />
-<col width="50%" />
-<col width="7%" />
-<col width="27%" />
+<col width="11%" />
+<col width="10%" />
+<col width="47%" />
+<col width="6%" />
+<col width="26%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Keyword</th>
@@ -464,96 +488,128 @@ of any optional secondary axes begin with the prefix</p>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>size</td>
+<tr class="row-even"><td>ax_edge_color</td>
+<td>hex color string</td>
+<td>outer edge color of plot area</td>
+<td>#aaaaaa</td>
+<td>None</td>
+</tr>
+<tr class="row-odd"><td>ax_fill_color</td>
+<td>hex color string</td>
+<td>inner fill color of plot area</td>
+<td rowspan="6">#eaeaea</td>
+<td>None</td>
+</tr>
+<tr class="row-even"><td rowspan="5">ax_scale</td>
+<td rowspan="5">str</td>
+<td>enable linear vs log scaling of axis</td>
+<td rowspan="5"><a class="reference external" href="plot.html#Log-scale">log scale plot</a></td>
+</tr>
+<tr class="row-odd"><td>x-axis: [‘linear’, ‘logx’, ‘semilogx’]</td>
+</tr>
+<tr class="row-even"><td>y-axis: [‘linear’, ‘logx’, ‘semilogx’]</td>
+</tr>
+<tr class="row-odd"><td>both: [‘loglog’, ‘log’]</td>
+</tr>
+<tr class="row-even"><td>other: [‘symlog’, ‘logit’]</td>
+</tr>
+<tr class="row-odd"><td>ax_size</td>
 <td>list of ints</td>
 <td>width, height of plot area</td>
 <td>[400, 400]</td>
 <td>None</td>
 </tr>
-<tr class="row-odd"><td>ax_edge_color</td>
-<td>str</td>
-<td>outer edge color of plot area</td>
-<td>#aaaaaa</td>
-<td>None</td>
-</tr>
-<tr class="row-even"><td>ax_fill_color</td>
-<td>str</td>
-<td>inner fill color of plot area</td>
-<td rowspan="6">#eaeaea</td>
-<td>None</td>
-</tr>
-<tr class="row-odd"><td rowspan="5">ax_scale</td>
-<td rowspan="5">str</td>
-<td>enable linear vs log scaling of axis</td>
-<td rowspan="5"><a class="reference external" href="plot.html#Log-scale">log scale plot</a></td>
-</tr>
-<tr class="row-even"><td>x-axis: [‘linear’, ‘logx’, ‘semilogx’]</td>
-</tr>
-<tr class="row-odd"><td>y-axis: [‘linear’, ‘logx’, ‘semilogx’]</td>
-</tr>
-<tr class="row-even"><td>both: [‘loglog’, ‘log’]</td>
-</tr>
-<tr class="row-odd"><td>other: [‘symlog’, ‘logit’]</td>
-</tr>
-<tr class="row-even"><td>share_x</td>
+<tr class="row-even"><td><span class="hh">share_x</span></td>
 <td>boolean</td>
-<td>enable/disable primary x-axis range sharing across all subplots</td>
+<td>enable primary x-axis range sharing across all subplots</td>
 <td>True</td>
 <td>None</td>
 </tr>
-<tr class="row-odd"><td>share_y</td>
+<tr class="row-odd"><td><span class="hh">share_y</span></td>
 <td>boolean</td>
-<td>enable/disable primary y-axis range sharing across all subplots</td>
+<td>enable primary y-axis range sharing across all subplots</td>
 <td>True</td>
 <td>None</td>
 </tr>
-<tr class="row-even"><td>share_z</td>
+<tr class="row-even"><td><span class="hh">share_z</span></td>
 <td>boolean</td>
-<td>enable/disable primary z-axis range sharing across all subplots</td>
+<td>enable primary z-axis range sharing across all subplots</td>
 <td>True</td>
 <td>None</td>
 </tr>
-<tr class="row-odd"><td>share_x2</td>
+<tr class="row-odd"><td><span class="hh">share_x2</span></td>
 <td>boolean</td>
-<td>enable/disable secondary x-axis range sharing across all subplots</td>
+<td>enable secondary x-axis range sharing across all subplots</td>
 <td>True</td>
 <td>None</td>
 </tr>
-<tr class="row-even"><td>share_y2</td>
+<tr class="row-even"><td><span class="hh">share_y2</span></td>
 <td>boolean</td>
-<td>enable/disable secondary y-axis range sharing across all subplots</td>
+<td>enable secondary y-axis range sharing across all subplots</td>
 <td>True</td>
 <td>None</td>
 </tr>
-<tr class="row-odd"><td>share_col</td>
+<tr class="row-odd"><td><span class="hh">share_col</span></td>
 <td>boolean</td>
-<td>enable/disable axis range sharing for all subplots in a column of subplots</td>
+<td>enable axis range sharing for all subplots in a column of subplots</td>
 <td>False</td>
 <td>None</td>
 </tr>
-<tr class="row-even"><td>share_row</td>
+<tr class="row-even"><td><span class="hh">share_row</span></td>
 <td>boolean</td>
-<td>enable/disable axis range sharing for all subplots in a row of subplots</td>
+<td>enable axis range sharing for all subplots in a row of subplots</td>
 <td>False</td>
-<td>None</td>
+<td rowspan="6">None</td>
 </tr>
-<tr class="row-odd"><td>twin_x</td>
+<tr class="row-odd"><td><span class="hh">spines</span></td>
+<td>boolean</td>
+<td>show all axis edges</td>
+<td>True</td>
+</tr>
+<tr class="row-even"><td><span class="hh">spine_bottom</span></td>
+<td>boolean</td>
+<td>show bottom axis edge</td>
+<td>True</td>
+</tr>
+<tr class="row-odd"><td><span class="hh">spine_left</span></td>
+<td>boolean</td>
+<td>show left axis edge</td>
+<td>True</td>
+</tr>
+<tr class="row-even"><td><span class="hh">spine_right</span></td>
+<td>boolean</td>
+<td>show right axis edge</td>
+<td>True</td>
+</tr>
+<tr class="row-odd"><td><span class="hh">spine_top</span></td>
+<td>boolean</td>
+<td>show top axis edge</td>
+<td>True</td>
+</tr>
+<tr class="row-even"><td><span class="hh">twin_x</span></td>
 <td>boolean</td>
 <td>enable/disable a secondary y-axis (x-axis is “twinned” or duplicated across two y-axes)</td>
 <td>False</td>
 <td><a class="reference external" href="plot.html#Shared-x-axis-twin_x">twin_x plot</a></td>
 </tr>
-<tr class="row-even"><td rowspan="2">twin_y</td>
+<tr class="row-odd"><td rowspan="2"><span class="hh">twin_y</span></td>
 <td rowspan="2">boolean</td>
 <td>enable/disable a secondary x-axis (y-axis is “twinned” or duplicated across two x-axes)</td>
 <td rowspan="2">False</td>
 <td rowspan="2"><a class="reference external" href="plot.html#Shared-y-axis-twin_y">twin_y plot</a></td>
 </tr>
-<tr class="row-odd"><td>Note:  wrap plots cannot be used when <code class="docutils literal notranslate"><span class="pre">twin_y</span> <span class="pre">==</span> <span class="pre">True</span></code></td>
+<tr class="row-even"><td>Note:  wrap plots cannot be used when <code class="docutils literal notranslate"><span class="pre">twin_y</span> <span class="pre">==</span> <span class="pre">True</span></code></td>
 </tr>
 </tbody>
 </table>
-</div>
+<div class="admonition note">
+<p class="first admonition-title">Invalid base <code class="docutils literal notranslate">Element</code> attributes</p>
+<ul>
+<li>"Fonts" category</li>
+<li>"Lines" category</li>
+<li><code class="docutils literal notranslate">text</code></li>
+</ul>
+</div></div>
 <div class="section" id="boxplots">
 <h3>Boxplots<a class="headerlink" href="#boxplots" title="Permalink to this headline">¶</a></h3>
 <img alt="_images/element_box.png" src="_images/element_box.png" />
@@ -812,7 +868,7 @@ can be computed via the <code class="docutils literal notranslate"><span class="
 </div>
 <div class="section" id="figure">
 <h3>Figure<a class="headerlink" href="#figure" title="Permalink to this headline">¶</a></h3>
-<img alt="_images/element_fig.png" src="_images/element_fig.png" />
+<img alt="_images/element_fig.png" class="align-right" src="_images/element_fig.png" />
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>To style the figure region in yellow for this example, the following keywords were
@@ -826,9 +882,9 @@ the keywords with the element name, <code class="docutils literal notranslate"><
 <p>The <code class="docutils literal notranslate"><span class="pre">figure</span></code> element is the full window in which other elements are rendered.
 Most of the <code class="docutils literal notranslate"><span class="pre">figure</span></code> region is covered by these other elements but the visible
 portion (shown in yellow above) can be styled.  <code class="docutils literal notranslate"><span class="pre">figure</span></code> elements can also
-be subdivided into multiple subplots to display more data.  Unlike matplotlib,
-size of the figure window is caluculated automatically by the sizes of the discrete
-elements it contains.  It cannot be set directly.</p>
+be subdivided into multiple subplots to display more data.  Unlike matplotlib, <strong>the</strong>
+<strong>size of the figure window is caluculated automatically by the sizes of the discrete</strong>
+<strong>elements it contains.  It cannot be set directly.</strong></p>
 <div class="admonition note">
 <p class="first admonition-title">Keyword Prefix</p>
 <p class="last"><b>fig_</b></p>
@@ -852,10 +908,74 @@ elements it contains.  It cannot be set directly.</p>
 <td>dots per inch</td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>size</td>
-<td>list</td>
-<td>size of the figure window</td>
-<td>calculated automatically</td>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Invalid base <code class="docutils literal notranslate">Element</code> attributes</p>
+<ul>
+<li>"Fonts" category</li>
+<li>"Lines" category</li>
+<li><code class="docutils literal notranslate">on</code></li>
+<li><code class="docutils literal notranslate">size</code></li>
+<li><code class="docutils literal notranslate">text</code></li>
+</ul>
+</div></div>
+<div class="section" id="fit">
+<h3>Fit<a class="headerlink" href="#fit" title="Permalink to this headline">¶</a></h3>
+<p><strong>fivecentplots</strong> can add a polynomial fit to a data set.  This is controlled via
+the family of keywords beginning with <code class="docutils literal notranslate"><span class="pre">fit_</span></code>:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="10%" />
+<col width="51%" />
+<col width="6%" />
+<col width="23%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Keyword</th>
+<th class="head">Data Type</th>
+<th class="head">Description</th>
+<th class="head">Default</th>
+<th class="head">Example</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>fit</td>
+<td>int</td>
+<td>polynomial degree for the fit</td>
+<td>None</td>
+<td><a class="reference external" href="plot.html#Line-fit">Line fit</a></td>
+</tr>
+<tr class="row-odd"><td>fit_color</td>
+<td>hex color str</td>
+<td>color of the fit line</td>
+<td>#000000</td>
+<td>None</td>
+</tr>
+<tr class="row-even"><td>fit_eqn</td>
+<td>boolean</td>
+<td>display the fit equation on the plot</td>
+<td>False</td>
+<td>None</td>
+</tr>
+<tr class="row-odd"><td>fit_font_size</td>
+<td>float</td>
+<td>font size of the fit eqn and rsq value</td>
+<td>12</td>
+<td>None</td>
+</tr>
+<tr class="row-even"><td>fit_padding</td>
+<td>int</td>
+<td>padding in pixels from the top of the plot to the location of the fit eqn</td>
+<td>10</td>
+<td>None</td>
+</tr>
+<tr class="row-odd"><td>fit_rsq</td>
+<td>boolean</td>
+<td>display the rsq of the fit on the plot</td>
+<td>False</td>
+<td>None</td>
 </tr>
 </tbody>
 </table>
@@ -865,12 +985,11 @@ elements it contains.  It cannot be set directly.</p>
 </div>
 <div class="section" id="labels">
 <h3>Labels<a class="headerlink" href="#labels" title="Permalink to this headline">¶</a></h3>
-<img alt="_images/element_label.png" src="_images/element_label.png" />
-<img alt="_images/element_label2.png" src="_images/element_label2.png" />
+<img alt="_images/element_label_3.png" class="align-right" src="_images/element_label_3.png" />
 <p>The following types of <code class="docutils literal notranslate"><span class="pre">label</span></code> elements can exist in a plot:</p>
 <blockquote>
 <div><ul>
-<li><p class="first">axis labels (colored in salmon above)</p>
+<li><p class="first">axis labels (colored in salmon on right)</p>
  <div class="admonition note">
  <p class="first admonition-title">Keyword Prefix</p>
  <ul>
@@ -892,7 +1011,7 @@ DataFrame column names used to define these values (i.e., the <code class="docut
 will match the value of <code class="docutils literal notranslate"><span class="pre">x</span></code>).  However, axes label text can be overriden by
 setting a value for the label such as <code class="docutils literal notranslate"><span class="pre">label_x='New</span> <span class="pre">Name'</span></code>.</p>
 </li>
-<li><p class="first">row, column, and wrap labels (colored in yellow above)</p>
+<li><p class="first">row, column, and wrap labels (colored in yellow on right)</p>
  <div class="admonition note">
  <p class="first admonition-title">Keyword Prefix</p>
  <ul>
@@ -909,14 +1028,20 @@ setting a value for the label such as <code class="docutils literal notranslate"
         </ul>
     </li>
 </ul>
-</div><p>The text for row and column labels is
-“&lt;the DataFrame column name specified for <code class="docutils literal notranslate"><span class="pre">row</span></code> or <code class="docutils literal notranslate"><span class="pre">col</span></code>&gt; =
-&lt;one of the unique values of that DataFrame column&gt;”.  The text for wrap labels
+</div><p>The text for row and column labels is the DataFrame column name followed
+by the unique value corresponding to that row or column of plots.  The text for wrap labels
 will be a tuple of the unique values of the DataFrame columns specified for
 the <code class="docutils literal notranslate"><span class="pre">wrap</span></code> keyword. Unlike axes label text, row, column, or wrap label text
 cannot be overriden by the user but depends on the information in the DataFrame
 being plotted.</p>
 </li>
+</ul>
+</div></blockquote>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<blockquote>
+<div><ul>
 <li><p class="first">wrap titles: <code class="docutils literal notranslate"><span class="pre">wrap_title</span></code> (colored in cyan above)</p>
 <div class="admonition note">
 <p class="first admonition-title">Keyword Prefix</p>
@@ -925,32 +1050,214 @@ being plotted.</p>
 </li>
 </ul>
 </div></blockquote>
-<p>All <code class="docutils literal notranslate"><span class="pre">label</span></code> elements are styled using the <a class="reference external" href="keyword.html#default-attributes">default</a>
-<code class="docutils literal notranslate"><span class="pre">Element</span></code> class attributes for color and font.</p>
+<p>All <code class="docutils literal notranslate"><span class="pre">label</span></code> elements are styled using the <a class="reference external" href="keyword.html#base-attributes">base</a>
+<code class="docutils literal notranslate"><span class="pre">Element</span></code> class attributes for fill color, edge color, and font.  The “Lines” category
+of base attributes is not used for labels.</p>
 </div>
 <div class="section" id="legend">
 <h3>Legend<a class="headerlink" href="#legend" title="Permalink to this headline">¶</a></h3>
 </div>
-<div class="section" id="line-fit">
-<h3>Line Fit<a class="headerlink" href="#line-fit" title="Permalink to this headline">¶</a></h3>
-</div>
 <div class="section" id="lines">
 <h3>Lines<a class="headerlink" href="#lines" title="Permalink to this headline">¶</a></h3>
+<p>Lines can be drawn to connect markers on a plot.  By default the colors will be
+selected from the default color list:</p>
+<img alt="_images/colors.png" src="_images/colors.png" />
+<p>The following keywords are related to <code class="docutils literal notranslate"><span class="pre">lines</span></code> elements:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="9%" />
+<col width="25%" />
+<col width="23%" />
+<col width="9%" />
+<col width="35%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Keyword</th>
+<th class="head">Data Type</th>
+<th class="head">Description</th>
+<th class="head">Default</th>
+<th class="head">Example</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="hh">colors</span></td>
+<td>hex color str or list of hex color strs</td>
+<td>colors to use for lines and markers</td>
+<td>default list</td>
+<td><a class="reference external" href="styles.html#Built-in-color-list">built-in color list</a></td>
+</tr>
+<tr class="row-odd"><td><span class="hh">lines</span></td>
+<td>boolean</td>
+<td>toggle line visibility</td>
+<td>True</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section" id="markers">
 <h3>Markers<a class="headerlink" href="#markers" title="Permalink to this headline">¶</a></h3>
+<p>Markers are characters that represent the actual data points on a plot. <strong>fivecentplots</strong>
+comes with a built-in list of marker styles that are cycled through depending
+on the number of data sets displayed:</p>
+<img alt="_images/markers.png" src="_images/markers.png" />
+<p>The marker type, size, and color/alpha are all completely customizable via <code class="docutils literal notranslate"><span class="pre">marker_</span></code>
+keywords:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="8%" />
+<col width="14%" />
+<col width="39%" />
+<col width="22%" />
+<col width="17%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Keyword</th>
+<th class="head">Data Type</th>
+<th class="head">Description</th>
+<th class="head">Default</th>
+<th class="head">Example</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td rowspan="2">markers</td>
+<td rowspan="2">boolean or list of str characters</td>
+<td>if <code class="docutils literal notranslate"><span class="pre">False</span></code>, turns off markers on the plot</td>
+<td rowspan="2">default marker list</td>
+<td rowspan="2"><a class="reference external" href="styles.html#Markers">Markers</a></td>
+</tr>
+<tr class="row-odd"><td>if a list of characters, sets the markers to be used (one marker type per curve or data set)</td>
+</tr>
+<tr class="row-even"><td>marker_fill</td>
+<td>boolean</td>
+<td>turn on/off marker fill</td>
+<td>False</td>
+<td>None</td>
+</tr>
+<tr class="row-odd"><td>marker_edge_color</td>
+<td>hex color str</td>
+<td>set the marker edge color</td>
+<td>match the line color scheme</td>
+<td>None</td>
+</tr>
+<tr class="row-even"><td>marker_edge_width</td>
+<td>float</td>
+<td>set the marker edge width</td>
+<td>1.5</td>
+<td>None</td>
+</tr>
+<tr class="row-odd"><td>marker_fill_color</td>
+<td>hex color str</td>
+<td>set the marker fill color (only rendered if <code class="docutils literal notranslate"><span class="pre">marker_fill=True</span></code>)</td>
+<td>True</td>
+<td>None</td>
+</tr>
+<tr class="row-even"><td>marker_jitter</td>
+<td>boolean</td>
+<td>add a random offset or jitter to the points around their x-value (useful for box plots)</td>
+<td><a href="#id4"><span class="problematic" id="id5">`</span></a>True for boxplots | <a href="#id6"><span class="problematic" id="id7">`</span></a>False for all other plot types</td>
+<td>None</td>
+</tr>
+<tr class="row-odd"><td>marker_size</td>
+<td>float</td>
+<td>size of the markers (can be specified uniquely from the legend marker size)</td>
+<td>7</td>
+<td><a class="reference external" href="styles.html#Marker-size">Marker size</a></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section" id="ticks">
 <h3>Ticks<a class="headerlink" href="#ticks" title="Permalink to this headline">¶</a></h3>
+<p>Tick marks are controlled using keywords beginning with <code class="docutils literal notranslate"><span class="pre">ticks_</span></code> and are
+referenced to either the major or minor grid:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="12%" />
+<col width="37%" />
+<col width="6%" />
+<col width="27%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Keyword</th>
+<th class="head">Data Type</th>
+<th class="head">Description</th>
+<th class="head">Default</th>
+<th class="head">Example</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>ticks_&lt;major|minor&gt;_color</td>
+<td>hex color string</td>
+<td>tick color</td>
+<td rowspan="2">#ffffff</td>
+<td>None</td>
+</tr>
+<tr class="row-odd"><td>ticks_major_increment</td>
+<td>float</td>
+<td>for major ticks only, the increment between tick marks</td>
+<td><a href="#id14"><span class="problematic" id="id15">`Grids and ticks&lt;ticks.html#Increment&gt;`_</span></a></td>
+</tr>
+<tr class="row-even"><td>ticks_major_length</td>
+<td>float</td>
+<td>the length in pixels of the major tick lines</td>
+<td>6.2</td>
+<td>None</td>
+</tr>
+<tr class="row-odd"><td>ticks_minor_length</td>
+<td>float</td>
+<td>the length in pixels of the minor tick lines</td>
+<td>4.2</td>
+<td>None</td>
+</tr>
+<tr class="row-even"><td>tick_minor_number</td>
+<td>int</td>
+<td>enable primary y-axis range sharing across all subplots</td>
+<td>True</td>
+<td><a href="#id16"><span class="problematic" id="id17">`Grids and ticks&lt;ticks.html#Increment&gt;`_</span></a></td>
+</tr>
+<tr class="row-odd"><td>ticks_major_width</td>
+<td>float</td>
+<td>thickness or edge width of a major tick mark</td>
+<td>2.2</td>
+<td>None</td>
+</tr>
+<tr class="row-even"><td>ticks_minor_width</td>
+<td>float</td>
+<td>thickness or edge width of a minor tick mark</td>
+<td>1.3</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+<p>To reference a specific axis, add the axis name (x, x2, y, y2, or z) to the keyword
+after the designation of the grid (i.e., <code class="docutils literal notranslate"><span class="pre">ticks_major_x_increment</span></code> or
+<code class="docutils literal notranslate"><span class="pre">ticks_minor_y_width</span></code>.  If no axis is specified, the keyword is applied to
+all axes.</p>
+</div>
+<div class="section" id="tick-labels">
+<h3>Tick Labels<a class="headerlink" href="#tick-labels" title="Permalink to this headline">¶</a></h3>
+<p>Tick labels or the text associated with a tick mark have the same attritubes
+as any other text label.  Keywords begin with <code class="docutils literal notranslate"><span class="pre">tick_labels_</span></code> followed by the
+major or minor grid and an option specification of the axis of interest.  For example:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">tick_labels_major_font_size</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">tick_labels_minor_x_rotation</span></code></li>
+</ul>
+<p>See <a class="reference external" href="keyword.html#labels">Labels</a> for more details.</p>
 </div>
 <div class="section" id="title">
 <h3>Title<a class="headerlink" href="#title" title="Permalink to this headline">¶</a></h3>
-<img alt="_images/element_title.png" src="_images/element_title.png" />
-<p>The <code class="docutils literal notranslate"><span class="pre">title</span></code> element (shown above in yellow) adds a title to the top of the figure.
+<img alt="_images/element_title.png" class="align-right" src="_images/element_title.png" />
+<p>The <code class="docutils literal notranslate"><span class="pre">title</span></code> element (shown on right in yellow) adds a title centered above the top of the plot(s).
 The title text is added directly via the <code class="docutils literal notranslate"><span class="pre">title</span></code> keyword:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;IV Data&#39;</span>
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">title</span></code> elements are styled using the <a class="reference external" href="keyword.html#base-attributes">base</a>
+<code class="docutils literal notranslate"><span class="pre">Element</span></code> class attributes for fill color, edge color, and font.  The “Lines” category
+of base attributes is not used for titles.</p>
 </div>
 </div>
 <div class="section" id="whitespace">
@@ -958,8 +1265,8 @@ The title text is added directly via the <code class="docutils literal notransla
 <img alt="_static/images/figure_design.png" src="_static/images/figure_design.png" />
 <img alt="_static/images/figure_design_rc.png" src="_static/images/figure_design_rc.png" />
 </div>
-<div class="section" id="id4">
-<h2>Data<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="data">
+<h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="other">
 <h2>Other<a class="headerlink" href="#other" title="Permalink to this headline">¶</a></h2>

@@ -319,6 +319,9 @@ class BaseLayout:
         if 'tick_labels' in kwargs.keys() \
                 and 'tick_labels_major' not in kwargs.keys():
             kwargs['tick_labels_major'] = kwargs['tick_labels']
+        for k, v in kwargs.copy().items():
+            if 'tick_labels' in k and 'major' not in k and 'minor' not in k:
+                kwargs['tick_labels_major%s' % k.split('tick_labels')[1]] = v
         self.tick_labels_major = \
             Element('tick_labels_major', self.fcpp, kwargs,
                     on=utl.kwget(kwargs, self.fcpp,
@@ -383,7 +386,7 @@ class BaseLayout:
                                                      'ticks_minor_padding',
                                                      4),
                                    size=[utl.kwget(kwargs, self.fcpp,
-                                                   'ticks_minor_length_minor',
+                                                   'ticks_minor_length',
                                                    ticks_length*0.67),
                                          utl.kwget(kwargs, self.fcpp,
                                                    'ticks_minor_width',
@@ -480,7 +483,8 @@ class BaseLayout:
                                                      1.5),
                                fill_color=copy.copy(marker_fill_color),
                                jitter=utl.kwget(kwargs, self.fcpp,
-                                                'jitter', False),
+                                                'marker_jitter',
+                                                kwargs.get('jitter', False)),
                                size=utl.kwget(kwargs, self.fcpp,
                                               'marker_size', 7),
                                type=markers,
@@ -496,7 +500,7 @@ class BaseLayout:
                              )
 
         # Line fit
-        self.fit = Element('line_fit', self.fcpp, kwargs,
+        self.fit = Element('fit', self.fcpp, kwargs,
                            on=True if kwargs.get('fit', False) else False,
                            color='#000000',
                            eqn=utl.kwget(kwargs, self.fcpp, 'fit_eqn', False),
@@ -561,9 +565,11 @@ class BaseLayout:
                                cmap=utl.kwget(kwargs, self.fcpp,
                                               'cmap', 'inferno'),
                                filled=utl.kwget(kwargs, self.fcpp,
-                                                'filled', True),
+                                                'contour_filled',
+                                                kwargs.get('filled', True)),
                                levels=utl.kwget(kwargs, self.fcpp,
-                                                'levels', 20),
+                                                'contour_levels',
+                                                kwargs.get('levels', 20)),
                               )
 
         # Heatmaps
@@ -646,8 +652,10 @@ class BaseLayout:
                            median_color=utl.kwget(kwargs, self.fcpp,
                                                  'box_median_line_color',
                                                  '#ff7f0e'),
-                           notch=utl.kwget(kwargs, self.fcpp, 'notch', False),
-                           violin=utl.kwget(kwargs, self.fcpp, 'violin', False),
+                           notch=utl.kwget(kwargs, self.fcpp, 'box_notch',
+                                           kwargs.get('notch', False)),
+                           violin=utl.kwget(kwargs, self.fcpp, 'box_violin',
+                                            kwargs.get('violin', False)),
                            )
 
         self.box_whisker = Element('box_whisker', self.fcpp, kwargs,
@@ -728,70 +736,6 @@ class BaseLayout:
             if 'box_marker_zorder' in self.fcpp.keys():
                 self.markers.zorder = self.fcpp['box_marker_zorder']
 
-
-        # # Markers/points
-        # if 'marker_type' in kwargs.keys():
-        #     marker_list = kwargs['marker_type']
-        # else:
-        #     marker_list = utl.validate_list(kwargs.get('markers', DEFAULT_MARKERS))
-        # markers = RepeatedList(marker_list, 'markers')
-        # marker_edge_color = utl.kwget(kwargs, self.fcpp, 'marker_edge_color', color_list)
-        # marker_fill_color = utl.kwget(kwargs, self.fcpp, 'marker_fill_color', color_list)
-        # if kwargs.get('marker_fill_color'):
-        #     kwargs['marker_fill'] = True
-        # self.markers = Element('marker', self.fcpp, kwargs,
-        #                        on=utl.kwget(kwargs, self.fcpp,
-        #                                     'markers', True),
-        #                        filled=utl.kwget(kwargs, self.fcpp,
-        #                                         'marker_fill', False),
-        #                        edge_color=copy.copy(marker_edge_color),
-        #                        edge_width=utl.kwget(kwargs, self.fcpp,
-        #                                             'marker_edge_width',
-        #                                              1.5),
-        #                        fill_color=copy.copy(marker_fill_color),
-        #                        jitter=utl.kwget(kwargs, self.fcpp,
-        #                                         'jitter', False),
-        #                        size=utl.kwget(kwargs, self.fcpp,
-        #                                       'marker_size', 7),
-        #                        type=markers,
-        #                        zorder=utl.kwget(kwargs, self.fcpp,
-        #                                         'zorder', 2),
-        #                        )
-        # if 'box' in self.plot_func:
-        #     self.lines.on = False
-        #     if not kwargs.get('colors') and not kwargs.get('marker_edge_color'):
-        #         self.markers.edge_color = DEFAULT_COLORS[1]
-        #         self.markers.color_alpha('edge_color', 'edge_alpha')
-        #     if not kwargs.get('colors') and not kwargs.get('marker_fill_color'):
-        #         self.markers.fill_color = DEFAULT_COLORS[1]
-        #         self.markers.color_alpha('fill_color', 'fill_alpha')
-        #     if 'box_marker_edge_alpha' in self.fcpp.keys():
-        #         self.markers.edge_alpha = self.fcpp['box_marker_edge_alpha']
-        #     if 'box_marker_edge_color' in self.fcpp.keys():
-        #         self.markers.edge_color = self.fcpp['box_marker_edge_color']
-        #         self.markers.color_alpha('edge_color', 'edge_alpha')
-        #     if 'box_marker_fill_alpha' in self.fcpp.keys():
-        #         self.markers.fill_alpha = self.fcpp['box_marker_fill_alpha']
-        #     if 'box_marker_fill_color' in self.fcpp.keys():
-        #         self.markers.fill_color = self.fcpp['box_marker_fill_color']
-        #         self.markers.color_alpha('fill_color', 'fill_alpha')
-        #     self.markers.filled = self.fcpp.get('box_marker_fill', self.markers.filled)
-        #     self.markers.edge_width = self.fcpp.get('box_marker_edge_width', self.markers.edge_width)
-        #     self.markers.jitter = utl.kwget(kwargs, self.fcpp, 'jitter', True)
-        #     if 'box_marker_jitter' in self.fcpp.keys():
-        #         self.markers.jitter = self.fcpp['box_marker_jitter']
-        #     if 'box_marker_size' in self.fcpp.keys():
-        #         self.markers.size = self.fcpp['box_marker_size']
-        #     else:
-        #         self.markers.size = kwargs.get('marker_size', 4)
-        #     if 'marker_type' in kwargs.keys():
-        #         self.markers.type = RepeatedList(kwargs['marker_type'], 'marker_type')
-        #     elif 'box_marker_type' in self.fcpp.keys():
-        #         self.markers.type = RepeatedList(self.fcpp['box_marker_type'], 'marker_type')
-        #     else:
-        #         self.markers.type = RepeatedList('o', 'marker_type')
-        #     if 'box_marker_zorder' in self.fcpp.keys():
-        #         self.markers.zorder = self.fcpp['box_marker_zorder']
 
         # Axhlines/axvlines
         axlines = ['ax_hlines', 'ax_vlines', 'yline',
@@ -1597,6 +1541,22 @@ class LayoutMPL(BaseLayout):
         cbar = mplp.colorbar(contour, cax=cax)
         cbar.outline.set_edgecolor(self.cbar.edge_color.get(0))
         cbar.outline.set_linewidth(self.cbar.edge_width)
+
+        # Style tick labels
+        ticks_font = \
+            font_manager.FontProperties(family=getattr(self, 'tick_labels_major_z').font,
+                                        size=getattr(self, 'tick_labels_major_z').font_size,
+                                        style=getattr(self, 'tick_labels_major_z').font_style,
+                                        weight=getattr(self, 'tick_labels_major_z').font_weight)
+
+        for text in cax.get_yticklabels():
+            if getattr(self, 'tick_labels_major_z').rotation != 0:
+                text.set_rotation(getattr(self, 'tick_labels_major_z').rotation)
+            text.set_fontproperties(ticks_font)
+            text.set_bbox(dict(edgecolor=getattr(self, 'tick_labels_major_z').edge_color.get(0),
+                                facecolor=getattr(self, 'tick_labels_major_z').fill_color.get(0),
+                                linewidth=getattr(self, 'tick_labels_major_z').edge_width))
+
         #cbar.dividers.set_color('white')  # could enable
         #cbar.dividers.set_linewidth(2)
 
