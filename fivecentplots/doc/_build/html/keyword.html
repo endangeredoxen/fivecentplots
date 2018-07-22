@@ -117,6 +117,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#legend">Legend</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#lines">Lines</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#markers">Markers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reference-line">Reference Line</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ticks">Ticks</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#tick-labels">Tick Labels</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#title">Title</a></li>
@@ -465,13 +466,9 @@ do not apply to a given <code class="docutils literal notranslate"><span class="
 <h3>Axes<a class="headerlink" href="#axes" title="Permalink to this headline">¶</a></h3>
 <img alt="_images/element_axes.png" src="_images/element_axes.png" />
 <p>The <code class="docutils literal notranslate"><span class="pre">axes</span></code> element consists of the actual plotting window shown in yellow above.
-Keywords for the primary <code class="docutils literal notranslate"><span class="pre">axes</span></code> object begin with the prefix “<a href="#id10"><span class="problematic" id="id11">ax_</span></a>”.  Properties
-of any optional secondary axes begin with the prefix “<a href="#id12"><span class="problematic" id="id13">ax2_</span></a>”.</p>
-<div class="admonition note">
-<p class="first admonition-title">Keyword Prefix</p>
-<p class="last"><b>Primary axis: ax_</b></p>
-<p class="last"><b>Secondary axis: ax2_</b></p>
-</div><table border="1" class="docutils">
+Keywords for the primary <code class="docutils literal notranslate"><span class="pre">axes</span></code> object begin with the prefix “<a href="#id12"><span class="problematic" id="id13">ax_</span></a>”.  Properties
+of any optional secondary axes begin with the prefix “<a href="#id14"><span class="problematic" id="id15">ax2_</span></a>”.</p>
+<table border="1" class="docutils">
 <colgroup>
 <col width="11%" />
 <col width="10%" />
@@ -602,25 +599,24 @@ of any optional secondary axes begin with the prefix “<a href="#id12"><span cl
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="first admonition-title">Invalid base <code class="docutils literal notranslate">Element</code> attributes</p>
-<ul>
-<li>"Fonts" category</li>
-<li>"Lines" category</li>
-<li><code class="docutils literal notranslate">text</code></li>
+<p>The following base attributes of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> class are not used for this item:</p>
+<blockquote>
+<div><ul class="simple">
+<li>“Fonts” category</li>
+<li>“Lines” category</li>
+<li><code class="docutils literal notranslate"><span class="pre">text</span></code></li>
 </ul>
-</div></div>
+</div></blockquote>
+</div>
 <div class="section" id="boxplots">
 <h3>Boxplots<a class="headerlink" href="#boxplots" title="Permalink to this headline">¶</a></h3>
 <img alt="_images/element_box.png" src="_images/element_box.png" />
 <p>Boxplots have several unique <code class="docutils literal notranslate"><span class="pre">Element</span></code> objects that can be styled:</p>
 <blockquote>
 <div><ul>
-<li><p class="first"><strong>Boxes:</strong>  the actual boxes of the box plot (shown in white with a blue border above)</p>
-<div class="admonition note">
-<p class="first admonition-title">Keyword Prefix</p>
-<p class="last"><b>box_</b></p>
-</div><table border="1" class="docutils">
+<li><p class="first"><strong>Boxes:</strong>  the actual boxes of the box plot (shown in white with a
+blue border above) are accessed using keywords with the prefix <code class="docutils literal notranslate"><span class="pre">box_</span></code>:</p>
+<table border="1" class="docutils">
 <colgroup>
 <col width="13%" />
 <col width="8%" />
@@ -674,17 +670,14 @@ of any optional secondary axes begin with the prefix “<a href="#id12"><span cl
 <blockquote>
 <div><ul>
 <li><p class="first"><strong>Divider lines:</strong>  optional vertical divider lines between groups</p>
-<div class="admonition note">
-<p class="first admonition-title">Keyword Prefix</p>
-<p class="last"><b>box_divider_</b></p>
-</div><p>These lines are styled using the <a class="reference external" href="keyword.html#default-attributes">default</a>
-attributes for lines of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> object.  They are enabled by default
-but can be turned off with <code class="docutils literal notranslate"><span class="pre">box_divider=False</span></code>.  (Default <code class="docutils literal notranslate"><span class="pre">zorder</span></code> = 2)</p>
+<p>These lines are styled using keywords with the prefix <code class="docutils literal notranslate"><span class="pre">box_divider</span></code> and use
+the “Lines” category of base attributes for the <code class="docutils literal notranslate"><span class="pre">Element</span></code> object.  They are
+enabled by default but can be turned off with <code class="docutils literal notranslate"><span class="pre">box_divider=False</span></code>:</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="20%" />
-<col width="14%" />
-<col width="55%" />
+<col width="23%" />
+<col width="13%" />
+<col width="53%" />
 <col width="11%" />
 </colgroup>
 <thead valign="bottom">
@@ -700,15 +693,10 @@ but can be turned off with <code class="docutils literal notranslate"><span clas
 <td>toggle divider lines between groups on/off</td>
 <td>True</td>
 </tr>
-<tr class="row-odd"><td>color</td>
+<tr class="row-odd"><td>box_divider_color</td>
 <td>str</td>
 <td>line color</td>
 <td>#bbbbbb</td>
-</tr>
-<tr class="row-even"><td>zorder</td>
-<td>int</td>
-<td>relative z-height of line in plot</td>
-<td>2</td>
 </tr>
 </tbody>
 </table>
@@ -725,8 +713,8 @@ of the given box (shown in yellow above).</p>
 <div class="admonition note">
 <p class="first admonition-title">Keyword Prefix</p>
 <p class="last"><b>box_group_label_</b></p>
-</div><p>These labels are styled using the <a class="reference external" href="keyword.html#default-attributes">default</a> label
-attributes of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> object.</p>
+</div><p>These labels are styled using keywords with the prefix <code class="docutils literal notranslate"><span class="pre">box_group_label_</span></code> and
+are similar to other <a class="reference external" href="keyword.html#labels">label</a> elements.</p>
 </li>
 </ul>
 </div></blockquote>
@@ -737,11 +725,8 @@ attributes of the <code class="docutils literal notranslate"><span class="pre">E
 <div><ul>
 <li><p class="first"><strong>Group titles:</strong> labels to the right of the group labels that indicate the DataFrame
 column name of each grouping column (shown in salmon above).</p>
-<div class="admonition note">
-<p class="first admonition-title">Keyword Prefix</p>
-<p class="last"><b>box_group_title_</b></p>
-</div><p>These labels are styled using the <a class="reference external" href="keyword.html#default-attributes">default</a> label
-attributes of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> object.</p>
+<p>These labels are controlled using keywords with the prefix <code class="docutils literal notranslate"><span class="pre">box_group_title_</span></code> and
+are similar to other <a class="reference external" href="keyword.html#labels">label</a> elements.</p>
 </li>
 </ul>
 </div></blockquote>
@@ -752,15 +737,13 @@ attributes of the <code class="docutils literal notranslate"><span class="pre">E
 <div><ul>
 <li><p class="first"><strong>Range lines:</strong> optional lines within a single box that span the entire range of the
 data set.  These are useful for visualization of outlier points that may be
-outside of the selected ymin/ymax Range (Default <code class="docutils literal notranslate"><span class="pre">zorder</span></code> = 3)</p>
-<div class="admonition note">
-<p class="first admonition-title">Keyword Prefix</p>
-<p class="last"><b>box_range_lines</b></p>
-</div><table border="1" class="docutils">
+outside of the selected ymin/ymax range.  They are accessed using keywords with the
+prefix <code class="docutils literal notranslate"><span class="pre">box_range_lines_</span></code>:</p>
+<table border="1" class="docutils">
 <colgroup>
-<col width="18%" />
-<col width="10%" />
-<col width="64%" />
+<col width="21%" />
+<col width="9%" />
+<col width="62%" />
 <col width="8%" />
 </colgroup>
 <thead valign="bottom">
@@ -776,12 +759,12 @@ outside of the selected ymin/ymax Range (Default <code class="docutils literal n
 <td>toggle range lines on/off</td>
 <td>True</td>
 </tr>
-<tr class="row-odd"><td>color</td>
+<tr class="row-odd"><td>box_range_lines_color</td>
 <td>str</td>
 <td>line color</td>
 <td>#cccccc</td>
 </tr>
-<tr class="row-even"><td>style</td>
+<tr class="row-even"><td>box_range_lines_style</td>
 <td>str</td>
 <td>horizontal lines at the end of the range</td>
 <td><ul class="first last simple">
@@ -789,15 +772,10 @@ outside of the selected ymin/ymax Range (Default <code class="docutils literal n
 </ul>
 </td>
 </tr>
-<tr class="row-odd"><td>style2</td>
+<tr class="row-odd"><td>box_range_lines_style2</td>
 <td>str</td>
 <td>vertical lines connecting the horizontal lines at the end of the range</td>
 <td>–</td>
-</tr>
-<tr class="row-even"><td>zorder</td>
-<td>int</td>
-<td>relative z-height of line in plot</td>
-<td>3</td>
 </tr>
 </tbody>
 </table>
@@ -808,19 +786,19 @@ outside of the selected ymin/ymax Range (Default <code class="docutils literal n
 <div class="line"><br /></div>
 </div>
 <blockquote>
-<div><ul>
-<li><p class="first"><strong>Stat lines:</strong> optional connecting line between each box at some statistical
+<div><ul class="simple">
+<li><strong>Stat lines:</strong> optional connecting line between each box at some statistical
 value calculated from the data for a single box.  Options include any stat that
 can be computed via the <code class="docutils literal notranslate"><span class="pre">groupby</span></code> command on a pandas DataFrame (i.e., “mean”,
-“median”, “std”, etc.) (Default <code class="docutils literal notranslate"><span class="pre">zorder</span></code> = 7 to be on top of the boxes)</p>
-<div class="admonition note">
-<p class="first admonition-title">Keyword Prefix</p>
-<p class="last"><b>box_stat_line_</b></p>
-</div><table border="1" class="docutils">
+“median”, “std”, etc.).  Box stat lines are accessed using keywords with the prefix
+<code class="docutils literal notranslate"><span class="pre">box_stat_line_</span></code>:</li>
+</ul>
+<blockquote>
+<div><table border="1" class="docutils">
 <colgroup>
-<col width="22%" />
+<col width="25%" />
 <col width="13%" />
-<col width="54%" />
+<col width="52%" />
 <col width="11%" />
 </colgroup>
 <thead valign="bottom">
@@ -841,20 +819,14 @@ can be computed via the <code class="docutils literal notranslate"><span class="
 <td>set the statistic for the connecting line</td>
 <td>mean</td>
 </tr>
-<tr class="row-even"><td>color</td>
+<tr class="row-even"><td>box_stat_line_color</td>
 <td>str</td>
 <td>line color</td>
 <td>#666666</td>
 </tr>
-<tr class="row-odd"><td>zorder</td>
-<td>int</td>
-<td>relative z-height of line in plot</td>
-<td>7</td>
-</tr>
 </tbody>
 </table>
-</li>
-</ul>
+</div></blockquote>
 </div></blockquote>
 </div>
 <div class="section" id="color-bar">
@@ -890,10 +862,10 @@ be subdivided into multiple subplots to display more data.  Unlike matplotlib, <
 <p class="last"><b>fig_</b></p>
 </div><table border="1" class="docutils">
 <colgroup>
-<col width="12%" />
-<col width="15%" />
-<col width="37%" />
-<col width="36%" />
+<col width="24%" />
+<col width="24%" />
+<col width="33%" />
+<col width="20%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Keyword</th>
@@ -903,23 +875,24 @@ be subdivided into multiple subplots to display more data.  Unlike matplotlib, <
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>dpi</td>
+<tr class="row-even"><td><span class="hh">dpi</span></td>
 <td>int</td>
 <td>dots per inch</td>
-<td>&#160;</td>
+<td>100</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="first admonition-title">Invalid base <code class="docutils literal notranslate">Element</code> attributes</p>
-<ul>
-<li>"Fonts" category</li>
-<li>"Lines" category</li>
-<li><code class="docutils literal notranslate">on</code></li>
-<li><code class="docutils literal notranslate">size</code></li>
-<li><code class="docutils literal notranslate">text</code></li>
+<p>The following base attributes of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> class are not used for this item:</p>
+<blockquote>
+<div><ul class="simple">
+<li>“Fonts” category</li>
+<li>“Lines” category</li>
+<li><code class="docutils literal notranslate"><span class="pre">on</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">size</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">text</span></code></li>
 </ul>
-</div></div>
+</div></blockquote>
+</div>
 <div class="section" id="fit">
 <h3>Fit<a class="headerlink" href="#fit" title="Permalink to this headline">¶</a></h3>
 <p><strong>fivecentplots</strong> can add a polynomial fit to a data set.  This is controlled via
@@ -979,6 +952,17 @@ the family of keywords beginning with <code class="docutils literal notranslate"
 </tr>
 </tbody>
 </table>
+<p>The following base attributes of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> class are not used for this item:</p>
+<blockquote>
+<div><ul class="simple">
+<li>“Fill” category</li>
+<li>“Edges” category</li>
+<li>“Fonts” category</li>
+<li><code class="docutils literal notranslate"><span class="pre">on</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">size</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">text</span></code></li>
+</ul>
+</div></blockquote>
 </div>
 <div class="section" id="gridlines">
 <h3>Gridlines<a class="headerlink" href="#gridlines" title="Permalink to this headline">¶</a></h3>
@@ -1053,9 +1037,136 @@ being plotted.</p>
 <p>All <code class="docutils literal notranslate"><span class="pre">label</span></code> elements are styled using the <a class="reference external" href="keyword.html#base-attributes">base</a>
 <code class="docutils literal notranslate"><span class="pre">Element</span></code> class attributes for fill color, edge color, and font.  The “Lines” category
 of base attributes is not used for labels.</p>
+<p>The following base attributes of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> class are not used for this item:</p>
+<blockquote>
+<div><ul class="simple">
+<li>“Lines” category</li>
+</ul>
+</div></blockquote>
 </div>
 <div class="section" id="legend">
 <h3>Legend<a class="headerlink" href="#legend" title="Permalink to this headline">¶</a></h3>
+<img alt="_images/element_legend.png" src="_images/element_legend.png" />
+<p>The plot legend (shown in yellow on left) is controlled by keywords with the
+prefix <code class="docutils literal notranslate"><span class="pre">legend_</span></code>.  By default, legends are placed outside of the plot area
+(where they should be to avoid obscuring data!).</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="6%" />
+<col width="41%" />
+<col width="18%" />
+<col width="23%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Keyword</th>
+<th class="head">Data Type</th>
+<th class="head">Description</th>
+<th class="head">Default</th>
+<th class="head">Example</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>legend</td>
+<td>str</td>
+<td>name of a DataFrame column to use for grouping</td>
+<td>None</td>
+<td><a class="reference external" href="plot.html#Legend">Legend</a></td>
+</tr>
+<tr class="row-odd"><td rowspan="12"><span class="hh">location</span></td>
+<td rowspan="12">int | str</td>
+<td>location of legend (at this time only outside of the plot is available!):</td>
+<td rowspan="12">0</td>
+<td rowspan="12">None</td>
+</tr>
+<tr class="row-even"><td><ul class="first last simple">
+<li>0 | “outside” = outside of plot on right side</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><ul class="first last simple">
+<li>1 | “upper right” = upper right inside corner</li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><ul class="first last simple">
+<li>2 | “upper left = upper left inside corner</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><ul class="first last simple">
+<li>3 | “lower left” = lower left inside corner</li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><ul class="first last simple">
+<li>4 | “lower right” = lower right inside corner</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><ul class="first last simple">
+<li>5 | “right”</li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><ul class="first last simple">
+<li>6 | “center left”</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><ul class="first last simple">
+<li>7 | “center right”</li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><ul class="first last simple">
+<li>8 | “lower center”</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><ul class="first last simple">
+<li>9 | “upper center”</li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><ul class="first last simple">
+<li>10 | “center”</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td>legend_marker_alpha</td>
+<td>float</td>
+<td>alpha of the markers in the legend only</td>
+<td>1</td>
+<td><a class="reference external" href="styles.html#Alpha">Alpha</a></td>
+</tr>
+<tr class="row-even"><td>legend_marker_size</td>
+<td>float</td>
+<td>marker size in legend only</td>
+<td>same as <code class="docutils literal notranslate"><span class="pre">marker_size</span></code></td>
+<td><a class="reference external" href="styles.html#Marker-size">Marker size</a></td>
+</tr>
+<tr class="row-odd"><td>legend_points</td>
+<td>int</td>
+<td>number of points for each legend value</td>
+<td>1</td>
+<td>None</td>
+</tr>
+<tr class="row-even"><td>legend_title</td>
+<td>str</td>
+<td>legend title text</td>
+<td>defaults to legend column name</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+<p>The following base attributes of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> class are not used for this item:</p>
+<blockquote>
+<div><ul class="simple">
+<li>“Lines” category</li>
+<li><code class="docutils literal notranslate"><span class="pre">size</span></code></li>
+</ul>
+</div></blockquote>
 </div>
 <div class="section" id="lines">
 <h3>Lines<a class="headerlink" href="#lines" title="Permalink to this headline">¶</a></h3>
@@ -1094,6 +1205,16 @@ selected from the default color list:</p>
 </tr>
 </tbody>
 </table>
+<p>The following base attributes of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> class are not used for this item:</p>
+<blockquote>
+<div><ul class="simple">
+<li>“Fill” category</li>
+<li>“Edges” category</li>
+<li>“Fonts” category</li>
+<li><code class="docutils literal notranslate"><span class="pre">size</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">text</span></code></li>
+</ul>
+</div></blockquote>
 </div>
 <div class="section" id="markers">
 <h3>Markers<a class="headerlink" href="#markers" title="Permalink to this headline">¶</a></h3>
@@ -1166,6 +1287,56 @@ keywords:</p>
 </tr>
 </tbody>
 </table>
+<p>The following base attributes of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> class are not used for this item:</p>
+<blockquote>
+<div><ul class="simple">
+<li>“Lines” category</li>
+<li><code class="docutils literal notranslate"><span class="pre">text</span></code></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="reference-line">
+<h3>Reference Line<a class="headerlink" href="#reference-line" title="Permalink to this headline">¶</a></h3>
+<p>A reference line can be drawn on a plot via keywords with the <code class="docutils literal notranslate"><span class="pre">ref_line_</span></code> prefix:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="8%" />
+<col width="13%" />
+<col width="31%" />
+<col width="10%" />
+<col width="39%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Keyword</th>
+<th class="head">Data Type</th>
+<th class="head">Description</th>
+<th class="head">Default</th>
+<th class="head">Example</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>color</td>
+<td>hex color str</td>
+<td>color of the reference line</td>
+<td>#000000</td>
+<td rowspan="2"><a class="reference external" href="plot.html#Reference-line">Reference line</a></td>
+</tr>
+<tr class="row-odd"><td>text</td>
+<td>str</td>
+<td>legend text for the reference line</td>
+<td>“Ref Line”</td>
+</tr>
+</tbody>
+</table>
+<p>The following base attributes of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> class are not used for this item:</p>
+<blockquote>
+<div><ul class="simple">
+<li>“Fill” category</li>
+<li>“Edges” category</li>
+<li>“Fonts” category</li>
+<li><code class="docutils literal notranslate"><span class="pre">size</span></code></li>
+</ul>
+</div></blockquote>
 </div>
 <div class="section" id="ticks">
 <h3>Ticks<a class="headerlink" href="#ticks" title="Permalink to this headline">¶</a></h3>
@@ -1197,7 +1368,7 @@ referenced to either the major or minor grid:</p>
 <tr class="row-odd"><td>ticks_major_increment</td>
 <td>float</td>
 <td>for major ticks only, the increment between tick marks</td>
-<td><a href="#id14"><span class="problematic" id="id15">`Grids and ticks&lt;ticks.html#Increment&gt;`_</span></a></td>
+<td><a href="#id16"><span class="problematic" id="id17">`Grids and ticks&lt;ticks.html#Increment&gt;`_</span></a></td>
 </tr>
 <tr class="row-even"><td>ticks_major_length</td>
 <td>float</td>
@@ -1215,7 +1386,7 @@ referenced to either the major or minor grid:</p>
 <td>int</td>
 <td>enable primary y-axis range sharing across all subplots</td>
 <td>True</td>
-<td><a href="#id16"><span class="problematic" id="id17">`Grids and ticks&lt;ticks.html#Increment&gt;`_</span></a></td>
+<td><a href="#id18"><span class="problematic" id="id19">`Grids and ticks&lt;ticks.html#Increment&gt;`_</span></a></td>
 </tr>
 <tr class="row-odd"><td>ticks_major_width</td>
 <td>float</td>
@@ -1235,6 +1406,16 @@ referenced to either the major or minor grid:</p>
 after the designation of the grid (i.e., <code class="docutils literal notranslate"><span class="pre">ticks_major_x_increment</span></code> or
 <code class="docutils literal notranslate"><span class="pre">ticks_minor_y_width</span></code>.  If no axis is specified, the keyword is applied to
 all axes.</p>
+<p>The following base attributes of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> class are not used for this item:</p>
+<blockquote>
+<div><ul class="simple">
+<li>“Fill” category</li>
+<li>“Edges” category</li>
+<li>“Fonts” category</li>
+<li><code class="docutils literal notranslate"><span class="pre">size</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">text</span></code></li>
+</ul>
+</div></blockquote>
 </div>
 <div class="section" id="tick-labels">
 <h3>Tick Labels<a class="headerlink" href="#tick-labels" title="Permalink to this headline">¶</a></h3>
@@ -1246,6 +1427,13 @@ major or minor grid and an option specification of the axis of interest.  For ex
 <li><code class="docutils literal notranslate"><span class="pre">tick_labels_minor_x_rotation</span></code></li>
 </ul>
 <p>See <a class="reference external" href="keyword.html#labels">Labels</a> for more details.</p>
+<p>The following base attributes of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> class are not used for this item:</p>
+<blockquote>
+<div><ul class="simple">
+<li>“Lines” category</li>
+<li><code class="docutils literal notranslate"><span class="pre">text</span></code></li>
+</ul>
+</div></blockquote>
 </div>
 <div class="section" id="title">
 <h3>Title<a class="headerlink" href="#title" title="Permalink to this headline">¶</a></h3>
@@ -1258,12 +1446,104 @@ The title text is added directly via the <code class="docutils literal notransla
 <p><code class="docutils literal notranslate"><span class="pre">title</span></code> elements are styled using the <a class="reference external" href="keyword.html#base-attributes">base</a>
 <code class="docutils literal notranslate"><span class="pre">Element</span></code> class attributes for fill color, edge color, and font.  The “Lines” category
 of base attributes is not used for titles.</p>
+<p>The following base attributes of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> class are not used for this item:</p>
+<blockquote>
+<div><ul class="simple">
+<li>“Lines” category</li>
+</ul>
+</div></blockquote>
 </div>
 </div>
 <div class="section" id="whitespace">
 <h2>Whitespace<a class="headerlink" href="#whitespace" title="Permalink to this headline">¶</a></h2>
-<img alt="_static/images/figure_design.png" src="_static/images/figure_design.png" />
-<img alt="_static/images/figure_design_rc.png" src="_static/images/figure_design_rc.png" />
+<img alt="_images/ws.png" src="_images/ws.png" />
+<p>Whitespace keywords are prefixed by <code class="docutils literal notranslate"><span class="pre">ws_</span></code> and are followed by the two items
+that sandwich the whitespace, going from left to right or top to bottom:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="18%" />
+<col width="9%" />
+<col width="52%" />
+<col width="7%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Category</th>
+<th class="head">Keyword</th>
+<th class="head">Data Type</th>
+<th class="head">Description</th>
+<th class="head">Default</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td rowspan="4">Row/column grid</td>
+<td>ws_label_col</td>
+<td rowspan="15">int</td>
+<td>col label to top edge of axes window</td>
+<td>10</td>
+</tr>
+<tr class="row-odd"><td>ws_label_row</td>
+<td>row label to right edge of axes window</td>
+<td>10</td>
+</tr>
+<tr class="row-even"><td>ws_col</td>
+<td>space between columns</td>
+<td>30</td>
+</tr>
+<tr class="row-odd"><td>ws_row</td>
+<td>space between rows</td>
+<td>30</td>
+</tr>
+<tr class="row-even"><td rowspan="4">Figure</td>
+<td>ws_fig_label</td>
+<td>left figure edge to <code class="docutils literal notranslate"><span class="pre">label_y</span></code></td>
+<td>10</td>
+</tr>
+<tr class="row-odd"><td>ws_leg_fig</td>
+<td>right legend edge to right figure edge</td>
+<td>10</td>
+</tr>
+<tr class="row-even"><td>ws_fig_ax</td>
+<td>top figure edge to top edge of axes with figure title disabled</td>
+<td>20</td>
+</tr>
+<tr class="row-odd"><td>ws_fig_title</td>
+<td>top figure edge to top of figure title</td>
+<td>10</td>
+</tr>
+<tr class="row-even"><td rowspan="5">Axes</td>
+<td>ws_label_tick</td>
+<td>space between axis label and tick labels</td>
+<td>10</td>
+</tr>
+<tr class="row-odd"><td>ws_leg_ax</td>
+<td>right edge of axes to left edge of legend box</td>
+<td>20</td>
+</tr>
+<tr class="row-even"><td>ws_ticks_ax</td>
+<td>space between tick labels and axes</td>
+<td>5</td>
+</tr>
+<tr class="row-odd"><td>ws_title_ax</td>
+<td>bottom edge of title to top edge of axes window</td>
+<td>10</td>
+</tr>
+<tr class="row-even"><td>ws_ax_fig</td>
+<td>right edge of axes to right edge of figure with legend disabled</td>
+<td>30</td>
+</tr>
+<tr class="row-odd"><td>Ticks</td>
+<td>ws_tick_tick_minimum</td>
+<td>minimum space between consecutive ticks</td>
+<td>10</td>
+</tr>
+<tr class="row-even"><td>Boxplot</td>
+<td>ws_ax_box_title</td>
+<td>right edge of axes to right edge of box title text</td>
+<td>10</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section" id="data">
 <h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>

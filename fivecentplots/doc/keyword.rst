@@ -145,14 +145,6 @@ The ``axes`` element consists of the actual plotting window shown in yellow abov
 Keywords for the primary ``axes`` object begin with the prefix "ax_".  Properties
 of any optional secondary axes begin with the prefix "ax2_".
 
-.. raw:: html
-
-    <div class="admonition note">
-    <p class="first admonition-title">Keyword Prefix</p>
-    <p class="last"><b>Primary axis: ax_</b></p>
-    <p class="last"><b>Secondary axis: ax2_</b></p>
-    </div>
-
 +--------------------+------------------+-----------------------------------------------------------------------------------------+------------+-------------------------------------------------+
 | Keyword            | Data Type        | Description                                                                             | Default    | Example                                         |
 +====================+==================+=========================================================================================+============+=================================================+
@@ -203,16 +195,11 @@ of any optional secondary axes begin with the prefix "ax2_".
 |                    |                  | Note:  wrap plots cannot be used when ``twin_y == True``                                |            |                                                 |
 +--------------------+------------------+-----------------------------------------------------------------------------------------+------------+-------------------------------------------------+
 
-.. raw:: html
+The following base attributes of the ``Element`` class are not used for this item:
 
-   <div class="admonition note">
-   <p class="first admonition-title">Invalid base <code class="docutils literal notranslate">Element</code> attributes</p>
-   <ul>
-   <li>"Fonts" category</li>
-   <li>"Lines" category</li>
-   <li><code class="docutils literal notranslate">text</code></li>
-   </ul>
-   </div>
+   * "Fonts" category
+   * "Lines" category
+   * ``text``
 
 
 Boxplots
@@ -221,14 +208,8 @@ Boxplots
 
 Boxplots have several unique ``Element`` objects that can be styled:
 
-    * **Boxes:**  the actual boxes of the box plot (shown in white with a blue border above)
-
-      .. raw:: html
-
-         <div class="admonition note">
-         <p class="first admonition-title">Keyword Prefix</p>
-         <p class="last"><b>box_</b></p>
-         </div>
+    * **Boxes:**  the actual boxes of the box plot (shown in white with a
+      blue border above) are accessed using keywords with the prefix ``box_``:
 
       +------------------+-----------+------------------------------------------------------+---------+-------------------------------------------+
       | Keyword          | Data Type | Description                                          | Default | Example                                   |
@@ -248,26 +229,17 @@ Boxplots have several unique ``Element`` objects that can be styled:
 
     * **Divider lines:**  optional vertical divider lines between groups
 
-      .. raw:: html
+      These lines are styled using keywords with the prefix ``box_divider`` and use
+      the "Lines" category of base attributes for the ``Element`` object.  They are
+      enabled by default but can be turned off with ``box_divider=False``:
 
-         <div class="admonition note">
-         <p class="first admonition-title">Keyword Prefix</p>
-         <p class="last"><b>box_divider_</b></p>
-         </div>
-
-      These lines are styled using the `default <keyword.html#default-attributes>`_
-      attributes for lines of the ``Element`` object.  They are enabled by default
-      but can be turned off with ``box_divider=False``.  (Default ``zorder`` = 2)
-
-      +----------------+-----------+--------------------------------------------+---------+
-      | Keyword        | Data Type | Description                                | Default |
-      +================+===========+============================================+=========+
-      | box_divider_on | boolean   | toggle divider lines between groups on/off | True    |
-      +----------------+-----------+--------------------------------------------+---------+
-      | color          | str       | line color                                 | #bbbbbb |
-      +----------------+-----------+--------------------------------------------+---------+
-      | zorder         | int       | relative z-height of line in plot          | 2       |
-      +----------------+-----------+--------------------------------------------+---------+
+      +-------------------+-----------+--------------------------------------------+---------+
+      | Keyword           | Data Type | Description                                | Default |
+      +===================+===========+============================================+=========+
+      | box_divider_on    | boolean   | toggle divider lines between groups on/off | True    |
+      +-------------------+-----------+--------------------------------------------+---------+
+      | box_divider_color | str       | line color                                 | #bbbbbb |
+      +-------------------+-----------+--------------------------------------------+---------+
 
 |
 
@@ -282,77 +254,53 @@ Boxplots have several unique ``Element`` objects that can be styled:
          </div>
 
 
-      These labels are styled using the `default <keyword.html#default-attributes>`_ label
-      attributes of the ``Element`` object.
+      These labels are styled using keywords with the prefix ``box_group_label_`` and
+      are similar to other `label <keyword.html#labels>`_ elements.
 
 |
 
     * **Group titles:** labels to the right of the group labels that indicate the DataFrame
       column name of each grouping column (shown in salmon above).
 
-      .. raw:: html
-
-         <div class="admonition note">
-         <p class="first admonition-title">Keyword Prefix</p>
-         <p class="last"><b>box_group_title_</b></p>
-         </div>
-
-
-      These labels are styled using the `default <keyword.html#default-attributes>`_ label
-      attributes of the ``Element`` object.
+      These labels are controlled using keywords with the prefix ``box_group_title_`` and
+      are similar to other `label <keyword.html#labels>`_ elements.
 
 |
 
     * **Range lines:** optional lines within a single box that span the entire range of the
       data set.  These are useful for visualization of outlier points that may be
-      outside of the selected ymin/ymax Range (Default ``zorder`` = 3)
+      outside of the selected ymin/ymax range.  They are accessed using keywords with the
+      prefix ``box_range_lines_``:
 
-      .. raw:: html
-
-         <div class="admonition note">
-         <p class="first admonition-title">Keyword Prefix</p>
-         <p class="last"><b>box_range_lines</b></p>
-         </div>
-
-      +--------------------+-----------+------------------------------------------------------------------------+---------+
-      | Keyword            | Data Type | Description                                                            | Default |
-      +====================+===========+========================================================================+=========+
-      | box_range_lines_on | boolean   | toggle range lines on/off                                              | True    |
-      +--------------------+-----------+------------------------------------------------------------------------+---------+
-      | color              | str       | line color                                                             | #cccccc |
-      +--------------------+-----------+------------------------------------------------------------------------+---------+
-      | style              | str       | horizontal lines at the end of the range                               | -       |
-      +--------------------+-----------+------------------------------------------------------------------------+---------+
-      | style2             | str       | vertical lines connecting the horizontal lines at the end of the range | --      |
-      +--------------------+-----------+------------------------------------------------------------------------+---------+
-      | zorder             | int       | relative z-height of line in plot                                      | 3       |
-      +--------------------+-----------+------------------------------------------------------------------------+---------+
+      +------------------------+-----------+------------------------------------------------------------------------+---------+
+      | Keyword                | Data Type | Description                                                            | Default |
+      +========================+===========+========================================================================+=========+
+      | box_range_lines_on     | boolean   | toggle range lines on/off                                              | True    |
+      +------------------------+-----------+------------------------------------------------------------------------+---------+
+      | box_range_lines_color  | str       | line color                                                             | #cccccc |
+      +------------------------+-----------+------------------------------------------------------------------------+---------+
+      | box_range_lines_style  | str       | horizontal lines at the end of the range                               | -       |
+      +------------------------+-----------+------------------------------------------------------------------------+---------+
+      | box_range_lines_style2 | str       | vertical lines connecting the horizontal lines at the end of the range | --      |
+      +------------------------+-----------+------------------------------------------------------------------------+---------+
 
 |
 
     * **Stat lines:** optional connecting line between each box at some statistical
       value calculated from the data for a single box.  Options include any stat that
       can be computed via the ``groupby`` command on a pandas DataFrame (i.e., "mean",
-      "median", "std", etc.) (Default ``zorder`` = 7 to be on top of the boxes)
+      "median", "std", etc.).  Box stat lines are accessed using keywords with the prefix
+      ``box_stat_line_``:
 
-      .. raw:: html
-
-         <div class="admonition note">
-         <p class="first admonition-title">Keyword Prefix</p>
-         <p class="last"><b>box_stat_line_</b></p>
-         </div>
-
-      +------------------+-----------+--------------------------------------------+---------+
-      | Keyword          | Data Type | Description                                | Default |
-      +==================+===========+============================================+=========+
-      | box_stat_line_on | boolean   | toggle divider lines between groups on/off | True    |
-      +------------------+-----------+--------------------------------------------+---------+
-      | box_stat_line    | str       | set the statistic for the connecting line  | mean    |
-      +------------------+-----------+--------------------------------------------+---------+
-      | color            | str       | line color                                 | #666666 |
-      +------------------+-----------+--------------------------------------------+---------+
-      | zorder           | int       | relative z-height of line in plot          | 7       |
-      +------------------+-----------+--------------------------------------------+---------+
+     +---------------------+-----------+--------------------------------------------+---------+
+     | Keyword             | Data Type | Description                                | Default |
+     +=====================+===========+============================================+=========+
+     | box_stat_line_on    | boolean   | toggle divider lines between groups on/off | True    |
+     +---------------------+-----------+--------------------------------------------+---------+
+     | box_stat_line       | str       | set the statistic for the connecting line  | mean    |
+     +---------------------+-----------+--------------------------------------------+---------+
+     | box_stat_line_color | str       | line color                                 | #666666 |
+     +---------------------+-----------+--------------------------------------------+---------+
 
 Color Bar
 ^^^^^^^^^
@@ -396,24 +344,19 @@ be subdivided into multiple subplots to display more data.  Unlike matplotlib, *
     <p class="last"><b>fig_</b></p>
     </div>
 
-+---------+-----------+---------------------------+--------------------------+
-| Keyword | Data Type | Description               | Default                  |
-+=========+===========+===========================+==========================+
-| dpi     | int       | dots per inch             |                          |
-+---------+-----------+---------------------------+--------------------------+
++-----------+-----------+---------------+---------+
+| Keyword   | Data Type | Description   | Default |
++===========+===========+===============+=========+
+| :hh:`dpi` | int       | dots per inch | 100     |
++-----------+-----------+---------------+---------+
 
-.. raw:: html
+The following base attributes of the ``Element`` class are not used for this item:
 
-   <div class="admonition note">
-   <p class="first admonition-title">Invalid base <code class="docutils literal notranslate">Element</code> attributes</p>
-   <ul>
-   <li>"Fonts" category</li>
-   <li>"Lines" category</li>
-   <li><code class="docutils literal notranslate">on</code></li>
-   <li><code class="docutils literal notranslate">size</code></li>
-   <li><code class="docutils literal notranslate">text</code></li>
-   </ul>
-   </div>
+    * "Fonts" category
+    * "Lines" category
+    * ``on``
+    * ``size``
+    * ``text``
 
 
 Fit
@@ -436,6 +379,16 @@ the family of keywords beginning with ``fit_``:
 +---------------+---------------+---------------------------------------------------------------------------+---------+----------------------------------+
 | fit_rsq       | boolean       | display the rsq of the fit on the plot                                    | False   | None                             |
 +---------------+---------------+---------------------------------------------------------------------------+---------+----------------------------------+
+
+The following base attributes of the ``Element`` class are not used for this item:
+
+    * "Fill" category
+    * "Edges" category
+    * "Fonts" category
+    * ``on``
+    * ``size``
+    * ``text``
+
 
 Gridlines
 ^^^^^^^^^
@@ -521,8 +474,62 @@ All ``label`` elements are styled using the `base <keyword.html#base-attributes>
 ``Element`` class attributes for fill color, edge color, and font.  The "Lines" category
 of base attributes is not used for labels.
 
+The following base attributes of the ``Element`` class are not used for this item:
+
+    * "Lines" category
+
+
 Legend
 ^^^^^^
+
+.. image:: _static/images/element_legend.png
+
+The plot legend (shown in yellow on left) is controlled by keywords with the
+prefix ``legend_``.  By default, legends are placed outside of the plot area
+(where they should be to avoid obscuring data!).
+
++---------------------+-----------+---------------------------------------------------------------------------+--------------------------------+------------------------------------------+
+| Keyword             | Data Type | Description                                                               | Default                        | Example                                  |
++=====================+===========+===========================================================================+================================+==========================================+
+| legend              | str       | name of a DataFrame column to use for grouping                            | None                           | `Legend <plot.html#Legend>`_             |
++---------------------+-----------+---------------------------------------------------------------------------+--------------------------------+------------------------------------------+
+| :hh:`location`      | int | str | location of legend (at this time only outside of the plot is available!): | 0                              | None                                     |
++                     +           +---------------------------------------------------------------------------+                                +                                          +
+|                     |           | * 0 | "outside" = outside of plot on right side                           |                                |                                          |
++                     +           +---------------------------------------------------------------------------+                                +                                          +
+|                     |           | * 1 | "upper right" = upper right inside corner                           |                                |                                          |
++                     +           +---------------------------------------------------------------------------+                                +                                          +
+|                     |           | * 2 | "upper left = upper left inside corner                              |                                |                                          |
++                     +           +---------------------------------------------------------------------------+                                +                                          +
+|                     |           | * 3 | "lower left" = lower left inside corner                             |                                |                                          |
++                     +           +---------------------------------------------------------------------------+                                +                                          +
+|                     |           | * 4 | "lower right" = lower right inside corner                           |                                |                                          |
++                     +           +---------------------------------------------------------------------------+                                +                                          +
+|                     |           | * 5 | "right"                                                             |                                |                                          |
++                     +           +---------------------------------------------------------------------------+                                +                                          +
+|                     |           | * 6 | "center left"                                                       |                                |                                          |
++                     +           +---------------------------------------------------------------------------+                                +                                          +
+|                     |           | * 7 | "center right"                                                      |                                |                                          |
++                     +           +---------------------------------------------------------------------------+                                +                                          +
+|                     |           | * 8 | "lower center"                                                      |                                |                                          |
++                     +           +---------------------------------------------------------------------------+                                +                                          +
+|                     |           | * 9 | "upper center"                                                      |                                |                                          |
++                     +           +---------------------------------------------------------------------------+                                +                                          +
+|                     |           | * 10 | "center"                                                           |                                |                                          |
++---------------------+-----------+---------------------------------------------------------------------------+--------------------------------+------------------------------------------+
+| legend_marker_alpha | float     | alpha of the markers in the legend only                                   | 1                              | `Alpha <styles.html#Alpha>`_             |
++---------------------+-----------+---------------------------------------------------------------------------+--------------------------------+------------------------------------------+
+| legend_marker_size  | float     | marker size in legend only                                                | same as ``marker_size``        | `Marker size <styles.html#Marker-size>`_ |
++---------------------+-----------+---------------------------------------------------------------------------+--------------------------------+------------------------------------------+
+| legend_points       | int       | number of points for each legend value                                    | 1                              | None                                     |
++---------------------+-----------+---------------------------------------------------------------------------+--------------------------------+------------------------------------------+
+| legend_title        | str       | legend title text                                                         | defaults to legend column name | None                                     |
++---------------------+-----------+---------------------------------------------------------------------------+--------------------------------+------------------------------------------+
+
+The following base attributes of the ``Element`` class are not used for this item:
+
+   * "Lines" category
+   * ``size``
 
 Lines
 ^^^^^
@@ -540,6 +547,14 @@ The following keywords are related to ``lines`` elements:
 +--------------+-----------------------------------------+-------------------------------------+--------------+----------------------------------------------------------+
 | :hh:`lines`  | boolean                                 | toggle line visibility              | True         | None                                                     |
 +--------------+-----------------------------------------+-------------------------------------+--------------+----------------------------------------------------------+
+
+The following base attributes of the ``Element`` class are not used for this item:
+
+    * "Fill" category
+    * "Edges" category
+    * "Fonts" category
+    * ``size``
+    * ``text``
 
 Markers
 ^^^^^^^
@@ -572,6 +587,29 @@ keywords:
 | marker_size       | float                             | size of the markers (can be specified uniquely from the legend marker size)                  | 7                                                    | `Marker size <styles.html#Marker-size>`_ |
 +-------------------+-----------------------------------+----------------------------------------------------------------------------------------------+------------------------------------------------------+------------------------------------------+
 
+The following base attributes of the ``Element`` class are not used for this item:
+
+    * "Lines" category
+    * ``text``
+
+Reference Line
+^^^^^^^^^^^^^^
+A reference line can be drawn on a plot via keywords with the ``ref_line_`` prefix:
+
++---------+---------------+------------------------------------+------------+----------------------------------------------+
+| Keyword | Data Type     | Description                        | Default    | Example                                      |
++=========+===============+====================================+============+==============================================+
+| color   | hex color str | color of the reference line        | #000000    | `Reference line <plot.html#Reference-line>`_ |
++---------+---------------+------------------------------------+------------+                                              +
+| text    | str           | legend text for the reference line | "Ref Line" |                                              |
++---------+---------------+------------------------------------+------------+----------------------------------------------+
+
+The following base attributes of the ``Element`` class are not used for this item:
+
+    * "Fill" category
+    * "Edges" category
+    * "Fonts" category
+    * ``size``
 
 Ticks
 ^^^^^
@@ -601,6 +639,14 @@ after the designation of the grid (i.e., ``ticks_major_x_increment`` or
 ``ticks_minor_y_width``.  If no axis is specified, the keyword is applied to
 all axes.
 
+The following base attributes of the ``Element`` class are not used for this item:
+
+    * "Fill" category
+    * "Edges" category
+    * "Fonts" category
+    * ``size``
+    * ``text``
+
 Tick Labels
 ^^^^^^^^^^^
 Tick labels or the text associated with a tick mark have the same attritubes
@@ -611,6 +657,11 @@ major or minor grid and an option specification of the axis of interest.  For ex
 * ``tick_labels_minor_x_rotation``
 
 See `Labels <keyword.html#labels>`_ for more details.
+
+The following base attributes of the ``Element`` class are not used for this item:
+
+    * "Lines" category
+    * ``text``
 
 Title
 ^^^^^
@@ -628,14 +679,52 @@ The title text is added directly via the ``title`` keyword:
 ``Element`` class attributes for fill color, edge color, and font.  The "Lines" category
 of base attributes is not used for titles.
 
+The following base attributes of the ``Element`` class are not used for this item:
+
+    * "Lines" category
+
 
 Whitespace
 ----------
 
-.. image:: _static/images/figure_design.png
+.. image:: _static/images/ws.png
 
-.. image:: _static/images/figure_design_rc.png
+Whitespace keywords are prefixed by ``ws_`` and are followed by the two items
+that sandwich the whitespace, going from left to right or top to bottom:
 
++-----------------+----------------------+-----------+-----------------------------------------------------------------+---------+
+| Category        | Keyword              | Data Type | Description                                                     | Default |
++=================+======================+===========+=================================================================+=========+
+| Row/column grid | ws_label_col         | int       | col label to top edge of axes window                            | 10      |
++                 +----------------------+           +-----------------------------------------------------------------+---------+
+|                 | ws_label_row         |           | row label to right edge of axes window                          | 10      |
++                 +----------------------+           +-----------------------------------------------------------------+---------+
+|                 | ws_col               |           | space between columns                                           | 30      |
++                 +----------------------+           +-----------------------------------------------------------------+---------+
+|                 | ws_row               |           | space between rows                                              | 30      |
++-----------------+----------------------+           +-----------------------------------------------------------------+---------+
+| Figure          | ws_fig_label         |           | left figure edge to ``label_y``                                 | 10      |
++                 +----------------------+           +-----------------------------------------------------------------+---------+
+|                 | ws_leg_fig           |           | right legend edge to right figure edge                          | 10      |
++                 +----------------------+           +-----------------------------------------------------------------+---------+
+|                 | ws_fig_ax            |           | top figure edge to top edge of axes with figure title disabled  | 20      |
++                 +----------------------+           +-----------------------------------------------------------------+---------+
+|                 | ws_fig_title         |           | top figure edge to top of figure title                          | 10      |
++-----------------+----------------------+           +-----------------------------------------------------------------+---------+
+| Axes            | ws_label_tick        |           | space between axis label and tick labels                        | 10      |
++                 +----------------------+           +-----------------------------------------------------------------+---------+
+|                 | ws_leg_ax            |           | right edge of axes to left edge of legend box                   | 20      |
++                 +----------------------+           +-----------------------------------------------------------------+---------+
+|                 | ws_ticks_ax          |           | space between tick labels and axes                              | 5       |
++                 +----------------------+           +-----------------------------------------------------------------+---------+
+|                 | ws_title_ax          |           | bottom edge of title to top edge of axes window                 | 10      |
++                 +----------------------+           +-----------------------------------------------------------------+---------+
+|                 | ws_ax_fig            |           | right edge of axes to right edge of figure with legend disabled | 30      |
++-----------------+----------------------+           +-----------------------------------------------------------------+---------+
+| Ticks           | ws_tick_tick_minimum |           | minimum space between consecutive ticks                         | 10      |
++-----------------+----------------------+           +-----------------------------------------------------------------+---------+
+| Boxplot         | ws_ax_box_title      |           | right edge of axes to right edge of box title text              | 10      |
++-----------------+----------------------+-----------+-----------------------------------------------------------------+---------+
 
 Data
 ----

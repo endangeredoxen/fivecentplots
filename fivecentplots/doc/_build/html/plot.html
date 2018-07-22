@@ -141,6 +141,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#Other-options">Other options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Horizontal-and-vertical-lines">Horizontal and vertical lines</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Line-fit">Line fit</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Stat-lines">Stat lines</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Confidence-intervals">Confidence intervals</a></li>
@@ -869,6 +870,39 @@ ranges are shared.</p>
 </div>
 <div class="section" id="Other-options">
 <h2>Other options<a class="headerlink" href="#Other-options" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="Horizontal-and-vertical-lines">
+<h3>Horizontal and vertical lines<a class="headerlink" href="#Horizontal-and-vertical-lines" title="Permalink to this headline">¶</a></h3>
+<p>We can add horizontal and vertical reference lines to a plot using one
+or more of the following keywords: <code class="docutils literal notranslate"><span class="pre">ax_hlines</span></code>, <code class="docutils literal notranslate"><span class="pre">ax_vlines</span></code>,
+<code class="docutils literal notranslate"><span class="pre">ax2_hlines</span></code>, <code class="docutils literal notranslate"><span class="pre">ax2_vlines</span></code> where “hlines” are horizontal, “vlines”
+are vertical, “ax” lines are applied to the primary axis, and “ax2”
+lines are applied to a secondary axis, if it exists. The value of these
+keywords is:</p>
+<ul><li><p>a single float number</p>
+</li><li><p>a list of float numbers</p>
+</li><li><p>or a list of tuples, each consisting of the value (required), color
+(optional), line style (optional), line width (optional), and the line
+alpha (optional)</p>
+</li></ul><div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;IV Data&#39;</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">,</span>
+         <span class="n">ax_hlines</span><span class="o">=</span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;#FF0000&#39;</span><span class="p">,</span> <span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="mf">1.2</span><span class="p">],</span> <span class="n">ax_vlines</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;#00FF00&#39;</span><span class="p">)])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_51_0.png" src="_images/plot_51_0.png" />
+</div>
+</div>
+</div>
 <div class="section" id="Line-fit">
 <h3>Line fit<a class="headerlink" href="#Line-fit" title="Permalink to this headline">¶</a></h3>
 <p>We can add a polynomial line of fit of some degree to the plot with the
@@ -876,7 +910,7 @@ keyword <code class="docutils literal notranslate"><span class="pre">line_fit</s
 value:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [17]:
+<span></span>In [18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -890,7 +924,7 @@ value:</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_51_0.png" src="_images/plot_51_0.png" />
+<img alt="_images/plot_54_0.png" src="_images/plot_54_0.png" />
 </div>
 </div>
 </div>
@@ -911,7 +945,7 @@ measurement, the x-values for each data set are not identical. The
 there may only be a single data point. The result is ugly and useful.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [18]:
+<span></span>In [19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -925,14 +959,14 @@ there may only be a single data point. The result is ugly and useful.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_54_0.png" src="_images/plot_54_0.png" />
+<img alt="_images/plot_57_0.png" src="_images/plot_57_0.png" />
 </div>
 </div>
 <p>Instead, add the column name for the column containing the set point
 value of I [A] to the keyword <code class="docutils literal notranslate"><span class="pre">stat_val</span></code>:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [19]:
+<span></span>In [20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -946,7 +980,7 @@ value of I [A] to the keyword <code class="docutils literal notranslate"><span c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_56_0.png" src="_images/plot_56_0.png" />
+<img alt="_images/plot_59_0.png" src="_images/plot_59_0.png" />
 </div>
 </div>
 </div>
@@ -961,7 +995,7 @@ the data at a given point. The example below shows a 95% confidence
 interval:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [20]:
+<span></span>In [21]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -975,7 +1009,7 @@ interval:</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_59_0.png" src="_images/plot_59_0.png" />
+<img alt="_images/plot_62_0.png" src="_images/plot_62_0.png" />
 </div>
 </div>
 </div>
@@ -990,7 +1024,7 @@ create a new column in the DataFrame that is plotted vs the value of
 <h4>y=x reference<a class="headerlink" href="#y=x-reference" title="Permalink to this headline">¶</a></h4>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [21]:
+<span></span>In [22]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1004,7 +1038,7 @@ create a new column in the DataFrame that is plotted vs the value of
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_63_0.png" src="_images/plot_63_0.png" />
+<img alt="_images/plot_66_0.png" src="_images/plot_66_0.png" />
 </div>
 </div>
 </div>
@@ -1014,7 +1048,7 @@ create a new column in the DataFrame that is plotted vs the value of
 a reference line:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [22]:
+<span></span>In [23]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1028,7 +1062,7 @@ a reference line:</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_66_0.png" src="_images/plot_66_0.png" />
+<img alt="_images/plot_69_0.png" src="_images/plot_69_0.png" />
 </div>
 </div>
 </div>

@@ -738,17 +738,21 @@ class BaseLayout:
 
 
         # Axhlines/axvlines
-        axlines = ['ax_hlines', 'ax_vlines', 'yline',
-                   'ax2_hlines', 'ax2_vlines', 'y2line']
+        axlines = ['ax_hlines', 'ax_vlines', 'ax2_hlines', 'ax2_vlines']
         # Todo: list
         for axline in axlines:
             val = kwargs.get(axline, False)
             vals = utl.validate_list(val)
+            values = []
             colors = []
             styles = []
             widths = []
             alphas = []
             for ival, val in enumerate(vals):
+                if type(val) is list or type(val) is tuple and len(val) > 1:
+                    values += [val[0]]
+                else:
+                    values += [val]
                 if type(val) is list or type(val) is tuple and len(val) > 1:
                     colors += [val[1]]
                 else:
@@ -769,7 +773,7 @@ class BaseLayout:
             setattr(self, axline,
                     Element(axline, self.fcpp, kwargs,
                             on=True if axline in kwargs.keys() else False,
-                            values=vals, color=colors, style=styles,
+                            values=values, color=colors, style=styles,
                             width=widths, alpha=alphas,
                             zorder=utl.kwget(kwargs, self.fcpp, '%s_zorder' % axline, 1),
                             ))
