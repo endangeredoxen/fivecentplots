@@ -3796,32 +3796,38 @@ class LayoutMPL(BaseLayout):
                         ticks = [f for f in tp[axx]['ticks'] if f >= lim[0] and f <= lim[1]]
                         if len(ticks) > 0:
                             if axx == 'x':
-                                delmaj = (xfx-xcx)/(len(valid_x)-1)
+                                if xfx != xcx:
+                                    delmaj = (xfx-xcx)/(len(valid_x)-1)
+                                else:
+                                    delmaj = xfx
                             else:
-                                delmaj = (yfy-ycy)/(len(valid_y)-1)
+                                if yfy != ycy:
+                                    delmaj = (yfy-ycy)/(len(valid_y)-1)
+                                else:
+                                    delmaj = yfy
 
                             labels = tp[axx]['label_text'][len(tp[axx]['ticks']):]
                             delmin = delmaj/number
                             wipe = []
 
-                            ## need to calc log position within delmaj
-                            if delmaj - 2*majw < tlminlab.size[wh] + buf:
-                                st()
-                                # No room for any ticks
-                                warnings.warn('Insufficient space between %s '
-                                              'major tick labels for minor '
-                                              'tick labels. Skipping...' % axx)
-                                wipe = list(range(0, number-1))
-                            else:
-                                for i in range(0, number - 1):
-                                    if getattr(self, 'axes%s' % lab).scale in \
-                                            (LOGX if axx == 'x' else LOGY):
-                                        pos = np.log10(i + 2) * delmaj
-                                    else:
-                                        pos = delmaj / number * (i + 1)
-                                    if majw > pos - tlminlab.size[wh]/2 - buf or \
-                                            delmaj - majw < pos + tlminlab.size[wh]/2 + buf:
-                                        wipe += [i]
+                            # ## need to calc log position within delmaj
+                            # if delmaj - 2*majw < tlminlab.size[wh] + buf:
+                            #     st()
+                            #     # No room for any ticks
+                            #     warnings.warn('Insufficient space between %s '
+                            #                   'major tick labels for minor '
+                            #                   'tick labels. Skipping...' % axx)
+                            #     wipe = list(range(0, number-1))
+                            # else:
+                            for i in range(0, number - 1):
+                                if getattr(self, 'axes%s' % lab).scale in \
+                                        (LOGX if axx == 'x' else LOGY):
+                                    pos = np.log10(i + 2) * delmaj
+                                else:
+                                    pos = delmaj / number * (i + 1)
+                                if majw > pos - tlminlab.size[wh]/2 - buf or \
+                                        delmaj - majw < pos + tlminlab.size[wh]/2 + buf:
+                                    wipe += [i]
                             offset = len([f for f in minor_ticks if f < ticks[0]])
 
                             # There is a weird bug where a tick can be both major and minor; need to remove
