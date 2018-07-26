@@ -47,7 +47,7 @@ class Data:
 
         # Default axis attributes
         self.auto_scale = utl.kwget(kwargs, self.fcpp, 'auto_scale', True)
-        if self.plot_func in ['plot_heatmap']:
+        if self.plot_func in ['plot_heatmap', 'plot_hist']:
             self.auto_scale = False
         self.ax_scale = kwargs.get('ax_scale', None)
         self.ax_limit_pad(**kwargs)
@@ -398,7 +398,7 @@ class Data:
 
             chars = {' ': '_', '.': 'dot', '[': '',']': '', '(': '', ')': '',
                      '-': '_', '^': '', '>': '', '<': '', '/': '_', '@': 'at',
-                     '%': 'percent'}
+                     '%': 'percent', '*': '_'}
             for sk in skip:
                 chars.pop(sk)
             for k, v in chars.items():

@@ -3650,7 +3650,7 @@ class LayoutMPL(BaseLayout):
                                                   [yw+2*buf, yh+2*buf, [0,dely*(iy+1)]])]
 
                 # x and y at the origin
-                if x0y0 and tp['y']['first']==0:
+                if x0y0:  # and tp['y']['first']==0:  not sure about this
                     tp['y']['label_text'][tp['y']['first']] = ''
                 if x0yf and self.axes.twin_y:
                     tp['y']['label_text'][tp['y']['last']] = ''
@@ -3718,11 +3718,11 @@ class LayoutMPL(BaseLayout):
                 if ia == 1 and axx == 'y' and self.axes.twin_y:
                     continue
 
-                if not self.separate_labels and axl == 'x' and ir != self.nrow - 1 and self.nwrap == 0 or \
-                        not self.separate_labels and axl == 'y2' and ic != self.ncol - 1 and self.nwrap == 0 or \
-                        not self.separate_labels and axl == 'x2' and ir != 0 or \
-                        not self.separate_labels and axl == 'y' and ic != 0 or \
-                        not self.separate_labels and axl == 'y2' and ic != self.ncol - 1 and (ic + ir * self.ncol + 1) != self.nwrap:
+                if not self.separate_ticks and axl == 'x' and ir != self.nrow - 1 and self.nwrap == 0 or \
+                        not self.separate_ticks and axl == 'y2' and ic != self.ncol - 1 and self.nwrap == 0 or \
+                        not self.separate_ticks and axl == 'x2' and ir != 0 or \
+                        not self.separate_ticks and axl == 'y' and ic != 0 or \
+                        not self.separate_ticks and axl == 'y2' and ic != self.ncol - 1 and (ic + ir * self.ncol + 1) != self.nwrap:
                     axes[ia].tick_params(which='minor', **sides[axl])
 
                 elif tlmin.on:
