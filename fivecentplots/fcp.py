@@ -449,7 +449,7 @@ def plot_heatmap(data, layout, ir, ic, df_rc, kwargs):
     for iline, df, x, y, z, leg_name, twin in data.get_plot_data(df_rc):
 
         # Make the plot
-        layout.plot_heatmap(layout.axes.obj[ir, ic], df, data.ranges[ir, ic])
+        layout.plot_heatmap(layout.axes.obj[ir, ic], df, x, y, z, data.ranges[ir, ic])
 
     return data
 

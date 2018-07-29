@@ -372,6 +372,7 @@ class BaseLayout:
                         ))
             if ax != 'z' and not getattr(self, 'ticks_major_%s' % ax).on:
                 getattr(self, 'tick_labels_major_%s' %ax).on = False
+
         self.ticks_minor = Element('ticks_minor', self.fcpp, kwargs,
                                    on=utl.kwget(kwargs, self.fcpp,
                                                 'ticks_minor', False),
@@ -538,7 +539,7 @@ class BaseLayout:
                                                         None),
                                  marker_size=utl.kwget(kwargs, self.fcpp,
                                                        'legend_marker_size',
-                                                       self.markers.size),
+                                                       7),
                                  points=utl.kwget(kwargs, self.fcpp,
                                                   'legend_points', 1),
                                  overflow=0,
@@ -593,11 +594,13 @@ class BaseLayout:
             if len(grids) == 0:
                 kwargs['grid_major'] = False
                 kwargs['grid_minor'] = False
+                kwargs['ticks_major'] = True
             if 'ax_edge_width' not in kwargs.keys():
                 self.axes.edge_width = 0
             self.tick_labels_major_x.rotation = \
                 utl.kwget(kwargs, self.fcpp, 'tick_labels_major_x', 90)
-            kwargs['tick_cleanup'] = False
+            if 'x' in kwargs.keys():
+                kwargs['tick_cleanup'] = False
 
         # Histogram
         self.hist = Element('hist', self.fcpp, kwargs,
@@ -1138,11 +1141,11 @@ class BaseLayout:
 
             # Get label override name if in kwargs
             if '%slabel' % lab in kwargs.keys():
-                lab_text = kwargs.get('%slabel' % lab)
-                lab_text2 = kwargs.get('%s2label' % lab)
+                lab_text = str(kwargs.get('%slabel' % lab))
+                lab_text2 = str(kwargs.get('%s2label' % lab))
             elif 'label_%s' % lab in kwargs.keys():
-                lab_text = kwargs.get('label_%s' % lab)
-                lab_text2 = kwargs.get('label_%s2' % lab)
+                lab_text = str(kwargs.get('label_%s' % lab))
+                lab_text2 = str(kwargs.get('label_%s2' % lab))
             else:
                 lab_text = None
                 lab_text2 = None
@@ -1169,12 +1172,14 @@ class BaseLayout:
                         getattr(self, val).text = data.wrap_vals
                     else:
                         getattr(self, val).text = \
-                            lab_text if lab_text is not None else ' + '.join(dd)
+                            lab_text if lab_text is not None \
+                            else ' + '.join([str(f) for f in dd])
                 else:
                     getattr(self, val).text = dd
                 if lab != 'z' and hasattr(self, 'label_%s2' % lab):
                     getattr(self, 'label_%s2' % lab).text = \
-                        lab_text2 if lab_text2 is not None else ' + '.join(dd)
+                        lab_text2 if lab_text2 is not None \
+                        else ' + '.join([str(f) for f in dd])
 
             if hasattr(data, '%s_vals' % lab):
                 getattr(self, 'label_%s' % lab).values = \
@@ -1424,7 +1429,6 @@ class RepeatedList:
 
         # can we make this a next??
 
-        if type(self.values) is tuple: st()
         return self.values[(idx + self.shift) % len(self.values)]
 
 
@@ -1824,7 +1828,8 @@ class LayoutMPL(BaseLayout):
         fig = mpl.pyplot.figure(dpi=self.fig.dpi)
         ax = fig.add_subplot(111)
         ax2, ax3 = None, None
-        if self.axes.twin_x or data.z is not None:
+        if self.axes.twin_x or data.z is not None \
+                or self.plot_func == 'plot_heatmap':
             ax2 = ax.twinx()
         if self.axes.twin_y:
             ax3 = ax.twiny()
@@ -1928,21 +1933,38 @@ class LayoutMPL(BaseLayout):
                 pp = ax.plot(df[data.x[0]], df[data.y[0]], 'o-')
                 pp2 = ax3.plot(df[data.x[1]], df[data.y[0]], 'o-')
             # Z axis
-            elif data.z is not None and self.plot_func == 'plot_heatmap':
-                pp = ax.imshow(df)
-                ax.set_yticks(np.arange(len(df)))
-                ax.set_xticks(np.arange(len(df.columns)))
-                ax.set_yticklabels(df.index)
-                ax.set_xticklabels(df.columns)
+            elif self.plot_func == 'plot_heatmap':
+                pp = ax.imshow(df, vmin=data.zmin, vmax=data.zmax)
+                if self.cbar.on:
+                    cbar = self.add_cbar(ax, pp)
+                axes[1] = cbar.ax
+
+                # Set ticks
+                dtypes = [int, np.int32, np.int64]
+                if df.index.dtype not in dtypes:
+                    ax.set_yticks(np.arange(len(df)))
+                    ax.set_yticklabels(df.index)
+                if df.columns.dtype not in dtypes:
+                    ax.set_xticks(np.arange(len(df.columns)))
+                    ax.set_xticklabels(df.columns)
                 if len(df) > len(df.columns) and self.axes.size[0] == self.axes.size[1]:
                     self.axes.size[0] = self.axes.size[0] * len(df.columns) / len(df)
                     self.label_col.size[0] = self.axes.size[0]
                 elif len(df) < len(df.columns) and self.axes.size[0] == self.axes.size[1]:
                     self.axes.size[1] = self.axes.size[1] * len(df) / len(df.columns)
                     self.label_row.size[1] = self.axes.size[1]
+            elif self.plot_func == 'plot_contour':
+                pp, cbar = self.plot_contour(ax, df, data.x[0], data.y[0], data.z[0],
+                                             data.ranges[ir, ic])
+                if cbar is not None:
+                    axes[1] = cbar.ax
             elif data.z is not None:
                 pp = ax.plot(df[data.x[0]], df[data.y[0]], 'o-')
                 pp2 = ax2.plot(df[data.x[0]], df[data.z[0]], 'o-')
+                if data.ranges[ir, ic]['zmin'] is not None:
+                    ax2.set_ylim(bottom=data.ranges[ir, ic]['zmin'])
+                if data.ranges[ir, ic]['y2max'] is not None and data.twin_x:
+                    ax2.set_ylim(top=data.ranges[ir, ic]['zmax'])
             # hist
             elif self.plot_func == 'plot_hist':
                 pp = ax.hist(df[data.x[0]], bins=self.hist.bins, normed=self.hist.normalize)
@@ -1974,7 +1996,7 @@ class LayoutMPL(BaseLayout):
                 xlim = axes[0].get_xlim()
                 axes[0].set_xticks(
                     np.arange(xlim[0] + xinc - xlim[0] % xinc,
-                              xlmin[1], xinc))
+                              xlim[1], xinc))
             yinc = self.ticks_major_y.increment
             if yinc is not None:
                 ylim = axes[0].get_ylim()
@@ -1982,13 +2004,13 @@ class LayoutMPL(BaseLayout):
                     np.arange(ylim[0] + yinc - ylim[0] % yinc,
                               ylim[1], yinc))
             x2inc = self.ticks_major_x2.increment
-            if x2inc is not None:
+            if axes[2] is not None and x2inc is not None:
                 xlim = axes[2].get_xlim()
                 axes[2].set_xticks(
                     np.arange(xlim[0] + x2inc - xlim[0] % x2inc,
                               xlmin[1], x2inc))
             y2inc = self.ticks_major_y2.increment
-            if y2inc is not None:
+            if axes[1] is not None and y2inc is not None:
                 ylim = axes[1].get_ylim()
                 axes[1].set_yticks(
                     np.arange(ylim[0] + y2inc - ylim[0] % y2inc,
@@ -2013,7 +2035,7 @@ class LayoutMPL(BaseLayout):
                 x2iter_ticks = [f for f in axes[2].xaxis.iter_ticks()]
                 x2ticksmaj += [f[2] for f in x2iter_ticks[0:len(x2ticks)]]
             if data.z is not None:
-                zticks = axes[1].get_xticks()
+                zticks = axes[1].get_yticks()
                 ziter_ticks = [f for f in axes[1].yaxis.iter_ticks()]
                 zticksmaj += [f[2] for f in ziter_ticks[0:len(zticks)]]
 
@@ -2783,14 +2805,17 @@ class LayoutMPL(BaseLayout):
 
         return cc, cbar
 
-    def plot_heatmap(self, ax, df, ranges):
+    def plot_heatmap(self, ax, df, x, y, z, ranges):
         """
         Plot a heatmap
 
         Args:
             ax (mpl.axes): current axes obj
             df (pd.DataFrame):  data to plot
-            range (dict):  z-limits
+            x (str): x-column name
+            y (str): y-column name
+            z (str): z-column name
+            range (dict):  ax limits
 
         """
 
@@ -2800,10 +2825,25 @@ class LayoutMPL(BaseLayout):
                        interpolation=self.heatmap.interpolation)
 
         # Set the axes
-        ax.set_yticks(np.arange(len(df)))
-        ax.set_xticks(np.arange(len(df.columns)))
-        ax.set_yticklabels(df.index)
-        ax.set_xticklabels(df.columns)
+        dtypes = [int, np.int32, np.int64]
+        if df.index.dtype not in dtypes:
+            ax.set_yticks(np.arange(len(df)))
+            ax.set_yticklabels(df.index)
+            ax.set_yticks(np.arange(df.shape[0]+1)-.5, minor=True)
+        if df.columns.dtype not in dtypes:
+            ax.set_xticks(np.arange(len(df.columns)))
+            ax.set_xticklabels(df.columns)
+            ax.set_xticks(np.arange(df.shape[1]+1)-.5, minor=True)
+        if df.index.dtype not in dtypes or df.columns.dtype not in dtypes:
+            ax.grid(which="minor", color=self.heatmap.edge_color.get(0),
+                    linestyle='-', linewidth=self.heatmap.edge_width)
+            ax.tick_params(which="minor", bottom=False, left=False)
+        if ranges['xmin'] is not None and ranges['xmin'] > 0:
+            xticks = ax.get_xticks()
+            ax.set_xticklabels([int(f + ranges['xmin']) for f in xticks])
+        if ranges['ymax'] is not None and ranges['ymax'] > 0:
+            yticks = ax.get_yticks()
+            ax.set_yticklabels([int(f + ranges['ymax']) for f in yticks])
 
         if self.cbar.on:
             cbar = self.add_cbar(ax, im)
@@ -2820,13 +2860,6 @@ class LayoutMPL(BaseLayout):
                     text = ax.text(ix, iy, df.loc[yy, xx],
                                    ha="center", va="center",
                                    color=self.heatmap.font_color)
-
-        ax.set_xticks(np.arange(df.shape[1]+1)-.5, minor=True)
-        ax.set_yticks(np.arange(df.shape[0]+1)-.5, minor=True)
-        ax.grid(which="minor", color=self.heatmap.edge_color.get(0),
-                linestyle='-', linewidth=self.heatmap.edge_width)
-        ax.tick_params(which="minor", bottom=False, left=False)
-
 
         return im
 
@@ -3416,7 +3449,7 @@ class LayoutMPL(BaseLayout):
                 tick = tp[xy]['label_vals'][tp[xy][loc]]
             else:
                 tick = tp[xy]['label_vals'][loc]
-            lim = getattr(ax, 'get_%slim' % xy)()
+            lim = sorted(getattr(ax, 'get_%slim' % xy)())
             if tick > lim[1]:
                 pos = self.axes.size[size]
             elif tick < lim[0]:
@@ -3528,8 +3561,9 @@ class LayoutMPL(BaseLayout):
                                         )
 
             tp = mpl_get_ticks(axes[ia],
-                               getattr(self, 'ticks_major_x%s' % lab).on,
-                               getattr(self, 'ticks_major_y%s' % lab).on)
+                               True, #getattr(self, 'ticks_major_x%s' % lab).on,
+                               True, #getattr(self, 'ticks_major_y%s' % lab).on
+                               )
 
             # Set custom tick increment
             redo = True
@@ -3547,8 +3581,9 @@ class LayoutMPL(BaseLayout):
                 redo = True
             if redo:
                 tp = mpl_get_ticks(axes[ia],
-                                   getattr(self, 'ticks_major_x%s' % lab).on,
-                                   getattr(self, 'ticks_major_y%s' % lab).on)
+                                   True, #getattr(self, 'ticks_major_x%s' % lab).on,
+                                   True, #getattr(self, 'ticks_major_y%s' % lab).on
+                                   )
 
             # Force ticks
             if self.separate_ticks:
@@ -3619,6 +3654,10 @@ class LayoutMPL(BaseLayout):
                 yfy = get_tick_position(axes[ia], tp, 'y', 'last', ia)
                 yc = [-tlmajy.size[0]/2-self.ws_ticks_ax, ycy]
                 yf = [-tlmajy.size[0]/2-self.ws_ticks_ax, yfy]
+                if lim[0] > lim[1]:
+                    yyc = yc
+                    yc = yf
+                    yf = yyc
                 lim = axes[ia].get_ylim()
                 valid_y = [f for f in tp['y']['ticks']
                            if f >= lim[0] and f <= lim[1]]
@@ -3650,8 +3689,10 @@ class LayoutMPL(BaseLayout):
                                                   [yw+2*buf, yh+2*buf, [0,dely*(iy+1)]])]
 
                 # x and y at the origin
-                if x0y0:  # and tp['y']['first']==0:  not sure about this
+                if x0y0 and lim[0] < lim[1]:  # and tp['y']['first']==0:  not sure about this
                     tp['y']['label_text'][tp['y']['first']] = ''
+                elif x0y0:
+                    tp['y']['label_text'][tp['y']['last']] = ''
                 if x0yf and self.axes.twin_y:
                     tp['y']['label_text'][tp['y']['last']] = ''
 

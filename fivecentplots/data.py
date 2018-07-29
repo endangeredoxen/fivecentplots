@@ -15,6 +15,12 @@ REQUIRED_VALS = {'plot_xy': ['x', 'y'],
                  'plot_box': ['y'],
                  'plot_hist': ['x'],
                  'plot_contour': ['x', 'y', 'z'],
+                 'plot_heatmap': [],
+                }
+OPTIONAL_VALS = {'plot_xy': [],
+                 'plot_box': [],
+                 'plot_hist': [],
+                 'plot_contour': [],
                  'plot_heatmap': ['x', 'y', 'z'],
                 }
 
@@ -114,6 +120,16 @@ class Data:
             if len(self.x) < 2:
                 raise AxisError('twin_y requires two x-axis columns')
             self.x2 = [self.x[1]]
+        if self.plot_func == 'plot_heatmap':
+            if not self.x and not self.y and not self.z:
+                self.x = ['Column']
+                self.y = ['Row']
+                self.z = ['Value']
+                self.pivot = False
+                self.auto_cols = True
+            else:
+                self.pivot = True
+                self.auto_cols = False
 
         # Ref line
         self.ref_line = kwargs.get('ref_line', None)
@@ -324,12 +340,16 @@ class Data:
             add option to recast non-float/datetime column as categorical str
         """
 
-        if xyz not in REQUIRED_VALS[self.plot_func]:
+        if xyz not in REQUIRED_VALS[self.plot_func] and \
+                xyz not in OPTIONAL_VALS[self.plot_func]:
             return
+
+        if xyz in OPTIONAL_VALS[self.plot_func] and getattr(self, xyz) is None:
+            return None
 
         vals = getattr(self, xyz)
 
-        if vals is None:
+        if vals is None and xyz not in OPTIONAL_VALS[self.plot_func]:
             raise AxisError('Must provide a column name for "%s"' % xyz)
 
         for val in vals:
@@ -595,15 +615,36 @@ class Data:
 
         if not hasattr(self, ax) or getattr(self, ax) is None:
             return None, None
-        elif len([f for f in getattr(self, ax) if str(f) not in df.columns]) > 0:
-            return None, None
+        #elif len([f for f in getattr(self, ax) if str(f) not in df.columns]) > 0:
+        #    return None, None
         else:
             cols = getattr(self, ax)
 
-        # Categorical
-        if self.plot_func == 'plot_heatmap' and ax != 'z':
-            vmin = 0
-            vmax = len(df[getattr(self, ax)].drop_duplicates())
+        # Heatmap special case
+        if self.plot_func == 'plot_heatmap':
+            if getattr(self, ax) == ['Column']:
+                vmin = min([f for f in df.columns if type(f) is int])
+                vmax = max([f for f in df.columns if type(f) is int])
+            elif getattr(self, ax) == ['Row']:
+                vmin = min([f for f in df.index if type(f) is int])
+                vmax = max([f for f in df.index if type(f) is int])
+            elif getattr(self, ax) == ['Value'] and self.auto_cols:
+                vmin = df.min().min()
+                vmax = df.max().max()
+            elif ax != 'z':
+                vmin = 0
+                vmax = len(df[getattr(self, ax)].drop_duplicates())
+            else:
+                vmin = df[getattr(self, ax)].min().iloc[0]
+                vmax = df[getattr(self, ax)].max().iloc[0]
+            if getattr(self, '%smin' % ax):
+                vmin = getattr(self, '%smin' % ax)
+            if getattr(self, '%smax' % ax):
+                vmax = getattr(self, '%smax' % ax)
+            if type(vmin) is str:
+                vmin = None
+            if type(vmax) is str:
+                vmax = None
             return vmin, vmax
 
         # Groupby for stats
@@ -813,7 +854,7 @@ class Data:
         df_hist = pd.DataFrame()
 
         if self.share_y and ir == 0 and ic == 0:
-            for iir, iic, df_rc in self.get_rc_subset(self.df_fig, False):
+            for iir, iic, df_rc in self.get_rc_subset(self.df_fig):
                 if len(df_rc) == 0:
                     break
                 for iline, df, x, y, z, leg_name, twin in self.get_plot_data(df_rc):
@@ -823,7 +864,7 @@ class Data:
             self.ranges[ir, ic]['ymin'] = vals[0]
             self.ranges[ir, ic]['ymax'] = vals[1]
         elif self.share_row:
-            for iir, iic, df_rc in self.get_rc_subset(self.df_fig, False):
+            for iir, iic, df_rc in self.get_rc_subset(self.df_fig):
                 df_row = df_rc[df_rc[self.row[0]] == self.row_vals[ir]].copy()
                 for iline, df, x, y, z, leg_name, twin in self.get_plot_data(df_row):
                     counts = np.histogram(df[self.x[0]], bins=self.bins, normed=self.norm)[0]
@@ -832,7 +873,7 @@ class Data:
             self.ranges[ir, ic]['ymin'] = vals[0]
             self.ranges[ir, ic]['ymax'] = vals[1]
         elif self.share_col:
-            for iir, iic, df_rc in self.get_rc_subset(self.df_fig, False):
+            for iir, iic, df_rc in self.get_rc_subset(self.df_fig):
                 df_col = df_rc[df_rc[self.col[0]] == self.col_vals[ic]]
                 for iline, df, x, y, z, leg_name, twin in self.get_plot_data(df_col):
                     counts = np.histogram(df[self.x[0]], bins=self.bins, normed=self.norm)[0]
@@ -1205,15 +1246,43 @@ class Data:
 
                 # Reshaping
                 if self.plot_func == 'plot_heatmap':
-                    self.df_rc = pd.pivot_table(self.df_rc, values=self.z[0],
-                                                index=self.y[0], columns=self.x[0])
+                    if self.pivot:
+                        # Reshape if input dataframe is stacked
+                        self.df_rc = pd.pivot_table(self.df_rc, values=self.z[0],
+                                                    index=self.y[0], columns=self.x[0])
                     cols = natsorted(self.df_rc.columns)
                     self.df_rc = self.df_rc[cols]
-                    self.df_rc = self.df_rc.sort_index(ascending=False)
-                    self.xmin = -0.5
-                    self.ymax = -0.5
-                    self.xmax = len(self.df_rc.columns) - 0.5
-                    self.ymin = len(self.df_rc) - 0.5
+                    # Set limits
+                    if not self.xmin:
+                        self.xmin = -0.5
+                    if not self.xmax:
+                        self.xmax = len(self.df_rc.columns) - 0.5
+                    if self.ymin is not None and self.ymax is not None \
+                            and self.ymin < self.ymax:
+                        ymin = self.ymin
+                        self.ymin = self.ymax
+                        self.ymax = ymin
+                    if not self.ymax:
+                        self.ymax = -0.5
+                    if not self.ymin:
+                        self.ymin = len(self.df_rc) - 0.5
+                    if self.x == ['Column'] and self.auto_cols:
+                        self.df_rc = self.df_rc[[f for f in self.df_rc.columns
+                                                    if f >= self.xmin]]
+                        self.df_rc = self.df_rc[[f for f in self.df_rc.columns
+                                                    if f <= self.xmax]]
+                    if self.y == ['Row'] and self.auto_cols:
+                        self.df_rc = self.df_rc.loc[[f for f in self.df_rc.index
+                                                        if f >= self.ymax]]
+                        self.df_rc = self.df_rc.loc[[f for f in self.df_rc.index
+                                                         if f <= self.ymin]]
+                    dtypes = [int, np.int32, np.int64]
+                    if self.df_rc.index.dtype in dtypes and list(self.df_rc.index) != \
+                            [f + self.df_rc.index[0] for f in range(0, len(self.df_rc.index))]:
+                        self.df_rc.index = self.df_rc.index.astype('O')
+                    if self.df_rc.columns.dtype in dtypes and list(self.df_rc.columns) != \
+                            [f + self.df_rc.columns[0] for f in range(0, len(self.df_rc.columns))]:
+                        self.df_rc.columns = self.df_rc.columns.astype('O')
 
                 # Deal with empty dfs
                 if len(self.df_rc) == 0:

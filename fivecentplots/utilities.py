@@ -123,7 +123,8 @@ def rectangle_overlap(r1, r2):
     b2 = [r2[2][0] - r2[0]/2, r2[2][0] + r2[0]/2,
           r2[2][1] + r2[1]/2, r2[2][1] - r2[1]/2]
 
-    if b1[0]<b2[1] and b1[1]>b2[0] and b1[2]>b2[3] and b1[3]<b2[2]:
+    if b1[0] < b2[1] and b1[1] > b2[0] \
+            and b1[2] > b2[3] and b1[3] < b2[2]:
         return True
     else:
         return False
