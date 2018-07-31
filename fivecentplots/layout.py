@@ -466,8 +466,10 @@ class BaseLayout:
         # Markers/points
         if 'marker_type' in kwargs.keys():
             marker_list = kwargs['marker_type']
+        elif kwargs.get('markers') not in [None, True]:
+            marker_list = utl.validate_list(kwargs.get('markers'))
         else:
-            marker_list = utl.validate_list(kwargs.get('markers', DEFAULT_MARKERS))
+            marker_list = utl.validate_list(DEFAULT_MARKERS)
         markers = RepeatedList(marker_list, 'markers')
         marker_edge_color = utl.kwget(kwargs, self.fcpp, 'marker_edge_color', color_list)
         marker_fill_color = utl.kwget(kwargs, self.fcpp, 'marker_fill_color', color_list)
