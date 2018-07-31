@@ -495,7 +495,7 @@ def plot_ref(ir, ic, iline, data, layout, df, x, y):
     return data
 
 
-def plot_stat(ir, ic, iline, data, layout, df, x, y):
+def plot_stat(ir, ic, iline, data, layout, df, x, y, leg_name=None):
     """
     Plot a line calculated by stats
     """
@@ -506,7 +506,7 @@ def plot_stat(ir, ic, iline, data, layout, df, x, y):
         return
 
     layout.lines.on = True
-    layout.plot_xy(ir, ic, iline, df_stat, x, y, None, False)
+    layout.plot_xy(ir, ic, iline, df_stat, x, y, leg_name, False)
 
     return data
 
@@ -528,7 +528,9 @@ def plot_xy(data, layout, ir, ic, df_rc, kwargs):
     for iline, df, x, y, z, leg_name, twin in data.get_plot_data(df_rc):
         if data.stat is not None:
             layout.lines.on = False
-        if kwargs.get('groups', False):
+        if not layout.lines.on and not layout.markers.on:
+            pass
+        elif kwargs.get('groups', False):
             for nn, gg in df.groupby(validate_list(kwargs['groups'])):
                 layout.plot_xy(ir, ic, iline, gg, x, y, leg_name, twin)
                 plot_fit(data, layout, ir, ic, iline, gg, x, y, twin)
@@ -538,7 +540,10 @@ def plot_xy(data, layout, ir, ic, df_rc, kwargs):
             plot_fit(data, layout, ir, ic, iline, df, x, y, twin)
 
         plot_ref(ir, ic, iline, data, layout, df, x, y)
-        plot_stat(ir, ic, iline, data, layout, df, x, y)
+        if not layout.lines.on and not layout.markers.on:
+            plot_stat(ir, ic, iline, data, layout, df, x, y, leg_name)
+        else:
+            plot_stat(ir, ic, iline, data, layout, df, x, y)
         plot_conf_int(ir, ic, iline, data, layout, df, x, y)
 
     return data
