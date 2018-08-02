@@ -304,12 +304,46 @@ Boxplots have several unique ``Element`` objects that can be styled:
 
 Color Bar
 ^^^^^^^^^
+A color bar (or "cbar") is a colorized gradient scale used to signify the z-value
+of data plotted in an X-Y plane on a contour or heatmap plot.  By default, the color
+bar is disabled.
+
++------------+-----------+-------------------------------------------------------+---------+--------------------------------------------------+
+| Keyword    | Data Type | Description                                           | Default | Example                                          |
++============+===========+=======================================================+=========+==================================================+
+| :hh:`cbar` | boolean   | toggle colorbar on/off for contour and heatmap plots  | False   | `contour example <contour.html#Filled-contour>`_ |
++------------+-----------+-------------------------------------------------------+---------+                                                  +
+| size       | int       | cbar width (height will match the height of the axes) | 30      |                                                  |
++------------+-----------+-------------------------------------------------------+---------+--------------------------------------------------+
+
+The color bar text label is pulled from the column name supplied for the keyword
+``z``, but can be overriden via the keyword ``label_z``.  All font keywords which
+belong to the base ``Element`` class can be used to style the color bar text.
+
+The following base attributes of the ``Element`` class are not used for this item:
+
+    * "Lines" category
+    * ``text``
 
 Confidence Intervals
 ^^^^^^^^^^^^^^^^^^^^
 
+
+
 Contour
 ^^^^^^^
+Contour plots have a few options that can be specified via keyword:
+
++--------------+-----------+----------------------------------------+---------+--------------------------------------------------+
+| Keyword      | Data Type | Description                            | Default | Example                                          |
++==============+===========+========================================+=========+==================================================+
+| :hh:`cmap`   | str       | Name of a color map                    | inferno | `contour example <contour.html#Filled-contour>`_ |
++--------------+-----------+----------------------------------------+---------+                                                  +
+| :hh:`filled` | boolean   | Fill area between contour lines        | True    |                                                  |
++--------------+-----------+----------------------------------------+---------+                                                  +
+| :hh:`levels` | int       | Number of contour lines/levels to draw | 20      |                                                  |
++--------------+-----------+----------------------------------------+---------+--------------------------------------------------+
+
 
 Figure
 ^^^^^^
@@ -392,6 +426,11 @@ The following base attributes of the ``Element`` class are not used for this ite
 
 Gridlines
 ^^^^^^^^^
+
+Heatmap
+^^^^^^^
+
+
 
 Labels
 ^^^^^^

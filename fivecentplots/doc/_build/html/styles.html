@@ -1059,7 +1059,9 @@ in the list.</p>
 <div class="section" id="Marker-size">
 <h3>Marker size<a class="headerlink" href="#Marker-size" title="Permalink to this headline">¶</a></h3>
 <p>The size of the markers within the plot window are controlled by the
-<code class="docutils literal notranslate"><span class="pre">marker_size</span></code> keyword. All data sets share the same marker size.</p>
+<code class="docutils literal notranslate"><span class="pre">marker_size</span></code> keyword. All data sets share the same marker size.
+Notice that the legend markers do not scale their size with the markers
+on the plot.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
 <span></span>In [24]:
@@ -1079,9 +1081,8 @@ in the list.</p>
 <img alt="_images/styles_71_0.png" src="_images/styles_71_0.png" />
 </div>
 </div>
-<p>By default, the markers in the legend match the size of the markers
-within the plot. However, the legend marker size can be controlled
-independently if needed using the keyword <code class="docutils literal notranslate"><span class="pre">legend_marker_size</span></code>:</p>
+<p>The legend marker size can be controlled independently if needed using
+the keyword <code class="docutils literal notranslate"><span class="pre">legend_marker_size</span></code>:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
 <span></span>In [25]:
@@ -1090,7 +1091,7 @@ independently if needed using the keyword <code class="docutils literal notransl
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="s1">&#39;Substrate&#39;</span><span class="p">],</span> \
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">,</span>
-         <span class="n">marker_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">legend_marker_size</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+         <span class="n">marker_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">legend_marker_size</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

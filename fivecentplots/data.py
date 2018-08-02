@@ -78,6 +78,8 @@ class Data:
         if kwargs.get('wrap', None) == 'y' or kwargs.get('wrap', None) == 'x':
             self.share_x = kwargs.get('share_x', True)
             self.share_y = kwargs.get('share_y', True)
+        if self.plot_func in ['plot_box']:
+            self.share_x = False
         self.twin_x = kwargs.get('twin_x', False)
         self.twin_y = kwargs.get('twin_y', False)
         if self.twin_x == self.twin_y and self.twin_x:
@@ -203,7 +205,7 @@ class Data:
         self.fig_vals = None
 
         # Make sure groups, legend, and fig_groups are not the same
-        if self.legend and self.groups:
+        if self.legend and self.groups and self.plot_func != 'plot_box':
             self.check_group_matching('legend', 'groups')
         if self.legend and self.fig:
             self.check_group_matching('legend', 'fig')
@@ -1295,6 +1297,8 @@ class Data:
                 # Get boxplot changes DataFrame
                 if 'box' in self.plot_func and len(self.df_rc) > 0:  # think we are doing this twice
                     self.get_box_index_changes()
+                    self.ranges[ir, ic]['xmin'] = 0.5
+                    self.ranges[ir, ic]['xmax'] = len(self.changes) + 0.5
 
                 # Yield the subset
                 yield ir, ic, self.df_rc

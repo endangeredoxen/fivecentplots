@@ -113,6 +113,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#figure">Figure</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fit">Fit</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#gridlines">Gridlines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#heatmap">Heatmap</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#labels">Labels</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#legend">Legend</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#lines">Lines</a></li>
@@ -466,8 +467,8 @@ do not apply to a given <code class="docutils literal notranslate"><span class="
 <h3>Axes<a class="headerlink" href="#axes" title="Permalink to this headline">¶</a></h3>
 <img alt="_images/element_axes.png" src="_images/element_axes.png" />
 <p>The <code class="docutils literal notranslate"><span class="pre">axes</span></code> element consists of the actual plotting window shown in yellow above.
-Keywords for the primary <code class="docutils literal notranslate"><span class="pre">axes</span></code> object begin with the prefix “<a href="#id12"><span class="problematic" id="id13">ax_</span></a>”.  Properties
-of any optional secondary axes begin with the prefix “<a href="#id14"><span class="problematic" id="id15">ax2_</span></a>”.</p>
+Keywords for the primary <code class="docutils literal notranslate"><span class="pre">axes</span></code> object begin with the prefix “<a href="#id13"><span class="problematic" id="id14">ax_</span></a>”.  Properties
+of any optional secondary axes begin with the prefix “<a href="#id15"><span class="problematic" id="id16">ax2_</span></a>”.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="11%" />
@@ -831,12 +832,91 @@ can be computed via the <code class="docutils literal notranslate"><span class="
 </div>
 <div class="section" id="color-bar">
 <h3>Color Bar<a class="headerlink" href="#color-bar" title="Permalink to this headline">¶</a></h3>
+<p>A color bar (or “cbar”) is a colorized gradient scale used to signify the z-value
+of data plotted in an X-Y plane on a contour or heatmap plot.  By default, the color
+bar is disabled.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="9%" />
+<col width="8%" />
+<col width="40%" />
+<col width="7%" />
+<col width="36%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Keyword</th>
+<th class="head">Data Type</th>
+<th class="head">Description</th>
+<th class="head">Default</th>
+<th class="head">Example</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="hh">cbar</span></td>
+<td>boolean</td>
+<td>toggle colorbar on/off for contour and heatmap plots</td>
+<td>False</td>
+<td rowspan="2"><a class="reference external" href="contour.html#Filled-contour">contour example</a></td>
+</tr>
+<tr class="row-odd"><td>size</td>
+<td>int</td>
+<td>cbar width (height will match the height of the axes)</td>
+<td>30</td>
+</tr>
+</tbody>
+</table>
+<p>The color bar text label is pulled from the column name supplied for the keyword
+<code class="docutils literal notranslate"><span class="pre">z</span></code>, but can be overriden via the keyword <code class="docutils literal notranslate"><span class="pre">label_z</span></code>.  All font keywords which
+belong to the base <code class="docutils literal notranslate"><span class="pre">Element</span></code> class can be used to style the color bar text.</p>
+<p>The following base attributes of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> class are not used for this item:</p>
+<blockquote>
+<div><ul class="simple">
+<li>“Lines” category</li>
+<li><code class="docutils literal notranslate"><span class="pre">text</span></code></li>
+</ul>
+</div></blockquote>
 </div>
 <div class="section" id="confidence-intervals">
 <h3>Confidence Intervals<a class="headerlink" href="#confidence-intervals" title="Permalink to this headline">¶</a></h3>
 </div>
 <div class="section" id="contour">
 <h3>Contour<a class="headerlink" href="#contour" title="Permalink to this headline">¶</a></h3>
+<p>Contour plots have a few options that can be specified via keyword:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="9%" />
+<col width="32%" />
+<col width="7%" />
+<col width="40%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Keyword</th>
+<th class="head">Data Type</th>
+<th class="head">Description</th>
+<th class="head">Default</th>
+<th class="head">Example</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="hh">cmap</span></td>
+<td>str</td>
+<td>Name of a color map</td>
+<td>inferno</td>
+<td rowspan="3"><a class="reference external" href="contour.html#Filled-contour">contour example</a></td>
+</tr>
+<tr class="row-odd"><td><span class="hh">filled</span></td>
+<td>boolean</td>
+<td>Fill area between contour lines</td>
+<td>True</td>
+</tr>
+<tr class="row-even"><td><span class="hh">levels</span></td>
+<td>int</td>
+<td>Number of contour lines/levels to draw</td>
+<td>20</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section" id="figure">
 <h3>Figure<a class="headerlink" href="#figure" title="Permalink to this headline">¶</a></h3>
@@ -966,6 +1046,9 @@ the family of keywords beginning with <code class="docutils literal notranslate"
 </div>
 <div class="section" id="gridlines">
 <h3>Gridlines<a class="headerlink" href="#gridlines" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="heatmap">
+<h3>Heatmap<a class="headerlink" href="#heatmap" title="Permalink to this headline">¶</a></h3>
 </div>
 <div class="section" id="labels">
 <h3>Labels<a class="headerlink" href="#labels" title="Permalink to this headline">¶</a></h3>
@@ -1276,7 +1359,7 @@ keywords:</p>
 <tr class="row-even"><td>marker_jitter</td>
 <td>boolean</td>
 <td>add a random offset or jitter to the points around their x-value (useful for box plots)</td>
-<td><a href="#id4"><span class="problematic" id="id5">`</span></a>True for boxplots | <a href="#id6"><span class="problematic" id="id7">`</span></a>False for all other plot types</td>
+<td><a href="#id5"><span class="problematic" id="id6">`</span></a>True for boxplots | <a href="#id7"><span class="problematic" id="id8">`</span></a>False for all other plot types</td>
 <td>None</td>
 </tr>
 <tr class="row-odd"><td>marker_size</td>
@@ -1368,7 +1451,7 @@ referenced to either the major or minor grid:</p>
 <tr class="row-odd"><td>ticks_major_increment</td>
 <td>float</td>
 <td>for major ticks only, the increment between tick marks</td>
-<td><a href="#id16"><span class="problematic" id="id17">`Grids and ticks&lt;ticks.html#Increment&gt;`_</span></a></td>
+<td><a href="#id17"><span class="problematic" id="id18">`Grids and ticks&lt;ticks.html#Increment&gt;`_</span></a></td>
 </tr>
 <tr class="row-even"><td>ticks_major_length</td>
 <td>float</td>
@@ -1386,7 +1469,7 @@ referenced to either the major or minor grid:</p>
 <td>int</td>
 <td>enable primary y-axis range sharing across all subplots</td>
 <td>True</td>
-<td><a href="#id18"><span class="problematic" id="id19">`Grids and ticks&lt;ticks.html#Increment&gt;`_</span></a></td>
+<td><a href="#id19"><span class="problematic" id="id20">`Grids and ticks&lt;ticks.html#Increment&gt;`_</span></a></td>
 </tr>
 <tr class="row-odd"><td>ticks_major_width</td>
 <td>float</td>

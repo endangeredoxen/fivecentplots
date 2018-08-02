@@ -308,6 +308,9 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
         data[0]['x'] = 1
         layout.plot_xy(ir, ic, 0, data[0], 'x', dd.y[0], None, False, zorder=10)
 
+    # Remove lowest divider
+    dividers = [f for f in dividers if f > 0.5]
+
     # Remove temporary 'x' column
     for dat in data:
         del dat['x']
@@ -339,6 +342,7 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
         layout.ax_vlines.style = [layout.box_divider.style] * len(dividers)
         layout.ax_vlines.width = [layout.box_divider.width] * len(dividers)
         layout.add_hvlines(ir, ic)
+        layout.ax_vlines.values = []
 
     # Add mean/median connecting lines
     if layout.box_stat_line.on and len(stats) > 0:
