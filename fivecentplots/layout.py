@@ -43,6 +43,7 @@ DEFAULT_COLORS = ['#4b72b0', '#c34e52', '#54a767', '#8172b1', '#64b4cc',
                   '#b07b9d', '#f2be5b', '#326438', '#3c5477', '#de7426',
                   '#588281', '#c22a64', '#57324e', '#948974', '#9dcbdf',
                   '#6f6f6f', ]
+BAYER = []
 
 DEFAULT_MARKERS = ['o', '+', 's', 'x', 'd', 'Z', '^', 'Y', 'v', '\infty',
                    '\#', '<', u'\u2B21', u'\u263A', '>', u'\u29C6', '\$',
@@ -618,7 +619,7 @@ class BaseLayout:
                                           self.fcpp, 'legend_location', 0)],
                                  marker_alpha=utl.kwget(kwargs, self.fcpp,
                                                         'legend_marker_alpha',
-                                                        None),
+                                                        1),
                                  marker_size=utl.kwget(kwargs, self.fcpp,
                                                        'legend_marker_size',
                                                        7),
@@ -770,7 +771,7 @@ class BaseLayout:
                                                      not kwargs.get('violin', False)),
                                        color='#cccccc',
                                        style='-',
-                                       style2='--',
+                                       style2=RepeatedList('--', 'style2'),
                                        zorder=utl.kwget(kwargs, self.fcpp,
                                                         'box_range_lines',
                                                         3),
@@ -1339,8 +1340,12 @@ class Element:
 
         self.width = utl.kwget(kwargs, fcpp, '%s_width' % label,
                                kwargs.get('width', 1))
+        if type(self.width) is not RepeatedList:
+            self.width = RepeatedList(self.width, 'width')
         self.style = utl.kwget(kwargs, fcpp, '%s_style' % label,
                                kwargs.get('style', '-'))
+        if type(self.style) is not RepeatedList:
+            self.style = RepeatedList(self.style, 'style')
 
         skip_keys = ['df', 'x', 'y', 'z']
         for k, v in kwargs.items():
@@ -1675,8 +1680,8 @@ class LayoutMPL(BaseLayout):
             if ll.on:
                 for ival, val in enumerate(ll.values):
                     func(val, color=ll.color.get(ival),
-                         linestyle=ll.style[ival],
-                         linewidth=ll.width[ival],
+                         linestyle=ll.style.get(ival),
+                         linewidth=ll.width.get(ival),
                          zorder=ll.zorder)
 
     def add_label(self, ir, ic, text='', position=None, rotation=0, size=None,
@@ -3428,6 +3433,7 @@ class LayoutMPL(BaseLayout):
                           )
         self.fig.obj = fig
         self.axes.obj = axes
+        self.axes.visible = np.array([[True]*self.ncol]*self.nrow)
 
         # Adjust the subplots size
         self.fig.obj.subplots_adjust(left=self.axes.position[0],
@@ -3503,15 +3509,15 @@ class LayoutMPL(BaseLayout):
                 patch.set_facecolor(self.box.fill_color.get(ipatch))
                 patch.set_alpha(self.box.fill_alpha)
                 patch.set_lw(self.box.edge_width)
-                patch.set_ls(self.box.style)
+                patch.set_ls(self.box.style.get(ipatch))
             for ipatch, patch in enumerate(bp['whiskers']):
                 patch.set_color(self.box_whisker.color.get(int(ipatch/2)))
-                patch.set_lw(self.box_whisker.width)
-                patch.set_ls(self.box_whisker.style)
+                patch.set_lw(self.box_whisker.width.get(ipatch))
+                patch.set_ls(self.box_whisker.style.get(ipatch))
             for ipatch, patch in enumerate(bp['caps']):
                 patch.set_color(self.box_whisker.color.get(int(ipatch/2)))
-                patch.set_lw(self.box_whisker.width)
-                patch.set_ls(self.box_whisker.style)
+                patch.set_lw(self.box_whisker.width.get(ipatch))
+                patch.set_ls(self.box_whisker.style.get(ipatch))
 
         self.axes.obj[ir, ic].set_xticklabels([''])
         self.axes.obj[ir, ic].set_xlim(0.5, len(data) + 0.5)
@@ -3681,21 +3687,20 @@ class LayoutMPL(BaseLayout):
         if y1 is not None:
             y0 = [y0, y1]
 
-        if 'color' in kwargs.keys():
-            if type(kwargs['color']) is RepeatedList:
-                color = kwargs['color'].get(0)
-            elif type(kwargs['color']) is list:
-                color = kwargs['color'][0]
-            else:
-                color = kwargs['color']
-        else:
-            color = '#000000'
-        line = self.axes.obj[ir, ic].plot(x0, y0,
-                                          linestyle=kwargs.get('style', '-'),
-                                          linewidth=kwargs.get('width', 1),
-                                          color=color,
-                                          zorder=kwargs.get('zorder', 1))
+        if 'color' not in kwargs.keys():
+            kwargs['color'] = RepeatedList('#000000', 'temp')
+        if 'style' not in kwargs.keys():
+            kwargs['style'] = RepeatedList('-', 'temp')
+        if 'width' not in kwargs.keys():
+            kwargs['width'] = RepeatedList('-', 'temp')
 
+        try:
+            line = self.axes.obj[ir, ic].plot(x0, y0,
+                                          linestyle=kwargs['style'].get(0),
+                                          linewidth=kwargs['width'].get(0),
+                                          color=kwargs['color'].get(0),
+                                          zorder=kwargs.get('zorder', 1))
+        except: st()
         return line
 
     def plot_xy(self, ir, ic, iline, df, x, y, leg_name, twin, zorder=1,
@@ -3760,9 +3765,12 @@ class LayoutMPL(BaseLayout):
         if line_type.on:
             lines = ax.plot(df[x], df[y],
                             color=line_type.color.get(iline),
-                            linestyle='-' if line_type.style is None \
-                                      else line_type.style,
-                            linewidth=line_type.width)
+                            #linestyle='-' if line_type.style is None \
+                            #          else line_type.style,
+                            #linewidth=line_type.width)
+                            linestyle=line_type.style.get(iline),
+                            linewidth=line_type.width.get(iline),
+                            )
 
         # Add a reference to the line to self.lines
         if leg_name:
@@ -3806,7 +3814,6 @@ class LayoutMPL(BaseLayout):
                 axes[-1].obj[ir, ic].spines[f].set_color(self.fig.fill_color.get(0))
             axes[-1].obj[ir, ic].spines[f].set_linewidth(self.axes.edge_width)
 
-
     def set_axes_grid_lines(self, ir, ic):
         """
         Style the grid lines and toggle visibility
@@ -3835,8 +3842,8 @@ class LayoutMPL(BaseLayout):
                 ax.obj[ir, ic].xaxis.grid(b=True, which='major',
                                           #zorder=self.grid_major_x.zorder,
                                           color=self.grid_major_x.color.get(0),
-                                          linestyle=self.grid_major_x.style,
-                                          linewidth=self.grid_major_x.width)
+                                          linestyle=self.grid_major_x.style.get(0),
+                                          linewidth=self.grid_major_x.width.get(0))
             else:
                 ax.obj[ir, ic].xaxis.grid(b=False, which='major')
 
@@ -3845,8 +3852,8 @@ class LayoutMPL(BaseLayout):
                     ax.obj[ir, ic].xaxis.grid(b=True, which='major',
                                             #zorder=self.grid_major_x.zorder,
                                             color=self.grid_major_x2.color.get(0),
-                                            linestyle=self.grid_major_x2.style,
-                                            linewidth=self.grid_major_x2.width)
+                                            linestyle=self.grid_major_x2.style.get(0),
+                                            linewidth=self.grid_major_x2.width.get(0))
                 else:
                     ax.obj[ir, ic].xaxis.grid(b=False, which='major')
 
@@ -3854,8 +3861,8 @@ class LayoutMPL(BaseLayout):
                 ax.obj[ir, ic].yaxis.grid(b=True, which='major',
                                           #zorder=self.grid_major_y.zorder,
                                           color=self.grid_major_y.color.get(0),
-                                          linestyle=self.grid_major_y.style,
-                                          linewidth=self.grid_major_y.width)
+                                          linestyle=self.grid_major_y.style.get(0),
+                                          linewidth=self.grid_major_y.width.get(0))
             else:
                 ax.obj[ir, ic].yaxis.grid(b=False, which='major')
 
@@ -3864,8 +3871,8 @@ class LayoutMPL(BaseLayout):
                     ax.obj[ir, ic].yaxis.grid(b=True, which='major',
                                             #zorder=self.grid_major_y.zorder,
                                             color=self.grid_major_y2.color.get(0),
-                                            linestyle=self.grid_major_y2.style,
-                                            linewidth=self.grid_major_y2.width)
+                                            linestyle=self.grid_major_y2.style.get(0),
+                                            linewidth=self.grid_major_y2.width.get(0))
                 else:
                     ax.obj[ir, ic].yaxis.grid(b=False, which='major')
 
@@ -3874,14 +3881,14 @@ class LayoutMPL(BaseLayout):
                 ax.obj[ir, ic].xaxis.grid(b=True, which='minor',
                                           #zorder=self.grid_minor_x.zorder,
                                           color=self.grid_minor_x.color.get(0),
-                                          linestyle=self.grid_minor_x.style,
-                                          linewidth=self.grid_minor_x.width)
+                                          linestyle=self.grid_minor_x.style.get(0),
+                                          linewidth=self.grid_minor_x.width.get(0))
             if self.grid_minor_y.on:
                 ax.obj[ir, ic].yaxis.grid(b=True, which='minor',
                                           #zorder=self.grid_minor_y.zorder,
                                           color=self.grid_minor_y.color.get(0),
-                                          linestyle=self.grid_minor_y.style,
-                                          linewidth=self.grid_minor_y.width)
+                                          linestyle=self.grid_minor_y.style.get(0),
+                                          linewidth=self.grid_minor_y.width.get(0))
 
     def set_axes_labels(self, ir, ic):
         """
@@ -3917,10 +3924,16 @@ class LayoutMPL(BaseLayout):
 
             # Toggle label visibility
             if not self.separate_labels:
-                if ax == 'x' and ir != self.nrow - 1 and self.nwrap == 0: continue
-                if ax == 'x2' and ir != 0: continue
-                if ax == 'y' and ic != 0: continue
-                if ax == 'y2' and ic != self.ncol - 1 and (ic + ir * self.ncol + 1) != self.nwrap: continue
+                if ax == 'x' and ir != self.nrow - 1 and \
+                        self.nwrap == 0 and self.axes.visible[ir+1, ic]:
+                    continue
+                if ax == 'x2' and ir != 0:
+                    continue
+                if ax == 'y' and ic != 0 and self.axes.visible[ir, ic - 1]:
+                    continue
+                if ax == 'y2' and ic != self.ncol - 1 and \
+                        (ic + ir * self.ncol + 1) != self.nwrap:
+                    continue
 
             # Add the label
             self.add_label(ir, ic, labeltext, **self.make_kwargs(label))
@@ -4332,9 +4345,14 @@ class LayoutMPL(BaseLayout):
                 mplp.setp(axes[ia].get_xticklabels(), visible=True)
             if self.separate_ticks:
                 mplp.setp(axes[ia].get_yticklabels(), visible=True)
-            if self.nwrap > 0 and (ic + (ir + 1) * self.ncol + 1) > self.nwrap:
+            if self.nwrap > 0 and (ic + (ir + 1) * self.ncol + 1) > self.nwrap or \
+                    (ir < self.nrow - 1 and not self.axes.visible[ir + 1, ic]):
                 mplp.setp(axes[ia].get_xticklabels()[1:], visible=True)
-            if not self.separate_ticks and (ic != self.ncol - 1 and (ic + ir * self.ncol + 1) != self.nwrap) and self.axes.twin_x and ia == 1:
+            if not self.separate_ticks and not self.axes.visible[ir, ic - 1]:
+                mplp.setp(axes[ia].get_yticklabels(), visible=True)
+            elif not self.separate_ticks and (ic != self.ncol - 1 and \
+                    (ic + ir * self.ncol + 1) != self.nwrap) and \
+                    self.axes.twin_x and ia == 1:
                 mplp.setp(axes[ia].get_yticklabels(), visible=False)
             if not self.separate_ticks and ir != 0 and self.axes.twin_y and ia == 1:
                 mplp.setp(axes[ia].get_xticklabels(), visible=False)
@@ -4679,8 +4697,8 @@ class LayoutMPL(BaseLayout):
                                 t1 = np.log10(float(t1)) % 1
                                 delmin = (t1-t0) * delmaj
                                 if tlminlab.size[wh] + buf > delmin:
-                                    if tp[axx]['label_text'][m0+itick] != '':
-                                        tp[axx]['label_text'][m0+itick+1] = ''
+                                    if tp[axx]['label_text'][m0+itick+1] != '':
+                                        tp[axx]['label_text'][m0+itick+2] = ''
 
                         elif tlminlab.size[wh] + buf > delmin:
                             for itick, tick in enumerate(tp[axx]['label_text'][m0+1:]):

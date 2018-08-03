@@ -28,7 +28,7 @@ import shutil
 import datetime
 import sys
 from . data import Data
-from . layout import LayoutMPL, LayoutBokeh
+from . layout import LayoutMPL, LayoutBokeh, RepeatedList
 from . utilities import dfkwarg, set_save_filename, validate_list
 import warnings
 try:
@@ -339,8 +339,8 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
     if layout.box_divider.on and len(dividers) > 0:
         layout.ax_vlines = copy.deepcopy(layout.box_divider)
         layout.ax_vlines.values = dividers
-        layout.ax_vlines.style = [layout.box_divider.style] * len(dividers)
-        layout.ax_vlines.width = [layout.box_divider.width] * len(dividers)
+        layout.ax_vlines.style = copy.copy(layout.box_divider.style)
+        layout.ax_vlines.width = copy.copy(layout.box_divider.width)
         layout.add_hvlines(ir, ic)
         layout.ax_vlines.values = []
 
@@ -591,15 +591,21 @@ def plotter(plot_func, **kwargs):
         # Make the figure
         layout.make_figure(dd, **kwargs)
 
-        # Make the subplots
+        # Turn off empty subplots
         for ir, ic, df_rc in dd.get_rc_subset(df_fig):
 
             if len(df_rc) == 0:
                 if dd.wrap is None:
                     layout.set_axes_rc_labels(ir, ic)
                 layout.axes.obj[ir, ic].axis('off')
+                layout.axes.visible[ir, ic] = False
                 if layout.axes2.obj[ir, ic] is not None:
                     layout.axes2.obj[ir, ic].axis('off')
+                continue
+
+        # Make the subplots
+        for ir, ic, df_rc in dd.get_rc_subset(df_fig):
+            if not layout.axes.visible[ir, ic]:
                 continue
 
             # Set the axes colors

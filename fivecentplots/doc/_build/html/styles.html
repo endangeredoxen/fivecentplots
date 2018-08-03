@@ -696,8 +696,8 @@ an 8-character hex color code.</p>
 <img alt="_images/styles_25_0.png" src="_images/styles_25_0.png" />
 </div>
 </div>
-<p>When adding alpha to plot markers, the legend markers will inherit the
-same level of alpha by default:</p>
+<p>When adding alpha to plot markers, the legend markers will retain full
+opacity by default:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
 <span></span>In [9]:
@@ -717,10 +717,10 @@ same level of alpha by default:</p>
 <img alt="_images/styles_27_0.png" src="_images/styles_27_0.png" />
 </div>
 </div>
-<p>However, there are instances when we want alpha on the plot markers but
-not on the legend markers. To override this, use the keyword
-<code class="docutils literal notranslate"><span class="pre">legend_marker_alpha</span></code> to override both the edge and fill alpha of the
-legend markers and set to a different value (like 1):</p>
+<p>However, there are instances when we want alpha on the plot markers and
+on the legend markers. To achieve this, use the keyword
+<code class="docutils literal notranslate"><span class="pre">legend_marker_alpha</span></code> to set both the edge and fill alpha of the
+legend markers to a different value:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
 <span></span>In [10]:
@@ -729,7 +729,7 @@ legend markers and set to a different value (like 1):</p>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="s1">&#39;Substrate&#39;</span><span class="p">],</span> \
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">,</span>
-         <span class="n">marker_edge_alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">legend_marker_alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+         <span class="n">marker_edge_alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">legend_marker_alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -846,7 +846,8 @@ keyword <code class="docutils literal notranslate"><span class="pre">cmap</span>
 <p>Plot lines do not have a fill or edge so the typical styling parameters
 like <code class="docutils literal notranslate"><span class="pre">&lt;element</span> <span class="pre">name&gt;_fill_color</span></code> do not exist. Instead, lines have
 just a unary styling keywords: <code class="docutils literal notranslate"><span class="pre">lines_color</span></code>, <code class="docutils literal notranslate"><span class="pre">lines_width</span></code>,
-<code class="docutils literal notranslate"><span class="pre">lines_style</span></code> and <code class="docutils literal notranslate"><span class="pre">lines_alpha</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">lines_style</span></code> and <code class="docutils literal notranslate"><span class="pre">lines_alpha</span></code>. In this case, we apply global style
+settings to all lines in the data set.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
 <span></span>In [15]:
@@ -866,6 +867,28 @@ just a unary styling keywords: <code class="docutils literal notranslate"><span 
 <img alt="_images/styles_44_0.png" src="_images/styles_44_0.png" />
 </div>
 </div>
+<p>We can also set line styles for each line, instead of applying them
+globally:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="s1">&#39;Substrate&#39;</span><span class="p">],</span> <span class="n">markers</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> \
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">,</span>
+         <span class="n">colors</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+         <span class="n">lines_width</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">lines_style</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">],</span> <span class="n">lines_alpha</span><span class="o">=</span><span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/styles_46_0.png" src="_images/styles_46_0.png" />
+</div>
+</div>
 </div>
 </div>
 <div class="section" id="Marker-colors">
@@ -877,7 +900,7 @@ below.</p>
 <p>Change the marker edge color for all markers:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [16]:
+<span></span>In [17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -891,13 +914,13 @@ below.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_48_0.png" src="_images/styles_48_0.png" />
+<img alt="_images/styles_50_0.png" src="_images/styles_50_0.png" />
 </div>
 </div>
 <p>All a custom fill color:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [17]:
+<span></span>In [18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -911,13 +934,13 @@ below.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_50_0.png" src="_images/styles_50_0.png" />
+<img alt="_images/styles_52_0.png" src="_images/styles_52_0.png" />
 </div>
 </div>
 <p>Use the default color scheme with marker fill:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [18]:
+<span></span>In [19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -931,13 +954,13 @@ below.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_52_0.png" src="_images/styles_52_0.png" />
+<img alt="_images/styles_54_0.png" src="_images/styles_54_0.png" />
 </div>
 </div>
 <p>Add fill alpha:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [19]:
+<span></span>In [20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -951,7 +974,7 @@ below.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_54_0.png" src="_images/styles_54_0.png" />
+<img alt="_images/styles_56_0.png" src="_images/styles_56_0.png" />
 </div>
 </div>
 </div>
@@ -961,7 +984,7 @@ below.</p>
 behind the markers:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [20]:
+<span></span>In [21]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -977,7 +1000,7 @@ behind the markers:</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_57_0.png" src="_images/styles_57_0.png" />
+<img alt="_images/styles_59_0.png" src="_images/styles_59_0.png" />
 </div>
 </div>
 </div>
@@ -988,7 +1011,7 @@ by the theme file or keyword). This can easily be tailored for a
 different style. Compare the default plot:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [21]:
+<span></span>In [22]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1001,13 +1024,13 @@ different style. Compare the default plot:</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_60_0.png" src="_images/styles_60_0.png" />
+<img alt="_images/styles_62_0.png" src="_images/styles_62_0.png" />
 </div>
 </div>
 <p>with this one, that employs the <code class="docutils literal notranslate"><span class="pre">hist_fill_alpha</span></code> keyword:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [22]:
+<span></span>In [23]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1019,7 +1042,7 @@ different style. Compare the default plot:</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_62_0.png" src="_images/styles_62_0.png" />
+<img alt="_images/styles_64_0.png" src="_images/styles_64_0.png" />
 </div>
 </div>
 <p>The benefit of transparency is clear in order to visualize both
@@ -1038,7 +1061,7 @@ loop back on itself if the number of curves exceeds the number of items
 in the list.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [23]:
+<span></span>In [24]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1052,7 +1075,7 @@ in the list.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_68_0.png" src="_images/styles_68_0.png" />
+<img alt="_images/styles_70_0.png" src="_images/styles_70_0.png" />
 </div>
 </div>
 </div>
@@ -1064,7 +1087,7 @@ Notice that the legend markers do not scale their size with the markers
 on the plot.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [24]:
+<span></span>In [25]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1078,14 +1101,14 @@ on the plot.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_71_0.png" src="_images/styles_71_0.png" />
+<img alt="_images/styles_73_0.png" src="_images/styles_73_0.png" />
 </div>
 </div>
 <p>The legend marker size can be controlled independently if needed using
 the keyword <code class="docutils literal notranslate"><span class="pre">legend_marker_size</span></code>:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [25]:
+<span></span>In [26]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1099,7 +1122,7 @@ the keyword <code class="docutils literal notranslate"><span class="pre">legend_
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_73_0.png" src="_images/styles_73_0.png" />
+<img alt="_images/styles_75_0.png" src="_images/styles_75_0.png" />
 </div>
 </div>
 </div>
@@ -1112,7 +1135,7 @@ note that the font family “fantasy” below looks an awful lot like comic
 sans which really should be banned globally.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [26]:
+<span></span>In [27]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1129,7 +1152,7 @@ sans which really should be banned globally.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_76_0.png" src="_images/styles_76_0.png" />
+<img alt="_images/styles_78_0.png" src="_images/styles_78_0.png" />
 </div>
 </div>
 </div>
