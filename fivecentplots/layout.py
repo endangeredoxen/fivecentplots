@@ -630,6 +630,9 @@ class BaseLayout:
                                                  kwargs.get('legend') if kwargs.get('legend') != True else ''),
                                  values={} if not kwargs.get('legend') else {'NaN': None},
                                  )
+        if not self.legend.on and self.ref_line.on:
+            self.legend.values['ref_line'] = []
+            self.legend.on = True
 
         # Color bar
         cbar_size = utl.kwget(kwargs, self.fcpp, 'cbar_size', 30)
@@ -2030,7 +2033,7 @@ class LayoutMPL(BaseLayout):
                 pp = ax.imshow(df, vmin=data.zmin, vmax=data.zmax)
                 if self.cbar.on:
                     cbar = self.add_cbar(ax, pp)
-                axes[1] = cbar.ax
+                    axes[1] = cbar.ax
 
                 # Set ticks
                 dtypes = [int, np.int32, np.int64]
@@ -2897,14 +2900,15 @@ class LayoutMPL(BaseLayout):
                                 )]
 
         # Make a dummy legend --> move to add_legend???
-        if data.legend_vals is not None and len(data.legend_vals) > 0:
+        if data.legend_vals is not None and len(data.legend_vals) > 0 \
+                or self.ref_line.on:
             lines = []
             leg_vals = []
             if type(data.legend_vals) == pd.DataFrame:
                 for irow, row in data.legend_vals.iterrows():
                     lines += ax.plot([1, 2, 3])
                     leg_vals += [row['names']]
-            else:
+            elif data.legend_vals:
                 for val in data.legend_vals:
                     lines += ax.plot([1, 2, 3])
                     leg_vals += [val]
@@ -2917,9 +2921,14 @@ class LayoutMPL(BaseLayout):
                                     fontsize=self.legend.font_size)
             leg.get_title().set_fontsize(self.legend.font_size)
             if self.legend.marker_size:
-                for irow, row in data.legend_vals.iterrows():
-                    leg.legendHandles[irow]._legmarker\
-                        .set_markersize(self.legend.marker_size)
+                if type(data.legend_vals) == pd.DataFrame:
+                    for irow, row in data.legend_vals.iterrows():
+                        leg.legendHandles[irow]._legmarker\
+                            .set_markersize(self.legend.marker_size)
+                elif data.legend_vals:
+                    for irow, row in enumerate(data.legend_vals):
+                        leg.legendHandles[irow]._legmarker\
+                           .set_markersize(self.legend.marker_size)
         else:
             leg = None
 
@@ -3663,7 +3672,7 @@ class LayoutMPL(BaseLayout):
                                  data.ranges[ir, ic]['ymax'], 1000)
                 x0 = kde(y0)
             kwargs = self.make_kwargs(self.kde)
-            kwargs['color'] = kwargs['color'].get(iline)
+            kwargs['color'] = RepeatedList(kwargs['color'].get(iline), 'color')
             kde = self.plot_line(ir, ic, x0, y0, **kwargs)
 
         return hist, data
@@ -4519,6 +4528,13 @@ class LayoutMPL(BaseLayout):
                 if ia == 1 and axx == 'y' and self.axes.twin_y:
                     continue
 
+                if getattr(self, 'ticks_minor_%s' % axl).number is not None:
+                    num_minor = getattr(self, 'ticks_minor_%s' % axl).number
+                    if getattr(self, 'axes%s' % lab).scale not in (LOG_ALLX if axx == 'x' else LOG_ALLY):
+                        loc = None
+                        loc = AutoMinorLocator(num_minor+1)
+                        getattr(axes[ia], '%saxis' % axx).set_minor_locator(loc)
+
                 if not self.separate_ticks and axl == 'x' and ir != self.nrow - 1 and self.nwrap == 0 or \
                         not self.separate_ticks and axl == 'y2' and ic != self.ncol - 1 and self.nwrap == 0 or \
                         not self.separate_ticks and axl == 'x2' and ir != 0 or \
@@ -4527,13 +4543,6 @@ class LayoutMPL(BaseLayout):
                     axes[ia].tick_params(which='minor', **sides[axl])
 
                 elif tlmin.on:
-                    if getattr(self, 'ticks_minor_%s' % axl).number is not None:
-                        num_minor = getattr(self, 'ticks_minor_%s' % axl).number
-                        if getattr(self, 'axes%s' % lab).scale not in (LOG_ALLX if axx == 'x' else LOG_ALLY):
-                            loc = None
-                            loc = AutoMinorLocator(num_minor+1)
-                            getattr(axes[ia], '%saxis' % axx).set_minor_locator(loc)
-
                     if not getattr(self, 'tick_labels_minor_%s' % axl).on:
                         continue
                     else:

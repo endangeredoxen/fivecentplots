@@ -124,5 +124,6 @@ rcParams = {'font.cursive': ['Apple Chancery',
                            'Palatino',
                            'Charter',
                            'serif'],
+            'agg.path.chunksize': 1000,
             }
 mpl.rcParams.update(rcParams)
