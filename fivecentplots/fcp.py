@@ -407,10 +407,17 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin):
     if not layout.fit.on:
         return
 
-    df, coeffs, rsq = data.get_fit_data(df, x, y)
+    df, coeffs, rsq = data.get_fit_data(ir, ic, df, x, y)
+    if layout.legend.on:
+        if iline > 0:
+            leg_name = 'Fit %s' % (iline + 1)
+        else:
+            leg_name = 'Fit'
+    else:
+        leg_name = None
     layout.plot_xy(ir, ic, iline, df, '%s Fit' % x, '%s Fit' %y,
-                    None, twin, line_type='fit',
-                    marker_disable=True)
+                   leg_name, twin, line_type='fit',
+                   marker_disable=True)
 
     if layout.fit.eqn:
         eqn = 'y='

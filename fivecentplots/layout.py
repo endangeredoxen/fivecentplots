@@ -577,6 +577,10 @@ class BaseLayout:
                                )
 
         # Lines
+        for k in list(kwargs.keys()):
+            if 'line_' in k and '%ss_%s' % (k.split('_')[0], k.split('_')[1]) \
+                    not in kwargs.keys():
+                kwargs['%ss_%s' % (k.split('_')[0], k.split('_')[1])] = kwargs[k]
         self.lines = Element('lines', self.fcpp, kwargs,
                              on=kwargs.get('lines', True),
                              color=copy.copy(color_list),
@@ -633,6 +637,8 @@ class BaseLayout:
         if not self.legend.on and self.ref_line.on:
             self.legend.values['ref_line'] = []
             self.legend.on = True
+        if self.legend.on and self.fit.on:
+            self.fit.color = copy.copy(self.lines.color)
 
         # Color bar
         cbar_size = utl.kwget(kwargs, self.fcpp, 'cbar_size', 30)

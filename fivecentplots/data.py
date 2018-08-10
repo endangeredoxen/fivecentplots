@@ -59,6 +59,8 @@ class Data:
         self.ax_limit_pad(**kwargs)
         self.conf_int = kwargs.get('conf_int', False)
         self.fit = kwargs.get('fit', False)
+        self.fit_range_x = utl.kwget(kwargs, self.fcpp, 'fit_range_x', None)
+        self.fit_range_y = utl.kwget(kwargs, self.fcpp, 'fit_range_y', None)
         self.legend = None
         self.legend_vals = None
         self.ranges = None
@@ -947,7 +949,7 @@ class Data:
         if self.fig:
             self.fig_vals = list(self.df_all.groupby(self.fig).groups.keys())
 
-    def get_fit_data(self, df, x, y):
+    def get_fit_data(self, ir, ic, df, x, y):
         """
         Make columns of fitted data
 
@@ -960,6 +962,7 @@ class Data:
             updated DataFrame and rsq (for poly fit only)
         """
 
+        df2 = df.copy()
         df['%s Fit' % x] = np.nan
         df['%s Fit' % y] = np.nan
 
@@ -968,8 +971,17 @@ class Data:
 
         if self.fit == True or type(self.fit) is int:
 
-            xx = np.array(df[x])
-            yy = np.array(df[y])
+            if type(self.fit_range_x) is list:
+                df2 = df2[(df2[x] >= self.fit_range_x[0]) & \
+                          (df2[x] <= self.fit_range_x[1])].copy()
+            elif type(self.fit_range_y) is list:
+                df2 = df2[(df2[y] >= self.fit_range_y[0]) & \
+                          (df2[y] <= self.fit_range_y[1])].copy()
+            else:
+                df2 = df2.copy()
+
+            xx = np.array(df2[x])
+            yy = np.array(df2[y])
 
             # Fit the polynomial
             coeffs = np.polyfit(xx, yy, int(self.fit))
@@ -982,7 +994,8 @@ class Data:
             rsq = ssreg/sstot
 
             # Add fit line
-            df['%s Fit' % x] = np.linspace(0.9*xx.min(), 1.1*xx.max(), len(df))
+            df['%s Fit' % x] = np.linspace(self.ranges[ir, ic]['xmin'],
+                                           self.ranges[ir, ic]['xmax'], len(df))
             df['%s Fit' % y] = np.polyval(coeffs, df['%s Fit' % x])
 
             return df, coeffs, rsq
