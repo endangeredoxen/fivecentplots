@@ -18,6 +18,7 @@ import copy
 import decimal
 import math
 import fivecentplots.utilities as utl
+from distutils.version import LooseVersion
 from random import randint
 from collections import defaultdict
 import warnings
@@ -71,6 +72,7 @@ LOGITX = ['logitx', 'logit']
 LOGITY = ['logity', 'logit']
 LOG_ALLX = LOGX + SYMLOGX + LOGITX
 LOG_ALLY = LOGY + SYMLOGY + LOGITY
+ENGINE = ''
 
 
 def mplc_to_hex(color, alpha=True):
@@ -1432,6 +1434,11 @@ class Element:
         Add alpha to each color in the color list and make it a RepeatedList
         """
 
+        # MPL < v2 does not support alpha in hex color code
+        skip_alpha = False
+        if ENGINE == 'mpl' and LooseVersion(mpl.__version__) < LooseVersion('2'):
+            skip_alpha = True
+        
         alpha = RepeatedList(getattr(self, alpha), 'temp')
 
         if type(getattr(self, attr)) is not RepeatedList:
@@ -1442,8 +1449,11 @@ class Element:
                     color = DEFAULT_COLORS[color]
                 if color[0] != '#':
                     color = '#' + color
-                color_list[ic] = color[0:7].lower() + \
-                    str(hex(int(alpha.get(ic)*255)))[-2:].replace('x', '0')
+                if skip_alpha:
+                    astr = ''
+                else:
+                    astr = str(hex(int(alpha.get(ic) * 255)))[-2:].replace('x', '0')
+                color_list[ic] = color[0:7].lower() + astr
 
             setattr(self, attr, RepeatedList(color_list, attr))
 
@@ -1452,8 +1462,15 @@ class Element:
             setattr(self, attr, copy.copy(getattr(self, attr)))
             new_vals = []
             for ival, val in enumerate(getattr(self, attr).values):
-                new_vals += [val[0:-2] + \
-                    str(hex(int(alpha.get(ival)*255)))[-2:].replace('x', '0')]
+                if skip_alpha:
+                    astr = ''
+                else:
+                    astr = str(hex(int(alpha.get(ival) * 255)))[-2:].replace('x', '0')
+                if len(val) > 7:
+                    new_vals += [val[0:-2] + astr]
+                else:
+                    new_vals += [val + astr]
+                
             getattr(self, attr).values = new_vals
 
     def see(self):
@@ -1532,6 +1549,10 @@ class RepeatedList:
 
 class LayoutBokeh(BaseLayout):
     def __init__(self, **kwargs):
+        
+        global ENGINE
+        ENGINE = 'bokeh'
+        
         BaseLayout.__init__(self, **kwargs)
 
 
@@ -1545,6 +1566,9 @@ class LayoutMPL(BaseLayout):
             **kwargs: input args from user
         """
 
+        global ENGINE
+        ENGINE = 'mpl'
+        
         if kwargs.get('tick_cleanup', True):
             mplp.style.use('classic')
         mplp.close('all')
@@ -4764,9 +4788,9 @@ class LayoutMPL(BaseLayout):
 
             self.lines.color = copy.copy(color_list)
             self.lines.color_alpha('color', 'alpha')
-            self.markers.edge_color = color_list
+            self.markers.edge_color = copy.copy(color_list)
             self.markers.color_alpha('edge_color', 'edge_alpha')
-            self.markers.fill_color = color_list
+            self.markers.fill_color = copy.copy(color_list)
             self.markers.color_alpha('fill_color', 'fill_alpha')
 
         except:
