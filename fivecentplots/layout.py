@@ -1438,7 +1438,7 @@ class Element:
         skip_alpha = False
         if ENGINE == 'mpl' and LooseVersion(mpl.__version__) < LooseVersion('2'):
             skip_alpha = True
-        
+
         alpha = RepeatedList(getattr(self, alpha), 'temp')
 
         if type(getattr(self, attr)) is not RepeatedList:
@@ -1470,7 +1470,7 @@ class Element:
                     new_vals += [val[0:-2] + astr]
                 else:
                     new_vals += [val + astr]
-                
+
             getattr(self, attr).values = new_vals
 
     def see(self):
@@ -1549,10 +1549,10 @@ class RepeatedList:
 
 class LayoutBokeh(BaseLayout):
     def __init__(self, **kwargs):
-        
+
         global ENGINE
         ENGINE = 'bokeh'
-        
+
         BaseLayout.__init__(self, **kwargs)
 
 
@@ -1568,7 +1568,7 @@ class LayoutMPL(BaseLayout):
 
         global ENGINE
         ENGINE = 'mpl'
-        
+
         if kwargs.get('tick_cleanup', True):
             mplp.style.use('classic')
         mplp.close('all')
@@ -4436,10 +4436,10 @@ class LayoutMPL(BaseLayout):
                 axes[ia].set_yticklabels([''])
 
             # Check for overlapping major tick labels
-            if self.tick_cleanup and tlmajx.on and tlmajy.on:
-                lims = {}
-                valid_maj = {}
-
+            lims = {}
+            valid_maj = {}
+            buf = 3
+            if self.tick_cleanup and tlmajx.on:
                 # Get the position of the first major x tick
                 xcx = get_tick_position(axes[ia], tp, 'x', 'first', ia)
                 xfx = get_tick_position(axes[ia], tp, 'x', 'last', ia)
@@ -4448,66 +4448,23 @@ class LayoutMPL(BaseLayout):
                 valid_x = [f for f in tp['x']['ticks']
                            if f >= lim[0] and f <= lim[1]]
 
-                # Get the position of the first and last major y tick
-                ycy = get_tick_position(axes[ia], tp, 'y', 'first', ia)
-                yfy = get_tick_position(axes[ia], tp, 'y', 'last', ia)
-                yc = [-tlmajy.size[0]/2-self.ws_ticks_ax, ycy]
-                yf = [-tlmajy.size[0]/2-self.ws_ticks_ax, yfy]
-                if lim[0] > lim[1]:
-                    yyc = yc
-                    yc = yf
-                    yf = yyc
-                lim = axes[ia].get_ylim()
-                valid_y = [f for f in tp['y']['ticks']
-                           if f >= lim[0] and f <= lim[1]]
-
                 # Get spacings
-                buf = 3
                 if len(tp['x']['ticks']) > 2:
                     delx = self.axes.size[0]/(len(tp['x']['ticks'])-2)
                 else:
                     delx = self.axes.size[0] - tlmajx.size[0]
-                if len(tp['y']['ticks']) > 2:
-                    dely = self.axes.size[1]/(len(tp['y']['ticks'])-2)
-                else:
-                    dely = self.axes.size[1] - tlmajy.size[1]
-                x2x, y2y = [], []
+                x2x = []
                 xw, xh = tlmajx.size
-                yw, yh = tlmajy.size
 
-                # Calculate overlaps
-                x0y0 = utl.rectangle_overlap([xw+2*buf, xh+2*buf, xc],
-                                             [yw+2*buf, yh+2*buf, yc])
-                x0yf = utl.rectangle_overlap([xw+2*buf, xh+2*buf, xc],
-                                             [yw+2*buf, yh+2*buf, yf])
+                # Calculate x-only overlaps
                 for ix in range(0, len(tp['x']['ticks']) - 1):
                     x2x += [utl.rectangle_overlap([xw+2*buf, xh+2*buf, [delx*ix,0]],
                                                   [xw+2*buf, xh+2*buf, [delx*(ix+1), 0]])]
-                for iy in range(0, len(tp['y']['ticks']) - 1):
-                    y2y += [utl.rectangle_overlap([yw+2*buf, yh+2*buf, [0,dely*iy]],
-                                                  [yw+2*buf, yh+2*buf, [0,dely*(iy+1)]])]
-
-                # x and y at the origin
-                if x0y0 and lim[0] < lim[1]:  # and tp['y']['first']==0:  not sure about this
-                    tp['y']['label_text'][tp['y']['first']] = ''
-                elif x0y0:
-                    tp['y']['label_text'][tp['y']['last']] = ''
-                if x0yf and self.axes.twin_y:
-                    tp['y']['label_text'][tp['y']['last']] = ''
-
-                # x overlapping x (this will fail if plot is so small that odd elements overlap)
                 if any(x2x) and ((self.axes.share_x and ir==0 and ic==0) \
                         or not self.axes.share_x) \
                         and tp['x']['first'] != -999 and tp['x']['last'] != -999:
                     for i in range(tp['x']['first'] + 1, tp['x']['last'] + 1, 2):
                         tp['x']['label_text'][i] = ''
-
-                # y overlapping y
-                if any(y2y) and ((self.axes.share_y and ir==0 and ic==0) \
-                        or not self.axes.share_y) \
-                        and tp['y']['first'] != -999 and tp['y']['last'] != -999:
-                    for i in range(tp['y']['first'], tp['y']['last'] + 1, 2):
-                        tp['y']['label_text'][i] = ''
 
                 # overlapping labels between row, col, and wrap plots
                 if tp['x']['last'] != -999:
@@ -4519,6 +4476,40 @@ class LayoutMPL(BaseLayout):
                             ic < self.ncol - 1:
                         tp['x']['label_text'][tp['x']['last']] = ''
 
+            if self.tick_cleanup and tlmajy.on:
+                # Get the position of the first and last major y tick
+                ycy = get_tick_position(axes[ia], tp, 'y', 'first', ia)
+                yfy = get_tick_position(axes[ia], tp, 'y', 'last', ia)
+                yc = [-tlmajy.size[0]/2-self.ws_ticks_ax, ycy]
+                yf = [-tlmajy.size[0]/2-self.ws_ticks_ax, yfy]
+                xlim = axes[ia].get_xlim()
+                if xlim[0] > xlim[1]:
+                    yyc = yc
+                    yc = yf
+                    yf = yyc
+                lim = axes[ia].get_ylim()
+                valid_y = [f for f in tp['y']['ticks']
+                           if f >= lim[0] and f <= lim[1]]
+
+                # Get spacings
+                if len(tp['y']['ticks']) > 2:
+                    dely = self.axes.size[1]/(len(tp['y']['ticks'])-2)
+                else:
+                    dely = self.axes.size[1] - tlmajy.size[1]
+                y2y = []
+                yw, yh = tlmajy.size
+
+                # Calculate y-only overlaps
+                for iy in range(0, len(tp['y']['ticks']) - 1):
+                    y2y += [utl.rectangle_overlap([yw+2*buf, yh+2*buf, [0,dely*iy]],
+                                                  [yw+2*buf, yh+2*buf, [0,dely*(iy+1)]])]
+                if any(y2y) and ((self.axes.share_y and ir==0 and ic==0) \
+                        or not self.axes.share_y) \
+                        and tp['y']['first'] != -999 and tp['y']['last'] != -999:
+                    for i in range(tp['y']['first'], tp['y']['last'] + 1, 2):
+                        tp['y']['label_text'][i] = ''
+
+                # overlapping labels between row, col, and wrap plots
                 if tp['y']['last'] != -999:
                     last_y = tp['y']['labels'][tp['y']['last']][1]
                     last_y_pos = last_y/(tp['y']['max']-tp['y']['min'])
@@ -4528,6 +4519,21 @@ class LayoutMPL(BaseLayout):
                             ir < self.nrow - 1 and self.nwrap == 0:
                         tp['y']['label_text'][tp['y']['last']] = ''
 
+            if self.tick_cleanup and tlmajx.on and tlmajy.on:
+                # Calculate overlaps
+                x0y0 = utl.rectangle_overlap([xw+2*buf, xh+2*buf, xc],
+                                             [yw+2*buf, yh+2*buf, yc])
+                x0yf = utl.rectangle_overlap([xw+2*buf, xh+2*buf, xc],
+                                             [yw+2*buf, yh+2*buf, yf])
+
+                # x and y at the origin
+                if x0y0 and lim[0] < lim[1]:  # and tp['y']['first']==0:  not sure about this
+                    tp['y']['label_text'][tp['y']['first']] = ''
+                elif x0y0:
+                    tp['y']['label_text'][tp['y']['last']] = ''
+                if x0yf and self.axes.twin_y:
+                    tp['y']['label_text'][tp['y']['last']] = ''
+
                 # overlapping last y and first x between row, col, and wraps
                 if self.nrow > 1 and ir < self.nrow-1:
                     x2y = utl.rectangle_overlap([xw, xh, xc],
@@ -4536,7 +4542,9 @@ class LayoutMPL(BaseLayout):
                     #         tp['y']['min'] == tp['y']['ticks'][tp['y']['first']]:
                     #     tp['x']['label_text'][0] = ''
 
+            if self.tick_cleanup and tlmajx.on:
                 axes[ia].set_xticklabels(tp['x']['label_text'])
+            if self.tick_cleanup and tlmajy.on:
                 axes[ia].set_yticklabels(tp['y']['label_text'])
 
             # Turn on minor tick labels
