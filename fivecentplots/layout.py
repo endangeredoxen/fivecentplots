@@ -647,6 +647,10 @@ class BaseLayout:
             self.legend.on = True
         if self.legend.on and self.fit.on:
             self.fit.color = copy.copy(self.lines.color)
+        y = utl.validate_list(kwargs.get('y'))
+        if not self.axes.twin_x and y is not None and len(y) > 1:
+            self.legend.values = {'NaN': None}
+            self.legend.on = True
 
         # Color bar
         cbar_size = utl.kwget(kwargs, self.fcpp, 'cbar_size', 30)
@@ -4218,7 +4222,7 @@ class LayoutMPL(BaseLayout):
                 ax.get_xaxis().set_major_formatter(ticker.ScalarFormatter())
                 tp = mpl_get_ticks(ax)
                 for itick, tick in enumerate(tp['x']['ticks']):
-                    if tick < 1:
+                    if tick < 1 and tick > 0:
                         digits = -np.log10(tick)
                     else:
                         digits = 0
@@ -4241,7 +4245,7 @@ class LayoutMPL(BaseLayout):
                 ax.get_yaxis().set_major_formatter(ticker.ScalarFormatter())
                 tp = mpl_get_ticks(ax)
                 for itick, tick in enumerate(tp['y']['ticks']):
-                    if tick < 1:
+                    if tick < 1 and tick > 0:
                         digits = -np.log10(tick)
                     else:
                         digits = 0

@@ -197,6 +197,8 @@ class Data:
             else:
                 self.legend = self.check_group_columns('legend',
                                                        kwargs.get('legend', None))
+        elif not self.twin_x and self.y is not None and len(self.y) > 1:
+            self.legend = True
 
         # Define figure grouping column names
         if 'fig_groups' in kwargs.keys():
@@ -208,7 +210,8 @@ class Data:
 
         # Make sure groups, legend, and fig_groups are not the same
         if self.legend and self.groups and self.plot_func != 'plot_box':
-            self.check_group_matching('legend', 'groups')
+            if type(self.legend) is not bool:
+                self.check_group_matching('legend', 'groups')
         if self.legend and self.fig:
             self.check_group_matching('legend', 'fig')
         if self.groups and self.fig:
@@ -1032,6 +1035,10 @@ class Data:
 
         leg_all = []
 
+        if self.legend == True:
+            self.legend = None  # no option for legend here so disable
+            return
+
         if self.legend:
             if type(self.legend) is list:
                 for ileg, leg in enumerate(self.legend):
@@ -1225,7 +1232,7 @@ class Data:
                         cols = (utl.validate_list(self.x) if self.x is not None else []) + \
                                (utl.validate_list(self.y) if self.y is not None else []) + \
                                (utl.validate_list(self.groups) if self.groups is not None else []) + \
-                               (utl.validate_list(self.legend) if self.legend is not None else [])
+                               (utl.validate_list(self.legend) if self.legend not in [None, True, False] else [])
                         self.df_rc = df[cols]
                     elif self.wrap == 'x':
                         self.x = utl.validate_list(self.wrap_vals[ic + ir * self.ncol])
