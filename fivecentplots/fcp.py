@@ -267,7 +267,7 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
             temp = gg[dd.y].dropna()
             temp['x'] = irow + 1
             data += [temp]
-            ss = layout.box_stat_line.stat.lower()
+            ss = str(layout.box_stat_line.stat).lower()
             if ss == 'median':
                 stats += [temp.median().iloc[0]]
             elif ss == 'std':
