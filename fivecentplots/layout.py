@@ -211,6 +211,10 @@ class BaseLayout:
         if self.axes.share_row or self.axes.share_col:
             self.axes.share_x = False
             self.axes.share_y = False
+        if self.axes.twin_x and 'share_y' not in kwargs.keys():
+            self.axes.share_y = False
+        if self.axes.twin_y and 'share_x' not in kwargs.keys():
+            self.axes.share_x = False
 
         twinned = kwargs.get('twin_x', False) or kwargs.get('twin_y', False)
         self.axes2 = Element('ax', self.fcpp, kwargs,
@@ -1260,12 +1264,12 @@ class BaseLayout:
                 getattr(self, 'label_x').text = \
                     lab_text if lab_text is not None else dd[0]
                 getattr(self, 'label_x2').text = \
-                    lab_text if lab_text is not None else dd[1]
+                    lab_text if lab_text is not None else getattr(data, '%s2' % lab)[0]
             elif lab == 'y' and self.axes.twin_x:
                 getattr(self, 'label_y').text = \
                     lab_text if lab_text is not None else dd[0]
                 getattr(self, 'label_y2').text = \
-                    lab_text if lab_text is not None else dd[1]
+                    lab_text if lab_text is not None else getattr(data, '%s2' % lab)[0]
             else:
                 if lab == 'wrap':
                     # special case
@@ -1885,24 +1889,6 @@ class LayoutMPL(BaseLayout):
                         facecolor=fc.get(iline) if type(fc) is RepeatedList else fc,
                         edgecolor=ec.get(iline) if type(ec) is RepeatedList else ec)
 
-    def format_axes(self):
-        """
-        Format the axes colors and gridlines
-        IN USE?
-        """
-
-        axes = self.get_axes()
-
-        for ir in range(0, self.nrow):
-            for ic in range(0, self.ncol):
-                for ax in axes:
-                    ax = self.set_axes_colors(ax, ir, ic)
-                    ax = self.set_axes_grid_lines(ax, ir, ic)
-                    #NOT SURE IF THIS SHOULD BE DONE HERE OR IN THE MAIN LOOP
-
-                    # Set axis ticks
-                    st()
-
     def get_axes(self):
         """
         Return list of active axes
@@ -1994,11 +1980,11 @@ class LayoutMPL(BaseLayout):
             # twin_x
             if self.axes.twin_x:
                 pp = ax.plot(df[data.x[0]], df[data.y[0]], 'o-')
-                pp2 = ax2.plot(df[data.x[0]], df[data.y[1]], 'o-')
+                pp2 = ax2.plot(df[data.x[0]], df[data.y2[0]], 'o-')
             # twin_y
             elif self.axes.twin_y:
                 pp = ax.plot(df[data.x[0]], df[data.y[0]], 'o-')
-                pp2 = ax3.plot(df[data.x[1]], df[data.y[0]], 'o-')
+                pp2 = ax3.plot(df[data.x2[0]], df[data.y[0]], 'o-')
             # Z axis
             elif self.plot_func == 'plot_heatmap':
                 pp = ax.imshow(df, vmin=data.zmin, vmax=data.zmax)
@@ -2077,27 +2063,6 @@ class LayoutMPL(BaseLayout):
             elif self.axes2.scale in LOGITX:
                 ax3.set_xscale('logit')
 
-        # Set limits
-        for ir, ic, df in data.get_rc_subset(data.df_fig):
-            if len(df) == 0:
-                continue
-            if data.ranges[ir, ic]['xmin'] is not None:
-                ax.set_xlim(left=data.ranges[ir, ic]['xmin'])
-            if data.ranges[ir, ic]['xmax'] is not None:
-                ax.set_xlim(right=data.ranges[ir, ic]['xmax'])
-            if data.ranges[ir, ic]['ymin'] is not None:
-                ax.set_ylim(bottom=data.ranges[ir, ic]['ymin'])
-            if data.ranges[ir, ic]['ymax'] is not None:
-                ax.set_ylim(top=data.ranges[ir, ic]['ymax'])
-            if data.ranges[ir, ic]['x2min'] is not None and data.twin_y:
-                ax3.set_xlim(left=data.ranges[ir, ic]['x2min'])
-            if data.ranges[ir, ic]['x2max'] is not None and data.twin_y:
-                ax3.set_xlim(right=data.ranges[ir, ic]['x2max'])
-            if data.ranges[ir, ic]['y2min'] is not None and data.twin_x:
-                ax2.set_ylim(bottom=data.ranges[ir, ic]['y2min'])
-            if data.ranges[ir, ic]['y2max'] is not None and data.twin_x:
-                ax2.set_ylim(top=data.ranges[ir, ic]['y2max'])
-
         axes = [ax, ax2, ax3]
         for ia, aa in enumerate(axes):
             if aa is None:
@@ -2142,6 +2107,22 @@ class LayoutMPL(BaseLayout):
         for ir, ic, df in data.get_rc_subset(data.df_fig):
             if len(df) == 0:
                 continue
+            if data.ranges[ir, ic]['xmin'] is not None:
+                ax.set_xlim(left=data.ranges[ir, ic]['xmin'])
+            if data.ranges[ir, ic]['xmax'] is not None:
+                ax.set_xlim(right=data.ranges[ir, ic]['xmax'])
+            if data.ranges[ir, ic]['ymin'] is not None:
+                ax.set_ylim(bottom=data.ranges[ir, ic]['ymin'])
+            if data.ranges[ir, ic]['ymax'] is not None:
+                ax.set_ylim(top=data.ranges[ir, ic]['ymax'])
+            if data.ranges[ir, ic]['x2min'] is not None and data.twin_y:
+                ax3.set_xlim(left=data.ranges[ir, ic]['x2min'])
+            if data.ranges[ir, ic]['x2max'] is not None and data.twin_y:
+                ax3.set_xlim(right=data.ranges[ir, ic]['x2max'])
+            if data.ranges[ir, ic]['y2min'] is not None and data.twin_x:
+                ax2.set_ylim(bottom=data.ranges[ir, ic]['y2min'])
+            if data.ranges[ir, ic]['y2max'] is not None and data.twin_x:
+                ax2.set_ylim(top=data.ranges[ir, ic]['y2max'])
             # Set custom tick increment
             xinc = self.ticks_major_x.increment
             if xinc is not None:
@@ -2788,7 +2769,8 @@ class LayoutMPL(BaseLayout):
             self.label_wrap.size[1] + self.labtick_x2) / self.fig.size[1]
 
         self.axes.position[3] = \
-            (self.labtick_x + self.ws_fig_label + self.box_labels) / self.fig.size[1]
+            (self.labtick_x + self.ws_fig_label + self.box_labels + \
+             self.legend.overflow) / self.fig.size[1]
 
     def get_title_position(self):
         """
@@ -3431,7 +3413,7 @@ class LayoutMPL(BaseLayout):
             if ranges[ir, ic]['xmax'] is not None:
                 self.axes.obj[ir, ic].set_xlim(right=ranges[ir, ic]['xmax'])
             if ranges[ir, ic]['x2max'] is not None:
-                self.axes.obj[ir, ic].set_xlim(right=ranges[ir, ic]['x2max'])
+                self.axes2.obj[ir, ic].set_xlim(right=ranges[ir, ic]['x2max'])
 
         # Y-axis
         if self.axes.share_y:
@@ -3464,29 +3446,7 @@ class LayoutMPL(BaseLayout):
             if ranges[ir, ic]['ymax'] is not None:
                 self.axes.obj[ir, ic].set_ylim(top=ranges[ir, ic]['ymax'])
             if ranges[ir, ic]['y2max'] is not None:
-                self.axes.obj[ir, ic].set_ylim(top=ranges[ir, ic]['y2max'])
-
-
-
-
-
-        # for k, v in ranges.items():
-        #     if k == 'xmin' and v is not None:
-        #         self.axes.obj[ir, ic].set_xlim(left=v)
-        #     elif k == 'x2min' and v is not None:
-        #         self.axes2.obj[ir, ic].set_xlim(left=v)
-        #     elif k == 'xmax' and v is not None:
-        #         self.axes.obj[ir, ic].set_xlim(right=v)
-        #     elif k == 'x2max' and v is not None:
-        #         self.axes2.obj[ir, ic].set_xlim(right=v)
-        #     elif k == 'ymin' and v is not None:
-        #         self.axes.obj[ir, ic].set_ylim(bottom=v)
-        #     elif k == 'y2min' and v is not None:
-        #         self.axes2.obj[ir, ic].set_ylim(bottom=v)
-        #     elif k == 'ymax' and v is not None:
-        #         self.axes.obj[ir, ic].set_ylim(top=v)
-        #     elif k == 'y2max' and v is not None:
-        #         self.axes2.obj[ir, ic].set_ylim(top=v)
+                self.axes2.obj[ir, ic].set_ylim(top=ranges[ir, ic]['y2max'])
 
     def set_axes_ranges_hist(self, ir, ic, data, hist, iline):
         """

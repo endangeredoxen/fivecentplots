@@ -111,6 +111,12 @@
 <li class="toctree-l3"><a class="reference internal" href="#Single-legend-column">Single legend column</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Multiple-legend-columns">Multiple legend columns</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Multiple-x-&amp;-y-values">Multiple x &amp; y values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Secondary-x|y-plots">Secondary x|y plots</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#No-legend">No legend</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Axis-legend">Axis legend</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Legend-by-another-column">Legend by another column</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#groups">groups</a><ul>
@@ -535,6 +541,75 @@ visualization of the data. The legend can be disabled by setting
 </div>
 </div>
 </div>
+<div class="section" id="Secondary-x|y-plots">
+<h3>Secondary x|y plots<a class="headerlink" href="#Secondary-x|y-plots" title="Permalink to this headline">¶</a></h3>
+<p>Three options are available for legending are available for plots with a
+secondary axis: (1) no legend; (2) legend based on the values of the
+primary/secondary axes; or (3) legend based on another column.</p>
+<div class="section" id="No-legend">
+<h4>No legend<a class="headerlink" href="#No-legend" title="Permalink to this headline">¶</a></h4>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/grouping_21_0.png" src="_images/grouping_21_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Axis-legend">
+<h4>Axis legend<a class="headerlink" href="#Axis-legend" title="Permalink to this headline">¶</a></h4>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/grouping_23_0.png" src="_images/grouping_23_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Legend-by-another-column">
+<h4>Legend by another column<a class="headerlink" href="#Legend-by-another-column" title="Permalink to this headline">¶</a></h4>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/grouping_25_0.png" src="_images/grouping_25_0.png" />
+</div>
+</div>
+</div>
+</div>
 </div>
 <div class="section" id="groups">
 <h2>groups<a class="headerlink" href="#groups" title="Permalink to this headline">¶</a></h2>
@@ -551,7 +626,7 @@ back to the begining for each “group” of the data. This occurs because
 we have provided no information about how to segment the data set.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [6]:
+<span></span>In [9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -564,7 +639,7 @@ we have provided no information about how to segment the data set.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_22_0.png" src="_images/grouping_22_0.png" />
+<img alt="_images/grouping_30_0.png" src="_images/grouping_30_0.png" />
 </div>
 </div>
 <p>To handle cases like this, we can add the keyword <code class="docutils literal notranslate"><span class="pre">groups</span></code> and specify
@@ -574,7 +649,7 @@ the measurement data. The <code class="docutils literal notranslate"><span class
 a legend from a different DataFrame column.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [7]:
+<span></span>In [10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -587,14 +662,14 @@ a legend from a different DataFrame column.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_24_0.png" src="_images/grouping_24_0.png" />
+<img alt="_images/grouping_32_0.png" src="_images/grouping_32_0.png" />
 </div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">groups</span></code> also supports multiple column names. Here is the above plot
 without legending by “Temperature [C]”:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [8]:
+<span></span>In [11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -607,7 +682,7 @@ without legending by “Temperature [C]”:</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_26_0.png" src="_images/grouping_26_0.png" />
+<img alt="_images/grouping_34_0.png" src="_images/grouping_34_0.png" />
 </div>
 </div>
 </div>
@@ -618,7 +693,7 @@ into subsets. However, for boxplots the group column names and values
 are actually displayed along the x-axis:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [9]:
+<span></span>In [12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -631,7 +706,7 @@ are actually displayed along the x-axis:</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_29_0.png" src="_images/grouping_29_0.png" />
+<img alt="_images/grouping_37_0.png" src="_images/grouping_37_0.png" />
 </div>
 </div>
 </div>
@@ -645,7 +720,7 @@ columns we are using. In this case, we remove the “Temperature [C]” and
 and column commands, respectively.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [10]:
+<span></span>In [13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -658,7 +733,7 @@ and column commands, respectively.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_32_0.png" src="_images/grouping_32_0.png" />
+<img alt="_images/grouping_40_0.png" src="_images/grouping_40_0.png" />
 </div>
 </div>
 </div>
@@ -676,7 +751,7 @@ the “Temperature [C]” and “Boost Level” column names as a list to the
 <code class="docutils literal notranslate"><span class="pre">wrap</span></code> keyword.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [11]:
+<span></span>In [14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -689,7 +764,7 @@ the “Temperature [C]” and “Boost Level” column names as a list to the
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_36_0.png" src="_images/grouping_36_0.png" />
+<img alt="_images/grouping_44_0.png" src="_images/grouping_44_0.png" />
 </div>
 </div>
 <p>By default, wrap plots will be arranged in a square grid. If the number
@@ -701,7 +776,7 @@ columns. The number of rows will be automatically determined from the
 number of subplots.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [12]:
+<span></span>In [15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -714,7 +789,7 @@ number of subplots.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_38_0.png" src="_images/grouping_38_0.png" />
+<img alt="_images/grouping_46_0.png" src="_images/grouping_46_0.png" />
 </div>
 </div>
 </div>
@@ -729,7 +804,7 @@ sharing can be overriden. As before, used <code class="docutils literal notransl
 default gridding.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [13]:
+<span></span>In [16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -743,14 +818,14 @@ default gridding.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_41_0.png" src="_images/grouping_41_0.png" />
+<img alt="_images/grouping_49_0.png" src="_images/grouping_49_0.png" />
 </div>
 </div>
 <p>Or an alternatively styled version of this plot with tick and label
 sharing off:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [14]:
+<span></span>In [17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -765,7 +840,7 @@ sharing off:</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_43_0.png" src="_images/grouping_43_0.png" />
+<img alt="_images/grouping_51_0.png" src="_images/grouping_51_0.png" />
 </div>
 </div>
 </div>
@@ -779,7 +854,7 @@ created for each unique value in the DataFrame column(s) listed in the
 of the “Die” column.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [15]:
+<span></span>In [18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -792,21 +867,21 @@ of the “Die” column.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_46_0.png" src="_images/grouping_46_0.png" />
+<img alt="_images/grouping_54_0.png" src="_images/grouping_54_0.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_46_1.png" src="_images/grouping_46_1.png" />
+<img alt="_images/grouping_54_1.png" src="_images/grouping_54_1.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_46_2.png" src="_images/grouping_46_2.png" />
+<img alt="_images/grouping_54_2.png" src="_images/grouping_54_2.png" />
 </div>
 </div>
 </div>

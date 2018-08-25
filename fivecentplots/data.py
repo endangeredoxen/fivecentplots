@@ -86,6 +86,10 @@ class Data:
         self.twin_y = kwargs.get('twin_y', False)
         if self.twin_x == self.twin_y and self.twin_x:
             raise AxisError('cannot simultaneously twin x and y axes')
+        if self.twin_x and 'share_y' not in kwargs.keys():
+            self.share_y = False
+        if self.twin_y and 'share_x' not in kwargs.keys():
+            self.share_x = False
         self.xtrans = kwargs.get('xtrans', None)
         self.x2trans = kwargs.get('x2trans', None)
         self.ytrans = kwargs.get('ytrans', None)
@@ -116,14 +120,18 @@ class Data:
         self.x = self.check_xyz('x')
         self.y = self.check_xyz('y')
         self.z = self.check_xyz('z')
+        self.x2 = []
+        self.y2 = []
         if self.twin_x:
             if len(self.y) < 2:
                 raise AxisError('twin_x requires two y-axis columns')
             self.y2 = [self.y[1]]
+            self.y = [self.y[0]]
         if self.twin_y:
             if len(self.x) < 2:
                 raise AxisError('twin_y requires two x-axis columns')
             self.x2 = [self.x[1]]
+            self.x = [self.x[0]]
         if self.plot_func == 'plot_heatmap':
             if not self.x and not self.y and not self.z:
                 self.x = ['Column']
@@ -638,12 +646,15 @@ class Data:
             elif getattr(self, ax) == ['Value'] and self.auto_cols:
                 vmin = df.min().min()
                 vmax = df.max().max()
-            elif ax != 'z':
+            elif ax not in ['x2', 'y2', 'z']:
                 vmin = 0
                 vmax = len(df[getattr(self, ax)].drop_duplicates())
-            else:
+            elif ax not in ['x2', 'y2']:
                 vmin = df[getattr(self, ax)].min().iloc[0]
                 vmax = df[getattr(self, ax)].max().iloc[0]
+            else:
+                vmin = None
+                vmax = None
             if getattr(self, '%smin' % ax):
                 vmin = getattr(self, '%smin' % ax)
             if getattr(self, '%smax' % ax):
@@ -767,6 +778,11 @@ class Data:
         else:
             vmax = None
 
+        if type(vmin) in [float, np.float32, np.float64] and np.isnan(vmin):
+            vmin = None
+        if type(vmax) in [float, np.float32, np.float64] and np.isnan(vmax):
+            vmax = None
+
         return vmin, vmax
 
     def get_data_ranges(self, ir, ic):
@@ -792,12 +808,7 @@ class Data:
             for f in fixed:
                 ax = f[0:-3]
                 side = f[-3:]
-                if '2' in ax and (self.twin_x or self.twin_y):
-                    ax = [getattr(self, ax[0])[1]]
-                elif self.twin_x and ax == 'y' or self.twin_y and ax == 'x':
-                    ax = [getattr(self, ax[0])[0]]
-                else:
-                    ax = getattr(self, ax)
+                ax = getattr(self, ax)
 
                 for axx in ax:
                     # Adjust the dataframe by the limits
@@ -823,12 +834,12 @@ class Data:
                 vals = self.get_data_range(ax, df_fig)
                 self.ranges[ir, ic]['%smin' % ax] = vals[0]
                 self.ranges[ir, ic]['%smax' % ax] = vals[1]
-            elif self.share_row:
+            elif self.share_row and self.row is not None:
                 vals = self.get_data_range(ax,
                     df_fig[df_fig[self.row[0]] == self.row_vals[ir]])
                 self.ranges[ir, ic]['%smin' % ax] = vals[0]
                 self.ranges[ir, ic]['%smax' % ax] = vals[1]
-            elif self.share_col:
+            elif self.share_col and self.col is not None:
                 vals = self.get_data_range(ax,
                     df_fig[df_fig[self.col[0]] == self.col_vals[ic]])
                 self.ranges[ir, ic]['%smin' % ax] = vals[0]
@@ -1022,12 +1033,12 @@ class Data:
 
         if self.legend == True and self.twin_x \
                 or self.legend == True and len(self.y) > 1:
-            self.legend_vals = self.y
-            self.nleg = len(self.y)
+            self.legend_vals = self.y + self.y2
+            self.nleg = len(self.y + self.y2)
             return
         elif self.legend == True and self.twin_y:
-            self.legend_vals = self.x
-            self.nleg = len(self.x)
+            self.legend_vals = self.x + self.x2
+            self.nleg = len(self.x + self.x2)
             return
 
         if not self.legend:
@@ -1059,11 +1070,11 @@ class Data:
             if not self.x:
                 selfx = [None]
             else:
-                selfx = self.x
+                selfx = self.x + self.x2
             if not self.y:
                 selfy = [None]
             else:
-                selfy = self.y
+                selfy = self.y + self.y2
             for xx in selfx:
                 for yy in selfy:
                     leg_all += [(leg, xx, yy)]
@@ -1091,8 +1102,6 @@ class Data:
         elif len(leg_df.x.unique()) > 1 and not self.twin_x:
             leg_df['names'] = \
                 leg_df['names'].map(str) + ' | ' + leg_df.y.map(str) + ' / ' + leg_df.x.map(str)
-        # elif self.twin_x:
-        #     leg_df['names'] = leg_df.x.map(str)
 
         new_index = natsorted(leg_df['names'])
         leg_df = leg_df.set_index('names')
@@ -1111,10 +1120,12 @@ class Data:
         """
 
         if type(self.legend_vals) != pd.DataFrame:
-            lenx = 1 if not self.x else len(self.x)
-            leny = 1 if not self.y else len(self.y)
-            vals = pd.DataFrame({'x': self.x if not self.x else self.x*leny,
-                                 'y': self.y if not self.y else self.y*lenx})
+            xx = [] if not self.x else self.x + self.x2
+            yy = [] if not self.y else self.y + self.y2
+            lenx = 1 if not self.x else len(xx)
+            leny = 1 if not self.y else len(yy)
+            vals = pd.DataFrame({'x': self.x if not self.x else xx*leny,
+                                 'y': self.y if not self.y else yy*lenx})
 
             for irow, row in vals.iterrows():
                 # Set twin ax status

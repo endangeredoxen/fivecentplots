@@ -111,3 +111,5 @@ ENV/
 fivecentplots/tests/test.png
 .idea/workspace.xml
 fivecentplots/tests/test.png
+fivecentplots/__pycache__/__init__.cpython-35.pyc
+fivecentplots/__pycache__/fcp.cpython-35.pyc
