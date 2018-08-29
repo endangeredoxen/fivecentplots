@@ -844,6 +844,9 @@ class Data:
                     df_fig[df_fig[self.col[0]] == self.col_vals[ic]])
                 self.ranges[ir, ic]['%smin' % ax] = vals[0]
                 self.ranges[ir, ic]['%smax' % ax] = vals[1]
+            elif len(df_rc) == 0:
+                self.ranges[ir, ic]['%smin' % ax] = None
+                self.ranges[ir, ic]['%smax' % ax] = None
             elif not getattr(self, 'share_%s' % ax):
                 vals = self.get_data_range(ax, df_rc)
                 self.ranges[ir, ic]['%smin' % ax] = vals[0]
@@ -988,11 +991,27 @@ class Data:
             if type(self.fit_range_x) is list:
                 df2 = df2[(df2[x] >= self.fit_range_x[0]) & \
                           (df2[x] <= self.fit_range_x[1])].copy()
+                if self.ranges[ir, ic]['ymin'] is not None:
+                    df2 = df2[(df2[y]) >= self.ranges[ir, ic]['ymin']]
+                if self.ranges[ir, ic]['ymax'] is not None:
+                    df2 = df2[(df2[y]) <= self.ranges[ir, ic]['ymax']]
             elif type(self.fit_range_y) is list:
                 df2 = df2[(df2[y] >= self.fit_range_y[0]) & \
                           (df2[y] <= self.fit_range_y[1])].copy()
+                if self.ranges[ir, ic]['xmin'] is not None:
+                    df2 = df2[(df2[x]) >= self.ranges[ir, ic]['xmin']]
+                if self.ranges[ir, ic]['xmax'] is not None:
+                    df2 = df2[(df2[x]) <= self.ranges[ir, ic]['xmax']]
             else:
                 df2 = df2.copy()
+                if self.ranges[ir, ic]['xmin'] is not None:
+                    df2 = df2[(df2[x]) >= self.ranges[ir, ic]['xmin']]
+                if self.ranges[ir, ic]['xmax'] is not None:
+                    df2 = df2[(df2[x]) <= self.ranges[ir, ic]['xmax']]
+                if self.ranges[ir, ic]['ymin'] is not None:
+                    df2 = df2[(df2[y]) >= self.ranges[ir, ic]['ymin']]
+                if self.ranges[ir, ic]['ymax'] is not None:
+                    df2 = df2[(df2[y]) <= self.ranges[ir, ic]['ymax']]
 
             xx = np.array(df2[x])
             yy = np.array(df2[y])
@@ -1092,9 +1111,6 @@ class Data:
 
         elif len(leg_df.y.unique()) > 1 and not (leg_df.Leg==None).all() and len(leg_df.x.unique()) == 1:
             leg_df['names'] = leg_df.Leg.map(str) + ' | ' + leg_df.y.map(str)
-
-        # elif self.twin_x:
-        #     leg_df['names'] = leg_df.y
 
         # if more than one x and leg specified
         if 'names' not in leg_df.columns:

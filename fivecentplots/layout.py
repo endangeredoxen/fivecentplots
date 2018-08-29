@@ -344,6 +344,8 @@ class BaseLayout:
                                     not kwargs.get('tick_labels_major_fill_color', None) \
                                     else 1,
                     font_size=13,
+                    offset=utl.kwget(kwargs, self.fcpp,
+                                     'tick_labels_major_offset', False),
                     padding=utl.kwget(kwargs, self.fcpp,
                                       'tick_labels_major_padding', 4),
                     )
@@ -417,6 +419,8 @@ class BaseLayout:
                                        self.tick_labels_major.font_style),
                         font_weight=kwargs.get('tick_labels_major_font_style',
                                        self.tick_labels_major.font_style),
+                        offset=kwargs.get('tick_labels_major_offset',
+                                       self.tick_labels_major.offset),
                         padding=kwargs.get('tick_labels_major_padding',
                                        self.tick_labels_major.padding),
                         rotation=kwargs.get('tick_labels_major_rotation',
@@ -646,13 +650,15 @@ class BaseLayout:
                                                  kwargs.get('legend') if kwargs.get('legend') != True else ''),
                                  values={} if not kwargs.get('legend') else {'NaN': None},
                                  )
+
         if not self.legend.on and self.ref_line.on:
             self.legend.values['ref_line'] = []
             self.legend.on = True
         if self.legend.on and self.fit.on:
             self.fit.color = copy.copy(self.lines.color)
         y = utl.validate_list(kwargs.get('y'))
-        if not self.axes.twin_x and y is not None and len(y) > 1:
+        if not self.axes.twin_x and y is not None and len(y) > 1 and \
+                self.plot_func != 'plot_box':
             self.legend.values = {'NaN': None}
             self.legend.on = True
 
@@ -1990,7 +1996,7 @@ class LayoutMPL(BaseLayout):
                 pp = ax.imshow(df, vmin=data.zmin, vmax=data.zmax)
                 if self.cbar.on:
                     cbar = self.add_cbar(ax, pp)
-                ax2 = cbar.ax
+                    ax2 = cbar.ax
 
                 # Set ticks
                 dtypes = [int, np.int32, np.int64]
@@ -2067,7 +2073,17 @@ class LayoutMPL(BaseLayout):
         for ia, aa in enumerate(axes):
             if aa is None:
                 continue
-            axes[ia] = self.set_scientific(aa, ia)
+            if not (ia == 1 and self.plot_func == 'plot_heatmap'):
+                axes[ia] = self.set_scientific(aa, ia)
+            if not self.tick_labels_major.offset:
+                try:
+                    axes[ia].get_xaxis().get_major_formatter().set_useOffset(False)
+                except:
+                    pass
+                try:
+                    axes[ia].get_yaxis().get_major_formatter().set_useOffset(False)
+                except:
+                    pass
             axes[ia].minorticks_on()
             if ia == 0:
                 axes[ia].tick_params(axis='both',
@@ -2123,6 +2139,7 @@ class LayoutMPL(BaseLayout):
                 ax2.set_ylim(bottom=data.ranges[ir, ic]['y2min'])
             if data.ranges[ir, ic]['y2max'] is not None and data.twin_x:
                 ax2.set_ylim(top=data.ranges[ir, ic]['y2max'])
+
             # Set custom tick increment
             xinc = self.ticks_major_x.increment
             if xinc is not None:
@@ -3386,6 +3403,7 @@ class LayoutMPL(BaseLayout):
         if self.axes.share_x:
             xvals = ['xmin', 'xmax', 'x2min', 'x2max']
             for xval in xvals:
+                xx = None
                 for irow in range(0, self.nrow):
                     for icol in range(0, self.ncol):
                         if ranges[irow, icol][xval] is not None:
@@ -3395,8 +3413,7 @@ class LayoutMPL(BaseLayout):
                                 xx = min(xx, ranges[irow, icol][xval])
                             else:
                                 xx = max(xx, ranges[irow, icol][xval])
-                        else:
-                            xx = None
+
                 if xx and xval == 'xmin':
                     self.axes.obj[ir, ic].set_xlim(left=xx)
                 elif xx and xval == 'x2min':
@@ -3419,6 +3436,7 @@ class LayoutMPL(BaseLayout):
         if self.axes.share_y:
             yvals = ['ymin', 'ymax', 'y2min', 'y2max']
             for yval in yvals:
+                yy = None
                 for irow in range(0, self.nrow):
                     for icol in range(0, self.ncol):
                         if ranges[irow, icol][yval] is not None:
@@ -3428,8 +3446,7 @@ class LayoutMPL(BaseLayout):
                                 yy = min(yy, ranges[irow, icol][yval])
                             else:
                                 yy = max(yy, ranges[irow, icol][yval])
-                        else:
-                            yy = None
+
                 if yy and yval == 'ymin':
                     self.axes.obj[ir, ic].set_ylim(bottom=yy)
                 elif yy and yval == 'y2min':
@@ -3607,6 +3624,17 @@ class LayoutMPL(BaseLayout):
             # Turn off scientific
             if ia == 0 or self.axes.twin_y or self.axes.twin_x:
                 self.set_scientific(axes[ia])
+
+            # Turn off offsets
+            if not self.tick_labels_major.offset:
+                try:
+                    aa.get_xaxis().get_major_formatter().set_useOffset(False)
+                except:
+                    pass
+                try:
+                    aa.get_yaxis().get_major_formatter().set_useOffset(False)
+                except:
+                    pass
 
             # General tick params
             if ia == 0:
@@ -4177,7 +4205,8 @@ class LayoutMPL(BaseLayout):
             except:
                 pass
 
-        elif not self.tick_labels_major_x.sci:
+        elif not self.tick_labels_major_x.sci \
+                and self.plot_func not in ['plot_box', 'plot_heatmap']:
             try:
                 ax.get_xaxis().set_major_formatter(ticker.ScalarFormatter())
                 tp = mpl_get_ticks(ax)
@@ -4200,7 +4229,8 @@ class LayoutMPL(BaseLayout):
             except:
                 pass
 
-        elif not self.tick_labels_major_y.sci:
+        elif not self.tick_labels_major_y.sci \
+                and self.plot_func not in ['plot_heatmap']:
             try:
                 ax.get_yaxis().set_major_formatter(ticker.ScalarFormatter())
                 tp = mpl_get_ticks(ax)
