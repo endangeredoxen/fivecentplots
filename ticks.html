@@ -126,7 +126,11 @@
 <li class="toctree-l2"><a class="reference internal" href="#Tick-labels">Tick labels</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#General-comments">General comments</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Tick-cleanup">Tick cleanup</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Scientific-notation">Scientific notation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Scientific-notation">Scientific notation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Linear-scale-axis">Linear scale axis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Log-scale-axis">Log scale axis</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -932,18 +936,23 @@ the tick labels (if applicable):</p>
 </div>
 <div class="section" id="Scientific-notation">
 <h3>Scientific notation<a class="headerlink" href="#Scientific-notation" title="Permalink to this headline">¶</a></h3>
-<p>By default, tick labels for log-scaled plots will use scientific
-notation. To use regular numerals, set the keywords <code class="docutils literal notranslate"><span class="pre">sci_x</span></code> and or
-<code class="docutils literal notranslate"><span class="pre">sci_y</span></code> to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<div class="section" id="Linear-scale-axis">
+<h4>Linear scale axis<a class="headerlink" href="#Linear-scale-axis" title="Permalink to this headline">¶</a></h4>
+<p>By default, fivecentplots will attempt to make an intelligent decision
+about how to display tick labels when the range of data and/or the
+discrete tick values are very small/large. Consider the following
+example with very small <code class="docutils literal notranslate"><span class="pre">y</span></code> values. Notice that the values on the y
+axis default to exponential notation rather than explictly writing out
+18 zeros after the decimal place.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [21]:
+<span></span>In [20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
-         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">,</span>
-         <span class="n">ax_scale</span><span class="o">=</span><span class="s1">&#39;logy&#39;</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">sci_y</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span></span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">1E-19</span><span class="p">,</span> <span class="mf">1E-18</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="n">y</span><span class="p">}),</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -951,7 +960,115 @@ notation. To use regular numerals, set the keywords <code class="docutils litera
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_57_0.png" src="_images/ticks_57_0.png" />
+<img alt="_images/ticks_58_0.png" src="_images/ticks_58_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">1E18</span><span class="p">,</span> <span class="mf">1E19</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="n">y</span><span class="p">}),</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/ticks_59_0.png" src="_images/ticks_59_0.png" />
+</div>
+</div>
+<p>You can disable the auto-formatting of ticks by setting the keywords
+<code class="docutils literal notranslate"><span class="pre">sci_x</span></code> and/or <code class="docutils literal notranslate"><span class="pre">sci_y</span></code> to <code class="docutils literal notranslate"><span class="pre">False</span></code>. In this particular example,
+this would be a really poor choice.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">1E18</span><span class="p">,</span> <span class="mf">1E19</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="n">y</span><span class="p">}),</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">sci_y</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/ticks_61_0.png" src="_images/ticks_61_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Log-scale-axis">
+<h4>Log scale axis<a class="headerlink" href="#Log-scale-axis" title="Permalink to this headline">¶</a></h4>
+<p>Now consider the following log-scaled plot. By default, the major tick
+labels for a log axis are powers of 10 if the values are large.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">,</span>
+         <span class="n">ax_scale</span><span class="o">=</span><span class="s1">&#39;logy&#39;</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="mf">0.00001</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="mi">100000000</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/ticks_64_0.png" src="_images/ticks_64_0.png" />
+</div>
+</div>
+<p>We can force the tick values to regular numerals as we did above by
+setting the keywords <code class="docutils literal notranslate"><span class="pre">sci_x</span></code> and/or <code class="docutils literal notranslate"><span class="pre">sci_y</span></code> to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">,</span>
+         <span class="n">ax_scale</span><span class="o">=</span><span class="s1">&#39;logy&#39;</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="mf">0.00001</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="mi">100000000</span><span class="p">,</span> <span class="n">sci_y</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/ticks_66_0.png" src="_images/ticks_66_0.png" />
+</div>
+</div>
+<p>Lastly we can force tick marks of a log-scaled axis to exponential
+notation by setting the keywords <code class="docutils literal notranslate"><span class="pre">sci_x</span></code> and/or <code class="docutils literal notranslate"><span class="pre">sci_y</span></code> to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">,</span>
+         <span class="n">ax_scale</span><span class="o">=</span><span class="s1">&#39;logy&#39;</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="mf">0.00001</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="mi">100000000</span><span class="p">,</span> <span class="n">sci_y</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/ticks_68_0.png" src="_images/ticks_68_0.png" />
+</div>
 </div>
 </div>
 </div>
