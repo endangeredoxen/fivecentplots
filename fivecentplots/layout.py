@@ -396,7 +396,7 @@ class BaseLayout:
             if getattr(self, 'axes%s' % axl).scale in globals()['LOG%s' % ax[0].upper()] and \
                     not utl.kwget(kwargs, self.fcpp, 'sci_%s' % ax, False) and \
                     'sci_%s' % ax not in kwargs.keys():
-                kwargs['sci_%s' % ax] = True
+                kwargs['sci_%s' % ax] = 'best'
 
             setattr(self, 'tick_labels_major_%s' % ax,
                     Element('tick_labels_major_%s' % ax, self.fcpp, kwargs,
@@ -426,8 +426,10 @@ class BaseLayout:
                         rotation=kwargs.get('tick_labels_major_rotation',
                                        self.tick_labels_major.rotation),
                         size=[0, 0],
-                        sci=utl.kwget(kwargs, self.fcpp, 'sci_%s' % ax, False),
+                        sci=utl.kwget(kwargs, self.fcpp, 'sci_%s' % ax, 'best'),
                         ))
+        self.auto_tick_threshold = utl.kwget(kwargs, self.fcpp,
+                                             'auto_tick_threshold', [1e-5, 1e5])
 
         self.ticks_minor = Element('ticks_minor', self.fcpp, kwargs,
                                    on=utl.kwget(kwargs, self.fcpp,
@@ -2069,6 +2071,26 @@ class LayoutMPL(BaseLayout):
             elif self.axes2.scale in LOGITX:
                 ax3.set_xscale('logit')
 
+        for ir, ic, df in data.get_rc_subset(data.df_fig):
+            if len(df) == 0:
+                continue
+            if data.ranges[ir, ic]['xmin'] is not None:
+                ax.set_xlim(left=data.ranges[ir, ic]['xmin'])
+            if data.ranges[ir, ic]['xmax'] is not None:
+                ax.set_xlim(right=data.ranges[ir, ic]['xmax'])
+            if data.ranges[ir, ic]['ymin'] is not None:
+                ax.set_ylim(bottom=data.ranges[ir, ic]['ymin'])
+            if data.ranges[ir, ic]['ymax'] is not None:
+                ax.set_ylim(top=data.ranges[ir, ic]['ymax'])
+            if data.ranges[ir, ic]['x2min'] is not None and data.twin_y:
+                ax3.set_xlim(left=data.ranges[ir, ic]['x2min'])
+            if data.ranges[ir, ic]['x2max'] is not None and data.twin_y:
+                ax3.set_xlim(right=data.ranges[ir, ic]['x2max'])
+            if data.ranges[ir, ic]['y2min'] is not None and data.twin_x:
+                ax2.set_ylim(bottom=data.ranges[ir, ic]['y2min'])
+            if data.ranges[ir, ic]['y2max'] is not None and data.twin_x:
+                ax2.set_ylim(top=data.ranges[ir, ic]['y2max'])
+
         axes = [ax, ax2, ax3]
         for ia, aa in enumerate(axes):
             if aa is None:
@@ -2123,22 +2145,22 @@ class LayoutMPL(BaseLayout):
         for ir, ic, df in data.get_rc_subset(data.df_fig):
             if len(df) == 0:
                 continue
-            if data.ranges[ir, ic]['xmin'] is not None:
-                ax.set_xlim(left=data.ranges[ir, ic]['xmin'])
-            if data.ranges[ir, ic]['xmax'] is not None:
-                ax.set_xlim(right=data.ranges[ir, ic]['xmax'])
-            if data.ranges[ir, ic]['ymin'] is not None:
-                ax.set_ylim(bottom=data.ranges[ir, ic]['ymin'])
-            if data.ranges[ir, ic]['ymax'] is not None:
-                ax.set_ylim(top=data.ranges[ir, ic]['ymax'])
-            if data.ranges[ir, ic]['x2min'] is not None and data.twin_y:
-                ax3.set_xlim(left=data.ranges[ir, ic]['x2min'])
-            if data.ranges[ir, ic]['x2max'] is not None and data.twin_y:
-                ax3.set_xlim(right=data.ranges[ir, ic]['x2max'])
-            if data.ranges[ir, ic]['y2min'] is not None and data.twin_x:
-                ax2.set_ylim(bottom=data.ranges[ir, ic]['y2min'])
-            if data.ranges[ir, ic]['y2max'] is not None and data.twin_x:
-                ax2.set_ylim(top=data.ranges[ir, ic]['y2max'])
+            # if data.ranges[ir, ic]['xmin'] is not None:
+            #     ax.set_xlim(left=data.ranges[ir, ic]['xmin'])
+            # if data.ranges[ir, ic]['xmax'] is not None:
+            #     ax.set_xlim(right=data.ranges[ir, ic]['xmax'])
+            # if data.ranges[ir, ic]['ymin'] is not None:
+            #     ax.set_ylim(bottom=data.ranges[ir, ic]['ymin'])
+            # if data.ranges[ir, ic]['ymax'] is not None:
+            #     ax.set_ylim(top=data.ranges[ir, ic]['ymax'])
+            # if data.ranges[ir, ic]['x2min'] is not None and data.twin_y:
+            #     ax3.set_xlim(left=data.ranges[ir, ic]['x2min'])
+            # if data.ranges[ir, ic]['x2max'] is not None and data.twin_y:
+            #     ax3.set_xlim(right=data.ranges[ir, ic]['x2max'])
+            # if data.ranges[ir, ic]['y2min'] is not None and data.twin_x:
+            #     ax2.set_ylim(bottom=data.ranges[ir, ic]['y2min'])
+            # if data.ranges[ir, ic]['y2max'] is not None and data.twin_x:
+            #     ax2.set_ylim(top=data.ranges[ir, ic]['y2max'])
 
             # Set custom tick increment
             xinc = self.ticks_major_x.increment
@@ -4197,15 +4219,51 @@ class LayoutMPL(BaseLayout):
         else:
             lab = '2'
 
-        if not self.tick_labels_major_x.sci \
+        # Select scientific notation unless specified
+        tp = mpl_get_ticks(ax)
+        bestx, besty = False, False
+        if self.tick_labels_major_x.sci == 'best' and len(tp['x']['ticks']) > 0:
+            xrange = tp['x']['ticks'][-1] - tp['x']['ticks'][0]
+            nonzero = tp['x']['ticks'][tp['x']['ticks'] != 0]
+            xthresh = np.any(np.abs(nonzero) <= self.auto_tick_threshold[0]) or \
+                      np.any(np.abs(nonzero) >= self.auto_tick_threshold[1])
+            if xrange <= self.auto_tick_threshold[0] or \
+               xrange >= self.auto_tick_threshold[1] or xthresh:
+                tick_labels_major_x_sci = True
+            else:
+                tick_labels_major_x_sci = False
+            bestx = True
+        elif self.tick_labels_major_x.sci == 'best':
+            tick_labels_major_x_sci = False
+        else:
+            tick_labels_major_x_sci = self.tick_labels_major_x.sci
+        if self.tick_labels_major_y.sci == 'best' and len(tp['y']['ticks']) > 0:
+            yrange = tp['y']['ticks'][-1] - tp['y']['ticks'][0]
+            nonzero = tp['y']['ticks'][tp['y']['ticks'] != 0]
+            ythresh = np.any(np.abs(nonzero) <= self.auto_tick_threshold[0]) or \
+                      np.any(np.abs(nonzero) >= self.auto_tick_threshold[1])
+            if yrange <= self.auto_tick_threshold[0] or \
+               yrange >= self.auto_tick_threshold[1] or ythresh:
+                tick_labels_major_y_sci = True
+            else:
+                tick_labels_major_y_sci = False
+            besty = True
+        elif self.tick_labels_major_y.sci == 'best':
+            tick_labels_major_y_sci = False
+        else:
+            tick_labels_major_y_sci = self.tick_labels_major_y.sci
+
+        # Set labels
+        logx = getattr(self, 'axes%s' % lab).scale in LOGX + SYMLOGX + LOGITX
+        if not tick_labels_major_x_sci \
                 and self.plot_func not in ['plot_box', 'plot_heatmap'] \
-                and getattr(self, 'axes%s' % lab).scale not in LOGX + SYMLOGX + LOGITX:
+                and not logx:
             try:
                 ax.get_xaxis().get_major_formatter().set_scientific(False)
             except:
                 pass
 
-        elif not self.tick_labels_major_x.sci \
+        elif not tick_labels_major_x_sci \
                 and self.plot_func not in ['plot_box', 'plot_heatmap']:
             try:
                 ax.get_xaxis().set_major_formatter(ticker.ScalarFormatter())
@@ -4220,16 +4278,31 @@ class LayoutMPL(BaseLayout):
                 ax.set_xticklabels(tp['x']['label_text'])
             except:
                 pass
+        elif (bestx and not logx \
+                or not bestx and tick_labels_major_x_sci and logx) \
+                and self.plot_func not in ['plot_box', 'plot_heatmap']:
+            xlim = ax.get_xlim()
+            max_dec = 0
+            for itick, tick in enumerate(tp['x']['ticks']):
+                if tick != 0:
+                    power = np.ceil(-np.log10(tick))
+                    if np.isnan(power) or tick < xlim[0] or tick > xlim[1]:
+                        continue
+                    dec = utl.get_decimals(tick*10**power)
+                    max_dec = max(max_dec, dec)
+            dec = '%%.%se' % max_dec
+            ax.get_xaxis().set_major_formatter(ticker.FormatStrFormatter(dec))
 
-        if not self.tick_labels_major_y.sci \
+        logy = getattr(self, 'axes%s' % lab).scale in LOGY + SYMLOGY + LOGITY
+        if not tick_labels_major_y_sci \
                 and self.plot_func not in ['plot_heatmap'] \
-                and getattr(self, 'axes%s' % lab).scale not in LOGY + SYMLOGY + LOGITY:
+                and not logy:
             try:
                 ax.get_yaxis().get_major_formatter().set_scientific(False)
             except:
                 pass
 
-        elif not self.tick_labels_major_y.sci \
+        elif not tick_labels_major_y_sci \
                 and self.plot_func not in ['plot_heatmap']:
             try:
                 ax.get_yaxis().set_major_formatter(ticker.ScalarFormatter())
@@ -4244,5 +4317,19 @@ class LayoutMPL(BaseLayout):
                 ax.set_yticklabels(tp['y']['label_text'])
             except:
                 pass
+        elif (besty and not logy \
+                or not besty and tick_labels_major_y_sci and logy) \
+                and self.plot_func not in ['plot_heatmap']:
+            ylim = ax.get_ylim()
+            max_dec = 0
+            for itick, tick in enumerate(tp['y']['ticks']):
+                if tick != 0:
+                    power = np.ceil(-np.log10(tick))
+                    if np.isnan(power) or tick < ylim[0] or tick > ylim[1]:
+                        continue
+                    dec = utl.get_decimals(tick*10**power)
+                    max_dec = max(max_dec, dec)
+            dec = '%%.%se' % max_dec
+            ax.get_yaxis().set_major_formatter(ticker.FormatStrFormatter(dec))
 
         return ax
