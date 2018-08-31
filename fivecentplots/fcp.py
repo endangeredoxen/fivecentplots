@@ -587,8 +587,11 @@ def plotter(plot_func, **kwargs):
     # Set the plotting engine
     engine = kwargs.get('engine', 'mpl').lower()
 
-    # Build the data object
+    # Build the data object and update kwargs
     dd = Data(plot_func, **kwargs)
+    for k, v in kwargs.items():
+        if k in dd.__dict__.keys():
+            kwargs[k] = getattr(dd, k)
 
     # Iterate over discrete figures
     for ifig, fig_item, fig_cols, df_fig in dd.get_df_figure():

@@ -1088,6 +1088,8 @@ class BaseLayout:
                                          'separate_labels', False)
         self.separate_ticks = utl.kwget(kwargs, self.fcpp,
                                         'separate_ticks', self.separate_labels)
+        if self.separate_labels:
+            self.separate_ticks = True
         if not self.axes.share_x or not self.axes.share_y:
             self.separate_ticks = True
         self.tick_cleanup = utl.kwget(kwargs, self.fcpp, 'tick_cleanup', True)
@@ -2141,26 +2143,33 @@ class LayoutMPL(BaseLayout):
                                      width=self.ticks_minor.size[1],
                                      )
 
+        for ia, aa in enumerate(axes):
+            if aa is None:
+                continue
+            if not (ia == 1 and self.plot_func == 'plot_heatmap'):
+                axes[ia] = self.set_scientific(aa, ia)
+
         # Ticks
         for ir, ic, df in data.get_rc_subset(data.df_fig):
+            # have to do this a second time... may be a better way
             if len(df) == 0:
                 continue
-            # if data.ranges[ir, ic]['xmin'] is not None:
-            #     ax.set_xlim(left=data.ranges[ir, ic]['xmin'])
-            # if data.ranges[ir, ic]['xmax'] is not None:
-            #     ax.set_xlim(right=data.ranges[ir, ic]['xmax'])
-            # if data.ranges[ir, ic]['ymin'] is not None:
-            #     ax.set_ylim(bottom=data.ranges[ir, ic]['ymin'])
-            # if data.ranges[ir, ic]['ymax'] is not None:
-            #     ax.set_ylim(top=data.ranges[ir, ic]['ymax'])
-            # if data.ranges[ir, ic]['x2min'] is not None and data.twin_y:
-            #     ax3.set_xlim(left=data.ranges[ir, ic]['x2min'])
-            # if data.ranges[ir, ic]['x2max'] is not None and data.twin_y:
-            #     ax3.set_xlim(right=data.ranges[ir, ic]['x2max'])
-            # if data.ranges[ir, ic]['y2min'] is not None and data.twin_x:
-            #     ax2.set_ylim(bottom=data.ranges[ir, ic]['y2min'])
-            # if data.ranges[ir, ic]['y2max'] is not None and data.twin_x:
-            #     ax2.set_ylim(top=data.ranges[ir, ic]['y2max'])
+            if data.ranges[ir, ic]['xmin'] is not None:
+                ax.set_xlim(left=data.ranges[ir, ic]['xmin'])
+            if data.ranges[ir, ic]['xmax'] is not None:
+                ax.set_xlim(right=data.ranges[ir, ic]['xmax'])
+            if data.ranges[ir, ic]['ymin'] is not None:
+                ax.set_ylim(bottom=data.ranges[ir, ic]['ymin'])
+            if data.ranges[ir, ic]['ymax'] is not None:
+                ax.set_ylim(top=data.ranges[ir, ic]['ymax'])
+            if data.ranges[ir, ic]['x2min'] is not None and data.twin_y:
+                ax3.set_xlim(left=data.ranges[ir, ic]['x2min'])
+            if data.ranges[ir, ic]['x2max'] is not None and data.twin_y:
+                ax3.set_xlim(right=data.ranges[ir, ic]['x2max'])
+            if data.ranges[ir, ic]['y2min'] is not None and data.twin_x:
+                ax2.set_ylim(bottom=data.ranges[ir, ic]['y2min'])
+            if data.ranges[ir, ic]['y2max'] is not None and data.twin_x:
+                ax2.set_ylim(top=data.ranges[ir, ic]['y2max'])
 
             # Set custom tick increment
             xinc = self.ticks_major_x.increment
@@ -2680,14 +2689,14 @@ class LayoutMPL(BaseLayout):
             self.ws_col = self.labtick_z #- self.label_z.size[0]
 
         if self.separate_labels:  # may need to move this down
-            self.ws_col += self.label_y.size[0]
-            self.ws_row += self.label_x.size[1]
+            self.ws_col += self.label_y.size[0] + self.ws_label_tick + self.ws_fig_label
+            self.ws_row += self.label_x.size[1] + self.ws_label_tick + self.ws_fig_label
 
         if self.separate_ticks:
             self.ws_col += max(self.tick_labels_major_y.size[0],
-                               self.tick_labels_minor_y.size[0])
+                               self.tick_labels_minor_y.size[0]) + self.ws_ticks_ax
             self.ws_row += max(self.tick_labels_major_x.size[1],
-                               self.tick_labels_minor_x.size[1])
+                               self.tick_labels_minor_x.size[1]) + self.ws_ticks_ax
 
         # Figure width
         self.fig.size[0] = \
@@ -2782,8 +2791,8 @@ class LayoutMPL(BaseLayout):
                                       self.labtick_x2)/self.axes.size[1]
 
         self.label_wrap.position[3] = 1
-        self.title_wrap.size[0] = self.ncol * self.title_wrap.size[0]
-        self.title_wrap.position[3] = 1 + self.label_wrap.size[1] / self.axes.size[1]
+        self.title_wrap.size[0] = self.ncol * self.title_wrap.size[0] + (self.ncol - 1) * self.ws_col
+        self.title_wrap.position[3] = 1 + (self.label_wrap.size[1] + 1)/ self.axes.size[1]
 
     def get_subplots_adjust(self):
         """
@@ -2842,10 +2851,12 @@ class LayoutMPL(BaseLayout):
             self.title_wrap.on = False
             self.label_wrap.on = False
             self.separate_labels = kwargs.get('separate_labels', True)
-            self.separate_ticks = kwargs.get('separate_ticks', True)
+            self.separate_ticks = kwargs.get('separate_ticks', True) \
+                                  if not self.separate_labels else True
         elif data.wrap:
             self.separate_labels = kwargs.get('separate_labels', False)
-            self.separate_ticks = kwargs.get('separate_ticks', False)
+            self.separate_ticks = kwargs.get('separate_ticks', False) \
+                                  if not self.separate_labels else True
             self.ws_row = kwargs.get('ws_row', self.label_wrap._size[1])
             self.ws_col = kwargs.get('ws_col', 0)
             self.cbar.on = False  # may want to address this someday
@@ -3644,8 +3655,10 @@ class LayoutMPL(BaseLayout):
                 lab = '2'
 
             # Turn off scientific
-            if ia == 0 or self.axes.twin_y or self.axes.twin_x:
+            if ia == 0:
                 self.set_scientific(axes[ia])
+            elif self.axes.twin_y or self.axes.twin_x:
+                self.set_scientific(axes[ia], 2)
 
             # Turn off offsets
             if not self.tick_labels_major.offset:
@@ -3828,6 +3841,16 @@ class LayoutMPL(BaseLayout):
             valid_maj = {}
             buf = 3
             if self.tick_cleanup and tlmajx.on:
+                # Get rid of out of range labels
+                for idx in range(0, tp['x']['first']):
+                    tp['x']['label_text'][idx] = ''
+                for idx in range(tp['x']['last'] + 1, len(tp['x']['label_text'])):
+                    tp['x']['label_text'][idx] = ''
+                for idx in range(0, tp['y']['first']):
+                    tp['y']['label_text'][idx] = ''
+                for idx in range(tp['y']['last'] + 1, len(tp['y']['label_text'])):
+                    tp['y']['label_text'][idx] = ''
+
                 # Get the position of the first major x tick
                 xcx = get_tick_position(axes[ia], tp, 'x', 'first', ia)
                 xfx = get_tick_position(axes[ia], tp, 'x', 'last', ia)

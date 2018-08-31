@@ -2,6 +2,10 @@ import importlib
 import os, sys
 import pdb
 import numpy as np
+try:
+    from scipy import misc
+except:
+    pass
 st = pdb.set_trace
 # Get user default file
 user_dir = os.path.expanduser('~')
@@ -104,6 +108,21 @@ def kwget(dict1, dict2, val, default):
     else:
         return default
 
+
+def imgdf(path):
+    """
+    Read an image file into a DataFrame
+
+    Args:
+        path (str): path to file
+
+    Returns:
+        DataFrame
+
+    """
+
+    image = misc.imread(path)
+    st()
 
 def rectangle_overlap(r1, r2):
     """
