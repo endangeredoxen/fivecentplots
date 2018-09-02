@@ -315,10 +315,10 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
     for dat in data:
         del dat['x']
 
-    if type(data) is pd.Series:
-        data = data.values
-    elif type(data) is pd.DataFrame and len(data.columns) == 1:
-        data = data.values
+    # if type(data) is pd.Series:
+    #     data = data.values
+    # elif type(data) is pd.DataFrame and len(data.columns) == 1:
+    #     data = data.values
 
     # Range lines
     if layout.box_range_lines.on:
@@ -333,6 +333,8 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
                             x1=id+1, y1=dat.max().iloc[0], **kwargs)
 
     # Add boxes
+    for ival, val in enumerate(data):
+        data[ival] = val[dd.y[0]].values
     bp = layout.plot_box(ir, ic, data, **kwargs)
 
     # Add divider lines

@@ -2030,7 +2030,10 @@ class LayoutMPL(BaseLayout):
                     ax2.set_ylim(top=data.ranges[ir, ic]['zmax'])
             # hist
             elif self.plot_func == 'plot_hist':
-                pp = ax.hist(df[data.x[0]], bins=self.hist.bins, normed=self.hist.normalize)
+                if LooseVersion(mpl.__version__) < LooseVersion('2.2'):
+                    pp = ax.hist(df[data.x[0]], bins=self.hist.bins, normed=self.hist.normalize)
+                else:
+                    pp = ax.hist(df[data.x[0]], bins=self.hist.bins, density=self.hist.normalize)
             # Regular
             else:
                 for xy in zip(data.x, data.y):
@@ -2984,16 +2987,20 @@ class LayoutMPL(BaseLayout):
         zz = np.array(df[z])
 
         # Make the grid
-        xi = np.linspace(min(xx), max(xx))
-        yi = np.linspace(min(yy), max(yy))
-        zi = mlab.griddata(xx, yy, zz, xi, yi, interp='linear')
+        if LooseVersion(mpl.__version__) < LooseVersion('2.2'):
+            xi = np.linspace(min(xx), max(xx))
+            yi = np.linspace(min(yy), max(yy))
+            zi = mlab.griddata(xx, yy, zz, xi, yi, interp='linear')
+        else:
+            xi, yi = np.mgrid[min(xx):max(xx):100j, min(yy):max(yy):200j]
+            zi = scipy.interpolate.griddata((xx, yy), zz, (xi, yi), method='linear')
 
         if self.contour.filled:
-            contour = ax.contourf
+            cc = ax.contourf(xi, yi, zi, self.contour.levels, cmap=self.contour.cmap, zorder=2,
+                             vmin=ranges['zmin'], vmax=ranges['zmax'])
         else:
-            contour = ax.contour
-        cc = contour(xi, yi, zi, self.contour.levels, line_width=self.contour.width,
-                     cmap=self.contour.cmap, zorder=2, vmin=ranges['zmin'], vmax=ranges['zmax'])
+            cc = ax.contour(xi, yi, zi, self.contour.levels, linewidths=self.contour.width.values,
+                            cmap=self.contour.cmap, zorder=2, vmin=ranges['zmin'], vmax=ranges['zmax'])
 
         if self.cbar.on:
             cbar = self.add_cbar(ax, cc)
@@ -3063,18 +3070,32 @@ class LayoutMPL(BaseLayout):
     def plot_hist(self, ir, ic, iline, df, x, y, leg_name, data, zorder=1,
                 line_type=None, marker_disable=False):
 
-        hist = self.axes.obj[ir, ic].hist(df[x], bins=self.hist.bins,
-                                          color=self.hist.fill_color.get(iline),
-                                          ec=self.hist.edge_color.get(iline),
-                                          lw=self.hist.edge_width,
-                                          zorder=3, align=self.hist.align,
-                                          cumulative=self.hist.cumulative,
-                                          normed=self.hist.normalize,
-                                          rwidth=self.hist.rwidth,
-                                          stacked=self.hist.stacked,
-                                          #type=self.hist.type,
-                                          orientation='vertical' if not self.hist.horizontal else 'horizontal',
-                                          )
+        if LooseVersion(mpl.__version__) < LooseVersion('2.2'):
+                hist = self.axes.obj[ir, ic].hist(df[x], bins=self.hist.bins,
+                                            color=self.hist.fill_color.get(iline),
+                                            ec=self.hist.edge_color.get(iline),
+                                            lw=self.hist.edge_width,
+                                            zorder=3, align=self.hist.align,
+                                            cumulative=self.hist.cumulative,
+                                            normed=self.hist.normalize,
+                                            rwidth=self.hist.rwidth,
+                                            stacked=self.hist.stacked,
+                                            #type=self.hist.type,
+                                            orientation='vertical' if not self.hist.horizontal else 'horizontal',
+                                            )
+        else:
+            hist = self.axes.obj[ir, ic].hist(df[x], bins=self.hist.bins,
+                                            color=self.hist.fill_color.get(iline),
+                                            ec=self.hist.edge_color.get(iline),
+                                            lw=self.hist.edge_width,
+                                            zorder=3, align=self.hist.align,
+                                            cumulative=self.hist.cumulative,
+                                            density=self.hist.normalize,
+                                            rwidth=self.hist.rwidth,
+                                            stacked=self.hist.stacked,
+                                            #type=self.hist.type,
+                                            orientation='vertical' if not self.hist.horizontal else 'horizontal',
+                                            )
 
         # Add a reference to the line to self.lines
         if leg_name:
@@ -3961,10 +3982,16 @@ class LayoutMPL(BaseLayout):
             # Turn on minor tick labels
             ax = ['x', 'y']
             sides = {}
-            sides['x'] = {'labelbottom': 'off'}
-            sides['x2'] = {'labeltop': 'off'}
-            sides['y'] = {'labelleft': 'off'}
-            sides['y2'] = {'labelright': 'off'}
+            if LooseVersion(mpl.__version__) < LooseVersion('2.2'):
+                sides['x'] = {'labelbottom': 'off'}
+                sides['x2'] = {'labeltop': 'off'}
+                sides['y'] = {'labelleft': 'off'}
+                sides['y2'] = {'labelright': 'off'}
+            else:
+                sides['x'] = {'labelbottom': False}
+                sides['x2'] = {'labeltop': False}
+                sides['y'] = {'labelleft': False}
+                sides['y2'] = {'labelright': False}
 
             tlminon = False  # "tick label min"
             for axx in ax:

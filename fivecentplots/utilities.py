@@ -2,11 +2,13 @@ import importlib
 import os, sys
 import pdb
 import numpy as np
+import pandas as pd
 try:
-    from scipy import misc
+    import cv2
 except:
     pass
 st = pdb.set_trace
+
 # Get user default file
 user_dir = os.path.expanduser('~')
 default_path = os.path.join(user_dir, '.fivecentplots')
@@ -109,20 +111,29 @@ def kwget(dict1, dict2, val, default):
         return default
 
 
-def imgdf(path):
+def img_compare(img1, img2):
     """
-    Read an image file into a DataFrame
+    Read two images and compare for difference by pixel
 
     Args:
-        path (str): path to file
+        img1 (str): path to file #1
+        img2 (str): path to file #2
 
     Returns:
-        DataFrame
+        True/False of existance of differences
 
     """
 
-    image = misc.imread(path)
-    st()
+    img1 = cv2.imread(img1)
+    img2 = cv2.imread(img2)
+
+    if img1 is None or img2 is None or img1.shape != img2.shape:
+        return False
+
+    difference = cv2.subtract(img1, img2)
+
+    return np.any(difference)
+
 
 def rectangle_overlap(r1, r2):
     """
