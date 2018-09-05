@@ -690,9 +690,15 @@ class BaseLayout:
                               )
 
         # Heatmaps
+        if 'cell_size' in kwargs.keys():
+            kwargs['heatmap_cell_size'] = kwargs['cell_size']
         self.heatmap = Element('heatmap', self.fcpp, kwargs,
                                on=True if self.plot_func=='plot_heatmap'
                                   else False,
+                               cell_size=utl.kwget(kwargs, self.fcpp,
+                                                   'heatmap_cell_size',
+                                                   60 if 'ax_size' not in
+                                                   kwargs else None),
                                cmap=utl.kwget(kwargs, self.fcpp,
                                               'cmap', 'inferno'),
                                edge_width=0,
@@ -2645,7 +2651,7 @@ class LayoutMPL(BaseLayout):
         if saved:
             os.remove(filename + '.png')
 
-    def get_figure_size(self, **kwargs):
+    def get_figure_size(self, data, **kwargs):
         """
         Determine the size of the mpl figure canvas in pixels and inches
         """
@@ -2700,6 +2706,11 @@ class LayoutMPL(BaseLayout):
                                self.tick_labels_minor_y.size[0]) + self.ws_ticks_ax
             self.ws_row += max(self.tick_labels_major_x.size[1],
                                self.tick_labels_minor_x.size[1]) + self.ws_ticks_ax
+        if self.plot_func == 'plot_heatmap' and \
+                self.heatmap.cell_size is not None and \
+                data.num_x is not None:
+            self.axes.size = [self.heatmap.cell_size * data.num_x,
+                              self.heatmap.cell_size * data.num_y]
 
         # Figure width
         self.fig.size[0] = \
@@ -2867,7 +2878,7 @@ class LayoutMPL(BaseLayout):
         self.set_colormap(data)
         self.set_label_text(data, **kwargs)
         self.get_element_sizes(data)
-        self.get_figure_size(**kwargs)
+        self.get_figure_size(data, **kwargs)
         self.get_subplots_adjust()
         self.get_rc_label_position()
         self.get_legend_position()

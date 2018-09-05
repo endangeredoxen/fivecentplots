@@ -175,7 +175,7 @@ def reload_defaults():
     return fcp_params, colors, markers
 
 
-def set_save_filename(df, fig_item, fig_cols, layout, kwargs):
+def set_save_filename(df, ifig, fig_item, fig_cols, layout, kwargs):
     """
     Build a filename based on the plot setup parameters
 
@@ -193,7 +193,10 @@ def set_save_filename(df, fig_item, fig_cols, layout, kwargs):
     if 'filename' in kwargs.keys():
         filename = kwargs['filename']
         ext = kwargs.get('save_ext', '.png')
-        filename += ext if ext not in filename else ''
+        filename = filename.replace(ext, '')
+        if ifig is not None and ifig > 0:
+            filename += ' (%s)' % (ifig + 1)
+        filename += ext
         return filename
 
     # Build a filename

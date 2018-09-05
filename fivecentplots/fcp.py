@@ -657,7 +657,7 @@ def plotter(plot_func, **kwargs):
         layout.set_figure_title()
 
         # Build the save filename
-        filename = set_save_filename(df_fig, fig_item, fig_cols,
+        filename = set_save_filename(df_fig, ifig, fig_item, fig_cols,
                                      layout, kwargs)
         if 'filepath' in kwargs.keys():
             filename = os.path.join(kwargs['filepath'], filename)

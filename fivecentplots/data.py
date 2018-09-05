@@ -1301,6 +1301,8 @@ class Data:
                                                     index=self.y[0], columns=self.x[0])
                     cols = natsorted(self.df_rc.columns)
                     self.df_rc = self.df_rc[cols]
+                    self.df_rc.index = natsorted(self.df_rc.index)
+
                     # Set limits
                     if not self.xmin:
                         self.xmin = -0.5
@@ -1332,6 +1334,14 @@ class Data:
                     if self.df_rc.columns.dtype in dtypes and list(self.df_rc.columns) != \
                             [f + self.df_rc.columns[0] for f in range(0, len(self.df_rc.columns))]:
                         self.df_rc.columns = self.df_rc.columns.astype('O')
+                    if self.x[0] in self.df_fig.columns:
+                        self.num_x = len(self.df_fig[self.x].drop_duplicates())
+                    else:
+                        self.num_x = None
+                    if self.y[0] in self.df_fig.columns:
+                        self.num_y = len(self.df_fig[self.y].drop_duplicates())
+                    else:
+                        self.num_y = None
 
                 # Deal with empty dfs
                 if len(self.df_rc) == 0:

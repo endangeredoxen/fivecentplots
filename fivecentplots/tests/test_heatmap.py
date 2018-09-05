@@ -1,112 +1,25 @@
 
-# coding: utf-8
-
-# # <b>heatmap</b>
-
-# This section provides examples of how to use the <b>heatmap</b> function.  At a minimum, the `heatmap` function requires the following keywords:
-# <ul>
-# <li>`df`: a pandas DataFrame</li>
-# <li>`x`: the name of the DataFrame column containing the x-axis data</li>
-# <li>`y`: the name of the DataFrame column containing the y-axis data</li>
-# <li>`z`: the name of the DataFrame column containing the z-axis data</li>
-# </ul>
-# 
-# Heatmaps in <b><font color="blue" style="font-family:'Courier New'">fivecentplots </font></b> can display both categorical and non-categorical data on either a uniform or non-uniform grid.
-
-# ## Setup
-
-# ### Imports
-
-# In[1]:
-
-
-get_ipython().run_line_magic('load_ext', 'autoreload')
-get_ipython().run_line_magic('autoreload', '2')
-get_ipython().run_line_magic('matplotlib', 'inline')
+import pytest
 import fivecentplots as fcp
 import pandas as pd
 import numpy as np
 import os, sys, pdb
+import fivecentplots.utilities as utl
+import inspect
 osjoin = os.path.join
 st = pdb.set_trace
 
+MASTER = osjoin(os.path.dirname(fcp.__file__), 'tests', 'test_images', 'heatmap.py')
 
-# ### Sample data
-
-# In[2]:
-
-
+# Sample data
 df = pd.read_csv(osjoin(os.path.dirname(fcp.__file__), 'tests', 'fake_data_heatmap.csv'))
-df.head()
 
+# Set theme
+# fcp.set_theme('gray')
+# fcp.set_theme('white')
 
-# ### Set theme
-
-# In[3]:
-
-
-#fcp.set_theme('gray')
-#fcp.set_theme('white')
-
-
-# ### Other
-
-# In[4]:
-
-
+# Other
 SHOW = False
-
-
-# ## Categorical heatmap
-
-# First consider a case where both the `x` and `y` DataFrame columns contain categorical data values:
-
-# ### No data labels
-
-# In[5]:
-
-
-fcp.heatmap(df=df, x='Category', y='Player', z='Average', cbar=True, show=SHOW)
-
-
-# Note that for heatmaps the `x` tick labels are rotated 90&#176; by default.  This can be overridden via the keyword `tick_labels_major_x_rotation`.
-
-# ### With data labels
-
-# In[6]:
-
-
-fcp.heatmap(df=df, x='Category', y='Player', z='Average', cbar=True, data_labels=True, 
-            heatmap_font_color='#aaaaaa', show=SHOW, tick_labels_major_y_edge_width=0, ws_ticks_ax=5)
-
-
-# ## Non-uniform data
-
-# A major difference between heatmaps and contour plots is that contour plots assume that the `x` and `y` DataFrame column values are numerical and continuous.  With a heatmap, we can cast numerical data into categorical form.  Note that any missing values get mapped as `nan` values are not not plotted.  
-
-# In[7]:
-
-
-# Read the contour DataFrame
-df2 = pd.read_csv(osjoin(os.path.dirname(fcp.__file__), 'tests', 'fake_data_contour.csv'))
-
-
-# In[8]:
-
-
-fcp.heatmap(df=df2, x='X', y='Y', z='Value', row='Batch', col='Experiment', 
-            cbar=True, show=SHOW, share_z=True, ax_size=[400, 400],
-            data_labels=False, label_rc_font_size=12, filter='Batch==103', cmap='viridis')
-
-
-# Note that the x-axis width is not 400px as specified by the keyword `ax_scale`.  This occurs because the data set does not have as many values on the x-axis as on the y-axis.  <b><font color="blue" style="font-family:'Courier New'">fivecentplots </font></b> applies the axis size to the axis with the most items and scales the other axis accordingly.
-
-# ## imshow alternative
-
-# We can also use `fcp.heatmap` to display images (similar to `imshow` in matplotlib).  Here we will take a random image from the world wide web, place it in a pandas DataFrame, and display.
-
-# In[9]:
-
 
 # Read an image
 import imageio
@@ -119,33 +32,163 @@ gray = 0.2989 * r + 0.5870 * g + 0.1140 * b
 
 # Convert image data to pandas DataFrame
 img = pd.DataFrame(gray)
-img.head()
 
 
-# Display the image as a colored heatmap:
+def make_all():
+    """
+    Remake all test master images
+    """
 
-# In[10]:
-
-
-fcp.heatmap(img, cmap='inferno', cbar=True, ax_size=[600, 600])
-
-
-# Now let's enhance the contrast of the same image by limiting our color range to the mean pixel value +/- 3 * sigma:
-
-# In[11]:
-
-
-uu = img.stack().mean()
-ss = img.stack().std()
-fcp.heatmap(img, cmap='inferno', cbar=True, ax_size=[600, 600], zmin=uu-3*ss, zmax=uu+3*ss)
+    members = inspect.getmembers(sys.modules[__name__])
+    members = [f for f in members if 'test_' in f[0]]
+    for member in members:
+        print('Running %s...' % member[0], end='')
+        member[1](master=True)
+        print('done!')
 
 
-# We can also crop the image by specifying range value for `x` and `y`.  Unlike `imshow`, the actual row and column values displayed on the x- and y-axis are preserved after the zoom (not reset to 0, 0):
+def test_cat_no_label(master=False, remove=True):
 
-# In[12]:
+    name = osjoin(MASTER, 'cat_no_label_master') if master else 'cat_no_label'
+
+    # Make the plot
+    fcp.heatmap(df=df, x='Category', y='Player', z='Average', cbar=True, show=SHOW,
+                filename=name + '.png', inline=False)
+
+    # Compare with master
+    if master:
+        return
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
 
 
-fcp.heatmap(img, cmap='inferno', cbar=True, ax_size=[600, 600], xmin=1400, xmax=2000, ymin=500, ymax=1000)
+def test_cat_label(master=False, remove=True):
+
+    name = osjoin(MASTER, 'cat_label_master') if master else 'cat_label'
+
+    # Make the plot
+    fcp.heatmap(df=df, x='Category', y='Player', z='Average', cbar=True, data_labels=True,
+                heatmap_font_color='#aaaaaa', show=SHOW, tick_labels_major_y_edge_width=0,
+                ws_ticks_ax=5,
+                filename=name + '.png', inline=False)
+
+    # Compare with master
+    if master:
+        return
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
 
 
-# <i> private eyes are watching you... </i>
+def test_cat_cell_size(master=False, remove=True):
+
+    name = osjoin(MASTER, 'cat_cell_size_master') if master else 'cat_cell_size'
+
+    # Make the plot
+    fcp.heatmap(df=df, x='Category', y='Player', z='Average', cbar=True, data_labels=True,
+            heatmap_font_color='#aaaaaa', show=SHOW, tick_labels_major_y_edge_width=0,
+            ws_ticks_ax=5, cell_size=100,
+            filename=name + '.png', inline=False)
+
+    # Compare with master
+    if master:
+        return
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_cat_non_uniform(master=False, remove=True):
+
+    name = osjoin(MASTER, 'cat_non-uniform_master') if master else 'cat_non-uniform'
+
+    # Make the plot
+    df2 = pd.read_csv(osjoin(os.path.dirname(fcp.__file__), 'tests', 'fake_data_contour.csv'))
+    fcp.heatmap(df=df2, x='X', y='Y', z='Value', row='Batch', col='Experiment',
+                cbar=True, show=SHOW, share_z=True, ax_size=[400, 400],
+                data_labels=False, label_rc_font_size=12, filter='Batch==103', cmap='viridis',
+                filename=name + '.png', inline=False)
+
+    # Compare with master
+    if master:
+        return
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_heatmap(master=False, remove=True):
+
+    name = osjoin(MASTER, 'heatmap_master') if master else 'heatmap'
+
+    # Make the plot
+    fcp.heatmap(img, cmap='inferno', cbar=True, ax_size=[600, 600],
+                filename=name + '.png', inline=False)
+
+    # Compare with master
+    if master:
+        return
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_heatmap_stretched(master=False, remove=True):
+
+    name = osjoin(MASTER, 'heatmap_stretched_master') if master else 'heatmap_stretched'
+
+    # Make the plot
+    uu = img.stack().mean()
+    ss = img.stack().std()
+    fcp.heatmap(img, cmap='inferno', cbar=True, ax_size=[600, 600], zmin=uu-3*ss, zmax=uu+3*ss,
+                filename=name + '.png', inline=False)
+
+    # Compare with master
+    if master:
+        return
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_heatmap_zoomed(master=False, remove=True):
+
+    name = osjoin(MASTER, 'heatmap_zoomed_master') if master else 'heatmap_zoomed'
+
+    # Make the plot
+    fcp.heatmap(img, cmap='inferno', cbar=True, ax_size=[600, 600], xmin=1400, xmax=2000,
+                ymin=500, ymax=1000,
+                filename=name + '.png', inline=False)
+
+    # Compare with master
+    if master:
+        return
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+if __name__ == '__main__':
+    pass

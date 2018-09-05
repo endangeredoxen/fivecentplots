@@ -122,6 +122,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#Categorical-heatmap">Categorical heatmap</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#No-data-labels">No data labels</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#With-data-labels">With data labels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Cell-size">Cell size</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#Non-uniform-data">Non-uniform data</a></li>
@@ -566,6 +567,32 @@ This can be overridden via the keyword <code class="docutils literal notranslate
 </div>
 </div>
 </div>
+<div class="section" id="Cell-size">
+<h3>Cell size<a class="headerlink" href="#Cell-size" title="Permalink to this headline">¶</a></h3>
+<p>The size of the heatmap cell will default to a width of 60 pixels
+unless: (1) the keyword <code class="docutils literal notranslate"><span class="pre">heatmap_cell_size</span></code> (or <code class="docutils literal notranslate"><span class="pre">cell_size</span></code> when
+directly supplying the value to the function call) is specified; or (2)
+<code class="docutils literal notranslate"><span class="pre">ax_size</span></code> is explicitly defined. Note that for a heatmap the cells are
+always square with width=height.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Category&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Player&#39;</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="s1">&#39;Average&#39;</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">data_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">heatmap_font_color</span><span class="o">=</span><span class="s1">&#39;#aaaaaa&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">tick_labels_major_y_edge_width</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ws_ticks_ax</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">cell_size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/heatmap_20_0.png" src="_images/heatmap_20_0.png" />
+</div>
+</div>
+</div>
 </div>
 <div class="section" id="Non-uniform-data">
 <h2>Non-uniform data<a class="headerlink" href="#Non-uniform-data" title="Permalink to this headline">¶</a></h2>
@@ -576,7 +603,7 @@ into categorical form. Note that any missing values get mapped as
 <code class="docutils literal notranslate"><span class="pre">nan</span></code> values are not not plotted.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [7]:
+<span></span>In [8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -587,7 +614,7 @@ into categorical form. Note that any missing values get mapped as
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [8]:
+<span></span>In [9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -601,7 +628,7 @@ into categorical form. Note that any missing values get mapped as
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/heatmap_21_0.png" src="_images/heatmap_21_0.png" />
+<img alt="_images/heatmap_24_0.png" src="_images/heatmap_24_0.png" />
 </div>
 </div>
 <p>Note that the x-axis width is not 400px as specified by the keyword
@@ -617,7 +644,7 @@ in matplotlib). Here we will take a random image from the world wide
 web, place it in a pandas DataFrame, and display.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [9]:
+<span></span>In [10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -638,7 +665,7 @@ web, place it in a pandas DataFrame, and display.</p>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>Out[9]:
+<span></span>Out[10]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -812,7 +839,7 @@ web, place it in a pandas DataFrame, and display.</p>
 <p>Display the image as a colored heatmap:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [10]:
+<span></span>In [11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -824,14 +851,14 @@ web, place it in a pandas DataFrame, and display.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/heatmap_27_0.png" src="_images/heatmap_27_0.png" />
+<img alt="_images/heatmap_30_0.png" src="_images/heatmap_30_0.png" />
 </div>
 </div>
 <p>Now let’s enhance the contrast of the same image by limiting our color
 range to the mean pixel value +/- 3 * sigma:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [11]:
+<span></span>In [12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -845,7 +872,7 @@ range to the mean pixel value +/- 3 * sigma:</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/heatmap_29_0.png" src="_images/heatmap_29_0.png" />
+<img alt="_images/heatmap_32_0.png" src="_images/heatmap_32_0.png" />
 </div>
 </div>
 <p>We can also crop the image by specifying range value for <code class="docutils literal notranslate"><span class="pre">x</span></code> and
@@ -853,7 +880,7 @@ range to the mean pixel value +/- 3 * sigma:</p>
 the x- and y-axis are preserved after the zoom (not reset to 0, 0):</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [12]:
+<span></span>In [13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -866,7 +893,7 @@ the x- and y-axis are preserved after the zoom (not reset to 0, 0):</p>
 </div>
 <div class="output_area docutils container">
 <blockquote>
-<div><img alt="_images/heatmap_31_0.png" src="_images/heatmap_31_0.png" />
+<div><img alt="_images/heatmap_34_0.png" src="_images/heatmap_34_0.png" />
 </div></blockquote>
 <p>private eyes are watching you…</p>
 </div>
