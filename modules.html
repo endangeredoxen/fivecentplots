@@ -664,6 +664,27 @@ rounding errors</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="utilities.img_compare">
+<code class="descclassname">utilities.</code><code class="descname">img_compare</code><span class="sig-paren">(</span><em>img1</em>, <em>img2</em><span class="sig-paren">)</span><a class="headerlink" href="#utilities.img_compare" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read two images and compare for difference by pixel</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>img1</strong> (<em>str</em>) – path to file #1</li>
+<li><strong>img2</strong> (<em>str</em>) – path to file #2</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">True/False of existance of differences</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="utilities.kwget">
 <code class="descclassname">utilities.</code><code class="descname">kwget</code><span class="sig-paren">(</span><em>dict1</em>, <em>dict2</em>, <em>val</em>, <em>default</em><span class="sig-paren">)</span><a class="headerlink" href="#utilities.kwget" title="Permalink to this definition">¶</a></dt>
 <dd><p>Augmented kwargs.get function</p>
@@ -716,7 +737,7 @@ dict1 or dict2 keys</li>
 
 <dl class="function">
 <dt id="utilities.set_save_filename">
-<code class="descclassname">utilities.</code><code class="descname">set_save_filename</code><span class="sig-paren">(</span><em>df</em>, <em>fig_item</em>, <em>fig_cols</em>, <em>layout</em>, <em>kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#utilities.set_save_filename" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">utilities.</code><code class="descname">set_save_filename</code><span class="sig-paren">(</span><em>df</em>, <em>ifig</em>, <em>fig_item</em>, <em>fig_cols</em>, <em>layout</em>, <em>kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#utilities.set_save_filename" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build a filename based on the plot setup parameters</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
