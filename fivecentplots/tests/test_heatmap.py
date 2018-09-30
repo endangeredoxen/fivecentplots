@@ -1,4 +1,3 @@
-
 import pytest
 import fivecentplots as fcp
 import pandas as pd
@@ -47,7 +46,7 @@ def make_all():
         print('done!')
 
 
-def test_cat_no_label(master=False, remove=True):
+def test_cat_no_label(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'cat_no_label_master') if master else 'cat_no_label'
 
@@ -58,6 +57,9 @@ def test_cat_no_label(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -66,7 +68,7 @@ def test_cat_no_label(master=False, remove=True):
         assert not compare
 
 
-def test_cat_label(master=False, remove=True):
+def test_cat_label(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'cat_label_master') if master else 'cat_label'
 
@@ -79,6 +81,9 @@ def test_cat_label(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -87,7 +92,7 @@ def test_cat_label(master=False, remove=True):
         assert not compare
 
 
-def test_cat_cell_size(master=False, remove=True):
+def test_cat_cell_size(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'cat_cell_size_master') if master else 'cat_cell_size'
 
@@ -100,6 +105,9 @@ def test_cat_cell_size(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -108,7 +116,7 @@ def test_cat_cell_size(master=False, remove=True):
         assert not compare
 
 
-def test_cat_non_uniform(master=False, remove=True):
+def test_cat_non_uniform(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'cat_non-uniform_master') if master else 'cat_non-uniform'
 
@@ -122,6 +130,9 @@ def test_cat_non_uniform(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -130,7 +141,7 @@ def test_cat_non_uniform(master=False, remove=True):
         assert not compare
 
 
-def test_heatmap(master=False, remove=True):
+def test_heatmap(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'heatmap_master') if master else 'heatmap'
 
@@ -141,6 +152,9 @@ def test_heatmap(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -149,7 +163,7 @@ def test_heatmap(master=False, remove=True):
         assert not compare
 
 
-def test_heatmap_stretched(master=False, remove=True):
+def test_heatmap_stretched(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'heatmap_stretched_master') if master else 'heatmap_stretched'
 
@@ -162,6 +176,9 @@ def test_heatmap_stretched(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -170,7 +187,7 @@ def test_heatmap_stretched(master=False, remove=True):
         assert not compare
 
 
-def test_heatmap_zoomed(master=False, remove=True):
+def test_heatmap_zoomed(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'heatmap_zoomed_master') if master else 'heatmap_zoomed'
 
@@ -182,6 +199,9 @@ def test_heatmap_zoomed(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:

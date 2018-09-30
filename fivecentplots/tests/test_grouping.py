@@ -36,7 +36,7 @@ def make_all():
         print('done!')
 
 
-def test_legend_single(master=False, remove=True):
+def test_legend_single(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'legend_single_master') if master else 'legend_single'
 
@@ -48,6 +48,9 @@ def test_legend_single(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -56,7 +59,7 @@ def test_legend_single(master=False, remove=True):
         assert not compare
 
 
-def test_legend_multiple(master=False, remove=True):
+def test_legend_multiple(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'legend_multiple_master') if master else 'legend_multiple'
 
@@ -68,6 +71,9 @@ def test_legend_multiple(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -76,7 +82,7 @@ def test_legend_multiple(master=False, remove=True):
         assert not compare
 
 
-def test_legend_multiple_xy(master=False, remove=True):
+def test_legend_multiple_xy(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'legend_multiple_xy_master') if master else 'legend_multiple_xy'
 
@@ -88,6 +94,9 @@ def test_legend_multiple_xy(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -96,7 +105,7 @@ def test_legend_multiple_xy(master=False, remove=True):
         assert not compare
 
 
-def test_legend_secondary_none(master=False, remove=True):
+def test_legend_secondary_none(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'legend_secondary_none') if master else 'legend_secondary_none'
 
@@ -108,6 +117,9 @@ def test_legend_secondary_none(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -116,7 +128,7 @@ def test_legend_secondary_none(master=False, remove=True):
         assert not compare
 
 
-def test_legend_secondary_axis(master=False, remove=True):
+def test_legend_secondary_axis(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'legend_secondary_axis') if master else 'legend_secondary_axis'
 
@@ -128,6 +140,9 @@ def test_legend_secondary_axis(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -136,7 +151,7 @@ def test_legend_secondary_axis(master=False, remove=True):
         assert not compare
 
 
-def test_legend_secondary_column(master=False, remove=True):
+def test_legend_secondary_column(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'legend_secondary_column_master') if master else 'legend_secondary_column'
 
@@ -148,6 +163,9 @@ def test_legend_secondary_column(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -156,7 +174,7 @@ def test_legend_secondary_column(master=False, remove=True):
         assert not compare
 
 
-def test_groups_none(master=False, remove=True):
+def test_groups_none(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'groups_none_master') if master else 'groups_none'
 
@@ -168,6 +186,9 @@ def test_groups_none(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -176,7 +197,7 @@ def test_groups_none(master=False, remove=True):
         assert not compare
 
 
-def test_groups_enabled(master=False, remove=True):
+def test_groups_enabled(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'groups_enabled_master') if master else 'groups_enabled'
 
@@ -188,6 +209,9 @@ def test_groups_enabled(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -196,7 +220,7 @@ def test_groups_enabled(master=False, remove=True):
         assert not compare
 
 
-def test_groups_enabled2(master=False, remove=True):
+def test_groups_enabled2(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'groups_enabled2_master') if master else 'groups_enabled2'
 
@@ -208,6 +232,9 @@ def test_groups_enabled2(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -216,7 +243,7 @@ def test_groups_enabled2(master=False, remove=True):
         assert not compare
 
 
-def test_groups_boxplot(master=False, remove=True):
+def test_groups_boxplot(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'groups_boxplot_master') if master else 'groups_boxplot'
 
@@ -228,6 +255,9 @@ def test_groups_boxplot(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -236,7 +266,7 @@ def test_groups_boxplot(master=False, remove=True):
         assert not compare
 
 
-def test_groups_row_col(master=False, remove=True):
+def test_groups_row_col(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'groups_row_col_master') if master else 'groups_row_col'
 
@@ -248,6 +278,9 @@ def test_groups_row_col(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -256,7 +289,7 @@ def test_groups_row_col(master=False, remove=True):
         assert not compare
 
 
-def test_groups_wrap_column(master=False, remove=True):
+def test_groups_wrap_column(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'groups_wrap_column_master') if master else 'groups_wrap_column'
 
@@ -268,6 +301,9 @@ def test_groups_wrap_column(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -276,7 +312,7 @@ def test_groups_wrap_column(master=False, remove=True):
         assert not compare
 
 
-def test_groups_wrap_column_ncol(master=False, remove=True):
+def test_groups_wrap_column_ncol(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'groups_wrap_column_ncol_master') if master else 'groups_wrap_column_ncol'
 
@@ -288,6 +324,9 @@ def test_groups_wrap_column_ncol(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -296,7 +335,7 @@ def test_groups_wrap_column_ncol(master=False, remove=True):
         assert not compare
 
 
-def test_groups_wrap_names(master=False, remove=True):
+def test_groups_wrap_names(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'groups_wrap_names_master') if master else 'groups_wrap_names'
 
@@ -309,6 +348,9 @@ def test_groups_wrap_names(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -317,7 +359,7 @@ def test_groups_wrap_names(master=False, remove=True):
         assert not compare
 
 
-def test_groups_wrap_names_no_sharing(master=False, remove=True):
+def test_groups_wrap_names_no_sharing(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'groups_wrap_names-no-sharing_master') if master else 'groups_wrap_names-no-sharing'
 
@@ -331,6 +373,9 @@ def test_groups_wrap_names_no_sharing(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -339,7 +384,7 @@ def test_groups_wrap_names_no_sharing(master=False, remove=True):
         assert not compare
 
 
-def test_figure(master=False, remove=True):
+def test_figure(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'figure_master') if master else 'figure'
 
@@ -351,6 +396,9 @@ def test_figure(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         for i in range(0, 3):
             tag = ' (%s)' % (i+1) if i > 0 else ''

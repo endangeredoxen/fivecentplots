@@ -306,7 +306,15 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
         data = [df_rc[dd.y].dropna()]
         labels = ['']
         data[0]['x'] = 1
-        layout.plot_xy(ir, ic, 0, data[0], 'x', dd.y[0], None, False, zorder=10)
+        if type(dd.legend_vals) is pd.DataFrame:
+            for jj, jrow in dd.legend_vals.iterrows():
+                temp = data[0].loc[df_rc[dd.legend]==jrow['names']].index
+
+                layout.plot_xy(ir, ic, jj, data[0].loc[temp], 'x', dd.y[0],
+                           jrow['names'], False, zorder=10)
+        else:
+            layout.plot_xy(ir, ic, 0, data[0], 'x', dd.y[0], None, False,
+                           zorder=10)
 
     # Remove lowest divider
     dividers = [f for f in dividers if f > 0.5]
@@ -486,7 +494,7 @@ def plot_hist(data, layout, ir, ic, df_rc, kwargs):
             layout.lines.on = False
         if kwargs.get('groups', False):
             for nn, gg in df.groupby(validate_list(kwargs['groups'])):
-                hist, data =layout.plot_hist(ir, ic, iline, gg, x, y, leg_name, data)
+                hist, data = layout.plot_hist(ir, ic, iline, gg, x, y, leg_name, data)
 
         else:
             hist, data = layout.plot_hist(ir, ic, iline, df, x, y, leg_name, data)
@@ -670,10 +678,16 @@ def plotter(plot_func, **kwargs):
                 os.startfile(filename)
 
         # Return inline
-        if not kwargs.get('inline', True):
+        if kwargs.get('return_filename'):
+            plt.close('all')
+            if 'filepath' in kwargs.keys():
+                return osjoin(kwargs['filepath'], filename)
+            else:
+                return osjoin(os.getcwd(), filename)
+        elif not kwargs.get('inline', True):
             plt.close('all')
         else:
-            if kwargs.get('show_filename', False):
+            if kwargs.get('print_filename', False):
                 print(filename)
             plt.show()
             plt.close('all')

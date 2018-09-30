@@ -21,6 +21,7 @@ df = pd.read_csv(osjoin(os.path.dirname(fcp.__file__), 'tests', 'fake_data.csv')
 # Other
 SHOW = False
 
+
 def make_all():
     """
     Remake all test master images
@@ -34,7 +35,7 @@ def make_all():
         print('done!')
 
 
-def test_xy_scatter(master=False, remove=True):
+def test_xy_scatter(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'xy_scatter_master') if master else 'xy_scatter'
 
@@ -46,6 +47,9 @@ def test_xy_scatter(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -54,7 +58,7 @@ def test_xy_scatter(master=False, remove=True):
         assert not compare
 
 
-def test_xy_legend(master=False, remove=True):
+def test_xy_legend(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'xy_legend_master') if master else 'xy_legend'
 
@@ -66,6 +70,9 @@ def test_xy_legend(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -74,7 +81,7 @@ def test_xy_legend(master=False, remove=True):
         assert not compare
 
 
-def test_xy_log_scale(master=False, remove=True):
+def test_xy_log_scale(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'xy_log-scale_master') if master else 'xy_log-scale'
 
@@ -86,6 +93,9 @@ def test_xy_log_scale(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -94,7 +104,7 @@ def test_xy_log_scale(master=False, remove=True):
         assert not compare
 
 
-def test_secondary_xy_shared_y(master=False, remove=True):
+def test_secondary_xy_shared_y(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'secondary-xy_shared-y_master') if master else 'secondary-xy_shared-y'
 
@@ -106,6 +116,9 @@ def test_secondary_xy_shared_y(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -114,7 +127,7 @@ def test_secondary_xy_shared_y(master=False, remove=True):
         assert not compare
 
 
-def test_secondary_xy_shared_x(master=False, remove=True):
+def test_secondary_xy_shared_x(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'secondary-xy_shared-x_master') if master else 'secondary-xy_shared-x'
 
@@ -126,6 +139,9 @@ def test_secondary_xy_shared_x(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -134,7 +150,7 @@ def test_secondary_xy_shared_x(master=False, remove=True):
         assert not compare
 
 
-def test_multiple_xy_y(master=False, remove=True):
+def test_multiple_xy_y(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'multiple-xy_y-only_master') if master else 'multiple-xy_y-only'
 
@@ -146,6 +162,9 @@ def test_multiple_xy_y(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -154,7 +173,7 @@ def test_multiple_xy_y(master=False, remove=True):
         assert not compare
 
 
-def test_multiple_xy_x(master=False, remove=True):
+def test_multiple_xy_x(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'multiple-xy_x-only_master') if master else 'multiple-xy_x-only'
 
@@ -166,6 +185,9 @@ def test_multiple_xy_x(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -174,7 +196,7 @@ def test_multiple_xy_x(master=False, remove=True):
         assert not compare
 
 
-def test_multiple_xy_both(master=False, remove=True):
+def test_multiple_xy_both(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'multiple-xy_both_master') if master else 'multiple-xy_both'
 
@@ -186,6 +208,9 @@ def test_multiple_xy_both(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -194,7 +219,7 @@ def test_multiple_xy_both(master=False, remove=True):
         assert not compare
 
 
-def test_row(master=False, remove=True):
+def test_row(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'grid-plots-row_master') if master else 'grid-plots-row'
 
@@ -206,6 +231,9 @@ def test_row(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -214,7 +242,7 @@ def test_row(master=False, remove=True):
         assert not compare
 
 
-def test_column(master=False, remove=True):
+def test_column(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'grid-plots-column_master') if master else 'grid-plots-column'
 
@@ -226,6 +254,9 @@ def test_column(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -234,7 +265,7 @@ def test_column(master=False, remove=True):
         assert not compare
 
 
-def test_row_x_column(master=False, remove=True):
+def test_row_x_column(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'grid-plots-row-x-column_master') if master else 'grid-plots-row-x-column'
 
@@ -246,6 +277,9 @@ def test_row_x_column(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -254,7 +288,7 @@ def test_row_x_column(master=False, remove=True):
         assert not compare
 
 
-def test_wrap(master=False, remove=True):
+def test_wrap(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'grid-plots-wrap_master') if master else 'grid-plots-wrap'
 
@@ -266,6 +300,9 @@ def test_wrap(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -274,7 +311,7 @@ def test_wrap(master=False, remove=True):
         assert not compare
 
 
-def test_other_lines(master=False, remove=True):
+def test_other_lines(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'other_lines_master') if master else 'other_lines'
 
@@ -287,6 +324,9 @@ def test_other_lines(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -295,7 +335,7 @@ def test_other_lines(master=False, remove=True):
         assert not compare
 
 
-def test_other_curve_fitting(master=False, remove=True):
+def test_other_curve_fitting(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'other_curve-fitting_master') if master else 'other_curve-fitting'
 
@@ -308,6 +348,9 @@ def test_other_curve_fitting(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -316,7 +359,7 @@ def test_other_curve_fitting(master=False, remove=True):
         assert not compare
 
 
-def test_other_curve_fitting_range(master=False, remove=True):
+def test_other_curve_fitting_range(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'other_curve-fitting-range_master') if master else 'other_curve-fitting-range'
 
@@ -329,6 +372,9 @@ def test_other_curve_fitting_range(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -337,7 +383,7 @@ def test_other_curve_fitting_range(master=False, remove=True):
         assert not compare
 
 
-def test_other_curve_fitting_legend(master=False, remove=True):
+def test_other_curve_fitting_legend(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'other_curve-fitting-legend_master') if master else 'other_curve-fitting-legend'
 
@@ -350,6 +396,9 @@ def test_other_curve_fitting_legend(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -358,7 +407,7 @@ def test_other_curve_fitting_legend(master=False, remove=True):
         assert not compare
 
 
-def test_other_stat_bad(master=False, remove=True):
+def test_other_stat_bad(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'other_stat-lines-bad_master') if master else 'other_stat-lines-bad'
 
@@ -371,6 +420,9 @@ def test_other_stat_bad(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -379,7 +431,7 @@ def test_other_stat_bad(master=False, remove=True):
         assert not compare
 
 
-def test_other_stat_good(master=False, remove=True):
+def test_other_stat_good(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'other_stat-lines-good_master') if master else 'other_stat-lines-good'
 
@@ -392,6 +444,9 @@ def test_other_stat_good(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -400,7 +455,7 @@ def test_other_stat_good(master=False, remove=True):
         assert not compare
 
 
-def test_other_stat_good(master=False, remove=True):
+def test_other_stat_good(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'other_stat-lines-good-multipe-y_master') if master else 'other_stat-lines-good-multipe-y'
 
@@ -412,6 +467,9 @@ def test_other_stat_good(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -420,7 +478,7 @@ def test_other_stat_good(master=False, remove=True):
         assert not compare
 
 
-def test_other_conf_int(master=False, remove=True):
+def test_other_conf_int(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'other_conf-int_master') if master else 'other_conf-int'
 
@@ -433,6 +491,9 @@ def test_other_conf_int(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -441,7 +502,7 @@ def test_other_conf_int(master=False, remove=True):
         assert not compare
 
 
-def test_other_ref_line(master=False, remove=True):
+def test_other_ref_line(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'other_ref-line-y=x_master') if master else 'other_ref-line-y=x'
 
@@ -454,6 +515,9 @@ def test_other_ref_line(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -462,7 +526,7 @@ def test_other_ref_line(master=False, remove=True):
         assert not compare
 
 
-def test_other_ref_line_complex(master=False, remove=True):
+def test_other_ref_line_complex(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'other_ref-line-complex_master') if master else 'other_ref-line-complex'
 
@@ -475,6 +539,9 @@ def test_other_ref_line_complex(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:

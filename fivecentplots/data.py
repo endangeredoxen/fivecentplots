@@ -684,7 +684,7 @@ class Data:
         dfax = df[cols]
 
         # Calculate actual min / max vals for the axis
-        if self.ax_scale in ['log%s' % ax, 'loglog', 'semilog%s' % ax]:
+        if self.ax_scale in ['log%s' % ax, 'loglog', 'semilog%s' % ax, 'log']:
             axmin = dfax[dfax > 0].stack().min()
             axmax = dfax.stack().max()
             axdelta = np.log10(axmax)-np.log10(axmin)
@@ -725,9 +725,11 @@ class Data:
                         .quantile(xq)[cols].min().iloc[0]
         elif vmin is not None:
             vmin = vmin
+        # elif self.plot_func == 'plot_hist' and ax == 'y':
+        #     vmin = int(axmin)
         elif getattr(self, 'ax_limit_padding_%s_min' % ax) is not None:
             if self.ax_scale in ['log%s' % ax, 'loglog',
-                                 'semilog%s' % ax]:
+                                 'semilog%s' % ax, 'log']:
                 axmin = np.log10(axmin) - \
                         getattr(self, 'ax_limit_padding_%s_min' % ax) * axdelta
                 vmin = 10**axmin
@@ -766,9 +768,11 @@ class Data:
                         .quantile(xq)[cols].max().iloc[0]
         elif vmax is not None:
             vmax = vmax
+        # elif self.plot_func == 'plot_hist' and ax == 'y':
+        #     vmax = int(axmax)
         elif getattr(self, 'ax_limit_padding_%s_max' % ax) is not None:
             if self.ax_scale in ['log%s' % ax, 'loglog',
-                                 'semilog%s' % ax]:
+                                 'semilog%s' % ax, 'log']:
                 axmax = np.log10(axmax) + \
                         getattr(self, 'ax_limit_padding_%s_max' % ax) * axdelta
                 vmax = 10**axmax
@@ -815,11 +819,15 @@ class Data:
                     if type(getattr(self, f)) is str:
                         continue
                     if side == 'min':
-                        df_fig = df_fig[df_fig[axx] >= getattr(self, f)]
-                        df_rc = df_rc[df_rc[axx] >= getattr(self, f)]
+                        if len(df_fig) > 0:
+                            df_fig = df_fig[df_fig[axx] >= getattr(self, f)]
+                        if len(df_rc) > 0:
+                            df_rc = df_rc[df_rc[axx] >= getattr(self, f)]
                     else:
-                        df_fig = df_fig[df_fig[axx] <= getattr(self, f)]
-                        df_rc = df_rc[df_rc[axx] <= getattr(self, f)]
+                        if len(df_fig) > 0:
+                            df_fig = df_fig[df_fig[axx] <= getattr(self, f)]
+                        if len(df_rc) > 0:
+                            df_rc = df_rc[df_rc[axx] <= getattr(self, f)]
 
         # Iterate over axis
         axs = ['x', 'x2', 'y', 'y2', 'z']

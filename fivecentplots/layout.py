@@ -4,7 +4,7 @@ import matplotlib.pyplot as mplp
 import matplotlib.ticker as ticker
 import matplotlib.patches as patches
 import matplotlib.font_manager as font_manager
-from matplotlib.ticker import AutoMinorLocator, LogLocator
+from matplotlib.ticker import AutoMinorLocator, LogLocator, MaxNLocator
 import matplotlib.mlab as mlab
 import importlib
 import os, sys
@@ -429,7 +429,7 @@ class BaseLayout:
                         sci=utl.kwget(kwargs, self.fcpp, 'sci_%s' % ax, 'best'),
                         ))
         self.auto_tick_threshold = utl.kwget(kwargs, self.fcpp,
-                                             'auto_tick_threshold', [1e-5, 1e5])
+                                             'auto_tick_threshold', [1e-6, 1e6])
 
         self.ticks_minor = Element('ticks_minor', self.fcpp, kwargs,
                                    on=utl.kwget(kwargs, self.fcpp,
@@ -3125,12 +3125,14 @@ class LayoutMPL(BaseLayout):
 
             # Rotate ranges
             if iline == 0:
-                ymin = data.ranges[ir, ic]['ymin']
-                ymax = data.ranges[ir, ic]['ymax']
-                data.ranges[ir, ic]['ymin'] = data.ranges[ir, ic]['xmin']
-                data.ranges[ir, ic]['ymax'] = data.ranges[ir, ic]['xmax']
-                data.ranges[ir, ic]['xmin'] = ymin
-                data.ranges[ir, ic]['xmax'] = ymax
+                for irow in range(0, self.nrow):
+                    for icol in range(0, self.ncol):
+                        ymin = data.ranges[irow, icol]['ymin']
+                        ymax = data.ranges[irow, icol]['ymax']
+                        data.ranges[irow, icol]['ymin'] = data.ranges[irow, icol]['xmin']
+                        data.ranges[irow, icol]['ymax'] = data.ranges[irow, icol]['xmax']
+                        data.ranges[irow, icol]['xmin'] = ymin
+                        data.ranges[irow, icol]['xmax'] = ymax
 
         # Add a kde
         if self.kde.on:
@@ -3479,13 +3481,13 @@ class LayoutMPL(BaseLayout):
                             else:
                                 xx = max(xx, ranges[irow, icol][xval])
 
-                if xx and xval == 'xmin':
+                if xx is not None and xval == 'xmin':
                     self.axes.obj[ir, ic].set_xlim(left=xx)
-                elif xx and xval == 'x2min':
+                elif xx is not None and xval == 'x2min':
                     self.axes2.obj[ir, ic].set_xlim(left=xx)
-                elif xx and xval == 'xmax':
+                elif xx is not None and xval == 'xmax':
                     self.axes.obj[ir, ic].set_xlim(right=xx)
-                elif xx and xval == 'x2max':
+                elif xx is not None and xval == 'x2max':
                     self.axes2.obj[ir, ic].set_xlim(right=xx)
         else:
             if ranges[ir, ic]['xmin'] is not None:
@@ -3512,13 +3514,13 @@ class LayoutMPL(BaseLayout):
                             else:
                                 yy = max(yy, ranges[irow, icol][yval])
 
-                if yy and yval == 'ymin':
+                if yy is not None and yval == 'ymin':
                     self.axes.obj[ir, ic].set_ylim(bottom=yy)
-                elif yy and yval == 'y2min':
+                elif yy is not None and yval == 'y2min':
                     self.axes2.obj[ir, ic].set_ylim(bottom=yy)
-                elif yy and yval == 'ymax':
+                elif yy is not None and yval == 'ymax':
                     self.axes.obj[ir, ic].set_ylim(top=yy)
-                elif yy and yval == 'ymax':
+                elif yy is not None and yval == 'ymax':
                     self.axes2.obj[ir, ic].set_ylim(top=yy)
         else:
             if ranges[ir, ic]['ymin'] is not None:
@@ -3679,6 +3681,7 @@ class LayoutMPL(BaseLayout):
 
         axes = [f.obj[ir, ic] for f in [self.axes, self.axes2] if f.on]
 
+        # Format ticks
         for ia, aa in enumerate(axes):
 
             if ia == 0:
@@ -3686,20 +3689,35 @@ class LayoutMPL(BaseLayout):
             else:
                 lab = '2'
 
+            # Skip certain calculations if axes are shared and subplots > 1
+            skipx, skipy = False, False
+            if hasattr(getattr(self, 'axes%s' % lab), 'share_x%s' % lab) and \
+                    getattr(getattr(self, 'axes%s' % lab), 'share_x%s' % lab) == True and \
+                    (ir != 0 or ic != 0):
+                skipx = True
+            if hasattr(getattr(self, 'axes%s' % lab), 'share_y%s' %lab) and \
+                    getattr(getattr(self, 'axes%s' % lab), 'share_y%s' %lab) and \
+                    (ir != 0 or ic != 0):
+                skipy = True
+
             # Turn off scientific
             if ia == 0:
-                self.set_scientific(axes[ia])
+                if not skipx:
+                    self.set_scientific(axes[ia])
             elif self.axes.twin_y or self.axes.twin_x:
-                self.set_scientific(axes[ia], 2)
+                if not skipy:
+                    self.set_scientific(axes[ia], 2)
 
             # Turn off offsets
             if not self.tick_labels_major.offset:
                 try:
-                    aa.get_xaxis().get_major_formatter().set_useOffset(False)
+                    if not skipx:
+                        aa.get_xaxis().get_major_formatter().set_useOffset(False)
                 except:
                     pass
                 try:
-                    aa.get_yaxis().get_major_formatter().set_useOffset(False)
+                    if not skipy:
+                        aa.get_yaxis().get_major_formatter().set_useOffset(False)
                 except:
                     pass
 
@@ -3716,7 +3734,7 @@ class LayoutMPL(BaseLayout):
                                     top=False,
                                     bottom=self.ticks_major_x.on,
                                     right=False if self.axes.twin_x
-                                          else self.ticks_major_y.on,
+                                        else self.ticks_major_y.on,
                                     left=self.ticks_major_y.on,
                                     length=self.ticks_major._size[0],
                                     width=self.ticks_major._size[1],
@@ -3732,7 +3750,7 @@ class LayoutMPL(BaseLayout):
                                     top=False,
                                     bottom=self.ticks_minor_x.on,
                                     right=False if self.axes.twin_x
-                                          else self.ticks_minor_y.on,
+                                        else self.ticks_minor_y.on,
                                     left=self.ticks_minor_y.on,
                                     length=self.ticks_minor._size[0],
                                     width=self.ticks_minor._size[1],
@@ -3787,41 +3805,55 @@ class LayoutMPL(BaseLayout):
                                         direction=self.ticks_minor.direction,
                                         )
 
-            tp = mpl_get_ticks(axes[ia],
-                               True, #getattr(self, 'ticks_major_x%s' % lab).on,
-                               True, #getattr(self, 'ticks_major_y%s' % lab).on
-                               )
+            tp = mpl_get_ticks(axes[ia], True, True)
 
             # Set custom tick increment
             redo = True
             xinc = getattr(self, 'ticks_major_x%s' % lab).increment
-            if xinc is not None:
+            if not skipx and xinc is not None:
                 axes[ia].set_xticks(
                     np.arange(tp['x']['min'] + xinc - tp['x']['min'] % xinc,
                               tp['x']['max'], xinc))
                 redo = True
             yinc = getattr(self, 'ticks_major_y%s' % lab).increment
-            if yinc is not None:
+            if not skipy and yinc is not None:
                 axes[ia].set_yticks(
                     np.arange(tp['y']['min'] + yinc - tp['y']['min'] % yinc,
                               tp['y']['max'], yinc))
                 redo = True
             if redo:
-                tp = mpl_get_ticks(axes[ia],
-                                   True, #getattr(self, 'ticks_major_x%s' % lab).on,
-                                   True, #getattr(self, 'ticks_major_y%s' % lab).on
-                                   )
+                tp = mpl_get_ticks(axes[ia], True, True)
 
             # Force ticks
             if self.separate_ticks:
-                mplp.setp(axes[ia].get_xticklabels(), visible=True)
-            if self.separate_ticks:
-                mplp.setp(axes[ia].get_yticklabels(), visible=True)
+                if LooseVersion(mpl.__version__) < LooseVersion('2.2'):
+                    mplp.setp(axes[ia].get_xticklabels(), visible=True)
+                    mplp.setp(axes[ia].get_yticklabels(), visible=True)
+                else:
+                    if self.axes.twin_x and ia == 1:
+                        axes[ia].xaxis.set_tick_params(which='both', labelbottom=True)
+                        axes[ia].yaxis.set_tick_params(which='both', labelright=True)
+                    elif self.axes.twin_y and ia == 1:
+                        axes[ia].xaxis.set_tick_params(which='both', labeltop=True)
+                        axes[ia].yaxis.set_tick_params(which='both', labelleft=True)
+                    else:
+                        axes[ia].xaxis.set_tick_params(which='both', labelbottom=True)
+                        axes[ia].yaxis.set_tick_params(which='both', labelleft=True)
             if self.nwrap > 0 and (ic + (ir + 1) * self.ncol + 1) > self.nwrap or \
                     (ir < self.nrow - 1 and not self.axes.visible[ir + 1, ic]):
-                mplp.setp(axes[ia].get_xticklabels()[1:], visible=True)
+                if LooseVersion(mpl.__version__) < LooseVersion('2.2'):
+                    mplp.setp(axes[ia].get_xticklabels()[1:], visible=True)
+                elif self.axes.twin_y and ia == 1:
+                    axes[ia].yaxis.set_tick_params(which='both', labeltop=True)
+                else:
+                    axes[ia].xaxis.set_tick_params(which='both', labelbottom=True)
             if not self.separate_ticks and not self.axes.visible[ir, ic - 1]:
-                mplp.setp(axes[ia].get_yticklabels(), visible=True)
+                if LooseVersion(mpl.__version__) < LooseVersion('2.2'):
+                    mplp.setp(axes[ia].get_yticklabels(), visible=True)
+                elif self.axes.twin_x and ia == 1:
+                    axes[ia].yaxis.set_tick_params(which='both', labelright=True)
+                else:
+                    axes[ia].yaxis.set_tick_params(which='both', labelleft=True)
             elif not self.separate_ticks and (ic != self.ncol - 1 and \
                     (ic + ir * self.ncol + 1) != self.nwrap) and \
                     self.axes.twin_x and ia == 1:
@@ -3900,24 +3932,36 @@ class LayoutMPL(BaseLayout):
                 xw, xh = tlmajx.size
 
                 # Calculate x-only overlaps
-                for ix in range(0, len(tp['x']['ticks']) - 1):
-                    x2x += [utl.rectangle_overlap([xw+2*buf, xh+2*buf, [delx*ix,0]],
-                                                  [xw+2*buf, xh+2*buf, [delx*(ix+1), 0]])]
-                if any(x2x) and ((self.axes.share_x and ir==0 and ic==0) \
-                        or not self.axes.share_x) \
-                        and tp['x']['first'] != -999 and tp['x']['last'] != -999:
-                    for i in range(tp['x']['first'] + 1, tp['x']['last'] + 1, 2):
-                        tp['x']['label_text'][i] = ''
+                if not skipx:
+                    for ix in range(0, len(tp['x']['ticks']) - 1):
+                        x2x += [utl.rectangle_overlap([xw+2*buf, xh+2*buf, [delx*ix,0]],
+                                                        [xw+2*buf, xh+2*buf, [delx*(ix+1), 0]])]
+                    if any(x2x) and ((self.axes.share_x and ir==0 and ic==0) \
+                            or not self.axes.share_x) \
+                            and tp['x']['first'] != -999 and tp['x']['last'] != -999:
+                        for i in range(tp['x']['first'] + 1, tp['x']['last'] + 1, 2):
+                            tp['x']['label_text'][i] = ''
 
-                # overlapping labels between row, col, and wrap plots
-                if tp['x']['last'] != -999:
-                    last_x = tp['x']['labels'][tp['x']['last']][1]
-                    last_x_pos = (last_x - tp['x']['min'])/(tp['x']['max'] - tp['x']['min'])
-                    last_x_px = (1-last_x_pos)*self.axes.size[0]
-                    if self.ncol > 1 and \
-                            xw > last_x_px + self.ws_col - self.ws_tick_tick_minimum and \
-                            ic < self.ncol - 1:
-                        tp['x']['label_text'][tp['x']['last']] = ''
+                    # overlapping labels between row, col, and wrap plots
+                    if tp['x']['last'] != -999:
+                        if self.nwrap > 0 and self.nwrap < self.nrow * self.ncol:
+                            if xcx - xw/2 + 2 < 0:
+                                tp['x']['label_text'][tp['x']['first']] = ''
+
+                        last_x = tp['x']['labels'][tp['x']['last']][1]
+                        if getattr(self, 'axes%s' % lab).scale not in LOG_ALLX:
+                            last_x_pos = (last_x - tp['x']['min']) / \
+                                            (tp['x']['max'] - tp['x']['min'])
+                        else:
+                            last_x_pos = (np.log10(last_x) - np.log10(tp['x']['min'])) / \
+                                            (np.log10(tp['x']['max']) - np.log10(tp['x']['min']))
+                        last_x_px = (1-last_x_pos)*self.axes.size[0]
+                        if self.ncol > 1 and \
+                                xw / 2 - xcx > last_x_px + self.ws_col - \
+                                                self.ws_tick_tick_minimum and \
+                                ic < self.ncol - 1 and \
+                                tp['x']['label_text'][tp['x']['first']] != '':
+                            tp['x']['label_text'][tp['x']['last']] = ''
 
             if self.tick_cleanup and tlmajy.on:
                 # Get the position of the first and last major y tick
@@ -3943,24 +3987,31 @@ class LayoutMPL(BaseLayout):
                 yw, yh = tlmajy.size
 
                 # Calculate y-only overlaps
-                for iy in range(0, len(tp['y']['ticks']) - 1):
-                    y2y += [utl.rectangle_overlap([yw+2*buf, yh+2*buf, [0,dely*iy]],
-                                                  [yw+2*buf, yh+2*buf, [0,dely*(iy+1)]])]
-                if any(y2y) and ((self.axes.share_y and ir==0 and ic==0) \
-                        or not self.axes.share_y) \
-                        and tp['y']['first'] != -999 and tp['y']['last'] != -999:
-                    for i in range(tp['y']['first'], tp['y']['last'] + 1, 2):
-                        tp['y']['label_text'][i] = ''
+                if not skipy:
+                    for iy in range(0, len(tp['y']['ticks']) - 1):
+                        y2y += [utl.rectangle_overlap([yw+2*buf, yh+2*buf, [0,dely*iy]],
+                                                    [yw+2*buf, yh+2*buf, [0,dely*(iy+1)]])]
+                    if any(y2y) and ((self.axes.share_y and ir==0 and ic==0) \
+                            or not self.axes.share_y) \
+                            and tp['y']['first'] != -999 and tp['y']['last'] != -999:
+                        for i in range(tp['y']['first'], tp['y']['last'] + 1, 2):
+                            tp['y']['label_text'][i] = ''
 
-                # overlapping labels between row, col, and wrap plots
-                if tp['y']['last'] != -999:
-                    last_y = tp['y']['labels'][tp['y']['last']][1]
-                    last_y_pos = last_y/(tp['y']['max']-tp['y']['min'])
-                    last_y_px = (1-last_y_pos)*self.axes.size[1]
-                    if self.nrow > 1 and \
-                            yh > last_y_px + self.ws_col - self.ws_tick_tick_minimum and \
-                            ir < self.nrow - 1 and self.nwrap == 0:
-                        tp['y']['label_text'][tp['y']['last']] = ''
+                    # overlapping labels between row, col, and wrap plots
+                    if tp['y']['last'] != -999:
+                        last_y = tp['y']['labels'][tp['y']['last']][1]
+                        if getattr(self, 'axes%s' % lab).scale not in LOG_ALLY:
+                            last_y_pos = (last_y - tp['y']['min']) / \
+                                        (tp['y']['max']-tp['y']['min'])
+                        else:
+                            last_y_pos = (np.log10(last_y) - np.log10(tp['y']['min'])) / \
+                                        (np.log10(tp['y']['max'])-np.log10(tp['y']['min']))
+                        last_y_px = (1-last_y_pos)*self.axes.size[1]
+                        # there is a discrepancy here compared with x (yh?)
+                        if self.nrow > 1 and \
+                                yh > last_y_px + self.ws_col - self.ws_tick_tick_minimum and \
+                                ir < self.nrow - 1 and self.nwrap == 0:
+                            tp['y']['label_text'][tp['y']['last']] = ''
 
             if self.tick_cleanup and tlmajx.on and tlmajy.on:
                 # Calculate overlaps
@@ -3981,13 +4032,11 @@ class LayoutMPL(BaseLayout):
                 if self.nrow > 1 and ir < self.nrow-1:
                     x2y = utl.rectangle_overlap([xw, xh, xc],
                                                 [yw, yh, [yc[0], yc[1]-self.ws_row]])
-                    # if x2y and \
-                    #         tp['y']['min'] == tp['y']['ticks'][tp['y']['first']]:
-                    #     tp['x']['label_text'][0] = ''
 
-            if self.tick_cleanup and tlmajx.on:
+            if self.tick_cleanup and tlmajx.on and not skipx:
                 axes[ia].set_xticklabels(tp['x']['label_text'])
-            if self.tick_cleanup and tlmajy.on:
+
+            if self.tick_cleanup and tlmajy.on and not skipy:
                 axes[ia].set_yticklabels(tp['y']['label_text'])
 
             # Turn on minor tick labels
@@ -4031,6 +4080,10 @@ class LayoutMPL(BaseLayout):
 
                 elif tlmin.on:
                     if not getattr(self, 'tick_labels_minor_%s' % axl).on:
+                        continue
+                    elif 'x' in axx and skipx:
+                        continue
+                    elif 'y' in axx and skipy:
                         continue
                     else:
                         tlminon = True
@@ -4283,13 +4336,14 @@ class LayoutMPL(BaseLayout):
         # Select scientific notation unless specified
         tp = mpl_get_ticks(ax)
         bestx, besty = False, False
+
         if self.tick_labels_major_x.sci == 'best' and len(tp['x']['ticks']) > 0:
             xrange = tp['x']['ticks'][-1] - tp['x']['ticks'][0]
             nonzero = tp['x']['ticks'][tp['x']['ticks'] != 0]
             xthresh = np.any(np.abs(nonzero) <= self.auto_tick_threshold[0]) or \
-                      np.any(np.abs(nonzero) >= self.auto_tick_threshold[1])
+                    np.any(np.abs(nonzero) >= self.auto_tick_threshold[1])
             if xrange <= self.auto_tick_threshold[0] or \
-               xrange >= self.auto_tick_threshold[1] or xthresh:
+            xrange >= self.auto_tick_threshold[1] or xthresh:
                 tick_labels_major_x_sci = True
             else:
                 tick_labels_major_x_sci = False
@@ -4298,13 +4352,14 @@ class LayoutMPL(BaseLayout):
             tick_labels_major_x_sci = False
         else:
             tick_labels_major_x_sci = self.tick_labels_major_x.sci
+
         if self.tick_labels_major_y.sci == 'best' and len(tp['y']['ticks']) > 0:
             yrange = tp['y']['ticks'][-1] - tp['y']['ticks'][0]
             nonzero = tp['y']['ticks'][tp['y']['ticks'] != 0]
             ythresh = np.any(np.abs(nonzero) <= self.auto_tick_threshold[0]) or \
-                      np.any(np.abs(nonzero) >= self.auto_tick_threshold[1])
+                    np.any(np.abs(nonzero) >= self.auto_tick_threshold[1])
             if yrange <= self.auto_tick_threshold[0] or \
-               yrange >= self.auto_tick_threshold[1] or ythresh:
+            yrange >= self.auto_tick_threshold[1] or ythresh:
                 tick_labels_major_y_sci = True
             else:
                 tick_labels_major_y_sci = False
@@ -4316,7 +4371,10 @@ class LayoutMPL(BaseLayout):
 
         # Set labels
         logx = getattr(self, 'axes%s' % lab).scale in LOGX + SYMLOGX + LOGITX
-        if not tick_labels_major_x_sci \
+        if self.plot_func in ['plot_hist'] and self.hist.horizontal == True and \
+                self.hist.kde == False:
+            ax.get_xaxis().set_major_locator(MaxNLocator(integer=True))
+        elif not tick_labels_major_x_sci \
                 and self.plot_func not in ['plot_box', 'plot_heatmap'] \
                 and not logx:
             try:
@@ -4355,7 +4413,10 @@ class LayoutMPL(BaseLayout):
             ax.get_xaxis().set_major_formatter(ticker.FormatStrFormatter(dec))
 
         logy = getattr(self, 'axes%s' % lab).scale in LOGY + SYMLOGY + LOGITY
-        if not tick_labels_major_y_sci \
+        if self.plot_func in ['plot_hist'] and self.hist.horizontal == False and \
+                self.hist.kde == False:
+            ax.get_yaxis().set_major_locator(MaxNLocator(integer=True))
+        elif not tick_labels_major_y_sci \
                 and self.plot_func not in ['plot_heatmap'] \
                 and not logy:
             try:

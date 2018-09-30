@@ -37,7 +37,7 @@ def make_all():
         print('done!')
 
 
-def test_default(master=False, remove=True):
+def test_default(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'default_master') if master else 'default'
 
@@ -49,6 +49,9 @@ def test_default(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -57,7 +60,7 @@ def test_default(master=False, remove=True):
         assert not compare
 
 
-def test_default(master=False, remove=True):
+def test_default(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'default_master') if master else 'default'
 
@@ -69,6 +72,9 @@ def test_default(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -77,7 +83,7 @@ def test_default(master=False, remove=True):
         assert not compare
 
 
-def test_primary(master=False, remove=True):
+def test_primary(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'primary_master') if master else 'primary'
 
@@ -90,6 +96,9 @@ def test_primary(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -98,7 +107,7 @@ def test_primary(master=False, remove=True):
         assert not compare
 
 
-def test_primary_no_scale(master=False, remove=True):
+def test_primary_no_scale(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'primary_no-auto-scale_master') if master else 'primary_no-auto-scale'
 
@@ -111,6 +120,9 @@ def test_primary_no_scale(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -119,7 +131,7 @@ def test_primary_no_scale(master=False, remove=True):
         assert not compare
 
 
-def test_primary_explicit(master=False, remove=True):
+def test_primary_explicit(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'primary_explicit_master') if master else 'primary_explicit'
 
@@ -132,6 +144,9 @@ def test_primary_explicit(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -140,7 +155,7 @@ def test_primary_explicit(master=False, remove=True):
         assert not compare
 
 
-def test_secondary(master=False, remove=True):
+def test_secondary(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'secondary_master') if master else 'secondary'
 
@@ -152,6 +167,9 @@ def test_secondary(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -160,7 +178,7 @@ def test_secondary(master=False, remove=True):
         assert not compare
 
 
-def test_secondary_limits(master=False, remove=True):
+def test_secondary_limits(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'secondary_limits_master') if master else 'secondary_limits'
 
@@ -173,6 +191,9 @@ def test_secondary_limits(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -181,7 +202,7 @@ def test_secondary_limits(master=False, remove=True):
         assert not compare
 
 
-def test_secondary_limits_no_scale(master=False, remove=True):
+def test_secondary_limits_no_scale(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'secondary_no-auto-scale_master') if master else 'secondary_no-auto-scale'
 
@@ -194,6 +215,9 @@ def test_secondary_limits_no_scale(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -202,7 +226,7 @@ def test_secondary_limits_no_scale(master=False, remove=True):
         assert not compare
 
 
-def test_secondary_limits_y(master=False, remove=True):
+def test_secondary_limits_y(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'secondary_y-limit_master') if master else 'secondary_y-limit'
 
@@ -215,6 +239,9 @@ def test_secondary_limits_y(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -223,7 +250,7 @@ def test_secondary_limits_y(master=False, remove=True):
         assert not compare
 
 
-def test_multiple(master=False, remove=True):
+def test_multiple(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'multiple_master') if master else 'multiple_master'
 
@@ -235,6 +262,9 @@ def test_multiple(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -243,7 +273,7 @@ def test_multiple(master=False, remove=True):
         assert not compare
 
 
-def test_multiple_scaled(master=False, remove=True):
+def test_multiple_scaled(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'multiple_scaled_master') if master else 'multiple_scaled'
 
@@ -256,6 +286,9 @@ def test_multiple_scaled(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -264,7 +297,7 @@ def test_multiple_scaled(master=False, remove=True):
         assert not compare
 
 
-def test_boxplot(master=False, remove=True):
+def test_boxplot(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'boxplot_master') if master else 'boxplot'
 
@@ -275,6 +308,9 @@ def test_boxplot(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -283,104 +319,191 @@ def test_boxplot(master=False, remove=True):
         assert not compare
 
 
+def test_boxplot_quantile(master=False, remove=True, show=False):
 
-# # Note: auto-scaling is not active for boxplots, contours, and heatmaps.
+    name = osjoin(MASTER, 'boxplot_quantile_master') if master else 'boxplot_quantile'
 
-# # ## Statistical limits
+    # Make the plot
+    fcp.boxplot(df=df_box, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', show=SHOW, ymax='95q',
+                filename=name + '.png', inline=False, jitter=False)
 
-# # <b><font color="blue" style="font-family:'Courier New'">fivecentplots </font></b> allows you to set axis limits based on some quantile percentage of the actual data or the inter-quartile range of the data.  This is most useful when working with boxplots that contain outliers which we do not want to skew y-axis range.
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
 
-# # ### Quantiles
-
-# # Quantile ranges are added to the standard min/max keywords as strings with the form: "&#60;quantile&gt;q".  <br>
-# # Consider the plot below in which the boxplot for sample 2 has an outlier.  The default limit will cover the entire span of the data so the `ymax` value is above this outlier.
-
-# # In[15]:
-
-
-# fcp.boxplot(df=df_box, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', show=SHOW)
-
-
-# # Obviously we could manually set a `ymax` value to exclude this outlier, but in the case of automated plot generation we likely do not know the outlier exists in advance.  Instead we can specify a 95% quantile limit to exclude tail points in the distribution. For boxplots, if the `range_lines` option is enabled, we can still visualize that there is an outlier in the data set that exceeds the y-axis range (see `here <boxplot.html#Range-lines>`_)
-
-# # In[16]:
-
-
-# fcp.boxplot(df=df_box, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', show=SHOW, ymax='95q')
+        assert not compare
 
 
-# # ### Inter-quartile range
+def test_boxplot_iqr(master=False, remove=True, show=False):
 
-# # In some cases we may want to set a limit based on the inter-quartile range of the data set (i.e., the delta between the 25% and 75% quantiles).  This can also help to deal with outlier data.  The value supplied to the range keyword(s) is a string of the form: "&#60;factor&gt;*iqr", where "factor" is a float value to be multiplied to the inter-quartile range.
+    name = osjoin(MASTER, 'boxplot_iqr_master') if master else 'boxplot_iqr'
 
-# # In[17]:
+    # Make the plot
+    fcp.boxplot(df=df_box, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', show=SHOW,
+                ymin='1.5*iqr', ymax='1.5*iqr',
+                filename=name + '.png', inline=False, jitter=False)
 
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
 
-# fcp.boxplot(df=df_box, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', show=SHOW,
-#             ymin='1.5*iqr', ymax='1.5*iqr')
-
-
-# # ## Axes sharing
-
-# # Axes sharing applies when using `row`, `col`, or `wrap` grouping to split the plot into multiple subplots.  The boolean keywords of interest are:
-# # <ul>
-# # <li>`share_x`</li>
-# # <li>`share_x2`</li>
-# # <li>`share_y`</li>
-# # <li>`share_y2`</li>
-# # <li>`share_z`</li>
-# # </ul>
-# #
-
-# # ### Shared axes
-
-# # By default, gridded plots share axes ranges (and tick labels) for all axes.  Because axes are shared, the tick labels and axis labels only appear on the outermost subplots.
-
-# # In[18]:
+        assert not compare
 
 
-# sub = df[(df.Substrate=='Si') & (df['Target Wavelength']==450)].copy()
-# fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',          show=SHOW, ax_size=[225, 225])
+def test_shared(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'shared_master') if master else 'shared'
+
+    # Make the plot
+    sub = df[(df.Substrate=='Si') & (df['Target Wavelength']==450)].copy()
+    fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',
+             show=SHOW, ax_size=[225, 225],
+             filename=name + '.png', inline=False)
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
 
 
-# # Sharing can be disabled by setting the `share_` keyword for one or more of the axes to `False`.  Notice that tick labels are added automatically and the spacing between plots is adjusted.
+def test_shared_false(master=False, remove=True, show=False):
 
-# # In[19]:
+    name = osjoin(MASTER, 'shared_false_master') if master else 'shared_false'
 
+    # Make the plot
+    sub = df[(df.Substrate=='Si') & (df['Target Wavelength']==450)].copy()
+    fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',          show=SHOW, ax_size=[225, 225], share_x=False, share_y=False,
+             filename=name + '.png', inline=False)
 
-# sub = df[(df.Substrate=='Si') & (df['Target Wavelength']==450)].copy()
-# fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',          show=SHOW, ax_size=[225, 225], share_x=False, share_y=False)
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
 
-
-# # We can also force shared axes to display their own tick labels and/or axis labels using the keywords `separate_ticks` and `separate_labels`.
-
-# # In[20]:
-
-
-# sub = df[(df.Substrate=='Si') & (df['Target Wavelength']==450)].copy()
-# fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',          show=SHOW, ax_size=[225, 225], separate_ticks=True, separate_labels=True)
-
-
-# # <b>Note: for `wrap` plots based on column values, axis sharing is forced to `True` and cannot be overriden.</b>
-
-# # ### Share rows
-
-# # For `row` plots, we can opt to share both the x- and y-axis range uniquely across each row of subplots via the `share_row` keyword:
-
-# # In[21]:
+        assert not compare
 
 
-# sub = df[(df.Substrate=='Si') & (df['Target Wavelength']==450)].copy()
-# fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',          show=SHOW, ax_size=[225, 225], share_row=True)
+def test_shared_separate(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'shared_separate_master') if master else 'shared_separate'
+
+    # Make the plot
+    sub = df[(df.Substrate=='Si') & (df['Target Wavelength']==450)].copy()
+    fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',          show=SHOW, ax_size=[225, 225], separate_ticks=True, separate_labels=True,
+             filename=name + '.png', inline=False)
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
 
 
-# # ### Share columns
+def test_shared_separate(master=False, remove=True, show=False):
 
-# # Similarly for `cow` plots, we can opt to share the both the x- and y-axis range uniquely across each column of subplots via the `share_col` keyword:
+    name = osjoin(MASTER, 'shared_separate_master') if master else 'shared_separate'
 
-# # In[22]:
+    # Make the plot
+    sub = df[(df.Substrate=='Si') & (df['Target Wavelength']==450)].copy()
+    fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',          show=SHOW, ax_size=[225, 225], separate_ticks=True, separate_labels=True,
+             filename=name + '.png', inline=False)
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
 
 
-# sub = df[(df.Substrate=='Si') & (df['Target Wavelength']==450)].copy()
-# fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',          show=SHOW, ax_size=[225, 225], share_col=True)
+def test_shared_rows(master=False, remove=True, show=False):
 
+    name = osjoin(MASTER, 'shared_rows_master') if master else 'shared_rows'
+
+    # Make the plot
+    sub = df[(df.Substrate=='Si') & (df['Target Wavelength']==450)].copy()
+    fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',
+             show=SHOW, ax_size=[225, 225], share_row=True,
+             filename=name + '.png', inline=False)
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_shared_cols(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'shared_columns_master') if master else 'shared_columns_master'
+
+    # Make the plot
+    sub = df[(df.Substrate=='Si') & (df['Target Wavelength']==450)].copy()
+    fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',
+             show=SHOW, ax_size=[225, 225], share_col=True,
+             filename=name + '.png', inline=False)
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+if __name__ == '__main__':
+    pass

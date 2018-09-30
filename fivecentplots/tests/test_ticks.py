@@ -1,307 +1,542 @@
+import pytest
+import fivecentplots as fcp
+import pandas as pd
+import numpy as np
+import os, sys, pdb
+import fivecentplots.utilities as utl
+import inspect
+osjoin = os.path.join
+st = pdb.set_trace
 
-# # coding: utf-8
+MASTER = osjoin(os.path.dirname(fcp.__file__), 'tests', 'test_images', 'ticks.py')
 
-# # # Grids and ticks
+# Sample data
+df = df = pd.read_csv(osjoin(os.path.dirname(fcp.__file__), 'tests', 'fake_data.csv'))
 
-# # This section demonstrates options available for axes grids and ticks.
+# Set theme
+# fcp.set_theme('gray')
+# fcp.set_theme('white')
 
-# # ## Setup
+# Other
+SHOW = False
 
-# # ### Imports
 
-# # In[1]:
+def make_all():
+    """
+    Remake all test master images
+    """
+
+    members = inspect.getmembers(sys.modules[__name__])
+    members = [f for f in members if 'test_' in f[0]]
+    for member in members:
+        print('Running %s...' % member[0], end='')
+        member[1](master=True)
+        print('done!')
 
 
-# get_ipython().run_line_magic('load_ext', 'autoreload')
-# get_ipython().run_line_magic('autoreload', '2')
-# get_ipython().run_line_magic('matplotlib', 'inline')
-# import fivecentplots as fcp
-# import pandas as pd
-# import numpy as np
-# import seaborn as sns
-# import os, sys, pdb
-# osjoin = os.path.join
-# st = pdb.set_trace
+def test_grid_major(master=False, remove=True, show=False):
 
+    name = osjoin(MASTER, 'grid_major_master') if master else 'grid_major'
 
-# # ### Sample data
+    # Make the plot
+    fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             filename=name + '.png', inline=False)
 
-# # In[2]:
 
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
 
-# df = pd.read_csv(osjoin(os.path.dirname(fcp.__file__), 'tests', 'fake_data.csv'))
-# df.head()
+        assert not compare
 
 
-# # ### Set theme
+def test_grid_major_off(master=False, remove=True, show=False):
 
-# # Optionally set design theme
+    name = osjoin(MASTER, 'grid_major_off_master') if master else 'grid_major_off'
 
-# # In[3]:
+    # Make the plot
+    fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             grid_major=False,
+             filename=name + '.png', inline=False)
 
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
 
-# #fcp.set_theme('gray')
-# #fcp.set_theme('white')
+        assert not compare
 
 
-# # ### Other
+def test_grid_major_off_y(master=False, remove=True, show=False):
 
-# # In[4]:
+    name = osjoin(MASTER, 'grid_major_off_y_master') if master else 'grid_major_off_y'
 
+    # Make the plot
+    fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             grid_major_y=False,
+             filename=name + '.png', inline=False)
 
-# SHOW = False
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
 
+        assert not compare
 
-# # ## Grids
 
-# # Grid properties apply to a specific axis:
-# # <ul>
-# # <li>major vs. minor</li>
-# # <li>`x` vs. `x2` vs. `y` vs. `y2`
-# # </ul>
-# #
-# # <b><font color="blue" style="font-family:'Courier New'">fivecentplots </font></b> allows you to adjust all major and all minor grids together (using `grid_major_` as a keyword prefix) or to adjust only a specific axis (using `grid_major_<x|y|x2|y2>_` as a keyword prefix.
+def test_grid_major_secondary(master=False, remove=True, show=False):
 
-# # ### Major grid
+    name = osjoin(MASTER, 'grid_major_secondary_master') if master else 'grid_major_secondary'
 
-# # By default, only major gridlines for the <i>primary</i> axes are visible in a plot.  Notice below that the secondary y-axis has tick marks only.
+    # Make the plot
+    fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             grid_major_y2=True, grid_major_y2_style='--',
+             filename=name + '.png', inline=False)
 
-# # In[5]:
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
 
+        assert not compare
 
-# fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
-#          filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"')
 
+def test_grid_minor(master=False, remove=True, show=False):
 
-# # We can disable both primary gridlines using the `grid_major` keyword:
+    name = osjoin(MASTER, 'grid_minor_master') if master else 'grid_minor'
 
-# # In[6]:
+    # Make the plot
+    fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             grid_minor=True,
+             filename=name + '.png', inline=False)
 
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
 
-# fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
-#          filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-#          grid_major=False)
+        assert not compare
 
 
-# # Or just disable one gridline by specifying the axis of interest in our keyword:
+def test_ticks_minor(master=False, remove=True, show=False):
 
-# # In[7]:
+    name = osjoin(MASTER, 'ticks_minor_master') if master else 'ticks_minor'
 
+    # Make the plot
+    fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             ticks_minor=True,
+             filename=name + '.png', inline=False)
 
-# fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
-#          filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-#          grid_major_y=False)
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
 
+        assert not compare
 
-# # We can also turn on the secondary y-axis grid and give it a distinct look:
 
-# # In[8]:
+def test_ticks_style(master=False, remove=True, show=False):
 
+    name = osjoin(MASTER, 'ticks_style_master') if master else 'ticks_style'
 
-# fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
-#          filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-#          grid_major_y2=True, grid_major_y2_style='--')
+    # Make the plot
+    fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             ticks_major_direction='out', ticks_major_color='#aaaaaa', ticks_major_length=5, ticks_major_width=0.8,
+             filename=name + '.png', inline=False)
 
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
 
-# # Unfortunately when using the matplotlib engine, the secondary grid lies above the plot on the primary grid which is not ideal.  This is why the secondary grid lines are disabled by default.
+        assert not compare
 
-# # ### Minor grid
 
-# # Minor grids are off by default by can be enabled and styled using either the `grid_minor` family of keywords to batch address all primary axes or the `grid_minor_<x|y|x2|y2>` family of keywords to change a single axis.
+def test_ticks_inc(master=False, remove=True, show=False):
 
-# # In[9]:
+    name = osjoin(MASTER, 'ticks_inc_master') if master else 'ticks_inc'
 
+    # Make the plot
+    fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             ticks_major_y_increment=0.2,
+             filename=name + '.png', inline=False)
 
-# fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
-#          filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-#          grid_minor=True)
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
 
+        assert not compare
 
-# # ## Tick marks
 
-# # ### Visibility
+def test_ticks_minor_number(master=False, remove=True, show=False):
 
-# # Tick marks are controlled by keywords with the prefix `ticks_major` or `ticks_minor` and, like gridlines, can be controlled as one for major and minor ticks or by specific axis.  They enabled by default on the inside of the plot whenever a grid line is enabled.  However, you can enable tick marks without enabling grid lines:
+    name = osjoin(MASTER, 'ticks_minor_number_master') if master else 'ticks_minor_number'
 
-# # In[10]:
+    # Make the plot
+    fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             ticks_minor_x_number=5, ticks_minor_y_number=10, ticks_minor_y2_number=4,
+             filename=name + '.png', inline=False)
 
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
 
-# fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
-#          filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-#          ticks_minor=True)
+        assert not compare
 
 
-# # ### Style
+def test_ticks_minor_number_log(master=False, remove=True, show=False):
 
-# # All tick mark parameters can be changed via keywords at the time of plot execution or in the theme file.  Consider the option below:
+    name = osjoin(MASTER, 'ticks_minor_number_log_master') if master else 'ticks_minor_number_log'
 
-# # In[11]:
+    # Make the plot
+    fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             ticks_minor_x_number=5, ticks_minor_y_number=10, ticks_minor_y2_number=4, ax_scale='logy', ax2_scale='linear',
+             filename=name + '.png', inline=False)
 
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
 
-# fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
-#          filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-#          ticks_major_direction='out', ticks_major_color='#aaaaaa', ticks_major_length=5, ticks_major_width=0.8)
+        assert not compare
 
 
-# # ### Increment
+def test_tick_labels(master=False, remove=True, show=False):
 
-# # Instead of specifying a number of tick marks to display, for major tick marks in <b><font color="blue" style="font-family:'Courier New'">fivecentplots </font></b> we specify the tick increment.
+    name = osjoin(MASTER, 'tick_labels_master') if master else 'tick_labels'
 
-# # In[12]:
+    # Make the plot
+    fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             ticks_major=False,
+             filename=name + '.png', inline=False)
 
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
 
-# fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
-#          filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-#          ticks_major_y_increment=0.2)
+        assert not compare
 
 
-# # For minor ticks however, it is easier to specify the number of minor ticks to use via the `ticks_minor_<x|y|x2|y2>_number` keyword.  The interval between minor ticks will then be calculated automatically. Setting the number of ticks automatically turns on the tick marks without setting `ticks_minor_<x|y|x2|y2>=True`.  <i>Note that this option only works for linearly scaled axis.  Minor log axis will always have 8 minor ticks with log spacing.</i>
+def test_tick_labels_minor(master=False, remove=True, show=False):
 
-# # In[13]:
+    name = osjoin(MASTER, 'tick_labels_minor_master') if master else 'tick_labels_minor'
 
+    # Make the plot
+    fcp.plot(df=df, x='Voltage', y='I [A]', show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             tick_labels_minor=True,
+             filename=name + '.png', inline=False)
 
-# fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
-#          filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-#          ticks_minor_x_number=5, ticks_minor_y_number=10, ticks_minor_y2_number=4)
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
 
+        assert not compare
 
-# # Or with a log scale on the y-axis (notice the number keywords for the y-axis are ignored):
 
-# # In[14]:
+def test_tick_cleanup(master=False, remove=True, show=False):
 
+    name = osjoin(MASTER, 'tick_cleanup_master') if master else 'tick_cleanup'
 
-# fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
-#          filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-#          ticks_minor_x_number=5, ticks_minor_y_number=10, ticks_minor_y2_number=4, ax_scale='logy', ax2_scale='linear')
+    # Make the plot
+    fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             tick_labels_minor=True, ax_scale='logy', ax2_scale='lin', ticks_minor_x_number=5,
+             filename=name + '.png', inline=False)
 
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
 
-# # ## Tick labels
+        assert not compare
 
-# # ### General comments
 
-# # In addition to tick markers, we can control the labels associated with those markers for both major and minor axes. Note the following:
-# # <ul>
-# # <li>Tick marks are automatically enabled if tick labels are enabled</li>
-# # <li>Tick labels are not automatically enbaled when tick marks are enabled, but they are automatically disabled if tick marks are disabled</li>
-# # <li>Major tick labels are always on by default unless shut off intentionally</li>
-# # <li>Minor tick labels are always off by default and must be turned on intentionally</li>
-# # </ul>
+def test_tick_cleanup_off(master=False, remove=True, show=False):
 
-# # <b>Turn off all ticks</b><br>
-# # (Notice the labels are also turned off)
+    name = osjoin(MASTER, 'tick_cleanup_off_master') if master else 'tick_cleanup_off'
 
-# # In[15]:
+    # Make the plot
+    fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             tick_labels_minor=True, ax_scale='logy', ax2_scale='lin', ticks_minor_x_number=5, tick_cleanup=False,
+             filename=name + '.png', inline=False)
 
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
 
-# fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
-#          filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-#          ticks_major=False)
+        assert not compare
 
 
-# # <b>Turn on minor ticks</b><br>
-# # This is done using the `tick_labels_minor` family of keywords:
+def test_tick_cleanup2(master=False, remove=True, show=False):
 
-# # In[16]:
+    name = osjoin(MASTER, 'tick_cleanup2_master') if master else 'tick_cleanup2'
 
+    # Make the plot
+    fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             tick_labels_minor=True, ax_scale='logy', ax2_scale='lin', ticks_minor_x_number=5,
+             ax_size=[600,400], tick_labels_minor_x_rotation=90,
+             filename=name + '.png', inline=False)
 
-# fcp.plot(df=df, x='Voltage', y='I [A]', show=SHOW, legend='Die',
-#          filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-#          tick_labels_minor=True)
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
 
+        assert not compare
 
-# # ### Tick cleanup
 
-# # One issue with tick labels is the potential for overlap depeding on the number of ticks displayed and the size of the plot.  <b><font color="blue" style="font-family:'Courier New'">fivecentplots </font></b> employs an algorithm that looks for tick label collision problems within a plot and between subplots and throws out certain labels while leaving the actual tick mark intact.  Consider the following example:
+def test_lin_sci(master=False, remove=True, show=False):
 
-# # In[17]:
+    name = osjoin(MASTER, 'lin_sci_master') if master else 'lin_sci'
 
+    # Make the plot
+    x = np.linspace(1, 10, 10)
+    y = np.linspace(1E-19, 1E-18, 10)
+    fcp.plot(pd.DataFrame({'x': x, 'y': y}), x='x', y='y',
+             filename=name + '.png', inline=False)
 
-# fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
-#          filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-#          tick_labels_minor=True, ax_scale='logy', ax2_scale='lin', ticks_minor_x_number=5)
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
 
+        assert not compare
 
-# # Notice that not all ticks have labels, but not all ticks have labels.  For instance, the x-axis has 5 ticks as specified by `ticks_major_x_number=5`, but only the 2nd and 4th tick labels are displayed.  This is the result of tick cleanup.  We can disable the cleanup algorithm by setting the keyword `tick_cleanup=False`.  This may produce an undesirable result:
 
-# # In[18]:
+def test_lin_sci2(master=False, remove=True, show=False):
 
+    name = osjoin(MASTER, 'lin_sci2_master') if master else 'lin_sci2'
 
-# fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
-#          filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-#          tick_labels_minor=True, ax_scale='logy', ax2_scale='lin', ticks_minor_x_number=5, tick_cleanup=False)
+    # Make the plot
+    x = np.linspace(1, 10, 10)
+    y = np.linspace(1E18, 1E19, 10)
+    fcp.plot(pd.DataFrame({'x': x, 'y': y}), x='x', y='y',
+             filename=name + '.png', inline=False)
 
-
-# # To fit more tick labels in, try increasing the axes size and rotating the tick labels (if applicable):
-
-# # In[19]:
-
-
-# fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
-#          filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-#          tick_labels_minor=True, ax_scale='logy', ax2_scale='lin', ticks_minor_x_number=5,
-#          ax_size=[600,400], tick_labels_minor_x_rotation=90)  #### Y2 TICKS!
-
-
-# # ### Scientific notation
-
-# # #### Linear scale axis
-
-# # By default, <b><font color="blue" style="font-family:'Courier New'">fivecentplots </font></b> will attempt to make an intelligent decision about how to display tick labels when the range of data and/or the discrete tick values are very small/large.  Consider the following example with very small `y` values.  Notice that the values on the y axis default to exponential notation rather than explictly writing out 18 zeros after the decimal place.
-
-# # In[20]:
-
-
-# x = np.linspace(1, 10, 10)
-# y = np.linspace(1E-19, 1E-18, 10)
-# fcp.plot(pd.DataFrame({'x': x, 'y': y}), x='x', y='y')
-
-
-# # In[21]:
-
-
-# x = np.linspace(1, 10, 10)
-# y = np.linspace(1E18, 1E19, 10)
-# fcp.plot(pd.DataFrame({'x': x, 'y': y}), x='x', y='y')
-
-
-# # You can disable the auto-formatting of ticks by setting the keywords `sci_x` and/or `sci_y` to `False`.  In this particular example, this would be a really poor choice.
-
-# # In[22]:
-
-
-# x = np.linspace(1, 10, 10)
-# y = np.linspace(1E18, 1E19, 10)
-# fcp.plot(pd.DataFrame({'x': x, 'y': y}), x='x', y='y', sci_y=False)
-
-
-# # #### Log scale axis
-
-# # Now consider the following log-scaled plot.  By default, the major tick labels for a log axis are powers of 10 if the values are large.
-
-# # In[23]:
-
-
-# fcp.plot(df=df, x='Voltage', y='Voltage', show=SHOW, legend='Die',
-#          filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-#          ax_scale='logy', ymin=0.00001, ymax=100000000)
-
-
-# # We can force the tick values to regular numerals as we did above by setting the keywords `sci_x` and/or `sci_y` to `False`.
-
-# # In[24]:
-
-
-# fcp.plot(df=df, x='Voltage', y='Voltage', show=SHOW, legend='Die',
-#          filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-#          ax_scale='logy', ymin=0.00001, ymax=100000000, sci_y=False)
-
-
-# # Lastly we can force tick marks of a log-scaled axis to exponential notation by setting the keywords `sci_x` and/or `sci_y` to `True`.
-
-# # In[25]:
-
-
-# fcp.plot(df=df, x='Voltage', y='Voltage', show=SHOW, legend='Die',
-#          filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-#          ax_scale='logy', ymin=0.00001, ymax=100000000, sci_y=True)
-
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_lin_sci_off(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'lin_sci_off_master') if master else 'lin_sci_off'
+
+    # Make the plot
+    x = np.linspace(1, 10, 10)
+    y = np.linspace(1E18, 1E19, 10)
+    fcp.plot(pd.DataFrame({'x': x, 'y': y}), x='x', y='y', sci_y=False,
+             filename=name + '.png', inline=False)
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_log_sci(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'log_sci_master') if master else 'log_sci'
+
+    # Make the plot
+    fcp.plot(df=df, x='Voltage', y='Voltage', show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             ax_scale='logy', ymin=0.00001, ymax=100000000,
+             filename=name + '.png', inline=False)
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_log_sci2(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'log_sci2_master') if master else 'log_sci2'
+
+    # Make the plot
+    fcp.plot(df=df, x='Voltage', y='Voltage', show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             ax_scale='logy', ymin=0.00001, ymax=100000000, sci_y=False,
+             filename=name + '.png', inline=False)
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_log_exp(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'log_exp_master') if master else 'log_exp'
+
+    # Make the plot
+    fcp.plot(df=df, x='Voltage', y='Voltage', show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             ax_scale='logy', ymin=0.00001, ymax=100000000, sci_y=True,
+             filename=name + '.png', inline=False)
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+if __name__ == '__main__':
+    pass

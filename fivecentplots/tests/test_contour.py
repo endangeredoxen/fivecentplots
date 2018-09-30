@@ -35,7 +35,7 @@ def make_all():
         print('done!')
 
 
-def test_basic(master=False, remove=True):
+def test_basic(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'basic_master') if master else 'basic'
 
@@ -48,6 +48,9 @@ def test_basic(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -56,7 +59,7 @@ def test_basic(master=False, remove=True):
         assert not compare
 
 
-def test_filled(master=False, remove=True):
+def test_filled(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'filled_master') if master else 'filled'
 
@@ -69,6 +72,12 @@ def test_filled(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -77,7 +86,7 @@ def test_filled(master=False, remove=True):
         assert not compare
 
 
-def test_filled_range(master=False, remove=True):
+def test_filled_range(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'filled_range_master') if master else 'filled_range'
 
@@ -90,6 +99,9 @@ def test_filled_range(master=False, remove=True):
     # Compare with master
     if master:
         return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
