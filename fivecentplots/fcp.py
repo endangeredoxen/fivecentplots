@@ -362,7 +362,7 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
     return dd
 
 
-def plot_conf_int(ir, ic, iline, data, layout, df, x, y):
+def plot_conf_int(ir, ic, iline, data, layout, df, x, y, twin):
     """
     """
 
@@ -372,7 +372,7 @@ def plot_conf_int(ir, ic, iline, data, layout, df, x, y):
     data.get_conf_int(df, x, y)
 
     layout.fill_between_lines(ir, ic, iline, data.stat_idx, data.lcl, data.ucl,
-                              'conf_int')
+                              'conf_int', twin)
 
     return data
 
@@ -516,7 +516,7 @@ def plot_ref(ir, ic, iline, data, layout, df, x, y):
     return data
 
 
-def plot_stat(ir, ic, iline, data, layout, df, x, y, leg_name=None):
+def plot_stat(ir, ic, iline, data, layout, df, x, y, leg_name=None, twin=False):
     """
     Plot a line calculated by stats
     """
@@ -527,7 +527,7 @@ def plot_stat(ir, ic, iline, data, layout, df, x, y, leg_name=None):
         return
 
     layout.lines.on = True
-    layout.plot_xy(ir, ic, iline, df_stat, x, y, leg_name, False)
+    layout.plot_xy(ir, ic, iline, df_stat, x, y, leg_name, twin)
 
     return data
 
@@ -562,10 +562,10 @@ def plot_xy(data, layout, ir, ic, df_rc, kwargs):
 
         plot_ref(ir, ic, iline, data, layout, df, x, y)
         if not layout.lines.on and not layout.markers.on:
-            plot_stat(ir, ic, iline, data, layout, df, x, y, leg_name)
+            plot_stat(ir, ic, iline, data, layout, df, x, y, leg_name, twin)
         else:
-            plot_stat(ir, ic, iline, data, layout, df, x, y)
-        plot_conf_int(ir, ic, iline, data, layout, df, x, y)
+            plot_stat(ir, ic, iline, data, layout, df, x, y, twin=twin)
+        plot_conf_int(ir, ic, iline, data, layout, df, x, y, twin)
 
     return data
 

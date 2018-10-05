@@ -86,10 +86,6 @@ class Data:
         self.twin_y = kwargs.get('twin_y', False)
         if self.twin_x == self.twin_y and self.twin_x:
             raise AxisError('cannot simultaneously twin x and y axes')
-        if self.twin_x and 'share_y' not in kwargs.keys():
-            self.share_y = False
-        if self.twin_y and 'share_x' not in kwargs.keys():
-            self.share_x = False
         self.xtrans = kwargs.get('xtrans', None)
         self.x2trans = kwargs.get('x2trans', None)
         self.ytrans = kwargs.get('ytrans', None)
@@ -169,7 +165,7 @@ class Data:
         # Apply an optional filter to the data
         self.filter = kwargs.get('filter', None)
         if self.filter:
-            self.df_all = self.df_filter(self.filter)
+            self.df_all = utl.df_filter(self.df_all, self.filter)
             if len(self.df_all) == 0:
                 raise DataError('DataFrame is empty after applying filter')
         # Define rc grouping column names
@@ -397,111 +393,8 @@ class Data:
                             ' two are required' % len(self.x))
         if self.twin_y and len(self.y) > 1:
             raise AxisError('twin_y error! only one y value can be specified')
-        # if len(self.y) > 1 and len(self.x) > 1 and len(self.y) != len(self.x):
-        #     raise AxisError('too many axes! Number of x and y axes specified '
-        #                     'must match OR at least one axis must contain '
-        #                     'only one value')
 
         return vals
-
-    def df_filter(self, filt_orig):
-        """  Filter the DataFrame
-
-        Due to limitations in pd.query, column names must not have spaces.  This
-        function will temporarily replace spaces in the column names with
-        underscores, but the supplied query string must contain column names
-        without any spaces
-
-        Args:
-            filt_orig (str):  query expression for filtering
-
-        Returns:
-            filtered DataFrame
-        """
-
-        def special_chars(text, skip=[]):
-            """
-            Replace special characters in a text string
-
-            Args:
-                text (str): input string
-                skip (list): characters to skip
-
-            Returns:
-                formatted string
-            """
-
-            chars = {' ': '_', '.': 'dot', '[': '',']': '', '(': '', ')': '',
-                     '-': '_', '^': '', '>': '', '<': '', '/': '_', '@': 'at',
-                     '%': 'percent', '*': '_'}
-            for sk in skip:
-                chars.pop(sk)
-            for k, v in chars.items():
-                text = text.replace(k, v).lstrip(' ').rstrip(' ')
-            return text
-
-        df2 = self.df_all.copy()
-
-        # Parse the filter string
-        filt = utl.get_current_values(df2, filt_orig)
-
-        # Remove spaces from
-        cols_orig = [f for f in self.df_all.columns]
-        cols_new = ['fCp%s' % f for f in cols_orig.copy()]
-        cols_new = [special_chars(f) for f in cols_new]
-
-        df2.columns = cols_new
-
-        # Reformat the filter string for compatibility with pd.query
-        operators = ['==', '<', '>', '!=']
-        ands = [f.lstrip().rstrip() for f in filt.split('&')]
-        for ia, aa in enumerate(ands):
-            ors = [f.lstrip() for f in aa.split('|')]
-            for io, oo in enumerate(ors):
-                # Temporarily remove any parentheses
-                param_start = False
-                param_end = False
-                if oo[0] == '(':
-                    oo = oo[1:]
-                    param_start = True
-                if oo[-1] == ')':
-                    oo = oo[0:-1]
-                    param_end = True
-                for op in operators:
-                    if op not in oo:
-                        continue
-                    vals = oo.split(op)
-                    vals[0] = vals[0].rstrip()
-                    vals[1] = vals[1].lstrip()
-                    if vals[1] == vals[0]:
-                        vals[1] = 'fCp%s' % special_chars(vals[1])
-                    vals[0] = 'fCp%s' % special_chars(vals[0])
-                    ors[io] = op.join(vals)
-                    if param_start:
-                        ors[io] = '(' + ors[io]
-                    if param_end:
-                        ors[io] = ors[io] + ')'
-            if len(ors) > 1:
-                ands[ia] = '|'.join(ors)
-            else:
-                ands[ia] = ors[0]
-        if len(ands) > 1:
-            filt = '&'.join(ands)
-        else:
-            filt = ands[0]
-
-        # Apply the filter
-        try:
-            df2 = df2.query(filt)
-            df2.columns = cols_orig
-
-            return df2
-
-        except:
-            print('Could not filter data!\n   Original filter string: %s\n   '
-                  'Modified filter string: %s' % (filt_orig, filt))
-
-            return df
 
     def get_all_groups(self, df):
         """

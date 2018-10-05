@@ -44,7 +44,7 @@ DEFAULT_COLORS = ['#4b72b0', '#c34e52', '#54a767', '#8172b1', '#64b4cc',
                   '#b07b9d', '#f2be5b', '#326438', '#3c5477', '#de7426',
                   '#588281', '#c22a64', '#57324e', '#948974', '#9dcbdf',
                   '#6f6f6f', ]
-BAYER = []
+BAYER = ['#4b72b0', '#56a58e', '#93d366', '#c34e52']
 
 DEFAULT_MARKERS = ['o', '+', 's', 'x', 'd', 'Z', '^', 'Y', 'v', '\infty',
                    '\#', '<', u'\u2B21', u'\u263A', '>', u'\u29C6', '\$',
@@ -211,10 +211,6 @@ class BaseLayout:
         if self.axes.share_row or self.axes.share_col:
             self.axes.share_x = False
             self.axes.share_y = False
-        if self.axes.twin_x and 'share_y' not in kwargs.keys():
-            self.axes.share_y = False
-        if self.axes.twin_y and 'share_x' not in kwargs.keys():
-            self.axes.share_x = False
 
         twinned = kwargs.get('twin_x', False) or kwargs.get('twin_y', False)
         self.axes2 = Element('ax', self.fcpp, kwargs,
@@ -246,8 +242,11 @@ class BaseLayout:
             # Override params
             keys = [f for f in kwargs.keys() if 'label_%s' % lab in f]
             for k in keys:
+                v = kwargs[k]
+                if k == 'label_%s' % lab:
+                    k = 'label_%s_text' % lab
                 setattr(getattr(self, 'label_%s' % lab),
-                        k.replace('label_%s_' % lab, ''), kwargs[k])
+                        k.replace('label_%s_' % lab, ''), v)
 
             # Update alphas
             getattr(self, 'label_%s' % lab).color_alpha('fill_color', 'fill_alpha')
@@ -260,14 +259,16 @@ class BaseLayout:
             self.label_y2.on = False
 
         # Twinned label colors
-        if self.axes.twin_x and 'label_y_font_color' not in kwargs.keys():
-            self.label_y.font_color = color_list[0]
-        if self.axes.twin_x and 'label_y2_font_color' not in kwargs.keys():
-            self.label_y2.font_color = color_list[1]
-        if self.axes.twin_y and 'label_x_font_color' not in kwargs.keys():
-            self.label_x.font_color = color_list[0]
-        if self.axes.twin_y and 'label_x_font_color' not in kwargs.keys():
-            self.label_x2.font_color = color_list[1]
+        if 'legend' not in kwargs.keys():
+            color_list_unique = pd.Series(color_list).unique()
+            if self.axes.twin_x and 'label_y_font_color' not in kwargs.keys():
+                self.label_y.font_color = color_list_unique[0]
+            if self.axes.twin_x and 'label_y2_font_color' not in kwargs.keys():
+                self.label_y2.font_color = color_list_unique[1]
+            if self.axes.twin_y and 'label_x_font_color' not in kwargs.keys():
+                self.label_x.font_color = color_list_unique[0]
+            if self.axes.twin_y and 'label_x_font_color' not in kwargs.keys():
+                self.label_x2.font_color = color_list_unique[1]
 
         # Figure title
         title = kwargs.get('title', None)
@@ -1280,12 +1281,12 @@ class BaseLayout:
                 getattr(self, 'label_x').text = \
                     lab_text if lab_text is not None else dd[0]
                 getattr(self, 'label_x2').text = \
-                    lab_text if lab_text is not None else getattr(data, '%s2' % lab)[0]
+                    lab_text2 if lab_text2 is not None else getattr(data, '%s2' % lab)[0]
             elif lab == 'y' and self.axes.twin_x:
                 getattr(self, 'label_y').text = \
                     lab_text if lab_text is not None else dd[0]
                 getattr(self, 'label_y2').text = \
-                    lab_text if lab_text is not None else getattr(data, '%s2' % lab)[0]
+                    lab_text2 if lab_text2 is not None else getattr(data, '%s2' % lab)[0]
             else:
                 if lab == 'wrap':
                     # special case
@@ -1329,7 +1330,6 @@ class Element:
             if k not in kwargs.keys():
                 kwargs[k] = v
 
-        self.column = None
         self._on = kwargs.get('on', True) # visbile or not
         self.dpi = utl.kwget(kwargs, fcpp, 'dpi', 100)
         self.obj = None  # plot object reference
@@ -1889,7 +1889,7 @@ class LayoutMPL(BaseLayout):
                 fontname=kwargs['font'], style=kwargs['font_style'],
                 weight=kwargs['font_weight'], size=kwargs['font_size'])
 
-    def fill_between_lines(self, ir, ic, iline, x, lcl, ucl, obj):
+    def fill_between_lines(self, ir, ic, iline, x, lcl, ucl, obj, twin=False):
         """
         Shade a region between two curves
 
@@ -1897,7 +1897,10 @@ class LayoutMPL(BaseLayout):
 
         """
 
-        ax = self.axes.obj[ir, ic]
+        if twin:
+            ax = self.axes2.obj[ir, ic]
+        else:
+            ax = self.axes.obj[ir, ic]
         obj = getattr(self, obj)
         fc = obj.fill_color
         ec = obj.edge_color
@@ -2719,7 +2722,7 @@ class LayoutMPL(BaseLayout):
             (self.axes.size[0] + self.cbar.size[0] + self.ws_ax_cbar) * self.ncol + \
             self.ws_col * (self.ncol - 1) +  \
             self.ws_leg_ax + self.legend.size[0] + self.ws_leg_fig + \
-            self.labtick_y2 + \
+            self.legend.edge_width + self.labtick_y2 + \
             self.label_row.size[0] + self.ws_label_row * self.label_row.on + \
             self.labtick_z * (self.ncol - 1 if self.ncol > 1 else 1) + \
             self.box_title
@@ -3520,7 +3523,7 @@ class LayoutMPL(BaseLayout):
                     self.axes2.obj[ir, ic].set_ylim(bottom=yy)
                 elif yy is not None and yval == 'ymax':
                     self.axes.obj[ir, ic].set_ylim(top=yy)
-                elif yy is not None and yval == 'ymax':
+                elif yy is not None and yval == 'y2max':
                     self.axes2.obj[ir, ic].set_ylim(top=yy)
         else:
             if ranges[ir, ic]['ymin'] is not None:
@@ -4279,7 +4282,10 @@ class LayoutMPL(BaseLayout):
             cmap = mplp.get_cmap(self.cmap)
             color_list = []
             if data.legend_vals is None or len(data.legend_vals) == 0:
-                maxx = 1
+                if self.axes.twin_x or self.axes.twin_y:
+                    maxx = 2
+                else:
+                    maxx = 1
             else:
                 maxx = len(data.legend_vals)
             for i in range(0, maxx):
@@ -4287,14 +4293,15 @@ class LayoutMPL(BaseLayout):
                     [mplc_to_hex(cmap((i+1)/(maxx+1)), False)]
 
             # Reset colors
-            if self.axes.twin_x and 'label_y_font_color' not in kwargs.keys():
-                self.label_y.font_color = color_list[0]
-            if self.axes.twin_x and 'label_y2_font_color' not in kwargs.keys():
-                self.label_y2.font_color = color_list[1]
-            if self.axes.twin_y and 'label_x_font_color' not in kwargs.keys():
-                self.label_x.font_color = color_list[0]
-            if self.axes.twin_y and 'label_x_font_color' not in kwargs.keys():
-                self.label_x2.font_color = color_list[1]
+            if self.legend.column is None:
+                if self.axes.twin_x and 'label_y_font_color' not in kwargs.keys():
+                    self.label_y.font_color = color_list[0]
+                if self.axes.twin_x and 'label_y2_font_color' not in kwargs.keys():
+                    self.label_y2.font_color = color_list[1]
+                if self.axes.twin_y and 'label_x_font_color' not in kwargs.keys():
+                    self.label_x.font_color = color_list[0]
+                if self.axes.twin_y and 'label_x_font_color' not in kwargs.keys():
+                    self.label_x2.font_color = color_list[1]
 
             self.lines.color = copy.copy(color_list)
             self.lines.color_alpha('color', 'alpha')

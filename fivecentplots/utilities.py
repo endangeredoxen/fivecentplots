@@ -36,6 +36,138 @@ def dfkwarg(args, kwargs):
     return kwargs
 
 
+def df_filter(df, filt_orig):
+    """  Filter the DataFrame
+    Due to limitations in pd.query, column names must not have spaces.  This
+    function will temporarily replace spaces in the column names with
+    underscores, but the supplied query string must contain column names
+    without any spaces
+    Args:
+        filt_orig (str):  query expression for filtering
+    Returns:
+        filtered DataFrame
+    """
+
+    def special_chars(text, skip=[]):
+        """
+        Replace special characters in a text string
+        Args:
+            text (str): input string
+            skip (list): characters to skip
+        Returns:
+            formatted string
+        """
+
+        chars = {' ': '_', '.': 'dot', '[': '',']': '', '(': '', ')': '',
+                    '-': '_', '^': '', '>': '', '<': '', '/': '_', '@': 'at',
+                    '%': 'percent', '*': '_'}
+        for sk in skip:
+            chars.pop(sk)
+        for k, v in chars.items():
+            text = text.replace(k, v).lstrip(' ').rstrip(' ')
+        return text
+
+    # Remove spaces from
+    cols_orig = [f for f in df.columns]
+    cols_new = ['fCp%s' % f for f in cols_orig.copy()]
+    cols_new = [special_chars(f) for f in cols_new]
+
+    # Parse the filter string
+    filt = get_current_values(df, filt_orig)
+
+    df.columns = cols_new
+
+    # Reformat the filter string for compatibility with pd.query
+    operators = ['==', '<', '>', '!=']
+    ands = [f.lstrip().rstrip() for f in filt.split('&')]
+    for ia, aa in enumerate(ands):
+        ors = [f.lstrip() for f in aa.split('|')]
+        for io, oo in enumerate(ors):
+            # Temporarily remove any parentheses
+            param_start = False
+            param_end = False
+            if oo[0] == '(':
+                oo = oo[1:]
+                param_start = True
+            if oo[-1] == ')':
+                oo = oo[0:-1]
+                param_end = True
+            for op in operators:
+                if op not in oo:
+                    continue
+                vals = oo.split(op)
+                vals[0] = vals[0].rstrip()
+                vals[1] = vals[1].lstrip()
+                if vals[1] == vals[0]:
+                    vals[1] = 'fCp%s' % special_chars(vals[1])
+                vals[0] = 'fCp%s' % special_chars(vals[0])
+                ors[io] = op.join(vals)
+                if param_start:
+                    ors[io] = '(' + ors[io]
+                if param_end:
+                    ors[io] = ors[io] + ')'
+        if len(ors) > 1:
+            ands[ia] = '|'.join(ors)
+        else:
+            ands[ia] = ors[0]
+    if len(ands) > 1:
+        filt = '&'.join(ands)
+    else:
+        filt = ands[0]
+
+    # Apply the filter
+    try:
+        df = df.query(filt)
+        df.columns = cols_orig
+
+        return df
+
+    except:
+        print('Could not filter data!\n   Original filter string: %s\n   '
+                'Modified filter string: %s' % (filt_orig, filt))
+
+        df.columns = cols_orig
+        return df
+
+
+def df_summary(df, columns=[], exclude=[], multiple=False):
+    """
+    Return a summary table of unique conditions in a DataFrame
+
+    If more than one value exists, replace with "Multiple" or a
+    string list of the values
+
+    Args:
+        df (pd.DataFrame): input DataFrame
+        columns (list): list of column names to include; if empty,
+            include all columns
+        exclude(list): list of column names to ignore
+        multiple (bool): toggle between showing discrete values or
+            "Multiple" when a column contains more than one value
+
+    """
+
+    # Filter the DataFrame
+    if columns:
+        df = df[columns]
+    if exclude:
+        for ex in exclude:
+            del df[ex]
+
+    # Build the new DataFrame
+    summ = pd.DataFrame(index=[0])
+    for col in df.columns:
+        uni = df[col].unique()
+        if len(uni) == 1:
+            summ[col] = uni[0]
+        elif multiple:
+            summ[col] = '; '.join([str(f) for f in uni])
+        else:
+            summ[col] = 'Multiple'
+
+    return summ
+
+
 def get_current_values(df, text, key='@'):
     """
     Parse a string looking for text enclosed by 'key' and replace with the
