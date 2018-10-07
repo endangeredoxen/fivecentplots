@@ -602,7 +602,7 @@ column of “Batch”:</p>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -757,8 +757,7 @@ be applied to the violin plots.</p>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">violin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">box_fill_color</span><span class="o">=</span><span class="s1">&#39;#a000FF&#39;</span><span class="p">,</span> <span class="n">box_fill_alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">box_edge_width</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">violin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">markers</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -767,6 +766,45 @@ be applied to the violin plots.</p>
 </div>
 <div class="output_area docutils container">
 <img alt="_images/boxplot_40_0.png" src="_images/boxplot_40_0.png" />
+</div>
+</div>
+<p>We can change the style of the violin density using keywords starting
+with <code class="docutils literal notranslate"><span class="pre">violin</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">violin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">markers</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">violin_fill_color</span><span class="o">=</span><span class="s1">&#39;#eaef1a&#39;</span><span class="p">,</span> <span class="n">violin_fill_alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">violin_edge_color</span><span class="o">=</span><span class="s1">&#39;#555555&#39;</span><span class="p">,</span> <span class="n">violin_edge_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">box_fill_color</span><span class="o">=</span><span class="s1">&#39;#555555&#39;</span><span class="p">,</span> <span class="n">box_edge_color</span><span class="o">=</span><span class="s1">&#39;#555555&#39;</span><span class="p">,</span> <span class="n">box_whisker_color</span><span class="o">=</span><span class="s1">&#39;#555555&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/boxplot_42_0.png" src="_images/boxplot_42_0.png" />
+</div>
+</div>
+<p>We can also disable the box overlay on the violin plot as follows:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">violin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">box_on</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/boxplot_44_0.png" src="_images/boxplot_44_0.png" />
 </div>
 </div>
 </div>
@@ -783,7 +821,7 @@ the typical styling keywords of any line object with the prefix
 <h4>Mean<a class="headerlink" href="#Mean" title="Permalink to this headline">¶</a></h4>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [15]:
+<span></span>In [17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -795,7 +833,7 @@ the typical styling keywords of any line object with the prefix
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/boxplot_44_0.png" src="_images/boxplot_44_0.png" />
+<img alt="_images/boxplot_48_0.png" src="_images/boxplot_48_0.png" />
 </div>
 </div>
 </div>
@@ -803,7 +841,7 @@ the typical styling keywords of any line object with the prefix
 <h4>Median<a class="headerlink" href="#Median" title="Permalink to this headline">¶</a></h4>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [16]:
+<span></span>In [18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -815,7 +853,7 @@ the typical styling keywords of any line object with the prefix
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/boxplot_46_0.png" src="_images/boxplot_46_0.png" />
+<img alt="_images/boxplot_50_0.png" src="_images/boxplot_50_0.png" />
 </div>
 </div>
 </div>
@@ -823,7 +861,7 @@ the typical styling keywords of any line object with the prefix
 <h4>Std dev<a class="headerlink" href="#Std-dev" title="Permalink to this headline">¶</a></h4>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [17]:
+<span></span>In [19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -835,7 +873,7 @@ the typical styling keywords of any line object with the prefix
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/boxplot_48_0.png" src="_images/boxplot_48_0.png" />
+<img alt="_images/boxplot_52_0.png" src="_images/boxplot_52_0.png" />
 </div>
 </div>
 </div>
@@ -847,7 +885,7 @@ visually segrate main groups of boxes. These lines are enabled by
 default but can be turned off easily:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [18]:
+<span></span>In [20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -859,7 +897,7 @@ default but can be turned off easily:</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/boxplot_51_0.png" src="_images/boxplot_51_0.png" />
+<img alt="_images/boxplot_55_0.png" src="_images/boxplot_55_0.png" />
 </div>
 </div>
 </div>
@@ -873,7 +911,7 @@ but can be disabled or styled through keywords with the prefix
 <code class="docutils literal notranslate"><span class="pre">box_range_lines_</span></code>:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [19]:
+<span></span>In [21]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -885,7 +923,7 @@ but can be disabled or styled through keywords with the prefix
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/boxplot_54_0.png" src="_images/boxplot_54_0.png" />
+<img alt="_images/boxplot_58_0.png" src="_images/boxplot_58_0.png" />
 </div>
 </div>
 </div>
