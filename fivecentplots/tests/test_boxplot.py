@@ -244,7 +244,52 @@ def test_violin(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, violin=True,
-                box_fill_color='#a000FF', box_fill_alpha=0.2, box_edge_width=0,
+                markers=False, filename=name + '.png', inline=False, jitter=False)
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_violin_styled(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'violin_styled_master') if master else 'violin_styled'
+
+    # Make the plot
+    fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, violin=True, markers=False,
+            violin_fill_color='#eaef1a', violin_fill_alpha=1, violin_edge_color='#555555', violin_edge_width=2,
+            box_fill_color='#555555', box_edge_color='#555555', box_whisker_color='#555555',
+            filename=name + '.png', inline=False, jitter=False)
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_violin_box_off(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'violin_box_off_master') if master else 'violin_box_off'
+
+    # Make the plot
+    fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, violin=True, box_on=False,
                 filename=name + '.png', inline=False, jitter=False)
 
     # Compare with master

@@ -769,6 +769,18 @@ class BaseLayout:
                                        )
 
         # Other boxplot elements
+        self.violin = Element('violin', self.fcpp, kwargs,
+                              on=utl.kwget(kwargs, self.fcpp, 'box_violin',
+                                           kwargs.get('violin', False)),
+                              edge_color=utl.kwget(kwargs, self.fcpp,
+                                                   'violin_edge_color', '#aaaaaa'),
+                              fill_alpha=0.5,
+                              fill_color=utl.kwget(kwargs, self.fcpp,
+                                                   'violin_fill_color', DEFAULT_COLORS[0]),
+                              median_color=utl.kwget(kwargs, self.fcpp,
+                                                     'violin_median_line_color', DEFAULT_COLORS[0]),
+
+                             )
         box_edge_color = utl.kwget(kwargs, self.fcpp, 'box_edge_color', '#aaaaaa') #['#4b72b0'])
         box_fill_color = utl.kwget(kwargs, self.fcpp, 'box_fill_color', '#ffffff')
         self.box = Element('box', self.fcpp, kwargs,
@@ -781,10 +793,10 @@ class BaseLayout:
                                                  '#ff7f0e'),
                            notch=utl.kwget(kwargs, self.fcpp, 'box_notch',
                                            kwargs.get('notch', False)),
-                           violin=utl.kwget(kwargs, self.fcpp, 'box_violin',
-                                            kwargs.get('violin', False)),
+                           width=utl.kwget(kwargs, self.fcpp, 'box_width',
+                                           kwargs.get('width', 0.5 if not self.violin.on
+                                                               else 0.15)),
                            )
-
         self.box_whisker = Element('box_whisker', self.fcpp, kwargs,
                                    on=self.box.on,
                                    color=self.box.edge_color,
@@ -862,7 +874,16 @@ class BaseLayout:
                 self.markers.type = RepeatedList('o', 'marker_type')
             if 'box_marker_zorder' in self.fcpp.keys():
                 self.markers.zorder = self.fcpp['box_marker_zorder']
-
+        violin_box = '#eeeeee' #'#262626'
+        if self.violin.on:
+            if 'box_edge_color' not in kwargs.keys():
+                self.box.edge_color = violin_box
+                self.box.color_alpha('edge_color', 'edge_alpha')
+            if 'box_fill_color' not in kwargs.keys():
+                self.box.fill_color = violin_box
+                self.box.color_alpha('fill_color', 'fill_alpha')
+            if 'box_whisker_color' not in kwargs.keys():
+                self.box_whisker.color = RepeatedList(violin_box, 'color')
 
         # Axhlines/axvlines
         axlines = ['ax_hlines', 'ax_vlines', 'ax2_hlines', 'ax2_vlines']
@@ -2947,29 +2968,32 @@ class LayoutMPL(BaseLayout):
 
         bp = None
 
-        if self.box.violin:
+        if self.violin.on:
             bp = self.axes.obj[ir, ic].violinplot(data,
                                                   showmeans=False,
                                                   showextrema=False,
                                                   showmedians=True,
                                                  )
             for ipatch, patch in enumerate(bp['bodies']):
-                patch.set_facecolor(self.box.fill_color.get(ipatch))
-                patch.set_edgecolor(self.box.edge_color.get(ipatch))
-                patch.set_alpha(self.box.fill_alpha)
+                patch.set_facecolor(self.violin.fill_color.get(ipatch))
+                patch.set_edgecolor(self.violin.edge_color.get(ipatch))
+                patch.set_alpha(self.violin.fill_alpha)
                 patch.set_zorder(2)
-                patch.set_lw(self.box.edge_width)
+                patch.set_lw(self.violin.edge_width)
 
-            bp['cmedians'].set_edgecolor(self.box.median_color)
+            bp['cmedians'].set_edgecolor(self.violin.median_color)
 
-        elif self.box.on:
+        if self.box.on:
             bp = self.axes.obj[ir, ic].boxplot(data,
                                                labels=[''] * len(data),
                                                showfliers=False,
                                                medianprops={'color': self.box.median_color},
                                                notch=self.box.notch,
                                                patch_artist=True,
-                                               zorder=3)
+                                               zorder=3,
+                                               widths=self.box.width.values[0]
+                                                      if len(self.box.width.values) == 1
+                                                      else self.box.width.values)
             for ipatch, patch in enumerate(bp['boxes']):
                 patch.set_edgecolor(self.box.edge_color.get(ipatch))
                 patch.set_facecolor(self.box.fill_color.get(ipatch))
@@ -2978,7 +3002,7 @@ class LayoutMPL(BaseLayout):
                 patch.set_ls(self.box.style.get(ipatch))
             for ipatch, patch in enumerate(bp['whiskers']):
                 patch.set_color(self.box_whisker.color.get(int(ipatch/2)))
-                patch.set_lw(self.box_whisker.width.get(ipatch))
+                patch.set_lw(1)#self.box_whisker.width.get(ipatch))
                 patch.set_ls(self.box_whisker.style.get(ipatch))
             for ipatch, patch in enumerate(bp['caps']):
                 patch.set_color(self.box_whisker.color.get(int(ipatch/2)))

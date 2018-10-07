@@ -284,26 +284,6 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="data.Data.df_filter">
-<code class="descname">df_filter</code><span class="sig-paren">(</span><em>filt_orig</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.df_filter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Filter the DataFrame</p>
-<p>Due to limitations in pd.query, column names must not have spaces.  This
-function will temporarily replace spaces in the column names with
-underscores, but the supplied query string must contain column names
-without any spaces</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filt_orig</strong> (<em>str</em>) – query expression for filtering</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">filtered DataFrame</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="data.Data.get_all_groups">
 <code class="descname">get_all_groups</code><span class="sig-paren">(</span><em>df</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.get_all_groups" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generator to get all possible allowed groups of data</p>
@@ -597,6 +577,50 @@ self.df_all</td>
 </div>
 <div class="section" id="module-utilities">
 <span id="utilities-py"></span><h2>utilities.py<a class="headerlink" href="#module-utilities" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="utilities.df_filter">
+<code class="descclassname">utilities.</code><code class="descname">df_filter</code><span class="sig-paren">(</span><em>df</em>, <em>filt_orig</em><span class="sig-paren">)</span><a class="headerlink" href="#utilities.df_filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter the DataFrame
+Due to limitations in pd.query, column names must not have spaces.  This
+function will temporarily replace spaces in the column names with
+underscores, but the supplied query string must contain column names
+without any spaces
+:param filt_orig: query expression for filtering
+:type filt_orig: str</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">filtered DataFrame</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="utilities.df_summary">
+<code class="descclassname">utilities.</code><code class="descname">df_summary</code><span class="sig-paren">(</span><em>df</em>, <em>columns=[]</em>, <em>exclude=[]</em>, <em>multiple=False</em><span class="sig-paren">)</span><a class="headerlink" href="#utilities.df_summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a summary table of unique conditions in a DataFrame</p>
+<p>If more than one value exists, replace with “Multiple” or a
+string list of the values</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>df</strong> (<em>pd.DataFrame</em>) – input DataFrame</li>
+<li><strong>columns</strong> (<em>list</em>) – list of column names to include; if empty,
+include all columns</li>
+<li><strong>exclude</strong> (<em>list</em>) – list of column names to ignore</li>
+<li><strong>multiple</strong> (<em>bool</em>) – toggle between showing discrete values or
+“Multiple” when a column contains more than one value</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="function">
 <dt id="utilities.dfkwarg">
 <code class="descclassname">utilities.</code><code class="descname">dfkwarg</code><span class="sig-paren">(</span><em>args</em>, <em>kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#utilities.dfkwarg" title="Permalink to this definition">¶</a></dt>
