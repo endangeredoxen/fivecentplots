@@ -1,15 +1,2 @@
-* wrap plot labels cover up x-axis tick marks most of the time but in grouping
-notebook fig plot example one is clearly peaking through
-
-* grouping notebook intro has formatting problems
-
-* can't automodule fcp and layout
-
-* style and formatting notebook needs new name and intro
-  marker figure is not showing
-
-* rename rc_label | wrap_label etc to label_rc and label_wrap for consistancy
-
-* complete docs
-
-* spell check
+* move np.hist to data --> transform
+* xy with categorical

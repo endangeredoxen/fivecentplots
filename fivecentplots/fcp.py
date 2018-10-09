@@ -180,6 +180,14 @@ def hist(*args, **kwargs):
     return plotter('plot_hist', **dfkwarg(args, kwargs))
 
 
+def nq(*args, **kwargs):
+    """
+    Plot normal quantiles of a data set
+    """
+
+    return plotter('plot_nq', **dfkwarg(args, kwargs))
+
+
 def paste_kwargs(kwargs):
     """
     Get the kwargs from contents of the clipboard in ini file format
@@ -498,6 +506,26 @@ def plot_hist(data, layout, ir, ic, df_rc, kwargs):
 
         else:
             hist, data = layout.plot_hist(ir, ic, iline, df, x, y, leg_name, data)
+
+    return data
+
+
+def plot_nq(data, layout, ir, ic, df_rc, kwargs):
+
+    """
+    Plot data as normal quantiles by sigma
+
+    Args:
+        data (obj): Data object
+        layout (obj): layout object
+        ir (int): current subplot row number
+        ic (int): current subplot column number
+        df_rc (pd.DataFrame): data subset
+        kwargs (dict): keyword args
+
+    """
+
+    plot_xy(data, layout, ir, ic, df_rc, kwargs)
 
     return data
 

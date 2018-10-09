@@ -3,6 +3,7 @@ import os, sys
 import pdb
 import numpy as np
 import pandas as pd
+import scipy.stats as ss
 try:
     import cv2
 except:
@@ -168,6 +169,28 @@ def df_summary(df, columns=[], exclude=[], multiple=False):
     return summ
 
 
+def df_unique(df):
+    """
+    Get column names with one unique value
+
+    Args:
+        df (pd.DataFrame): data to check
+
+    Returns:
+        dict of col names and unique values
+
+    """
+
+    unq = {}
+
+    for col in df.columns:
+        val = df[col].unique()
+        if len(val) == 1:
+            unq[col] = val[0]
+
+    return unq
+
+
 def get_current_values(df, text, key='@'):
     """
     Parse a string looking for text enclosed by 'key' and replace with the
@@ -265,6 +288,35 @@ def img_compare(img1, img2):
     difference = cv2.subtract(img1, img2)
 
     return np.any(difference)
+
+
+def nq(data, column='Value', kwargs={}):
+    """
+    Normal quantile calculation
+    """
+
+    # Defaults
+    sig = kwargs.get('sigma', None)
+    tail = kwargs.get('tail', 3)
+    step_tail = kwargs.get('step_tail', 0.2)
+    step_inner = kwargs.get('step_inner', 0.5)
+
+    # Flatten the DataFrame to an array
+    data = data.values.flatten()
+
+    # Get sigma
+    if not sig:
+        sig = sigma(data)
+    index = np.concatenate([np.arange(-sig, -tail, step_tail),
+                            np.arange(-tail, tail, step_tail),
+                            np.arange(tail, sig + 1e-9, step_tail)])
+
+    # Get the sigma value
+    values = np.zeros(len(index))
+    for ii, idx in enumerate(index):
+        values[ii] = np.percentile(data, ss.norm.cdf(idx) * 100)
+
+    return pd.DataFrame({'Sigma': index, column: values})
 
 
 def rectangle_overlap(r1, r2):
@@ -373,6 +425,21 @@ def set_save_filename(df, ifig, fig_item, fig_cols, layout, kwargs):
     return filename + kwargs.get('save_ext', '.png')
 
 
+def sigma(x):
+    """
+    Calculate the sigma range for a data set
+
+    Args:
+        x (pd.Series | np.array): data set
+
+    Returns:
+        int value to use for +/- max sigma
+
+    """
+
+    return np.round(np.trunc(10 * abs(ss.norm.ppf(1 / len(x)))) / 10)
+
+
 def validate_list(items):
     """
     Make sure a list variable is actually a list and not a single string
@@ -392,4 +459,3 @@ def validate_list(items):
         return [items]
     else:
         return items
-

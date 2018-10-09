@@ -16,12 +16,14 @@ REQUIRED_VALS = {'plot_xy': ['x', 'y'],
                  'plot_hist': ['x'],
                  'plot_contour': ['x', 'y', 'z'],
                  'plot_heatmap': [],
+                 'plot_nq': []
                 }
 OPTIONAL_VALS = {'plot_xy': [],
                  'plot_box': [],
                  'plot_hist': [],
                  'plot_contour': [],
                  'plot_heatmap': ['x', 'y', 'z'],
+                 'plot_nq': ['x'],
                 }
 
 
@@ -52,6 +54,7 @@ class Data:
         self.plot_func = plot_func
 
         # Default axis attributes
+        self.auto_cols = False
         self.auto_scale = utl.kwget(kwargs, self.fcpp, 'auto_scale', True)
         if self.plot_func in ['plot_heatmap', 'plot_hist']:
             self.auto_scale = False
@@ -63,6 +66,7 @@ class Data:
         self.fit_range_y = utl.kwget(kwargs, self.fcpp, 'fit_range_y', None)
         self.legend = None
         self.legend_vals = None
+        self.pivot = False
         self.ranges = None
         self.share_col = utl.kwget(kwargs, self.fcpp, 'share_col', False)
         self.share_row = utl.kwget(kwargs, self.fcpp, 'share_row', False)
@@ -82,15 +86,17 @@ class Data:
             self.share_y = kwargs.get('share_y', True)
         if self.plot_func in ['plot_box']:
             self.share_x = False
+        self.trans_df_fig = False
+        self.trans_df_rc = False
+        self.trans_x = kwargs.get('trans_x', None)
+        self.trans_x2 = kwargs.get('trans_x2', None)
+        self.trans_y = kwargs.get('trans_y', None)
+        self.trans_y2 = kwargs.get('trans_y2', None)
+        self.trans_z = kwargs.get('trans_z', None)
         self.twin_x = kwargs.get('twin_x', False)
         self.twin_y = kwargs.get('twin_y', False)
         if self.twin_x == self.twin_y and self.twin_x:
             raise AxisError('cannot simultaneously twin x and y axes')
-        self.xtrans = kwargs.get('xtrans', None)
-        self.x2trans = kwargs.get('x2trans', None)
-        self.ytrans = kwargs.get('ytrans', None)
-        self.y2trans = kwargs.get('y2trans', None)
-        self.ztrans = kwargs.get('ztrans', None)
         self.xmin = kwargs.get('xmin', None)
         self.x2min = kwargs.get('x2min', None)
         self.xmax = kwargs.get('xmax', None)
@@ -133,11 +139,16 @@ class Data:
                 self.x = ['Column']
                 self.y = ['Row']
                 self.z = ['Value']
-                self.pivot = False
                 self.auto_cols = True
             else:
                 self.pivot = True
-                self.auto_cols = False
+        if self.plot_func == 'plot_nq':
+            if not self.x:
+                self.x = ['Value']
+                self.y = ['Sigma']
+                self.df_all = pd.DataFrame(self.df_all.stack())
+                self.df_all.columns = self.x
+            self.trans_y = 'nq'
 
         # Ref line
         self.ref_line = kwargs.get('ref_line', None)
@@ -762,6 +773,18 @@ class Data:
                 self.ranges[ir, ic]['%smax' % ax] = \
                     self.ranges[0, 0]['%smax' % ax]
 
+    def get_data_ranges_nq(self, ir, ic):
+        """
+        Get the data ranges
+
+        Args:
+            ir (int): subplot row index
+            ic (int): subplot col index
+
+        """
+
+        st()
+
     def get_data_ranges_hist(self, ir, ic):
         """
         Get the data ranges
@@ -815,6 +838,20 @@ class Data:
             self.ranges[ir, ic]['ymax'] = self.ranges[0, 0]['ymax']
         self.y = None
 
+    def get_data_ranges_nq(self, ir, ic):
+        """
+        Get the data ranges
+
+        Args:
+            ir (int): subplot row index
+            ic (int): subplot col index
+
+        """
+
+        if self.share_x and ir == 0 and ic == 0:
+            st()
+
+
     def get_df_figure(self):
         """
         Generator to subset the main DataFrame based on fig_item grouping
@@ -833,12 +870,14 @@ class Data:
             self.get_legend_groupings(self.df_all)
             self.get_rc_groupings(self.df_all)
             self.df_fig = self.df_all
+            self.trans_df_rc = False
             for ir, ic, df_rc in self.get_rc_subset(self.df_fig, True):
                 continue
             yield None, None, None, self.df_fig
 
         else:
             for ifig, fig_val in enumerate(self.fig_vals):
+                self.trans_df_fig = False
                 if type(fig_val) is tuple:
                     for ig, gg in enumerate(fig_val):
                         self.df_fig = self.df_all[self.df_all[self.fig_groups[ig]] == gg].copy()
@@ -1145,10 +1184,10 @@ class Data:
             subset DataFrame
         """
 
-        df = df.copy()
+        #df = df.copy()
 
-        transform = any([self.xtrans, self.x2trans, self.ytrans, self.y2trans,
-                         self.ztrans])
+        transform = any([self.trans_x, self.trans_x2, self.trans_y, self.trans_y2,
+                         self.trans_z])
 
         for ir in range(0, self.nrow):
             for ic in range(0, self.ncol):
@@ -1192,7 +1231,12 @@ class Data:
 
                 # Perform any axis transformations
                 if transform:
-                    self.df_rc = self.transform(self.df_rc)
+                    if not self.trans_df_fig:
+                        self.df_fig = self.transform(self.df_fig)
+                        self.trans_df_fig = True
+                    if not self.trans_df_rc:
+                        self.df_rc = self.transform(self.df_rc)
+                        self.trans_df_rc = True
 
                 # Reshaping
                 if self.plot_func == 'plot_heatmap':
@@ -1257,7 +1301,7 @@ class Data:
                     self.get_box_index_changes()
                     self.ranges[ir, ic]['xmin'] = 0.5
                     self.ranges[ir, ic]['xmax'] = len(self.changes) + 0.5
-
+                print(self.df_rc)
                 # Yield the subset
                 yield ir, ic, self.df_rc
 
@@ -1309,7 +1353,7 @@ class Data:
             updated DataFrame
         """
 
-        df = df.copy()
+        #df = df.copy()
 
         axis = ['x', 'y', 'z']
 
@@ -1318,19 +1362,24 @@ class Data:
             if not vals:
                 continue
             for val in vals:
-                if getattr(self, '%strans' % ax) == 'abs':
+                if getattr(self, 'trans_%s' % ax) == 'abs':
                     df.loc[:, val] = abs(df[val])
-                elif getattr(self, '%strans' % ax) == 'negative' \
-                        or getattr(self, '%strans' % ax) == 'neg':
+                elif getattr(self, 'trans_%s' % ax) == 'negative' \
+                        or getattr(self, 'trans_%s' % ax) == 'neg':
                     df.loc[:, val] = -df[val]
-                elif getattr(self, '%strans' % ax) == 'inverse' \
-                        or getattr(self, '%strans' % ax) == 'inv':
+                elif getattr(self, 'trans_%s' % ax) == 'nq':
+                    extras = utl.df_unique(df)
+                    df = utl.nq(df, self.x[0])
+                    for k, v in extras.items():
+                        df[k] = v
+                elif getattr(self, 'trans_%s' % ax) == 'inverse' \
+                        or getattr(self, 'trans_%s' % ax) == 'inv':
                     df.loc[:, val] = 1/df[val]
-                elif (type(getattr(self, '%strans' % ax)) is tuple \
-                        or type(getattr(self, '%strans' % ax)) is list) \
-                        and getattr(self, '%strans' % ax)[0] == 'pow':
-                    df.loc[:, val] = df[val]**getattr(self, '%strans' % ax)[1]
-                elif getattr(self, '%strans' % ax) == 'flip':
+                elif (type(getattr(self, 'trans_%s' % ax)) is tuple \
+                        or type(getattr(self, 'trans_%s' % ax)) is list) \
+                        and getattr(self, 'trans_%s' % ax)[0] == 'pow':
+                    df.loc[:, val] = df[val]**getattr(self, 'trans_%s' % ax)[1]
+                elif getattr(self, 'trans_%s' % ax) == 'flip':
                     maxx = df.loc[:, val].max()
                     df.loc[:, val] -= maxx
                     df.loc[:, val] = abs(df[val])
