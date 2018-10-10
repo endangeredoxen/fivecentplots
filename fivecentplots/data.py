@@ -86,6 +86,7 @@ class Data:
             self.share_y = kwargs.get('share_y', True)
         if self.plot_func in ['plot_box']:
             self.share_x = False
+        self.swap = utl.kwget(kwargs, self.fcpp, 'swap', False)
         self.trans_df_fig = False
         self.trans_df_rc = False
         self.trans_x = kwargs.get('trans_x', None)
@@ -145,10 +146,10 @@ class Data:
         if self.plot_func == 'plot_nq':
             if not self.x:
                 self.x = ['Value']
-                self.y = ['Sigma']
                 self.df_all = pd.DataFrame(self.df_all.stack())
                 self.df_all.columns = self.x
-            self.trans_y = 'nq'
+            self.trans_x = 'nq'
+            self.y = ['Sigma']
 
         # Ref line
         self.ref_line = kwargs.get('ref_line', None)
@@ -231,6 +232,13 @@ class Data:
             self.check_group_matching('legend', 'fig')
         if self.groups and self.fig:
             self.check_group_matching('groups', 'fig')
+
+        # Swap x and y axes
+        if self.swap:
+            self.swap_xy()
+
+        # Transform data
+        self.transform()
 
         # Other kwargs
         for k, v in kwargs.items():
@@ -838,20 +846,6 @@ class Data:
             self.ranges[ir, ic]['ymax'] = self.ranges[0, 0]['ymax']
         self.y = None
 
-    def get_data_ranges_nq(self, ir, ic):
-        """
-        Get the data ranges
-
-        Args:
-            ir (int): subplot row index
-            ic (int): subplot col index
-
-        """
-
-        if self.share_x and ir == 0 and ic == 0:
-            st()
-
-
     def get_df_figure(self):
         """
         Generator to subset the main DataFrame based on fig_item grouping
@@ -1229,15 +1223,6 @@ class Data:
                     else:
                         self.df_rc = df
 
-                # Perform any axis transformations
-                if transform:
-                    if not self.trans_df_fig:
-                        self.df_fig = self.transform(self.df_fig)
-                        self.trans_df_fig = True
-                    if not self.trans_df_rc:
-                        self.df_rc = self.transform(self.df_rc)
-                        self.trans_df_rc = True
-
                 # Reshaping
                 if self.plot_func == 'plot_heatmap':
                     if self.pivot:
@@ -1301,7 +1286,7 @@ class Data:
                     self.get_box_index_changes()
                     self.ranges[ir, ic]['xmin'] = 0.5
                     self.ranges[ir, ic]['xmax'] = len(self.changes) + 0.5
-                print(self.df_rc)
+
                 # Yield the subset
                 yield ir, ic, self.df_rc
 
@@ -1328,6 +1313,21 @@ class Data:
             print('stat "%s" is not supported...skipping stat calculation' % self.stat)
             return None
 
+    @property
+    def groupers(self):
+        """
+        Get all grouping values
+        """
+
+        props = ['row', 'col', 'groups', 'legend', 'fig']
+        grouper = []
+
+        for prop in props:
+            if getattr(self, prop):
+                grouper += getattr(self, prop)
+
+        return grouper
+
     def see(self):
         """
         Prints a readable list of class attributes
@@ -1339,49 +1339,84 @@ class Data:
 
         return df
 
-    def transform(self, df):
+    def swap_xy(self):
         """
-        Transform x, y, or z data
-
-        Args:
-            df (pd.DataFrame): current DataFrame
-            x (str): x column name
-            y (list): y column names
-            z (str): z column name
-
-        Returns:
-            updated DataFrame
+        Swap the x and y axis
         """
 
-        #df = df.copy()
+        # Axis values
+        x = self.x
+        x2 = self.x2
+        self.x = self.y
+        self.x2 = self.y2
+        self.y = x
+        self.y2 = x2
 
-        axis = ['x', 'y', 'z']
+        # Trans
+        trans_x = self.trans_x
+        trans_x2 = self.trans_x2
+        self.trans_x = self.trans_y
+        self.tras_x2 = self.trans_y2
+        self.trans_y = trans_x
+        self.trans_y2 = trans_x2
 
-        for ax in axis:
-            vals = getattr(self, ax)
-            if not vals:
-                continue
-            for val in vals:
-                if getattr(self, 'trans_%s' % ax) == 'abs':
-                    df.loc[:, val] = abs(df[val])
-                elif getattr(self, 'trans_%s' % ax) == 'negative' \
-                        or getattr(self, 'trans_%s' % ax) == 'neg':
-                    df.loc[:, val] = -df[val]
-                elif getattr(self, 'trans_%s' % ax) == 'nq':
-                    extras = utl.df_unique(df)
-                    df = utl.nq(df, self.x[0])
-                    for k, v in extras.items():
-                        df[k] = v
-                elif getattr(self, 'trans_%s' % ax) == 'inverse' \
-                        or getattr(self, 'trans_%s' % ax) == 'inv':
-                    df.loc[:, val] = 1/df[val]
-                elif (type(getattr(self, 'trans_%s' % ax)) is tuple \
-                        or type(getattr(self, 'trans_%s' % ax)) is list) \
-                        and getattr(self, 'trans_%s' % ax)[0] == 'pow':
-                    df.loc[:, val] = df[val]**getattr(self, 'trans_%s' % ax)[1]
-                elif getattr(self, 'trans_%s' % ax) == 'flip':
-                    maxx = df.loc[:, val].max()
-                    df.loc[:, val] -= maxx
-                    df.loc[:, val] = abs(df[val])
+    def transform(self):
+        """
+        Transform x, y, or z data by unique group
+        """
 
-        return df
+        # Possible tranformations
+        transform = any([self.trans_x, self.trans_x2, self.trans_y,
+                         self.trans_y2, self.trans_z])
+        if not transform:
+            return
+
+        # Container for transformed data
+        df = pd.DataFrame()
+
+        # Transform by unique group
+        groups = self.groupers
+        if len(groups) > 0:
+            groups = self.df_all.groupby(groups)
+        else:
+            groups = [self.df_all]
+        for group in groups:
+            if type(group) is tuple:
+                gg = group[1]
+            else:
+                gg = group
+
+            axis = ['x', 'y', 'z']
+
+            for ax in axis:
+                vals = getattr(self, ax)
+                if not vals:
+                    continue
+                for ival, val in enumerate(vals):
+                    if getattr(self, 'trans_%s' % ax) == 'abs':
+                        gg.loc[:, val] = abs(gg[val])
+                    elif getattr(self, 'trans_%s' % ax) == 'negative' \
+                            or getattr(self, 'trans_%s' % ax) == 'neg':
+                        gg.loc[:, val] = -gg[val]
+                    elif getattr(self, 'trans_%s' % ax) == 'nq':
+                        if ival == 0:
+                            gg = utl.nq(gg[val], val)
+                    elif getattr(self, 'trans_%s' % ax) == 'inverse' \
+                            or getattr(self, 'trans_%s' % ax) == 'inv':
+                        gg.loc[:, val] = 1/gg[val]
+                    elif (type(getattr(self, 'trans_%s' % ax)) is tuple \
+                            or type(getattr(self, 'trans_%s' % ax)) is list) \
+                            and getattr(self, 'trans_%s' % ax)[0] == 'pow':
+                        gg.loc[:, val] = gg[val]**getattr(self, 'trans_%s' % ax)[1]
+                    elif getattr(self, 'trans_%s' % ax) == 'flip':
+                        maxx = gg.loc[:, val].max()
+                        gg.loc[:, val] -= maxx
+                        gg.loc[:, val] = abs(gg[val])
+
+            if type(group) is tuple:
+                for k, v in dict(zip(self.groupers, group[0])).items():
+                    gg[k] = v
+
+            df = pd.concat([df, gg])
+
+        self.df_all = df
