@@ -45,8 +45,6 @@ class GroupingError(Exception):
 class Data:
     def __init__(self, plot_func='xy', **kwargs):
 
-        #from fivecentplots.fcp import utl.kwget, reload_defaults
-
         # Reload default file
         self.fcpp, dummy, dummy2 = utl.reload_defaults()
 
@@ -110,7 +108,8 @@ class Data:
         self.zmax = kwargs.get('zmax', None)
 
         # Define DataFrames
-        self.df_all = self.check_df(kwargs.get('df'))
+        self.check_df(kwargs)
+        self.df_all = kwargs['df']
         self.df_fig = None
         self.df_sub = None
         self.changes = pd.DataFrame()  # used with boxplots
@@ -233,6 +232,10 @@ class Data:
         if self.groups and self.fig:
             self.check_group_matching('groups', 'fig')
 
+        # Add all non-dataframe kwargs to self
+        kwargs = kwargs.pop('df')  # for memory
+        self.kwargs = kwargs
+
         # Swap x and y axes
         if self.swap:
             self.swap_xy()
@@ -267,19 +270,17 @@ class Data:
                         utl.kwget(kwargs, self.fcpp,
                                   'ax_limit_padding_%s_max' % ax, self.ax_limit_padding))
 
-    def check_df(self, df):
+    def check_df(self, kwargs):
         """
         Validate the dataframe
         """
 
-        if df is None:
+        if 'df' not in kwargs.keys() or kwargs['df'] is None:
             raise DataError('Must provide a DataFrame called "df" '
-                             'for plotting!')
+                            'for plotting!')
 
-        if len(df) == 0:
+        if len(kwargs['df']) == 0:
             raise DataError('DataFrame is empty.  Nothing to plot!')
-
-        return df.copy()
 
     def check_group_columns(self, group_type, col_names):
         """
@@ -1319,7 +1320,7 @@ class Data:
         Get all grouping values
         """
 
-        props = ['row', 'col', 'groups', 'legend', 'fig']
+        props = ['row', 'col', 'wrap', 'groups', 'legend', 'fig']
         grouper = []
 
         for prop in props:
@@ -1375,9 +1376,9 @@ class Data:
         df = pd.DataFrame()
 
         # Transform by unique group
-        groups = self.groupers
-        if len(groups) > 0:
-            groups = self.df_all.groupby(groups)
+        groups_all = self.groupers
+        if len(groups_all) > 0:
+            groups = self.df_all.groupby(groups_all)
         else:
             groups = [self.df_all]
         for group in groups:
@@ -1400,7 +1401,7 @@ class Data:
                         gg.loc[:, val] = -gg[val]
                     elif getattr(self, 'trans_%s' % ax) == 'nq':
                         if ival == 0:
-                            gg = utl.nq(gg[val], val)
+                            gg = utl.nq(gg[val], val, self.kwargs)
                     elif getattr(self, 'trans_%s' % ax) == 'inverse' \
                             or getattr(self, 'trans_%s' % ax) == 'inv':
                         gg.loc[:, val] = 1/gg[val]
@@ -1414,7 +1415,8 @@ class Data:
                         gg.loc[:, val] = abs(gg[val])
 
             if type(group) is tuple:
-                for k, v in dict(zip(self.groupers, group[0])).items():
+                vals = group[0] if type(group[0]) is tuple else [group[0]]
+                for k, v in dict(zip(groups_all, vals)).items():
                     gg[k] = v
 
             df = pd.concat([df, gg])
