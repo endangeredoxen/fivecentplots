@@ -530,6 +530,12 @@ self.df_all</td>
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="data.Data.groupers">
+<code class="descname">groupers</code><a class="headerlink" href="#data.Data.groupers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all grouping values</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="data.Data.see">
 <code class="descname">see</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.see" title="Permalink to this definition">¶</a></dt>
@@ -537,26 +543,15 @@ self.df_all</td>
 </dd></dl>
 
 <dl class="method">
+<dt id="data.Data.swap_xy">
+<code class="descname">swap_xy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.swap_xy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Swap the x and y axis</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="data.Data.transform">
-<code class="descname">transform</code><span class="sig-paren">(</span><em>df</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.transform" title="Permalink to this definition">¶</a></dt>
-<dd><p>Transform x, y, or z data</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>df</strong> (<em>pd.DataFrame</em>) – current DataFrame</li>
-<li><strong>x</strong> (<em>str</em>) – x column name</li>
-<li><strong>y</strong> (<em>list</em>) – y column names</li>
-<li><strong>z</strong> (<em>str</em>) – z column name</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">updated DataFrame</p>
-</td>
-</tr>
-</tbody>
-</table>
+<code class="descname">transform</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform x, y, or z data by unique group</p>
 </dd></dl>
 
 </dd></dl>
@@ -616,6 +611,22 @@ include all columns</li>
 “Multiple” when a column contains more than one value</li>
 </ul>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="utilities.df_unique">
+<code class="descclassname">utilities.</code><code class="descname">df_unique</code><span class="sig-paren">(</span><em>df</em><span class="sig-paren">)</span><a class="headerlink" href="#utilities.df_unique" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get column names with one unique value</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>df</strong> (<em>pd.DataFrame</em>) – data to check</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">dict of col names and unique values</td>
 </tr>
 </tbody>
 </table>
@@ -733,6 +744,12 @@ dict1 or dict2 keys</li>
 </dd></dl>
 
 <dl class="function">
+<dt id="utilities.nq">
+<code class="descclassname">utilities.</code><code class="descname">nq</code><span class="sig-paren">(</span><em>data</em>, <em>column='Value'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#utilities.nq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normal quantile calculation</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="utilities.rectangle_overlap">
 <code class="descclassname">utilities.</code><code class="descname">rectangle_overlap</code><span class="sig-paren">(</span><em>r1</em>, <em>r2</em><span class="sig-paren">)</span><a class="headerlink" href="#utilities.rectangle_overlap" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine if the bounds of two rectangles overlap</p>
@@ -778,6 +795,22 @@ dict1 or dict2 keys</li>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">str filename</p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="utilities.sigma">
+<code class="descclassname">utilities.</code><code class="descname">sigma</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#utilities.sigma" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the sigma range for a data set</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> (<em>pd.Series | np.array</em>) – data set</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">int value to use for +/- max sigma</td>
 </tr>
 </tbody>
 </table>

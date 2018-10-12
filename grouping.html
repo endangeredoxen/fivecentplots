@@ -124,10 +124,14 @@
 <li class="toctree-l3"><a class="reference internal" href="#boxplots">boxplots</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#row-|-col-subplots">row | col subplots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#row-|-col-subplots">row | col subplots</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#By-unique-values">By unique values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#By-x-or-y">By x or y</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#wrap-subplots">wrap subplots</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#By-column-values">By column values</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#By-column-names">By column names</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#By-unique-values">By unique values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#By-x-and-y">By x and y</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#figure-plots">figure plots</a></li>
@@ -478,7 +482,7 @@ site.</p>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> \
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -487,8 +491,43 @@ site.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_11_0.png" src="_images/grouping_11_0.png" />
-</div>
+<div class="highlight"><pre>
+<span class="ansi-red-intense-fg ansi-bold">---------------------------------------------------------------------------</span>
+<span class="ansi-red-intense-fg ansi-bold">TypeError</span>                                 Traceback (most recent call last)
+<span class="ansi-green-intense-fg ansi-bold">&lt;ipython-input-3-ba685f2709f9&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-intense-fg ansi-bold">()</span>
+<span class="ansi-green-fg">      1</span> fcp.plot(df=df1, x=&#39;Voltage&#39;, y=&#39;I [A]&#39;, legend=&#39;Die&#39;,
+<span class="ansi-green-intense-fg ansi-bold">----&gt; 2</span><span class="ansi-yellow-intense-fg ansi-bold">          filter=&#39;Substrate==&#34;Si&#34; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;)
+</span>
+<span class="ansi-green-intense-fg ansi-bold">C:\GitHub\fivecentplots\fivecentplots\fcp.py</span> in <span class="ansi-cyan-fg">plot</span><span class="ansi-blue-intense-fg ansi-bold">(*args, **kwargs)</span>
+<span class="ansi-green-fg">    220</span> <span class="ansi-green-intense-fg ansi-bold">def</span> plot<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-yellow-intense-fg ansi-bold">*</span>args<span class="ansi-yellow-intense-fg ansi-bold">,</span> <span class="ansi-yellow-intense-fg ansi-bold">**</span>kwargs<span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">:</span>
+<span class="ansi-green-fg">    221</span>
+<span class="ansi-green-intense-fg ansi-bold">--&gt; 222</span><span class="ansi-yellow-intense-fg ansi-bold">     </span><span class="ansi-green-intense-fg ansi-bold">return</span> plotter<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-blue-intense-fg ansi-bold">&#39;plot_xy&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">,</span> <span class="ansi-yellow-intense-fg ansi-bold">**</span>dfkwarg<span class="ansi-yellow-intense-fg ansi-bold">(</span>args<span class="ansi-yellow-intense-fg ansi-bold">,</span> kwargs<span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">)</span>
+<span class="ansi-green-fg">    223</span>
+<span class="ansi-green-fg">    224</span>
+
+<span class="ansi-green-intense-fg ansi-bold">C:\GitHub\fivecentplots\fivecentplots\fcp.py</span> in <span class="ansi-cyan-fg">plotter</span><span class="ansi-blue-intense-fg ansi-bold">(plot_func, **kwargs)</span>
+<span class="ansi-green-fg">    634</span>
+<span class="ansi-green-fg">    635</span>     <span class="ansi-red-intense-fg ansi-bold"># Iterate over discrete figures</span>
+<span class="ansi-green-intense-fg ansi-bold">--&gt; 636</span><span class="ansi-yellow-intense-fg ansi-bold">     </span><span class="ansi-green-intense-fg ansi-bold">for</span> ifig<span class="ansi-yellow-intense-fg ansi-bold">,</span> fig_item<span class="ansi-yellow-intense-fg ansi-bold">,</span> fig_cols<span class="ansi-yellow-intense-fg ansi-bold">,</span> df_fig <span class="ansi-green-intense-fg ansi-bold">in</span> dd<span class="ansi-yellow-intense-fg ansi-bold">.</span>get_df_figure<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">:</span>
+<span class="ansi-green-fg">    637</span>         <span class="ansi-red-intense-fg ansi-bold"># Create a layout object</span>
+<span class="ansi-green-fg">    638</span>         layout <span class="ansi-yellow-intense-fg ansi-bold">=</span> LAYOUT<span class="ansi-yellow-intense-fg ansi-bold">[</span>engine<span class="ansi-yellow-intense-fg ansi-bold">]</span><span class="ansi-yellow-intense-fg ansi-bold">(</span>plot_func<span class="ansi-yellow-intense-fg ansi-bold">,</span> <span class="ansi-yellow-intense-fg ansi-bold">**</span>kwargs<span class="ansi-yellow-intense-fg ansi-bold">)</span>
+
+<span class="ansi-green-intense-fg ansi-bold">C:\GitHub\fivecentplots\fivecentplots\data.py</span> in <span class="ansi-cyan-fg">get_df_figure</span><span class="ansi-blue-intense-fg ansi-bold">(self)</span>
+<span class="ansi-green-fg">    880</span>             self<span class="ansi-yellow-intense-fg ansi-bold">.</span>df_fig <span class="ansi-yellow-intense-fg ansi-bold">=</span> self<span class="ansi-yellow-intense-fg ansi-bold">.</span>df_all
+<span class="ansi-green-fg">    881</span>             self<span class="ansi-yellow-intense-fg ansi-bold">.</span>trans_df_rc <span class="ansi-yellow-intense-fg ansi-bold">=</span> <span class="ansi-green-intense-fg ansi-bold">False</span>
+<span class="ansi-green-intense-fg ansi-bold">--&gt; 882</span><span class="ansi-yellow-intense-fg ansi-bold">             </span><span class="ansi-green-intense-fg ansi-bold">for</span> ir<span class="ansi-yellow-intense-fg ansi-bold">,</span> ic<span class="ansi-yellow-intense-fg ansi-bold">,</span> df_rc <span class="ansi-green-intense-fg ansi-bold">in</span> self<span class="ansi-yellow-intense-fg ansi-bold">.</span>get_rc_subset<span class="ansi-yellow-intense-fg ansi-bold">(</span>self<span class="ansi-yellow-intense-fg ansi-bold">.</span>df_fig<span class="ansi-yellow-intense-fg ansi-bold">,</span> <span class="ansi-green-intense-fg ansi-bold">True</span><span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">:</span>
+<span class="ansi-green-fg">    883</span>                 <span class="ansi-green-intense-fg ansi-bold">continue</span>
+<span class="ansi-green-fg">    884</span>             <span class="ansi-green-intense-fg ansi-bold">yield</span> <span class="ansi-green-intense-fg ansi-bold">None</span><span class="ansi-yellow-intense-fg ansi-bold">,</span> <span class="ansi-green-intense-fg ansi-bold">None</span><span class="ansi-yellow-intense-fg ansi-bold">,</span> <span class="ansi-green-intense-fg ansi-bold">None</span><span class="ansi-yellow-intense-fg ansi-bold">,</span> self<span class="ansi-yellow-intense-fg ansi-bold">.</span>df_fig
+
+<span class="ansi-green-intense-fg ansi-bold">C:\GitHub\fivecentplots\fivecentplots\data.py</span> in <span class="ansi-cyan-fg">get_rc_subset</span><span class="ansi-blue-intense-fg ansi-bold">(self, df, ranges)</span>
+<span class="ansi-green-fg">   1250</span>                         self<span class="ansi-yellow-intense-fg ansi-bold">.</span>df_rc <span class="ansi-yellow-intense-fg ansi-bold">=</span> df<span class="ansi-yellow-intense-fg ansi-bold">[</span><span class="ansi-yellow-intense-fg ansi-bold">(</span>df<span class="ansi-yellow-intense-fg ansi-bold">[</span>self<span class="ansi-yellow-intense-fg ansi-bold">.</span>col<span class="ansi-yellow-intense-fg ansi-bold">[</span><span class="ansi-cyan-intense-fg ansi-bold">0</span><span class="ansi-yellow-intense-fg ansi-bold">]</span><span class="ansi-yellow-intense-fg ansi-bold">]</span> <span class="ansi-yellow-intense-fg ansi-bold">==</span> col<span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">]</span><span class="ansi-yellow-intense-fg ansi-bold">.</span>copy<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-yellow-intense-fg ansi-bold">)</span>
+<span class="ansi-green-fg">   1251</span>                     <span class="ansi-green-intense-fg ansi-bold">elif</span> self<span class="ansi-yellow-intense-fg ansi-bold">.</span>col <span class="ansi-yellow-intense-fg ansi-bold">!=</span> <span class="ansi-blue-intense-fg ansi-bold">&#39;x&#39;</span> <span class="ansi-green-intense-fg ansi-bold">and</span> self<span class="ansi-yellow-intense-fg ansi-bold">.</span>row <span class="ansi-green-intense-fg ansi-bold">in</span> <span class="ansi-yellow-intense-fg ansi-bold">[</span><span class="ansi-green-intense-fg ansi-bold">None</span><span class="ansi-yellow-intense-fg ansi-bold">,</span> <span class="ansi-blue-intense-fg ansi-bold">&#39;y&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">]</span><span class="ansi-yellow-intense-fg ansi-bold">:</span>
+<span class="ansi-green-intense-fg ansi-bold">-&gt; 1252</span><span class="ansi-yellow-intense-fg ansi-bold">                         </span>col <span class="ansi-yellow-intense-fg ansi-bold">=</span> self<span class="ansi-yellow-intense-fg ansi-bold">.</span>col_vals<span class="ansi-yellow-intense-fg ansi-bold">[</span>ic<span class="ansi-yellow-intense-fg ansi-bold">]</span>
+<span class="ansi-green-fg">   1253</span>                         self<span class="ansi-yellow-intense-fg ansi-bold">.</span>df_rc <span class="ansi-yellow-intense-fg ansi-bold">=</span> df<span class="ansi-yellow-intense-fg ansi-bold">[</span><span class="ansi-yellow-intense-fg ansi-bold">(</span>df<span class="ansi-yellow-intense-fg ansi-bold">[</span>self<span class="ansi-yellow-intense-fg ansi-bold">.</span>col<span class="ansi-yellow-intense-fg ansi-bold">[</span><span class="ansi-cyan-intense-fg ansi-bold">0</span><span class="ansi-yellow-intense-fg ansi-bold">]</span><span class="ansi-yellow-intense-fg ansi-bold">]</span> <span class="ansi-yellow-intense-fg ansi-bold">==</span> col<span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">]</span><span class="ansi-yellow-intense-fg ansi-bold">.</span>copy<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-yellow-intense-fg ansi-bold">)</span>
+<span class="ansi-green-fg">   1254</span>                     <span class="ansi-green-intense-fg ansi-bold">elif</span> self<span class="ansi-yellow-intense-fg ansi-bold">.</span>col <span class="ansi-green-intense-fg ansi-bold">in</span> <span class="ansi-yellow-intense-fg ansi-bold">[</span><span class="ansi-green-intense-fg ansi-bold">None</span><span class="ansi-yellow-intense-fg ansi-bold">,</span> <span class="ansi-blue-intense-fg ansi-bold">&#39;x&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">]</span> <span class="ansi-green-intense-fg ansi-bold">and</span> self<span class="ansi-yellow-intense-fg ansi-bold">.</span>row <span class="ansi-yellow-intense-fg ansi-bold">!=</span> <span class="ansi-blue-intense-fg ansi-bold">&#39;y&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">:</span>
+
+<span class="ansi-red-intense-fg ansi-bold">TypeError</span>: &#39;NoneType&#39; object is not subscriptable
+</pre></div></div>
 </div>
 </div>
 <div class="section" id="Multiple-legend-columns">
@@ -497,22 +536,15 @@ site.</p>
 When a list of column names is passed to the <code class="docutils literal notranslate"><span class="pre">legend</span></code> keyword, a dummy
 column is created in the DataFrame that concatenates the values from
 each column listed in <code class="docutils literal notranslate"><span class="pre">legend</span></code>. This new column is used for legending.</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [4]:
+<span></span>In [ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="s1">&#39;Substrate&#39;</span><span class="p">],</span> \
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">)</span>
 </pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/grouping_14_0.png" src="_images/grouping_14_0.png" />
 </div>
 </div>
 </div>
@@ -522,22 +554,15 @@ each column listed in <code class="docutils literal notranslate"><span class="pr
 specific grouping column, a legend is also enabled to improve
 visualization of the data. The legend can be disabled by setting
 <code class="docutils literal notranslate"><span class="pre">legend=False</span></code>.</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [5]:
+<span></span>In [ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="s1">&#39;Voltage&#39;</span><span class="p">],</span> <span class="n">lines</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2&#39;</span><span class="p">)</span>
 </pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/grouping_17_0.png" src="_images/grouping_17_0.png" />
 </div>
 </div>
 </div>
@@ -548,9 +573,9 @@ secondary axis: (1) no legend; (2) legend based on the values of the
 primary/secondary axes; or (3) legend based on another column.</p>
 <div class="section" id="No-legend">
 <h4>No legend<a class="headerlink" href="#No-legend" title="Permalink to this headline">¶</a></h4>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [6]:
+<span></span>In [ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -559,19 +584,12 @@ primary/secondary axes; or (3) legend based on another column.</p>
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/grouping_21_0.png" src="_images/grouping_21_0.png" />
-</div>
-</div>
 </div>
 <div class="section" id="Axis-legend">
 <h4>Axis legend<a class="headerlink" href="#Axis-legend" title="Permalink to this headline">¶</a></h4>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [7]:
+<span></span>In [ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -580,32 +598,18 @@ primary/secondary axes; or (3) legend based on another column.</p>
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/grouping_23_0.png" src="_images/grouping_23_0.png" />
-</div>
-</div>
 </div>
 <div class="section" id="Legend-by-another-column">
 <h4>Legend by another column<a class="headerlink" href="#Legend-by-another-column" title="Permalink to this headline">¶</a></h4>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [8]:
+<span></span>In [ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">)</span>
 </pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/grouping_25_0.png" src="_images/grouping_25_0.png" />
 </div>
 </div>
 </div>
@@ -624,9 +628,9 @@ following example where we plot all the data together and connect the
 points with lines. Notice how the line loops from the end of the data
 back to the begining for each “group” of the data. This occurs because
 we have provided no information about how to segment the data set.</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [9]:
+<span></span>In [ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -635,21 +639,14 @@ we have provided no information about how to segment the data set.</p>
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/grouping_30_0.png" src="_images/grouping_30_0.png" />
-</div>
-</div>
 <p>To handle cases like this, we can add the keyword <code class="docutils literal notranslate"><span class="pre">groups</span></code> and specify
 another DataFrame column name that indicates how the data are grouped
 (in this case by “Die”). Now we get distinct lines for each instance of
 the measurement data. The <code class="docutils literal notranslate"><span class="pre">groups</span></code> keyword can still be combined with
 a legend from a different DataFrame column.</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [10]:
+<span></span>In [ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -658,18 +655,11 @@ a legend from a different DataFrame column.</p>
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/grouping_32_0.png" src="_images/grouping_32_0.png" />
-</div>
-</div>
 <p><code class="docutils literal notranslate"><span class="pre">groups</span></code> also supports multiple column names. Here is the above plot
 without legending by “Temperature [C]”:</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [11]:
+<span></span>In [ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -678,22 +668,15 @@ without legending by “Temperature [C]”:</p>
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/grouping_34_0.png" src="_images/grouping_34_0.png" />
-</div>
-</div>
 </div>
 <div class="section" id="boxplots">
 <h3>boxplots<a class="headerlink" href="#boxplots" title="Permalink to this headline">¶</a></h3>
 <p>Like x-y plots, the <code class="docutils literal notranslate"><span class="pre">groups</span></code> keyword is used to break the data set
 into subsets. However, for boxplots the group column names and values
 are actually displayed along the x-axis:</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [12]:
+<span></span>In [ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -702,25 +685,22 @@ are actually displayed along the x-axis:</p>
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/grouping_37_0.png" src="_images/grouping_37_0.png" />
-</div>
-</div>
 </div>
 </div>
 <div class="section" id="row-|-col-subplots">
 <h2>row | col subplots<a class="headerlink" href="#row-|-col-subplots" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="By-unique-values">
+<h3>By unique values<a class="headerlink" href="#By-unique-values" title="Permalink to this headline">¶</a></h3>
 <p>To see a larger subset of the main DataFrame, we can make a grid of
-subplots based on DataFrame columns other than the primary x and y
-columns we are using. In this case, we remove the “Temperature [C]” and
-“Boost Level” columns from the filter keyword and add them to the row
-and column commands, respectively.</p>
-<div class="nbinput docutils container">
+subplots based on the unique values within DataFrame columns other than
+the primary x and y columns we are using. In this case, we remove the
+“Temperature [C]” and “Boost Level” columns from the filter keyword and
+add them to the row and column commands, respectively. This gives a grid
+of plots where each plot represents the intersection of a unique Boost
+Level and Temperature.</p>
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [13]:
+<span></span>In [ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -729,18 +709,43 @@ and column commands, respectively.</p>
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
 </div>
-<div class="output_area docutils container">
-<img alt="_images/grouping_40_0.png" src="_images/grouping_40_0.png" />
+<div class="section" id="By-x-or-y">
+<h3>By x or y<a class="headerlink" href="#By-x-or-y" title="Permalink to this headline">¶</a></h3>
+<p>Alternatively, we can use row vs column grids to compare different <code class="docutils literal notranslate"><span class="pre">x</span></code>
+or <code class="docutils literal notranslate"><span class="pre">y</span></code> values. For example, we can plot two y-columns (one per row) by
+adding the keyword <code class="docutils literal notranslate"><span class="pre">&quot;y&quot;</span></code> to the <code class="docutils literal notranslate"><span class="pre">row</span></code> parameter. Each column in this
+plot shares the same x-axis variable.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span>
+         <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Temperature [C]==75&#39;</span><span class="p">,</span> <span class="n">label_rc_font_size</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>We can make a similar plot with common <code class="docutils literal notranslate"><span class="pre">row</span></code> values and different
+x-axes by setting <code class="docutils literal notranslate"><span class="pre">col='x'</span></code>:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span>
+         <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Temperature [C]==75&#39;</span><span class="p">,</span> <span class="n">label_rc_font_size</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+</pre></div>
+</div>
 </div>
 </div>
 </div>
 <div class="section" id="wrap-subplots">
 <h2>wrap subplots<a class="headerlink" href="#wrap-subplots" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="By-column-values">
-<h3>By column values<a class="headerlink" href="#By-column-values" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="By-unique-values">
+<h3>By unique values<a class="headerlink" href="#By-unique-values" title="Permalink to this headline">¶</a></h3>
 <p>We can create a plot similar to the row/column plot above using the
 <code class="docutils literal notranslate"><span class="pre">wrap</span></code> keyword. The key differences are that spacing and ticks between
 subplots is removed by default (can be changed via keywords), axis
@@ -749,22 +754,15 @@ condensed to a single label above each subplot. To do this, remove the
 <code class="docutils literal notranslate"><span class="pre">row</span></code> and <code class="docutils literal notranslate"><span class="pre">column</span></code> keywords from the previous function call and pass
 the “Temperature [C]” and “Boost Level” column names as a list to the
 <code class="docutils literal notranslate"><span class="pre">wrap</span></code> keyword.</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [14]:
+<span></span>In [ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> <span class="s1">&#39;Boost Level&#39;</span><span class="p">],</span> \
          <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450&#39;</span><span class="p">)</span>
 </pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/grouping_44_0.png" src="_images/grouping_44_0.png" />
 </div>
 </div>
 <p>By default, wrap plots will be arranged in a square grid. If the number
@@ -774,9 +772,9 @@ handled appropriately for this case. If you want to override the default
 grid size, specify the keyword <code class="docutils literal notranslate"><span class="pre">ncol</span></code> which sets the number of
 columns. The number of rows will be automatically determined from the
 number of subplots.</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [15]:
+<span></span>In [ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -785,26 +783,20 @@ number of subplots.</p>
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
 </div>
-<div class="output_area docutils container">
-<img alt="_images/grouping_46_0.png" src="_images/grouping_46_0.png" />
-</div>
-</div>
-</div>
-<div class="section" id="By-column-names">
-<h3>By column names<a class="headerlink" href="#By-column-names" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="By-x-and-y">
+<h3>By x and y<a class="headerlink" href="#By-x-and-y" title="Permalink to this headline">¶</a></h3>
 <p>We can also “wrap” by column names instead of unique column values. In
 this case we list the columns to plot in the <code class="docutils literal notranslate"><span class="pre">x</span></code> or <code class="docutils literal notranslate"><span class="pre">y</span></code> keywords as
 usual but we add “x” or “y” to the <code class="docutils literal notranslate"><span class="pre">wrap</span></code> keyword. This will create a
 unique subplot in a grid for each <code class="docutils literal notranslate"><span class="pre">wrap</span></code> value. Unlike the case of
 wrapping column values, this plot will not have wrap labels and axis
 sharing can be overriden. As before, used <code class="docutils literal notranslate"><span class="pre">ncol</span></code> to override the
-default gridding.</p>
-<div class="nbinput docutils container">
+default gridding. Unlike a row vs column plot by x and y, a wrap plot by
+x and y can be displayed without the extra grouping factor.</p>
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [16]:
+<span></span>In [ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -814,18 +806,11 @@ default gridding.</p>
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/grouping_49_0.png" src="_images/grouping_49_0.png" />
-</div>
-</div>
 <p>Or an alternatively styled version of this plot with tick and label
 sharing off:</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [17]:
+<span></span>In [ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -834,13 +819,6 @@ sharing off:</p>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450&#39;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ws_row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
          <span class="n">separate_labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">separate_ticks</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/grouping_51_0.png" src="_images/grouping_51_0.png" />
 </div>
 </div>
 </div>
@@ -852,36 +830,16 @@ figure. In this case, a separate figure (i.e., a separate png) is
 created for each unique value in the DataFrame column(s) listed in the
 <code class="docutils literal notranslate"><span class="pre">fig_groups</span></code> keyword. Here we will plot a single figure for each value
 of the “Die” column.</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [18]:
+<span></span>In [ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">fig_groups</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> <span class="s1">&#39;Boost Level&#39;</span><span class="p">],</span> \
-         <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450&#39;</span><span class="p">)</span>
+         <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450&#39;</span><span class="p">,</span> <span class="n">show_filename</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+         <span class="n">filename</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;C:\GitHub\fivecentplots\fivecentplots\tests\test_images\grouping.py\figure.png&#39;</span><span class="p">)</span>
 </pre></div>
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/grouping_54_0.png" src="_images/grouping_54_0.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/grouping_54_1.png" src="_images/grouping_54_1.png" />
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/grouping_54_2.png" src="_images/grouping_54_2.png" />
 </div>
 </div>
 </div>
