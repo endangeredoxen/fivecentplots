@@ -108,8 +108,7 @@ class Data:
         self.zmax = kwargs.get('zmax', None)
 
         # Define DataFrames
-        self.check_df(kwargs)
-        self.df_all = kwargs['df']
+        self.df_all = self.check_df(kwargs['df'])
         self.df_fig = None
         self.df_sub = None
         self.changes = pd.DataFrame()  # used with boxplots
@@ -117,7 +116,9 @@ class Data:
 
         # Get the x, y, and (optional) axis column names and error check
         self.x = utl.validate_list(kwargs.get('x'))
+        self.x_vals = [f for f in self.x] if self.x else None
         self.y = utl.validate_list(kwargs.get('y'))
+        self.y_vals = [f for f in self.y] if self.y else None
         self.z = utl.validate_list(kwargs.get('z'))
         self.x = self.check_xyz('x')
         self.y = self.check_xyz('y')
@@ -179,11 +180,24 @@ class Data:
             self.df_all = utl.df_filter(self.df_all, self.filter)
             if len(self.df_all) == 0:
                 raise DataError('DataFrame is empty after applying filter')
+
         # Define rc grouping column names
-        self.col = self.check_group_columns('col', kwargs.get('col', None))
+        self.col = kwargs.get('col', None)
         self.col_vals = None
-        self.row = self.check_group_columns('row', kwargs.get('row', None))
+        if self.col is not None:
+            if self.col == 'x':
+                self.col_vals = [f for f in self.x]
+            else:
+                self.col = self.check_group_columns('col',
+                                                    kwargs.get('col', None))
+        self.row = kwargs.get('row', None)
         self.row_vals = None
+        if self.row is not None:
+            if self.row == 'y':
+                self.row_vals = [f for f in self.y]
+            else:
+                self.row = self.check_group_columns('row',
+                                                    kwargs.get('row', None))
         self.wrap = kwargs.get('wrap', None)
         self.wrap_vals = None
         if self.wrap is not None:
@@ -233,7 +247,7 @@ class Data:
             self.check_group_matching('groups', 'fig')
 
         # Add all non-dataframe kwargs to self
-        kwargs = kwargs.pop('df')  # for memory
+        del kwargs['df']  # for memory
         self.kwargs = kwargs
 
         # Swap x and y axes
@@ -270,17 +284,19 @@ class Data:
                         utl.kwget(kwargs, self.fcpp,
                                   'ax_limit_padding_%s_max' % ax, self.ax_limit_padding))
 
-    def check_df(self, kwargs):
+    def check_df(self, df):
         """
         Validate the dataframe
         """
 
-        if 'df' not in kwargs.keys() or kwargs['df'] is None:
+        if df is None:
             raise DataError('Must provide a DataFrame called "df" '
                             'for plotting!')
 
-        if len(kwargs['df']) == 0:
+        if len(df) == 0:
             raise DataError('DataFrame is empty.  Nothing to plot!')
+
+        return df.copy()
 
     def check_group_columns(self, group_type, col_names):
         """
@@ -345,8 +361,9 @@ class Data:
         if self.row is not None and self.row == self.col:
             raise GroupingError('Row and column values must be different!')
 
-        if self.wrap and (self.col or self.row):
-            error = 'Cannot combine "wrap" grouping with "%s"' % ('col' if self.col else 'row')
+        if self.wrap is not None and (self.col or self.row):
+            error = 'Cannot combine "wrap" grouping with "%s"' % \
+                    ('col' if self.col else 'row')
             raise GroupingError(error)
 
         if self.groups is not None and \
@@ -543,8 +560,10 @@ class Data:
 
         if not hasattr(self, ax) or getattr(self, ax) is None:
             return None, None
-        #elif len([f for f in getattr(self, ax) if str(f) not in df.columns]) > 0:
-        #    return None, None
+        elif self.col == 'x' and self.share_x and ax == 'x':
+            cols = self.x_vals
+        elif self.row == 'y' and self.share_y and ax == 'y':
+            cols = self.y_vals
         else:
             cols = getattr(self, ax)
 
@@ -756,13 +775,19 @@ class Data:
                 self.ranges[ir, ic]['%smin' % ax] = vals[0]
                 self.ranges[ir, ic]['%smax' % ax] = vals[1]
             elif self.share_row and self.row is not None:
-                vals = self.get_data_range(ax,
-                    df_fig[df_fig[self.row[0]] == self.row_vals[ir]])
+                if self.row == 'y':
+                    vals = self.get_data_range(ax, df_fig)
+                else:
+                    vals = self.get_data_range(ax,
+                        df_fig[df_fig[self.row[0]] == self.row_vals[ir]])
                 self.ranges[ir, ic]['%smin' % ax] = vals[0]
                 self.ranges[ir, ic]['%smax' % ax] = vals[1]
             elif self.share_col and self.col is not None:
-                vals = self.get_data_range(ax,
-                    df_fig[df_fig[self.col[0]] == self.col_vals[ic]])
+                if self.col == 'x':
+                    vals = self.get_data_range(ax, df_fig)
+                else:
+                    vals = self.get_data_range(ax,
+                        df_fig[df_fig[self.col[0]] == self.col_vals[ic]])
                 self.ranges[ir, ic]['%smin' % ax] = vals[0]
                 self.ranges[ir, ic]['%smax' % ax] = vals[1]
             elif len(df_rc) == 0:
@@ -781,18 +806,6 @@ class Data:
                     self.ranges[0, 0]['%smin' % ax]
                 self.ranges[ir, ic]['%smax' % ax] = \
                     self.ranges[0, 0]['%smax' % ax]
-
-    def get_data_ranges_nq(self, ir, ic):
-        """
-        Get the data ranges
-
-        Args:
-            ir (int): subplot row index
-            ic (int): subplot col index
-
-        """
-
-        st()
 
     def get_data_ranges_hist(self, ir, ic):
         """
@@ -1043,14 +1056,21 @@ class Data:
         if self.wrap == 'y' or self.wrap == 'x':
             leg_df = leg_df.drop(self.wrap, axis=1).drop_duplicates()
             leg_df[self.wrap] = self.wrap
-
-        elif len(leg_df.y.unique()) > 1 and not (leg_df.Leg==None).all() and len(leg_df.x.unique()) == 1:
+        elif self.row == 'y':
+            del leg_df['y']
+            leg_df = leg_df.drop_duplicates().reset_index(drop=True)
+        elif self.col == 'x':
+            del leg_df['x']
+            leg_df = leg_df.drop_duplicates().reset_index(drop=True)
+        elif len(leg_df.y.unique()) > 1 and not (leg_df.Leg==None).all() \
+                and len(leg_df.x.unique()) == 1:
             leg_df['names'] = leg_df.Leg.map(str) + ' | ' + leg_df.y.map(str)
 
         # if more than one x and leg specified
         if 'names' not in leg_df.columns:
             leg_df['names'] = leg_df.x
-        elif len(leg_df.x.unique()) > 1 and not self.twin_x:
+        elif 'x' in leg_df.columns and len(leg_df.x.unique()) > 1 \
+                and not self.twin_x:
             leg_df['names'] = \
                 leg_df['names'].map(str) + ' | ' + leg_df.y.map(str) + ' / ' + leg_df.x.map(str)
 
@@ -1101,6 +1121,12 @@ class Data:
                     wrap_col = list(set(df.columns) & set(getattr(self, self.wrap)))[0]
                     df = df.rename(columns={self.wrap: wrap_col})
                     row[self.wrap] = wrap_col
+                if self.row == 'y':
+                    row['y'] = self.y[0]
+                    self.legend_vals['y'] = self.y[0]
+                if self.col == 'x':
+                    row['x'] = self.x[0]
+                    self.legend_vals['x'] = self.x[0]
 
                 # Subset by legend value
                 if row['Leg'] is not None:
@@ -1116,7 +1142,6 @@ class Data:
                 if (row['x'] != self.legend_vals.loc[0, 'x'] and self.twin_y) \
                         or (row['y'] != self.legend_vals.loc[0, 'y'] and self.twin_x):
                     twin = True
-
                 yield irow, df2, row['x'], row['y'], \
                       None if self.z is None else self.z[0], row['names'], twin
 
@@ -1147,13 +1172,15 @@ class Data:
         else:
             # Set up the row grouping
             if self.col:
-                self.col_vals = \
-                    natsorted(list(df.groupby(self.col).groups.keys()))
+                if self.col_vals is None:
+                    self.col_vals = \
+                        natsorted(list(df.groupby(self.col).groups.keys()))
                 self.ncol = len(self.col_vals)
 
             if self.row:
-                self.row_vals = \
-                    natsorted(list(df.groupby(self.row).groups.keys()))
+                if self.row_vals is None:
+                    self.row_vals = \
+                        natsorted(list(df.groupby(self.row).groups.keys()))
                 self.nrow = len(self.row_vals)
 
         if self.ncol == 0:
@@ -1178,11 +1205,6 @@ class Data:
         Returns:
             subset DataFrame
         """
-
-        #df = df.copy()
-
-        transform = any([self.trans_x, self.trans_x2, self.trans_y, self.trans_y2,
-                         self.trans_z])
 
         for ir in range(0, self.nrow):
             for ic in range(0, self.ncol):
@@ -1210,17 +1232,28 @@ class Data:
                                     utl.validate_list(self.wrap_vals[ir*self.ncol + ic])))
                         self.df_rc = df.loc[(df[list(wrap)] == pd.Series(wrap)).all(axis=1)].copy()
                 else:
-                    if self.row is not None and self.col is not None:
+                    if self.row == 'y':
+                        self.y = utl.validate_list(self.row_vals[ir])
+                    if self.col == 'x':
+                        self.x = utl.validate_list(self.col_vals[ic])
+                    if self.row not in [None, 'y'] \
+                            and self.col not in [None, 'x']:
                         row = self.row_vals[ir]
                         col = self.col_vals[ic]
-                        self.df_rc = df[(df[self.row[0]]==row) &
-                                        (df[self.col[0]]==col)].copy()
-                    elif self.row and not self.col:
+                        self.df_rc = df[(df[self.row[0]] == row) &
+                                        (df[self.col[0]] == col)].copy()
+                    elif self.row not in [None, 'y'] and not self.col:
                         row = self.row_vals[ir]
-                        self.df_rc = df[(df[self.row[0]]==row)].copy()
-                    elif self.col and not self.row:
+                        self.df_rc = df[(df[self.row[0]] == row)].copy()
+                    elif self.col not in [None, 'x'] and not self.row:
                         col = self.col_vals[ic]
-                        self.df_rc = df[(df[self.col[0]]==col)].copy()
+                        self.df_rc = df[(df[self.col[0]] == col)].copy()
+                    elif self.col not in [None, 'x'] and self.row in [None, 'y']:
+                        col = self.col_vals[ic]
+                        self.df_rc = df[(df[self.col[0]] == col)].copy()
+                    elif self.col in [None, 'x'] and self.row not in [None, 'y']:
+                        row = self.row_vals[ir]
+                        self.df_rc = df[(df[self.row[0]] == row)].copy()
                     else:
                         self.df_rc = df
 
@@ -1401,7 +1434,7 @@ class Data:
                         gg.loc[:, val] = -gg[val]
                     elif getattr(self, 'trans_%s' % ax) == 'nq':
                         if ival == 0:
-                            gg = utl.nq(gg[val], val, self.kwargs)
+                            gg = utl.nq(gg[val], val, **self.kwargs)
                     elif getattr(self, 'trans_%s' % ax) == 'inverse' \
                             or getattr(self, 'trans_%s' % ax) == 'inv':
                         gg.loc[:, val] = 1/gg[val]

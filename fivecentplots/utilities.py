@@ -128,6 +128,7 @@ def df_filter(df, filt_orig):
                 'Modified filter string: %s' % (filt_orig, filt))
 
         df.columns = cols_orig
+
         return df
 
 
@@ -290,7 +291,7 @@ def img_compare(img1, img2):
     return np.any(difference)
 
 
-def nq(data, column='Value', kwargs={}):
+def nq(data, column='Value', **kwargs):
     """
     Normal quantile calculation
     """

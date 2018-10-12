@@ -271,8 +271,8 @@ def test_groups_row_col(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'groups_row_col_master') if master else 'groups_row_col'
 
     # Make the plot
-    fcp.plot(df=df1, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',          ax_size=[225, 225],
-             filter='Substrate=="Si" & Target Wavelength==450', label_rc_font_size=14,
+    fcp.plot(df=df1, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',
+             ax_size=[225, 225], filter='Substrate=="Si" & Target Wavelength==450', label_rc_font_size=14,
              filename=name + '.png', inline=False)
 
     # Compare with master
@@ -289,9 +289,55 @@ def test_groups_row_col(master=False, remove=True, show=False):
         assert not compare
 
 
-def test_groups_wrap_column(master=False, remove=True, show=False):
+def test_groups_row_col_y(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'groups_wrap_column_master') if master else 'groups_wrap_column'
+    name = osjoin(MASTER, 'groups_row_col_y_master') if master else 'groups_row_col_y'
+
+    # Make the plot
+    fcp.plot(df=df1, x='Voltage', y=['Voltage', 'I [A]'], legend='Die', col='Boost Level', row='y',
+             ax_size=[225, 225], filter='Substrate=="Si" & Target Wavelength==450 & Temperature [C]==75', label_rc_font_size=14,
+             filename=name + '.png', inline=False)
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_groups_row_col_x(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'groups_row_col_x_master') if master else 'groups_row_col_x'
+
+    # Make the plot
+    fcp.plot(df=df1, x=['Voltage', 'I [A]'], y='Voltage', legend='Die', row='Boost Level', col='x',
+             ax_size=[225, 225], filter='Substrate=="Si" & Target Wavelength==450 & Temperature [C]==75', label_rc_font_size=14,
+             filename=name + '.png', inline=False)
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_groups_wrap_unique(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'groups_wrap_unique_master') if master else 'groups_wrap_unique'
 
     # Make the plot
     fcp.plot(df=df1, x='Voltage', y='I [A]', legend='Die', wrap=['Temperature [C]', 'Boost Level'],
@@ -335,9 +381,9 @@ def test_groups_wrap_column_ncol(master=False, remove=True, show=False):
         assert not compare
 
 
-def test_groups_wrap_names(master=False, remove=True, show=False):
+def test_groups_wrap_xy(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'groups_wrap_names_master') if master else 'groups_wrap_names'
+    name = osjoin(MASTER, 'groups_wrap_xy_master') if master else 'groups_wrap_xy'
 
     # Make the plot
     fcp.plot(df=df1, x='Voltage', y=['I Set', 'I [A]'], legend='Die', wrap='y',

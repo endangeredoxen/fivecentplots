@@ -10,7 +10,7 @@
 __author__    = 'Steve Nicholes'
 __copyright__ = 'Copyright (C) 2016 Steve Nicholes'
 __license__   = 'GPLv3'
-__version__   = '0.3.0'
+__version__   = '0.3.1'
 __url__       = 'https://github.com/endangeredoxen/fivecentplots'
 import os
 import matplotlib.pyplot as plt
@@ -28,6 +28,7 @@ import shutil
 import datetime
 import sys
 from . data import Data
+from . colors import *
 from . layout import LayoutMPL, LayoutBokeh, RepeatedList
 from . utilities import dfkwarg, set_save_filename, validate_list
 import warnings

@@ -17,6 +17,7 @@ import numpy as np
 import copy
 import decimal
 import math
+from .colors import *
 import fivecentplots.utilities as utl
 from distutils.version import LooseVersion
 from random import randint
@@ -35,16 +36,6 @@ except:
     natsorted = sorted
 
 st = pdb.set_trace
-
-DEFAULT_COLORS = ['#4b72b0', '#c34e52', '#54a767', '#8172b1', '#64b4cc',
-                  '#ccb973', '#fa8d62', '#8d9fca', '#a6d753', '#fed82f',
-                  '#b3b2b2', '#8cd3c6', '#bfbbd9', '#f98174', '#b07b9d',
-                  '#f2be5b', '#326438', '#3c5477', '#de7426', '#588281',
-                  '#c22a64', '#57324e', '#948974', '#9dcbdf', '#6f6f6f',
-                  '#b07b9d', '#f2be5b', '#326438', '#3c5477', '#de7426',
-                  '#588281', '#c22a64', '#57324e', '#948974', '#9dcbdf',
-                  '#6f6f6f', ]
-BAYER = ['#4b72b0', '#56a58e', '#93d366', '#c34e52']
 
 DEFAULT_MARKERS = ['o', '+', 's', 'x', 'd', 'Z', '^', 'Y', 'v', '\infty',
                    '\#', '<', u'\u2B21', u'\u263A', '>', u'\u29C6', '\$',
@@ -997,7 +988,8 @@ class BaseLayout:
                               )
         self.label_row = copy.deepcopy(label_rc)
         self.label_row.on = \
-            utl.kwget(kwargs, self.fcpp, 'label_row_on', True) if kwargs.get('row') else False
+            utl.kwget(kwargs, self.fcpp, 'label_row_on', True) \
+                if kwargs.get('row') not in [None, 'y'] else False
         self.label_row.column = kwargs.get('row')
         self.label_row.size = [utl.kwget(kwargs, self.fcpp,
                                          'label_row_size', label_rc._size),
@@ -1022,7 +1014,8 @@ class BaseLayout:
 
         self.label_col = copy.deepcopy(label_rc)
         self.label_col.on = \
-            utl.kwget(kwargs, self.fcpp, 'label_col_on', True) if kwargs.get('col') else False
+            utl.kwget(kwargs, self.fcpp, 'label_col_on', True) \
+                if kwargs.get('col') not in [None, 'x'] else False
         self.label_row.column = kwargs.get('col')
         self.label_col.size = [self.axes.size[0],
                                utl.kwget(kwargs, self.fcpp,
@@ -1090,8 +1083,8 @@ class BaseLayout:
 
         if type(self.title_wrap.size) is not list:
             self.title_wrap.size = [self.axes.size[0], self.title_wrap.size]
-        if self.title_wrap.on and not self.title_wrap.text:
-            self.title_wrap.text = ' | '.join(self.label_wrap.values)
+        # if self.title_wrap.on and not self.title_wrap.text:
+        #     self.title_wrap.text = ' | '.join(self.label_wrap.values)
 
         # Confidence interval
         self.conf_int = Element('conf_int', self.fcpp, kwargs,
@@ -1318,6 +1311,13 @@ class BaseLayout:
                     if data.wrap == 'y' and lab == 'y' \
                             or data.wrap == 'x' and lab == 'x':
                         getattr(self, val).text = data.wrap_vals
+                    elif lab == 'x' and data.col == 'x':
+                        getattr(self, val).text = data.x_vals * self.nrow
+                    elif lab == 'y' and data.row == 'y':
+                        yvals = []
+                        for yval in data.y_vals:
+                            yvals += [yval] * self.ncol
+                        getattr(self, val).text = yvals
                     else:
                         getattr(self, val).text = \
                             lab_text if lab_text is not None \
@@ -1557,7 +1557,8 @@ class DF_Element(Element):
     @property
     def on(self):
 
-        return True if self._on and len(self.values) > 0 else False
+        return True if self._on and self.values is not None \
+               and len(self.values) > 0 else False
 
     @on.setter
     def on(self, state):
