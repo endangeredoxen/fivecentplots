@@ -1,2 +1,3 @@
-* move np.hist to data --> transform
-* xy with categorical
+* xy with categorical/time series
+* change box overlay on violin
+* remove fit from legend if it is not by group or maybe same color

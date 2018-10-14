@@ -648,7 +648,7 @@ class BaseLayout:
         if not self.legend.on and self.ref_line.on:
             self.legend.values['ref_line'] = []
             self.legend.on = True
-        if self.legend.on and self.fit.on:
+        if self.legend.on and self.fit.on and 'fit_color' not in kwargs.keys():
             self.fit.color = copy.copy(self.lines.color)
         y = utl.validate_list(kwargs.get('y'))
         if not self.axes.twin_x and y is not None and len(y) > 1 and \
