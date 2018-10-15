@@ -244,7 +244,7 @@ def test_violin(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, violin=True,
-                markers=False, filename=name + '.png', inline=False, jitter=False)
+                filename=name + '.png', inline=False)
 
     # Compare with master
     if master:
@@ -265,10 +265,11 @@ def test_violin_styled(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'violin_styled_master') if master else 'violin_styled'
 
     # Make the plot
-    fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, violin=True, markers=False,
-            violin_fill_color='#eaef1a', violin_fill_alpha=1, violin_edge_color='#555555', violin_edge_width=2,
-            box_fill_color='#555555', box_edge_color='#555555', box_whisker_color='#555555',
-            filename=name + '.png', inline=False, jitter=False)
+    fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, violin=True,
+                violin_fill_color='#eaef1a', violin_fill_alpha=1, violin_edge_color='#555555', violin_edge_width=2,
+                violin_box_color='#ffffff', violin_whisker_color='#ff0000',
+                violin_median_marker='+', violin_median_color='#00ffff', violin_median_size=10,
+                filename=name + '.png', inline=False)
 
     # Compare with master
     if master:
@@ -289,8 +290,8 @@ def test_violin_box_off(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'violin_box_off_master') if master else 'violin_box_off'
 
     # Make the plot
-    fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, violin=True, box_on=False,
-                filename=name + '.png', inline=False, jitter=False)
+    fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, violin=True, violin_box_on=False, violin_markers=True, jitter=False,
+                filename=name + '.png', inline=False)
 
     # Compare with master
     if master:

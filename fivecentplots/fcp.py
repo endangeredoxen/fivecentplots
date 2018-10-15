@@ -10,7 +10,7 @@
 __author__    = 'Steve Nicholes'
 __copyright__ = 'Copyright (C) 2016 Steve Nicholes'
 __license__   = 'GPLv3'
-__version__   = '0.3.1'
+__version__   = '0.3.0'
 __url__       = 'https://github.com/endangeredoxen/fivecentplots'
 import os
 import matplotlib.pyplot as plt
@@ -27,9 +27,11 @@ import itertools
 import shutil
 import datetime
 import sys
+import textwrap
 from . data import Data
 from . colors import *
 from . layout import LayoutMPL, LayoutBokeh, RepeatedList
+from . keywords import *
 from . utilities import dfkwarg, set_save_filename, validate_list
 import warnings
 try:
@@ -88,14 +90,12 @@ def boxplot(*args, **kwargs):
     least one column for the y axis.  Plots can be customized and enhanced by
     passing keyword arguments.  Default values that must be defined in order to
     generate the plot are pulled from the fcp_params default dictionary
+
     Args:
         df (DataFrame): DataFrame containing data to plot
-        x (str):        name of x column in df
-        y (str|list):   name or list of names of y column(s) in df
-    Keyword Args:
-        see online docs
-    Returns:
-        plots
+        y (str|list):   column name in df to use for the box(es)
+
+    Keywords:
     """
 
     return plotter('plot_box', **dfkwarg(args, kwargs))
@@ -251,6 +251,8 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
         df_rc (pd.DataFrame): data subset
         kwargs (dict): keyword args
 
+    Keywords:
+
     """
 
     # Init arrays
@@ -331,11 +333,6 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
     # Remove temporary 'x' column
     for dat in data:
         del dat['x']
-
-    # if type(data) is pd.Series:
-    #     data = data.values
-    # elif type(data) is pd.DataFrame and len(data.columns) == 1:
-    #     data = data.values
 
     # Range lines
     if layout.box_range_lines.on:
@@ -817,3 +814,37 @@ def set_theme(theme=None):
                      osjoin(user_dir, '.fivecentplots', 'defaults.py'))
 
     print('done!')
+
+
+def kw_header(val):
+    """
+    Indent header names
+    """
+
+    return '   %s\n' % val
+
+
+def kw_print(kw):
+    """
+    Print friendly version of kw dicts
+    """
+
+    indent = '          '
+    kwstr = ''
+
+    for irow, row in kw.iterrows():
+        line = row['Keyword'] + ' (%s)' % row['Data Type'] + ': ' +\
+               row['Description'] + '; default: %s' % row['Default'] + \
+               '; ex: %s' % row['Example']
+
+        kwstr += textwrap.fill(line, 80, initial_indent=indent,
+                               subsequent_indent=indent + '  ')
+        kwstr += '\n'
+
+    return kwstr
+
+
+boxplot.__doc__ = \
+    boxplot.__doc__ + \
+    kw_header('Markers:') + \
+    kw_print(kw_markers)

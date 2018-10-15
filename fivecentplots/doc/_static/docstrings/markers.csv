@@ -1,0 +1,7 @@
+Keyword,Data Type,Description,Default,Example
+markers,bool or list of str or int,if bool: enable/disable markers; if list of str: set the marker type list to new characters; if list of int: select specific markers from the default list by index,True,None
+marker_fill,bool,fill markers,False,None
+marker_edge_color,hex color str,marker edge color,default color list,#00FF00
+marker_fill_color,hex color str,marker fill color (only if marker_fill==True),default color list,#00FF00
+marker_size,int,marker size in pixels,7,None
+marker_jitter | jitter,bool,add a random point to the marker position,True for boxplot; otherwise False,None

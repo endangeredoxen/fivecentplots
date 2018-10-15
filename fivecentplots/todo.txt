@@ -1,3 +1,10 @@
 * xy with categorical/time series
 * change box overlay on violin
 * remove fit from legend if it is not by group or maybe same color
+
+
+.. csv-table::
+   :file: _static/docstrings/markers.csv
+   :header-rows: 1
+
+CONVERT TO THIS!!

@@ -5,6 +5,8 @@ import matplotlib.ticker as ticker
 import matplotlib.patches as patches
 import matplotlib.font_manager as font_manager
 from matplotlib.ticker import AutoMinorLocator, LogLocator, MaxNLocator
+import matplotlib.transforms as mtransforms
+from matplotlib.patches import FancyBboxPatch
 import matplotlib.mlab as mlab
 import importlib
 import os, sys
@@ -763,14 +765,29 @@ class BaseLayout:
         self.violin = Element('violin', self.fcpp, kwargs,
                               on=utl.kwget(kwargs, self.fcpp, 'box_violin',
                                            kwargs.get('violin', False)),
+                              box_color=utl.kwget(kwargs, self.fcpp,
+                                                  'violin_box_color', '#555555'),
+                              box_on=utl.kwget(kwargs, self.fcpp,
+                                               'violin_box_on', True),
                               edge_color=utl.kwget(kwargs, self.fcpp,
                                                    'violin_edge_color', '#aaaaaa'),
                               fill_alpha=0.5,
                               fill_color=utl.kwget(kwargs, self.fcpp,
                                                    'violin_fill_color', DEFAULT_COLORS[0]),
+                              markers=utl.kwget(kwargs, self.fcpp,
+                                                'violin_markers', False),
                               median_color=utl.kwget(kwargs, self.fcpp,
-                                                     'violin_median_line_color', DEFAULT_COLORS[0]),
-
+                                                     'violin_median_color', '#ffffff'),
+                              median_marker=utl.kwget(kwargs, self.fcpp,
+                                                     'violin_median_marker', 'o'),
+                              median_size=utl.kwget(kwargs, self.fcpp,
+                                                     'violin_median_size', 2),
+                              whisker_color=utl.kwget(kwargs, self.fcpp,
+                                                      'violin_whisker_color', '#555555'),
+                              whisker_style=utl.kwget(kwargs, self.fcpp,
+                                                      'violin_whisker_style', '-'),
+                              whisker_width=utl.kwget(kwargs, self.fcpp,
+                                                      'violin_whisker_width', 1.5),
                              )
         box_edge_color = utl.kwget(kwargs, self.fcpp, 'box_edge_color', '#aaaaaa') #['#4b72b0'])
         box_fill_color = utl.kwget(kwargs, self.fcpp, 'box_fill_color', '#ffffff')
@@ -865,16 +882,8 @@ class BaseLayout:
                 self.markers.type = RepeatedList('o', 'marker_type')
             if 'box_marker_zorder' in self.fcpp.keys():
                 self.markers.zorder = self.fcpp['box_marker_zorder']
-        violin_box = '#eeeeee' #'#262626'
-        if self.violin.on:
-            if 'box_edge_color' not in kwargs.keys():
-                self.box.edge_color = violin_box
-                self.box.color_alpha('edge_color', 'edge_alpha')
-            if 'box_fill_color' not in kwargs.keys():
-                self.box.fill_color = violin_box
-                self.box.color_alpha('fill_color', 'fill_alpha')
-            if 'box_whisker_color' not in kwargs.keys():
-                self.box_whisker.color = RepeatedList(violin_box, 'color')
+        if self.violin.on and not self.violin.markers:
+            self.markers.on = False
 
         # Axhlines/axvlines
         axlines = ['ax_hlines', 'ax_vlines', 'ax2_hlines', 'ax2_vlines']
@@ -2973,7 +2982,7 @@ class LayoutMPL(BaseLayout):
             bp = self.axes.obj[ir, ic].violinplot(data,
                                                   showmeans=False,
                                                   showextrema=False,
-                                                  showmedians=True,
+                                                  showmedians=False,
                                                  )
             for ipatch, patch in enumerate(bp['bodies']):
                 patch.set_facecolor(self.violin.fill_color.get(ipatch))
@@ -2981,20 +2990,44 @@ class LayoutMPL(BaseLayout):
                 patch.set_alpha(self.violin.fill_alpha)
                 patch.set_zorder(2)
                 patch.set_lw(self.violin.edge_width)
+                if self.violin.box_on:
+                    q25 = np.percentile(data[ipatch], 25)
+                    med = np.percentile(data[ipatch], 50)
+                    q75 = np.percentile(data[ipatch], 75)
+                    iqr = q75 - q25
+                    offset = 0.05 * len(data) / 7
+                    bb = mtransforms.Bbox([[1 + ipatch - offset, q25],
+                                           [1 + ipatch + offset, q75]])
+                    p_bbox = FancyBboxPatch((bb.xmin, bb.ymin),
+                            abs(bb.width), abs(bb.height),
+                            boxstyle="round,pad=0, rounding_size=0.05",
+                            ec="none", fc=self.violin.box_color, zorder=12)
+                    self.axes.obj[ir, ic].add_patch(p_bbox)
+                    whisker_max = min(max(data[ipatch]), q75 + 1.5 * iqr)
+                    whisker_min = max(min(data[ipatch]), q25 - 1.5 * iqr)
+                    self.axes.obj[ir, ic].plot([ipatch + 1, ipatch + 1],
+                                               [whisker_min, whisker_max],
+                                               linestyle=self.violin.whisker_style,
+                                               color=self.violin.whisker_color,
+                                               linewidth=self.violin.whisker_width)
+                    self.axes.obj[ir, ic].plot([ipatch + 1], [med],
+                                               marker=self.violin.median_marker,
+                                               color=self.violin.median_color,
+                                               markersize=self.violin.median_size,
+                                               markeredgecolor=self.violin.median_color,
+                                               zorder=13)
 
-            bp['cmedians'].set_edgecolor(self.violin.median_color)
-
-        if self.box.on:
+        elif self.box.on and not self.violin.on:
             bp = self.axes.obj[ir, ic].boxplot(data,
                                                labels=[''] * len(data),
                                                showfliers=False,
                                                medianprops={'color': self.box.median_color},
                                                notch=self.box.notch,
                                                patch_artist=True,
-                                               zorder=3,
-                                               widths=self.box.width.values[0]
-                                                      if len(self.box.width.values) == 1
-                                                      else self.box.width.values)
+                                               zorder=3)#,
+                                               #widths=self.box.width.values[0]
+                                                #      if len(self.box.width.values) == 1
+                                                 #     else self.box.width.values)
             for ipatch, patch in enumerate(bp['boxes']):
                 patch.set_edgecolor(self.box.edge_color.get(ipatch))
                 patch.set_facecolor(self.box.fill_color.get(ipatch))
@@ -3205,13 +3238,11 @@ class LayoutMPL(BaseLayout):
         if 'width' not in kwargs.keys():
             kwargs['width'] = RepeatedList('-', 'temp')
 
-        try:
-            line = self.axes.obj[ir, ic].plot(x0, y0,
-                                          linestyle=kwargs['style'].get(0),
-                                          linewidth=kwargs['width'].get(0),
-                                          color=kwargs['color'].get(0),
-                                          zorder=kwargs.get('zorder', 1))
-        except: st()
+        line = self.axes.obj[ir, ic].plot(x0, y0,
+                                        linestyle=kwargs['style'].get(0),
+                                        linewidth=kwargs['width'].get(0),
+                                        color=kwargs['color'].get(0),
+                                        zorder=kwargs.get('zorder', 1))
         return line
 
     def plot_xy(self, ir, ic, iline, df, x, y, leg_name, twin, zorder=1,

@@ -748,16 +748,19 @@ unique subplot for each column:</p>
 <h2>Other options<a class="headerlink" href="#Other-options" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="Violins">
 <h3>Violins<a class="headerlink" href="#Violins" title="Permalink to this headline">¶</a></h3>
-<p>The traditional boxes can be replaced by violins with kernal density
-estimates of the data distrubution. Style attributes for the boxes will
-be applied to the violin plots.</p>
+<p>We can also plot distributions with violin plots that show kernal
+density estimates of the data. By default, these violin plots also
+contain a small boxes with whiskers to indicate Q1, Q3, 1.5 * IQR and
+the median of the distribution. Discrete data points are disabled by
+default but can be turned on with the keyword <code class="docutils literal notranslate"><span class="pre">violin_markers=True</span></code>
+(box style shamelessly appropriated from <code class="docutils literal notranslate"><span class="pre">seaborn</span></code>).</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
 <span></span>In [14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">violin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">markers</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">violin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -768,17 +771,22 @@ be applied to the violin plots.</p>
 <img alt="_images/boxplot_40_0.png" src="_images/boxplot_40_0.png" />
 </div>
 </div>
-<p>We can change the style of the violin density using keywords starting
-with <code class="docutils literal notranslate"><span class="pre">violin</span></code>.</p>
+<p>We can change the style of the violin density profiles and the
+associated boxplot using keywords starting with <code class="docutils literal notranslate"><span class="pre">violin</span></code>. Note that
+the standard box styling attributes are ignored when adding the violin
+plot. The reason for this is to make it possilbe to maintain different
+default settings for regular box plots and violin plots in the same
+theme file.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
 <span></span>In [15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">violin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">markers</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">violin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">violin_fill_color</span><span class="o">=</span><span class="s1">&#39;#eaef1a&#39;</span><span class="p">,</span> <span class="n">violin_fill_alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">violin_edge_color</span><span class="o">=</span><span class="s1">&#39;#555555&#39;</span><span class="p">,</span> <span class="n">violin_edge_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-            <span class="n">box_fill_color</span><span class="o">=</span><span class="s1">&#39;#555555&#39;</span><span class="p">,</span> <span class="n">box_edge_color</span><span class="o">=</span><span class="s1">&#39;#555555&#39;</span><span class="p">,</span> <span class="n">box_whisker_color</span><span class="o">=</span><span class="s1">&#39;#555555&#39;</span><span class="p">)</span>
+            <span class="n">violin_box_color</span><span class="o">=</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">,</span> <span class="n">violin_whisker_color</span><span class="o">=</span><span class="s1">&#39;#ff0000&#39;</span><span class="p">,</span>
+            <span class="n">violin_median_marker</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">violin_median_color</span><span class="o">=</span><span class="s1">&#39;#00ffff&#39;</span><span class="p">,</span> <span class="n">violin_median_size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -796,7 +804,7 @@ with <code class="docutils literal notranslate"><span class="pre">violin</span><
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">violin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">box_on</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">violin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">violin_box_on</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">violin_markers</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">jitter</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
