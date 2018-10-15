@@ -83,7 +83,7 @@ setup(
     # installed, specify them here.  If using Python 2.6 or less, then these
     # have to be included in MANIFEST.in as well.
     package_data={
-        'fivecentplots': ['themes/gray.py','themes/white.py', 'tests/*'],
+        'fivecentplots': ['themes/gray.py','themes/white.py', 'tests/*', 'doc/_static/docstrings/*'],
     },
 
     # Although 'package_data' is the preferred approach, in some case you may
