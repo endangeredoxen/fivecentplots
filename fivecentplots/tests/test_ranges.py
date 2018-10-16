@@ -9,7 +9,7 @@ import inspect
 osjoin = os.path.join
 st = pdb.set_trace
 
-MASTER = osjoin(os.path.dirname(fcp.__file__), 'tests', 'test_images', 'plot.py')
+MASTER = osjoin(os.path.dirname(fcp.__file__), 'tests', 'test_images', 'ranges.py')
 
 # Sample data
 df = pd.read_csv(osjoin(os.path.dirname(fcp.__file__), 'tests', 'fake_data.csv'))
@@ -252,7 +252,7 @@ def test_secondary_limits_y(master=False, remove=True, show=False):
 
 def test_multiple(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'multiple_master') if master else 'multiple_master'
+    name = osjoin(MASTER, 'multiple_master') if master else 'multiple'
 
     # Make the plot
     fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=False, show=SHOW, legend='Die',
@@ -417,7 +417,9 @@ def test_shared_separate(master=False, remove=True, show=False):
 
     # Make the plot
     sub = df[(df.Substrate=='Si') & (df['Target Wavelength']==450)].copy()
-    fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',          show=SHOW, ax_size=[225, 225], separate_ticks=True, separate_labels=True,
+    fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level',
+             row='Temperature [C]', show=SHOW, ax_size=[225, 225],
+             separate_ticks=True, separate_labels=True,
              filename=name + '.png', inline=False)
 
     # Compare with master
@@ -434,27 +436,27 @@ def test_shared_separate(master=False, remove=True, show=False):
         assert not compare
 
 
-def test_shared_separate(master=False, remove=True, show=False):
+# def test_shared_separate(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'shared_separate_master') if master else 'shared_separate'
+#     name = osjoin(MASTER, 'shared_separate_master') if master else 'shared_separate'
 
-    # Make the plot
-    sub = df[(df.Substrate=='Si') & (df['Target Wavelength']==450)].copy()
-    fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',          show=SHOW, ax_size=[225, 225], separate_ticks=True, separate_labels=True,
-             filename=name + '.png', inline=False)
+#     # Make the plot
+#     sub = df[(df.Substrate=='Si') & (df['Target Wavelength']==450)].copy()
+#     fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',          show=SHOW, ax_size=[225, 225], separate_ticks=True, separate_labels=True,
+#              filename=name + '.png', inline=False)
 
-    # Compare with master
-    if master:
-        return
-    elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
+#     # Compare with master
+#     if master:
+#         return
+#     elif show:
+#         os.startfile(osjoin(MASTER, name + '_master.png'))
+#         os.startfile(name + '.png')
+#     else:
+#         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+#         if remove:
+#             os.remove(name + '.png')
 
-        assert not compare
+#         assert not compare
 
 
 def test_shared_rows(master=False, remove=True, show=False):
@@ -483,7 +485,7 @@ def test_shared_rows(master=False, remove=True, show=False):
 
 def test_shared_cols(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'shared_columns_master') if master else 'shared_columns_master'
+    name = osjoin(MASTER, 'shared_columns_master') if master else 'shared_columns'
 
     # Make the plot
     sub = df[(df.Substrate=='Si') & (df['Target Wavelength']==450)].copy()

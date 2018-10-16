@@ -642,9 +642,9 @@ class Data:
                 iqr = factor*(q3 - q1)
                 vmin = q1 - iqr
             else:
-                q1 = df.groupby(self.groups) \
+                q1 = df.groupby(self.groupers) \
                           .quantile(0.25)[cols].reset_index()
-                q3 = df.groupby(self.groups) \
+                q3 = df.groupby(self.groupers) \
                          .quantile(0.75)[cols].reset_index()
                 iqr = factor*(q3[cols] - q1[cols])
                 vmin = (q1[cols] - iqr[cols]).min().iloc[0]
@@ -652,6 +652,9 @@ class Data:
             xq = float(str(vmin).lower().replace('q', ''))/100
             if self.groups is None:
                 vmin = dfax.quantile(xq).min()
+            elif 'box' in self.plot_func:
+                vmin = df.groupby(self.groupers) \
+                        .quantile(xq)[cols].min().iloc[0]
             else:
                 vmin = df.groupby(self.groups) \
                         .quantile(xq)[cols].min().iloc[0]
@@ -685,9 +688,9 @@ class Data:
                 iqr = factor*(q3 - q1)
                 vmax = q3 + iqr
             else:
-                q1 = df.groupby(self.groups) \
+                q1 = df.groupby(self.groupers) \
                           .quantile(0.25)[cols].reset_index()
-                q3 = df.groupby(self.groups) \
+                q3 = df.groupby(self.groupers) \
                          .quantile(0.75)[cols].reset_index()
                 iqr = factor*(q3[cols] - q1[cols])
                 vmax = (q3[cols] + iqr[cols]).max().iloc[0]  # should this be referred to median?
@@ -695,6 +698,9 @@ class Data:
             xq = float(str(vmax).lower().replace('q', ''))/100
             if self.groups is None:
                 vmax = dfax.quantile(xq).max()
+            elif 'box' in self.plot_func:
+                vmax = df.groupby(self.groupers) \
+                        .quantile(xq)[cols].max().iloc[0]
             else:
                 vmax = df.groupby(self.groups) \
                         .quantile(xq)[cols].max().iloc[0]
@@ -824,7 +830,7 @@ class Data:
             for iir, iic, df_rc in self.get_rc_subset(self.df_fig):
                 if len(df_rc) == 0:
                     break
-                for iline, df, x, y, z, leg_name, twin in self.get_plot_data(df_rc):
+                for iline, df, x, y, z, leg_name, twin, ngroups in self.get_plot_data(df_rc):
                     counts = np.histogram(df[self.x[0]], bins=self.bins, normed=self.norm)[0]
                     df_hist = pd.concat([df_hist, pd.DataFrame({self.y[0]: counts})])
             vals = self.get_data_range('y', df_hist)
@@ -833,7 +839,7 @@ class Data:
         elif self.share_row:
             for iir, iic, df_rc in self.get_rc_subset(self.df_fig):
                 df_row = df_rc[df_rc[self.row[0]] == self.row_vals[ir]].copy()
-                for iline, df, x, y, z, leg_name, twin in self.get_plot_data(df_row):
+                for iline, df, x, y, z, leg_name, twin, ngroups in self.get_plot_data(df_row):
                     counts = np.histogram(df[self.x[0]], bins=self.bins, normed=self.norm)[0]
                     df_hist = pd.concat([df_hist, pd.DataFrame({self.y[0]: counts})])
             vals = self.get_data_range('y', df_hist)
@@ -1112,7 +1118,7 @@ class Data:
                     leg = None
 
                 yield irow, df, row['x'], row['y'], \
-                      None if self.z is None else self.z[0], leg, twin
+                      None if self.z is None else self.z[0], leg, twin, len(vals)
 
         else:
             for irow, row in self.legend_vals.iterrows():
@@ -1143,7 +1149,8 @@ class Data:
                         or (row['y'] != self.legend_vals.loc[0, 'y'] and self.twin_x):
                     twin = True
                 yield irow, df2, row['x'], row['y'], \
-                      None if self.z is None else self.z[0], row['names'], twin
+                      None if self.z is None else self.z[0], row['names'], \
+                      twin, len(self.legend_vals)
 
     def get_rc_groupings(self, df):
         """

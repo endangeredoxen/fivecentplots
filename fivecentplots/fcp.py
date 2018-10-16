@@ -397,13 +397,13 @@ def plot_contour(data, layout, ir, ic, df_rc, kwargs):
 
     """
 
-    for iline, df, x, y, z, leg_name, twin in data.get_plot_data(df_rc):
+    for iline, df, x, y, z, leg_name, twin, ngroups in data.get_plot_data(df_rc):
         layout.plot_contour(layout.axes.obj[ir, ic], df, x, y, z, data.ranges[ir, ic])
 
     return data
 
 
-def plot_fit(data, layout, ir, ic, iline, df, x, y, twin):
+def plot_fit(data, layout, ir, ic, iline, df, x, y, twin, leg_name, ngroups):
     """
     Plot a fit line
 
@@ -417,6 +417,8 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin):
         x (str): x-column name
         y (str): y-column name
         twin (bool): denote twin axis
+        leg_name (str): legend value
+        ngroups (int): number of groups in this data set
 
     """
 
@@ -425,8 +427,11 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin):
 
     df, coeffs, rsq = data.get_fit_data(ir, ic, df, x, y)
     if layout.legend.on:
-        if iline > 0:
-            leg_name = 'Fit %s' % (iline + 1)
+        if (data.wrap_vals is not None and ngroups / data.nwrap > 1 \
+                or ngroups / (data.nrow * data.ncol) > 1 \
+                or len(np.unique(layout.fit.color.values)) > 1) \
+                and data.legend_vals is not None:
+            leg_name = '%s [Fit]' % leg_name
         else:
             leg_name = 'Fit'
     else:
@@ -473,7 +478,7 @@ def plot_heatmap(data, layout, ir, ic, df_rc, kwargs):
 
     """
 
-    for iline, df, x, y, z, leg_name, twin in data.get_plot_data(df_rc):
+    for iline, df, x, y, z, leg_name, twin, ngroups in data.get_plot_data(df_rc):
 
         # Make the plot
         layout.plot_heatmap(layout.axes.obj[ir, ic], df, x, y, z, data.ranges[ir, ic])
@@ -495,7 +500,7 @@ def plot_hist(data, layout, ir, ic, df_rc, kwargs):
 
     """
 
-    for iline, df, x, y, z, leg_name, twin in data.get_plot_data(df_rc):
+    for iline, df, x, y, z, leg_name, twin, ngroups in data.get_plot_data(df_rc):
         if data.stat is not None:
             layout.lines.on = False
         if kwargs.get('groups', False):
@@ -572,7 +577,7 @@ def plot_xy(data, layout, ir, ic, df_rc, kwargs):
 
     """
 
-    for iline, df, x, y, z, leg_name, twin in data.get_plot_data(df_rc):
+    for iline, df, x, y, z, leg_name, twin, ngroups in data.get_plot_data(df_rc):
         if data.stat is not None:
             layout.lines.on = False
         if not layout.lines.on and not layout.markers.on:
@@ -580,11 +585,11 @@ def plot_xy(data, layout, ir, ic, df_rc, kwargs):
         elif kwargs.get('groups', False):
             for nn, gg in df.groupby(validate_list(kwargs['groups'])):
                 layout.plot_xy(ir, ic, iline, gg, x, y, leg_name, twin)
-                plot_fit(data, layout, ir, ic, iline, gg, x, y, twin)
+                plot_fit(data, layout, ir, ic, iline, gg, x, y, twin, leg_name, ngroups)
 
         else:
             layout.plot_xy(ir, ic, iline, df, x, y, leg_name, twin)
-            plot_fit(data, layout, ir, ic, iline, df, x, y, twin)
+            plot_fit(data, layout, ir, ic, iline, df, x, y, twin, leg_name, ngroups)
 
         plot_ref(ir, ic, iline, data, layout, df, x, y)
         if not layout.lines.on and not layout.markers.on:

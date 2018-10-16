@@ -650,6 +650,11 @@ class BaseLayout:
         if not self.legend.on and self.ref_line.on:
             self.legend.values['ref_line'] = []
             self.legend.on = True
+        if not self.legend.on and self.fit.on \
+                and not (('legend' in kwargs.keys() and kwargs['legend'] == False) or \
+                         ('legend_on' in kwargs.keys() and kwargs['legend_on'] == False)):
+            self.legend.values['fit_line'] = []
+            self.legend.on = True
         if self.legend.on and self.fit.on and 'fit_color' not in kwargs.keys():
             self.fit.color = copy.copy(self.lines.color)
         y = utl.validate_list(kwargs.get('y'))
@@ -1858,6 +1863,11 @@ class LayoutMPL(BaseLayout):
                 del self.legend.values['ref_line']
             else:
                 ref_line = None
+            if 'fit_line' in self.legend.values.keys():
+                fit_line = self.legend.values['fit_line']
+                del self.legend.values['fit_line']
+            else:
+                fit_line = None
 
             if self.axes.twin_x or self.axes.twin_y:
                 keys = self.legend.values.keys()
@@ -2381,7 +2391,7 @@ class LayoutMPL(BaseLayout):
 
         # Make a dummy legend --> move to add_legend???
         if data.legend_vals is not None and len(data.legend_vals) > 0 \
-                or self.ref_line.on:
+                or self.ref_line.on or self.fit.on:
             lines = []
             leg_vals = []
             if type(data.legend_vals) == pd.DataFrame:
@@ -2395,6 +2405,13 @@ class LayoutMPL(BaseLayout):
             if self.ref_line.on:
                 lines += ax.plot([1, 2, 3])
                 leg_vals += [self.ref_line.text]
+            if self.fit.on:
+                lines += ax.plot([1, 2, 3])
+                if data.legend_vals is not None and \
+                        len(data.legend_vals) > 0:
+                    leg_vals += [row['names'] + '[Fit]']
+                else:
+                    leg_vals += ['Fit']
             leg = mpl.pyplot.legend(lines, leg_vals,
                                     title=self.legend.text,
                                     numpoints=self.legend.points,

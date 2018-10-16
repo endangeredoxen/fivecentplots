@@ -22,7 +22,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.3.1',
+    version='0.3.0',
 
     description='Wrapper for matplotlib to make plots the way I like them',
     long_description=long_description,
@@ -62,9 +62,9 @@ setup(
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
-    packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
+    packages=find_packages(exclude=['contrib', 'docs', 'tests*', ]),
 
-    dependency_links = ['https://github.com/endangeredoxen/fileio/zipball/master#egg=fileio-0.2.2'],
+    dependency_links = ['https://github.com/endangeredoxen/fileio/zipball/master'],
     # List run-time dependencies here.  These will be installed by pip when
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:

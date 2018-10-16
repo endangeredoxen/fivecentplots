@@ -8,13 +8,13 @@ import inspect
 osjoin = os.path.join
 st = pdb.set_trace
 
-MASTER = osjoin(os.path.dirname(fcp.__file__), 'tests', 'test_images', 'style.py')
+MASTER = osjoin(os.path.dirname(fcp.__file__), 'tests', 'test_images', 'styles.py')
 
 df = pd.read_csv(osjoin(os.path.dirname(fcp.__file__), 'tests', 'fake_data.csv'))
 
 
 # Set theme
-# fcp.set_theme('gray')
+fcp.set_theme('gray')
 # fcp.set_theme('white')
 
 # Other
@@ -428,7 +428,7 @@ def test_marker_fill_default(master=False, remove=True, show=False):
 
 def test_marker_fill_alpha(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'marker_fill_alpha_master') if master else 'marker_fill_alpha_master'
+    name = osjoin(MASTER, 'marker_fill_alpha_master') if master else 'marker_fill_alpha'
 
     # Make the plot
     fcp.plot(df=df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
@@ -452,14 +452,14 @@ def test_marker_fill_alpha(master=False, remove=True, show=False):
 
 def test_marker_boxplot(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'boxplot_master') if master else 'boxplot_master'
+    name = osjoin(MASTER, 'boxplot_master') if master else 'boxplot'
 
     # Make the plot
     df_box = pd.read_csv(osjoin(os.path.dirname(fcp.__file__), 'tests', 'fake_data_box.csv'))
     fcp.boxplot(df=df_box, y='Value', groups=['Batch', 'Sample'], show=SHOW,
                 box_fill_color=[0, 0, 1, 1, 2, 2], box_fill_alpha=0.3, box_edge_width=0,
                 marker_edge_color=[0, 0, 1, 1, 2, 2], marker_type=['o', '+'],
-                box_whisker_color=[0, 0, 1, 1, 2, 2], box_whisker_width=1,
+                box_whisker_color=[0, 0, 1, 1, 2, 2], box_whisker_width=1, jitter=False,
                 filename=name + '.png', inline=False)
 
     # Compare with master

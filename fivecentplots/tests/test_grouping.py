@@ -107,7 +107,7 @@ def test_legend_multiple_xy(master=False, remove=True, show=False):
 
 def test_legend_secondary_none(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'legend_secondary_none') if master else 'legend_secondary_none'
+    name = osjoin(MASTER, 'legend_secondary_none_master') if master else 'legend_secondary_none'
 
     # Make the plot
     fcp.plot(df1, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True,
@@ -130,7 +130,7 @@ def test_legend_secondary_none(master=False, remove=True, show=False):
 
 def test_legend_secondary_axis(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'legend_secondary_axis') if master else 'legend_secondary_axis'
+    name = osjoin(MASTER, 'legend_secondary_axis_master') if master else 'legend_secondary_axis'
 
     # Make the plot
     fcp.plot(df1, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, legend=True,

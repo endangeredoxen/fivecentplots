@@ -407,6 +407,30 @@ def test_other_curve_fitting_legend(master=False, remove=True, show=False):
         assert not compare
 
 
+def test_other_curve_fitting_legend2(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'other_curve-fitting-legend2_master') if master else 'other_curve-fitting-legend2'
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, show=SHOW, wrap='Die', legend='Die',
+         filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+         fit=1, fit_range_x=[1.3, 2], fit_width=2, fit_color='#555555', ax_size=[250, 250],
+         filename=name + '.png', inline=False)
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def test_other_stat_bad(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'other_stat-lines-bad_master') if master else 'other_stat-lines-bad'

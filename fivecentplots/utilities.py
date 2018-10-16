@@ -284,7 +284,7 @@ def img_compare(img1, img2):
     img2 = cv2.imread(img2)
 
     if img1 is None or img2 is None or img1.shape != img2.shape:
-        return False
+        return True
 
     difference = cv2.subtract(img1, img2)
 
