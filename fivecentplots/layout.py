@@ -2934,6 +2934,11 @@ class LayoutMPL(BaseLayout):
         self.get_rc_label_position()
         self.get_legend_position()
 
+        # # Update subplot spacing
+        # if self.label_y.size[1] > self.axes.size[1]:
+        #     st()
+        #     self.ws_row += self.label_y.size[1] - self.axes.size[1] + 10
+
         # Define the subplots
         fig, axes = \
             mplp.subplots(data.nrow, data.ncol,

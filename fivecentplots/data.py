@@ -1364,8 +1364,8 @@ class Data:
         grouper = []
 
         for prop in props:
-            if getattr(self, prop):
-                grouper += getattr(self, prop)
+            if getattr(self, prop) not in ['x', 'y', None]:
+                grouper += utl.validate_list(getattr(self, prop))
 
         return grouper
 

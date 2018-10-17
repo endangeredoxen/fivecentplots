@@ -8,4 +8,3 @@
 CONVERT TO THIS!!
 
 * extra long xy labels auto-adjust ws_col and ws_row
-* test_grouping figure plot fails due to filenames

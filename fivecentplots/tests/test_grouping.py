@@ -448,7 +448,7 @@ def test_figure(master=False, remove=True, show=False):
     else:
         for i in range(0, 3):
             tag = ' (%s)' % (i+1) if i > 0 else ''
-            compare = utl.img_compare(name + tag + '.png', osjoin(MASTER, name + tag + '_master.png'))
+            compare = utl.img_compare(name + tag + '.png', osjoin(MASTER, name + '_master' + tag + '.png'))
             if remove:
                 os.remove(name + tag + '.png')
 
