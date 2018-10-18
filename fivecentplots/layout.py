@@ -2929,15 +2929,11 @@ class LayoutMPL(BaseLayout):
         self.set_colormap(data)
         self.set_label_text(data, **kwargs)
         self.get_element_sizes(data)
+        self.update_subplot_spacing()
         self.get_figure_size(data, **kwargs)
         self.get_subplots_adjust()
         self.get_rc_label_position()
         self.get_legend_position()
-
-        # # Update subplot spacing
-        # if self.label_y.size[1] > self.axes.size[1]:
-        #     st()
-        #     self.ws_row += self.label_y.size[1] - self.axes.size[1] + 10
 
         # Define the subplots
         fig, axes = \
@@ -4540,3 +4536,13 @@ class LayoutMPL(BaseLayout):
             ax.get_yaxis().set_major_formatter(ticker.FormatStrFormatter(dec))
 
         return ax
+
+    def update_subplot_spacing(self):
+        """
+        Update spacing for long labels
+        """
+        if self.label_y.size[1] > self.axes.size[1]:
+            self.ws_row += self.label_y.size[1] - self.axes.size[1]
+        if self.label_x.size[0] > self.axes.size[0]:
+            self.ws_col += self.label_x.size[0] - self.axes.size[0]
+
