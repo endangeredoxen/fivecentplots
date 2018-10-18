@@ -343,7 +343,7 @@ class Data:
 
         """
 
-        equal = set(getattr(self, group1)) == set(getattr(self, group2))
+        equal = set(str(getattr(self, group1))) == set(str(getattr(self, group2)))
 
         if equal:
             raise GroupingError('%s and %s grouping columns cannot be the same!'
