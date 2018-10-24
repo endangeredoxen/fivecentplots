@@ -446,8 +446,8 @@ def test_figure(master=False, remove=True, show=False):
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
     else:
-        for i in range(0, 3):
-            tag = ' (%s)' % (i+1) if i > 0 else ''
+        for die in df1.Die.unique():
+            tag = ' where %s=%s' % ('Die', die)
             compare = utl.img_compare(name + tag + '.png', osjoin(MASTER, name + '_master' + tag + '.png'))
             if remove:
                 os.remove(name + tag + '.png')

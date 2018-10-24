@@ -538,10 +538,10 @@ def plot_ref(ir, ic, iline, data, layout, df, x, y):
     Plot a reference line
     """
 
-    if type(data.ref_line) != pd.Series:
+    if not layout.ref_line.on:
         return
 
-    layout.plot_xy(ir, ic, iline, df, x, 'Ref Line', 'ref_line',
+    layout.plot_xy(ir, ic, iline, df, x, layout.ref_line.column, 'ref_line',
                    False, line_type='ref_line', marker_disable=True)
 
     return data

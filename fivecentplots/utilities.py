@@ -375,14 +375,19 @@ def set_save_filename(df, ifig, fig_item, fig_cols, layout, kwargs):
         str filename
     """
 
+    # Use provided filename
     if 'filename' in kwargs.keys():
         filename = kwargs['filename']
         ext = kwargs.get('save_ext', '.png')
         filename = filename.replace(ext, '')
-        if ifig is not None and ifig > 0:
-            filename += ' (%s)' % (ifig + 1)
-        filename += ext
-        return filename
+        fig = ''
+        if fig_item is not None:
+            fig_items = validate_list(fig_item)
+            for icol, col in enumerate(fig_cols):
+                if icol > 0:
+                    fig += ' and'
+                fig += ' where %s=%s' % (col, fig_items[icol])
+        return filename + fig + ext
 
     # Build a filename
     if 'z' in kwargs.keys():

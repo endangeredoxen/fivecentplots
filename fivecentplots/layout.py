@@ -614,11 +614,23 @@ class BaseLayout:
                                     self.fit.font_size)/ self.axes.size[1]
 
         # Reference line
+        if type(kwargs.get('ref_line', False)) is pd.Series:
+            ref_line_on = True
+            ref_col = 'Ref Line'
+        elif type(kwargs.get('ref_line', False)) is str and \
+                kwargs.get('ref_line', False) in kwargs['df'].columns:
+            ref_line_on = True
+            ref_col = kwargs.get('ref_line')
+        else:
+            ref_line_on = False
+            ref_col = None
         self.ref_line = Element('ref_line', self.fcpp, kwargs,
-                                on=True if type(kwargs.get('ref_line', False)) is pd.Series else False,
+                                on=ref_line_on,
+                                column=ref_col,
                                 color='#000000',
                                 size=[0,0],
-                                text=utl.kwget(kwargs, self.fcpp, 'ref_line_text', 'Ref Line'),
+                                text=utl.kwget(kwargs, self.fcpp,
+                                               'ref_line_text', 'Ref Line'),
                                 )
 
         # Legend
@@ -4545,4 +4557,8 @@ class LayoutMPL(BaseLayout):
             self.ws_row += self.label_y.size[1] - self.axes.size[1]
         if self.label_x.size[0] > self.axes.size[0]:
             self.ws_col += self.label_x.size[0] - self.axes.size[0]
-
+        if self.axes.twin_x and self.separate_ticks \
+                and self.tick_labels_major_y2.on:
+            self.ws_col += self.tick_labels_major_y2.size[0]
+        if self.axes.twin_x and self.separate_labels:
+            self.ws_col += self.label_y2.size[0]
