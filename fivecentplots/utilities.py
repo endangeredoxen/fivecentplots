@@ -376,7 +376,7 @@ def set_save_filename(df, ifig, fig_item, fig_cols, layout, kwargs):
     """
 
     # Use provided filename
-    if 'filename' in kwargs.keys():
+    if 'filename' in kwargs.keys() and type(kwargs['filename']) is str:
         filename = kwargs['filename']
         ext = kwargs.get('save_ext', '.png')
         filename = filename.replace(ext, '')

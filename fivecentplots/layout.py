@@ -671,7 +671,9 @@ class BaseLayout:
             self.fit.color = copy.copy(self.lines.color)
         y = utl.validate_list(kwargs.get('y'))
         if not self.axes.twin_x and y is not None and len(y) > 1 and \
-                self.plot_func != 'plot_box':
+                self.plot_func != 'plot_box' and \
+                (kwargs.get('wrap') != 'y' and \
+                kwargs.get('row') != 'y' and kwargs.get('col') != 'y'):
             self.legend.values = {'NaN': None}
             self.legend.on = True
 
@@ -3301,6 +3303,8 @@ class LayoutMPL(BaseLayout):
 
             if marker in ['o', '+', 's', 'x', 'd', '^']:
                 return marker
+            elif marker is None:
+                return 'None'
             else:
                 return r'$%s$' % marker
 
@@ -3322,24 +3326,30 @@ class LayoutMPL(BaseLayout):
         if self.markers.on and not marker_disable:
             if self.markers.jitter:
                 df[x] = np.random.normal(df[x], 0.03, size=len(df[y]))
-            points = ax.plot(df[x], df[y],
-                             marker=format_marker(self.markers.type.get(iline)),
-                             markerfacecolor=self.markers.fill_color.get(iline) \
-                                             if self.markers.filled else 'none',
-                             markeredgecolor=self.markers.edge_color.get(iline),
-                             markeredgewidth=self.markers.edge_width,
-                             linewidth=0,
-                             markersize=self.markers.size,
-                             zorder=40)
+            marker = format_marker(self.markers.type.get(iline))
+            if marker != 'None':
+                points = ax.plot(df[x], df[y],
+                                marker=marker,
+                                markerfacecolor=self.markers.fill_color.get(iline) \
+                                                if self.markers.filled else 'none',
+                                markeredgecolor=self.markers.edge_color.get(iline),
+                                markeredgewidth=self.markers.edge_width,
+                                linewidth=0,
+                                markersize=self.markers.size,
+                                zorder=40)
+            else:
+                points = ax.plot(df[x], df[y],
+                                marker=marker,
+                                color=line_type.color.get(iline),
+                                linestyle=line_type.style.get(iline),
+                                linewidth=line_type.width.get(iline),
+                                zorder=40)
 
         # Make the line
         lines = None
         if line_type.on:
             lines = ax.plot(df[x], df[y],
                             color=line_type.color.get(iline),
-                            #linestyle='-' if line_type.style is None \
-                            #          else line_type.style,
-                            #linewidth=line_type.width)
                             linestyle=line_type.style.get(iline),
                             linewidth=line_type.width.get(iline),
                             )

@@ -547,6 +547,30 @@ def test_marker_type(master=False, remove=True, show=False):
         assert not compare
 
 
+def test_marker_type_none(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'marker_type_none_master') if master else 'marker_type_none'
+
+    # Make the plot
+    fcp.plot(df=df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], \
+             filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             markers=['o', None, '+', '*', 'B', None],
+             filename=name + '.png', inline=False)
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def test_marker_size(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'marker_size_master') if master else 'marker_size'

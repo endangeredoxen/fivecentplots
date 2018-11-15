@@ -1116,6 +1116,8 @@ class Data:
                     leg = row['y']
                 else:
                     leg = None
+                if self.wrap == 'y':
+                    irow = self.wrap_vals.index(leg)
 
                 yield irow, df, row['x'], row['y'], \
                       None if self.z is None else self.z[0], leg, twin, len(vals)
