@@ -842,7 +842,7 @@ class BaseLayout:
 
         self.box_divider = Element('box_divider', self.fcpp, kwargs,
                                    on=kwargs.get('box_divider', kwargs.get('box', True)),
-                                   color='#bbbbbb',
+                                   color='#bbbbbb', text=None,
                                    zorder=2,
                                    )
         self.box_range_lines = Element('box_range_lines', self.fcpp, kwargs,
@@ -915,6 +915,7 @@ class BaseLayout:
             styles = []
             widths = []
             alphas = []
+            labels = []
             for ival, val in enumerate(vals):
                 if type(val) is list or type(val) is tuple and len(val) > 1:
                     values += [val[0]]
@@ -936,14 +937,20 @@ class BaseLayout:
                     alphas += [val[4]]
                 else:
                     alphas += [utl.kwget(kwargs, self.fcpp, '%s_alpha' % axline, 1)]
-
+                if type(val) is list or type(val) is tuple and len(val) > 5:
+                    labels += [val[5]]
+                else:
+                    labels += [utl.kwget(kwargs, self.fcpp, '%s_label' % axline, None)]
             setattr(self, axline,
                     Element(axline, self.fcpp, kwargs,
                             on=True if axline in kwargs.keys() else False,
                             values=values, color=colors, style=styles,
-                            width=widths, alpha=alphas,
+                            width=widths, alpha=alphas, text=labels,
                             zorder=utl.kwget(kwargs, self.fcpp, '%s_zorder' % axline, 1),
                             ))
+            for label in labels:
+                if label:
+                    self.legend.values[label] = []
 
         # Gridlines
         self.grid_major = Element('grid_major', self.fcpp, kwargs,
@@ -1794,10 +1801,12 @@ class LayoutMPL(BaseLayout):
                    else self.axes.obj[ir, ic].axvline
             if ll.on:
                 for ival, val in enumerate(ll.values):
-                    func(val, color=ll.color.get(ival),
-                         linestyle=ll.style.get(ival),
-                         linewidth=ll.width.get(ival),
-                         zorder=ll.zorder)
+                    line = func(val, color=ll.color.get(ival),
+                                linestyle=ll.style.get(ival),
+                                linewidth=ll.width.get(ival),
+                                zorder=ll.zorder)
+                    if type(ll.text) is list and ll.text[ival] is not None:
+                        self.legend.values[ll.text[ival]] = [line]
 
     def add_label(self, ir, ic, text='', position=None, rotation=0, size=None,
                   fill_color='#ffffff', edge_color='#aaaaaa', edge_width=1,
@@ -2405,7 +2414,9 @@ class LayoutMPL(BaseLayout):
 
         # Make a dummy legend --> move to add_legend???
         if data.legend_vals is not None and len(data.legend_vals) > 0 \
-                or self.ref_line.on or self.fit.on:
+                or self.ref_line.on or self.fit.on \
+                or (self.ax_hlines.on and not all(v is None for v in self.ax_hlines.text)) \
+                or (self.ax_vlines.on and not all(v is None for v in self.ax_vlines.text)):
             lines = []
             leg_vals = []
             if type(data.legend_vals) == pd.DataFrame:
@@ -2426,6 +2437,16 @@ class LayoutMPL(BaseLayout):
                     leg_vals += [row['names'] + '[Fit]']
                 else:
                     leg_vals += ['Fit']
+            if (self.ax_hlines.on and not all(v is None for v in self.ax_hlines.text)):
+                for ival, val in enumerate(self.ax_hlines.values):
+                    if self.ax_hlines.text[ival] is not None:
+                        lines += [ax.axhline(val)]
+                        leg_vals += [self.ax_hlines.text[ival]]
+            if (self.ax_vlines.on and not all(v is None for v in self.ax_vlines.text)):
+                for ival, val in enumerate(self.ax_vlines.values):
+                    if self.ax_vlines.text[ival] is not None:
+                        lines += [ax.axvline(val)]
+                        leg_vals += [self.ax_vlines.text[ival]]
             leg = mpl.pyplot.legend(lines, leg_vals,
                                     title=self.legend.text,
                                     numpoints=self.legend.points,

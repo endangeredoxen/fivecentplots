@@ -316,9 +316,9 @@ def test_other_lines(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'other_lines_master') if master else 'other_lines'
 
     # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, show=SHOW,
+    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, show=SHOW, legend=True,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             ax_hlines=[(0, '#FF0000', '--', 3), 1.2], ax_vlines=[0, (1, '#00FF00')],
+             ax_hlines=[(0, '#FF0000', '--', 3, 1, 'Open'), 1.2], ax_vlines=[0, (1, '#00FF00')],
              filename=name + '.png', inline=False)
 
     # Compare with master
