@@ -20,6 +20,7 @@ import copy
 import decimal
 import math
 from .colors import *
+from . utilities import RepeatedList
 import fivecentplots.utilities as utl
 from distutils.version import LooseVersion
 from random import randint
@@ -1609,31 +1610,6 @@ class DF_Element(Element):
             self._text = self._text_orig
 
 
-class RepeatedList:
-    def __init__(self, values, name):
-        """
-        Set a default list of items and loop through it beyond the maximum
-        index value
-
-        Args:
-            values (list): user-defined list of values
-            name (str): label to describe contents of class
-        """
-
-        self.values = utl.validate_list(values)
-        self.shift = 0
-
-        if type(self.values) is not list and len(self.values) < 1:
-            raise(ValueError, 'RepeatedList for "%s" must contain an actual '
-                              'list with more at least one element')
-
-    def get(self, idx):
-
-        # can we make this a next??
-
-        return self.values[(idx + self.shift) % len(self.values)]
-
-
 class LayoutBokeh(BaseLayout):
     def __init__(self, **kwargs):
 
@@ -1837,9 +1813,9 @@ class LayoutMPL(BaseLayout):
                                 fill=True,
                                 transform=self.axes.obj[ir, ic].transAxes,
                                 facecolor=fill_color if type(fill_color) is str \
-                                        else fill_color.get(ic + ir * self.ncol + 1),
+                                        else fill_color.get(utl.plot_num(ir, ic, self.ncol)),
                                 edgecolor=edge_color if type(edge_color) is str \
-                                        else edge_color.get(ic + ir * self.ncol + 1),
+                                        else edge_color.get(utl.plot_num(ir, ic, self.ncol)),
                                 clip_on=False, zorder=1)
 
         self.axes.obj[ir, ic].add_patch(rect)
@@ -3404,15 +3380,15 @@ class LayoutMPL(BaseLayout):
 
         #for ax in axes:
         try:
-            axes[0].obj[ir, ic].set_facecolor(axes[0].fill_color.get(ic + ir * self.ncol + 1))
+            axes[0].obj[ir, ic].set_facecolor(axes[0].fill_color.get(utl.plot_num(ir, ic, self.ncol)))
         except:
-            axes[0].obj[ir, ic].set_axis_bgcolor(axes[0].fill_color.get(ic + ir * self.ncol + 1))
+            axes[0].obj[ir, ic].set_axis_bgcolor(axes[0].fill_color.get(utl.plot_num(ir, ic, self.ncol)))
 
         for f in ['bottom', 'top', 'right', 'left']:
             if len(axes) > 1:
                 axes[0].obj[ir, ic].spines[f].set_visible(False)
             if getattr(self.axes, 'spine_%s' % f):
-                axes[-1].obj[ir, ic].spines[f].set_color(axes[0].edge_color.get(ic + ir * self.ncol + 1))
+                axes[-1].obj[ir, ic].spines[f].set_color(axes[0].edge_color.get(utl.plot_num(ir, ic, self.ncol)))
             else:
                 axes[-1].obj[ir, ic].spines[f].set_color(self.fig.fill_color.get(0))
             axes[-1].obj[ir, ic].spines[f].set_linewidth(self.axes.edge_width)
@@ -3535,7 +3511,7 @@ class LayoutMPL(BaseLayout):
                 if ax == 'y' and ic != 0 and self.axes.visible[ir, ic - 1]:
                     continue
                 if ax == 'y2' and ic != self.ncol - 1 and \
-                        (ic + ir * self.ncol + 1) != self.nwrap:
+                        utl.plot_num(ir, ic, self.ncol) != self.nwrap:
                     continue
 
             # Add the label
@@ -3975,7 +3951,7 @@ class LayoutMPL(BaseLayout):
                 else:
                     axes[ia].yaxis.set_tick_params(which='both', labelleft=True)
             elif not self.separate_ticks and (ic != self.ncol - 1 and \
-                    (ic + ir * self.ncol + 1) != self.nwrap) and \
+                    utl.plot_num(ir, ic, self.ncol) != self.nwrap) and \
                     self.axes.twin_x and ia == 1:
                 mplp.setp(axes[ia].get_yticklabels(), visible=False)
             if not self.separate_ticks and ir != 0 and self.axes.twin_y and ia == 1:
@@ -4195,7 +4171,7 @@ class LayoutMPL(BaseLayout):
                         not self.separate_ticks and axl == 'y2' and ic != self.ncol - 1 and self.nwrap == 0 or \
                         not self.separate_ticks and axl == 'x2' and ir != 0 or \
                         not self.separate_ticks and axl == 'y' and ic != 0 or \
-                        not self.separate_ticks and axl == 'y2' and ic != self.ncol - 1 and (ic + ir * self.ncol + 1) != self.nwrap:
+                        not self.separate_ticks and axl == 'y2' and ic != self.ncol - 1 and utl.plot_num(ir, ic, self.ncol) != self.nwrap:
                     axes[ia].tick_params(which='minor', **sides[axl])
 
                 elif tlmin.on:

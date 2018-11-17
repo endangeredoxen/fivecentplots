@@ -18,6 +18,31 @@ if os.path.exists(default_path) and default_path not in sys.path:
     from defaults import *
 
 
+class RepeatedList:
+    def __init__(self, values, name):
+        """
+        Set a default list of items and loop through it beyond the maximum
+        index value
+
+        Args:
+            values (list): user-defined list of values
+            name (str): label to describe contents of class
+        """
+
+        self.values = validate_list(values)
+        self.shift = 0
+
+        if type(self.values) is not list and len(self.values) < 1:
+            raise(ValueError, 'RepeatedList for "%s" must contain an actual '
+                              'list with more at least one element')
+
+    def get(self, idx):
+
+        # can we make this a next??
+
+        return self.values[(idx + self.shift) % len(self.values)]
+
+
 def dfkwarg(args, kwargs):
     """
     Add the DataFrame to kwargs
@@ -318,6 +343,14 @@ def nq(data, column='Value', **kwargs):
         values[ii] = np.percentile(data, ss.norm.cdf(idx) * 100)
 
     return pd.DataFrame({'Sigma': index, column: values})
+
+
+def plot_num(ir, ic, ncol):
+    """
+    Get the plot number based on grid location
+    """
+
+    return (ic + ir * ncol + 1)
 
 
 def rectangle_overlap(r1, r2):

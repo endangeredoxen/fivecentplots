@@ -176,6 +176,11 @@ def heatmap(*args, **kwargs):
     return plotter('plot_heatmap', **dfkwarg(args, kwargs))
 
 
+def help():
+    import webbrowser
+    webbrowser.open(r'https://endangeredoxen.github.io/fivecentplots/index.html')
+
+
 def hist(*args, **kwargs):
 
     return plotter('plot_hist', **dfkwarg(args, kwargs))
