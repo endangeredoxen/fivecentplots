@@ -56,7 +56,10 @@ class Data:
         self.auto_scale = utl.kwget(kwargs, self.fcpp, 'auto_scale', True)
         if self.plot_func in ['plot_heatmap', 'plot_hist']:
             self.auto_scale = False
+        #self.ax_scale = utl.RepeatedList(kwargs.get('ax_scale', [None]), 'ax_scale')
         self.ax_scale = kwargs.get('ax_scale', None)
+        self.ax2_scale = kwargs.get('ax2_scale', self.ax_scale)
+        # validate list? repeated list and all to lower
         self.ax_limit_pad(**kwargs)
         self.conf_int = kwargs.get('conf_int', False)
         self.fit = kwargs.get('fit', False)
@@ -96,16 +99,26 @@ class Data:
         self.twin_y = kwargs.get('twin_y', False)
         if self.twin_x == self.twin_y and self.twin_x:
             raise AxisError('cannot simultaneously twin x and y axes')
-        self.xmin = kwargs.get('xmin', None)
-        self.x2min = kwargs.get('x2min', None)
-        self.xmax = kwargs.get('xmax', None)
-        self.x2max = kwargs.get('x2max', None)
-        self.ymin = kwargs.get('ymin', None)
-        self.y2min = kwargs.get('y2min', None)
-        self.ymax = kwargs.get('ymax', None)
-        self.y2max = kwargs.get('y2max', None)
-        self.zmin = kwargs.get('zmin', None)
-        self.zmax = kwargs.get('zmax', None)
+        self.xmin = utl.RepeatedList(kwargs.get('xmin', [None]), 'xmin')
+        self.x2min = utl.RepeatedList(kwargs.get('x2min', [None]), 'x2min')
+        self.xmax = utl.RepeatedList(kwargs.get('xmax', [None]), 'xmax')
+        self.x2max = utl.RepeatedList(kwargs.get('x2max', [None]), 'x2max')
+        self.ymin = utl.RepeatedList(kwargs.get('ymin', [None]), 'ymin')
+        self.y2min = utl.RepeatedList(kwargs.get('y2min', [None]), 'y2min')
+        self.ymax = utl.RepeatedList(kwargs.get('ymax', [None]), 'ymax')
+        self.y2max = utl.RepeatedList(kwargs.get('y2max', [None]), 'y2max')
+        self.zmin = utl.RepeatedList(kwargs.get('zmin', [None]), 'zmin')
+        self.zmax = utl.RepeatedList(kwargs.get('zmax', [None]), 'zmax')
+
+        # Update share
+        if len(self.xmin) > 1 or len(self.xmax) > 1:
+            self.share_x = False
+        if len(self.x2min) > 1 or len(self.x2max) > 1:
+            self.share_x2 = False
+        if len(self.ymin) > 1 or len(self.ymax) > 1:
+            self.share_y = False
+        if len(self.y2min) > 1 or len(self.y2max) > 1:
+            self.share_y2 = False
 
         # Define DataFrames
         self.df_all = self.check_df(kwargs['df'])
@@ -546,7 +559,7 @@ class Data:
             self.lcl = stat['lcl']
             self.ucl = stat['ucl']
 
-    def get_data_range(self, ax, df):
+    def get_data_range(self, ax, df, ir, ic):
         """
         Determine the min/max values for a given axis based on user inputs
 
@@ -587,10 +600,11 @@ class Data:
             else:
                 vmin = None
                 vmax = None
-            if getattr(self, '%smin' % ax):
-                vmin = getattr(self, '%smin' % ax)
-            if getattr(self, '%smax' % ax):
-                vmax = getattr(self, '%smax' % ax)
+            plot_num = utl.plot_num(ir, ic, self.ncol)
+            if getattr(self, '%smin' % ax).get(plot_num):
+                vmin = getattr(self, '%smin' % ax).get(plot_num)
+            if getattr(self, '%smax' % ax).get(plot_num):
+                vmax = getattr(self, '%smax' % ax).get(plot_num)
             if type(vmin) is str:
                 vmin = None
             if type(vmax) is str:
@@ -629,7 +643,8 @@ class Data:
             axmax += 0.1*axmax
 
         # Check user-specified min values
-        vmin = getattr(self, '%smin' % ax)
+        plot_num = utl.plot_num(ir, ic, self.ncol) - 1
+        vmin = getattr(self, '%smin' % ax).get(plot_num)
         if vmin is not None and 'iqr' in str(vmin).lower():
             factor = str(vmin).split('*')
             if len(factor) == 1:
@@ -675,7 +690,7 @@ class Data:
             vmin = None
 
         # Check user-specified max values
-        vmax = getattr(self, '%smax' % ax)
+        vmax = getattr(self, '%smax' % ax).get(plot_num)
         if vmax is not None and 'iqr' in str(vmax).lower():
             factor = str(vmax).split('*')
             if len(factor) == 1:
@@ -706,8 +721,6 @@ class Data:
                         .quantile(xq)[cols].max().iloc[0]
         elif vmax is not None:
             vmax = vmax
-        # elif self.plot_func == 'plot_hist' and ax == 'y':
-        #     vmax = int(axmax)
         elif getattr(self, 'ax_limit_padding_%s_max' % ax) is not None:
             if self.ax_scale in ['log%s' % ax, 'loglog',
                                  'semilog%s' % ax, 'log']:
@@ -745,27 +758,29 @@ class Data:
             limits = ['xmin', 'xmax', 'x2min', 'x2max', 'ymin', 'ymax',
                       'y2min', 'y2max']
 
-            fixed = [f for f in limits if getattr(self, f) is not None]
+            plot_num = utl.plot_num(ir, ic, self.ncol) - 1
+            fixed = [f for f in limits if getattr(self, f).get(plot_num) is not None]
 
             for f in fixed:
                 ax = f[0:-3]
                 side = f[-3:]
                 ax = getattr(self, ax)
+                lim = getattr(self, f).get(plot_num)
 
                 for axx in ax:
                     # Adjust the dataframe by the limits
-                    if type(getattr(self, f)) is str:
+                    if type(lim) is str or lim is None:
                         continue
                     if side == 'min':
                         if len(df_fig) > 0:
-                            df_fig = df_fig[df_fig[axx] >= getattr(self, f)]
+                            df_fig = df_fig[df_fig[axx] >= lim]
                         if len(df_rc) > 0:
-                            df_rc = df_rc[df_rc[axx] >= getattr(self, f)]
+                            df_rc = df_rc[df_rc[axx] >= lim]
                     else:
                         if len(df_fig) > 0:
-                            df_fig = df_fig[df_fig[axx] <= getattr(self, f)]
+                            df_fig = df_fig[df_fig[axx] <= lim]
                         if len(df_rc) > 0:
-                            df_rc = df_rc[df_rc[axx] <= getattr(self, f)]
+                            df_rc = df_rc[df_rc[axx] <= lim]
 
         # Iterate over axis
         axs = ['x', 'x2', 'y', 'y2', 'z']
@@ -777,34 +792,34 @@ class Data:
                 self.get_data_ranges_hist(ir, ic)
                 continue
             if getattr(self, 'share_%s' % ax) and ir == 0 and ic == 0:
-                vals = self.get_data_range(ax, df_fig)
+                vals = self.get_data_range(ax, df_fig, ir, ic)
                 self.ranges[ir, ic]['%smin' % ax] = vals[0]
                 self.ranges[ir, ic]['%smax' % ax] = vals[1]
             elif self.share_row and self.row is not None:
                 if self.row == 'y':
-                    vals = self.get_data_range(ax, df_fig)
+                    vals = self.get_data_range(ax, df_fig, ir, ic)
                 else:
                     vals = self.get_data_range(ax,
-                        df_fig[df_fig[self.row[0]] == self.row_vals[ir]])
+                        df_fig[df_fig[self.row[0]] == self.row_vals[ir]], ir, ic)
                 self.ranges[ir, ic]['%smin' % ax] = vals[0]
                 self.ranges[ir, ic]['%smax' % ax] = vals[1]
             elif self.share_col and self.col is not None:
                 if self.col == 'x':
-                    vals = self.get_data_range(ax, df_fig)
+                    vals = self.get_data_range(ax, df_fig, ir, ic)
                 else:
                     vals = self.get_data_range(ax,
-                        df_fig[df_fig[self.col[0]] == self.col_vals[ic]])
+                        df_fig[df_fig[self.col[0]] == self.col_vals[ic]], ir, ic)
                 self.ranges[ir, ic]['%smin' % ax] = vals[0]
                 self.ranges[ir, ic]['%smax' % ax] = vals[1]
             elif len(df_rc) == 0:
                 self.ranges[ir, ic]['%smin' % ax] = None
                 self.ranges[ir, ic]['%smax' % ax] = None
             elif not getattr(self, 'share_%s' % ax):
-                vals = self.get_data_range(ax, df_rc)
+                vals = self.get_data_range(ax, df_rc, ir, ic)
                 self.ranges[ir, ic]['%smin' % ax] = vals[0]
                 self.ranges[ir, ic]['%smax' % ax] = vals[1]
             elif self.wrap is not None and self.wrap == 'y' or self.wrap == 'x':
-                vals = self.get_data_range(ax, df_rc)
+                vals = self.get_data_range(ax, df_rc, ir, ic)
                 self.ranges[ir, ic]['%smin' % ax] = vals[0]
                 self.ranges[ir, ic]['%smax' % ax] = vals[1]
             else:
@@ -833,7 +848,7 @@ class Data:
                 for iline, df, x, y, z, leg_name, twin, ngroups in self.get_plot_data(df_rc):
                     counts = np.histogram(df[self.x[0]], bins=self.bins, normed=self.norm)[0]
                     df_hist = pd.concat([df_hist, pd.DataFrame({self.y[0]: counts})])
-            vals = self.get_data_range('y', df_hist)
+            vals = self.get_data_range('y', df_hist, ir, ic)
             self.ranges[ir, ic]['ymin'] = vals[0]
             self.ranges[ir, ic]['ymax'] = vals[1]
         elif self.share_row:
@@ -842,7 +857,7 @@ class Data:
                 for iline, df, x, y, z, leg_name, twin, ngroups in self.get_plot_data(df_row):
                     counts = np.histogram(df[self.x[0]], bins=self.bins, normed=self.norm)[0]
                     df_hist = pd.concat([df_hist, pd.DataFrame({self.y[0]: counts})])
-            vals = self.get_data_range('y', df_hist)
+            vals = self.get_data_range('y', df_hist, ir, ic)
             self.ranges[ir, ic]['ymin'] = vals[0]
             self.ranges[ir, ic]['ymax'] = vals[1]
         elif self.share_col:
@@ -851,14 +866,14 @@ class Data:
                 for iline, df, x, y, z, leg_name, twin in self.get_plot_data(df_col):
                     counts = np.histogram(df[self.x[0]], bins=self.bins, normed=self.norm)[0]
                     df_hist = pd.concat([df_hist, pd.DataFrame({self.y[0]: counts})])
-            vals = self.get_data_range('y', df_hist)
+            vals = self.get_data_range('y', df_hist, ir, ic)
             self.ranges[ir, ic]['ymin'] = vals[0]
             self.ranges[ir, ic]['ymax'] = vals[1]
         elif not self.share_y:
             for iline, df, x, y, z, leg_name, twin in self.get_plot_data(self.df_rc):
                 counts = np.histogram(df[self.x[0]], bins=self.bins, normed=self.norm)[0]
                 df_hist = pd.concat([df_hist, pd.DataFrame({self.y[0]: counts})])
-            vals = self.get_data_range('y', df_hist)
+            vals = self.get_data_range('y', df_hist, ir, ic)
             self.ranges[ir, ic]['ymin'] = vals[0]
             self.ranges[ir, ic]['ymax'] = vals[1]
         else:
@@ -1277,29 +1292,32 @@ class Data:
                     self.df_rc.index = natsorted(self.df_rc.index)
 
                     # Set limits
-                    if not self.xmin:
-                        self.xmin = -0.5
-                    if not self.xmax:
-                        self.xmax = len(self.df_rc.columns) - 0.5
-                    if self.ymin is not None and self.ymax is not None \
-                            and self.ymin < self.ymax:
-                        ymin = self.ymin
-                        self.ymin = self.ymax
-                        self.ymax = ymin
-                    if not self.ymax:
-                        self.ymax = -0.5
-                    if not self.ymin:
-                        self.ymin = len(self.df_rc) - 0.5
+                    plot_num = utl.plot_num(ir, ic, self.ncol) - 1
+                    if not self.xmin.get(plot_num):
+                        self.xmin.values[plot_num] = -0.5
+                    if not self.xmax.get(plot_num):
+                        self.xmax.values[plot_num] = \
+                            len(self.df_rc.columns) - 0.5
+                    if self.ymin.get(plot_num) is not None \
+                            and self.ymax.get(plot_num) is not None \
+                            and self.ymin.get(plot_num) < self.ymax.get(plot_num):
+                        ymin = self.ymin.get(plot_num)
+                        self.ymin.values[plot_num] = self.ymax.get(plot_num)
+                        self.ymax.values[plot_num] = ymin
+                    if not self.ymax.get(plot_num):
+                        self.ymax.values[plot_num] = -0.5
+                    if not self.ymin.get(plot_num):
+                        self.ymin.values[plot_num] = len(self.df_rc) - 0.5
                     if self.x == ['Column'] and self.auto_cols:
                         self.df_rc = self.df_rc[[f for f in self.df_rc.columns
-                                                    if f >= self.xmin]]
+                                                 if f >= self.xmin.get(plot_num)]]
                         self.df_rc = self.df_rc[[f for f in self.df_rc.columns
-                                                    if f <= self.xmax]]
+                                                 if f <= self.xmax.get(plot_num)]]
                     if self.y == ['Row'] and self.auto_cols:
                         self.df_rc = self.df_rc.loc[[f for f in self.df_rc.index
-                                                        if f >= self.ymax]]
+                                                     if f >= self.ymax.get(plot_num)]]
                         self.df_rc = self.df_rc.loc[[f for f in self.df_rc.index
-                                                         if f <= self.ymin]]
+                                                     if f <= self.ymin.get(plot_num)]]
                     dtypes = [int, np.int32, np.int64]
                     if self.df_rc.index.dtype in dtypes and list(self.df_rc.index) != \
                             [f + self.df_rc.index[0] for f in range(0, len(self.df_rc.index))]:

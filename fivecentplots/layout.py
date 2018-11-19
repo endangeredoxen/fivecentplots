@@ -182,13 +182,13 @@ class BaseLayout:
                             fill_color='#eaeaea',
                             primary=True,
                             scale=kwargs.get('ax_scale', None),
-                            share_x=kwargs.get('share_x', True),
-                            share_y=kwargs.get('share_y', True),
-                            share_z=kwargs.get('share_z', True),
-                            share_x2=kwargs.get('share_x2', True),
-                            share_y2=kwargs.get('share_y2', True),
-                            share_col = kwargs.get('share_col', False),
-                            share_row = kwargs.get('share_row', False),
+                            share_x=kwargs.get('share_x', None),
+                            share_y=kwargs.get('share_y', None),
+                            share_z=kwargs.get('share_z', None),
+                            share_x2=kwargs.get('share_x2', None),
+                            share_y2=kwargs.get('share_y2', None),
+                            share_col = kwargs.get('share_col', None),
+                            share_row = kwargs.get('share_row', None),
                             spine_bottom = utl.kwget(kwargs, self.fcpp,
                                                      'spine_bottom', spines),
                             spine_left = utl.kwget(kwargs, self.fcpp,
@@ -200,11 +200,6 @@ class BaseLayout:
                             twin_x=kwargs.get('twin_x', False),
                             twin_y=kwargs.get('twin_y', False),
                             )
-        if self.axes.scale:
-            self.axes.scale = self.axes.scale.lower()
-        if self.axes.share_row or self.axes.share_col:
-            self.axes.share_x = False
-            self.axes.share_y = False
 
         twinned = kwargs.get('twin_x', False) or kwargs.get('twin_y', False)
         self.axes2 = Element('ax', self.fcpp, kwargs,
@@ -212,14 +207,12 @@ class BaseLayout:
                              edge_color=self.axes.edge_color,
                              fill_color=self.axes.fill_color,
                              primary=False,
-                             scale=kwargs.get('ax2_scale', self.axes.scale),
+                             scale=kwargs.get('ax2_scale', None),
                              xmin=kwargs.get('x2min', None),
                              xmax=kwargs.get('x2max', None),
                              ymin=kwargs.get('y2min', None),
                              ymax=kwargs.get('y2max', None),
                              )
-        if self.axes2.scale:
-            self.axes2.scale = self.axes2.scale.lower()
 
         # Axes labels
         label = Element('label', self.fcpp, kwargs,
@@ -1147,8 +1140,6 @@ class BaseLayout:
                                         'separate_ticks', self.separate_labels)
         if self.separate_labels:
             self.separate_ticks = True
-        if not self.axes.share_x or not self.axes.share_y:
-            self.separate_ticks = True
         self.tick_cleanup = utl.kwget(kwargs, self.fcpp, 'tick_cleanup', True)
 
         # Plot overrides
@@ -1160,7 +1151,6 @@ class BaseLayout:
             self.tick_labels_major_x.on = False
             self.tick_labels_minor_x.on = False
             self.label_x.on = False
-            self.axes.share_x = False
         if 'heatmap' in self.plot_func:
             self.grid_major_x.on = False
             self.grid_major_y.on = False
@@ -1375,6 +1365,29 @@ class BaseLayout:
             else:
                 self.label_y.text = kwargs.get('label_y_text', 'Counts')
 
+    def update_from_data(self, data):
+        """
+        Make properties updates from the Data class
+        """
+
+        self.groups = data.groups
+        self.ncol = data.ncol
+        self.ngroups = data.ngroups
+        self.nrow = data.nrow
+        self.nwrap = data.nwrap
+        self.axes.share_x = data.share_x
+        self.axes.share_x2 = data.share_x2
+        self.axes.share_y = data.share_y
+        self.axes.share_y2 = data.share_y2
+        self.axes.share_col = data.share_col
+        self.axes.share_row = data.share_row
+        self.axes.scale = data.ax_scale
+        self.axes2.scale =data.ax2_scale
+        if self.plot_func in ['plot_box'] and not self.axes.share_y:
+            self.separate_ticks = True
+        elif self.plot_func not in ['plot_box'] and \
+                (not self.axes.share_x or not self.axes.share_y):
+            self.separate_ticks = True
 
 class Element:
     def __init__(self, label='None', fcpp={}, others={}, **kwargs):
@@ -2046,7 +2059,8 @@ class LayoutMPL(BaseLayout):
                 pp2 = ax3.plot(df[data.x2[0]], df[data.y[0]], 'o-')
             # Z axis
             elif self.plot_func == 'plot_heatmap':
-                pp = ax.imshow(df, vmin=data.zmin, vmax=data.zmax)
+                pp = ax.imshow(df, vmin=data.zmin.get(0),
+                               vmax=data.zmax.get(0))
                 if self.cbar.on:
                     cbar = self.add_cbar(ax, pp)
                     ax2 = cbar.ax
@@ -2912,16 +2926,12 @@ class LayoutMPL(BaseLayout):
         self.title.position[2] = self.title.position[3] + (self.ws_title_ax +
                                  self.title.size[1])/self.axes.size[1]
 
-    def make_figure(self, data,**kwargs):
+    def make_figure(self, data, **kwargs):
         """
         Make the figure and axes objects
         """
 
-        self.groups = data.groups
-        self.ncol = data.ncol
-        self.ngroups = data.ngroups
-        self.nrow = data.nrow
-        self.nwrap = data.nwrap
+        self.update_from_data(data)
 
         if data.wrap == 'y' or data.wrap == 'x':
             self.title_wrap.on = False

@@ -36,6 +36,9 @@ class RepeatedList:
             raise(ValueError, 'RepeatedList for "%s" must contain an actual '
                               'list with more at least one element')
 
+    def __len__(self):
+        return len(self.values)
+
     def get(self, idx):
 
         # can we make this a next??
