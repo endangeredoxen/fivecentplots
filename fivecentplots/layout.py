@@ -863,7 +863,7 @@ class BaseLayout:
                     and not self.legend.on:
                 self.markers.edge_color = DEFAULT_COLORS[1]
                 self.markers.color_alpha('edge_color', 'edge_alpha')
-            else:
+            elif not kwargs.get('colors'):
                 self.markers.edge_color = color_list[1:] + [color_list[0]]
                 self.markers.color_alpha('edge_color', 'edge_alpha')
             if not kwargs.get('colors') \
@@ -871,7 +871,7 @@ class BaseLayout:
                     and not self.legend.on:
                 self.markers.fill_color = DEFAULT_COLORS[1]
                 self.markers.color_alpha('fill_color', 'fill_alpha')
-            else:
+            elif not kwargs.get('colors'):
                 self.markers.fill_color = color_list[1:] + [color_list[0]]
                 self.markers.color_alpha('fill_color', 'fill_alpha')
             if 'box_marker_edge_alpha' in self.fcpp.keys():
