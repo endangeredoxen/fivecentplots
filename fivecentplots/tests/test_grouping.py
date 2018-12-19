@@ -16,7 +16,7 @@ df1 = pd.read_csv(osjoin(os.path.dirname(fcp.__file__), 'tests', 'fake_data.csv'
 df2 = pd.read_csv(osjoin(os.path.dirname(fcp.__file__), 'tests', 'fake_data_box.csv'))
 
 # Set theme
-# fcp.set_theme('gray')
+fcp.set_theme('gray')
 # fcp.set_theme('white')
 
 # Other

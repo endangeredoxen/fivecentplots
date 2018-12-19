@@ -656,11 +656,13 @@ class BaseLayout:
         if not self.legend.on and self.ref_line.on:
             self.legend.values['ref_line'] = []
             self.legend.on = True
+            self.legend.text = ''
         if not self.legend.on and self.fit.on \
                 and not (('legend' in kwargs.keys() and kwargs['legend'] == False) or \
                          ('legend_on' in kwargs.keys() and kwargs['legend_on'] == False)):
             self.legend.values['fit_line'] = []
             self.legend.on = True
+            self.legend.text = ''
         if self.legend.on and self.fit.on and 'fit_color' not in kwargs.keys():
             self.fit.color = copy.copy(self.lines.color)
         y = utl.validate_list(kwargs.get('y'))
@@ -857,7 +859,7 @@ class BaseLayout:
                     and not self.legend.on:
                 self.markers.edge_color = DEFAULT_COLORS[1]
                 self.markers.color_alpha('edge_color', 'edge_alpha')
-            else:
+            elif not kwargs.get('colors'):
                 self.markers.edge_color = color_list[1:] + [color_list[0]]
                 self.markers.color_alpha('edge_color', 'edge_alpha')
             if not kwargs.get('colors') \
@@ -865,7 +867,7 @@ class BaseLayout:
                     and not self.legend.on:
                 self.markers.fill_color = DEFAULT_COLORS[1]
                 self.markers.color_alpha('fill_color', 'fill_alpha')
-            else:
+            elif not kwargs.get('colors'):
                 self.markers.fill_color = color_list[1:] + [color_list[0]]
                 self.markers.color_alpha('fill_color', 'fill_alpha')
             if 'box_marker_edge_alpha' in self.fcpp.keys():
@@ -1193,7 +1195,7 @@ class BaseLayout:
 
         # axes
         self.ws_label_tick = utl.kwget(kwargs, self.fcpp, 'ws_label_tick', 10)
-        self.ws_leg_ax = utl.kwget(kwargs, self.fcpp, 'ws_leg_ax', 20)
+        self.ws_ax_leg = utl.kwget(kwargs, self.fcpp, 'ws_ax_leg', 5)
         self.ws_ticks_ax = utl.kwget(kwargs, self.fcpp, 'ws_ticks_ax', 5)
         self.ws_title_ax = utl.kwget(kwargs, self.fcpp, 'ws_title_ax', 10)
         self.ws_ax_fig = utl.kwget(kwargs, self.fcpp, 'ws_ax_fig', 30)
@@ -1751,6 +1753,10 @@ class LayoutMPL(BaseLayout):
 
         # Add the colorbar
         cbar = mplp.colorbar(contour, cax=cax)
+        # num_ticks = len(cbar.ax.get_yticklabels())
+        # cbarlabels = np.linspace(np.floor(0), np.ceil(1), num=num_ticks, endpoint=True)
+        # cbar.set_ticks(cbarlabels)
+        # cbar.set_ticklabels(cbarlabels)
         cbar.outline.set_edgecolor(self.cbar.edge_color.get(0))
         cbar.outline.set_linewidth(self.cbar.edge_width)
 
@@ -1926,6 +1932,7 @@ class LayoutMPL(BaseLayout):
             self.legend.obj.get_frame().set_facecolor(self.legend.fill_color.get(0))
             self.legend.obj.get_frame().set_alpha(self.legend.fill_alpha)
             self.legend.obj.get_frame().set_edgecolor(self.legend.edge_color.get(0))
+            self.legend.obj.get_frame().set_linewidth(self.legend.edge_width)
 
     def add_text(self, ir, ic, text, element, offsetx=0, offsety=0):
         """
@@ -2423,8 +2430,9 @@ class LayoutMPL(BaseLayout):
             if self.fit.on:
                 lines += ax.plot([1, 2, 3])
                 if data.legend_vals is not None and \
-                        len(data.legend_vals) > 0:
-                    leg_vals += [row['names'] + '[Fit]']
+                        len(data.legend_vals) > 0 and \
+                        self.label_wrap.column is None:
+                    leg_vals += [row['names'] + ' [Fit]']
                 else:
                     leg_vals += ['Fit']
             if (self.ax_hlines.on and not all(v is None for v in self.ax_hlines.text)):
@@ -2580,7 +2588,7 @@ class LayoutMPL(BaseLayout):
             filename = '%s%s' % (int(round(time.time() * 1000)), randint(0, 99))
             mpl.pyplot.savefig(filename + '.png')
 
-        # mpl.pyplot.savefig(r'test.png')  # turn on for debugging
+        mpl.pyplot.savefig(r'test.png')  # turn on for debugging
 
         # Get actual sizes
         if self.tick_labels_major_x.on and len(xticklabelsmaj) > 0:
@@ -2751,7 +2759,7 @@ class LayoutMPL(BaseLayout):
                                self.tick_labels_minor_y2.size[0])) * self.axes.twin_x
         self.labtick_z = (self.ws_ticks_ax + self.ws_label_tick) * self.label_z.on + \
                          self.label_z.size[0] + self.tick_labels_major_z.size[0]
-        self.ws_leg_ax = max(0, self.ws_leg_ax - self.labtick_y2) if self.legend.text is not None else 0
+        self.ws_ax_leg = max(0, self.ws_ax_leg - self.labtick_y2) if self.legend.text is not None else 0
         self.ws_leg_fig = self.ws_leg_fig if self.legend.text is not None else self.ws_ax_fig
         self.box_title = max(self.box_group_title.size)[0] if self.box_group_title.on else 0
         if self.box_group_label.on:
@@ -2789,20 +2797,29 @@ class LayoutMPL(BaseLayout):
                               self.heatmap.cell_size * data.num_y]
 
         # Figure width
-        self.fig.size[0] = \
-            self.ws_fig_label + \
-            self.labtick_y + \
-            (self.axes.size[0] + self.cbar.size[0] + self.ws_ax_cbar) * self.ncol + \
-            self.ws_col * (self.ncol - 1) +  \
-            self.ws_leg_ax + self.legend.size[0] + self.ws_leg_fig + \
+        self.left = self.ws_fig_label + self.labtick_y
+        self.right = (self.cbar.size[0] + self.ws_ax_cbar) * self.ncol + \
+            self.ws_ax_leg + \
             self.legend.edge_width + self.labtick_y2 + \
             self.label_row.size[0] + self.ws_label_row * self.label_row.on + \
-            self.labtick_z * (self.ncol - 1 if self.ncol > 1 else 1) + \
-            self.box_title
-        self.fig.size[0] = max(self.fig.size[0], self.title.size[0])
+            self.labtick_z * (self.ncol - 1 if self.ncol > 1 else 1)
+        self.fig.size[0] = self.left + self.axes.size[0] * self.ncol + \
+            self.right + self.ws_col * (self.ncol - 1) + self.box_title + \
+            self.legend.size[0] + self.ws_leg_fig
+
+        # Get extra width of a long title (centered on axes, not figure)
+        self.title_slush_left = self.title.size[0] / 2 - \
+            (self.left + self.axes.size[0] / 2)
+        self.title_slush_right = self.title.size[0] / 2 - (self.fig.size[0] - \
+            self.axes.size[0]/2 - self.labtick_y - self.ws_fig_label)
+        if self.title_slush_left < 0:
+           self.title_slush_left = 0
+        if self.title_slush_right < 0:
+           self.title_slush_right = 0
+        self.fig.size[0] += self.title_slush_left + self.title_slush_right
 
         # Figure height
-        self.fig.size[1] = \
+        self.fig.size[1] = int( \
             self.ws_title + \
             (self.label_col.size[1] + self.ws_label_col) * self.label_col.on + \
             self.title_wrap.size[1] + self.label_wrap.size[1] + \
@@ -2811,14 +2828,14 @@ class LayoutMPL(BaseLayout):
             self.labtick_x + \
             self.ws_fig_label + \
             self.ws_row * (self.nrow - 1) + \
-            self.box_labels
+            self.box_labels)
 
         # Debug output
         if debug:
             print('self.fig.size[0] = %s' % self.fig.size[0])
             vals = ['ws_fig_label', 'label_y', 'ws_label_tick', 'tick_labels_major_y',
                     'tick_labels_minor_y', 'ws_ticks_ax', 'axes', 'cbar', 'ws_ax_cbar',
-                    'ws_col', 'ws_leg_ax', 'legend', 'ws_leg_fig', 'label_y2',
+                    'ws_col', 'ws_ax_leg', 'legend', 'ws_leg_fig', 'label_y2',
                     'ws_label_tick', 'ws_ticks_ax', 'tick_labels_major_y2', 'label_row',
                     'ws_label_row', 'label_z', 'tick_labels_major_z', 'box_title',
                     'ncol', 'labtick_y', 'labtick_y2', 'labtick_z']
@@ -2855,14 +2872,16 @@ class LayoutMPL(BaseLayout):
         Get legend position
         """
 
-        offset_x = 0
-        if self.box_group_title.on and self.legend.size[1] < self.axes.size[1]:
-            offset_x = max(self.box_group_title.size)[0]
+        offset_x = 7 # no idea why this is needed
+        offset_box = 0
+        if self.box_group_title.on and self.legend.size[1] > self.axes.size[1]:
+            offset_box = max(self.box_group_title.size)[0]
 
-        self.legend.position[1] = \
-            1 - (self.ws_leg_fig - self.fig_right_border + \
-            offset_x) / self.fig.size[0]
-
+        self.legend.position[1] = self.axes.position[1] + \
+            (self.ws_ax_leg + offset_x + offset_box + self.legend.size[0] + \
+             self.labtick_y2 + \
+             self.label_row.size[0] + self.ws_label_row * self.label_row.on) / \
+             self.fig.size[0]
         self.legend.position[2] = \
             self.axes.position[2] + self.legend_top_offset/self.fig.size[1]
 
@@ -2890,12 +2909,12 @@ class LayoutMPL(BaseLayout):
             self.axes.position --> [left, right, top, bottom]
         """
 
-        self.axes.position[0] = \
-            (self.ws_fig_label + self.labtick_y) / self.fig.size[0]
+        self.axes.position[0] = int(self.ws_fig_label + self.labtick_y + \
+                                 self.title_slush_left) / self.fig.size[0]
 
         self.axes.position[1] = \
             self.axes.position[0] + \
-            (self.axes.size[0] * self.ncol + \
+            int(self.axes.size[0] * self.ncol + \
             self.ws_col * (self.ncol - 1) + \
             (self.cbar.size[0] + self.ws_ax_cbar) * (self.ncol - 1) + \
             self.labtick_z - self.label_z.size[0]) \
@@ -3115,6 +3134,7 @@ class LayoutMPL(BaseLayout):
 
         if self.cbar.on:
             cbar = self.add_cbar(ax, cc)
+            #cbar.set_clim(-999, 0)#ranges['zmin'], ranges['zmax'])
         else:
             cbar = None
 

@@ -14,7 +14,7 @@ MASTER = osjoin(os.path.dirname(fcp.__file__), 'tests', 'test_images', 'heatmap.
 df = pd.read_csv(osjoin(os.path.dirname(fcp.__file__), 'tests', 'fake_data_heatmap.csv'))
 
 # Set theme
-# fcp.set_theme('gray')
+fcp.set_theme('gray')
 # fcp.set_theme('white')
 
 # Other

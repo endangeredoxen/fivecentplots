@@ -14,7 +14,7 @@ MASTER = osjoin(os.path.dirname(fcp.__file__), 'tests', 'test_images', 'ticks.py
 df = df = pd.read_csv(osjoin(os.path.dirname(fcp.__file__), 'tests', 'fake_data.csv'))
 
 # Set theme
-# fcp.set_theme('gray')
+fcp.set_theme('gray')
 # fcp.set_theme('white')
 
 # Other
@@ -537,6 +537,8 @@ def test_log_exp(master=False, remove=True, show=False):
             os.remove(name + '.png')
 
         assert not compare
+
+fcp.set_theme('gray')
 
 if __name__ == '__main__':
     pass

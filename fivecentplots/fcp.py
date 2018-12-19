@@ -708,7 +708,14 @@ def plotter(plot_func, **kwargs):
 
         # Save and optionally open
         if kwargs.get('save', True):
-            layout.fig.obj.savefig(filename)
+            if ifig:
+                idx = ifig
+            else:
+                idx = 0
+            layout.fig.obj.savefig(filename,
+                                   edgecolor=layout.fig.edge_color.get(idx),
+                                   facecolor=layout.fig.fill_color.get(idx),
+                                   linewidth=layout.fig.edge_width)
 
             if kwargs.get('show', False):
                 os.startfile(filename)

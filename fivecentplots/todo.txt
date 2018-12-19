@@ -8,3 +8,7 @@
 CONVERT TO THIS!!
 
 * extra long xy labels auto-adjust ws_col and ws_row
+
+* fix contour z limits on color bar
+
+* add axes text for log with only one tick mark

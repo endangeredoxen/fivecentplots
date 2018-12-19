@@ -15,7 +15,7 @@ MASTER = osjoin(os.path.dirname(fcp.__file__), 'tests', 'test_images', 'boxplot.
 df = pd.read_csv(osjoin(os.path.dirname(fcp.__file__), 'tests', 'fake_data_box.csv'))
 
 # Set theme
-# fcp.set_theme('gray')
+fcp.set_theme('gray')
 # fcp.set_theme('white')
 
 

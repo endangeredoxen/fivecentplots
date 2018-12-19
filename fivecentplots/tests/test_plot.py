@@ -14,7 +14,7 @@ MASTER = osjoin(os.path.dirname(fcp.__file__), 'tests', 'test_images', 'plot.py'
 df = pd.read_csv(osjoin(os.path.dirname(fcp.__file__), 'tests', 'fake_data.csv'))
 
 # Set theme
-# fcp.set_theme('gray')
+fcp.set_theme('gray')
 # fcp.set_theme('white')
 
 
