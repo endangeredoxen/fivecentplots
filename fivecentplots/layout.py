@@ -787,10 +787,10 @@ class BaseLayout:
                               edge_color=utl.kwget(kwargs, self.fcpp,
                                                    'violin_edge_color', '#aaaaaa'),
                               fill_alpha=0.5,
-                              fill_color=utl.kwget(kwargs, self.fcpp,
-                                                   'violin_fill_color', DEFAULT_COLORS[0]),
-                              markers=utl.kwget(kwargs, self.fcpp,
-                                                'violin_markers', False),
+                              fill_color=kwargs.get('color', utl.kwget(kwargs, self.fcpp,
+                                                    'violin_fill_color', DEFAULT_COLORS[0])),
+                              markers=kwargs.get('markers', utl.kwget(kwargs, self.fcpp,
+                                                'violin_markers', False)),
                               median_color=utl.kwget(kwargs, self.fcpp,
                                                      'violin_median_color', '#ffffff'),
                               median_marker=utl.kwget(kwargs, self.fcpp,
@@ -853,13 +853,16 @@ class BaseLayout:
                                        )
         if 'box' in self.plot_func:
             self.lines.on = False
+        if self.violin.on:
+            self.markers.on = self.violin.markers
         if 'box' in self.plot_func:
+            # edge color
             if not kwargs.get('colors') \
                     and not kwargs.get('marker_edge_color') \
                     and not self.legend.on:
                 self.markers.edge_color = DEFAULT_COLORS[1]
                 self.markers.color_alpha('edge_color', 'edge_alpha')
-            elif not kwargs.get('colors'):
+            elif not kwargs.get('colors') and not kwargs.get('marker_edge_color'):
                 self.markers.edge_color = color_list[1:] + [color_list[0]]
                 self.markers.color_alpha('edge_color', 'edge_alpha')
             if not kwargs.get('colors') \
@@ -897,8 +900,6 @@ class BaseLayout:
                 self.markers.type = RepeatedList('o', 'marker_type')
             if 'box_marker_zorder' in self.fcpp.keys():
                 self.markers.zorder = self.fcpp['box_marker_zorder']
-        if self.violin.on and not self.violin.markers:
-            self.markers.on = False
 
         # Axhlines/axvlines
         axlines = ['ax_hlines', 'ax_vlines', 'ax2_hlines', 'ax2_vlines']
@@ -1891,10 +1892,15 @@ class LayoutMPL(BaseLayout):
                 keys = self.legend.values.keys()
             else:
                 keys = natsorted(list(self.legend.values.keys()))
-            lines = [self.legend.values[f][0] for f in keys]
+            lines = [self.legend.values[f][0] for f in keys
+                     if self.legend.values[f] is not None]
             if ref_line is not None:
                 keys = [self.ref_line.text] + keys
                 lines = ref_line + lines
+
+            if len(lines) == 0:
+                print('Legend contains no elements...skipping')
+                return
 
             # Set the font properties
             fontp = {}
@@ -2066,8 +2072,8 @@ class LayoutMPL(BaseLayout):
                 pp2 = ax3.plot(df[data.x2[0]], df[data.y[0]], 'o-')
             # Z axis
             elif self.plot_func == 'plot_heatmap':
-                pp = ax.imshow(df, vmin=data.zmin.get(0),
-                               vmax=data.zmax.get(0))
+                pp = ax.imshow(df, vmin=data.ranges[ir, ic]['zmin'],
+                               vmax=data.ranges[ir, ic]['zmax'])
                 if self.cbar.on:
                     cbar = self.add_cbar(ax, pp)
                     ax2 = cbar.ax
@@ -2588,7 +2594,7 @@ class LayoutMPL(BaseLayout):
             filename = '%s%s' % (int(round(time.time() * 1000)), randint(0, 99))
             mpl.pyplot.savefig(filename + '.png')
 
-        mpl.pyplot.savefig(r'test.png')  # turn on for debugging
+        # mpl.pyplot.savefig(r'test.png')  # turn on for debugging
 
         # Get actual sizes
         if self.tick_labels_major_x.on and len(xticklabelsmaj) > 0:
@@ -2795,6 +2801,8 @@ class LayoutMPL(BaseLayout):
                 data.num_x is not None:
             self.axes.size = [self.heatmap.cell_size * data.num_x,
                               self.heatmap.cell_size * data.num_y]
+            self.label_col.size[0] = self.axes.size[0]
+            self.label_row.size[1] = self.axes.size[1]
 
         # Figure width
         self.left = self.ws_fig_label + self.labtick_y
@@ -3382,7 +3390,7 @@ class LayoutMPL(BaseLayout):
                             )
 
         # Add a reference to the line to self.lines
-        if leg_name:
+        if leg_name is not None:
             self.legend.values[leg_name] = points if points is not None else lines
 
     def see(self):

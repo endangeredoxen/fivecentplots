@@ -759,13 +759,17 @@ class Data:
                       'y2min', 'y2max']
 
             plot_num = utl.plot_num(ir, ic, self.ncol) - 1
-            fixed = [f for f in limits if getattr(self, f).get(plot_num) is not None]
+            fixed = [f for f in limits
+                     if getattr(self, f).get(plot_num) is not None]
 
             for f in fixed:
                 ax = f[0:-3]
                 side = f[-3:]
                 ax = getattr(self, ax)
                 lim = getattr(self, f).get(plot_num)
+
+                if ax is None:
+                    continue
 
                 for axx in ax:
                     # Adjust the dataframe by the limits
