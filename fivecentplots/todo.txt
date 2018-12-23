@@ -1,14 +1,19 @@
 * xy with categorical/time series
 
-
-.. csv-table::
-   :file: _static/docstrings/markers.csv
-   :header-rows: 1
-
-CONVERT TO THIS!!
-
-* extra long xy labels auto-adjust ws_col and ws_row
-
 * fix contour z limits on color bar
 
 * add axes text for log with only one tick mark
+
+* add random text
+
+* bokeh option
+
+* data shader option
+
+* fix ws ax_leg in docs
+
+* data and other sections of docs
+
+* custom ax_scale per plot
+
+* bar plot

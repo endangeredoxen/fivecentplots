@@ -13,9 +13,6 @@ __license__   = 'GPLv3'
 __version__   = '0.3.0'
 __url__       = 'https://github.com/endangeredoxen/fivecentplots'
 import os
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-import matplotlib.mlab as mlab
 import numpy as np
 import scipy.stats as ss
 import pandas as pd
@@ -30,8 +27,8 @@ import sys
 import textwrap
 from . data import Data
 from . colors import *
-from . layout import LayoutMPL, LayoutBokeh, RepeatedList
-from . keywords import *
+from . import engines
+from . import keywords
 from . utilities import dfkwarg, set_save_filename, validate_list
 import warnings
 try:
@@ -61,8 +58,7 @@ sys.path = [osjoin(user_dir, '.fivecentplots')] + sys.path
 
 from defaults import *  # use local file
 
-LAYOUT = {'mpl': LayoutMPL,
-          'bokeh': LayoutBokeh}
+kw = keywords.make_docstrings()
 
 
 def bar(**kwargs):
@@ -95,7 +91,7 @@ def boxplot(*args, **kwargs):
         df (DataFrame): DataFrame containing data to plot
         y (str|list):   column name in df to use for the box(es)
 
-    Keywords:
+    Keyword Args:
     """
 
     return plotter('plot_box', **dfkwarg(args, kwargs))
@@ -108,15 +104,14 @@ def contour(*args, **kwargs):
     Plots can be customized and enhanced by passing keyword arguments as
     defined below. Default values that must be defined in order to
     generate the plot are pulled from the fcp_params default dictionary
+
     Args:
         df (DataFrame): DataFrame containing data to plot
         x (str|list):   name of list of names of x column in df
         y (str|list):   name or list of names of y column(s) in df
         z (str):   name of z column(s) in df
+
     Keyword Args:
-        see online docs
-    Returns:
-        plots
     """
 
     return plotter('plot_contour', **dfkwarg(args, kwargs))
@@ -162,15 +157,14 @@ def heatmap(*args, **kwargs):
     Plots can be customized and enhanced by passing keyword arguments as
     defined below. Default values that must be defined in order to
     generate the plot are pulled from the fcp_params default dictionary
+
     Args:
         df (DataFrame): DataFrame containing data to plot
         x (str|list):   name of list of names of x column in df
         y (str|list):   name or list of names of y column(s) in df
         z (str):   name of z column(s) in df
+
     Keyword Args:
-        see online docs
-    Returns:
-        plots
     """
 
     return plotter('plot_heatmap', **dfkwarg(args, kwargs))
@@ -182,6 +176,9 @@ def help():
 
 
 def hist(*args, **kwargs):
+    """
+    Histogram plot
+    """
 
     return plotter('plot_hist', **dfkwarg(args, kwargs))
 
@@ -223,6 +220,9 @@ def paste_kwargs(kwargs):
 
 
 def plot(*args, **kwargs):
+    """
+    XY plot
+    """
 
     return plotter('plot_xy', **dfkwarg(args, kwargs))
 
@@ -632,6 +632,11 @@ def plotter(plot_func, **kwargs):
 
     # Set the plotting engine
     engine = kwargs.get('engine', 'mpl').lower()
+    if not hasattr(engines, engine):
+        print('Specified plotting engine could not be found!')
+        return
+    else:
+        engine = getattr(engines, engine)
 
     # Build the data object and update kwargs
     dd = Data(plot_func, **kwargs)
@@ -642,7 +647,7 @@ def plotter(plot_func, **kwargs):
     # Iterate over discrete figures
     for ifig, fig_item, fig_cols, df_fig in dd.get_df_figure():
         # Create a layout object
-        layout = LAYOUT[engine](plot_func, **kwargs)
+        layout = engine.Layout(plot_func, **kwargs)
 
         # Make the figure
         layout.make_figure(dd, **kwargs)
@@ -706,34 +711,31 @@ def plotter(plot_func, **kwargs):
         if 'filepath' in kwargs.keys():
             filename = os.path.join(kwargs['filepath'], filename)
 
-        # Save and optionally open
+        # Save and optionally open  ### This needs to move into the engine
         if kwargs.get('save', True):
             if ifig:
                 idx = ifig
             else:
                 idx = 0
-            layout.fig.obj.savefig(filename,
-                                   edgecolor=layout.fig.edge_color.get(idx),
-                                   facecolor=layout.fig.fill_color.get(idx),
-                                   linewidth=layout.fig.edge_width)
+            layout.save(filename, idx)
 
             if kwargs.get('show', False):
                 os.startfile(filename)
 
         # Return inline
         if kwargs.get('return_filename'):
-            plt.close('all')
+            layout.close()
             if 'filepath' in kwargs.keys():
                 return osjoin(kwargs['filepath'], filename)
             else:
                 return osjoin(os.getcwd(), filename)
         elif not kwargs.get('inline', True):
-            plt.close('all')
+            layout.close()
         else:
             if kwargs.get('print_filename', False):
                 print(filename)
-            plt.show()
-            plt.close('all')
+            layout.show()
+            layout.close()
 
 
 def save(fig, filename, kw):
@@ -833,12 +835,12 @@ def set_theme(theme=None):
     print('done!')
 
 
-def kw_header(val):
+def kw_header(val, indent='       '):
     """
     Indent header names
     """
 
-    return '   %s\n' % val
+    return '%s%s\n' % (indent, val)
 
 
 def kw_print(kw):
@@ -850,18 +852,199 @@ def kw_print(kw):
     kwstr = ''
 
     for irow, row in kw.iterrows():
-        line = row['Keyword'] + ' (%s)' % row['Data Type'] + ': ' +\
-               row['Description'] + '; default: %s' % row['Default'] + \
-               '; ex: %s' % row['Example']
+        kw = row['Keyword'].split(':')[-1]
+        line = kw + ' (%s)' % row['Data Type'] + ': ' +\
+            row['Description'] + '; default: %s' % row['Default'] + \
+            '; ex: %s' % row['Example']
 
         kwstr += textwrap.fill(line, 80, initial_indent=indent,
                                subsequent_indent=indent + '  ')
         kwstr += '\n'
 
+    kwstr = kwstr.replace('`','')
+
     return kwstr
 
 
-boxplot.__doc__ = \
-    boxplot.__doc__ + \
-    kw_header('Markers:') + \
-    kw_print(kw_markers)
+# DOC only
+def axes():
+    """
+    Axes
+    """
+
+    pass
+
+
+def cbar():
+    """
+    Color bar
+    """
+
+    pass
+
+
+def figure():
+    """
+    Figure
+    """
+
+    pass
+
+
+def fit():
+    """
+    Fit
+    """
+
+    pass
+
+
+def gridlines():
+    """
+    Gridlines
+    """
+
+    pass
+
+
+def labels():
+    """
+    Labels
+    """
+
+    pass
+
+
+def legend():
+    """
+    Legend
+    """
+
+    pass
+
+
+def lines():
+    """
+    Lines
+    """
+
+    pass
+
+
+def markers():
+    """
+    Markers
+    """
+
+    pass
+
+
+def ref_line():
+    """
+    Reference line
+    """
+
+    pass
+
+
+def ticks():
+    """
+    Ticks
+    """
+
+    pass
+
+
+def tick_labels():
+    """
+    Tick labels
+    """
+
+    pass
+
+
+def ws():
+    """"""
+    pass
+
+
+bar.__doc__ += \
+    ''
+
+
+boxplot.__doc__ += \
+    kw_header('Box Dividers:', indent='   ') + \
+    kw_print(kw['BoxDivider']) + \
+    kw_header('Box Range Lines:') + \
+    kw_print(kw['BoxRange']) + \
+    kw_header('Box Stat Lines:') + \
+    kw_print(kw['BoxStat'])
+
+
+contour.__doc__ += \
+    kw_header('Color bar:', indent='   ') + \
+    kw_print(kw['Cbar'])
+
+
+heatmap.__doc__ += \
+    kw_header('Color bar:', indent='   ') + \
+    kw_print(kw['Cbar'])
+
+
+hist.__doc__ += ''
+
+
+nq.__doc__ += ''
+
+
+plot.__doc__ += ''
+
+
+axes.__doc__ = \
+    kw_print(kw['Axes'])
+
+
+cbar.__doc__ = \
+    kw_print(kw['Cbar'])
+
+
+figure.__doc__ = \
+    kw_print(kw['Figure'])
+
+
+fit.__doc__ = \
+    kw_print(kw['Fit'])
+
+
+gridlines.__doc__ = ''
+
+
+labels.__doc__ = \
+    kw_print(kw['Label'])
+
+
+legend.__doc__ = \
+    kw_print(kw['Legend'])
+
+
+lines.__doc__ = \
+    kw_print(kw['Lines'])
+
+
+markers.__doc__ = \
+    kw_print(kw['Markers'])
+
+
+ref_line.__doc__ = \
+    kw_print(kw['Ref Line'])
+
+
+ticks.__doc__ = \
+    kw_print(kw['Ticks'])
+
+
+tick_labels.__doc__ = ''
+
+
+ws.__doc__ = \
+    kw_print(kw['WS'])
