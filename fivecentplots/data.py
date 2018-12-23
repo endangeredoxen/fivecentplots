@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-import fivecentplots.utilities as utl
+from . import utilities as utl
 import scipy.stats as ss
 
 try:
@@ -429,8 +429,9 @@ class Data:
                 self.df_all[val] = self.df_all[val].astype('datetime64[ns]')
                 continue
             except:
-                raise AxisError('Could not convert x-column "%s" to float or '
-                                 'datetime.' % val)
+                continue
+            #     raise AxisError('Could not convert x-column "%s" to float or '
+                                #  'datetime.' % val)
 
         # Check for axis errors
         if self.twin_x and len(self.y) != 2:
@@ -628,6 +629,11 @@ class Data:
 
         # Get the dataframe values for this axis
         dfax = df[cols]
+
+        # Check dtypes
+        dtypes = dfax.dtypes.unique()
+        if 'str' in dtypes or 'object' in dtypes or 'datetime64[ns]' in dtypes:
+            return None, None
 
         # Calculate actual min / max vals for the axis
         if self.ax_scale in ['log%s' % ax, 'loglog', 'semilog%s' % ax, 'log']:

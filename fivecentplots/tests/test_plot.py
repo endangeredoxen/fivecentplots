@@ -12,6 +12,7 @@ MASTER = osjoin(os.path.dirname(fcp.__file__), 'tests', 'test_images', 'plot.py'
 
 # Sample data
 df = pd.read_csv(osjoin(os.path.dirname(fcp.__file__), 'tests', 'fake_data.csv'))
+ts = pd.read_csv(osjoin(os.path.dirname(fcp.__file__), 'tests', 'fake_ts.csv'))
 
 # Set theme
 fcp.set_theme('gray')
@@ -88,6 +89,51 @@ def test_xy_log_scale(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             filename=name + '.png', inline=False)
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_xy_categorical(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'xy_categorical_master') if master else 'xy_categorical'
+
+    # Make the plot
+    fcp.plot(df, x='Die', y='I [A]', show=SHOW,
+         filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Voltage==1.5',
+         filename=name + '.png', inline=False)
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_xy_ts(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'xy_ts_master') if master else 'xy_ts'
+
+    # Make the plot
+    fcp.plot(ts, x='Date', y='Happiness Quotient', markers=False, ax_size=[1000, 250],
              filename=name + '.png', inline=False)
 
     # Compare with master
