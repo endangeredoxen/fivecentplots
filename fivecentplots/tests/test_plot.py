@@ -596,6 +596,32 @@ def test_other_ref_line(master=False, remove=True, show=False):
         assert not compare
 
 
+def test_other_ref_line_mult(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'other_ref-line_mult_master') if master else 'other_ref-line_mult'
+
+    # Make the plot
+    df['2*Voltage'] = 2*df['Voltage']
+    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', show=SHOW, legend='Die',
+            filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+            xmin=0, ymin=0, xmax=1.6, ymax=1.6,
+            ref_line=['Voltage', '2*Voltage'], ref_line_text=['y=x', 'y=2*x'], ref_line_style=['-', '--'], ref_line_color=[5,6],
+            filename=name + '.png', inline=False)
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def test_other_ref_line_complex(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'other_ref-line-complex_master') if master else 'other_ref-line-complex'

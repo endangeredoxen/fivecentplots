@@ -9,6 +9,7 @@ function div_switch(name) {
     var re = /(?:\.([^.]+))?$/;
     var ext = re.exec(name)[1];
     var dv = document.getElementById('viewer');
+
     if (ext == "html") {
         // Check for an existing image and remove if found
         var image = document.getElementById('img0');
@@ -122,6 +123,14 @@ function div_switch(name) {
             }
         }
     }
+    var pin = document.createElement("object");
+    pin.data = "pywebify/img/pin_off.png";
+    pin.id = "html0";
+    pin.width = '24px';
+    // pin.height = '24px;
+    dv.insertBefore(pin, summary);
+
     viewer.scrollTop = 0;
     viewer.scrollLeft = 0;
+
 }

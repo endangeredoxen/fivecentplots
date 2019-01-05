@@ -566,8 +566,10 @@ def plot_ref(ir, ic, iline, data, layout, df, x, y):
     if not layout.ref_line.on:
         return
 
-    layout.plot_xy(ir, ic, iline, df, x, layout.ref_line.column, 'ref_line',
-                   False, line_type='ref_line', marker_disable=True)
+    for iref in range(0, len(layout.ref_line.column.values)):
+        layout.plot_xy(ir, ic, iref, df, x, layout.ref_line.column.get(iref),
+                       layout.ref_line.text.get(iref), False,
+                       line_type='ref_line', marker_disable=True)
 
     return data
 

@@ -8,10 +8,6 @@
 
 * data shader option
 
-* fix ws ax_leg in docs
-
 * data and other sections of docs
 
 * custom ax_scale per plot
-
-* multiple ref_line support

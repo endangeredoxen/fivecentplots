@@ -354,9 +354,12 @@ class Layout(BaseLayout):
             # Sort the legend keys
             if 'NaN' in self.legend.values.keys():
                 del self.legend.values['NaN']
-            if 'ref_line' in self.legend.values.keys():
-                ref_line = self.legend.values['ref_line']
-                del self.legend.values['ref_line']
+            if self.ref_line.on:
+                ref_line, ref_line_text = [], []
+                for iref, ref in enumerate(self.ref_line.column.values):
+                    ref_line += self.legend.values[self.ref_line.text.get(iref)]
+                    ref_line_text += [self.ref_line.text.get(iref)]
+                    del self.legend.values[self.ref_line.text.get(iref)]
             else:
                 ref_line = None
             if 'fit_line' in self.legend.values.keys():
@@ -372,7 +375,7 @@ class Layout(BaseLayout):
             lines = [self.legend.values[f][0] for f in keys
                      if self.legend.values[f] is not None]
             if ref_line is not None:
-                keys = [self.ref_line.text] + keys
+                keys = ref_line_text + keys
                 lines = ref_line + lines
 
             if len(lines) == 0:
@@ -925,8 +928,9 @@ class Layout(BaseLayout):
                     lines += ax.plot([1, 2, 3])
                     leg_vals += [val]
             if self.ref_line.on:
-                lines += ax.plot([1, 2, 3])
-                leg_vals += [self.ref_line.text]
+                for iref, ref in enumerate(self.ref_line.column.values):
+                    lines += ax.plot([1, 2, 3])
+                    leg_vals += [self.ref_line.text.get(iref)]
             if self.fit.on:
                 lines += ax.plot([1, 2, 3])
                 if data.legend_vals is not None and \

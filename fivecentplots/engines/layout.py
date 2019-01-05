@@ -536,23 +536,30 @@ class BaseLayout:
                                     self.fit.font_size)/ self.axes.size[1]
 
         # Reference line
-        if type(kwargs.get('ref_line', False)) is pd.Series:
-            ref_line_on = True
+        ref_line = kwargs.get('ref_line', False)
+        if type(ref_line) is pd.Series:
             ref_col = 'Ref Line'
+        elif type(ref_line) is list:
+            ref_col = [f for f in ref_line if f in kwargs['df'].columns]
+            missing = [f for f in ref_line if f not in ref_col]
+            if len(missing) > 0:
+                print('Could not find one or more columns for ref line: "%s"' %
+                      ', '.join(missing))
+            if not kwargs.get('ref_line_text'):
+                kwargs['ref_line_text'] = ref_col
         elif type(kwargs.get('ref_line', False)) is str and \
                 kwargs.get('ref_line', False) in kwargs['df'].columns:
-            ref_line_on = True
             ref_col = kwargs.get('ref_line')
         else:
-            ref_line_on = False
             ref_col = None
+
         self.ref_line = Element('ref_line', self.fcpp, kwargs,
-                                on=ref_line_on,
-                                column=ref_col,
+                                on=False if not ref_col else True,
+                                column=RepeatedList(ref_col, 'ref_col') if ref_col else None,
                                 color='#000000',
-                                size=[0,0],
-                                text=utl.kwget(kwargs, self.fcpp,
-                                               'ref_line_text', 'Ref Line'),
+                                text=RepeatedList(utl.kwget(kwargs, self.fcpp,
+                                                  'ref_line_text', 'Ref Line'),
+                                                  'ref_line_text'),
                                 )
 
         # Legend
@@ -582,7 +589,8 @@ class BaseLayout:
                                  )
 
         if not self.legend.on and self.ref_line.on:
-            self.legend.values['ref_line'] = []
+            for ref_line_text in self.ref_line.text.values:
+                self.legend.values[ref_line_text] = []
             self.legend.on = True
             self.legend.text = ''
         if not self.legend.on and self.fit.on \
