@@ -1,0 +1,328 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>&lt;no title&gt; &mdash; fivecentplots beta documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../theme_overrides.css" type="text/css" />
+  
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Archivo Black" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="fivecentplots beta documentation" href="../../index.html"/> 
+
+  
+  <script src="../js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> fivecentplots
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../layout.html">Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../keyword.html">Keyword Arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../grouping.html">Grouping data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../styles.html">Styles and formatting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ranges.html">Data ranges</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ticks.html">Grids and ticks</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../plot.html">plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../boxplot.html">boxplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contour.html">contour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../heatmap.html">heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hist.html">hist</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Other</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../older.html">Older Versions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">fivecentplots</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+      <li>&lt;no title&gt;</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/_static/docstrings/test.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+</style>
+<table border="1" class="docutils">
+<colgroup>
+<col width="8%" />
+<col width="14%" />
+<col width="39%" />
+<col width="22%" />
+<col width="17%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Keyword</th>
+<th class="head">Data Type</th>
+<th class="head">Description</th>
+<th class="head">Default</th>
+<th class="head">Example</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td rowspan="2">markers</td>
+<td rowspan="2">boolean or list of str characters</td>
+<td>if <code class="docutils literal notranslate"><span class="pre">False</span></code>, turns off markers on the plot</td>
+<td rowspan="2">default marker list</td>
+<td rowspan="2"><a class="reference external" href="styles.html#Markers">Markers</a></td>
+</tr>
+<tr class="row-odd"><td>if a list of characters, sets the markers to be used (one marker type per curve or data set)</td>
+</tr>
+<tr class="row-even"><td>marker_fill</td>
+<td>boolean</td>
+<td>turn on/off marker fill</td>
+<td>False</td>
+<td>None</td>
+</tr>
+<tr class="row-odd"><td>marker_edge_color</td>
+<td>hex color str</td>
+<td>set the marker edge color</td>
+<td>match the line color scheme</td>
+<td>None</td>
+</tr>
+<tr class="row-even"><td>marker_edge_width</td>
+<td>float</td>
+<td>set the marker edge width</td>
+<td>1.5</td>
+<td>None</td>
+</tr>
+<tr class="row-odd"><td>marker_fill_color</td>
+<td>hex color str</td>
+<td>set the marker fill color (only rendered if <code class="docutils literal notranslate"><span class="pre">marker_fill=True</span></code>)</td>
+<td>True</td>
+<td>None</td>
+</tr>
+<tr class="row-even"><td>marker_jitter</td>
+<td>boolean</td>
+<td>add a random offset or jitter to the points around their x-value (useful for box plots)</td>
+<td><a href="#id1"><span class="problematic" id="id2">`</span></a>True for boxplots | <a href="#id3"><span class="problematic" id="id4">`</span></a>False for all other plot types</td>
+<td>None</td>
+</tr>
+<tr class="row-odd"><td>marker_size</td>
+<td>float</td>
+<td>size of the markers (can be specified uniquely from the legend marker size)</td>
+<td>7</td>
+<td><a class="reference external" href="styles.html#Marker-size">Marker size</a></td>
+</tr>
+</tbody>
+</table>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Steve Nicholes.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'beta',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../jquery.js"></script>
+      <script type="text/javascript" src="../underscore.js"></script>
+      <script type="text/javascript" src="../doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
