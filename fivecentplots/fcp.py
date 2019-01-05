@@ -61,7 +61,7 @@ from defaults import *  # use local file
 kw = keywords.make_docstrings()
 
 
-def bar(**kwargs):
+def bar(*args, **kwargs):
     """ Main bar chart plotting function
     At minimum, it requires a pandas DataFrame with at
     least one column for the y axis.  Plots can be customized and enhanced by
@@ -77,7 +77,7 @@ def bar(**kwargs):
         plots
     """
 
-    return plotter('plot_bar', **kwargs)
+    return plotter('plot_bar', **dfkwarg(args, kwargs))
 
 
 def boxplot(*args, **kwargs):
@@ -241,7 +241,27 @@ def plot_bar(data, layout, ir, ic, df_rc, kwargs):
 
     """
 
-    pass
+    stacked = pd.DataFrame()
+    ss = []
+
+    for iline, df, x, y, z, leg_name, twin, ngroups in data.get_plot_data(df_rc):
+
+        df2 = df.groupby(x).mean()[y]
+
+        if layout.bar.error_bars:
+            std = df.groupby(x).std()[y]
+        else:
+            std = None
+
+        if layout.bar.stacked:
+            stacked = pd.concat([stacked, df2])
+
+        data = layout.plot_bar(ir, ic, iline, df2, x, y, leg_name, data, ss, std, ngroups)
+
+        if layout.bar.stacked:
+            ss = stacked.groupby(stacked.index).sum()[0].values
+
+    return data
 
 
 def plot_box(dd, layout, ir, ic, df_rc, kwargs):
@@ -645,16 +665,15 @@ def plotter(plot_func, **kwargs):
             kwargs[k] = getattr(dd, k)
 
     # Iterate over discrete figures
-    for ifig, fig_item, fig_cols, df_fig in dd.get_df_figure():
+    for ifig, fig_item, fig_cols, df_fig, dd in dd.get_df_figure():
         # Create a layout object
-        layout = engine.Layout(plot_func, **kwargs)
+        layout = engine.Layout(plot_func, dd, **kwargs)
 
         # Make the figure
-        layout.make_figure(dd, **kwargs)
+        dd = layout.make_figure(dd, **kwargs)
 
         # Turn off empty subplots
         for ir, ic, df_rc in dd.get_rc_subset(df_fig):
-
             if len(df_rc) == 0:
                 if dd.wrap is None:
                     layout.set_axes_rc_labels(ir, ic)

@@ -443,8 +443,10 @@ def test_figure(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        for die in df1.Die.unique():
+            tag = ' where %s=%s' % ('Die', die)
+            os.startfile(osjoin(MASTER, name + '_master' + tag + '.png'))
+            os.startfile(name + tag + '.png')
     else:
         for die in df1.Die.unique():
             tag = ' where %s=%s' % ('Die', die)

@@ -112,11 +112,13 @@ def mpl_get_ticks(ax, xon=True, yon=True):
 
 class Layout(BaseLayout):
 
-    def __init__(self, plot_func='plot', **kwargs):
+    def __init__(self, plot_func, data, **kwargs):
         """
         Layout attributes and methods for matplotlib Figure
 
         Args:
+            plot_func (str): name of plot function to use
+            data (Data class): data values
             **kwargs: input args from user
         """
 
@@ -130,7 +132,7 @@ class Layout(BaseLayout):
         mplp.close('all')
 
         # Inherit the base layout properties
-        BaseLayout.__init__(self, plot_func, **kwargs)
+        BaseLayout.__init__(self, plot_func, data, **kwargs)
 
         # Define white space parameters
         self.init_white_space(**kwargs)
@@ -402,7 +404,7 @@ class Layout(BaseLayout):
 
             for itext, text in enumerate(self.legend.obj.get_texts()):
                 text.set_color(self.legend.font_color)
-                if self.plot_func != 'plot_hist':
+                if self.plot_func not in ['plot_hist', 'plot_bar']:
                     self.legend.obj.legendHandles[itext]. \
                         _legmarker.set_markersize(self.legend.marker_size)
                     if self.legend.marker_alpha is not None:
@@ -511,9 +513,6 @@ class Layout(BaseLayout):
 
         # Make a dummy figure
         data = copy.deepcopy(data)
-        if 'box' in self.plot_func:
-            data.x = ['x']
-            data.df_fig['x'] = 1
 
         mplp.ioff()
         fig = mpl.pyplot.figure(dpi=self.fig.dpi)
@@ -586,6 +585,19 @@ class Layout(BaseLayout):
                     ax2.set_ylim(bottom=data.ranges[ir, ic]['zmin'])
                 if data.ranges[ir, ic]['y2max'] is not None and data.twin_x:
                     ax2.set_ylim(top=data.ranges[ir, ic]['zmax'])
+            # bar
+            elif self.plot_func == 'plot_bar':
+                yy = df.groupby(data.x[0]).mean()[data.y[0]]
+                idx = list(np.arange(len(yy)))
+                pp = ax.bar(idx, yy.values)
+                ticks = ax.get_xticks()
+                labels = []
+                for itick, tick in enumerate(ticks):
+                    if int(tick) in idx:
+                        labels += [yy.index[int(tick)]]
+                    else:
+                        labels += ['']
+                ax.set_xticklabels(labels)
             # hist
             elif self.plot_func == 'plot_hist':
                 if LooseVersion(mpl.__version__) < LooseVersion('2.2'):
@@ -1218,10 +1230,39 @@ class Layout(BaseLayout):
                                            f.get_window_extent().height)
                                            for f in box_group_title]
 
+        # Horizontal shifts
+        if self.hist.horizontal or self.bar.horizontal:
+            # Swap axes labels
+            ylab = copy.copy(self.label_y)
+            xrot = self.label_x.rotation
+            self.label_y = copy.copy(self.label_x)
+            self.label_y.size = [self.label_y.size[1], self.label_y.size[0]]
+            self.label_y.rotation = ylab.rotation
+            self.label_x = ylab
+            self.label_x.size = [self.label_x.size[1], self.label_x.size[0]]
+            self.label_x.rotation = xrot
+
+            # Swap tick labels
+            ylab = copy.copy(self.tick_labels_major_y)
+            self.tick_labels_major_y = copy.copy(self.tick_labels_major_x)
+            self.tick_labels_major_x = ylab
+
+            # Rotate ranges
+            for irow in range(0, self.nrow):
+                for icol in range(0, self.ncol):
+                    ymin = data.ranges[irow, icol]['ymin']
+                    ymax = data.ranges[irow, icol]['ymax']
+                    data.ranges[irow, icol]['ymin'] = data.ranges[irow, icol]['xmin']
+                    data.ranges[irow, icol]['ymax'] = data.ranges[irow, icol]['xmax']
+                    data.ranges[irow, icol]['xmin'] = ymin
+                    data.ranges[irow, icol]['xmax'] = ymax
+
         # Destroy the dummy figure
         mpl.pyplot.close(fig)
         if saved:
             os.remove(filename + '.png')
+
+        return data
 
     def get_figure_size(self, data, **kwargs):
         """
@@ -1458,7 +1499,7 @@ class Layout(BaseLayout):
 
         self.set_colormap(data)
         self.set_label_text(data, **kwargs)
-        self.get_element_sizes(data)
+        data = self.get_element_sizes(data)
         self.update_subplot_spacing()
         self.get_figure_size(data, **kwargs)
         self.get_subplots_adjust()
@@ -1509,7 +1550,102 @@ class Layout(BaseLayout):
                 for ic in range(0, self.ncol):
                     self.axes2.obj[ir, ic] = self.axes.obj[ir, ic].twiny()
 
-    def plot_box(self, ir, ic, data,**kwargs):
+        return data
+
+    def plot_bar(self, ir, ic, iline, df, x, y, leg_name, data, stacked, std,
+                 ngroups=1):
+        """
+        Plot bar graph
+        """
+
+        ax = self.axes.obj[ir, ic]
+        idx = list(np.arange(len(df)))
+        kwargs = {}
+
+        # Orientation
+        if self.bar.horizontal:
+            bar = ax.barh
+            axx = 'y'
+            if self.bar.stacked:
+                kwargs['height'] = self.bar.width
+                if iline > 0:
+                    kwargs['bottom'] = stacked
+            else:
+                kwargs['height'] = self.bar.width / ngroups
+                idx = [f + iline * (kwargs['height']) for f in idx]
+        else:
+            bar = ax.bar
+            axx = 'x'
+            if self.bar.stacked:
+                kwargs['width'] = self.bar.width
+                if iline > 0:
+                    kwargs['bottom'] = stacked
+            else:
+                kwargs['width'] = self.bar.width / ngroups
+                idx = [f + iline * (kwargs['width']) for f in idx]
+        if self.bar.color_by_bar:
+            edgecolor = [self.bar.edge_color.get(i)
+                        for i, f in enumerate(df[y].index)]
+            fillcolor = [self.bar.fill_color.get(i)
+                         for i, f in enumerate(df[y].index)]
+        else:
+            edgecolor = self.bar.edge_color.get(iline)
+            fillcolor = self.bar.fill_color.get(iline)
+
+        # Error bars
+        if std is not None and self.bar.horizontal:
+            kwargs['xerr'] = std
+        elif std is not None:
+            kwargs['yerr'] = std
+
+        # Plot
+        bb = bar(idx, df.values, align=self.bar.align,
+                 linewidth=self.bar.edge_width,
+                 edgecolor=edgecolor, color=fillcolor,
+                 ecolor=self.bar.error_color, **kwargs)
+
+        # Set ticks
+        if iline==0:
+            ticks = getattr(ax, 'get_%sticks' % axx)()
+            labels = []
+            xticks = []
+            for itick, tick in enumerate(ticks):
+                if int(tick) in idx:
+                    labels += [df.index[int(tick)]]
+                else:
+                    labels += ['']
+                if ngroups == 1 or self.bar.align == 'edge':
+                    xticks += [tick]
+                else:
+                    xticks += [tick + self.bar.width / ngroups]
+            getattr(ax, 'set_%sticks' % axx)(xticks)
+            getattr(ax, 'set_%sticklabels' % axx)(labels)
+
+            # Update ranges
+            new_ticks = getattr(ax, 'get_%sticks' % axx)()
+            tick_off = [f for f in new_ticks if f >= 0][0]
+            if self.bar.horizontal:
+                axx = 'y'
+            else:
+                axx = 'x'
+            xoff = 3*self.bar.width / 4
+            if data.ranges[ir, ic]['%smin' % axx] is None:
+                data.ranges[ir, ic]['%smin' % axx] = -xoff + tick_off
+            else:
+                data.ranges[ir, ic]['%smin' % axx] += tick_off
+            if data.ranges[ir, ic]['%smax' % axx] is None:
+                data.ranges[ir, ic]['%smax' % axx] = len(idx) - 1 + xoff + tick_off
+            else:
+                data.ranges[ir, ic]['%smax' % axx] += tick_off
+
+        # Legend
+        if leg_name is not None:
+            handle = [patches.Rectangle((0,0),1,1,color=self.bar.fill_color.get(iline))]
+            self.legend.values[leg_name] = handle
+
+        return data
+
+    def plot_box(self, ir, ic, data, **kwargs):
         """ Plot boxplot data
 
         Args:
@@ -1719,30 +1855,30 @@ class Layout(BaseLayout):
                                             )
 
         # Add a reference to the line to self.lines
-        if leg_name:
+        if leg_name is not None:
             handle = [patches.Rectangle((0,0),1,1,color=self.hist.fill_color.get(iline))]
             self.legend.values[leg_name] = handle
 
-        # Horizontal adjustments
-        if self.hist.horizontal:
-            # Swap labels
-            if iline == 0 and ir == 0 and ic == 0:
-                ylab = self.label_y.text
-                self.label_y.text = self.label_x.text
-                self.label_x.text = ylab
-                self.label_x.size = [self.label_y.size[1], self.label_y.size[0]]
-                self.label_y.size = [self.label_x.size[1], self.label_x.size[0]]
+        # # Horizontal adjustments
+        # if self.hist.horizontal:
+        #     # # Swap labels
+        #     # if iline == 0 and ir == 0 and ic == 0:
+        #     #     ylab = self.label_y.text
+        #     #     self.label_y.text = self.label_x.text
+        #     #     self.label_x.text = ylab
+        #     #     self.label_x.size = [self.label_y.size[1], self.label_y.size[0]]
+        #     #     self.label_y.size = [self.label_x.size[1], self.label_x.size[0]]
 
-            # Rotate ranges
-            if iline == 0:
-                for irow in range(0, self.nrow):
-                    for icol in range(0, self.ncol):
-                        ymin = data.ranges[irow, icol]['ymin']
-                        ymax = data.ranges[irow, icol]['ymax']
-                        data.ranges[irow, icol]['ymin'] = data.ranges[irow, icol]['xmin']
-                        data.ranges[irow, icol]['ymax'] = data.ranges[irow, icol]['xmax']
-                        data.ranges[irow, icol]['xmin'] = ymin
-                        data.ranges[irow, icol]['xmax'] = ymax
+        #     # Rotate ranges
+        #     if iline == 0:
+        #         for irow in range(0, self.nrow):
+        #             for icol in range(0, self.ncol):
+        #                 ymin = data.ranges[irow, icol]['ymin']
+        #                 ymax = data.ranges[irow, icol]['ymax']
+        #                 data.ranges[irow, icol]['ymin'] = data.ranges[irow, icol]['xmin']
+        #                 data.ranges[irow, icol]['ymax'] = data.ranges[irow, icol]['xmax']
+        #                 data.ranges[irow, icol]['xmin'] = ymin
+        #                 data.ranges[irow, icol]['xmax'] = ymax
 
         # Add a kde
         if self.kde.on:

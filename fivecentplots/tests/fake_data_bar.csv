@@ -1,0 +1,31 @@
+Liquid,pH,Measurement,T [C]
+Lemon juice,2.4,A,25
+Orange juice,3.5,A,25
+Battery acid,1,A,25
+Bottled water,6.7,A,25
+Coke,3,A,25
+Lemon juice,2,B,25
+Orange juice,4,B,25
+Battery acid,0.7,B,25
+Bottled water,7,B,25
+Coke,2.5,B,25
+Lemon juice,2.2,C,25
+Orange juice,3.4,C,25
+Battery acid,0.5,C,25
+Bottled water,7.2,C,25
+Coke,3.2,C,25
+Lemon juice,-1.2,A,100
+Orange juice,1.7,A,100
+Battery acid,-0.5,A,100
+Bottled water,3.3,A,100
+Coke,1.5,A,100
+Lemon juice,-1,B,100
+Orange juice,2,B,100
+Battery acid,-0.35,B,100
+Bottled water,3.5,B,100
+Coke,1.25,B,100
+Lemon juice,-1.1,C,100
+Orange juice,1.7,C,100
+Battery acid,-0.25,C,100
+Bottled water,3.6,C,100
+Coke,1.6,C,100

@@ -62,11 +62,13 @@ ENGINE = ''
 
 
 class BaseLayout:
-    def __init__(self, plot_func, **kwargs):
+    def __init__(self, plot_func, data, **kwargs):
         """
         Generic layout properties class
 
         Args:
+            plot_func (str): name of plot function to use
+            data (Data class): data values
             **kwargs: styling, spacing kwargs
 
         """
@@ -123,7 +125,10 @@ class BaseLayout:
                             twin_x=kwargs.get('twin_x', False),
                             twin_y=kwargs.get('twin_y', False),
                             )
-
+        for isize, size in enumerate(self.axes.size):
+            if 'group' in str(size) and self.plot_func == 'plot_box':
+                self.axes.size[isize] = \
+                    int(size.split('*')[0].replace(' ', '')) * len(data.indices)
         twinned = kwargs.get('twin_x', False) or kwargs.get('twin_y', False)
         self.axes2 = Element('ax', self.fcpp, kwargs,
                              on=True if twinned else False,
@@ -656,6 +661,26 @@ class BaseLayout:
             if 'x' in kwargs.keys():
                 kwargs['tick_cleanup'] = False
 
+        # Bar
+        self.bar = Element('bar', self.fcpp, kwargs,
+                           on=True if 'bar' in self.plot_func else False,
+                           width=utl.kwget(kwargs, self.fcpp, 'bar_width', kwargs.get('width', 0.8)),
+                           align=utl.kwget(kwargs, self.fcpp, 'bar_align', kwargs.get('align', 'center')),
+                           edge_color=utl.kwget(kwargs, self.fcpp, 'bar_edge_color', copy.copy(color_list)),
+                           edge_width=utl.kwget(kwargs, self.fcpp, 'bar_edge_width', 0),
+                           fill_alpha=utl.kwget(kwargs, self.fcpp, 'bar_fill_alpha', 0.75),
+                           fill_color=utl.kwget(kwargs, self.fcpp, 'bar_fill_color', copy.copy(color_list)),
+                           line=utl.kwget(kwargs, self.fcpp, 'bar_line', kwargs.get('line', False) | kwargs.get('lines', False)),
+                           horizontal=utl.kwget(kwargs, self.fcpp, 'bar_horizontal', kwargs.get('horizontal', False)),
+                           stacked=utl.kwget(kwargs, self.fcpp, 'bar_stacked', kwargs.get('stacked', False)),
+                           error_bars=utl.kwget(kwargs, self.fcpp, 'bar_error_bars', kwargs.get('error_bars', None)),
+                           error_color=utl.kwget(kwargs, self.fcpp, 'bar_error_color', kwargs.get('error_color', '#555555')),
+                           color_by_bar=utl.kwget(kwargs, self.fcpp, 'bar_color_by_bar', kwargs.get('color_by_bar', False)),
+                           )
+        self.bar.width = self.bar.width.get(0)
+        if 'colors' in kwargs.keys():
+            self.bar.color_by_bar = True
+
         # Histogram
         self.hist = Element('hist', self.fcpp, kwargs,
                             on=True if 'hist' in self.plot_func and kwargs.get('hist_on', True) else False,
@@ -1069,6 +1094,11 @@ class BaseLayout:
         self.tick_cleanup = utl.kwget(kwargs, self.fcpp, 'tick_cleanup', True)
 
         # Plot overrides
+        if 'bar' in self.plot_func:
+            self.grid_major_x.on = True
+            self.grid_minor_x.on = False
+            self.ticks_major_x.on = False
+            self.ticks_minor_x.on = False
         if 'box' in self.plot_func:
             self.grid_major_x.on = False
             self.grid_minor_x.on = False

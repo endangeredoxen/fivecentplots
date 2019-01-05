@@ -65,14 +65,20 @@ def dfkwarg(args, kwargs):
     return kwargs
 
 
-def df_filter(df, filt_orig):
-    """  Filter the DataFrame
+def df_filter(df, filt_orig, drop_cols=False):
+    """
+    Filter the DataFrame
+
     Due to limitations in pd.query, column names must not have spaces.  This
     function will temporarily replace spaces in the column names with
     underscores, but the supplied query string must contain column names
     without any spaces
+
     Args:
+        df (pd.DataFrame):  DataFrame to filter
         filt_orig (str):  query expression for filtering
+        drop_cols (bool): drop filtered columns from results
+
     Returns:
         filtered DataFrame
     """
@@ -96,13 +102,14 @@ def df_filter(df, filt_orig):
             text = text.replace(k, v).lstrip(' ').rstrip(' ')
         return text
 
-    # Remove spaces from
+    # Parse the filter string
+    filt = get_current_values(df, filt_orig)
+
+    # Rename the columns to remove special characters
     cols_orig = [f for f in df.columns]
     cols_new = ['fCp%s' % f for f in cols_orig.copy()]
     cols_new = [special_chars(f) for f in cols_new]
-
-    # Parse the filter string
-    filt = get_current_values(df, filt_orig)
+    cols_used = []
 
     df.columns = cols_new
 
@@ -126,6 +133,7 @@ def df_filter(df, filt_orig):
                     continue
                 vals = oo.split(op)
                 vals[0] = vals[0].rstrip()
+                cols_used += [vals[0]]
                 vals[1] = vals[1].lstrip()
                 if vals[1] == vals[0]:
                     vals[1] = 'fCp%s' % special_chars(vals[1])
@@ -149,11 +157,16 @@ def df_filter(df, filt_orig):
         df = df.query(filt)
         df.columns = cols_orig
 
+        if drop_cols:
+            cols_used = list(set(cols_used))
+            for col in cols_used:
+                del df[col]
+
         return df
 
     except:
         print('Could not filter data!\n   Original filter string: %s\n   '
-                'Modified filter string: %s' % (filt_orig, filt))
+              'Modified filter string: %s' % (filt_orig, filt))
 
         df.columns = cols_orig
 

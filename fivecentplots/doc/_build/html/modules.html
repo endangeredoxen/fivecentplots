@@ -118,7 +118,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Modules</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#fcp-py">fcp.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-data">data.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-py">data.py</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#layout-py">layout.py</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-utilities">utilities.py</a></li>
 </ul>
@@ -211,382 +211,45 @@
 <div class="section" id="fcp-py">
 <h2>fcp.py<a class="headerlink" href="#fcp-py" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-data">
-<span id="data-py"></span><h2>data.py<a class="headerlink" href="#module-data" title="Permalink to this headline">¶</a></h2>
-<dl class="exception">
-<dt id="data.AxisError">
-<em class="property">exception </em><code class="descclassname">data.</code><code class="descname">AxisError</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#data.AxisError" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="class">
-<dt id="data.Data">
-<em class="property">class </em><code class="descclassname">data.</code><code class="descname">Data</code><span class="sig-paren">(</span><em>plot_func='xy'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
-<dt id="data.Data.ax_limit_pad">
-<code class="descname">ax_limit_pad</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.ax_limit_pad" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set padding limits for axis</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="data.Data.check_df">
-<code class="descname">check_df</code><span class="sig-paren">(</span><em>df</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.check_df" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate the dataframe</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="data.Data.check_group_columns">
-<code class="descname">check_group_columns</code><span class="sig-paren">(</span><em>group_type</em>, <em>col_names</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.check_group_columns" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check wrap/row/column grouping variables for errors</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>group_type</strong> (<em>str</em>) – type of grouping (row, col, leg, wrap)</li>
-<li><strong>col_name</strong> (<em>str</em>) – name of the column by which to group</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="data.Data.check_group_errors">
-<code class="descname">check_group_errors</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.check_group_errors" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check for common errors related to grouping keywords</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="data.Data.check_group_matching">
-<code class="descname">check_group_matching</code><span class="sig-paren">(</span><em>group1</em>, <em>group2</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.check_group_matching" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check to make sure certain group column values are not the same</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>group1</strong> (<em>str</em>) – attr name of first grouping column</li>
-<li><strong>group2</strong> (<em>str</em>) – attr name of second grouping column</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="data.Data.check_xyz">
-<code class="descname">check_xyz</code><span class="sig-paren">(</span><em>xyz</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.check_xyz" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate the name and column data provided for x, y, and/or z
-:param xyz: name of variable to check
-:type xyz: str</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="data.Data.get_all_groups">
-<code class="descname">get_all_groups</code><span class="sig-paren">(</span><em>df</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.get_all_groups" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generator to get all possible allowed groups of data</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>df</strong> – </td>
-</tr>
-</tbody>
-</table>
-<p>Returns:</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="data.Data.get_box_index_changes">
-<code class="descname">get_box_index_changes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.get_box_index_changes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make a DataFrame that shows when groups vals change; used for grouping labels</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>df</strong> (<em>pd.DataFrame</em>) – grouping values</li>
-<li><strong>num_groups</strong> (<em>int</em>) – number of unique groups</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">new DataFrame with 1’s showing where group levels change for each row of df</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="data.Data.get_conf_int">
-<code class="descname">get_conf_int</code><span class="sig-paren">(</span><em>df</em>, <em>x</em>, <em>y</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.get_conf_int" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate and draw confidence intervals around a curve</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>df</strong> – </li>
-<li><strong>x</strong> – </li>
-<li><strong>y</strong> – </li>
-<li><strong>ax</strong> – </li>
-<li><strong>color</strong> – </li>
-<li><strong>kw</strong> – </li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p>Returns:</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="data.Data.get_data_range">
-<code class="descname">get_data_range</code><span class="sig-paren">(</span><em>ax</em>, <em>df</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.get_data_range" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determine the min/max values for a given axis based on user inputs</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>axis</strong> (<em>str</em>) – x, x2, y, y2, z</li>
-<li><strong>df</strong> (<em>pd.DataFrame</em>) – data table to use for range calculation</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">min, max tuple</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="data.Data.get_data_ranges">
-<code class="descname">get_data_ranges</code><span class="sig-paren">(</span><em>ir</em>, <em>ic</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.get_data_ranges" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the data ranges</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>ir</strong> (<em>int</em>) – subplot row index</li>
-<li><strong>ic</strong> (<em>int</em>) – subplot col index</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="data.Data.get_data_ranges_hist">
-<code class="descname">get_data_ranges_hist</code><span class="sig-paren">(</span><em>ir</em>, <em>ic</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.get_data_ranges_hist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the data ranges</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>ir</strong> (<em>int</em>) – subplot row index</li>
-<li><strong>ic</strong> (<em>int</em>) – subplot col index</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="data.Data.get_df_figure">
-<code class="descname">get_df_figure</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.get_df_figure" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generator to subset the main DataFrame based on fig_item grouping</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>fig_item</strong> (<em>str</em>) – figure grouping value</li>
-<li><strong>kw</strong> (<em>dict</em>) – kwargs dict</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">DataFrame subset</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="data.Data.get_fig_groupings">
-<code class="descname">get_fig_groupings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.get_fig_groupings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determine the figure grouping levels</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="data.Data.get_fit_data">
-<code class="descname">get_fit_data</code><span class="sig-paren">(</span><em>ir</em>, <em>ic</em>, <em>df</em>, <em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.get_fit_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make columns of fitted data</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>df</strong> (<em>pd.DataFrame</em>) – main DataFrame</li>
-<li><strong>x</strong> (<em>str</em>) – x-column name</li>
-<li><strong>y</strong> (<em>str</em>) – y-column name</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">updated DataFrame and rsq (for poly fit only)</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="data.Data.get_legend_groupings">
-<code class="descname">get_legend_groupings</code><span class="sig-paren">(</span><em>df</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.get_legend_groupings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determine the legend groupings</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>df</strong> (<em>pd.DataFrame</em>) – data being plotted</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">updated kwargs dict</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="data.Data.get_plot_data">
-<code class="descname">get_plot_data</code><span class="sig-paren">(</span><em>df</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.get_plot_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generator to subset into discrete sets of data for each curve</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>df</strong> (<em>pd.DataFrame</em>) – main DataFrame</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">subset</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="data.Data.get_rc_groupings">
-<code class="descname">get_rc_groupings</code><span class="sig-paren">(</span><em>df</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.get_rc_groupings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determine the row and column or wrap grid groupings</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>df</strong> (<em>pd.DataFrame</em>) – data being plotted; usually a subset of
-self.df_all</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="data.Data.get_rc_subset">
-<code class="descname">get_rc_subset</code><span class="sig-paren">(</span><em>df</em>, <em>ranges=False</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.get_rc_subset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Subset the data by the row/col values</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>df</strong> (<em>pd.DataFrame</em>) – main DataFrame</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">subset DataFrame</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="data.Data.get_stat_data">
-<code class="descname">get_stat_data</code><span class="sig-paren">(</span><em>df</em>, <em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.get_stat_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a stat subset from input data</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>df</strong> (<em>pd.DataFrame</em>) – input data</li>
-<li><strong>x</strong> (<em>str</em>) – x-column name</li>
-<li><strong>y</strong> (<em>str</em>) – y-column name</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="data.Data.groupers">
-<code class="descname">groupers</code><a class="headerlink" href="#data.Data.groupers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get all grouping values</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="data.Data.see">
-<code class="descname">see</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.see" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prints a readable list of class attributes</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="data.Data.swap_xy">
-<code class="descname">swap_xy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.swap_xy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Swap the x and y axis</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="data.Data.transform">
-<code class="descname">transform</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.transform" title="Permalink to this definition">¶</a></dt>
-<dd><p>Transform x, y, or z data by unique group</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="exception">
-<dt id="data.DataError">
-<em class="property">exception </em><code class="descclassname">data.</code><code class="descname">DataError</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#data.DataError" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="exception">
-<dt id="data.GroupingError">
-<em class="property">exception </em><code class="descclassname">data.</code><code class="descname">GroupingError</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#data.GroupingError" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<div class="section" id="data-py">
+<h2>data.py<a class="headerlink" href="#data-py" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="layout-py">
 <h2>layout.py<a class="headerlink" href="#layout-py" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-utilities">
 <span id="utilities-py"></span><h2>utilities.py<a class="headerlink" href="#module-utilities" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="utilities.RepeatedList">
+<em class="property">class </em><code class="descclassname">utilities.</code><code class="descname">RepeatedList</code><span class="sig-paren">(</span><em>values</em>, <em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#utilities.RepeatedList" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="utilities.RepeatedList.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>idx</em><span class="sig-paren">)</span><a class="headerlink" href="#utilities.RepeatedList.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="function">
 <dt id="utilities.df_filter">
-<code class="descclassname">utilities.</code><code class="descname">df_filter</code><span class="sig-paren">(</span><em>df</em>, <em>filt_orig</em><span class="sig-paren">)</span><a class="headerlink" href="#utilities.df_filter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Filter the DataFrame
-Due to limitations in pd.query, column names must not have spaces.  This
+<code class="descclassname">utilities.</code><code class="descname">df_filter</code><span class="sig-paren">(</span><em>df</em>, <em>filt_orig</em>, <em>drop_cols=False</em><span class="sig-paren">)</span><a class="headerlink" href="#utilities.df_filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter the DataFrame</p>
+<p>Due to limitations in pd.query, column names must not have spaces.  This
 function will temporarily replace spaces in the column names with
 underscores, but the supplied query string must contain column names
-without any spaces
-:param filt_orig: query expression for filtering
-:type filt_orig: str</p>
+without any spaces</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">filtered DataFrame</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>df</strong> (<em>pd.DataFrame</em>) – DataFrame to filter</li>
+<li><strong>filt_orig</strong> (<em>str</em>) – query expression for filtering</li>
+<li><strong>drop_cols</strong> (<em>bool</em>) – drop filtered columns from results</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">filtered DataFrame</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -747,6 +410,12 @@ dict1 or dict2 keys</li>
 <dt id="utilities.nq">
 <code class="descclassname">utilities.</code><code class="descname">nq</code><span class="sig-paren">(</span><em>data</em>, <em>column='Value'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#utilities.nq" title="Permalink to this definition">¶</a></dt>
 <dd><p>Normal quantile calculation</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utilities.plot_num">
+<code class="descclassname">utilities.</code><code class="descname">plot_num</code><span class="sig-paren">(</span><em>ir</em>, <em>ic</em>, <em>ncol</em><span class="sig-paren">)</span><a class="headerlink" href="#utilities.plot_num" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the plot number based on grid location</p>
 </dd></dl>
 
 <dl class="function">

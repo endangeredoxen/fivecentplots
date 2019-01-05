@@ -108,6 +108,7 @@ The following plot types are supported in **fivecentplots**:
   3) `contour plots <contour.html>`_
   4) `heatmaps <heatmap.html>`_
   5) `histograms <hist.html>`_
+  6) `bar plots <barplot.html>`_
 
 Follow the links to the example section to see the many options
 available within each plot category.
@@ -137,6 +138,7 @@ Documentation
    contour.ipynb
    heatmap.ipynb
    hist.ipynb
+   bar.ipynb
 
 .. toctree::
    :maxdepth: 1
