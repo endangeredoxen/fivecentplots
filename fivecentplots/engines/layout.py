@@ -186,9 +186,9 @@ class BaseLayout:
                 self.label_x2.font_color = color_list_unique[1]
 
         # Figure title
-        title = kwargs.get('title', None)
+        title = utl.kwget(kwargs, self.fcpp, 'title', None)
         self.title = Element('title', self.fcpp, kwargs,
-                             on=True if title else False,
+                             on=True if title is not None else False,
                              text=title if title is not None else None,
                              font_color='#333333',
                              font_size=18,
@@ -321,25 +321,25 @@ class BaseLayout:
                                      self.tick_labels_major.on),
                         edge_color=edge_color,
                         edge_alpha=edge_alpha,
-                        edge_width=kwargs.get('tick_labels_major_edge_width',
+                        edge_width=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_edge_width',
                                        self.tick_labels_major.edge_width),
                         fill_color=fill_color,
                         fill_alpha=fill_alpha,
-                        font=kwargs.get('tick_labels_major_font',
+                        font=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_font',
                                        self.tick_labels_major.font),
-                        font_color=kwargs.get('tick_labels_major_font_color',
+                        font_color=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_font_color',
                                        self.tick_labels_major.font_color),
-                        font_size=kwargs.get('tick_labels_major_font_size',
+                        font_size=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_font_size',
                                        self.tick_labels_major.font_size),
-                        font_style=kwargs.get('tick_labels_major_font_style',
+                        font_style=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_font_style',
                                        self.tick_labels_major.font_style),
-                        font_weight=kwargs.get('tick_labels_major_font_style',
+                        font_weight=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_font_style',
                                        self.tick_labels_major.font_style),
-                        offset=kwargs.get('tick_labels_major_offset',
+                        offset=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_offset',
                                        self.tick_labels_major.offset),
-                        padding=kwargs.get('tick_labels_major_padding',
+                        padding=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_padding',
                                        self.tick_labels_major.padding),
-                        rotation=kwargs.get('tick_labels_major_rotation',
+                        rotation=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_rotation',
                                        self.tick_labels_major.rotation),
                         size=[0, 0],
                         sci=utl.kwget(kwargs, self.fcpp, 'sci_%s' % ax, 'best'),
@@ -525,15 +525,17 @@ class BaseLayout:
         self.fit = Element('fit', self.fcpp, kwargs,
                            on=True if kwargs.get('fit', False) else False,
                            color='#000000',
+                           edge_color='none',
                            eqn=utl.kwget(kwargs, self.fcpp, 'fit_eqn', False),
+                           fill_color='none',
                            font_size=utl.kwget(kwargs, self.fcpp, 'fit_font_size', 12),
                            padding=utl.kwget(kwargs, self.fcpp, 'fit_padding', 10),
                            rsq=utl.kwget(kwargs, self.fcpp, 'fit_rsq', False),
                            size=[0,0],
                            )
-        self.fit.position[0] = self.fit.padding / self.axes.size[0]
-        self.fit.position[3] = 1 - (self.fit.padding + \
-                                    self.fit.font_size)/ self.axes.size[1]
+        self.fit.position[0] = self.fit.padding
+        self.fit.position[1] = self.axes.size[1] - \
+                               (self.fit.padding + self.fit.font_size)
 
         # Reference line
         ref_line = kwargs.get('ref_line', False)
@@ -1091,6 +1093,42 @@ class BaseLayout:
                                                      0.2),
                                 )
 
+        # Arbitrart text
+        position = utl.kwget(kwargs, self.fcpp, 'text_position', [0,0])
+        if type(position[0]) is not list:
+            position = [position]
+        self.text = Element('text', self.fcpp, {},
+                            on=True if utl.kwget(kwargs, self.fcpp, 'text', None) \
+                               is not None else False,
+                            edge_color=RepeatedList(utl.kwget(kwargs, self.fcpp,
+                                                    'text_edge_color', 'none'),
+                                                    'text_edge_color'),
+                            fill_color=RepeatedList(utl.kwget(kwargs, self.fcpp,
+                                                    'text_fill_color', 'none'),
+                                                    'text_fill_color'),
+                            font=RepeatedList(utl.kwget(kwargs, self.fcpp,
+                                              'text_font', 'sans-serif'), 'text_font'),
+                            font_color=RepeatedList(utl.kwget(kwargs, self.fcpp,
+                                                    'text_font_color', '#000000'),
+                                                    'text_font_color'),
+                            font_size=RepeatedList(utl.kwget(kwargs, self.fcpp,
+                                                   'text_font_size', 14),
+                                                   'text_font_size'),
+                            font_style=RepeatedList(utl.kwget(kwargs, self.fcpp,
+                                                    'text_font_style', 'normal'),
+                                                    'text_font_style'),
+                            font_weight=RepeatedList(utl.kwget(kwargs, self.fcpp,
+                                                    'text_font_weight', 'normal'),
+                                                    'text_font_weight'),
+                            position=RepeatedList(position, 'text_position'),
+                            coordinate=utl.kwget(kwargs, self.fcpp, 'text_coordinate', 'axis'),
+                            rotation=RepeatedList(utl.kwget(kwargs, self.fcpp,
+                                                  'text_rotation', 0), 'text_rotation'),
+                            units=utl.kwget(kwargs, self.fcpp, 'text_units', 'pixel'),
+                            text=RepeatedList(utl.kwget(kwargs, self.fcpp,
+                                                  'text', ''), 'text'),
+                            )
+
         # Extras
         self.inline = utl.kwget(kwargs, self.fcpp, 'inline', None)
         self.separate_labels = utl.kwget(kwargs, self.fcpp,
@@ -1503,7 +1541,7 @@ class Element:
         self._on = kwargs.get('on', True) # visbile or not
         self.dpi = utl.kwget(kwargs, fcpp, 'dpi', 100)
         self.obj = None  # plot object reference
-        self.position = [0, 0, 0, 0]  # left, right, top, bottom
+        self.position = kwargs.get('position', [0, 0, 0, 0])  # left, right, top, bottom
         self._size = kwargs.get('size', [0, 0])  # width, height
         self._size_orig = kwargs.get('size')
         self._text = kwargs.get('text', True)  # text label
@@ -1518,7 +1556,8 @@ class Element:
                                     kwargs.get('fill_alpha', 1))
         self.fill_color = utl.kwget(kwargs, fcpp, '%s_fill_color' % label,
                                     kwargs.get('fill_color', '#ffffff'))
-        self.color_alpha('fill_color', 'fill_alpha')
+        if type(self.fill_color) is not RepeatedList:
+            self.color_alpha('fill_color', 'fill_alpha')
 
         self.edge_width = utl.kwget(kwargs, fcpp, '%s_edge_width' % label,
                                     kwargs.get('edge_width', 1))
@@ -1647,9 +1686,9 @@ class Element:
             for ic, color in enumerate(color_list):
                 if type(color) is int:
                     color = DEFAULT_COLORS[color]
-                if color[0] != '#':
+                if color[0] != '#' and color != 'none':
                     color = '#' + color
-                if skip_alpha:
+                if skip_alpha or color == 'none':
                     astr = ''
                 else:
                     astr = str(hex(int(alpha.get(ic) * 255)))[-2:].replace('x', '0')

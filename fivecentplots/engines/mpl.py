@@ -420,20 +420,88 @@ class Layout(BaseLayout):
             self.legend.obj.get_frame().set_edgecolor(self.legend.edge_color.get(0))
             self.legend.obj.get_frame().set_linewidth(self.legend.edge_width)
 
-    def add_text(self, ir, ic, text, element, offsetx=0, offsety=0):
+    def add_text(self, ir, ic, text=None, element=None, offsetx=0, offsety=0,
+                 **kwargs):
         """
         Add a text box
         """
 
-        obj = getattr(self, element)
-        kwargs = self.make_kwargs(obj, pop=['size'])
-
+        # Shortcuts
         ax = self.axes.obj[ir, ic]
-        ax.text(obj.position[0] + offsetx, obj.position[3] + offsety, text,
-                transform=ax.transAxes,
-                rotation=kwargs['rotation'], color=kwargs['font_color'],
-                fontname=kwargs['font'], style=kwargs['font_style'],
-                weight=kwargs['font_weight'], size=kwargs['font_size'])
+        if element is None:
+            obj = self.text
+        else:
+            obj = getattr(self, element)
+        text = text if text is not None else obj.text.values
+        if type(text) is str:
+            text = [text]
+
+        # Set the coordinate so text is anchored to figure, axes, or the current
+        #    data range
+        coord = None if not hasattr(obj, 'coordinate') \
+                else self.text.coordinate.lower()
+        if coord == 'figure':
+            transform = self.fig.obj.transFigure
+        elif coord == 'data':
+            transform = ax.transData
+        else:
+            transform = ax.transAxes
+        units = 'pixel' if not hasattr(obj, 'units') else getattr(obj, 'units')
+
+        # Add each text box
+        for itext, txt in enumerate(text):
+            kw = {}
+
+            # Set style attributes
+            attrs = ['rotation', 'font_color', 'font', 'fill_color', 'edge_color',
+                     'font_style', 'font_weight', 'font_size']
+            for attr in attrs:
+                if attr in kwargs.keys():
+                    kw[attr] = kwargs[attr]
+                elif hasattr(obj, attr) and \
+                        type(getattr(obj, attr)) is RepeatedList:
+                    kw[attr] = getattr(obj, attr).get(itext)
+                elif hasattr(obj, attr):
+                    kw[attr] = getattr(obj, attr)
+
+            # Get position
+            if 'position' in kwargs.keys():
+                position = copy.copy(kwargs['position'])
+            elif hasattr(obj, 'position') and \
+                    type(getattr(obj, 'position')) is RepeatedList:
+                position = copy.copy(getattr(obj, 'position').get(itext))
+            elif hasattr(obj, 'position'):
+                position = copy.copy(getattr(obj, 'position'))
+
+            # Convert position to correct units
+            if units == 'pixel' and coord == 'figure':
+                position[0] /= self.fig.size[0]
+                offsetx /= self.fig.size[0]
+                position[1] /= self.fig.size[1]
+                offsety /= self.fig.size[1]
+            elif units == 'pixel' and coord != 'data':
+                position[0] /= self.axes.size[0]
+                offsetx /= self.axes.size[0]
+                position[1] /= self.axes.size[1]
+                offsety /= self.axes.size[1]
+
+            # Something goes weird with x = 0 so we need to adjust slightly
+            if position[0] == 0:
+                position[0] = 0.01
+
+            # Add the text
+            ax.text(position[0] + offsetx,
+                    position[1] + offsety,
+                    txt, transform=transform,
+                    rotation=kw['rotation'],
+                    color=kw['font_color'],
+                    fontname=kw['font'],
+                    style=kw['font_style'],
+                    weight=kw['font_weight'],
+                    size=kw['font_size'],
+                    bbox=dict(facecolor=kw['fill_color'],
+                              edgecolor=kw['edge_color']),
+                    zorder=45)
 
     def close(self):
         """

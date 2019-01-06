@@ -478,13 +478,11 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin, leg_name, ngroups):
         if coeffs[-1] > 0:
             eqn += '+'
         eqn += '%s' % round(coeffs[-1], 3)
-
         layout.add_text(ir, ic, eqn, 'fit')
 
     if layout.fit.rsq:
-        offsety = (2.2*layout.fit.font_size) / layout.axes.size[1]
         layout.add_text(ir, ic, 'R^2=%s' % round(rsq, 4), 'fit',
-                        offsety=-offsety)
+                        offsety=-2.2*layout.fit.font_size)
 
     return data
 
@@ -719,6 +717,9 @@ def plotter(plot_func, **kwargs):
 
             # Add box labels
             layout.add_box_labels(ir, ic, dd)
+
+            # Add arbitrary text
+            layout.add_text(ir, ic)
 
         # Make the legend
         layout.add_legend()

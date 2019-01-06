@@ -139,6 +139,7 @@ Documentation
    heatmap.ipynb
    hist.ipynb
    bar.ipynb
+   misc.ipynb
 
 .. toctree::
    :maxdepth: 1

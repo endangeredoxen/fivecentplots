@@ -173,7 +173,7 @@ def test_wrap(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'wrap_master') if master else 'wrap'
 
     # Make the plot
-    fcp.bar(df, x='Liquid', y='pH', show=True, tick_labels_major_x_rotation=90, wrap='Measurement', ax_size=[300, 300],
+    fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, wrap='Measurement', ax_size=[300, 300],
             filename=name + '.png', inline=False, jitter=False)
 
     # Compare with master
