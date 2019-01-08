@@ -1462,12 +1462,13 @@ class Layout(BaseLayout):
 
 
         # Account for legends longer than the figure
-        fig_only = self.axes.size[1]*self.nrow + (self.ws_ticks_ax +
-                   self.label_x.size[1] + self.ws_fig_label +
-                   max(self.tick_labels_major_x.size[1],
-                       self.tick_labels_minor_x.size[1])) * \
-                   (1 + int(self.separate_labels)*self.nrow)
-        self.legend.overflow = max(self.legend.size[1]-fig_only, 0)
+        header = self.ws_title + \
+            (self.label_col.size[1] + self.ws_label_col) * self.label_col.on + \
+            self.title_wrap.size[1] + self.label_wrap.size[1] + \
+            self.labtick_x2
+
+        if self.legend.size[1] + header > self.fig.size[1]:
+            self.legend.overflow = self.legend.size[1] + header - self.fig.size[1]
         self.fig.size[1] += self.legend.overflow
 
     def get_legend_position(self):
