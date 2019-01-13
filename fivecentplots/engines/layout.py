@@ -872,28 +872,30 @@ class BaseLayout:
             alphas = []
             labels = []
             for ival, val in enumerate(vals):
-                if type(val) is list or type(val) is tuple and len(val) > 1:
+                if (type(val) is list or type(val) is tuple) and len(val) > 1:
                     values += [val[0]]
                 else:
                     values += [val]
-                if type(val) is list or type(val) is tuple and len(val) > 1:
+                if (type(val) is list or type(val) is tuple) and len(val) > 1:
                     colors += [val[1]]
                 else:
                     colors += [utl.kwget(kwargs, self.fcpp, '%s_color' % axline, '#000000')]
-                if type(val) is list or type(val) is tuple and len(val) > 2:
+                if (type(val) is list or type(val) is tuple) and len(val) > 2:
                     styles += [val[2]]
                 else:
                     styles += [utl.kwget(kwargs, self.fcpp, '%s_style' % axline, '-')]
-                if type(val) is list or type(val) is tuple and len(val) > 3:
+                if (type(val) is list or type(val) is tuple) and len(val) > 3:
                     widths += [val[3]]
                 else:
                     widths += [utl.kwget(kwargs, self.fcpp, '%s_width' % axline, 1)]
-                if type(val) is list or type(val) is tuple and len(val) > 4:
+                if (type(val) is list or type(val) is tuple) and len(val) > 4:
                     alphas += [val[4]]
                 else:
                     alphas += [utl.kwget(kwargs, self.fcpp, '%s_alpha' % axline, 1)]
-                if type(val) is list or type(val) is tuple and len(val) > 5:
+                if (type(val) is list or type(val) is tuple) and len(val) > 5:
                     labels += [val[5]]
+                elif (type(val) is list or type(val) is tuple) and type(val[0]) is str:
+                    labels += [val[0]]
                 else:
                     labels += [utl.kwget(kwargs, self.fcpp, '%s_label' % axline, None)]
             setattr(self, axline,

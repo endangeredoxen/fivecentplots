@@ -381,6 +381,31 @@ def test_other_lines(master=False, remove=True, show=False):
         assert not compare
 
 
+def test_other_lines_df(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'other_lines_df_master') if master else 'other_lines_df'
+
+    # Make the plot
+    df['Open'] = 0
+    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, show=SHOW, legend=True,
+            filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+            ax_hlines=[('Open', '#FF0000', '--', 3, 1), 1.2], ax_vlines=[0, (1, '#00FF00')],
+            filename=name + '.png', inline=False)
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def test_other_curve_fitting(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'other_curve-fitting_master') if master else 'other_curve-fitting'

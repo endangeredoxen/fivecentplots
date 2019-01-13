@@ -695,7 +695,7 @@ def plotter(plot_func, **kwargs):
             layout.set_axes_grid_lines(ir, ic)
 
             # Add horizontal and vertical lines
-            layout.add_hvlines(ir, ic)
+            layout.add_hvlines(ir, ic, df_rc)
 
             # Plot the data
             dd = globals()[plot_func](dd, layout, ir, ic, df_rc, kwargs)

@@ -258,13 +258,14 @@ class Layout(BaseLayout):
 
         return cbar
 
-    def add_hvlines(self, ir, ic):
+    def add_hvlines(self, ir, ic, df=None):
         """
         Add axhlines and axvlines
 
         Args:
             ir (int): subplot row index
             ic (int): subplot col index
+            df (pd.DataFrame): current data
         """
 
         # Set default line attributes
@@ -274,6 +275,8 @@ class Layout(BaseLayout):
                    else self.axes.obj[ir, ic].axvline
             if ll.on:
                 for ival, val in enumerate(ll.values):
+                    if type(val) is str and type(df) is pd.DataFrame:
+                        val = df[val].iloc[0]
                     line = func(val, color=ll.color.get(ival),
                                 linestyle=ll.style.get(ival),
                                 linewidth=ll.width.get(ival),

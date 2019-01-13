@@ -945,20 +945,24 @@ or more of the following keywords: <code class="docutils literal notranslate"><s
 are vertical, “ax” lines are applied to the primary axis, and “ax2”
 lines are applied to a secondary axis, if it exists. The value of these
 keywords is:</p>
-<ul><li><p>a single float number</p>
-</li><li><p>a list of float numbers</p>
-</li><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="ow">or</span> <span class="n">a</span> <span class="n">variable</span><span class="o">-</span><span class="n">length</span> <span class="nb">list</span> <span class="n">of</span> <span class="n">tuples</span> <span class="p">(</span><span class="n">only</span> <span class="n">first</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">required</span><span class="p">):</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
-<span class="o">&lt;</span><span class="n">ul</span><span class="o">&gt;</span>
-    <span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="n">item</span> <span class="mi">1</span> <span class="p">(</span><span class="n">required</span><span class="p">)</span> <span class="o">=</span> <span class="n">x</span> <span class="ow">or</span> <span class="n">y</span> <span class="n">axis</span> <span class="n">value</span> <span class="n">of</span> <span class="n">the</span> <span class="n">line</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
-    <span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="n">item</span> <span class="mi">2</span><span class="p">:</span> <span class="n">line</span> <span class="n">color</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
-    <span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="n">item</span> <span class="mi">3</span><span class="p">:</span> <span class="n">line</span> <span class="n">style</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
-    <span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="n">item</span> <span class="mi">4</span><span class="p">:</span> <span class="n">line</span> <span class="n">width</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
-    <span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="n">item</span> <span class="mi">5</span><span class="p">:</span> <span class="n">line</span> <span class="n">alpha</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
-    <span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="n">item</span> <span class="mi">6</span><span class="p">:</span> <span class="n">legend</span> <span class="n">text</span> <span class="p">(</span><span class="n">won</span><span class="s1">&#39;t appear in legend without this)&lt;/li&gt;</span>
-<span class="o">&lt;/</span><span class="n">ul</span><span class="o">&gt;</span>
-</pre></div>
-</div>
-</ul><div class="nbinput docutils container">
+<ul class="simple">
+<li>a single float number</li>
+<li>a list of float numbers</li>
+<li>or a variable-length list of tuples (only first value is required):<ul>
+<li>item 1 (required) = x or y axis value of the line or the name of a
+DataFrame column from which the first entry in the column will be
+used</li>
+<li>item 2: line color</li>
+<li>item 3: line style</li>
+<li>item 4: line width</li>
+<li>item 5: line alpha</li>
+<li>item 6: legend text (won’t appear in legend without this unless
+item 1 is a name of a DataFrame column)</li>
+</ul>
+</li>
+</ul>
+<p>Explicitly defined horizontal and vertical lines:</p>
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
 <span></span>In [20]:
 </pre></div>
@@ -974,7 +978,28 @@ keywords is:</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_58_0.png" src="_images/plot_58_0.png" />
+<img alt="_images/plot_59_0.png" src="_images/plot_59_0.png" />
+</div>
+</div>
+<p>Horizontal line using the first value of a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> column:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Open&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;IV Data&#39;</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">,</span>
+         <span class="n">ax_hlines</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;Open&#39;</span><span class="p">,</span> <span class="s1">&#39;#FF0000&#39;</span><span class="p">,</span> <span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mf">1.2</span><span class="p">],</span> <span class="n">ax_vlines</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;#00FF00&#39;</span><span class="p">)])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_61_0.png" src="_images/plot_61_0.png" />
 </div>
 </div>
 </div>
@@ -985,7 +1010,7 @@ keyword <code class="docutils literal notranslate"><span class="pre">fit</span><
 value:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [21]:
+<span></span>In [22]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -999,13 +1024,13 @@ value:</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_61_0.png" src="_images/plot_61_0.png" />
+<img alt="_images/plot_64_0.png" src="_images/plot_64_0.png" />
 </div>
 </div>
 <p>We can disable the legend using <code class="docutils literal notranslate"><span class="pre">legend=False</span></code>:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [22]:
+<span></span>In [23]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1019,7 +1044,7 @@ value:</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_63_0.png" src="_images/plot_63_0.png" />
+<img alt="_images/plot_66_0.png" src="_images/plot_66_0.png" />
 </div>
 </div>
 <p>We can also constrain the region of interest for the fit by supplying a
@@ -1027,7 +1052,7 @@ start and stop value to either the <code class="docutils literal notranslate"><s
 keywords:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [23]:
+<span></span>In [24]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1041,13 +1066,13 @@ keywords:</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_65_0.png" src="_images/plot_65_0.png" />
+<img alt="_images/plot_68_0.png" src="_images/plot_68_0.png" />
 </div>
 </div>
 <p>We can also add a line of fit for each item in a legend:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [24]:
+<span></span>In [25]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1061,7 +1086,7 @@ keywords:</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_67_0.png" src="_images/plot_67_0.png" />
+<img alt="_images/plot_70_0.png" src="_images/plot_70_0.png" />
 </div>
 </div>
 <p>If we legend and group by the same value and select a single color for
@@ -1069,7 +1094,7 @@ the fit line, the legend will collapse to show only one instance of
 “Fit”:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [25]:
+<span></span>In [26]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1083,7 +1108,7 @@ the fit line, the legend will collapse to show only one instance of
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_69_0.png" src="_images/plot_69_0.png" />
+<img alt="_images/plot_72_0.png" src="_images/plot_72_0.png" />
 </div>
 </div>
 </div>
@@ -1104,7 +1129,7 @@ measurement, the x-values for each data set are not identical. The
 there may only be a single data point. The result is ugly and useful.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [26]:
+<span></span>In [27]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1118,14 +1143,14 @@ there may only be a single data point. The result is ugly and useful.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_72_0.png" src="_images/plot_72_0.png" />
+<img alt="_images/plot_75_0.png" src="_images/plot_75_0.png" />
 </div>
 </div>
 <p>Instead, add the column name for the column containing the set point
 value of I [A] to the keyword <code class="docutils literal notranslate"><span class="pre">stat_val</span></code>:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [27]:
+<span></span>In [28]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1139,7 +1164,7 @@ value of I [A] to the keyword <code class="docutils literal notranslate"><span c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_74_0.png" src="_images/plot_74_0.png" />
+<img alt="_images/plot_77_0.png" src="_images/plot_77_0.png" />
 </div>
 </div>
 <p>Stat lines also work with multiple DataFrame columns are plotted on a
@@ -1147,7 +1172,7 @@ given axis. For example, consider the following with two values on the
 y-axis:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [28]:
+<span></span>In [29]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1160,7 +1185,7 @@ y-axis:</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_76_0.png" src="_images/plot_76_0.png" />
+<img alt="_images/plot_79_0.png" src="_images/plot_79_0.png" />
 </div>
 </div>
 </div>
@@ -1175,7 +1200,7 @@ the data at a given point. The example below shows a 95% confidence
 interval:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [29]:
+<span></span>In [30]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1189,7 +1214,7 @@ interval:</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_79_0.png" src="_images/plot_79_0.png" />
+<img alt="_images/plot_82_0.png" src="_images/plot_82_0.png" />
 </div>
 </div>
 </div>
@@ -1204,7 +1229,7 @@ create a new column in the DataFrame that is plotted vs the value of
 <h4>y=x reference<a class="headerlink" href="#y=x-reference" title="Permalink to this headline">¶</a></h4>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [30]:
+<span></span>In [31]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1218,13 +1243,13 @@ create a new column in the DataFrame that is plotted vs the value of
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_83_0.png" src="_images/plot_83_0.png" />
+<img alt="_images/plot_86_0.png" src="_images/plot_86_0.png" />
 </div>
 </div>
 <p>We can also add multiple reference lines to a single plot:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [31]:
+<span></span>In [32]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1240,7 +1265,7 @@ create a new column in the DataFrame that is plotted vs the value of
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_85_0.png" src="_images/plot_85_0.png" />
+<img alt="_images/plot_88_0.png" src="_images/plot_88_0.png" />
 </div>
 </div>
 </div>
@@ -1252,7 +1277,7 @@ column in the DataFrame as the <code class="docutils literal notranslate"><span 
 <code class="docutils literal notranslate"><span class="pre">ref_line_text</span></code>, the legend defaults to a generic label “Ref Line”):</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [32]:
+<span></span>In [33]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1266,7 +1291,7 @@ column in the DataFrame as the <code class="docutils literal notranslate"><span 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_88_0.png" src="_images/plot_88_0.png" />
+<img alt="_images/plot_91_0.png" src="_images/plot_91_0.png" />
 </div>
 </div>
 </div>
