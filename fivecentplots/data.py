@@ -1383,6 +1383,8 @@ class Data:
                             cols = [f for f in cols if f != 'Counts']
                         self.df_rc = df[cols]
                     else:
+                        self.wrap_vals = \
+                            natsorted(list(df.groupby(self.wrap).groups.keys()))
                         wrap = dict(zip(self.wrap,
                                     utl.validate_list(self.wrap_vals[ir*self.ncol + ic])))
                         self.df_rc = df.loc[(df[list(wrap)] == pd.Series(wrap)).all(axis=1)].copy()
