@@ -509,6 +509,11 @@ class BaseLayout:
                                zorder=utl.kwget(kwargs, self.fcpp,
                                                 'zorder', 2),
                                )
+        if type(self.markers.size) is not RepeatedList:
+            self.markers.size = RepeatedList(self.markers.size, 'marker_size')
+        if type(self.markers.edge_width) is not RepeatedList:
+            self.markers.edge_width = RepeatedList(self.markers.edge_width,
+                                                   'marker_edge_width')
 
         # Lines
         for k in list(kwargs.keys()):
@@ -533,6 +538,7 @@ class BaseLayout:
                            rsq=utl.kwget(kwargs, self.fcpp, 'fit_rsq', False),
                            size=[0,0],
                            )
+        self.fit.legend_text = utl.kwget(kwargs, self.fcpp, 'fit_legend_text', None)
         self.fit.position[0] = self.fit.padding
         self.fit.position[1] = self.axes.size[1] - \
                                (self.fit.padding + self.fit.font_size)
@@ -547,8 +553,8 @@ class BaseLayout:
             if len(missing) > 0:
                 print('Could not find one or more columns for ref line: "%s"' %
                       ', '.join(missing))
-            if not kwargs.get('ref_line_text'):
-                kwargs['ref_line_text'] = ref_col
+            if not kwargs.get('ref_line_legend_text'):
+                kwargs['ref_line_legend_text'] = ref_col
         elif type(kwargs.get('ref_line', False)) is str and \
                 kwargs.get('ref_line', False) in kwargs['df'].columns:
             ref_col = kwargs.get('ref_line')
@@ -559,9 +565,9 @@ class BaseLayout:
                                 on=False if not ref_col else True,
                                 column=RepeatedList(ref_col, 'ref_col') if ref_col else None,
                                 color='#000000',
-                                text=RepeatedList(utl.kwget(kwargs, self.fcpp,
-                                                  'ref_line_text', 'Ref Line'),
-                                                  'ref_line_text'),
+                                legend_text=RepeatedList(utl.kwget(kwargs, self.fcpp,
+                                                  'ref_line_legend_text', 'Ref Line'),
+                                                  'ref_line_legend_text'),
                                 )
 
         # Legend
@@ -591,8 +597,8 @@ class BaseLayout:
                                  )
 
         if not self.legend.on and self.ref_line.on:
-            for ref_line_text in self.ref_line.text.values:
-                self.legend.values[ref_line_text] = []
+            for ref_line_legend_text in self.ref_line.legend_text.values:
+                self.legend.values[ref_line_legend_text] = []
             self.legend.on = True
             self.legend.text = ''
         if not self.legend.on and self.fit.on \
@@ -858,13 +864,21 @@ class BaseLayout:
                 self.markers.type = RepeatedList('o', 'marker_type')
             if 'box_marker_zorder' in self.fcpp.keys():
                 self.markers.zorder = self.fcpp['box_marker_zorder']
+            if type(self.markers.size) is not RepeatedList:
+                self.markers.size = RepeatedList(self.markers.size, 'marker_size')
+            if type(self.markers.edge_width) is not RepeatedList:
+                self.markers.edge_width = RepeatedList(self.markers.edge_width,
+                                                    'marker_edge_width')
 
         # Axhlines/axvlines
         axlines = ['ax_hlines', 'ax_vlines', 'ax2_hlines', 'ax2_vlines']
         # Todo: list
         for axline in axlines:
             val = kwargs.get(axline, False)
-            vals = utl.validate_list(val)
+            if type(val) is not tuple:
+                vals = utl.validate_list(val)
+            else:
+                vals = [val]
             values = []
             colors = []
             styles = []
@@ -1351,13 +1365,13 @@ class BaseLayout:
                     else:
                         getattr(self, val).text = \
                             lab_text if lab_text is not None \
-                            else ' + '.join([str(f) for f in dd])
+                            else ' & '.join([str(f) for f in dd])
                 else:
                     getattr(self, val).text = dd
                 if lab != 'z' and hasattr(self, 'label_%s2' % lab):
                     getattr(self, 'label_%s2' % lab).text = \
                         lab_text2 if lab_text2 is not None \
-                        else ' + '.join([str(f) for f in dd])
+                        else ' & '.join([str(f) for f in dd])
 
             if hasattr(data, '%s_vals' % lab):
                 getattr(self, 'label_%s' % lab).values = \
@@ -1380,18 +1394,37 @@ class BaseLayout:
         self.nrow = data.nrow
         self.nwrap = data.nwrap
         self.axes.share_x = data.share_x
-        self.axes.share_x2 = data.share_x2
+        self.axes2.share_x = data.share_x2
         self.axes.share_y = data.share_y
-        self.axes.share_y2 = data.share_y2
+        self.axes2.share_y = data.share_y2
         self.axes.share_col = data.share_col
         self.axes.share_row = data.share_row
         self.axes.scale = data.ax_scale
         self.axes2.scale =data.ax2_scale
-        if self.plot_func in ['plot_box'] and not self.axes.share_y:
-            self.separate_ticks = True
-        elif self.plot_func not in ['plot_box'] and \
-                (not self.axes.share_x or not self.axes.share_y):
-            self.separate_ticks = True
+        # if self.plot_func in ['plot_box'] and not self.axes.share_y:
+        #     self.separate_ticks = True
+        # elif self.plot_func not in ['plot_box'] and \
+        #         (not self.axes.share_x or not self.axes.share_y):
+        #     self.separate_ticks = True
+
+    def update_wrap(self, data, kwargs):
+        """
+        Update figure props based on wrap selections
+        """
+
+        if data.wrap == 'y' or data.wrap == 'x':
+            self.title_wrap.on = False
+            self.label_wrap.on = False
+            self.separate_labels = kwargs.get('separate_labels', True)
+            self.separate_ticks = kwargs.get('separate_ticks', True) \
+                                  if not self.separate_labels else True
+        elif data.wrap:
+            self.separate_labels = kwargs.get('separate_labels', False)
+            self.separate_ticks = kwargs.get('separate_ticks', False) \
+                                  if not self.separate_labels else True
+            self.ws_row = kwargs.get('ws_row', self.label_wrap._size[1])
+            self.ws_col = kwargs.get('ws_col', 0)
+            self.cbar.on = False  # may want to address this someday
 
     def add_box_labels(self, ir, ic, dd):
         pass
@@ -1528,6 +1561,7 @@ class BaseLayout:
 
     def show(self, inline=True):
         pass
+
 
 class Element:
     def __init__(self, label='None', fcpp={}, others={}, **kwargs):

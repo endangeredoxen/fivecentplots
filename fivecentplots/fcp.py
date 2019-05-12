@@ -331,7 +331,8 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
                 for jj, jrow in dd.legend_vals.iterrows():
                     temp = gg.loc[gg[dd.legend]==jrow['names']][dd.y].dropna()
                     temp['x'] = irow + 1
-                    layout.plot_xy(ir, ic, jj, temp, 'x', dd.y[0],
+                    if len(temp) > 0:
+                        layout.plot_xy(ir, ic, jj, temp, 'x', dd.y[0],
                                    jrow['names'], False, zorder=10)
             else:
                 if len(temp) > 0:
@@ -452,10 +453,13 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin, leg_name, ngroups):
 
     df, coeffs, rsq = data.get_fit_data(ir, ic, df, x, y)
     if layout.legend.on:
-        if (data.wrap_vals is not None and ngroups / data.nwrap > 1 \
+        if layout.fit.legend_text is not None:
+            leg_name = layout.fit.legend_text
+        elif (data.wrap_vals is not None and ngroups / data.nwrap > 1 \
                 or ngroups / (data.nrow * data.ncol) > 1 \
                 or len(np.unique(layout.fit.color.values)) > 1) \
-                and data.legend_vals is not None:
+                and data.legend_vals is not None \
+                and layout.label_wrap.column is None:
             leg_name = '%s [Fit]' % leg_name
         else:
             leg_name = 'Fit'
@@ -566,7 +570,7 @@ def plot_ref(ir, ic, iline, data, layout, df, x, y):
 
     for iref in range(0, len(layout.ref_line.column.values)):
         layout.plot_xy(ir, ic, iref, df, x, layout.ref_line.column.get(iref),
-                       layout.ref_line.text.get(iref), False,
+                       layout.ref_line.legend_text.get(iref), False,
                        line_type='ref_line', marker_disable=True)
 
     return data
@@ -579,11 +583,11 @@ def plot_stat(ir, ic, iline, data, layout, df, x, y, leg_name=None, twin=False):
 
     df_stat = data.get_stat_data(df, x, y)
 
-    if df_stat is None or len(df_stat) == 0:
+    if df_stat is None or len(df_stat) == 0 or layout.fit.on:
         return
 
     layout.lines.on = True
-    layout.plot_xy(ir, ic, iline, df_stat, x, y, leg_name, twin)
+    layout.plot_xy(ir, ic, iline, df_stat, x, y, leg_name, twin, marker_disable=True)
 
     return data
 
@@ -611,7 +615,6 @@ def plot_xy(data, layout, ir, ic, df_rc, kwargs):
             for nn, gg in df.groupby(validate_list(kwargs['groups'])):
                 layout.plot_xy(ir, ic, iline, gg, x, y, leg_name, twin)
                 plot_fit(data, layout, ir, ic, iline, gg, x, y, twin, leg_name, ngroups)
-
         else:
             layout.plot_xy(ir, ic, iline, df, x, y, leg_name, twin)
             plot_fit(data, layout, ir, ic, iline, df, x, y, twin, leg_name, ngroups)
@@ -668,6 +671,7 @@ def plotter(plot_func, **kwargs):
     for ifig, fig_item, fig_cols, df_fig, dd in dd.get_df_figure():
         # Create a layout object
         layout = engine.Layout(plot_func, dd, **kwargs)
+        kwargs = layout.kwargs
 
         # Make the figure
         dd = layout.make_figure(dd, **kwargs)
@@ -757,7 +761,6 @@ def plotter(plot_func, **kwargs):
             if kwargs.get('print_filename', False):
                 print(filename)
             layout.show()
-            layout.close()
 
 
 def save(fig, filename, kw):
@@ -770,7 +773,8 @@ def save(fig, filename, kw):
         kw (dict): kwargs dict
 
     """
-
+    # is this deprecated??
+    st()
     try:
 
         if kw['save_ext'] == 'html':

@@ -18,15 +18,7 @@ from random import randint
 from collections import defaultdict
 from . layout import *
 import warnings
-import matplotlib as mpl
-import matplotlib.pyplot as mplp
-import matplotlib.ticker as ticker
-import matplotlib.patches as patches
-import matplotlib.font_manager as font_manager
-from matplotlib.ticker import AutoMinorLocator, LogLocator, MaxNLocator
-import matplotlib.transforms as mtransforms
-from matplotlib.patches import FancyBboxPatch
-import matplotlib.mlab as mlab
+import bokeh.plotting as bp
 def custom_formatwarning(msg, *args, **kwargs):
     # ignore everything except the message
     return 'Warning: ' + str(msg) + '\n'
@@ -41,25 +33,73 @@ except:
 
 st = pdb.set_trace
 
+
+def format_marker(fig, marker):
+            """
+            Format the marker string to mathtext
+            """
+
+            markers = {'o': fig.circle,
+                       'circle': fig.circle,
+                       '+': fig.cross,
+                       'cross': fig.cross,
+                       's': fig.square,
+                       'square': fig.square,
+                       'x': fig.x,
+                       'd': fig.diamond,
+                       'diamond': fig.diamond,
+                       't': fig.triangle,
+                       'triangle': fig.triangle}
+
+            return markers[marker]
+
+
 class Layout(BaseLayout):
-    def __init__(self, **kwargs):
+    def __init__(self, plot_func, data, **kwargs):
 
         global ENGINE
         ENGINE = 'bokeh'
 
-        BaseLayout.__init__(self, **kwargs)
+        BaseLayout.__init__(self, plot_func, data, **kwargs)
+
+        # Update kwargs
+        if not kwargs.get('save_ext'):
+            kwargs['save_ext'] = '.html'
+        self.kwargs = kwargs
 
     def add_box_labels(self, ir, ic, dd):
         pass
 
-    def add_hvlines(self, ir, ic):
+    def add_hvlines(self, ir, ic, df=None):
         pass
 
     def add_legend(self):
         pass
 
-    def make_figure(self):
+    def add_text(self, ir, ic, text=None, element=None, offsetx=0, offsety=0,
+                 **kwargs):
+        """
+        Add a text box
+        """
+
         pass
+
+    def make_figure(self, data, **kwargs):
+        """
+        Make the figure and axes objects
+        """
+
+        self.update_from_data(data)
+        self.update_wrap(data, kwargs)
+        self.set_label_text(data, **kwargs)
+
+
+        self.fig.obj = bp.figure(plot_width=self.axes.size[0],
+                                 plot_height=self.axes.size[1])
+
+        self.axes.visible = np.array([[True]*self.ncol]*self.nrow)
+
+        return data
 
     def plot_box(self, ir, ic, data,**kwargs):
         """ Plot boxplot data
@@ -139,10 +179,52 @@ class Layout(BaseLayout):
             return the line plot object
         """
 
-        pass
+        df = df.copy()
 
-    def save(self, filename):
-        pass
+        if not line_type:
+            line_type = self.lines
+        else:
+            line_type = getattr(self, line_type)
+
+        # TWINNING
+        # Insert here
+
+        # Make the points
+        points = None
+        if self.markers.on and not marker_disable:
+            if self.markers.jitter:
+                df[x] = np.random.normal(df[x], 0.03, size=len(df[y]))
+            marker = format_marker(self.fig.obj,
+                                   self.markers.type.get(iline))
+            if marker != 'None':
+                marker(df[x], df[y],
+                       fill_color=self.markers.fill_color.get(iline) \
+                                  if self.markers.filled else None,
+                       line_color=self.markers.edge_color.get(iline)[0:7],
+                       size=self.markers.size.get(iline),
+                       )
+            else:
+                st()
+                #??
+                points = ax.plot(df[x], df[y],
+                                marker=marker,
+                                color=line_type.color.get(iline),
+                                linestyle=line_type.style.get(iline),
+                                linewidth=line_type.width.get(iline),
+                                zorder=40)
+
+        # Make the line
+        lines = None
+        if line_type.on:
+            lines = self.fig.obj.line(df[x], df[y],
+                                      color=line_type.color.get(iline)[0:7],
+                                      #linestyle=line_type.style.get(iline),
+                                      line_width=line_type.width.get(iline),
+                                     )
+
+    def save(self, filename, idx=0):
+
+        bp.output_file(filename)
 
     def see(self):
         """
@@ -162,9 +244,11 @@ class Layout(BaseLayout):
         pass
 
     def set_axes_labels(self, ir, ic):
-        pass
 
-    def set_axes_ranges(self, ir, ic):
+        self.fig.obj.xaxis.axis_label = self.label_x.text
+        self.fig.obj.yaxis.axis_label = self.label_y.text
+
+    def set_axes_ranges(self, ir, ic, ranges):
         pass
 
     def set_axes_rc_labels(self, ir, ic):
@@ -180,4 +264,8 @@ class Layout(BaseLayout):
         pass
 
     def show(self, inline=True):
-        pass
+        """
+        Handle display of the plot window
+        """
+
+        bp.show(self.fig.obj)

@@ -148,6 +148,11 @@ class Layout(BaseLayout):
         self.legend_top_offset = 8 # this is differnt for inline; do we need to toggle on/off with show?
         self.legend_border = 3
 
+        # Update kwargs
+        if not kwargs.get('save_ext'):
+            kwargs['save_ext'] = '.png'
+        self.kwargs = kwargs
+
     def add_box_labels(self, ir, ic, data):
 
         num_cols = len(data.changes.columns)
@@ -357,12 +362,13 @@ class Layout(BaseLayout):
             # Sort the legend keys
             if 'NaN' in self.legend.values.keys():
                 del self.legend.values['NaN']
+
             if self.ref_line.on:
-                ref_line, ref_line_text = [], []
+                ref_line, ref_line_legend_text = [], []
                 for iref, ref in enumerate(self.ref_line.column.values):
-                    ref_line += self.legend.values[self.ref_line.text.get(iref)]
-                    ref_line_text += [self.ref_line.text.get(iref)]
-                    del self.legend.values[self.ref_line.text.get(iref)]
+                    ref_line += self.legend.values[self.ref_line.legend_text.get(iref)]
+                    ref_line_legend_text += [self.ref_line.legend_text.get(iref)]
+                    del self.legend.values[self.ref_line.legend_text.get(iref)]
             else:
                 ref_line = None
             if 'fit_line' in self.legend.values.keys():
@@ -378,7 +384,7 @@ class Layout(BaseLayout):
             lines = [self.legend.values[f][0] for f in keys
                      if self.legend.values[f] is not None]
             if ref_line is not None:
-                keys = ref_line_text + keys
+                keys = ref_line_legend_text + keys
                 lines = ref_line + lines
 
             if len(lines) == 0:
@@ -1001,10 +1007,12 @@ class Layout(BaseLayout):
             if self.ref_line.on:
                 for iref, ref in enumerate(self.ref_line.column.values):
                     lines += ax.plot([1, 2, 3])
-                    leg_vals += [self.ref_line.text.get(iref)]
+                    leg_vals += [self.ref_line.legend_text.get(iref)]
             if self.fit.on:
                 lines += ax.plot([1, 2, 3])
-                if data.legend_vals is not None and \
+                if self.fit.legend_text is not None:
+                    leg_vals += [self.fit.legend_text]
+                elif data.legend_vals is not None and \
                         len(data.legend_vals) > 0 and \
                         self.label_wrap.column is None:
                     leg_vals += [row['names'] + ' [Fit]']
@@ -1389,11 +1397,16 @@ class Layout(BaseLayout):
             self.ws_col += self.label_y.size[0] + self.ws_label_tick + self.ws_fig_label
             self.ws_row += self.label_x.size[1] + self.ws_label_tick + self.ws_fig_label
 
-        if self.separate_ticks:
+        if self.separate_ticks or self.axes.share_y == False:
             self.ws_col += max(self.tick_labels_major_y.size[0],
-                               self.tick_labels_minor_y.size[0]) + self.ws_ticks_ax
+                                   self.tick_labels_minor_y.size[0]) + \
+                              self.ws_ticks_ax
+        if self.separate_ticks or \
+                (self.axes.share_x == False and self.box.on == False):
             self.ws_row += max(self.tick_labels_major_x.size[1],
-                               self.tick_labels_minor_x.size[1]) + self.ws_ticks_ax
+                                self.tick_labels_minor_x.size[1]) + \
+                            self.ws_ticks_ax
+
         if self.plot_func == 'plot_heatmap' and \
                 self.heatmap.cell_size is not None and \
                 data.num_x is not None:
@@ -1558,21 +1571,7 @@ class Layout(BaseLayout):
         """
 
         self.update_from_data(data)
-
-        if data.wrap == 'y' or data.wrap == 'x':
-            self.title_wrap.on = False
-            self.label_wrap.on = False
-            self.separate_labels = kwargs.get('separate_labels', True)
-            self.separate_ticks = kwargs.get('separate_ticks', True) \
-                                  if not self.separate_labels else True
-        elif data.wrap:
-            self.separate_labels = kwargs.get('separate_labels', False)
-            self.separate_ticks = kwargs.get('separate_ticks', False) \
-                                  if not self.separate_labels else True
-            self.ws_row = kwargs.get('ws_row', self.label_wrap._size[1])
-            self.ws_col = kwargs.get('ws_col', 0)
-            self.cbar.on = False  # may want to address this someday
-
+        self.update_wrap(data, kwargs)
         self.set_colormap(data)
         self.set_label_text(data, **kwargs)
         data = self.get_element_sizes(data)
@@ -2062,9 +2061,9 @@ class Layout(BaseLayout):
                                 markerfacecolor=self.markers.fill_color.get(iline) \
                                                 if self.markers.filled else 'none',
                                 markeredgecolor=self.markers.edge_color.get(iline),
-                                markeredgewidth=self.markers.edge_width,
+                                markeredgewidth=self.markers.edge_width.get(iline),
                                 linewidth=0,
-                                markersize=self.markers.size,
+                                markersize=self.markers.size.get(iline),
                                 zorder=40)
             else:
                 points = ax.plot(df[x], df[y],
@@ -2667,20 +2666,28 @@ class Layout(BaseLayout):
                 tp = mpl_get_ticks(axes[ia], True, True)
 
             # Force ticks
-            if self.separate_ticks:
+            if self.separate_ticks or getattr(self, 'axes%s' % lab).share_x == False:
                 if LooseVersion(mpl.__version__) < LooseVersion('2.2'):
                     mplp.setp(axes[ia].get_xticklabels(), visible=True)
-                    mplp.setp(axes[ia].get_yticklabels(), visible=True)
                 else:
                     if self.axes.twin_x and ia == 1:
                         axes[ia].xaxis.set_tick_params(which='both', labelbottom=True)
-                        axes[ia].yaxis.set_tick_params(which='both', labelright=True)
                     elif self.axes.twin_y and ia == 1:
                         axes[ia].xaxis.set_tick_params(which='both', labeltop=True)
-                        axes[ia].yaxis.set_tick_params(which='both', labelleft=True)
                     else:
                         axes[ia].xaxis.set_tick_params(which='both', labelbottom=True)
+
+            if self.separate_ticks or getattr(self, 'axes%s' % lab).share_y == False:
+                if LooseVersion(mpl.__version__) < LooseVersion('2.2'):
+                    mplp.setp(axes[ia].get_yticklabels(), visible=True)
+                else:
+                    if self.axes.twin_x and ia == 1:
+                        axes[ia].yaxis.set_tick_params(which='both', labelright=True)
+                    elif self.axes.twin_y and ia == 1:
                         axes[ia].yaxis.set_tick_params(which='both', labelleft=True)
+                    else:
+                        axes[ia].yaxis.set_tick_params(which='both', labelleft=True)
+
             if self.nwrap > 0 and (ic + (ir + 1) * self.ncol + 1) > self.nwrap or \
                     (ir < self.nrow - 1 and not self.axes.visible[ir + 1, ic]):
                 if LooseVersion(mpl.__version__) < LooseVersion('2.2'):

@@ -60,29 +60,6 @@ def test_default(master=False, remove=True, show=False):
         assert not compare
 
 
-def test_default(master=False, remove=True, show=False):
-
-    name = osjoin(MASTER, 'default_master') if master else 'default'
-
-    # Make the plot
-    sub = df[(df.Substrate=='Si')&(df['Target Wavelength']==450)&(df['Boost Level']==0.2)&(df['Temperature [C]']==25)]
-    fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', show=SHOW,
-             filename=name + '.png', inline=False)
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
-
-
 def test_primary(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'primary_master') if master else 'primary'

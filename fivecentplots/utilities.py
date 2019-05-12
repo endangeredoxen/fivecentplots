@@ -427,7 +427,7 @@ def set_save_filename(df, ifig, fig_item, fig_cols, layout, kwargs):
     # Use provided filename
     if 'filename' in kwargs.keys() and type(kwargs['filename']) is str:
         filename = kwargs['filename']
-        ext = kwargs.get('save_ext', '.png')
+        ext = kwargs.get('save_ext')
         filename = filename.replace(ext, '')
         fig = ''
         if fig_item is not None:
@@ -477,7 +477,7 @@ def set_save_filename(df, ifig, fig_item, fig_cols, layout, kwargs):
     for bad in bad_char:
         filename = filename.replace(bad, '_')
 
-    return filename + kwargs.get('save_ext', '.png')
+    return filename + kwargs.get('save_ext')
 
 
 def sigma(x):

@@ -550,7 +550,7 @@ def test_other_stat_good(master=False, remove=True, show=False):
         assert not compare
 
 
-def test_other_stat_good(master=False, remove=True, show=False):
+def test_other_stat_good_mult(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'other_stat-lines-good-multipe-y_master') if master else 'other_stat-lines-good-multipe-y'
 
@@ -604,7 +604,7 @@ def test_other_ref_line(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             ref_line=df['Voltage'], ref_line_text='y=x', xmin=0, ymin=0, xmax=1.6, ymax=1.6,
+             ref_line=df['Voltage'], ref_line_legend_text='y=x', xmin=0, ymin=0, xmax=1.6, ymax=1.6,
              filename=name + '.png', inline=False)
 
     # Compare with master
@@ -630,7 +630,7 @@ def test_other_ref_line_mult(master=False, remove=True, show=False):
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', show=SHOW, legend='Die',
             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
             xmin=0, ymin=0, xmax=1.6, ymax=1.6,
-            ref_line=['Voltage', '2*Voltage'], ref_line_text=['y=x', 'y=2*x'], ref_line_style=['-', '--'], ref_line_color=[5,6],
+            ref_line=['Voltage', '2*Voltage'], ref_line_legend_text=['y=x', 'y=2*x'], ref_line_style=['-', '--'], ref_line_color=[5,6],
             filename=name + '.png', inline=False)
 
     # Compare with master

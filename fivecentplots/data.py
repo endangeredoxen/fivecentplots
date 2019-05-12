@@ -353,8 +353,8 @@ class Data:
         # Check for no groups
         if len(natsorted(list(self.df_all.groupby(values).groups.keys()))) == 0:
             raise GroupingError('The number of unique groups in the data for '
-                                'the "%s=[%s]" is 0' %
-                                (group_type, ', '.join(col_names)))
+                                "the %s=['%s'] is 0" %
+                                (group_type, ', '.join(values)))
 
         # Check for wrap with twiny
         if group_type == 'wrap' and col_names is not None and self.twin_y:
@@ -1115,6 +1115,8 @@ class Data:
 
             xx = np.array(df2[x])
             yy = np.array(df2[y])
+            if len(xx) == 0 or len(yy) == 0:
+                return df, np.ones(int(self.fit)) * np.nan, 0
 
             # Fit the polynomial
             coeffs = np.polyfit(xx, yy, int(self.fit))
@@ -1311,7 +1313,7 @@ class Data:
 
         # Set up wrapping (wrap option overrides row/col)
         if self.wrap:
-            if self.wrap_vals is None:
+            if self.wrap_vals is None:  # this broke something but removing will cause other failures
                 self.wrap_vals = \
                     natsorted(list(df.groupby(self.wrap).groups.keys()))
             if self.ncols == 0:
