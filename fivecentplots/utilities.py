@@ -4,6 +4,7 @@ import pdb
 import numpy as np
 import pandas as pd
 import scipy.stats as ss
+import ctypes
 try:
     import cv2
 except:
@@ -283,6 +284,23 @@ def get_decimals(value, max_places=4):
             last = current
 
     return i - 1
+
+
+def get_text_dimensions(text, points, font):
+    class SIZE(ctypes.Structure):
+        _fields_ = [("cx", ctypes.c_long), ("cy", ctypes.c_long)]
+
+    hdc = ctypes.windll.user32.GetDC(0)
+    hfont = ctypes.windll.gdi32.CreateFontA(points, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, font)
+    hfont_old = ctypes.windll.gdi32.SelectObject(hdc, hfont)
+
+    size = SIZE(0, 0)
+    ctypes.windll.gdi32.GetTextExtentPoint32A(hdc, text, len(text), ctypes.byref(size))
+
+    ctypes.windll.gdi32.SelectObject(hdc, hfont_old)
+    ctypes.windll.gdi32.DeleteObject(hfont)
+
+    return (size.cx, size.cy)
 
 
 def kwget(dict1, dict2, val, default):

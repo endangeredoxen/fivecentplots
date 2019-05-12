@@ -193,6 +193,7 @@ class BaseLayout:
                              font_color='#333333',
                              font_size=18,
                              font_weight='bold',
+                             align='center',
                              )
         if type(self.title.size) is not list:
             self.title.size = [self.axes.size[0], self.title.size]
@@ -1440,6 +1441,13 @@ class BaseLayout:
 
     def make_figure(self):
         pass
+
+    def get_axes(self):
+        """
+        Return list of active axes
+        """
+
+        return [f for f in [self.axes, self.axes2] if f.on]
 
     def plot_box(self, ir, ic, data,**kwargs):
         """ Plot boxplot data

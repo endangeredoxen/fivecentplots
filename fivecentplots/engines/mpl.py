@@ -538,17 +538,6 @@ class Layout(BaseLayout):
                         facecolor=fc.get(iline) if type(fc) is RepeatedList else fc,
                         edgecolor=ec.get(iline) if type(ec) is RepeatedList else ec)
 
-    def get_axes(self):
-        """
-        Return list of active axes
-        """
-
-        axes = [f for f in [self.axes, self.axes2] if f.on]
-        #if self.axes2.on:
-        #    axes += [self.axes2]
-
-        return axes
-
     def get_axes_label_position(self):
         """
         Get the position of the axes labels

@@ -19,6 +19,8 @@ from collections import defaultdict
 from . layout import *
 import warnings
 import bokeh.plotting as bp
+import bokeh.layouts as bl
+import bokeh.models as bm
 def custom_formatwarning(msg, *args, **kwargs):
     # ignore everything except the message
     return 'Warning: ' + str(msg) + '\n'
@@ -32,6 +34,29 @@ except:
     natsorted = sorted
 
 st = pdb.set_trace
+
+
+DASHES = {'-': 'solid',
+          'solid': 'solid',
+          '--': 'dashed ',
+          'dashed': 'dashed',
+          '.': 'dotted',
+          'dotted': 'dotted',
+          '.-': 'dotdash',
+          'dotdash': 'dotdash',
+          '-.': 'dashdot',
+          'dashdot': 'dashdot'}
+
+
+def fill_alpha(hexstr):
+    """
+    Break an 8-digit hex string into a hex color and a fractional alpha value
+    """
+
+    if len(hexstr) == 6:
+        return hexstr, 1
+
+    return hexstr[0:7], int(hexstr[-2:], 16) / 255
 
 
 def format_marker(fig, marker):
@@ -74,7 +99,20 @@ class Layout(BaseLayout):
         pass
 
     def add_legend(self):
-        pass
+        """
+        Add a figure legend
+        """
+
+        if not self.legend.on or len(self.legend.values) == 0:
+            return
+
+        tt = list(self.legend.values.items())
+        tt = [f for f in tt if f[0] is not 'NaN']
+        title = self.axes.obj[0, 0].circle(0, 0, size=0.00000001,
+                                             color=None)
+        tt = [(self.legend.text, [title])] + tt
+        legend = bm.Legend(items=tt, location='top_right')
+        self.axes.obj[0,0].add_layout(legend, 'right')
 
     def add_text(self, ir, ic, text=None, element=None, offsetx=0, offsety=0,
                  **kwargs):
@@ -84,6 +122,24 @@ class Layout(BaseLayout):
 
         pass
 
+    def get_element_sizes(self, data):
+
+        # Get approx legend size
+        name_size = 0
+        for name in data.legend_vals['names']:
+            name_size = max(name_size,
+                            utl.get_text_dimensions(name, self.legend.font_size,
+                                                    self.legend.font)[0])
+
+        if self.legend.on:
+            self.legend.size = [10 + 20 + 5 + name_size + 10, 0]
+
+        return data
+
+    def get_figure_size(self, data, **kwargs):
+
+        self.axes.size[0] += self.legend.size[0]
+
     def make_figure(self, data, **kwargs):
         """
         Make the figure and axes objects
@@ -92,10 +148,14 @@ class Layout(BaseLayout):
         self.update_from_data(data)
         self.update_wrap(data, kwargs)
         self.set_label_text(data, **kwargs)
+        data = self.get_element_sizes(data)
+        self.get_figure_size(data, **kwargs)
 
-
-        self.fig.obj = bp.figure(plot_width=self.axes.size[0],
-                                 plot_height=self.axes.size[1])
+        self.axes.obj = np.array([[None]*self.ncol]*self.nrow)
+        for ir in range(0, self.nrow):
+            for ic in range(0, self.ncol):
+                self.axes.obj[ir, ic] = bp.figure(plot_width=self.axes.size[0],
+                                                  plot_height=self.axes.size[1])
 
         self.axes.visible = np.array([[True]*self.ncol]*self.nrow)
 
@@ -194,33 +254,42 @@ class Layout(BaseLayout):
         if self.markers.on and not marker_disable:
             if self.markers.jitter:
                 df[x] = np.random.normal(df[x], 0.03, size=len(df[y]))
-            marker = format_marker(self.fig.obj,
+            marker = format_marker(self.axes.obj[ir, ic],
                                    self.markers.type.get(iline))
+            ecolor, ealpha = fill_alpha(self.markers.edge_color.get(iline))
+            fcolor, falpha = fill_alpha(self.markers.fill_color.get(iline))
             if marker != 'None':
-                marker(df[x], df[y],
-                       fill_color=self.markers.fill_color.get(iline) \
-                                  if self.markers.filled else None,
-                       line_color=self.markers.edge_color.get(iline)[0:7],
-                       size=self.markers.size.get(iline),
-                       )
+                points = marker(df[x], df[y],
+                                fill_color=fcolor if self.markers.filled else None,
+                                fill_alpha=falpha,
+                                line_color=ecolor,
+                                line_alpha=ealpha,
+                                size=self.markers.size.get(iline),
+                                )
             else:
-                st()
                 #??
-                points = ax.plot(df[x], df[y],
-                                marker=marker,
+                points = marker(df[x], df[y],
                                 color=line_type.color.get(iline),
                                 linestyle=line_type.style.get(iline),
-                                linewidth=line_type.width.get(iline),
-                                zorder=40)
+                                linewidth=line_type.width.get(iline))
 
         # Make the line
         lines = None
         if line_type.on:
-            lines = self.fig.obj.line(df[x], df[y],
-                                      color=line_type.color.get(iline)[0:7],
-                                      #linestyle=line_type.style.get(iline),
-                                      line_width=line_type.width.get(iline),
-                                     )
+            lines = self.axes.obj[ir, ic].line(df[x], df[y],
+                                               color=line_type.color.get(iline)[0:7],
+                                               line_dash=DASHES[line_type.style.get(iline)],
+                                               line_width=line_type.width.get(iline),
+                                               )
+
+        # Add a reference to the line to self.lines
+        if leg_name is not None:
+            leg_vals = []
+            if self.markers.on:
+                leg_vals += [points]
+            if line_type.on:
+                leg_vals += [lines]
+            self.legend.values[leg_name] = leg_vals
 
     def save(self, filename, idx=0):
 
@@ -238,15 +307,90 @@ class Layout(BaseLayout):
         return df
 
     def set_axes_colors(self, ir, ic):
-        pass
+        """
+        Set axes colors (fill, alpha, edge)
+
+        Args:
+            ir (int): subplot row index
+            ic (int): subplot col index
+
+        """
+
+        axes = self.get_axes()
+
+        fill, alpha = fill_alpha(axes[0].fill_color.get(utl.plot_num(ir, ic, self.ncol)))
+        self.axes.obj[ir, ic].background_fill_color = fill
+        self.axes.obj[ir, ic].background_fill_alpha = alpha
 
     def set_axes_grid_lines(self, ir, ic):
-        pass
+        """
+        Style the grid lines and toggle visibility
+
+        Args:
+            ir (int): subplot row index
+            ic (int): subplot col index
+
+        """
+
+        axis = ['x', 'y']
+
+        for ax in axis:
+            grid = getattr(self.axes.obj[ir, ic], '%sgrid' % ax)
+            grid.grid_line_color = self.grid_major.color.get(0)[0:7] if self.grid_major.on \
+                                   else None
+            grid.grid_line_width = self.grid_major.width.get(0)
+            grid.grid_line_dash = DASHES[self.grid_major.style.get(0)]
+
+            grid.minor_grid_line_color = self.grid_minor.color.get(0)[0:7] if self.grid_minor.on \
+                                   else None
+            grid.minor_grid_line_width = self.grid_minor.width.get(0)
+            grid.minor_grid_line_dash = DASHES[self.grid_minor.style.get(0)]
 
     def set_axes_labels(self, ir, ic):
+        """
+        Set the axes labels
 
-        self.fig.obj.xaxis.axis_label = self.label_x.text
-        self.fig.obj.yaxis.axis_label = self.label_y.text
+        Args:
+            ir (int): current row index
+            ic (int): current column index
+            kw (dict): kwargs dict
+
+        """
+
+        axis = ['x', 'y'] #x2', 'y', 'y2', 'z']
+        for ax in axis:
+            label = getattr(self, 'label_%s' % ax)
+            if not label.on:
+                continue
+            if type(label.text) not in [str, list]:
+                continue
+            if type(label.text) is str:
+                labeltext = label.text
+            if type(label.text) is list:
+                labeltext = label.text[ic + ir * self.ncol]
+
+            # Twinning?
+
+            # Toggle label visibility
+            if not self.separate_labels:
+                if ax == 'x' and ir != self.nrow - 1 and \
+                        self.nwrap == 0 and self.axes.visible[ir+1, ic]:
+                    continue
+                if ax == 'x2' and ir != 0:
+                    continue
+                if ax == 'y' and ic != 0 and self.axes.visible[ir, ic - 1]:
+                    continue
+                if ax == 'y2' and ic != self.ncol - 1 and \
+                        utl.plot_num(ir, ic, self.ncol) != self.nwrap:
+                    continue
+
+            lkwargs = self.make_kwargs(label)
+            laxis = getattr(self.axes.obj[ir, ic], '%saxis' % ax)
+            laxis.axis_label = labeltext
+            laxis.axis_label_text_font = lkwargs['font']
+            laxis.axis_label_text_font_size = '%spt' % lkwargs['font_size']
+            laxis.axis_label_text_color = lkwargs['font_color']
+            laxis.axis_label_text_font_style = lkwargs['font_style']
 
     def set_axes_ranges(self, ir, ic, ranges):
         pass
@@ -258,14 +402,30 @@ class Layout(BaseLayout):
         pass
 
     def set_axes_ticks(self, ir, ic):
-        pass
+
+        self.axes.obj[ir, ic].xaxis.major_label_text_font_size = \
+            '%spt' % self.tick_labels_major.font_size
+        self.axes.obj[ir, ic].yaxis.major_label_text_font_size = \
+            '%spt' % self.tick_labels_major.font_size
 
     def set_figure_title(self):
-        pass
+        """
+        Add a figure title
+        """
+
+        if self.title.on:
+            title = self.axes.obj[0,0].title
+            title.text = self.title.text
+            title.align = self.title.align
+            title.text_color = self.title.font_color
+            title.text_font_size = '%spt' % self.title.font_size
+            title.background_fill_alpha = self.title.fill_alpha
+            title.background_fill_color = self.title.fill_color.get(0)[0:7]
 
     def show(self, inline=True):
         """
         Handle display of the plot window
         """
 
-        bp.show(self.fig.obj)
+        grid = bl.gridplot(self.axes.obj.flatten(), ncols=self.ncol)
+        bp.show(grid)

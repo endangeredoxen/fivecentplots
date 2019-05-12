@@ -237,12 +237,30 @@ in the <a class="reference external" href="keyword.html">next section</a> of the
 <div class="section" id="engine">
 <h2>Engine<a class="headerlink" href="#engine" title="Permalink to this headline">¶</a></h2>
 <p>In order to actually create a plot, <strong>fivecentplots</strong> must tap into a plotting “engine”.
-This engine is a Python package like <strong>matplotlib</strong> or <strong>bokeh</strong>.  The keyword-argument-based
-api for <strong>fivecentplots</strong> is not tied to a particular package but is sufficiently general
-to be used with multiple plotting engines.</p>
-<p>Each engine inherits a unique <code class="docutils literal notranslate"><span class="pre">Layout</span></code> class that converts the inputs from <strong>fivecentplots</strong>
-into methods and attributes unique to that plotting package.  In version 0.3.0, only <strong>matplotlib</strong> is supported.  However, future versions will include
-the ability to switch to other plotting engines depending on the desired result.</p>
+This engine is a standard Python plotting package like <strong>matplotlib</strong> or <strong>bokeh</strong>.
+One of the key advantages of <strong>fivecentplots</strong> is the ability to switch between plotting engines
+while using the same keyword-argument-based api.  The engine itself is toggled by a keyword.
+<strong>fivecentplots</strong> uses <strong>matplotlib</strong> as its default engine.</p>
+<p>For example, if you needed a high-quality plot for a paper and wanted to use <strong>matplotlib</strong>, you
+could do the following:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/engine_mpl.png" src="_images/engine_mpl.png" />
+<p>Alternatively, what if you needed to interactively manipulate the same data set?  It may be more
+convenient to plot via <strong>bokeh</strong>.  To switch engines, we simply add the keyword <code class="docutils literal notranslate"><span class="pre">engine</span></code> and
+set to “bokeh”:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;bokeh&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/engine_bokeh.png" src="_images/engine_bokeh.png" />
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">As of version 0.3.0, <strong>bokeh</strong> support is limited compared with <strong>matplotlib</strong>.  More
+development is needed.</p>
+</div>
 <div class="section" id="matplotlib">
 <h3><strong>matplotlib</strong><a class="headerlink" href="#matplotlib" title="Permalink to this headline">¶</a></h3>
 <p>When using the <strong>matplotlib</strong> engine, in order to consistently define the layout and
