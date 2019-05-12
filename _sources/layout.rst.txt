@@ -40,13 +40,34 @@ in the `next section <keyword.html>`_ of the guide.
 Engine
 ------
 In order to actually create a plot, **fivecentplots** must tap into a plotting "engine".
-This engine is a Python package like **matplotlib** or **bokeh**.  The keyword-argument-based
-api for **fivecentplots** is not tied to a particular package but is sufficiently general
-to be used with multiple plotting engines.
+This engine is a standard Python plotting package like **matplotlib** or **bokeh**.
+One of the key advantages of **fivecentplots** is the ability to switch between plotting engines
+while using the same keyword-argument-based api.  The engine itself is toggled by a keyword.
+**fivecentplots** uses **matplotlib** as its default engine.
 
-Each engine inherits a unique ``Layout`` class that converts the inputs from **fivecentplots**
-into methods and attributes unique to that plotting package.  In version 0.3.0, only **matplotlib** is supported.  However, future versions will include
-the ability to switch to other plotting engines depending on the desired result.
+For example, if you needed a high-quality plot for a paper and wanted to use **matplotlib**, you
+could do the following:
+
+.. code:: python
+
+   fcp.plot(df, x='Voltage', y='I [A]', legend='Die',
+            filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25')
+
+.. image:: _static/images/engine_mpl.png
+
+Alternatively, what if you needed to interactively manipulate the same data set?  It may be more
+convenient to plot via **bokeh**.  To switch engines, we simply add the keyword ``engine`` and
+set to "bokeh":
+
+.. code:: python
+
+   fcp.plot(df, x='Voltage', y='I [A]', legend='Die', engine='bokeh',
+            filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25')
+
+.. image:: _static/images/engine_bokeh.png
+
+.. note:: As of version 0.3.0, **bokeh** support is limited compared with **matplotlib**.  More
+          development is needed.
 
 **matplotlib**
 ^^^^^^^^^^^^^^
