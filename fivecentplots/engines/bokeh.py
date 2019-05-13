@@ -124,6 +124,9 @@ class Layout(BaseLayout):
 
     def get_element_sizes(self, data):
 
+        if data.legend_vals is None:
+            return data
+
         # Get approx legend size
         name_size = 0
         for name in data.legend_vals['names']:
@@ -293,7 +296,10 @@ class Layout(BaseLayout):
 
     def save(self, filename, idx=0):
 
-        bp.output_file(filename)
+        #bp.output_file(filename)
+        #self.saved = bl.gridplot(self.axes.obj.flatten(), ncols=self.ncol)
+        #bp.save(self.saved)
+        pass  # conflicts with jupyter
 
     def see(self):
         """
@@ -427,5 +433,16 @@ class Layout(BaseLayout):
         Handle display of the plot window
         """
 
-        grid = bl.gridplot(self.axes.obj.flatten(), ncols=self.ncol)
-        bp.show(grid)
+        try:
+            app = str(get_ipython())
+        except:
+            app = ''
+
+        # jupyter notebook special
+        if 'zmqshell.ZMQInteractiveShell' in app:
+            bp.output_notebook()
+            bp.show(bl.gridplot(self.axes.obj.flatten(), ncols=self.ncol))
+
+        # other
+        else:
+            bp.show(self.saved)
