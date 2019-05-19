@@ -4,7 +4,9 @@ import pdb
 import numpy as np
 import pandas as pd
 import scipy.stats as ss
-import ctypes
+#import ctypes
+from matplotlib.font_manager import FontProperties, findfont
+from PIL import ImageFont
 try:
     import cv2
 except:
@@ -286,21 +288,29 @@ def get_decimals(value, max_places=4):
     return i - 1
 
 
-def get_text_dimensions(text, points, font):
-    class SIZE(ctypes.Structure):
-        _fields_ = [("cx", ctypes.c_long), ("cy", ctypes.c_long)]
+def get_text_dimensions(text, **kwargs):
+    # class SIZE(ctypes.Structure):
+    #     _fields_ = [("cx", ctypes.c_long), ("cy", ctypes.c_long)]
 
-    hdc = ctypes.windll.user32.GetDC(0)
-    hfont = ctypes.windll.gdi32.CreateFontA(points, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, font)
-    hfont_old = ctypes.windll.gdi32.SelectObject(hdc, hfont)
+    # hdc = ctypes.windll.user32.GetDC(0)
+    # hfont = ctypes.windll.gdi32.CreateFontW(-points, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, font)
+    # hfont_old = ctypes.windll.gdi32.SelectObject(hdc, hfont)
+    # size = SIZE(0, 0)
+    # ctypes.windll.gdi32.GetTextExtentPoint32W(hdc, text, len(text), ctypes.byref(size))
+    # ctypes.windll.gdi32.SelectObject(hdc, hfont_old)
+    # ctypes.windll.gdi32.DeleteObject(hfont)
 
-    size = SIZE(0, 0)
-    ctypes.windll.gdi32.GetTextExtentPoint32A(hdc, text, len(text), ctypes.byref(size))
+    # return (size.cx, size.cy)
 
-    ctypes.windll.gdi32.SelectObject(hdc, hfont_old)
-    ctypes.windll.gdi32.DeleteObject(hfont)
+    font = FontProperties()
+    font.set_family(kwargs['font'])
+    font.set_style(kwargs['font_style'])
+    font.set_weight(kwargs['font_weight'])
+    fontfile = findfont(font, fallback_to_default=True)
 
-    return (size.cx, size.cy)
+    size = ImageFont.truetype(fontfile , kwargs['font_size']).getsize(text)
+
+    return size[0]*1.125, size[1]*1.125  # no idea why it is off
 
 
 def kwget(dict1, dict2, val, default):

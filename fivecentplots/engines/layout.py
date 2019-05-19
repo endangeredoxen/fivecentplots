@@ -992,6 +992,7 @@ class BaseLayout:
                               font_size=16,
                               font_style='normal',
                               font_weight='bold',
+                              align='center',
                               )
         self.label_row = copy.deepcopy(label_rc)
         self.label_row.on = \

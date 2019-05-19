@@ -29,7 +29,7 @@ from . data import Data
 from . colors import *
 from . import engines
 from . import keywords
-from . utilities import dfkwarg, set_save_filename, validate_list
+from . utilities import dfkwarg, kwget, set_save_filename, validate_list, reload_defaults
 import warnings
 try:
     import fileio
@@ -654,7 +654,7 @@ def plotter(plot_func, **kwargs):
     kwargs = deprecated(kwargs)
 
     # Set the plotting engine
-    engine = kwargs.get('engine', 'mpl').lower()
+    engine = kwget(kwargs, reload_defaults()[0], 'engine', 'mpl') #kwargs.get('engine', 'mpl').lower()
     if not hasattr(engines, engine):
         print('Specified plotting engine could not be found!')
         return
@@ -760,7 +760,9 @@ def plotter(plot_func, **kwargs):
         else:
             if kwargs.get('print_filename', False):
                 print(filename)
-            layout.show()
+            out = layout.show(filename)
+            if out is not None:
+                return out
 
 
 def save(fig, filename, kw):

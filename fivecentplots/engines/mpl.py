@@ -3298,7 +3298,7 @@ class Layout(BaseLayout):
 
         return ax
 
-    def show(self):
+    def show(self, filename=None):
         """
         Handle display of the plot window
         """
