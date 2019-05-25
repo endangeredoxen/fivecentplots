@@ -2065,7 +2065,14 @@ class Layout(BaseLayout):
         # Make the line
         lines = None
         if line_type.on:
-            lines = ax.plot(df[x], df[y],
+            # Mask any nans
+            try:
+                mask = np.isfinite(df[x])
+            except:
+                mask = df[x] == df[x]
+
+            # Plot the line
+            lines = ax.plot(df[x][mask], df[y][mask],
                             color=line_type.color.get(iline),
                             linestyle=line_type.style.get(iline),
                             linewidth=line_type.width.get(iline),
