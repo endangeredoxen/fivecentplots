@@ -135,16 +135,16 @@ What issues does fivecentplots address?
      plt.show()
 
   This example is a bit contrived as you can certainly plot data in matplotlib with
-  fewer lines of code in a less visually appealing manner.  We could also update a
-  matplotlibrc file to automatically account for some of the style elements without
-  having to hard cod them.  Regardless, the point should be clear:  **fivecentplots**
-  reduces the barrier to good-looking plots.
+  fewer lines of code in a less visually appealing manner.  We could simplify further by
+  adding some of the style elements of this plot into a matplotlibrc file to avoid
+  hard coding them.  Regardless, the point should be clear:  **fivecentplots**
+  reduces the barrier to generate good-looking plots.
 
   What if we wanted to do the same plot in bokeh?  We'd need to learn an entirely
   different syntax!  But in **fivecentplots** we can just change the plotting engine
   adding one additional keyword, ``engine``:
 
-  .. code-block::
+  .. code-block:: python
 
      fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level',
               ax_size=[225, 225], share_y=False,
@@ -257,7 +257,7 @@ Documentation
    contour.ipynb
    heatmap.ipynb
    hist.ipynb
-   bar.ipynb
+   barplot.ipynb
    misc.ipynb
 
 .. toctree::
