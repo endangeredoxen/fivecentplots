@@ -344,7 +344,7 @@ class Layout(BaseLayout):
         # Add a reference to the line to self.lines
         if leg_name is not None:
             leg_vals = []
-            if self.markers.on:
+            if self.markers.on and not marker_disable:
                 leg_vals += [points]
             if line_type.on:
                 leg_vals += [lines]

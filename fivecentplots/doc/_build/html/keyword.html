@@ -103,8 +103,8 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Keyword Arguments</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#mandatory">Mandatory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#elements">Elements</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#base-attributes">Base attributes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#nomenclature">Nomenclature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#base-attributes">Base attributes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#axes">Axes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#boxplots">Boxplots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#color-bar">Color Bar</a></li>
@@ -119,6 +119,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#lines">Lines</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#markers">Markers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#reference-line">Reference Line</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id19">Stats</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ticks">Ticks</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#tick-labels">Tick Labels</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#title">Title</a></li>
@@ -282,6 +283,75 @@ only mandatory inputs to plot functions involve the basics of the data that shou
 size, font, etc., that fully describe the <a class="reference external" href="layout.html">element</a>.  All the
 base attributes of a particular <code class="docutils literal notranslate"><span class="pre">Element</span></code> can be overriden by keywords provided
 either in a user theme file or at the time of the plot function call.</p>
+<div class="section" id="nomenclature">
+<h3>Nomenclature<a class="headerlink" href="#nomenclature" title="Permalink to this headline">¶</a></h3>
+<p>Keywords that access the attributes of an element <em>mostly</em> follow a specific formula:</p>
+<div class="admonition note">
+<p class="first admonition-title">Keyword Naming Scheme</p>
+<p class="last">&lt;element name&gt;_&lt;major|minor axis type (if any)&gt;_&lt;x|y|z axis (if any)&gt;_&lt;element attribute name&gt;</p>
+</div><p>Consider the following examples:</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p class="first">Change the x label font color to red:</p>
+<blockquote>
+<div><p><strong>label_x_font_color = ‘#FF0000’</strong></p>
+</div></blockquote>
+</li>
+<li><p class="first">Change the y-axis minor gridline width:</p>
+<blockquote>
+<div><p><strong>grid_major_y_width = 2</strong></p>
+</div></blockquote>
+</li>
+<li><p class="first">Change the axes edge color to black:</p>
+<blockquote>
+<div><p><strong>ax_edge_color = ‘#000000’</strong></p>
+</div></blockquote>
+</li>
+<li><p class="first">Change the whisker color in a box plot:</p>
+<blockquote>
+<div><p><strong>box_whisker_color = #FF00FF</strong></p>
+</div></blockquote>
+</li>
+</ol>
+</div></blockquote>
+<p>Some elements have attributes that fall outside of the scope of the
+<a class="reference external" href="keyword.html#default-attributes">Default Attributes</a>.  These still
+follow the general nomenclature found above.  For example:</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p class="first">Display the fit equation and rsq value of a line fit:</p>
+<blockquote>
+<div><p><strong>fit_eqn = True</strong>
+<strong>fit_rsq = True</strong></p>
+</div></blockquote>
+</li>
+<li><p class="first">Set a different marker size just for the legend</p>
+<blockquote>
+<div><p><strong>legend_marker_size = 8</strong></p>
+</div></blockquote>
+</li>
+<li><p class="first">Change the statistic of the connecting line on a boxplot:</p>
+<blockquote>
+<div><p><strong>box_stat_line = ‘std’</strong></p>
+</div></blockquote>
+</li>
+</ol>
+</div></blockquote>
+<p>There are also a handful of keywords that allow a shorthand notation when
+defining them in the function call.  For example, if you are calling <code class="docutils literal notranslate"><span class="pre">boxplot</span></code>
+and want to convert the box to a violin, you can use either <code class="docutils literal notranslate"><span class="pre">box_violin=True</span></code>
+or <code class="docutils literal notranslate"><span class="pre">violin=True</span></code>.  However, the long form of such values is still required in
+theme files.</p>
+<p>Listed below are the keyword arguments of specific elements. Note that some
+keywords deviate from the standard nomenclature given what they represent.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">We only list the base <code class="docutils literal notranslate"><span class="pre">Element</span></code> attributes below which have a
+default value different than what is specified in the table
+<a class="reference external" href="keyword.html#base-attributes">above</a> for base attributes.  Base attributes that
+do not apply to a given <code class="docutils literal notranslate"><span class="pre">Element</span></code> are also listed.</p>
+</div>
+</div>
 <div class="section" id="base-attributes">
 <h3>Base attributes<a class="headerlink" href="#base-attributes" title="Permalink to this headline">¶</a></h3>
 <p>Each <code class="docutils literal notranslate"><span class="pre">Element</span></code> object contains a basic set of attributes which may or may not be used
@@ -395,86 +465,17 @@ depending on the specifics of the element:</p>
 </tbody>
 </table>
 </div>
-<div class="section" id="nomenclature">
-<h3>Nomenclature<a class="headerlink" href="#nomenclature" title="Permalink to this headline">¶</a></h3>
-<p>Keywords that access the attributes of an element <em>mostly</em> follow a specific formula:</p>
-<div class="admonition note">
-<p class="first admonition-title">Keyword Naming Scheme</p>
-<p class="last">&lt;element name&gt;_&lt;major|minor axis type (if any)&gt;_&lt;x|y|z axis (if any)&gt;_&lt;element attribute name&gt;</p>
-</div><p>Consider the following examples:</p>
-<blockquote>
-<div><ol class="arabic">
-<li><p class="first">Change the x label font color to red:</p>
-<blockquote>
-<div><p><strong>label_x_font_color = ‘#FF0000’</strong></p>
-</div></blockquote>
-</li>
-<li><p class="first">Change the y-axis minor gridline width:</p>
-<blockquote>
-<div><p><strong>grid_major_y_width = 2</strong></p>
-</div></blockquote>
-</li>
-<li><p class="first">Change the axes edge color to black:</p>
-<blockquote>
-<div><p><strong>ax_edge_color = ‘#000000’</strong></p>
-</div></blockquote>
-</li>
-<li><p class="first">Change the whisker color in a box plot:</p>
-<blockquote>
-<div><p><strong>box_whisker_color = #FF00FF</strong></p>
-</div></blockquote>
-</li>
-</ol>
-</div></blockquote>
-<p>Some elements have attributes that fall outside of the scope of the
-<a class="reference external" href="keyword.html#default-attributes">Default Attributes</a>.  These still
-follow the general nomenclature found above.  For example:</p>
-<blockquote>
-<div><ol class="arabic">
-<li><p class="first">Display the fit equation and rsq value of a line fit:</p>
-<blockquote>
-<div><p><strong>fit_eqn = True</strong>
-<strong>fit_rsq = True</strong></p>
-</div></blockquote>
-</li>
-<li><p class="first">Set a different marker size just for the legend</p>
-<blockquote>
-<div><p><strong>legend_marker_size = 8</strong></p>
-</div></blockquote>
-</li>
-<li><p class="first">Change the statistic of the connecting line on a boxplot:</p>
-<blockquote>
-<div><p><strong>box_stat_line = ‘std’</strong></p>
-</div></blockquote>
-</li>
-</ol>
-</div></blockquote>
-<p>There are also a handful of keywords that allow a shorthand notation when
-defining them in the function call.  For example, if you are calling <code class="docutils literal notranslate"><span class="pre">boxplot</span></code>
-and want to convert the box to a violin, you can use either <code class="docutils literal notranslate"><span class="pre">box_violin=True</span></code>
-or <code class="docutils literal notranslate"><span class="pre">violin=True</span></code>.  However, the long form of such values is still required in
-theme files.</p>
-<p>Listed below are the keyword arguments of specific elements. Keyword names that
-deviate from the standard nomenclature are highlighted in cyan.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">We only list the base <code class="docutils literal notranslate"><span class="pre">Element</span></code> attributes below which have a
-default value different than what is specified in the table
-<a class="reference external" href="keyword.html#base-attributes">above</a> for base attributes.  Base attributes that
-do not apply to a given <code class="docutils literal notranslate"><span class="pre">Element</span></code> are also listed.</p>
-</div>
-</div>
 <div class="section" id="axes">
 <h3>Axes<a class="headerlink" href="#axes" title="Permalink to this headline">¶</a></h3>
 <img alt="_images/element_axes.png" src="_images/element_axes.png" />
 <p>The <code class="docutils literal notranslate"><span class="pre">axes</span></code> element consists of the actual plotting window shown in yellow above.
-Keywords for the primary <code class="docutils literal notranslate"><span class="pre">axes</span></code> object begin with the prefix “<a href="#id13"><span class="problematic" id="id14">ax_</span></a>”.  Properties
-of any optional secondary axes begin with the prefix “<a href="#id15"><span class="problematic" id="id16">ax2_</span></a>”.</p>
+Keywords for the primary <code class="docutils literal notranslate"><span class="pre">axes</span></code> object begin with the prefix “<a href="#id25"><span class="problematic" id="id26">ax_</span></a>”.  Properties
+of any optional secondary axes begin with the prefix “<a href="#id27"><span class="problematic" id="id28">ax2_</span></a>”.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="11%" />
-<col width="10%" />
-<col width="47%" />
+<col width="8%" />
+<col width="14%" />
+<col width="46%" />
 <col width="6%" />
 <col width="26%" />
 </colgroup>
@@ -516,88 +517,94 @@ of any optional secondary axes begin with the prefix “<a href="#id15"><span cl
 <td>list of ints</td>
 <td>width, height of plot area</td>
 <td>[400, 400]</td>
-<td>None</td>
-</tr>
-<tr class="row-even"><td><span class="hh">share_x</span></td>
-<td>boolean</td>
-<td>enable primary x-axis range sharing across all subplots</td>
-<td>True</td>
-<td>None</td>
-</tr>
-<tr class="row-odd"><td><span class="hh">share_y</span></td>
-<td>boolean</td>
-<td>enable primary y-axis range sharing across all subplots</td>
-<td>True</td>
-<td>None</td>
-</tr>
-<tr class="row-even"><td><span class="hh">share_z</span></td>
-<td>boolean</td>
-<td>enable primary z-axis range sharing across all subplots</td>
-<td>True</td>
-<td>None</td>
-</tr>
-<tr class="row-odd"><td><span class="hh">share_x2</span></td>
-<td>boolean</td>
-<td>enable secondary x-axis range sharing across all subplots</td>
-<td>True</td>
-<td>None</td>
-</tr>
-<tr class="row-even"><td><span class="hh">share_y2</span></td>
-<td>boolean</td>
-<td>enable secondary y-axis range sharing across all subplots</td>
-<td>True</td>
-<td>None</td>
-</tr>
-<tr class="row-odd"><td><span class="hh">share_col</span></td>
-<td>boolean</td>
-<td>enable axis range sharing for all subplots in a column of subplots</td>
-<td>False</td>
-<td>None</td>
-</tr>
-<tr class="row-even"><td><span class="hh">share_row</span></td>
-<td>boolean</td>
-<td>enable axis range sharing for all subplots in a row of subplots</td>
-<td>False</td>
 <td rowspan="6">None</td>
 </tr>
-<tr class="row-odd"><td><span class="hh">spines</span></td>
+<tr class="row-even"><td>spines</td>
 <td>boolean</td>
 <td>show all axis edges</td>
 <td>True</td>
 </tr>
-<tr class="row-even"><td><span class="hh">spine_bottom</span></td>
+<tr class="row-odd"><td>spine_bottom</td>
 <td>boolean</td>
 <td>show bottom axis edge</td>
 <td>True</td>
 </tr>
-<tr class="row-odd"><td><span class="hh">spine_left</span></td>
+<tr class="row-even"><td>spine_left</td>
 <td>boolean</td>
 <td>show left axis edge</td>
 <td>True</td>
 </tr>
-<tr class="row-even"><td><span class="hh">spine_right</span></td>
+<tr class="row-odd"><td>spine_right</td>
 <td>boolean</td>
 <td>show right axis edge</td>
 <td>True</td>
 </tr>
-<tr class="row-odd"><td><span class="hh">spine_top</span></td>
+<tr class="row-even"><td>spine_top</td>
 <td>boolean</td>
 <td>show top axis edge</td>
 <td>True</td>
 </tr>
-<tr class="row-even"><td><span class="hh">twin_x</span></td>
+<tr class="row-odd"><td>twin_x</td>
 <td>boolean</td>
 <td>enable/disable a secondary y-axis (x-axis is “twinned” or duplicated across two y-axes)</td>
 <td>False</td>
 <td><a class="reference external" href="plot.html#Shared-x-axis-twin_x">twin_x plot</a></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><span class="hh">twin_y</span></td>
+<tr class="row-even"><td rowspan="2">twin_y</td>
 <td rowspan="2">boolean</td>
 <td>enable/disable a secondary x-axis (y-axis is “twinned” or duplicated across two x-axes)</td>
 <td rowspan="2">False</td>
 <td rowspan="2"><a class="reference external" href="plot.html#Shared-y-axis-twin_y">twin_y plot</a></td>
 </tr>
-<tr class="row-even"><td>Note:  wrap plots cannot be used when <code class="docutils literal notranslate"><span class="pre">twin_y</span> <span class="pre">==</span> <span class="pre">True</span></code></td>
+<tr class="row-odd"><td>Note:  wrap plots cannot be used when <code class="docutils literal notranslate"><span class="pre">twin_y</span> <span class="pre">==</span> <span class="pre">True</span></code></td>
+</tr>
+<tr class="row-even"><td>xmin</td>
+<td>float|list of floats|None</td>
+<td>minimum x-values; can use a list for each subplot</td>
+<td>None</td>
+<td><a class="reference external" href="ranges.html#Primary-axes-only">primary axis</a></td>
+</tr>
+<tr class="row-odd"><td>x2min</td>
+<td>float|list of floats|None</td>
+<td>minimum x-values; can use a list for each subplot</td>
+<td>None</td>
+<td><a class="reference external" href="ranges.html#Secondary-y-axis">secondary axis</a></td>
+</tr>
+<tr class="row-even"><td>xmax</td>
+<td>float|list of floats|None</td>
+<td>maximum x-values; can use a list for each subplot</td>
+<td>None</td>
+<td><a class="reference external" href="ranges.html#Primary-axes-only">primary axis</a></td>
+</tr>
+<tr class="row-odd"><td>x2max</td>
+<td>float|list of floats|None</td>
+<td>maximum x-values for secondary axis; can use a list for each subplot</td>
+<td>None</td>
+<td><a class="reference external" href="ranges.html#Secondary-y-axis">secondary axis</a></td>
+</tr>
+<tr class="row-even"><td>ymin</td>
+<td>float|list of floats|None</td>
+<td>minimum y-values; can use a list for each subplot</td>
+<td>None</td>
+<td><a class="reference external" href="ranges.html#Primary-axes-only">primary axis</a></td>
+</tr>
+<tr class="row-odd"><td>y2min</td>
+<td>float|list of floats|None</td>
+<td>minimum y-values for secondary axis; can use a list for each subplot</td>
+<td>None</td>
+<td><a class="reference external" href="ranges.html#Secondary-y-axis">secondary axis</a></td>
+</tr>
+<tr class="row-even"><td>ymax</td>
+<td>float|list of floats|None</td>
+<td>maximum y-values; can use a list for each subplot</td>
+<td>None</td>
+<td><a class="reference external" href="ranges.html#Primary-axes-only">primary axis</a></td>
+</tr>
+<tr class="row-odd"><td>y2max</td>
+<td>float|list of floats|None</td>
+<td>maximum y-values for secondary axis; can use a list for each subplot</td>
+<td>None</td>
+<td><a class="reference external" href="ranges.html#Secondary-y-axis">secondary axis</a></td>
 </tr>
 </tbody>
 </table>
@@ -853,7 +860,7 @@ bar is disabled.</p>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><span class="hh">cbar</span></td>
+<tr class="row-even"><td>cbar</td>
 <td>boolean</td>
 <td>toggle colorbar on/off for contour and heatmap plots</td>
 <td>False</td>
@@ -879,6 +886,7 @@ belong to the base <code class="docutils literal notranslate"><span class="pre">
 </div>
 <div class="section" id="confidence-intervals">
 <h3>Confidence Intervals<a class="headerlink" href="#confidence-intervals" title="Permalink to this headline">¶</a></h3>
+<p>See <a class="reference external" href="keyword.html#stats">Stats</a></p>
 </div>
 <div class="section" id="contour">
 <h3>Contour<a class="headerlink" href="#contour" title="Permalink to this headline">¶</a></h3>
@@ -900,18 +908,18 @@ belong to the base <code class="docutils literal notranslate"><span class="pre">
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><span class="hh">cmap</span></td>
+<tr class="row-even"><td>cmap</td>
 <td>str</td>
 <td>Name of a color map</td>
 <td>inferno</td>
 <td rowspan="3"><a class="reference external" href="contour.html#Filled-contour">contour example</a></td>
 </tr>
-<tr class="row-odd"><td><span class="hh">filled</span></td>
+<tr class="row-odd"><td>filled</td>
 <td>boolean</td>
 <td>Fill area between contour lines</td>
 <td>True</td>
 </tr>
-<tr class="row-even"><td><span class="hh">levels</span></td>
+<tr class="row-even"><td>levels</td>
 <td>int</td>
 <td>Number of contour lines/levels to draw</td>
 <td>20</td>
@@ -956,7 +964,7 @@ be subdivided into multiple subplots to display more data.  Unlike matplotlib, <
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><span class="hh">dpi</span></td>
+<tr class="row-even"><td>dpi</td>
 <td>int</td>
 <td>dots per inch</td>
 <td>100</td>
@@ -980,11 +988,11 @@ be subdivided into multiple subplots to display more data.  Unlike matplotlib, <
 the family of keywords beginning with <code class="docutils literal notranslate"><span class="pre">fit_</span></code>:</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="10%" />
-<col width="10%" />
-<col width="51%" />
+<col width="9%" />
+<col width="9%" />
+<col width="46%" />
 <col width="6%" />
-<col width="23%" />
+<col width="30%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Keyword</th>
@@ -1025,6 +1033,17 @@ the family of keywords beginning with <code class="docutils literal notranslate"
 <td>10</td>
 <td>None</td>
 </tr>
+<tr class="row-odd"><td>fit_range_x</td>
+<td>list</td>
+<td>compute the fit only over a given range of x-values</td>
+<td>None</td>
+<td rowspan="2"><a class="reference external" href="plot.html#Curve-fitting">third example here</a></td>
+</tr>
+<tr class="row-even"><td>fit_range_y</td>
+<td>list</td>
+<td>compute the fit only over a given range of y-values</td>
+<td>None</td>
+</tr>
 <tr class="row-odd"><td>fit_rsq</td>
 <td>boolean</td>
 <td>display the rsq of the fit on the plot</td>
@@ -1047,9 +1066,162 @@ the family of keywords beginning with <code class="docutils literal notranslate"
 </div>
 <div class="section" id="gridlines">
 <h3>Gridlines<a class="headerlink" href="#gridlines" title="Permalink to this headline">¶</a></h3>
+<p>A plot can have both major and minor grids on both primary and secondary axes.  Only
+major grids are enabled by default.</p>
+<p>Grids properities are accessed by keywords with the following nomenclature:</p>
+<div class="admonition note">
+<p class="first admonition-title">Keyword Naming Scheme</p>
+<p class="last">&lt;grid&gt;_&lt;major|minor&gt;_&lt;x|y|z|blank&gt;_&lt;element attribute name&gt;</p>
+</div><p>To specify grids of a specific axis you must include the axis designation in the keyword.
+If the axis is not specified, the property will be applied to all axes.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="6%" />
+<col width="37%" />
+<col width="5%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Keyword</th>
+<th class="head">Data Type</th>
+<th class="head">Description</th>
+<th class="head">Default</th>
+<th class="head">Example</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>grid_major</td>
+<td>boolean</td>
+<td>Toggle major grid visibility for primary x and y axes</td>
+<td>True</td>
+<td>` Major grid enabled/disabled &lt;ticks.html#Major-grid&gt;`_</td>
+</tr>
+<tr class="row-odd"><td>grid_major_x</td>
+<td>boolean</td>
+<td>Toggle major grid visibility for primary x axis</td>
+<td>True</td>
+<td>None</td>
+</tr>
+<tr class="row-even"><td>grid_major_x2</td>
+<td>boolean</td>
+<td>Toggle major grid visibility for secondary x axis</td>
+<td>False</td>
+<td>None</td>
+</tr>
+<tr class="row-odd"><td>grid_major_y</td>
+<td>boolean</td>
+<td>Toggle major grid visibility for primary y axis</td>
+<td>True</td>
+<td>None</td>
+</tr>
+<tr class="row-even"><td>grid_major_y2</td>
+<td>boolean</td>
+<td>Toggle major grid visibility for secondary y axis</td>
+<td>False</td>
+<td>None</td>
+</tr>
+<tr class="row-odd"><td>grid_minor</td>
+<td>boolean</td>
+<td>Toggle minor grid visibility for primary x and y axes</td>
+<td>False</td>
+<td>` Minor grid enabled/disabled &lt;ticks.html#Minor-grid&gt;`_</td>
+</tr>
+<tr class="row-even"><td>grid_minor_x</td>
+<td>boolean</td>
+<td>Toggle minor grid visibility for primary x axis</td>
+<td>False</td>
+<td>None</td>
+</tr>
+<tr class="row-odd"><td>grid_minor_x2</td>
+<td>boolean</td>
+<td>Toggle minor grid visibility for secondary x axis</td>
+<td>False</td>
+<td>None</td>
+</tr>
+<tr class="row-even"><td>grid_minor_y</td>
+<td>boolean</td>
+<td>Toggle minor grid visibility for primary y axis</td>
+<td>False</td>
+<td>None</td>
+</tr>
+<tr class="row-odd"><td>grid_minor_y2</td>
+<td>boolean</td>
+<td>Toggle minor grid visibility for secondary y axis</td>
+<td>False</td>
+<td>None</td>
+</tr>
+<tr class="row-even"><td>grid_major|minor_x|y|blank_color</td>
+<td>str</td>
+<td>Grid line color</td>
+<td>#ffffff</td>
+<td>None</td>
+</tr>
+<tr class="row-odd"><td>grid_major|minor_x|y|blank_style</td>
+<td>str</td>
+<td>Grid line style (follows matplotlib standards: ‘-‘, ‘–’, etc)</td>
+<td><ul class="first last simple">
+<li></li>
+</ul>
+</td>
+<td>None</td>
+</tr>
+<tr class="row-even"><td>grid_major|minor_x|y|blank_width</td>
+<td>float</td>
+<td>Grid line width</td>
+<td>1.3</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section" id="heatmap">
 <h3>Heatmap<a class="headerlink" href="#heatmap" title="Permalink to this headline">¶</a></h3>
+<p>Heatmaps are a useful way to display categorical data or colorized images.  The
+following keywords are available for this platform:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="6%" />
+<col width="51%" />
+<col width="5%" />
+<col width="28%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Keyword</th>
+<th class="head">Data Type</th>
+<th class="head">Description</th>
+<th class="head">Default</th>
+<th class="head">Example</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>cell_size</td>
+<td>int</td>
+<td>width of a heatmap cell</td>
+<td>60</td>
+<td><a class="reference external" href="heatmap.html#Cell-size">cell size</a></td>
+</tr>
+<tr class="row-odd"><td>cmap</td>
+<td>boolean</td>
+<td>toggle colorbar on/off for contour and heatmap plots</td>
+<td>False</td>
+<td><a class="reference external" href="heatmap.html#No-data-labels">basic heatmap</a></td>
+</tr>
+<tr class="row-even"><td>data_labels</td>
+<td>boolean</td>
+<td>enable/disable value labels on the heatmap cells</td>
+<td>False</td>
+<td><a class="reference external" href="heatmap.html#With-data-labels">data labels</a></td>
+</tr>
+<tr class="row-odd"><td>heatmap_font_xxx</td>
+<td>various</td>
+<td>data label fonts are controlled by standard font attributes with the prefix “<a class="reference internal" href="#heatmap">heatmap</a>”</td>
+<td>Various</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section" id="labels">
 <h3>Labels<a class="headerlink" href="#labels" title="Permalink to this headline">¶</a></h3>
@@ -1157,7 +1329,7 @@ prefix <code class="docutils literal notranslate"><span class="pre">legend_</spa
 <td>None</td>
 <td><a class="reference external" href="plot.html#Legend">Legend</a></td>
 </tr>
-<tr class="row-odd"><td rowspan="12"><span class="hh">location</span></td>
+<tr class="row-odd"><td rowspan="12">location</td>
 <td rowspan="12">int | str</td>
 <td>location of legend (at this time only outside of the plot is available!):</td>
 <td rowspan="12">0</td>
@@ -1227,7 +1399,7 @@ prefix <code class="docutils literal notranslate"><span class="pre">legend_</spa
 <tr class="row-even"><td>legend_marker_size</td>
 <td>float</td>
 <td>marker size in legend only</td>
-<td>same as <code class="docutils literal notranslate"><span class="pre">marker_size</span></code></td>
+<td>same as <a href="#id10"><span class="problematic" id="id11">``</span></a>marker_size`</td>
 <td><a class="reference external" href="styles.html#Marker-size">Marker size</a></td>
 </tr>
 <tr class="row-odd"><td>legend_points</td>
@@ -1275,13 +1447,13 @@ selected from the default color list:</p>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><span class="hh">colors</span></td>
+<tr class="row-even"><td>colors</td>
 <td>hex color str or list of hex color strs</td>
 <td>colors to use for lines and markers</td>
 <td>default list</td>
 <td><a class="reference external" href="styles.html#Built-in-color-list">built-in color list</a></td>
 </tr>
-<tr class="row-odd"><td><span class="hh">lines</span></td>
+<tr class="row-odd"><td>lines</td>
 <td>boolean</td>
 <td>toggle line visibility</td>
 <td>True</td>
@@ -1360,7 +1532,7 @@ keywords:</p>
 <tr class="row-even"><td>marker_jitter</td>
 <td>boolean</td>
 <td>add a random offset or jitter to the points around their x-value (useful for box plots)</td>
-<td><a href="#id5"><span class="problematic" id="id6">`</span></a>True for boxplots | <a href="#id7"><span class="problematic" id="id8">`</span></a>False for all other plot types</td>
+<td><a href="#id13"><span class="problematic" id="id14">`</span></a>True for boxplots | <a href="#id15"><span class="problematic" id="id16">`</span></a>False for all other plot types</td>
 <td>None</td>
 </tr>
 <tr class="row-odd"><td>marker_size</td>
@@ -1422,6 +1594,50 @@ keywords:</p>
 </ul>
 </div></blockquote>
 </div>
+<div class="section" id="id19">
+<h3>Stats<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h3>
+<p>Several options are available for graphically displaying statistical information about
+a given data set:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="5%" />
+<col width="5%" />
+<col width="59%" />
+<col width="4%" />
+<col width="27%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Keyword</th>
+<th class="head">Data Type</th>
+<th class="head">Description</th>
+<th class="head">Default</th>
+<th class="head">Example</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>conf_int</td>
+<td>float</td>
+<td>Add shading around a curve based on a given confidence interval from 0 to 1</td>
+<td>None</td>
+<td>` Confidence Intervals &lt;plot.html#Confidence-intervals&gt;`_</td>
+</tr>
+<tr class="row-odd"><td>stat</td>
+<td>str</td>
+<td>Add a line through a data set where each y-value represents a computed statistic of the data at a given x-value.
+Options include:  ‘mean’, ‘median’, ‘std’, ‘q25’ (25% quantile), etc</td>
+<td>None</td>
+<td><a class="reference external" href="plot.html#Stat-lines">Stat lines example</a></td>
+</tr>
+<tr class="row-even"><td>stat_val</td>
+<td>str</td>
+<td>Column name to use instead of the given ‘x’ column for calculating the stat</td>
+<td>None</td>
+<td><a class="reference external" href="plot.html#Stat-lines">Stat lines example</a></td>
+</tr>
+</tbody>
+</table>
+<p>See <a class="reference external" href="plot.html#Stat-lines">Stat lines</a> for examples.</p>
+</div>
 <div class="section" id="ticks">
 <h3>Ticks<a class="headerlink" href="#ticks" title="Permalink to this headline">¶</a></h3>
 <p>Tick marks are controlled using keywords beginning with <code class="docutils literal notranslate"><span class="pre">ticks_</span></code> and are
@@ -1452,7 +1668,7 @@ referenced to either the major or minor grid:</p>
 <tr class="row-odd"><td>ticks_major_increment</td>
 <td>float</td>
 <td>for major ticks only, the increment between tick marks</td>
-<td><a href="#id17"><span class="problematic" id="id18">`Grids and ticks&lt;ticks.html#Increment&gt;`_</span></a></td>
+<td><a href="#id29"><span class="problematic" id="id30">`Grids and ticks&lt;ticks.html#Increment&gt;`_</span></a></td>
 </tr>
 <tr class="row-even"><td>ticks_major_length</td>
 <td>float</td>
@@ -1470,7 +1686,7 @@ referenced to either the major or minor grid:</p>
 <td>int</td>
 <td>enable primary y-axis range sharing across all subplots</td>
 <td>True</td>
-<td><a href="#id19"><span class="problematic" id="id20">`Grids and ticks&lt;ticks.html#Increment&gt;`_</span></a></td>
+<td><a href="#id31"><span class="problematic" id="id32">`Grids and ticks&lt;ticks.html#Increment&gt;`_</span></a></td>
 </tr>
 <tr class="row-odd"><td>ticks_major_width</td>
 <td>float</td>
@@ -1580,7 +1796,7 @@ that sandwich the whitespace, going from left to right or top to bottom:</p>
 </tr>
 <tr class="row-even"><td rowspan="4">Figure</td>
 <td>ws_fig_label</td>
-<td>left figure edge to <code class="docutils literal notranslate"><span class="pre">label_y</span></code></td>
+<td>left figure edge to <a href="#id23"><span class="problematic" id="id24">``</span></a>label_y`</td>
 <td>10</td>
 </tr>
 <tr class="row-odd"><td>ws_leg_fig</td>
@@ -1631,10 +1847,202 @@ that sandwich the whitespace, going from left to right or top to bottom:</p>
 </div>
 <div class="section" id="data">
 <h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
+<p>Some parameters of the plot are handled by the <code class="docutils literal notranslate"><span class="pre">Data</span></code> class in <strong>fivecentplots</strong>.  This
+class is responsible for defining the unique groups for each plot, handling subplots,
+etc.  These keywords are added to the plot function call just like element attribute
+keywords.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="6%" />
+<col width="9%" />
+<col width="35%" />
+<col width="13%" />
+<col width="36%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Keyword</th>
+<th class="head">Data Type</th>
+<th class="head">Description</th>
+<th class="head">Default</th>
+<th class="head">Example</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td rowspan="2">auto_scale</td>
+<td rowspan="2">True</td>
+<td>enable/disable auto-scaling feature for one-side range</td>
+<td rowspan="2">True</td>
+<td rowspan="2"><a class="reference external" href="ranges.html#Primary-axes-only">auto-scale</a></td>
+</tr>
+<tr class="row-odd"><td>specification; not allowed for heatmap or histogram</td>
+</tr>
+<tr class="row-even"><td>col</td>
+<td>str</td>
+<td>name of DataFrame column to use for column-based subplots</td>
+<td>None</td>
+<td><a class="reference external" href="plot.html#Column-plot">column plot</a></td>
+</tr>
+<tr class="row-odd"><td>fig_groups</td>
+<td>str|list of str</td>
+<td>DataFrame column(s) to use for figure-level grouping</td>
+<td>None</td>
+<td><a class="reference external" href="grouping.html#figure-plots">figure plots</a></td>
+</tr>
+<tr class="row-even"><td>filter</td>
+<td>str</td>
+<td>string-based DataFrame filter (similar to query in pandas)</td>
+<td>None</td>
+<td>see most plot examples</td>
+</tr>
+<tr class="row-odd"><td>ncol</td>
+<td>int</td>
+<td>specify the number of columns in a wrap plot</td>
+<td>try to make square grid</td>
+<td><a class="reference external" href="grouping.html?highlight=ncol#By-unique-values">compare two cases</a></td>
+</tr>
+<tr class="row-even"><td>row</td>
+<td>str</td>
+<td>name of DataFrame column to use for row-based subplots</td>
+<td>None</td>
+<td><a class="reference external" href="plot.html#Row-plot">row plot</a></td>
+</tr>
+<tr class="row-odd"><td>share_x</td>
+<td>boolean</td>
+<td>enable primary x-axis range sharing across all subplots</td>
+<td>True</td>
+<td rowspan="7"><a class="reference external" href="ranges.html#Axes-sharing">axis sharing</a></td>
+</tr>
+<tr class="row-even"><td>share_y</td>
+<td>boolean</td>
+<td>enable primary y-axis range sharing across all subplots</td>
+<td>True</td>
+</tr>
+<tr class="row-odd"><td>share_z</td>
+<td>boolean</td>
+<td>enable primary z-axis range sharing across all subplots</td>
+<td>True</td>
+</tr>
+<tr class="row-even"><td>share_x2</td>
+<td>boolean</td>
+<td>enable secondary x-axis range sharing across all subplots</td>
+<td>True</td>
+</tr>
+<tr class="row-odd"><td>share_y2</td>
+<td>boolean</td>
+<td>enable secondary y-axis range sharing across all subplots</td>
+<td>True</td>
+</tr>
+<tr class="row-even"><td>share_col</td>
+<td>boolean</td>
+<td>enable axis range sharing for all subplots in a column of subplots</td>
+<td>False</td>
+</tr>
+<tr class="row-odd"><td>share_row</td>
+<td>boolean</td>
+<td>enable axis range sharing for all subplots in a row of subplots</td>
+<td>False</td>
+</tr>
+<tr class="row-even"><td rowspan="3">trans_x</td>
+<td rowspan="3">str|None</td>
+<td>apply an axis transformation to a given axis</td>
+<td rowspan="3">None</td>
+<td rowspan="3">None</td>
+</tr>
+<tr class="row-odd"><td>options: ‘abs’, ‘negative’ or ‘neg’, ‘nq’ (normal quantile)</td>
+</tr>
+<tr class="row-even"><td>inverse’ or ‘inv’, (‘pow’, int), ‘flip’</td>
+</tr>
+<tr class="row-odd"><td>trans_x2</td>
+<td>str|None</td>
+<td>same as <code class="docutils literal notranslate"><span class="pre">trans_x</span></code></td>
+<td>None</td>
+<td>None</td>
+</tr>
+<tr class="row-even"><td>trans_y</td>
+<td>str|None</td>
+<td>same as <code class="docutils literal notranslate"><span class="pre">trans_x</span></code></td>
+<td>None</td>
+<td>None</td>
+</tr>
+<tr class="row-odd"><td>trans_y2</td>
+<td>str|None</td>
+<td>same as <code class="docutils literal notranslate"><span class="pre">trans_x</span></code></td>
+<td>None</td>
+<td>None</td>
+</tr>
+<tr class="row-even"><td>trans_z</td>
+<td>str|None</td>
+<td>same as <code class="docutils literal notranslate"><span class="pre">trans_x</span></code></td>
+<td rowspan="2">None</td>
+<td>None</td>
+</tr>
+<tr class="row-odd"><td>wrap</td>
+<td>str|list</td>
+<td>name or list of names of DataFrame columns for wrap-type subplots</td>
+<td><a class="reference external" href="plot.html#Wrap-plot">wrap plot</a></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section" id="other">
 <h2>Other<a class="headerlink" href="#other" title="Permalink to this headline">¶</a></h2>
-<p>show</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="7%" />
+<col width="55%" />
+<col width="28%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Keyword</th>
+<th class="head">Data Type</th>
+<th class="head">Description</th>
+<th class="head">Default</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>filename</td>
+<td>str</td>
+<td>Name of the saved plot</td>
+<td>Built automatically based on plot conditions</td>
+</tr>
+<tr class="row-odd"><td>filepath</td>
+<td>str</td>
+<td>Directory in which the plot should be saved</td>
+<td>Current directory</td>
+</tr>
+<tr class="row-even"><td>inline</td>
+<td>boolean</td>
+<td>Display the plot inline (in a jupyter notebook, using the matplotlib show command, etc)</td>
+<td>True</td>
+</tr>
+<tr class="row-odd"><td>print_filename</td>
+<td>boolean</td>
+<td>Print the filename and return the plot</td>
+<td>False</td>
+</tr>
+<tr class="row-even"><td>return_filename</td>
+<td>boolean</td>
+<td>Return only the filename of the saved plot but not the plot itself</td>
+<td>False</td>
+</tr>
+<tr class="row-odd"><td>save</td>
+<td>boolean</td>
+<td>Save the image</td>
+<td>True</td>
+</tr>
+<tr class="row-even"><td>save_ext</td>
+<td>str</td>
+<td>File extension for the saved plot</td>
+<td>png</td>
+</tr>
+<tr class="row-odd"><td>show</td>
+<td>boolean</td>
+<td>Open the <strong>saved</strong> plot (this is not the same as show in matplotlib)</td>
+<td>False</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 

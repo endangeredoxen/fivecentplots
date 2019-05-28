@@ -207,74 +207,183 @@
 </div>
 <div class="section" id="fivecentplots">
 <h1><span class="title">fivecentplots</span><a class="headerlink" href="#fivecentplots" title="Permalink to this headline">¶</a></h1>
-<p><span class="tagline">–Plot data bigly–</span></p>
+<p><span class="tagline">–A Python plotting analgesic–</span></p>
 <div class="section" id="why-another-python-plotting-library">
 <h2>Why another Python plotting library?<a class="headerlink" href="#why-another-python-plotting-library" title="Permalink to this headline">¶</a></h2>
-<p><strong>fivecentplots</strong> exists to simplify plotting of <strong>pandas</strong> DataFrames.
+<p><strong>fivecentplots</strong> exists to simplify plotting of data contained in a <strong>pandas</strong> DataFrames.
 While there is no shortage of quality Python plotting libraries on the
-world wide web (i.e., matplotlib, bokeh, seaborn, etc.), the APIs can
-be overly complicated and require multiple lines of code to make the plot
+world wide web (i.e., matplotlib, bokeh, seaborn, etc.), the APIs are daunting and often require excessive code to make the plot
 look just right.  This complexity is especially discouraging to new
 or casual Python users and often results in them giving up on Python plotting
-in favor of inferior yet simplar plotting tools like Excel.</p>
+in favor of inferior, yet simplar, plotting tools like Excel.</p>
 </div>
 <div class="section" id="what-issues-does-fivecentplots-address">
 <h2>What issues does fivecentplots address?<a class="headerlink" href="#what-issues-does-fivecentplots-address" title="Permalink to this headline">¶</a></h2>
 <p><strong>1. Ease of Use</strong></p>
 <blockquote>
+<div><blockquote>
 <div><ul class="simple">
-<li>Plots require <em>a single function call</em>.  All needed inputs from the data to plot
-to any style and/or formatting parameters are specified as optional keyword
-arguments in this single function call.</li>
+<li>Plots require <em>a single function call</em> with all style and/or formatting
+parameters specified as optional keyword arguments or in a simple
+theme file.</li>
 <li>Data come from pandas DataFrames eliminating direct management of
 numpy arrays</li>
 <li>Data can be quickly grouped into subsets and visualized.  This includes
 creating grids of subplots and legending by color and/or marker.  All of these
 options are invoked simply by specifying DataFrame column names as appropriate
 keyword arugments</li>
+<li>Multiple plotting backends (matplotlib, bokeh, etc.) can be used with virtually
+the same function call, eliminating the need to learn the unique syntax of
+each package.</li>
 </ul>
+</div></blockquote>
+<p>Consider the following plot of some dummy data:</p>
+<img alt="_images/syntax.png" src="_images/syntax.png" />
+<p>Using <strong>fivecentplots</strong>, we need a single function call with the appropriate
+keyword arguments:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span>
+         <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="n">share_y</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Temperature [C]==25&#39;</span><span class="p">,</span>
+         <span class="n">ref_line</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">],</span> <span class="n">ref_line_legend_text</span><span class="o">=</span><span class="s1">&#39;y==x&#39;</span><span class="p">,</span>
+         <span class="n">xmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mf">1.6</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">ymax</span><span class="o">=</span><span class="p">[</span><span class="mf">1.3</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">,</span> <span class="mf">5.2</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Contrast this with the code required in matplotlib:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">osjoin</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;tests&#39;</span><span class="p">,</span> <span class="s1">&#39;fake_data.csv&#39;</span><span class="p">))</span>
+
+<span class="c1"># Filter the dataframe</span>
+<span class="n">df_sub</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">Substrate</span><span class="o">==</span><span class="s2">&quot;Si&quot;</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Target Wavelength&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">450</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">25</span><span class="p">)]</span>
+
+<span class="c1"># Set some defaults</span>
+<span class="n">markers</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">]</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;#4b72b0&#39;</span><span class="p">,</span> <span class="s1">&#39;#c34e52&#39;</span><span class="p">,</span> <span class="s1">&#39;#54a767&#39;</span><span class="p">]</span>
+<span class="n">ymax</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.3</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">,</span> <span class="mf">5.2</span><span class="p">]</span>
+<span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1"># Create the figure and axes</span>
+<span class="n">f</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mf">9.82</span><span class="p">,</span> <span class="mf">3.46</span><span class="p">])</span>
+
+<span class="c1"># Plot the data and style the axes</span>
+<span class="k">for</span> <span class="n">iboost</span><span class="p">,</span> <span class="n">boost</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">df_sub</span><span class="p">[</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()):</span>
+    <span class="n">df_boost</span> <span class="o">=</span> <span class="n">df_sub</span><span class="p">[</span><span class="n">df_sub</span><span class="p">[</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">boost</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">idie</span><span class="p">,</span> <span class="n">die</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">natsort</span><span class="o">.</span><span class="n">natsorted</span><span class="p">(</span><span class="n">df_boost</span><span class="o">.</span><span class="n">Die</span><span class="o">.</span><span class="n">unique</span><span class="p">())):</span>
+        <span class="n">df_die</span> <span class="o">=</span> <span class="n">df_boost</span><span class="p">[</span><span class="n">df_boost</span><span class="o">.</span><span class="n">Die</span><span class="o">==</span><span class="n">die</span><span class="p">]</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s1">&#39;#eaeaea&#39;</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.3</span><span class="p">)</span>
+        <span class="n">lines</span> <span class="o">+=</span> <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df_die</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">],</span> <span class="n">df_die</span><span class="p">[</span><span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">idie</span><span class="p">],</span>
+                                   <span class="n">marker</span><span class="o">=</span><span class="n">markers</span><span class="p">[</span><span class="n">idie</span><span class="p">],</span> <span class="n">markeredgecolor</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">idie</span><span class="p">],</span> <span class="n">markerfacecolor</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span>
+                                   <span class="n">markeredgewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">set_axisbelow</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;bottom&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s1">&#39;#aaaaaa&#39;</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;top&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s1">&#39;#aaaaaa&#39;</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s1">&#39;#aaaaaa&#39;</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;left&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s1">&#39;#aaaaaa&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">iboost</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">fontstyle</span><span class="o">=</span><span class="s1">&#39;italic&#39;</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">fontstyle</span><span class="o">=</span><span class="s1">&#39;italic&#39;</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mf">1.6</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">bottom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="n">ymax</span><span class="p">[</span><span class="n">iboost</span><span class="p">])</span>
+
+    <span class="c1"># Add the column labels</span>
+    <span class="n">rect</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">patches</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.044</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">30</span><span class="o">/</span><span class="mi">225</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+                                        <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;#8c8c8c&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;#8c8c8c&#39;</span><span class="p">,</span> <span class="n">clip_on</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">rect</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;Boost Level = {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">boost</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.111</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+                      <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span>
+                      <span class="n">rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+
+    <span class="c1"># Customize ticks</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">,</span>
+                             <span class="n">labelsize</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">labelcolor</span><span class="o">=</span><span class="s1">&#39;#000000&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">2.2</span><span class="p">)</span>
+
+    <span class="c1"># Add reference line</span>
+    <span class="n">ref_line</span> <span class="o">=</span> <span class="n">df_die</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">]</span>
+    <span class="n">ref</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df_die</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">],</span> <span class="n">ref_line</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#000000&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">iboost</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">:</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">ref</span> <span class="o">+</span> <span class="n">lines</span>
+
+<span class="c1"># Style the figure</span>
+<span class="n">f</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">)</span>
+<span class="n">f</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="mf">0.077</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mf">0.882</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="mf">0.827</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="mf">0.176</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mf">0.133</span><span class="p">,</span> <span class="n">wspace</span><span class="o">=</span><span class="mf">0.313</span><span class="p">)</span>
+
+<span class="c1"># Add legend</span>
+<span class="n">leg</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;y==x&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">df_boost</span><span class="o">.</span><span class="n">Die</span><span class="o">.</span><span class="n">unique</span><span class="p">()),</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">numpoints</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+               <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">),</span> <span class="n">prop</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">})</span>
+<span class="n">leg</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">)</span>
+
+<span class="c1"># Show the plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This example is a bit contrived as you can certainly plot data in matplotlib with
+fewer lines of code in a less visually appealing manner.  We could also update a
+matplotlibrc file to automatically account for some of the style elements without
+having to hard cod them.  Regardless, the point should be clear:  <strong>fivecentplots</strong>
+reduces the barrier to good-looking plots.</p>
+<p>What if we wanted to do the same plot in bokeh?  We’d need to learn an entirely
+different syntax!  But in <strong>fivecentplots</strong> we can just change the plotting engine
+adding one additional keyword, <code class="docutils literal notranslate"><span class="pre">engine</span></code>:</p>
+<img alt="_images/syntax_bokeh.png" src="_images/syntax_bokeh.png" />
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Bokeh does not currently have as much styling flexibility as matplotlib
+so plots are not a 1:1 exact replication.  Also, support for bokeh plots
+in <strong>fivecentplots</strong> is still in development so mileage may vary.  But
+the syntactic goal of <strong>fivecentplots</strong> should be clear.</p>
+</div>
 </div></blockquote>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<p><strong>2. Repeatability</strong></p>
+<p><strong>2. Styles and colors</strong></p>
 <blockquote>
 <div><ul class="simple">
-<li>Figure sizes expand and contract to accommodate plot elements rather
-than remaining fixed and shrinking the internal elements often in unexpected
-ways (as is the standard practice in matplotlib).  In <strong>fivecentplots</strong> the
-axes window size is king so plot areas of the same size stay the same size
-regardless of everything surrounding them.  Because element sizes are
-measured before the plot is generated and the figure size is not fixed,
-<strong>fivecentplots</strong> can adjust the layout to prevent elements from overlapping
-unexpectedly.</li>
-<li>All colors, sizes, marker themes, etc. can be specified from input keywords
-or from a theme file</li>
+<li>All colors, sizes, marker themes, etc. can be specified by optional keyword
+arguments in the function call or can be set from a theme file.  This is
+arguably easier than trying to identify and modify various attributes of
+different embedded class objects.</li>
 </ul>
 </div></blockquote>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<p><strong>3. Automation</strong></p>
+<p><strong>3. Matplotlib Size Repeatability</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li>In matplotlib the figure or image size is king.  Consequently, the axes area
+containing the actual plotted data expands and contracts to accommodate
+other elements in the figure like labels and legends.  This can often lead to
+unpleasing results which obscure the data of interest.  In <strong>fivecentplots</strong> the
+plotting area size is fixed regardless of everything surrounding it and the
+overall figure size is scaled accordingly.  The trade off for this feature
+is a slight slow-down in plot generation as we have to double render certain
+elements in order to determine their actual size.</li>
+</ul>
+</div></blockquote>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p><strong>4. Automation</strong></p>
 <blockquote>
 <div><ul class="simple">
 <li>In addition to explicit function calls, plots can be fully defined
-from ini-style config files making it easy create a batch of plots that are
-auto-generated from repeated calculations or data collection. These text
-files can be shared among and modified by multiple engineers and
-scientists without requiring a deep knowledge of Python syntax</li>
+from ini-style config files making it easy automate creation of a batch of
+plots . These simple text files make it even easier for engineers and
+scientists to plot without requiring a deep knowledge of Python syntax.</li>
 </ul>
 </div></blockquote>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<p><strong>4. JMP-style plots that would be tedious to create every time in raw code</strong></p>
+<p><strong>5. JMP-style plots that would be tedious to create every time in raw code</strong></p>
 <blockquote>
-<div><p>With the development of <strong>pandas</strong>, statistical analysis in Python can rival or surpass that of
-popular commercial software packages like JMP. However, JMP has several plotting platforms
-that are very useful and would be tedious to create from scratch in Python.  <strong>fivecentplot</strong>
-handles all of this work so you don’t have to, allowing you to create beautiful
-<em>and often more flexible</em> JMP-style plots with a single function call.  Examples include:</p>
+<div><p>With the development of <strong>pandas</strong>, statistical analysis in Python can rival or
+surpass that of popular commercial software packages like JMP. However, JMP has
+several plotting platforms that are very useful and would be tedious to create
+from scratch in Python.  <strong>fivecentplot</strong> handles all of this work so you don’t
+have to, allowing you to create beautiful <em>and often more flexible</em> JMP-style
+plots with a single function call.  Examples include:</p>
 <ul>
 <li><p class="first">Boxplots with grouping labels (i.e., variability charts):</p>
 <blockquote>

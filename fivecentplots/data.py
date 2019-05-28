@@ -1504,7 +1504,12 @@ class Data:
 
         df_stat = df.groupby(x if not self.stat_val else self.stat_val)
         try:
-            return getattr(df_stat, self.stat)().reset_index()
+            if 'q' in self.stat:
+                q = float(self.stat.replace('q', ''))
+                if q > 1: q = q / 100
+                return df_stat.quantile(q)
+            else:
+                return getattr(df_stat, self.stat)().reset_index()
         except:
             print('stat "%s" is not supported...skipping stat calculation' % self.stat)
             return None
