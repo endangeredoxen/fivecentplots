@@ -6,27 +6,41 @@ Modules
 fcp.py
 ------
 
-.. automodule:: fcp
+.. automodule:: fivecentplots.fcp
  :members:
  :undoc-members:
 
 data.py
 -------
 
-.. automodule:: data
+.. automodule:: fivecentplots.data
  :members:
  :undoc-members:
 
 layout.py
 ---------
 
-.. automodule:: layout
+.. automodule:: fivecentplots.engines.layout
+ :members:
+ :undoc-members:
+
+mpl.py
+------
+
+.. automodule:: fivecentplots.engines.mpl
+ :members:
+ :undoc-members:
+
+bokeh.py
+--------
+
+.. automodule:: fivecentplots.engines.bokeh
  :members:
  :undoc-members:
 
 utilities.py
 ------------
 
-.. automodule:: utilities
+.. automodule:: fivecentplots.utilities
  :members:
  :undoc-members:
