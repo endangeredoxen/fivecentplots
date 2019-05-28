@@ -69,12 +69,3 @@ set to "bokeh":
 .. note:: As of version 0.3.0, **bokeh** support is limited compared with **matplotlib**.  More
           development is needed.
 
-**matplotlib**
-^^^^^^^^^^^^^^
-When using the **matplotlib** engine, in order to consistently define the layout and
-spacing of a plot, only static figures are generated.  All figures are saved to disk
-by default upon creation.  Options to display the figure are controlled via keywords:
-
-    * ``show`` (default = ``False``):  figures are popped open from disk
-    * ``inline`` (default = ``True``):  figures are returned
-
