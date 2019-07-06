@@ -23,7 +23,7 @@ import matplotlib.pyplot as mplp
 import matplotlib.ticker as ticker
 import matplotlib.patches as patches
 import matplotlib.font_manager as font_manager
-from matplotlib.ticker import AutoMinorLocator, LogLocator, MaxNLocator
+from matplotlib.ticker import AutoMinorLocator, LogLocator, MaxNLocator, NullFormatter
 import matplotlib.transforms as mtransforms
 from matplotlib.patches import FancyBboxPatch
 import matplotlib.mlab as mlab
@@ -354,6 +354,22 @@ class Layout(BaseLayout):
 
         """
 
+        def format_legend(self, leg):
+            for itext, text in enumerate(leg.get_texts()):
+                text.set_color(self.legend.font_color)
+                if self.plot_func not in ['plot_hist', 'plot_bar']:
+                    leg.legendHandles[itext]. \
+                        _legmarker.set_markersize(self.legend.marker_size)
+                    if self.legend.marker_alpha is not None:
+                        leg.legendHandles[itext]. \
+                            _legmarker.set_alpha(self.legend.marker_alpha)
+
+            leg.get_title().set_fontsize(self.legend.font_size)
+            leg.get_frame().set_facecolor(self.legend.fill_color.get(0))
+            leg.get_frame().set_alpha(self.legend.fill_alpha)
+            leg.get_frame().set_edgecolor(self.legend.edge_color.get(0))
+            leg.get_frame().set_linewidth(self.legend.edge_width)
+
         if self.legend.on and len(self.legend.values) > 0:
 
             # Format the legend keys
@@ -406,28 +422,21 @@ class Layout(BaseLayout):
                                                         self.legend.position[2]),
                                         numpoints=self.legend.points,
                                         prop=fontp)
+                format_legend(self, self.legend.obj)
 
             else:
-                self.legend.obj = \
-                    self.fig.obj.legend(lines, keys, loc=self.legend.position,
-                                        title = self.legend.text if self.legend is not True else '',
-                                        numpoints=self.legend.points,
-                                        prop=fontp)
-
-            for itext, text in enumerate(self.legend.obj.get_texts()):
-                text.set_color(self.legend.font_color)
-                if self.plot_func not in ['plot_hist', 'plot_bar']:
-                    self.legend.obj.legendHandles[itext]. \
-                        _legmarker.set_markersize(self.legend.marker_size)
-                    if self.legend.marker_alpha is not None:
-                        self.legend.obj.legendHandles[itext]. \
-                            _legmarker.set_alpha(self.legend.marker_alpha)
-
-            self.legend.obj.get_title().set_fontsize(self.legend.font_size)
-            self.legend.obj.get_frame().set_facecolor(self.legend.fill_color.get(0))
-            self.legend.obj.get_frame().set_alpha(self.legend.fill_alpha)
-            self.legend.obj.get_frame().set_edgecolor(self.legend.edge_color.get(0))
-            self.legend.obj.get_frame().set_linewidth(self.legend.edge_width)
+                for irow, row in enumerate(self.axes.obj):
+                    for icol, col in enumerate(row):
+                        if self.legend.nleg == 1 and \
+                                not(irow == 0 and icol == self.ncol - 1):
+                            continue
+                        leg = \
+                            col.legend(lines, keys, loc=self.legend.location,
+                                    title = self.legend.text if self.legend is not True else '',
+                                    numpoints=self.legend.points,
+                                    prop=fontp)
+                        leg.set_zorder(102)
+                        format_legend(self, leg)
 
     def add_text(self, ir, ic, text=None, element=None, offsetx=0, offsety=0,
                  **kwargs):
@@ -1361,7 +1370,10 @@ class Layout(BaseLayout):
         self.labtick_z = (self.ws_ticks_ax + self.ws_label_tick) * self.label_z.on + \
                          self.label_z.size[0] + self.tick_labels_major_z.size[0]
         self.ws_ax_leg = max(0, self.ws_ax_leg - self.labtick_y2) if self.legend.text is not None else 0
-        self.ws_leg_fig = self.ws_leg_fig if self.legend.text is not None else self.ws_ax_fig
+        if self.legend.location == 0 and self.legend.text is not None:
+            self.ws_leg_fig = self.ws_leg_fig
+        else:
+            self.ws_leg_fig = self.ws_ax_fig  # do we need something different for different legend locations?
         self.box_title = max(self.box_group_title.size)[0] if self.box_group_title.on else 0
         if self.box_group_label.on:
             self.box_labels = sum(f[1] * (1 + 2 * self.box_group_label.padding / 100) \
@@ -1379,7 +1391,8 @@ class Layout(BaseLayout):
             self.ws_title = self.ws_fig_title + self.title.size[1] + self.ws_title_ax
         else:
             self.ws_title = self.ws_fig_ax
-        if self.cbar.on:
+
+        if self.cbar.on and utl.kwget(kwargs, self.fcpp, 'ws_col', -999) == -999:
             self.ws_col = self.labtick_z #- self.label_z.size[0]
 
         if self.separate_labels:  # may need to move this down
@@ -1411,13 +1424,14 @@ class Layout(BaseLayout):
             self.legend.edge_width + self.labtick_y2 + \
             self.label_row.size[0] + self.ws_label_row * self.label_row.on + \
             self.labtick_z * (self.ncol - 1 if self.ncol > 1 else 1)
+        leg = self.legend.size[0] + self.ws_leg_fig if self.legend.location == 0 else 0
         self.fig.size[0] = self.left + self.axes.size[0] * self.ncol + \
-            self.right + self.ws_col * (self.ncol - 1) + self.box_title + \
-            self.legend.size[0] + self.ws_leg_fig
+            self.right + self.ws_col * (self.ncol - 1) + self.box_title + leg
 
         # Get extra width of a long title (centered on axes, not figure)
         self.title_slush_left = self.title.size[0] / 2 - \
-            (self.left + self.axes.size[0] / 2)
+            (self.left + (self.axes.size[0] * self.ncol + \
+             self.ws_col * (self.ncol - 1)) / 2)
         self.title_slush_right = self.title.size[0] / 2 - (self.fig.size[0] - \
             self.axes.size[0]/2 - self.labtick_y - self.ws_fig_label)
         if self.title_slush_left < 0:
@@ -2531,11 +2545,11 @@ class Layout(BaseLayout):
             if hasattr(getattr(self, 'axes%s' % lab), 'share_x%s' % lab) and \
                     getattr(getattr(self, 'axes%s' % lab), 'share_x%s' % lab) == True and \
                     (ir != 0 or ic != 0):
-                skipx = True
+                skipx = False
             if hasattr(getattr(self, 'axes%s' % lab), 'share_y%s' %lab) and \
                     getattr(getattr(self, 'axes%s' % lab), 'share_y%s' %lab) and \
                     (ir != 0 or ic != 0):
-                skipy = True
+                skipy = False
 
             # Turn off scientific
             if ia == 0:
@@ -2878,9 +2892,9 @@ class Layout(BaseLayout):
                     x2y = utl.rectangle_overlap([xw, xh, xc],
                                                 [yw, yh, [yc[0], yc[1]-self.ws_row]])
 
-            if self.tick_cleanup and tlmajx.on and not skipx:
+            if self.tick_cleanup and tlmajx.on:# and not skipx:
+                axes[ia].xaxis.set_major_formatter(NullFormatter())
                 axes[ia].set_xticklabels(tp['x']['label_text'])
-
             if self.tick_cleanup and tlmajy.on and not skipy:
                 axes[ia].set_yticklabels(tp['y']['label_text'])
 

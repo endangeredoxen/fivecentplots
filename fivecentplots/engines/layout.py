@@ -589,6 +589,7 @@ class BaseLayout:
                                  marker_size=utl.kwget(kwargs, self.fcpp,
                                                        'legend_marker_size',
                                                        7),
+                                 nleg=utl.kwget(kwargs, self.fcpp, 'nleg', -1),
                                  points=utl.kwget(kwargs, self.fcpp,
                                                   'legend_points', 1),
                                  overflow=0,

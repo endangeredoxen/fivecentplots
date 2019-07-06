@@ -241,7 +241,7 @@ class Data:
         self.check_group_errors()
         self.ncols = kwargs.get('ncol', 0)
         self.ncol = 1
-        self.nleg = 0
+        self.nleg_vals = 0
         self.nrow = 1
         self.nwrap = 0
         self.ngroups = 0
@@ -1155,11 +1155,11 @@ class Data:
         if self.legend == True and self.twin_x \
                 or self.legend == True and len(self.y) > 1:
             self.legend_vals = self.y + self.y2
-            self.nleg = len(self.y + self.y2)
+            self.nleg_vals = len(self.y + self.y2)
             return
         elif self.legend == True and self.twin_y:
             self.legend_vals = self.x + self.x2
-            self.nleg = len(self.x + self.x2)
+            self.nleg_vals = len(self.x + self.x2)
             return
 
         if not self.legend:
@@ -1182,10 +1182,10 @@ class Data:
                 df[self.legend] = temp
             legend_vals = \
                 natsorted(list(df.groupby(self.legend).groups.keys()))
-            self.nleg = len(legend_vals)
+            self.nleg_vals = len(legend_vals)
         else:
             legend_vals = [None]
-            self.nleg = 0
+            self.nleg_vals = 0
 
         for leg in legend_vals:
             if not self.x:

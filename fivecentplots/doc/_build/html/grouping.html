@@ -117,6 +117,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#Legend-by-another-column">Legend by another column</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#Location">Location</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#groups">groups</a><ul>
@@ -432,7 +433,7 @@ column</p>
 <h3>Imports<a class="headerlink" href="#Imports" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [1]:
+<span></span>In [2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -453,7 +454,7 @@ column</p>
 <h3>Sample data<a class="headerlink" href="#Sample-data" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [2]:
+<span></span>In [3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -480,11 +481,11 @@ the “Die” value, we can distinctly visualize the measurement for each
 site.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [3]:
+<span></span>In [8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -509,7 +510,7 @@ each column listed in <code class="docutils literal notranslate"><span class="pr
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="s1">&#39;Substrate&#39;</span><span class="p">],</span> \
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="s1">&#39;Substrate&#39;</span><span class="p">],</span> \
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -534,7 +535,7 @@ visualization of the data. The legend can be disabled by setting
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="s1">&#39;Voltage&#39;</span><span class="p">],</span> <span class="n">lines</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="s1">&#39;Voltage&#39;</span><span class="p">],</span> <span class="n">lines</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -616,6 +617,54 @@ primary/secondary axes; or (3) legend based on another column.</p>
 </div>
 </div>
 </div>
+<div class="section" id="Location">
+<h3>Location<a class="headerlink" href="#Location" title="Permalink to this headline">¶</a></h3>
+<p>By default, fivecentplots places the legend in the upper right corner of
+a figure, outside of the plot axes as this is the only way to be certain
+the legend will never obscure the actual data. However, the legend can
+be placed inside the axes area by specifying the keyword
+<code class="docutils literal notranslate"><span class="pre">legend_location</span></code> with one of the following values (which align
+roughly <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> syntax):</p>
+<ul class="simple">
+<li>‘outside’ or 0</li>
+<li>‘upper right’ or 1</li>
+<li>‘upper left’ or 2</li>
+<li>‘lower left’ or 3</li>
+<li>‘lower right’ or 4</li>
+<li>‘right’ or 5</li>
+<li>‘center left’ or 6</li>
+<li>‘center right’ or 7</li>
+<li>‘lower center’ or 8</li>
+<li>‘upper center’ or 9</li>
+<li>‘center’ or 10</li>
+</ul>
+<p>Note this feature is not currently supported with the <code class="docutils literal notranslate"><span class="pre">bokeh</span></code> plotting
+engine</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">,</span> <span class="n">legend_location</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/grouping_28_0.png" src="_images/grouping_28_0.png" />
+</div>
+</div>
+<p>Relocating the legend is straightforward when dealing with a single plot
+axes, but the ideal situation is a bit murky when dealing with grid
+plots with legends (see below). By default, the legend will be placed in
+each subplot window. However, if the keyword <code class="docutils literal notranslate"><span class="pre">nleg</span></code> is included and
+set equal to 1, the legend will appear in the new location but only
+within the upper right subplot.</p>
+</div>
 </div>
 <div class="section" id="groups">
 <h2>groups<a class="headerlink" href="#groups" title="Permalink to this headline">¶</a></h2>
@@ -636,7 +685,7 @@ we have provided no information about how to segment the data set.</p>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> \
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> \
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -645,7 +694,7 @@ we have provided no information about how to segment the data set.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_30_0.png" src="_images/grouping_30_0.png" />
+<img alt="_images/grouping_34_0.png" src="_images/grouping_34_0.png" />
 </div>
 </div>
 <p>To handle cases like this, we can add the keyword <code class="docutils literal notranslate"><span class="pre">groups</span></code> and specify
@@ -659,7 +708,7 @@ a legend from a different DataFrame column.</p>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> \
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> \
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -668,7 +717,7 @@ a legend from a different DataFrame column.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_32_0.png" src="_images/grouping_32_0.png" />
+<img alt="_images/grouping_36_0.png" src="_images/grouping_36_0.png" />
 </div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">groups</span></code> also supports multiple column names. Here is the above plot
@@ -679,7 +728,7 @@ without legending by “Temperature [C]”:</p>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="s1">&#39;Temperature [C]&#39;</span><span class="p">],</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="s1">&#39;Temperature [C]&#39;</span><span class="p">],</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -688,7 +737,7 @@ without legending by “Temperature [C]”:</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_34_0.png" src="_images/grouping_34_0.png" />
+<img alt="_images/grouping_38_0.png" src="_images/grouping_38_0.png" />
 </div>
 </div>
 </div>
@@ -712,7 +761,7 @@ are actually displayed along the x-axis:</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_37_0.png" src="_images/grouping_37_0.png" />
+<img alt="_images/grouping_41_0.png" src="_images/grouping_41_0.png" />
 </div>
 </div>
 </div>
@@ -734,7 +783,7 @@ Level and Temperature.</p>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> \
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> \
          <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450&#39;</span><span class="p">,</span> <span class="n">label_rc_font_size</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -743,7 +792,7 @@ Level and Temperature.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_41_0.png" src="_images/grouping_41_0.png" />
+<img alt="_images/grouping_45_0.png" src="_images/grouping_45_0.png" />
 </div>
 </div>
 </div>
@@ -759,8 +808,9 @@ plot shares the same x-axis variable.</p>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span>
-         <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Temperature [C]==75&#39;</span><span class="p">,</span> <span class="n">label_rc_font_size</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span>
+         <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Temperature [C]==75&#39;</span><span class="p">,</span>
+         <span class="n">label_rc_font_size</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -768,7 +818,7 @@ plot shares the same x-axis variable.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_44_0.png" src="_images/grouping_44_0.png" />
+<img alt="_images/grouping_48_0.png" src="_images/grouping_48_0.png" />
 </div>
 </div>
 <p>We can make a similar plot with common <code class="docutils literal notranslate"><span class="pre">row</span></code> values and different
@@ -779,7 +829,7 @@ x-axes by setting <code class="docutils literal notranslate"><span class="pre">c
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span>
          <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Temperature [C]==75&#39;</span><span class="p">,</span> <span class="n">label_rc_font_size</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -788,7 +838,7 @@ x-axes by setting <code class="docutils literal notranslate"><span class="pre">c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_46_0.png" src="_images/grouping_46_0.png" />
+<img alt="_images/grouping_50_0.png" src="_images/grouping_50_0.png" />
 </div>
 </div>
 </div>
@@ -811,7 +861,7 @@ the “Temperature [C]” and “Boost Level” column names as a list to the
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> <span class="s1">&#39;Boost Level&#39;</span><span class="p">],</span> \
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> <span class="s1">&#39;Boost Level&#39;</span><span class="p">],</span> \
          <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -820,7 +870,7 @@ the “Temperature [C]” and “Boost Level” column names as a list to the
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_50_0.png" src="_images/grouping_50_0.png" />
+<img alt="_images/grouping_54_0.png" src="_images/grouping_54_0.png" />
 </div>
 </div>
 <p>By default, wrap plots will be arranged in a square grid. If the number
@@ -836,7 +886,7 @@ number of subplots.</p>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> <span class="s1">&#39;Boost Level&#39;</span><span class="p">],</span> \
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> <span class="s1">&#39;Boost Level&#39;</span><span class="p">],</span> \
          <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450&#39;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -845,7 +895,7 @@ number of subplots.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_52_0.png" src="_images/grouping_52_0.png" />
+<img alt="_images/grouping_56_0.png" src="_images/grouping_56_0.png" />
 </div>
 </div>
 </div>
@@ -865,7 +915,7 @@ x and y can be displayed without the extra grouping factor.</p>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;I Set&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;I Set&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span>
          <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="s1">&#39;Temperature [C]&#39;</span><span class="p">],</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">325</span><span class="p">,</span> <span class="mi">325</span><span class="p">],</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450&#39;</span><span class="p">)</span>
 </pre></div>
@@ -875,7 +925,7 @@ x and y can be displayed without the extra grouping factor.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_55_0.png" src="_images/grouping_55_0.png" />
+<img alt="_images/grouping_59_0.png" src="_images/grouping_59_0.png" />
 </div>
 </div>
 <p>Or an alternatively styled version of this plot with tick and label
@@ -886,7 +936,7 @@ sharing off:</p>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;I Set&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;I Set&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span>
          <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="s1">&#39;Temperature [C]&#39;</span><span class="p">],</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">525</span><span class="p">,</span> <span class="mi">170</span><span class="p">],</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450&#39;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ws_row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
          <span class="n">separate_labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">separate_ticks</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -897,7 +947,7 @@ sharing off:</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_57_0.png" src="_images/grouping_57_0.png" />
+<img alt="_images/grouping_61_0.png" src="_images/grouping_61_0.png" />
 </div>
 </div>
 </div>
@@ -911,11 +961,11 @@ created for each unique value in the DataFrame column(s) listed in the
 of the “Die” column.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [20]:
+<span></span>In [11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">fig_groups</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> <span class="s1">&#39;Boost Level&#39;</span><span class="p">],</span> \
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">fig_groups</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> <span class="s1">&#39;Boost Level&#39;</span><span class="p">],</span> \
          <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450&#39;</span><span class="p">,</span> <span class="n">show_filename</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
          <span class="n">filename</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;C:\GitHub\fivecentplots\fivecentplots\tests\test_images\grouping.py\figure.png&#39;</span><span class="p">)</span>
 </pre></div>
@@ -925,21 +975,21 @@ of the “Die” column.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_60_0.png" src="_images/grouping_60_0.png" />
+<img alt="_images/grouping_64_0.png" src="_images/grouping_64_0.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_60_1.png" src="_images/grouping_60_1.png" />
+<img alt="_images/grouping_64_1.png" src="_images/grouping_64_1.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/grouping_60_2.png" src="_images/grouping_60_2.png" />
+<img alt="_images/grouping_64_2.png" src="_images/grouping_64_2.png" />
 </div>
 </div>
 </div>
