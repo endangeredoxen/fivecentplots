@@ -116,3 +116,4 @@ fivecentplots/__pycache__/fcp.cpython-35.pyc
 
 #pytest
 .pytest_cache
+/meta.yaml
