@@ -589,7 +589,7 @@ class Data:
             min, max tuple
         """
 
-        if not hasattr(self, ax) or getattr(self, ax) is None:
+        if not hasattr(self, ax) or getattr(self, ax) in [None, []]:
             return None, None
         elif self.col == 'x' and self.share_x and ax == 'x':
             cols = self.x_vals
