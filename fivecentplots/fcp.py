@@ -10,7 +10,7 @@
 __author__    = 'Steve Nicholes'
 __copyright__ = 'Copyright (C) 2016 Steve Nicholes'
 __license__   = 'GPLv3'
-__version__   = '0.3.0'
+__version__   = '0.3.1'
 __url__       = 'https://github.com/endangeredoxen/fivecentplots'
 import os
 import numpy as np
