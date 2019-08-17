@@ -64,12 +64,12 @@ setup(
     # simple. Or you can use find_packages().
     packages=find_packages(exclude=['contrib', 'docs', 'tests*', ]),
 
-    dependency_links = ['https://github.com/endangeredoxen/fileio/zipball/master'],
+    dependency_links=['https://github.com/endangeredoxen/fileio/zipball/master'],
     # List run-time dependencies here.  These will be installed by pip when
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=['pandas', 'numpy', 'matplotlib'], #'fileio==0.2.2'],
+    install_requires=['pandas', 'numpy', 'matplotlib'],  # 'fileio==0.2.2'],
 
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
@@ -83,7 +83,7 @@ setup(
     # installed, specify them here.  If using Python 2.6 or less, then these
     # have to be included in MANIFEST.in as well.
     package_data={
-        'fivecentplots': ['themes/gray.py','themes/white.py', 'tests/*', 'doc/_static/docstrings/*', 'keywords.xlsx'],
+        'fivecentplots': ['themes/gray.py', 'themes/white.py', 'tests/*', 'doc/_static/docstrings/*', 'keywords.xlsx'],
     },
 
     # Although 'package_data' is the preferred approach, in some case you may
