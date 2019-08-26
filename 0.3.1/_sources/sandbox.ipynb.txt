@@ -1,0 +1,339 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "%load_ext autoreload\n",
+    "%autoreload 2\n",
+    "%matplotlib inline\n",
+    "import pandas as pd\n",
+    "import pdb\n",
+    "import numpy as np\n",
+    "st = pdb.set_trace\n",
+    "import sys\n",
+    "sys.path = [r'C:\\Github\\fileio'] + sys.path\n",
+    "import fileio"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "file = r'C:\\GitHub\\fivecentplots\\fivecentplots\\doc\\keywords.xlsx'"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df = pd.read_excel(file, sheet='Mandatory')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>Keyword</th>\n",
+       "      <th>Data Type</th>\n",
+       "      <th>Description</th>\n",
+       "      <th>Required?</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>df</td>\n",
+       "      <td>pandas DataFrame</td>\n",
+       "      <td>DataFrame containing all data to be plotted in...</td>\n",
+       "      <td>always (**note:** ``df`` can also be specified...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>x</td>\n",
+       "      <td>str</td>\n",
+       "      <td>Column name of the x-axis data</td>\n",
+       "      <td>all except boxplot</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>y</td>\n",
+       "      <td>str</td>\n",
+       "      <td>Column name of the y-axis data</td>\n",
+       "      <td>all except histogram</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>z</td>\n",
+       "      <td>str</td>\n",
+       "      <td>Column name of the z-axis data</td>\n",
+       "      <td>contour and heatmap</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "  Keyword         Data Type  \\\n",
+       "0      df  pandas DataFrame   \n",
+       "1       x               str   \n",
+       "2       y               str   \n",
+       "3       z               str   \n",
+       "\n",
+       "                                         Description  \\\n",
+       "0  DataFrame containing all data to be plotted in...   \n",
+       "1                     Column name of the x-axis data   \n",
+       "2                     Column name of the y-axis data   \n",
+       "3                     Column name of the z-axis data   \n",
+       "\n",
+       "                                           Required?  \n",
+       "0  always (**note:** ``df`` can also be specified...  \n",
+       "1                                 all except boxplot  \n",
+       "2                               all except histogram  \n",
+       "3                                contour and heatmap  "
+      ]
+     },
+     "execution_count": 4,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>Keyword</th>\n",
+       "      <th>Data Type</th>\n",
+       "      <th>Description</th>\n",
+       "      <th>Required?</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>9</td>\n",
+       "      <td>18</td>\n",
+       "      <td>72</td>\n",
+       "      <td>118</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "   Keyword  Data Type  Description  Required?\n",
+       "0        9         18           72        118"
+      ]
+     },
+     "execution_count": 16,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "width = pd.DataFrame(columns=df.columns, index=[0])\n",
+    "for col in df.columns:\n",
+    "    width[col] = max(df[col].apply(lambda x: len(str(x))).max(), len(col)) + 2\n",
+    "width"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "line = ''\n",
+    "for col in width.columns:\n",
+    "    line += '+' + '-'*width[col].iloc[0]\n",
+    "line += '+\\n'"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "tab = ''\n",
+    "for irow, row in df.iterrows():\n",
+    "    for col, value in row.items():\n",
+    "        tab += (('| %s ' % value).ljust(width[col].iloc[0]+1)).replace('nan', '   ')\n",
+    "    tab += '|\\n'\n",
+    "    # check for vertical merged\n",
+    "    line0 = ('%s' % line).split('+')\n",
+    "    if irow < len(df) - 1:\n",
+    "        nrow = df.iloc[irow+1]\n",
+    "        for icol, (col, value) in enumerate(nrow.items()):\n",
+    "            if type(value) is float and np.isnan(value):\n",
+    "                line0[icol+1] = line0[icol+1].replace('-', ' ')\n",
+    "    line0 = '+'.join(line0)\n",
+    "    tab += line0\n",
+    "#print(tab)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "header = line\n",
+    "for col in df.columns:\n",
+    "    header += ('| %s ' % col).ljust(width[col].iloc[0]+1)\n",
+    "header += '|\\n'\n",
+    "header += line.replace('-', '=')\n",
+    "#print(header)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "+---------+------------------+------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------+\n",
+      "| Keyword | Data Type        | Description                                                            | Required?                                                                                                            |\n",
+      "+=========+==================+========================================================================+======================================================================================================================+\n",
+      "| df      | pandas DataFrame | DataFrame containing all data to be plotted including grouping columns | always (**note:** ``df`` can also be specified as the first function argument withouth the keyword name of ``df==``) |\n",
+      "+---------+------------------+------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------+\n",
+      "| x       | str              | Column name of the x-axis data                                         | all except boxplot                                                                                                   |\n",
+      "+---------+------------------+------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------+\n",
+      "| y       | str              | Column name of the y-axis data                                         | all except histogram                                                                                                 |\n",
+      "+---------+------------------+------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------+\n",
+      "| z       | str              | Column name of the z-axis data                                         | contour and heatmap                                                                                                  |\n",
+      "+---------+------------------+------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------+\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(header + tab)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 40,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "+-----------+-----------+---------------+---------+\n",
+      "| Keyword   | Data Type | Description   | Default |\n",
+      "+===========+===========+===============+=========+\n",
+      "| :hh:`dpi` | int       | dots per inch | 100     |\n",
+      "+-----------+-----------+---------------+---------+\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(fileio.utilities.xls_2_rst(file, 'Figure'))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "%time fcp.plot(df=df, x='Voltage', y='I [A]', legend='Die', inline=True, show=True, \\\n",
+    "              filter='Substrate==\"Si\" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',\\\n",
+    "              wrap='Substrate', ax_size=[300, 300],  \\\n",
+    "              rc_label_fill_color='#fffd75', rc_label_fill_alpha=0.5,\\\n",
+    "              rc_label_font_color='#000000', wrap_title_fill_color='#00FFFF', \\\n",
+    "              wrap_title_font_color='#000000', label_fill_color='#FF0000', label_fill_alpha=0.5)"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.6.4"
+  },
+  "toc": {
+   "nav_menu": {},
+   "number_sections": true,
+   "sideBar": true,
+   "skip_h1_title": true,
+   "toc_cell": false,
+   "toc_position": {},
+   "toc_section_display": "block",
+   "toc_window_display": true
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
