@@ -29,7 +29,7 @@ from . data import Data
 from . colors import *
 from . import engines
 from . import keywords
-from . utilities import dfkwarg, kwget, set_save_filename, validate_list, reload_defaults
+from . utilities import dfkwarg, kwget, set_save_filename, validate_list, reload_defaults, ci
 import warnings
 try:
     import fileio
@@ -390,6 +390,51 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
     if layout.box_stat_line.on and len(stats) > 0:
         x = np.linspace(1, dd.ngroups, dd.ngroups)
         layout.plot_line(ir, ic, x, stats, **layout.box_stat_line.kwargs,)
+
+    # add group means
+    if layout.box_group_means.on == True:
+        mgroups = df_rc.groupby(dd.groups[0:1])
+        x = -0.5
+        for ii, (nn, mm) in enumerate(mgroups):
+            y = mm[dd.y[0]].mean()
+            y = [y, y]
+            if ii == 0:
+                x2 = len(mm[dd.groups].drop_duplicates()) + x + 1
+            else:
+                x2 = len(mm[dd.groups].drop_duplicates()) + x
+            layout.plot_line(ir, ic, [x, x2], y, **layout.box_group_means.kwargs,)
+            x = x2
+
+    # add grand mean
+    if layout.box_grand_mean.on == True:
+        x = np.linspace(0.5, dd.ngroups + 0.5, dd.ngroups)
+        mm = df_rc[dd.y[0]].mean()
+        y = [mm for f in x]
+        layout.plot_line(ir, ic, x, y, **layout.box_grand_mean.kwargs,)
+
+    # add grand mean
+    if layout.box_grand_median.on:
+        x = np.linspace(0.5, dd.ngroups + 0.5, dd.ngroups)
+        mm = df_rc[dd.y[0]].median()
+        y = [mm for f in x]
+        layout.plot_line(ir, ic, x, y, **layout.box_grand_median.kwargs,)
+
+    # add mean confidence diamonds
+    if layout.box_mean_diamonds.on:
+        mgroups = df_rc.groupby(dd.groups)
+        for ii, (nn, mm) in enumerate(mgroups):
+            low, high = ci(mm[dd.y[0]], layout.box_mean_diamonds.conf_coeff)
+            mm = mm[dd.y[0]].mean()
+            x1 = -layout.box_mean_diamonds.width.get(0)/2
+            x2 = layout.box_mean_diamonds.width.get(0)/2
+            points = [[ii + 1 + x1, mm],
+                      [ii + 1, high],
+                      [ii + 1 + x2, mm],
+                      [ii + 1, low],
+                      [ii + 1 + x1, mm],
+                      [ii + 1 + x2, mm]]
+            layout.plot_polygon(ir, ic, points,
+                                **layout.box_mean_diamonds.kwargs)
 
     return dd
 

@@ -26,6 +26,7 @@ import matplotlib.font_manager as font_manager
 from matplotlib.ticker import AutoMinorLocator, LogLocator, MaxNLocator, NullFormatter
 import matplotlib.transforms as mtransforms
 from matplotlib.patches import FancyBboxPatch
+from matplotlib.collections import PatchCollection
 import matplotlib.mlab as mlab
 def custom_formatwarning(msg, *args, **kwargs):
     # ignore everything except the message
@@ -1975,7 +1976,7 @@ class Layout(BaseLayout):
 
         return hist, data
 
-    def plot_line(self, ir, ic, x0, y0, x1=None, y1=None,**kwargs):
+    def plot_line(self, ir, ic, x0, y0, x1=None, y1=None, **kwargs):
         """
         Plot a simple line
 
@@ -2007,6 +2008,32 @@ class Layout(BaseLayout):
                                         color=kwargs['color'].get(0),
                                         zorder=kwargs.get('zorder', 1))
         return line
+
+    def plot_polygon(self, ir, ic, points, **kwargs):
+        """
+        Plot a polygon
+
+        Args:
+            ir (int): subplot row index
+            ic (int): subplot column index
+            points (list of float): points on the polygon
+            kwargs: keyword args
+        """
+
+        if kwargs['fill_color'] is None:
+            fill_color = 'none'
+        else:
+            fill_color = kwargs['fill_color'].get(0)
+
+        polygon = [patches.Polygon(points, facecolor=fill_color,
+                                   edgecolor=kwargs['edge_color'].get(0),
+                                   linewidth=kwargs['edge_width'],
+                                   linestyle=kwargs['edge_style'],
+                                   alpha=kwargs['alpha'],
+                                   )]
+        p = PatchCollection(polygon, match_original=True, zorder=kwargs['zorder'])
+
+        self.axes.obj[ir, ic].add_collection(p)
 
     def plot_xy(self, ir, ic, iline, df, x, y, leg_name, twin, zorder=1,
                 line_type=None, marker_disable=False):

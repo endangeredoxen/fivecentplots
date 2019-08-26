@@ -1869,6 +1869,26 @@ them.  This is needed to correctly adjust the figure dimensions</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="fivecentplots.engines.mpl.Layout.plot_polygon">
+<code class="descname">plot_polygon</code><span class="sig-paren">(</span><em>ir</em>, <em>ic</em>, <em>points</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.engines.mpl.Layout.plot_polygon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot a polygon</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ir</strong> (<em>int</em>) – subplot row index</li>
+<li><strong>ic</strong> (<em>int</em>) – subplot column index</li>
+<li><strong>points</strong> (<em>list of float</em>) – points on the polygon</li>
+<li><strong>kwargs</strong> – keyword args</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="fivecentplots.engines.mpl.Layout.plot_xy">
 <code class="descname">plot_xy</code><span class="sig-paren">(</span><em>ir</em>, <em>ic</em>, <em>iline</em>, <em>df</em>, <em>x</em>, <em>y</em>, <em>leg_name</em>, <em>twin</em>, <em>zorder=1</em>, <em>line_type=None</em>, <em>marker_disable=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.engines.mpl.Layout.plot_xy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot xy data</p>
@@ -2464,6 +2484,23 @@ them.  This is needed to correctly adjust the figure dimensions</p>
 <code class="descname">get</code><span class="sig-paren">(</span><em>idx</em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.utilities.RepeatedList.get" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+<dl class="function">
+<dt id="fivecentplots.utilities.ci">
+<code class="descclassname">fivecentplots.utilities.</code><code class="descname">ci</code><span class="sig-paren">(</span><em>data</em>, <em>coeff=0.95</em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.utilities.ci" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the confidence interval</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>pd.Series</em>) – raw data for computation</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">lower confidence interval, upper confidence interval
+returns np.nan if standard err &lt; 0</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">

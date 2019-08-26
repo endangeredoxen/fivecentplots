@@ -49,6 +49,29 @@ class RepeatedList:
         return self.values[(idx + self.shift) % len(self.values)]
 
 
+def ci(data, coeff=0.95):
+    """
+    Compute the confidence interval
+
+    Args:
+        data (pd.Series): raw data for computation
+
+    Returns:
+        lower confidence interval, upper confidence interval
+        returns np.nan if standard err < 0
+
+    """
+
+    sem = data.sem()
+    size = len(data.dropna()) - 1
+
+    if sem > 0:
+        return ss.t.interval(coeff, size, loc=data.mean(), scale=sem)
+
+    else:
+        return np.nan, np.nan
+
+
 def dfkwarg(args, kwargs):
     """
     Add the DataFrame to kwargs

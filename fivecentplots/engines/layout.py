@@ -786,6 +786,58 @@ class BaseLayout:
                                            kwargs.get('width', 0.5 if not self.violin.on
                                                                else 0.15)),
                            )
+        self.box_grand_mean = Element('box_grand_mean', self.fcpp, kwargs,
+                                      on=utl.kwget(kwargs, self.fcpp, 'box_grand_mean', kwargs.get('grand_mean', False)),
+                                      color=utl.kwget(kwargs, self.fcpp, 'box_grand_mean_color', kwargs.get('grand_mean_color', '#555555')),
+                                      style=utl.kwget(kwargs, self.fcpp, 'box_grand_mean_style', kwargs.get('grand_mean_style', '--')),
+                                      width=utl.kwget(kwargs, self.fcpp, 'box_grand_mean_width', kwargs.get('grand_mean_width', 1)),
+                                      zorder=30)
+
+        self.box_grand_median = Element('box_grand_median', self.fcpp, kwargs,
+                                        on=utl.kwget(kwargs, self.fcpp, 'box_grand_median',
+                                                     kwargs.get('grand_median', False)),
+                                        color=utl.kwget(kwargs, self.fcpp, 'box_grand_median_color',
+                                                        kwargs.get('grand_median_color', '#0000ff')),
+                                        style=utl.kwget(kwargs, self.fcpp, 'box_grand_median_style',
+                                                        kwargs.get('grand_median_style', '--')),
+                                        width=utl.kwget(kwargs, self.fcpp, 'box_grand_median_width',
+                                                        kwargs.get('grand_median_width', 1)),
+                                        zorder=30)
+
+        self.box_group_means = Element('box_group_means', self.fcpp, kwargs,
+                                       on=utl.kwget(kwargs, self.fcpp, 'box_group_means',
+                                                    kwargs.get('group_means', False)),
+                                       color=utl.kwget(kwargs, self.fcpp, 'box_group_means_color',
+                                                       kwargs.get('group_means_color', '#FF00FF')),
+                                       style=utl.kwget(kwargs, self.fcpp, 'box_group_means_style',
+                                                       kwargs.get('group_means_style', '--')),
+                                       width=utl.kwget(kwargs, self.fcpp, 'box_group_means_width',
+                                                       kwargs.get('group_means_width', 1)),
+                                       zorder=30)
+
+        self.box_mean_diamonds = Element('box_mean_diamonds', self.fcpp, kwargs,
+                                         on=utl.kwget(kwargs, self.fcpp, 'box_mean_diamonds',
+                                                      kwargs.get('mean_diamonds', False)),
+                                         alpha=utl.kwget(kwargs, self.fcpp, 'box_mean_diamonds_alpha',
+                                                         kwargs.get('mean_diamonds_alpha', 1)),
+                                         conf_coeff=utl.kwget(kwargs, self.fcpp, 'conf_coeff', 0.95),
+                                         edge_color=utl.kwget(kwargs, self.fcpp,
+                                                              'box_mean_diamonds_edge_color',
+                                                              kwargs.get('mean_diamonds_edge_color', '#00FF00')),
+                                         edge_style=utl.kwget(kwargs, self.fcpp,
+                                                         'box_mean_diamonds_edge_style',
+                                                         kwargs.get('mean_diamonds_edge_style', '-')),
+                                         edge_width=utl.kwget(kwargs, self.fcpp,
+                                                              'box_mean_diamonds_edge_width',
+                                                              kwargs.get('mean_diamonds_edge_width', 0.7)),
+                                         fill_color=utl.kwget(kwargs, self.fcpp,
+                                                              'box_mean_diamonds_fill_color',
+                                                              kwargs.get('mean_diamonds_fill_color', None)),
+                                         width=utl.kwget(kwargs, self.fcpp,
+                                                         'box_mean_diamonds_width',
+                                                         kwargs.get('mean_diamonds_width', 0.8)),
+                                         zorder=30)
+
         self.box_whisker = Element('box_whisker', self.fcpp, kwargs,
                                    on=self.box.on,
                                    color=self.box.edge_color,
@@ -807,6 +859,7 @@ class BaseLayout:
                                    color='#bbbbbb', text=None,
                                    zorder=2,
                                    )
+
         self.box_range_lines = Element('box_range_lines', self.fcpp, kwargs,
                                        on=kwargs.get('box_range_lines',
                                                      not kwargs.get('violin', False)),
@@ -1602,7 +1655,8 @@ class Element:
                                     kwargs.get('fill_alpha', 1))
         self.fill_color = utl.kwget(kwargs, fcpp, '%s_fill_color' % label,
                                     kwargs.get('fill_color', '#ffffff'))
-        if type(self.fill_color) is not RepeatedList:
+        if type(self.fill_color) is not RepeatedList \
+                and self.fill_color is not None:
             self.color_alpha('fill_color', 'fill_alpha')
 
         self.edge_width = utl.kwget(kwargs, fcpp, '%s_edge_width' % label,

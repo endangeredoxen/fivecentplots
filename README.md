@@ -1,12 +1,13 @@
 # fivecentplots
-Custom plotting wrapper for matplotlib
+Install latest release using:
+
+pip install https://github.com/endangeredoxen/fivecentplots/archive/v0.3.zip
+
+Install the current dev version using:
 
 pip install https://github.com/endangeredoxen/fivecentplots/zipball/master
 
-Read the docs:  https://endangeredoxen.github.io/fivecentplots/
+Read the docs at:
 
-### Changelog
+https://endangeredoxen.github.io/fivecentplots/layout.html
 
-**0.3.1** 2019/08/06
-- Conda packaging
-- Handle getattr != None bug

@@ -238,6 +238,72 @@ def test_grid_wrap_y_no_share(master=False, remove=True, show=False):
         assert not compare
 
 
+def test_grand_means(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'grand_means_master') if master else 'grand_means'
+
+    # Make the plot
+    fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, grand_mean=True, grand_median=True,
+                filename=name + '.png', inline=False, jitter=False)
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_group_means(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'group_means_master') if master else 'group_means'
+
+    # Make the plot
+    fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, group_means=True,
+                filename=name + '.png', inline=False, jitter=False)
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_mean_diamonds(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'mean_diamonds_master') if master else 'mean_diamonds'
+
+    # Make the plot
+    fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, mean_diamonds=True, conf_coeff=0.95,
+                filename=name + '.png', inline=False, jitter=False)
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def test_violin(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'violin_master') if master else 'violin'
