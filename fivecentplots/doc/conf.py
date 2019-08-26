@@ -17,6 +17,7 @@ import sys
 import os
 import shlex
 import pdb
+import fivecentplots as fcp
 sys.path.insert(0, os.path.abspath('..'))
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -63,7 +64,7 @@ author = 'Steve Nicholes'
 # built documents.
 #
 # The short X.Y version.
-version = '0.3.0'
+version = fcp.__version__#'0.3.0'
 # The full version, including alpha/beta/rc tags.
 release = 'beta'
 
