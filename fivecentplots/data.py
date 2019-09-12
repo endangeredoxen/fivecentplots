@@ -277,12 +277,17 @@ class Data:
             self.check_group_matching('groups', 'fig')
 
         # Define all the columns in use
-        self.cols_all = self.x + self.x2 + self.y + self.y2
+        self.cols_all = []
+        self.cols_all += self.x if self.x is not None else []
+        self.cols_all += self.x2 if self.x2 is not None else []
+        self.cols_all += self.y if self.y is not None else []
+        self.cols_all += self.y2 if self.y2 is not None else []
         self.cols_all += self.z if self.z is not None else []
         self.cols_all += self.col if self.col is not None else []
         self.cols_all += self.row if self.row is not None else []
         self.cols_all += self.wrap if self.wrap is not None else []
-        self.cols_all += self.legend if self.legend is not None else []
+        if type(self.legend) is list:
+            self.cols_all += self.legend
 
         # Add all non-dataframe kwargs to self
         del kwargs['df']  # for memory
