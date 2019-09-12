@@ -276,6 +276,14 @@ class Data:
         if self.groups and self.fig:
             self.check_group_matching('groups', 'fig')
 
+        # Define all the columns in use
+        self.cols_all = self.x + self.x2 + self.y + self.y2
+        self.cols_all += self.z if self.z is not None else []
+        self.cols_all += self.col if self.col is not None else []
+        self.cols_all += self.row if self.row is not None else []
+        self.cols_all += self.wrap if self.wrap is not None else []
+        self.cols_all += self.legend if self.legend is not None else []
+
         # Add all non-dataframe kwargs to self
         del kwargs['df']  # for memory
         self.kwargs = kwargs

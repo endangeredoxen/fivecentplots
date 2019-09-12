@@ -809,6 +809,14 @@ def plotter(plot_func, **kwargs):
             if out is not None:
                 return out
 
+    # Save data used in the figures
+    if kwargs.get('save_data', False):
+        if type(kwargs['save_data']) is str:
+            filename = kwargs['save_data']
+        else:
+            filename = filename.split('.')[0] + '.csv'
+        dd.df_all[dd.cols_all].to_csv(filename, index=False)
+
 
 def save(fig, filename, kw):
     """
