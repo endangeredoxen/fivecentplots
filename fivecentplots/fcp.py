@@ -818,36 +818,6 @@ def plotter(plot_func, **kwargs):
         dd.df_all[dd.cols_all].to_csv(filename, index=False)
 
 
-def save(fig, filename, kw):
-    """
-    Save the figure
-
-    Args:
-        fig (mpl.Figure): current figure
-        filename (str): output filename
-        kw (dict): kwargs dict
-
-    """
-    # is this deprecated??
-    st()
-    try:
-
-        if kw['save_ext'] == 'html':
-            import mpld3
-            mpld3.save_html(fig, filename)
-
-        else:
-            fig.savefig(filename)
-
-        if kw['show']:
-            os.startfile(filename)
-
-    except:
-        if kwargs.get('show_filename', False):
-            print(filename)
-        raise NameError('%s is not a valid filename!' % filename)
-
-
 def set_theme(theme=None):
     """
     Select a "defaults" file and copy to the user directory

@@ -478,7 +478,9 @@ def set_save_filename(df, ifig, fig_item, fig_cols, layout, kwargs):
     # Use provided filename
     if 'filename' in kwargs.keys() and type(kwargs['filename']) is str:
         filename = kwargs['filename']
-        ext = kwargs.get('save_ext')
+        ext = os.path.splitext(filename)[-1]
+        if ext == '':
+            ext = kwargs.get('save_ext')
         filename = filename.replace(ext, '')
         fig = ''
         if fig_item is not None:
@@ -527,6 +529,10 @@ def set_save_filename(df, ifig, fig_item, fig_cols, layout, kwargs):
     bad_char = ['\\', '/', ':', '*', '?', '"', '<', '>', '|']
     for bad in bad_char:
         filename = filename.replace(bad, '_')
+
+    # Make sure extension has a '.'
+    if kwargs.get('save_ext')[0] != '.':
+        kwargs['save_ext'] = '.' + kwargs['save_ext']
 
     return filename + kwargs.get('save_ext')
 
