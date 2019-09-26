@@ -1899,7 +1899,8 @@ class Layout(BaseLayout):
                         continue
                     text = ax.text(ix, iy, df.loc[yy, xx],
                                    ha="center", va="center",
-                                   color=self.heatmap.font_color)
+                                   color=self.heatmap.font_color,
+                                   fontsize=self.heatmap.font_size)
 
         return im
 
