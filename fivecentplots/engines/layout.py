@@ -658,6 +658,7 @@ class BaseLayout:
                                               'cmap', 'inferno'),
                                edge_width=0,
                                font_color='#ffffff',
+                               font_size=12,
                                interpolation=utl.kwget(kwargs, self.fcpp,
                                               'heatmap_interpolation',
                                               kwargs.get('interpolation', 'none')),
