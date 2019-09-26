@@ -121,7 +121,7 @@ def df_filter(df, filt_orig, drop_cols=False):
 
         chars = {' ': '_', '.': 'dot', '[': '',']': '', '(': '', ')': '',
                     '-': '_', '^': '', '>': '', '<': '', '/': '_', '@': 'at',
-                    '%': 'percent', '*': '_'}
+                    '%': 'percent', '*': '_', ':': 'sc'}
         for sk in skip:
             chars.pop(sk)
         for k, v in chars.items():
