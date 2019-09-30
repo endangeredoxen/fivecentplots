@@ -1185,6 +1185,8 @@ class Data:
             return
 
         if self.legend:
+            if type(self.legend) is str and ' | ' in self.legend:
+                self.legend = self.legend.split(' | ')
             if type(self.legend) is list:
                 for ileg, leg in enumerate(self.legend):
                     if ileg == 0:
