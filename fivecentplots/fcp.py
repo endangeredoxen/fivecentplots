@@ -699,7 +699,8 @@ def plotter(plot_func, **kwargs):
     kwargs = deprecated(kwargs)
 
     # Set the plotting engine
-    engine = kwget(kwargs, reload_defaults()[0], 'engine', 'mpl') #kwargs.get('engine', 'mpl').lower()
+    theme = kwargs.get('theme', None)
+    engine = kwget(kwargs, reload_defaults(theme)[0], 'engine', 'mpl')
     if not hasattr(engines, engine):
         print('Specified plotting engine could not be found!')
         return
@@ -823,12 +824,18 @@ def set_theme(theme=None):
     Select a "defaults" file and copy to the user directory
     """
 
+    if theme is not None and os.path.exists(theme):
+        my_theme_dir = os.sep.join(theme.split(os.sep)[0:-1])
+        theme = theme.split(os.sep)[-1]
+    else:
+        my_theme_dir = osjoin(user_dir, '.fivecentplots')
+
     if theme is not None:
         theme = theme.replace('.py', '')
+
     themes = [f.replace('.py', '')
               for f in os.listdir(osjoin(cur_dir, 'themes')) if '.py' in f]
-    mythemes = [f.replace('.py', '')
-                for f in os.listdir(osjoin(user_dir, '.fivecentplots'))
+    mythemes = [f.replace('.py', '') for f in os.listdir(my_theme_dir)
                 if '.py' in f and 'defaults' not in f]
 
     if theme in themes:
@@ -880,7 +887,7 @@ def set_theme(theme=None):
         shutil.copy2(osjoin(cur_dir, 'themes', themes[int(entry)-1] + '.py'),
                      osjoin(user_dir, '.fivecentplots', 'defaults.py'))
     else:
-        shutil.copy2(osjoin(user_dir, '.fivecentplots', mythemes[int(entry)-1-len(themes)] + '.py'),
+        shutil.copy2(osjoin(my_theme_dir, mythemes[int(entry)-1-len(themes)] + '.py'),
                      osjoin(user_dir, '.fivecentplots', 'defaults.py'))
 
     print('done!')

@@ -48,7 +48,7 @@ class Data:
     def __init__(self, plot_func='xy', **kwargs):
 
         # Reload default file
-        self.fcpp, dummy, dummy2 = utl.reload_defaults()
+        self.fcpp, dummy, dummy2 = utl.reload_defaults(kwargs.get('theme', None))
 
         # Set the plot type
         self.plot_func = plot_func

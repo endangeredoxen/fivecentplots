@@ -4,6 +4,7 @@ import pdb
 import numpy as np
 import pandas as pd
 import scipy.stats as ss
+import importlib
 #import ctypes
 from matplotlib.font_manager import FontProperties, findfont
 from PIL import ImageFont
@@ -445,17 +446,51 @@ def rectangle_overlap(r1, r2):
         return False
 
 
-def reload_defaults():
+def reload_defaults(theme=None):
     """
     Reload the fcp params
     """
 
-    #del fcp_params
-    import defaults
-    importlib.reload(defaults)
+    theme_dir = os.path.join(os.path.dirname(__file__), 'themes')
+    reset_path = False
+    err_msg = 'Requested theme not found; using default'
+
+    if theme is not None and os.path.exists(theme):
+        # full filename case
+        theme_dir = os.sep.join(theme.split(os.sep)[0:-1])
+        theme = theme.split(os.sep)[-1]
+        sys.path = [theme_dir] + sys.path
+        reset_path = True
+        try:
+            defaults = importlib.import_module(theme.replace('.py', ''), theme_dir)
+            importlib.reload(defaults)
+        except:
+            print(err_msg)
+            import defaults
+            importlib.reload(defaults)
+
+    elif theme is not None and \
+            (theme in os.listdir(theme_dir) or theme+'.py' in os.listdir(theme_dir)):
+        sys.path = [theme_dir] + sys.path
+        reset_path = True
+        try:
+            defaults = importlib.import_module(theme.replace('.py', ''), theme_dir)
+            importlib.reload(defaults)
+        except:
+            print(err_msg)
+            import defaults
+            importlib.reload(defaults)
+    else:
+        # use default theme
+        import defaults
+        importlib.reload(defaults)
+
     fcp_params = defaults.fcp_params
     colors = defaults.colors if hasattr(defaults, 'colors') else None
     markers = defaults.markers if hasattr(defaults, 'markers') else None
+
+    if reset_path:
+        sys.path = sys.path [1:]
 
     return fcp_params, colors, markers
 

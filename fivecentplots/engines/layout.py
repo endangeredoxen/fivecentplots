@@ -76,7 +76,7 @@ class BaseLayout:
         self.plot_func = plot_func
 
         # Reload default file
-        self.fcpp, color_list, marker_list = utl.reload_defaults()
+        self.fcpp, color_list, marker_list = utl.reload_defaults(kwargs.get('theme', None))
 
         # Figure
         self.fig = Element('fig', self.fcpp, kwargs,
