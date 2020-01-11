@@ -148,6 +148,7 @@ class Layout(BaseLayout):
         self.fig_right_border = 6  # extra border on right side that shows up by default
         self.legend_top_offset = 8 # this is differnt for inline; do we need to toggle on/off with show?
         self.legend_border = 3
+        self.fig_legend_border = 5
 
         # Update kwargs
         if not kwargs.get('save_ext'):
@@ -1370,17 +1371,21 @@ class Layout(BaseLayout):
                                self.tick_labels_minor_y2.size[0])) * self.axes.twin_x
         self.labtick_z = (self.ws_ticks_ax + self.ws_label_tick) * self.label_z.on + \
                          self.label_z.size[0] + self.tick_labels_major_z.size[0]
-        self.ws_ax_leg = max(0, self.ws_ax_leg - self.labtick_y2) if self.legend.text is not None else 0
-        if self.legend.location == 0 and self.legend.text is not None:
-            self.ws_leg_fig = self.ws_leg_fig
-        else:
-            self.ws_leg_fig = self.ws_ax_fig  # do we need something different for different legend locations?
-        self.box_title = max(self.box_group_title.size)[0] if self.box_group_title.on else 0
+        self.ws_ax_leg = max(0, self.ws_ax_leg - self.labtick_y2) if self.legend.location == 0 else 0
+        self.ws_leg_fig = self.ws_leg_fig if self.legend.location == 0 else 0
+        self.ws_ax_fig = 0 if self.legend.location == 0 else self.ws_ax_fig
+        self.fig_legend_border = self.fig_legend_border if self.legend.location == 0 else 0
         if self.box_group_label.on:
             self.box_labels = sum(f[1] * (1 + 2 * self.box_group_label.padding / 100) \
                                   for f in self.box_group_label.size)
         else:
             self.box_labels = 0
+        self.box_title = 0
+        if self.box_group_title.on and self.legend.size[1] > self.axes.size[1]:
+            self.box_title = max(self.box_group_title.size)[0]
+        elif self.box_group_title.on and \
+                max(self.box_group_title.size)[0] > self.legend.size[0]:
+            self.box_title = max(self.box_group_title.size)[0] - self.legend.size[0]
 
         # Adjust the column and row whitespace
         if self.box_group_label.on and self.label_wrap.on and 'ws_row' not in kwargs.keys():
@@ -1421,13 +1426,15 @@ class Layout(BaseLayout):
         # Figure width
         self.left = self.ws_fig_label + self.labtick_y
         self.right = (self.cbar.size[0] + self.ws_ax_cbar) * self.ncol + \
-            self.ws_ax_leg + \
-            self.legend.edge_width + self.labtick_y2 + \
+            self.ws_ax_fig + self.labtick_y2 + \
             self.label_row.size[0] + self.ws_label_row * self.label_row.on + \
             self.labtick_z * (self.ncol - 1 if self.ncol > 1 else 1)
-        leg = self.legend.size[0] + self.ws_leg_fig if self.legend.location == 0 else 0
+        leg = self.legend.size[0] + self.ws_ax_leg + self.ws_leg_fig + \
+              self.fig_legend_border + self.legend.edge_width
         self.fig.size[0] = self.left + self.axes.size[0] * self.ncol + \
-            self.right + self.ws_col * (self.ncol - 1) + self.box_title + leg
+            self.right + leg + self.ws_col * (self.ncol - 1) + self.box_title + \
+            (self.ws_ax_box_title if self.box_group_title.on else 0) - \
+            self.fig_legend_border
 
         # Get extra width of a long title (centered on axes, not figure)
         self.title_slush_left = self.title.size[0] / 2 - \
@@ -1496,16 +1503,12 @@ class Layout(BaseLayout):
         Get legend position
         """
 
-        offset_x = 7 # no idea why this is needed
         offset_box = 0
         if self.box_group_title.on and self.legend.size[1] > self.axes.size[1]:
             offset_box = max(self.box_group_title.size)[0]
-
-        self.legend.position[1] = self.axes.position[1] + \
-            (self.ws_ax_leg + offset_x + offset_box + self.legend.size[0] + \
-             self.labtick_y2 + \
-             self.label_row.size[0] + self.ws_label_row * self.label_row.on) / \
-             self.fig.size[0]
+            self.legend.position[1] = 1 + (self.fig_legend_border - self.ws_leg_fig) / self.fig.size[0]
+        else:
+            self.legend.position[1] = 1 + (self.fig_legend_border - self.ws_leg_fig) / self.fig.size[0]
         self.legend.position[2] = \
             self.axes.position[2] + self.legend_top_offset/self.fig.size[1]
 
