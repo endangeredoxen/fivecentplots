@@ -830,7 +830,7 @@ def set_theme(theme=None):
         ignores = []
     else:
         my_theme_dir = osjoin(user_dir, '.fivecentplots')
-        ignores ['defaults.py', 'defaults_old.py']
+        ignores = ['defaults.py', 'defaults_old.py']
 
     if theme is not None:
         theme = theme.replace('.py', '')
