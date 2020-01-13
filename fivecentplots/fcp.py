@@ -827,8 +827,10 @@ def set_theme(theme=None):
     if theme is not None and os.path.exists(theme):
         my_theme_dir = os.sep.join(theme.split(os.sep)[0:-1])
         theme = theme.split(os.sep)[-1]
+        ignores = []
     else:
         my_theme_dir = osjoin(user_dir, '.fivecentplots')
+        ignores ['defaults.py', 'defaults_old.py']
 
     if theme is not None:
         theme = theme.replace('.py', '')
@@ -836,13 +838,17 @@ def set_theme(theme=None):
     themes = [f.replace('.py', '')
               for f in os.listdir(osjoin(cur_dir, 'themes')) if '.py' in f]
     mythemes = [f.replace('.py', '') for f in os.listdir(my_theme_dir)
-                if '.py' in f and 'defaults' not in f]
+                if '.py' in f and f not in ignores]
 
     if theme in themes:
         entry = themes.index('%s' % theme) + 1
 
     elif theme in mythemes:
         entry = mythemes.index('%s' % theme) + 1 + len(themes)
+
+    elif theme is not None:
+        print('Theme file not found!  Please try again')
+        return
 
     else:
         print('Select default styling theme:')
