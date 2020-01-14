@@ -91,6 +91,12 @@ class BaseLayout:
                 if type(color) is int:
                     colors[icolor] = DEFAULT_COLORS[color]
             color_list = colors
+        elif 'colors' in self.fcpp.keys():
+            colors = utl.validate_list(self.fcpp['colors'])
+            for icolor, color in enumerate(colors):
+                if type(color) is int:
+                    colors[icolor] = DEFAULT_COLORS[color]
+            color_list = colors
         elif not color_list:
             color_list = copy.copy(DEFAULT_COLORS)
         self.cmap = kwargs.get('cmap', None)
