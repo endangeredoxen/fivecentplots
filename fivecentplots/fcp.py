@@ -657,7 +657,7 @@ def plot_xy(data, layout, ir, ic, df_rc, kwargs):
         if not layout.lines.on and not layout.markers.on:
             pass
         elif kwargs.get('groups', False):
-            for nn, gg in df.groupby(validate_list(kwargs['groups'])):
+            for nn, gg in df.groupby(validate_list(kwargs['groups']), sort=data.sort):
                 layout.plot_xy(ir, ic, iline, gg, x, y, leg_name, twin)
                 plot_fit(data, layout, ir, ic, iline, gg, x, y, twin, leg_name, ngroups)
         else:

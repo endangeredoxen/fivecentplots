@@ -395,10 +395,11 @@ class Layout(BaseLayout):
             else:
                 fit_line = None
 
-            if self.axes.twin_x or self.axes.twin_y:
-                keys = self.legend.values.keys()
-            else:
-                keys = natsorted(list(self.legend.values.keys()))
+            # if self.axes.twin_x or self.axes.twin_y:
+            #     keys = self.legend.values.keys()
+            # else:
+            #     keys = natsorted(list(self.legend.values.keys()))
+            keys = self.legend.ordered_list
             lines = [self.legend.values[f][0] for f in keys
                      if self.legend.values[f] is not None]
             if ref_line is not None:
@@ -1724,6 +1725,7 @@ class Layout(BaseLayout):
         if leg_name is not None:
             handle = [patches.Rectangle((0,0),1,1,color=self.bar.fill_color.get(iline))]
             self.legend.values[leg_name] = handle
+            self.legend.ordered_list += [leg_name]
 
         return data
 
@@ -2126,6 +2128,7 @@ class Layout(BaseLayout):
         # Add a reference to the line to self.lines
         if leg_name is not None:
             self.legend.values[leg_name] = points if points is not None else lines
+            self.legend.ordered_list += [leg_name]
 
     def save(self, filename, idx=0):
         """

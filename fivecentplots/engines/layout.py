@@ -592,6 +592,7 @@ class BaseLayout:
                                  nleg=utl.kwget(kwargs, self.fcpp, 'nleg', -1),
                                  points=utl.kwget(kwargs, self.fcpp,
                                                   'legend_points', 1),
+                                 ordered_list=[],
                                  overflow=0,
                                  text=kwargs.get('legend_title',
                                                  kwargs.get('legend') if kwargs.get('legend') != True else ''),
