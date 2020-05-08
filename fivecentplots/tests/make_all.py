@@ -1,5 +1,5 @@
 import pdb
-st = pdb.set_trace
+db = pdb.set_trace
 import test_boxplot
 import test_contour
 import test_grouping

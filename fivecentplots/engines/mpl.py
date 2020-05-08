@@ -40,7 +40,7 @@ try:
 except:
     natsorted = sorted
 
-st = pdb.set_trace
+db = pdb.set_trace
 
 
 def mplc_to_hex(color, alpha=True):
@@ -289,7 +289,7 @@ class Layout(BaseLayout):
                                 linewidth=ll.width.get(ival),
                                 zorder=ll.zorder)
                     if type(ll.text) is list and ll.text[ival] is not None:
-                        self.legend.values[ll.text[ival]] = [line]
+                        self.legend.add_value(ll.text[ival], [line], 'ref_line')
 
     def add_label(self, ir, ic, text='', position=None, rotation=0, size=None,
                   fill_color='#ffffff', edge_color='#aaaaaa', edge_width=1,
@@ -374,41 +374,9 @@ class Layout(BaseLayout):
 
         if self.legend.on and len(self.legend.values) > 0:
 
-            # Format the legend keys
-            #self.format_legend_values()
-
             # Sort the legend keys
-            if 'NaN' in self.legend.values.keys():
-                del self.legend.values['NaN']
-
-            if self.ref_line.on:
-                ref_line, ref_line_legend_text = [], []
-                for iref, ref in enumerate(self.ref_line.column.values):
-                    ref_line += self.legend.values[self.ref_line.legend_text.get(iref)]
-                    ref_line_legend_text += [self.ref_line.legend_text.get(iref)]
-                    del self.legend.values[self.ref_line.legend_text.get(iref)]
-            else:
-                ref_line = None
-            if 'fit_line' in self.legend.values.keys():
-                fit_line = self.legend.values['fit_line']
-                del self.legend.values['fit_line']
-            else:
-                fit_line = None
-
-            # if self.axes.twin_x or self.axes.twin_y:
-            #     keys = self.legend.values.keys()
-            # else:
-            #     keys = natsorted(list(self.legend.values.keys()))
-            keys = self.legend.ordered_list
-            lines = [self.legend.values[f][0] for f in keys
-                     if self.legend.values[f] is not None]
-            if ref_line is not None:
-                keys = ref_line_legend_text + keys
-                lines = ref_line + lines
-
-            if len(lines) == 0:
-                print('Legend contains no elements...skipping')
-                return
+            if 'NaN' in self.legend.values['Key'].values:
+                self.legend.del_value('NaN')
 
             # Set the font properties
             fontp = {}
@@ -416,6 +384,9 @@ class Layout(BaseLayout):
             fontp['size'] = self.legend.font_size
             fontp['style'] = self.legend.font_style
             fontp['weight'] = self.legend.font_weight
+
+            keys = list(self.legend.values['Key'])
+            lines = list(self.legend.values['Curve'])
 
             if self.legend.location == 0:
                 self.legend.obj = \
@@ -615,6 +586,7 @@ class Layout(BaseLayout):
         wrap_labels = np.array([[None]*self.ncol]*self.nrow)
         row_labels = np.array([[None]*self.ncol]*self.nrow)
         col_labels = np.array([[None]*self.ncol]*self.nrow)
+        x_tick_xs = False
 
         box_group_label = np.array([[None]*self.ncol]*self.nrow)
         box_group_title = []
@@ -873,6 +845,13 @@ class Layout(BaseLayout):
                 zticks = ax2.get_yticks()
                 ziter_ticks = [f for f in ax2.yaxis.iter_ticks()]
                 zticksmaj += [f[2] for f in ziter_ticks[0:len(zticks)]]
+
+            # categorical tick label adjustment
+            tp = mpl_get_ticks(ax)
+            xy = 'x' if utl.kwget(self.kwargs, self.fcpp, 'horizontal', False) is False else 'y'
+            if tp[xy]['max'] == tp[xy]['ticks'][-1] \
+                    and data.ranges[ir, ic]['%smax' % xy] is None:
+                x_tick_xs = True
 
             # Minor ticks
             if self.tick_labels_minor_x.on:
@@ -1251,6 +1230,12 @@ class Layout(BaseLayout):
                                      title.get_window_extent().width)
             self.title.size[1] = title.get_window_extent().height
 
+        ## TODO:: expand this to other axes and minor ticks?
+        if x_tick_xs:
+            self.x_tick_xs = self.tick_labels_major_x.size[0] / 2
+        else:
+            self.x_tick_xs = 0
+
         for ir in range(0, self.nrow):
             for ic in range(0, self.ncol):
                 if wrap_labels[ir, ic] is not None:
@@ -1432,6 +1417,10 @@ class Layout(BaseLayout):
             self.labtick_z * (self.ncol - 1 if self.ncol > 1 else 1)
         leg = self.legend.size[0] + self.ws_ax_leg + self.ws_leg_fig + \
               self.fig_legend_border + self.legend.edge_width
+        if self.x_tick_xs > leg - self.fig_legend_border:
+            # hack for categorical tick labels
+            print('here')
+            leg += 2 + self.x_tick_xs - leg + self.fig_legend_border
         self.fig.size[0] = self.left + self.axes.size[0] * self.ncol + \
             self.right + leg + self.ws_col * (self.ncol - 1) + self.box_title + \
             (self.ws_ax_box_title if self.box_group_title.on else 0) - \
@@ -1724,8 +1713,7 @@ class Layout(BaseLayout):
         # Legend
         if leg_name is not None:
             handle = [patches.Rectangle((0,0),1,1,color=self.bar.fill_color.get(iline))]
-            self.legend.values[leg_name] = handle
-            self.legend.ordered_list += [leg_name]
+            self.legend.add_value(leg_name, handle, 'lines')
 
         return data
 
@@ -1942,7 +1930,7 @@ class Layout(BaseLayout):
         # Add a reference to the line to self.lines
         if leg_name is not None:
             handle = [patches.Rectangle((0,0),1,1,color=self.hist.fill_color.get(iline))]
-            self.legend.values[leg_name] = handle
+            self.legend.add_value(leg_name, handle, 'lines')
 
         # # Horizontal adjustments
         # if self.hist.horizontal:
@@ -2076,7 +2064,9 @@ class Layout(BaseLayout):
 
         if not line_type:
             line_type = self.lines
+            line_type_name = 'lines'
         else:
+            line_type_name = line_type
             line_type = getattr(self, line_type)
 
         # Select the axes
@@ -2127,8 +2117,9 @@ class Layout(BaseLayout):
 
         # Add a reference to the line to self.lines
         if leg_name is not None:
-            self.legend.values[leg_name] = points if points is not None else lines
-            self.legend.ordered_list += [leg_name]
+            if leg_name is not None \
+                    and leg_name not in list(self.legend.values['Key']):
+                self.legend.add_value(leg_name, points if points is not None else lines, line_type_name)
 
     def save(self, filename, idx=0):
         """

@@ -2,7 +2,7 @@
 import pandas as pd
 import os
 import pdb
-st = pdb.set_trace
+db = pdb.set_trace
 osjoin = os.path.join
 cur_dir = os.path.dirname(__file__)
 #PATH = osjoin(cur_dir, r'doc\_static\docstrings')

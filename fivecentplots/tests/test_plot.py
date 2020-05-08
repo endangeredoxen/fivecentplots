@@ -6,7 +6,7 @@ import os, sys, pdb
 import fivecentplots.utilities as utl
 import inspect
 osjoin = os.path.join
-st = pdb.set_trace
+db = pdb.set_trace
 
 MASTER = osjoin(os.path.dirname(fcp.__file__), 'tests', 'test_images', 'plot.py')
 
@@ -87,7 +87,7 @@ def test_xy_log_scale(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'xy_log-scale_master') if master else 'xy_log-scale'
 
     # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9,
+    fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9, xmax=2.1, grid_minor=True,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              filename=name + '.png', inline=False)
 
@@ -484,9 +484,9 @@ def test_other_curve_fitting_legend2(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, show=SHOW, wrap='Die', legend='Die',
-         filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-         fit=1, fit_range_x=[1.3, 2], fit_width=2, fit_color='#555555', ax_size=[250, 250],
-         filename=name + '.png', inline=False)
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             fit=1, fit_range_x=[1.3, 2], fit_width=2, fit_color='#555555', ax_size=[250, 250],
+             filename=name + '.png', inline=False)
 
     # Compare with master
     if master:

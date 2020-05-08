@@ -29,7 +29,7 @@ try:
 except:
     natsorted = sorted
 
-st = pdb.set_trace
+db = pdb.set_trace
 
 DEFAULT_MARKERS = ['o', '+', 's', 'x', 'd', 'Z', '^', 'Y', 'v', '\infty',
                    '\#', '<', u'\u2B21', u'\u263A', '>', u'\u29C6', '\$',
@@ -575,8 +575,8 @@ class BaseLayout:
         kwargs['legend'] = kwargs.get('legend', None)
         if type(kwargs['legend']) is list:
             kwargs['legend'] = ' | '.join(utl.validate_list(kwargs['legend']))
-
-        self.legend = DF_Element('legend', self.fcpp, kwargs,
+        legend_none = pd.DataFrame({'Key': ['NaN'], 'Line': None}, index=[0])
+        self.legend = Legend_Element('legend', self.fcpp, kwargs,
                                  on=True if (kwargs.get('legend') and
                                     kwargs.get('legend_on', True)) else False,
                                  column=kwargs['legend'],
@@ -592,32 +592,33 @@ class BaseLayout:
                                  nleg=utl.kwget(kwargs, self.fcpp, 'nleg', -1),
                                  points=utl.kwget(kwargs, self.fcpp,
                                                   'legend_points', 1),
-                                 ordered_list=[],
+                                 ordered_curves=[],
+                                 ordered_fits=[],
+                                 ordered_ref_lines=[],
                                  overflow=0,
                                  text=kwargs.get('legend_title',
                                                  kwargs.get('legend') if kwargs.get('legend') != True else ''),
-                                 values={} if not kwargs.get('legend') else {'NaN': None},
+                                 #values={} if not kwargs.get('legend') else {'NaN': None},
                                  )
-
-        if not self.legend.on and self.ref_line.on:
+        if not self.legend._on and self.ref_line.on:
             for ref_line_legend_text in self.ref_line.legend_text.values:
                 self.legend.values[ref_line_legend_text] = []
             self.legend.on = True
             self.legend.text = ''
-        if not self.legend.on and self.fit.on \
+        if not self.legend._on and self.fit.on \
                 and not (('legend' in kwargs.keys() and kwargs['legend'] == False) or \
                          ('legend_on' in kwargs.keys() and kwargs['legend_on'] == False)):
-            self.legend.values['fit_line'] = []
+            #self.legend.values['fit_line'] = []
             self.legend.on = True
             self.legend.text = ''
-        if self.legend.on and self.fit.on and 'fit_color' not in kwargs.keys():
+        if self.legend._on and self.fit.on and 'fit_color' not in kwargs.keys():
             self.fit.color = copy.copy(self.lines.color)
         y = utl.validate_list(kwargs.get('y'))
         if not self.axes.twin_x and y is not None and len(y) > 1 and \
                 self.plot_func != 'plot_box' and \
                 (kwargs.get('wrap') != 'y' and \
                 kwargs.get('row') != 'y' and kwargs.get('col') != 'y'):
-            self.legend.values = {'NaN': None}
+            self.legend.values = self.legend.set_default()
             self.legend.on = True
 
         # Color bar
@@ -880,7 +881,7 @@ class BaseLayout:
             # edge color
             if not kwargs.get('colors') \
                     and not kwargs.get('marker_edge_color') \
-                    and not self.legend.on:
+                    and not self.legend._on:
                 self.markers.edge_color = DEFAULT_COLORS[1]
                 self.markers.color_alpha('edge_color', 'edge_alpha')
             elif not kwargs.get('colors') and not kwargs.get('marker_edge_color'):
@@ -888,7 +889,7 @@ class BaseLayout:
                 self.markers.color_alpha('edge_color', 'edge_alpha')
             if not kwargs.get('colors') \
                     and not kwargs.get('marker_fill_color') \
-                    and not self.legend.on:
+                    and not self.legend._on:
                 self.markers.fill_color = DEFAULT_COLORS[1]
                 self.markers.color_alpha('fill_color', 'fill_alpha')
             elif not kwargs.get('colors'):
@@ -917,7 +918,7 @@ class BaseLayout:
                 self.markers.type = RepeatedList(kwargs['marker_type'], 'marker_type')
             elif 'box_marker_type' in self.fcpp.keys():
                 self.markers.type = RepeatedList(self.fcpp['box_marker_type'], 'marker_type')
-            elif not self.legend.on:
+            elif not self.legend._on:
                 self.markers.type = RepeatedList('o', 'marker_type')
             if 'box_marker_zorder' in self.fcpp.keys():
                 self.markers.zorder = self.fcpp['box_marker_zorder']
@@ -976,9 +977,9 @@ class BaseLayout:
                             width=widths, alpha=alphas, text=labels,
                             zorder=utl.kwget(kwargs, self.fcpp, '%s_zorder' % axline, 1),
                             ))
-            for label in labels:
-                if label:
-                    self.legend.values[label] = []
+            # for label in labels:
+            #     if label:
+            #         self.legend.values[label] = []
 
         # Gridlines
         self.grid_major = Element('grid_major', self.fcpp, kwargs,
@@ -1862,3 +1863,78 @@ class DF_Element(Element):
         else:
             self._size = self._size_orig
             self._text = self._text_orig
+
+
+class Legend_Element(DF_Element):
+    def __init__(self, label='None', fcpp={}, others={}, **kwargs):
+        self.cols = ['Key', 'Curve', 'LineType']
+        self.default = pd.DataFrame(columns=self.cols, data=[['NaN', None, None]], index=[0])
+
+        if not kwargs.get('legend'):
+            self._values = pd.DataFrame(columns=self.cols)
+        else:
+            self._values = self.set_default()
+        if kwargs.get('sort') == True:
+            self.sort = True
+        else:
+            self.sort = False
+
+        DF_Element.__init__(self, label=label, fcpp=fcpp, others=others, **kwargs)
+
+    @property
+    def size(self):
+
+        if self._on:
+            return self._size
+        else:
+            return [0, 0]
+
+    @size.setter
+    def size(self, value):
+
+        if self._size_orig is None and value is not None:
+            self._size_orig = value
+
+        self._size = value
+
+    @property
+    def values(self):
+        if len(self._values) <= 1:
+            return self._values
+
+        # Re-order single fit lines
+        if 'Fit' in self._values.Key.values \
+                or 'ref_line' in self._values.LineType.values:
+            df = self._values[self._values.LineType=='lines']
+            fit = self._values[self._values.LineType=='fit']
+            ref = self._values[self._values.LineType=='ref_line']
+            return pd.concat([df, fit, ref]).reset_index(drop=True)
+        else:
+            return self._values.sort_index()
+
+    @values.setter
+    def values(self, value):
+        self._values = value
+
+    def add_value(self, key, curve, line_type_name):
+        """
+        Add a new curve to the values dataframe
+
+        Args:
+            key (str): string name for legend label
+            curve (obj): reference to curve obj
+            line_type_name (str): line type description
+        """
+
+        temp = pd.DataFrame({'Key': key, 'Curve': curve, 'LineType': line_type_name},
+                            index=[len(self._values)])
+        self._values = pd.concat([self.values, temp], sort=True)
+
+
+    def del_value(self, key):
+        df = self.values.copy()
+        self._values = df[df.Key!=key].copy()
+
+    def set_default(self):
+        return self.default.copy()
+

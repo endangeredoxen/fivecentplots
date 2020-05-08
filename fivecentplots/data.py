@@ -9,7 +9,7 @@ except:
     natsorted = sorted
 
 import pdb
-st = pdb.set_trace
+db = pdb.set_trace
 
 REQUIRED_VALS = {'plot_xy': ['x', 'y'],
                  'plot_bar': ['x', 'y'],

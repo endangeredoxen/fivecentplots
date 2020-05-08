@@ -33,7 +33,7 @@ try:
 except:
     natsorted = sorted
 
-st = pdb.set_trace
+db = pdb.set_trace
 
 
 DASHES = {'-': 'solid',

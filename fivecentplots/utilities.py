@@ -12,7 +12,7 @@ try:
     import cv2
 except:
     pass
-st = pdb.set_trace
+db = pdb.set_trace
 
 # Get user default file
 user_dir = os.path.expanduser('~')

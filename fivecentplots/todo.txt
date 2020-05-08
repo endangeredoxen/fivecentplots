@@ -2,12 +2,12 @@
 
 * add axes text for log with only one tick mark
 
-* add random text
-
-* bokeh option
-
 * data shader option
 
 * data and other sections of docs
 
 * custom ax_scale per plot
+
+* time series x/y limits
+
+* specific grouping order

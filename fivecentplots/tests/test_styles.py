@@ -6,7 +6,7 @@ import os, sys, pdb
 import fivecentplots.utilities as utl
 import inspect
 osjoin = os.path.join
-st = pdb.set_trace
+db = pdb.set_trace
 
 MASTER = osjoin(os.path.dirname(fcp.__file__), 'tests', 'test_images', 'styles.py')
 

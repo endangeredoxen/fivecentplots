@@ -7,7 +7,7 @@ import os, sys, pdb
 import fivecentplots.utilities as utl
 import inspect
 osjoin = os.path.join
-st = pdb.set_trace
+db = pdb.set_trace
 
 MASTER = osjoin(os.path.dirname(fcp.__file__), 'tests', 'test_images', 'grouping.py')
 
@@ -159,6 +159,29 @@ def test_legend_secondary_column(master=False, remove=True, show=False):
     fcp.plot(df1, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              filename=name + '.png', inline=False)
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_legend_position(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'legend_position_master') if master else 'legend_position'
+
+    # Make the plot
+    fcp.plot(df1, x='Voltage', y='I [A]', legend='Die', show=SHOW,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             legend_location=2, filename=name + '.png', inline=False)
 
     # Compare with master
     if master:

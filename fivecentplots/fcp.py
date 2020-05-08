@@ -44,7 +44,7 @@ try:
     from natsort import natsorted
 except:
     natsorted = sorted
-st = pdb.set_trace
+db = pdb.set_trace
 
 osjoin = os.path.join
 cur_dir = os.path.dirname(__file__)
@@ -497,7 +497,7 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin, leg_name, ngroups):
         return
 
     df, coeffs, rsq = data.get_fit_data(ir, ic, df, x, y)
-    if layout.legend.on:
+    if layout.legend._on:
         if layout.fit.legend_text is not None:
             leg_name = layout.fit.legend_text
         elif (data.wrap_vals is not None and ngroups / data.nwrap > 1 \
@@ -617,6 +617,7 @@ def plot_ref(ir, ic, iline, data, layout, df, x, y):
         layout.plot_xy(ir, ic, iref, df, x, layout.ref_line.column.get(iref),
                        layout.ref_line.legend_text.get(iref), False,
                        line_type='ref_line', marker_disable=True)
+        layout.legend.ordered_curves = layout.legend.ordered_curves[0:-1]
 
     return data
 
