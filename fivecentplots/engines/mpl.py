@@ -43,6 +43,22 @@ except:
 db = pdb.set_trace
 
 
+def iterticks(ax):
+    # this is deprecated in later versions of mpl but used in fcp so just
+    # copying it here to avoid warnings or future removal
+    if LooseVersion(mpl.__version__) >= LooseVersion('3.1'):
+        major_locs = ax.get_majorticklocs()
+        major_labels = ax.major.formatter.format_ticks(major_locs)
+        major_ticks = ax.get_major_ticks(len(major_locs))
+        yield from zip(major_ticks, major_locs, major_labels)
+        minor_locs = ax.get_minorticklocs()
+        minor_labels = ax.minor.formatter.format_ticks(minor_locs)
+        minor_ticks = ax.get_minor_ticks(len(minor_locs))
+        yield from zip(minor_ticks, minor_locs, minor_labels)
+    else:
+        yield from getattr(ax, 'iter_ticks')()
+
+
 def mplc_to_hex(color, alpha=True):
     """
     Convert mpl color to hex
@@ -85,7 +101,7 @@ def mpl_get_ticks(ax, xon=True, yon=True):
         tp[vv]['min'] = min(getattr(ax, 'get_%slim' % vv)())
         tp[vv]['max'] = max(getattr(ax, 'get_%slim' % vv)())
         tp[vv]['ticks'] = getattr(ax, 'get_%sticks' % vv)()
-        tp[vv]['labels'] = [f for f in getattr(ax, '%saxis' % vv).iter_ticks()]
+        tp[vv]['labels'] = [f for f in iterticks(getattr(ax, '%saxis' % vv))]
         tp[vv]['label_vals'] = [f[1] for f in tp[vv]['labels']]
         tp[vv]['label_text'] = [f[2] for f in tp[vv]['labels']]
         try:
@@ -826,24 +842,24 @@ class Layout(BaseLayout):
             # Major ticks
             xticks = ax.get_xticks()
             yticks = ax.get_yticks()
-            xiter_ticks = [f for f in ax.xaxis.iter_ticks()] # fails for symlog in 1.5.1
-            yiter_ticks = [f for f in ax.yaxis.iter_ticks()]
+            xiter_ticks = [f for f in iterticks(ax.xaxis)] # fails for symlog in 1.5.1
+            yiter_ticks = [f for f in iterticks(ax.yaxis)]
             xticksmaj += [f[2] for f in xiter_ticks[0:len(xticks)]]
             yticksmaj += [f[2] for f in yiter_ticks[0:len(yticks)]]
 
             if data.twin_x:
-                y2ticks = [f[2] for f in ax2.yaxis.iter_ticks()
+                y2ticks = [f[2] for f in iterticks(ax2.yaxis)
                           if f[2] != '']
-                y2iter_ticks = [f for f in ax2.yaxis.iter_ticks()]
+                y2iter_ticks = [f for f in iterticks(ax2.yaxis)]
                 y2ticksmaj += [f[2] for f in y2iter_ticks[0:len(y2ticks)]]
             elif data.twin_y:
-                x2ticks = [f[2] for f in ax3.xaxis.iter_ticks()
+                x2ticks = [f[2] for f in iterticks(ax3.xaxis)
                            if f[2] != '']
-                x2iter_ticks = [f for f in ax3.xaxis.iter_ticks()]
+                x2iter_ticks = [f for f in iterticks(ax3.xaxis)]
                 x2ticksmaj += [f[2] for f in x2iter_ticks[0:len(x2ticks)]]
             if data.z is not None:
                 zticks = ax2.get_yticks()
-                ziter_ticks = [f for f in ax2.yaxis.iter_ticks()]
+                ziter_ticks = [f for f in iterticks(ax2.yaxis)]
                 zticksmaj += [f[2] for f in ziter_ticks[0:len(zticks)]]
 
             # categorical tick label adjustment
@@ -869,7 +885,7 @@ class Layout(BaseLayout):
                 number = len([f for f in minor_ticks if f > vals[0] and f < vals[1]]) + 1
                 decimals = utl.get_decimals(inc/number)
                 ax.xaxis.set_minor_formatter(ticker.FormatStrFormatter('%%.%sf' % (decimals)))
-                xiter_ticks = [f for f in ax.xaxis.iter_ticks()]
+                xiter_ticks = [f for f in iterticks(ax.xaxis)]
 
             if self.tick_labels_minor_y.on:
                 if self.ticks_minor_y.number is not None:
@@ -886,10 +902,10 @@ class Layout(BaseLayout):
                 number = len([f for f in minor_ticks if f > vals[0] and f < vals[1]]) + 1
                 decimals = utl.get_decimals(inc/number)
                 ax.yaxis.set_minor_formatter(ticker.FormatStrFormatter('%%.%sf' % (decimals)))
-                yiter_ticks = [f for f in ax.yaxis.iter_ticks()]
+                yiter_ticks = [f for f in iterticks(ax.yaxis)]
 
-            xticksmin += [f[2] for f in ax.xaxis.iter_ticks()][len(xticks):]
-            yticksmin += [f[2] for f in ax.yaxis.iter_ticks()][len(yticks):]
+            xticksmin += [f[2] for f in iterticks(ax.xaxis)][len(xticks):]
+            yticksmin += [f[2] for f in iterticks(ax.yaxis)][len(yticks):]
 
             if self.tick_labels_minor_x2.on and ax3 is not None:
                 if self.ticks_minor_x2.number is not None:
@@ -906,7 +922,7 @@ class Layout(BaseLayout):
                 number = len([f for f in minor_ticks if f > vals[0] and f < vals[1]]) + 1
                 decimals = utl.get_decimals(inc/number)
                 ax3.xaxis.set_minor_formatter(ticker.FormatStrFormatter('%%.%sf' % (decimals)))
-                xiter_ticks = [f for f in ax3.xaxis.iter_ticks()]
+                xiter_ticks = [f for f in iterticks(ax3.xaxis)]
 
             if self.tick_labels_minor_y2.on and ax2 is not None:
                 if self.ticks_minor_y2.number is not None:
@@ -923,12 +939,12 @@ class Layout(BaseLayout):
                 number = len([f for f in minor_ticks if f > vals[0] and f < vals[1]]) + 1
                 decimals = utl.get_decimals(inc/number)
                 ax2.yaxis.set_minor_formatter(ticker.FormatStrFormatter('%%.%sf' % (decimals)))
-                yiter_ticks = [f for f in ax2.yaxis.iter_ticks()]
+                yiter_ticks = [f for f in iterticks(ax2.yaxis)]
 
             if ax3 is not None:
-                x2ticksmin += [f[2] for f in ax3.xaxis.iter_ticks()][len(xticks):]
+                x2ticksmin += [f[2] for f in iterticks(ax3.xaxis)][len(xticks):]
             if ax2 is not None:
-                y2ticksmin += [f[2] for f in ax2.yaxis.iter_ticks()][len(yticks):]
+                y2ticksmin += [f[2] for f in iterticks(ax2.yaxis)][len(yticks):]
 
             self.axes.obj = np.array([[None]*self.ncol]*self.nrow)
             self.axes.obj[ir, ic] = ax
