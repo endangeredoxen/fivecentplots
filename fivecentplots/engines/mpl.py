@@ -165,6 +165,7 @@ class Layout(BaseLayout):
         self.legend_top_offset = 8 # this is differnt for inline; do we need to toggle on/off with show?
         self.legend_border = 3
         self.fig_legend_border = 5
+        self.x_tick_xs = 0
 
         # Update kwargs
         if not kwargs.get('save_ext'):
@@ -413,7 +414,15 @@ class Layout(BaseLayout):
                                         numpoints=self.legend.points,
                                         prop=fontp)
                 format_legend(self, self.legend.obj)
-
+            elif self.legend.location == 11:
+                self.legend.obj = \
+                    self.fig.obj.legend(lines, keys, loc='lower center',
+                                        title=self.legend.text if self.legend is not True else '',
+                                        bbox_to_anchor=(self.legend.position[0],
+                                                        self.legend.position[2]),
+                                        numpoints=self.legend.points,
+                                        prop=fontp)
+                format_legend(self, self.legend.obj)
             else:
                 for irow, row in enumerate(self.axes.obj):
                     for icol, col in enumerate(row):
@@ -602,7 +611,7 @@ class Layout(BaseLayout):
         wrap_labels = np.array([[None]*self.ncol]*self.nrow)
         row_labels = np.array([[None]*self.ncol]*self.nrow)
         col_labels = np.array([[None]*self.ncol]*self.nrow)
-        x_tick_xs = False
+        x_tick_xs = 0
 
         box_group_label = np.array([[None]*self.ncol]*self.nrow)
         box_group_title = []
@@ -862,12 +871,8 @@ class Layout(BaseLayout):
                 ziter_ticks = [f for f in iterticks(ax2.yaxis)]
                 zticksmaj += [f[2] for f in ziter_ticks[0:len(zticks)]]
 
-            # categorical tick label adjustment
+            # get ticks
             tp = mpl_get_ticks(ax)
-            xy = 'x' if utl.kwget(self.kwargs, self.fcpp, 'horizontal', False) is False else 'y'
-            if tp[xy]['max'] == tp[xy]['ticks'][-1] \
-                    and data.ranges[ir, ic]['%smax' % xy] is None:
-                x_tick_xs = True
 
             # Minor ticks
             if self.tick_labels_minor_x.on:
@@ -1166,7 +1171,6 @@ class Layout(BaseLayout):
             saved = True
             filename = '%s%s' % (int(round(time.time() * 1000)), randint(0, 99))
             mpl.pyplot.savefig(filename + '.png')
-
         # mpl.pyplot.savefig(r'test.png')  # turn on for debugging
 
         # Get actual sizes
@@ -1246,11 +1250,24 @@ class Layout(BaseLayout):
                                      title.get_window_extent().width)
             self.title.size[1] = title.get_window_extent().height
 
+        # Hack to get extra figure spacing for tick marks at the right
+        # edge of an axis and when no legend present
         ## TODO:: expand this to other axes and minor ticks?
-        if x_tick_xs:
-            self.x_tick_xs = self.tick_labels_major_x.size[0] / 2
-        else:
-            self.x_tick_xs = 0
+        if self.tick_labels_major_x.on and len(xticklabelsmaj) > 0:
+            xy = 'x' if utl.kwget(self.kwargs, self.fcpp, 'horizontal', False) \
+                 is False else 'y'
+            smax = data.ranges[ir, ic]['%smax' % xy]
+            smin = data.ranges[ir, ic]['%smin' % xy]
+            if tp[xy]['max'] == tp[xy]['ticks'][-1] \
+                    and data.ranges[ir, ic]['%smax' % xy] is None:
+                self.x_tick_xs = self.tick_labels_major_x.size[0] / 2
+            elif smax is not None and smin is not None:
+                last_x = [f for f in tp[xy]['ticks'] if f < smax][-1]
+                delta = (last_x - smin) / (smax - smin)
+                x_tick_xs = self.axes.size[0] * (delta - 1) + \
+                            getattr(self, 'tick_labels_major_%s' % xy).size[0] / 2
+                if x_tick_xs > 0:
+                    self.x_tick_xs = x_tick_xs
 
         for ir in range(0, self.nrow):
             for ic in range(0, self.ncol):
@@ -1431,14 +1448,18 @@ class Layout(BaseLayout):
             self.ws_ax_fig + self.labtick_y2 + \
             self.label_row.size[0] + self.ws_label_row * self.label_row.on + \
             self.labtick_z * (self.ncol - 1 if self.ncol > 1 else 1)
-        leg = self.legend.size[0] + self.ws_ax_leg + self.ws_leg_fig + \
-              self.fig_legend_border + self.legend.edge_width
-        if self.x_tick_xs > leg - self.fig_legend_border:
-            # hack for categorical tick labels
-            print('here')
-            leg += 2 + self.x_tick_xs - leg + self.fig_legend_border
+        legx, legy = 0, 0
+        if self.legend.location == 0:
+            legx = self.legend.size[0] + self.ws_ax_leg + self.ws_leg_fig + \
+                self.fig_legend_border + self.legend.edge_width
+        elif self.legend.location == 11:
+            legy = self.legend.size[1]
+        if self.x_tick_xs > 0 and \
+                self.x_tick_xs > legx - self.fig_legend_border:
+            # hack for long x ticks and no legend
+            legx += 3 + self.x_tick_xs - legx + self.fig_legend_border
         self.fig.size[0] = self.left + self.axes.size[0] * self.ncol + \
-            self.right + leg + self.ws_col * (self.ncol - 1) + self.box_title + \
+            self.right + legx + self.ws_col * (self.ncol - 1) + self.box_title + \
             (self.ws_ax_box_title if self.box_group_title.on else 0) - \
             self.fig_legend_border
 
@@ -1464,7 +1485,8 @@ class Layout(BaseLayout):
             self.labtick_x + \
             self.ws_fig_label + \
             self.ws_row * (self.nrow - 1) + \
-            self.box_labels)
+            self.box_labels) + \
+            legy
 
         # Debug output
         if debug:
@@ -1510,13 +1532,17 @@ class Layout(BaseLayout):
         """
 
         offset_box = 0
-        if self.box_group_title.on and self.legend.size[1] > self.axes.size[1]:
-            offset_box = max(self.box_group_title.size)[0]
-            self.legend.position[1] = 1 + (self.fig_legend_border - self.ws_leg_fig) / self.fig.size[0]
-        else:
-            self.legend.position[1] = 1 + (self.fig_legend_border - self.ws_leg_fig) / self.fig.size[0]
-        self.legend.position[2] = \
-            self.axes.position[2] + self.legend_top_offset/self.fig.size[1]
+        if self.legend.location == 0:
+            if self.box_group_title.on and self.legend.size[1] > self.axes.size[1]:
+                offset_box = max(self.box_group_title.size)[0]
+                self.legend.position[1] = 1 + (self.fig_legend_border - self.ws_leg_fig) / self.fig.size[0]
+            else:
+                self.legend.position[1] = 1 + (self.fig_legend_border - self.ws_leg_fig) / self.fig.size[0]
+            self.legend.position[2] = \
+                self.axes.position[2] + self.legend_top_offset/self.fig.size[1]
+        if self.legend.location == 11:
+            self.legend.position[0] = 0.5
+            self.legend.position[2] = 0
 
     def get_rc_label_position(self):
         """
@@ -1560,7 +1586,8 @@ class Layout(BaseLayout):
 
         self.axes.position[3] = \
             (self.labtick_x + self.ws_fig_label + self.box_labels + \
-             self.legend.overflow) / self.fig.size[1]
+             self.legend.overflow + \
+             (self.legend.size[1] if self.legend.location==11 else 0)) / self.fig.size[1]
 
     def get_title_position(self):
         """

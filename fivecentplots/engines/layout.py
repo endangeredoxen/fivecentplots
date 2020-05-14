@@ -47,7 +47,9 @@ LEGEND_LOCATION = defaultdict(int,
                    'center right': 7, 7: 7,
                    'lower center': 8, 8: 8,
                    'upper center': 9, 9: 9,
-                   'center': 10, 10: 10})
+                   'center': 10, 10: 10,
+                   'below': 11, 11:11},
+                   )
 
 LOGX = ['logx', 'semilogx', 'log', 'loglog']
 LOGY = ['logy', 'semilogy', 'log', 'loglog']
@@ -623,7 +625,9 @@ class BaseLayout:
         if not self.axes.twin_x and y is not None and len(y) > 1 and \
                 self.plot_func != 'plot_box' and \
                 (kwargs.get('wrap') != 'y' and \
-                kwargs.get('row') != 'y' and kwargs.get('col') != 'y'):
+                kwargs.get('row') != 'y' and \
+                kwargs.get('col') != 'y') and \
+                kwargs.get('legend') != False:
             self.legend.values = self.legend.set_default()
             self.legend.on = True
 

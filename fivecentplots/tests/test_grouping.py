@@ -197,6 +197,31 @@ def test_legend_position(master=False, remove=True, show=False):
         assert not compare
 
 
+def test_legend_position_below(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'legend_position_below_master') if master else 'legend_position_below'
+
+    # Make the plot
+    df1.loc[df1.Die=='(1,1)', 'Long Legend'] = 'Sample #ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    df1.loc[df1.Die=='(2,-1)', 'Long Legend'] = 'Sample #RUNFORYOURLIFEWITHME'
+    df1.loc[df1.Die=='(-1,2)', 'Long Legend'] = 'Sample #THESKYISANEIGHBORHOOD!!!!!!!!!'
+    fcp.plot(df1, x='Voltage', y='I [A]', legend='Long Legend', show=SHOW,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             legend_location='below', filename=name + '.png', inline=False)
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def test_groups_none(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'groups_none_master') if master else 'groups_none'
