@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                0.3.1
+                0.4.0
               </div>
             
           
@@ -127,6 +127,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#Shared-axes">Shared axes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Share-rows">Share rows</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Share-columns">Share columns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#No-sharing">No sharing</a></li>
 </ul>
 </li>
 </ul>
@@ -145,6 +146,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Other</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">0.4.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="older.html">Older Versions</a></li>
 </ul>
@@ -420,7 +422,7 @@ range</p>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">pdb</span>
 <span class="n">osjoin</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span>
-<span class="n">st</span> <span class="o">=</span> <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span>
 </pre></div>
 </div>
 </div>
@@ -687,8 +689,8 @@ in the same DataFrame, auto-scaling impacts both.</p>
 </div>
 <div class="section" id="Multiple-values-on-same-axis">
 <h3>Multiple values on same axis<a class="headerlink" href="#Multiple-values-on-same-axis" title="Permalink to this headline">¶</a></h3>
-<p>Lastly consider the non-twinned case with more than one value assigned
-to a given axis:</p>
+<p>Next consider the non-twinned case with more than one value assigned to
+a given axis:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre>
 <span></span>In [13]:
@@ -940,6 +942,47 @@ y-axis range uniquely across each column of subplots via the
 </div>
 <div class="output_area docutils container">
 <img alt="_images/ranges_64_0.png" src="_images/ranges_64_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="No-sharing">
+<h3>No sharing<a class="headerlink" href="#No-sharing" title="Permalink to this headline">¶</a></h3>
+<p>Lastly, we can specify unique axes ranges for each plot. Each axes range
+variable (<code class="docutils literal notranslate"><span class="pre">xmin</span></code>, <code class="docutils literal notranslate"><span class="pre">xmax</span></code>, <code class="docutils literal notranslate"><span class="pre">ymin</span></code>, <code class="docutils literal notranslate"><span class="pre">ymax</span></code>, etc.), is a special
+<code class="docutils literal notranslate"><span class="pre">fcp</span></code> data type called <code class="docutils literal notranslate"><span class="pre">RepeatedList</span></code> (note this is the same data
+type used for specifying line color, markers, alpha, etc.). The
+<code class="docutils literal notranslate"><span class="pre">RepeatedList</span></code> class simply loops over a list of any arbitrary size
+over and over with increasing index. When applied to axis ranges, this
+means we can specify: * a single value loop that gives the same value
+for each subplot index * a list of ranges for each plot in the grid (no
+looping occurs in this case) * or a partial list of ranges that is
+repeated (for example, a two-value list would be applied in repeating
+fashion to odd- and even-indexed subplots) Subplot index starts at 0 and
+increases column by column along a given row until the last column and
+then moves to the next row and continues incrementing.</p>
+<p>Consider the following example. We have size subplots with index 0, 1, 2
+on the first row and 3, 4, 5 on the second. We supply 5 <code class="docutils literal notranslate"><span class="pre">xmin</span></code> values
+and 6 <code class="docutils literal notranslate"><span class="pre">ymax</span></code> values. The <code class="docutils literal notranslate"><span class="pre">ymax</span></code> value has been uniquely specified
+for each plot. However, the <code class="docutils literal notranslate"><span class="pre">xmin</span></code> value for the final plot is not
+uniquely specified, so the <code class="docutils literal notranslate"><span class="pre">RepeatedList</span></code> will loop back to the first
+value supplied.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> \
+         <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450&#39;</span><span class="p">,</span> <span class="n">label_rc_font_size</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span>
+         <span class="n">xmin</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">],</span> <span class="n">ymax</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/ranges_67_0.png" src="_images/ranges_67_0.png" />
 </div>
 </div>
 </div>
