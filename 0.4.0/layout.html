@@ -1,0 +1,338 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Layout &mdash; fivecentplots beta documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
+  
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Archivo Black" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="fivecentplots beta documentation" href="index.html"/>
+        <link rel="next" title="Keyword Arguments" href="keyword.html"/>
+        <link rel="prev" title="Installation" href="install.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> fivecentplots
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.4.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Basics</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Layout</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#engine">Engine</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="grouping.html">Grouping data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="styles.html">Styles and formatting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ranges.html">Data ranges</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ticks.html">Grids and ticks</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="plot.html">plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heatmap.html">heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hist.html">hist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="barplot.html">barplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Other</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">0.4.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="older.html">Older Versions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">fivecentplots</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Layout</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/layout.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+</style>
+<div class="section" id="layout">
+<h1>Layout<a class="headerlink" href="#layout" title="Permalink to this headline">¶</a></h1>
+<p>All plots consist of a number of different “elements” arranged in a specific
+spatial “layout”.  In <strong>fivecentplots</strong>, each plot component (such as the
+axes window, labels, legends, etc.) is defined as an
+<code class="docutils literal notranslate"><span class="pre">Element</span></code> class (or object) that contains all of the attributes that define
+its style (i.e., color, font, size, etc).  The placement of these <code class="docutils literal notranslate"><span class="pre">Element</span></code>
+objects is handled by a <code class="docutils literal notranslate"><span class="pre">Layout</span></code> class.  <code class="docutils literal notranslate"><span class="pre">Element</span></code> objects are spaced
+by either a user-defined or default whitespace.  The specifics
+of the <code class="docutils literal notranslate"><span class="pre">Layout</span></code> class depend on the python plotting engine being used.
+Currently, only <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> is available as a plotting engine, but additional
+engines will be added in the future.</p>
+<p>An example x-y plot and a schematic blueprint of its underlying layout
+is shown below.  All <code class="docutils literal notranslate"><span class="pre">Element</span></code> attributes
+and whitespace parameters can be controlled via keyword arguments in the plot
+function call or from a predifined “theme” file that consists of dictionaries
+of preferred values.</p>
+<p><strong>Example Plot:</strong></p>
+<img alt="_images/my_favorite_ever.png" src="_images/my_favorite_ever.png" />
+<p><strong>Layout Schematic:</strong></p>
+<img alt="_images/layout.png" src="_images/layout.png" />
+<p>We can extend the simple single-axis plot and make a grid of subplots.
+An example of the featured <code class="docutils literal notranslate"><span class="pre">Element</span></code> objects in this case is shown below:</p>
+<p><strong>Layout Schematic with Grid:</strong></p>
+<img alt="_images/layout_grid.png" src="_images/layout_grid.png" />
+<p>All keyword arguments for <code class="docutils literal notranslate"><span class="pre">Element</span></code> attributes and whitespace are defined
+in the <a class="reference external" href="keyword.html">next section</a> of the guide.</p>
+<div class="section" id="engine">
+<h2>Engine<a class="headerlink" href="#engine" title="Permalink to this headline">¶</a></h2>
+<p>In order to actually create a plot, <strong>fivecentplots</strong> must tap into a plotting “engine”.
+This engine is a standard Python plotting package like <strong>matplotlib</strong> or <strong>bokeh</strong>.
+One of the key advantages of <strong>fivecentplots</strong> is the ability to switch between plotting engines
+while using the same keyword-argument-based api.  The engine itself is toggled by a keyword.
+<strong>fivecentplots</strong> uses <strong>matplotlib</strong> as its default engine.</p>
+<p>For example, if you needed a high-quality plot for a paper and wanted to use <strong>matplotlib</strong>, you
+could do the following:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/engine_mpl.png" src="_images/engine_mpl.png" />
+<p>Alternatively, what if you needed to interactively manipulate the same data set?  It may be more
+convenient to plot via <strong>bokeh</strong>.  To switch engines, we simply add the keyword <code class="docutils literal notranslate"><span class="pre">engine</span></code> and
+set to “bokeh”:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;bokeh&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/engine_bokeh.png" src="_images/engine_bokeh.png" />
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">As of version 0.3.0, <strong>bokeh</strong> support is limited compared with <strong>matplotlib</strong>.  More
+development is needed.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="keyword.html" class="btn btn-neutral float-right" title="Keyword Arguments" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="install.html" class="btn btn-neutral" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Steve Nicholes.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'beta',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
