@@ -16,13 +16,17 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
+# get the version
+with open(path.join(here, 'fivecentplots', 'version.csv'), 'r') as input:
+    __version__ = input.readlines()[0]
+
 setup(
     name='fivecentplots',
 
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.3.0',
+    version=__version__,
 
     description='Wrapper for matplotlib to make plots the way I like them',
     long_description=long_description,
@@ -83,7 +87,7 @@ setup(
     # installed, specify them here.  If using Python 2.6 or less, then these
     # have to be included in MANIFEST.in as well.
     package_data={
-        'fivecentplots': ['themes/gray.py', 'themes/white.py', 'tests/*', 'doc/_static/docstrings/*', 'keywords.xlsx'],
+        'fivecentplots': ['themes/gray.py', 'themes/white.py', 'tests/*', 'doc/_static/docstrings/*', 'keywords.xlsx', 'version.txt'],
     },
 
     # Although 'package_data' is the preferred approach, in some case you may
