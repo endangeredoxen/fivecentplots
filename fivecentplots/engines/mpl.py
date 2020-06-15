@@ -193,8 +193,9 @@ class Layout(BaseLayout):
                         width = sub.index[j+1] - sub.index[j]
                     width = width * self.axes.size[0] / len(data.changes)
                     label = data.indices.loc[sub.index[j], num_cols-1-i]
-                    height = self.box_group_label.size[i][1] * \
-                                (1 + 2 * self.box_group_label.padding / 100)
+                    hh = max(self.box_group_label.size[i][1],
+                             self.box_group_title.size[i][1])
+                    height = hh * (1 + 2 * self.box_group_label.padding / 100)
                     # if self.box_group_title.on:
                     #     height2 = self.box_group_title.size[i][1] * \
                     #               (1 + 2 * self.box_group_title.padding / 100)
@@ -213,7 +214,7 @@ class Layout(BaseLayout):
                 self.add_label(ir, ic, data.groups[k],
                                (1 + self.ws_ax_box_title / self.axes.size[0],
                                0, 0,
-                               (bottom - height/2 - 1 - \
+                               (bottom - height/2 - 2 - \
                                 self.box_group_title.size[k][1]/2) / \
                                 self.axes.size[1]),
                                size=self.box_group_title.size[k],
@@ -1016,7 +1017,7 @@ class Layout(BaseLayout):
                 elif data.legend_vals is not None and \
                         len(data.legend_vals) > 0 and \
                         self.label_wrap.column is None:
-                    leg_vals += [row['names'] + ' [Fit]']
+                    leg_vals += [str(row['names']) + ' [Fit]']
                 else:
                     leg_vals += ['Fit']
             if (self.ax_hlines.on and not all(v is None for v in self.ax_hlines.text)):
@@ -1394,11 +1395,11 @@ class Layout(BaseLayout):
         self.ws_leg_fig = self.ws_leg_fig if self.legend.location == 0 else 0
         self.ws_ax_fig = 0 if self.legend.location == 0 else self.ws_ax_fig
         self.fig_legend_border = self.fig_legend_border if self.legend.location == 0 else 0
+        self.box_labels = 0
         if self.box_group_label.on:
-            self.box_labels = sum(f[1] * (1 + 2 * self.box_group_label.padding / 100) \
-                                  for f in self.box_group_label.size)
-        else:
-            self.box_labels = 0
+            for i, f in enumerate(self.box_group_label.size):
+                hh = max(f[1], self.box_group_title.size[i][1])
+                self.box_labels += hh * (1 + 2 * self.box_group_label.padding / 100)
         self.box_title = 0
         if self.box_group_title.on and self.legend.size[1] > self.axes.size[1]:
             self.box_title = max(self.box_group_title.size)[0]
