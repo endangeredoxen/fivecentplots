@@ -155,6 +155,17 @@ def df_filter(df, filt_orig, drop_cols=False):
             val_str = key2.join(vals)
             ands[ia] = '(%s%s)' % (key + '!=', key2.join(vals))
             continue
+        elif 'in [' in aa:
+            key, val = aa.split('in ')
+            key = key.rstrip(' ')
+            key = 'fCp%s' % special_chars(key)
+            vals = val.replace('[', '').replace(']', '').split(',')
+            for iv, vv in enumerate(vals):
+                vals[iv] = vv.lstrip().rstrip()
+            key2 = '|' + key + '=='
+            val_str = key2.join(vals)
+            ands[ia] = '(%s%s)' % (key + '==', key2.join(vals))
+            continue
         ors = [f.lstrip() for f in aa.split('|')]
         for io, oo in enumerate(ors):
             # Temporarily remove any parentheses
