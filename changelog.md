@@ -1,5 +1,8 @@
 ### Changelog
 
+**0.4.0**
+- Fixed requirements so it will import after install in clean environment
+
 **0.3.1**
 - Conda packaging
 - Handle getattr != None bug
