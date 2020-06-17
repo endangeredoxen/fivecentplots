@@ -86,7 +86,7 @@ setup(
     # for example:
     # $ pip install -e .[dev,test]
     extras_require={
-                    'test': ['pytest', 'opencv', 'imageio']
+                    'test': ['pytest', 'opencv-python', 'imageio']
     },
 
     # If there are data files included in your packages that need to be
