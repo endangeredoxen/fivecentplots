@@ -17,7 +17,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 # get the version
-with open(path.join(here, 'fivecentplots', 'version.csv'), 'r') as input:
+with open(path.join(here, 'fivecentplots', 'version.txt'), 'r') as input:
     __version__ = input.readlines()[0]
 
 setup(
@@ -73,14 +73,20 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=['pandas', 'numpy', 'matplotlib', 'scipy'],  # 'fileio==0.2.2'],
+    install_requires=['pandas',
+                      'pillow',
+                      'pywin32',
+                      'numpy',
+                      'matplotlib',
+                      'scipy',
+                      'xlrd'],
 
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
     # for example:
     # $ pip install -e .[dev,test]
     extras_require={
-
+                    'test': ['pytest', 'opencv', 'imageio']
     },
 
     # If there are data files included in your packages that need to be
