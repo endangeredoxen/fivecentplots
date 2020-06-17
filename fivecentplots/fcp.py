@@ -17,7 +17,6 @@ with open(os.path.join(os.path.dirname(__file__), r'version.txt'), 'r') as input
 __url__ = 'https://github.com/endangeredoxen/fivecentplots'
 
 import numpy as np
-import scipy.stats as ss
 import pandas as pd
 import pdb
 import re
@@ -706,7 +705,7 @@ def plotter(plot_func, **kwargs):
     theme = kwargs.get('theme', None)
     engine = kwget(kwargs, reload_defaults(theme)[0], 'engine', 'mpl')
     if not hasattr(engines, engine):
-        print('Specified plotting engine could not be found!')
+        print('Plotting engine "%s" could not be found!' % engine)
         return
     else:
         engine = getattr(engines, engine)
