@@ -17,7 +17,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 # get the version
-with open(path.join(here, 'fivecentplots', 'version.csv'), 'r') as input:
+with open(path.join(here, 'fivecentplots', 'version.txt'), 'r') as input:
     __version__ = input.readlines()[0]
 
 setup(
@@ -28,7 +28,7 @@ setup(
     # https://packaging.python.org/en/latest/single_source_version.html
     version=__version__,
 
-    description='Wrapper for matplotlib to make plots the way I like them',
+    description='Wrapper for popular python plotting packages to make visually appealing plots easier',
     long_description=long_description,
 
     # The project's main homepage.
