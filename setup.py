@@ -6,18 +6,14 @@ https://github.com/pypa/sampleproject
 
 # Always prefer setuptools over distutils
 from setuptools import setup, find_packages
-# To use a consistent encoding
-from codecs import open
 from os import path
 
-here = path.abspath(path.dirname(__file__))
-
 # Get the long description from the README file
-with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
+with open(path.join('README.rst')) as f:
     long_description = f.read()
 
 # get the version
-with open(path.join(here, 'fivecentplots', 'version.txt'), 'r') as input:
+with open(path.join('fivecentplots', 'version.txt'), 'r') as input:
     __version__ = input.readlines()[0]
 
 setup(
@@ -30,9 +26,11 @@ setup(
 
     description='Wrapper for popular python plotting packages to make visually appealing plots easier',
     long_description=long_description,
+    long_description_content_type="text/markdown",
 
     # The project's main homepage.
     url='https://github.com/endangeredoxen/fivecentplots',
+    download_url='https://github.com/endangeredoxen/fivecentplots/archive/v0.4.0rc.tar.gz',
 
     # Author details
     author='Steve Nicholes',
@@ -50,16 +48,17 @@ setup(
         'Development Status :: 4 - Beta',
 
         # Indicate who your project is intended for
-        'Intended Audience :: Engineers/Scientists',
-        'Topic :: Data Analysis',
+        'Intended Audience :: Science/Research',
+        'Topic :: Scientific/Engineering :: Visualization',
 
         # Pick your license as you wish (should match "license" above)
-        'License :: GPL v3 License',
+        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
 
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
         'Programming Language :: Python :: 3',
     ],
+    python_requires='>=3.6',
 
     # What does your project relate to?
     keywords='data',
