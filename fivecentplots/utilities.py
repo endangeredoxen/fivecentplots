@@ -7,7 +7,10 @@ import scipy.stats as ss
 import importlib
 #import ctypes
 from matplotlib.font_manager import FontProperties, findfont
-from PIL import ImageFont
+try:
+    from PIL import ImageFont
+except:
+    pass
 try:
     import cv2
 except:
@@ -348,6 +351,13 @@ def get_text_dimensions(text, **kwargs):
 
     # return (size.cx, size.cy)
 
+    try:
+        ImageFont
+    except:
+        print('get_text_dimensions requires pillow which was not found.  Please '
+              'run pip install pillow and try again.')
+        return False
+
     font = FontProperties()
     font.set_family(kwargs['font'])
     font.set_style(kwargs['font_style'])
@@ -386,6 +396,9 @@ def img_compare(img1, img2):
     """
     Read two images and compare for difference by pixel
 
+    This is an optional utility used only for developer tests, so
+    the function will only work if opencv is installed
+
     Args:
         img1 (str): path to file #1
         img2 (str): path to file #2
@@ -395,9 +408,18 @@ def img_compare(img1, img2):
 
     """
 
+    try:
+        cv2
+    except:
+        print('img_compare requires opencv which was not found.  Please '
+              'run pip install opencv-python and try again.')
+        return False
+
+    # read images
     img1 = cv2.imread(img1)
     img2 = cv2.imread(img2)
 
+    # compare
     if img1 is None or img2 is None or img1.shape != img2.shape:
         return True
 

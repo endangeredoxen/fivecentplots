@@ -34,15 +34,14 @@ from . import keywords
 from . utilities import dfkwarg, kwget, set_save_filename, validate_list, reload_defaults, ci
 import warnings
 try:
-    import fileio
+    # optional import - only used for paste_kwargs to use windows clipboard
+    # to directly copy kwargs from ini file
+    import fivecentfileio as fileio
+    import win32clipboard
 except:
     pass
 try:
-    import win32clipboard
-except:
-    print('Could not import win32clipboard.  Make sure pywin32 is installed '
-          'to use the paste from clipboard option.')
-try:
+    # use natsort if available else use built-in python sorted
     from natsort import natsorted
 except:
     natsorted = sorted
@@ -61,6 +60,10 @@ sys.path = [osjoin(user_dir, '.fivecentplots')] + sys.path
 from defaults import *  # use local file
 
 kw = keywords.make_docstrings()
+
+# install requirements for other packages beyond what is in setup.py
+INSTALL = {}
+INSTALL['bokeh'] = ['bokeh', 'pillow']
 
 
 def bar(*args, **kwargs):
@@ -217,8 +220,9 @@ def paste_kwargs(kwargs):
         return new_kw
 
     except:
-        print('This feature requires the fileio package '
-              '(download @ https://github.com/endangeredoxen/fileio)')
+        print('This feature requires the fivecentfileio package '
+              '(download @ https://github.com/endangeredoxen/fivecentfileio) '
+              'and pywin32 for the win32clipboard module')
 
 
 def plot(*args, **kwargs):
@@ -705,7 +709,12 @@ def plotter(plot_func, **kwargs):
     theme = kwargs.get('theme', None)
     engine = kwget(kwargs, reload_defaults(theme)[0], 'engine', 'mpl')
     if not hasattr(engines, engine):
-        print('Plotting engine "%s" could not be found!' % engine)
+        if engine in INSTALL.keys():
+            installs = '\npip install '.join(INSTALL[engine])
+            print('Plotting engine "%s" is not installed! Please run the '
+                  'following:\npip install %s' % (engine, installs))
+        else:
+            print('Plotting engine "%s" is not supported' % (engine))
         return
     else:
         engine = getattr(engines, engine)
