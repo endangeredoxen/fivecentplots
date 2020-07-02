@@ -63,7 +63,7 @@ kw = keywords.make_docstrings()
 
 # install requirements for other packages beyond what is in setup.py
 INSTALL = {}
-INSTALL['bokeh'] = ['bokeh', 'pillow']
+INSTALL['bokeh'] = ['bokeh']
 
 
 def bar(*args, **kwargs):
