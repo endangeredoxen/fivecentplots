@@ -53,6 +53,11 @@ class RepeatedList:
         return self.values[(idx + self.shift) % len(self.values)]
 
 
+class PlatformError(Exception):
+    def __init__(self):
+        super().__init__('Image tests currently require Windows 10 installation to run')
+
+
 def ci(data, coeff=0.95):
     """
     Compute the confidence interval
@@ -335,6 +340,23 @@ def get_decimals(value, max_places=4):
             last = current
 
     return i - 1
+
+
+def get_mpl_version_dir():
+    """
+    Get the matplotlib version directory for test images based
+    on the current version of mpl
+    """
+
+    from distutils.version import LooseVersion
+    import matplotlib as mpl
+    version = LooseVersion(mpl.__version__)
+
+    if version > LooseVersion('1') and version < LooseVersion('3'):
+        return 'mpl_v2'
+
+    else:
+        return 'mpl_v3'
 
 
 def get_text_dimensions(text, **kwargs):
