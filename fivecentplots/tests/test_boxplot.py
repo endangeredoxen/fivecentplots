@@ -3,13 +3,16 @@ import pytest
 import fivecentplots as fcp
 import pandas as pd
 import numpy as np
-import os, sys, pdb
+import os, sys, pdb, platform
 import fivecentplots.utilities as utl
 import inspect
 osjoin = os.path.join
 db = pdb.set_trace
+if platform.system() != 'Windows':
+    raise utl.PlatformError()
 
-MASTER = osjoin(os.path.dirname(fcp.__file__), 'tests', 'test_images', 'boxplot.py')
+MPL = utl.get_mpl_version_dir()
+MASTER = osjoin(os.path.dirname(fcp.__file__), 'tests', 'test_images', MPL, 'boxplot.py')
 
 # Sample data
 df = pd.read_csv(osjoin(os.path.dirname(fcp.__file__), 'tests', 'fake_data_box.csv'))
