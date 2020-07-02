@@ -695,9 +695,9 @@ class Data:
                 iqr = factor*(q3 - q1)
                 vmin = q1 - iqr
             else:
-                q1 = df.groupby(self.groupers) \
-                          .quantile(0.25)[cols].reset_index()
-                q3 = df.groupby(self.groupers) \
+                q1 = df[self.groupers + cols].groupby(self.groupers) \
+                        .quantile(0.25)[cols].reset_index()
+                q3 = df[self.groupers + cols].groupby(self.groupers) \
                          .quantile(0.75)[cols].reset_index()
                 iqr = factor*(q3[cols] - q1[cols])
                 vmin = (q1[cols] - iqr[cols]).min().iloc[0]
@@ -706,10 +706,10 @@ class Data:
             if self.groups is None:
                 vmin = dfax.quantile(xq).min()
             elif 'box' in self.plot_func:
-                vmin = df.groupby(self.groupers) \
+                vmin = df[self.groupers + cols].groupby(self.groupers) \
                         .quantile(xq)[cols].min().iloc[0]
             else:
-                vmin = df.groupby(self.groups) \
+                vmin = df[self.groups + cols].groupby(self.groups) \
                         .quantile(xq)[cols].min().iloc[0]
         elif vmin is not None:
             vmin = vmin
@@ -741,9 +741,9 @@ class Data:
                 iqr = factor*(q3 - q1)
                 vmax = q3 + iqr
             else:
-                q1 = df.groupby(self.groupers) \
+                q1 = df[self.groupers + cols].groupby(self.groupers) \
                           .quantile(0.25)[cols].reset_index()
-                q3 = df.groupby(self.groupers) \
+                q3 = df[self.groupers + cols].groupby(self.groupers) \
                          .quantile(0.75)[cols].reset_index()
                 iqr = factor*(q3[cols] - q1[cols])
                 vmax = (q3[cols] + iqr[cols]).max().iloc[0]  # should this be referred to median?
@@ -752,10 +752,10 @@ class Data:
             if self.groups is None:
                 vmax = dfax.quantile(xq).max()
             elif 'box' in self.plot_func:
-                vmax = df.groupby(self.groupers) \
+                vmax = df[self.groupers + cols].groupby(self.groupers) \
                         .quantile(xq)[cols].max().iloc[0]
             else:
-                vmax = df.groupby(self.groups) \
+                vmax = df[self.groups + cols].groupby(self.groups) \
                         .quantile(xq)[cols].max().iloc[0]
         elif vmax is not None:
             vmax = vmax
