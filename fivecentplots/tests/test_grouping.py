@@ -3,13 +3,16 @@ import pytest
 import fivecentplots as fcp
 import pandas as pd
 import numpy as np
-import os, sys, pdb
+import os, sys, pdb, platform
 import fivecentplots.utilities as utl
 import inspect
 osjoin = os.path.join
-st = pdb.set_trace
+db = pdb.set_trace
+if platform.system() != 'Windows':
+    raise utl.PlatformError()
 
-MASTER = osjoin(os.path.dirname(fcp.__file__), 'tests', 'test_images', 'grouping.py')
+MPL = utl.get_mpl_version_dir()
+MASTER = osjoin(os.path.dirname(fcp.__file__), 'tests', 'test_images', MPL, 'grouping.py')
 
 # Sample data
 df1 = pd.read_csv(osjoin(os.path.dirname(fcp.__file__), 'tests', 'fake_data.csv'))
@@ -160,6 +163,54 @@ def test_legend_secondary_column(master=False, remove=True, show=False):
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              filename=name + '.png', inline=False)
 
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_legend_position(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'legend_position_master') if master else 'legend_position'
+
+    # Make the plot
+    fcp.plot(df1, x='Voltage', y='I [A]', legend='Die', show=SHOW,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             legend_location=2, filename=name + '.png', inline=False)
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_legend_position_below(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'legend_position_below_master') if master else 'legend_position_below'
+
+    # Make the plot
+    df1.loc[df1.Die=='(1,1)', 'Long Legend'] = 'Sample #ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    df1.loc[df1.Die=='(2,-1)', 'Long Legend'] = 'Sample #RUNFORYOURLIFEWITHME'
+    df1.loc[df1.Die=='(-1,2)', 'Long Legend'] = 'Sample #THESKYISANEIGHBORHOOD!!!!!!!!!'
+    fcp.plot(df1, x='Voltage', y='I [A]', legend='Long Legend', show=SHOW,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             legend_location='below', filename=name + '.png', inline=False)
     # Compare with master
     if master:
         return

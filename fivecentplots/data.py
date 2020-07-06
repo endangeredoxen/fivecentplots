@@ -9,7 +9,7 @@ except:
     natsorted = sorted
 
 import pdb
-st = pdb.set_trace
+db = pdb.set_trace
 
 REQUIRED_VALS = {'plot_xy': ['x', 'y'],
                  'plot_bar': ['x', 'y'],
@@ -48,7 +48,7 @@ class Data:
     def __init__(self, plot_func='xy', **kwargs):
 
         # Reload default file
-        self.fcpp, dummy, dummy2 = utl.reload_defaults()
+        self.fcpp, dummy, dummy2 = utl.reload_defaults(kwargs.get('theme', None))
 
         # Set the plot type
         self.plot_func = plot_func
@@ -90,6 +90,7 @@ class Data:
             self.share_y = kwargs.get('share_y', True)
         if self.plot_func in ['plot_box']:
             self.share_x = False
+        self.sort = utl.kwget(kwargs, self.fcpp, 'sort', True)
         self.stacked = False
         if self.plot_func == 'plot_bar':
             self.stacked = utl.kwget(kwargs, self.fcpp, 'bar_stacked',
@@ -519,14 +520,15 @@ class Data:
             groups = [(None, self.df_rc.copy())]
             self.ngroups = 0
         else:
-            groups = self.df_rc.groupby(self.groups)
+            groups = self.df_rc.groupby(self.groups, sort=self.sort)
             self.ngroups = groups.ngroups
 
         # Order the group labels with natsorting
         gidx = []
         for i, (nn, g) in enumerate(groups):
             gidx += [nn]
-        gidx = natsorted(gidx)
+        if self.sort:
+            gidx = natsorted(gidx)
         self.indices = pd.DataFrame(gidx)
         self.changes = self.indices.copy()
 
@@ -693,9 +695,9 @@ class Data:
                 iqr = factor*(q3 - q1)
                 vmin = q1 - iqr
             else:
-                q1 = df.groupby(self.groupers) \
-                          .quantile(0.25)[cols].reset_index()
-                q3 = df.groupby(self.groupers) \
+                q1 = df[self.groupers + cols].groupby(self.groupers) \
+                        .quantile(0.25)[cols].reset_index()
+                q3 = df[self.groupers + cols].groupby(self.groupers) \
                          .quantile(0.75)[cols].reset_index()
                 iqr = factor*(q3[cols] - q1[cols])
                 vmin = (q1[cols] - iqr[cols]).min().iloc[0]
@@ -704,10 +706,10 @@ class Data:
             if self.groups is None:
                 vmin = dfax.quantile(xq).min()
             elif 'box' in self.plot_func:
-                vmin = df.groupby(self.groupers) \
+                vmin = df[self.groupers + cols].groupby(self.groupers) \
                         .quantile(xq)[cols].min().iloc[0]
             else:
-                vmin = df.groupby(self.groups) \
+                vmin = df[self.groups + cols].groupby(self.groups) \
                         .quantile(xq)[cols].min().iloc[0]
         elif vmin is not None:
             vmin = vmin
@@ -739,9 +741,9 @@ class Data:
                 iqr = factor*(q3 - q1)
                 vmax = q3 + iqr
             else:
-                q1 = df.groupby(self.groupers) \
+                q1 = df[self.groupers + cols].groupby(self.groupers) \
                           .quantile(0.25)[cols].reset_index()
-                q3 = df.groupby(self.groupers) \
+                q3 = df[self.groupers + cols].groupby(self.groupers) \
                          .quantile(0.75)[cols].reset_index()
                 iqr = factor*(q3[cols] - q1[cols])
                 vmax = (q3[cols] + iqr[cols]).max().iloc[0]  # should this be referred to median?
@@ -750,10 +752,10 @@ class Data:
             if self.groups is None:
                 vmax = dfax.quantile(xq).max()
             elif 'box' in self.plot_func:
-                vmax = df.groupby(self.groupers) \
+                vmax = df[self.groupers + cols].groupby(self.groupers) \
                         .quantile(xq)[cols].max().iloc[0]
             else:
-                vmax = df.groupby(self.groups) \
+                vmax = df[self.groups + cols].groupby(self.groups) \
                         .quantile(xq)[cols].max().iloc[0]
         elif vmax is not None:
             vmax = vmax
@@ -1195,8 +1197,12 @@ class Data:
                         temp = temp.map(str) + ' | ' + df[leg].map(str)
                 self.legend = ' | '.join(self.legend)
                 df[self.legend] = temp
-            legend_vals = \
-                natsorted(list(df.groupby(self.legend).groups.keys()))
+            if self.sort:
+                legend_vals = \
+                    natsorted(list(df.groupby(self.legend).groups.keys()))
+            else:
+                legend_vals = \
+                    list(df.groupby(self.legend, sort=False).groups.keys())
             self.nleg_vals = len(legend_vals)
         else:
             legend_vals = [None]
@@ -1243,9 +1249,7 @@ class Data:
             leg_df['names'] = \
                 leg_df['names'].map(str) + ' | ' + leg_df.y.map(str) + ' / ' + leg_df.x.map(str)
 
-        new_index = natsorted(leg_df['names'])
         leg_df = leg_df.set_index('names')
-        # leg_df = leg_df.loc[new_index].reset_index() # why is this here??
         self.legend_vals = leg_df.reset_index()
 
     def get_plot_data(self, df):
@@ -1329,8 +1333,12 @@ class Data:
         # Set up wrapping (wrap option overrides row/col)
         if self.wrap:
             if self.wrap_vals is None:  # this broke something but removing will cause other failures
-                self.wrap_vals = \
-                    natsorted(list(df.groupby(self.wrap).groups.keys()))
+                if self.sort:
+                    self.wrap_vals = \
+                        natsorted(list(df.groupby(self.wrap).groups.keys()))
+                else:
+                    self.wrap_vals = \
+                        list(df.groupby(self.wrap, sort=False).groups.keys())
             if self.ncols == 0:
                 rcnum = int(np.ceil(np.sqrt(len(self.wrap_vals))))
             else:
@@ -1345,14 +1353,22 @@ class Data:
             # Set up the row grouping
             if self.col:
                 if self.col_vals is None:
-                    self.col_vals = \
-                        natsorted(list(df.groupby(self.col).groups.keys()))
+                    if self.sort:
+                        self.col_vals = \
+                            natsorted(list(df.groupby(self.col).groups.keys()))
+                    else:
+                        self.col_vals = \
+                            list(df.groupby(self.col, sort=False).groups.keys())
                 self.ncol = len(self.col_vals)
 
             if self.row:
                 if self.row_vals is None:
-                    self.row_vals = \
-                        natsorted(list(df.groupby(self.row).groups.keys()))
+                    if self.sort:
+                        self.row_vals = \
+                            natsorted(list(df.groupby(self.row).groups.keys()))
+                    else:
+                        self.row_vals = \
+                            list(df.groupby(self.row, sort=False).groups.keys())
                 self.nrow = len(self.row_vals)
 
         if self.ncol == 0:
@@ -1400,8 +1416,11 @@ class Data:
                             cols = [f for f in cols if f != 'Counts']
                         self.df_rc = df[cols]
                     else:
-                        self.wrap_vals = \
-                            natsorted(list(df.groupby(self.wrap).groups.keys()))
+                        if self.sort:
+                            self.wrap_vals = \
+                                natsorted(list(df.groupby(self.wrap).groups.keys()))
+                        else:
+                            self.wrap_vals = list(df.groupby(self.wrap, sort=False).groups.keys())
                         wrap = dict(zip(self.wrap,
                                     utl.validate_list(self.wrap_vals[ir*self.ncol + ic])))
                         self.df_rc = df.loc[(df[list(wrap)] == pd.Series(wrap)).all(axis=1)].copy()
@@ -1437,9 +1456,13 @@ class Data:
                         # Reshape if input dataframe is stacked
                         self.df_rc = pd.pivot_table(self.df_rc, values=self.z[0],
                                                     index=self.y[0], columns=self.x[0])
-                    cols = natsorted(self.df_rc.columns)
+                    if self.sort:
+                        cols = natsorted(self.df_rc.columns)
+                    else:
+                        cols = self.df_rc.columns
                     self.df_rc = self.df_rc[cols]
-                    self.df_rc.index = natsorted(self.df_rc.index)
+                    if self.sort:
+                        self.df_rc.index = natsorted(self.df_rc.index)
 
                     # Set limits
                     plot_num = utl.plot_num(ir, ic, self.ncol) - 1

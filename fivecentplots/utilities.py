@@ -4,14 +4,18 @@ import pdb
 import numpy as np
 import pandas as pd
 import scipy.stats as ss
+import importlib
 #import ctypes
 from matplotlib.font_manager import FontProperties, findfont
-from PIL import ImageFont
+try:
+    from PIL import ImageFont
+except:
+    pass
 try:
     import cv2
 except:
     pass
-st = pdb.set_trace
+db = pdb.set_trace
 
 # Get user default file
 user_dir = os.path.expanduser('~')
@@ -47,6 +51,11 @@ class RepeatedList:
         # can we make this a next??
 
         return self.values[(idx + self.shift) % len(self.values)]
+
+
+class PlatformError(Exception):
+    def __init__(self):
+        super().__init__('Image tests currently require Windows 10 installation to run')
 
 
 def ci(data, coeff=0.95):
@@ -143,6 +152,28 @@ def df_filter(df, filt_orig, drop_cols=False):
     operators = ['==', '<', '>', '!=']
     ands = [f.lstrip().rstrip() for f in filt.split('&')]
     for ia, aa in enumerate(ands):
+        if 'not in [' in aa:
+            key, val = aa.split('not in ')
+            key = key.rstrip(' ')
+            key = 'fCp%s' % special_chars(key)
+            vals = val.replace('[', '').replace(']', '').split(',')
+            for iv, vv in enumerate(vals):
+                vals[iv] = vv.lstrip().rstrip()
+            key2 = '&' + key + '!='
+            val_str = key2.join(vals)
+            ands[ia] = '(%s%s)' % (key + '!=', key2.join(vals))
+            continue
+        elif 'in [' in aa:
+            key, val = aa.split('in ')
+            key = key.rstrip(' ')
+            key = 'fCp%s' % special_chars(key)
+            vals = val.replace('[', '').replace(']', '').split(',')
+            for iv, vv in enumerate(vals):
+                vals[iv] = vv.lstrip().rstrip()
+            key2 = '|' + key + '=='
+            val_str = key2.join(vals)
+            ands[ia] = '(%s%s)' % (key + '==', key2.join(vals))
+            continue
         ors = [f.lstrip() for f in aa.split('|')]
         for io, oo in enumerate(ors):
             # Temporarily remove any parentheses
@@ -311,6 +342,23 @@ def get_decimals(value, max_places=4):
     return i - 1
 
 
+def get_mpl_version_dir():
+    """
+    Get the matplotlib version directory for test images based
+    on the current version of mpl
+    """
+
+    from distutils.version import LooseVersion
+    import matplotlib as mpl
+    version = LooseVersion(mpl.__version__)
+
+    if version > LooseVersion('1') and version < LooseVersion('3'):
+        return 'mpl_v2'
+
+    else:
+        return 'mpl_v3'
+
+
 def get_text_dimensions(text, **kwargs):
     # class SIZE(ctypes.Structure):
     #     _fields_ = [("cx", ctypes.c_long), ("cy", ctypes.c_long)]
@@ -324,6 +372,13 @@ def get_text_dimensions(text, **kwargs):
     # ctypes.windll.gdi32.DeleteObject(hfont)
 
     # return (size.cx, size.cy)
+
+    try:
+        ImageFont
+    except:
+        print('get_text_dimensions requires pillow which was not found.  Please '
+              'run pip install pillow and try again.')
+        return False
 
     font = FontProperties()
     font.set_family(kwargs['font'])
@@ -363,6 +418,9 @@ def img_compare(img1, img2):
     """
     Read two images and compare for difference by pixel
 
+    This is an optional utility used only for developer tests, so
+    the function will only work if opencv is installed
+
     Args:
         img1 (str): path to file #1
         img2 (str): path to file #2
@@ -372,9 +430,18 @@ def img_compare(img1, img2):
 
     """
 
+    try:
+        cv2
+    except:
+        print('img_compare requires opencv which was not found.  Please '
+              'run pip install opencv-python and try again.')
+        return False
+
+    # read images
     img1 = cv2.imread(img1)
     img2 = cv2.imread(img2)
 
+    # compare
     if img1 is None or img2 is None or img1.shape != img2.shape:
         return True
 
@@ -445,17 +512,51 @@ def rectangle_overlap(r1, r2):
         return False
 
 
-def reload_defaults():
+def reload_defaults(theme=None):
     """
     Reload the fcp params
     """
 
-    #del fcp_params
-    import defaults
-    importlib.reload(defaults)
+    theme_dir = os.path.join(os.path.dirname(__file__), 'themes')
+    reset_path = False
+    err_msg = 'Requested theme not found; using default'
+
+    if theme is not None and os.path.exists(theme):
+        # full filename case
+        theme_dir = os.sep.join(theme.split(os.sep)[0:-1])
+        theme = theme.split(os.sep)[-1]
+        sys.path = [theme_dir] + sys.path
+        reset_path = True
+        try:
+            defaults = importlib.import_module(theme.replace('.py', ''), theme_dir)
+            importlib.reload(defaults)
+        except:
+            print(err_msg)
+            import defaults
+            importlib.reload(defaults)
+
+    elif theme is not None and \
+            (theme in os.listdir(theme_dir) or theme+'.py' in os.listdir(theme_dir)):
+        sys.path = [theme_dir] + sys.path
+        reset_path = True
+        try:
+            defaults = importlib.import_module(theme.replace('.py', ''), theme_dir)
+            importlib.reload(defaults)
+        except:
+            print(err_msg)
+            import defaults
+            importlib.reload(defaults)
+    else:
+        # use default theme
+        import defaults
+        importlib.reload(defaults)
+
     fcp_params = defaults.fcp_params
     colors = defaults.colors if hasattr(defaults, 'colors') else None
     markers = defaults.markers if hasattr(defaults, 'markers') else None
+
+    if reset_path:
+        sys.path = sys.path [1:]
 
     return fcp_params, colors, markers
 

@@ -264,6 +264,7 @@ Documentation
    :maxdepth: 1
    :caption: Other
 
+   changelog
    modules
    older
 

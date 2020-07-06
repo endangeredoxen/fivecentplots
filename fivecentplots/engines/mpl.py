@@ -40,7 +40,23 @@ try:
 except:
     natsorted = sorted
 
-st = pdb.set_trace
+db = pdb.set_trace
+
+
+def iterticks(ax):
+    # this is deprecated in later versions of mpl but used in fcp so just
+    # copying it here to avoid warnings or future removal
+    if LooseVersion(mpl.__version__) >= LooseVersion('3.1'):
+        major_locs = ax.get_majorticklocs()
+        major_labels = ax.major.formatter.format_ticks(major_locs)
+        major_ticks = ax.get_major_ticks(len(major_locs))
+        yield from zip(major_ticks, major_locs, major_labels)
+        minor_locs = ax.get_minorticklocs()
+        minor_labels = ax.minor.formatter.format_ticks(minor_locs)
+        minor_ticks = ax.get_minor_ticks(len(minor_locs))
+        yield from zip(minor_ticks, minor_locs, minor_labels)
+    else:
+        yield from getattr(ax, 'iter_ticks')()
 
 
 def mplc_to_hex(color, alpha=True):
@@ -85,7 +101,7 @@ def mpl_get_ticks(ax, xon=True, yon=True):
         tp[vv]['min'] = min(getattr(ax, 'get_%slim' % vv)())
         tp[vv]['max'] = max(getattr(ax, 'get_%slim' % vv)())
         tp[vv]['ticks'] = getattr(ax, 'get_%sticks' % vv)()
-        tp[vv]['labels'] = [f for f in getattr(ax, '%saxis' % vv).iter_ticks()]
+        tp[vv]['labels'] = [f for f in iterticks(getattr(ax, '%saxis' % vv))]
         tp[vv]['label_vals'] = [f[1] for f in tp[vv]['labels']]
         tp[vv]['label_text'] = [f[2] for f in tp[vv]['labels']]
         try:
@@ -148,6 +164,8 @@ class Layout(BaseLayout):
         self.fig_right_border = 6  # extra border on right side that shows up by default
         self.legend_top_offset = 8 # this is differnt for inline; do we need to toggle on/off with show?
         self.legend_border = 3
+        self.fig_legend_border = 5
+        self.x_tick_xs = 0
 
         # Update kwargs
         if not kwargs.get('save_ext'):
@@ -175,8 +193,9 @@ class Layout(BaseLayout):
                         width = sub.index[j+1] - sub.index[j]
                     width = width * self.axes.size[0] / len(data.changes)
                     label = data.indices.loc[sub.index[j], num_cols-1-i]
-                    height = self.box_group_label.size[i][1] * \
-                                (1 + 2 * self.box_group_label.padding / 100)
+                    hh = max(self.box_group_label.size[i][1],
+                             self.box_group_title.size[i][1])
+                    height = hh * (1 + 2 * self.box_group_label.padding / 100)
                     # if self.box_group_title.on:
                     #     height2 = self.box_group_title.size[i][1] * \
                     #               (1 + 2 * self.box_group_title.padding / 100)
@@ -195,7 +214,7 @@ class Layout(BaseLayout):
                 self.add_label(ir, ic, data.groups[k],
                                (1 + self.ws_ax_box_title / self.axes.size[0],
                                0, 0,
-                               (bottom - height/2 - 1 - \
+                               (bottom - height/2 - 2 - \
                                 self.box_group_title.size[k][1]/2) / \
                                 self.axes.size[1]),
                                size=self.box_group_title.size[k],
@@ -288,7 +307,7 @@ class Layout(BaseLayout):
                                 linewidth=ll.width.get(ival),
                                 zorder=ll.zorder)
                     if type(ll.text) is list and ll.text[ival] is not None:
-                        self.legend.values[ll.text[ival]] = [line]
+                        self.legend.add_value(ll.text[ival], [line], 'ref_line')
 
     def add_label(self, ir, ic, text='', position=None, rotation=0, size=None,
                   fill_color='#ffffff', edge_color='#aaaaaa', edge_width=1,
@@ -373,40 +392,9 @@ class Layout(BaseLayout):
 
         if self.legend.on and len(self.legend.values) > 0:
 
-            # Format the legend keys
-            #self.format_legend_values()
-
             # Sort the legend keys
-            if 'NaN' in self.legend.values.keys():
-                del self.legend.values['NaN']
-
-            if self.ref_line.on:
-                ref_line, ref_line_legend_text = [], []
-                for iref, ref in enumerate(self.ref_line.column.values):
-                    ref_line += self.legend.values[self.ref_line.legend_text.get(iref)]
-                    ref_line_legend_text += [self.ref_line.legend_text.get(iref)]
-                    del self.legend.values[self.ref_line.legend_text.get(iref)]
-            else:
-                ref_line = None
-            if 'fit_line' in self.legend.values.keys():
-                fit_line = self.legend.values['fit_line']
-                del self.legend.values['fit_line']
-            else:
-                fit_line = None
-
-            if self.axes.twin_x or self.axes.twin_y:
-                keys = self.legend.values.keys()
-            else:
-                keys = natsorted(list(self.legend.values.keys()))
-            lines = [self.legend.values[f][0] for f in keys
-                     if self.legend.values[f] is not None]
-            if ref_line is not None:
-                keys = ref_line_legend_text + keys
-                lines = ref_line + lines
-
-            if len(lines) == 0:
-                print('Legend contains no elements...skipping')
-                return
+            if 'NaN' in self.legend.values['Key'].values:
+                self.legend.del_value('NaN')
 
             # Set the font properties
             fontp = {}
@@ -414,6 +402,9 @@ class Layout(BaseLayout):
             fontp['size'] = self.legend.font_size
             fontp['style'] = self.legend.font_style
             fontp['weight'] = self.legend.font_weight
+
+            keys = list(self.legend.values['Key'])
+            lines = list(self.legend.values['Curve'])
 
             if self.legend.location == 0:
                 self.legend.obj = \
@@ -424,7 +415,15 @@ class Layout(BaseLayout):
                                         numpoints=self.legend.points,
                                         prop=fontp)
                 format_legend(self, self.legend.obj)
-
+            elif self.legend.location == 11:
+                self.legend.obj = \
+                    self.fig.obj.legend(lines, keys, loc='lower center',
+                                        title=self.legend.text if self.legend is not True else '',
+                                        bbox_to_anchor=(self.legend.position[0],
+                                                        self.legend.position[2]),
+                                        numpoints=self.legend.points,
+                                        prop=fontp)
+                format_legend(self, self.legend.obj)
             else:
                 for irow, row in enumerate(self.axes.obj):
                     for icol, col in enumerate(row):
@@ -613,6 +612,7 @@ class Layout(BaseLayout):
         wrap_labels = np.array([[None]*self.ncol]*self.nrow)
         row_labels = np.array([[None]*self.ncol]*self.nrow)
         col_labels = np.array([[None]*self.ncol]*self.nrow)
+        x_tick_xs = 0
 
         box_group_label = np.array([[None]*self.ncol]*self.nrow)
         box_group_title = []
@@ -852,25 +852,28 @@ class Layout(BaseLayout):
             # Major ticks
             xticks = ax.get_xticks()
             yticks = ax.get_yticks()
-            xiter_ticks = [f for f in ax.xaxis.iter_ticks()] # fails for symlog in 1.5.1
-            yiter_ticks = [f for f in ax.yaxis.iter_ticks()]
+            xiter_ticks = [f for f in iterticks(ax.xaxis)] # fails for symlog in 1.5.1
+            yiter_ticks = [f for f in iterticks(ax.yaxis)]
             xticksmaj += [f[2] for f in xiter_ticks[0:len(xticks)]]
             yticksmaj += [f[2] for f in yiter_ticks[0:len(yticks)]]
 
             if data.twin_x:
-                y2ticks = [f[2] for f in ax2.yaxis.iter_ticks()
+                y2ticks = [f[2] for f in iterticks(ax2.yaxis)
                           if f[2] != '']
-                y2iter_ticks = [f for f in ax2.yaxis.iter_ticks()]
+                y2iter_ticks = [f for f in iterticks(ax2.yaxis)]
                 y2ticksmaj += [f[2] for f in y2iter_ticks[0:len(y2ticks)]]
             elif data.twin_y:
-                x2ticks = [f[2] for f in ax3.xaxis.iter_ticks()
+                x2ticks = [f[2] for f in iterticks(ax3.xaxis)
                            if f[2] != '']
-                x2iter_ticks = [f for f in ax3.xaxis.iter_ticks()]
+                x2iter_ticks = [f for f in iterticks(ax3.xaxis)]
                 x2ticksmaj += [f[2] for f in x2iter_ticks[0:len(x2ticks)]]
             if data.z is not None:
                 zticks = ax2.get_yticks()
-                ziter_ticks = [f for f in ax2.yaxis.iter_ticks()]
+                ziter_ticks = [f for f in iterticks(ax2.yaxis)]
                 zticksmaj += [f[2] for f in ziter_ticks[0:len(zticks)]]
+
+            # get ticks
+            tp = mpl_get_ticks(ax)
 
             # Minor ticks
             if self.tick_labels_minor_x.on:
@@ -888,7 +891,7 @@ class Layout(BaseLayout):
                 number = len([f for f in minor_ticks if f > vals[0] and f < vals[1]]) + 1
                 decimals = utl.get_decimals(inc/number)
                 ax.xaxis.set_minor_formatter(ticker.FormatStrFormatter('%%.%sf' % (decimals)))
-                xiter_ticks = [f for f in ax.xaxis.iter_ticks()]
+                xiter_ticks = [f for f in iterticks(ax.xaxis)]
 
             if self.tick_labels_minor_y.on:
                 if self.ticks_minor_y.number is not None:
@@ -905,10 +908,10 @@ class Layout(BaseLayout):
                 number = len([f for f in minor_ticks if f > vals[0] and f < vals[1]]) + 1
                 decimals = utl.get_decimals(inc/number)
                 ax.yaxis.set_minor_formatter(ticker.FormatStrFormatter('%%.%sf' % (decimals)))
-                yiter_ticks = [f for f in ax.yaxis.iter_ticks()]
+                yiter_ticks = [f for f in iterticks(ax.yaxis)]
 
-            xticksmin += [f[2] for f in ax.xaxis.iter_ticks()][len(xticks):]
-            yticksmin += [f[2] for f in ax.yaxis.iter_ticks()][len(yticks):]
+            xticksmin += [f[2] for f in iterticks(ax.xaxis)][len(xticks):]
+            yticksmin += [f[2] for f in iterticks(ax.yaxis)][len(yticks):]
 
             if self.tick_labels_minor_x2.on and ax3 is not None:
                 if self.ticks_minor_x2.number is not None:
@@ -925,7 +928,7 @@ class Layout(BaseLayout):
                 number = len([f for f in minor_ticks if f > vals[0] and f < vals[1]]) + 1
                 decimals = utl.get_decimals(inc/number)
                 ax3.xaxis.set_minor_formatter(ticker.FormatStrFormatter('%%.%sf' % (decimals)))
-                xiter_ticks = [f for f in ax3.xaxis.iter_ticks()]
+                xiter_ticks = [f for f in iterticks(ax3.xaxis)]
 
             if self.tick_labels_minor_y2.on and ax2 is not None:
                 if self.ticks_minor_y2.number is not None:
@@ -942,12 +945,12 @@ class Layout(BaseLayout):
                 number = len([f for f in minor_ticks if f > vals[0] and f < vals[1]]) + 1
                 decimals = utl.get_decimals(inc/number)
                 ax2.yaxis.set_minor_formatter(ticker.FormatStrFormatter('%%.%sf' % (decimals)))
-                yiter_ticks = [f for f in ax2.yaxis.iter_ticks()]
+                yiter_ticks = [f for f in iterticks(ax2.yaxis)]
 
             if ax3 is not None:
-                x2ticksmin += [f[2] for f in ax3.xaxis.iter_ticks()][len(xticks):]
+                x2ticksmin += [f[2] for f in iterticks(ax3.xaxis)][len(xticks):]
             if ax2 is not None:
-                y2ticksmin += [f[2] for f in ax2.yaxis.iter_ticks()][len(yticks):]
+                y2ticksmin += [f[2] for f in iterticks(ax2.yaxis)][len(yticks):]
 
             self.axes.obj = np.array([[None]*self.ncol]*self.nrow)
             self.axes.obj[ir, ic] = ax
@@ -1014,7 +1017,7 @@ class Layout(BaseLayout):
                 elif data.legend_vals is not None and \
                         len(data.legend_vals) > 0 and \
                         self.label_wrap.column is None:
-                    leg_vals += [row['names'] + ' [Fit]']
+                    leg_vals += [str(row['names']) + ' [Fit]']
                 else:
                     leg_vals += ['Fit']
             if (self.ax_hlines.on and not all(v is None for v in self.ax_hlines.text)):
@@ -1169,7 +1172,6 @@ class Layout(BaseLayout):
             saved = True
             filename = '%s%s' % (int(round(time.time() * 1000)), randint(0, 99))
             mpl.pyplot.savefig(filename + '.png')
-
         # mpl.pyplot.savefig(r'test.png')  # turn on for debugging
 
         # Get actual sizes
@@ -1248,6 +1250,25 @@ class Layout(BaseLayout):
             self.title.size[0] = max(self.axes.size[0],
                                      title.get_window_extent().width)
             self.title.size[1] = title.get_window_extent().height
+
+        # Hack to get extra figure spacing for tick marks at the right
+        # edge of an axis and when no legend present
+        ## TODO:: expand this to other axes and minor ticks?
+        if self.tick_labels_major_x.on and len(xticklabelsmaj) > 0:
+            xy = 'x' if utl.kwget(self.kwargs, self.fcpp, 'horizontal', False) \
+                 is False else 'y'
+            smax = data.ranges[ir, ic]['%smax' % xy]
+            smin = data.ranges[ir, ic]['%smin' % xy]
+            if tp[xy]['max'] == tp[xy]['ticks'][-1] \
+                    and data.ranges[ir, ic]['%smax' % xy] is None:
+                self.x_tick_xs = self.tick_labels_major_x.size[0] / 2
+            elif smax is not None and smin is not None:
+                last_x = [f for f in tp[xy]['ticks'] if f < smax][-1]
+                delta = (last_x - smin) / (smax - smin)
+                x_tick_xs = self.axes.size[0] * (delta - 1) + \
+                            getattr(self, 'tick_labels_major_%s' % xy).size[0] / 2
+                if x_tick_xs > 0:
+                    self.x_tick_xs = x_tick_xs
 
         for ir in range(0, self.nrow):
             for ic in range(0, self.ncol):
@@ -1370,17 +1391,21 @@ class Layout(BaseLayout):
                                self.tick_labels_minor_y2.size[0])) * self.axes.twin_x
         self.labtick_z = (self.ws_ticks_ax + self.ws_label_tick) * self.label_z.on + \
                          self.label_z.size[0] + self.tick_labels_major_z.size[0]
-        self.ws_ax_leg = max(0, self.ws_ax_leg - self.labtick_y2) if self.legend.text is not None else 0
-        if self.legend.location == 0 and self.legend.text is not None:
-            self.ws_leg_fig = self.ws_leg_fig
-        else:
-            self.ws_leg_fig = self.ws_ax_fig  # do we need something different for different legend locations?
-        self.box_title = max(self.box_group_title.size)[0] if self.box_group_title.on else 0
+        self.ws_ax_leg = max(0, self.ws_ax_leg - self.labtick_y2) if self.legend.location == 0 else 0
+        self.ws_leg_fig = self.ws_leg_fig if self.legend.location == 0 else 0
+        self.ws_ax_fig = 0 if self.legend.location == 0 else self.ws_ax_fig
+        self.fig_legend_border = self.fig_legend_border if self.legend.location == 0 else 0
+        self.box_labels = 0
         if self.box_group_label.on:
-            self.box_labels = sum(f[1] * (1 + 2 * self.box_group_label.padding / 100) \
-                                  for f in self.box_group_label.size)
-        else:
-            self.box_labels = 0
+            for i, f in enumerate(self.box_group_label.size):
+                hh = max(f[1], self.box_group_title.size[i][1])
+                self.box_labels += hh * (1 + 2 * self.box_group_label.padding / 100)
+        self.box_title = 0
+        if self.box_group_title.on and self.legend.size[1] > self.axes.size[1]:
+            self.box_title = max(self.box_group_title.size)[0]
+        elif self.box_group_title.on and \
+                max(self.box_group_title.size)[0] > self.legend.size[0]:
+            self.box_title = max(self.box_group_title.size)[0] - self.legend.size[0]
 
         # Adjust the column and row whitespace
         if self.box_group_label.on and self.label_wrap.on and 'ws_row' not in kwargs.keys():
@@ -1421,13 +1446,23 @@ class Layout(BaseLayout):
         # Figure width
         self.left = self.ws_fig_label + self.labtick_y
         self.right = (self.cbar.size[0] + self.ws_ax_cbar) * self.ncol + \
-            self.ws_ax_leg + \
-            self.legend.edge_width + self.labtick_y2 + \
+            self.ws_ax_fig + self.labtick_y2 + \
             self.label_row.size[0] + self.ws_label_row * self.label_row.on + \
             self.labtick_z * (self.ncol - 1 if self.ncol > 1 else 1)
-        leg = self.legend.size[0] + self.ws_leg_fig if self.legend.location == 0 else 0
+        legx, legy = 0, 0
+        if self.legend.location == 0:
+            legx = self.legend.size[0] + self.ws_ax_leg + self.ws_leg_fig + \
+                self.fig_legend_border + self.legend.edge_width
+        elif self.legend.location == 11:
+            legy = self.legend.size[1]
+        if self.x_tick_xs > 0 and \
+                self.x_tick_xs > legx - self.fig_legend_border:
+            # hack for long x ticks and no legend
+            legx += 3 + self.x_tick_xs - legx + self.fig_legend_border
         self.fig.size[0] = self.left + self.axes.size[0] * self.ncol + \
-            self.right + self.ws_col * (self.ncol - 1) + self.box_title + leg
+            self.right + legx + self.ws_col * (self.ncol - 1) + self.box_title + \
+            (self.ws_ax_box_title if self.box_group_title.on else 0) - \
+            self.fig_legend_border
 
         # Get extra width of a long title (centered on axes, not figure)
         self.title_slush_left = self.title.size[0] / 2 - \
@@ -1451,7 +1486,8 @@ class Layout(BaseLayout):
             self.labtick_x + \
             self.ws_fig_label + \
             self.ws_row * (self.nrow - 1) + \
-            self.box_labels)
+            self.box_labels) + \
+            legy
 
         # Debug output
         if debug:
@@ -1496,18 +1532,18 @@ class Layout(BaseLayout):
         Get legend position
         """
 
-        offset_x = 7 # no idea why this is needed
         offset_box = 0
-        if self.box_group_title.on and self.legend.size[1] > self.axes.size[1]:
-            offset_box = max(self.box_group_title.size)[0]
-
-        self.legend.position[1] = self.axes.position[1] + \
-            (self.ws_ax_leg + offset_x + offset_box + self.legend.size[0] + \
-             self.labtick_y2 + \
-             self.label_row.size[0] + self.ws_label_row * self.label_row.on) / \
-             self.fig.size[0]
-        self.legend.position[2] = \
-            self.axes.position[2] + self.legend_top_offset/self.fig.size[1]
+        if self.legend.location == 0:
+            if self.box_group_title.on and self.legend.size[1] > self.axes.size[1]:
+                offset_box = max(self.box_group_title.size)[0]
+                self.legend.position[1] = 1 + (self.fig_legend_border - self.ws_leg_fig) / self.fig.size[0]
+            else:
+                self.legend.position[1] = 1 + (self.fig_legend_border - self.ws_leg_fig) / self.fig.size[0]
+            self.legend.position[2] = \
+                self.axes.position[2] + self.legend_top_offset/self.fig.size[1]
+        if self.legend.location == 11:
+            self.legend.position[0] = 0.5
+            self.legend.position[2] = 0
 
     def get_rc_label_position(self):
         """
@@ -1551,7 +1587,8 @@ class Layout(BaseLayout):
 
         self.axes.position[3] = \
             (self.labtick_x + self.ws_fig_label + self.box_labels + \
-             self.legend.overflow) / self.fig.size[1]
+             self.legend.overflow + \
+             (self.legend.size[1] if self.legend.location==11 else 0)) / self.fig.size[1]
 
     def get_title_position(self):
         """
@@ -1720,7 +1757,7 @@ class Layout(BaseLayout):
         # Legend
         if leg_name is not None:
             handle = [patches.Rectangle((0,0),1,1,color=self.bar.fill_color.get(iline))]
-            self.legend.values[leg_name] = handle
+            self.legend.add_value(leg_name, handle, 'lines')
 
         return data
 
@@ -1937,7 +1974,7 @@ class Layout(BaseLayout):
         # Add a reference to the line to self.lines
         if leg_name is not None:
             handle = [patches.Rectangle((0,0),1,1,color=self.hist.fill_color.get(iline))]
-            self.legend.values[leg_name] = handle
+            self.legend.add_value(leg_name, handle, 'lines')
 
         # # Horizontal adjustments
         # if self.hist.horizontal:
@@ -2071,7 +2108,9 @@ class Layout(BaseLayout):
 
         if not line_type:
             line_type = self.lines
+            line_type_name = 'lines'
         else:
+            line_type_name = line_type
             line_type = getattr(self, line_type)
 
         # Select the axes
@@ -2122,7 +2161,9 @@ class Layout(BaseLayout):
 
         # Add a reference to the line to self.lines
         if leg_name is not None:
-            self.legend.values[leg_name] = points if points is not None else lines
+            if leg_name is not None \
+                    and leg_name not in list(self.legend.values['Key']):
+                self.legend.add_value(leg_name, points if points is not None else lines, line_type_name)
 
     def save(self, filename, idx=0):
         """

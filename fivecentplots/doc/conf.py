@@ -64,7 +64,7 @@ author = 'Steve Nicholes'
 # built documents.
 #
 # The short X.Y version.
-version = fcp.__version__#'0.3.0'
+version = fcp.__version__
 # The full version, including alpha/beta/rc tags.
 release = 'beta'
 

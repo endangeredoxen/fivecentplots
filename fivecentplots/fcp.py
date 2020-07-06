@@ -7,14 +7,16 @@
 # maybe subclass fig and ax in a new class that contains all the internal
 # functions needed for an mpl plot.  then another for bokeh
 
-__author__    = 'Steve Nicholes'
-__copyright__ = 'Copyright (C) 2016 Steve Nicholes'
-__license__   = 'GPLv3'
-__version__   = '0.3.1'
-__url__       = 'https://github.com/endangeredoxen/fivecentplots'
 import os
+
+__author__ = 'Steve Nicholes'
+__copyright__ = 'Copyright (C) 2016 Steve Nicholes'
+__license__ = 'GPLv3'
+with open(os.path.join(os.path.dirname(__file__), r'version.txt'), 'r') as input:
+    __version__ = input.readlines()[0]
+__url__ = 'https://github.com/endangeredoxen/fivecentplots'
+
 import numpy as np
-import scipy.stats as ss
 import pandas as pd
 import pdb
 import re
@@ -32,19 +34,18 @@ from . import keywords
 from . utilities import dfkwarg, kwget, set_save_filename, validate_list, reload_defaults, ci
 import warnings
 try:
-    import fileio
+    # optional import - only used for paste_kwargs to use windows clipboard
+    # to directly copy kwargs from ini file
+    import fivecentfileio as fileio
+    import win32clipboard
 except:
     pass
 try:
-    import win32clipboard
-except:
-    print('Could not import win32clipboard.  Make sure pywin32 is installed '
-          'to use the paste from clipboard option.')
-try:
+    # use natsort if available else use built-in python sorted
     from natsort import natsorted
 except:
     natsorted = sorted
-st = pdb.set_trace
+db = pdb.set_trace
 
 osjoin = os.path.join
 cur_dir = os.path.dirname(__file__)
@@ -59,6 +60,10 @@ sys.path = [osjoin(user_dir, '.fivecentplots')] + sys.path
 from defaults import *  # use local file
 
 kw = keywords.make_docstrings()
+
+# install requirements for other packages beyond what is in setup.py
+INSTALL = {}
+INSTALL['bokeh'] = ['bokeh']
 
 
 def bar(*args, **kwargs):
@@ -215,8 +220,9 @@ def paste_kwargs(kwargs):
         return new_kw
 
     except:
-        print('This feature requires the fileio package '
-              '(download @ https://github.com/endangeredoxen/fileio)')
+        print('This feature requires the fivecentfileio package '
+              '(download @ https://github.com/endangeredoxen/fivecentfileio) '
+              'and pywin32 for the win32clipboard module')
 
 
 def plot(*args, **kwargs):
@@ -497,7 +503,7 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin, leg_name, ngroups):
         return
 
     df, coeffs, rsq = data.get_fit_data(ir, ic, df, x, y)
-    if layout.legend.on:
+    if layout.legend._on:
         if layout.fit.legend_text is not None:
             leg_name = layout.fit.legend_text
         elif (data.wrap_vals is not None and ngroups / data.nwrap > 1 \
@@ -617,6 +623,7 @@ def plot_ref(ir, ic, iline, data, layout, df, x, y):
         layout.plot_xy(ir, ic, iref, df, x, layout.ref_line.column.get(iref),
                        layout.ref_line.legend_text.get(iref), False,
                        line_type='ref_line', marker_disable=True)
+        layout.legend.ordered_curves = layout.legend.ordered_curves[0:-1]
 
     return data
 
@@ -657,7 +664,7 @@ def plot_xy(data, layout, ir, ic, df_rc, kwargs):
         if not layout.lines.on and not layout.markers.on:
             pass
         elif kwargs.get('groups', False):
-            for nn, gg in df.groupby(validate_list(kwargs['groups'])):
+            for nn, gg in df.groupby(validate_list(kwargs['groups']), sort=data.sort):
                 layout.plot_xy(ir, ic, iline, gg, x, y, leg_name, twin)
                 plot_fit(data, layout, ir, ic, iline, gg, x, y, twin, leg_name, ngroups)
         else:
@@ -699,9 +706,15 @@ def plotter(plot_func, **kwargs):
     kwargs = deprecated(kwargs)
 
     # Set the plotting engine
-    engine = kwget(kwargs, reload_defaults()[0], 'engine', 'mpl') #kwargs.get('engine', 'mpl').lower()
+    theme = kwargs.get('theme', None)
+    engine = kwget(kwargs, reload_defaults(theme)[0], 'engine', 'mpl')
     if not hasattr(engines, engine):
-        print('Specified plotting engine could not be found!')
+        if engine in INSTALL.keys():
+            installs = '\npip install '.join(INSTALL[engine])
+            print('Plotting engine "%s" is not installed! Please run the '
+                  'following:\npip install %s' % (engine, installs))
+        else:
+            print('Plotting engine "%s" is not supported' % (engine))
         return
     else:
         engine = getattr(engines, engine)
@@ -823,19 +836,31 @@ def set_theme(theme=None):
     Select a "defaults" file and copy to the user directory
     """
 
+    if theme is not None and os.path.exists(theme):
+        my_theme_dir = os.sep.join(theme.split(os.sep)[0:-1])
+        theme = theme.split(os.sep)[-1]
+        ignores = []
+    else:
+        my_theme_dir = osjoin(user_dir, '.fivecentplots')
+        ignores = ['defaults.py', 'defaults_old.py']
+
     if theme is not None:
         theme = theme.replace('.py', '')
+
     themes = [f.replace('.py', '')
               for f in os.listdir(osjoin(cur_dir, 'themes')) if '.py' in f]
-    mythemes = [f.replace('.py', '')
-                for f in os.listdir(osjoin(user_dir, '.fivecentplots'))
-                if '.py' in f and 'defaults' not in f]
+    mythemes = [f.replace('.py', '') for f in os.listdir(my_theme_dir)
+                if '.py' in f and f not in ignores]
 
     if theme in themes:
         entry = themes.index('%s' % theme) + 1
 
     elif theme in mythemes:
         entry = mythemes.index('%s' % theme) + 1 + len(themes)
+
+    elif theme is not None:
+        print('Theme file not found!  Please try again')
+        return
 
     else:
         print('Select default styling theme:')
@@ -880,7 +905,7 @@ def set_theme(theme=None):
         shutil.copy2(osjoin(cur_dir, 'themes', themes[int(entry)-1] + '.py'),
                      osjoin(user_dir, '.fivecentplots', 'defaults.py'))
     else:
-        shutil.copy2(osjoin(user_dir, '.fivecentplots', mythemes[int(entry)-1-len(themes)] + '.py'),
+        shutil.copy2(osjoin(my_theme_dir, mythemes[int(entry)-1-len(themes)] + '.py'),
                      osjoin(user_dir, '.fivecentplots', 'defaults.py'))
 
     print('done!')

@@ -3,7 +3,6 @@ import importlib
 import os, sys
 import pandas as pd
 import pdb
-import scipy.stats
 import datetime
 import time
 import numpy as np
@@ -33,7 +32,7 @@ try:
 except:
     natsorted = sorted
 
-st = pdb.set_trace
+db = pdb.set_trace
 
 
 DASHES = {'-': 'solid',
