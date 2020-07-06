@@ -2507,6 +2507,11 @@ them.  This is needed to correctly adjust the figure dimensions</p>
 </div>
 <div class="section" id="module-fivecentplots.utilities">
 <span id="utilities-py"></span><h2>utilities.py<a class="headerlink" href="#module-fivecentplots.utilities" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="fivecentplots.utilities.PlatformError">
+<em class="property">exception </em><code class="descclassname">fivecentplots.utilities.</code><code class="descname">PlatformError</code><a class="headerlink" href="#fivecentplots.utilities.PlatformError" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="class">
 <dt id="fivecentplots.utilities.RepeatedList">
 <em class="property">class </em><code class="descclassname">fivecentplots.utilities.</code><code class="descname">RepeatedList</code><span class="sig-paren">(</span><em>values</em>, <em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.utilities.RepeatedList" title="Permalink to this definition">¶</a></dt>
@@ -2667,6 +2672,13 @@ rounding errors</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="fivecentplots.utilities.get_mpl_version_dir">
+<code class="descclassname">fivecentplots.utilities.</code><code class="descname">get_mpl_version_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.utilities.get_mpl_version_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the matplotlib version directory for test images based
+on the current version of mpl</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="fivecentplots.utilities.get_text_dimensions">
 <code class="descclassname">fivecentplots.utilities.</code><code class="descname">get_text_dimensions</code><span class="sig-paren">(</span><em>text</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.utilities.get_text_dimensions" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -2675,6 +2687,8 @@ rounding errors</p>
 <dt id="fivecentplots.utilities.img_compare">
 <code class="descclassname">fivecentplots.utilities.</code><code class="descname">img_compare</code><span class="sig-paren">(</span><em>img1</em>, <em>img2</em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.utilities.img_compare" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read two images and compare for difference by pixel</p>
+<p>This is an optional utility used only for developer tests, so
+the function will only work if opencv is installed</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
