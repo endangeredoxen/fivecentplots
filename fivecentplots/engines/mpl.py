@@ -28,6 +28,8 @@ import matplotlib.transforms as mtransforms
 from matplotlib.patches import FancyBboxPatch
 from matplotlib.collections import PatchCollection
 import matplotlib.mlab as mlab
+import warnings
+warnings.filterwarnings('ignore', category=UserWarning)
 def custom_formatwarning(msg, *args, **kwargs):
     # ignore everything except the message
     return 'Warning: ' + str(msg) + '\n'
@@ -299,15 +301,25 @@ class Layout(BaseLayout):
             func = self.axes.obj[ir, ic].axhline if 'hline' in axline \
                    else self.axes.obj[ir, ic].axvline
             if ll.on:
-                for ival, val in enumerate(ll.values):
-                    if type(val) is str and type(df) is pd.DataFrame:
-                        val = df[val].iloc[0]
-                    line = func(val, color=ll.color.get(ival),
+                if hasattr(ll, 'by_plot') and ll.by_plot:
+                    ival = utl.plot_num(ir, ic, self.ncol) - 1
+                    line = func(ll.values[ival], color=ll.color.get(ival),
                                 linestyle=ll.style.get(ival),
                                 linewidth=ll.width.get(ival),
                                 zorder=ll.zorder)
                     if type(ll.text) is list and ll.text[ival] is not None:
                         self.legend.add_value(ll.text[ival], [line], 'ref_line')
+
+                else:
+                    for ival, val in enumerate(ll.values):
+                        if type(val) is str and type(df) is pd.DataFrame:
+                            val = df[val].iloc[0]
+                        line = func(val, color=ll.color.get(ival),
+                                    linestyle=ll.style.get(ival),
+                                    linewidth=ll.width.get(ival),
+                                    zorder=ll.zorder)
+                        if type(ll.text) is list and ll.text[ival] is not None:
+                            self.legend.add_value(ll.text[ival], [line], 'ref_line')
 
     def add_label(self, ir, ic, text='', position=None, rotation=0, size=None,
                   fill_color='#ffffff', edge_color='#aaaaaa', edge_width=1,
@@ -1843,7 +1855,8 @@ class Layout(BaseLayout):
                 patch.set_lw(self.box_whisker.width.get(ipatch))
                 patch.set_ls(self.box_whisker.style.get(ipatch))
 
-        self.axes.obj[ir, ic].set_xticklabels([''])
+        ll = ['' for f in self.axes.obj[ir, ic].get_xticklabels()]
+        self.axes.obj[ir, ic].set_xticklabels(ll)
         self.axes.obj[ir, ic].set_xlim(0.5, len(data) + 0.5)
 
         return bp
@@ -2174,10 +2187,13 @@ class Layout(BaseLayout):
 
         """
 
-        self.fig.obj.savefig(filename,
-                             edgecolor=self.fig.edge_color.get(idx),
-                             facecolor=self.fig.fill_color.get(idx),
-                             linewidth=self.fig.edge_width)
+        kwargs = {'edgecolor': self.fig.edge_color.get(idx),
+                  'facecolor': self.fig.fill_color.get(idx)}
+        if LooseVersion(mpl.__version__) < LooseVersion('3.3'):
+            kwargs['linewidth'] = self.fig.edge_width
+
+        self.fig.obj.savefig(filename, **kwargs)
+
 
     def see(self):
         """
@@ -2823,10 +2839,12 @@ class Layout(BaseLayout):
 
             # Turn off major tick labels
             if not tlmajx.on:
-                axes[ia].set_xticklabels([''])
+                ll = ['' for f in axes[ia].get_xticklabels()]
+                axes[ia].set_xticklabels(ll)
 
             if not tlmajy.on:
-                axes[ia].set_yticklabels([''])
+                ll = ['' for f in axes[ia].get_yticklabels()]
+                axes[ia].set_yticklabels(ll)
 
             # Check for overlapping major tick labels
             lims = {}

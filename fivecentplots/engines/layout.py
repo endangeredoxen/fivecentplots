@@ -984,6 +984,7 @@ class BaseLayout:
                             on=True if axline in kwargs.keys() else False,
                             values=values, color=colors, style=styles,
                             width=widths, alpha=alphas, text=labels,
+                            by_plot=utl.kwget(kwargs, self.fcpp, '%s_by_plot' % axline, False),
                             zorder=utl.kwget(kwargs, self.fcpp, '%s_zorder' % axline, 1),
                             ))
             # for label in labels:

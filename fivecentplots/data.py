@@ -513,10 +513,10 @@ class Data:
             for group in self.groups:
                 if len(self.df_rc[group].dropna()) == 0:
                     self.groups.remove(group)
-                    print('Column "%s" is all NaN and will be excluded from plot' % group)
+                    print('Column "%s" for a subplot is all NaN and will be excluded from plot' % group)
 
         # Get the changes df
-        if self.groups is None:
+        if self.groups is None or self.groups == []:
             groups = [(None, self.df_rc.copy())]
             self.ngroups = 0
         else:
@@ -543,6 +543,8 @@ class Data:
                     self.changes.loc[i, col] = 0
                 else:
                     self.changes.loc[i, col] = 1
+
+        return True
 
     def get_conf_int(self, df, x, y, **kwargs):
         """
@@ -989,7 +991,7 @@ class Data:
                 if len(df_rc) == 0:
                     break
                 for iline, df, x, y, z, leg_name, twin, ngroups in self.get_plot_data(df_rc):
-                    counts = np.histogram(df[self.x[0]], bins=self.bins, normed=self.norm)[0]
+                    counts = np.histogram(df[self.x[0]].dropna(), bins=self.bins, normed=self.norm)[0]
                     df_hist = pd.concat([df_hist, pd.DataFrame({self.y[0]: counts})])
             vals = self.get_data_range('y', df_hist, ir, ic)
             self.ranges[ir, ic]['ymin'] = vals[0]
@@ -1470,7 +1472,7 @@ class Data:
                         self.xmin.values[plot_num] = -0.5
                     if not self.xmax.get(plot_num):
                         self.xmax.values[plot_num] = \
-                            len(self.df_rc.columns) - 0.5
+                            len(self.df_rc.columns) + 0.5
                     if self.ymin.get(plot_num) is not None \
                             and self.ymax.get(plot_num) is not None \
                             and self.ymin.get(plot_num) < self.ymax.get(plot_num):
@@ -1480,17 +1482,19 @@ class Data:
                     if not self.ymax.get(plot_num):
                         self.ymax.values[plot_num] = -0.5
                     if not self.ymin.get(plot_num):
-                        self.ymin.values[plot_num] = len(self.df_rc) - 0.5
+                        self.ymin.values[plot_num] = len(self.df_rc) + 0.5
                     if self.x == ['Column'] and self.auto_cols:
+                        col0 = self.df_rc.columns[0]
                         self.df_rc = self.df_rc[[f for f in self.df_rc.columns
-                                                 if f >= self.xmin.get(plot_num)]]
+                                                 if (f - col0) >= self.xmin.get(plot_num)]]
                         self.df_rc = self.df_rc[[f for f in self.df_rc.columns
-                                                 if f <= self.xmax.get(plot_num)]]
+                                                 if (f - col0) <= self.xmax.get(plot_num)]]
                     if self.y == ['Row'] and self.auto_cols:
+                        row0 = self.df_rc.index[0]
                         self.df_rc = self.df_rc.loc[[f for f in self.df_rc.index
-                                                     if f >= self.ymax.get(plot_num)]]
+                                                     if (f - row0) >= self.ymax.get(plot_num)]]
                         self.df_rc = self.df_rc.loc[[f for f in self.df_rc.index
-                                                     if f <= self.ymin.get(plot_num)]]
+                                                     if (f - row0) <= self.ymin.get(plot_num)]]
                     dtypes = [int, np.int32, np.int64]
                     if self.df_rc.index.dtype in dtypes and list(self.df_rc.index) != \
                             [f + self.df_rc.index[0] for f in range(0, len(self.df_rc.index))]:
@@ -1517,6 +1521,9 @@ class Data:
 
                 # Get boxplot changes DataFrame
                 if 'box' in self.plot_func and len(self.df_rc) > 0:  # think we are doing this twice
+                    if (self.groups is not None and self.groups != []) and \
+                            len(self.df_rc.groupby(self.groups)) == 0:
+                        continue
                     self.get_box_index_changes()
                     self.ranges[ir, ic]['xmin'] = 0.5
                     self.ranges[ir, ic]['xmax'] = len(self.changes) + 0.5
