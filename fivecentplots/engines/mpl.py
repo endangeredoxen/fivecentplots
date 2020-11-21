@@ -2981,9 +2981,11 @@ class Layout(BaseLayout):
 
             if self.tick_cleanup and tlmajx.on:# and not skipx:
                 axes[ia].xaxis.set_major_formatter(NullFormatter())
-                axes[ia].set_xticklabels(tp['x']['label_text'])
+                nticks = len(axes[ia].get_xticks())
+                axes[ia].set_xticklabels(tp['x']['label_text'][0:nticks])
             if self.tick_cleanup and tlmajy.on and not skipy:
-                axes[ia].set_yticklabels(tp['y']['label_text'])
+                nticks = len(axes[ia].get_yticks())
+                axes[ia].set_yticklabels(tp['y']['label_text'][0:nticks])c
 
             # Turn on minor tick labels
             ax = ['x', 'y']
