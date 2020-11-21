@@ -247,12 +247,31 @@ def plot_bar(data, layout, ir, ic, df_rc, kwargs):
 
     """
 
-    stacked = pd.DataFrame()
+    xvals = np.sort(df_rc[data.x[0]].unique())  # would need to update to support multiple x
+    group_vals = [data.x[0], data.legend] if data.legend else data.x[0]
+    groups = df_rc.groupby(group_vals)
+    ticks = len(groups)
+    stacked = pd.DataFrame(index=xvals)
     ss = []
+
+    # xvals can't come from df_rc if grouping is happening
+
+    if data.legend:
+        df_rc_new = pd.DataFrame()
+        df_rc = df_rc.reset_index(drop=True)
+        for n, g in df_rc.groupby(data.x[0]):
+            for ii, (nn, gg) in enumerate(g.groupby(data.legend)):
+                df_rc.loc[df_rc.index.isin(gg.index), 'Instance'] = ii
+                df_rc.loc[df_rc.index.isin(gg.index), 'Total'] = len(g.groupby(data.legend))
+    else:
+        df_rc['Instance'] = 0
+        df_rc['Total'] = 1
 
     for iline, df, x, y, z, leg_name, twin, ngroups in data.get_plot_data(df_rc):
 
-        df2 = df.groupby(x).mean()[y]
+        df2 = df.groupby(x).sum()[y]
+        inst = df.groupby(x).mean()['Instance']
+        total = df.groupby(x).mean()['Total']
 
         if layout.bar.error_bars:
             std = df.groupby(x).std()[y]
@@ -262,10 +281,11 @@ def plot_bar(data, layout, ir, ic, df_rc, kwargs):
         if layout.bar.stacked:
             stacked = pd.concat([stacked, df2])
 
-        data = layout.plot_bar(ir, ic, iline, df2, x, y, leg_name, data, ss, std, ngroups)
+        data = layout.plot_bar(ir, ic, iline, df2, x, y, leg_name, data, ss,
+                               std, ngroups, xvals, inst, total)
 
         if layout.bar.stacked:
-            ss = stacked.groupby(stacked.index).sum()[0].values
+            ss = stacked.groupby(stacked.index).sum()[0]
 
     return data
 

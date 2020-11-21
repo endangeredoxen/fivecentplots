@@ -303,12 +303,13 @@ class Layout(BaseLayout):
             if ll.on:
                 if hasattr(ll, 'by_plot') and ll.by_plot:
                     ival = utl.plot_num(ir, ic, self.ncol) - 1
-                    line = func(ll.values[ival], color=ll.color.get(ival),
-                                linestyle=ll.style.get(ival),
-                                linewidth=ll.width.get(ival),
-                                zorder=ll.zorder)
-                    if type(ll.text) is list and ll.text[ival] is not None:
-                        self.legend.add_value(ll.text[ival], [line], 'ref_line')
+                    if ival < len(ll.values):
+                        line = func(ll.values[ival], color=ll.color.get(ival),
+                                    linestyle=ll.style.get(ival),
+                                    linewidth=ll.width.get(ival),
+                                    zorder=ll.zorder)
+                        if type(ll.text) is list and ll.text[ival] is not None:
+                            self.legend.add_value(ll.text[ival], [line], 'ref_line')
 
                 else:
                     for ival, val in enumerate(ll.values):
@@ -678,17 +679,13 @@ class Layout(BaseLayout):
                     ax2.set_ylim(top=data.ranges[ir, ic]['zmax'])
             # bar
             elif self.plot_func == 'plot_bar':
-                yy = df.groupby(data.x[0]).mean()[data.y[0]]
+                yy = df.groupby(data.x[0]).sum()[data.y[0]]
+                xvals = np.sort(df[data.x[0]].unique())
+                ixvals = list(range(0, len(xvals)))
                 idx = list(np.arange(len(yy)))
                 pp = ax.bar(idx, yy.values)
-                ticks = ax.get_xticks()
-                labels = []
-                for itick, tick in enumerate(ticks):
-                    if int(tick) in idx:
-                        labels += [yy.index[int(tick)]]
-                    else:
-                        labels += ['']
-                ax.set_xticklabels(labels)
+                ax.set_xticks(ixvals)
+                ax.set_xticklabels(xvals)
             # hist
             elif self.plot_func == 'plot_hist':
                 if LooseVersion(mpl.__version__) < LooseVersion('2.2'):
@@ -839,6 +836,7 @@ class Layout(BaseLayout):
             xinc = self.ticks_major_x.increment
             if xinc is not None:
                 xlim = ax.get_xlim()
+                # something here with labels
                 ax.set_xticks(
                     np.arange(xlim[0] + xinc - xlim[0] % xinc,
                               xlim[1], xinc))
@@ -1681,13 +1679,14 @@ class Layout(BaseLayout):
         return data
 
     def plot_bar(self, ir, ic, iline, df, x, y, leg_name, data, stacked, std,
-                 ngroups=1):
+                 ngroups, xvals, inst, total):
         """
         Plot bar graph
         """
 
         ax = self.axes.obj[ir, ic]
-        idx = list(np.arange(len(df)))
+        idx = np.where(np.isin(xvals,df.index))[0]
+        ixvals = list(range(0, len(xvals)))
         kwargs = {}
 
         # Orientation
@@ -1697,20 +1696,33 @@ class Layout(BaseLayout):
             if self.bar.stacked:
                 kwargs['height'] = self.bar.width
                 if iline > 0:
+                    if type(stacked) is pd.Series:
+                        stacked = stacked.loc[xvals[idx]].values
                     kwargs['bottom'] = stacked
             else:
+                #kwargs['height'] = self.bar.width / ngroups
+                #idx = [f + iline * (kwargs['height']) for f in idx]
                 kwargs['height'] = self.bar.width / ngroups
-                idx = [f + iline * (kwargs['height']) for f in idx]
+                width_offset = self.bar.width / total.values
+                idx = [f + inst[i] * kwargs['height'] for i, f in enumerate(idx)]
+                init_off = (total - 1) / 2 * kwargs['height']
+                idx = list((idx - init_off).values)
         else:
             bar = ax.bar
             axx = 'x'
             if self.bar.stacked:
                 kwargs['width'] = self.bar.width
                 if iline > 0:
+                    if type(stacked) is pd.Series:
+                        stacked = stacked.loc[xvals[idx]].values
                     kwargs['bottom'] = stacked
             else:
                 kwargs['width'] = self.bar.width / ngroups
-                idx = [f + iline * (kwargs['width']) for f in idx]
+                width_offset = self.bar.width / total.values
+                idx = [f + inst[i] * kwargs['width'] for i, f in enumerate(idx)]
+                init_off = (total - 1) / 2 * kwargs['width']
+                idx = list((idx - init_off).values)
+
         if self.bar.color_by_bar:
             edgecolor = [self.bar.edge_color.get(i)
                         for i, f in enumerate(df[y].index)]
@@ -1733,22 +1745,9 @@ class Layout(BaseLayout):
                  ecolor=self.bar.error_color, **kwargs)
 
         # Set ticks
+        getattr(ax, 'set_%sticks' % axx)(ixvals)
+        getattr(ax, 'set_%sticklabels' % axx)(xvals)
         if iline==0:
-            ticks = getattr(ax, 'get_%sticks' % axx)()
-            labels = []
-            xticks = []
-            for itick, tick in enumerate(ticks):
-                if int(tick) in idx:
-                    labels += [df.index[int(tick)]]
-                else:
-                    labels += ['']
-                if ngroups == 1 or self.bar.align == 'edge':
-                    xticks += [tick]
-                else:
-                    xticks += [tick + self.bar.width / ngroups]
-            getattr(ax, 'set_%sticks' % axx)(xticks)
-            getattr(ax, 'set_%sticklabels' % axx)(labels)
-
             # Update ranges
             new_ticks = getattr(ax, 'get_%sticks' % axx)()
             tick_off = [f for f in new_ticks if f >= 0][0]
@@ -1756,13 +1755,13 @@ class Layout(BaseLayout):
                 axx = 'y'
             else:
                 axx = 'x'
-            xoff = 3*self.bar.width / 4
+            xoff = 3 * self.bar.width / 4
             if data.ranges[ir, ic]['%smin' % axx] is None:
                 data.ranges[ir, ic]['%smin' % axx] = -xoff + tick_off
             else:
                 data.ranges[ir, ic]['%smin' % axx] += tick_off
             if data.ranges[ir, ic]['%smax' % axx] is None:
-                data.ranges[ir, ic]['%smax' % axx] = len(idx) - 1 + xoff + tick_off
+                data.ranges[ir, ic]['%smax' % axx] = len(xvals) - 1 + xoff + tick_off
             else:
                 data.ranges[ir, ic]['%smax' % axx] += tick_off
 
@@ -2746,10 +2745,9 @@ class Layout(BaseLayout):
             # Set custom tick increment
             redo = True
             xinc = getattr(self, 'ticks_major_x%s' % lab).increment
-            if not skipx and xinc is not None:
-                axes[ia].set_xticks(
-                    np.arange(tp['x']['min'] + xinc - tp['x']['min'] % xinc,
-                              tp['x']['max'], xinc))
+            if not skipx and xinc is not None and self.plot_func not in ['plot_bar']:
+                xstart = 0 if tp['x']['min'] == 0 else tp['x']['min'] + xinc - tp['x']['min'] % xinc
+                axes[ia].set_xticks(np.arange(xstart, tp['x']['max'], xinc))
                 redo = True
             yinc = getattr(self, 'ticks_major_y%s' % lab).increment
             if not skipy and yinc is not None:
@@ -2985,7 +2983,7 @@ class Layout(BaseLayout):
                 axes[ia].set_xticklabels(tp['x']['label_text'][0:nticks])
             if self.tick_cleanup and tlmajy.on and not skipy:
                 nticks = len(axes[ia].get_yticks())
-                axes[ia].set_yticklabels(tp['y']['label_text'][0:nticks])c
+                axes[ia].set_yticklabels(tp['y']['label_text'][0:nticks])
 
             # Turn on minor tick labels
             ax = ['x', 'y']

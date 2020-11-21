@@ -897,7 +897,7 @@ class Data:
                 if len(df_rc) == 0:
                     break
                 for iline, df, x, y, z, leg_name, twin, ngroups in self.get_plot_data(df_rc):
-                    yy = df.groupby(df[self.x[0]]).mean()[self.y[0]]
+                    yy = df.groupby(df[self.x[0]]).sum()[self.y[0]]
                     if self.error_bars:
                         yys = df.groupby(df[self.x[0]]).std()[self.y[0]] + yy
                     else:
@@ -907,7 +907,10 @@ class Data:
                 df_bar = df_bar.groupby(df_bar.index).sum()
             df_bar.columns = self.y
             vals = self.get_data_range('y', df_bar, ir, ic)
-            self.ranges[ir, ic]['ymin'] = vals[0]
+            if any(df_bar[y].values < 0):
+                self.ranges[ir, ic]['ymin'] = vals[0]
+            else:
+                self.ranges[ir, ic]['ymin'] = 0
             self.ranges[ir, ic]['ymax'] = vals[1]
         elif self.share_row:
             for iir, iic, df_rc in self.get_rc_subset(self.df_fig):
@@ -956,6 +959,7 @@ class Data:
             self.ranges[ir, ic]['ymin'] = self.ranges[0, 0]['ymin']
             self.ranges[ir, ic]['ymax'] = self.ranges[0, 0]['ymax']
 
+        # x-axis
         if self.xmin.get(plot_num) is None:
             self.ranges[ir, ic]['xmin'] = None
         else:

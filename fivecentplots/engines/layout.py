@@ -1226,10 +1226,16 @@ class BaseLayout:
 
         # Plot overrides
         if 'bar' in self.plot_func:
-            self.grid_major_x.on = True
-            self.grid_minor_x.on = False
-            self.ticks_major_x.on = False
-            self.ticks_minor_x.on = False
+            if self.bar.horizontal:
+                self.grid_major_y.on = False
+                self.grid_minor_y.on = False
+                self.ticks_major_y.on = False
+                self.ticks_minor_y.on = False
+            else:
+                self.grid_major_x.on = False
+                self.grid_minor_x.on = False
+                self.ticks_major_x.on = False
+                self.ticks_minor_x.on = False
         if 'box' in self.plot_func:
             self.grid_major_x.on = False
             self.grid_minor_x.on = False
