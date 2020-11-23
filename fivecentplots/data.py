@@ -17,7 +17,8 @@ REQUIRED_VALS = {'plot_xy': ['x', 'y'],
                  'plot_hist': ['x'],
                  'plot_contour': ['x', 'y', 'z'],
                  'plot_heatmap': [],
-                 'plot_nq': []
+                 'plot_nq': [],
+                 'plot_pie': ['x', 'y'],
                 }
 OPTIONAL_VALS = {'plot_xy': [],
                  'plot_bar': [],
@@ -26,6 +27,7 @@ OPTIONAL_VALS = {'plot_xy': [],
                  'plot_contour': [],
                  'plot_heatmap': ['x', 'y', 'z'],
                  'plot_nq': ['x'],
+                 'plot_pie': [],
                 }
 
 
@@ -93,10 +95,10 @@ class Data:
         self.sort = utl.kwget(kwargs, self.fcpp, 'sort', True)
         self.stacked = False
         if self.plot_func == 'plot_bar':
-            self.stacked = utl.kwget(kwargs, self.fcpp, 'bar_stacked',
+            self.stacked = utl.kwget(kwargs, self.fcpp, ['bar_stacked', 'stacked'],
                                      kwargs.get('stacked', False))
         elif self.plot_func == 'plot_hist':
-            self.stacked = utl.kwget(kwargs, self.fcpp, 'hist_stacked',
+            self.stacked = utl.kwget(kwargs, self.fcpp, ['hist_stacked', 'stacked'],
                                      kwargs.get('stacked', False))
         self.swap = utl.kwget(kwargs, self.fcpp, 'swap', False)
         self.trans_df_fig = False
@@ -171,7 +173,8 @@ class Data:
             else:
                 self.pivot = True
         if self.plot_func == 'plot_bar' and \
-                utl.kwget(kwargs, self.fcpp, 'bar_error_bars',
+                utl.kwget(kwargs, self.fcpp,
+                          ['bar_error_bars', 'error_bars'],
                           kwargs.get('error_bars', False)):
             self.error_bars = True
         if self.plot_func == 'plot_nq':
@@ -197,13 +200,16 @@ class Data:
         self.ucl = []
 
         # Special for hist
-        normalize = utl.kwget(kwargs, self.fcpp, 'hist_normalize', kwargs.get('normalize', False))
-        kde=utl.kwget(kwargs, self.fcpp, 'hist_kde', kwargs.get('kde', False))
+        normalize = utl.kwget(kwargs, self.fcpp, ['hist_normalize', 'normalize'],
+                              kwargs.get('normalize', False))
+        kde=utl.kwget(kwargs, self.fcpp, ['hist_kde', 'kde'],
+                      kwargs.get('kde', False))
         if normalize or kde:
             self.norm = True
         else:
             self.norm = False
-        self.bins = utl.kwget(kwargs, self.fcpp, 'hist_bins', kwargs.get('bins', 20))
+        self.bins = utl.kwget(kwargs, self.fcpp, ['hist_bins', 'bins'],
+                              kwargs.get('bins', 20))
 
         # Apply an optional filter to the data
         self.filter = kwargs.get('filter', None)

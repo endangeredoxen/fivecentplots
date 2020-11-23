@@ -391,27 +391,30 @@ def get_text_dimensions(text, **kwargs):
     return size[0]*1.125, size[1]*1.125  # no idea why it is off
 
 
-def kwget(dict1, dict2, val, default):
+def kwget(dict1, dict2, vals, default):
     """
     Augmented kwargs.get function
 
     Args:
         dict1 (dict): first dictionary to check for the value
         dict2 (dict): second dictionary to check for the value
-        val (str): value to look for
+        vals (str | list): value to look for
         default (multiple): default value if not found in
             dict1 or dict2 keys
 
     Returns:
         value to use
     """
+    vals = validate_list(vals)
 
-    if val in dict1.keys():
-        return dict1[val]
-    elif val in dict2.keys():
-        return dict2[val]
-    else:
-        return default
+    for val in vals:
+        if val in dict1.keys():
+            return dict1[val]
+    for val in vals:
+        if val in dict2.keys():
+            return dict2[val]
+
+    return default
 
 
 def img_compare(img1, img2):

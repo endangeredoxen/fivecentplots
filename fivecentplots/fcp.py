@@ -631,6 +631,32 @@ def plot_nq(data, layout, ir, ic, df_rc, kwargs):
     return data
 
 
+def plot_pie(data, layout, ir, ic, df, kwargs):
+    """
+    Plot a pie chart
+
+    Args:
+        data (obj): Data object
+        layout (obj): layout object
+        ir (int): current subplot row number
+        ic (int): current subplot column number
+        df_rc (pd.DataFrame): data subset
+        kwargs (dict): keyword args
+
+    """
+
+    x = df[data.x[0]].values
+    y = df[data.y[0]].values
+
+    if any(y < 0):
+        print('Pie plot had negative values.  Skipping...')
+        return data
+
+    pie = layout.plot_pie(ir, ic, df, x, y, layout.pie.__dict__)
+
+    return data
+
+
 def plot_ref(ir, ic, iline, data, layout, df, x, y):
     """
     Plot a reference line
@@ -849,6 +875,14 @@ def plotter(plot_func, **kwargs):
         else:
             filename = filename.split('.')[0] + '.csv'
         dd.df_all[dd.cols_all].to_csv(filename, index=False)
+
+
+def pie(*args, **kwargs):
+    """
+    Pie chart
+    """
+
+    return plotter('plot_pie', **dfkwarg(args, kwargs))
 
 
 def set_theme(theme=None):

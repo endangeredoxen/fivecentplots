@@ -692,6 +692,13 @@ class Layout(BaseLayout):
                     pp = ax.hist(df[data.x[0]], bins=self.hist.bins, normed=self.hist.normalize)
                 else:
                     pp = ax.hist(df[data.x[0]], bins=self.hist.bins, density=self.hist.normalize)
+            # pie
+            elif self.plot_func == 'plot_pie':
+                x = df[data.x[0]].values
+                y = df[data.y[0]].values
+                if any(y < 0):
+                    continue
+                pp = ax.pie(y, labels=x)
             # Regular
             else:
                 for xy in zip(data.x, data.y):
@@ -735,7 +742,7 @@ class Layout(BaseLayout):
                 ax3.set_xscale('logit')
 
         for ir, ic, df in data.get_rc_subset(data.df_fig):
-            if len(df) == 0:
+            if len(df) == 0 or self.plot_func in ['plot_pie']:
                 continue
             if data.ranges[ir, ic]['xmin'] is not None:
                 ax.set_xlim(left=data.ranges[ir, ic]['xmin'])
@@ -813,7 +820,7 @@ class Layout(BaseLayout):
         # Ticks
         for ir, ic, df in data.get_rc_subset(data.df_fig):
             # have to do this a second time... may be a better way
-            if len(df) == 0:
+            if len(df) == 0 or self.plot_func in ['plot_pie']:
                 continue
             if data.ranges[ir, ic]['xmin'] is not None:
                 ax.set_xlim(left=data.ranges[ir, ic]['xmin'])
@@ -1104,7 +1111,7 @@ class Layout(BaseLayout):
         label_y = []
         label_y2 = []
         label_z = []
-        if type(self.label_x.text) is str:
+        if type(self.label_x.text) is str and self.label_x.on:
             label_x = [fig.text(0, 0, r'%s' % self.label_x.text,
                                 fontsize=self.label_x.font_size,
                                 weight=self.label_x.font_weight,
@@ -1112,7 +1119,7 @@ class Layout(BaseLayout):
                                 color=self.label_x.font_color,
                                 rotation=self.label_x.rotation)]
 
-        if type(self.label_x.text) is list:
+        if type(self.label_x.text) is list and self.label_x.on:
             label_x = []
             for text in self.label_x.text:
                 label_x += [fig.text(0, 0, r'%s' % text,
@@ -1122,7 +1129,7 @@ class Layout(BaseLayout):
                                      color=self.label_x.font_color,
                                      rotation=self.label_x.rotation)]
 
-        if type(self.label_x2.text) is str:
+        if type(self.label_x2.text) is str and self.label_x2.on:
             label_x2 = [fig.text(0, 0, r'%s' % self.label_x2.text,
                                fontsize=self.label_x2.font_size,
                                weight=self.label_x2.font_weight,
@@ -1130,7 +1137,7 @@ class Layout(BaseLayout):
                                color=self.label_x2.font_color,
                                rotation=self.label_x2.rotation)]
 
-        if type(self.label_y.text) is str:
+        if type(self.label_y.text) is str and self.label_y.on:
             label_y = [fig.text(0, 0, r'%s' % self.label_y.text,
                                fontsize=self.label_y.font_size,
                                weight=self.label_y.font_weight,
@@ -1138,7 +1145,7 @@ class Layout(BaseLayout):
                                color=self.label_y.font_color,
                                rotation=self.label_y.rotation)]
 
-        if type(self.label_y.text) is list:
+        if type(self.label_y.text) is list and self.label_y.on:
             label_y = []
             for text in self.label_y.text:
                 label_y += [fig.text(0, 0, r'%s' % text,
@@ -1148,7 +1155,7 @@ class Layout(BaseLayout):
                                      color=self.label_y.font_color,
                                      rotation=self.label_y.rotation)]
 
-        if type(self.label_y2.text) is str:
+        if type(self.label_y2.text) is str and self.label_y2.on:
             label_y2 = [fig.text(0, 0, r'%s' % self.label_y2.text,
                                fontsize=self.label_y2.font_size,
                                weight=self.label_y2.font_weight,
@@ -1156,7 +1163,7 @@ class Layout(BaseLayout):
                                color=self.label_y2.font_color,
                                rotation=self.label_y2.rotation)]
 
-        if type(self.label_z.text) is str:
+        if type(self.label_z.text) is str and self.label_z.on:
             label_z = [fig.text(0, 0, r'%s' % self.label_z.text,
                                fontsize=self.label_z.font_size,
                                weight=self.label_z.font_weight,
@@ -1182,7 +1189,7 @@ class Layout(BaseLayout):
             saved = True
             filename = '%s%s' % (int(round(time.time() * 1000)), randint(0, 99))
             mpl.pyplot.savefig(filename + '.png')
-        # mpl.pyplot.savefig(r'test.png')  # turn on for debugging
+        #mpl.pyplot.savefig(r'test.png')  # turn on for debugging
 
         # Get actual sizes
         if self.tick_labels_major_x.on and len(xticklabelsmaj) > 0:
@@ -1536,6 +1543,10 @@ class Layout(BaseLayout):
         if self.legend.size[1] + header > self.fig.size[1]:
             self.legend.overflow = self.legend.size[1] + header - self.fig.size[1]
         self.fig.size[1] += self.legend.overflow
+
+        # temp
+        if self.plot_func == 'plot_pie':
+            self.fig.size = [400, 400]
 
     def get_legend_position(self):
         """
@@ -1988,27 +1999,6 @@ class Layout(BaseLayout):
             handle = [patches.Rectangle((0,0),1,1,color=self.hist.fill_color.get(iline))]
             self.legend.add_value(leg_name, handle, 'lines')
 
-        # # Horizontal adjustments
-        # if self.hist.horizontal:
-        #     # # Swap labels
-        #     # if iline == 0 and ir == 0 and ic == 0:
-        #     #     ylab = self.label_y.text
-        #     #     self.label_y.text = self.label_x.text
-        #     #     self.label_x.text = ylab
-        #     #     self.label_x.size = [self.label_y.size[1], self.label_y.size[0]]
-        #     #     self.label_y.size = [self.label_x.size[1], self.label_x.size[0]]
-
-        #     # Rotate ranges
-        #     if iline == 0:
-        #         for irow in range(0, self.nrow):
-        #             for icol in range(0, self.ncol):
-        #                 ymin = data.ranges[irow, icol]['ymin']
-        #                 ymax = data.ranges[irow, icol]['ymax']
-        #                 data.ranges[irow, icol]['ymin'] = data.ranges[irow, icol]['xmin']
-        #                 data.ranges[irow, icol]['ymax'] = data.ranges[irow, icol]['xmax']
-        #                 data.ranges[irow, icol]['xmin'] = ymin
-        #                 data.ranges[irow, icol]['xmax'] = ymax
-
         # Add a kde
         if self.kde.on:
             kde = scipy.stats.gaussian_kde(df[x])
@@ -2058,6 +2048,60 @@ class Layout(BaseLayout):
                                         color=kwargs['color'].get(0),
                                         zorder=kwargs.get('zorder', 1))
         return line
+
+    def plot_pie(self, ir, ic, df, x, y, kwargs):
+        """
+        Plot a pie chart
+
+        Args:
+            ax (mpl.axes): current axes obj
+            df (pd.DataFrame):  data to plot
+            x (str): x-column name with label data
+            y (str): y-column name with values
+            kwargs (dict):  options
+
+        """
+
+        wedgeprops = {'linewidth': self.pie.edge_width,
+                      'alpha': self.pie.alpha,
+                      'linestyle': self.pie.edge_style,
+                      'edgecolor': self.pie.edge_color.get(0),
+                      'width': self.pie.inner_radius,
+                     }
+        textprops = {'fontsize': self.pie.font_size,
+                     'weight': self.pie.font_weight,
+                     'style': self.pie.font_style,
+                     'color': self.pie.font_color,
+                    }
+
+        if self.pie.explode is not None:
+            if self.pie.explode[0] == 'all':
+                self.pie.explode = tuple([self.pie.explode[1] for f in y])
+            elif len(self.pie.explode) < len(y):
+                self.pie.explode = list(self.pie.explode)
+                self.pie.explode += [0 for f in range(0, len(y) - len(self.pie.explode))]
+
+        pie = self.axes.obj[ir, ic].pie(y, labels=x,
+                                        explode=self.pie.explode,
+                                        #center=[40,40],
+                                        colors=self.pie.colors,
+                                        autopct=self.pie.autopct,
+                                        counterclock=self.pie.counterclock,
+                                        labeldistance=self.pie.labeldistance,
+                                        pctdistance=self.pie.pctdistance,
+                                        radius=self.pie.radius,
+                                        rotatelabels=self.pie.rotatelabels,
+                                        shadow=self.pie.shadow,
+                                        startangle=self.pie.startangle,
+                                        wedgeprops=wedgeprops,
+                                        textprops=textprops,
+                                        )
+        self.axes.obj[ir, ic].axis('equal')
+        #self.axes.obj[ir, ic].set_aspect('equal')
+        # self.axes.share_x = None
+        # self.axes.share_y = None
+
+        return pie
 
     def plot_polygon(self, ir, ic, points, **kwargs):
         """
@@ -2190,7 +2234,6 @@ class Layout(BaseLayout):
                   'facecolor': self.fig.fill_color.get(idx)}
         if LooseVersion(mpl.__version__) < LooseVersion('3.3'):
             kwargs['linewidth'] = self.fig.edge_width
-
         self.fig.obj.savefig(filename, **kwargs)
 
 
@@ -2319,6 +2362,9 @@ class Layout(BaseLayout):
 
         """
 
+        if self.plot_func in ['plot_pie']:
+            return
+
         self.get_axes_label_position()
 
         axis = ['x', 'x2', 'y', 'y2', 'z']
@@ -2398,7 +2444,7 @@ class Layout(BaseLayout):
 
         """
 
-        if self.plot_func == 'plot_heatmap':
+        if self.plot_func in ['plot_heatmap', 'plot_pie']:
             return
 
         # X-axis
@@ -2613,6 +2659,9 @@ class Layout(BaseLayout):
                 pos = (tick - lim[0]) / (lim[1] - lim[0]) * self.axes.size[size]
 
             return pos
+
+        if self.plot_func in ['plot_pie']:
+            return
 
         axes = [f.obj[ir, ic] for f in [self.axes, self.axes2] if f.on]
 
