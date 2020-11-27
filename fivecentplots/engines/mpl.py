@@ -390,7 +390,7 @@ class Layout(BaseLayout):
         def format_legend(self, leg):
             for itext, text in enumerate(leg.get_texts()):
                 text.set_color(self.legend.font_color)
-                if self.plot_func not in ['plot_hist', 'plot_bar']:
+                if self.plot_func not in ['plot_hist', 'plot_bar', 'plot_pie']:
                     leg.legendHandles[itext]. \
                         _legmarker.set_markersize(self.legend.marker_size)
                     if self.legend.marker_alpha is not None:
@@ -631,6 +631,8 @@ class Layout(BaseLayout):
         box_group_title = []
         changes = np.array([[None]*self.ncol]*self.nrow)
 
+        pie_labels = []
+
         # Plot data
         for ir, ic, df in data.get_rc_subset(data.df_fig):
             if len(df) == 0:
@@ -698,7 +700,42 @@ class Layout(BaseLayout):
                 y = df[data.y[0]].values
                 if any(y < 0):
                     continue
-                pp = ax.pie(y, labels=x)
+                wedgeprops = {'linewidth': self.pie.edge_width,
+                              'alpha': self.pie.alpha,
+                              'linestyle': self.pie.edge_style,
+                              'edgecolor': self.pie.edge_color.get(0),
+                              'width': self.pie.inner_radius,
+                             }
+                textprops = {'fontsize': self.pie.font_size,
+                             'weight': self.pie.font_weight,
+                             'style': self.pie.font_style,
+                             'color': self.pie.font_color,
+                            }
+                if self.pie.explode is not None:
+                    if self.pie.explode[0] == 'all':
+                        self.pie.explode = tuple([self.pie.explode[1] for f in y])
+                    elif len(self.pie.explode) < len(y):
+                        self.pie.explode = list(self.pie.explode)
+                        self.pie.explode += [0 for f in range(0, len(y) - len(self.pie.explode))]
+
+                pp = ax.pie(y, labels=x, explode=self.pie.explode, #, center=[0, -100],
+                            colors=self.pie.colors, autopct=self.pie.autopct,
+                            counterclock=self.pie.counterclock,
+                            labeldistance=self.pie.labeldistance,
+                            pctdistance=self.pie.pctdistance,
+                            radius=self.pie.radius,
+                            rotatelabels=self.pie.rotatelabels,
+                            shadow=self.pie.shadow,
+                            startangle=self.pie.startangle,
+                            wedgeprops=wedgeprops, textprops=textprops,
+                            )#frame=True)
+
+                ax.set_xlim(left=-1)
+                ax.set_xlim(right=1)
+                ax.set_ylim(bottom=-1)
+                ax.set_ylim(top=1)
+
+
             # Regular
             else:
                 for xy in zip(data.x, data.y):
@@ -742,7 +779,7 @@ class Layout(BaseLayout):
                 ax3.set_xscale('logit')
 
         for ir, ic, df in data.get_rc_subset(data.df_fig):
-            if len(df) == 0 or self.plot_func in ['plot_pie']:
+            if len(df) == 0:
                 continue
             if data.ranges[ir, ic]['xmin'] is not None:
                 ax.set_xlim(left=data.ranges[ir, ic]['xmin'])
@@ -820,7 +857,7 @@ class Layout(BaseLayout):
         # Ticks
         for ir, ic, df in data.get_rc_subset(data.df_fig):
             # have to do this a second time... may be a better way
-            if len(df) == 0 or self.plot_func in ['plot_pie']:
+            if len(df) == 0:
                 continue
             if data.ranges[ir, ic]['xmin'] is not None:
                 ax.set_xlim(left=data.ranges[ir, ic]['xmin'])
@@ -1001,12 +1038,23 @@ class Layout(BaseLayout):
                 for group in data.groups:
                     box_group_title += \
                         [fig.text(0, 0, r'%s' % group,
-                                fontsize=self.box_group_title.font_size,
-                                weight=self.box_group_title.font_weight,
-                                style=self.box_group_title.font_style,
-                                color=self.box_group_title.font_color,
-                                rotation=self.box_group_title.rotation,
-                                )]
+                         fontsize=self.box_group_title.font_size,
+                         weight=self.box_group_title.font_weight,
+                         style=self.box_group_title.font_style,
+                         color=self.box_group_title.font_color,
+                         rotation=self.box_group_title.rotation,
+                        )]
+
+            # pie labels
+            if 'pie' in self.plot_func:
+                for xlab in x:
+                    pie_labels += \
+                        [fig.text(0, 0, r'%s' % xlab,
+                        fontsize=self.pie.font_size,
+                        weight=self.pie.font_weight,
+                        style=self.pie.font_style,
+                        color=self.pie.font_color,
+                        )]
 
         # Make a dummy legend --> move to add_legend???
         if data.legend_vals is not None and len(data.legend_vals) > 0 \
@@ -1189,7 +1237,14 @@ class Layout(BaseLayout):
             saved = True
             filename = '%s%s' % (int(round(time.time() * 1000)), randint(0, 99))
             mpl.pyplot.savefig(filename + '.png')
-        #mpl.pyplot.savefig(r'test.png')  # turn on for debugging
+        if 'pie' in self.plot_func:
+            saved = True
+            filename = '%s%s' % (int(round(time.time() * 1000)), randint(0, 99))
+            mpl.pyplot.savefig(filename + '.png')
+
+        # mpl.pyplot.savefig(r'test.png')  # turn on for debugging
+        # os.startfile(r'test.png')
+        # db()
 
         # Get actual sizes
         if self.tick_labels_major_x.on and len(xticklabelsmaj) > 0:
@@ -1350,6 +1405,13 @@ class Layout(BaseLayout):
                                            f.get_window_extent().height)
                                            for f in box_group_title]
 
+        if 'pie' in self.plot_func and not self.legend.on:
+            sizes = [(f.get_window_extent().width, f.get_window_extent().height)
+                      for f in pie_labels]
+            left, right = utl.pie_wedge_labels(x, y, self.pie.startangle)
+            if data.legend is None:
+                self.pie.label_sizes = [sizes[left], sizes[right]]
+
         # Horizontal shifts
         if self.hist.horizontal or self.bar.horizontal:
             # Swap axes labels
@@ -1479,7 +1541,8 @@ class Layout(BaseLayout):
         self.fig.size[0] = self.left + self.axes.size[0] * self.ncol + \
             self.right + legx + self.ws_col * (self.ncol - 1) + self.box_title + \
             (self.ws_ax_box_title if self.box_group_title.on else 0) - \
-            self.fig_legend_border
+            self.fig_legend_border + \
+            self.pie.label_sizes[0][0] + self.pie.label_sizes[1][0]
 
         # Get extra width of a long title (centered on axes, not figure)
         self.title_slush_left = self.title.size[0] / 2 - \
@@ -1544,10 +1607,6 @@ class Layout(BaseLayout):
             self.legend.overflow = self.legend.size[1] + header - self.fig.size[1]
         self.fig.size[1] += self.legend.overflow
 
-        # temp
-        if self.plot_func == 'plot_pie':
-            self.fig.size = [400, 400]
-
     def get_legend_position(self):
         """
         Get legend position
@@ -1591,7 +1650,8 @@ class Layout(BaseLayout):
         """
 
         self.axes.position[0] = int(self.ws_fig_label + self.labtick_y + \
-                                 self.title_slush_left) / self.fig.size[0]
+                                 self.title_slush_left + self.pie.label_sizes[0][0]) \
+                                 / self.fig.size[0]
 
         self.axes.position[1] = \
             self.axes.position[0] + \
@@ -1736,9 +1796,9 @@ class Layout(BaseLayout):
 
         if self.bar.color_by_bar:
             edgecolor = [self.bar.edge_color.get(i)
-                        for i, f in enumerate(df[y].index)]
+                        for i, f in enumerate(df.index)]
             fillcolor = [self.bar.fill_color.get(i)
-                         for i, f in enumerate(df[y].index)]
+                         for i, f in enumerate(df.index)]
         else:
             edgecolor = self.bar.edge_color.get(iline)
             fillcolor = self.bar.fill_color.get(iline)
@@ -2049,7 +2109,7 @@ class Layout(BaseLayout):
                                         zorder=kwargs.get('zorder', 1))
         return line
 
-    def plot_pie(self, ir, ic, df, x, y, kwargs):
+    def plot_pie(self, ir, ic, df, x, y, data, kwargs):
         """
         Plot a pie chart
 
@@ -2081,6 +2141,10 @@ class Layout(BaseLayout):
                 self.pie.explode = list(self.pie.explode)
                 self.pie.explode += [0 for f in range(0, len(y) - len(self.pie.explode))]
 
+        if data.legend is not None:
+            xx = [f for f in x]
+            x = ['' for f in x]
+
         pie = self.axes.obj[ir, ic].pie(y, labels=x,
                                         explode=self.pie.explode,
                                         #center=[40,40],
@@ -2096,10 +2160,18 @@ class Layout(BaseLayout):
                                         wedgeprops=wedgeprops,
                                         textprops=textprops,
                                         )
-        self.axes.obj[ir, ic].axis('equal')
-        #self.axes.obj[ir, ic].set_aspect('equal')
-        # self.axes.share_x = None
-        # self.axes.share_y = None
+
+        self.axes.obj[ir, ic].set_xlim(left=-1)
+        self.axes.obj[ir, ic].set_xlim(right=1)
+        self.axes.obj[ir, ic].set_ylim(bottom=-1)
+        self.axes.obj[ir, ic].set_ylim(top=1)
+
+        if data.legend is not None:
+            for i, val in enumerate(x):
+                if xx[i] in self.legend.values['Key'].values:
+                    continue
+                handle = [patches.Rectangle((0,0),1,1,color=self.pie.colors[i])]
+                self.legend.add_value(xx[i], handle, 'lines')
 
         return pie
 

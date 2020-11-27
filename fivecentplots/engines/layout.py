@@ -619,6 +619,8 @@ class BaseLayout:
                                                  kwargs.get('legend') if kwargs.get('legend') != True else ''),
                                  #values={} if not kwargs.get('legend') else {'NaN': None},
                                  )
+        if self.legend._on and self.plot_func=='plot_pie':
+            self.legend.on = True
         if not self.legend._on and self.ref_line.on:
             for ref_line_legend_text in self.ref_line.legend_text.values:
                 self.legend.values[ref_line_legend_text] = []
@@ -738,7 +740,8 @@ class BaseLayout:
         # Pie
         self.pie = Element('pie', self.fcpp, kwargs,
                            on=True if 'pie' in self.plot_func else False,
-                           autopct=utl.kwget(kwargs, self.fcpp, 'pie_autopct', kwargs.get('autopct', '%1.1f%%')),
+                           autopct=utl.kwget(kwargs, self.fcpp, ['pie_autopct', 'percents'],
+                                             kwargs.get('percents', None)),
                            colors=utl.kwget(kwargs, self.fcpp, 'pie_colors', copy.copy(color_list)),
                            counterclock=utl.kwget(kwargs, self.fcpp, ['pie_counterclock', 'counterclock'],
                                                   kwargs.get('counterclock', True)),
@@ -752,6 +755,7 @@ class BaseLayout:
                                                   kwargs.get('innerradius', 1)),
                            labeldistance=utl.kwget(kwargs, self.fcpp, ['pie_labeldistance', 'labeldistance'],
                                                    kwargs.get('labeldistance', 1.1)),
+                           label_sizes=[(0, 0), (0, 0)],
                            pctdistance=utl.kwget(kwargs, self.fcpp, ['pie_pctdistance', 'pctdistance'],
                                                  kwargs.get('pctdistance', 0.6)),
                            radius=utl.kwget(kwargs, self.fcpp, ['pie_radius', 'radius'],
@@ -763,6 +767,10 @@ class BaseLayout:
                            startangle=utl.kwget(kwargs, self.fcpp, ['pie_startangle', 'startangle'],
                                                 kwargs.get('startangle', 90)),
                            )
+        if self.pie.autopct == True:
+            self.pie.autopct = '%1.1f%%'
+        elif self.pie.autopct == False:
+            self.pie.autopct = None
 
         # Histogram
         self.hist = Element('hist', self.fcpp, kwargs,
@@ -1334,7 +1342,6 @@ class BaseLayout:
             self.tick_labels_minor_x.on = False
             self.tick_labels_minor_y.on = False
         if 'pie' in self.plot_func:
-            self.legend.on = False
             self.grid_major_x.on = False
             self.grid_major_y.on = False
             self.grid_minor_x.on = False

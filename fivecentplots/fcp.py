@@ -652,7 +652,7 @@ def plot_pie(data, layout, ir, ic, df, kwargs):
         print('Pie plot had negative values.  Skipping...')
         return data
 
-    pie = layout.plot_pie(ir, ic, df, x, y, layout.pie.__dict__)
+    pie = layout.plot_pie(ir, ic, df, x, y, data, layout.pie.__dict__)
 
     return data
 

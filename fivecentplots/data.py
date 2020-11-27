@@ -848,6 +848,11 @@ class Data:
             elif self.plot_func == 'plot_bar':
                 self.get_data_ranges_bar(ir, ic)
                 continue
+            elif self.plot_func == 'plot_pie':
+                self.ranges[ir, ic]['xmin'] = -1
+                self.ranges[ir, ic]['xmax'] = 1
+                self.ranges[ir, ic]['ymin'] = -1
+                self.ranges[ir, ic]['ymax'] = 1
             if getattr(self, 'share_%s' % ax) and ir == 0 and ic == 0:
                 vals = self.get_data_range(ax, df_fig, ir, ic)
                 self.ranges[ir, ic]['%smin' % ax] = vals[0]
@@ -1193,6 +1198,9 @@ class Data:
             return
 
         leg_all = []
+
+        if self.legend == True and self.plot_func=='plot_pie':
+            self.legend = self.x[0]
 
         if self.legend == True:
             self.legend = None  # no option for legend here so disable

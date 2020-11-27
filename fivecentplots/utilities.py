@@ -482,6 +482,35 @@ def nq(data, column='Value', **kwargs):
     return pd.DataFrame({'Sigma': index, column: values})
 
 
+def pie_wedge_labels(x, y, startangle):
+    """
+    Identify the wedge labels that extend furthest on the horizontal axis
+
+    Args:
+        x (array): pie wedge labels
+        y (array): pie wedge values
+        startangle (float): the starting angle (0 = right | 90 = top, etc)
+
+    Returns:
+        indices of the longest labels on the horizontal axis
+
+    """
+
+    yper = y / sum(y)
+    yperrad = yper * 2 * np.pi
+    csr = yperrad.cumsum()
+    startangle = startangle * np.pi / 180
+    csradj = csr - startangle
+    left = np.where((csr - (np.pi - startangle)) > 0)[0][0]
+    right = np.where((csr - (2 * np.pi - startangle)) > 0)
+    if len(right[0]) > 0:
+        right = right[0][0]
+    else:
+        right = (csr - (2 * np.pi - startangle)).argmax()
+
+    return left, right
+
+
 def plot_num(ir, ic, ncol):
     """
     Get the plot number based on grid location
