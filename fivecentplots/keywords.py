@@ -10,7 +10,7 @@ cur_dir = os.path.dirname(__file__)
 
 def make_docstrings():
 
-    kw = pd.read_excel(osjoin(cur_dir, 'keywords.xlsx'), sheet_name=None)
+    kw = pd.read_excel(osjoin(cur_dir, 'keywords.xlsx'), engine='openpyxl', sheet_name=None)
 
     for k, v in kw.items():
         kw[k] = kw[k].replace('`', '', regex=True)
