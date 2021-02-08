@@ -623,6 +623,10 @@ class Data:
 
         # Heatmap special case
         if self.plot_func == 'plot_heatmap':
+            # for imshow option ensure only int column names
+            if self.auto_cols:
+                df = df[utl.df_int_cols(df)]
+
             if getattr(self, ax) == ['Column']:
                 vmin = min([f for f in df.columns if type(f) is int])
                 vmax = max([f for f in df.columns if type(f) is int])
@@ -1420,6 +1424,7 @@ class Data:
                     if ir*self.ncol + ic > self.nwrap-1:
                         self.df_rc = pd.DataFrame()
                     elif self.wrap == 'y':
+                        # can we drop these validate calls for speed
                         self.y = utl.validate_list(self.wrap_vals[ic + ir * self.ncol])
                         cols = (utl.validate_list(self.x) if self.x is not None else []) + \
                                (utl.validate_list(self.y) if self.y is not None else []) + \
@@ -1472,19 +1477,22 @@ class Data:
 
                 # Reshaping
                 if self.plot_func == 'plot_heatmap':
+                    if len(self.df_rc) == 0:
+                        continue
                     if self.pivot:
                         # Reshape if input dataframe is stacked
                         self.df_rc = pd.pivot_table(self.df_rc, values=self.z[0],
                                                     index=self.y[0], columns=self.x[0])
                     if self.sort:
                         cols = natsorted(self.df_rc.columns)
-                    else:
-                        cols = self.df_rc.columns
-                    self.df_rc = self.df_rc[cols]
-                    if self.sort:
+                        self.df_rc = self.df_rc[cols]
                         self.df_rc.index = natsorted(self.df_rc.index)
 
-                    # Set limits
+                    # Ensure only int columns are present for imshow case
+                    if self.auto_cols:
+                        self.df_rc = self.df_rc[utl.df_int_cols(self.df_rc)]
+
+                    # Set limits (DOING THIS EVERY TIME IS NOT EFFICIENT)
                     plot_num = utl.plot_num(ir, ic, self.ncol) - 1
                     if not self.xmin.get(plot_num):
                         self.xmin.values[plot_num] = -0.5
@@ -1501,18 +1509,28 @@ class Data:
                         self.ymax.values[plot_num] = -0.5
                     if not self.ymin.get(plot_num):
                         self.ymin.values[plot_num] = len(self.df_rc) + 0.5
+                    # if self.x == ['Column'] and self.auto_cols:
+                    #     col0 = self.df_rc.columns[0]
+                    #     self.df_rc = self.df_rc[[f for f in self.df_rc.columns
+                    #                             if (f - col0) >= self.xmin.get(plot_num)]]
+                    #     self.df_rc = self.df_rc[[f for f in self.df_rc.columns
+                    #                             if (f - col0) <= self.xmax.get(plot_num)]]
+                    # if self.y == ['Row'] and self.auto_cols:
+                    #     row0 = self.df_rc.index[0]
+                    #     self.df_rc = self.df_rc.loc[[f for f in self.df_rc.index
+                    #                                 if (f - row0) >= self.ymax.get(plot_num)]]
+                    #     self.df_rc = self.df_rc.loc[[f for f in self.df_rc.index
+                    #                                 if (f - row0) <= self.ymin.get(plot_num)]]
                     if self.x == ['Column'] and self.auto_cols:
-                        col0 = self.df_rc.columns[0]
                         self.df_rc = self.df_rc[[f for f in self.df_rc.columns
-                                                 if (f - col0) >= self.xmin.get(plot_num)]]
+                                                if f >= self.xmin.get(plot_num)]]
                         self.df_rc = self.df_rc[[f for f in self.df_rc.columns
-                                                 if (f - col0) <= self.xmax.get(plot_num)]]
+                                                if f <= self.xmax.get(plot_num)]]
                     if self.y == ['Row'] and self.auto_cols:
-                        row0 = self.df_rc.index[0]
                         self.df_rc = self.df_rc.loc[[f for f in self.df_rc.index
-                                                     if (f - row0) >= self.ymax.get(plot_num)]]
+                                                    if f >= self.ymax.get(plot_num)]]
                         self.df_rc = self.df_rc.loc[[f for f in self.df_rc.index
-                                                     if (f - row0) <= self.ymin.get(plot_num)]]
+                                                    if f <= self.ymin.get(plot_num)]]
                     dtypes = [int, np.int32, np.int64]
                     if self.df_rc.index.dtype in dtypes and list(self.df_rc.index) != \
                             [f + self.df_rc.index[0] for f in range(0, len(self.df_rc.index))]:
