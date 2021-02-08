@@ -5,12 +5,12 @@ import pdb
 db = pdb.set_trace
 osjoin = os.path.join
 cur_dir = os.path.dirname(__file__)
-from packaging import version
+from distutils.version import LooseVersion
 
 
 def make_docstrings():
 
-    if version.parse(pd.__version__) >= version.parse('1.2'):
+    if LooseVersion(pd.__version__) >= LooseVersion('1.2'):
         kw = pd.read_excel(osjoin(cur_dir, 'keywords.xlsx'), engine='openpyxl', sheet_name=None)
     else:
         kw = pd.read_excel(osjoin(cur_dir, 'keywords.xlsx'), sheet_name=None)
