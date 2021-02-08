@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import scipy.stats as ss
 import importlib
+import datetime
 #import ctypes
 from matplotlib.font_manager import FontProperties, findfont
 try:
@@ -56,6 +57,69 @@ class RepeatedList:
 class PlatformError(Exception):
     def __init__(self):
         super().__init__('Image tests currently require Windows 10 installation to run')
+
+
+class Timer:
+    def __init__(self, print=True, start=False, units='s'):
+        """
+        Quick timer class to optimize speed of various functions
+
+        Args:
+            print (bool): enable/disable print messages
+            start (bool): start timer on class init
+            units (str): convert timedelta into "s" or "ms"
+
+        """
+
+        self.print = print
+        self.init = None
+        self.units = units
+        if start:
+            self.start()
+
+    @property
+    def now(self):
+        return datetime.datetime.now()
+
+    def start(self):
+        self.init = self.now
+
+    def stop(self):
+        self.init = None
+
+    def read(self, label='', restart=True, stop=False):
+        """
+        Read the timer
+
+        Args:
+            reset (bool): restart the timer on read
+            label (str): prepend the time with a string label
+        """
+
+        if not self.init:
+            print('timer has not been started')
+            return
+
+        delta = self.now - self.init
+        if self.units == 'ms':
+            delta = delta.seconds * 1000 + \
+                    delta.microseconds / 1000
+        elif self.units == 's':
+            delta = delta.seconds + delta.microseconds / 1E6
+        else:
+            self.units = 'NA'
+
+        if label != '':
+            label += ': '
+
+        if self.print is True:
+            print(label + str(delta) + ' [%s]' % self.units)
+
+        if restart is True:
+            self.start()
+
+        if stop is True:
+            self.stop()
 
 
 def ci(data, coeff=0.95):
@@ -228,6 +292,65 @@ def df_filter(df, filt_orig, drop_cols=False):
         df.columns = cols_orig
 
         return df
+
+
+def df_from_array3d(arr, labels=[], name='Item', verbose=True):
+    """
+    Convert a 3d numpy array to a DataFrame
+
+    Args:
+        arr (np.array): input data to stack into a DataFrame
+        label (list | np.array): optional list of labels to designate each
+            sub array in the 3d input array; added to DataFrame in column
+            named ``label`` [default = []]
+        name (str): name of label column [default = "Item"]
+        verbose (bool): toggle error print statements [default = True]
+
+    Returns:
+        pd.DataFrame
+    """
+
+    shape = arr.shape
+    if len(shape) != 3:
+        print('Input numpy array is not 3d')
+        return None
+
+    # Regroup into a stacked DataFrame
+    m, n, r = shape
+    arr = np.column_stack((np.repeat(np.arange(m), n),
+                           arr.reshape(m * n, -1)))
+    df = pd.DataFrame(arr)
+
+    # Add a label column
+    if len(labels) > 0:
+        df[name] = np.repeat(labels, n)
+    else:
+        df[name] = np.floor(df.index / r).astype(int)
+
+    return df
+
+
+def df_int_cols(df, non_int=False):
+    """
+    Return column names that are integers (or not)
+
+    Args:
+        df (pd.DataFrame): input DataFrame
+        non_int (bool): if False, return column names that are
+            integers; if True, return column names that are
+            not integers
+
+    Returns:
+        list of column names
+
+    """
+
+    int_types = [np.int32, np.int64, int]
+
+    if non_int:
+        return [f for f in df.columns if type(f) not in int_types]
+    else:
+        return [f for f in df.columns if type(f) in int_types]
 
 
 def df_summary(df, columns=[], exclude=[], multiple=False):
@@ -417,7 +540,7 @@ def kwget(dict1, dict2, vals, default):
     return default
 
 
-def img_compare(img1, img2):
+def img_compare(img1, img2, show=False):
     """
     Read two images and compare for difference by pixel
 
@@ -427,9 +550,10 @@ def img_compare(img1, img2):
     Args:
         img1 (str): path to file #1
         img2 (str): path to file #2
+        show (bool): display the difference
 
     Returns:
-        True/False of existance of differences
+        True/False of existence of differences
 
     """
 
@@ -446,11 +570,18 @@ def img_compare(img1, img2):
 
     # compare
     if img1 is None or img2 is None or img1.shape != img2.shape:
-        return True
+        is_diff = True
+        if show and img1.shape != img2.shape:
+            print('image sizes do not match')
 
-    difference = cv2.subtract(img1, img2)
+    else:
+        difference = cv2.subtract(img1, img2)
+        is_diff = np.any(difference)
+        if show and is_diff:
+            cv2.imwrite('difference.png', 10 * difference)
+            os.startfile('difference.png')
 
-    return np.any(difference)
+    return is_diff
 
 
 def nq(data, column='Value', **kwargs):
