@@ -5,12 +5,16 @@ import pdb
 db = pdb.set_trace
 osjoin = os.path.join
 cur_dir = os.path.dirname(__file__)
+from distutils.version import LooseVersion
 #PATH = osjoin(cur_dir, r'doc\_static\docstrings')
 
 
 def make_docstrings():
 
-    kw = pd.read_excel(osjoin(cur_dir, 'keywords.xlsx'), engine='openpyxl', sheet_name=None)
+    if LooseVersion(pd.__version__) >= LooseVersion('1.2'):
+        kw = pd.read_excel(osjoin(cur_dir, 'keywords.xlsx'), engine='openpyxl', sheet_name=None)
+    else:
+        kw = pd.read_excel(osjoin(cur_dir, 'keywords.xlsx'), sheet_name=None)
 
     for k, v in kw.items():
         kw[k] = kw[k].replace('`', '', regex=True)

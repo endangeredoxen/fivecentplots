@@ -76,6 +76,7 @@ setup(
                       'numpy',
                       'matplotlib',
                       'scipy',
+                      'xlrd',
                       'openpyxl',
                       ],
 
