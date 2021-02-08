@@ -1575,11 +1575,6 @@ class BaseLayout:
         self.axes.share_row = data.share_row
         self.axes.scale = data.ax_scale
         self.axes2.scale =data.ax2_scale
-        # if self.plot_func in ['plot_box'] and not self.axes.share_y:
-        #     self.separate_ticks = True
-        # elif self.plot_func not in ['plot_box'] and \
-        #         (not self.axes.share_x or not self.axes.share_y):
-        #     self.separate_ticks = True
 
     def update_wrap(self, data, kwargs):
         """
@@ -2043,8 +2038,11 @@ class Legend_Element(DF_Element):
 
         temp = pd.DataFrame({'Key': key, 'Curve': curve, 'LineType': line_type_name},
                             index=[len(self._values)])
-        self._values = pd.concat([self.values, temp], sort=True)
 
+        # don't add duplicates - this could miss a case where the curve type is actually different
+        if len(self.values.loc[(self.values.Key==key)& \
+                               (self.values.LineType==line_type_name)]) == 0:
+            self._values = pd.concat([self.values, temp], sort=True)
 
     def del_value(self, key):
         df = self.values.copy()
