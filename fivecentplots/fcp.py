@@ -12,8 +12,8 @@ import os
 __author__ = 'Steve Nicholes'
 __copyright__ = 'Copyright (C) 2016 Steve Nicholes'
 __license__ = 'GPLv3'
-with open(os.path.join(os.path.dirname(__file__), r'version.txt'), 'r') as input:
-    __version__ = input.readlines()[0]
+with open(os.path.join(os.path.dirname(__file__), r'version.txt'), 'r') as fid:
+    __version__ = fid.readlines()[0].replace('\n', '')
 __url__ = 'https://github.com/endangeredoxen/fivecentplots'
 
 import numpy as np
@@ -31,7 +31,7 @@ from . data import Data
 from . colors import *
 from . import engines
 from . import keywords
-from . utilities import dfkwarg, kwget, set_save_filename, validate_list, reload_defaults, ci
+from . utilities import *
 import warnings
 try:
     # optional import - only used for paste_kwargs to use windows clipboard
@@ -186,6 +186,28 @@ def hist(*args, **kwargs):
     """
 
     return plotter('plot_hist', **dfkwarg(args, kwargs))
+
+
+def imshow(*args, **kwargs):
+    """ Main imshow plotting function
+    At minimum, it requires a pandas DataFrame with at
+    least three columns and three column names for the x, y, and z axis.
+    Plots can be customized and enhanced by passing keyword arguments as
+    defined below. Default values that must be defined in order to
+    generate the plot are pulled from the fcp_params default dictionary
+
+    Args:
+        df (DataFrame): DataFrame containing data to plot
+        x (str|list):   name of list of names of x column in df
+        y (str|list):   name or list of names of y column(s) in df
+        z (str):   name of z column(s) in df
+
+    Keyword Args:
+    """
+
+    kwargs['tick_labels'] = kwargs.get('tick_labels', False)
+
+    return plotter('plot_imshow', **dfkwarg(args, kwargs))
 
 
 def nq(*args, **kwargs):
@@ -611,6 +633,26 @@ def plot_hist(data, layout, ir, ic, df_rc, kwargs):
     return data
 
 
+def plot_imshow(data, layout, ir, ic, df_rc, kwargs):
+    """
+    Show an image
+
+    Args:
+        data (obj): Data object
+        layout (obj): layout object
+        ir (int): current subplot row number
+        ic (int): current subplot column number
+        df_rc (pd.DataFrame): data subset
+        kwargs (dict): keyword args
+
+    """
+
+    for iline, df, x, y, z, leg_name, twin, ngroups in data.get_plot_data(df_rc):
+        layout.plot_imshow(layout.axes.obj[ir, ic], df, x, y, z, data.ranges[ir, ic])
+
+    return data
+
+
 def plot_nq(data, layout, ir, ic, df_rc, kwargs):
 
     """
@@ -765,22 +807,28 @@ def plotter(plot_func, **kwargs):
     else:
         engine = getattr(engines, engine)
 
+    # Timer
+    kwargs['timer'] = Timer(print=kwargs.get('timeit', False), start=True, units='ms')
+
     # Build the data object and update kwargs
     dd = Data(plot_func, **kwargs)
     for k, v in kwargs.items():
         if k in dd.__dict__.keys():
             kwargs[k] = getattr(dd, k)
+    kwargs['timer'].read('Data obj')
 
     # Iterate over discrete figures
     for ifig, fig_item, fig_cols, df_fig, dd in dd.get_df_figure():
         # Create a layout object
         layout = engine.Layout(plot_func, dd, **kwargs)
         kwargs = layout.kwargs
+        kwargs['timer'].read('layout class')
 
         # Make the figure
         dd = layout.make_figure(dd, **kwargs)
+        kwargs['timer'].read('ifig=%s | make_figure' % ifig)
 
-        # Turn off empty subplots
+        # Turn off empty subplots (COULD THIS BE FASTER WITHOUT AN EXTRA CALL TO GET_RC_SUBSET? using this to populate layout.axes.visible)
         for ir, ic, df_rc in dd.get_rc_subset(df_fig):
             if len(df_rc) == 0:
                 if dd.wrap is None:
@@ -790,6 +838,7 @@ def plotter(plot_func, **kwargs):
                 if layout.axes2.obj[ir, ic] is not None:
                     layout.axes2.obj[ir, ic].axis('off')
                 continue
+        kwargs['timer'].read('ifig=%s | turn off empty subplots' % ifig)
 
         # Make the subplots
         for ir, ic, df_rc in dd.get_rc_subset(df_fig):
@@ -798,42 +847,55 @@ def plotter(plot_func, **kwargs):
 
             # Set the axes colors
             layout.set_axes_colors(ir, ic)
+            kwargs['timer'].read('ifig=%s | ir=%s | ic=%s | set_axes_colors' % (ifig, ir, ic))
 
             # Add and format gridlines
             layout.set_axes_grid_lines(ir, ic)
+            kwargs['timer'].read('ifig=%s | ir=%s | ic=%s | set_axes_grid_lines' % (ifig, ir, ic))
 
             # Add horizontal and vertical lines
             layout.add_hvlines(ir, ic, df_rc)
+            kwargs['timer'].read('ifig=%s | ir=%s | ic=%s | add_hvlines' % (ifig, ir, ic))
 
             # Plot the data
             dd = globals()[plot_func](dd, layout, ir, ic, df_rc, kwargs)
+            kwargs['timer'].read('ifig=%s | ir=%s | ic=%s | plot' % (ifig, ir, ic))
 
             # Set linear or log axes scaling
             layout.set_axes_scale(ir, ic)
+            kwargs['timer'].read('ifig=%s | ir=%s | ic=%s | set_axes_scale' % (ifig, ir, ic))
 
             # Set axis ranges
             layout.set_axes_ranges(ir, ic, dd.ranges)
+            kwargs['timer'].read('ifig=%s | ir=%s | ic=%s | set_axes_ranges' % (ifig, ir, ic))
 
             # Add axis labels
             layout.set_axes_labels(ir, ic)
+            kwargs['timer'].read('ifig=%s | ir=%s | ic=%s | set_axes_labels' % (ifig, ir, ic))
 
             # Add rc labels
             layout.set_axes_rc_labels(ir, ic)
+            kwargs['timer'].read('ifig=%s | ir=%s | ic=%s | set_axes_rc_labels' % (ifig, ir, ic))
 
             # Adjust tick marks
             layout.set_axes_ticks(ir, ic)
+            kwargs['timer'].read('ifig=%s | ir=%s | ic=%s | set_axes_ticks' % (ifig, ir, ic))
 
             # Add box labels
             layout.add_box_labels(ir, ic, dd)
+            kwargs['timer'].read('ifig=%s | ir=%s | ic=%s | add_box_labels' % (ifig, ir, ic))
 
             # Add arbitrary text
             layout.add_text(ir, ic)
+            kwargs['timer'].read('ifig=%s | ir=%s | ic=%s | add_text' % (ifig, ir, ic))
 
         # Make the legend
         layout.add_legend()
+        kwargs['timer'].read('ifig=%s | add_legend' % (ifig))
 
         # Add a figure title
         layout.set_figure_title()
+        kwargs['timer'].read('ifig=%s | set_figure_title' % (ifig))
 
         # Build the save filename
         filename = set_save_filename(df_fig, ifig, fig_item, fig_cols,
@@ -851,6 +913,7 @@ def plotter(plot_func, **kwargs):
 
             if kwargs.get('show', False):
                 os.startfile(filename)
+        kwargs['timer'].read('ifig=%s | save' % (ifig))
 
         # Return inline
         if kwargs.get('return_filename'):
@@ -867,6 +930,7 @@ def plotter(plot_func, **kwargs):
             out = layout.show(filename)
             if out is not None:
                 return out
+        kwargs['timer'].read('ifig=%s | return' % (ifig))
 
     # Save data used in the figures
     if kwargs.get('save_data', False):
@@ -875,6 +939,7 @@ def plotter(plot_func, **kwargs):
         else:
             filename = filename.split('.')[0] + '.csv'
         dd.df_all[dd.cols_all].to_csv(filename, index=False)
+        kwargs['timer'].read('save_data' % (ifig))
 
 
 def pie(*args, **kwargs):
