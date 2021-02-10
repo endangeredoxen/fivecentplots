@@ -829,7 +829,7 @@ def validate_list(items):
 
     if items is None:
         return None
-    if type(items) is tuple:
+    if type(items) is tuple or type(items) is np.ndarray:
         return list(items)
     elif type(items) is not list:
         return [items]
