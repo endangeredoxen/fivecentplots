@@ -104,6 +104,16 @@ class BaseLayout:
         if self.plot_func in ['plot_contour', 'plot_heatmap']:
             self.cmap = utl.kwget(kwargs, self.fcpp, 'cmap', None)
 
+        # program any legend value specific color overrides
+        vals = ['fill_alpha', 'fill_color', 'edge_alpha', 'edge_color', 'color']
+        for val in vals:
+            if '%s_override' % val in kwargs.keys():
+                kwargs['%s_override' % val] = utl.kwget(kwargs, self.fcpp,
+                                                '%s_override' % val, {})
+            else:
+                kwargs['%s_override' % val] = utl.kwget(kwargs, self.fcpp,
+                                                'color_override', {})
+
         # Axis
         self.ax = ['x', 'y', 'x2', 'y2']
         spines = utl.kwget(kwargs, self.fcpp, 'spines', True)
@@ -542,7 +552,7 @@ class BaseLayout:
                 kwargs['%ss_%s' % (k.split('_')[0], k.split('_')[1])] = kwargs[k]
         self.lines = Element('lines', self.fcpp, kwargs,
                              on=kwargs.get('lines', True),
-                             color=copy.copy(color_list),
+                             color=RepeatedList(copy.copy(color_list), 'colors'),
                              values=[],
                              )
 
@@ -1751,6 +1761,7 @@ class Element:
                 kwargs[k] = v
 
         self._on = kwargs.get('on', True) # visbile or not
+        self.label = label
         self.dpi = utl.kwget(kwargs, fcpp, 'dpi', 100)
         self.obj = None  # plot object reference
         self.position = kwargs.get('position', [0, 0, 0, 0])  # left, right, top, bottom
@@ -1769,7 +1780,8 @@ class Element:
         self.fill_color = utl.kwget(kwargs, fcpp, '%s_fill_color' % label,
                                     kwargs.get('fill_color', '#ffffff'))
         if type(self.fill_color) is not RepeatedList \
-                and self.fill_color is not None:
+                and self.fill_color is not None \
+                or self.fill_alpha != 1:
             self.color_alpha('fill_color', 'fill_alpha')
 
         self.edge_width = utl.kwget(kwargs, fcpp, '%s_edge_width' % label,
@@ -1778,7 +1790,8 @@ class Element:
                                     kwargs.get('edge_alpha', 1))
         self.edge_color = utl.kwget(kwargs, fcpp, '%s_edge_color' % label,
                                     kwargs.get('edge_color', '#ffffff'))
-        if type(self.edge_color) is not RepeatedList:
+        if type(self.edge_color) is not RepeatedList \
+                or self.edge_alpha != 1:
             self.color_alpha('edge_color', 'edge_alpha')
 
         # fonts
@@ -1798,9 +1811,8 @@ class Element:
                                kwargs.get('alpha', 1))
         self.color = utl.kwget(kwargs, fcpp, '%s_color' % label,
                                kwargs.get('color', '#000000'))
-        if type(self.color) is not RepeatedList:
+        if type(self.color) is not RepeatedList or self.alpha != 1:
             self.color_alpha('color', 'alpha')
-
         self.width = utl.kwget(kwargs, fcpp, '%s_width' % label,
                                kwargs.get('width', 1))
         if type(self.width) is not RepeatedList:
@@ -1809,6 +1821,13 @@ class Element:
                                kwargs.get('style', '-'))
         if type(self.style) is not RepeatedList:
             self.style = RepeatedList(self.style, 'style')
+
+        # overrides
+        attrs = ['color', 'fill_color', 'edge_color']
+        for attr in attrs:
+            if getattr(self, attr) is None:
+                continue
+            getattr(self, attr).override = others.get('%s_override' % attr, {})
 
         skip_keys = ['df', 'x', 'y', 'z']
         for k, v in kwargs.items():

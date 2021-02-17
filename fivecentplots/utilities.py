@@ -27,7 +27,7 @@ if os.path.exists(default_path) and default_path not in sys.path:
 
 
 class RepeatedList:
-    def __init__(self, values, name):
+    def __init__(self, values, name, override={}):
         """
         Set a default list of items and loop through it beyond the maximum
         index value
@@ -35,10 +35,13 @@ class RepeatedList:
         Args:
             values (list): user-defined list of values
             name (str): label to describe contents of class
+            override (dict): override the RepeatedList value based on the
+                legend value for this item
         """
 
         self.values = validate_list(values)
         self.shift = 0
+        self.override = override
 
         if type(self.values) is not list and len(self.values) < 1:
             raise(ValueError, 'RepeatedList for "%s" must contain an actual '
@@ -47,11 +50,16 @@ class RepeatedList:
     def __len__(self):
         return len(self.values)
 
-    def get(self, idx):
+    def get(self, idx, key=None):
 
         # can we make this a next??
 
-        return self.values[(idx + self.shift) % len(self.values)]
+        val = self.values[(idx + self.shift) % len(self.values)]
+
+        if len(list(self.override.keys())) == 0 or key not in self.override.keys():
+            return val
+        else:
+            return self.override[key]
 
 
 class PlatformError(Exception):

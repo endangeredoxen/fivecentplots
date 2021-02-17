@@ -1800,8 +1800,8 @@ class Layout(BaseLayout):
             fillcolor = [self.bar.fill_color.get(i)
                          for i, f in enumerate(df.index)]
         else:
-            edgecolor = self.bar.edge_color.get(iline)
-            fillcolor = self.bar.fill_color.get(iline)
+            edgecolor = self.bar.edge_color.get(iline, leg_name)
+            fillcolor = self.bar.fill_color.get(iline, leg_name)
 
         # Error bars
         if std is not None and self.bar.horizontal:
@@ -1838,7 +1838,7 @@ class Layout(BaseLayout):
 
         # Legend
         if leg_name is not None:
-            handle = [patches.Rectangle((0,0),1,1,color=self.bar.fill_color.get(iline))]
+            handle = [patches.Rectangle((0,0),1,1,color=self.bar.fill_color.get(iline, leg_name))]
             self.legend.add_value(leg_name, handle, 'lines')
 
         return data
@@ -2256,17 +2256,17 @@ class Layout(BaseLayout):
             if marker != 'None':
                 points = ax.plot(df[x], df[y],
                                 marker=marker,
-                                markerfacecolor=self.markers.fill_color.get(iline) \
+                                markerfacecolor=self.markers.fill_color.get(iline, leg_name) \
                                                 if self.markers.filled else 'none',
-                                markeredgecolor=self.markers.edge_color.get(iline),
-                                markeredgewidth=self.markers.edge_width.get(iline),
+                                markeredgecolor=self.markers.edge_color.get(iline, leg_name),
+                                markeredgewidth=self.markers.edge_width.get(iline, leg_name),
                                 linewidth=0,
                                 markersize=self.markers.size.get(iline),
                                 zorder=40)
             else:
                 points = ax.plot(df[x], df[y],
                                 marker=marker,
-                                color=line_type.color.get(iline),
+                                color=line_type.color.get(iline, leg_name),
                                 linestyle=line_type.style.get(iline),
                                 linewidth=line_type.width.get(iline),
                                 zorder=40)
@@ -2282,7 +2282,7 @@ class Layout(BaseLayout):
 
             # Plot the line
             lines = ax.plot(df[x][mask], df[y][mask],
-                            color=line_type.color.get(iline),
+                            color=line_type.color.get(iline, leg_name),
                             linestyle=line_type.style.get(iline),
                             linewidth=line_type.width.get(iline),
                             )
@@ -2307,7 +2307,6 @@ class Layout(BaseLayout):
         if LooseVersion(mpl.__version__) < LooseVersion('3.3'):
             kwargs['linewidth'] = self.fig.edge_width
         self.fig.obj.savefig(filename, **kwargs)
-
 
     def see(self):
         """
