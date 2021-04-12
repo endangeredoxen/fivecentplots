@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,6 +11,12 @@
   
 
   
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Archivo Black" type="text/css" />
+
+  
   
     <link rel="shortcut icon" href="_static/favicon.ico"/>
   
@@ -19,48 +24,37 @@
   
 
   
-
-  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
-  
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Archivo Black" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="fivecentplots beta documentation" href="index.html"/> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
-            <a href="index.html" class="icon icon-home"> fivecentplots
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> fivecentplots
           
 
           
@@ -70,7 +64,7 @@
             
             
               <div class="version">
-                0.4.0
+                0.4.3
               </div>
             
           
@@ -87,6 +81,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -116,7 +111,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Other</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="changelog.html">0.4.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="older.html">Older Versions</a></li>
 </ul>
@@ -124,13 +119,14 @@
             
           
         </div>
+        
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">fivecentplots</a>
@@ -138,9 +134,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -161,7 +158,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>plot bokeh</li>
     
@@ -187,31 +184,45 @@
 /* CSS for nbsphinx extension */
 
 /* remove conflicting styling from Sphinx themes */
-div.nbinput,
-div.nbinput div.prompt,
-div.nbinput div.input_area,
-div.nbinput div[class*=highlight],
-div.nbinput div[class*=highlight] pre,
-div.nboutput,
-div.nbinput div.prompt,
-div.nbinput div.output_area,
-div.nboutput div[class*=highlight],
-div.nboutput div[class*=highlight] pre {
-    background: none;
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
     border: none;
-    padding: 0 0;
+    padding: 0;
     margin: 0;
     box-shadow: none;
 }
 
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
 /* avoid gaps between output lines */
-div.nboutput div[class*=highlight] pre {
+div.nboutput.container div[class*=highlight] pre {
     line-height: normal;
 }
 
 /* input/output containers */
-div.nbinput,
-div.nboutput {
+div.nbinput.container,
+div.nboutput.container {
     display: -webkit-flex;
     display: flex;
     align-items: flex-start;
@@ -219,92 +230,104 @@ div.nboutput {
     width: 100%;
 }
 @media (max-width: 540px) {
-    div.nbinput,
-    div.nboutput {
+    div.nbinput.container,
+    div.nboutput.container {
         flex-direction: column;
     }
 }
 
 /* input container */
-div.nbinput {
+div.nbinput.container {
     padding-top: 5px;
 }
 
 /* last container */
-div.nblast {
+div.nblast.container {
     padding-bottom: 5px;
 }
 
 /* input prompt */
-div.nbinput div.prompt pre {
-    color: #303F9F;
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
 }
 
 /* output prompt */
-div.nboutput div.prompt pre {
-    color: #D84315;
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
 }
 
 /* all prompts */
-div.nbinput div.prompt,
-div.nboutput div.prompt {
-    min-width: 8ex;
-    padding-top: 0.4em;
-    padding-right: 0.4em;
-    text-align: right;
-    flex: 0;
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
 }
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
 @media (max-width: 540px) {
-    div.nbinput div.prompt,
-    div.nboutput div.prompt {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
         text-align: left;
         padding: 0.4em;
     }
-    div.nboutput div.prompt.empty {
+    div.nboutput.container div.prompt.empty {
         padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
     }
 }
 
 /* disable scrollbars on prompts */
-div.nbinput div.prompt pre,
-div.nboutput div.prompt pre {
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
     overflow: hidden;
 }
 
 /* input/output area */
-div.nbinput div.input_area,
-div.nboutput div.output_area {
-    padding: 0.4em;
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
     -webkit-flex: 1;
     flex: 1;
     overflow: auto;
 }
 @media (max-width: 540px) {
-    div.nbinput div.input_area,
-    div.nboutput div.output_area {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
         width: 100%;
     }
 }
 
 /* input area */
-div.nbinput div.input_area {
-    border: 1px solid #cfcfcf;
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
     border-radius: 2px;
-    background: #f7f7f7;
+    /*background: #f5f5f5;*/
 }
 
 /* override MathJax center alignment in output cells */
-div.nboutput div[class*=MathJax] {
+div.nboutput.container div[class*=MathJax] {
     text-align: left !important;
 }
 
-/* override sphinx.ext.pngmath center alignment in output cells */
-div.nboutput div.math p {
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
     text-align: left;
 }
 
 /* standard error */
-div.nboutput div.output_area.stderr {
+div.nboutput.container div.output_area.stderr {
     background: #fdd;
 }
 
@@ -348,27 +371,87 @@ div.nboutput div.output_area.stderr {
 .ansi-bold { font-weight: bold; }
 .ansi-underline { text-decoration: underline; }
 
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
 /* CSS overrides for sphinx_rtd_theme */
 
 /* 24px margin */
-.nbinput.nblast,
-.nboutput.nblast {
+.nbinput.nblast.container,
+.nboutput.nblast.container {
     margin-bottom: 19px;  /* padding has already 5px */
 }
 
 /* ... except between code cells! */
-.nblast + .nbinput {
+.nblast.container + .nbinput.container {
     margin-top: -19px;
 }
 
 .admonition > p:before {
     margin-right: 4px;  /* make room for the exclamation icon */
 }
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
 </style>
 <div class="section" id="plot-bokeh">
 <h1>plot bokeh<a class="headerlink" href="#plot-bokeh" title="Permalink to this headline">¶</a></h1>
-<p>The <code class="docutils literal notranslate"><span class="pre">plot</span></code> function is the primary vehicle for visualizing x-y data.
-At a minimum, the <code class="docutils literal notranslate"><span class="pre">plot</span></code> function requires the following keywords:</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">plot</span></code> function is the primary vehicle for visualizing x-y data. At a minimum, the <code class="docutils literal notranslate"><span class="pre">plot</span></code> function requires the following keywords:</p>
 <ul><li><p><code class="docutils literal notranslate"><span class="pre">df</span></code>: a pandas DataFrame</p>
 </li><li><p><code class="docutils literal notranslate"><span class="pre">x</span></code>: the name of the DataFrame column containing the x-axis data</p>
 </li><li><p><code class="docutils literal notranslate"><span class="pre">y</span></code>: the name of the DataFrame column containing the y-axis data</p>
@@ -378,8 +461,7 @@ At a minimum, the <code class="docutils literal notranslate"><span class="pre">p
 <div class="section" id="Imports">
 <h3>Imports<a class="headerlink" href="#Imports" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -399,8 +481,7 @@ At a minimum, the <code class="docutils literal notranslate"><span class="pre">p
 <div class="section" id="Sample-data">
 <h3>Sample data<a class="headerlink" href="#Sample-data" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -410,11 +491,10 @@ At a minimum, the <code class="docutils literal notranslate"><span class="pre">p
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>Out[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="output_area docutils container">
+<div class="output_area rendered_html docutils container">
 <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -504,8 +584,7 @@ At a minimum, the <code class="docutils literal notranslate"><span class="pre">p
 </div></div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -518,8 +597,7 @@ At a minimum, the <code class="docutils literal notranslate"><span class="pre">p
 <h3>Set theme<a class="headerlink" href="#Set-theme" title="Permalink to this headline">¶</a></h3>
 <p>(Only needs to be run once)</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [175]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[175]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -540,8 +618,7 @@ Previous theme file found! Renaming to &#34;defaults_old.py&#34; and copying new
 <div class="section" id="Other">
 <h3>Other<a class="headerlink" href="#Other" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [178]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[178]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -557,8 +634,7 @@ Previous theme file found! Renaming to &#34;defaults_old.py&#34; and copying new
 <h3>Scatter<a class="headerlink" href="#Scatter" title="Permalink to this headline">¶</a></h3>
 <p>A simple XY plot with no lines or legend</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [290]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[290]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -568,11 +644,10 @@ Previous theme file found! Renaming to &#34;defaults_old.py&#34; and copying new
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>Out[290]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[290]:
 </pre></div>
 </div>
-<div class="output_area docutils container">
+<div class="output_area rendered_html docutils container">
 <!DOCTYPE html>
 <html lang="en">
 
@@ -660,8 +735,7 @@ Previous theme file found! Renaming to &#34;defaults_old.py&#34; and copying new
 <h3>Legend<a class="headerlink" href="#Legend" title="Permalink to this headline">¶</a></h3>
 <p>Add a legend by the column “Die”</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [177]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[177]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -671,11 +745,10 @@ Previous theme file found! Renaming to &#34;defaults_old.py&#34; and copying new
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>Out[177]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[177]:
 </pre></div>
 </div>
-<div class="output_area docutils container">
+<div class="output_area rendered_html docutils container">
 <!DOCTYPE html>
 <html lang="en">
 
@@ -761,16 +834,14 @@ Previous theme file found! Renaming to &#34;defaults_old.py&#34; and copying new
 </div>
 <div class="section" id="Log-scale">
 <h3>Log scale<a class="headerlink" href="#Log-scale" title="Permalink to this headline">¶</a></h3>
-<p>Log-scaled axes can be enabled through the kwargs “ax_scale”. Valid
-options:</p>
+<p>Log-scaled axes can be enabled through the kwargs “ax_scale”. Valid options:</p>
 <ul><li><p>x-only: logx | semilogx</p>
 </li><li><p>y-only: logy | semilogy</p>
 </li><li><p>both: loglog | log</p>
 </li><li><p>symlog: symlog (doesn’t work in matploblib 1.5.1)</p>
 </li><li><p>logit: logit</p>
 </li></ul><div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [185]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[185]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -780,11 +851,10 @@ options:</p>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>Out[185]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[185]:
 </pre></div>
 </div>
-<div class="output_area docutils container">
+<div class="output_area rendered_html docutils container">
 <!DOCTYPE html>
 <html lang="en">
 
@@ -872,8 +942,7 @@ options:</p>
 <h3>Categorical labels<a class="headerlink" href="#Categorical-labels" title="Permalink to this headline">¶</a></h3>
 <p>Categorical DataFrame columns can also be plotted on x and/or y axes:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [186]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[186]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -929,8 +998,7 @@ options:</p>
 <h3>Time series<a class="headerlink" href="#Time-series" title="Permalink to this headline">¶</a></h3>
 <p>Similarly, a DataFrame containing time series data can be plotted:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -945,8 +1013,7 @@ options:</p>
 <div class="section" id="Shared-x-axis-(twin_x)">
 <h3>Shared x-axis (twin_x)<a class="headerlink" href="#Shared-x-axis-(twin_x)" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -959,8 +1026,7 @@ options:</p>
 <div class="section" id="Shared-y-axis-(twin_y)">
 <h3>Shared y-axis (twin_y)<a class="headerlink" href="#Shared-y-axis-(twin_y)" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -973,15 +1039,11 @@ options:</p>
 </div>
 <div class="section" id="Multiple-x-&amp;-y-values">
 <h2>Multiple x &amp; y values<a class="headerlink" href="#Multiple-x-&-y-values" title="Permalink to this headline">¶</a></h2>
-<p>Instead of sharing (or twinning) one independent axis across a primary
-and secondary dependent axis, we can plot multiple columns of data on
-the same dependent axis. In this case, all dependent values share the
-same limits on the plot.</p>
+<p>Instead of sharing (or twinning) one independent axis across a primary and secondary dependent axis, we can plot multiple columns of data on the same dependent axis. In this case, all dependent values share the same limits on the plot.</p>
 <div class="section" id="Multiple-y-only">
 <h3>Multiple y only<a class="headerlink" href="#Multiple-y-only" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -994,8 +1056,7 @@ same limits on the plot.</p>
 <div class="section" id="Multiple-x-only">
 <h3>Multiple x only<a class="headerlink" href="#Multiple-x-only" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1008,8 +1069,7 @@ same limits on the plot.</p>
 <div class="section" id="Both">
 <h3>Both<a class="headerlink" href="#Both" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1024,13 +1084,18 @@ same limits on the plot.</p>
 <h2>Grid plots<a class="headerlink" href="#Grid-plots" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="Row-plot">
 <h3>Row plot<a class="headerlink" href="#Row-plot" title="Permalink to this headline">¶</a></h3>
-<p>Create a unique plot for each unique value of the “row” column in the
-specified DataFrame. Plots are arranged row by row in a single column.
-Each row contains a label indicating the unique value of the “row”
-column.</p>
+<p>Create a unique plot for each unique value of the “row” column in the specified DataFrame. Plots are arranged row by row in a single column. Each row contains a label indicating the unique value of the “row” column.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [257]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[257]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1050,11 +1115,10 @@ column.</p>
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>Out[257]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[257]:
 </pre></div>
 </div>
-<div class="output_area docutils container">
+<div class="output_area rendered_html docutils container">
 <!DOCTYPE html>
 <html lang="en">
 
@@ -1140,13 +1204,9 @@ column.</p>
 </div>
 <div class="section" id="Column-plot">
 <h3>Column plot<a class="headerlink" href="#Column-plot" title="Permalink to this headline">¶</a></h3>
-<p>Create a unique plot for each unique value of the “col” column in the
-specified DataFrame. Plots are arranged in a single row, column by
-column. Each column contains a label indicating the unique value of the
-“col” column.</p>
+<p>Create a unique plot for each unique value of the “col” column in the specified DataFrame. Plots are arranged in a single row, column by column. Each column contains a label indicating the unique value of the “col” column.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [289]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[289]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1156,11 +1216,10 @@ column. Each column contains a label indicating the unique value of the
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>Out[289]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[289]:
 </pre></div>
 </div>
-<div class="output_area docutils container">
+<div class="output_area rendered_html docutils container">
 <!DOCTYPE html>
 <html lang="en">
 
@@ -1246,12 +1305,9 @@ column. Each column contains a label indicating the unique value of the
 </div>
 <div class="section" id="Row-x-column-grid">
 <h3>Row x column grid<a class="headerlink" href="#Row-x-column-grid" title="Permalink to this headline">¶</a></h3>
-<p>Remove “Temperature [C]” from the DataFrame subset and make a grid of
-plots for each unique combination of “row” and “col” values. Both “row”
-and “col” labels are included.</p>
+<p>Remove “Temperature [C]” from the DataFrame subset and make a grid of plots for each unique combination of “row” and “col” values. Both “row” and “col” labels are included.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [203]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[203]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1331,15 +1387,9 @@ and “col” labels are included.</p>
 </div>
 <div class="section" id="Wrap-plot">
 <h3>Wrap plot<a class="headerlink" href="#Wrap-plot" title="Permalink to this headline">¶</a></h3>
-<p>A wrap plot is an alternate view of the row x column plot. For wrap
-plots, the row and column labels are condensed into a single label above
-each plot window and the spacing between plots is eliminated (by
-default; can be overriden). The x and y sizes of the grid are determined
-by the square root of the total number of plot windows. x and y axes
-ranges are shared.</p>
+<p>A wrap plot is an alternate view of the row x column plot. For wrap plots, the row and column labels are condensed into a single label above each plot window and the spacing between plots is eliminated (by default; can be overriden). The x and y sizes of the grid are determined by the square root of the total number of plot windows. x and y axes ranges are shared.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1354,32 +1404,24 @@ ranges are shared.</p>
 <h2>Other options<a class="headerlink" href="#Other-options" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="Horizontal-and-vertical-lines">
 <h3>Horizontal and vertical lines<a class="headerlink" href="#Horizontal-and-vertical-lines" title="Permalink to this headline">¶</a></h3>
-<p>We can add horizontal and vertical reference lines to a plot using one
-or more of the following keywords: <code class="docutils literal notranslate"><span class="pre">ax_hlines</span></code>, <code class="docutils literal notranslate"><span class="pre">ax_vlines</span></code>,
-<code class="docutils literal notranslate"><span class="pre">ax2_hlines</span></code>, <code class="docutils literal notranslate"><span class="pre">ax2_vlines</span></code> where “hlines” are horizontal, “vlines”
-are vertical, “ax” lines are applied to the primary axis, and “ax2”
-lines are applied to a secondary axis, if it exists. The value of these
-keywords is:</p>
+<p>We can add horizontal and vertical reference lines to a plot using one or more of the following keywords: <code class="docutils literal notranslate"><span class="pre">ax_hlines</span></code>, <code class="docutils literal notranslate"><span class="pre">ax_vlines</span></code>, <code class="docutils literal notranslate"><span class="pre">ax2_hlines</span></code>, <code class="docutils literal notranslate"><span class="pre">ax2_vlines</span></code> where “hlines” are horizontal, “vlines” are vertical, “ax” lines are applied to the primary axis, and “ax2” lines are applied to a secondary axis, if it exists. The value of these keywords is:</p>
 <ul class="simple">
-<li>a single float number</li>
-<li>a list of float numbers</li>
-<li>or a variable-length list of tuples (only first value is required):<ul>
-<li>item 1 (required) = x or y axis value of the line or the name of a
-DataFrame column from which the first entry in the column will be
-used</li>
-<li>item 2: line color</li>
-<li>item 3: line style</li>
-<li>item 4: line width</li>
-<li>item 5: line alpha</li>
-<li>item 6: legend text (won’t appear in legend without this unless
-item 1 is a name of a DataFrame column)</li>
+<li><p>a single float number</p></li>
+<li><p>a list of float numbers</p></li>
+<li><p>or a variable-length list of tuples (only first value is required):</p>
+<ul>
+<li><p>item 1 (required) = x or y axis value of the line or the name of a DataFrame column from which the first entry in the column will be used</p></li>
+<li><p>item 2: line color</p></li>
+<li><p>item 3: line style</p></li>
+<li><p>item 4: line width</p></li>
+<li><p>item 5: line alpha</p></li>
+<li><p>item 6: legend text (won’t appear in legend without this unless item 1 is a name of a DataFrame column)</p></li>
 </ul>
 </li>
 </ul>
 <p>Explicitly defined horizontal and vertical lines:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1391,8 +1433,7 @@ item 1 is a name of a DataFrame column)</li>
 </div>
 <p>Horizontal line using the first value of a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> column:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1406,12 +1447,9 @@ item 1 is a name of a DataFrame column)</li>
 </div>
 <div class="section" id="Curve-fitting">
 <h3>Curve fitting<a class="headerlink" href="#Curve-fitting" title="Permalink to this headline">¶</a></h3>
-<p>We can add a polynomial line of fit of some degree to the plot with the
-keyword <code class="docutils literal notranslate"><span class="pre">fit</span></code> with an option to display the fit equation and R^2
-value:</p>
+<p>We can add a polynomial line of fit of some degree to the plot with the keyword <code class="docutils literal notranslate"><span class="pre">fit</span></code> with an option to display the fit equation and R^2 value:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1423,8 +1461,7 @@ value:</p>
 </div>
 <p>We can disable the legend using <code class="docutils literal notranslate"><span class="pre">legend=False</span></code>:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1434,12 +1471,9 @@ value:</p>
 </pre></div>
 </div>
 </div>
-<p>We can also constrain the region of interest for the fit by supplying a
-start and stop value to either the <code class="docutils literal notranslate"><span class="pre">fit_range_x</span></code> or <code class="docutils literal notranslate"><span class="pre">fit_range_y</span></code>
-keywords:</p>
+<p>We can also constrain the region of interest for the fit by supplying a start and stop value to either the <code class="docutils literal notranslate"><span class="pre">fit_range_x</span></code> or <code class="docutils literal notranslate"><span class="pre">fit_range_y</span></code> keywords:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1451,8 +1485,7 @@ keywords:</p>
 </div>
 <p>We can also add a line of fit for each item in a legend:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1462,12 +1495,9 @@ keywords:</p>
 </pre></div>
 </div>
 </div>
-<p>If we legend and group by the same value and select a single color for
-the fit line, the legend will collapse to show only one instance of
-“Fit”:</p>
+<p>If we legend and group by the same value and select a single color for the fit line, the legend will collapse to show only one instance of “Fit”:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1480,22 +1510,11 @@ the fit line, the legend will collapse to show only one instance of
 </div>
 <div class="section" id="Stat-lines">
 <h3>Stat lines<a class="headerlink" href="#Stat-lines" title="Permalink to this headline">¶</a></h3>
-<p>Rather than drawing connecting lines between all points, you can draw a
-line through a representative statistic of the data, such as the
-“median” value of the points, using the <code class="docutils literal notranslate"><span class="pre">stat</span></code> keyword (any stats that
-can be applied to a pandas <code class="docutils literal notranslate"><span class="pre">groupby</span></code> object can be used). For cases
-where the x-values are not identical for all data sets, use the keyword
-<code class="docutils literal notranslate"><span class="pre">stat_val</span></code> and specify an alternative x-axis to use for the
-statistical calculation (the actual plotted x-axis will be whatever is
-specified for the <code class="docutils literal notranslate"><span class="pre">x</span></code> keyword).</p>
-<p>First consider a plot of Voltage vs I [A]. Because the actual measured
-current values vary from the current set point value from measurement to
-measurement, the x-values for each data set are not identical. The
-<code class="docutils literal notranslate"><span class="pre">stat</span></code> line thus computes the median value for each x value where
-there may only be a single data point. The result is ugly and useful.</p>
+<p>Rather than drawing connecting lines between all points, you can draw a line through a representative statistic of the data, such as the “median” value of the points, using the <code class="docutils literal notranslate"><span class="pre">stat</span></code> keyword (any stats that can be applied to a pandas <code class="docutils literal notranslate"><span class="pre">groupby</span></code> object can be used). For cases where the x-values are not identical for all data sets, use the keyword <code class="docutils literal notranslate"><span class="pre">stat_val</span></code> and specify an alternative x-axis to use for the statistical calculation (the actual plotted x-axis will be whatever is specified for
+the <code class="docutils literal notranslate"><span class="pre">x</span></code> keyword).</p>
+<p>First consider a plot of Voltage vs I [A]. Because the actual measured current values vary from the current set point value from measurement to measurement, the x-values for each data set are not identical. The <code class="docutils literal notranslate"><span class="pre">stat</span></code> line thus computes the median value for each x value where there may only be a single data point. The result is ugly and useful.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1505,11 +1524,9 @@ there may only be a single data point. The result is ugly and useful.</p>
 </pre></div>
 </div>
 </div>
-<p>Instead, add the column name for the column containing the set point
-value of I [A] to the keyword <code class="docutils literal notranslate"><span class="pre">stat_val</span></code>:</p>
+<p>Instead, add the column name for the column containing the set point value of I [A] to the keyword <code class="docutils literal notranslate"><span class="pre">stat_val</span></code>:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1519,12 +1536,9 @@ value of I [A] to the keyword <code class="docutils literal notranslate"><span c
 </pre></div>
 </div>
 </div>
-<p>Stat lines also work with multiple DataFrame columns are plotted on a
-given axis. For example, consider the following with two values on the
-y-axis:</p>
+<p>Stat lines also work with multiple DataFrame columns are plotted on a given axis. For example, consider the following with two values on the y-axis:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1536,16 +1550,9 @@ y-axis:</p>
 </div>
 <div class="section" id="Confidence-intervals">
 <h3>Confidence intervals<a class="headerlink" href="#Confidence-intervals" title="Permalink to this headline">¶</a></h3>
-<p>It is possible to display confidence intervals on a data set. By default
-these are shown as partially transparent filled regions around a curve.
-The actual confidence interval to display is set by the <code class="docutils literal notranslate"><span class="pre">conf_int</span></code>
-keyword. Allowed values are any interval between 0 and 1 or the special
-value <code class="docutils literal notranslate"><span class="pre">range</span></code> which plots a region from the min to the max value of
-the data at a given point. The example below shows a 95% confidence
-interval:</p>
+<p>It is possible to display confidence intervals on a data set. By default these are shown as partially transparent filled regions around a curve. The actual confidence interval to display is set by the <code class="docutils literal notranslate"><span class="pre">conf_int</span></code> keyword. Allowed values are any interval between 0 and 1 or the special value <code class="docutils literal notranslate"><span class="pre">range</span></code> which plots a region from the min to the max value of the data at a given point. The example below shows a 95% confidence interval:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1558,16 +1565,11 @@ interval:</p>
 </div>
 <div class="section" id="Reference-line">
 <h3>Reference line<a class="headerlink" href="#Reference-line" title="Permalink to this headline">¶</a></h3>
-<p>We can add a reference line to the plot using the keyword <code class="docutils literal notranslate"><span class="pre">ref_line</span></code>.
-The value of this keyword is: (1) an equation applied to an existing
-DataFrame column; or (2) a simple int or float. This value is used to
-create a new column in the DataFrame that is plotted vs the value of
-<code class="docutils literal notranslate"><span class="pre">x</span></code></p>
+<p>We can add a reference line to the plot using the keyword <code class="docutils literal notranslate"><span class="pre">ref_line</span></code>. The value of this keyword is: (1) an equation applied to an existing DataFrame column; or (2) a simple int or float. This value is used to create a new column in the DataFrame that is plotted vs the value of <code class="docutils literal notranslate"><span class="pre">x</span></code></p>
 <div class="section" id="y=x-reference">
 <h4>y=x reference<a class="headerlink" href="#y=x-reference" title="Permalink to this headline">¶</a></h4>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1579,8 +1581,7 @@ create a new column in the DataFrame that is plotted vs the value of
 </div>
 <p>We can also add multiple reference lines to a single plot:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1595,14 +1596,9 @@ create a new column in the DataFrame that is plotted vs the value of
 </div>
 <div class="section" id="More-complex-calculation">
 <h4>More complex calculation<a class="headerlink" href="#More-complex-calculation" title="Permalink to this headline">¶</a></h4>
-<p>Now let’s use the fit equation calculated above and add the fit line as
-a reference line (notice that because we are not specifying an exisiting
-column in the DataFrame as the <code class="docutils literal notranslate"><span class="pre">ref_line</span></code> and we are not specifying
-<code class="docutils literal notranslate"><span class="pre">ref_line_legend_text</span></code>, the legend defaults to a generic label “Ref
-Line”):</p>
+<p>Now let’s use the fit equation calculated above and add the fit line as a reference line (notice that because we are not specifying an exisiting column in the DataFrame as the <code class="docutils literal notranslate"><span class="pre">ref_line</span></code> and we are not specifying <code class="docutils literal notranslate"><span class="pre">ref_line_legend_text</span></code>, the legend defaults to a generic label “Ref Line”):</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1612,6 +1608,15 @@ Line”):</p>
 </pre></div>
 </div>
 </div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -1619,9 +1624,7 @@ Line”):</p>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -1630,11 +1633,19 @@ Line”):</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, Steve Nicholes.
+        
+        &copy; Copyright 2016, Steve Nicholes
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -1646,37 +1657,15 @@ Line”):</p>
   </div>
   
 
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'beta',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

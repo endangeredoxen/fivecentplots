@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,6 +11,12 @@
   
 
   
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Archivo Black" type="text/css" />
+
+  
   
     <link rel="shortcut icon" href="_static/favicon.ico"/>
   
@@ -19,50 +24,39 @@
   
 
   
-
-  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
-  
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Archivo Black" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="fivecentplots beta documentation" href="index.html"/>
-        <link rel="next" title="Modules" href="modules.html"/>
-        <link rel="prev" title="Miscellaneous" href="misc.html"/> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Modules" href="modules.html" />
+    <link rel="prev" title="Miscellaneous" href="misc.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
-            <a href="index.html" class="icon icon-home"> fivecentplots
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> fivecentplots
           
 
           
@@ -72,7 +66,7 @@
             
             
               <div class="version">
-                0.4.0
+                0.4.3
               </div>
             
           
@@ -89,6 +83,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -119,7 +114,10 @@
 <p class="caption"><span class="caption-text">Other</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#id1">0.4.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">0.4.3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">0.4.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">0.4.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">0.4.0</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
@@ -129,13 +127,14 @@
             
           
         </div>
+        
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">fivecentplots</a>
@@ -143,9 +142,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -166,7 +166,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Changelog</li>
     
@@ -192,58 +192,82 @@
 /* CSS overrides for sphinx_rtd_theme */
 
 /* 24px margin */
-.nbinput.nblast,
-.nboutput.nblast {
+.nbinput.nblast.container,
+.nboutput.nblast.container {
     margin-bottom: 19px;  /* padding has already 5px */
 }
 
 /* ... except between code cells! */
-.nblast + .nbinput {
+.nblast.container + .nbinput.container {
     margin-top: -19px;
 }
 
 .admonition > p:before {
     margin-right: 4px;  /* make room for the exclamation icon */
 }
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
 </style>
 <div class="section" id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="id1">
-<h2>0.4.0<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<h2>0.4.3<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>fix heatmap but when DataFrame column names are of type <code class="docutils literal notranslate"><span class="pre">object</span></code> but are actually <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h2>0.4.2<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>handle change to pandas xlsx engine for &gt;=v1.2</p></li>
+<li><p>remove unintentional overload of <code class="docutils literal notranslate"><span class="pre">input</span></code></p></li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h2>0.4.1<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>update to ignore warnings with v3.3 of MPL</p></li>
+</ul>
+</div>
+<div class="section" id="id4">
+<h2>0.4.0<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
 <ul>
-<li><p class="first">legend:</p>
+<li><p>legend:</p>
 <blockquote>
 <div><ul class="simple">
-<li>allow placing legend below plot (<code class="docutils literal notranslate"><span class="pre">legend_location=='below'</span></code> or <code class="docutils literal notranslate"><span class="pre">legend_location==11</span></code>)</li>
-<li>fixes for figure grouping and multi-column plots</li>
+<li><p>allow placing legend below plot (<code class="docutils literal notranslate"><span class="pre">legend_location=='below'</span></code> or <code class="docutils literal notranslate"><span class="pre">legend_location==11</span></code>)</p></li>
+<li><p>fixes for figure grouping and multi-column plots</p></li>
 </ul>
 </div></blockquote>
 </li>
-<li><p class="first">other:</p>
+<li><p>heatmap:</p>
 <blockquote>
 <div><ul class="simple">
-<li>updates for Python 3.7</li>
-<li>deal with iterticks warning from <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> versions &gt;= 3.1</li>
-<li>added <code class="docutils literal notranslate"><span class="pre">save_data</span></code> keyword to dump a subset of the plotted data only from the original <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></li>
-<li>file extension bug fix</li>
-<li>filter improvements (allow “not in” list)</li>
-<li>added option to disable alphabetical sorting of data and plot based on the order in which data appears in the original <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></li>
+<li><p>font and font size fixes</p></li>
 </ul>
 </div></blockquote>
 </li>
-<li><p class="first">heatmap:</p>
+<li><p>themes:</p>
 <blockquote>
 <div><ul class="simple">
-<li>font and font size fixes</li>
+<li><p>beautification of “white” theme</p></li>
+<li><p>allow switching of themes via keyword at the plot call</p></li>
+<li><p>allow overloading of default color list in theme file</p></li>
 </ul>
 </div></blockquote>
 </li>
-<li><p class="first">themes:</p>
+<li><p>other:</p>
 <blockquote>
 <div><ul class="simple">
-<li>beautification of “white” theme</li>
-<li>allow switching of themes via keyword at the plot call</li>
-<li>allow overloading of default color list in theme file</li>
+<li><p>fixed requirements so it will import after install in clean environment</p></li>
+<li><p>deal with iterticks warning from <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> versions &gt;= 3.1</p></li>
+<li><p>added <code class="docutils literal notranslate"><span class="pre">save_data</span></code> keyword to dump a subset of the plotted data only from the original <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p></li>
+<li><p>file extension bug fix</p></li>
+<li><p>filter improvements (allow “not in” list)</p></li>
+<li><p>added option to disable alphabetical sorting of data and plot based on the order in which data appears in the original <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p></li>
 </ul>
 </div></blockquote>
 </li>
@@ -253,9 +277,7 @@
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -264,7 +286,7 @@
         <a href="modules.html" class="btn btn-neutral float-right" title="Modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="misc.html" class="btn btn-neutral" title="Miscellaneous" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="misc.html" class="btn btn-neutral float-left" title="Miscellaneous" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -273,11 +295,19 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, Steve Nicholes.
+        
+        &copy; Copyright 2016, Steve Nicholes
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -289,37 +319,15 @@
   </div>
   
 
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'beta',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>
