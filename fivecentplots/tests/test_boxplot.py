@@ -53,6 +53,7 @@ def test_simple(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -75,6 +76,7 @@ def test_group_single(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -97,6 +99,7 @@ def test_group_multiple(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -119,6 +122,7 @@ def test_group_legend(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -141,6 +145,7 @@ def test_grid_column(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -163,6 +168,7 @@ def test_grid_row(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -185,6 +191,7 @@ def test_grid_wrap(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -209,6 +216,7 @@ def test_grid_wrap_y(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -233,6 +241,7 @@ def test_grid_wrap_y_no_share(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -255,6 +264,7 @@ def test_grand_means(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -277,6 +287,7 @@ def test_group_means(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -299,6 +310,7 @@ def test_mean_diamonds(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -321,6 +333,7 @@ def test_violin(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -346,6 +359,7 @@ def test_violin_styled(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -368,6 +382,7 @@ def test_violin_box_off(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -390,6 +405,7 @@ def test_stat_mean(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -412,6 +428,7 @@ def test_stat_median(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -434,6 +451,7 @@ def test_stat_std_dev(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -456,6 +474,7 @@ def test_dividers(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -478,6 +497,7 @@ def test_range_lines(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:

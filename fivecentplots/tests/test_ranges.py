@@ -55,6 +55,7 @@ def test_default(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -79,6 +80,7 @@ def test_primary(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -103,6 +105,7 @@ def test_primary_no_scale(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -127,6 +130,7 @@ def test_primary_explicit(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -150,6 +154,7 @@ def test_secondary(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -174,6 +179,7 @@ def test_secondary_limits(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -198,6 +204,7 @@ def test_secondary_limits_no_scale(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -222,6 +229,7 @@ def test_secondary_limits_y(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -245,6 +253,7 @@ def test_multiple(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -269,6 +278,7 @@ def test_multiple_scaled(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -291,6 +301,7 @@ def test_boxplot(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -313,6 +324,7 @@ def test_boxplot_quantile(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -336,6 +348,7 @@ def test_boxplot_iqr(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -360,6 +373,7 @@ def test_shared(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -383,6 +397,7 @@ def test_shared_false(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -408,6 +423,7 @@ def test_shared_separate(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -432,6 +448,7 @@ def test_shared_rows(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -456,6 +473,7 @@ def test_shared_cols(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -479,6 +497,7 @@ def test_shared_no(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:

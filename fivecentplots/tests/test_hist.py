@@ -53,6 +53,7 @@ def test_simple(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -75,6 +76,7 @@ def test_horizontal(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -97,6 +99,7 @@ def test_legend(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -119,6 +122,7 @@ def test_kde(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -141,6 +145,7 @@ def test_grid(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -163,6 +168,7 @@ def test_wrap_values(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
@@ -187,6 +193,7 @@ def test_wrap_names(master=False, remove=True, show=False):
     elif show:
         os.startfile(osjoin(MASTER, name + '_master.png'))
         os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
