@@ -718,9 +718,9 @@ class BaseLayout:
         # Bar
         self.bar = Element('bar', self.fcpp, kwargs,
                            on=True if 'bar' in self.plot_func else False,
-                           width=utl.kwget(kwargs, self.fcpp, ['bar_width', 'width'],
+                           width=utl.kwget(kwargs, self.fcpp, 'bar_width',
                                            kwargs.get('width', 0.8)),
-                           align=utl.kwget(kwargs, self.fcpp, ['bar_align', 'align'],
+                           align=utl.kwget(kwargs, self.fcpp, 'bar_align',
                                            kwargs.get('align', 'center')),
                            edge_color=utl.kwget(kwargs, self.fcpp, 'bar_edge_color',
                                                 copy.copy(color_list)),

@@ -3366,11 +3366,11 @@ class Layout(BaseLayout):
                 if self.axes.twin_y and 'label_x_font_color' not in kwargs.keys():
                     self.label_x2.font_color = color_list[1]
 
-            self.lines.color = copy.copy(color_list)
+            self.lines.color.values = copy.copy(color_list)
             self.lines.color_alpha('color', 'alpha')
-            self.markers.edge_color = copy.copy(color_list)
+            self.markers.edge_color.values = copy.copy(color_list)
             self.markers.color_alpha('edge_color', 'edge_alpha')
-            self.markers.fill_color = copy.copy(color_list)
+            self.markers.fill_color.values = copy.copy(color_list)
             self.markers.color_alpha('fill_color', 'fill_alpha')
 
         except:
