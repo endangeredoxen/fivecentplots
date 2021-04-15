@@ -551,10 +551,8 @@ def kwget(dict1, dict2, vals, default):
 def img_compare(img1, img2, show=False):
     """
     Read two images and compare for difference by pixel
-
     This is an optional utility used only for developer tests, so
     the function will only work if opencv is installed
-
     Args:
         img1 (str): path to file #1
         img2 (str): path to file #2

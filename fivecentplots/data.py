@@ -1535,7 +1535,11 @@ class Data:
                     if self.df_rc.index.dtype in dtypes and list(self.df_rc.index) != \
                             [f + self.df_rc.index[0] for f in range(0, len(self.df_rc.index))]:
                         self.df_rc.index = self.df_rc.index.astype('O')
-                    if self.df_rc.columns.dtype in dtypes and list(self.df_rc.columns) != \
+                    if self.df_rc.columns.dtype == 'object':
+                        ddtypes = list(set([type(f) for f in self.df_rc.columns]))
+                        if all(f in dtypes for f in ddtypes):
+                            self.df_rc.columns = [np.int64(f) for f in self.df_rc.columns]
+                    elif self.df_rc.columns.dtype in dtypes and list(self.df_rc.columns) != \
                             [f + self.df_rc.columns[0] for f in range(0, len(self.df_rc.columns))]:
                         self.df_rc.columns = self.df_rc.columns.astype('O')
                     if self.x[0] in self.df_fig.columns:

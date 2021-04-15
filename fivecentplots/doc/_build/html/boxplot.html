@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,6 +11,12 @@
   
 
   
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Archivo Black" type="text/css" />
+
+  
   
     <link rel="shortcut icon" href="_static/favicon.ico"/>
   
@@ -19,50 +24,39 @@
   
 
   
-
-  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
-  
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Archivo Black" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="fivecentplots beta documentation" href="index.html"/>
-        <link rel="next" title="contour" href="contour.html"/>
-        <link rel="prev" title="plot" href="plot.html"/> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="contour" href="contour.html" />
+    <link rel="prev" title="plot" href="plot.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
-            <a href="index.html" class="icon icon-home"> fivecentplots
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> fivecentplots
           
 
           
@@ -72,7 +66,7 @@
             
             
               <div class="version">
-                0.4.0
+                0.4.3
               </div>
             
           
@@ -89,6 +83,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -162,13 +157,14 @@
             
           
         </div>
+        
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">fivecentplots</a>
@@ -176,9 +172,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -199,7 +196,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>boxplot</li>
     
@@ -225,31 +222,45 @@
 /* CSS for nbsphinx extension */
 
 /* remove conflicting styling from Sphinx themes */
-div.nbinput,
-div.nbinput div.prompt,
-div.nbinput div.input_area,
-div.nbinput div[class*=highlight],
-div.nbinput div[class*=highlight] pre,
-div.nboutput,
-div.nbinput div.prompt,
-div.nbinput div.output_area,
-div.nboutput div[class*=highlight],
-div.nboutput div[class*=highlight] pre {
-    background: none;
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
     border: none;
-    padding: 0 0;
+    padding: 0;
     margin: 0;
     box-shadow: none;
 }
 
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
 /* avoid gaps between output lines */
-div.nboutput div[class*=highlight] pre {
+div.nboutput.container div[class*=highlight] pre {
     line-height: normal;
 }
 
 /* input/output containers */
-div.nbinput,
-div.nboutput {
+div.nbinput.container,
+div.nboutput.container {
     display: -webkit-flex;
     display: flex;
     align-items: flex-start;
@@ -257,92 +268,104 @@ div.nboutput {
     width: 100%;
 }
 @media (max-width: 540px) {
-    div.nbinput,
-    div.nboutput {
+    div.nbinput.container,
+    div.nboutput.container {
         flex-direction: column;
     }
 }
 
 /* input container */
-div.nbinput {
+div.nbinput.container {
     padding-top: 5px;
 }
 
 /* last container */
-div.nblast {
+div.nblast.container {
     padding-bottom: 5px;
 }
 
 /* input prompt */
-div.nbinput div.prompt pre {
-    color: #303F9F;
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
 }
 
 /* output prompt */
-div.nboutput div.prompt pre {
-    color: #D84315;
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
 }
 
 /* all prompts */
-div.nbinput div.prompt,
-div.nboutput div.prompt {
-    min-width: 8ex;
-    padding-top: 0.4em;
-    padding-right: 0.4em;
-    text-align: right;
-    flex: 0;
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
 }
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
 @media (max-width: 540px) {
-    div.nbinput div.prompt,
-    div.nboutput div.prompt {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
         text-align: left;
         padding: 0.4em;
     }
-    div.nboutput div.prompt.empty {
+    div.nboutput.container div.prompt.empty {
         padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
     }
 }
 
 /* disable scrollbars on prompts */
-div.nbinput div.prompt pre,
-div.nboutput div.prompt pre {
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
     overflow: hidden;
 }
 
 /* input/output area */
-div.nbinput div.input_area,
-div.nboutput div.output_area {
-    padding: 0.4em;
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
     -webkit-flex: 1;
     flex: 1;
     overflow: auto;
 }
 @media (max-width: 540px) {
-    div.nbinput div.input_area,
-    div.nboutput div.output_area {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
         width: 100%;
     }
 }
 
 /* input area */
-div.nbinput div.input_area {
-    border: 1px solid #cfcfcf;
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
     border-radius: 2px;
-    background: #f7f7f7;
+    /*background: #f5f5f5;*/
 }
 
 /* override MathJax center alignment in output cells */
-div.nboutput div[class*=MathJax] {
+div.nboutput.container div[class*=MathJax] {
     text-align: left !important;
 }
 
-/* override sphinx.ext.pngmath center alignment in output cells */
-div.nboutput div.math p {
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
     text-align: left;
 }
 
 /* standard error */
-div.nboutput div.output_area.stderr {
+div.nboutput.container div.output_area.stderr {
     background: #fdd;
 }
 
@@ -386,31 +409,87 @@ div.nboutput div.output_area.stderr {
 .ansi-bold { font-weight: bold; }
 .ansi-underline { text-decoration: underline; }
 
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
 /* CSS overrides for sphinx_rtd_theme */
 
 /* 24px margin */
-.nbinput.nblast,
-.nboutput.nblast {
+.nbinput.nblast.container,
+.nboutput.nblast.container {
     margin-bottom: 19px;  /* padding has already 5px */
 }
 
 /* ... except between code cells! */
-.nblast + .nbinput {
+.nblast.container + .nbinput.container {
     margin-top: -19px;
 }
 
 .admonition > p:before {
     margin-right: 4px;  /* make room for the exclamation icon */
 }
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
 </style>
 <div class="section" id="boxplot">
 <h1>boxplot<a class="headerlink" href="#boxplot" title="Permalink to this headline">¶</a></h1>
-<p>Boxplots in fivecentplots are modeled after the “Variability Chart” in
-JMP which provides convenient, multi-level group labels automatically
-along the x-axis. Data can be broken into multiple subsets for easy
-visualization by simply listing the DataFrame column names of interest
-in the groups keyword. At a minimum, the <code class="docutils literal notranslate"><span class="pre">boxplot</span></code> function requires
-the following keywords:</p>
+<p>Boxplots in fivecentplots are modeled after the “Variability Chart” in JMP which provides convenient, multi-level group labels automatically along the x-axis. Data can be broken into multiple subsets for easy visualization by simply listing the DataFrame column names of interest in the groups keyword. At a minimum, the <code class="docutils literal notranslate"><span class="pre">boxplot</span></code> function requires the following keywords:</p>
 <ul><li><p><code class="docutils literal notranslate"><span class="pre">df</span></code>: a pandas DataFrame</p>
 </li><li><p><code class="docutils literal notranslate"><span class="pre">y</span></code>: the name of the DataFrame column containing the y-axis data</p>
 </li></ul><div class="section" id="Setup">
@@ -418,8 +497,7 @@ the following keywords:</p>
 <div class="section" id="Imports">
 <h3>Imports<a class="headerlink" href="#Imports" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -440,8 +518,7 @@ the following keywords:</p>
 <h3>Sample data<a class="headerlink" href="#Sample-data" title="Permalink to this headline">¶</a></h3>
 <p>Read some fake boxplot data</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -451,11 +528,10 @@ the following keywords:</p>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>Out[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="output_area docutils container">
+<div class="output_area rendered_html docutils container">
 <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -531,8 +607,7 @@ the following keywords:</p>
 <h3>Set theme<a class="headerlink" href="#Set-theme" title="Permalink to this headline">¶</a></h3>
 <p>Optionally set the design theme</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -545,8 +620,7 @@ the following keywords:</p>
 <div class="section" id="Other">
 <h3>Other<a class="headerlink" href="#Other" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -560,8 +634,7 @@ the following keywords:</p>
 <h2>Groups<a class="headerlink" href="#Groups" title="Permalink to this headline">¶</a></h2>
 <p>Consider the following boxplot of made-up data:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -578,12 +651,9 @@ the following keywords:</p>
 </div>
 <div class="section" id="Single-group">
 <h3>Single group<a class="headerlink" href="#Single-group" title="Permalink to this headline">¶</a></h3>
-<p>Rather than lumping the data into a single box, we can separate them
-into categories to get more information. First, set a single group
-column of “Batch”:</p>
+<p>Rather than lumping the data into a single box, we can separate them into categories to get more information. First, set a single group column of “Batch”:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -603,8 +673,7 @@ column of “Batch”:</p>
 <h3>Multiple groups<a class="headerlink" href="#Multiple-groups" title="Permalink to this headline">¶</a></h3>
 <p>We can dive deeper by specifying more than one value for groups:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -619,11 +688,9 @@ column of “Batch”:</p>
 <img alt="_images/boxplot_21_0.png" src="_images/boxplot_21_0.png" />
 </div>
 </div>
-<p>By default, the groups are sorted alphanumerically. To preserve the
-order of the input DataFrame, add the keyword <code class="docutils literal notranslate"><span class="pre">sort=False</span></code>:</p>
+<p>By default, the groups are sorted alphanumerically. To preserve the order of the input DataFrame, add the keyword <code class="docutils literal notranslate"><span class="pre">sort=False</span></code>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -643,8 +710,7 @@ order of the input DataFrame, add the keyword <code class="docutils literal notr
 <h3>Groups + legend<a class="headerlink" href="#Groups-+-legend" title="Permalink to this headline">¶</a></h3>
 <p>Boxplots also support legending for another level of visualization:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -659,12 +725,9 @@ order of the input DataFrame, add the keyword <code class="docutils literal notr
 <img alt="_images/boxplot_26_0.png" src="_images/boxplot_26_0.png" />
 </div>
 </div>
-<p>Note: if there are a lot of legend items, the position of the legend
-will be automatically adjusted to avoid rendering over the box group
-titles.</p>
+<p>Note: if there are a lot of legend items, the position of the legend will be automatically adjusted to avoid rendering over the box group titles.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -684,13 +747,11 @@ titles.</p>
 </div>
 <div class="section" id="Grid-plots">
 <h2>Grid plots<a class="headerlink" href="#Grid-plots" title="Permalink to this headline">¶</a></h2>
-<p>Like the plot function, boxplots can be broken into subplots based on
-“row” and/or “col” values or “wrap” values.</p>
+<p>Like the plot function, boxplots can be broken into subplots based on “row” and/or “col” values or “wrap” values.</p>
 <div class="section" id="Column-plots">
 <h3>Column plots<a class="headerlink" href="#Column-plots" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -709,8 +770,7 @@ titles.</p>
 <div class="section" id="Row-plots">
 <h3>Row plots<a class="headerlink" href="#Row-plots" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -729,8 +789,7 @@ titles.</p>
 <div class="section" id="Wrap-plots">
 <h3>Wrap plots<a class="headerlink" href="#Wrap-plots" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -745,11 +804,9 @@ titles.</p>
 <img alt="_images/boxplot_36_0.png" src="_images/boxplot_36_0.png" />
 </div>
 </div>
-<p>Alternatively, we can wrap multiple <code class="docutils literal notranslate"><span class="pre">y</span></code> column values and create a
-unique subplot for each column:</p>
+<p>Alternatively, we can wrap multiple <code class="docutils literal notranslate"><span class="pre">y</span></code> column values and create a unique subplot for each column:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -771,8 +828,7 @@ unique subplot for each column:</p>
 </div>
 <p>Or if we disable y-axis range sharing:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -794,14 +850,9 @@ unique subplot for each column:</p>
 <h2>Other options<a class="headerlink" href="#Other-options" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="Grand-Mean/Median">
 <h3>Grand Mean/Median<a class="headerlink" href="#Grand-Mean/Median" title="Permalink to this headline">¶</a></h3>
-<p>The “grand mean” or “grand median” is the mean/median value for the
-entire data set in a given plot window. By default, the “grand mean”
-line is a dashed gray line and the “grand median” is a dashed blue line.
-Individual line color, styles, and widths can be controlled via the
-typically-named keywords.</p>
+<p>The “grand mean” or “grand median” is the mean/median value for the entire data set in a given plot window. By default, the “grand mean” line is a dashed gray line and the “grand median” is a dashed blue line. Individual line color, styles, and widths can be controlled via the typically-named keywords.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -816,11 +867,9 @@ typically-named keywords.</p>
 <img alt="_images/boxplot_44_0.png" src="_images/boxplot_44_0.png" />
 </div>
 </div>
-<p>Both long form and short form keywords are available: i.e.,
-<code class="docutils literal notranslate"><span class="pre">box_grand_mean_ATTRIBUTENAME</span></code> or <code class="docutils literal notranslate"><span class="pre">grand_mean_ATTRIBUTENAME</span></code></p>
+<p>Both long form and short form keywords are available: i.e., <code class="docutils literal notranslate"><span class="pre">box_grand_mean_ATTRIBUTENAME</span></code> or <code class="docutils literal notranslate"><span class="pre">grand_mean_ATTRIBUTENAME</span></code></p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -839,13 +888,9 @@ typically-named keywords.</p>
 </div>
 <div class="section" id="Group-Means">
 <h3>Group Means<a class="headerlink" href="#Group-Means" title="Permalink to this headline">¶</a></h3>
-<p>Group means that correspond to the first level of grouping (i.e., same
-as the vertical divider lines). By default, the mean values are depicted
-with horizontal dashed magenta lines. Style are controlled by
-<code class="docutils literal notranslate"><span class="pre">box_group_means_ATTRIBUTENAME</span></code> or <code class="docutils literal notranslate"><span class="pre">group_means_ATTRIBUTENAME</span></code>.</p>
+<p>Group means that correspond to the first level of grouping (i.e., same as the vertical divider lines). By default, the mean values are depicted with horizontal dashed magenta lines. Style are controlled by <code class="docutils literal notranslate"><span class="pre">box_group_means_ATTRIBUTENAME</span></code> or <code class="docutils literal notranslate"><span class="pre">group_means_ATTRIBUTENAME</span></code>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -863,29 +908,18 @@ with horizontal dashed magenta lines. Style are controlled by
 </div>
 <div class="section" id="Mean-Diamonds">
 <h3>Mean Diamonds<a class="headerlink" href="#Mean-Diamonds" title="Permalink to this headline">¶</a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">box_mean_diamonds</span></code> or <code class="docutils literal notranslate"><span class="pre">mean_diamonds</span></code> keyword allows you to
-overlay a diamond on the box which shows vertically the span of the data
-for a given confidence interval (default = 95%) and a horizontal line
-for the mean value of each group. The following keywords are available
-to modify the diamond from its default style:</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">box_mean_diamonds</span></code> or <code class="docutils literal notranslate"><span class="pre">mean_diamonds</span></code> keyword allows you to overlay a diamond on the box which shows vertically the span of the data for a given confidence interval (default = 95%) and a horizontal line for the mean value of each group. The following keywords are available to modify the diamond from its default style:</p>
 <ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">box_mean_diamonds_alpha</span></code> | <code class="docutils literal notranslate"><span class="pre">mean_diamonds_alpha</span></code>: transparency
-of the diamond 0 to 1 (default: 1)</li>
-<li><code class="docutils literal notranslate"><span class="pre">conf_coeff</span></code>: confidence interval from 0 to 1 (default: 0.95)</li>
-<li><code class="docutils literal notranslate"><span class="pre">box_mean_diamonds_edge_color</span></code> | <code class="docutils literal notranslate"><span class="pre">mean_diamonds_edge_color</span></code>:
-edge color of the diamond (default: ‘#FF0000’)</li>
-<li><code class="docutils literal notranslate"><span class="pre">box_mean_diamonds_edge_style</span></code> | <code class="docutils literal notranslate"><span class="pre">mean_diamonds_edge_style</span></code>:
-edge style of the diamond (default: ‘-‘)</li>
-<li><code class="docutils literal notranslate"><span class="pre">box_mean_diamonds_edge_width</span></code> | <code class="docutils literal notranslate"><span class="pre">mean_diamonds_edge_width</span></code>:
-edge width of the diamond (default: 0.6)</li>
-<li><code class="docutils literal notranslate"><span class="pre">box_mean_diamonds_fill_color</span></code> | <code class="docutils literal notranslate"><span class="pre">mean_diamonds_fill_color</span></code>:
-fill color of the diamond (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</li>
-<li><code class="docutils literal notranslate"><span class="pre">box_mean_diamonds_width</span></code> | <code class="docutils literal notranslate"><span class="pre">mean_diamonds_width</span></code>: width of the
-diamond from 0 to 1 (default: 0.8)</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">box_mean_diamonds_alpha</span></code> | <code class="docutils literal notranslate"><span class="pre">mean_diamonds_alpha</span></code>: transparency of the diamond 0 to 1 (default: 1)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">conf_coeff</span></code>: confidence interval from 0 to 1 (default: 0.95)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">box_mean_diamonds_edge_color</span></code> | <code class="docutils literal notranslate"><span class="pre">mean_diamonds_edge_color</span></code>: edge color of the diamond (default: ‘#FF0000’)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">box_mean_diamonds_edge_style</span></code> | <code class="docutils literal notranslate"><span class="pre">mean_diamonds_edge_style</span></code>: edge style of the diamond (default: ‘-’)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">box_mean_diamonds_edge_width</span></code> | <code class="docutils literal notranslate"><span class="pre">mean_diamonds_edge_width</span></code>: edge width of the diamond (default: 0.6)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">box_mean_diamonds_fill_color</span></code> | <code class="docutils literal notranslate"><span class="pre">mean_diamonds_fill_color</span></code>: fill color of the diamond (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">box_mean_diamonds_width</span></code> | <code class="docutils literal notranslate"><span class="pre">mean_diamonds_width</span></code>: width of the diamond from 0 to 1 (default: 0.8)</p></li>
 </ul>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -903,15 +937,9 @@ diamond from 0 to 1 (default: 0.8)</li>
 </div>
 <div class="section" id="Violins">
 <h3>Violins<a class="headerlink" href="#Violins" title="Permalink to this headline">¶</a></h3>
-<p>We can also plot distributions with violin plots that show kernal
-density estimates of the data. By default, these violin plots also
-contain a small boxes with whiskers to indicate Q1, Q3, 1.5 * IQR and
-the median of the distribution. Discrete data points are disabled by
-default but can be turned on with the keyword <code class="docutils literal notranslate"><span class="pre">violin_markers=True</span></code>
-(box style shamelessly appropriated from <code class="docutils literal notranslate"><span class="pre">seaborn</span></code>).</p>
+<p>We can also plot distributions with violin plots that show kernal density estimates of the data. By default, these violin plots also contain a small boxes with whiskers to indicate Q1, Q3, 1.5 * IQR and the median of the distribution. Discrete data points are disabled by default but can be turned on with the keyword <code class="docutils literal notranslate"><span class="pre">violin_markers=True</span></code> (box style shamelessly appropriated from <code class="docutils literal notranslate"><span class="pre">seaborn</span></code>).</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -926,15 +954,9 @@ default but can be turned on with the keyword <code class="docutils literal notr
 <img alt="_images/boxplot_55_0.png" src="_images/boxplot_55_0.png" />
 </div>
 </div>
-<p>We can change the style of the violin density profiles and the
-associated boxplot using keywords starting with <code class="docutils literal notranslate"><span class="pre">violin</span></code>. Note that
-the standard box styling attributes are ignored when adding the violin
-plot. The reason for this is to make it possilbe to maintain different
-default settings for regular box plots and violin plots in the same
-theme file.</p>
+<p>We can change the style of the violin density profiles and the associated boxplot using keywords starting with <code class="docutils literal notranslate"><span class="pre">violin</span></code>. Note that the standard box styling attributes are ignored when adding the violin plot. The reason for this is to make it possilbe to maintain different default settings for regular box plots and violin plots in the same theme file.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -954,8 +976,7 @@ theme file.</p>
 </div>
 <p>We can also disable the box overlay on the violin plot as follows:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -973,18 +994,11 @@ theme file.</p>
 </div>
 <div class="section" id="Stat-line">
 <h3>Stat line<a class="headerlink" href="#Stat-line" title="Permalink to this headline">¶</a></h3>
-<p>In addition to displaying boxes with a median line and interquartile
-ranges, a connecting line can be drawn between boxes at some statistical
-value. By default, the line connects the mean value of each distribution
-but other DataFrame stat values can be selected. The stat line accepts
-the typical styling keywords of any line object with the prefix
-<code class="docutils literal notranslate"><span class="pre">box_stat_line_</span></code> (i.e., <code class="docutils literal notranslate"><span class="pre">box_stat_line_color</span></code> or
-<code class="docutils literal notranslate"><span class="pre">box_stat_line_width</span></code>)</p>
+<p>In addition to displaying boxes with a median line and interquartile ranges, a connecting line can be drawn between boxes at some statistical value. By default, the line connects the mean value of each distribution but other DataFrame stat values can be selected. The stat line accepts the typical styling keywords of any line object with the prefix <code class="docutils literal notranslate"><span class="pre">box_stat_line_</span></code> (i.e., <code class="docutils literal notranslate"><span class="pre">box_stat_line_color</span></code> or <code class="docutils literal notranslate"><span class="pre">box_stat_line_width</span></code>)</p>
 <div class="section" id="Mean">
 <h4>Mean<a class="headerlink" href="#Mean" title="Permalink to this headline">¶</a></h4>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1003,8 +1017,7 @@ the typical styling keywords of any line object with the prefix
 <div class="section" id="Median">
 <h4>Median<a class="headerlink" href="#Median" title="Permalink to this headline">¶</a></h4>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1023,8 +1036,7 @@ the typical styling keywords of any line object with the prefix
 <div class="section" id="Std-dev">
 <h4>Std dev<a class="headerlink" href="#Std-dev" title="Permalink to this headline">¶</a></h4>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1043,12 +1055,9 @@ the typical styling keywords of any line object with the prefix
 </div>
 <div class="section" id="Dividers">
 <h3>Dividers<a class="headerlink" href="#Dividers" title="Permalink to this headline">¶</a></h3>
-<p>Using the keyword <code class="docutils literal notranslate"><span class="pre">box_divider</span></code>, lines can be drawn on the boxplot to
-visually segrate main groups of boxes. These lines are enabled by
-default but can be turned off easily:</p>
+<p>Using the keyword <code class="docutils literal notranslate"><span class="pre">box_divider</span></code>, lines can be drawn on the boxplot to visually segrate main groups of boxes. These lines are enabled by default but can be turned off easily:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [26]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1066,15 +1075,9 @@ default but can be turned off easily:</p>
 </div>
 <div class="section" id="Range-lines">
 <h3>Range lines<a class="headerlink" href="#Range-lines" title="Permalink to this headline">¶</a></h3>
-<p>Because outlier points by definition fall outside of the span of the
-box, we can draw lines that span the entire range of the data. This is
-particularly useful to indicate when there are data points that fall
-outside of the limits of the y-axis. These lines are enabled by default
-but can be disabled or styled through keywords with the prefix
-<code class="docutils literal notranslate"><span class="pre">box_range_lines_</span></code>:</p>
+<p>Because outlier points by definition fall outside of the span of the box, we can draw lines that span the entire range of the data. This is particularly useful to indicate when there are data points that fall outside of the limits of the y-axis. These lines are enabled by default but can be disabled or styled through keywords with the prefix <code class="docutils literal notranslate"><span class="pre">box_range_lines_</span></code>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
-<span></span>In [27]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1089,15 +1092,22 @@ but can be disabled or styled through keywords with the prefix
 <img alt="_images/boxplot_73_0.png" src="_images/boxplot_73_0.png" />
 </div>
 </div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 </div>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -1106,7 +1116,7 @@ but can be disabled or styled through keywords with the prefix
         <a href="contour.html" class="btn btn-neutral float-right" title="contour" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="plot.html" class="btn btn-neutral" title="plot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="plot.html" class="btn btn-neutral float-left" title="plot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -1115,11 +1125,19 @@ but can be disabled or styled through keywords with the prefix
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, Steve Nicholes.
+        
+        &copy; Copyright 2016, Steve Nicholes
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -1131,37 +1149,15 @@ but can be disabled or styled through keywords with the prefix
   </div>
   
 
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'beta',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

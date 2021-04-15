@@ -3101,6 +3101,7 @@ class Layout(BaseLayout):
                 axes[ia].xaxis.set_major_formatter(NullFormatter())
                 nticks = len(axes[ia].get_xticks())
                 axes[ia].set_xticklabels(tp['x']['label_text'][0:nticks])
+
             if self.tick_cleanup and tlmajy.on and not skipy:
                 nticks = len(axes[ia].get_yticks())
                 axes[ia].set_yticklabels(tp['y']['label_text'][0:nticks])
