@@ -155,6 +155,25 @@ def deprecated(kwargs):
     return kwargs
 
 
+def gantt(*args, **kwargs):
+    """ Main gantt chart plotting function
+    xxxxxxxAt minimum, it requires a pandas DataFrame with at
+    least one column for the y axis.  Plots can be customized and enhanced by
+    passing keyword arguments.  Default values that must be defined in order to
+    generate the plot are pulled from the fcp_params default dictionary
+    Args:
+        df (DataFrame): DataFrame containing data to plot
+        x (str):        name of x column in df
+        y (str|list):   name or list of names of y column(s) in df
+    Keyword Args:
+        see online docs
+    Returns:
+        plots
+    """
+
+    return plotter('plot_gantt', **dfkwarg(args, kwargs))
+
+
 def heatmap(*args, **kwargs):
     """ Main heatmap plotting function
     At minimum, it requires a pandas DataFrame with at
@@ -205,7 +224,7 @@ def imshow(*args, **kwargs):
     Keyword Args:
     """
 
-    kwargs['tick_labels'] = kwargs.get('tick_labels', False)
+    kwargs['tick_labels'] = kwargs.get('tick_labels', True)
 
     return plotter('plot_imshow', **dfkwarg(args, kwargs))
 
@@ -584,6 +603,38 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin, leg_name, ngroups):
     return data
 
 
+def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
+    """
+    Plot data as gantt chart
+
+    Args:
+        data (obj): Data object
+        layout (obj): layout object
+        ir (int): current subplot row number
+        ic (int): current subplot column number
+        df_rc (pd.DataFrame): data subset
+        kwargs (dict): keyword args
+
+    """
+
+    # Sort the values
+    ascending = False if layout.gantt.sort.lower()=='descending' else True
+    df_rc = df_rc.sort_values(data.x[0], ascending=ascending)
+    if layout.gantt.order_by_legend:
+        df_rc = df_rc.sort_values(data.legend, ascending=ascending)
+
+    cols = data.y
+    if data.legend is not None:
+        cols += [f for f in validate_list(data.legend) if f is not None and f not in cols]
+    yvals = [tuple(f) for f in df_rc[cols].values]
+
+    for iline, df, x, y, z, leg_name, twin, ngroups in data.get_plot_data(df_rc):
+        layout.plot_gantt(ir, ic, df, data.x, y, iline, leg_name,
+                          data.ranges[ir, ic], yvals, ngroups)
+
+    return data
+
+
 def plot_heatmap(data, layout, ir, ic, df_rc, kwargs):
     """
     Plot heatmap data data
@@ -648,7 +699,8 @@ def plot_imshow(data, layout, ir, ic, df_rc, kwargs):
     """
 
     for iline, df, x, y, z, leg_name, twin, ngroups in data.get_plot_data(df_rc):
-        layout.plot_imshow(layout.axes.obj[ir, ic], df, x, y, z, data.ranges[ir, ic])
+        layout.plot_imshow(ir, ic, layout.axes.obj[ir, ic], df, x, y, z,
+                           data.ranges[ir, ic])
 
     return data
 

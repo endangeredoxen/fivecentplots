@@ -22,6 +22,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as mplp
 import matplotlib.ticker as ticker
 import matplotlib.patches as patches
+import matplotlib.dates as mdates
 import matplotlib.font_manager as font_manager
 from matplotlib.ticker import AutoMinorLocator, LogLocator, MaxNLocator, NullFormatter
 import matplotlib.transforms as mtransforms
@@ -254,14 +255,10 @@ class Layout(BaseLayout):
         divider = make_axes_locatable(ax)
         size = '%s%%' % (100*self.cbar.size[0]/self.axes.size[0])
         pad = self.ws_ax_cbar/100
-        cax = divider.append_axes("right", size=size, pad=pad)
+        cax = divider.append_axes('right', size=size, pad=pad)
 
         # Add the colorbar
         cbar = mplp.colorbar(contour, cax=cax)
-        # num_ticks = len(cbar.ax.get_yticklabels())
-        # cbarlabels = np.linspace(np.floor(0), np.ceil(1), num=num_ticks, endpoint=True)
-        # cbar.set_ticks(cbarlabels)
-        # cbar.set_ticklabels(cbarlabels)
         cbar.outline.set_edgecolor(self.cbar.edge_color.get(0))
         cbar.outline.set_linewidth(self.cbar.edge_width)
 
@@ -344,6 +341,16 @@ class Layout(BaseLayout):
             fontsize (int):  label font size (default=14)
         """
 
+        # Set slight text offset
+        if rotation == 270 and offset:
+            offsetx = -2/self.axes.size[0]#-font_size/self.axes.size[0]/4
+        else:
+            offsetx = 0
+        if rotation == 0 and offset:
+            offsety = -2/self.axes.size[1]#-font_size/self.axes.size[1]/4
+        else:
+            offsety = 0
+
         # Define the label background
         rect = patches.Rectangle((position[0], position[3]),
                                 size[0]/self.axes.size[0],
@@ -355,18 +362,7 @@ class Layout(BaseLayout):
                                 edgecolor=edge_color if type(edge_color) is str \
                                         else edge_color.get(utl.plot_num(ir, ic, self.ncol)),
                                 clip_on=False, zorder=1)
-
         self.axes.obj[ir, ic].add_patch(rect)
-
-        # Set slight text offset
-        if rotation == 270 and offset:
-            offsetx = -2/self.axes.size[0]#-font_size/self.axes.size[0]/4
-        else:
-            offsetx = 0
-        if rotation == 0 and offset:
-            offsety = -2/self.axes.size[1]#-font_size/self.axes.size[1]/4
-        else:
-            offsety = 0
 
         # Add the label text
         text = self.axes.obj[ir, ic].text(
@@ -390,7 +386,7 @@ class Layout(BaseLayout):
         def format_legend(self, leg):
             for itext, text in enumerate(leg.get_texts()):
                 text.set_color(self.legend.font_color)
-                if self.plot_func not in ['plot_hist', 'plot_bar', 'plot_pie']:
+                if self.plot_func not in ['plot_hist', 'plot_bar', 'plot_pie', 'plot_gantt']:
                     leg.legendHandles[itext]. \
                         _legmarker.set_markersize(self.legend.marker_size)
                     if self.legend.marker_alpha is not None:
@@ -646,6 +642,12 @@ class Layout(BaseLayout):
                 pp = ax.plot(df[data.x[0]], df[data.y[0]], 'o-')
                 pp2 = ax3.plot(df[data.x2[0]], df[data.y[0]], 'o-')
             # Z axis
+            elif self.plot_func == 'plot_imshow':
+                pp = ax.imshow(df, vmin=data.ranges[ir, ic]['zmin'],
+                               vmax=data.ranges[ir, ic]['zmax'])
+                if self.cbar.on:
+                    cbar = self.add_cbar(ax, pp)
+                    ax2 = cbar.ax
             elif self.plot_func == 'plot_heatmap':
                 pp = ax.imshow(df, vmin=data.ranges[ir, ic]['zmin'],
                                vmax=data.ranges[ir, ic]['zmax'])
@@ -1330,7 +1332,11 @@ class Layout(BaseLayout):
             xy = 'x' if utl.kwget(self.kwargs, self.fcpp, 'horizontal', False) \
                  is False else 'y'
             smax = data.ranges[ir, ic]['%smax' % xy]
+            if type(smax) == pd.Timestamp:
+                smax = mdates.date2num(smax)
             smin = data.ranges[ir, ic]['%smin' % xy]
+            if type(smin) == pd.Timestamp:
+                smin = mdates.date2num(smin)
             if tp[xy]['max'] == tp[xy]['ticks'][-1] \
                     and data.ranges[ir, ic]['%smax' % xy] is None:
                 self.x_tick_xs = self.tick_labels_major_x.size[0] / 2
@@ -1468,11 +1474,13 @@ class Layout(BaseLayout):
         self.labtick_y2 = (self.label_y2.size[0] + self.ws_label_tick + 2*self.ws_ticks_ax + \
                            max(self.tick_labels_major_y2.size[0],
                                self.tick_labels_minor_y2.size[0])) * self.axes.twin_x
-        self.labtick_z = (self.ws_ticks_ax + self.ws_label_tick) * self.label_z.on + \
+        self.labtick_z = (self.ws_ticks_ax + self.ws_label_tick + self.ws_label_fig) * self.label_z.on + \
                          self.label_z.size[0] + self.tick_labels_major_z.size[0]
         self.ws_ax_leg = max(0, self.ws_ax_leg - self.labtick_y2) if self.legend.location == 0 else 0
         self.ws_leg_fig = self.ws_leg_fig if self.legend.location == 0 else 0
-        self.ws_ax_fig = 0 if self.legend.location == 0 else self.ws_ax_fig
+        if self.legend.location == 0 and self.legend.on or self.cbar.on:
+            self.ws_ax_fig = 0
+
         self.fig_legend_border = self.fig_legend_border if self.legend.location == 0 else 0
         self.box_labels = 0
         if self.box_group_label.on:
@@ -1500,19 +1508,19 @@ class Layout(BaseLayout):
         if self.cbar.on and utl.kwget(kwargs, self.fcpp, 'ws_col', -999) == -999:
             self.ws_col = self.labtick_z #- self.label_z.size[0]
 
-        if self.separate_labels:  # may need to move this down
-            self.ws_col += self.label_y.size[0] + self.ws_label_tick + self.ws_fig_label
-            self.ws_row += self.label_x.size[1] + self.ws_label_tick + self.ws_fig_label
-
         if self.separate_ticks or self.axes.share_y == False:
-            self.ws_col += max(self.tick_labels_major_y.size[0],
-                                   self.tick_labels_minor_y.size[0]) + \
-                              self.ws_ticks_ax
+            self.ws_col += self.labtick_y
         if self.separate_ticks or \
                 (self.axes.share_x == False and self.box.on == False):
             self.ws_row += max(self.tick_labels_major_x.size[1],
                                 self.tick_labels_minor_x.size[1]) + \
                             self.ws_ticks_ax
+
+        if self.separate_labels and not self.separate_ticks:
+            self.ws_col += self.label_y.size[0] + self.ws_label_tick + self.ws_fig_label
+            self.ws_row += self.label_x.size[1] + self.ws_label_tick + self.ws_fig_label
+        elif self.separate_labels:
+            self.ws_col += self.ws_label_tick
 
         if self.plot_func == 'plot_heatmap' and \
                 self.heatmap.cell_size is not None and \
@@ -1522,39 +1530,53 @@ class Layout(BaseLayout):
             self.label_col.size[0] = self.axes.size[0]
             self.label_row.size[1] = self.axes.size[1]
 
-        # Figure width
+        # imshow ax adjustment
+        if self.plot_func == 'plot_imshow':
+            width = len(data.df_rc.dropna(1, 'all').columns)
+            height = len(data.df_rc.dropna(0, 'all').index)
+            wh_ratio = width / height
+            if wh_ratio >= 1:
+                self.axes.size[1] = self.axes.size[0] / wh_ratio
+            else:
+                self.axes.size[0] = self.axes.size[1] * wh_ratio
+
+        # Left side whitespace
         self.left = self.ws_fig_label + self.labtick_y
+        title_xs_left = self.title.size[0] / 2 - (self.left + \
+            (self.axes.size[0] * self.ncol + self.ws_col * (self.ncol - 1)) / 2)
+        if title_xs_left < 0:
+           title_xs_left = 0
+        self.left += title_xs_left
+
+        # Right side whitespace
         self.right = (self.cbar.size[0] + self.ws_ax_cbar) * self.ncol + \
             self.ws_ax_fig + self.labtick_y2 + \
             self.label_row.size[0] + self.ws_label_row * self.label_row.on + \
             self.labtick_z * (self.ncol - 1 if self.ncol > 1 else 1)
+        title_xs_right = self.title.size[0] / 2 - (self.right + \
+            (self.axes.size[0] * self.ncol + self.ws_col * (self.ncol - 1)) / 2)
+        if title_xs_right < 0:
+           title_xs_right = 0
+        self.right += title_xs_right
+
+        # Legend whitespace
         legx, legy = 0, 0
-        if self.legend.location == 0:
+        if self.legend.location == 0 and self.legend._on:
             legx = self.legend.size[0] + self.ws_ax_leg + self.ws_leg_fig + \
                 self.fig_legend_border + self.legend.edge_width
-        elif self.legend.location == 11:
+        elif self.legend.location == 11 and self.legend._on:
             legy = self.legend.size[1]
-        if self.x_tick_xs > 0 and \
+        if self.x_tick_xs > 0 and self.legend._on and \
                 self.x_tick_xs > legx - self.fig_legend_border:
             # hack for long x ticks and no legend
             legx += 3 + self.x_tick_xs - legx + self.fig_legend_border
+
+        # Set figure width
         self.fig.size[0] = self.left + self.axes.size[0] * self.ncol + \
             self.right + legx + self.ws_col * (self.ncol - 1) + self.box_title + \
             (self.ws_ax_box_title if self.box_group_title.on else 0) - \
-            self.fig_legend_border + \
+            (self.fig_legend_border if self.legend._on else 0) + \
             self.pie.label_sizes[0][0] + self.pie.label_sizes[1][0]
-
-        # Get extra width of a long title (centered on axes, not figure)
-        self.title_slush_left = self.title.size[0] / 2 - \
-            (self.left + (self.axes.size[0] * self.ncol + \
-             self.ws_col * (self.ncol - 1)) / 2)
-        self.title_slush_right = self.title.size[0] / 2 - (self.fig.size[0] - \
-            self.axes.size[0]/2 - self.labtick_y - self.ws_fig_label)
-        if self.title_slush_left < 0:
-           self.title_slush_left = 0
-        if self.title_slush_right < 0:
-           self.title_slush_right = 0
-        self.fig.size[0] += self.title_slush_left + self.title_slush_right
 
         # Figure height
         self.fig.size[1] = int( \
@@ -1640,7 +1662,11 @@ class Layout(BaseLayout):
                                       self.labtick_x2)/self.axes.size[1]
 
         self.label_wrap.position[3] = 1
-        self.title_wrap.size[0] = self.ncol * self.title_wrap.size[0] + (self.ncol - 1) * self.ws_col
+
+        self.title_wrap.size[0] = self.ncol * self.title_wrap.size[0] + \
+                                  (self.ncol - 1) * self.ws_col + \
+                                  ((self.cbar.size[0] + self.ws_ax_cbar) if self.cbar.on else 0)
+
         self.title_wrap.position[3] = 1 + (self.label_wrap.size[1] + 1)/ self.axes.size[1]
 
     def get_subplots_adjust(self):
@@ -1649,16 +1675,22 @@ class Layout(BaseLayout):
             self.axes.position --> [left, right, top, bottom]
         """
 
-        self.axes.position[0] = int(self.ws_fig_label + self.labtick_y + \
-                                 self.title_slush_left + self.pie.label_sizes[0][0]) \
-                                 / self.fig.size[0]
+        self.axes.position[0] = int(self.left + self.pie.label_sizes[0][0]) \
+                                    / self.fig.size[0]
+
+        # if self.cbar.on and (not self.axes.share_z or self.separate_labels):
+        #     ztick = (self.cbar.size[0] + self.ws_ax_cbar) * (self.ncol - 1) + \
+        #              self.labtick_z - self.label_z.size[0]
+        # elif self.cbar.on:
+        #     ztick = self.left - self.cbar.size[0] / 2
+        # else:
+        #     ztick = 0
 
         self.axes.position[1] = \
             self.axes.position[0] + \
             int(self.axes.size[0] * self.ncol + \
             self.ws_col * (self.ncol - 1) + \
-            (self.cbar.size[0] + self.ws_ax_cbar) * (self.ncol - 1) + \
-            self.labtick_z - self.label_z.size[0]) \
+            self.cbar.on * (self.cbar.size[0] + self.ws_ax_cbar + 1)) \
             / self.fig.size[0]
 
         self.axes.position[2] = \
@@ -1695,7 +1727,14 @@ class Layout(BaseLayout):
         self.update_from_data(data)
         self.update_wrap(data, kwargs)
         self.set_colormap(data)
-        self.set_label_text(data, **kwargs)
+
+        # Update the label keys
+        lab_keys = [f for f in self.kwargs_mod.keys() if 'label' in f]
+        kw = kwargs.copy()
+        for lk in lab_keys:
+            kw[lk] = self.kwargs_mod[lk]
+        self.set_label_text(data, **kw)
+
         data = self.get_element_sizes(data)
         self.update_subplot_spacing()
         self.get_figure_size(data, **kwargs)
@@ -1951,19 +1990,160 @@ class Layout(BaseLayout):
             zi = scipy.interpolate.griddata((xx, yy), zz, (xi, yi), method='linear')
 
         if self.contour.filled:
-            cc = ax.contourf(xi, yi, zi, self.contour.levels, cmap=self.contour.cmap, zorder=2,
+            cc = ax.contourf(xi, yi, zi, self.contour.levels, cmap=self.cmap, zorder=2,
                              vmin=ranges['zmin'], vmax=ranges['zmax'])
         else:
             cc = ax.contour(xi, yi, zi, self.contour.levels, linewidths=self.contour.width.values,
-                            cmap=self.contour.cmap, zorder=2, vmin=ranges['zmin'], vmax=ranges['zmax'])
+                            cmap=self.cmap, zorder=2, vmin=ranges['zmin'], vmax=ranges['zmax'])
 
         if self.cbar.on:
             cbar = self.add_cbar(ax, cc)
-            #cbar.set_clim(-999, 0)#ranges['zmin'], ranges['zmax'])
         else:
             cbar = None
 
         return cc, cbar
+
+    def plot_gantt(self, ir, ic, df, x, y, iline, leg_name, ranges, yvals, ngroups):
+        """
+        Plot gantt graph
+        """
+
+        ax = self.axes.obj[ir, ic]
+        bar = ax.broken_barh
+
+        # Set the color values
+        if self.gantt.color_by_bar:
+            edgecolor = [self.gantt.edge_color.get(i)
+                        for i, f in enumerate(df.index)]
+            fillcolor = [self.gantt.fill_color.get(i)
+                         for i, f in enumerate(df.index)]
+        else:
+            edgecolor = [self.gantt.edge_color.get(iline, leg_name)
+                        for i, f in enumerate(df.index)]
+            fillcolor = [self.gantt.fill_color.get(iline, leg_name)
+                        for i, f in enumerate(df.index)]
+
+        # Plot the bars
+        for ii, (irow, row) in enumerate(df.iterrows()):
+            if leg_name is not None:
+                try:
+                    yi = yvals.index((row[y], leg_name))
+                except:
+                    db()
+            else:
+                yi = yvals.index((row[y],))
+            #offset = ((ranges['ymax'] - ranges['ymin']) - len(yvals)) / \
+            #         (ranges['ymax'] - ranges['ymin'])
+            bar([(row[x[0]], row[x[1]] - row[x[0]])],
+                (yi - self.gantt.height/2, self.gantt.height),
+                facecolor=fillcolor[ii],
+                edgecolor=edgecolor[ii],
+                linewidth=self.gantt.edge_width)
+
+        # Adjust the yticklabels
+        if iline + 1 == ngroups:
+            tp = mpl_get_ticks(ax)
+            new_yticks = tp['y']['ticks'].astype(str)
+            yvals = [f[0] for f in yvals]
+            ax.set_yticks(range(-1, len(yvals)))
+            ax.set_yticklabels([''] + list(yvals))
+
+        # Legend
+        if leg_name is not None:
+            handle = [patches.Rectangle((0,0),1,1,
+                      color=self.gantt.fill_color.get(iline, leg_name))]
+            self.legend.add_value(leg_name, handle, 'lines')
+
+
+        # Adjust the xticklabels
+
+
+        # idx = np.where(np.isin(xvals,df.index))[0]
+        # ixvals = list(range(0, len(xvals)))
+        # kwargs = {}
+
+        # # Orientation
+        # if self.bar.horizontal:
+        #     bar = ax.barh
+        #     axx = 'y'
+        #     if self.bar.stacked:
+        #         kwargs['height'] = self.bar.width
+        #         if iline > 0:
+        #             if type(stacked) is pd.Series:
+        #                 stacked = stacked.loc[xvals[idx]].values
+        #             kwargs['bottom'] = stacked
+        #     else:
+        #         #kwargs['height'] = self.bar.width / ngroups
+        #         #idx = [f + iline * (kwargs['height']) for f in idx]
+        #         kwargs['height'] = self.bar.width / ngroups
+        #         width_offset = self.bar.width / total.values
+        #         idx = [f + inst[i] * kwargs['height'] for i, f in enumerate(idx)]
+        #         init_off = (total - 1) / 2 * kwargs['height']
+        #         idx = list((idx - init_off).values)
+        # else:
+        #     bar = ax.bar
+        #     axx = 'x'
+        #     if self.bar.stacked:
+        #         kwargs['width'] = self.bar.width
+        #         if iline > 0:
+        #             if type(stacked) is pd.Series:
+        #                 stacked = stacked.loc[xvals[idx]].values
+        #             kwargs['bottom'] = stacked
+        #     else:
+        #         kwargs['width'] = self.bar.width / ngroups
+        #         width_offset = self.bar.width / total.values
+        #         idx = [f + inst[i] * kwargs['width'] for i, f in enumerate(idx)]
+        #         init_off = (total - 1) / 2 * kwargs['width']
+        #         idx = list((idx - init_off).values)
+
+        # if self.bar.color_by_bar:
+        #     edgecolor = [self.bar.edge_color.get(i)
+        #                 for i, f in enumerate(df.index)]
+        #     fillcolor = [self.bar.fill_color.get(i)
+        #                  for i, f in enumerate(df.index)]
+        # else:
+        #     edgecolor = self.bar.edge_color.get(iline, leg_name)
+        #     fillcolor = self.bar.fill_color.get(iline, leg_name)
+
+        # # Error bars
+        # if std is not None and self.bar.horizontal:
+        #     kwargs['xerr'] = std
+        # elif std is not None:
+        #     kwargs['yerr'] = std
+
+        # # Plot
+        # bb = bar(idx, df.values, align=self.bar.align,
+        #          linewidth=self.bar.edge_width,
+        #          edgecolor=edgecolor, color=fillcolor,
+        #          ecolor=self.bar.error_color, **kwargs)
+
+        # # Set ticks
+        # getattr(ax, 'set_%sticks' % axx)(ixvals)
+        # getattr(ax, 'set_%sticklabels' % axx)(xvals)
+        # if iline==0:
+        #     # Update ranges
+        #     new_ticks = getattr(ax, 'get_%sticks' % axx)()
+        #     tick_off = [f for f in new_ticks if f >= 0][0]
+        #     if self.bar.horizontal:
+        #         axx = 'y'
+        #     else:
+        #         axx = 'x'
+        #     xoff = 3 * self.bar.width / 4
+        #     if data.ranges[ir, ic]['%smin' % axx] is None:
+        #         data.ranges[ir, ic]['%smin' % axx] = -xoff + tick_off
+        #     else:
+        #         data.ranges[ir, ic]['%smin' % axx] += tick_off
+        #     if data.ranges[ir, ic]['%smax' % axx] is None:
+        #         data.ranges[ir, ic]['%smax' % axx] = len(xvals) - 1 + xoff + tick_off
+        #     else:
+        #         data.ranges[ir, ic]['%smax' % axx] += tick_off
+
+        # # Legend
+        # if leg_name is not None:
+        #     handle = [patches.Rectangle((0,0),1,1,color=self.bar.fill_color.get(iline, leg_name))]
+        #     self.legend.add_value(leg_name, handle, 'lines')
+
+        return df
 
     def plot_heatmap(self, ax, df, x, y, z, ranges):
         """
@@ -1980,7 +2160,7 @@ class Layout(BaseLayout):
         """
 
         # Make the heatmap
-        im = ax.imshow(df, self.heatmap.cmap, vmin=ranges['zmin'],
+        im = ax.imshow(df, self.cmap, vmin=ranges['zmin'],
                        vmax=ranges['zmax'],
                        interpolation=self.heatmap.interpolation)
 
@@ -2075,6 +2255,33 @@ class Layout(BaseLayout):
             kde = self.plot_line(ir, ic, x0, y0, **kwargs)
 
         return hist, data
+
+    def plot_imshow(self, ir, ic, ax, df, x, y, z, ranges):
+        """
+        Plot a image
+
+        Args:
+            ax (mpl.axes): current axes obj
+            df (pd.DataFrame):  data to plot
+            x (str): x-column name
+            y (str): y-column name
+            z (str): z-column name
+            range (dict):  ax limits
+
+        """
+
+        # Make the heatmap (maybe pull these kwargs out to an imshow obj?)
+        im = ax.imshow(df.dropna(1, 'all'), self.cmap,
+                       vmin=ranges['zmin'], vmax=ranges['zmax'],
+                       interpolation=self.imshow.interpolation)
+
+        # Add a cmap
+        if self.cbar.on:# and (self.separate_ticks or ic == self.ncol - 1):
+            cbar = self.add_cbar(ax, im)
+        else:
+            cbar = None
+
+        return im
 
     def plot_line(self, ir, ic, x0, y0, x1=None, y1=None, **kwargs):
         """
@@ -2469,6 +2676,9 @@ class Layout(BaseLayout):
                 if ax == 'y2' and ic != self.ncol - 1 and \
                         utl.plot_num(ir, ic, self.ncol) != self.nwrap:
                     continue
+                if ax == 'z' and ic != self.ncol - 1 and \
+                        utl.plot_num(ir, ic, self.ncol) != self.nwrap:
+                    continue
 
             # Add the label
             self.add_label(ir, ic, labeltext, **self.make_kwargs(label))
@@ -2650,8 +2860,14 @@ class Layout(BaseLayout):
 
         # Wrap title  --> this guy's text size is not defined in get_elements_size
         if ir == 0 and ic == 0 and self.title_wrap.on:
-            title = self.add_label(ir, ic, self.title_wrap.text,
-                                   **self.make_kwargs(self.title_wrap))
+            kwargs = self.make_kwargs(self.title_wrap)
+            if self.axes.edge_width == 0:
+                kwargs['size'][0] -= 1
+            if self.plot_func == 'plot_imshow' and not self.cbar.on and self.nrow == 1:
+                kwargs['size'][0] -= 1  # don't understand this one
+            if self.cbar.on:
+                kwargs['size'][0] -= (self.ws_ax_cbar + self.cbar.size[0])
+            title = self.add_label(ir, ic, self.title_wrap.text, **kwargs)
 
         # Row labels
         if ic == self.ncol-1 and self.label_row.on and not self.label_wrap.on:
@@ -2670,10 +2886,14 @@ class Layout(BaseLayout):
             else:
                 text_size = None
             if self.label_wrap.on:
+                kwargs = self.make_kwargs(self.label_wrap)
+                if self.axes.edge_width == 0:# and ic == self.ncol - 1:
+                    kwargs['size'][0] -= 1
+                if self.plot_func == 'plot_imshow' and not self.cbar.on and self.nrow == 1:
+                    kwargs['size'][0] -= 1
                 text = ' | '.join([str(f) for f in utl.validate_list(
                     self.label_wrap.values[ir*self.ncol + ic])])
-                scol = self.add_label(ir, ic, text,
-                                     **self.make_kwargs(self.label_wrap))
+                scol = self.add_label(ir, ic, text, **kwargs)
             else:
                 text = '%s=%s' % (self.label_col.text, self.label_col.values[ic])
                 col = self.add_label(ir, ic, text,
@@ -3338,7 +3558,8 @@ class Layout(BaseLayout):
             data (Data object)
         """
 
-        if not self.cmap or self.plot_func in ['plot_contour', 'plot_heatmap']:
+        if not self.cmap or self.plot_func in \
+                ['plot_contour', 'plot_heatmap', 'plot_imshow']:
             return
 
         try:

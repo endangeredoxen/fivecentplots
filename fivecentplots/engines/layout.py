@@ -74,6 +74,8 @@ class BaseLayout:
 
         """
 
+        kwargs_orig = kwargs.copy()
+
         self.plot_func = plot_func
 
         # Reload default file
@@ -101,8 +103,8 @@ class BaseLayout:
         elif not color_list:
             color_list = copy.copy(DEFAULT_COLORS)
         self.cmap = kwargs.get('cmap', None)
-        if self.plot_func in ['plot_contour', 'plot_heatmap']:
-            self.cmap = utl.kwget(kwargs, self.fcpp, 'cmap', None)
+        if self.plot_func in ['plot_contour', 'plot_heatmap', 'plot_imshow']:
+            self.cmap = utl.kwget(kwargs, self.fcpp, 'cmap', 'inferno')
 
         # program any legend value specific color overrides
         vals = ['fill_alpha', 'fill_color', 'edge_alpha', 'edge_color', 'color']
@@ -669,8 +671,6 @@ class BaseLayout:
         # Contours
         self.contour = Element('contour', self.fcpp, kwargs,
                                on=True,
-                               cmap=utl.kwget(kwargs, self.fcpp,
-                                              'cmap', 'inferno'),
                                filled=utl.kwget(kwargs, self.fcpp,
                                                 ['contour_filled', 'filled'],
                                                 kwargs.get('filled', True)),
@@ -678,6 +678,25 @@ class BaseLayout:
                                                 ['contour_levels', 'levels'],
                                                 kwargs.get('levels', 20)),
                               )
+
+        # Imshow
+        self.imshow = Element('imshow', self.fcpp, kwargs,
+                               on=True if self.plot_func=='plot_imshow'
+                                  else False,
+                               edge_width=0,
+                               font_color='#ffffff',
+                               font_size=12,
+                               interpolation=utl.kwget(kwargs, self.fcpp,
+                                              ['imshow_interpolation', 'interpolation'],
+                                              kwargs.get('interpolation', 'none')),
+                               )
+        if self.imshow.on:
+            self.label_x.on = \
+                utl.kwget(kwargs_orig, self.fcpp, ['label_x'], False)
+            self.label_y.on = \
+                utl.kwget(kwargs_orig, self.fcpp, ['label_y'], False)
+            self.tick_labels_major_x.rotation = \
+                utl.kwget(kwargs_orig, self.fcpp, 'tick_labels_major_x', 0)
 
         # Heatmaps
         if 'cell_size' in kwargs.keys():
@@ -689,8 +708,6 @@ class BaseLayout:
                                                    'heatmap_cell_size',
                                                    60 if 'ax_size' not in
                                                    kwargs else None),
-                               cmap=utl.kwget(kwargs, self.fcpp,
-                                              'cmap', 'inferno'),
                                edge_width=0,
                                font_color='#ffffff',
                                font_size=12,
@@ -701,6 +718,9 @@ class BaseLayout:
                                               'data_labels', False),
                                )
         if self.heatmap.on:
+            self.tick_labels_major_x.rotation = \
+                utl.kwget(kwargs, self.fcpp, 'tick_labels_major_x', 90)
+        if self.heatmap.on or self.imshow.on:
             grids = [f for f in kwargs.keys() if f in
                      ['grid_major', 'grid_major_x', 'grid_major_y',
                       'grid_minor', 'grid_minor_x', 'grid_minor_y']]
@@ -710,10 +730,14 @@ class BaseLayout:
                 kwargs['ticks_major'] = True
             if 'ax_edge_width' not in kwargs.keys():
                 self.axes.edge_width = 0
-            self.tick_labels_major_x.rotation = \
-                utl.kwget(kwargs, self.fcpp, 'tick_labels_major_x', 90)
             if 'x' in kwargs.keys():
                 kwargs['tick_cleanup'] = False
+            self.ticks_major_x.on = \
+                utl.kwget(kwargs_orig, self.fcpp,
+                          ['ticks_major_x', 'ticks_major'], False)
+            self.ticks_major_y.on = \
+                utl.kwget(kwargs_orig, self.fcpp,
+                          ['ticks_major_y', 'ticks_major'], False)
 
         # Bar
         self.bar = Element('bar', self.fcpp, kwargs,
@@ -746,6 +770,51 @@ class BaseLayout:
             self.bar.color_by_bar = True
 
         ### need to fix all the kwargs only defaults!!
+
+        # Gantt
+        self.gantt = Element('gantt', self.fcpp, kwargs,
+                            on=True if 'gantt' in self.plot_func else False,
+                            height=utl.kwget(kwargs, self.fcpp, 'gantt_height',
+                                            kwargs.get('height', 0.9)),
+                            align=utl.kwget(kwargs, self.fcpp, 'gantt_align',
+                                            kwargs.get('align', 'center')),
+                            sort=utl.kwget(kwargs, self.fcpp, 'sort', 'descending'),
+                            edge_color=utl.kwget(kwargs, self.fcpp, 'gantt_edge_color',
+                                                 copy.copy(color_list)),
+                            edge_width=utl.kwget(kwargs, self.fcpp, 'gantt_edge_width', 0),
+                            fill_alpha=utl.kwget(kwargs, self.fcpp, 'gantt_fill_alpha', 0.75),
+                            fill_color=utl.kwget(kwargs, self.fcpp, 'gantt_fill_color',
+                                                 copy.copy(color_list)),
+                            stacked=utl.kwget(kwargs, self.fcpp, ['bar_stacked', 'stacked'],
+                                              kwargs.get('stacked', False)),
+                            color_by_bar=utl.kwget(kwargs, self.fcpp, ['gantt_color_by_bar', 'color_by_bar'],
+                                                   kwargs.get('color_by_bar', False)),
+                            order_by_legend=utl.kwget(kwargs, self.fcpp, ['gantt_order_by_legend', 'order_by_legend'],
+                                                   kwargs.get('order_by_legend', False)),
+                            label_x=utl.kwget(kwargs, self.fcpp, 'gantt_label_x',
+                                              kwargs.get('gantt_label_x', '')),
+                            tick_labels_x_rotation=utl.kwget(kwargs, self.fcpp, 'gantt_tick_labels_x_rotation',
+                                                    kwargs.get('gantt_tick_labels_x_rotation', 90)),
+                            )
+        if self.gantt.on and \
+                ('tick_labels_major_rotation' not in kwargs.keys() or \
+                'tick_labels_major_x_rotation' not in kwargs.keys() or \
+                'tick_labels_x_rotation' not in kwargs.keys()):
+            self.tick_labels_major_x.rotation = self.gantt.tick_labels_x_rotation
+        if self.gantt.on and \
+                ('grid_major' not in kwargs.keys() or \
+                 'grid_major_y' not in kwargs.keys()):
+            kwargs['grid_major_y'] = False
+        if self.gantt.on and \
+                'grid_minor_y' not in kwargs.keys():
+            kwargs['grid_minor_y'] = False
+        if self.gantt.on and \
+                ('ticks_major' not in kwargs.keys() or \
+                 'ticks_major_y' not in kwargs.keys()):
+            self.ticks_major_y.on = False
+        if self.gantt.on and 'label_x' not in kwargs.keys():
+            self.label_x.text = self.gantt.label_x
+            kwargs['label_x'] = self.gantt.label_x
 
         # Pie
         self.pie = Element('pie', self.fcpp, kwargs,
@@ -1364,6 +1433,7 @@ class BaseLayout:
             self.tick_labels_minor_y.on = False
             self.label_x.on = False
             self.label_y.on = False
+        self.kwargs_mod = kwargs
 
     def init_white_space(self, **kwargs):
         """
@@ -1392,13 +1462,15 @@ class BaseLayout:
         self.ws_leg_fig = utl.kwget(kwargs, self.fcpp, 'ws_leg_fig', 10)
         self.ws_fig_ax = utl.kwget(kwargs, self.fcpp, 'ws_fig_ax', 20)
         self.ws_fig_title = utl.kwget(kwargs, self.fcpp, 'ws_fig_title', 10)
+        self.ws_label_fig = utl.kwget(kwargs, self.fcpp, 'ws_label_fig',
+                                      self.ws_fig_label)
 
         # axes
         self.ws_label_tick = utl.kwget(kwargs, self.fcpp, 'ws_label_tick', 10)
         self.ws_ax_leg = utl.kwget(kwargs, self.fcpp, 'ws_ax_leg', 5)
         self.ws_ticks_ax = utl.kwget(kwargs, self.fcpp, 'ws_ticks_ax', 5)
         self.ws_title_ax = utl.kwget(kwargs, self.fcpp, 'ws_title_ax', 10)
-        self.ws_ax_fig = utl.kwget(kwargs, self.fcpp, 'ws_ax_fig', 30)
+        self.ws_ax_fig = utl.kwget(kwargs, self.fcpp, 'ws_ax_fig', 10)
 
         # ticks
         self.ws_tick_tick_minimum = utl.kwget(kwargs, self.fcpp,
@@ -1472,21 +1544,21 @@ class BaseLayout:
 
     def make_kwargs(self, element, pop=[]):
         kwargs = {}
-        kwargs['position'] = element.position
-        kwargs['size'] = element.size
-        kwargs['rotation'] = element.rotation
-        kwargs['fill_color'] = element.fill_color
-        kwargs['edge_color'] = element.edge_color
-        kwargs['edge_width'] = element.edge_width
-        kwargs['font'] = element.font
-        kwargs['font_weight'] = element.font_weight
-        kwargs['font_style'] = element.font_style
-        kwargs['font_color'] = element.font_color
-        kwargs['font_size'] = element.font_size
-        kwargs['color'] = element.color
-        kwargs['width'] = element.width
-        kwargs['style'] = element.style
-        kwargs['zorder'] = element.zorder
+        kwargs['position'] = copy.copy(element.position)
+        kwargs['size'] = copy.copy(element.size)
+        kwargs['rotation'] = copy.copy(element.rotation)
+        kwargs['fill_color'] = copy.copy(element.fill_color)
+        kwargs['edge_color'] = copy.copy(element.edge_color)
+        kwargs['edge_width'] = copy.copy(element.edge_width)
+        kwargs['font'] = copy.copy(element.font)
+        kwargs['font_weight'] = copy.copy(element.font_weight)
+        kwargs['font_style'] = copy.copy(element.font_style)
+        kwargs['font_color'] = copy.copy(element.font_color)
+        kwargs['font_size'] = copy.copy(element.font_size)
+        kwargs['color'] = copy.copy(element.color)
+        kwargs['width'] = copy.copy(element.width)
+        kwargs['style'] = copy.copy(element.style)
+        kwargs['zorder'] = copy.copy(element.zorder)
         for pp in pop:
             if pp in kwargs.keys():
                 kwargs.pop(pp)
@@ -1581,6 +1653,7 @@ class BaseLayout:
         self.axes2.share_x = data.share_x2
         self.axes.share_y = data.share_y
         self.axes2.share_y = data.share_y2
+        self.axes.share_z = data.share_z
         self.axes.share_col = data.share_col
         self.axes.share_row = data.share_row
         self.axes.scale = data.ax_scale
@@ -1603,7 +1676,7 @@ class BaseLayout:
                                   if not self.separate_labels else True
             self.ws_row = kwargs.get('ws_row', self.label_wrap._size[1])
             self.ws_col = kwargs.get('ws_col', 0)
-            self.cbar.on = False  # may want to address this someday
+            # self.cbar.on = False  # may want to address this someday
 
     def add_box_labels(self, ir, ic, dd):
         pass
@@ -1626,6 +1699,22 @@ class BaseLayout:
         """
 
         return [f for f in [self.axes, self.axes2] if f.on]
+
+    def plot_bar(self, ax, df, x, y, z, ranges):
+        """
+        Plot a bar plot
+
+        Args:
+            ax (mpl.axes): current axes obj
+            df (pd.DataFrame):  data to plot
+            x (str): x-column name
+            y (str): y-column name
+            z (str): z-column name
+            range (dict):  ax limits
+
+        """
+
+        pass
 
     def plot_box(self, ir, ic, data,**kwargs):
         """ Plot boxplot data
@@ -1651,6 +1740,22 @@ class BaseLayout:
 
         pass
 
+    def plot_gantt(self, ax, df, x, y, z, ranges):
+        """
+        Plot a bar plot
+
+        Args:
+            ax (mpl.axes): current axes obj
+            df (pd.DataFrame):  data to plot
+            x (str): x-column name
+            y (str): y-column name
+            z (str): z-column name
+            range (dict):  ax limits
+
+        """
+
+        pass
+
     def plot_heatmap(self, ax, df, x, y, z, ranges):
         """
         Plot a heatmap
@@ -1669,6 +1774,22 @@ class BaseLayout:
 
     def plot_hist(self, ir, ic, iline, df, x, y, leg_name, data, zorder=1,
                   line_type=None, marker_disable=False):
+
+        pass
+
+    def plot_imshow(self, ax, df, x, y, z, ranges):
+        """
+        Plot a image
+
+        Args:
+            ax (mpl.axes): current axes obj
+            df (pd.DataFrame):  data to plot
+            x (str): x-column name
+            y (str): y-column name
+            z (str): z-column name
+            range (dict):  ax limits
+
+        """
 
         pass
 

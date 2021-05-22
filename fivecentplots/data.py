@@ -14,20 +14,16 @@ db = pdb.set_trace
 REQUIRED_VALS = {'plot_xy': ['x', 'y'],
                  'plot_bar': ['x', 'y'],
                  'plot_box': ['y'],
-                 'plot_hist': ['x'],
                  'plot_contour': ['x', 'y', 'z'],
+                 'plot_gantt': ['x', 'y'],
                  'plot_heatmap': [],
+                 'plot_hist': ['x'],
+                 'plot_imshow': [],
                  'plot_nq': [],
                  'plot_pie': ['x', 'y'],
                 }
-OPTIONAL_VALS = {'plot_xy': [],
-                 'plot_bar': [],
-                 'plot_box': [],
-                 'plot_hist': [],
-                 'plot_contour': [],
-                 'plot_heatmap': ['x', 'y', 'z'],
+OPTIONAL_VALS = {'plot_heatmap': ['x', 'y', 'z'],
                  'plot_nq': ['x'],
-                 'plot_pie': [],
                 }
 
 
@@ -58,7 +54,7 @@ class Data:
         # Default axis attributes
         self.auto_cols = False
         self.auto_scale = utl.kwget(kwargs, self.fcpp, 'auto_scale', True)
-        if self.plot_func in ['plot_heatmap', 'plot_hist']:
+        if self.plot_func in ['plot_heatmap', 'plot_hist', 'plot_imshow']:
             self.auto_scale = False
         #self.ax_scale = utl.RepeatedList(kwargs.get('ax_scale', [None]), 'ax_scale')
         self.ax_scale = kwargs.get('ax_scale', None)
@@ -92,6 +88,8 @@ class Data:
             self.share_y = kwargs.get('share_y', True)
         if self.plot_func in ['plot_box']:
             self.share_x = False
+        if self.plot_func in ['plot_gantt']:
+            self.share_y = False
         self.sort = utl.kwget(kwargs, self.fcpp, 'sort', True)
         self.stacked = False
         if self.plot_func == 'plot_bar':
@@ -164,7 +162,7 @@ class Data:
         if self.plot_func == 'plot_box':
             self.x = ['x']
             self.df_all['x'] = 1
-        if self.plot_func == 'plot_heatmap':
+        if self.plot_func in ['plot_heatmap', 'plot_imshow']:
             if not self.x and not self.y and not self.z:
                 self.x = ['Column']
                 self.y = ['Row']
@@ -177,6 +175,13 @@ class Data:
                           ['bar_error_bars', 'error_bars'],
                           kwargs.get('error_bars', False)):
             self.error_bars = True
+        if self.plot_func == 'plot_gantt':
+            if len(self.x) != 2:
+                raise DataError('Gantt charts require both a start and a stop column')
+            if self.df_all[self.x[0]].dtype != 'datetime64[ns]':
+                raise DataError('Start column in gantt chart must be of type datetime')
+            if self.df_all[self.x[1]].dtype != 'datetime64[ns]':
+                raise DataError('Stop column in gantt chart must be of type datetime')
         if self.plot_func == 'plot_nq':
             if not self.x:
                 self.x = ['Value']
@@ -317,7 +322,7 @@ class Data:
         Set padding limits for axis
         """
 
-        if self.plot_func in ['plot_contour', 'plot_heatmap']:
+        if self.plot_func in ['plot_contour', 'plot_heatmap', 'plot_imshow']:
             self.ax_limit_padding = kwargs.get('ax_limit_padding', None)
         elif self.plot_func in ['plot_hist']:
             self.ax_limit_padding = kwargs.get('ax_limit_padding', 0)
@@ -438,6 +443,9 @@ class Data:
             add option to recast non-float/datetime column as categorical str
         """
 
+        if self.plot_func not in OPTIONAL_VALS.keys():
+            OPTIONAL_VALS[self.plot_func] = []
+
         if xyz not in REQUIRED_VALS[self.plot_func] and \
                 xyz not in OPTIONAL_VALS[self.plot_func]:
             return
@@ -455,7 +463,7 @@ class Data:
                 raise DataError('No column named "%s" found in DataFrame' % val)
 
             # Check case
-            if self.plot_func == 'plot_heatmap':
+            if self.plot_func in ['plot_heatmap', 'plot_imshow']:
                 continue
             try:
                 self.df_all[val] = self.df_all[val].astype(float)
@@ -620,6 +628,38 @@ class Data:
             cols = self.y_vals
         else:
             cols = getattr(self, ax)
+
+        # imshow special case
+        if self.plot_func == 'plot_imshow':
+            df = df.dropna(1, 'all')
+            if getattr(self, ax) == ['Column']:
+                vmin = 0
+                vmax = len(df.columns)
+            elif getattr(self, ax) == ['Row']:
+                vmin = 0
+                vmax = len(df.index)
+            elif getattr(self, ax) == ['Value']:# and self.auto_cols:
+                vmin = df[utl.df_int_cols(df)].min().min()
+                vmax = df[utl.df_int_cols(df)].max().max()
+            # elif ax not in ['x2', 'y2', 'z']:
+            #     vmin = 0
+            #     vmax = len(df[getattr(self, ax)].drop_duplicates())
+            # elif ax not in ['x2', 'y2']:
+            #     vmin = df[getattr(self, ax)].min().iloc[0]
+            #     vmax = df[getattr(self, ax)].max().iloc[0]
+            # else:
+            #     vmin = None
+            #     vmax = None
+            # plot_num = utl.plot_num(ir, ic, self.ncol)
+            # if getattr(self, '%smin' % ax).get(plot_num):
+            #     vmin = getattr(self, '%smin' % ax).get(plot_num)
+            # if getattr(self, '%smax' % ax).get(plot_num):
+            #     vmax = getattr(self, '%smax' % ax).get(plot_num)
+            # if type(vmin) is str:
+            #     vmin = None
+            # if type(vmax) is str:
+            #     vmax = None
+            return vmin, vmax
 
         # Heatmap special case
         if self.plot_func == 'plot_heatmap':
@@ -792,7 +832,7 @@ class Data:
 
     def get_data_ranges(self, ir, ic):
         """
-        Get the data ranges
+        Get the data ranges - this looks really inefficient, way not loop over each subplot one time?
 
         Args:
             ir (int): subplot row index
@@ -851,6 +891,12 @@ class Data:
                 continue
             elif self.plot_func == 'plot_bar':
                 self.get_data_ranges_bar(ir, ic)
+                continue
+            elif self.plot_func == 'plot_gantt':
+                self.get_data_ranges_gantt(ir, ic)
+                return
+            elif self.plot_func == 'plot_imshow':
+                self.get_data_ranges_imshow(ir, ic, ax, df_fig, df_rc)
                 continue
             elif self.plot_func == 'plot_pie':
                 self.ranges[ir, ic]['xmin'] = -1
@@ -912,9 +958,9 @@ class Data:
                 if len(df_rc) == 0:
                     break
                 for iline, df, x, y, z, leg_name, twin, ngroups in self.get_plot_data(df_rc):
-                    yy = df.groupby(df[self.x[0]]).sum()[self.y[0]]
+                    yy = df.groupby(self.x[0]).sum()[self.y[0]]
                     if self.error_bars:
-                        yys = df.groupby(df[self.x[0]]).std()[self.y[0]] + yy
+                        yys = df.groupby(self.x[0]).std()[self.y[0]] + yy
                     else:
                         yys = pd.DataFrame()
                     df_bar = pd.concat([df_bar, yy, yys])
@@ -991,6 +1037,58 @@ class Data:
         if self.ymin.values == [None] and self.ranges[ir, ic]['ymin'] > 0:
             self.ranges[ir, ic]['ymin'] > 0
 
+    def get_data_ranges_gantt(self, ir, ic):
+        """
+        Get the data ranges for gantt plot data
+
+        Args:
+            ir (int): subplot row index
+            ic (int): subplot col index
+
+        """
+
+        df_bar = pd.DataFrame()
+        plot_num = utl.plot_num(ir, ic, self.ncol)
+        ymaxes = []
+
+        for iir, iic, df_rc in self.get_rc_subset(self.df_fig):
+            if len(df_rc) == 0:
+                limits = ['xmin', 'xmax', 'x2min', 'x2max', 'ymin', 'ymax',
+                          'y2min', 'y2max']
+                for lim in limits:
+                    self.ranges[iir, iic][lim] = None
+                continue
+            self.ranges[iir, iic]['ymin'] = -0.5
+
+            # shared axes
+            if self.share_x or (self.nrow == 1 and self.ncol == 1):
+                self.ranges[iir, iic]['xmin'] = self.df_fig[self.x[0]].min()
+                self.ranges[iir, iic]['xmax'] = self.df_fig[self.x[1]].max()
+            if self.share_y or (self.nrow == 1 and self.ncol == 1):
+                self.ranges[iir, iic]['ymax'] = len(self.df_fig[self.y[0]]) - 0.5
+
+            # non-shared axes
+            if not self.share_x:
+                self.ranges[iir, iic]['xmin'] = df_rc[self.x[0]].min()
+                self.ranges[iir, iic]['xmax'] = df_rc[self.x[1]].max()
+            if not self.share_y:
+                self.ranges[iir, iic]['ymax'] = len(df_rc[self.y[0]]) - 0.5
+                ymaxes += [len(df_rc[self.y[0]]) - 0.5]
+
+            # not used
+            self.ranges[iir, iic]['x2min'] = None
+            self.ranges[iir, iic]['y2min'] = None
+            self.ranges[iir, iic]['zmin'] = None
+            self.ranges[iir, iic]['x2max'] = None
+            self.ranges[iir, iic]['y2max'] = None
+            self.ranges[iir, iic]['zmax'] = None
+
+        # # Update the ymax so bars don't have different widths
+        # if not self.share_y:
+        #     for iir in range(0, self.nrow):
+        #         for iic in range(0, self.ncol):
+        #             self.ranges[iir, iic]['ymax'] = max(ymaxes)
+
     def get_data_ranges_hist(self, ir, ic):
         """
         Get the data ranges
@@ -1044,6 +1142,39 @@ class Data:
             self.ranges[ir, ic]['ymin'] = self.ranges[0, 0]['ymin']
             self.ranges[ir, ic]['ymax'] = self.ranges[0, 0]['ymax']
         self.y = None
+
+    def get_data_ranges_imshow(self, ir, ic, ax, df_fig, df_rc):
+        """
+        Get the data ranges for imshow
+
+        Args:
+            ir (int): subplot row index
+            ic (int): subplot col index
+            ax (str): an axis name
+
+        """
+
+        if getattr(self, 'share_%s' % ax) and ax != 'z':
+            vals = self.get_data_range(ax, df_rc, ir, ic)
+            self.ranges[ir, ic]['%smin' % ax] = vals[0]
+            self.ranges[ir, ic]['%smax' % ax] = vals[1]
+        elif getattr(self, 'share_%s' % ax) and ax == 'z':
+            vals = self.get_data_range(ax, df_fig, ir, ic)
+            self.ranges[ir, ic]['%smin' % ax] = vals[0]
+            self.ranges[ir, ic]['%smax' % ax] = vals[1]
+        elif ir == 0 and ic == 0 and ax != 'z':
+            vals = self.get_data_range(ax, df_fig, ir, ic)
+            self.ranges[ir, ic]['%smin' % ax] = vals[0]
+            self.ranges[ir, ic]['%smax' % ax] = vals[1]
+        elif ir == 0 and ic == 0 and ax == 'z':
+            vals = self.get_data_range(ax, df_rc, ir, ic)
+            self.ranges[ir, ic]['%smin' % ax] = vals[0]
+            self.ranges[ir, ic]['%smax' % ax] = vals[1]
+        else:
+            self.ranges[ir, ic]['%smin' % ax] = \
+                self.ranges[0, 0]['%smin' % ax]
+            self.ranges[ir, ic]['%smax' % ax] = \
+                self.ranges[0, 0]['%smax' % ax]
 
     def get_df_figure(self):
         """
@@ -1233,7 +1364,7 @@ class Data:
             self.nleg_vals = 0
 
         for leg in legend_vals:
-            if not self.x:
+            if not self.x or self.plot_func == 'plot_gantt':
                 selfx = [None]
             else:
                 selfx = self.x + self.x2
@@ -1288,7 +1419,11 @@ class Data:
         """
 
         if type(self.legend_vals) != pd.DataFrame:
-            xx = [] if not self.x else self.x + self.x2
+            if self.plot_func == 'plot_gantt':
+                # make sure we only get one group for self.x
+                xx = [self.x[0]]
+            else:
+                xx = [] if not self.x else self.x + self.x2
             yy = [] if not self.y else self.y + self.y2
             lenx = 1 if not self.x else len(xx)
             leny = 1 if not self.y else len(yy)
@@ -1476,6 +1611,20 @@ class Data:
                         self.df_rc = df
 
                 # Reshaping
+                if self.plot_func == 'plot_gantt':
+                    # deal with duplicate gantt entries
+                    if self.legend is None and len(self.df_rc) > 0:
+                        idx = []
+                        [idx.append(x) for x in self.df_rc.set_index(self.y).index if x not in idx]
+                        df_start = self.df_rc.groupby(self.y).min()
+                        df_stop = self.df_rc.groupby(self.y).max()
+                        df_start[self.x[1]] = df_stop.loc[df_start.index, self.x[1]]
+                        self.df_rc = df_start.reindex(idx).reset_index()
+                if self.plot_func == 'plot_imshow':
+                    self.df_rc.index.astype = int
+                    cols = utl.df_int_cols(self.df_rc)
+                    self.df_rc = self.df_rc[cols]
+                    self.df_rc.columns.astype = int
                 if self.plot_func == 'plot_heatmap':
                     if len(self.df_rc) == 0:
                         continue
@@ -1509,18 +1658,6 @@ class Data:
                         self.ymax.values[plot_num] = -0.5
                     if not self.ymin.get(plot_num):
                         self.ymin.values[plot_num] = len(self.df_rc) + 0.5
-                    # if self.x == ['Column'] and self.auto_cols:
-                    #     col0 = self.df_rc.columns[0]
-                    #     self.df_rc = self.df_rc[[f for f in self.df_rc.columns
-                    #                             if (f - col0) >= self.xmin.get(plot_num)]]
-                    #     self.df_rc = self.df_rc[[f for f in self.df_rc.columns
-                    #                             if (f - col0) <= self.xmax.get(plot_num)]]
-                    # if self.y == ['Row'] and self.auto_cols:
-                    #     row0 = self.df_rc.index[0]
-                    #     self.df_rc = self.df_rc.loc[[f for f in self.df_rc.index
-                    #                                 if (f - row0) >= self.ymax.get(plot_num)]]
-                    #     self.df_rc = self.df_rc.loc[[f for f in self.df_rc.index
-                    #                                 if (f - row0) <= self.ymin.get(plot_num)]]
                     if self.x == ['Column'] and self.auto_cols:
                         self.df_rc = self.df_rc[[f for f in self.df_rc.columns
                                                 if f >= self.xmin.get(plot_num)]]
