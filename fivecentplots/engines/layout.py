@@ -63,12 +63,11 @@ ENGINE = ''
 
 
 class BaseLayout:
-    def __init__(self, plot_func, data, **kwargs):
+    def __init__(self, data, **kwargs):
         """
         Generic layout properties class
 
         Args:
-            plot_func (str): name of plot function to use
             data (Data class): data values
             **kwargs: styling, spacing kwargs
 
@@ -76,7 +75,7 @@ class BaseLayout:
 
         kwargs_orig = kwargs.copy()
 
-        self.plot_func = plot_func
+        self.name = data.name
 
         # Reload default file
         self.fcpp, color_list, marker_list = utl.reload_defaults(kwargs.get('theme', None))
@@ -103,7 +102,7 @@ class BaseLayout:
         elif not color_list:
             color_list = copy.copy(DEFAULT_COLORS)
         self.cmap = kwargs.get('cmap', None)
-        if self.plot_func in ['plot_contour', 'plot_heatmap', 'plot_imshow']:
+        if self.name in ['contour', 'heatmap', 'imshow']:
             self.cmap = utl.kwget(kwargs, self.fcpp, 'cmap', 'inferno')
 
         # program any legend value specific color overrides
@@ -157,7 +156,7 @@ class BaseLayout:
                             twin_y=kwargs.get('twin_y', False),
                             )
         for isize, size in enumerate(self.axes.size):
-            if 'group' in str(size) and self.plot_func == 'plot_box':
+            if 'group' in str(size) and self.name == 'box':
                 self.axes.size[isize] = \
                     int(size.split('*')[0].replace(' ', '')) * len(data.indices)
         twinned = kwargs.get('twin_x', False) or kwargs.get('twin_y', False)
@@ -631,7 +630,7 @@ class BaseLayout:
                                                  kwargs.get('legend') if kwargs.get('legend') != True else ''),
                                  #values={} if not kwargs.get('legend') else {'NaN': None},
                                  )
-        if self.legend._on and self.plot_func=='plot_pie':
+        if self.legend._on and self.name=='pie':
             self.legend.on = True
         if not self.legend._on and self.ref_line.on:
             for ref_line_legend_text in self.ref_line.legend_text.values:
@@ -648,7 +647,7 @@ class BaseLayout:
             self.fit.color = copy.copy(self.lines.color)
         y = utl.validate_list(kwargs.get('y'))
         if not self.axes.twin_x and y is not None and len(y) > 1 and \
-                self.plot_func != 'plot_box' and \
+                self.name != 'box' and \
                 (kwargs.get('wrap') != 'y' and \
                 kwargs.get('row') != 'y' and \
                 kwargs.get('col') != 'y') and \
@@ -677,11 +676,17 @@ class BaseLayout:
                                levels=utl.kwget(kwargs, self.fcpp,
                                                 ['contour_levels', 'levels'],
                                                 kwargs.get('levels', 20)),
+                               interp=utl.kwget(kwargs, self.fcpp,
+                                                ['contour_interp', 'interp'],
+                                                kwargs.get('interp', 'cubic')),
+                               show_points=utl.kwget(kwargs, self.fcpp,
+                                                ['contour_show_points', 'show_points'],
+                                                kwargs.get('show_points', False)),
                               )
 
         # Imshow
         self.imshow = Element('imshow', self.fcpp, kwargs,
-                               on=True if self.plot_func=='plot_imshow'
+                               on=True if self.name=='imshow'
                                   else False,
                                edge_width=0,
                                font_color='#ffffff',
@@ -702,7 +707,7 @@ class BaseLayout:
         if 'cell_size' in kwargs.keys():
             kwargs['heatmap_cell_size'] = kwargs['cell_size']
         self.heatmap = Element('heatmap', self.fcpp, kwargs,
-                               on=True if self.plot_func=='plot_heatmap'
+                               on=True if self.name=='heatmap'
                                   else False,
                                cell_size=utl.kwget(kwargs, self.fcpp,
                                                    'heatmap_cell_size',
@@ -741,7 +746,7 @@ class BaseLayout:
 
         # Bar
         self.bar = Element('bar', self.fcpp, kwargs,
-                           on=True if 'bar' in self.plot_func else False,
+                           on=True if 'bar' in self.name else False,
                            width=utl.kwget(kwargs, self.fcpp, 'bar_width',
                                            kwargs.get('width', 0.8)),
                            align=utl.kwget(kwargs, self.fcpp, 'bar_align',
@@ -773,7 +778,7 @@ class BaseLayout:
 
         # Gantt
         self.gantt = Element('gantt', self.fcpp, kwargs,
-                            on=True if 'gantt' in self.plot_func else False,
+                            on=True if 'gantt' in self.name else False,
                             height=utl.kwget(kwargs, self.fcpp, 'gantt_height',
                                             kwargs.get('height', 0.9)),
                             align=utl.kwget(kwargs, self.fcpp, 'gantt_align',
@@ -818,7 +823,7 @@ class BaseLayout:
 
         # Pie
         self.pie = Element('pie', self.fcpp, kwargs,
-                           on=True if 'pie' in self.plot_func else False,
+                           on=True if 'pie' in self.name else False,
                            autopct=utl.kwget(kwargs, self.fcpp, ['pie_autopct', 'percents'],
                                              kwargs.get('percents', None)),
                            colors=utl.kwget(kwargs, self.fcpp, 'pie_colors', copy.copy(color_list)),
@@ -853,7 +858,7 @@ class BaseLayout:
 
         # Histogram
         self.hist = Element('hist', self.fcpp, kwargs,
-                            on=True if 'hist' in self.plot_func and kwargs.get('hist_on', True) else False,
+                            on=True if 'hist' in self.name and kwargs.get('hist_on', True) else False,
                             align=utl.kwget(kwargs, self.fcpp, 'hist_align', 'mid'),
                             bins=utl.kwget(kwargs, self.fcpp, ['hist_bins', 'bins'],
                                            kwargs.get('bins', 20)),
@@ -886,14 +891,14 @@ class BaseLayout:
 
         # Boxplot labels
         self.box_group_title = Element('box_group_title', self.fcpp, kwargs,
-                                      on=True if 'box' in self.plot_func and kwargs.get('box_labels_on', True) else False,
+                                      on=True if 'box' in self.name and kwargs.get('box_labels_on', True) else False,
                                       font_color='#666666',
                                       font_size=12,
                                       padding=15,  # percent
                                       )
         self.box_group_label = Element('box_group_label', self.fcpp, kwargs,
                                        align={},
-                                       on=True if 'box' in self.plot_func and kwargs.get('box_labels_on', True) else False,
+                                       on=True if 'box' in self.name and kwargs.get('box_labels_on', True) else False,
                                        edge_color='#aaaaaa',
                                        font_color='#666666',
                                        font_size=13,
@@ -932,7 +937,7 @@ class BaseLayout:
         box_edge_color = utl.kwget(kwargs, self.fcpp, 'box_edge_color', '#aaaaaa') #['#4b72b0'])
         box_fill_color = utl.kwget(kwargs, self.fcpp, 'box_fill_color', '#ffffff')
         self.box = Element('box', self.fcpp, kwargs,
-                           on=True if 'box' in self.plot_func and kwargs.get('box_on', True) else False,
+                           on=True if 'box' in self.name and kwargs.get('box_on', True) else False,
                            edge_color=box_edge_color,
                            edge_width=0.5,
                            fill_color=box_fill_color,
@@ -1023,7 +1028,7 @@ class BaseLayout:
 
         self.box_stat_line = \
             Element('box_stat_line', self.fcpp, kwargs,
-                    on=True if 'box' in self.plot_func and \
+                    on=True if 'box' in self.name and \
                         kwargs.get('box_stat_line_on', True) else False,
                     color='#666666',
                     stat=kwargs.get('box_stat_line', 'mean'),
@@ -1047,11 +1052,11 @@ class BaseLayout:
                                                         'box_range_lines',
                                                         3),
                                        )
-        if 'box' in self.plot_func:
+        if 'box' in self.name:
             self.lines.on = False
         if self.violin.on:
             self.markers.on = self.violin.markers
-        if 'box' in self.plot_func:
+        if 'box' in self.name:
             # edge color
             if not kwargs.get('colors') \
                     and not kwargs.get('marker_edge_color') \
@@ -1390,7 +1395,7 @@ class BaseLayout:
         self.tick_cleanup = utl.kwget(kwargs, self.fcpp, 'tick_cleanup', True)
 
         # Plot overrides
-        if 'bar' in self.plot_func:
+        if 'bar' in self.name:
             if self.bar.horizontal:
                 self.grid_major_y.on = False
                 self.grid_minor_y.on = False
@@ -1401,7 +1406,7 @@ class BaseLayout:
                 self.grid_minor_x.on = False
                 self.ticks_major_x.on = False
                 self.ticks_minor_x.on = False
-        if 'box' in self.plot_func:
+        if 'box' in self.name:
             self.grid_major_x.on = False
             self.grid_minor_x.on = False
             self.ticks_major_x.on = False
@@ -1409,7 +1414,7 @@ class BaseLayout:
             self.tick_labels_major_x.on = False
             self.tick_labels_minor_x.on = False
             self.label_x.on = False
-        if 'heatmap' in self.plot_func:
+        if 'heatmap' in self.name:
             self.grid_major_x.on = False
             self.grid_major_y.on = False
             self.grid_minor_x.on = False
@@ -1420,7 +1425,7 @@ class BaseLayout:
             self.ticks_minor_y.on = False
             self.tick_labels_minor_x.on = False
             self.tick_labels_minor_y.on = False
-        if 'pie' in self.plot_func:
+        if 'pie' in self.name:
             self.grid_major_x.on = False
             self.grid_major_y.on = False
             self.grid_minor_x.on = False
@@ -1471,6 +1476,7 @@ class BaseLayout:
         self.ws_ticks_ax = utl.kwget(kwargs, self.fcpp, 'ws_ticks_ax', 5)
         self.ws_title_ax = utl.kwget(kwargs, self.fcpp, 'ws_title_ax', 10)
         self.ws_ax_fig = utl.kwget(kwargs, self.fcpp, 'ws_ax_fig', 10)
+        self.ws_ax_label_xs = utl.kwget(kwargs, self.fcpp, 'ws_ax_label_xs', 5)
 
         # ticks
         self.ws_tick_tick_minimum = utl.kwget(kwargs, self.fcpp,
@@ -1633,7 +1639,7 @@ class BaseLayout:
                 getattr(self, 'label_%s' % lab).values = \
                     getattr(data, '%s_vals' % lab)
 
-        if 'hist' in self.plot_func:
+        if 'hist' in self.name:
             if self.hist.normalize:
                 self.label_y.text = kwargs.get('label_y_text', 'Normalized Counts')
             else:
