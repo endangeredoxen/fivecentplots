@@ -25,7 +25,7 @@ SHOW = False
 
 # Read an image
 import imageio
-url = 'https://s4827.pcdn.co/wp-content/uploads/2011/04/low-light-iphone4.jpg'
+url = 'https://imagesvc.meredithcorp.io/v3/mm/image?q=85&c=sc&rect=0%2C214%2C2000%2C1214&poi=%5B920%2C546%5D&w=2000&h=1000&url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F47%2F2020%2F10%2F07%2Fcat-in-pirate-costume-380541532-2000.jpg'
 imgr = imageio.imread(url)
 
 # Convert to grayscale
@@ -140,7 +140,6 @@ def test_cat_non_uniform(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'cat_non-uniform_master') if master else 'cat_non-uniform'
 
     # Make the plot
-    ### NOT THE RIGHT SIZE
     df2 = pd.read_csv(osjoin(os.path.dirname(fcp.__file__), 'tests', 'fake_data_contour.csv'))
     fcp.heatmap(df=df2, x='X', y='Y', z='Value', row='Batch', col='Experiment',
                 cbar=True, show=SHOW, share_z=True, ax_size=[400, 400],

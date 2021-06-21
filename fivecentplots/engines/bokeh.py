@@ -472,7 +472,7 @@ class Layout(BaseLayout):
 
         """
 
-        if self.plot_func == 'plot_heatmap':
+        if self.name == 'heatmap':
             return
 
         # X-axis

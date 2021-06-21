@@ -1,6 +1,15 @@
 Changelog
 *********
 
+0.5.0
+=====
+* class-based data objects for plot types
+* new plots:
+    * gantt
+    * imshow
+* spacing bug fixes for mpl engine
+
+
 0.4.3
 =====
 * fix heatmap but when DataFrame column names are of type ``object`` but are actually ``int``

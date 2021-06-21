@@ -27,7 +27,8 @@ import shutil
 import datetime
 import sys
 import textwrap
-from . data import Data
+#from . data import Data
+from . import data_obj
 from . colors import *
 from . import engines
 from . import keywords
@@ -82,7 +83,7 @@ def bar(*args, **kwargs):
         plots
     """
 
-    return plotter('plot_bar', **dfkwarg(args, kwargs))
+    return plotter(data_obj.Bar, **dfkwarg(args, kwargs))
 
 
 def boxplot(*args, **kwargs):
@@ -99,7 +100,7 @@ def boxplot(*args, **kwargs):
     Keyword Args:
     """
 
-    return plotter('plot_box', **dfkwarg(args, kwargs))
+    return plotter(data_obj.Box, **dfkwarg(args, kwargs))
 
 
 def contour(*args, **kwargs):
@@ -119,7 +120,7 @@ def contour(*args, **kwargs):
     Keyword Args:
     """
 
-    return plotter('plot_contour', **dfkwarg(args, kwargs))
+    return plotter(data_obj.Contour, **dfkwarg(args, kwargs))
 
 
 def deprecated(kwargs):
@@ -171,7 +172,7 @@ def gantt(*args, **kwargs):
         plots
     """
 
-    return plotter('plot_gantt', **dfkwarg(args, kwargs))
+    return plotter(data_obj.Gantt, **dfkwarg(args, kwargs))
 
 
 def heatmap(*args, **kwargs):
@@ -191,7 +192,7 @@ def heatmap(*args, **kwargs):
     Keyword Args:
     """
 
-    return plotter('plot_heatmap', **dfkwarg(args, kwargs))
+    return plotter(data_obj.Heatmap, **dfkwarg(args, kwargs))
 
 
 def help():
@@ -204,7 +205,7 @@ def hist(*args, **kwargs):
     Histogram plot
     """
 
-    return plotter('plot_hist', **dfkwarg(args, kwargs))
+    return plotter('hist', **dfkwarg(args, kwargs))
 
 
 def imshow(*args, **kwargs):
@@ -226,7 +227,7 @@ def imshow(*args, **kwargs):
 
     kwargs['tick_labels'] = kwargs.get('tick_labels', True)
 
-    return plotter('plot_imshow', **dfkwarg(args, kwargs))
+    return plotter('imshow', **dfkwarg(args, kwargs))
 
 
 def nq(*args, **kwargs):
@@ -234,7 +235,7 @@ def nq(*args, **kwargs):
     Plot normal quantiles of a data set
     """
 
-    return plotter('plot_nq', **dfkwarg(args, kwargs))
+    return plotter('nq', **dfkwarg(args, kwargs))
 
 
 def paste_kwargs(kwargs):
@@ -271,7 +272,7 @@ def plot(*args, **kwargs):
     XY plot
     """
 
-    return plotter('plot_xy', **dfkwarg(args, kwargs))
+    return plotter(data_obj.XY, **dfkwarg(args, kwargs))
 
 
 def plot_bar(data, layout, ir, ic, df_rc, kwargs):
@@ -652,7 +653,7 @@ def plot_heatmap(data, layout, ir, ic, df_rc, kwargs):
     for iline, df, x, y, z, leg_name, twin, ngroups in data.get_plot_data(df_rc):
 
         # Make the plot
-        layout.plot_heatmap(layout.axes.obj[ir, ic], df, x, y, z, data.ranges[ir, ic])
+        layout.plot_heatmap(layout.axes.obj[ir, ic], df, ir, ic, x, y, z, data.ranges[ir, ic])
 
     return data
 
@@ -821,7 +822,7 @@ def plot_xy(data, layout, ir, ic, df_rc, kwargs):
     return data
 
 
-def plotter(plot_func, **kwargs):
+def plotter(dobj, **kwargs):
     """ Main plotting function
 
     UPDATE At minimum, it requires a pandas DataFrame with at
@@ -831,9 +832,7 @@ def plotter(plot_func, **kwargs):
     pulled from the fcp_params default dictionary
 
     Args:
-        df (DataFrame): DataFrame containing data to plot
-        x (str):        name of x column in df
-        y (str|list):   name or list of names of y column(s) in df
+        dobj (Data object):  data class for the specific plot type
 
     Keyword Args:
         UPDATE
@@ -863,16 +862,16 @@ def plotter(plot_func, **kwargs):
     kwargs['timer'] = Timer(print=kwargs.get('timeit', False), start=True, units='ms')
 
     # Build the data object and update kwargs
-    dd = Data(plot_func, **kwargs)
+    dd = dobj(**kwargs)
     for k, v in kwargs.items():
         if k in dd.__dict__.keys():
             kwargs[k] = getattr(dd, k)
     kwargs['timer'].read('Data obj')
 
     # Iterate over discrete figures
-    for ifig, fig_item, fig_cols, df_fig, dd in dd.get_df_figure():
+    for ifig, fig_item, fig_cols, dd in dd.get_df_figure():
         # Create a layout object
-        layout = engine.Layout(plot_func, dd, **kwargs)
+        layout = engine.Layout(dd, **kwargs)
         kwargs = layout.kwargs
         kwargs['timer'].read('layout class')
 
@@ -881,8 +880,8 @@ def plotter(plot_func, **kwargs):
         kwargs['timer'].read('ifig=%s | make_figure' % ifig)
 
         # Turn off empty subplots (COULD THIS BE FASTER WITHOUT AN EXTRA CALL TO GET_RC_SUBSET? using this to populate layout.axes.visible)
-        for ir, ic, df_rc in dd.get_rc_subset(df_fig):
-            if len(df_rc) == 0:
+        for ir, ic, df_rc in dd.get_rc_subset():
+            if len(df_rc) == 0:  # don't loop again, but set this value in Data
                 if dd.wrap is None:
                     layout.set_axes_rc_labels(ir, ic)
                 layout.axes.obj[ir, ic].axis('off')
@@ -893,7 +892,7 @@ def plotter(plot_func, **kwargs):
         kwargs['timer'].read('ifig=%s | turn off empty subplots' % ifig)
 
         # Make the subplots
-        for ir, ic, df_rc in dd.get_rc_subset(df_fig):
+        for ir, ic, df_rc in dd.get_rc_subset():
             if not layout.axes.visible[ir, ic]:
                 continue
 
@@ -910,7 +909,7 @@ def plotter(plot_func, **kwargs):
             kwargs['timer'].read('ifig=%s | ir=%s | ic=%s | add_hvlines' % (ifig, ir, ic))
 
             # Plot the data
-            dd = globals()[plot_func](dd, layout, ir, ic, df_rc, kwargs)
+            dd = globals()['plot_{}'.format(dd.name)](dd, layout, ir, ic, df_rc, kwargs)
             kwargs['timer'].read('ifig=%s | ir=%s | ic=%s | plot' % (ifig, ir, ic))
 
             # Set linear or log axes scaling
@@ -950,7 +949,7 @@ def plotter(plot_func, **kwargs):
         kwargs['timer'].read('ifig=%s | set_figure_title' % (ifig))
 
         # Build the save filename
-        filename = set_save_filename(df_fig, ifig, fig_item, fig_cols,
+        filename = set_save_filename(dd.df_fig, ifig, fig_item, fig_cols,
                                      layout, kwargs)
         if 'filepath' in kwargs.keys():
             filename = os.path.join(kwargs['filepath'], filename)
@@ -999,7 +998,7 @@ def pie(*args, **kwargs):
     Pie chart
     """
 
-    return plotter('plot_pie', **dfkwarg(args, kwargs))
+    return plotter('pie', **dfkwarg(args, kwargs))
 
 
 def set_theme(theme=None):

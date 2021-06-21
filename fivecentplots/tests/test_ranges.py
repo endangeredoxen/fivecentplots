@@ -84,8 +84,7 @@ def test_primary(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df=df, x='Voltage', y='I [A]', legend='Die', show=SHOW,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             xmax=1.2,
-             filename=name + '.png', inline=False)
+             xmax=1.2, filename=name + '.png', inline=False)
 
     # Compare with master
     if master:
