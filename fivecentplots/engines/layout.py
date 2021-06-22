@@ -691,9 +691,9 @@ class BaseLayout:
                                edge_width=0,
                                font_color='#ffffff',
                                font_size=12,
-                               interpolation=utl.kwget(kwargs, self.fcpp,
-                                              ['imshow_interpolation', 'interpolation'],
-                                              kwargs.get('interpolation', 'none')),
+                               interp=utl.kwget(kwargs, self.fcpp,
+                                              ['imshow_interp', 'interp'],
+                                              kwargs.get('interp', 'none')),
                                )
         if self.imshow.on:
             self.label_x.on = \
@@ -716,13 +716,13 @@ class BaseLayout:
                                edge_width=0,
                                font_color='#ffffff',
                                font_size=12,
-                               interpolation=utl.kwget(kwargs, self.fcpp,
-                                              ['heatmap_interpolation', 'interpolation'],
-                                              kwargs.get('interpolation', 'none')),
+                               interp=utl.kwget(kwargs, self.fcpp,
+                                              ['heatmap_interp', 'interp'],
+                                              kwargs.get('interp', 'none')),
                                text=utl.kwget(kwargs, self.fcpp,
                                               'data_labels', False),
                                )
-        if self.heatmap.on:
+        if self.heatmap.on and data.x != ['Column']:  
             self.tick_labels_major_x.rotation = \
                 utl.kwget(kwargs, self.fcpp, 'tick_labels_major_x', 90)
         if self.heatmap.on or self.imshow.on:

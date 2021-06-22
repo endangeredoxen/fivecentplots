@@ -2212,7 +2212,7 @@ class Layout(BaseLayout):
         # Make the heatmap
         im = ax.imshow(df, self.cmap, vmin=ranges['zmin'],
                        vmax=ranges['zmax'],
-                       interpolation=self.heatmap.interpolation)
+                       interpolation=self.heatmap.interp)
         im.set_clim(ranges['zmin'], ranges['zmax'])
 
         # Set the axes
@@ -2232,9 +2232,10 @@ class Layout(BaseLayout):
         if ranges['xmin'] is not None and ranges['xmin'] > 0:
             xticks = ax.get_xticks()
             ax.set_xticklabels([int(f + ranges['xmin']) for f in xticks])
-        if ranges['ymax'] is not None and ranges['ymax'] > 0:
-            yticks = ax.get_yticks()
-            ax.set_yticklabels([int(f + ranges['ymax']) for f in yticks])
+        # don't recall why this is here but it isn't working...
+        # if ranges['ymax'] is not None and ranges['ymax'] > 0:
+        #     yticks = ax.get_yticks()
+        #     ax.set_yticklabels([int(f + ranges['ymax']) for f in yticks])
 
         #if (self.cbar.on and self.axes.share_z and ic == self.ncol - 1) or \
         #        (self.cbar.on and not self.axes.share_z):
@@ -2326,7 +2327,7 @@ class Layout(BaseLayout):
         # Make the heatmap (maybe pull these kwargs out to an imshow obj?)
         im = ax.imshow(df.dropna(1, 'all'), self.cmap,
                        vmin=ranges['zmin'], vmax=ranges['zmax'],
-                       interpolation=self.imshow.interpolation)
+                       interpolation=self.imshow.interp)
         im.set_clim(ranges['zmin'], ranges['zmax'])
 
         # Add a cmap
@@ -3307,6 +3308,7 @@ class Layout(BaseLayout):
                 yfy = get_tick_position(axes[ia], tp, 'y', 'last', ia)
                 yc = [-tlmajy.size[0]/2-self.ws_ticks_ax, ycy]
                 yf = [-tlmajy.size[0]/2-self.ws_ticks_ax, yfy]
+                
                 xlim = axes[ia].get_xlim()
                 if xlim[0] > xlim[1]:
                     yyc = yc
@@ -3314,7 +3316,7 @@ class Layout(BaseLayout):
                     yf = yyc
                 lim = axes[ia].get_ylim()
                 valid_y = [f for f in tp['y']['ticks']
-                           if f >= lim[0] and f <= lim[1]]
+                           if f >= min(lim) and f <= max(lim)]#if f >= lim[0] and f <= lim[1]]
 
                 # Get spacings
                 if len(tp['y']['ticks']) > 2:
@@ -3354,18 +3356,18 @@ class Layout(BaseLayout):
             if self.tick_cleanup and tlmajx.on and tlmajy.on:
                 # Calculate overlaps
                 x0y0 = utl.rectangle_overlap([xw+2*buf, xh+2*buf, xc],
-                                             [yw+2*buf, yh+2*buf, yc])
+                                            [yw+2*buf, yh+2*buf, yc])
                 x0yf = utl.rectangle_overlap([xw+2*buf, xh+2*buf, xc],
-                                             [yw+2*buf, yh+2*buf, yf])
-
+                                            [yw+2*buf, yh+2*buf, yf])
+                
                 # x and y at the origin
                 if x0y0 and lim[0] < lim[1]:  # and tp['y']['first']==0:  not sure about this
                     tp['y']['label_text'][tp['y']['first']] = ''
-                elif x0y0:
+                # elif x0y0:  # this is failing b/c last is not actually overlapping with the x-origin!
+                #     tp['y']['label_text'][tp['y']['last']] = ''
+                if x0yf and (self.axes.twin_y or lim[0] > lim[1]):
                     tp['y']['label_text'][tp['y']['last']] = ''
-                if x0yf and self.axes.twin_y:
-                    tp['y']['label_text'][tp['y']['last']] = ''
-
+                
                 # overlapping last y and first x between row, col, and wraps
                 if self.nrow > 1 and ir < self.nrow-1:
                     x2y = utl.rectangle_overlap([xw, xh, xc],

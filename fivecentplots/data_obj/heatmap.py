@@ -19,26 +19,21 @@ class Heatmap(data.Data):
         req = []
         opt = ['x', 'y', 'z']
         kwargs['auto_scale'] = False
-        auto_cols = False
-        pivot = False
-
-        if 'x' not in kwargs.keys() and 'y' not in kwargs.keys() and \
-                'z' not in kwargs.keys():
-            kwargs['x'] = ['Column']
-            kwargs['y'] = ['Row']
-            kwargs['z'] = ['Value']
-            auto_cols = True
-        else:
-            pivot = True
-
+        
         super().__init__(name, req, opt, **kwargs)
 
-        if pivot:
-            self.pivot = True
-
-        if auto_cols:
+        if 'x' not in kwargs.keys() and \
+                'y' not in kwargs.keys() and \
+                'z' not in kwargs.keys():
+            
             self.auto_cols = True
-
+            self.x = ['Column']
+            self.y = ['Row']
+            self.z = ['Value']
+                   
+        else:
+            self.pivot = True
+        
         self.ax_limit_padding = kwargs.get('ax_limit_padding', None)
 
     def get_data_range(self, ax, df, plot_num):
@@ -52,7 +47,7 @@ class Heatmap(data.Data):
         Returns:
             min, max tuple
         """
-
+        db()
         if self.auto_cols:
             df = df[utl.df_int_cols(df)]
 
@@ -110,8 +105,8 @@ class Heatmap(data.Data):
 
                 # y
                 rows = [f for f in df_rc.index if type(f) is int]
-                self.add_range(ir, ic, 'y', 'min', min(cols))
-                self.add_range(ir, ic, 'y', 'max', max(cols))
+                self.add_range(ir, ic, 'y', 'min', min(rows))
+                self.add_range(ir, ic, 'y', 'max', max(rows))
 
                 # z
                 self.add_range(ir, ic, 'z', 'min', df_rc.min().min())
