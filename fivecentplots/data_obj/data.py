@@ -12,8 +12,7 @@ except:
 import pdb
 db = pdb.set_trace
 
-REQUIRED_VALS = {'hist': ['x'],
-                 'imshow': [],
+REQUIRED_VALS = {'imshow': [],
                  'nq': [],
                  'pie': ['x', 'y'],
                 }
@@ -50,7 +49,7 @@ class Data:
         # Default axis attributes
         self.auto_cols = False
         self.auto_scale = utl.kwget(kwargs, self.fcpp, 'auto_scale', True)
-        if self.name in ['hist', 'imshow']:
+        if self.name in ['imshow']:
             self.auto_scale = False
         self.axs = ['x', 'x2', 'y', 'y2', 'z']
         self.ax_scale = kwargs.get('ax_scale', None)
@@ -85,10 +84,6 @@ class Data:
 
         self.sort = utl.kwget(kwargs, self.fcpp, 'sort', True)
         self.stacked = False
-        ##
-        if self.name == 'hist':
-            self.stacked = utl.kwget(kwargs, self.fcpp, ['hist_stacked', 'stacked'],
-                                     kwargs.get('stacked', False))
         self.swap = utl.kwget(kwargs, self.fcpp, 'swap', False)
         self.trans_x = kwargs.get('trans_x', None)
         self.trans_x2 = kwargs.get('trans_x2', None)
@@ -344,9 +339,6 @@ class Data:
 
         if self.name in [ 'imshow']:
             self.ax_limit_padding = kwargs.get('ax_limit_padding', None)
-        elif self.name in ['hist']:
-            self.ax_limit_padding = kwargs.get('ax_limit_padding', 0)
-            self.ax_limit_padding_y_max = kwargs.get('ax_limit_padding', 0.05)
         else:
             self.ax_limit_padding = utl.kwget(kwargs, self.fcpp, 'ax_limit_padding', 0.05)
         for ax in ['x', 'x2', 'y', 'y2', 'z']:
@@ -515,23 +507,19 @@ class Data:
 
         return df
 
-    def get_all_groups(self, df):
+    @property
+    def groupers(self):
         """
-        Generator to get all possible allowed groups of data
-        --not in use
-        Args:
-            df:
-
-        Returns:
-
+        Return all valid groupby values as list
         """
 
+        groupers = []
         group_cols = ['row', 'col', 'wrap', 'leg']
-        groups = [getattr(self, f) for f in group_cols
-                  if hasattr(self, f) and getattr(self, f) is not None]
-
-        for i, (nn, gg) in enumerate(df.groupby(groups)):
-            yield i, nn, self.transform(gg.copy())
+        for gc in group_cols:
+            if hasattr(self, gc) and getattr(self, gc) is not None:
+                groupers += getattr(self, gc)
+        
+        return groupers
 
     def get_auto_scale(self, df):
         """
@@ -737,8 +725,6 @@ class Data:
                         .quantile(xq)[cols].min().iloc[0]
         elif vmin is not None:
             vmin = vmin
-        elif self.name == 'hist' and ax == 'y':
-            vmin = int(axmin)
         elif getattr(self, 'ax_limit_padding_%smin' % ax) is not None:
             if self.ax_scale in ['log%s' % ax, 'loglog',
                                  'semilog%s' % ax, 'log']:
@@ -1501,11 +1487,21 @@ class Data:
             raise GroupingError('Cannot make subplot(s): '
                                 'number of rows is 0')
 
-        self.ranges = np.array([[None]*self.ncol]*self.nrow)
+        self.ranges = self.range_dict()
+
+    def range_dict(self):
+        """
+        Make a list of empty dicts for axes range limits
+        """
+
+        ranges = np.array([[None]*self.ncol]*self.nrow)
         for ir in range(0, self.nrow):
             for ic in range(0, self.ncol):
-                self.ranges[ir, ic] = {}
+                ranges[ir, ic] = {}
+        
+        return ranges
 
+    
     def get_rc_subset(self):
         """
         Subset the data by the row/col/wrap values
@@ -1701,8 +1697,6 @@ class Data:
                    (self.y if self.y is not None else []) + \
                    (self.groups if self.groups is not None else []) + \
                    (utl.validate_list(self.legend) if self.legend is not None else [])
-            # if self.name == 'hist':
-            #     cols = [f for f in cols if f != 'Counts']
             return self.df_fig[cols]
         else:
             if self.sort:
