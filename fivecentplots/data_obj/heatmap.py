@@ -36,53 +36,6 @@ class Heatmap(data.Data):
         
         self.ax_limit_padding = kwargs.get('ax_limit_padding', None)
 
-    def get_data_range(self, ax, df, plot_num):
-        """
-        Determine the min/max values for a given axis based on user inputs
-
-        Args:
-            axis (str): x, x2, y, y2, z
-            df (pd.DataFrame): data table to use for range calculation
-
-        Returns:
-            min, max tuple
-        """
-        db()
-        if self.auto_cols:
-            df = df[utl.df_int_cols(df)]
-
-            if ax == 'x':
-                vmin = min([f for f in df.columns if type(f) is int])
-                vmax = max([f for f in df.columns if type(f) is int])
-            elif ax == 'y':
-                vmin = min([f for f in df.index if type(f) is int])
-                vmax = max([f for f in df.index if type(f) is int])
-            else:
-                vmin = df.min().min()
-                vmax = df.max().max()
-            return vmin, vmax
-
-        axx = getattr(self, ax)
-        if ax not in ['x2', 'y2', 'z']:
-            vmin = 0
-            vmax = len(df[axx].drop_duplicates())
-        elif ax not in ['x2', 'y2']:
-            vmin = df[axx].min().iloc[0]
-            vmax = df[axx].max().iloc[0]
-        else:
-            vmin = None
-            vmax = None
-        # if getattr(self, '%smin' % ax).get(plot_num):
-        #     vmin = getattr(self, '%smin' % ax).get(plot_num)
-        # if getattr(self, '%smax' % ax).get(plot_num):
-        #     vmax = getattr(self, '%smax' % ax).get(plot_num)
-        # if type(vmin) is str:
-        #     vmin = None
-        # if type(vmax) is str:
-        #     vmax = None
-
-        return vmin, vmax
-
     def get_data_ranges(self):
 
         # First get any user defined range values and apply optional auto scaling
@@ -203,3 +156,7 @@ class Heatmap(data.Data):
             self.num_y = None
 
         return df
+
+
+# fix tick labels, need excess ws_ax_fig?  test_simple
+# sharing options not right
