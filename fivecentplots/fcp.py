@@ -205,7 +205,7 @@ def hist(*args, **kwargs):
     Histogram plot
     """
 
-    return plotter('hist', **dfkwarg(args, kwargs))
+    return plotter(data_obj.Histogram, **dfkwarg(args, kwargs))
 
 
 def imshow(*args, **kwargs):
