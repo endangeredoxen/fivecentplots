@@ -91,7 +91,7 @@ class Box(data.Data):
                 self.df_rc = self.subset(ir, ic)
 
                 # Plot specific subsetting
-                self.subset_modify()
+                self.subset_modify(self.df_rc, ir, ic)
 
                 # Deal with empty dfs
                 if len(self.df_rc) == 0:
@@ -113,4 +113,4 @@ class Box(data.Data):
 
     def subset_modify(self, df, ir, ic):
 
-        return self._subset_modify(self, df, ir, ic)
+        return self._subset_modify(df, ir, ic)

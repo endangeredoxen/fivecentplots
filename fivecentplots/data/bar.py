@@ -86,4 +86,4 @@ class Bar(data.Data):
 
     def subset_modify(self, df, ir, ic):
 
-        return self._subset_modify(self, df, ir, ic)
+        return self._subset_modify(df, ir, ic)

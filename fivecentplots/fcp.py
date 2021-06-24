@@ -28,7 +28,7 @@ import datetime
 import sys
 import textwrap
 #from . data import Data
-from . import data_obj
+from . import data
 from . colors import *
 from . import engines
 from . import keywords
@@ -83,7 +83,7 @@ def bar(*args, **kwargs):
         plots
     """
 
-    return plotter(data_obj.Bar, **dfkwarg(args, kwargs))
+    return plotter(data.Bar, **dfkwarg(args, kwargs))
 
 
 def boxplot(*args, **kwargs):
@@ -100,7 +100,7 @@ def boxplot(*args, **kwargs):
     Keyword Args:
     """
 
-    return plotter(data_obj.Box, **dfkwarg(args, kwargs))
+    return plotter(data.Box, **dfkwarg(args, kwargs))
 
 
 def contour(*args, **kwargs):
@@ -120,7 +120,7 @@ def contour(*args, **kwargs):
     Keyword Args:
     """
 
-    return plotter(data_obj.Contour, **dfkwarg(args, kwargs))
+    return plotter(data.Contour, **dfkwarg(args, kwargs))
 
 
 def deprecated(kwargs):
@@ -172,7 +172,7 @@ def gantt(*args, **kwargs):
         plots
     """
 
-    return plotter(data_obj.Gantt, **dfkwarg(args, kwargs))
+    return plotter(data.Gantt, **dfkwarg(args, kwargs))
 
 
 def heatmap(*args, **kwargs):
@@ -192,7 +192,7 @@ def heatmap(*args, **kwargs):
     Keyword Args:
     """
 
-    return plotter(data_obj.Heatmap, **dfkwarg(args, kwargs))
+    return plotter(data.Heatmap, **dfkwarg(args, kwargs))
 
 
 def help():
@@ -205,7 +205,7 @@ def hist(*args, **kwargs):
     Histogram plot
     """
 
-    return plotter(data_obj.Histogram, **dfkwarg(args, kwargs))
+    return plotter(data.Histogram, **dfkwarg(args, kwargs))
 
 
 def imshow(*args, **kwargs):
@@ -227,7 +227,7 @@ def imshow(*args, **kwargs):
 
     kwargs['tick_labels'] = kwargs.get('tick_labels', True)
 
-    return plotter(data_obj.ImShow, **dfkwarg(args, kwargs))
+    return plotter(data.ImShow, **dfkwarg(args, kwargs))
 
 
 def nq(*args, **kwargs):
@@ -235,7 +235,7 @@ def nq(*args, **kwargs):
     Plot normal quantiles of a data set
     """
 
-    return plotter(data_obj.NQ, **dfkwarg(args, kwargs))
+    return plotter(data.NQ, **dfkwarg(args, kwargs))
     
 
 def paste_kwargs(kwargs):
@@ -272,7 +272,7 @@ def plot(*args, **kwargs):
     XY plot
     """
 
-    return plotter(data_obj.XY, **dfkwarg(args, kwargs))
+    return plotter(data.XY, **dfkwarg(args, kwargs))
 
 
 def plot_bar(data, layout, ir, ic, df_rc, kwargs):
@@ -998,7 +998,7 @@ def pie(*args, **kwargs):
     Pie chart
     """
 
-    return plotter(data_obj.Pie, **dfkwarg(args, kwargs))
+    return plotter(data.Pie, **dfkwarg(args, kwargs))
 
 
 def set_theme(theme=None):
