@@ -12,11 +12,9 @@ except:
 import pdb
 db = pdb.set_trace
 
-REQUIRED_VALS = {'nq': [],
-                 'pie': ['x', 'y'],
+REQUIRED_VALS = {'pie': ['x', 'y'],
                 }
-OPTIONAL_VALS = {'nq': ['x'],
-                }
+OPTIONAL_VALS = {}
 
 
 class AxisError(Exception):
@@ -139,14 +137,7 @@ class Data:
                 raise AxisError('twin_y requires two x-axis columns')
             self.x2 = [self.x[1]]
             self.x = [self.x[0]]
-        if self.name == 'nq':
-            if not self.x:
-                self.x = ['Value']
-                self.df_all = pd.DataFrame(self.df_all.stack())
-                self.df_all.columns = self.x
-            self.trans_x = 'nq'
-            self.y = ['Sigma']
-
+        
         # Ref line
         self.ref_line = kwargs.get('ref_line', None)
         if type(self.ref_line) is pd.Series:
