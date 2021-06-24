@@ -12,10 +12,6 @@ except:
 import pdb
 db = pdb.set_trace
 
-REQUIRED_VALS = {'pie': ['x', 'y'],
-                }
-OPTIONAL_VALS = {}
-
 
 class AxisError(Exception):
     def __init__(self, *args, **kwargs):
@@ -1220,9 +1216,6 @@ class Data:
             return
 
         leg_all = []
-
-        if self.legend == True and self.name=='pie':
-            self.legend = self.x[0]
 
         if self.legend == True:
             self.legend = None  # no option for legend here so disable

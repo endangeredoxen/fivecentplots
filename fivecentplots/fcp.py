@@ -998,7 +998,7 @@ def pie(*args, **kwargs):
     Pie chart
     """
 
-    return plotter('pie', **dfkwarg(args, kwargs))
+    return plotter(data_obj.Pie, **dfkwarg(args, kwargs))
 
 
 def set_theme(theme=None):
