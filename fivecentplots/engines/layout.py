@@ -702,6 +702,18 @@ class BaseLayout:
                 utl.kwget(kwargs_orig, self.fcpp, ['label_y'], False)
             self.tick_labels_major_x.rotation = \
                 utl.kwget(kwargs_orig, self.fcpp, 'tick_labels_major_x', 0)
+            self.tick_labels_major_x.font_size = \
+                utl.kwget(kwargs_orig, self.fcpp, 
+                          ['tick_labels_major_font_size', 
+                          'tick_labels_major_x_font_size'], 10)
+            self.tick_labels_major_y.font_size = \
+                utl.kwget(kwargs_orig, self.fcpp, 
+                          ['tick_labels_major_font_size', 
+                          'tick_labels_major_y_font_size'], 10)
+            self.tick_labels_major_z.font_size = \
+                utl.kwget(kwargs_orig, self.fcpp, 
+                          ['tick_labels_major_font_size', 
+                          'tick_labels_major_z_font_size'], 10)
 
         # Heatmaps
         if 'cell_size' in kwargs.keys():
