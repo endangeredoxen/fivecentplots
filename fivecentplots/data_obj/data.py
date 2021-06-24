@@ -12,8 +12,7 @@ except:
 import pdb
 db = pdb.set_trace
 
-REQUIRED_VALS = {'imshow': [],
-                 'nq': [],
+REQUIRED_VALS = {'nq': [],
                  'pie': ['x', 'y'],
                 }
 OPTIONAL_VALS = {'nq': ['x'],
@@ -49,8 +48,6 @@ class Data:
         # Default axis attributes
         self.auto_cols = False
         self.auto_scale = utl.kwget(kwargs, self.fcpp, 'auto_scale', True)
-        if self.name in ['imshow']:
-            self.auto_scale = False
         self.axs = ['x', 'x2', 'y', 'y2', 'z']
         self.ax_scale = kwargs.get('ax_scale', None)
         self.ax2_scale = kwargs.get('ax2_scale', self.ax_scale)
@@ -81,7 +78,6 @@ class Data:
         if kwargs.get('wrap', None) == 'y' or kwargs.get('wrap', None) == 'x':
             self.share_x = kwargs.get('share_x', True)
             self.share_y = kwargs.get('share_y', True)
-
         self.sort = utl.kwget(kwargs, self.fcpp, 'sort', True)
         self.stacked = False
         self.swap = utl.kwget(kwargs, self.fcpp, 'swap', False)
@@ -143,19 +139,6 @@ class Data:
                 raise AxisError('twin_y requires two x-axis columns')
             self.x2 = [self.x[1]]
             self.x = [self.x[0]]
-        if self.name in ['imshow']:
-            if not self.x and not self.y and not self.z:
-                self.x = ['Column']
-                self.y = ['Row']
-                self.z = ['Value']
-                self.auto_cols = True
-            else:
-                self.pivot = True
-        # if self.name == 'bar' and \
-        #         utl.kwget(kwargs, self.fcpp,
-        #                   ['bar_error_bars', 'error_bars'],
-        #                   kwargs.get('error_bars', False)):
-        #     self.error_bars = True
         if self.name == 'nq':
             if not self.x:
                 self.x = ['Value']
@@ -337,10 +320,7 @@ class Data:
         Set padding limits for axis
         """
 
-        if self.name in [ 'imshow']:
-            self.ax_limit_padding = kwargs.get('ax_limit_padding', None)
-        else:
-            self.ax_limit_padding = utl.kwget(kwargs, self.fcpp, 'ax_limit_padding', 0.05)
+        self.ax_limit_padding = utl.kwget(kwargs, self.fcpp, 'ax_limit_padding', 0.05)
         for ax in ['x', 'x2', 'y', 'y2', 'z']:
             if not hasattr(self, 'ax_limit_padding_%smin' % ax):
                 setattr(self, 'ax_limit_padding_%smin' % ax,
@@ -471,8 +451,6 @@ class Data:
                 raise DataError('No column named "%s" found in DataFrame' % val)
 
             # Check case
-            if self.name in ['heatmap', 'imshow']:
-                continue
             try:
                 self.df_all[val] = self.df_all[val].astype(float)
                 continue
@@ -636,38 +614,6 @@ class Data:
             cols = self.y_vals
         else:
             cols = getattr(self, ax)
-
-        # imshow special case
-        if self.name == 'imshow':
-            df = df.dropna(1, 'all')
-            if getattr(self, ax) == ['Column']:
-                vmin = 0
-                vmax = len(df.columns)
-            elif getattr(self, ax) == ['Row']:
-                vmin = 0
-                vmax = len(df.index)
-            elif getattr(self, ax) == ['Value']:# and self.auto_cols:
-                vmin = df[utl.df_int_cols(df)].min().min()
-                vmax = df[utl.df_int_cols(df)].max().max()
-            # elif ax not in ['x2', 'y2', 'z']:
-            #     vmin = 0
-            #     vmax = len(df[getattr(self, ax)].drop_duplicates())
-            # elif ax not in ['x2', 'y2']:
-            #     vmin = df[getattr(self, ax)].min().iloc[0]
-            #     vmax = df[getattr(self, ax)].max().iloc[0]
-            # else:
-            #     vmin = None
-            #     vmax = None
-            # plot_num = utl.plot_num(ir, ic, self.ncol)
-            # if getattr(self, '%smin' % ax).get(plot_num):
-            #     vmin = getattr(self, '%smin' % ax).get(plot_num)
-            # if getattr(self, '%smax' % ax).get(plot_num):
-            #     vmax = getattr(self, '%smax' % ax).get(plot_num)
-            # if type(vmin) is str:
-            #     vmin = None
-            # if type(vmax) is str:
-            #     vmax = None
-            return vmin, vmax
 
         # Groupby for stats
         df = self.get_stat_groupings(df)
@@ -1517,13 +1463,7 @@ class Data:
             for ic in range(0, self.ncol):
                 self.df_rc = self.subset(ir, ic)
 
-                if self.name == 'imshow':  #move!
-                    self.df_rc.index.astype = int
-                    cols = utl.df_int_cols(self.df_rc)
-                    self.df_rc = self.df_rc[cols]
-                    self.df_rc.columns.astype = int
-
-                # Deal with empty dfs
+                # Handle empty dfs
                 if len(self.df_rc) == 0:
                     self.df_rc = pd.DataFrame()
 

@@ -227,7 +227,7 @@ def imshow(*args, **kwargs):
 
     kwargs['tick_labels'] = kwargs.get('tick_labels', True)
 
-    return plotter('imshow', **dfkwarg(args, kwargs))
+    return plotter(data_obj.ImShow, **dfkwarg(args, kwargs))
 
 
 def nq(*args, **kwargs):

@@ -1269,7 +1269,8 @@ class Layout(BaseLayout):
             filename = '%s%s' % (int(round(time.time() * 1000)), randint(0, 99))
             mpl.pyplot.savefig(filename + '.png')
 
-        # mpl.pyplot.savefig(r'test.png')  # turn on for debugging
+        ## turn on for debugging
+        # mpl.pyplot.savefig(r'test.png')  
         # os.startfile(r'test.png')
         # db()
 
@@ -1366,13 +1367,13 @@ class Layout(BaseLayout):
                     and data.ranges[ir, ic]['%smax' % xy] is None:
                 self.x_tick_xs = self.tick_labels_major_x.size[0] / 2
             elif smax is not None and smin is not None:
-                last_x = [f for f in tp[xy]['ticks'] if f < smax][-1]
+                last_x = [f for f in tp[xy]['ticks'] if f <= smax][-1]
                 delta = (last_x - smin) / (smax - smin)
                 x_tick_xs = self.axes.size[0] * (delta - 1) + \
                             getattr(self, 'tick_labels_major_%s' % xy).size[0] / 2
                 if x_tick_xs > 0:
                     self.x_tick_xs = x_tick_xs
-
+        
         for ir in range(0, self.nrow):
             for ic in range(0, self.ncol):
                 if wrap_labels[ir, ic] is not None:
@@ -1557,14 +1558,11 @@ class Layout(BaseLayout):
 
         # imshow ax adjustment
         if self.name == 'imshow':
-            width = len(data.df_rc.dropna(1, 'all').columns)
-            height = len(data.df_rc.dropna(0, 'all').index)
-            wh_ratio = width / height
-            if wh_ratio >= 1:
-                self.axes.size[1] = self.axes.size[0] / wh_ratio
+            if data.wh_ratio >= 1:
+                self.axes.size[1] = self.axes.size[0] / data.wh_ratio
             else:
-                self.axes.size[0] = self.axes.size[1] * wh_ratio
-
+                self.axes.size[0] = self.axes.size[1] * data.wh_ratio
+            
         # Left side whitespace
         self.left = self.ws_fig_label + self.labtick_y
         title_xs_left = self.title.size[0] / 2 - (self.left + \
@@ -1606,8 +1604,7 @@ class Layout(BaseLayout):
             (self.fig_legend_border if self.legend._on else 0) + \
             self.pie.label_sizes[0][0] + self.pie.label_sizes[1][0] + \
             (self.cbar.size[0] + self.ws_ax_cbar) * self.ncol
-            #(self.ncol if not self.axes.share_z else 1)
-        #db()
+        
         # Figure height
         self.fig.size[1] = int( \
             self.ws_title + \
@@ -1620,7 +1617,7 @@ class Layout(BaseLayout):
             self.ws_row * (self.nrow - 1) + \
             self.box_labels) + \
             legy
-
+        
         # Debug output
         if debug:
             print('self.fig.size[0] = %s' % self.fig.size[0])

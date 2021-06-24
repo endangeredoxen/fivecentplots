@@ -36,6 +36,42 @@ class Heatmap(data.Data):
         
         self.ax_limit_padding = kwargs.get('ax_limit_padding', None)
 
+    def check_xyz(self, xyz):
+        """
+        Validate the name and column data provided for x, y, and/or z
+        Args:
+            xyz (str): name of variable to check
+        TODO:
+            add option to recast non-float/datetime column as categorical str
+        """
+
+        if xyz not in self.req and xyz not in self.opt:
+            return
+
+        if xyz in self.opt and getattr(self, xyz) is None:
+            return None
+
+        vals = getattr(self, xyz)
+
+        if vals is None and xyz not in self.opt:
+            raise AxisError('Must provide a column name for "%s"' % xyz)
+
+        # Skip standard case check
+
+        # Check for axis errors
+        if self.twin_x and len(self.y) != 2:
+            raise AxisError('twin_x error! %s y values were specified but'
+                            ' two are required' % len(self.y))
+        if self.twin_x and len(self.x) > 1:
+            raise AxisError('twin_x error! only one x value can be specified')
+        if self.twin_y and len(self.x) != 2:
+            raise AxisError('twin_y error! %s x values were specified but'
+                            ' two are required' % len(self.x))
+        if self.twin_y and len(self.y) > 1:
+            raise AxisError('twin_y error! only one y value can be specified')
+
+        return vals
+
     def get_data_ranges(self):
 
         # First get any user defined range values and apply optional auto scaling
