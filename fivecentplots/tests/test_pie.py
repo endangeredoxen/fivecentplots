@@ -12,7 +12,7 @@ if platform.system() != 'Windows':
     raise utl.PlatformError()
 
 MPL = utl.get_mpl_version_dir()
-MASTER = osjoin(os.path.dirname(fcp.__file__), 'tests', 'test_images', MPL,  'barplot.py')
+MASTER = osjoin(os.path.dirname(fcp.__file__), 'tests', 'test_images', MPL,  'pie.py')
 
 # Sample data
 df = pd.read_csv(osjoin(os.path.dirname(fcp.__file__), 'tests', 'fake_data_bar.csv'))

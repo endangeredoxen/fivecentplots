@@ -1486,17 +1486,17 @@ class Layout(BaseLayout):
         debug = kwargs.get('debug_size', False)
 
         # Set some values for convenience
+        self.tick_x = max(self.tick_labels_major_x.size[1],
+                          self.tick_labels_minor_x.size[1]) + \
+                      self.ws_ticks_ax * self.tick_labels_major_x.on
         self.labtick_x = self.label_x.size[1] + \
-                         self.ws_label_tick * self.label_x.on + \
-                         max(self.tick_labels_major_x.size[1],
-                             self.tick_labels_minor_x.size[1]) + \
-                         self.ws_ticks_ax * self.tick_labels_major_x.on
+                         self.ws_label_tick * self.label_x.on + self.tick_x
         self.labtick_x2 = (self.label_x2.size[1] + self.ws_label_tick + 2*self.ws_ticks_ax + \
                            max(self.tick_labels_major_x2.size[1],
                                self.tick_labels_minor_x2.size[1])) * self.axes.twin_y
-        self.labtick_y = self.label_y.size[0] + self.ws_label_tick + \
-                         max(self.tick_labels_major_y.size[0],
-                             self.tick_labels_minor_y.size[0]) + self.ws_ticks_ax
+        self.tick_y = max(self.tick_labels_major_y.size[0],
+                          self.tick_labels_minor_y.size[0]) + self.ws_ticks_ax
+        self.labtick_y = self.label_y.size[0] + self.ws_label_tick + self.tick_y                         
         self.labtick_y2 = (self.label_y2.size[0] + self.ws_label_tick + 2*self.ws_ticks_ax + \
                            max(self.tick_labels_major_y2.size[0],
                                self.tick_labels_minor_y2.size[0])) * self.axes.twin_x
@@ -1534,9 +1534,9 @@ class Layout(BaseLayout):
 
         # separate ticks and labels
         if (self.separate_ticks or self.axes.share_y == False) and not self.cbar.on:
-            self.ws_col = max(self.labtick_y + self.ws_ax_label_xs, self.ws_col)
+            self.ws_col = max(self.tick_y + self.ws_ax_fig, self.ws_col)
         elif (self.separate_ticks or self.axes.share_y == False) and self.cbar.on:
-            self.ws_col += self.labtick_y + self.ws_ax_label_xs
+            self.ws_col += self.tick_y
         if self.separate_ticks or \
                 (self.axes.share_x == False and self.box.on == False):
             self.ws_row += max(self.tick_labels_major_x.size[1],
@@ -1546,8 +1546,10 @@ class Layout(BaseLayout):
             self.ws_col += self.label_y.size[0] + self.ws_label_tick + self.ws_fig_label
             self.ws_row += self.label_x.size[1] + self.ws_label_tick + self.ws_fig_label
         elif self.separate_labels:
-            self.ws_col += self.ws_label_tick
-
+            self.ws_col += self.labtick_y - self.tick_y + self.ws_ax_label_xs
+            if self.cbar.on:
+                self.ws_col += self.ws_label_tick
+        
         if self.name == 'heatmap' and \
                 self.heatmap.cell_size is not None and \
                 data.num_x is not None:
@@ -1572,17 +1574,21 @@ class Layout(BaseLayout):
         self.left += title_xs_left
 
         # Right side whitespace
-        self.right = (self.ws_ax_fig if not self.legend._on or self.legend.location!=0 else 0) + \
+        rc_label = self.label_row.size[0] + self.ws_label_row * self.label_row.on
+        ws_ax_fig = (self.ws_ax_fig if not self.legend._on or self.legend.location!=0 else 0)
+        self.right = ws_ax_fig + \
             self.labtick_y2 + \
-            self.label_row.size[0] + self.ws_label_row * self.label_row.on + \
+            rc_label + \
             self.labtick_z + \
             (self.label_z.size[0] * (self.ncol if self.separate_labels else 1))
+        
+        # Main figure title excess size
         title_xs_right = self.title.size[0] / 2 - (self.right + \
             (self.axes.size[0] * self.ncol + self.ws_col * (self.ncol - 1)) / 2)
         if title_xs_right < 0:
            title_xs_right = 0
         self.right += title_xs_right
-
+        
         # Legend whitespace
         legx, legy = 0, 0
         if self.legend.location == 0 and self.legend._on:
@@ -1590,17 +1596,23 @@ class Layout(BaseLayout):
                 self.fig_legend_border + self.legend.edge_width
         elif self.legend.location == 11 and self.legend._on:
             legy = self.legend.size[1]
-        if self.x_tick_xs > 0 and self.legend._on and \
-                self.x_tick_xs > legx - self.fig_legend_border:
-            # hack for long x ticks and no legend
-            legx += 3 + self.x_tick_xs - legx + self.fig_legend_border
-        elif self.x_tick_xs > self.ws_ax_fig:
+        if self.x_tick_xs > 0 and self.legend._on:
+            if self.x_tick_xs > legx - self.fig_legend_border:
+                # hack for long x ticks and no legend
+                legx += 3 + self.x_tick_xs - legx + self.fig_legend_border
+        elif self.x_tick_xs > (self.ws_ax_fig + rc_label):
             self.right += self.x_tick_xs - self.ws_ax_fig + 3
+
+        # Box titles excess size
+        if self.box_group_title.on:
+            btitle_xs_right = (self.ws_ax_box_title + self.box_title) - \
+                              self.right - legx + ws_ax_fig
+            if btitle_xs_right > 0:
+                self.right += btitle_xs_right        
 
         # Set figure width
         self.fig.size[0] = self.left + self.axes.size[0] * self.ncol + \
-            self.right + legx + self.ws_col * (self.ncol - 1) + self.box_title + \
-            (self.ws_ax_box_title if self.box_group_title.on else 0) - \
+            self.right + legx + self.ws_col * (self.ncol - 1) - \
             (self.fig_legend_border if self.legend._on else 0) + \
             self.pie.label_sizes[0][0] + self.pie.label_sizes[1][0] + \
             (self.cbar.size[0] + self.ws_ax_cbar) * self.ncol

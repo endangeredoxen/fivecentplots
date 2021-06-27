@@ -35,13 +35,15 @@ class Bar(data.Data):
 
         for ir, ic, plot_num in self.get_subplot_index():
             # y-axis
-            groupby = self.x + utl.validate_list(self.legend if self.legend else [])
+            groupby = self.x + self.groupers
             df_rc = self.subset(ir, ic)
-
+            
             if len(df_rc) == 0:
                 self.add_ranges_none(ir, ic)
                 break
-            if self.share_row:
+            if self.share_y and ir == 0 and ic == 0:
+                df_rc = df_fig
+            elif self.share_row:
                 df_rc = df_rc[df_rc[self.row[0]] == self.row_vals[ir]].copy()
             elif self.share_col:
                 df_rc = df_rc[df_rc[self.col[0]] == self.col_vals[ic]].copy

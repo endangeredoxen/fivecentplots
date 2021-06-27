@@ -49,7 +49,10 @@ class Gantt(data.Data):
                 self.add_range(ir, ic, 'x', 'min', df_fig[self.x[0]].min())
                 self.add_range(ir, ic, 'x', 'max', df_fig[self.x[1]].max())
             if self.share_y or (self.nrow == 1 and self.ncol == 1):
-                self.add_range(ir, ic, 'y', 'max', len(df_fig[self.y[0]]) - 0.5)
+                if self.legend is not None:
+                    self.add_range(ir, ic, 'y', 'max', len(df_fig[self.y[0]]) - 0.5)
+                else:
+                    self.add_range(ir, ic, 'y', 'max', len(df_fig[self.y[0]].unique()) - 0.5)
 
             # non-shared axes
             if not self.share_x:
@@ -66,7 +69,7 @@ class Gantt(data.Data):
             self.add_range(ir, ic, 'y2', 'max', None)
             self.add_range(ir, ic, 'z', 'min', None)
             self.add_range(ir, ic, 'z', 'max', None)
-
+        
     def subset_modify(self, df, ir, ic):
 
         # deal with duplicate gantt entries

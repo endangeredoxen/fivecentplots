@@ -72,9 +72,9 @@ class Box(data.Data):
         return True
 
     def get_data_ranges(self):
-
+        
         self._get_data_ranges()
-
+        
     def get_rc_subset(self):
         """
         Subset the data by the row/col/wrap values

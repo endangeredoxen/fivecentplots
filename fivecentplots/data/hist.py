@@ -4,6 +4,10 @@ import pandas as pd
 import numpy as np
 from .. import utilities
 import scipy.stats as ss
+try:
+    from natsort import natsorted
+except:
+    natsorted = sorted
 utl = utilities
 db = pdb.set_trace
 
