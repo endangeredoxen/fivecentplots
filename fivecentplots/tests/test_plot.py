@@ -335,7 +335,6 @@ def test_column(master=False, remove=True, show=False):
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
-
         assert not compare
 
 
@@ -344,7 +343,8 @@ def test_row_x_column(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'grid-plots-row-x-column_master') if master else 'grid-plots-row-x-column'
 
     # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]', show=SHOW,          ax_size=[225, 225],
+    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]', show=SHOW,
+             ax_size=[225, 225],
              filter='Substrate=="Si" & Target Wavelength==450', label_rc_font_size=13,
              filename=name + '.png', inline=False)
 

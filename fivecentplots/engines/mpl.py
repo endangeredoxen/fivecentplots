@@ -22,6 +22,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as mplp
 import matplotlib.ticker as ticker
 import matplotlib.patches as patches
+import matplotlib.dates as mdates
 import matplotlib.font_manager as font_manager
 from matplotlib.ticker import AutoMinorLocator, LogLocator, MaxNLocator, NullFormatter
 import matplotlib.transforms as mtransforms
@@ -44,6 +45,28 @@ except:
 
 db = pdb.set_trace
 
+
+def cbar_ticks(cbar, zmin, zmax):
+    """
+    Format cbar ticks and labels
+
+    Args:
+        cbar (colorbar obj)
+        zmin (float): min z-value
+        zmax (float): max z-value
+
+    Returns:
+        new tick labels
+    """
+
+    num_ticks = len(cbar.get_ticks())
+    new_ticks = np.linspace(zmin, zmax, num_ticks)
+    decimals = [utl.get_decimals(f) for f in new_ticks]
+    decimals = [f - 1 if f > 0 else f for f in decimals]
+    for it, nt in enumerate(new_ticks[0:-1]): 
+        new_ticks[it] = '{num:.{width}f}'.format(num=nt, width=decimals[it])
+    return new_ticks
+    
 
 def iterticks(ax):
     # this is deprecated in later versions of mpl but used in fcp so just
@@ -131,12 +154,11 @@ def mpl_get_ticks(ax, xon=True, yon=True):
 
 class Layout(BaseLayout):
 
-    def __init__(self, plot_func, data, **kwargs):
+    def __init__(self, data, **kwargs):
         """
         Layout attributes and methods for matplotlib Figure
 
         Args:
-            plot_func (str): name of plot function to use
             data (Data class): data values
             **kwargs: input args from user
         """
@@ -151,7 +173,7 @@ class Layout(BaseLayout):
         mplp.close('all')
 
         # Inherit the base layout properties
-        BaseLayout.__init__(self, plot_func, data, **kwargs)
+        BaseLayout.__init__(self, data, **kwargs)
 
         # Define white space parameters
         self.init_white_space(**kwargs)
@@ -254,14 +276,10 @@ class Layout(BaseLayout):
         divider = make_axes_locatable(ax)
         size = '%s%%' % (100*self.cbar.size[0]/self.axes.size[0])
         pad = self.ws_ax_cbar/100
-        cax = divider.append_axes("right", size=size, pad=pad)
+        cax = divider.append_axes('right', size=size, pad=pad)
 
         # Add the colorbar
         cbar = mplp.colorbar(contour, cax=cax)
-        # num_ticks = len(cbar.ax.get_yticklabels())
-        # cbarlabels = np.linspace(np.floor(0), np.ceil(1), num=num_ticks, endpoint=True)
-        # cbar.set_ticks(cbarlabels)
-        # cbar.set_ticklabels(cbarlabels)
         cbar.outline.set_edgecolor(self.cbar.edge_color.get(0))
         cbar.outline.set_linewidth(self.cbar.edge_width)
 
@@ -344,6 +362,16 @@ class Layout(BaseLayout):
             fontsize (int):  label font size (default=14)
         """
 
+        # Set slight text offset
+        if rotation == 270 and offset:
+            offsetx = -2/self.axes.size[0]#-font_size/self.axes.size[0]/4
+        else:
+            offsetx = 0
+        if rotation == 0 and offset:
+            offsety = -2/self.axes.size[1]#-font_size/self.axes.size[1]/4
+        else:
+            offsety = 0
+
         # Define the label background
         rect = patches.Rectangle((position[0], position[3]),
                                 size[0]/self.axes.size[0],
@@ -355,18 +383,7 @@ class Layout(BaseLayout):
                                 edgecolor=edge_color if type(edge_color) is str \
                                         else edge_color.get(utl.plot_num(ir, ic, self.ncol)),
                                 clip_on=False, zorder=1)
-
         self.axes.obj[ir, ic].add_patch(rect)
-
-        # Set slight text offset
-        if rotation == 270 and offset:
-            offsetx = -2/self.axes.size[0]#-font_size/self.axes.size[0]/4
-        else:
-            offsetx = 0
-        if rotation == 0 and offset:
-            offsety = -2/self.axes.size[1]#-font_size/self.axes.size[1]/4
-        else:
-            offsety = 0
 
         # Add the label text
         text = self.axes.obj[ir, ic].text(
@@ -390,7 +407,7 @@ class Layout(BaseLayout):
         def format_legend(self, leg):
             for itext, text in enumerate(leg.get_texts()):
                 text.set_color(self.legend.font_color)
-                if self.plot_func not in ['plot_hist', 'plot_bar', 'plot_pie']:
+                if self.name not in ['hist', 'bar', 'pie', 'gantt']:
                     leg.legendHandles[itext]. \
                         _legmarker.set_markersize(self.legend.marker_size)
                     if self.legend.marker_alpha is not None:
@@ -610,7 +627,7 @@ class Layout(BaseLayout):
         ax = fig.add_subplot(111)
         ax2, ax3 = None, None
         if self.axes.twin_x or data.z is not None \
-                or self.plot_func == 'plot_heatmap':
+                or self.name == 'heatmap':
             ax2 = ax.twinx()
         if self.axes.twin_y:
             ax3 = ax.twiny()
@@ -634,7 +651,7 @@ class Layout(BaseLayout):
         pie_labels = []
 
         # Plot data
-        for ir, ic, df in data.get_rc_subset(data.df_fig):
+        for ir, ic, df in data.get_rc_subset():
             if len(df) == 0:
                 continue
             # twin_x
@@ -646,7 +663,13 @@ class Layout(BaseLayout):
                 pp = ax.plot(df[data.x[0]], df[data.y[0]], 'o-')
                 pp2 = ax3.plot(df[data.x2[0]], df[data.y[0]], 'o-')
             # Z axis
-            elif self.plot_func == 'plot_heatmap':
+            elif self.name == 'imshow':
+                pp = ax.imshow(df, vmin=data.ranges[ir, ic]['zmin'],
+                               vmax=data.ranges[ir, ic]['zmax'])
+                if self.cbar.on:
+                    cbar = self.add_cbar(ax, pp)
+                    ax2 = cbar.ax
+            elif self.name == 'heatmap':
                 pp = ax.imshow(df, vmin=data.ranges[ir, ic]['zmin'],
                                vmax=data.ranges[ir, ic]['zmax'])
                 if self.cbar.on:
@@ -667,7 +690,7 @@ class Layout(BaseLayout):
                 elif len(df) < len(df.columns) and self.axes.size[0] == self.axes.size[1]:
                     self.axes.size[1] = self.axes.size[1] * len(df) / len(df.columns)
                     self.label_row.size[1] = self.axes.size[1]
-            elif self.plot_func == 'plot_contour':
+            elif self.name == 'contour':
                 pp, cbar = self.plot_contour(ax, df, data.x[0], data.y[0], data.z[0],
                                              data.ranges[ir, ic])
                 if cbar is not None:
@@ -680,7 +703,7 @@ class Layout(BaseLayout):
                 if data.ranges[ir, ic]['y2max'] is not None and data.twin_x:
                     ax2.set_ylim(top=data.ranges[ir, ic]['zmax'])
             # bar
-            elif self.plot_func == 'plot_bar':
+            elif self.name == 'bar':
                 yy = df.groupby(data.x[0]).sum()[data.y[0]]
                 xvals = np.sort(df[data.x[0]].unique())
                 ixvals = list(range(0, len(xvals)))
@@ -689,13 +712,13 @@ class Layout(BaseLayout):
                 ax.set_xticks(ixvals)
                 ax.set_xticklabels(xvals)
             # hist
-            elif self.plot_func == 'plot_hist':
+            elif self.name == 'hist':
                 if LooseVersion(mpl.__version__) < LooseVersion('2.2'):
                     pp = ax.hist(df[data.x[0]], bins=self.hist.bins, normed=self.hist.normalize)
                 else:
                     pp = ax.hist(df[data.x[0]], bins=self.hist.bins, density=self.hist.normalize)
             # pie
-            elif self.plot_func == 'plot_pie':
+            elif self.name == 'pie':
                 x = df[data.x[0]].values
                 y = df[data.y[0]].values
                 if any(y < 0):
@@ -737,6 +760,10 @@ class Layout(BaseLayout):
 
 
             # Regular
+            elif not data.x:
+                for yy in data.y:
+                    pp = ax.plot(df[yy], 'o-')
+
             else:
                 for xy in zip(data.x, data.y):
                     pp = ax.plot(df[xy[0]], df[xy[1]], 'o-')
@@ -778,7 +805,7 @@ class Layout(BaseLayout):
             elif self.axes2.scale in LOGITX:
                 ax3.set_xscale('logit')
 
-        for ir, ic, df in data.get_rc_subset(data.df_fig):
+        for ir, ic, df in data.get_rc_subset():
             if len(df) == 0:
                 continue
             if data.ranges[ir, ic]['xmin'] is not None:
@@ -802,7 +829,7 @@ class Layout(BaseLayout):
         for ia, aa in enumerate(axes):
             if aa is None:
                 continue
-            if not (ia == 1 and self.plot_func == 'plot_heatmap'):
+            if not (ia == 1 and self.name == 'heatmap'):
                 axes[ia] = self.set_scientific(aa, ia)
             if not self.tick_labels_major.offset:
                 try:
@@ -851,11 +878,11 @@ class Layout(BaseLayout):
         for ia, aa in enumerate(axes):
             if aa is None:
                 continue
-            if not (ia == 1 and self.plot_func == 'plot_heatmap'):
+            if not (ia == 1 and self.name == 'heatmap'):
                 axes[ia] = self.set_scientific(aa, ia)
 
         # Ticks
-        for ir, ic, df in data.get_rc_subset(data.df_fig):
+        for ir, ic, df in data.get_rc_subset():
             # have to do this a second time... may be a better way
             if len(df) == 0:
                 continue
@@ -1018,7 +1045,7 @@ class Layout(BaseLayout):
             if data.groups is None:
                 self.box_group_label.on = False
                 self.box_group_title.on = False
-            if 'box' in self.plot_func and self.box_group_label.on:
+            if 'box' in self.name and self.box_group_label.on:
                 changes[ir, ic] = data.changes
                 box_group_label[ir, ic] = []
                 for ii, cc in enumerate(data.indices.columns):
@@ -1034,7 +1061,7 @@ class Layout(BaseLayout):
                                     rotation=self.box_group_label.rotation,
                                     )]
                     box_group_label[ir, ic] += [box_group_label_row]
-            if 'box' in self.plot_func and self.box_group_title.on:
+            if 'box' in self.name and self.box_group_title.on:
                 for group in data.groups:
                     box_group_title += \
                         [fig.text(0, 0, r'%s' % group,
@@ -1046,7 +1073,7 @@ class Layout(BaseLayout):
                         )]
 
             # pie labels
-            if 'pie' in self.plot_func:
+            if 'pie' in self.name:
                 for xlab in x:
                     pie_labels += \
                         [fig.text(0, 0, r'%s' % xlab,
@@ -1237,12 +1264,13 @@ class Layout(BaseLayout):
             saved = True
             filename = '%s%s' % (int(round(time.time() * 1000)), randint(0, 99))
             mpl.pyplot.savefig(filename + '.png')
-        if 'pie' in self.plot_func:
+        if 'pie' in self.name:
             saved = True
             filename = '%s%s' % (int(round(time.time() * 1000)), randint(0, 99))
             mpl.pyplot.savefig(filename + '.png')
 
-        # mpl.pyplot.savefig(r'test.png')  # turn on for debugging
+        ## turn on for debugging
+        # mpl.pyplot.savefig(r'test.png')  
         # os.startfile(r'test.png')
         # db()
 
@@ -1330,18 +1358,22 @@ class Layout(BaseLayout):
             xy = 'x' if utl.kwget(self.kwargs, self.fcpp, 'horizontal', False) \
                  is False else 'y'
             smax = data.ranges[ir, ic]['%smax' % xy]
+            if type(smax) == pd.Timestamp:
+                smax = mdates.date2num(smax)
             smin = data.ranges[ir, ic]['%smin' % xy]
+            if type(smin) == pd.Timestamp:
+                smin = mdates.date2num(smin)
             if tp[xy]['max'] == tp[xy]['ticks'][-1] \
                     and data.ranges[ir, ic]['%smax' % xy] is None:
                 self.x_tick_xs = self.tick_labels_major_x.size[0] / 2
             elif smax is not None and smin is not None:
-                last_x = [f for f in tp[xy]['ticks'] if f < smax][-1]
+                last_x = [f for f in tp[xy]['ticks'] if f <= smax][-1]
                 delta = (last_x - smin) / (smax - smin)
                 x_tick_xs = self.axes.size[0] * (delta - 1) + \
                             getattr(self, 'tick_labels_major_%s' % xy).size[0] / 2
                 if x_tick_xs > 0:
                     self.x_tick_xs = x_tick_xs
-
+        
         for ir in range(0, self.nrow):
             for ic in range(0, self.ncol):
                 if wrap_labels[ir, ic] is not None:
@@ -1369,7 +1401,7 @@ class Layout(BaseLayout):
             self.legend.size = [0, 0]
 
         # box labels
-        if 'box' in self.plot_func and self.box_group_label.on \
+        if 'box' in self.name and self.box_group_label.on \
                 and data.groups is not None:
             # Get the size of group labels and adjust the rotation if needed
             rotations = np.array([0] * len(data.groups))
@@ -1399,13 +1431,13 @@ class Layout(BaseLayout):
             self.box_group_label._size = sizes
             self.box_group_label.rotation = rotations
 
-        if 'box' in self.plot_func and self.box_group_title.on \
+        if 'box' in self.name and self.box_group_title.on \
                 and data.groups is not None:
             self.box_group_title._size = [(f.get_window_extent().width,
                                            f.get_window_extent().height)
                                            for f in box_group_title]
 
-        if 'pie' in self.plot_func and not self.legend.on:
+        if 'pie' in self.name and not self.legend.on:
             sizes = [(f.get_window_extent().width, f.get_window_extent().height)
                       for f in pie_labels]
             left, right = utl.pie_wedge_labels(x, y, self.pie.startangle)
@@ -1454,25 +1486,25 @@ class Layout(BaseLayout):
         debug = kwargs.get('debug_size', False)
 
         # Set some values for convenience
+        self.tick_x = max(self.tick_labels_major_x.size[1],
+                          self.tick_labels_minor_x.size[1]) + \
+                      self.ws_ticks_ax * self.tick_labels_major_x.on
         self.labtick_x = self.label_x.size[1] + \
-                         self.ws_label_tick * self.label_x.on + \
-                         max(self.tick_labels_major_x.size[1],
-                             self.tick_labels_minor_x.size[1]) + \
-                         self.ws_ticks_ax * self.tick_labels_major_x.on
+                         self.ws_label_tick * self.label_x.on + self.tick_x
         self.labtick_x2 = (self.label_x2.size[1] + self.ws_label_tick + 2*self.ws_ticks_ax + \
                            max(self.tick_labels_major_x2.size[1],
                                self.tick_labels_minor_x2.size[1])) * self.axes.twin_y
-        self.labtick_y = self.label_y.size[0] + self.ws_label_tick + \
-                         max(self.tick_labels_major_y.size[0],
-                             self.tick_labels_minor_y.size[0]) + self.ws_ticks_ax
+        self.tick_y = max(self.tick_labels_major_y.size[0],
+                          self.tick_labels_minor_y.size[0]) + self.ws_ticks_ax
+        self.labtick_y = self.label_y.size[0] + self.ws_label_tick + self.tick_y                         
         self.labtick_y2 = (self.label_y2.size[0] + self.ws_label_tick + 2*self.ws_ticks_ax + \
                            max(self.tick_labels_major_y2.size[0],
                                self.tick_labels_minor_y2.size[0])) * self.axes.twin_x
-        self.labtick_z = (self.ws_ticks_ax + self.ws_label_tick) * self.label_z.on + \
-                         self.label_z.size[0] + self.tick_labels_major_z.size[0]
+        self.labtick_z = self.ws_label_tick * self.label_z.on + self.tick_labels_major_z.size[0]
         self.ws_ax_leg = max(0, self.ws_ax_leg - self.labtick_y2) if self.legend.location == 0 else 0
         self.ws_leg_fig = self.ws_leg_fig if self.legend.location == 0 else 0
-        self.ws_ax_fig = 0 if self.legend.location == 0 else self.ws_ax_fig
+        if self.legend.location == 0 and self.legend.on:
+            self.ws_ax_fig = 0
         self.fig_legend_border = self.fig_legend_border if self.legend.location == 0 else 0
         self.box_labels = 0
         if self.box_group_label.on:
@@ -1498,23 +1530,27 @@ class Layout(BaseLayout):
             self.ws_title = self.ws_fig_ax
 
         if self.cbar.on and utl.kwget(kwargs, self.fcpp, 'ws_col', -999) == -999:
-            self.ws_col = self.labtick_z #- self.label_z.size[0]
+            self.ws_col = self.labtick_z
 
-        if self.separate_labels:  # may need to move this down
-            self.ws_col += self.label_y.size[0] + self.ws_label_tick + self.ws_fig_label
-            self.ws_row += self.label_x.size[1] + self.ws_label_tick + self.ws_fig_label
-
-        if self.separate_ticks or self.axes.share_y == False:
-            self.ws_col += max(self.tick_labels_major_y.size[0],
-                                   self.tick_labels_minor_y.size[0]) + \
-                              self.ws_ticks_ax
+        # separate ticks and labels
+        if (self.separate_ticks or self.axes.share_y == False) and not self.cbar.on:
+            self.ws_col = max(self.tick_y + self.ws_ax_fig, self.ws_col)
+        elif (self.separate_ticks or self.axes.share_y == False) and self.cbar.on:
+            self.ws_col += self.tick_y
         if self.separate_ticks or \
                 (self.axes.share_x == False and self.box.on == False):
             self.ws_row += max(self.tick_labels_major_x.size[1],
                                 self.tick_labels_minor_x.size[1]) + \
                             self.ws_ticks_ax
-
-        if self.plot_func == 'plot_heatmap' and \
+        if self.separate_labels and not self.separate_ticks:
+            self.ws_col += self.label_y.size[0] + self.ws_label_tick + self.ws_fig_label
+            self.ws_row += self.label_x.size[1] + self.ws_label_tick + self.ws_fig_label
+        elif self.separate_labels:
+            self.ws_col += self.labtick_y - self.tick_y + self.ws_ax_label_xs
+            if self.cbar.on:
+                self.ws_col += self.ws_label_tick
+        
+        if self.name == 'heatmap' and \
                 self.heatmap.cell_size is not None and \
                 data.num_x is not None:
             self.axes.size = [self.heatmap.cell_size * data.num_x,
@@ -1522,40 +1558,65 @@ class Layout(BaseLayout):
             self.label_col.size[0] = self.axes.size[0]
             self.label_row.size[1] = self.axes.size[1]
 
-        # Figure width
+        # imshow ax adjustment
+        if self.name == 'imshow':
+            if data.wh_ratio >= 1:
+                self.axes.size[1] = self.axes.size[0] / data.wh_ratio
+            else:
+                self.axes.size[0] = self.axes.size[1] * data.wh_ratio
+            
+        # Left side whitespace
         self.left = self.ws_fig_label + self.labtick_y
-        self.right = (self.cbar.size[0] + self.ws_ax_cbar) * self.ncol + \
-            self.ws_ax_fig + self.labtick_y2 + \
-            self.label_row.size[0] + self.ws_label_row * self.label_row.on + \
-            self.labtick_z * (self.ncol - 1 if self.ncol > 1 else 1)
+        title_xs_left = self.title.size[0] / 2 - (self.left + \
+            (self.axes.size[0] * self.ncol + self.ws_col * (self.ncol - 1)) / 2)
+        if title_xs_left < 0:
+           title_xs_left = 0
+        self.left += title_xs_left
+
+        # Right side whitespace
+        rc_label = self.label_row.size[0] + self.ws_label_row * self.label_row.on
+        ws_ax_fig = (self.ws_ax_fig if not self.legend._on or self.legend.location!=0 else 0)
+        self.right = ws_ax_fig + \
+            self.labtick_y2 + \
+            rc_label + \
+            self.labtick_z + \
+            (self.label_z.size[0] * (self.ncol if self.separate_labels else 1))
+        
+        # Main figure title excess size
+        title_xs_right = self.title.size[0] / 2 - (self.right + \
+            (self.axes.size[0] * self.ncol + self.ws_col * (self.ncol - 1)) / 2)
+        if title_xs_right < 0:
+           title_xs_right = 0
+        self.right += title_xs_right
+        
+        # Legend whitespace
         legx, legy = 0, 0
-        if self.legend.location == 0:
+        if self.legend.location == 0 and self.legend._on:
             legx = self.legend.size[0] + self.ws_ax_leg + self.ws_leg_fig + \
                 self.fig_legend_border + self.legend.edge_width
-        elif self.legend.location == 11:
+        elif self.legend.location == 11 and self.legend._on:
             legy = self.legend.size[1]
-        if self.x_tick_xs > 0 and \
-                self.x_tick_xs > legx - self.fig_legend_border:
-            # hack for long x ticks and no legend
-            legx += 3 + self.x_tick_xs - legx + self.fig_legend_border
+        if self.x_tick_xs > 0 and self.legend._on:
+            if self.x_tick_xs > legx - self.fig_legend_border:
+                # hack for long x ticks and no legend
+                legx += 3 + self.x_tick_xs - legx + self.fig_legend_border
+        elif self.x_tick_xs > (self.ws_ax_fig + rc_label):
+            self.right += self.x_tick_xs - self.ws_ax_fig + 3
+
+        # Box titles excess size
+        if self.box_group_title.on:
+            btitle_xs_right = (self.ws_ax_box_title + self.box_title) - \
+                              self.right - legx + ws_ax_fig
+            if btitle_xs_right > 0:
+                self.right += btitle_xs_right        
+
+        # Set figure width
         self.fig.size[0] = self.left + self.axes.size[0] * self.ncol + \
-            self.right + legx + self.ws_col * (self.ncol - 1) + self.box_title + \
-            (self.ws_ax_box_title if self.box_group_title.on else 0) - \
-            self.fig_legend_border + \
-            self.pie.label_sizes[0][0] + self.pie.label_sizes[1][0]
-
-        # Get extra width of a long title (centered on axes, not figure)
-        self.title_slush_left = self.title.size[0] / 2 - \
-            (self.left + (self.axes.size[0] * self.ncol + \
-             self.ws_col * (self.ncol - 1)) / 2)
-        self.title_slush_right = self.title.size[0] / 2 - (self.fig.size[0] - \
-            self.axes.size[0]/2 - self.labtick_y - self.ws_fig_label)
-        if self.title_slush_left < 0:
-           self.title_slush_left = 0
-        if self.title_slush_right < 0:
-           self.title_slush_right = 0
-        self.fig.size[0] += self.title_slush_left + self.title_slush_right
-
+            self.right + legx + self.ws_col * (self.ncol - 1) - \
+            (self.fig_legend_border if self.legend._on else 0) + \
+            self.pie.label_sizes[0][0] + self.pie.label_sizes[1][0] + \
+            (self.cbar.size[0] + self.ws_ax_cbar) * self.ncol
+        
         # Figure height
         self.fig.size[1] = int( \
             self.ws_title + \
@@ -1568,7 +1629,7 @@ class Layout(BaseLayout):
             self.ws_row * (self.nrow - 1) + \
             self.box_labels) + \
             legy
-
+        
         # Debug output
         if debug:
             print('self.fig.size[0] = %s' % self.fig.size[0])
@@ -1634,13 +1695,17 @@ class Layout(BaseLayout):
         self.label_row.position[0] = \
             (self.axes.size[0] + self.labtick_y2 + self.ws_label_row +
              (self.ws_ax_cbar if self.cbar.on else 0) + self.cbar.size[0] +
-             self.labtick_z)/self.axes.size[0]
+             self.labtick_z + self.label_z.size[0])/self.axes.size[0]
 
         self.label_col.position[3] = (self.axes.size[1] + self.ws_label_col +
                                       self.labtick_x2)/self.axes.size[1]
 
         self.label_wrap.position[3] = 1
-        self.title_wrap.size[0] = self.ncol * self.title_wrap.size[0] + (self.ncol - 1) * self.ws_col
+
+        self.title_wrap.size[0] = self.ncol * self.title_wrap.size[0] + \
+                                  (self.ncol - 1) * self.ws_col + \
+                                  ((self.cbar.size[0] + self.ws_ax_cbar) if self.cbar.on else 0)
+
         self.title_wrap.position[3] = 1 + (self.label_wrap.size[1] + 1)/ self.axes.size[1]
 
     def get_subplots_adjust(self):
@@ -1649,16 +1714,17 @@ class Layout(BaseLayout):
             self.axes.position --> [left, right, top, bottom]
         """
 
-        self.axes.position[0] = int(self.ws_fig_label + self.labtick_y + \
-                                 self.title_slush_left + self.pie.label_sizes[0][0]) \
-                                 / self.fig.size[0]
+        self.axes.position[0] = int(self.left + self.pie.label_sizes[0][0]) \
+                                    / self.fig.size[0]
 
+        # note: if using cbar, self.axes.position[1] = 1 means the edge of the
+        # cbar is at the edge of the figure (+2 is a fudge to get the right image size)
         self.axes.position[1] = \
             self.axes.position[0] + \
             int(self.axes.size[0] * self.ncol + \
             self.ws_col * (self.ncol - 1) + \
-            (self.cbar.size[0] + self.ws_ax_cbar) * (self.ncol - 1) + \
-            self.labtick_z - self.label_z.size[0]) \
+            self.cbar.on * (self.cbar.size[0] + self.ws_ax_cbar + 2) * (self.ncol) + \
+            (self.label_z.size[0] * (self.ncol - 1) if self.separate_labels else 0)) \
             / self.fig.size[0]
 
         self.axes.position[2] = \
@@ -1695,7 +1761,14 @@ class Layout(BaseLayout):
         self.update_from_data(data)
         self.update_wrap(data, kwargs)
         self.set_colormap(data)
-        self.set_label_text(data, **kwargs)
+
+        # Update the label keys
+        lab_keys = [f for f in self.kwargs_mod.keys() if 'label' in f]
+        kw = kwargs.copy()
+        for lk in lab_keys:
+            kw[lk] = self.kwargs_mod[lk]
+        self.set_label_text(data, **kw)
+
         data = self.get_element_sizes(data)
         self.update_subplot_spacing()
         self.get_figure_size(data, **kwargs)
@@ -1719,6 +1792,7 @@ class Layout(BaseLayout):
         self.axes.visible = np.array([[True]*self.ncol]*self.nrow)
 
         # Adjust the subplots size
+        #wspace = 1.0 if not self.cbar.on else 0.87  # i don't know why this is needed
         self.fig.obj.subplots_adjust(left=self.axes.position[0],
                                      right=self.axes.position[1],
                                      top=self.axes.position[2],
@@ -1940,32 +2014,197 @@ class Layout(BaseLayout):
         xx = np.array(df[x])
         yy = np.array(df[y])
         zz = np.array(df[z])
-
+        
         # Make the grid
+        xi = np.linspace(min(xx), max(xx))
+        yi = np.linspace(min(yy), max(yy))
         if LooseVersion(mpl.__version__) < LooseVersion('2.2'):
-            xi = np.linspace(min(xx), max(xx))
-            yi = np.linspace(min(yy), max(yy))
-            zi = mlab.griddata(xx, yy, zz, xi, yi, interp='linear')
+            zi = mlab.griddata(xx, yy, zz, xi, yi, interp=self.contour.interp)
         else:
-            xi, yi = np.mgrid[min(xx):max(xx):100j, min(yy):max(yy):200j]
-            zi = scipy.interpolate.griddata((xx, yy), zz, (xi, yi), method='linear')
-
+            zi = scipy.interpolate.griddata((xx, yy), zz, 
+                                            (xi[None,:], yi[:,None]), 
+                                            method=self.contour.interp)
+            
+        # Deal with out of range values
+        zi[zi >= ranges['zmax']] = ranges['zmax']  
+        zi[zi <= ranges['zmin']] = ranges['zmin']
+        
+        # Set the contours
+        levels = np.linspace(ranges['zmin']*0.999, ranges['zmax']*1.001, 
+                             self.contour.levels)
+        
+        # Plot
         if self.contour.filled:
-            cc = ax.contourf(xi, yi, zi, self.contour.levels, cmap=self.contour.cmap, zorder=2,
-                             vmin=ranges['zmin'], vmax=ranges['zmax'])
+            cc = ax.contourf(xi, yi, zi, levels, cmap=self.cmap, zorder=2)
         else:
-            cc = ax.contour(xi, yi, zi, self.contour.levels, linewidths=self.contour.width.values,
-                            cmap=self.contour.cmap, zorder=2, vmin=ranges['zmin'], vmax=ranges['zmax'])
-
+            cc = ax.contour(xi, yi, zi, levels, 
+                            linewidths=self.contour.width.values,
+                            cmap=self.cmap, zorder=2)
+        
+        # Add a colorbar
         if self.cbar.on:
             cbar = self.add_cbar(ax, cc)
-            #cbar.set_clim(-999, 0)#ranges['zmin'], ranges['zmax'])
+            new_ticks = cbar_ticks(cbar, ranges['zmin'], ranges['zmax'])
+            cbar.set_ticks(new_ticks)
+
         else:
             cbar = None
 
+        # Show points
+        if self.contour.show_points:
+            ax.scatter(xx, yy, marker=self.markers.type.get(0),
+                               c=self.markers.fill_color.get(0) \
+                                               if self.markers.filled else 'none',
+                               edgecolors=self.markers.edge_color.get(0),
+                               linewidths=self.markers.edge_width.get(0),
+                               s=self.markers.size.get(0),
+                               zorder=40)
+
         return cc, cbar
 
-    def plot_heatmap(self, ax, df, x, y, z, ranges):
+    def plot_gantt(self, ir, ic, df, x, y, iline, leg_name, ranges, yvals, ngroups):
+        """
+        Plot gantt graph
+        """
+
+        ax = self.axes.obj[ir, ic]
+        bar = ax.broken_barh
+
+        # Set the color values
+        if self.gantt.color_by_bar:
+            edgecolor = [self.gantt.edge_color.get(i)
+                        for i, f in enumerate(df.index)]
+            fillcolor = [self.gantt.fill_color.get(i)
+                         for i, f in enumerate(df.index)]
+        else:
+            edgecolor = [self.gantt.edge_color.get(iline, leg_name)
+                        for i, f in enumerate(df.index)]
+            fillcolor = [self.gantt.fill_color.get(iline, leg_name)
+                        for i, f in enumerate(df.index)]
+
+        # Plot the bars
+        for ii, (irow, row) in enumerate(df.iterrows()):
+            if leg_name is not None:
+                try:
+                    yi = yvals.index((row[y], leg_name))
+                except:
+                    db()
+            else:
+                yi = yvals.index((row[y],))
+            #offset = ((ranges['ymax'] - ranges['ymin']) - len(yvals)) / \
+            #         (ranges['ymax'] - ranges['ymin'])
+            bar([(row[x[0]], row[x[1]] - row[x[0]])],
+                (yi - self.gantt.height/2, self.gantt.height),
+                facecolor=fillcolor[ii],
+                edgecolor=edgecolor[ii],
+                linewidth=self.gantt.edge_width)
+
+        # Adjust the yticklabels
+        if iline + 1 == ngroups:
+            tp = mpl_get_ticks(ax)
+            new_yticks = tp['y']['ticks'].astype(str)
+            yvals = [f[0] for f in yvals]
+            ax.set_yticks(range(-1, len(yvals)))
+            ax.set_yticklabels([''] + list(yvals))
+
+        # Legend
+        if leg_name is not None:
+            handle = [patches.Rectangle((0,0),1,1,
+                      color=self.gantt.fill_color.get(iline, leg_name))]
+            self.legend.add_value(leg_name, handle, 'lines')
+
+
+        # Adjust the xticklabels
+
+
+        # idx = np.where(np.isin(xvals,df.index))[0]
+        # ixvals = list(range(0, len(xvals)))
+        # kwargs = {}
+
+        # # Orientation
+        # if self.bar.horizontal:
+        #     bar = ax.barh
+        #     axx = 'y'
+        #     if self.bar.stacked:
+        #         kwargs['height'] = self.bar.width
+        #         if iline > 0:
+        #             if type(stacked) is pd.Series:
+        #                 stacked = stacked.loc[xvals[idx]].values
+        #             kwargs['bottom'] = stacked
+        #     else:
+        #         #kwargs['height'] = self.bar.width / ngroups
+        #         #idx = [f + iline * (kwargs['height']) for f in idx]
+        #         kwargs['height'] = self.bar.width / ngroups
+        #         width_offset = self.bar.width / total.values
+        #         idx = [f + inst[i] * kwargs['height'] for i, f in enumerate(idx)]
+        #         init_off = (total - 1) / 2 * kwargs['height']
+        #         idx = list((idx - init_off).values)
+        # else:
+        #     bar = ax.bar
+        #     axx = 'x'
+        #     if self.bar.stacked:
+        #         kwargs['width'] = self.bar.width
+        #         if iline > 0:
+        #             if type(stacked) is pd.Series:
+        #                 stacked = stacked.loc[xvals[idx]].values
+        #             kwargs['bottom'] = stacked
+        #     else:
+        #         kwargs['width'] = self.bar.width / ngroups
+        #         width_offset = self.bar.width / total.values
+        #         idx = [f + inst[i] * kwargs['width'] for i, f in enumerate(idx)]
+        #         init_off = (total - 1) / 2 * kwargs['width']
+        #         idx = list((idx - init_off).values)
+
+        # if self.bar.color_by_bar:
+        #     edgecolor = [self.bar.edge_color.get(i)
+        #                 for i, f in enumerate(df.index)]
+        #     fillcolor = [self.bar.fill_color.get(i)
+        #                  for i, f in enumerate(df.index)]
+        # else:
+        #     edgecolor = self.bar.edge_color.get(iline, leg_name)
+        #     fillcolor = self.bar.fill_color.get(iline, leg_name)
+
+        # # Error bars
+        # if std is not None and self.bar.horizontal:
+        #     kwargs['xerr'] = std
+        # elif std is not None:
+        #     kwargs['yerr'] = std
+
+        # # Plot
+        # bb = bar(idx, df.values, align=self.bar.align,
+        #          linewidth=self.bar.edge_width,
+        #          edgecolor=edgecolor, color=fillcolor,
+        #          ecolor=self.bar.error_color, **kwargs)
+
+        # # Set ticks
+        # getattr(ax, 'set_%sticks' % axx)(ixvals)
+        # getattr(ax, 'set_%sticklabels' % axx)(xvals)
+        # if iline==0:
+        #     # Update ranges
+        #     new_ticks = getattr(ax, 'get_%sticks' % axx)()
+        #     tick_off = [f for f in new_ticks if f >= 0][0]
+        #     if self.bar.horizontal:
+        #         axx = 'y'
+        #     else:
+        #         axx = 'x'
+        #     xoff = 3 * self.bar.width / 4
+        #     if data.ranges[ir, ic]['%smin' % axx] is None:
+        #         data.ranges[ir, ic]['%smin' % axx] = -xoff + tick_off
+        #     else:
+        #         data.ranges[ir, ic]['%smin' % axx] += tick_off
+        #     if data.ranges[ir, ic]['%smax' % axx] is None:
+        #         data.ranges[ir, ic]['%smax' % axx] = len(xvals) - 1 + xoff + tick_off
+        #     else:
+        #         data.ranges[ir, ic]['%smax' % axx] += tick_off
+
+        # # Legend
+        # if leg_name is not None:
+        #     handle = [patches.Rectangle((0,0),1,1,color=self.bar.fill_color.get(iline, leg_name))]
+        #     self.legend.add_value(leg_name, handle, 'lines')
+
+        return df
+
+    def plot_heatmap(self, ax, df, ir, ic, x, y, z, ranges):
         """
         Plot a heatmap
 
@@ -1980,9 +2219,10 @@ class Layout(BaseLayout):
         """
 
         # Make the heatmap
-        im = ax.imshow(df, self.heatmap.cmap, vmin=ranges['zmin'],
+        im = ax.imshow(df, self.cmap, vmin=ranges['zmin'],
                        vmax=ranges['zmax'],
-                       interpolation=self.heatmap.interpolation)
+                       interpolation=self.heatmap.interp)
+        im.set_clim(ranges['zmin'], ranges['zmax'])
 
         # Set the axes
         dtypes = [int, np.int32, np.int64]
@@ -2001,10 +2241,13 @@ class Layout(BaseLayout):
         if ranges['xmin'] is not None and ranges['xmin'] > 0:
             xticks = ax.get_xticks()
             ax.set_xticklabels([int(f + ranges['xmin']) for f in xticks])
-        if ranges['ymax'] is not None and ranges['ymax'] > 0:
-            yticks = ax.get_yticks()
-            ax.set_yticklabels([int(f + ranges['ymax']) for f in yticks])
+        # don't recall why this is here but it isn't working...
+        # if ranges['ymax'] is not None and ranges['ymax'] > 0:
+        #     yticks = ax.get_yticks()
+        #     ax.set_yticklabels([int(f + ranges['ymax']) for f in yticks])
 
+        #if (self.cbar.on and self.axes.share_z and ic == self.ncol - 1) or \
+        #        (self.cbar.on and not self.axes.share_z):
         if self.cbar.on:
             cbar = self.add_cbar(ax, im)
         else:
@@ -2075,6 +2318,34 @@ class Layout(BaseLayout):
             kde = self.plot_line(ir, ic, x0, y0, **kwargs)
 
         return hist, data
+
+    def plot_imshow(self, ir, ic, ax, df, x, y, z, ranges):
+        """
+        Plot a image
+
+        Args:
+            ax (mpl.axes): current axes obj
+            df (pd.DataFrame):  data to plot
+            x (str): x-column name
+            y (str): y-column name
+            z (str): z-column name
+            range (dict):  ax limits
+
+        """
+
+        # Make the heatmap (maybe pull these kwargs out to an imshow obj?)
+        im = ax.imshow(df.dropna(1, 'all'), self.cmap,
+                       vmin=ranges['zmin'], vmax=ranges['zmax'],
+                       interpolation=self.imshow.interp)
+        im.set_clim(ranges['zmin'], ranges['zmax'])
+
+        # Add a cmap
+        if self.cbar.on:# and (self.separate_ticks or ic == self.ncol - 1):
+            cbar = self.add_cbar(ax, im)
+        else:
+            cbar = None
+
+        return im
 
     def plot_line(self, ir, ic, x0, y0, x1=None, y1=None, **kwargs):
         """
@@ -2433,7 +2704,7 @@ class Layout(BaseLayout):
 
         """
 
-        if self.plot_func in ['plot_pie']:
+        if self.name in ['pie']:
             return
 
         self.get_axes_label_position()
@@ -2467,6 +2738,9 @@ class Layout(BaseLayout):
                 if ax == 'y' and ic != 0 and self.axes.visible[ir, ic - 1]:
                     continue
                 if ax == 'y2' and ic != self.ncol - 1 and \
+                        utl.plot_num(ir, ic, self.ncol) != self.nwrap:
+                    continue
+                if ax == 'z' and ic != self.ncol - 1 and \
                         utl.plot_num(ir, ic, self.ncol) != self.nwrap:
                     continue
 
@@ -2515,7 +2789,7 @@ class Layout(BaseLayout):
 
         """
 
-        if self.plot_func in ['plot_heatmap', 'plot_pie']:
+        if self.name in ['heatmap', 'pie']:
             return
 
         # X-axis
@@ -2650,8 +2924,14 @@ class Layout(BaseLayout):
 
         # Wrap title  --> this guy's text size is not defined in get_elements_size
         if ir == 0 and ic == 0 and self.title_wrap.on:
-            title = self.add_label(ir, ic, self.title_wrap.text,
-                                   **self.make_kwargs(self.title_wrap))
+            kwargs = self.make_kwargs(self.title_wrap)
+            if self.axes.edge_width == 0:
+                kwargs['size'][0] -= 1
+            if self.name == 'imshow' and not self.cbar.on and self.nrow == 1:
+                kwargs['size'][0] -= 1  # don't understand this one
+            if self.cbar.on:
+                kwargs['size'][0] -= (self.ws_ax_cbar + self.cbar.size[0])
+            title = self.add_label(ir, ic, self.title_wrap.text, **kwargs)
 
         # Row labels
         if ic == self.ncol-1 and self.label_row.on and not self.label_wrap.on:
@@ -2670,10 +2950,14 @@ class Layout(BaseLayout):
             else:
                 text_size = None
             if self.label_wrap.on:
+                kwargs = self.make_kwargs(self.label_wrap)
+                if self.axes.edge_width == 0:# and ic == self.ncol - 1:
+                    kwargs['size'][0] -= 1
+                if self.name == 'imshow' and not self.cbar.on and self.nrow == 1:
+                    kwargs['size'][0] -= 1
                 text = ' | '.join([str(f) for f in utl.validate_list(
                     self.label_wrap.values[ir*self.ncol + ic])])
-                scol = self.add_label(ir, ic, text,
-                                     **self.make_kwargs(self.label_wrap))
+                scol = self.add_label(ir, ic, text, **kwargs)
             else:
                 text = '%s=%s' % (self.label_col.text, self.label_col.values[ic])
                 col = self.add_label(ir, ic, text,
@@ -2731,7 +3015,7 @@ class Layout(BaseLayout):
 
             return pos
 
-        if self.plot_func in ['plot_pie']:
+        if self.name in ['pie']:
             return
 
         axes = [f.obj[ir, ic] for f in [self.axes, self.axes2] if f.on]
@@ -2865,7 +3149,7 @@ class Layout(BaseLayout):
             # Set custom tick increment
             redo = True
             xinc = getattr(self, 'ticks_major_x%s' % lab).increment
-            if not skipx and xinc is not None and self.plot_func not in ['plot_bar']:
+            if not skipx and xinc is not None and self.name not in ['bar']:
                 xstart = 0 if tp['x']['min'] == 0 else tp['x']['min'] + xinc - tp['x']['min'] % xinc
                 axes[ia].set_xticks(np.arange(xstart, tp['x']['max'], xinc))
                 redo = True
@@ -3033,6 +3317,7 @@ class Layout(BaseLayout):
                 yfy = get_tick_position(axes[ia], tp, 'y', 'last', ia)
                 yc = [-tlmajy.size[0]/2-self.ws_ticks_ax, ycy]
                 yf = [-tlmajy.size[0]/2-self.ws_ticks_ax, yfy]
+                
                 xlim = axes[ia].get_xlim()
                 if xlim[0] > xlim[1]:
                     yyc = yc
@@ -3040,7 +3325,7 @@ class Layout(BaseLayout):
                     yf = yyc
                 lim = axes[ia].get_ylim()
                 valid_y = [f for f in tp['y']['ticks']
-                           if f >= lim[0] and f <= lim[1]]
+                           if f >= min(lim) and f <= max(lim)]#if f >= lim[0] and f <= lim[1]]
 
                 # Get spacings
                 if len(tp['y']['ticks']) > 2:
@@ -3080,18 +3365,18 @@ class Layout(BaseLayout):
             if self.tick_cleanup and tlmajx.on and tlmajy.on:
                 # Calculate overlaps
                 x0y0 = utl.rectangle_overlap([xw+2*buf, xh+2*buf, xc],
-                                             [yw+2*buf, yh+2*buf, yc])
+                                            [yw+2*buf, yh+2*buf, yc])
                 x0yf = utl.rectangle_overlap([xw+2*buf, xh+2*buf, xc],
-                                             [yw+2*buf, yh+2*buf, yf])
-
+                                            [yw+2*buf, yh+2*buf, yf])
+                
                 # x and y at the origin
                 if x0y0 and lim[0] < lim[1]:  # and tp['y']['first']==0:  not sure about this
                     tp['y']['label_text'][tp['y']['first']] = ''
-                elif x0y0:
+                # elif x0y0:  # this is failing b/c last is not actually overlapping with the x-origin!
+                #     tp['y']['label_text'][tp['y']['last']] = ''
+                if x0yf and (self.axes.twin_y or lim[0] > lim[1]):
                     tp['y']['label_text'][tp['y']['last']] = ''
-                if x0yf and self.axes.twin_y:
-                    tp['y']['label_text'][tp['y']['last']] = ''
-
+                
                 # overlapping last y and first x between row, col, and wraps
                 if self.nrow > 1 and ir < self.nrow-1:
                     x2y = utl.rectangle_overlap([xw, xh, xc],
@@ -3338,7 +3623,8 @@ class Layout(BaseLayout):
             data (Data object)
         """
 
-        if not self.cmap or self.plot_func in ['plot_contour', 'plot_heatmap']:
+        if not self.cmap or self.name in \
+                ['contour', 'heatmap', 'imshow']:
             return
 
         try:
@@ -3442,11 +3728,11 @@ class Layout(BaseLayout):
 
         # Set labels
         logx = getattr(self, 'axes%s' % lab).scale in LOGX + SYMLOGX + LOGITX
-        if self.plot_func in ['plot_hist'] and self.hist.horizontal == True and \
+        if self.name in ['hist'] and self.hist.horizontal == True and \
                 self.hist.kde == False:
             ax.get_xaxis().set_major_locator(MaxNLocator(integer=True))
         elif not tick_labels_major_x_sci \
-                and self.plot_func not in ['plot_box', 'plot_heatmap'] \
+                and self.name not in ['box', 'heatmap'] \
                 and not logx:
             try:
                 ax.get_xaxis().get_major_formatter().set_scientific(False)
@@ -3454,7 +3740,7 @@ class Layout(BaseLayout):
                 pass
 
         elif not tick_labels_major_x_sci \
-                and self.plot_func not in ['plot_box', 'plot_heatmap']:
+                and self.name not in ['box', 'heatmap']:
             try:
                 ax.get_xaxis().set_major_formatter(ticker.ScalarFormatter())
                 tp = mpl_get_ticks(ax)
@@ -3470,7 +3756,7 @@ class Layout(BaseLayout):
                 pass
         elif (bestx and not logx \
                 or not bestx and tick_labels_major_x_sci and logx) \
-                and self.plot_func not in ['plot_box', 'plot_heatmap']:
+                and self.name not in ['box', 'heatmap']:
             xlim = ax.get_xlim()
             max_dec = 0
             for itick, tick in enumerate(tp['x']['ticks']):
@@ -3484,11 +3770,11 @@ class Layout(BaseLayout):
             ax.get_xaxis().set_major_formatter(ticker.FormatStrFormatter(dec))
 
         logy = getattr(self, 'axes%s' % lab).scale in LOGY + SYMLOGY + LOGITY
-        if self.plot_func in ['plot_hist'] and self.hist.horizontal == False and \
+        if self.name in ['hist'] and self.hist.horizontal == False and \
                 self.hist.kde == False:
             ax.get_yaxis().set_major_locator(MaxNLocator(integer=True))
         elif not tick_labels_major_y_sci \
-                and self.plot_func not in ['plot_heatmap'] \
+                and self.name not in ['heatmap'] \
                 and not logy:
             try:
                 ax.get_yaxis().get_major_formatter().set_scientific(False)
@@ -3496,7 +3782,7 @@ class Layout(BaseLayout):
                 pass
 
         elif not tick_labels_major_y_sci \
-                and self.plot_func not in ['plot_heatmap']:
+                and self.name not in ['heatmap']:
             try:
                 ax.get_yaxis().set_major_formatter(ticker.ScalarFormatter())
                 tp = mpl_get_ticks(ax)
@@ -3512,7 +3798,7 @@ class Layout(BaseLayout):
                 pass
         elif (besty and not logy \
                 or not besty and tick_labels_major_y_sci and logy) \
-                and self.plot_func not in ['plot_heatmap']:
+                and self.name not in ['heatmap']:
             ylim = ax.get_ylim()
             max_dec = 0
             for itick, tick in enumerate(tp['y']['ticks']):

@@ -59,10 +59,37 @@ def test_basic(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'basic_master') if master else 'basic'
 
     # Make the plot
+    fcp.contour(df=df, x='X', y='Y', z='Value', filled=False,
+                cbar=False, ax_size=[400, 400], show=SHOW, contour_width=2,
+                label_rc_font_size=12, levels=40, show_points=True,
+                filename=name + '.png', inline=False, 
+                marker_edge_color='#000000', marker_fill_color='#000000')
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_basic_rc(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'basic_rc_master') if master else 'basic_rc'
+
+    # Make the plot
     fcp.contour(df=df, x='X', y='Y', z='Value', row='Batch', col='Experiment', filled=False,
                 cbar=False, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250,250], show=SHOW, contour_width=2,
-                label_rc_font_size=12,
-                filename=name + '.png', inline=False)
+                label_rc_font_size=12, levels=40, show_points=True,
+                filename=name + '.png', inline=False,
+                marker_edge_color='#000000', marker_fill_color='#000000')
 
     # Compare with master
     if master:
@@ -87,6 +114,64 @@ def test_filled(master=False, remove=True, show=False):
     fcp.contour(df=df, x='X', y='Y', z='Value', row='Batch', col='Experiment', filled=True,
                 cbar=True, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250,250], show=SHOW,
                 label_rc_font_size=12, levels=40,
+                filename=name + '.png', inline=False)
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_filled_no_share(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'filled_no_share_master') if master else 'filled_no_share'
+
+    # Make the plot
+    fcp.contour(df=df, x='X', y='Y', z='Value', row='Batch', col='Experiment', filled=True,
+                cbar=True, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250,250], show=SHOW,
+                label_rc_font_size=12, levels=40, share_z=False,
+                filename=name + '.png', inline=False)
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    elif show:
+        os.startfile(osjoin(MASTER, name + '_master.png'))
+        os.startfile(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_filled_separate(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'filled_separate_master') if master else 'filled_separate'
+
+    # Make the plot
+    fcp.contour(df=df, x='X', y='Y', z='Value', row='Batch', col='Experiment', filled=True,
+                cbar=True, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250,250], show=SHOW,
+                label_rc_font_size=12, levels=40, separate_labels=True,
                 filename=name + '.png', inline=False)
 
     # Compare with master
