@@ -12,8 +12,8 @@ import os
 __author__ = 'Steve Nicholes'
 __copyright__ = 'Copyright (C) 2016 Steve Nicholes'
 __license__ = 'GPLv3'
-with open(os.path.join(os.path.dirname(__file__), r'version.txt'), 'r') as input:
-    __version__ = input.readlines()[0]
+with open(os.path.join(os.path.dirname(__file__), r'version.txt'), 'r') as fid:
+    __version__ = fid.readlines()[0].replace('\n', '')
 __url__ = 'https://github.com/endangeredoxen/fivecentplots'
 
 import numpy as np
