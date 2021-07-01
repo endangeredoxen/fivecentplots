@@ -28,6 +28,7 @@ import matplotlib.transforms as mtransforms
 from matplotlib.patches import FancyBboxPatch
 from matplotlib.collections import PatchCollection
 import matplotlib.mlab as mlab
+warnings.filterwarnings('ignore', category=UserWarning)
 def custom_formatwarning(msg, *args, **kwargs):
     # ignore everything except the message
     return 'Warning: ' + str(msg) + '\n'
@@ -1843,7 +1844,8 @@ class Layout(BaseLayout):
                 patch.set_lw(self.box_whisker.width.get(ipatch))
                 patch.set_ls(self.box_whisker.style.get(ipatch))
 
-        self.axes.obj[ir, ic].set_xticklabels([''])
+        ll = ['' for f in self.axes.obj[ir, ic].get_xticklabels()]
+        self.axes.obj[ir, ic].set_xticklabels(ll)
         self.axes.obj[ir, ic].set_xlim(0.5, len(data) + 0.5)
 
         return bp
@@ -2174,10 +2176,12 @@ class Layout(BaseLayout):
 
         """
 
-        self.fig.obj.savefig(filename,
-                             edgecolor=self.fig.edge_color.get(idx),
-                             facecolor=self.fig.fill_color.get(idx),
-                             linewidth=self.fig.edge_width)
+        kwargs = {'edgecolor': self.fig.edge_color.get(idx),
+                  'facecolor': self.fig.fill_color.get(idx)}
+        if LooseVersion(mpl.__version__) < LooseVersion('3.3'):
+            kwargs['linewidth'] = self.fig.edge_width
+
+        self.fig.obj.savefig(filename, **kwargs)
 
     def see(self):
         """
@@ -2823,10 +2827,12 @@ class Layout(BaseLayout):
 
             # Turn off major tick labels
             if not tlmajx.on:
-                axes[ia].set_xticklabels([''])
+                ll = ['' for f in axes[ia].get_xticklabels()]
+                axes[ia].set_xticklabels(ll)
 
             if not tlmajy.on:
-                axes[ia].set_yticklabels([''])
+                ll = ['' for f in axes[ia].get_yticklabels()]
+                axes[ia].set_yticklabels(ll)
 
             # Check for overlapping major tick labels
             lims = {}
@@ -2963,9 +2969,12 @@ class Layout(BaseLayout):
 
             if self.tick_cleanup and tlmajx.on:# and not skipx:
                 axes[ia].xaxis.set_major_formatter(NullFormatter())
-                axes[ia].set_xticklabels(tp['x']['label_text'])
+                nticks = len(axes[ia].get_xticks())
+                axes[ia].set_xticklabels(tp['x']['label_text'][0:nticks])
+
             if self.tick_cleanup and tlmajy.on and not skipy:
-                axes[ia].set_yticklabels(tp['y']['label_text'])
+                nticks = len(axes[ia].get_yticks())
+                axes[ia].set_yticklabels(tp['y']['label_text'][0:nticks])
 
             # Turn on minor tick labels
             ax = ['x', 'y']
