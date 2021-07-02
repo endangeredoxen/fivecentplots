@@ -1,6 +1,19 @@
 Changelog
 *********
 
+0.4.3
+=====
+* fix heatmap but when DataFrame column names are of type ``object`` but are actually ``int``
+
+0.4.2
+=====
+* handle change to pandas xlsx engine for >=v1.2
+* remove unintentional overload of ``input``
+
+0.4.1
+=====
+* update to ignore warnings with v3.3 of MPL
+
 0.4.0
 =====
 

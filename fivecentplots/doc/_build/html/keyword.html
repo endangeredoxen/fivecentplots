@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,6 +11,12 @@
   
 
   
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Archivo Black" type="text/css" />
+
+  
   
     <link rel="shortcut icon" href="_static/favicon.ico"/>
   
@@ -19,50 +24,39 @@
   
 
   
-
-  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
-  
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Archivo Black" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="fivecentplots beta documentation" href="index.html"/>
-        <link rel="next" title="Grouping data" href="grouping.html"/>
-        <link rel="prev" title="Layout" href="layout.html"/> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Grouping data" href="grouping.html" />
+    <link rel="prev" title="Layout" href="layout.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
-            <a href="index.html" class="icon icon-home"> fivecentplots
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> fivecentplots
           
 
           
@@ -72,7 +66,7 @@
             
             
               <div class="version">
-                0.4.0
+                0.4.3
               </div>
             
           
@@ -89,6 +83,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -147,7 +142,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Other</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="changelog.html">0.4.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="older.html">Older Versions</a></li>
 </ul>
@@ -155,13 +150,14 @@
             
           
         </div>
+        
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">fivecentplots</a>
@@ -169,9 +165,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -192,7 +189,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Keyword Arguments</li>
     
@@ -218,18 +215,23 @@
 /* CSS overrides for sphinx_rtd_theme */
 
 /* 24px margin */
-.nbinput.nblast,
-.nboutput.nblast {
+.nbinput.nblast.container,
+.nboutput.nblast.container {
     margin-bottom: 19px;  /* padding has already 5px */
 }
 
 /* ... except between code cells! */
-.nblast + .nbinput {
+.nblast.container + .nbinput.container {
     margin-top: -19px;
 }
 
 .admonition > p:before {
     margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
 }
 </style>
 <div class="section" id="keyword-arguments">
@@ -240,40 +242,40 @@
 determines the <em>kind</em> of plot, but keywords determine what data is included and how the plot is styled and arranged.
 Most keywords are completely optional or can be loaded automatically from a <a class="reference external" href="styles.html#Themes">user theme file</a>.  The
 only mandatory inputs to plot functions involve the basics of the data that should be plotted:</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="4%" />
-<col width="8%" />
-<col width="33%" />
-<col width="54%" />
+<col style="width: 4%" />
+<col style="width: 8%" />
+<col style="width: 33%" />
+<col style="width: 54%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Keyword</th>
-<th class="head">Data Type</th>
-<th class="head">Description</th>
-<th class="head">Required?</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Keyword</p></th>
+<th class="head"><p>Data Type</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Required?</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>df</td>
-<td>pandas DataFrame</td>
-<td>DataFrame containing all data to be plotted including grouping columns</td>
-<td>always (<strong>note:</strong> <code class="docutils literal notranslate"><span class="pre">df</span></code> can also be specified as the first function argument withouth the keyword name of <code class="docutils literal notranslate"><span class="pre">df==</span></code>)</td>
+<tbody>
+<tr class="row-even"><td><p>df</p></td>
+<td><p>pandas DataFrame</p></td>
+<td><p>DataFrame containing all data to be plotted including grouping columns</p></td>
+<td><p>always (<strong>note:</strong> <code class="docutils literal notranslate"><span class="pre">df</span></code> can also be specified as the first function argument withouth the keyword name of <code class="docutils literal notranslate"><span class="pre">df==</span></code>)</p></td>
 </tr>
-<tr class="row-odd"><td>x</td>
-<td>str</td>
-<td>Column name of the x-axis data</td>
-<td>all except boxplot</td>
+<tr class="row-odd"><td><p>x</p></td>
+<td><p>str</p></td>
+<td><p>Column name of the x-axis data</p></td>
+<td><p>all except boxplot</p></td>
 </tr>
-<tr class="row-even"><td>y</td>
-<td>str</td>
-<td>Column name of the y-axis data</td>
-<td>all except histogram</td>
+<tr class="row-even"><td><p>y</p></td>
+<td><p>str</p></td>
+<td><p>Column name of the y-axis data</p></td>
+<td><p>all except histogram</p></td>
 </tr>
-<tr class="row-odd"><td>z</td>
-<td>str</td>
-<td>Column name of the z-axis data</td>
-<td>only for contour and heatmap</td>
+<tr class="row-odd"><td><p>z</p></td>
+<td><p>str</p></td>
+<td><p>Column name of the z-axis data</p></td>
+<td><p>only for contour and heatmap</p></td>
 </tr>
 </tbody>
 </table>
@@ -294,22 +296,22 @@ either in a user theme file or at the time of the plot function call.</p>
 </div><p>Consider the following examples:</p>
 <blockquote>
 <div><ol class="arabic">
-<li><p class="first">Change the x label font color to red:</p>
+<li><p>Change the x label font color to red:</p>
 <blockquote>
 <div><p><strong>label_x_font_color = ‘#FF0000’</strong></p>
 </div></blockquote>
 </li>
-<li><p class="first">Change the y-axis minor gridline width:</p>
+<li><p>Change the y-axis minor gridline width:</p>
 <blockquote>
 <div><p><strong>grid_major_y_width = 2</strong></p>
 </div></blockquote>
 </li>
-<li><p class="first">Change the axes edge color to black:</p>
+<li><p>Change the axes edge color to black:</p>
 <blockquote>
 <div><p><strong>ax_edge_color = ‘#000000’</strong></p>
 </div></blockquote>
 </li>
-<li><p class="first">Change the whisker color in a box plot:</p>
+<li><p>Change the whisker color in a box plot:</p>
 <blockquote>
 <div><p><strong>box_whisker_color = #FF00FF</strong></p>
 </div></blockquote>
@@ -321,18 +323,18 @@ either in a user theme file or at the time of the plot function call.</p>
 follow the general nomenclature found above.  For example:</p>
 <blockquote>
 <div><ol class="arabic">
-<li><p class="first">Display the fit equation and rsq value of a line fit:</p>
+<li><p>Display the fit equation and rsq value of a line fit:</p>
 <blockquote>
 <div><p><strong>fit_eqn = True</strong>
 <strong>fit_rsq = True</strong></p>
 </div></blockquote>
 </li>
-<li><p class="first">Set a different marker size just for the legend</p>
+<li><p>Set a different marker size just for the legend</p>
 <blockquote>
 <div><p><strong>legend_marker_size = 8</strong></p>
 </div></blockquote>
 </li>
-<li><p class="first">Change the statistic of the connecting line on a boxplot:</p>
+<li><p>Change the statistic of the connecting line on a boxplot:</p>
 <blockquote>
 <div><p><strong>box_stat_line = ‘std’</strong></p>
 </div></blockquote>
@@ -347,8 +349,8 @@ theme files.</p>
 <p>Listed below are the keyword arguments of specific elements. Note that some
 keywords deviate from the standard nomenclature given what they represent.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">We only list the base <code class="docutils literal notranslate"><span class="pre">Element</span></code> attributes below which have a
+<p class="admonition-title">Note</p>
+<p>We only list the base <code class="docutils literal notranslate"><span class="pre">Element</span></code> attributes below which have a
 default value different than what is specified in the table
 <a class="reference external" href="keyword.html#base-attributes">above</a> for base attributes.  Base attributes that
 do not apply to a given <code class="docutils literal notranslate"><span class="pre">Element</span></code> are also listed.</p>
@@ -358,111 +360,111 @@ do not apply to a given <code class="docutils literal notranslate"><span class="
 <h3>Base attributes<a class="headerlink" href="#base-attributes" title="Permalink to this headline">¶</a></h3>
 <p>Each <code class="docutils literal notranslate"><span class="pre">Element</span></code> object contains a basic set of attributes which may or may not be used
 depending on the specifics of the element:</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="7%" />
-<col width="10%" />
-<col width="60%" />
-<col width="9%" />
-<col width="13%" />
+<col style="width: 7%" />
+<col style="width: 10%" />
+<col style="width: 60%" />
+<col style="width: 9%" />
+<col style="width: 13%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Category</th>
-<th class="head">Keyword</th>
-<th class="head">Description</th>
-<th class="head">Default</th>
-<th class="head">Example</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Category</p></th>
+<th class="head"><p>Keyword</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Example</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td rowspan="2">Fill</td>
-<td>fill_alpha</td>
-<td>fill color opacity [0 (fully transparent) - 1 (opaque)]</td>
-<td>1</td>
-<td><a class="reference external" href="https://test.org">https://test.org</a></td>
+<tbody>
+<tr class="row-even"><td rowspan="2"><p>Fill</p></td>
+<td><p>fill_alpha</p></td>
+<td><p>fill color opacity [0 (fully transparent) - 1 (opaque)]</p></td>
+<td><p>1</p></td>
+<td><p><a class="reference external" href="https://test.org">https://test.org</a></p></td>
 </tr>
-<tr class="row-odd"><td>fill_color</td>
-<td>fill color (hex color code)</td>
-<td>#ffffff</td>
-<td><a class="reference external" href="https://test.org">https://test.org</a></td>
+<tr class="row-odd"><td><p>fill_color</p></td>
+<td><p>fill color (hex color code)</p></td>
+<td><p>#ffffff</p></td>
+<td><p><a class="reference external" href="https://test.org">https://test.org</a></p></td>
 </tr>
-<tr class="row-even"><td rowspan="3">Edges</td>
-<td>edge_alpha</td>
-<td>edge color opacity  [0 (fully transparent) - 1 (opaque)]</td>
-<td>1</td>
-<td><a class="reference external" href="https://test.org">https://test.org</a></td>
+<tr class="row-even"><td rowspan="3"><p>Edges</p></td>
+<td><p>edge_alpha</p></td>
+<td><p>edge color opacity  [0 (fully transparent) - 1 (opaque)]</p></td>
+<td><p>1</p></td>
+<td><p><a class="reference external" href="https://test.org">https://test.org</a></p></td>
 </tr>
-<tr class="row-odd"><td>edge_width</td>
-<td>width in pixels of the element border</td>
-<td>1</td>
-<td><a class="reference external" href="https://test.org">https://test.org</a></td>
+<tr class="row-odd"><td><p>edge_width</p></td>
+<td><p>width in pixels of the element border</p></td>
+<td><p>1</p></td>
+<td><p><a class="reference external" href="https://test.org">https://test.org</a></p></td>
 </tr>
-<tr class="row-even"><td>edge_color</td>
-<td>edge color (hex color code)</td>
-<td>#ffffff</td>
-<td><a class="reference external" href="https://test.org">https://test.org</a></td>
+<tr class="row-even"><td><p>edge_color</p></td>
+<td><p>edge color (hex color code)</p></td>
+<td><p>#ffffff</p></td>
+<td><p><a class="reference external" href="https://test.org">https://test.org</a></p></td>
 </tr>
-<tr class="row-odd"><td rowspan="5">Fonts</td>
-<td>font</td>
-<td>font name for element text</td>
-<td>sans-serif</td>
-<td><a class="reference external" href="https://test.org">https://test.org</a></td>
+<tr class="row-odd"><td rowspan="5"><p>Fonts</p></td>
+<td><p>font</p></td>
+<td><p>font name for element text</p></td>
+<td><p>sans-serif</p></td>
+<td><p><a class="reference external" href="https://test.org">https://test.org</a></p></td>
 </tr>
-<tr class="row-even"><td>font_color</td>
-<td>font color (hex color code)</td>
-<td>#000000</td>
-<td><a class="reference external" href="https://test.org">https://test.org</a></td>
+<tr class="row-even"><td><p>font_color</p></td>
+<td><p>font color (hex color code)</p></td>
+<td><p>#000000</p></td>
+<td><p><a class="reference external" href="https://test.org">https://test.org</a></p></td>
 </tr>
-<tr class="row-odd"><td>font_size</td>
-<td>font size in pixels</td>
-<td>14</td>
-<td><a class="reference external" href="https://test.org">https://test.org</a></td>
+<tr class="row-odd"><td><p>font_size</p></td>
+<td><p>font size in pixels</p></td>
+<td><p>14</p></td>
+<td><p><a class="reference external" href="https://test.org">https://test.org</a></p></td>
 </tr>
-<tr class="row-even"><td>font_style</td>
-<td>font style [‘normal’, ‘italic’, ‘oblique’]</td>
-<td>normal</td>
-<td><a class="reference external" href="https://test.org">https://test.org</a></td>
+<tr class="row-even"><td><p>font_style</p></td>
+<td><p>font style [‘normal’, ‘italic’, ‘oblique’]</p></td>
+<td><p>normal</p></td>
+<td><p><a class="reference external" href="https://test.org">https://test.org</a></p></td>
 </tr>
-<tr class="row-odd"><td>font_weight</td>
-<td>font weight [‘light’, ‘normal’, ‘medium’, ‘semibold’, ‘bold’, ‘heavy’, ‘black’]</td>
-<td>normal</td>
-<td><a class="reference external" href="https://test.org">https://test.org</a></td>
+<tr class="row-odd"><td><p>font_weight</p></td>
+<td><p>font weight [‘light’, ‘normal’, ‘medium’, ‘semibold’, ‘bold’, ‘heavy’, ‘black’]</p></td>
+<td><p>normal</p></td>
+<td><p><a class="reference external" href="https://test.org">https://test.org</a></p></td>
 </tr>
-<tr class="row-even"><td rowspan="4">Lines</td>
-<td>alpha</td>
-<td>line opacity</td>
-<td>1</td>
-<td><a class="reference external" href="https://test.org">https://test.org</a></td>
+<tr class="row-even"><td rowspan="4"><p>Lines</p></td>
+<td><p>alpha</p></td>
+<td><p>line opacity</p></td>
+<td><p>1</p></td>
+<td><p><a class="reference external" href="https://test.org">https://test.org</a></p></td>
 </tr>
-<tr class="row-odd"><td>color</td>
-<td>line color (hex color code)</td>
-<td>#000000</td>
-<td><a class="reference external" href="https://test.org">https://test.org</a></td>
+<tr class="row-odd"><td><p>color</p></td>
+<td><p>line color (hex color code)</p></td>
+<td><p>#000000</p></td>
+<td><p><a class="reference external" href="https://test.org">https://test.org</a></p></td>
 </tr>
-<tr class="row-even"><td>style</td>
-<td>line style [‘-‘, ‘–’, ‘-.’, ‘:’]</td>
-<td><ul class="first last simple">
+<tr class="row-even"><td><p>style</p></td>
+<td><p>line style [‘-‘, ‘–’, ‘-.’, ‘:’]</p></td>
+<td><ul class="simple">
 <li></li>
 </ul>
 </td>
-<td><a class="reference external" href="https://test.org">https://test.org</a></td>
+<td><p><a class="reference external" href="https://test.org">https://test.org</a></p></td>
 </tr>
-<tr class="row-odd"><td>width</td>
-<td>line width in pixels</td>
-<td>1</td>
-<td><a class="reference external" href="https://test.org">https://test.org</a></td>
+<tr class="row-odd"><td><p>width</p></td>
+<td><p>line width in pixels</p></td>
+<td><p>1</p></td>
+<td><p><a class="reference external" href="https://test.org">https://test.org</a></p></td>
 </tr>
-<tr class="row-even"><td rowspan="3">Other</td>
-<td>on</td>
-<td>toggle visibility of the element</td>
-<td rowspan="3">depends</td>
-<td rowspan="3"><a class="reference external" href="https://test.org">https://test.org</a></td>
+<tr class="row-even"><td rowspan="3"><p>Other</p></td>
+<td><p>on</p></td>
+<td><p>toggle visibility of the element</p></td>
+<td rowspan="3"><p>depends</p></td>
+<td rowspan="3"><p><a class="reference external" href="https://test.org">https://test.org</a></p></td>
 </tr>
-<tr class="row-odd"><td>size</td>
-<td>[width, height] of the object</td>
+<tr class="row-odd"><td><p>size</p></td>
+<td><p>[width, height] of the object</p></td>
 </tr>
-<tr class="row-even"><td>text</td>
-<td>label text associated with the object</td>
+<tr class="row-even"><td><p>text</p></td>
+<td><p>label text associated with the object</p></td>
 </tr>
 </tbody>
 </table>
@@ -473,149 +475,149 @@ depending on the specifics of the element:</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">axes</span></code> element consists of the actual plotting window shown in yellow above.
 Keywords for the primary <code class="docutils literal notranslate"><span class="pre">axes</span></code> object begin with the prefix “<a href="#id25"><span class="problematic" id="id26">ax_</span></a>”.  Properties
 of any optional secondary axes begin with the prefix “<a href="#id27"><span class="problematic" id="id28">ax2_</span></a>”.</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="8%" />
-<col width="14%" />
-<col width="46%" />
-<col width="6%" />
-<col width="26%" />
+<col style="width: 8%" />
+<col style="width: 14%" />
+<col style="width: 46%" />
+<col style="width: 6%" />
+<col style="width: 26%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Keyword</th>
-<th class="head">Data Type</th>
-<th class="head">Description</th>
-<th class="head">Default</th>
-<th class="head">Example</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Keyword</p></th>
+<th class="head"><p>Data Type</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Example</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>ax_edge_color</td>
-<td>hex color string</td>
-<td>outer edge color of plot area</td>
-<td>#aaaaaa</td>
-<td>None</td>
+<tbody>
+<tr class="row-even"><td><p>ax_edge_color</p></td>
+<td><p>hex color string</p></td>
+<td><p>outer edge color of plot area</p></td>
+<td><p>#aaaaaa</p></td>
+<td><p>None</p></td>
 </tr>
-<tr class="row-odd"><td>ax_fill_color</td>
-<td>hex color string</td>
-<td>inner fill color of plot area</td>
-<td rowspan="6">#eaeaea</td>
-<td>None</td>
+<tr class="row-odd"><td><p>ax_fill_color</p></td>
+<td><p>hex color string</p></td>
+<td><p>inner fill color of plot area</p></td>
+<td rowspan="6"><p>#eaeaea</p></td>
+<td><p>None</p></td>
 </tr>
-<tr class="row-even"><td rowspan="5">ax_scale</td>
-<td rowspan="5">str</td>
-<td>enable linear vs log scaling of axis</td>
-<td rowspan="5"><a class="reference external" href="plot.html#Log-scale">log scale plot</a></td>
+<tr class="row-even"><td rowspan="5"><p>ax_scale</p></td>
+<td rowspan="5"><p>str</p></td>
+<td><p>enable linear vs log scaling of axis</p></td>
+<td rowspan="5"><p><a class="reference external" href="plot.html#Log-scale">log scale plot</a></p></td>
 </tr>
-<tr class="row-odd"><td>x-axis: [‘linear’, ‘logx’, ‘semilogx’]</td>
+<tr class="row-odd"><td><p>x-axis: [‘linear’, ‘logx’, ‘semilogx’]</p></td>
 </tr>
-<tr class="row-even"><td>y-axis: [‘linear’, ‘logx’, ‘semilogx’]</td>
+<tr class="row-even"><td><p>y-axis: [‘linear’, ‘logx’, ‘semilogx’]</p></td>
 </tr>
-<tr class="row-odd"><td>both: [‘loglog’, ‘log’]</td>
+<tr class="row-odd"><td><p>both: [‘loglog’, ‘log’]</p></td>
 </tr>
-<tr class="row-even"><td>other: [‘symlog’, ‘logit’]</td>
+<tr class="row-even"><td><p>other: [‘symlog’, ‘logit’]</p></td>
 </tr>
-<tr class="row-odd"><td>ax_size</td>
-<td>list of ints</td>
-<td>width, height of plot area</td>
-<td>[400, 400]</td>
-<td rowspan="6">None</td>
+<tr class="row-odd"><td><p>ax_size</p></td>
+<td><p>list of ints</p></td>
+<td><p>width, height of plot area</p></td>
+<td><p>[400, 400]</p></td>
+<td rowspan="6"><p>None</p></td>
 </tr>
-<tr class="row-even"><td>spines</td>
-<td>boolean</td>
-<td>show all axis edges</td>
-<td>True</td>
+<tr class="row-even"><td><p>spines</p></td>
+<td><p>boolean</p></td>
+<td><p>show all axis edges</p></td>
+<td><p>True</p></td>
 </tr>
-<tr class="row-odd"><td>spine_bottom</td>
-<td>boolean</td>
-<td>show bottom axis edge</td>
-<td>True</td>
+<tr class="row-odd"><td><p>spine_bottom</p></td>
+<td><p>boolean</p></td>
+<td><p>show bottom axis edge</p></td>
+<td><p>True</p></td>
 </tr>
-<tr class="row-even"><td>spine_left</td>
-<td>boolean</td>
-<td>show left axis edge</td>
-<td>True</td>
+<tr class="row-even"><td><p>spine_left</p></td>
+<td><p>boolean</p></td>
+<td><p>show left axis edge</p></td>
+<td><p>True</p></td>
 </tr>
-<tr class="row-odd"><td>spine_right</td>
-<td>boolean</td>
-<td>show right axis edge</td>
-<td>True</td>
+<tr class="row-odd"><td><p>spine_right</p></td>
+<td><p>boolean</p></td>
+<td><p>show right axis edge</p></td>
+<td><p>True</p></td>
 </tr>
-<tr class="row-even"><td>spine_top</td>
-<td>boolean</td>
-<td>show top axis edge</td>
-<td>True</td>
+<tr class="row-even"><td><p>spine_top</p></td>
+<td><p>boolean</p></td>
+<td><p>show top axis edge</p></td>
+<td><p>True</p></td>
 </tr>
-<tr class="row-odd"><td>twin_x</td>
-<td>boolean</td>
-<td>enable/disable a secondary y-axis (x-axis is “twinned” or duplicated across two y-axes)</td>
-<td>False</td>
-<td><a class="reference external" href="plot.html#Shared-x-axis-twin_x">twin_x plot</a></td>
+<tr class="row-odd"><td><p>twin_x</p></td>
+<td><p>boolean</p></td>
+<td><p>enable/disable a secondary y-axis (x-axis is “twinned” or duplicated across two y-axes)</p></td>
+<td><p>False</p></td>
+<td><p><a class="reference external" href="plot.html#Shared-x-axis-twin_x">twin_x plot</a></p></td>
 </tr>
-<tr class="row-even"><td rowspan="2">twin_y</td>
-<td rowspan="2">boolean</td>
-<td>enable/disable a secondary x-axis (y-axis is “twinned” or duplicated across two x-axes)</td>
-<td rowspan="2">False</td>
-<td rowspan="2"><a class="reference external" href="plot.html#Shared-y-axis-twin_y">twin_y plot</a></td>
+<tr class="row-even"><td rowspan="2"><p>twin_y</p></td>
+<td rowspan="2"><p>boolean</p></td>
+<td><p>enable/disable a secondary x-axis (y-axis is “twinned” or duplicated across two x-axes)</p></td>
+<td rowspan="2"><p>False</p></td>
+<td rowspan="2"><p><a class="reference external" href="plot.html#Shared-y-axis-twin_y">twin_y plot</a></p></td>
 </tr>
-<tr class="row-odd"><td>Note:  wrap plots cannot be used when <code class="docutils literal notranslate"><span class="pre">twin_y</span> <span class="pre">==</span> <span class="pre">True</span></code></td>
+<tr class="row-odd"><td><p>Note:  wrap plots cannot be used when <code class="docutils literal notranslate"><span class="pre">twin_y</span> <span class="pre">==</span> <span class="pre">True</span></code></p></td>
 </tr>
-<tr class="row-even"><td>xmin</td>
-<td>float|list of floats|None</td>
-<td>minimum x-values; can use a list for each subplot</td>
-<td>None</td>
-<td><a class="reference external" href="ranges.html#Primary-axes-only">primary axis</a></td>
+<tr class="row-even"><td><p>xmin</p></td>
+<td><p>float|list of floats|None</p></td>
+<td><p>minimum x-values; can use a list for each subplot</p></td>
+<td><p>None</p></td>
+<td><p><a class="reference external" href="ranges.html#Primary-axes-only">primary axis</a></p></td>
 </tr>
-<tr class="row-odd"><td>x2min</td>
-<td>float|list of floats|None</td>
-<td>minimum x-values; can use a list for each subplot</td>
-<td>None</td>
-<td><a class="reference external" href="ranges.html#Secondary-y-axis">secondary axis</a></td>
+<tr class="row-odd"><td><p>x2min</p></td>
+<td><p>float|list of floats|None</p></td>
+<td><p>minimum x-values; can use a list for each subplot</p></td>
+<td><p>None</p></td>
+<td><p><a class="reference external" href="ranges.html#Secondary-y-axis">secondary axis</a></p></td>
 </tr>
-<tr class="row-even"><td>xmax</td>
-<td>float|list of floats|None</td>
-<td>maximum x-values; can use a list for each subplot</td>
-<td>None</td>
-<td><a class="reference external" href="ranges.html#Primary-axes-only">primary axis</a></td>
+<tr class="row-even"><td><p>xmax</p></td>
+<td><p>float|list of floats|None</p></td>
+<td><p>maximum x-values; can use a list for each subplot</p></td>
+<td><p>None</p></td>
+<td><p><a class="reference external" href="ranges.html#Primary-axes-only">primary axis</a></p></td>
 </tr>
-<tr class="row-odd"><td>x2max</td>
-<td>float|list of floats|None</td>
-<td>maximum x-values for secondary axis; can use a list for each subplot</td>
-<td>None</td>
-<td><a class="reference external" href="ranges.html#Secondary-y-axis">secondary axis</a></td>
+<tr class="row-odd"><td><p>x2max</p></td>
+<td><p>float|list of floats|None</p></td>
+<td><p>maximum x-values for secondary axis; can use a list for each subplot</p></td>
+<td><p>None</p></td>
+<td><p><a class="reference external" href="ranges.html#Secondary-y-axis">secondary axis</a></p></td>
 </tr>
-<tr class="row-even"><td>ymin</td>
-<td>float|list of floats|None</td>
-<td>minimum y-values; can use a list for each subplot</td>
-<td>None</td>
-<td><a class="reference external" href="ranges.html#Primary-axes-only">primary axis</a></td>
+<tr class="row-even"><td><p>ymin</p></td>
+<td><p>float|list of floats|None</p></td>
+<td><p>minimum y-values; can use a list for each subplot</p></td>
+<td><p>None</p></td>
+<td><p><a class="reference external" href="ranges.html#Primary-axes-only">primary axis</a></p></td>
 </tr>
-<tr class="row-odd"><td>y2min</td>
-<td>float|list of floats|None</td>
-<td>minimum y-values for secondary axis; can use a list for each subplot</td>
-<td>None</td>
-<td><a class="reference external" href="ranges.html#Secondary-y-axis">secondary axis</a></td>
+<tr class="row-odd"><td><p>y2min</p></td>
+<td><p>float|list of floats|None</p></td>
+<td><p>minimum y-values for secondary axis; can use a list for each subplot</p></td>
+<td><p>None</p></td>
+<td><p><a class="reference external" href="ranges.html#Secondary-y-axis">secondary axis</a></p></td>
 </tr>
-<tr class="row-even"><td>ymax</td>
-<td>float|list of floats|None</td>
-<td>maximum y-values; can use a list for each subplot</td>
-<td>None</td>
-<td><a class="reference external" href="ranges.html#Primary-axes-only">primary axis</a></td>
+<tr class="row-even"><td><p>ymax</p></td>
+<td><p>float|list of floats|None</p></td>
+<td><p>maximum y-values; can use a list for each subplot</p></td>
+<td><p>None</p></td>
+<td><p><a class="reference external" href="ranges.html#Primary-axes-only">primary axis</a></p></td>
 </tr>
-<tr class="row-odd"><td>y2max</td>
-<td>float|list of floats|None</td>
-<td>maximum y-values for secondary axis; can use a list for each subplot</td>
-<td>None</td>
-<td><a class="reference external" href="ranges.html#Secondary-y-axis">secondary axis</a></td>
+<tr class="row-odd"><td><p>y2max</p></td>
+<td><p>float|list of floats|None</p></td>
+<td><p>maximum y-values for secondary axis; can use a list for each subplot</p></td>
+<td><p>None</p></td>
+<td><p><a class="reference external" href="ranges.html#Secondary-y-axis">secondary axis</a></p></td>
 </tr>
 </tbody>
 </table>
 <p>The following base attributes of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> class are not used for this item:</p>
 <blockquote>
 <div><ul class="simple">
-<li>“Fonts” category</li>
-<li>“Lines” category</li>
-<li><code class="docutils literal notranslate"><span class="pre">text</span></code></li>
+<li><p>“Fonts” category</p></li>
+<li><p>“Lines” category</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">text</span></code></p></li>
 </ul>
 </div></blockquote>
 </div>
@@ -625,50 +627,50 @@ of any optional secondary axes begin with the prefix “<a href="#id27"><span cl
 <p>Boxplots have several unique <code class="docutils literal notranslate"><span class="pre">Element</span></code> objects that can be styled:</p>
 <blockquote>
 <div><ul>
-<li><p class="first"><strong>Boxes:</strong>  the actual boxes of the box plot (shown in white with a
+<li><p><strong>Boxes:</strong>  the actual boxes of the box plot (shown in white with a
 blue border above) are accessed using keywords with the prefix <code class="docutils literal notranslate"><span class="pre">box_</span></code>:</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="13%" />
-<col width="8%" />
-<col width="40%" />
-<col width="7%" />
-<col width="32%" />
+<col style="width: 13%" />
+<col style="width: 8%" />
+<col style="width: 40%" />
+<col style="width: 7%" />
+<col style="width: 32%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Keyword</th>
-<th class="head">Data Type</th>
-<th class="head">Description</th>
-<th class="head">Default</th>
-<th class="head">Example</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Keyword</p></th>
+<th class="head"><p>Data Type</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Example</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>box_on</td>
-<td>boolean</td>
-<td>toggle box visibility</td>
-<td>True</td>
-<td rowspan="5"><a class="reference external" href="boxplot.html#multipe-groups">box plot</a></td>
+<tbody>
+<tr class="row-even"><td><p>box_on</p></td>
+<td><p>boolean</p></td>
+<td><p>toggle box visibility</p></td>
+<td><p>True</p></td>
+<td rowspan="5"><p><a class="reference external" href="boxplot.html#multipe-groups">box plot</a></p></td>
 </tr>
-<tr class="row-odd"><td>box_edge_color</td>
-<td>str</td>
-<td>edge color of the boxes</td>
-<td>#4b72b0</td>
+<tr class="row-odd"><td><p>box_edge_color</p></td>
+<td><p>str</p></td>
+<td><p>edge color of the boxes</p></td>
+<td><p>#4b72b0</p></td>
 </tr>
-<tr class="row-even"><td>box_fill_color</td>
-<td>str</td>
-<td>fill color of the boxes</td>
-<td>#ffffff</td>
+<tr class="row-even"><td><p>box_fill_color</p></td>
+<td><p>str</p></td>
+<td><p>fill color of the boxes</p></td>
+<td><p>#ffffff</p></td>
 </tr>
-<tr class="row-odd"><td>box_median_color</td>
-<td>str</td>
-<td>color of the median line within the boxes</td>
-<td>#ff7f0e</td>
+<tr class="row-odd"><td><p>box_median_color</p></td>
+<td><p>str</p></td>
+<td><p>color of the median line within the boxes</p></td>
+<td><p>#ff7f0e</p></td>
 </tr>
-<tr class="row-even"><td>notch</td>
-<td>boolean</td>
-<td>use a notched-style box instead of a rectangular box</td>
-<td>False</td>
+<tr class="row-even"><td><p>notch</p></td>
+<td><p>boolean</p></td>
+<td><p>use a notched-style box instead of a rectangular box</p></td>
+<td><p>False</p></td>
 </tr>
 </tbody>
 </table>
@@ -680,34 +682,34 @@ blue border above) are accessed using keywords with the prefix <code class="docu
 </div>
 <blockquote>
 <div><ul>
-<li><p class="first"><strong>Divider lines:</strong>  optional vertical divider lines between groups</p>
+<li><p><strong>Divider lines:</strong>  optional vertical divider lines between groups</p>
 <p>These lines are styled using keywords with the prefix <code class="docutils literal notranslate"><span class="pre">box_divider</span></code> and use
 the “Lines” category of base attributes for the <code class="docutils literal notranslate"><span class="pre">Element</span></code> object.  They are
 enabled by default but can be turned off with <code class="docutils literal notranslate"><span class="pre">box_divider=False</span></code>:</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="23%" />
-<col width="13%" />
-<col width="53%" />
-<col width="11%" />
+<col style="width: 23%" />
+<col style="width: 13%" />
+<col style="width: 53%" />
+<col style="width: 11%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Keyword</th>
-<th class="head">Data Type</th>
-<th class="head">Description</th>
-<th class="head">Default</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Keyword</p></th>
+<th class="head"><p>Data Type</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Default</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>box_divider_on</td>
-<td>boolean</td>
-<td>toggle divider lines between groups on/off</td>
-<td>True</td>
+<tbody>
+<tr class="row-even"><td><p>box_divider_on</p></td>
+<td><p>boolean</p></td>
+<td><p>toggle divider lines between groups on/off</p></td>
+<td><p>True</p></td>
 </tr>
-<tr class="row-odd"><td>box_divider_color</td>
-<td>str</td>
-<td>line color</td>
-<td>#bbbbbb</td>
+<tr class="row-odd"><td><p>box_divider_color</p></td>
+<td><p>str</p></td>
+<td><p>line color</p></td>
+<td><p>#bbbbbb</p></td>
 </tr>
 </tbody>
 </table>
@@ -719,7 +721,7 @@ enabled by default but can be turned off with <code class="docutils literal notr
 </div>
 <blockquote>
 <div><ul>
-<li><p class="first"><strong>Group labels:</strong> labels directly under each box that indicate the unique group values
+<li><p><strong>Group labels:</strong> labels directly under each box that indicate the unique group values
 of the given box (shown in yellow above).</p>
 <div class="admonition note">
 <p class="first admonition-title">Keyword Prefix</p>
@@ -734,7 +736,7 @@ are similar to other <a class="reference external" href="keyword.html#labels">la
 </div>
 <blockquote>
 <div><ul>
-<li><p class="first"><strong>Group titles:</strong> labels to the right of the group labels that indicate the DataFrame
+<li><p><strong>Group titles:</strong> labels to the right of the group labels that indicate the DataFrame
 column name of each grouping column (shown in salmon above).</p>
 <p>These labels are controlled using keywords with the prefix <code class="docutils literal notranslate"><span class="pre">box_group_title_</span></code> and
 are similar to other <a class="reference external" href="keyword.html#labels">label</a> elements.</p>
@@ -746,47 +748,47 @@ are similar to other <a class="reference external" href="keyword.html#labels">la
 </div>
 <blockquote>
 <div><ul>
-<li><p class="first"><strong>Range lines:</strong> optional lines within a single box that span the entire range of the
+<li><p><strong>Range lines:</strong> optional lines within a single box that span the entire range of the
 data set.  These are useful for visualization of outlier points that may be
 outside of the selected ymin/ymax range.  They are accessed using keywords with the
 prefix <code class="docutils literal notranslate"><span class="pre">box_range_lines_</span></code>:</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="21%" />
-<col width="9%" />
-<col width="62%" />
-<col width="8%" />
+<col style="width: 21%" />
+<col style="width: 9%" />
+<col style="width: 62%" />
+<col style="width: 8%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Keyword</th>
-<th class="head">Data Type</th>
-<th class="head">Description</th>
-<th class="head">Default</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Keyword</p></th>
+<th class="head"><p>Data Type</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Default</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>box_range_lines_on</td>
-<td>boolean</td>
-<td>toggle range lines on/off</td>
-<td>True</td>
+<tbody>
+<tr class="row-even"><td><p>box_range_lines_on</p></td>
+<td><p>boolean</p></td>
+<td><p>toggle range lines on/off</p></td>
+<td><p>True</p></td>
 </tr>
-<tr class="row-odd"><td>box_range_lines_color</td>
-<td>str</td>
-<td>line color</td>
-<td>#cccccc</td>
+<tr class="row-odd"><td><p>box_range_lines_color</p></td>
+<td><p>str</p></td>
+<td><p>line color</p></td>
+<td><p>#cccccc</p></td>
 </tr>
-<tr class="row-even"><td>box_range_lines_style</td>
-<td>str</td>
-<td>horizontal lines at the end of the range</td>
-<td><ul class="first last simple">
+<tr class="row-even"><td><p>box_range_lines_style</p></td>
+<td><p>str</p></td>
+<td><p>horizontal lines at the end of the range</p></td>
+<td><ul class="simple">
 <li></li>
 </ul>
 </td>
 </tr>
-<tr class="row-odd"><td>box_range_lines_style2</td>
-<td>str</td>
-<td>vertical lines connecting the horizontal lines at the end of the range</td>
-<td>–</td>
+<tr class="row-odd"><td><p>box_range_lines_style2</p></td>
+<td><p>str</p></td>
+<td><p>vertical lines connecting the horizontal lines at the end of the range</p></td>
+<td><p>–</p></td>
 </tr>
 </tbody>
 </table>
@@ -798,42 +800,42 @@ prefix <code class="docutils literal notranslate"><span class="pre">box_range_li
 </div>
 <blockquote>
 <div><ul class="simple">
-<li><strong>Stat lines:</strong> optional connecting line between each box at some statistical
+<li><p><strong>Stat lines:</strong> optional connecting line between each box at some statistical
 value calculated from the data for a single box.  Options include any stat that
 can be computed via the <code class="docutils literal notranslate"><span class="pre">groupby</span></code> command on a pandas DataFrame (i.e., “mean”,
 “median”, “std”, etc.).  Box stat lines are accessed using keywords with the prefix
-<code class="docutils literal notranslate"><span class="pre">box_stat_line_</span></code>:</li>
+<code class="docutils literal notranslate"><span class="pre">box_stat_line_</span></code>:</p></li>
 </ul>
 <blockquote>
-<div><table border="1" class="docutils">
+<div><table class="docutils align-default">
 <colgroup>
-<col width="25%" />
-<col width="13%" />
-<col width="52%" />
-<col width="11%" />
+<col style="width: 25%" />
+<col style="width: 13%" />
+<col style="width: 52%" />
+<col style="width: 11%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Keyword</th>
-<th class="head">Data Type</th>
-<th class="head">Description</th>
-<th class="head">Default</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Keyword</p></th>
+<th class="head"><p>Data Type</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Default</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>box_stat_line_on</td>
-<td>boolean</td>
-<td>toggle divider lines between groups on/off</td>
-<td>True</td>
+<tbody>
+<tr class="row-even"><td><p>box_stat_line_on</p></td>
+<td><p>boolean</p></td>
+<td><p>toggle divider lines between groups on/off</p></td>
+<td><p>True</p></td>
 </tr>
-<tr class="row-odd"><td>box_stat_line</td>
-<td>str</td>
-<td>set the statistic for the connecting line</td>
-<td>mean</td>
+<tr class="row-odd"><td><p>box_stat_line</p></td>
+<td><p>str</p></td>
+<td><p>set the statistic for the connecting line</p></td>
+<td><p>mean</p></td>
 </tr>
-<tr class="row-even"><td>box_stat_line_color</td>
-<td>str</td>
-<td>line color</td>
-<td>#666666</td>
+<tr class="row-even"><td><p>box_stat_line_color</p></td>
+<td><p>str</p></td>
+<td><p>line color</p></td>
+<td><p>#666666</p></td>
 </tr>
 </tbody>
 </table>
@@ -845,33 +847,33 @@ can be computed via the <code class="docutils literal notranslate"><span class="
 <p>A color bar (or “cbar”) is a colorized gradient scale used to signify the z-value
 of data plotted in an X-Y plane on a contour or heatmap plot.  By default, the color
 bar is disabled.</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="9%" />
-<col width="8%" />
-<col width="40%" />
-<col width="7%" />
-<col width="36%" />
+<col style="width: 9%" />
+<col style="width: 8%" />
+<col style="width: 40%" />
+<col style="width: 7%" />
+<col style="width: 36%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Keyword</th>
-<th class="head">Data Type</th>
-<th class="head">Description</th>
-<th class="head">Default</th>
-<th class="head">Example</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Keyword</p></th>
+<th class="head"><p>Data Type</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Example</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>cbar</td>
-<td>boolean</td>
-<td>toggle colorbar on/off for contour and heatmap plots</td>
-<td>False</td>
-<td rowspan="2"><a class="reference external" href="contour.html#Filled-contour">contour example</a></td>
+<tbody>
+<tr class="row-even"><td><p>cbar</p></td>
+<td><p>boolean</p></td>
+<td><p>toggle colorbar on/off for contour and heatmap plots</p></td>
+<td><p>False</p></td>
+<td rowspan="2"><p><a class="reference external" href="contour.html#Filled-contour">contour example</a></p></td>
 </tr>
-<tr class="row-odd"><td>size</td>
-<td>int</td>
-<td>cbar width (height will match the height of the axes)</td>
-<td>30</td>
+<tr class="row-odd"><td><p>size</p></td>
+<td><p>int</p></td>
+<td><p>cbar width (height will match the height of the axes)</p></td>
+<td><p>30</p></td>
 </tr>
 </tbody>
 </table>
@@ -881,8 +883,8 @@ belong to the base <code class="docutils literal notranslate"><span class="pre">
 <p>The following base attributes of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> class are not used for this item:</p>
 <blockquote>
 <div><ul class="simple">
-<li>“Lines” category</li>
-<li><code class="docutils literal notranslate"><span class="pre">text</span></code></li>
+<li><p>“Lines” category</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">text</span></code></p></li>
 </ul>
 </div></blockquote>
 </div>
@@ -893,38 +895,38 @@ belong to the base <code class="docutils literal notranslate"><span class="pre">
 <div class="section" id="contour">
 <h3>Contour<a class="headerlink" href="#contour" title="Permalink to this headline">¶</a></h3>
 <p>Contour plots have a few options that can be specified via keyword:</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="11%" />
-<col width="9%" />
-<col width="32%" />
-<col width="7%" />
-<col width="40%" />
+<col style="width: 11%" />
+<col style="width: 9%" />
+<col style="width: 32%" />
+<col style="width: 7%" />
+<col style="width: 40%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Keyword</th>
-<th class="head">Data Type</th>
-<th class="head">Description</th>
-<th class="head">Default</th>
-<th class="head">Example</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Keyword</p></th>
+<th class="head"><p>Data Type</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Example</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>cmap</td>
-<td>str</td>
-<td>Name of a color map</td>
-<td>inferno</td>
-<td rowspan="3"><a class="reference external" href="contour.html#Filled-contour">contour example</a></td>
+<tbody>
+<tr class="row-even"><td><p>cmap</p></td>
+<td><p>str</p></td>
+<td><p>Name of a color map</p></td>
+<td><p>inferno</p></td>
+<td rowspan="3"><p><a class="reference external" href="contour.html#Filled-contour">contour example</a></p></td>
 </tr>
-<tr class="row-odd"><td>filled</td>
-<td>boolean</td>
-<td>Fill area between contour lines</td>
-<td>True</td>
+<tr class="row-odd"><td><p>filled</p></td>
+<td><p>boolean</p></td>
+<td><p>Fill area between contour lines</p></td>
+<td><p>True</p></td>
 </tr>
-<tr class="row-even"><td>levels</td>
-<td>int</td>
-<td>Number of contour lines/levels to draw</td>
-<td>20</td>
+<tr class="row-even"><td><p>levels</p></td>
+<td><p>int</p></td>
+<td><p>Number of contour lines/levels to draw</p></td>
+<td><p>20</p></td>
 </tr>
 </tbody>
 </table>
@@ -933,13 +935,13 @@ belong to the base <code class="docutils literal notranslate"><span class="pre">
 <h3>Figure<a class="headerlink" href="#figure" title="Permalink to this headline">¶</a></h3>
 <img alt="_images/element_fig.png" class="align-right" src="_images/element_fig.png" />
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
+<p class="admonition-title">Note</p>
 <p>To style the figure region in yellow for this example, the following keywords were
 used in the <code class="docutils literal notranslate"><span class="pre">fcp.plot</span></code> command:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig_edge_color</span><span class="o">=</span><span class="s1">&#39;#000000&#39;</span><span class="p">,</span> <span class="n">fig_fill_color</span><span class="o">=</span><span class="s1">&#39;#fffd75&#39;</span><span class="p">,</span> <span class="n">fig_fill_alpha</span><span class="o">=</span><span class="mf">0.5</span>
 </pre></div>
 </div>
-<p class="last">Notice, we are just accessing default <code class="docutils literal notranslate"><span class="pre">Element</span></code> class attributes and prepending
+<p>Notice, we are just accessing default <code class="docutils literal notranslate"><span class="pre">Element</span></code> class attributes and prepending
 the keywords with the element name, <code class="docutils literal notranslate"><span class="pre">fig_</span></code> in this case.</p>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">figure</span></code> element is the full window in which other elements are rendered.
@@ -951,36 +953,36 @@ be subdivided into multiple subplots to display more data.  Unlike matplotlib, <
 <div class="admonition note">
 <p class="first admonition-title">Keyword Prefix</p>
 <p class="last"><b>fig_</b></p>
-</div><table border="1" class="docutils">
+</div><table class="docutils align-default">
 <colgroup>
-<col width="24%" />
-<col width="24%" />
-<col width="33%" />
-<col width="20%" />
+<col style="width: 24%" />
+<col style="width: 24%" />
+<col style="width: 33%" />
+<col style="width: 20%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Keyword</th>
-<th class="head">Data Type</th>
-<th class="head">Description</th>
-<th class="head">Default</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Keyword</p></th>
+<th class="head"><p>Data Type</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Default</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>dpi</td>
-<td>int</td>
-<td>dots per inch</td>
-<td>100</td>
+<tbody>
+<tr class="row-even"><td><p>dpi</p></td>
+<td><p>int</p></td>
+<td><p>dots per inch</p></td>
+<td><p>100</p></td>
 </tr>
 </tbody>
 </table>
 <p>The following base attributes of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> class are not used for this item:</p>
 <blockquote>
 <div><ul class="simple">
-<li>“Fonts” category</li>
-<li>“Lines” category</li>
-<li><code class="docutils literal notranslate"><span class="pre">on</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">size</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">text</span></code></li>
+<li><p>“Fonts” category</p></li>
+<li><p>“Lines” category</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">on</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">size</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">text</span></code></p></li>
 </ul>
 </div></blockquote>
 </div>
@@ -988,81 +990,81 @@ be subdivided into multiple subplots to display more data.  Unlike matplotlib, <
 <h3>Fit<a class="headerlink" href="#fit" title="Permalink to this headline">¶</a></h3>
 <p><strong>fivecentplots</strong> can add a polynomial fit to a data set.  This is controlled via
 the family of keywords beginning with <code class="docutils literal notranslate"><span class="pre">fit_</span></code>:</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="9%" />
-<col width="9%" />
-<col width="46%" />
-<col width="6%" />
-<col width="30%" />
+<col style="width: 9%" />
+<col style="width: 9%" />
+<col style="width: 46%" />
+<col style="width: 6%" />
+<col style="width: 30%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Keyword</th>
-<th class="head">Data Type</th>
-<th class="head">Description</th>
-<th class="head">Default</th>
-<th class="head">Example</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Keyword</p></th>
+<th class="head"><p>Data Type</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Example</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>fit</td>
-<td>int</td>
-<td>polynomial degree for the fit</td>
-<td>None</td>
-<td><a class="reference external" href="plot.html#Line-fit">Line fit</a></td>
+<tbody>
+<tr class="row-even"><td><p>fit</p></td>
+<td><p>int</p></td>
+<td><p>polynomial degree for the fit</p></td>
+<td><p>None</p></td>
+<td><p><a class="reference external" href="plot.html#Line-fit">Line fit</a></p></td>
 </tr>
-<tr class="row-odd"><td>fit_color</td>
-<td>hex color str</td>
-<td>color of the fit line</td>
-<td>#000000</td>
-<td>None</td>
+<tr class="row-odd"><td><p>fit_color</p></td>
+<td><p>hex color str</p></td>
+<td><p>color of the fit line</p></td>
+<td><p>#000000</p></td>
+<td><p>None</p></td>
 </tr>
-<tr class="row-even"><td>fit_eqn</td>
-<td>boolean</td>
-<td>display the fit equation on the plot</td>
-<td>False</td>
-<td>None</td>
+<tr class="row-even"><td><p>fit_eqn</p></td>
+<td><p>boolean</p></td>
+<td><p>display the fit equation on the plot</p></td>
+<td><p>False</p></td>
+<td><p>None</p></td>
 </tr>
-<tr class="row-odd"><td>fit_font_size</td>
-<td>float</td>
-<td>font size of the fit eqn and rsq value</td>
-<td>12</td>
-<td>None</td>
+<tr class="row-odd"><td><p>fit_font_size</p></td>
+<td><p>float</p></td>
+<td><p>font size of the fit eqn and rsq value</p></td>
+<td><p>12</p></td>
+<td><p>None</p></td>
 </tr>
-<tr class="row-even"><td>fit_padding</td>
-<td>int</td>
-<td>padding in pixels from the top of the plot to the location of the fit eqn</td>
-<td>10</td>
-<td>None</td>
+<tr class="row-even"><td><p>fit_padding</p></td>
+<td><p>int</p></td>
+<td><p>padding in pixels from the top of the plot to the location of the fit eqn</p></td>
+<td><p>10</p></td>
+<td><p>None</p></td>
 </tr>
-<tr class="row-odd"><td>fit_range_x</td>
-<td>list</td>
-<td>compute the fit only over a given range of x-values</td>
-<td>None</td>
-<td rowspan="2"><a class="reference external" href="plot.html#Curve-fitting">third example here</a></td>
+<tr class="row-odd"><td><p>fit_range_x</p></td>
+<td><p>list</p></td>
+<td><p>compute the fit only over a given range of x-values</p></td>
+<td><p>None</p></td>
+<td rowspan="2"><p><a class="reference external" href="plot.html#Curve-fitting">third example here</a></p></td>
 </tr>
-<tr class="row-even"><td>fit_range_y</td>
-<td>list</td>
-<td>compute the fit only over a given range of y-values</td>
-<td>None</td>
+<tr class="row-even"><td><p>fit_range_y</p></td>
+<td><p>list</p></td>
+<td><p>compute the fit only over a given range of y-values</p></td>
+<td><p>None</p></td>
 </tr>
-<tr class="row-odd"><td>fit_rsq</td>
-<td>boolean</td>
-<td>display the rsq of the fit on the plot</td>
-<td>False</td>
-<td>None</td>
+<tr class="row-odd"><td><p>fit_rsq</p></td>
+<td><p>boolean</p></td>
+<td><p>display the rsq of the fit on the plot</p></td>
+<td><p>False</p></td>
+<td><p>None</p></td>
 </tr>
 </tbody>
 </table>
 <p>The following base attributes of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> class are not used for this item:</p>
 <blockquote>
 <div><ul class="simple">
-<li>“Fill” category</li>
-<li>“Edges” category</li>
-<li>“Fonts” category</li>
-<li><code class="docutils literal notranslate"><span class="pre">on</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">size</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">text</span></code></li>
+<li><p>“Fill” category</p></li>
+<li><p>“Edges” category</p></li>
+<li><p>“Fonts” category</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">on</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">size</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">text</span></code></p></li>
 </ul>
 </div></blockquote>
 </div>
@@ -1076,103 +1078,103 @@ major grids are enabled by default.</p>
 <p class="last">&lt;grid&gt;_&lt;major|minor&gt;_&lt;x|y|z|blank&gt;_&lt;element attribute name&gt;</p>
 </div><p>To specify grids of a specific axis you must include the axis designation in the keyword.
 If the axis is not specified, the property will be applied to all axes.</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="19%" />
-<col width="6%" />
-<col width="37%" />
-<col width="5%" />
-<col width="33%" />
+<col style="width: 19%" />
+<col style="width: 6%" />
+<col style="width: 37%" />
+<col style="width: 5%" />
+<col style="width: 33%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Keyword</th>
-<th class="head">Data Type</th>
-<th class="head">Description</th>
-<th class="head">Default</th>
-<th class="head">Example</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Keyword</p></th>
+<th class="head"><p>Data Type</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Example</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>grid_major</td>
-<td>boolean</td>
-<td>Toggle major grid visibility for primary x and y axes</td>
-<td>True</td>
-<td>` Major grid enabled/disabled &lt;ticks.html#Major-grid&gt;`_</td>
+<tbody>
+<tr class="row-even"><td><p>grid_major</p></td>
+<td><p>boolean</p></td>
+<td><p>Toggle major grid visibility for primary x and y axes</p></td>
+<td><p>True</p></td>
+<td><p>` Major grid enabled/disabled &lt;ticks.html#Major-grid&gt;`_</p></td>
 </tr>
-<tr class="row-odd"><td>grid_major_x</td>
-<td>boolean</td>
-<td>Toggle major grid visibility for primary x axis</td>
-<td>True</td>
-<td>None</td>
+<tr class="row-odd"><td><p>grid_major_x</p></td>
+<td><p>boolean</p></td>
+<td><p>Toggle major grid visibility for primary x axis</p></td>
+<td><p>True</p></td>
+<td><p>None</p></td>
 </tr>
-<tr class="row-even"><td>grid_major_x2</td>
-<td>boolean</td>
-<td>Toggle major grid visibility for secondary x axis</td>
-<td>False</td>
-<td>None</td>
+<tr class="row-even"><td><p>grid_major_x2</p></td>
+<td><p>boolean</p></td>
+<td><p>Toggle major grid visibility for secondary x axis</p></td>
+<td><p>False</p></td>
+<td><p>None</p></td>
 </tr>
-<tr class="row-odd"><td>grid_major_y</td>
-<td>boolean</td>
-<td>Toggle major grid visibility for primary y axis</td>
-<td>True</td>
-<td>None</td>
+<tr class="row-odd"><td><p>grid_major_y</p></td>
+<td><p>boolean</p></td>
+<td><p>Toggle major grid visibility for primary y axis</p></td>
+<td><p>True</p></td>
+<td><p>None</p></td>
 </tr>
-<tr class="row-even"><td>grid_major_y2</td>
-<td>boolean</td>
-<td>Toggle major grid visibility for secondary y axis</td>
-<td>False</td>
-<td>None</td>
+<tr class="row-even"><td><p>grid_major_y2</p></td>
+<td><p>boolean</p></td>
+<td><p>Toggle major grid visibility for secondary y axis</p></td>
+<td><p>False</p></td>
+<td><p>None</p></td>
 </tr>
-<tr class="row-odd"><td>grid_minor</td>
-<td>boolean</td>
-<td>Toggle minor grid visibility for primary x and y axes</td>
-<td>False</td>
-<td>` Minor grid enabled/disabled &lt;ticks.html#Minor-grid&gt;`_</td>
+<tr class="row-odd"><td><p>grid_minor</p></td>
+<td><p>boolean</p></td>
+<td><p>Toggle minor grid visibility for primary x and y axes</p></td>
+<td><p>False</p></td>
+<td><p>` Minor grid enabled/disabled &lt;ticks.html#Minor-grid&gt;`_</p></td>
 </tr>
-<tr class="row-even"><td>grid_minor_x</td>
-<td>boolean</td>
-<td>Toggle minor grid visibility for primary x axis</td>
-<td>False</td>
-<td>None</td>
+<tr class="row-even"><td><p>grid_minor_x</p></td>
+<td><p>boolean</p></td>
+<td><p>Toggle minor grid visibility for primary x axis</p></td>
+<td><p>False</p></td>
+<td><p>None</p></td>
 </tr>
-<tr class="row-odd"><td>grid_minor_x2</td>
-<td>boolean</td>
-<td>Toggle minor grid visibility for secondary x axis</td>
-<td>False</td>
-<td>None</td>
+<tr class="row-odd"><td><p>grid_minor_x2</p></td>
+<td><p>boolean</p></td>
+<td><p>Toggle minor grid visibility for secondary x axis</p></td>
+<td><p>False</p></td>
+<td><p>None</p></td>
 </tr>
-<tr class="row-even"><td>grid_minor_y</td>
-<td>boolean</td>
-<td>Toggle minor grid visibility for primary y axis</td>
-<td>False</td>
-<td>None</td>
+<tr class="row-even"><td><p>grid_minor_y</p></td>
+<td><p>boolean</p></td>
+<td><p>Toggle minor grid visibility for primary y axis</p></td>
+<td><p>False</p></td>
+<td><p>None</p></td>
 </tr>
-<tr class="row-odd"><td>grid_minor_y2</td>
-<td>boolean</td>
-<td>Toggle minor grid visibility for secondary y axis</td>
-<td>False</td>
-<td>None</td>
+<tr class="row-odd"><td><p>grid_minor_y2</p></td>
+<td><p>boolean</p></td>
+<td><p>Toggle minor grid visibility for secondary y axis</p></td>
+<td><p>False</p></td>
+<td><p>None</p></td>
 </tr>
-<tr class="row-even"><td>grid_major|minor_x|y|blank_color</td>
-<td>str</td>
-<td>Grid line color</td>
-<td>#ffffff</td>
-<td>None</td>
+<tr class="row-even"><td><p>grid_major|minor_x|y|blank_color</p></td>
+<td><p>str</p></td>
+<td><p>Grid line color</p></td>
+<td><p>#ffffff</p></td>
+<td><p>None</p></td>
 </tr>
-<tr class="row-odd"><td>grid_major|minor_x|y|blank_style</td>
-<td>str</td>
-<td>Grid line style (follows matplotlib standards: ‘-‘, ‘–’, etc)</td>
-<td><ul class="first last simple">
+<tr class="row-odd"><td><p>grid_major|minor_x|y|blank_style</p></td>
+<td><p>str</p></td>
+<td><p>Grid line style (follows matplotlib standards: ‘-‘, ‘–’, etc)</p></td>
+<td><ul class="simple">
 <li></li>
 </ul>
 </td>
-<td>None</td>
+<td><p>None</p></td>
 </tr>
-<tr class="row-even"><td>grid_major|minor_x|y|blank_width</td>
-<td>float</td>
-<td>Grid line width</td>
-<td>1.3</td>
-<td>None</td>
+<tr class="row-even"><td><p>grid_major|minor_x|y|blank_width</p></td>
+<td><p>float</p></td>
+<td><p>Grid line width</p></td>
+<td><p>1.3</p></td>
+<td><p>None</p></td>
 </tr>
 </tbody>
 </table>
@@ -1181,46 +1183,46 @@ If the axis is not specified, the property will be applied to all axes.</p>
 <h3>Heatmap<a class="headerlink" href="#heatmap" title="Permalink to this headline">¶</a></h3>
 <p>Heatmaps are a useful way to display categorical data or colorized images.  The
 following keywords are available for this platform:</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="6%" />
-<col width="51%" />
-<col width="5%" />
-<col width="28%" />
+<col style="width: 10%" />
+<col style="width: 6%" />
+<col style="width: 51%" />
+<col style="width: 5%" />
+<col style="width: 28%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Keyword</th>
-<th class="head">Data Type</th>
-<th class="head">Description</th>
-<th class="head">Default</th>
-<th class="head">Example</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Keyword</p></th>
+<th class="head"><p>Data Type</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Example</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>cell_size</td>
-<td>int</td>
-<td>width of a heatmap cell</td>
-<td>60</td>
-<td><a class="reference external" href="heatmap.html#Cell-size">cell size</a></td>
+<tbody>
+<tr class="row-even"><td><p>cell_size</p></td>
+<td><p>int</p></td>
+<td><p>width of a heatmap cell</p></td>
+<td><p>60</p></td>
+<td><p><a class="reference external" href="heatmap.html#Cell-size">cell size</a></p></td>
 </tr>
-<tr class="row-odd"><td>cmap</td>
-<td>boolean</td>
-<td>toggle colorbar on/off for contour and heatmap plots</td>
-<td>False</td>
-<td><a class="reference external" href="heatmap.html#No-data-labels">basic heatmap</a></td>
+<tr class="row-odd"><td><p>cmap</p></td>
+<td><p>boolean</p></td>
+<td><p>toggle colorbar on/off for contour and heatmap plots</p></td>
+<td><p>False</p></td>
+<td><p><a class="reference external" href="heatmap.html#No-data-labels">basic heatmap</a></p></td>
 </tr>
-<tr class="row-even"><td>data_labels</td>
-<td>boolean</td>
-<td>enable/disable value labels on the heatmap cells</td>
-<td>False</td>
-<td><a class="reference external" href="heatmap.html#With-data-labels">data labels</a></td>
+<tr class="row-even"><td><p>data_labels</p></td>
+<td><p>boolean</p></td>
+<td><p>enable/disable value labels on the heatmap cells</p></td>
+<td><p>False</p></td>
+<td><p><a class="reference external" href="heatmap.html#With-data-labels">data labels</a></p></td>
 </tr>
-<tr class="row-odd"><td>heatmap_font_xxx</td>
-<td>various</td>
-<td>data label fonts are controlled by standard font attributes with the prefix “<a class="reference internal" href="#heatmap">heatmap</a>”</td>
-<td>Various</td>
-<td>None</td>
+<tr class="row-odd"><td><p>heatmap_font_xxx</p></td>
+<td><p>various</p></td>
+<td><p>data label fonts are controlled by standard font attributes with the prefix “<a class="reference internal" href="#heatmap">heatmap</a>”</p></td>
+<td><p>Various</p></td>
+<td><p>None</p></td>
 </tr>
 </tbody>
 </table>
@@ -1231,7 +1233,7 @@ following keywords are available for this platform:</p>
 <p>The following types of <code class="docutils literal notranslate"><span class="pre">label</span></code> elements can exist in a plot:</p>
 <blockquote>
 <div><ul>
-<li><p class="first">axis labels (colored in salmon on right)</p>
+<li><p>axis labels (colored in salmon on right)</p>
  <div class="admonition note">
  <p class="first admonition-title">Keyword Prefix</p>
  <ul>
@@ -1253,7 +1255,7 @@ DataFrame column names used to define these values (i.e., the <code class="docut
 will match the value of <code class="docutils literal notranslate"><span class="pre">x</span></code>).  However, axes label text can be overriden by
 setting a value for the label such as <code class="docutils literal notranslate"><span class="pre">label_x='New</span> <span class="pre">Name'</span></code>.</p>
 </li>
-<li><p class="first">row, column, and wrap labels (colored in yellow on right)</p>
+<li><p>row, column, and wrap labels (colored in yellow on right)</p>
  <div class="admonition note">
  <p class="first admonition-title">Keyword Prefix</p>
  <ul>
@@ -1284,7 +1286,7 @@ being plotted.</p>
 </div>
 <blockquote>
 <div><ul>
-<li><p class="first">wrap titles: <code class="docutils literal notranslate"><span class="pre">wrap_title</span></code> (colored in cyan above)</p>
+<li><p>wrap titles: <code class="docutils literal notranslate"><span class="pre">wrap_title</span></code> (colored in cyan above)</p>
 <div class="admonition note">
 <p class="first admonition-title">Keyword Prefix</p>
 <p class="last"><b>wrap_title_</b></p>
@@ -1298,7 +1300,7 @@ of base attributes is not used for labels.</p>
 <p>The following base attributes of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> class are not used for this item:</p>
 <blockquote>
 <div><ul class="simple">
-<li>“Lines” category</li>
+<li><p>“Lines” category</p></li>
 </ul>
 </div></blockquote>
 </div>
@@ -1308,121 +1310,121 @@ of base attributes is not used for labels.</p>
 <p>The plot legend (shown in yellow on left) is controlled by keywords with the
 prefix <code class="docutils literal notranslate"><span class="pre">legend_</span></code>.  By default, legends are placed outside of the plot area
 (where they should be to avoid obscuring data!).</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="12%" />
-<col width="6%" />
-<col width="41%" />
-<col width="18%" />
-<col width="23%" />
+<col style="width: 12%" />
+<col style="width: 6%" />
+<col style="width: 41%" />
+<col style="width: 18%" />
+<col style="width: 23%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Keyword</th>
-<th class="head">Data Type</th>
-<th class="head">Description</th>
-<th class="head">Default</th>
-<th class="head">Example</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Keyword</p></th>
+<th class="head"><p>Data Type</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Example</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>legend</td>
-<td>str</td>
-<td>name of a DataFrame column to use for grouping</td>
-<td>None</td>
-<td><a class="reference external" href="plot.html#Legend">Legend</a></td>
+<tbody>
+<tr class="row-even"><td><p>legend</p></td>
+<td><p>str</p></td>
+<td><p>name of a DataFrame column to use for grouping</p></td>
+<td><p>None</p></td>
+<td><p><a class="reference external" href="plot.html#Legend">Legend</a></p></td>
 </tr>
-<tr class="row-odd"><td rowspan="12">location</td>
-<td rowspan="12">int | str</td>
-<td>location of legend (at this time only outside of the plot is available!):</td>
-<td rowspan="12">0</td>
-<td rowspan="12">None</td>
+<tr class="row-odd"><td rowspan="12"><p>location</p></td>
+<td rowspan="12"><p>int | str</p></td>
+<td><p>location of legend (at this time only outside of the plot is available!):</p></td>
+<td rowspan="12"><p>0</p></td>
+<td rowspan="12"><p>None</p></td>
 </tr>
-<tr class="row-even"><td><ul class="first last simple">
-<li>0 | “outside” = outside of plot on right side</li>
+<tr class="row-even"><td><ul class="simple">
+<li><p>0 | “outside” = outside of plot on right side</p></li>
 </ul>
 </td>
 </tr>
-<tr class="row-odd"><td><ul class="first last simple">
-<li>1 | “upper right” = upper right inside corner</li>
+<tr class="row-odd"><td><ul class="simple">
+<li><p>1 | “upper right” = upper right inside corner</p></li>
 </ul>
 </td>
 </tr>
-<tr class="row-even"><td><ul class="first last simple">
-<li>2 | “upper left = upper left inside corner</li>
+<tr class="row-even"><td><ul class="simple">
+<li><p>2 | “upper left = upper left inside corner</p></li>
 </ul>
 </td>
 </tr>
-<tr class="row-odd"><td><ul class="first last simple">
-<li>3 | “lower left” = lower left inside corner</li>
+<tr class="row-odd"><td><ul class="simple">
+<li><p>3 | “lower left” = lower left inside corner</p></li>
 </ul>
 </td>
 </tr>
-<tr class="row-even"><td><ul class="first last simple">
-<li>4 | “lower right” = lower right inside corner</li>
+<tr class="row-even"><td><ul class="simple">
+<li><p>4 | “lower right” = lower right inside corner</p></li>
 </ul>
 </td>
 </tr>
-<tr class="row-odd"><td><ul class="first last simple">
-<li>5 | “right”</li>
+<tr class="row-odd"><td><ul class="simple">
+<li><p>5 | “right”</p></li>
 </ul>
 </td>
 </tr>
-<tr class="row-even"><td><ul class="first last simple">
-<li>6 | “center left”</li>
+<tr class="row-even"><td><ul class="simple">
+<li><p>6 | “center left”</p></li>
 </ul>
 </td>
 </tr>
-<tr class="row-odd"><td><ul class="first last simple">
-<li>7 | “center right”</li>
+<tr class="row-odd"><td><ul class="simple">
+<li><p>7 | “center right”</p></li>
 </ul>
 </td>
 </tr>
-<tr class="row-even"><td><ul class="first last simple">
-<li>8 | “lower center”</li>
+<tr class="row-even"><td><ul class="simple">
+<li><p>8 | “lower center”</p></li>
 </ul>
 </td>
 </tr>
-<tr class="row-odd"><td><ul class="first last simple">
-<li>9 | “upper center”</li>
+<tr class="row-odd"><td><ul class="simple">
+<li><p>9 | “upper center”</p></li>
 </ul>
 </td>
 </tr>
-<tr class="row-even"><td><ul class="first last simple">
-<li>10 | “center”</li>
+<tr class="row-even"><td><ul class="simple">
+<li><p>10 | “center”</p></li>
 </ul>
 </td>
 </tr>
-<tr class="row-odd"><td>legend_marker_alpha</td>
-<td>float</td>
-<td>alpha of the markers in the legend only</td>
-<td>1</td>
-<td><a class="reference external" href="styles.html#Alpha">Alpha</a></td>
+<tr class="row-odd"><td><p>legend_marker_alpha</p></td>
+<td><p>float</p></td>
+<td><p>alpha of the markers in the legend only</p></td>
+<td><p>1</p></td>
+<td><p><a class="reference external" href="styles.html#Alpha">Alpha</a></p></td>
 </tr>
-<tr class="row-even"><td>legend_marker_size</td>
-<td>float</td>
-<td>marker size in legend only</td>
-<td>same as <a href="#id10"><span class="problematic" id="id11">``</span></a>marker_size`</td>
-<td><a class="reference external" href="styles.html#Marker-size">Marker size</a></td>
+<tr class="row-even"><td><p>legend_marker_size</p></td>
+<td><p>float</p></td>
+<td><p>marker size in legend only</p></td>
+<td><p>same as <a href="#id10"><span class="problematic" id="id11">``</span></a>marker_size`</p></td>
+<td><p><a class="reference external" href="styles.html#Marker-size">Marker size</a></p></td>
 </tr>
-<tr class="row-odd"><td>legend_points</td>
-<td>int</td>
-<td>number of points for each legend value</td>
-<td>1</td>
-<td>None</td>
+<tr class="row-odd"><td><p>legend_points</p></td>
+<td><p>int</p></td>
+<td><p>number of points for each legend value</p></td>
+<td><p>1</p></td>
+<td><p>None</p></td>
 </tr>
-<tr class="row-even"><td>legend_title</td>
-<td>str</td>
-<td>legend title text</td>
-<td>defaults to legend column name</td>
-<td>None</td>
+<tr class="row-even"><td><p>legend_title</p></td>
+<td><p>str</p></td>
+<td><p>legend title text</p></td>
+<td><p>defaults to legend column name</p></td>
+<td><p>None</p></td>
 </tr>
 </tbody>
 </table>
 <p>The following base attributes of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> class are not used for this item:</p>
 <blockquote>
 <div><ul class="simple">
-<li>“Lines” category</li>
-<li><code class="docutils literal notranslate"><span class="pre">size</span></code></li>
+<li><p>“Lines” category</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">size</span></code></p></li>
 </ul>
 </div></blockquote>
 </div>
@@ -1432,45 +1434,45 @@ prefix <code class="docutils literal notranslate"><span class="pre">legend_</spa
 selected from the default color list:</p>
 <img alt="_images/colors.png" src="_images/colors.png" />
 <p>The following keywords are related to <code class="docutils literal notranslate"><span class="pre">lines</span></code> elements:</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="9%" />
-<col width="25%" />
-<col width="23%" />
-<col width="9%" />
-<col width="35%" />
+<col style="width: 9%" />
+<col style="width: 25%" />
+<col style="width: 23%" />
+<col style="width: 9%" />
+<col style="width: 35%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Keyword</th>
-<th class="head">Data Type</th>
-<th class="head">Description</th>
-<th class="head">Default</th>
-<th class="head">Example</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Keyword</p></th>
+<th class="head"><p>Data Type</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Example</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>colors</td>
-<td>hex color str or list of hex color strs</td>
-<td>colors to use for lines and markers</td>
-<td>default list</td>
-<td><a class="reference external" href="styles.html#Built-in-color-list">built-in color list</a></td>
+<tbody>
+<tr class="row-even"><td><p>colors</p></td>
+<td><p>hex color str or list of hex color strs</p></td>
+<td><p>colors to use for lines and markers</p></td>
+<td><p>default list</p></td>
+<td><p><a class="reference external" href="styles.html#Built-in-color-list">built-in color list</a></p></td>
 </tr>
-<tr class="row-odd"><td>lines</td>
-<td>boolean</td>
-<td>toggle line visibility</td>
-<td>True</td>
-<td>None</td>
+<tr class="row-odd"><td><p>lines</p></td>
+<td><p>boolean</p></td>
+<td><p>toggle line visibility</p></td>
+<td><p>True</p></td>
+<td><p>None</p></td>
 </tr>
 </tbody>
 </table>
 <p>The following base attributes of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> class are not used for this item:</p>
 <blockquote>
 <div><ul class="simple">
-<li>“Fill” category</li>
-<li>“Edges” category</li>
-<li>“Fonts” category</li>
-<li><code class="docutils literal notranslate"><span class="pre">size</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">text</span></code></li>
+<li><p>“Fill” category</p></li>
+<li><p>“Edges” category</p></li>
+<li><p>“Fonts” category</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">size</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">text</span></code></p></li>
 </ul>
 </div></blockquote>
 </div>
@@ -1482,117 +1484,117 @@ on the number of data sets displayed:</p>
 <img alt="_images/markers.png" src="_images/markers.png" />
 <p>The marker type, size, and color/alpha are all completely customizable via <code class="docutils literal notranslate"><span class="pre">marker_</span></code>
 keywords:</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="8%" />
-<col width="14%" />
-<col width="39%" />
-<col width="22%" />
-<col width="17%" />
+<col style="width: 8%" />
+<col style="width: 14%" />
+<col style="width: 39%" />
+<col style="width: 22%" />
+<col style="width: 17%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Keyword</th>
-<th class="head">Data Type</th>
-<th class="head">Description</th>
-<th class="head">Default</th>
-<th class="head">Example</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Keyword</p></th>
+<th class="head"><p>Data Type</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Example</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td rowspan="2">markers</td>
-<td rowspan="2">boolean or list of str characters</td>
-<td>if <code class="docutils literal notranslate"><span class="pre">False</span></code>, turns off markers on the plot</td>
-<td rowspan="2">default marker list</td>
-<td rowspan="2"><a class="reference external" href="styles.html#Markers">Markers</a></td>
+<tbody>
+<tr class="row-even"><td rowspan="2"><p>markers</p></td>
+<td rowspan="2"><p>boolean or list of str characters</p></td>
+<td><p>if <code class="docutils literal notranslate"><span class="pre">False</span></code>, turns off markers on the plot</p></td>
+<td rowspan="2"><p>default marker list</p></td>
+<td rowspan="2"><p><a class="reference external" href="styles.html#Markers">Markers</a></p></td>
 </tr>
-<tr class="row-odd"><td>if a list of characters, sets the markers to be used (one marker type per curve or data set)</td>
+<tr class="row-odd"><td><p>if a list of characters, sets the markers to be used (one marker type per curve or data set)</p></td>
 </tr>
-<tr class="row-even"><td>marker_fill</td>
-<td>boolean</td>
-<td>turn on/off marker fill</td>
-<td>False</td>
-<td>None</td>
+<tr class="row-even"><td><p>marker_fill</p></td>
+<td><p>boolean</p></td>
+<td><p>turn on/off marker fill</p></td>
+<td><p>False</p></td>
+<td><p>None</p></td>
 </tr>
-<tr class="row-odd"><td>marker_edge_color</td>
-<td>hex color str</td>
-<td>set the marker edge color</td>
-<td>match the line color scheme</td>
-<td>None</td>
+<tr class="row-odd"><td><p>marker_edge_color</p></td>
+<td><p>hex color str</p></td>
+<td><p>set the marker edge color</p></td>
+<td><p>match the line color scheme</p></td>
+<td><p>None</p></td>
 </tr>
-<tr class="row-even"><td>marker_edge_width</td>
-<td>float</td>
-<td>set the marker edge width</td>
-<td>1.5</td>
-<td>None</td>
+<tr class="row-even"><td><p>marker_edge_width</p></td>
+<td><p>float</p></td>
+<td><p>set the marker edge width</p></td>
+<td><p>1.5</p></td>
+<td><p>None</p></td>
 </tr>
-<tr class="row-odd"><td>marker_fill_color</td>
-<td>hex color str</td>
-<td>set the marker fill color (only rendered if <code class="docutils literal notranslate"><span class="pre">marker_fill=True</span></code>)</td>
-<td>True</td>
-<td>None</td>
+<tr class="row-odd"><td><p>marker_fill_color</p></td>
+<td><p>hex color str</p></td>
+<td><p>set the marker fill color (only rendered if <code class="docutils literal notranslate"><span class="pre">marker_fill=True</span></code>)</p></td>
+<td><p>True</p></td>
+<td><p>None</p></td>
 </tr>
-<tr class="row-even"><td>marker_jitter</td>
-<td>boolean</td>
-<td>add a random offset or jitter to the points around their x-value (useful for box plots)</td>
-<td><a href="#id13"><span class="problematic" id="id14">`</span></a>True for boxplots | <a href="#id15"><span class="problematic" id="id16">`</span></a>False for all other plot types</td>
-<td>None</td>
+<tr class="row-even"><td><p>marker_jitter</p></td>
+<td><p>boolean</p></td>
+<td><p>add a random offset or jitter to the points around their x-value (useful for box plots)</p></td>
+<td><p><a href="#id13"><span class="problematic" id="id14">`</span></a>True for boxplots | <a href="#id15"><span class="problematic" id="id16">`</span></a>False for all other plot types</p></td>
+<td><p>None</p></td>
 </tr>
-<tr class="row-odd"><td>marker_size</td>
-<td>float</td>
-<td>size of the markers (can be specified uniquely from the legend marker size)</td>
-<td>7</td>
-<td><a class="reference external" href="styles.html#Marker-size">Marker size</a></td>
+<tr class="row-odd"><td><p>marker_size</p></td>
+<td><p>float</p></td>
+<td><p>size of the markers (can be specified uniquely from the legend marker size)</p></td>
+<td><p>7</p></td>
+<td><p><a class="reference external" href="styles.html#Marker-size">Marker size</a></p></td>
 </tr>
 </tbody>
 </table>
 <p>The following base attributes of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> class are not used for this item:</p>
 <blockquote>
 <div><ul class="simple">
-<li>“Lines” category</li>
-<li><code class="docutils literal notranslate"><span class="pre">text</span></code></li>
+<li><p>“Lines” category</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">text</span></code></p></li>
 </ul>
 </div></blockquote>
 </div>
 <div class="section" id="reference-line">
 <h3>Reference Line<a class="headerlink" href="#reference-line" title="Permalink to this headline">¶</a></h3>
 <p>A reference line can be drawn on a plot via keywords with the <code class="docutils literal notranslate"><span class="pre">ref_line_</span></code> prefix:</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="8%" />
-<col width="13%" />
-<col width="31%" />
-<col width="10%" />
-<col width="39%" />
+<col style="width: 8%" />
+<col style="width: 13%" />
+<col style="width: 31%" />
+<col style="width: 10%" />
+<col style="width: 39%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Keyword</th>
-<th class="head">Data Type</th>
-<th class="head">Description</th>
-<th class="head">Default</th>
-<th class="head">Example</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Keyword</p></th>
+<th class="head"><p>Data Type</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Example</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>color</td>
-<td>hex color str</td>
-<td>color of the reference line</td>
-<td>#000000</td>
-<td rowspan="2"><a class="reference external" href="plot.html#Reference-line">Reference line</a></td>
+<tbody>
+<tr class="row-even"><td><p>color</p></td>
+<td><p>hex color str</p></td>
+<td><p>color of the reference line</p></td>
+<td><p>#000000</p></td>
+<td rowspan="2"><p><a class="reference external" href="plot.html#Reference-line">Reference line</a></p></td>
 </tr>
-<tr class="row-odd"><td>text</td>
-<td>str</td>
-<td>legend text for the reference line</td>
-<td>“Ref Line”</td>
+<tr class="row-odd"><td><p>text</p></td>
+<td><p>str</p></td>
+<td><p>legend text for the reference line</p></td>
+<td><p>“Ref Line”</p></td>
 </tr>
 </tbody>
 </table>
 <p>The following base attributes of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> class are not used for this item:</p>
 <blockquote>
 <div><ul class="simple">
-<li>“Fill” category</li>
-<li>“Edges” category</li>
-<li>“Fonts” category</li>
-<li><code class="docutils literal notranslate"><span class="pre">size</span></code></li>
+<li><p>“Fill” category</p></li>
+<li><p>“Edges” category</p></li>
+<li><p>“Fonts” category</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">size</span></code></p></li>
 </ul>
 </div></blockquote>
 </div>
@@ -1600,41 +1602,41 @@ keywords:</p>
 <h3>Stats<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h3>
 <p>Several options are available for graphically displaying statistical information about
 a given data set:</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="5%" />
-<col width="5%" />
-<col width="59%" />
-<col width="4%" />
-<col width="27%" />
+<col style="width: 5%" />
+<col style="width: 5%" />
+<col style="width: 59%" />
+<col style="width: 4%" />
+<col style="width: 27%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Keyword</th>
-<th class="head">Data Type</th>
-<th class="head">Description</th>
-<th class="head">Default</th>
-<th class="head">Example</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Keyword</p></th>
+<th class="head"><p>Data Type</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Example</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>conf_int</td>
-<td>float</td>
-<td>Add shading around a curve based on a given confidence interval from 0 to 1</td>
-<td>None</td>
-<td>` Confidence Intervals &lt;plot.html#Confidence-intervals&gt;`_</td>
+<tbody>
+<tr class="row-even"><td><p>conf_int</p></td>
+<td><p>float</p></td>
+<td><p>Add shading around a curve based on a given confidence interval from 0 to 1</p></td>
+<td><p>None</p></td>
+<td><p>` Confidence Intervals &lt;plot.html#Confidence-intervals&gt;`_</p></td>
 </tr>
-<tr class="row-odd"><td>stat</td>
-<td>str</td>
-<td>Add a line through a data set where each y-value represents a computed statistic of the data at a given x-value.
-Options include:  ‘mean’, ‘median’, ‘std’, ‘q25’ (25% quantile), etc</td>
-<td>None</td>
-<td><a class="reference external" href="plot.html#Stat-lines">Stat lines example</a></td>
+<tr class="row-odd"><td><p>stat</p></td>
+<td><p>str</p></td>
+<td><p>Add a line through a data set where each y-value represents a computed statistic of the data at a given x-value.
+Options include:  ‘mean’, ‘median’, ‘std’, ‘q25’ (25% quantile), etc</p></td>
+<td><p>None</p></td>
+<td><p><a class="reference external" href="plot.html#Stat-lines">Stat lines example</a></p></td>
 </tr>
-<tr class="row-even"><td>stat_val</td>
-<td>str</td>
-<td>Column name to use instead of the given ‘x’ column for calculating the stat</td>
-<td>None</td>
-<td><a class="reference external" href="plot.html#Stat-lines">Stat lines example</a></td>
+<tr class="row-even"><td><p>stat_val</p></td>
+<td><p>str</p></td>
+<td><p>Column name to use instead of the given ‘x’ column for calculating the stat</p></td>
+<td><p>None</p></td>
+<td><p><a class="reference external" href="plot.html#Stat-lines">Stat lines example</a></p></td>
 </tr>
 </tbody>
 </table>
@@ -1644,63 +1646,63 @@ Options include:  ‘mean’, ‘median’, ‘std’, ‘q25’ (25% quantile),
 <h3>Ticks<a class="headerlink" href="#ticks" title="Permalink to this headline">¶</a></h3>
 <p>Tick marks are controlled using keywords beginning with <code class="docutils literal notranslate"><span class="pre">ticks_</span></code> and are
 referenced to either the major or minor grid:</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="18%" />
-<col width="12%" />
-<col width="37%" />
-<col width="6%" />
-<col width="27%" />
+<col style="width: 18%" />
+<col style="width: 12%" />
+<col style="width: 37%" />
+<col style="width: 6%" />
+<col style="width: 27%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Keyword</th>
-<th class="head">Data Type</th>
-<th class="head">Description</th>
-<th class="head">Default</th>
-<th class="head">Example</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Keyword</p></th>
+<th class="head"><p>Data Type</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Example</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>ticks_&lt;major|minor&gt;_color</td>
-<td>hex color string</td>
-<td>tick color</td>
-<td rowspan="2">#ffffff</td>
-<td>None</td>
+<tbody>
+<tr class="row-even"><td><p>ticks_&lt;major|minor&gt;_color</p></td>
+<td><p>hex color string</p></td>
+<td><p>tick color</p></td>
+<td rowspan="2"><p>#ffffff</p></td>
+<td><p>None</p></td>
 </tr>
-<tr class="row-odd"><td>ticks_major_increment</td>
-<td>float</td>
-<td>for major ticks only, the increment between tick marks</td>
-<td><a href="#id29"><span class="problematic" id="id30">`Grids and ticks&lt;ticks.html#Increment&gt;`_</span></a></td>
+<tr class="row-odd"><td><p>ticks_major_increment</p></td>
+<td><p>float</p></td>
+<td><p>for major ticks only, the increment between tick marks</p></td>
+<td><p><a href="#id29"><span class="problematic" id="id30">`Grids and ticks&lt;ticks.html#Increment&gt;`_</span></a></p></td>
 </tr>
-<tr class="row-even"><td>ticks_major_length</td>
-<td>float</td>
-<td>the length in pixels of the major tick lines</td>
-<td>6.2</td>
-<td>None</td>
+<tr class="row-even"><td><p>ticks_major_length</p></td>
+<td><p>float</p></td>
+<td><p>the length in pixels of the major tick lines</p></td>
+<td><p>6.2</p></td>
+<td><p>None</p></td>
 </tr>
-<tr class="row-odd"><td>ticks_minor_length</td>
-<td>float</td>
-<td>the length in pixels of the minor tick lines</td>
-<td>4.2</td>
-<td>None</td>
+<tr class="row-odd"><td><p>ticks_minor_length</p></td>
+<td><p>float</p></td>
+<td><p>the length in pixels of the minor tick lines</p></td>
+<td><p>4.2</p></td>
+<td><p>None</p></td>
 </tr>
-<tr class="row-even"><td>tick_minor_number</td>
-<td>int</td>
-<td>enable primary y-axis range sharing across all subplots</td>
-<td>True</td>
-<td><a href="#id31"><span class="problematic" id="id32">`Grids and ticks&lt;ticks.html#Increment&gt;`_</span></a></td>
+<tr class="row-even"><td><p>tick_minor_number</p></td>
+<td><p>int</p></td>
+<td><p>enable primary y-axis range sharing across all subplots</p></td>
+<td><p>True</p></td>
+<td><p><a href="#id31"><span class="problematic" id="id32">`Grids and ticks&lt;ticks.html#Increment&gt;`_</span></a></p></td>
 </tr>
-<tr class="row-odd"><td>ticks_major_width</td>
-<td>float</td>
-<td>thickness or edge width of a major tick mark</td>
-<td>2.2</td>
-<td>None</td>
+<tr class="row-odd"><td><p>ticks_major_width</p></td>
+<td><p>float</p></td>
+<td><p>thickness or edge width of a major tick mark</p></td>
+<td><p>2.2</p></td>
+<td><p>None</p></td>
 </tr>
-<tr class="row-even"><td>ticks_minor_width</td>
-<td>float</td>
-<td>thickness or edge width of a minor tick mark</td>
-<td>1.3</td>
-<td>None</td>
+<tr class="row-even"><td><p>ticks_minor_width</p></td>
+<td><p>float</p></td>
+<td><p>thickness or edge width of a minor tick mark</p></td>
+<td><p>1.3</p></td>
+<td><p>None</p></td>
 </tr>
 </tbody>
 </table>
@@ -1711,11 +1713,11 @@ all axes.</p>
 <p>The following base attributes of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> class are not used for this item:</p>
 <blockquote>
 <div><ul class="simple">
-<li>“Fill” category</li>
-<li>“Edges” category</li>
-<li>“Fonts” category</li>
-<li><code class="docutils literal notranslate"><span class="pre">size</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">text</span></code></li>
+<li><p>“Fill” category</p></li>
+<li><p>“Edges” category</p></li>
+<li><p>“Fonts” category</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">size</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">text</span></code></p></li>
 </ul>
 </div></blockquote>
 </div>
@@ -1725,15 +1727,15 @@ all axes.</p>
 as any other text label.  Keywords begin with <code class="docutils literal notranslate"><span class="pre">tick_labels_</span></code> followed by the
 major or minor grid and an option specification of the axis of interest.  For example:</p>
 <ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">tick_labels_major_font_size</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">tick_labels_minor_x_rotation</span></code></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tick_labels_major_font_size</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tick_labels_minor_x_rotation</span></code></p></li>
 </ul>
 <p>See <a class="reference external" href="keyword.html#labels">Labels</a> for more details.</p>
 <p>The following base attributes of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> class are not used for this item:</p>
 <blockquote>
 <div><ul class="simple">
-<li>“Lines” category</li>
-<li><code class="docutils literal notranslate"><span class="pre">text</span></code></li>
+<li><p>“Lines” category</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">text</span></code></p></li>
 </ul>
 </div></blockquote>
 </div>
@@ -1751,7 +1753,7 @@ of base attributes is not used for titles.</p>
 <p>The following base attributes of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> class are not used for this item:</p>
 <blockquote>
 <div><ul class="simple">
-<li>“Lines” category</li>
+<li><p>“Lines” category</p></li>
 </ul>
 </div></blockquote>
 </div>
@@ -1761,88 +1763,88 @@ of base attributes is not used for titles.</p>
 <img alt="_images/ws.png" src="_images/ws.png" />
 <p>Whitespace keywords are prefixed by <code class="docutils literal notranslate"><span class="pre">ws_</span></code> and are followed by the two items
 that sandwich the whitespace, going from left to right or top to bottom:</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="14%" />
-<col width="18%" />
-<col width="9%" />
-<col width="52%" />
-<col width="7%" />
+<col style="width: 14%" />
+<col style="width: 18%" />
+<col style="width: 9%" />
+<col style="width: 52%" />
+<col style="width: 7%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Category</th>
-<th class="head">Keyword</th>
-<th class="head">Data Type</th>
-<th class="head">Description</th>
-<th class="head">Default</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Category</p></th>
+<th class="head"><p>Keyword</p></th>
+<th class="head"><p>Data Type</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Default</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td rowspan="4">Row/column grid</td>
-<td>ws_label_col</td>
-<td rowspan="15">int</td>
-<td>col label to top edge of axes window</td>
-<td>10</td>
+<tbody>
+<tr class="row-even"><td rowspan="4"><p>Row/column grid</p></td>
+<td><p>ws_label_col</p></td>
+<td rowspan="15"><p>int</p></td>
+<td><p>col label to top edge of axes window</p></td>
+<td><p>10</p></td>
 </tr>
-<tr class="row-odd"><td>ws_label_row</td>
-<td>row label to right edge of axes window</td>
-<td>10</td>
+<tr class="row-odd"><td><p>ws_label_row</p></td>
+<td><p>row label to right edge of axes window</p></td>
+<td><p>10</p></td>
 </tr>
-<tr class="row-even"><td>ws_col</td>
-<td>space between columns</td>
-<td>30</td>
+<tr class="row-even"><td><p>ws_col</p></td>
+<td><p>space between columns</p></td>
+<td><p>30</p></td>
 </tr>
-<tr class="row-odd"><td>ws_row</td>
-<td>space between rows</td>
-<td>30</td>
+<tr class="row-odd"><td><p>ws_row</p></td>
+<td><p>space between rows</p></td>
+<td><p>30</p></td>
 </tr>
-<tr class="row-even"><td rowspan="4">Figure</td>
-<td>ws_fig_label</td>
-<td>left figure edge to <a href="#id23"><span class="problematic" id="id24">``</span></a>label_y`</td>
-<td>10</td>
+<tr class="row-even"><td rowspan="4"><p>Figure</p></td>
+<td><p>ws_fig_label</p></td>
+<td><p>left figure edge to <a href="#id23"><span class="problematic" id="id24">``</span></a>label_y`</p></td>
+<td><p>10</p></td>
 </tr>
-<tr class="row-odd"><td>ws_leg_fig</td>
-<td>right legend edge to right figure edge</td>
-<td>10</td>
+<tr class="row-odd"><td><p>ws_leg_fig</p></td>
+<td><p>right legend edge to right figure edge</p></td>
+<td><p>10</p></td>
 </tr>
-<tr class="row-even"><td>ws_fig_ax</td>
-<td>top figure edge to top edge of axes with figure title disabled</td>
-<td>20</td>
+<tr class="row-even"><td><p>ws_fig_ax</p></td>
+<td><p>top figure edge to top edge of axes with figure title disabled</p></td>
+<td><p>20</p></td>
 </tr>
-<tr class="row-odd"><td>ws_fig_title</td>
-<td>top figure edge to top of figure title</td>
-<td>10</td>
+<tr class="row-odd"><td><p>ws_fig_title</p></td>
+<td><p>top figure edge to top of figure title</p></td>
+<td><p>10</p></td>
 </tr>
-<tr class="row-even"><td rowspan="5">Axes</td>
-<td>ws_label_tick</td>
-<td>space between axis label and tick labels</td>
-<td>10</td>
+<tr class="row-even"><td rowspan="5"><p>Axes</p></td>
+<td><p>ws_label_tick</p></td>
+<td><p>space between axis label and tick labels</p></td>
+<td><p>10</p></td>
 </tr>
-<tr class="row-odd"><td>ws_leg_ax</td>
-<td>right edge of axes to left edge of legend box</td>
-<td>20</td>
+<tr class="row-odd"><td><p>ws_leg_ax</p></td>
+<td><p>right edge of axes to left edge of legend box</p></td>
+<td><p>20</p></td>
 </tr>
-<tr class="row-even"><td>ws_ticks_ax</td>
-<td>space between tick labels and axes</td>
-<td>5</td>
+<tr class="row-even"><td><p>ws_ticks_ax</p></td>
+<td><p>space between tick labels and axes</p></td>
+<td><p>5</p></td>
 </tr>
-<tr class="row-odd"><td>ws_title_ax</td>
-<td>bottom edge of title to top edge of axes window</td>
-<td>10</td>
+<tr class="row-odd"><td><p>ws_title_ax</p></td>
+<td><p>bottom edge of title to top edge of axes window</p></td>
+<td><p>10</p></td>
 </tr>
-<tr class="row-even"><td>ws_ax_fig</td>
-<td>right edge of axes to right edge of figure with legend disabled</td>
-<td>30</td>
+<tr class="row-even"><td><p>ws_ax_fig</p></td>
+<td><p>right edge of axes to right edge of figure with legend disabled</p></td>
+<td><p>30</p></td>
 </tr>
-<tr class="row-odd"><td>Ticks</td>
-<td>ws_tick_tick_minimum</td>
-<td>minimum space between consecutive ticks</td>
-<td>10</td>
+<tr class="row-odd"><td><p>Ticks</p></td>
+<td><p>ws_tick_tick_minimum</p></td>
+<td><p>minimum space between consecutive ticks</p></td>
+<td><p>10</p></td>
 </tr>
-<tr class="row-even"><td>Boxplot</td>
-<td>ws_ax_box_title</td>
-<td>right edge of axes to right edge of box title text</td>
-<td>10</td>
+<tr class="row-even"><td><p>Boxplot</p></td>
+<td><p>ws_ax_box_title</p></td>
+<td><p>right edge of axes to right edge of box title text</p></td>
+<td><p>10</p></td>
 </tr>
 </tbody>
 </table>
@@ -1853,195 +1855,195 @@ that sandwich the whitespace, going from left to right or top to bottom:</p>
 class is responsible for defining the unique groups for each plot, handling subplots,
 etc.  These keywords are added to the plot function call just like element attribute
 keywords.</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="6%" />
-<col width="9%" />
-<col width="35%" />
-<col width="13%" />
-<col width="36%" />
+<col style="width: 6%" />
+<col style="width: 9%" />
+<col style="width: 35%" />
+<col style="width: 13%" />
+<col style="width: 36%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Keyword</th>
-<th class="head">Data Type</th>
-<th class="head">Description</th>
-<th class="head">Default</th>
-<th class="head">Example</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Keyword</p></th>
+<th class="head"><p>Data Type</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Example</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td rowspan="2">auto_scale</td>
-<td rowspan="2">True</td>
-<td>enable/disable auto-scaling feature for one-side range</td>
-<td rowspan="2">True</td>
-<td rowspan="2"><a class="reference external" href="ranges.html#Primary-axes-only">auto-scale</a></td>
+<tbody>
+<tr class="row-even"><td rowspan="2"><p>auto_scale</p></td>
+<td rowspan="2"><p>True</p></td>
+<td><p>enable/disable auto-scaling feature for one-side range</p></td>
+<td rowspan="2"><p>True</p></td>
+<td rowspan="2"><p><a class="reference external" href="ranges.html#Primary-axes-only">auto-scale</a></p></td>
 </tr>
-<tr class="row-odd"><td>specification; not allowed for heatmap or histogram</td>
+<tr class="row-odd"><td><p>specification; not allowed for heatmap or histogram</p></td>
 </tr>
-<tr class="row-even"><td>col</td>
-<td>str</td>
-<td>name of DataFrame column to use for column-based subplots</td>
-<td>None</td>
-<td><a class="reference external" href="plot.html#Column-plot">column plot</a></td>
+<tr class="row-even"><td><p>col</p></td>
+<td><p>str</p></td>
+<td><p>name of DataFrame column to use for column-based subplots</p></td>
+<td><p>None</p></td>
+<td><p><a class="reference external" href="plot.html#Column-plot">column plot</a></p></td>
 </tr>
-<tr class="row-odd"><td>fig_groups</td>
-<td>str|list of str</td>
-<td>DataFrame column(s) to use for figure-level grouping</td>
-<td>None</td>
-<td><a class="reference external" href="grouping.html#figure-plots">figure plots</a></td>
+<tr class="row-odd"><td><p>fig_groups</p></td>
+<td><p>str|list of str</p></td>
+<td><p>DataFrame column(s) to use for figure-level grouping</p></td>
+<td><p>None</p></td>
+<td><p><a class="reference external" href="grouping.html#figure-plots">figure plots</a></p></td>
 </tr>
-<tr class="row-even"><td>filter</td>
-<td>str</td>
-<td>string-based DataFrame filter (similar to query in pandas)</td>
-<td>None</td>
-<td>see most plot examples</td>
+<tr class="row-even"><td><p>filter</p></td>
+<td><p>str</p></td>
+<td><p>string-based DataFrame filter (similar to query in pandas)</p></td>
+<td><p>None</p></td>
+<td><p>see most plot examples</p></td>
 </tr>
-<tr class="row-odd"><td>ncol</td>
-<td>int</td>
-<td>specify the number of columns in a wrap plot</td>
-<td>try to make square grid</td>
-<td><a class="reference external" href="grouping.html?highlight=ncol#By-unique-values">compare two cases</a></td>
+<tr class="row-odd"><td><p>ncol</p></td>
+<td><p>int</p></td>
+<td><p>specify the number of columns in a wrap plot</p></td>
+<td><p>try to make square grid</p></td>
+<td><p><a class="reference external" href="grouping.html?highlight=ncol#By-unique-values">compare two cases</a></p></td>
 </tr>
-<tr class="row-even"><td>row</td>
-<td>str</td>
-<td>name of DataFrame column to use for row-based subplots</td>
-<td>None</td>
-<td><a class="reference external" href="plot.html#Row-plot">row plot</a></td>
+<tr class="row-even"><td><p>row</p></td>
+<td><p>str</p></td>
+<td><p>name of DataFrame column to use for row-based subplots</p></td>
+<td><p>None</p></td>
+<td><p><a class="reference external" href="plot.html#Row-plot">row plot</a></p></td>
 </tr>
-<tr class="row-odd"><td>share_x</td>
-<td>boolean</td>
-<td>enable primary x-axis range sharing across all subplots</td>
-<td>True</td>
-<td rowspan="7"><a class="reference external" href="ranges.html#Axes-sharing">axis sharing</a></td>
+<tr class="row-odd"><td><p>share_x</p></td>
+<td><p>boolean</p></td>
+<td><p>enable primary x-axis range sharing across all subplots</p></td>
+<td><p>True</p></td>
+<td rowspan="7"><p><a class="reference external" href="ranges.html#Axes-sharing">axis sharing</a></p></td>
 </tr>
-<tr class="row-even"><td>share_y</td>
-<td>boolean</td>
-<td>enable primary y-axis range sharing across all subplots</td>
-<td>True</td>
+<tr class="row-even"><td><p>share_y</p></td>
+<td><p>boolean</p></td>
+<td><p>enable primary y-axis range sharing across all subplots</p></td>
+<td><p>True</p></td>
 </tr>
-<tr class="row-odd"><td>share_z</td>
-<td>boolean</td>
-<td>enable primary z-axis range sharing across all subplots</td>
-<td>True</td>
+<tr class="row-odd"><td><p>share_z</p></td>
+<td><p>boolean</p></td>
+<td><p>enable primary z-axis range sharing across all subplots</p></td>
+<td><p>True</p></td>
 </tr>
-<tr class="row-even"><td>share_x2</td>
-<td>boolean</td>
-<td>enable secondary x-axis range sharing across all subplots</td>
-<td>True</td>
+<tr class="row-even"><td><p>share_x2</p></td>
+<td><p>boolean</p></td>
+<td><p>enable secondary x-axis range sharing across all subplots</p></td>
+<td><p>True</p></td>
 </tr>
-<tr class="row-odd"><td>share_y2</td>
-<td>boolean</td>
-<td>enable secondary y-axis range sharing across all subplots</td>
-<td>True</td>
+<tr class="row-odd"><td><p>share_y2</p></td>
+<td><p>boolean</p></td>
+<td><p>enable secondary y-axis range sharing across all subplots</p></td>
+<td><p>True</p></td>
 </tr>
-<tr class="row-even"><td>share_col</td>
-<td>boolean</td>
-<td>enable axis range sharing for all subplots in a column of subplots</td>
-<td>False</td>
+<tr class="row-even"><td><p>share_col</p></td>
+<td><p>boolean</p></td>
+<td><p>enable axis range sharing for all subplots in a column of subplots</p></td>
+<td><p>False</p></td>
 </tr>
-<tr class="row-odd"><td>share_row</td>
-<td>boolean</td>
-<td>enable axis range sharing for all subplots in a row of subplots</td>
-<td>False</td>
+<tr class="row-odd"><td><p>share_row</p></td>
+<td><p>boolean</p></td>
+<td><p>enable axis range sharing for all subplots in a row of subplots</p></td>
+<td><p>False</p></td>
 </tr>
-<tr class="row-even"><td rowspan="3">trans_x</td>
-<td rowspan="3">str|None</td>
-<td>apply an axis transformation to a given axis</td>
-<td rowspan="3">None</td>
-<td rowspan="3">None</td>
+<tr class="row-even"><td rowspan="3"><p>trans_x</p></td>
+<td rowspan="3"><p>str|None</p></td>
+<td><p>apply an axis transformation to a given axis</p></td>
+<td rowspan="3"><p>None</p></td>
+<td rowspan="3"><p>None</p></td>
 </tr>
-<tr class="row-odd"><td>options: ‘abs’, ‘negative’ or ‘neg’, ‘nq’ (normal quantile)</td>
+<tr class="row-odd"><td><p>options: ‘abs’, ‘negative’ or ‘neg’, ‘nq’ (normal quantile)</p></td>
 </tr>
-<tr class="row-even"><td>inverse’ or ‘inv’, (‘pow’, int), ‘flip’</td>
+<tr class="row-even"><td><p>inverse’ or ‘inv’, (‘pow’, int), ‘flip’</p></td>
 </tr>
-<tr class="row-odd"><td>trans_x2</td>
-<td>str|None</td>
-<td>same as <code class="docutils literal notranslate"><span class="pre">trans_x</span></code></td>
-<td>None</td>
-<td>None</td>
+<tr class="row-odd"><td><p>trans_x2</p></td>
+<td><p>str|None</p></td>
+<td><p>same as <code class="docutils literal notranslate"><span class="pre">trans_x</span></code></p></td>
+<td><p>None</p></td>
+<td><p>None</p></td>
 </tr>
-<tr class="row-even"><td>trans_y</td>
-<td>str|None</td>
-<td>same as <code class="docutils literal notranslate"><span class="pre">trans_x</span></code></td>
-<td>None</td>
-<td>None</td>
+<tr class="row-even"><td><p>trans_y</p></td>
+<td><p>str|None</p></td>
+<td><p>same as <code class="docutils literal notranslate"><span class="pre">trans_x</span></code></p></td>
+<td><p>None</p></td>
+<td><p>None</p></td>
 </tr>
-<tr class="row-odd"><td>trans_y2</td>
-<td>str|None</td>
-<td>same as <code class="docutils literal notranslate"><span class="pre">trans_x</span></code></td>
-<td>None</td>
-<td>None</td>
+<tr class="row-odd"><td><p>trans_y2</p></td>
+<td><p>str|None</p></td>
+<td><p>same as <code class="docutils literal notranslate"><span class="pre">trans_x</span></code></p></td>
+<td><p>None</p></td>
+<td><p>None</p></td>
 </tr>
-<tr class="row-even"><td>trans_z</td>
-<td>str|None</td>
-<td>same as <code class="docutils literal notranslate"><span class="pre">trans_x</span></code></td>
-<td rowspan="2">None</td>
-<td>None</td>
+<tr class="row-even"><td><p>trans_z</p></td>
+<td><p>str|None</p></td>
+<td><p>same as <code class="docutils literal notranslate"><span class="pre">trans_x</span></code></p></td>
+<td rowspan="2"><p>None</p></td>
+<td><p>None</p></td>
 </tr>
-<tr class="row-odd"><td>wrap</td>
-<td>str|list</td>
-<td>name or list of names of DataFrame columns for wrap-type subplots</td>
-<td><a class="reference external" href="plot.html#Wrap-plot">wrap plot</a></td>
+<tr class="row-odd"><td><p>wrap</p></td>
+<td><p>str|list</p></td>
+<td><p>name or list of names of DataFrame columns for wrap-type subplots</p></td>
+<td><p><a class="reference external" href="plot.html#Wrap-plot">wrap plot</a></p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="other">
 <h2>Other<a class="headerlink" href="#other" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="7%" />
-<col width="55%" />
-<col width="28%" />
+<col style="width: 10%" />
+<col style="width: 7%" />
+<col style="width: 55%" />
+<col style="width: 28%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Keyword</th>
-<th class="head">Data Type</th>
-<th class="head">Description</th>
-<th class="head">Default</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Keyword</p></th>
+<th class="head"><p>Data Type</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Default</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>filename</td>
-<td>str</td>
-<td>Name of the saved plot</td>
-<td>Built automatically based on plot conditions</td>
+<tbody>
+<tr class="row-even"><td><p>filename</p></td>
+<td><p>str</p></td>
+<td><p>Name of the saved plot</p></td>
+<td><p>Built automatically based on plot conditions</p></td>
 </tr>
-<tr class="row-odd"><td>filepath</td>
-<td>str</td>
-<td>Directory in which the plot should be saved</td>
-<td>Current directory</td>
+<tr class="row-odd"><td><p>filepath</p></td>
+<td><p>str</p></td>
+<td><p>Directory in which the plot should be saved</p></td>
+<td><p>Current directory</p></td>
 </tr>
-<tr class="row-even"><td>inline</td>
-<td>boolean</td>
-<td>Display the plot inline (in a jupyter notebook, using the matplotlib show command, etc)</td>
-<td>True</td>
+<tr class="row-even"><td><p>inline</p></td>
+<td><p>boolean</p></td>
+<td><p>Display the plot inline (in a jupyter notebook, using the matplotlib show command, etc)</p></td>
+<td><p>True</p></td>
 </tr>
-<tr class="row-odd"><td>print_filename</td>
-<td>boolean</td>
-<td>Print the filename and return the plot</td>
-<td>False</td>
+<tr class="row-odd"><td><p>print_filename</p></td>
+<td><p>boolean</p></td>
+<td><p>Print the filename and return the plot</p></td>
+<td><p>False</p></td>
 </tr>
-<tr class="row-even"><td>return_filename</td>
-<td>boolean</td>
-<td>Return only the filename of the saved plot but not the plot itself</td>
-<td>False</td>
+<tr class="row-even"><td><p>return_filename</p></td>
+<td><p>boolean</p></td>
+<td><p>Return only the filename of the saved plot but not the plot itself</p></td>
+<td><p>False</p></td>
 </tr>
-<tr class="row-odd"><td>save</td>
-<td>boolean</td>
-<td>Save the image</td>
-<td>True</td>
+<tr class="row-odd"><td><p>save</p></td>
+<td><p>boolean</p></td>
+<td><p>Save the image</p></td>
+<td><p>True</p></td>
 </tr>
-<tr class="row-even"><td>save_ext</td>
-<td>str</td>
-<td>File extension for the saved plot</td>
-<td>png</td>
+<tr class="row-even"><td><p>save_ext</p></td>
+<td><p>str</p></td>
+<td><p>File extension for the saved plot</p></td>
+<td><p>png</p></td>
 </tr>
-<tr class="row-odd"><td>show</td>
-<td>boolean</td>
-<td>Open the <strong>saved</strong> plot (this is not the same as show in matplotlib)</td>
-<td>False</td>
+<tr class="row-odd"><td><p>show</p></td>
+<td><p>boolean</p></td>
+<td><p>Open the <strong>saved</strong> plot (this is not the same as show in matplotlib)</p></td>
+<td><p>False</p></td>
 </tr>
 </tbody>
 </table>
@@ -2050,9 +2052,7 @@ keywords.</p>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -2061,7 +2061,7 @@ keywords.</p>
         <a href="grouping.html" class="btn btn-neutral float-right" title="Grouping data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="layout.html" class="btn btn-neutral" title="Layout" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="layout.html" class="btn btn-neutral float-left" title="Layout" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -2070,11 +2070,19 @@ keywords.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, Steve Nicholes.
+        
+        &copy; Copyright 2016, Steve Nicholes
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -2086,37 +2094,15 @@ keywords.</p>
   </div>
   
 
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'beta',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

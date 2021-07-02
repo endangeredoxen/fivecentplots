@@ -414,20 +414,17 @@ def kwget(dict1, dict2, val, default):
         return default
 
 
-def img_compare(img1, img2):
+def img_compare(img1, img2, show=False):
     """
     Read two images and compare for difference by pixel
-
     This is an optional utility used only for developer tests, so
     the function will only work if opencv is installed
-
     Args:
         img1 (str): path to file #1
         img2 (str): path to file #2
-
+        show (bool): display the difference
     Returns:
-        True/False of existance of differences
-
+        True/False of existence of differences
     """
 
     try:
@@ -443,11 +440,18 @@ def img_compare(img1, img2):
 
     # compare
     if img1 is None or img2 is None or img1.shape != img2.shape:
-        return True
+        is_diff = True
+        if show and img1.shape != img2.shape:
+            print('image sizes do not match')
 
-    difference = cv2.subtract(img1, img2)
+    else:
+        difference = cv2.subtract(img1, img2)
+        is_diff = np.any(difference)
+        if show and is_diff:
+            cv2.imwrite('difference.png', 10 * difference)
+            os.startfile('difference.png')
 
-    return np.any(difference)
+    return is_diff
 
 
 def nq(data, column='Value', **kwargs):
