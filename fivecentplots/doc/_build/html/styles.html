@@ -228,35 +228,21 @@
 /* CSS for nbsphinx extension */
 
 /* remove conflicting styling from Sphinx themes */
-div.nbinput.container div.prompt *,
-div.nboutput.container div.prompt *,
-div.nbinput.container div.input_area pre,
-div.nboutput.container div.output_area pre,
-div.nbinput.container div.input_area .highlight,
-div.nboutput.container div.output_area .highlight {
+div.nbinput.container,
+div.nbinput.container div.prompt,
+div.nbinput.container div.input_area,
+div.nbinput.container div[class*=highlight],
+div.nbinput.container div[class*=highlight] pre,
+div.nboutput.container,
+div.nboutput.container div.prompt,
+div.nboutput.container div.output_area,
+div.nboutput.container div[class*=highlight],
+div.nboutput.container div[class*=highlight] pre {
+    background: none;
     border: none;
-    padding: 0;
+    padding: 0 0;
     margin: 0;
     box-shadow: none;
-}
-
-div.nbinput.container > div[class*=highlight],
-div.nboutput.container > div[class*=highlight] {
-    margin: 0;
-}
-
-div.nbinput.container div.prompt *,
-div.nboutput.container div.prompt * {
-    background: none;
-}
-
-div.nboutput.container div.output_area .highlight,
-div.nboutput.container div.output_area pre {
-    background: unset;
-}
-
-div.nboutput.container div.output_area div.highlight {
-    color: unset;  /* override Pygments text color */
 }
 
 /* avoid gaps between output lines */
@@ -357,7 +343,7 @@ div.nboutput.container div.output_area {
 div.nbinput.container div.input_area {
     border: 1px solid #e0e0e0;
     border-radius: 2px;
-    /*background: #f5f5f5;*/
+    background: #f5f5f5;
 }
 
 /* override MathJax center alignment in output cells */
@@ -423,7 +409,6 @@ div.nboutput.container div.output_area.rendered_html,
 div.nboutput.container div.output_area > div.output_javascript,
 div.nboutput.container div.output_area:not(.rendered_html) > img{
     padding: 5px;
-    margin: 0;
 }
 
 /* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
@@ -1206,22 +1191,22 @@ consistent look you desire.</p>
 <ol class="arabic simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">fcp_params</span></code>: this is a python dictionary that contains any <code class="docutils literal notranslate"><span class="pre">fcp</span></code> keyword argument for which you want to override the default:</p></li>
 </ol>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>fcp_params = {&#39;ax_edge_color&#39;: &#39;#aaaaaa&#39;,
-              &#39;ax_fill_color&#39;: &#39;#eaeaea&#39;,
-              &#39;ax_size&#39;: [400,400],  # [width, height]
-             }
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fcp_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ax_edge_color&#39;</span><span class="p">:</span> <span class="s1">&#39;#aaaaaa&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;ax_fill_color&#39;</span><span class="p">:</span> <span class="s1">&#39;#eaeaea&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;ax_size&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">400</span><span class="p">,</span><span class="mi">400</span><span class="p">],</span>  <span class="c1"># [width, height]</span>
+             <span class="p">}</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
 <li><p><code class="docutils literal notranslate"><span class="pre">colors</span></code>: a list of default colors</p></li>
 </ol>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>colors = [&#39;#000000&#39;, &#39;#111111&#39;, &#39;#222222&#39;]
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;#000000&#39;</span><span class="p">,</span> <span class="s1">&#39;#111111&#39;</span><span class="p">,</span> <span class="s1">&#39;#222222&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
 <li><p><code class="docutils literal notranslate"><span class="pre">markers</span></code>: a list of default markers</p></li>
 </ol>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>markers = [&#39;+&#39;, &#39;o&#39;, &#39;d&#39;, &#39;$&#39;]
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">markers</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;$&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>The order of preference for assigning element attributes when plot elements are created is:</p>

@@ -25,7 +25,7 @@ SHOW = False
 
 # Read an image
 import imageio
-url = 'https://s4827.pcdn.co/wp-content/uploads/2011/04/low-light-iphone4.jpg'
+url = 'https://imagesvc.meredithcorp.io/v3/mm/image?q=85&c=sc&rect=0%2C214%2C2000%2C1214&poi=%5B920%2C546%5D&w=2000&h=1000&url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F47%2F2020%2F10%2F07%2Fcat-in-pirate-costume-380541532-2000.jpg'
 imgr = imageio.imread(url)
 
 # Convert to grayscale
@@ -201,8 +201,8 @@ def test_heatmap_zoomed(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'heatmap_zoomed_master') if master else 'heatmap_zoomed'
 
     # Make the plot
-    fcp.heatmap(img, cmap='inferno', cbar=True, ax_size=[600, 600], xmin=1400, xmax=2000,
-                ymin=500, ymax=1000,
+    fcp.heatmap(img, cmap='inferno', cbar=True, ax_size=[600, 600], xmin=700, xmax=1100,
+                ymin=300, ymax=400,
                 filename=name + '.png', inline=False)
 
     # Compare with master
