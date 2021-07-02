@@ -1,0 +1,535 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>fivecentplots &mdash; fivecentplots beta documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Archivo Black" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="install.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="#" class="icon icon-home" alt="Documentation Home"> fivecentplots
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.4.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layout.html">Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="grouping.html">Grouping data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="styles.html">Styles and formatting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ranges.html">Data ranges</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ticks.html">Grids and ticks</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="plot.html">plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heatmap.html">heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hist.html">hist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="barplot.html">barplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Other</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="older.html">Older Versions</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">fivecentplots</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+        
+      <li><span class="title">fivecentplots</span></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<img alt="_images/index.png" src="_images/index.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<div class="section" id="fivecentplots">
+<h1><span class="title">fivecentplots</span><a class="headerlink" href="#fivecentplots" title="Permalink to this headline">¶</a></h1>
+<p><span class="tagline">–A Python plotting analgesic–</span></p>
+<div class="section" id="why-another-python-plotting-library">
+<h2>Why another Python plotting library?<a class="headerlink" href="#why-another-python-plotting-library" title="Permalink to this headline">¶</a></h2>
+<p><strong>fivecentplots</strong> exists to simplify plotting of data contained in a <strong>pandas</strong> DataFrames.
+While there is no shortage of quality Python plotting libraries on the
+world wide web (i.e., matplotlib, bokeh, seaborn, etc.), the APIs are daunting and often require excessive code to make the plot
+look just right.  This complexity is especially discouraging to new
+or casual Python users and often results in them giving up on Python plotting
+in favor of inferior, yet simplar, plotting tools like Excel.</p>
+</div>
+<div class="section" id="what-issues-does-fivecentplots-address">
+<h2>What issues does fivecentplots address?<a class="headerlink" href="#what-issues-does-fivecentplots-address" title="Permalink to this headline">¶</a></h2>
+<p><strong>1. Ease of Use</strong></p>
+<blockquote>
+<div><blockquote>
+<div><ul class="simple">
+<li><p>Plots require <em>a single function call</em> with all style and/or formatting
+parameters specified as optional keyword arguments or in a simple
+theme file.</p></li>
+<li><p>Data come from pandas DataFrames eliminating direct management of
+numpy arrays</p></li>
+<li><p>Data can be quickly grouped into subsets and visualized.  This includes
+creating grids of subplots and legending by color and/or marker.  All of these
+options are invoked simply by specifying DataFrame column names as appropriate
+keyword arugments</p></li>
+<li><p>Multiple plotting backends (matplotlib, bokeh, etc.) can be used with virtually
+the same function call, eliminating the need to learn the unique syntax of
+each package.</p></li>
+</ul>
+</div></blockquote>
+<p>Consider the following plot of some dummy data:</p>
+<img alt="_images/syntax.png" src="_images/syntax.png" />
+<p>Using <strong>fivecentplots</strong>, we need a single function call with the appropriate
+keyword arguments:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span>
+         <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="n">share_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Temperature [C]==25&#39;</span><span class="p">,</span>
+         <span class="n">ref_line</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">],</span> <span class="n">ref_line_legend_text</span><span class="o">=</span><span class="s1">&#39;y==x&#39;</span><span class="p">,</span>
+         <span class="n">xmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mf">1.6</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">ymax</span><span class="o">=</span><span class="p">[</span><span class="mf">1.3</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">,</span> <span class="mf">5.2</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Contrast this with the code required in matplotlib:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">osjoin</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;tests&#39;</span><span class="p">,</span> <span class="s1">&#39;fake_data.csv&#39;</span><span class="p">))</span>
+
+<span class="c1"># Filter the dataframe</span>
+<span class="n">df_sub</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">Substrate</span><span class="o">==</span><span class="s2">&quot;Si&quot;</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Target Wavelength&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">450</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">25</span><span class="p">)]</span>
+
+<span class="c1"># Set some defaults</span>
+<span class="n">markers</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">]</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;#4b72b0&#39;</span><span class="p">,</span> <span class="s1">&#39;#c34e52&#39;</span><span class="p">,</span> <span class="s1">&#39;#54a767&#39;</span><span class="p">]</span>
+<span class="n">ymax</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.3</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">,</span> <span class="mf">5.2</span><span class="p">]</span>
+<span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1"># Create the figure and axes</span>
+<span class="n">f</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mf">9.82</span><span class="p">,</span> <span class="mf">3.46</span><span class="p">])</span>
+
+<span class="c1"># Plot the data and style the axes</span>
+<span class="k">for</span> <span class="n">iboost</span><span class="p">,</span> <span class="n">boost</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">df_sub</span><span class="p">[</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()):</span>
+    <span class="n">df_boost</span> <span class="o">=</span> <span class="n">df_sub</span><span class="p">[</span><span class="n">df_sub</span><span class="p">[</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">boost</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">idie</span><span class="p">,</span> <span class="n">die</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">natsort</span><span class="o">.</span><span class="n">natsorted</span><span class="p">(</span><span class="n">df_boost</span><span class="o">.</span><span class="n">Die</span><span class="o">.</span><span class="n">unique</span><span class="p">())):</span>
+        <span class="n">df_die</span> <span class="o">=</span> <span class="n">df_boost</span><span class="p">[</span><span class="n">df_boost</span><span class="o">.</span><span class="n">Die</span><span class="o">==</span><span class="n">die</span><span class="p">]</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s1">&#39;#eaeaea&#39;</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.3</span><span class="p">)</span>
+        <span class="n">lines</span> <span class="o">+=</span> <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df_die</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">],</span> <span class="n">df_die</span><span class="p">[</span><span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">idie</span><span class="p">],</span>
+                                   <span class="n">marker</span><span class="o">=</span><span class="n">markers</span><span class="p">[</span><span class="n">idie</span><span class="p">],</span> <span class="n">markeredgecolor</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">idie</span><span class="p">],</span> <span class="n">markerfacecolor</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span>
+                                   <span class="n">markeredgewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">set_axisbelow</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;bottom&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s1">&#39;#aaaaaa&#39;</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;top&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s1">&#39;#aaaaaa&#39;</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s1">&#39;#aaaaaa&#39;</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;left&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s1">&#39;#aaaaaa&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">iboost</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">fontstyle</span><span class="o">=</span><span class="s1">&#39;italic&#39;</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">fontstyle</span><span class="o">=</span><span class="s1">&#39;italic&#39;</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mf">1.6</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">bottom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="n">ymax</span><span class="p">[</span><span class="n">iboost</span><span class="p">])</span>
+
+    <span class="c1"># Add the column labels</span>
+    <span class="n">rect</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">patches</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.044</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">30</span><span class="o">/</span><span class="mi">225</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+                                        <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;#8c8c8c&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;#8c8c8c&#39;</span><span class="p">,</span> <span class="n">clip_on</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">rect</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;Boost Level = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">boost</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.111</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+                      <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span>
+                      <span class="n">rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+
+    <span class="c1"># Customize ticks</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">,</span>
+                             <span class="n">labelsize</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">labelcolor</span><span class="o">=</span><span class="s1">&#39;#000000&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">2.2</span><span class="p">)</span>
+
+    <span class="c1"># Add reference line</span>
+    <span class="n">ref_line</span> <span class="o">=</span> <span class="n">df_die</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">]</span>
+    <span class="n">ref</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df_die</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">],</span> <span class="n">ref_line</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#000000&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">iboost</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">:</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">ref</span> <span class="o">+</span> <span class="n">lines</span>
+
+<span class="c1"># Style the figure</span>
+<span class="n">f</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">)</span>
+<span class="n">f</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="mf">0.077</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mf">0.882</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="mf">0.827</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="mf">0.176</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mf">0.133</span><span class="p">,</span> <span class="n">wspace</span><span class="o">=</span><span class="mf">0.313</span><span class="p">)</span>
+
+<span class="c1"># Add legend</span>
+<span class="n">leg</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;y==x&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">df_boost</span><span class="o">.</span><span class="n">Die</span><span class="o">.</span><span class="n">unique</span><span class="p">()),</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">numpoints</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+               <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">),</span> <span class="n">prop</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">})</span>
+<span class="n">leg</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">)</span>
+
+<span class="c1"># Show the plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This example is a bit contrived as you can certainly plot data in matplotlib with
+fewer lines of code in a less visually appealing manner.  We could simplify further by
+adding some of the style elements of this plot into a matplotlibrc file to avoid
+hard coding them.  Regardless, the point should be clear:  <strong>fivecentplots</strong>
+reduces the barrier to generate good-looking plots.</p>
+<p>What if we wanted to do the same plot in bokeh?  We’d need to learn an entirely
+different syntax!  But in <strong>fivecentplots</strong> we can just change the plotting engine
+adding one additional keyword, <code class="docutils literal notranslate"><span class="pre">engine</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span>
+         <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="n">share_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Temperature [C]==25&#39;</span><span class="p">,</span>
+         <span class="n">ref_line</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">],</span> <span class="n">ref_line_legend_text</span><span class="o">=</span><span class="s1">&#39;y==x&#39;</span><span class="p">,</span>
+         <span class="n">xmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mf">1.6</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">ymax</span><span class="o">=</span><span class="p">[</span><span class="mf">1.3</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">,</span> <span class="mf">5.2</span><span class="p">],</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;bokeh&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/syntax_bokeh.png" src="_images/syntax_bokeh.png" />
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Bokeh does not currently have as much styling flexibility as matplotlib
+so plots are not a 1:1 exact replication.  Also, support for bokeh plots
+in <strong>fivecentplots</strong> is still in development so mileage may vary.  But
+the syntactic goal of <strong>fivecentplots</strong> should be clear.</p>
+</div>
+</div></blockquote>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p><strong>2. Styles and colors</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>All colors, sizes, marker themes, etc. can be specified by optional keyword
+arguments in the function call or can be set from a theme file.  This is
+arguably easier than trying to identify and modify various attributes of
+different embedded class objects.</p></li>
+</ul>
+</div></blockquote>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p><strong>3. Matplotlib Size Repeatability</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>In matplotlib the figure or image size is king.  Consequently, the axes area
+containing the actual plotted data expands and contracts to accommodate
+other elements in the figure like labels and legends.  This can often lead to
+unpleasing results which obscure the data of interest.  In <strong>fivecentplots</strong> the
+plotting area size is fixed regardless of everything surrounding it and the
+overall figure size is scaled accordingly.  The trade off for this feature
+is a slight slow-down in plot generation as we have to double render certain
+elements in order to determine their actual size.</p></li>
+</ul>
+</div></blockquote>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p><strong>4. Automation</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>In addition to explicit function calls, plots can be fully defined
+from ini-style config files making it easy automate creation of a batch of
+plots . These simple text files make it even easier for engineers and
+scientists to plot without requiring a deep knowledge of Python syntax.</p></li>
+</ul>
+</div></blockquote>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p><strong>5. JMP-style plots that would be tedious to create every time in raw code</strong></p>
+<blockquote>
+<div><p>With the development of <strong>pandas</strong>, statistical analysis in Python can rival or
+surpass that of popular commercial software packages like JMP. However, JMP has
+several plotting platforms that are very useful and would be tedious to create
+from scratch in Python.  <strong>fivecentplot</strong> handles all of this work so you don’t
+have to, allowing you to create beautiful <em>and often more flexible</em> JMP-style
+plots with a single function call.  Examples include:</p>
+<ul>
+<li><p>Boxplots with grouping labels (i.e., variability charts):</p>
+<blockquote>
+<div><p>While there are boxplot functions in Python plotting libraries, it is not easy to group
+data into multiple, <em>labeled</em> subgroups.  Borrowing inspiration from the
+<a class="reference external" href="http://www.jmp.com/support/help/Variability_Gauge_Charts.shtml">variability chart in JMP</a>,
+<strong>fivecentplots</strong> makes this possible.</p>
+</div></blockquote>
+</li>
+<li><p>Grouped facet grid plots:</p>
+<blockquote>
+<div><p>Like JMP’s <a class="reference external" href="http://www.jmp.com/support/help/Additional_Examples_of_the_Overlay_Plot_Platform.shtml#192569">grouped overlay plots</a>,
+take any multi-variate DataFrame and separate it into grids of plots,
+each represeting a unique combination of factors</p>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="current-options">
+<h2>Current Options<a class="headerlink" href="#current-options" title="Permalink to this headline">¶</a></h2>
+<p>The following plot types are supported in <strong>fivecentplots</strong>:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p><a class="reference external" href="plot.html">XY plots</a></p></li>
+<li><p><a class="reference external" href="boxplot.html">box plots</a></p></li>
+<li><p><a class="reference external" href="contour.html">contour plots</a></p></li>
+<li><p><a class="reference external" href="heatmap.html">heatmaps</a></p></li>
+<li><p><a class="reference external" href="hist.html">histograms</a></p></li>
+<li><p><a class="reference external" href="barplot.html">bar plots</a></p></li>
+</ol>
+</div></blockquote>
+<p>Follow the links to the example section to see the many options
+available within each plot category.</p>
+<div class="section" id="documentation">
+<h3>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h3>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layout.html">Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="grouping.html">Grouping data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="styles.html">Styles and formatting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ranges.html">Data ranges</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ticks.html">Grids and ticks</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="plot.html">plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heatmap.html">heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hist.html">hist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="barplot.html">barplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Other</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="older.html">Older Versions</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h3>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+<span class="target" id="module-fivecentplots"></span></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="install.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2016, Steve Nicholes
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
