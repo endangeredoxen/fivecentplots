@@ -3818,7 +3818,7 @@ class Layout(BaseLayout):
         Handle display of the plot window
         """
 
-        mplp.show()
+        mplp.show(block=False)
 
     def update_subplot_spacing(self):
         """
