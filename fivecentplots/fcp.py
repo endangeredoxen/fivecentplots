@@ -235,7 +235,7 @@ def nq(*args, **kwargs):
     """
     Plot normal quantiles of a data set
     """
-
+    
     return plotter(data.NQ, **dfkwarg(args, kwargs))
     
 

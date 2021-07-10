@@ -1701,13 +1701,25 @@ class Layout(BaseLayout):
                                       self.labtick_x2)/self.axes.size[1]
 
         self.label_wrap.position[3] = 1
-
+        
+        # there is some incredible weirdness with cbars on imshow.  Here is a stupid hack
+        hack = 0
+        if self.name in ['imshow']:
+            hack += 1 * (self.ncol - 1) if self.cbar.on else 0
+            if not self.cbar.on and self.ncol==1:
+                self.label_wrap.size[0] += 1
+                hack += 1 * (self.ncol)
+            elif self.cbar.on and self.ncol > 1:
+                hack += 2
+            elif not self.cbar.on:
+                hack += 1
+        
         self.title_wrap.size[0] = self.ncol * self.title_wrap.size[0] + \
-                                  (self.ncol - 1) * self.ws_col + \
-                                  ((self.cbar.size[0] + self.ws_ax_cbar) if self.cbar.on else 0)
-
+                                  (self.ncol - 1) * self.ws_col + hack + \
+                                  ((self.cbar.size[0] + self.ws_ax_cbar)*self.ncol if self.cbar.on else 0)
+        
         self.title_wrap.position[3] = 1 + (self.label_wrap.size[1] + 1)/ self.axes.size[1]
-
+        
     def get_subplots_adjust(self):
         """
         Calculate the subplots_adjust parameters for the axes

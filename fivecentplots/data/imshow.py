@@ -98,7 +98,7 @@ class ImShow(data.Data):
             vmax = len(df.columns)
         elif getattr(self, ax) == ['Row']:
             vmin = 0
-            vmax = len(df.index)
+            vmax = df.groupby(self.groupers).size().max()
         elif getattr(self, ax) == ['Value']:# and self.auto_cols:
             vmin = df[utl.df_int_cols(df)].min().min()
             vmax = df[utl.df_int_cols(df)].max().max()
@@ -124,8 +124,77 @@ class ImShow(data.Data):
 
     def get_data_ranges(self):
 
-        self._get_data_ranges()
+        """
+        Updated data range calculator by subplot for imshow
+        """
 
+        # First get any user defined range values and apply optional auto scaling
+        df_fig = self.df_fig.copy()  # use temporarily for setting ranges
+        self._get_data_ranges_user_defined()
+        df_fig = self.get_auto_scale(df_fig)
+        
+        # Apply shared axes
+        for ir, ic, plot_num in self.get_subplot_index():
+            for ax in self.axs:
+                # Share axes (use self.df_fig to get global min/max)
+                if getattr(self, 'share_%s' % ax):
+                    vals = self.get_data_range(ax, df_fig, plot_num)
+                    self.add_range(ir, ic, ax, 'min', vals[0])
+                    self.add_range(ir, ic, ax, 'max', vals[1])
+                elif getattr(self, 'share_%s' % ax) and (ir > 0 or ic > 0):
+                    self.add_range(ir, ic, ax, 'min', self.ranges[0, 0]['%smin' % ax])
+                    self.add_range(ir, ic, ax, 'max', self.ranges[0, 0]['%smax' % ax])
+
+                # Share row
+                elif self.share_row and self.row is not None:
+                    if self.row == 'y':
+                        vals = self.get_data_range(ax, df_fig, plot_num)
+                    else:
+                        vals = self.get_data_range(ax,
+                            df_fig[self.df_fig[self.row[0]] == self.row_vals[ir]], plot_num)
+                    self.add_range(ir, ic, ax, 'min', vals[0])
+                    self.add_range(ir, ic, ax, 'max', vals[1])
+                elif self.share_row and self.row is not None and ic > 0:
+                    self.add_range(ir, ic, ax, 'min', self.ranges[ir, 0]['%smin' % ax])
+                    self.add_range(ir, ic, ax, 'max', self.ranges[ir, 0]['%smax' % ax])
+
+                # Share col
+                elif self.share_col and self.col is not None:
+                    if self.col == 'x':
+                        vals = self.get_data_range(ax, df_fig, ir, ic)
+                    else:
+                        vals = self.get_data_range(ax,
+                            df_fig[df_fig[self.col[0]] == self.col_vals[ic]], plot_num)
+                    self.add_range(ir, ic, ax, 'min', vals[0])
+                    self.add_range(ir, ic, ax, 'max', vals[1])
+                elif self.share_col and self.col is not None and ir > 0:
+                    self.add_range(ir, ic, ax, 'min', self.ranges[0, ic]['%smin' % ax])
+                    self.add_range(ir, ic, ax, 'max', self.ranges[0, ic]['%smax' % ax])
+
+                # subplot level when not shared
+                else:
+                    df_rc = self.subset(ir, ic)
+                    
+                    # Empty rc
+                    if len(df_rc) == 0:  # this doesn't exist yet!
+                        self.add_range(ir, ic, ax, 'min', None)
+                        self.add_range(ir, ic, ax, 'max', None)
+                        continue
+
+                    # Not shared or wrap by x or y
+                    elif not getattr(self, 'share_%s' % ax) or \
+                            (self.wrap is not None and \
+                                self.wrap == 'y' or \
+                                self.wrap == 'x'):
+                        vals = self.get_data_range(ax, df_rc, plot_num)
+                        self.add_range(ir, ic, ax, 'min', vals[0])
+                        self.add_range(ir, ic, ax, 'max', vals[1])
+
+                    # Make them all equal to 0,0
+                    elif ir > 0 or ic > 0:
+                        self.add_range(ir, ic, ax, 'min', self.ranges[0, 0]['%smin' % ax])
+                        self.add_range(ir, ic, ax, 'max', self.ranges[0, 0]['%smax' % ax])
+        
         # some extras
         width = len(self.df_fig.dropna(1, 'all').columns)
         height = len(self.df_fig.dropna(0, 'all').index)
