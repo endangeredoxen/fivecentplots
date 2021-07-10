@@ -1711,8 +1711,8 @@ class Layout(BaseLayout):
                 hack += 1 * (self.ncol)
             elif self.cbar.on and self.ncol > 1:
                 hack += 2
-            elif not self.cbar.on:
-                hack += 1
+            # elif not self.cbar.on:  # may not work on another version of mpl!
+            #     hack += 1
         
         self.title_wrap.size[0] = self.ncol * self.title_wrap.size[0] + \
                                   (self.ncol - 1) * self.ws_col + hack + \

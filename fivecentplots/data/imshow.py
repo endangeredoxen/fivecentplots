@@ -93,12 +93,21 @@ class ImShow(data.Data):
 
         # imshow special case
         df = df.dropna(1, 'all')
+        groups = self.groupers
         if getattr(self, ax) == ['Column']:
             vmin = 0
-            vmax = len(df.columns)
+            if len(groups) > 0:
+                cols = df.iloc[0].dropna().index
+                cols = [f for f in cols if f not in groups]
+                vmax = len(cols)
+            else:
+                vmax = len(df.columns)
         elif getattr(self, ax) == ['Row']:
             vmin = 0
-            vmax = df.groupby(self.groupers).size().max()
+            if len(groups) > 0:
+                vmax = df.groupby(self.groupers).size().max()
+            else:
+                vmax = len(df.index)
         elif getattr(self, ax) == ['Value']:# and self.auto_cols:
             vmin = df[utl.df_int_cols(df)].min().min()
             vmax = df[utl.df_int_cols(df)].max().max()

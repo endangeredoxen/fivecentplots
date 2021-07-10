@@ -157,5 +157,36 @@ def test_imshow_zoomed(master=False, remove=True, show=False):
         assert not compare
 
 
+def test_wrap(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'wrap_master') if master else 'wrap'
+    
+    # Separate planes
+    img2 = pd.DataFrame()
+    cp = ['r', 'gr', 'gb', 'b']
+    for ic, cc in enumerate(cp):
+        temp = img.loc[ic//2::2, (ic%2)::2]
+        temp['Plane'] = cc
+        img2 = pd.concat([img2, temp])
+    
+    # Make the plot
+    fcp.imshow(img2, cmap='inferno', ax_size=[600, 600],
+               filename=name + '.png', inline=False, wrap='Plane')
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 if __name__ == '__main__':
     pass
