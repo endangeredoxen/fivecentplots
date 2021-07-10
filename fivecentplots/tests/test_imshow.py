@@ -28,12 +28,8 @@ import imageio
 url = 'https://imagesvc.meredithcorp.io/v3/mm/image?q=85&c=sc&rect=0%2C214%2C2000%2C1214&poi=%5B920%2C546%5D&w=2000&h=1000&url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F47%2F2020%2F10%2F07%2Fcat-in-pirate-costume-380541532-2000.jpg'
 imgr = imageio.imread(url)
 
-# Convert to grayscale
-r, g, b = imgr[:,:,0], imgr[:,:,1], imgr[:,:,2]
-gray = 0.2989 * r + 0.5870 * g + 0.1140 * b
-
-# Convert image data to pandas DataFrame
-img = pd.DataFrame(gray)
+# Convert to a grayscale DataFrame
+img = utl.img_grayscale(imgr)
 
 
 def make_all():
@@ -161,16 +157,8 @@ def test_wrap(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'wrap_master') if master else 'wrap'
     
-    # Separate planes
-    img2 = pd.DataFrame()
-    cp = ['r', 'gr', 'gb', 'b']
-    for ic, cc in enumerate(cp):
-        temp = img.loc[ic//2::2, (ic%2)::2]
-        temp['Plane'] = cc
-        img2 = pd.concat([img2, temp])
-    
     # Make the plot
-    fcp.imshow(img2, cmap='inferno', ax_size=[600, 600],
+    fcp.imshow(img, cmap='inferno', ax_size=[600, 600], cfa='rggb',
                filename=name + '.png', inline=False, wrap='Plane')
 
     # Compare with master

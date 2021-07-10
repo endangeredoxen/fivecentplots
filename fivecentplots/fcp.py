@@ -964,7 +964,7 @@ def plotter(dobj, **kwargs):
             layout.save(filename, idx)
 
             if kwargs.get('show', False):
-                utl.show_file(filename)
+                show_file(filename)
                 
         kwargs['timer'].read('ifig=%s | save' % (ifig))
 

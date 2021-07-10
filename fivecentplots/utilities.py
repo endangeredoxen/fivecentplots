@@ -68,6 +68,11 @@ class PlatformError(Exception):
         super().__init__('Image tests currently require Windows 10 installation to run')
 
 
+class CFAError(Exception):
+    def __init__(self, *args, **kwargs):
+        Exception.__init__(self, *args, **kwargs)
+
+
 class Timer:
     def __init__(self, print=True, start=False, units='s'):
         """
@@ -591,6 +596,23 @@ def img_compare(img1, img2, show=False):
     return is_diff
 
 
+def img_grayscale(img):
+    """
+    Convert an RGB image to grayscale
+
+    Args:
+        img (np.array): 3D array of image data
+    
+    Returns:
+        DataFrame with grayscale pixel values
+    
+    """
+
+    r, g, b = img[:,:,0], img[:,:,1], img[:,:,2]
+    
+    return pd.DataFrame(0.2989 * r + 0.5870 * g + 0.1140 * b)
+
+
 def nq(data, column='Value', **kwargs):
     """
     Normal quantile calculation
@@ -837,6 +859,54 @@ def show_file(filename):
     else:
         opener = "open" if sys.platform == "darwin" else "xdg-open"
         subprocess.call([opener, filename])
+
+
+def split_color_planes(img, cfa='rggb', asdict=False):
+    """
+    Split image data into respective color planes
+
+    Args:
+        img (pd.DataFrame): image data
+        cfa (str): four-digit cfa pattern
+    
+    Returns:
+        updated DataFrame
+    
+    """
+
+    # Break the cfa code to list
+    cfa = cfa.lower()  # force lowercase for now
+    cp = list(cfa)
+    if len(cp) != 4:
+        raise CFAError('Only CFAs with a 2x2 grid of colors is supported')
+    
+    # Relabel with green cp
+    idx = [i for i, f in enumerate(cp) if f == 'g']
+    for ii in idx:
+        if ii % 2 == 0:
+            cp[ii] = '{}{}'.format(cp[ii], cp[ii + 1])
+        else:
+            cp[ii] = '{}{}'.format(cp[ii], cp[ii - 1])
+    
+    # Separate planes
+    if asdict:
+        img2 = {}
+    else:
+        img2 = pd.DataFrame()
+    
+    for ic, cc in enumerate(cp):
+        temp = img.loc[ic//2::2, (ic%2)::2]
+        if asdict:
+            img2[cc] = temp
+        else:
+            temp['Plane'] = cc
+            img2 = pd.concat([img2, temp])
+
+    if asdict:
+        return img2
+
+    cols = df_int_cols(img2) + ['Plane']
+    return img2[cols]
 
 
 def validate_list(items):

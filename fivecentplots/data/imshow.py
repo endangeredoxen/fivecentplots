@@ -17,6 +17,15 @@ class ImShow(data.Data):
 
         kwargs['ax_limit_padding'] = kwargs.get('ax_limit_padding', None)
 
+        # Color plane splitting
+        self.fcpp, dummy, dummy2 = utl.reload_defaults(kwargs.get('theme', None))
+        cfa=utl.kwget(kwargs, self.fcpp, 'cfa', kwargs.get('cfa', None))
+        if cfa is not None:
+            kwargs['df'] = utl.split_color_planes(kwargs['df'], cfa)
+
+        # auto stretching
+        self.stretch(kwargs)
+
         super().__init__(name, req, opt, **kwargs)
 
         # overrides
@@ -250,6 +259,17 @@ class ImShow(data.Data):
 
         self.df_sub = None
         
+    def stretch(self, kwargs):
+        stretch = utl.kwget(kwargs, self.fcpp, 'stretch', kwargs.get('stretch', None))
+        if stretch is not None:
+            stretch = utl.validate_list(stretch)
+            if len(stretch) == 1:
+                stretch = [stretch[0], stretch[0]]
+            uu = kwargs['df'].stack().mean()
+            ss = kwargs['df'].stack().std()
+            kwargs['zmin'] = uu - abs(stretch[0]) * ss 
+            kwargs['zmax'] = uu + stretch[1] * ss
+            
     def subset_modify(self, df, ir, ic):
 
         return self._subset_modify(df, ir, ic)
