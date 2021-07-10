@@ -228,6 +228,8 @@ The following plot types are supported in **fivecentplots**:
   4) `heatmaps <heatmap.html>`_
   5) `histograms <hist.html>`_
   6) `bar plots <barplot.html>`_
+  7) `imshow plots <imshow.html>`_
+  8) `gantt charts <gantt.html>`_
 
 Follow the links to the example section to see the many options
 available within each plot category.
@@ -253,12 +255,15 @@ Documentation
    :caption: Examples
 
    plot.ipynb
+   barplot.ipynb
    boxplot.ipynb
    contour.ipynb
+   gantt.ipynb
    heatmap.ipynb
    hist.ipynb
-   barplot.ipynb
+   imshow.ipynb
    misc.ipynb
+   pie.ipynb
 
 .. toctree::
    :maxdepth: 1

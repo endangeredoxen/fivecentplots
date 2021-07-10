@@ -64,6 +64,27 @@ ul {
     color: #fbb61a;
 }
 
+.rendered_html table {
+    margin-left: auto;
+    margin-right: auto;
+    border: none;
+    border-collapse: collapse;
+    border-spacing: 0;
+    color: #353535;
+    font-size: 11px;
+    table-layout: auto;
+}
+
+div.rendered_html table {
+    border: none;
+    border-collapse: collapse;
+    border-spacing: 0;
+    color: black;
+    font-size: 12px;
+    float: left !important;
+    table-layout: auto !important;
+}
+
 .dataframe {
     border-collapse: collapse;
     border-spacing: 0;
