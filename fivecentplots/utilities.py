@@ -6,6 +6,7 @@ import pandas as pd
 import scipy.stats as ss
 import importlib
 import datetime
+import subprocess
 #import ctypes
 from matplotlib.font_manager import FontProperties, findfont
 try:
@@ -585,7 +586,7 @@ def img_compare(img1, img2, show=False):
         is_diff = np.any(difference)
         if show and is_diff:
             cv2.imwrite('difference.png', 10 * difference)
-            os.startfile('difference.png')
+            show_file('difference.png')
 
     return is_diff
 
@@ -820,6 +821,22 @@ def sigma(x):
     """
 
     return np.round(np.trunc(10 * abs(ss.norm.ppf(1 / len(x)))) / 10)
+
+
+def show_file(filename):
+    """
+    Platform independent show saved plot func
+    
+    Args:
+        filename (str): path to image
+        
+    """
+
+    if sys.platform == "win32":
+        os.startfile(filename)
+    else:
+        opener = "open" if sys.platform == "darwin" else "xdg-open"
+        subprocess.call([opener, filename])
 
 
 def validate_list(items):

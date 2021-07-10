@@ -9,7 +9,7 @@ import inspect
 osjoin = os.path.join
 db = pdb.set_trace
 if platform.system() != 'Windows':
-    raise utl.PlatformError()
+    print('Warning!  Image test files generated in windows.  Compatibility with linux/mac may vary')
 
 MPL = utl.get_mpl_version_dir()
 MASTER = osjoin(os.path.dirname(fcp.__file__), 'tests', 'test_images', MPL, 'grouping.py')
@@ -65,8 +65,8 @@ def test_legend_single(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -89,8 +89,8 @@ def test_legend_multiple(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -113,8 +113,8 @@ def test_legend_multiple_xy(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -137,8 +137,8 @@ def test_legend_secondary_none(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -161,8 +161,8 @@ def test_legend_secondary_axis(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -185,8 +185,8 @@ def test_legend_secondary_column(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -209,8 +209,8 @@ def test_legend_position(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -235,8 +235,8 @@ def test_legend_position_below(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -259,8 +259,8 @@ def test_groups_none(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -283,8 +283,8 @@ def test_groups_enabled(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -307,8 +307,8 @@ def test_groups_enabled2(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -331,8 +331,8 @@ def test_groups_boxplot(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -355,8 +355,8 @@ def test_groups_row_col(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -379,8 +379,8 @@ def test_groups_row_col_y(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -403,8 +403,8 @@ def test_groups_row_col_x(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -427,8 +427,8 @@ def test_groups_wrap_unique(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -451,8 +451,8 @@ def test_groups_wrap_column_ncol(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -476,8 +476,8 @@ def test_groups_wrap_xy(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -502,8 +502,8 @@ def test_groups_wrap_names_no_sharing(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -528,8 +528,8 @@ def test_figure(master=False, remove=True, show=False):
     elif show:
         for die in df1.Die.unique():
             tag = ' where %s=%s' % ('Die', die)
-            os.startfile(osjoin(MASTER, name + '_master' + tag + '.png'))
-            os.startfile(name + tag + '.png')
+            utl.show_file(osjoin(MASTER, name + '_master' + tag + '.png'))
+            utl.show_file(name + tag + '.png')
     else:
         for die in df1.Die.unique():
             tag = ' where %s=%s' % ('Die', die)

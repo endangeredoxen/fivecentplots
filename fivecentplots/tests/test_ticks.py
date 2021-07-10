@@ -8,7 +8,7 @@ import inspect
 osjoin = os.path.join
 db = pdb.set_trace
 if platform.system() != 'Windows':
-    raise utl.PlatformError()
+    print('Warning!  Image test files generated in windows.  Compatibility with linux/mac may vary')
 
 MPL = utl.get_mpl_version_dir()
 MASTER = osjoin(os.path.dirname(fcp.__file__), 'tests', 'test_images', MPL, 'ticks.py')
@@ -64,8 +64,8 @@ def test_grid_major(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -89,8 +89,8 @@ def test_grid_major_off(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -114,8 +114,8 @@ def test_grid_major_off_y(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -139,8 +139,8 @@ def test_grid_major_secondary(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -164,8 +164,8 @@ def test_grid_minor(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -189,8 +189,8 @@ def test_ticks_minor(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -214,8 +214,8 @@ def test_ticks_style(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -239,8 +239,8 @@ def test_ticks_inc(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -264,8 +264,8 @@ def test_ticks_minor_number(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -289,8 +289,8 @@ def test_ticks_minor_number_log(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -314,8 +314,8 @@ def test_tick_labels(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -339,8 +339,8 @@ def test_tick_labels_minor(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -364,8 +364,8 @@ def test_tick_cleanup(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -389,8 +389,8 @@ def test_tick_cleanup_off(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -415,8 +415,8 @@ def test_tick_cleanup2(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -440,8 +440,8 @@ def test_lin_sci(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -465,8 +465,8 @@ def test_lin_sci2(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -490,8 +490,8 @@ def test_lin_sci_off(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -515,8 +515,8 @@ def test_log_sci(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -540,8 +540,8 @@ def test_log_sci2(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
@@ -565,8 +565,8 @@ def test_log_exp(master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        os.startfile(osjoin(MASTER, name + '_master.png'))
-        os.startfile(name + '.png')
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))

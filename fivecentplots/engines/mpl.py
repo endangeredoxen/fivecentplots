@@ -1271,7 +1271,7 @@ class Layout(BaseLayout):
 
         ## turn on for debugging
         # mpl.pyplot.savefig(r'test.png')  
-        # os.startfile(r'test.png')
+        # utl.show_file(r'test.png')
         # db()
 
         # Get actual sizes

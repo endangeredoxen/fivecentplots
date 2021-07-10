@@ -636,4 +636,4 @@ class Layout(BaseLayout):
 
         # other
         else:
-            os.startfile(filename)
+            utl.show_file(filename)
