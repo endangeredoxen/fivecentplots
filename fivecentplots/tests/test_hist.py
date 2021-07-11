@@ -16,7 +16,9 @@ MASTER = osjoin(os.path.dirname(fcp.__file__), 'tests', 'test_images', MPL, 'his
 
 # Sample data
 df = pd.read_csv(osjoin(os.path.dirname(fcp.__file__), 'tests', 'fake_data_box.csv'))
-
+import imageio
+url = 'https://imgs.michaels.com/MAM/assets/1/D730994AF28E498A909A1002BBF38107/img/16F309E5F1CF4742B4AACD8E0CCF08E0/D203087S_1.jpg?fit=inside|1024:1024'
+imgr = imageio.imread(url)
 
 # Set theme
 fcp.set_theme('gray')
@@ -213,6 +215,57 @@ def test_wrap_names(master=False, remove=True, show=False):
             os.remove(name + '.png')
 
         assert not compare
+
+
+def test_image(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'image_master') if master else 'image'
+
+    # Make the plot
+    img = fcp.utilities.rgb2bayer(imgr, 'bbbb')
+    fcp.hist(img, markers=False, ax_scale='logy', ax_size=[600, 400], line_width=2, 
+             show=SHOW, filename=name + '.png', inline=False)
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_image_legend(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'image_legend_master') if master else 'image_legend'
+
+    # Make the plot
+    img = fcp.utilities.rgb2bayer(imgr, 'rggb')
+    fcp.hist(img, show=SHOW, filename=name + '.png', inline=False,
+             markers=False, ax_scale='logy', ax_size=[600, 400], 
+             legend='Plane', cfa='rggb', line_width=2, colors=fcp.BAYER)
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 
 
 if __name__ == '__main__':

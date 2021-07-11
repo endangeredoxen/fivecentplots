@@ -157,8 +157,13 @@ def test_wrap(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'wrap_master') if master else 'wrap'
     
+    # Get alt data
+    url = 'https://upload.wikimedia.org/wikipedia/commons/2/28/RGB_illumination.jpg'
+    imgr = imageio.imread(url)
+    raw = fcp.utilities.rgb2bayer(imgr)
+    
     # Make the plot
-    fcp.imshow(img, cmap='inferno', ax_size=[600, 600], cfa='rggb',
+    fcp.imshow(raw, cmap='inferno', ax_size=[300, 300], cfa='rggb',
                filename=name + '.png', inline=False, wrap='Plane')
 
     # Compare with master

@@ -868,7 +868,7 @@ def plotter(dobj, **kwargs):
         if k in dd.__dict__.keys():
             kwargs[k] = getattr(dd, k)
     kwargs['timer'].read('Data obj')
-
+    
     # Iterate over discrete figures
     for ifig, fig_item, fig_cols, dd in dd.get_df_figure():
         # Create a layout object

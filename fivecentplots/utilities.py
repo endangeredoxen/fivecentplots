@@ -679,6 +679,38 @@ def plot_num(ir, ic, ncol):
     return (ic + ir * ncol + 1)
 
 
+def rgb2bayer(img, cfa='rggb', bit_depth=np.uint8):
+    """
+    Approximate a Bayer raw image using an RGB image
+
+    Args:
+        img (np.array): 3D numpy array of RGB pixel values
+        cfa (str):  Bayer pattern
+
+    Returns:
+        DataFrame containing Bayer pixel values
+
+    """
+
+    raw = np.zeros((img.shape[0], img.shape[1]), dtype=bit_depth)
+    cp = list(cfa)
+    channel = {'r': 0, 'g': 1, 'b': 2}
+    
+    for cpp in list(set(cp)):
+        idx = [i for i, f in enumerate(cp) if f == cpp]
+        for ii in idx:
+            row = 0 if ii < 2 else 1
+            col = 0 if ii % 2 == 0 else 1
+            raw[row::2, col::2] = img[row::2, col::2, channel[cpp]]
+    
+    # db()
+    # raw[1::2, 1::2] = img[1::2, 1::2, 2]  # blue
+    # raw[1::2, ::2] = img[1::2, ::2, 1]  # green_blue
+    # raw[::2, ::2] = img[::2, ::2, 0]  # red
+    # raw[::2, 1::2] = img[::2, 1::2, 1]  # green_red
+    
+    return pd.DataFrame(raw)
+
 def rectangle_overlap(r1, r2):
     """
     Determine if the bounds of two rectangles overlap
