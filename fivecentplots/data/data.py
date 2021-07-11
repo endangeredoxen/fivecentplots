@@ -13,6 +13,43 @@ import pdb
 db = pdb.set_trace
 
 
+def local_groupers(kwargs):
+    props = ['row', 'col', 'wrap', 'groups', 'legend', 'fig']
+    grouper = []
+
+    for prop in props:
+        if prop in kwargs.keys() and kwargs[prop] not in ['x', 'y', None]:
+            grouper += utl.validate_list(kwargs[prop])
+
+    return grouper
+    
+    
+def reshape_2D(kwargs):
+    """
+    Reshape 2D image data to be suitable for certain non-imshow plot types
+
+    Args:
+        kwargs (dict): user-input keyword dict
+
+    Returns:
+        updated kwargs
+    
+    """
+
+    kwargs['x'] = ['Value']
+    lg = local_groupers(kwargs)
+    if len(lg) > 0:
+        kwargs['df'] = kwargs['df'].set_index(lg)
+        kwargs['df'] = pd.DataFrame(kwargs['df'].stack())
+        kwargs['df'].columns = kwargs['x']
+        kwargs['df'] = kwargs['df'].reset_index()
+    else:
+        kwargs['df'] = pd.DataFrame(kwargs['df'].stack())
+        kwargs['df'].columns = kwargs['x']
+
+    return kwargs
+
+
 class AxisError(Exception):
     def __init__(self, *args, **kwargs):
         Exception.__init__(self, *args, **kwargs)
@@ -808,7 +845,7 @@ class Data:
             self.get_legend_groupings(self.df_all)
             self.get_rc_groupings(self.df_all)
             self.df_fig = self.df_all
-            self.get_data_ranges()
+            self.get_data_ranges()  
 
             yield None, None, None, self
 
@@ -1028,11 +1065,7 @@ class Data:
         """
 
         if type(self.legend_vals) != pd.DataFrame:
-            if self.name == 'gantt':
-                # make sure we only get one group for self.x
-                xx = [self.x[0]]
-            else:
-                xx = [] if not self.x else self.x + self.x2
+            xx = [] if not self.x else self.x + self.x2
             yy = [] if not self.y else self.y + self.y2
             lenx = 1 if not self.x else len(xx)
             leny = 1 if not self.y else len(yy)
@@ -1311,7 +1344,7 @@ class Data:
         else:
             return self.df_fig.copy()
 
-    def subset_wrap(self, ir, ic):
+    def _subset_wrap(self, ir, ic):
         """
         For wrap plots, select the revelant subset from self.df_fig
         """

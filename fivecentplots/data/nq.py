@@ -8,17 +8,6 @@ utl = utilities
 db = pdb.set_trace
 
 
-def local_groupers(kwargs):
-    props = ['row', 'col', 'wrap', 'groups', 'legend', 'fig']
-    grouper = []
-
-    for prop in props:
-        if prop in kwargs.keys() and kwargs[prop] not in ['x', 'y', None]:
-            grouper += utl.validate_list(kwargs[prop])
-
-    return grouper
-
-
 class NQ(data.Data):
     def __init__(self, **kwargs):
 
@@ -27,16 +16,7 @@ class NQ(data.Data):
         opt = ['x']
 
         if not kwargs.get('x', None):
-            kwargs['x'] = ['Value']
-            lg = local_groupers(kwargs)
-            if len(lg) > 0:
-                kwargs['df'] = kwargs['df'].set_index(lg)
-                kwargs['df'] = pd.DataFrame(kwargs['df'].stack())
-                kwargs['df'].columns = kwargs['x']
-                kwargs['df'] = kwargs['df'].reset_index()
-            else:
-                kwargs['df'] = pd.DataFrame(kwargs['df'].stack())
-                kwargs['df'].columns = kwargs['x']
+            kwargs = data.reshape_2D(kwargs)
         kwargs['trans_x'] = 'nq'
                     
         super().__init__(name, req, opt, **kwargs)
@@ -51,4 +31,8 @@ class NQ(data.Data):
     def subset_modify(self, df, ir, ic):
 
         return self._subset_modify(df, ir, ic)
+
+    def subset_wrap(self, ir, ic):
+
+        return self._subset_wrap(ir, ic)
 

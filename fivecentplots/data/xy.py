@@ -22,3 +22,7 @@ class XY(data.Data):
     def subset_modify(self, df, ir, ic):
 
         return self._subset_modify(df, ir, ic)
+
+    def subset_wrap(self, ir, ic):
+
+        return self._subset_wrap(ir, ic)

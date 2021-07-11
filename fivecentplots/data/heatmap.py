@@ -193,6 +193,10 @@ class Heatmap(data.Data):
 
         return df
 
+    def subset_wrap(self, ir, ic):
+
+        return self._subset_wrap(ir, ic)
+
 
 # fix tick labels, need excess ws_ax_fig?  test_simple
 # sharing options not right
