@@ -166,12 +166,14 @@ class Layout(BaseLayout):
         global ENGINE
         ENGINE = 'mpl'
 
+        self.rc_orig = mpl.rcParams.copy()
+
         if kwargs.get('tick_cleanup', True):
             mplp.style.use('classic')
         else:
             mplp.style.use('default')
         mplp.close('all')
-
+       
         # Inherit the base layout properties
         BaseLayout.__init__(self, data, **kwargs)
 
@@ -621,7 +623,6 @@ class Layout(BaseLayout):
 
         # Make a dummy figure
         data = copy.deepcopy(data)
-
         mplp.ioff()
         fig = mpl.pyplot.figure(dpi=self.fig.dpi)
         ax = fig.add_subplot(111)
@@ -840,7 +841,8 @@ class Layout(BaseLayout):
                     axes[ia].get_yaxis().get_major_formatter().set_useOffset(False)
                 except:
                     pass
-            axes[ia].minorticks_on()
+            if self.grid_minor.on:
+                axes[ia].minorticks_on()
             if ia == 0:
                 axes[ia].tick_params(axis='both',
                                      which='major',
@@ -879,7 +881,7 @@ class Layout(BaseLayout):
             if aa is None:
                 continue
             if not (ia == 1 and self.name == 'heatmap'):
-                axes[ia] = self.set_scientific(aa, ia)
+                axes[ia] = self.set_scientific(aa, ia)  # why do this 2x
 
         # Ticks
         for ir, ic, df in data.get_rc_subset():
@@ -2125,95 +2127,6 @@ class Layout(BaseLayout):
                       color=self.gantt.fill_color.get(iline, leg_name))]
             self.legend.add_value(leg_name, handle, 'lines')
 
-
-        # Adjust the xticklabels
-
-
-        # idx = np.where(np.isin(xvals,df.index))[0]
-        # ixvals = list(range(0, len(xvals)))
-        # kwargs = {}
-
-        # # Orientation
-        # if self.bar.horizontal:
-        #     bar = ax.barh
-        #     axx = 'y'
-        #     if self.bar.stacked:
-        #         kwargs['height'] = self.bar.width
-        #         if iline > 0:
-        #             if type(stacked) is pd.Series:
-        #                 stacked = stacked.loc[xvals[idx]].values
-        #             kwargs['bottom'] = stacked
-        #     else:
-        #         #kwargs['height'] = self.bar.width / ngroups
-        #         #idx = [f + iline * (kwargs['height']) for f in idx]
-        #         kwargs['height'] = self.bar.width / ngroups
-        #         width_offset = self.bar.width / total.values
-        #         idx = [f + inst[i] * kwargs['height'] for i, f in enumerate(idx)]
-        #         init_off = (total - 1) / 2 * kwargs['height']
-        #         idx = list((idx - init_off).values)
-        # else:
-        #     bar = ax.bar
-        #     axx = 'x'
-        #     if self.bar.stacked:
-        #         kwargs['width'] = self.bar.width
-        #         if iline > 0:
-        #             if type(stacked) is pd.Series:
-        #                 stacked = stacked.loc[xvals[idx]].values
-        #             kwargs['bottom'] = stacked
-        #     else:
-        #         kwargs['width'] = self.bar.width / ngroups
-        #         width_offset = self.bar.width / total.values
-        #         idx = [f + inst[i] * kwargs['width'] for i, f in enumerate(idx)]
-        #         init_off = (total - 1) / 2 * kwargs['width']
-        #         idx = list((idx - init_off).values)
-
-        # if self.bar.color_by_bar:
-        #     edgecolor = [self.bar.edge_color.get(i)
-        #                 for i, f in enumerate(df.index)]
-        #     fillcolor = [self.bar.fill_color.get(i)
-        #                  for i, f in enumerate(df.index)]
-        # else:
-        #     edgecolor = self.bar.edge_color.get(iline, leg_name)
-        #     fillcolor = self.bar.fill_color.get(iline, leg_name)
-
-        # # Error bars
-        # if std is not None and self.bar.horizontal:
-        #     kwargs['xerr'] = std
-        # elif std is not None:
-        #     kwargs['yerr'] = std
-
-        # # Plot
-        # bb = bar(idx, df.values, align=self.bar.align,
-        #          linewidth=self.bar.edge_width,
-        #          edgecolor=edgecolor, color=fillcolor,
-        #          ecolor=self.bar.error_color, **kwargs)
-
-        # # Set ticks
-        # getattr(ax, 'set_%sticks' % axx)(ixvals)
-        # getattr(ax, 'set_%sticklabels' % axx)(xvals)
-        # if iline==0:
-        #     # Update ranges
-        #     new_ticks = getattr(ax, 'get_%sticks' % axx)()
-        #     tick_off = [f for f in new_ticks if f >= 0][0]
-        #     if self.bar.horizontal:
-        #         axx = 'y'
-        #     else:
-        #         axx = 'x'
-        #     xoff = 3 * self.bar.width / 4
-        #     if data.ranges[ir, ic]['%smin' % axx] is None:
-        #         data.ranges[ir, ic]['%smin' % axx] = -xoff + tick_off
-        #     else:
-        #         data.ranges[ir, ic]['%smin' % axx] += tick_off
-        #     if data.ranges[ir, ic]['%smax' % axx] is None:
-        #         data.ranges[ir, ic]['%smax' % axx] = len(xvals) - 1 + xoff + tick_off
-        #     else:
-        #         data.ranges[ir, ic]['%smax' % axx] += tick_off
-
-        # # Legend
-        # if leg_name is not None:
-        #     handle = [patches.Rectangle((0,0),1,1,color=self.bar.fill_color.get(iline, leg_name))]
-        #     self.legend.add_value(leg_name, handle, 'lines')
-
         return df
 
     def plot_heatmap(self, ax, df, ir, ic, x, y, z, ranges):
@@ -2576,6 +2489,14 @@ class Layout(BaseLayout):
                     and leg_name not in list(self.legend.values['Key']):
                 self.legend.add_value(leg_name, points if points is not None else lines, line_type_name)
 
+    def restore(self):
+        """
+        Undo changes to rcParams
+        """
+
+        for k, v in self.rc_orig.items():
+            mpl.rcParams[k] = self.rc_orig[k]
+    
     def save(self, filename, idx=0):
         """
         Save a plot window
@@ -3157,7 +3078,7 @@ class Layout(BaseLayout):
                                         )
 
             tp = mpl_get_ticks(axes[ia], True, True)
-
+            
             # Set custom tick increment
             redo = True
             xinc = getattr(self, 'ticks_major_x%s' % lab).increment

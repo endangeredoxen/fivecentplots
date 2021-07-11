@@ -1846,6 +1846,13 @@ class BaseLayout:
 
         pass
 
+    def restore(self):
+        """
+        Restore any changed settings to the original
+        """
+        
+        pass
+    
     def save(self, filename):
         pass
 
