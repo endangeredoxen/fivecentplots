@@ -3752,7 +3752,13 @@ class Layout(BaseLayout):
             tp = mpl_get_ticks(ax)
             dec = get_sci(tp['y']['ticks'], ylim)
             ax.get_yaxis().set_major_formatter(ticker.FormatStrFormatter(dec))
-            
+        elif self.tick_labels_major_z.sci==False and self.cbar.on:
+            try:
+                self.cbar.obj.ax.get_yaxis().set_major_formatter(ticker.ScalarFormatter())
+                self.cbar.obj.ax.get_yaxis().get_major_formatter().set_scientific(False)
+            except:
+                pass
+
         return ax
 
     def show(self, filename=None):
