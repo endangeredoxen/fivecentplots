@@ -344,7 +344,7 @@ class BaseLayout:
                     not utl.kwget(kwargs, self.fcpp, 'sci_%s' % ax, False) and \
                     'sci_%s' % ax not in kwargs.keys():
                 kwargs['sci_%s' % ax] = 'best'
-
+            
             setattr(self, 'tick_labels_major_%s' % ax,
                     Element('tick_labels_major_%s' % ax, self.fcpp, kwargs,
                         on=utl.kwget(kwargs, self.fcpp,
@@ -1850,7 +1850,7 @@ class BaseLayout:
         """
         Restore any changed settings to the original
         """
-        
+
         pass
     
     def save(self, filename):

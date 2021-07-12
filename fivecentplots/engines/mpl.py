@@ -2057,12 +2057,9 @@ class Layout(BaseLayout):
         
         # Add a colorbar
         if self.cbar.on:
-            cbar = self.add_cbar(ax, cc)
-            new_ticks = cbar_ticks(cbar, ranges['zmin'], ranges['zmax'])
-            cbar.set_ticks(new_ticks)
-
-        else:
-            cbar = None
+            self.cbar.obj = self.add_cbar(ax, cc)
+            new_ticks = cbar_ticks(self.cbar.obj, ranges['zmin'], ranges['zmax'])
+            self.cbar.obj.set_ticks(new_ticks)
 
         # Show points
         if self.contour.show_points:
@@ -2074,7 +2071,7 @@ class Layout(BaseLayout):
                                s=self.markers.size.get(0),
                                zorder=40)
 
-        return cc, cbar
+        return cc, self.cbar.obj
 
     def plot_gantt(self, ir, ic, df, x, y, iline, leg_name, ranges, yvals, ngroups):
         """
@@ -2174,10 +2171,8 @@ class Layout(BaseLayout):
         #if (self.cbar.on and self.axes.share_z and ic == self.ncol - 1) or \
         #        (self.cbar.on and not self.axes.share_z):
         if self.cbar.on:
-            cbar = self.add_cbar(ax, im)
-        else:
-            cbar = None
-
+            self.cbar.obj = self.add_cbar(ax, im)
+        
         if self.heatmap.text:
             # Loop over data dimensions and create text annotations.
             for iy, yy in enumerate(df.index):
@@ -2266,10 +2261,8 @@ class Layout(BaseLayout):
 
         # Add a cmap
         if self.cbar.on:# and (self.separate_ticks or ic == self.ncol - 1):
-            cbar = self.add_cbar(ax, im)
-        else:
-            cbar = None
-
+            self.cbar.obj = self.add_cbar(ax, im)
+        
         return im
 
     def plot_line(self, ir, ic, x0, y0, x1=None, y1=None, **kwargs):
@@ -3618,6 +3611,30 @@ class Layout(BaseLayout):
             updated axise
         """
 
+        def get_sci(ticks, limit):
+            """
+            Get the scientific notation format string
+
+            Args:
+                ticks: tp['?']['ticks']
+                limit: ax.get_?lim()
+            """
+
+            max_dec = 0
+            for itick, tick in enumerate(ticks):
+                if tick != 0:
+                    if tick < 0:
+                        power = np.nan
+                    else:
+                        power = np.ceil(-np.log10(tick))
+                    if np.isnan(power) or tick < ylim[0] or tick > ylim[1]:
+                        continue
+                    dec = utl.get_decimals(tick*10**power)
+                    max_dec = max(max_dec, dec)
+            dec = '%%.%se' % max_dec
+            return dec
+
+        
         if idx == 0:
             lab = ''
         else:
@@ -3691,15 +3708,7 @@ class Layout(BaseLayout):
                 or not bestx and tick_labels_major_x_sci and logx) \
                 and self.name not in ['box', 'heatmap']:
             xlim = ax.get_xlim()
-            max_dec = 0
-            for itick, tick in enumerate(tp['x']['ticks']):
-                if tick != 0:
-                    power = np.ceil(-np.log10(tick))
-                    if np.isnan(power) or tick < xlim[0] or tick > xlim[1]:
-                        continue
-                    dec = utl.get_decimals(tick*10**power)
-                    max_dec = max(max_dec, dec)
-            dec = '%%.%se' % max_dec
+            dec = get_sci(tp['x']['ticks'], xlim)
             ax.get_xaxis().set_major_formatter(ticker.FormatStrFormatter(dec))
 
         logy = getattr(self, 'axes%s' % lab).scale in LOGY + SYMLOGY + LOGITY
@@ -3733,17 +3742,17 @@ class Layout(BaseLayout):
                 or not besty and tick_labels_major_y_sci and logy) \
                 and self.name not in ['heatmap']:
             ylim = ax.get_ylim()
-            max_dec = 0
-            for itick, tick in enumerate(tp['y']['ticks']):
-                if tick != 0:
-                    power = np.ceil(-np.log10(tick))
-                    if np.isnan(power) or tick < ylim[0] or tick > ylim[1]:
-                        continue
-                    dec = utl.get_decimals(tick*10**power)
-                    max_dec = max(max_dec, dec)
-            dec = '%%.%se' % max_dec
+            dec = get_sci(tp['y']['ticks'], ylim)
             ax.get_yaxis().set_major_formatter(ticker.FormatStrFormatter(dec))
 
+        # Cbar z-axis
+        if self.tick_labels_major_z.sci==True and self.cbar.on:
+            ax = self.cbar.obj.ax
+            ylim = ax.get_ylim()
+            tp = mpl_get_ticks(ax)
+            dec = get_sci(tp['y']['ticks'], ylim)
+            ax.get_yaxis().set_major_formatter(ticker.FormatStrFormatter(dec))
+            
         return ax
 
     def show(self, filename=None):

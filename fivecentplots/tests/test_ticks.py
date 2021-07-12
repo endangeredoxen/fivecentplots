@@ -575,7 +575,35 @@ def test_log_exp(master=False, remove=True, show=False):
 
         assert not compare
 
+
+def test_sciz(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'sciz_master') if master else 'sciz'
+
+    # Make the plot
+    df2 = pd.read_csv(osjoin(os.path.dirname(fcp.__file__), 'tests', 'fake_data_contour.csv'))
+    fcp.contour(df2, x='X', y='Y', z='Value', row='Batch', col='Experiment', filled=True,
+                cbar=True, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250,250], show=SHOW,
+                label_rc_font_size=12, levels=40, sci_z=True,
+                filename=name + '.png', inline=False)
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 fcp.set_theme('gray')
+
 
 if __name__ == '__main__':
     pass
