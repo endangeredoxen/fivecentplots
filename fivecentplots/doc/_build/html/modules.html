@@ -1164,6 +1164,12 @@ Index 2 is for twinned axes</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="fivecentplots.engines.layout.BaseLayout.restore">
+<code class="sig-name descname">restore</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.engines.layout.BaseLayout.restore" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restore any changed settings to the original</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="fivecentplots.engines.layout.BaseLayout.save">
 <code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.engines.layout.BaseLayout.save" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -1651,6 +1657,12 @@ them.  This is needed to correctly adjust the figure dimensions</p>
 <dd class="field-odd"><p>return the line plot object</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="fivecentplots.engines.mpl.Layout.restore">
+<code class="sig-name descname">restore</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.engines.mpl.Layout.restore" title="Permalink to this definition">¶</a></dt>
+<dd><p>Undo changes to rcParams</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2490,6 +2502,23 @@ dict1 or dict2 keys</p></li>
 <dt id="fivecentplots.utilities.reload_defaults">
 <code class="sig-prename descclassname">fivecentplots.utilities.</code><code class="sig-name descname">reload_defaults</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">theme</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.utilities.reload_defaults" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reload the fcp params</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="fivecentplots.utilities.rgb2bayer">
+<code class="sig-prename descclassname">fivecentplots.utilities.</code><code class="sig-name descname">rgb2bayer</code><span class="sig-paren">(</span><em class="sig-param">img</em>, <em class="sig-param">cfa='rggb'</em>, <em class="sig-param">bit_depth=&lt;class 'numpy.uint8'&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.utilities.rgb2bayer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate a Bayer raw image using an RGB image</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>img</strong> (<em>np.array</em>) – 3D numpy array of RGB pixel values</p></li>
+<li><p><strong>cfa</strong> (<em>str</em>) – Bayer pattern</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>DataFrame containing Bayer pixel values</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">

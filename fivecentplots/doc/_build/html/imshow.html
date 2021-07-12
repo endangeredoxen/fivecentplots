@@ -484,6 +484,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="section" id="Read-an-image">
 <h3>Read an image<a class="headerlink" href="#Read-an-image" title="Permalink to this headline">¶</a></h3>
+<p><img alt="4f5e69a79cb4483eb1dde470bf9a50b1" class="no-scaled-link" src="https://imagesvc.meredithcorp.io/v3/mm/image?q=85&amp;c=sc&amp;rect=0%2C214%2C2000%2C1214&amp;poi=%5B920%2C546%5D&amp;w=2000&amp;h=1000&amp;url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F47%2F2020%2F10%2F07%2Fcat-in-pirate-costume-380541532-2000.jpg" style="width: 600px;" /></p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
@@ -782,7 +783,7 @@ Array([[[220, 221, 223],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/imshow_15_0.png" src="_images/imshow_15_0.png" />
+<img alt="_images/imshow_16_0.png" src="_images/imshow_16_0.png" />
 </div>
 </div>
 </div>
@@ -802,7 +803,7 @@ Array([[[220, 221, 223],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/imshow_18_0.png" src="_images/imshow_18_0.png" />
+<img alt="_images/imshow_19_0.png" src="_images/imshow_19_0.png" />
 </div>
 </div>
 </div>
@@ -822,7 +823,7 @@ Array([[[220, 221, 223],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/imshow_21_0.png" src="_images/imshow_21_0.png" />
+<img alt="_images/imshow_22_0.png" src="_images/imshow_22_0.png" />
 </div>
 </div>
 <p>private eyes are watching you…</p>
@@ -845,7 +846,7 @@ Array([[[220, 221, 223],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/imshow_25_0.png" src="_images/imshow_25_0.png" />
+<img alt="_images/imshow_26_0.png" src="_images/imshow_26_0.png" />
 </div>
 </div>
 <p>imshow plots in fivecentplots also provides a convenient kwarg called <code class="docutils literal notranslate"><span class="pre">stretch</span></code> which applies e a numerical multiplier of standard deviation above and below the mean and automatically calculates new z-limits (essentially the same thing as done above manually). <code class="docutils literal notranslate"><span class="pre">stretch</span></code> can be a single value of std dev which is interpreted as +/- that value or a list with the lower and higher std deviation respectively. First, we consider a +/- 3 sigma stretch as above:</p>
@@ -862,7 +863,7 @@ Array([[[220, 221, 223],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/imshow_27_0.png" src="_images/imshow_27_0.png" />
+<img alt="_images/imshow_28_0.png" src="_images/imshow_28_0.png" />
 </div>
 </div>
 <p>Now we show a single-sided stretch that only applies to the upper z-limit:</p>
@@ -879,21 +880,26 @@ Array([[[220, 221, 223],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/imshow_29_0.png" src="_images/imshow_29_0.png" />
+<img alt="_images/imshow_30_0.png" src="_images/imshow_30_0.png" />
 </div>
 </div>
 </div>
 <div class="section" id="Split-color-planes">
 <h2>Split color planes<a class="headerlink" href="#Split-color-planes" title="Permalink to this headline">¶</a></h2>
-<p>For some applications, it is useful to split a raw image based on some CFA pattern. fivecentplots provides a simple utility function to do this and <code class="docutils literal notranslate"><span class="pre">imshow</span></code> can be used to display the result. The utility returns a concatenated DataFrame consisting of the data from each color plane:</p>
+<p>For some applications, it is useful to split a raw/bayer image based on some CFA pattern. fivecentplots provides a simple utility function to do this and <code class="docutils literal notranslate"><span class="pre">imshow</span></code> can be used to display the result. The utility returns a concatenated DataFrame consisting of the data from each color plane. Consider the following image:</p>
+<p><img alt="271d51a833d7451392c0b52f4efd47aa" src="https://upload.wikimedia.org/wikipedia/commons/2/28/RGB_illumination.jpg" /></p>
+<p>First we convert the RGB image into a Bayer-like image and demonstrate the color plane split:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">temp</span> <span class="o">=</span> <span class="n">fcp</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">split_color_planes</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cfa</span><span class="o">=</span><span class="s1">&#39;rggb&#39;</span><span class="p">)</span>
+<span></span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://upload.wikimedia.org/wikipedia/commons/2/28/RGB_illumination.jpg&#39;</span>
+<span class="n">imgr</span> <span class="o">=</span> <span class="n">imageio</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="n">raw</span> <span class="o">=</span> <span class="n">fcp</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">rgb2bayer</span><span class="p">(</span><span class="n">imgr</span><span class="p">)</span>
+<span class="n">temp</span> <span class="o">=</span> <span class="n">fcp</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">split_color_planes</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="n">cfa</span><span class="o">=</span><span class="s1">&#39;rggb&#39;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">plane</span> <span class="ow">in</span> <span class="n">temp</span><span class="o">.</span><span class="n">Plane</span><span class="o">.</span><span class="n">unique</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">temp</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">temp</span><span class="o">.</span><span class="n">Plane</span><span class="o">==</span><span class="n">plane</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">temp</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">temp</span><span class="o">.</span><span class="n">Plane</span><span class="o">==</span><span class="n">plane</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -902,89 +908,75 @@ Array([[[220, 221, 223],
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-         0        2        4        6         8        10        12        14  \
-0  220.907  220.907  220.907  220.907  220.9070  220.9070  220.9070  220.9070
-2  220.907  220.907  220.907  220.907  219.9071  219.9071  219.9071  219.9071
-4  220.907  220.907  220.907  220.907  220.9070  220.9070  220.9070  220.9070
-6  220.907  220.907  220.907  220.907  220.9070  220.9070  220.9070  220.9070
-8  220.907  220.907  220.907  220.907  221.9069  221.9069  221.9069  221.9069
+      0     2     4     6     8    10    12    14    16    18  ...   382  \
+0  47.0  47.0  46.0  45.0  48.0  46.0  46.0  46.0  46.0  46.0  ...  49.0
+2  46.0  47.0  47.0  46.0  48.0  46.0  47.0  46.0  47.0  47.0  ...  49.0
+4  47.0  48.0  48.0  46.0  48.0  47.0  48.0  47.0  47.0  47.0  ...  49.0
+6  46.0  46.0  47.0  46.0  47.0  46.0  47.0  46.0  45.0  46.0  ...  44.0
+8  45.0  45.0  47.0  46.0  46.0  47.0  49.0  48.0  46.0  46.0  ...  45.0
 
-         16        18  ...  1983  1985  1987  1989  1991  1993  1995  1997  \
-0  221.9069  221.9069  ...   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN
-2  221.9069  221.9069  ...   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN
-4  221.9069  221.9069  ...   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN
-6  221.9069  221.9069  ...   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN
-8  221.9069  221.9069  ...   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN
+    384   386   388   390   392   394   396   398  Plane
+0  44.0  45.0  45.0  47.0  49.0  48.0  47.0  69.0      r
+2  49.0  48.0  50.0  49.0  47.0  47.0  50.0  73.0      r
+4  49.0  44.0  46.0  47.0  45.0  48.0  48.0  72.0      r
+6  46.0  44.0  48.0  47.0  51.0  49.0  46.0  75.0      r
+8  40.0  49.0  43.0  48.0  41.0  49.0  49.0  81.0      r
 
-   1999  Plane
-0   NaN      r
-2   NaN      r
-4   NaN      r
-6   NaN      r
-8   NaN      r
+[5 rows x 201 columns]
+      1     3     5     7     9    11    13    15    17    19  ...    383  \
+0  47.0  48.0  47.0  45.0  46.0  48.0  48.0  48.0  47.0  48.0  ...  104.0
+2  46.0  47.0  48.0  48.0  47.0  47.0  47.0  46.0  47.0  47.0  ...  113.0
+4  47.0  46.0  48.0  48.0  48.0  46.0  47.0  46.0  48.0  47.0  ...  122.0
+6  47.0  47.0  47.0  49.0  48.0  47.0  47.0  47.0  47.0  47.0  ...  121.0
+8  48.0  47.0  48.0  47.0  47.0  45.0  47.0  48.0  49.0  48.0  ...  158.0
 
-[5 rows x 2001 columns]
-    0   2   4   6   8  10  12  14  16  18  ...      1983      1985      1987  \
-0 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN  ...  219.9071  219.9071  219.9071
-2 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN  ...  219.9071  219.9071  219.9071
-4 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN  ...  219.9071  219.9071  219.9071
-6 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN  ...  219.9071  219.9071  219.9071
-8 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN  ...  219.9071  219.9071  219.9071
+     385    387    389    391    393    395    397  399  Plane
+0  106.0  104.0  102.0  103.0  103.0  104.0   96.0  0.0     gr
+2  107.0  106.0  104.0  102.0  105.0  102.0   98.0  0.0     gr
+4  112.0  106.0  105.0  103.0  107.0  107.0  101.0  0.0     gr
+6  120.0  113.0  107.0   98.0  108.0  121.0  117.0  1.0     gr
+8  160.0  154.0  152.0  111.0  100.0  111.0  120.0  3.0     gr
 
-       1989      1991      1993      1995      1997      1999  Plane
-0  219.9071  219.9071  219.9071  219.9071  219.9071  219.9071     gr
-2  219.9071  219.9071  219.9071  219.9071  219.9071  219.9071     gr
-4  219.9071  219.9071  219.9071  219.9071  219.9071  219.9071     gr
-6  219.9071  219.9071  219.9071  219.9071  219.9071  219.9071     gr
-8  219.9071  219.9071  219.9071  219.9071  219.9071  219.9071     gr
+[5 rows x 201 columns]
+      0     2     4     6     8    10    12    14    16    18  ...    382  \
+1  47.0  47.0  48.0  47.0  46.0  47.0  48.0  48.0  47.0  47.0  ...  107.0
+3  47.0  46.0  47.0  48.0  47.0  47.0  47.0  46.0  46.0  46.0  ...  123.0
+5  48.0  48.0  47.0  48.0  48.0  48.0  47.0  47.0  48.0  48.0  ...  111.0
+7  47.0  47.0  46.0  47.0  48.0  47.0  46.0  47.0  47.0  47.0  ...  130.0
+9  48.0  47.0  47.0  47.0  48.0  46.0  45.0  48.0  47.0  46.0  ...  139.0
 
-[5 rows x 2001 columns]
-         0        2        4        6         8        10        12        14  \
-1  220.907  220.907  220.907  220.907  219.9071  219.9071  219.9071  219.9071
-3  220.907  220.907  220.907  220.907  219.9071  219.9071  219.9071  219.9071
-5  220.907  220.907  220.907  220.907  220.9070  220.9070  220.9070  220.9070
-7  220.907  220.907  220.907  220.907  219.9071  219.9071  219.9071  219.9071
-9  220.907  220.907  220.907  220.907  221.9069  221.9069  221.9069  221.9069
+     384    386    388    390    392    394    396    398  Plane
+1  106.0  104.0  102.0  102.0  103.0  100.0  100.0  121.0     gb
+3  112.0  108.0  105.0  103.0  106.0  102.0  100.0  122.0     gb
+5  115.0  108.0  104.0  101.0  103.0  112.0  110.0  128.0     gb
+7  141.0  134.0  126.0  115.0   97.0  114.0  123.0  137.0     gb
+9  154.0  145.0  160.0  143.0  105.0   99.0  104.0  125.0     gb
 
-         16        18  ...  1983  1985  1987  1989  1991  1993  1995  1997  \
-1  221.9069  221.9069  ...   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN
-3  221.9069  221.9069  ...   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN
-5  221.9069  221.9069  ...   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN
-7  221.9069  221.9069  ...   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN
-9  221.9069  221.9069  ...   NaN   NaN   NaN   NaN   NaN   NaN   NaN   NaN
+[5 rows x 201 columns]
+       1      3      5      7      9     11     13     15     17     19  ...  \
+1   95.0   96.0   85.0   90.0   95.0   99.0   99.0   97.0   91.0   96.0  ...
+3  104.0  113.0  102.0   89.0  101.0  115.0  117.0  112.0  103.0  107.0  ...
+5   91.0   99.0   97.0   79.0   86.0  105.0  109.0  101.0   83.0   91.0  ...
+7   99.0  103.0  111.0   97.0   93.0  117.0  119.0  105.0   97.0  109.0  ...
+9   99.0  112.0  125.0  116.0   99.0  129.0  117.0  117.0  114.0  134.0  ...
 
-   1999  Plane
-1   NaN     gb
-3   NaN     gb
-5   NaN     gb
-7   NaN     gb
-9   NaN     gb
+    383   385   387   389   391   393   395   397  399  Plane
+1  46.0  46.0  47.0  46.0  46.0  51.0  46.0  42.0  0.0      b
+3  44.0  46.0  46.0  48.0  47.0  49.0  44.0  44.0  2.0      b
+5  47.0  44.0  44.0  49.0  49.0  52.0  46.0  44.0  0.0      b
+7  48.0  48.0  49.0  48.0  42.0  49.0  47.0  47.0  0.0      b
+9  48.0  49.0  48.0  49.0  46.0  50.0  44.0  46.0  0.0      b
 
-[5 rows x 2001 columns]
-    0   2   4   6   8  10  12  14  16  18  ...      1983      1985      1987  \
-1 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN  ...  219.9071  219.9071  219.9071
-3 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN  ...  219.9071  219.9071  219.9071
-5 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN  ...  219.9071  219.9071  219.9071
-7 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN  ...  219.9071  219.9071  219.9071
-9 NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN  ...  219.9071  219.9071  219.9071
-
-       1989      1991      1993      1995      1997      1999  Plane
-1  219.9071  219.9071  219.9071  219.9071  219.9071  219.9071      b
-3  219.9071  219.9071  219.9071  219.9071  219.9071  219.9071      b
-5  219.9071  219.9071  219.9071  219.9071  219.9071  219.9071      b
-7  219.9071  219.9071  219.9071  219.9071  219.9071  219.9071      b
-9  219.9071  219.9071  219.9071  219.9071  219.9071  219.9071      b
-
-[5 rows x 2001 columns]
+[5 rows x 201 columns]
 </pre></div></div>
 </div>
-<p>For ease of use, however, you do not need to actually use this utility manually. Adding the kwarg <code class="docutils literal notranslate"><span class="pre">cfa</span></code> to the <code class="docutils literal notranslate"><span class="pre">imshow</span></code> call will run the utility automatically:</p>
+<p>For ease of use, however, you do not need to actually use this utility manually. Adding the kwarg <code class="docutils literal notranslate"><span class="pre">cfa</span></code> with a string value of some CFA pattern to the <code class="docutils literal notranslate"><span class="pre">imshow</span></code> call will run the utility automatically:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">],</span> <span class="n">cfa</span><span class="o">=</span><span class="s1">&#39;rggb&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;Plane&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">],</span> <span class="n">cfa</span><span class="o">=</span><span class="s1">&#39;rggb&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;Plane&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -992,7 +984,16 @@ Array([[[220, 221, 223],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/imshow_34_0.png" src="_images/imshow_34_0.png" />
+<img alt="_images/imshow_36_0.png" src="_images/imshow_36_0.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
 </div>
 </div>
 </div>
