@@ -923,7 +923,7 @@ def split_color_planes(img, cfa='rggb', asdict=False):
                 cp[ii] = '{}{}'.format(cp[ii], cp[ii + 1])
             else:
                 cp[ii] = '{}{}'.format(cp[ii], cp[ii - 1])
-    return cp
+
     # Separate planes
     if asdict:
         img2 = {}
