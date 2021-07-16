@@ -602,14 +602,14 @@ def img_grayscale(img):
 
     Args:
         img (np.array): 3D array of image data
-    
+
     Returns:
         DataFrame with grayscale pixel values
-    
+
     """
 
     r, g, b = img[:,:,0], img[:,:,1], img[:,:,2]
-    
+
     return pd.DataFrame(0.2989 * r + 0.5870 * g + 0.1140 * b)
 
 
@@ -695,20 +695,20 @@ def rgb2bayer(img, cfa='rggb', bit_depth=np.uint8):
     raw = np.zeros((img.shape[0], img.shape[1]), dtype=bit_depth)
     cp = list(cfa)
     channel = {'r': 0, 'g': 1, 'b': 2}
-    
+
     for cpp in list(set(cp)):
         idx = [i for i, f in enumerate(cp) if f == cpp]
         for ii in idx:
             row = 0 if ii < 2 else 1
             col = 0 if ii % 2 == 0 else 1
             raw[row::2, col::2] = img[row::2, col::2, channel[cpp]]
-    
+
     # db()
     # raw[1::2, 1::2] = img[1::2, 1::2, 2]  # blue
     # raw[1::2, ::2] = img[1::2, ::2, 1]  # green_blue
     # raw[::2, ::2] = img[::2, ::2, 0]  # red
     # raw[::2, 1::2] = img[::2, 1::2, 1]  # green_red
-    
+
     return pd.DataFrame(raw)
 
 def rectangle_overlap(r1, r2):
@@ -880,10 +880,10 @@ def sigma(x):
 def show_file(filename):
     """
     Platform independent show saved plot func
-    
+
     Args:
         filename (str): path to image
-        
+
     """
 
     if sys.platform == "win32":
@@ -900,10 +900,10 @@ def split_color_planes(img, cfa='rggb', asdict=False):
     Args:
         img (pd.DataFrame): image data
         cfa (str): four-digit cfa pattern
-    
+
     Returns:
         updated DataFrame
-    
+
     """
 
     # Break the cfa code to list
@@ -911,21 +911,25 @@ def split_color_planes(img, cfa='rggb', asdict=False):
     cp = list(cfa)
     if len(cp) != 4:
         raise CFAError('Only CFAs with a 2x2 grid of colors is supported')
-    
-    # Relabel with green cp
-    idx = [i for i, f in enumerate(cp) if f == 'g']
-    for ii in idx:
-        if ii % 2 == 0:
-            cp[ii] = '{}{}'.format(cp[ii], cp[ii + 1])
-        else:
-            cp[ii] = '{}{}'.format(cp[ii], cp[ii - 1])
-    
+
+    # Check for a repeated cfa
+    counts = {i:cp.count(i) for i in cp}
+    dup = [k for k, v in counts.items() if v==2]
+    if len(dup) > 0:
+        dup = dup[0]
+        idx = [i for i, f in enumerate(cp) if f == dup]
+        for ii in idx:
+            if ii % 2 == 0:
+                cp[ii] = '{}{}'.format(cp[ii], cp[ii + 1])
+            else:
+                cp[ii] = '{}{}'.format(cp[ii], cp[ii - 1])
+    return cp
     # Separate planes
     if asdict:
         img2 = {}
     else:
         img2 = pd.DataFrame()
-    
+
     for ic, cc in enumerate(cp):
         temp = img.loc[ic//2::2, (ic%2)::2]
         if asdict:
