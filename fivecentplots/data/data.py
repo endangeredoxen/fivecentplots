@@ -201,7 +201,7 @@ class Data:
         # Apply an optional filter to the data
         self.filter = kwargs.get('filter', None)
         if self.filter:
-            self.df_all = utl.df_filter(self.df_all, self.filter)
+            self.df_all = utl.df_filter(self.df_all, self.filter)#, keep_filtered=True)
             if len(self.df_all) == 0:
                 raise DataError('DataFrame is empty after applying filter')
 

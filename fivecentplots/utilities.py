@@ -178,7 +178,7 @@ def dfkwarg(args, kwargs):
     return kwargs
 
 
-def df_filter(df, filt_orig, drop_cols=False):
+def df_filter(df, filt_orig, drop_cols=False, keep_filtered=False):
     """
     Filter the DataFrame
 
@@ -289,7 +289,17 @@ def df_filter(df, filt_orig, drop_cols=False):
 
     # Apply the filter
     try:
+        if keep_filtered:
+            df_orig = df.copy()
+
         df = df.query(filt)
+        
+        if keep_filtered:
+            dropped = df_orig.copy().loc[~df_orig.index.isin(df.index)]
+            cols_filt = [f for f in cols_new if f in filt]
+            dropped.loc[:, cols_filt] = np.nan
+            df = pd.concat([df, dropped])
+    
         df.columns = cols_orig
 
         if drop_cols:
