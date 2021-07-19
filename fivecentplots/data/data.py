@@ -22,8 +22,8 @@ def local_groupers(kwargs):
             grouper += utl.validate_list(kwargs[prop])
 
     return grouper
-    
-    
+
+
 def reshape_2D(kwargs):
     """
     Reshape 2D image data to be suitable for certain non-imshow plot types
@@ -33,7 +33,7 @@ def reshape_2D(kwargs):
 
     Returns:
         updated kwargs
-    
+
     """
 
     kwargs['x'] = ['Value']
@@ -44,6 +44,7 @@ def reshape_2D(kwargs):
         kwargs['df'].columns = kwargs['x']
         kwargs['df'] = kwargs['df'].reset_index()
     else:
+        kwargs['df'] = kwargs['df'][utl.df_int_cols(kwargs['df'])]
         kwargs['df'] = pd.DataFrame(kwargs['df'].stack())
         kwargs['df'].columns = kwargs['x']
 
@@ -170,7 +171,7 @@ class Data:
                 raise AxisError('twin_y requires two x-axis columns')
             self.x2 = [self.x[1]]
             self.x = [self.x[0]]
-        
+
         # Ref line
         self.ref_line = kwargs.get('ref_line', None)
         if type(self.ref_line) is pd.Series:
@@ -323,7 +324,7 @@ class Data:
         df_fig = self.df_fig.copy()  # use temporarily for setting ranges
         self._get_data_ranges_user_defined()
         df_fig = self.get_auto_scale(df_fig)
-        
+
         # Apply shared axes
         for ir, ic, plot_num in self.get_subplot_index():
             for ax in self.axs:
@@ -365,7 +366,7 @@ class Data:
                 # subplot level when not shared
                 else:
                     df_rc = self.subset(ir, ic)
-                    
+
                     # Empty rc
                     if len(df_rc) == 0:  # this doesn't exist yet!
                         self.add_range(ir, ic, ax, 'min', None)
@@ -385,7 +386,7 @@ class Data:
                     elif ir > 0 or ic > 0:
                         self.add_range(ir, ic, ax, 'min', self.ranges[0, 0]['%smin' % ax])
                         self.add_range(ir, ic, ax, 'max', self.ranges[0, 0]['%smax' % ax])
-        
+
     def _get_data_ranges_user_defined(self):
         """
         Get user defined range values
@@ -845,7 +846,7 @@ class Data:
             self.get_legend_groupings(self.df_all)
             self.get_rc_groupings(self.df_all)
             self.df_fig = self.df_all
-            self.get_data_ranges()  
+            self.get_data_ranges()
 
             yield None, None, None, self
 
@@ -1272,9 +1273,9 @@ class Data:
         for ir in range(0, self.nrow):
             for ic in range(0, self.ncol):
                 ranges[ir, ic] = {}
-        
+
         return ranges
-    
+
     def see(self):
         """
         Prints a readable list of class attributes
@@ -1300,7 +1301,7 @@ class Data:
 
         if not apply_ranges:
             return df
-        
+
         # apply any known ranges
         for k, v in self.ranges[ir, ic].items():
             if v is not None:

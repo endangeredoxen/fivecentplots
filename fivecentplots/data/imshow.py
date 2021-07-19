@@ -30,19 +30,19 @@ class ImShow(data.Data):
 
         # overrides
         self.auto_scale = False
-        
+
         if 'x' not in kwargs.keys() and \
                 'y' not in kwargs.keys() and \
                 'z' not in kwargs.keys():
-            
+
             self.auto_cols = True
             self.x = ['Column']
             self.y = ['Row']
             self.z = ['Value']
-                   
+
         else:
             self.pivot = True
-        
+
     def check_xyz(self, xyz):
         """
         Validate the name and column data provided for x, y, and/or z
@@ -101,7 +101,7 @@ class ImShow(data.Data):
             cols = getattr(self, ax)
 
         # imshow special case
-        df = df.dropna(1, 'all')
+        df = df.dropna(axis=1, how='all')
         groups = self.groupers
         if getattr(self, ax) == ['Column']:
             vmin = 0
@@ -120,24 +120,7 @@ class ImShow(data.Data):
         elif getattr(self, ax) == ['Value']:# and self.auto_cols:
             vmin = df[utl.df_int_cols(df)].min().min()
             vmax = df[utl.df_int_cols(df)].max().max()
-        # elif ax not in ['x2', 'y2', 'z']:
-        #     vmin = 0
-        #     vmax = len(df[getattr(self, ax)].drop_duplicates())
-        # elif ax not in ['x2', 'y2']:
-        #     vmin = df[getattr(self, ax)].min().iloc[0]
-        #     vmax = df[getattr(self, ax)].max().iloc[0]
-        # else:
-        #     vmin = None
-        #     vmax = None
-        # plot_num = utl.plot_num(ir, ic, self.ncol)
-        # if getattr(self, '%smin' % ax).get(plot_num):
-        #     vmin = getattr(self, '%smin' % ax).get(plot_num)
-        # if getattr(self, '%smax' % ax).get(plot_num):
-        #     vmax = getattr(self, '%smax' % ax).get(plot_num)
-        # if type(vmin) is str:
-        #     vmin = None
-        # if type(vmax) is str:
-        #     vmax = None
+
         return vmin, vmax
 
     def get_data_ranges(self):
@@ -150,7 +133,7 @@ class ImShow(data.Data):
         df_fig = self.df_fig.copy()  # use temporarily for setting ranges
         self._get_data_ranges_user_defined()
         df_fig = self.get_auto_scale(df_fig)
-        
+
         # Apply shared axes
         for ir, ic, plot_num in self.get_subplot_index():
             for ax in self.axs:
@@ -192,7 +175,7 @@ class ImShow(data.Data):
                 # subplot level when not shared
                 else:
                     df_rc = self.subset(ir, ic)
-                    
+
                     # Empty rc
                     if len(df_rc) == 0:  # this doesn't exist yet!
                         self.add_range(ir, ic, ax, 'min', None)
@@ -212,12 +195,12 @@ class ImShow(data.Data):
                     elif ir > 0 or ic > 0:
                         self.add_range(ir, ic, ax, 'min', self.ranges[0, 0]['%smin' % ax])
                         self.add_range(ir, ic, ax, 'max', self.ranges[0, 0]['%smax' % ax])
-        
+
         # some extras
-        width = len(self.df_fig.dropna(1, 'all').columns)
-        height = len(self.df_fig.dropna(0, 'all').index)
+        width = len(self.df_fig.dropna(axis=1, how='all').columns)
+        height = len(self.df_fig.dropna(axis=0, how='all').index)
         self.wh_ratio = width / height
-        
+
         for ir, ic, plot_num in self.get_subplot_index():
             # invert ymin and ymax
             temp = self.ranges[ir, ic]['ymax']
@@ -227,7 +210,7 @@ class ImShow(data.Data):
             # get the ratio of width to height for figure size
             width = self.ranges[ir, ic]['xmax'] - self.ranges[ir, ic]['xmin']
             height = self.ranges[ir, ic]['ymin'] - self.ranges[ir, ic]['ymax']
-            self.wh_ratio = max(self.wh_ratio, width / height)     
+            self.wh_ratio = max(self.wh_ratio, width / height)
 
     def get_rc_subset(self):
         """
@@ -258,7 +241,7 @@ class ImShow(data.Data):
                 yield ir, ic, self.df_rc
 
         self.df_sub = None
-        
+
     def stretch(self, kwargs):
         stretch = utl.kwget(kwargs, self.fcpp, 'stretch', kwargs.get('stretch', None))
         if stretch is not None:
@@ -267,9 +250,9 @@ class ImShow(data.Data):
                 stretch = [stretch[0], stretch[0]]
             uu = kwargs['df'].stack().mean()
             ss = kwargs['df'].stack().std()
-            kwargs['zmin'] = uu - abs(stretch[0]) * ss 
+            kwargs['zmin'] = uu - abs(stretch[0]) * ss
             kwargs['zmax'] = uu + stretch[1] * ss
-            
+
     def subset_modify(self, df, ir, ic):
 
         return self._subset_modify(df, ir, ic)

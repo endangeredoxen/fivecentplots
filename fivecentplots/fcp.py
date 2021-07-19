@@ -235,9 +235,9 @@ def nq(*args, **kwargs):
     """
     Plot normal quantiles of a data set
     """
-    
+
     return plotter(data.NQ, **dfkwarg(args, kwargs))
-    
+
 
 def paste_kwargs(kwargs):
     """
@@ -868,7 +868,7 @@ def plotter(dobj, **kwargs):
         if k in dd.__dict__.keys():
             kwargs[k] = getattr(dd, k)
     kwargs['timer'].read('Data obj')
-    
+
     # Iterate over discrete figures
     for ifig, fig_item, fig_cols, dd in dd.get_df_figure():
         # Create a layout object
@@ -965,7 +965,7 @@ def plotter(dobj, **kwargs):
 
             if kwargs.get('show', False):
                 show_file(filename)
-                
+
         kwargs['timer'].read('ifig=%s | save' % (ifig))
 
         # Return inline

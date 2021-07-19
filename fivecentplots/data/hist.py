@@ -18,13 +18,13 @@ class Histogram(data.Data):
         name = 'hist'
         req = []
         opt = ['x']
-        
+
         self.fcpp, dummy, dummy2 = utl.reload_defaults(kwargs.get('theme', None))
         bars = utl.kwget(kwargs, self.fcpp, 'bars', kwargs.get('bars', True))
         kwargs['2D'] = False
-            
+
         # 2D image input
-        if not kwargs.get('x', None):  
+        if not kwargs.get('x', None):
             # Color plane splitting
             cfa = utl.kwget(kwargs, self.fcpp, 'cfa', kwargs.get('cfa', None))
             if cfa is not None:
@@ -32,24 +32,24 @@ class Histogram(data.Data):
             kwargs = data.reshape_2D(kwargs)
             kwargs['2D'] = True
             bars = utl.kwget(kwargs, self.fcpp, 'bars', kwargs.get('bars', False))
-            
+
         # overrides
         kwargs['ax_limit_padding_ymax'] = kwargs.get('ax_limit_padding', 0.05)
         kwargs['ax_limit_padding'] = kwargs.get('ax_limit_padding', 0)
-        
+
         super().__init__(name, req, opt, **kwargs)
-        
+
         # Toggle bars vs lines
         if not bars:
             self.switch_type(kwargs)
-            
+
         # overrides post
         self.auto_scale = False
         self.ax_limit_padding_ymax = kwargs['ax_limit_padding_ymax']
-        self.stacked = utl.kwget(kwargs, self.fcpp, 
+        self.stacked = utl.kwget(kwargs, self.fcpp,
                                  ['hist_stacked', 'stacked'],
                                  kwargs.get('stacked', False))
-        
+
     def switch_type(self, kwargs):
         """
         If bars are not enabled, switch everything to line plot
@@ -59,7 +59,7 @@ class Histogram(data.Data):
         self.y = ['Counts']
         self.get_data_ranges = self._get_data_ranges
         self.subset_wrap = self._subset_wrap
-        
+
         # Update the bins to integer values if not specified and 2D image data
         bins = utl.kwget(kwargs, self.fcpp, 'bins', kwargs.get('bars', None))
         if not bins and kwargs['2D']:
@@ -70,20 +70,20 @@ class Histogram(data.Data):
         # Convert the image data to a histogram
         self.get_legend_groupings(self.df_all)
         self.df_all = self.df_hist(self.df_all, [vmin, vmax])
-        
+
     def df_hist(self, df_in, brange=None):
         """
         Iterate over groups and build a dataframe of counts
         """
-        
+
         hist = pd.DataFrame()
 
         for iline, df, x, y, z, leg_name, twin, ngroups in self.get_plot_data(df_in):
             if brange:
-                counts, vals = np.histogram(df[self.x[0]].dropna(), bins=self.bins, 
+                counts, vals = np.histogram(df[self.x[0]].dropna(), bins=self.bins,
                                             normed=self.norm, range=brange)
             else:
-                counts, vals = np.histogram(df[self.x[0]].dropna(), bins=self.bins, 
+                counts, vals = np.histogram(df[self.x[0]].dropna(), bins=self.bins,
                                             normed=self.norm)
             temp = pd.DataFrame({self.x[0]: vals[:-1], self.y[0]: counts})
             if leg_name is not None:
@@ -91,14 +91,14 @@ class Histogram(data.Data):
             hist = pd.concat([hist, temp])
 
         return hist
-    
+
     def get_data_ranges(self):
 
         # Handle all but y-axis which needs histogram binning
         self.axs = [f for f in self.axs if f != 'y']
         self._get_data_ranges()
         self.axs += ['y']
-        
+
         # set ranges by subset
         self.y = ['Counts']
         temp_ranges = self.range_dict()
@@ -108,11 +108,11 @@ class Histogram(data.Data):
         min_y = 0
         min_y_row = np.zeros(self.nrow)
         min_y_col = np.zeros(self.ncol)
-        
+
         # iterate through all rc_subsets in order to compute histogram counts
         for ir, ic, plot_num in self.get_subplot_index():
             df_rc = self.subset(ir, ic)
-            
+
             if len(df_rc) == 0:
                 temp_ranges[ir, ic]['ymin'] = None
                 temp_ranges[ir, ic]['ymin'] = None
@@ -129,13 +129,13 @@ class Histogram(data.Data):
             max_y_row[ir] = min(max_y_col[ir], vals[1])
             max_y_col[ic] = min(max_y_col[ir], vals[1])
 
-        # compute actual ranges with option y-axis sharing    
+        # compute actual ranges with option y-axis sharing
         for ir, ic, plot_num in self.get_subplot_index():
             # share y
             if self.share_y:
                 self.add_range(ir, ic, 'y', 'min', min_y)
                 self.add_range(ir, ic, 'y', 'max', max_y)
-            
+
             # share row
             elif self.share_row:
                 self.add_range(ir, ic, 'y', 'min', min_y_row[ir])
@@ -145,14 +145,14 @@ class Histogram(data.Data):
             elif self.share_col:
                 self.add_range(ir, ic, 'y', 'min', min_y_col[ic])
                 self.add_range(ir, ic, 'y', 'max', max_y_col[ic])
-            
+
             # not share y
             else:
                 self.add_range(ir, ic, 'y', 'min', temp_ranges[ir][ic]['ymin'])
                 self.add_range(ir, ic, 'y', 'max', temp_ranges[ir][ic]['ymax'])
 
         self.y = None
-        
+
     def subset_modify(self, df, ir, ic):
 
         return self._subset_modify(df, ir, ic)
@@ -193,4 +193,3 @@ class Histogram(data.Data):
                         utl.validate_list(self.wrap_vals[ir*self.ncol + ic])))
             return self.df_fig.loc[(self.df_fig[list(wrap)] == pd.Series(wrap)).all(axis=1)].copy()
 
-    

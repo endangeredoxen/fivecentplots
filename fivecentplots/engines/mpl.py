@@ -63,10 +63,10 @@ def cbar_ticks(cbar, zmin, zmax):
     new_ticks = np.linspace(zmin, zmax, num_ticks)
     decimals = [utl.get_decimals(f) for f in new_ticks]
     decimals = [f - 1 if f > 0 else f for f in decimals]
-    for it, nt in enumerate(new_ticks[0:-1]): 
+    for it, nt in enumerate(new_ticks[0:-1]):
         new_ticks[it] = '{num:.{width}f}'.format(num=nt, width=decimals[it])
     return new_ticks
-    
+
 
 def iterticks(ax):
     # this is deprecated in later versions of mpl but used in fcp so just
@@ -173,7 +173,7 @@ class Layout(BaseLayout):
         else:
             mplp.style.use('default')
         mplp.close('all')
-       
+
         # Inherit the base layout properties
         BaseLayout.__init__(self, data, **kwargs)
 
@@ -1272,7 +1272,7 @@ class Layout(BaseLayout):
             mpl.pyplot.savefig(filename + '.png')
 
         ## turn on for debugging
-        # mpl.pyplot.savefig(r'test.png')  
+        # mpl.pyplot.savefig(r'test.png')
         # utl.show_file(r'test.png')
         # db()
 
@@ -1375,7 +1375,7 @@ class Layout(BaseLayout):
                             getattr(self, 'tick_labels_major_%s' % xy).size[0] / 2
                 if x_tick_xs > 0:
                     self.x_tick_xs = x_tick_xs
-        
+
         for ir in range(0, self.nrow):
             for ic in range(0, self.ncol):
                 if wrap_labels[ir, ic] is not None:
@@ -1498,7 +1498,7 @@ class Layout(BaseLayout):
                                self.tick_labels_minor_x2.size[1])) * self.axes.twin_y
         self.tick_y = max(self.tick_labels_major_y.size[0],
                           self.tick_labels_minor_y.size[0]) + self.ws_ticks_ax
-        self.labtick_y = self.label_y.size[0] + self.ws_label_tick + self.tick_y                         
+        self.labtick_y = self.label_y.size[0] + self.ws_label_tick + self.tick_y
         self.labtick_y2 = (self.label_y2.size[0] + self.ws_label_tick + 2*self.ws_ticks_ax + \
                            max(self.tick_labels_major_y2.size[0],
                                self.tick_labels_minor_y2.size[0])) * self.axes.twin_x
@@ -1551,7 +1551,7 @@ class Layout(BaseLayout):
             self.ws_col += self.labtick_y - self.tick_y + self.ws_ax_label_xs
             if self.cbar.on:
                 self.ws_col += self.ws_label_tick
-        
+
         if self.name == 'heatmap' and \
                 self.heatmap.cell_size is not None and \
                 data.num_x is not None:
@@ -1566,7 +1566,7 @@ class Layout(BaseLayout):
                 self.axes.size[1] = self.axes.size[0] / data.wh_ratio
             else:
                 self.axes.size[0] = self.axes.size[1] * data.wh_ratio
-            
+
         # Left side whitespace
         self.left = self.ws_fig_label + self.labtick_y
         title_xs_left = self.title.size[0] / 2 - (self.left + \
@@ -1583,14 +1583,14 @@ class Layout(BaseLayout):
             rc_label + \
             self.labtick_z + \
             (self.label_z.size[0] * (self.ncol if self.separate_labels else 1))
-        
+
         # Main figure title excess size
         title_xs_right = self.title.size[0] / 2 - (self.right + \
             (self.axes.size[0] * self.ncol + self.ws_col * (self.ncol - 1)) / 2)
         if title_xs_right < 0:
            title_xs_right = 0
         self.right += title_xs_right
-        
+
         # Legend whitespace
         legx, legy = 0, 0
         if self.legend.location == 0 and self.legend._on:
@@ -1610,7 +1610,7 @@ class Layout(BaseLayout):
             btitle_xs_right = (self.ws_ax_box_title + self.box_title) - \
                               self.right - legx + ws_ax_fig
             if btitle_xs_right > 0:
-                self.right += btitle_xs_right        
+                self.right += btitle_xs_right
 
         # Set figure width
         self.fig.size[0] = self.left + self.axes.size[0] * self.ncol + \
@@ -1618,7 +1618,7 @@ class Layout(BaseLayout):
             (self.fig_legend_border if self.legend._on else 0) + \
             self.pie.label_sizes[0][0] + self.pie.label_sizes[1][0] + \
             (self.cbar.size[0] + self.ws_ax_cbar) * self.ncol
-        
+
         # Figure height
         self.fig.size[1] = int( \
             self.ws_title + \
@@ -1631,7 +1631,7 @@ class Layout(BaseLayout):
             self.ws_row * (self.nrow - 1) + \
             self.box_labels) + \
             legy
-        
+
         # Debug output
         if debug:
             print('self.fig.size[0] = %s' % self.fig.size[0])
@@ -1703,7 +1703,7 @@ class Layout(BaseLayout):
                                       self.labtick_x2)/self.axes.size[1]
 
         self.label_wrap.position[3] = 1
-        
+
         # there is some incredible weirdness with cbars on imshow.  Here is a stupid hack
         hack = 0
         if self.name in ['imshow']:
@@ -1715,13 +1715,13 @@ class Layout(BaseLayout):
                 hack += 2
             # elif not self.cbar.on:  # may not work on another version of mpl!
             #     hack += 1
-        
+
         self.title_wrap.size[0] = self.ncol * self.title_wrap.size[0] + \
                                   (self.ncol - 1) * self.ws_col + hack + \
                                   ((self.cbar.size[0] + self.ws_ax_cbar)*self.ncol if self.cbar.on else 0)
-        
+
         self.title_wrap.position[3] = 1 + (self.label_wrap.size[1] + 1)/ self.axes.size[1]
-        
+
     def get_subplots_adjust(self):
         """
         Calculate the subplots_adjust parameters for the axes
@@ -2028,33 +2028,33 @@ class Layout(BaseLayout):
         xx = np.array(df[x])
         yy = np.array(df[y])
         zz = np.array(df[z])
-        
+
         # Make the grid
         xi = np.linspace(min(xx), max(xx))
         yi = np.linspace(min(yy), max(yy))
         if LooseVersion(mpl.__version__) < LooseVersion('2.2'):
             zi = mlab.griddata(xx, yy, zz, xi, yi, interp=self.contour.interp)
         else:
-            zi = scipy.interpolate.griddata((xx, yy), zz, 
-                                            (xi[None,:], yi[:,None]), 
+            zi = scipy.interpolate.griddata((xx, yy), zz,
+                                            (xi[None,:], yi[:,None]),
                                             method=self.contour.interp)
-            
+
         # Deal with out of range values
-        zi[zi >= ranges['zmax']] = ranges['zmax']  
+        zi[zi >= ranges['zmax']] = ranges['zmax']
         zi[zi <= ranges['zmin']] = ranges['zmin']
-        
+
         # Set the contours
-        levels = np.linspace(ranges['zmin']*0.999, ranges['zmax']*1.001, 
+        levels = np.linspace(ranges['zmin']*0.999, ranges['zmax']*1.001,
                              self.contour.levels)
-        
+
         # Plot
         if self.contour.filled:
             cc = ax.contourf(xi, yi, zi, levels, cmap=self.cmap, zorder=2)
         else:
-            cc = ax.contour(xi, yi, zi, levels, 
+            cc = ax.contour(xi, yi, zi, levels,
                             linewidths=self.contour.width.values,
                             cmap=self.cmap, zorder=2)
-        
+
         # Add a colorbar
         if self.cbar.on:
             self.cbar.obj = self.add_cbar(ax, cc)
@@ -2172,7 +2172,7 @@ class Layout(BaseLayout):
         #        (self.cbar.on and not self.axes.share_z):
         if self.cbar.on:
             self.cbar.obj = self.add_cbar(ax, im)
-        
+
         if self.heatmap.text:
             # Loop over data dimensions and create text annotations.
             for iy, yy in enumerate(df.index):
@@ -2254,7 +2254,7 @@ class Layout(BaseLayout):
         """
 
         # Make the heatmap (maybe pull these kwargs out to an imshow obj?)
-        im = ax.imshow(df.dropna(1, 'all'), self.cmap,
+        im = ax.imshow(df.dropna(axis=1, how='all'), self.cmap,
                        vmin=ranges['zmin'], vmax=ranges['zmax'],
                        interpolation=self.imshow.interp)
         im.set_clim(ranges['zmin'], ranges['zmax'])
@@ -2262,7 +2262,7 @@ class Layout(BaseLayout):
         # Add a cmap
         if self.cbar.on:# and (self.separate_ticks or ic == self.ncol - 1):
             self.cbar.obj = self.add_cbar(ax, im)
-        
+
         return im
 
     def plot_line(self, ir, ic, x0, y0, x1=None, y1=None, **kwargs):
@@ -2489,7 +2489,7 @@ class Layout(BaseLayout):
 
         for k, v in self.rc_orig.items():
             mpl.rcParams[k] = self.rc_orig[k]
-    
+
     def save(self, filename, idx=0):
         """
         Save a plot window
@@ -3071,7 +3071,7 @@ class Layout(BaseLayout):
                                         )
 
             tp = mpl_get_ticks(axes[ia], True, True)
-            
+
             # Set custom tick increment
             redo = True
             xinc = getattr(self, 'ticks_major_x%s' % lab).increment
@@ -3243,7 +3243,7 @@ class Layout(BaseLayout):
                 yfy = get_tick_position(axes[ia], tp, 'y', 'last', ia)
                 yc = [-tlmajy.size[0]/2-self.ws_ticks_ax, ycy]
                 yf = [-tlmajy.size[0]/2-self.ws_ticks_ax, yfy]
-                
+
                 xlim = axes[ia].get_xlim()
                 if xlim[0] > xlim[1]:
                     yyc = yc
@@ -3294,7 +3294,7 @@ class Layout(BaseLayout):
                                             [yw+2*buf, yh+2*buf, yc])
                 x0yf = utl.rectangle_overlap([xw+2*buf, xh+2*buf, xc],
                                             [yw+2*buf, yh+2*buf, yf])
-                
+
                 # x and y at the origin
                 if x0y0 and lim[0] < lim[1]:  # and tp['y']['first']==0:  not sure about this
                     tp['y']['label_text'][tp['y']['first']] = ''
@@ -3302,7 +3302,7 @@ class Layout(BaseLayout):
                 #     tp['y']['label_text'][tp['y']['last']] = ''
                 if x0yf and (self.axes.twin_y or lim[0] > lim[1]):
                     tp['y']['label_text'][tp['y']['last']] = ''
-                
+
                 # overlapping last y and first x between row, col, and wraps
                 if self.nrow > 1 and ir < self.nrow-1:
                     x2y = utl.rectangle_overlap([xw, xh, xc],
@@ -3634,7 +3634,7 @@ class Layout(BaseLayout):
             dec = '%%.%se' % max_dec
             return dec
 
-        
+
         if idx == 0:
             lab = ''
         else:
