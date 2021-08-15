@@ -18,7 +18,6 @@ class Histogram(data.Data):
         name = 'hist'
         req = []
         opt = ['x']
-
         self.fcpp, dummy, dummy2 = utl.reload_defaults(kwargs.get('theme', None))
         bars = utl.kwget(kwargs, self.fcpp, 'bars', kwargs.get('bars', True))
         kwargs['2D'] = False
@@ -66,6 +65,9 @@ class Histogram(data.Data):
             vmin = int(np.floor(self.df_all.Value.min()))
             vmax = int(np.ceil(self.df_all.Value.max()))
             self.bins = vmax - vmin
+        elif not kwargs.get('vmin') and not kwargs.get('vmax'):
+            vmin = int(np.floor(self.df_all.Value.min()))
+            vmax = int(np.ceil(self.df_all.Value.max()))
 
         # Convert the image data to a histogram
         self.get_legend_groupings(self.df_all)
@@ -78,17 +80,31 @@ class Histogram(data.Data):
 
         hist = pd.DataFrame()
 
-        for iline, df, x, y, z, leg_name, twin, ngroups in self.get_plot_data(df_in):
+        groups = self.groupers
+
+        if len(groups) > 0:
+            for nn, df in df_in.groupby(self.groupers):
+                if brange:
+                    counts, vals = np.histogram(df[self.x[0]].dropna(), bins=self.bins,
+                                                normed=self.norm, range=brange)
+                else:
+                    counts, vals = np.histogram(df[self.x[0]].dropna(), bins=self.bins,
+                                                normed=self.norm)
+                temp = pd.DataFrame({self.x[0]: vals[:-1], self.y[0]: counts})
+                for ig, group in enumerate(self.groupers):
+                    if type(nn) is tuple:
+                        temp[group] = nn[ig]
+                    else:
+                        temp[group] = nn
+                hist = pd.concat([hist, temp])
+        else:
             if brange:
-                counts, vals = np.histogram(df[self.x[0]].dropna(), bins=self.bins,
+                counts, vals = np.histogram(df_in[self.x[0]].dropna(), bins=self.bins,
                                             normed=self.norm, range=brange)
             else:
-                counts, vals = np.histogram(df[self.x[0]].dropna(), bins=self.bins,
+                counts, vals = np.histogram(df_in[self.x[0]].dropna(), bins=self.bins,
                                             normed=self.norm)
-            temp = pd.DataFrame({self.x[0]: vals[:-1], self.y[0]: counts})
-            if leg_name is not None:
-                temp[self.legend] = leg_name
-            hist = pd.concat([hist, temp])
+            hist = pd.DataFrame({self.x[0]: vals[:-1], self.y[0]: counts})
 
         return hist
 
