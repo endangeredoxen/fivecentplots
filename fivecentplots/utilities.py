@@ -27,6 +27,10 @@ if os.path.exists(default_path) and default_path not in sys.path:
     from defaults import *
 
 
+# Convenience kwargs
+HIST = {'ax_scale': 'logy', 'markers': False, 'line_width': 2}
+
+
 class RepeatedList:
     def __init__(self, values, name, override={}):
         """
@@ -293,13 +297,13 @@ def df_filter(df, filt_orig, drop_cols=False, keep_filtered=False):
             df_orig = df.copy()
 
         df = df.query(filt)
-        
+
         if keep_filtered:
             dropped = df_orig.copy().loc[~df_orig.index.isin(df.index)]
             cols_filt = [f for f in cols_new if f in filt]
             dropped.loc[:, cols_filt] = np.nan
             df = pd.concat([df, dropped])
-    
+
         df.columns = cols_orig
 
         if drop_cols:
@@ -598,7 +602,7 @@ def img_compare(img1, img2, show=False):
 
     else:
         difference = cv2.subtract(img1, img2)
-        is_diff = np.any(difference)
+        is_diff = np.any(np.where(difference>1))  # 1 gives buffere for slight aliasing differences
         if show and is_diff:
             cv2.imwrite('difference.png', 10 * difference)
             show_file('difference.png')
@@ -720,6 +724,7 @@ def rgb2bayer(img, cfa='rggb', bit_depth=np.uint8):
     # raw[::2, 1::2] = img[::2, 1::2, 1]  # green_red
 
     return pd.DataFrame(raw)
+
 
 def rectangle_overlap(r1, r2):
     """
