@@ -381,6 +381,29 @@ def df_int_cols(df, non_int=False):
         return [f for f in df.columns if type(f) in int_types]
 
 
+def df_int_cols_convert(df, force=False):
+    """
+    Convert integer column names to int type
+        - in case column names are ints but cast as string (after read_csv, etc)
+
+    Args:
+        df (pd.DataFrame): input DataFrame
+        force (bool): force the conversion even if int cols are initially found
+
+    Returns:
+        DataFrame with updated column names
+
+    """
+
+    int_cols = df_int_cols(df)
+
+    if len(int_cols) == 0 or force:
+        cols = [int(f) if f.isdigit() else f for f in df.columns]
+        df.columns = cols
+
+    return df
+
+
 def df_summary(df, columns=[], exclude=[], multiple=False):
     """
     Return a summary table of unique conditions in a DataFrame
