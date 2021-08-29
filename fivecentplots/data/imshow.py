@@ -43,6 +43,9 @@ class ImShow(data.Data):
         else:
             self.pivot = True
 
+        self.df_all = utl.df_int_cols_convert(self.df_all)
+
+
     def check_xyz(self, xyz):
         """
         Validate the name and column data provided for x, y, and/or z

@@ -3627,7 +3627,7 @@ class Layout(BaseLayout):
                         power = np.nan
                     else:
                         power = np.ceil(-np.log10(tick))
-                    if np.isnan(power) or tick < ylim[0] or tick > ylim[1]:
+                    if np.isnan(power) or tick < limit[0] or tick > limit[1]:
                         continue
                     dec = utl.get_decimals(tick*10**power)
                     max_dec = max(max_dec, dec)

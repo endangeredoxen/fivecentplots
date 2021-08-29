@@ -223,7 +223,7 @@ def test_image(master=False, remove=True, show=False):
 
     # Make the plot
     img = fcp.utilities.rgb2bayer(imgr, 'bbbb')
-    fcp.hist(img, markers=False, ax_scale='logy', ax_size=[600, 400], line_width=2, 
+    fcp.hist(img, markers=False, ax_scale='logy', ax_size=[600, 400], line_width=2,
              show=SHOW, filename=name + '.png', inline=False)
 
     # Compare with master
@@ -248,7 +248,7 @@ def test_image_legend(master=False, remove=True, show=False):
     # Make the plot
     img = fcp.utilities.rgb2bayer(imgr, 'rggb')
     fcp.hist(img, show=SHOW, filename=name + '.png', inline=False,
-             markers=False, ax_scale='logy', ax_size=[600, 400], 
+             markers=False, ax_scale='logy', ax_size=[600, 400],
              legend='Plane', cfa='rggb', line_width=2, colors=fcp.BAYER)
 
     # Compare with master
@@ -264,7 +264,6 @@ def test_image_legend(master=False, remove=True, show=False):
             os.remove(name + '.png')
 
         assert not compare
-
 
 
 
