@@ -30,18 +30,13 @@ from matplotlib.patches import FancyBboxPatch
 from matplotlib.collections import PatchCollection
 import matplotlib.mlab as mlab
 import warnings
+from natsort import natsorted
 warnings.filterwarnings('ignore', category=UserWarning)
 def custom_formatwarning(msg, *args, **kwargs):
     # ignore everything except the message
     return 'Warning: ' + str(msg) + '\n'
-
 warnings.formatwarning = custom_formatwarning
 warnings.filterwarnings("ignore", "invalid value encountered in double_scalars")  # weird error in boxplot with no groups
-
-try:
-    from natsort import natsorted
-except:
-    natsorted = sorted
 
 db = pdb.set_trace
 
@@ -715,9 +710,11 @@ class Layout(BaseLayout):
             # hist
             elif self.name == 'hist':
                 if LooseVersion(mpl.__version__) < LooseVersion('2.2'):
-                    pp = ax.hist(df[data.x[0]], bins=self.hist.bins, normed=self.hist.normalize)
+                    pp = ax.hist(df[data.x[0]], bins=self.hist.bins,
+                                     normed=self.hist.normalize)
                 else:
-                    pp = ax.hist(df[data.x[0]], bins=self.hist.bins, density=self.hist.normalize)
+                    pp = ax.hist(df[data.x[0]], bins=self.hist.bins,
+                                     density=self.hist.normalize)
             # pie
             elif self.name == 'pie':
                 x = df[data.x[0]].values
@@ -2437,13 +2434,18 @@ class Layout(BaseLayout):
             ax = self.axes.obj[ir, ic]
 
         # Make the points
+        if x is None:
+            dfx = df[utl.df_int_cols(df)].values
+        else:
+            dfx = df[x]
+
         points = None
         if self.markers.on and not marker_disable:
             if self.markers.jitter:
                 df[x] = np.random.normal(df[x], 0.03, size=len(df[y]))
             marker = format_marker(self.markers.type.get(iline))
             if marker != 'None':
-                points = ax.plot(df[x], df[y],
+                points = ax.plot(dfx, df[y],
                                 marker=marker,
                                 markerfacecolor=self.markers.fill_color.get(iline, leg_name) \
                                                 if self.markers.filled else 'none',
@@ -2453,7 +2455,7 @@ class Layout(BaseLayout):
                                 markersize=self.markers.size.get(iline),
                                 zorder=40)
             else:
-                points = ax.plot(df[x], df[y],
+                points = ax.plot(dfx, df[y],
                                 marker=marker,
                                 color=line_type.color.get(iline, leg_name),
                                 linestyle=line_type.style.get(iline),
@@ -2465,12 +2467,12 @@ class Layout(BaseLayout):
         if line_type.on:
             # Mask any nans
             try:
-                mask = np.isfinite(df[x])
+                mask = np.isfinite(dfx)
             except:
-                mask = df[x] == df[x]
+                mask = dfx == dfx
 
             # Plot the line
-            lines = ax.plot(df[x][mask], df[y][mask],
+            lines = ax.plot(dfx[mask], df[y][mask],
                             color=line_type.color.get(iline, leg_name),
                             linestyle=line_type.style.get(iline),
                             linewidth=line_type.width.get(iline),
@@ -3308,14 +3310,15 @@ class Layout(BaseLayout):
                     x2y = utl.rectangle_overlap([xw, xh, xc],
                                                 [yw, yh, [yc[0], yc[1]-self.ws_row]])
 
-            if self.tick_cleanup and tlmajx.on:# and not skipx:
-                axes[ia].xaxis.set_major_formatter(NullFormatter())
-                nticks = len(axes[ia].get_xticks())
-                axes[ia].set_xticklabels(tp['x']['label_text'][0:nticks])
+            ## not sure what the purpose of this is
+            # if self.tick_cleanup and tlmajx.on:# and not skipx:
+            #     axes[ia].xaxis.set_major_formatter(NullFormatter())
+            #     nticks = len(axes[ia].get_xticks())
+            #     axes[ia].set_xticklabels(tp['x']['label_text'][0:nticks])
 
-            if self.tick_cleanup and tlmajy.on and not skipy:
-                nticks = len(axes[ia].get_yticks())
-                axes[ia].set_yticklabels(tp['y']['label_text'][0:nticks])
+            # if self.tick_cleanup and tlmajy.on and not skipy:
+            #     nticks = len(axes[ia].get_yticks())
+            #     axes[ia].set_yticklabels(tp['y']['label_text'][0:nticks])
 
             # Turn on minor tick labels
             ax = ['x', 'y']
