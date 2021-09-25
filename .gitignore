@@ -108,9 +108,7 @@ ENV/
 
 # mypy
 .mypy_cache/
-fivecentplots/tests/test.png
 .idea/workspace.xml
-fivecentplots/tests/test.png
 fivecentplots/__pycache__/__init__.cpython-35.pyc
 fivecentplots/__pycache__/fcp.cpython-35.pyc
 
@@ -118,5 +116,13 @@ fivecentplots/__pycache__/fcp.cpython-35.pyc
 .pytest_cache
 /meta.yaml
 
+# image files
+fivecentplots/*.png
+!fivecentplots/*.png/
+fivecentplots/tests/*.png
+!fivecentplots/tests/*.png/
+fivecentplots/tests/test.png
+
 #specific files
 difference.png
+
