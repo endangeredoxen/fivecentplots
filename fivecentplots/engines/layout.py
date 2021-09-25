@@ -16,17 +16,13 @@ from distutils.version import LooseVersion
 from random import randint
 from collections import defaultdict
 import warnings
+from natsort import natsorted
 def custom_formatwarning(msg, *args, **kwargs):
     # ignore everything except the message
     return 'Warning: ' + str(msg) + '\n'
 
 warnings.formatwarning = custom_formatwarning
 warnings.filterwarnings("ignore", "invalid value encountered in double_scalars")  # weird error in boxplot with no groups
-
-try:
-    from natsort import natsorted
-except:
-    natsorted = sorted
 
 db = pdb.set_trace
 
@@ -344,7 +340,7 @@ class BaseLayout:
                     not utl.kwget(kwargs, self.fcpp, 'sci_%s' % ax, False) and \
                     'sci_%s' % ax not in kwargs.keys():
                 kwargs['sci_%s' % ax] = 'best'
-            
+
             setattr(self, 'tick_labels_major_%s' % ax,
                     Element('tick_labels_major_%s' % ax, self.fcpp, kwargs,
                         on=utl.kwget(kwargs, self.fcpp,
@@ -703,16 +699,16 @@ class BaseLayout:
             self.tick_labels_major_x.rotation = \
                 utl.kwget(kwargs_orig, self.fcpp, 'tick_labels_major_x', 0)
             self.tick_labels_major_x.font_size = \
-                utl.kwget(kwargs_orig, self.fcpp, 
-                          ['tick_labels_major_font_size', 
+                utl.kwget(kwargs_orig, self.fcpp,
+                          ['tick_labels_major_font_size',
                           'tick_labels_major_x_font_size'], 10)
             self.tick_labels_major_y.font_size = \
-                utl.kwget(kwargs_orig, self.fcpp, 
-                          ['tick_labels_major_font_size', 
+                utl.kwget(kwargs_orig, self.fcpp,
+                          ['tick_labels_major_font_size',
                           'tick_labels_major_y_font_size'], 10)
             self.tick_labels_major_z.font_size = \
-                utl.kwget(kwargs_orig, self.fcpp, 
-                          ['tick_labels_major_font_size', 
+                utl.kwget(kwargs_orig, self.fcpp,
+                          ['tick_labels_major_font_size',
                           'tick_labels_major_z_font_size'], 10)
 
         # Heatmaps
@@ -734,7 +730,7 @@ class BaseLayout:
                                text=utl.kwget(kwargs, self.fcpp,
                                               'data_labels', False),
                                )
-        if self.heatmap.on and data.x != ['Column']:  
+        if self.heatmap.on and data.x != ['Column']:
             self.tick_labels_major_x.rotation = \
                 utl.kwget(kwargs, self.fcpp, 'tick_labels_major_x', 90)
         if self.heatmap.on or self.imshow.on:
@@ -1852,7 +1848,7 @@ class BaseLayout:
         """
 
         pass
-    
+
     def save(self, filename):
         pass
 

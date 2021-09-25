@@ -4,10 +4,7 @@ import pandas as pd
 import numpy as np
 from .. import utilities
 import scipy.stats as ss
-try:
-    from natsort import natsorted
-except:
-    natsorted = sorted
+from natsort import natsorted
 utl = utilities
 db = pdb.set_trace
 
@@ -28,7 +25,6 @@ class Histogram(data.Data):
             cfa = utl.kwget(kwargs, self.fcpp, 'cfa', kwargs.get('cfa', None))
             if cfa is not None:
                 kwargs['df'] = utl.split_color_planes(kwargs['df'], cfa)
-            kwargs = data.reshape_2D(kwargs)
             kwargs['2D'] = True
             bars = utl.kwget(kwargs, self.fcpp, 'bars', kwargs.get('bars', False))
 
@@ -62,12 +58,13 @@ class Histogram(data.Data):
         # Update the bins to integer values if not specified and 2D image data
         bins = utl.kwget(kwargs, self.fcpp, 'bins', kwargs.get('bars', None))
         if not bins and kwargs['2D']:
-            vmin = int(np.floor(self.df_all.Value.min()))
-            vmax = int(np.ceil(self.df_all.Value.max()))
+            cols = utl.df_int_cols(self.df_all)
+            vmin = int(np.nanmin(self.df_all[cols].values))
+            vmax = int(np.nanmax(self.df_all[cols].values))
             self.bins = vmax - vmin
         elif not kwargs.get('vmin') and not kwargs.get('vmax'):
-            vmin = int(np.floor(self.df_all.Value.min()))
-            vmax = int(np.ceil(self.df_all.Value.max()))
+            vmin = int(np.nanmin(self.df_all.Value))
+            vmax = int(np.nanmax(self.df_all.Value))
 
         # Convert the image data to a histogram
         self.get_legend_groupings(self.df_all)
@@ -84,12 +81,19 @@ class Histogram(data.Data):
 
         if len(groups) > 0:
             for nn, df in df_in.groupby(self.groupers):
+                if self.kwargs['2D']:
+                    dfx = df[utl.df_int_cols(df)].dropna(axis=1).dropna().values
+                    self.x = ['Value']
+                else:
+                    dfx = df[self.x[0]].dropna()
+
                 if brange:
-                    counts, vals = np.histogram(df[self.x[0]].dropna(), bins=self.bins,
+                    counts, vals = np.histogram(dfx, bins=self.bins,
                                                 normed=self.norm, range=brange)
                 else:
-                    counts, vals = np.histogram(df[self.x[0]].dropna(), bins=self.bins,
+                    counts, vals = np.histogram(dfx, bins=self.bins,
                                                 normed=self.norm)
+
                 temp = pd.DataFrame({self.x[0]: vals[:-1], self.y[0]: counts})
                 for ig, group in enumerate(self.groupers):
                     if type(nn) is tuple:
@@ -98,11 +102,16 @@ class Histogram(data.Data):
                         temp[group] = nn
                 hist = pd.concat([hist, temp])
         else:
+            if self.kwargs['2D']:
+                dfx = df_in[utl.df_int_cols(df_in)].dropna(axis=1).dropna().values
+                self.x = ['Value']
+            else:
+                dfx = df_in[self.x[0]].dropna()
             if brange:
-                counts, vals = np.histogram(df_in[self.x[0]].dropna(), bins=self.bins,
+                counts, vals = np.histogram(dfx, bins=self.bins,
                                             normed=self.norm, range=brange)
             else:
-                counts, vals = np.histogram(df_in[self.x[0]].dropna(), bins=self.bins,
+                counts, vals = np.histogram(dfx, bins=self.bins,
                                             normed=self.norm)
             hist = pd.DataFrame({self.x[0]: vals[:-1], self.y[0]: counts})
 
