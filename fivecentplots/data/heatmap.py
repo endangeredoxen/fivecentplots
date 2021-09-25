@@ -4,10 +4,7 @@ import pandas as pd
 import numpy as np
 from .. import utilities
 import scipy.stats as ss
-try:
-    from natsort import natsorted
-except:
-    natsorted = sorted
+from natsort import natsorted
 utl = utilities
 db = pdb.set_trace
 
@@ -19,21 +16,21 @@ class Heatmap(data.Data):
         req = []
         opt = ['x', 'y', 'z']
         kwargs['auto_scale'] = False
-        
+
         super().__init__(name, req, opt, **kwargs)
 
         if 'x' not in kwargs.keys() and \
                 'y' not in kwargs.keys() and \
                 'z' not in kwargs.keys():
-            
+
             self.auto_cols = True
             self.x = ['Column']
             self.y = ['Row']
             self.z = ['Value']
-                   
+
         else:
             self.pivot = True
-        
+
         self.ax_limit_padding = kwargs.get('ax_limit_padding', None)
 
     def check_xyz(self, xyz):

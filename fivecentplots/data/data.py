@@ -3,11 +3,7 @@ import numpy as np
 from .. import utilities
 utl = utilities
 import scipy.stats as ss
-
-try:
-    from natsort import natsorted
-except:
-    natsorted = sorted
+from natsort import natsorted
 
 import pdb
 db = pdb.set_trace
@@ -487,7 +483,7 @@ class Data:
                                     'in the DataFrame!' % val)
 
         # Check for no groups
-        if len(natsorted(list(self.df_all.groupby(values).groups.keys()))) == 0:
+        if len(list(self.df_all.groupby(values).groups.keys())) == 0:
             raise GroupingError('The number of unique groups in the data for '
                                 "the %s=['%s'] is 0" %
                                 (group_type, ', '.join(values)))

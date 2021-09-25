@@ -78,6 +78,7 @@ setup(
                       'scipy',
                       'xlrd',
                       'openpyxl',
+                      'natsort',
                       ],
 
     # List additional groups of dependencies here (e.g. development

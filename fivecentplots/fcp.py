@@ -42,11 +42,7 @@ try:
     import win32clipboard
 except:
     pass
-try:
-    # use natsort if available else use built-in python sorted
-    from natsort import natsorted
-except:
-    natsorted = sorted
+from natsort import natsorted
 db = pdb.set_trace
 
 osjoin = os.path.join

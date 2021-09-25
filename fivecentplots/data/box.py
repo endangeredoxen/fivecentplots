@@ -4,10 +4,7 @@ import pandas as pd
 import numpy as np
 from .. import utilities
 import scipy.stats as ss
-try:
-    from natsort import natsorted
-except:
-    natsorted = sorted
+from natsort import natsorted
 utl = utilities
 db = pdb.set_trace
 
@@ -72,9 +69,9 @@ class Box(data.Data):
         return True
 
     def get_data_ranges(self):
-        
+
         self._get_data_ranges()
-        
+
     def get_rc_subset(self):
         """
         Subset the data by the row/col/wrap values

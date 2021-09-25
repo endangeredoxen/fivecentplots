@@ -4,10 +4,7 @@ import pandas as pd
 import numpy as np
 from .. import utilities
 import scipy.stats as ss
-try:
-    from natsort import natsorted
-except:
-    natsorted = sorted
+from natsort import natsorted
 utl = utilities
 db = pdb.set_trace
 
@@ -31,14 +28,14 @@ class Pie(data.Data):
             self.ranges[ir, ic]['xmax'] = 1
             self.ranges[ir, ic]['ymin'] = -1
             self.ranges[ir, ic]['ymax'] = 1
-            
+
             self.ranges[ir, ic]['x2min'] = None
             self.ranges[ir, ic]['x2max'] = None
             self.ranges[ir, ic]['y2min'] = None
             self.ranges[ir, ic]['y2max'] = None
             self.ranges[ir, ic]['zmin'] = None
             self.ranges[ir, ic]['zmax'] = None
-            
+
     def get_legend_groupings(self, df):
         """
         Determine the legend groupings

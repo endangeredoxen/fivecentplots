@@ -27,10 +27,7 @@ def custom_formatwarning(msg, *args, **kwargs):
 warnings.formatwarning = custom_formatwarning
 warnings.filterwarnings("ignore", "invalid value encountered in double_scalars")  # weird error in boxplot with no groups
 
-try:
-    from natsort import natsorted
-except:
-    natsorted = sorted
+from natsort import natsorted
 
 db = pdb.set_trace
 
