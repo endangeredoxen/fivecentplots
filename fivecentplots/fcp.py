@@ -856,25 +856,27 @@ def plotter(dobj, **kwargs):
         engine = getattr(engines, engine)
 
     # Timer
-    kwargs['timer'] = Timer(print=kwargs.get('timeit', False), start=True, units='ms')
+    kwargs['timer'] = Timer(print=kwargs.get('timer', False), start=True,
+                            units='ms')
 
     # Build the data object and update kwargs
     dd = dobj(**kwargs)
     for k, v in kwargs.items():
         if k in dd.__dict__.keys():
             kwargs[k] = getattr(dd, k)
-    kwargs['timer'].read('Data obj')
+    kwargs['timer'].get('Data obj')
 
     # Iterate over discrete figures
     for ifig, fig_item, fig_cols, dd in dd.get_df_figure():
+        kwargs['timer'].get('dd.get_df_figure')
         # Create a layout object
         layout = engine.Layout(dd, **kwargs)
         kwargs = layout.kwargs
-        kwargs['timer'].read('layout class')
+        kwargs['timer'].get('layout class')
 
         # Make the figure
         dd = layout.make_figure(dd, **kwargs)
-        kwargs['timer'].read('ifig=%s | make_figure' % ifig)
+        kwargs['timer'].get('ifig=%s | make_figure' % ifig)
 
         # Turn off empty subplots (COULD THIS BE FASTER WITHOUT AN EXTRA CALL TO GET_RC_SUBSET? using this to populate layout.axes.visible)
         for ir, ic, df_rc in dd.get_rc_subset():
@@ -886,7 +888,7 @@ def plotter(dobj, **kwargs):
                 if layout.axes2.obj[ir, ic] is not None:
                     layout.axes2.obj[ir, ic].axis('off')
                 continue
-        kwargs['timer'].read('ifig=%s | turn off empty subplots' % ifig)
+        kwargs['timer'].get('ifig=%s | turn off empty subplots' % ifig)
 
         # Make the subplots
         for ir, ic, df_rc in dd.get_rc_subset():
@@ -895,55 +897,55 @@ def plotter(dobj, **kwargs):
 
             # Set the axes colors
             layout.set_axes_colors(ir, ic)
-            kwargs['timer'].read('ifig=%s | ir=%s | ic=%s | set_axes_colors' % (ifig, ir, ic))
+            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_colors' % (ifig, ir, ic))
 
             # Add and format gridlines
             layout.set_axes_grid_lines(ir, ic)
-            kwargs['timer'].read('ifig=%s | ir=%s | ic=%s | set_axes_grid_lines' % (ifig, ir, ic))
+            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_grid_lines' % (ifig, ir, ic))
 
             # Add horizontal and vertical lines
             layout.add_hvlines(ir, ic, df_rc)
-            kwargs['timer'].read('ifig=%s | ir=%s | ic=%s | add_hvlines' % (ifig, ir, ic))
+            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | add_hvlines' % (ifig, ir, ic))
 
             # Plot the data
             dd = globals()['plot_{}'.format(dd.name)](dd, layout, ir, ic, df_rc, kwargs)
-            kwargs['timer'].read('ifig=%s | ir=%s | ic=%s | plot' % (ifig, ir, ic))
+            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | plot' % (ifig, ir, ic))
 
             # Set linear or log axes scaling
             layout.set_axes_scale(ir, ic)
-            kwargs['timer'].read('ifig=%s | ir=%s | ic=%s | set_axes_scale' % (ifig, ir, ic))
+            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_scale' % (ifig, ir, ic))
 
             # Set axis ranges
             layout.set_axes_ranges(ir, ic, dd.ranges)
-            kwargs['timer'].read('ifig=%s | ir=%s | ic=%s | set_axes_ranges' % (ifig, ir, ic))
+            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_ranges' % (ifig, ir, ic))
 
             # Add axis labels
             layout.set_axes_labels(ir, ic)
-            kwargs['timer'].read('ifig=%s | ir=%s | ic=%s | set_axes_labels' % (ifig, ir, ic))
+            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_labels' % (ifig, ir, ic))
 
             # Add rc labels
             layout.set_axes_rc_labels(ir, ic)
-            kwargs['timer'].read('ifig=%s | ir=%s | ic=%s | set_axes_rc_labels' % (ifig, ir, ic))
+            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_rc_labels' % (ifig, ir, ic))
 
             # Adjust tick marks
             layout.set_axes_ticks(ir, ic)
-            kwargs['timer'].read('ifig=%s | ir=%s | ic=%s | set_axes_ticks' % (ifig, ir, ic))
+            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_ticks' % (ifig, ir, ic))
 
             # Add box labels
             layout.add_box_labels(ir, ic, dd)
-            kwargs['timer'].read('ifig=%s | ir=%s | ic=%s | add_box_labels' % (ifig, ir, ic))
+            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | add_box_labels' % (ifig, ir, ic))
 
             # Add arbitrary text
             layout.add_text(ir, ic)
-            kwargs['timer'].read('ifig=%s | ir=%s | ic=%s | add_text' % (ifig, ir, ic))
+            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | add_text' % (ifig, ir, ic))
 
         # Make the legend
         layout.add_legend()
-        kwargs['timer'].read('ifig=%s | add_legend' % (ifig))
+        kwargs['timer'].get('ifig=%s | add_legend' % (ifig))
 
         # Add a figure title
         layout.set_figure_title()
-        kwargs['timer'].read('ifig=%s | set_figure_title' % (ifig))
+        kwargs['timer'].get('ifig=%s | set_figure_title' % (ifig))
 
         # Build the save filename
         filename = set_save_filename(dd.df_fig, ifig, fig_item, fig_cols,
@@ -962,7 +964,7 @@ def plotter(dobj, **kwargs):
             if kwargs.get('show', False):
                 show_file(filename)
 
-        kwargs['timer'].read('ifig=%s | save' % (ifig))
+        kwargs['timer'].get('ifig=%s | save' % (ifig))
 
         # Return inline
         if kwargs.get('return_filename'):
@@ -979,7 +981,7 @@ def plotter(dobj, **kwargs):
             out = layout.show(filename)
             if out is not None:
                 return out
-        kwargs['timer'].read('ifig=%s | return' % (ifig))
+        kwargs['timer'].get('ifig=%s | return' % (ifig))
 
     # Save data used in the figures
     if kwargs.get('save_data', False):
@@ -988,10 +990,12 @@ def plotter(dobj, **kwargs):
         else:
             filename = filename.split('.')[0] + '.csv'
         dd.df_all[dd.cols_all].to_csv(filename, index=False)
-        kwargs['timer'].read('save_data' % (ifig))
+        kwargs['timer'].get('save_data' % (ifig))
 
     # Restore plotting engine settings
     layout.restore()
+
+    kwargs['timer'].get_total()
 
 
 def pie(*args, **kwargs):

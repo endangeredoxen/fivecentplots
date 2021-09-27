@@ -92,6 +92,7 @@ class Timer:
         self.print = print
         self.init = None
         self.units = units
+        self._total = 0
         if start:
             self.start()
 
@@ -99,18 +100,20 @@ class Timer:
     def now(self):
         return datetime.datetime.now()
 
-    def start(self):
-        self.init = self.now
+    @property
+    def total(self):
+        return self._total
 
-    def stop(self):
-        self.init = None
+    @total.setter
+    def total(self, val):
+        self._total += val
 
-    def read(self, label='', restart=True, stop=False):
+    def get(self, label='', restart=True, stop=False):
         """
-        Read the timer
+        Get the timer
 
         Args:
-            reset (bool): restart the timer on read
+            reset (bool): restart the timer on get call
             label (str): prepend the time with a string label
         """
 
@@ -126,6 +129,7 @@ class Timer:
             delta = delta.seconds + delta.microseconds / 1E6
         else:
             self.units = 'NA'
+        self.total = delta
 
         if label != '':
             label += ': '
@@ -138,6 +142,16 @@ class Timer:
 
         if stop is True:
             self.stop()
+
+    def get_total(self):
+        if self.print:
+            print(f'Total time: {self.total} [{self.units}]')
+
+    def start(self):
+        self.init = self.now
+
+    def stop(self):
+        self.init = None
 
 
 def ci(data, coeff=0.95):
