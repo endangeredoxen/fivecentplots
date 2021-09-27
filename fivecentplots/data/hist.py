@@ -45,31 +45,6 @@ class Histogram(data.Data):
                                  ['hist_stacked', 'stacked'],
                                  kwargs.get('stacked', False))
 
-    def switch_type(self, kwargs):
-        """
-        If bars are not enabled, switch everything to line plot
-        """
-
-        self.name = 'xy'
-        self.y = ['Counts']
-        self.get_data_ranges = self._get_data_ranges
-        self.subset_wrap = self._subset_wrap
-
-        # Update the bins to integer values if not specified and 2D image data
-        bins = utl.kwget(kwargs, self.fcpp, 'bins', kwargs.get('bars', None))
-        if not bins and kwargs['2D']:
-            cols = utl.df_int_cols(self.df_all)
-            vmin = int(np.nanmin(self.df_all[cols].values))
-            vmax = int(np.nanmax(self.df_all[cols].values))
-            self.bins = vmax - vmin
-        elif not kwargs.get('vmin') and not kwargs.get('vmax'):
-            vmin = int(np.nanmin(self.df_all.Value))
-            vmax = int(np.nanmax(self.df_all.Value))
-
-        # Convert the image data to a histogram
-        self.get_legend_groupings(self.df_all)
-        self.df_all = self.df_hist(self.df_all, [vmin, vmax])
-
     def df_hist(self, df_in, brange=None):
         """
         Iterate over groups and build a dataframe of counts
@@ -82,16 +57,18 @@ class Histogram(data.Data):
         if len(groups) > 0:
             for nn, df in df_in.groupby(self.groupers):
                 if self.kwargs['2D']:
-                    dfx = df[utl.df_int_cols(df)].dropna(axis=1).dropna().values
+                    dfx = df[utl.df_int_cols(df)].values
                     self.x = ['Value']
                 else:
-                    dfx = df[self.x[0]].dropna()
+                    dfx = df[self.x[0]]
 
                 if brange:
-                    counts, vals = np.histogram(dfx, bins=self.bins,
+                    counts, vals = np.histogram(dfx[~np.isnan(dfx)],
+                                                bins=self.bins,
                                                 normed=self.norm, range=brange)
                 else:
-                    counts, vals = np.histogram(dfx, bins=self.bins,
+                    counts, vals = np.histogram(dfx[~np.isnan(dfx)],
+                                                bins=self.bins,
                                                 normed=self.norm)
 
                 temp = pd.DataFrame({self.x[0]: vals[:-1], self.y[0]: counts})
@@ -103,15 +80,15 @@ class Histogram(data.Data):
                 hist = pd.concat([hist, temp])
         else:
             if self.kwargs['2D']:
-                dfx = df_in[utl.df_int_cols(df_in)].dropna(axis=1).dropna().values
+                dfx = df_in[utl.df_int_cols(df_in)].values
                 self.x = ['Value']
             else:
                 dfx = df_in[self.x[0]].dropna()
             if brange:
-                counts, vals = np.histogram(dfx, bins=self.bins,
+                counts, vals = np.histogram(dfx[~np.isnan(dfx)], bins=self.bins,
                                             normed=self.norm, range=brange)
             else:
-                counts, vals = np.histogram(dfx, bins=self.bins,
+                counts, vals = np.histogram(dfx[~np.isnan(dfx)], bins=self.bins,
                                             normed=self.norm)
             hist = pd.DataFrame({self.x[0]: vals[:-1], self.y[0]: counts})
 
@@ -218,3 +195,28 @@ class Histogram(data.Data):
                         utl.validate_list(self.wrap_vals[ir*self.ncol + ic])))
             return self.df_fig.loc[(self.df_fig[list(wrap)] == pd.Series(wrap)).all(axis=1)].copy()
 
+    def switch_type(self, kwargs):
+        """
+        If bars are not enabled, switch everything to line plot
+        """
+
+        self.name = 'xy'
+        self.y = ['Counts']
+        self.get_data_ranges = self._get_data_ranges
+        self.subset_wrap = self._subset_wrap
+
+        # Update the bins to integer values if not specified and 2D image data
+        bins = utl.kwget(kwargs, self.fcpp, 'bins', kwargs.get('bars', None))
+        if not bins and kwargs['2D']:
+            cols = utl.df_int_cols(self.df_all)
+            vals = self.df_all[cols].values
+            vmin = int(np.nanmin(vals))
+            vmax = int(np.nanmax(vals))
+            self.bins = vmax - vmin
+        elif not kwargs.get('vmin') and not kwargs.get('vmax'):
+            vmin = int(np.nanmin(self.df_all.Value))
+            vmax = int(np.nanmax(self.df_all.Value))
+
+        # Convert the image data to a histogram
+        self.get_legend_groupings(self.df_all)
+        self.df_all = self.df_hist(self.df_all, [vmin, vmax])
