@@ -172,9 +172,6 @@ class Layout(BaseLayout):
         # Inherit the base layout properties
         BaseLayout.__init__(self, data, **kwargs)
 
-        # Define white space parameters
-        self.init_white_space(**kwargs)
-
         # Initialize other class variables
         self.label_col_height  = 0
         self.label_row_left    = 0
@@ -2543,7 +2540,8 @@ class Layout(BaseLayout):
                 axes[-1].obj[ir, ic].spines[f].set_color(axes[0].edge_color.get(utl.plot_num(ir, ic, self.ncol)))
             else:
                 axes[-1].obj[ir, ic].spines[f].set_color(self.fig.fill_color.get(0))
-            axes[-1].obj[ir, ic].spines[f].set_linewidth(self.axes.edge_width)
+            if self.axes.edge_width != 1:
+                axes[-1].obj[ir, ic].spines[f].set_linewidth(self.axes.edge_width)
 
     def set_axes_grid_lines(self, ir, ic):
         """
