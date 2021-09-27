@@ -117,6 +117,7 @@ fivecentplots/__pycache__/fcp.cpython-35.pyc
 /meta.yaml
 
 # image files
+*.png
 fivecentplots/*.png
 !fivecentplots/*.png/
 fivecentplots/tests/*.png
