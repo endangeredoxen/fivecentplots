@@ -58,7 +58,8 @@ def test_vertical(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'vertical_master') if master else 'vertical'
 
     # Make the plot
-    fcp.bar(df=df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A" & T [C]==25', tick_labels_major_x_rotation=90,
+    fcp.bar(df=df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A" & T [C]==25',
+            tick_labels_major_x_rotation=90,
             filename=name + '.png', inline=False, jitter=False)
 
     # Compare with master
