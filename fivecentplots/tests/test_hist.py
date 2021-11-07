@@ -223,8 +223,11 @@ def test_image(master=False, remove=True, show=False):
 
     # Make the plot
     img = fcp.utilities.rgb2bayer(imgr, 'bbbb')
+    dn = 255
+    max_count = (imgr==dn).sum()
     fcp.hist(img, markers=False, ax_scale='logy', ax_size=[600, 400], line_width=2,
-             show=SHOW, filename=name + '.png', inline=False)
+             show=SHOW, filename=name + '.png', inline=False, xmax=dn+5,
+             ax_hlines=max_count, ax_vlines=dn)
 
     # Compare with master
     if master:
@@ -247,9 +250,14 @@ def test_image_legend(master=False, remove=True, show=False):
 
     # Make the plot
     img = fcp.utilities.rgb2bayer(imgr, 'rggb')
+    dnr = 180
+    dng = 230
+    max_count_r = (img.loc[::2, img.columns[::2]].stack().values==dnr).sum()
+    max_count_gb = (img.loc[1::2, img.columns[::2]].stack().values==dng).sum()
     fcp.hist(img, show=SHOW, filename=name + '.png', inline=False,
              markers=False, ax_scale='logy', ax_size=[600, 400],
-             legend='Plane', cfa='rggb', line_width=2, colors=fcp.BAYER)
+             legend='Plane', cfa='rggb', line_width=2, colors=fcp.BAYER,
+             ax_hlines=[max_count_r, max_count_gb], ax_vlines=[dnr, dng])
 
     # Compare with master
     if master:
@@ -264,7 +272,6 @@ def test_image_legend(master=False, remove=True, show=False):
             os.remove(name + '.png')
 
         assert not compare
-
 
 
 if __name__ == '__main__':

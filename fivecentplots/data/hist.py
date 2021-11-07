@@ -212,11 +212,13 @@ class Histogram(data.Data):
             vals = self.df_all[cols].values
             vmin = int(np.nanmin(vals))
             vmax = int(np.nanmax(vals))
-            self.bins = vmax - vmin
+            self.bins = vmax - vmin + 1  # add 1 to get the last bin
         elif not kwargs.get('vmin') and not kwargs.get('vmax'):
             vmin = int(np.nanmin(self.df_all.Value))
             vmax = int(np.nanmax(self.df_all.Value))
 
         # Convert the image data to a histogram
+        temp = self.legend
         self.get_legend_groupings(self.df_all)
-        self.df_all = self.df_hist(self.df_all, [vmin, vmax])
+        self.df_all = self.df_hist(self.df_all, [vmin, vmax + 1])
+        self.legend = temp  # reset the original legend param
