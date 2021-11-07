@@ -3314,9 +3314,10 @@ class Layout(BaseLayout):
             #     nticks = len(axes[ia].get_xticks())
             #     axes[ia].set_xticklabels(tp['x']['label_text'][0:nticks])
 
-            # if self.tick_cleanup and tlmajy.on and not skipy:
-            #     nticks = len(axes[ia].get_yticks())
-            #     axes[ia].set_yticklabels(tp['y']['label_text'][0:nticks])
+            ### need this to remove xy overlap!
+            if self.tick_cleanup and tlmajy.on and not skipy:
+                nticks = len(axes[ia].get_yticks())
+                axes[ia].set_yticklabels(tp['y']['label_text'][0:nticks])
 
             # Turn on minor tick labels
             ax = ['x', 'y']
