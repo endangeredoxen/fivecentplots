@@ -953,8 +953,8 @@ def plotter(dobj, **kwargs):
         if 'filepath' in kwargs.keys():
             filename = os.path.join(kwargs['filepath'], filename)
 
-        # Save and optionally open  ### This needs to move into the engine
-        if kwargs.get('save', True):
+        # Optionally save and open
+        if kwargs.get('save', False):
             if ifig:
                 idx = ifig
             else:
