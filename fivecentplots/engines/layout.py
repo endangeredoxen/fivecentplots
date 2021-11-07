@@ -376,7 +376,7 @@ class BaseLayout:
                            color_by_bar=utl.kwget(kwargs, self.fcpp, ['bar_color_by_bar', 'color_by_bar'],
                                                   kwargs.get('color_by_bar', False)),
                            )
-        self.bar.width = self.bar.width.get(0)
+        self.bar.width = self.bar.width[0]
         if 'colors' in kwargs.keys():
             self.bar.color_by_bar = True
         ### need to fix all the kwargs only defaults!!
@@ -2322,7 +2322,7 @@ class Element:
                 if skip_alpha or color == 'none':
                     astr = ''
                 else:
-                    astr = str(hex(int(alpha.get(ic) * 255)))[-2:].replace('x', '0')
+                    astr = str(hex(int(alpha[ic] * 255)))[-2:].replace('x', '0')
                 self.color_list[ic] = color[0:7].lower() + astr
 
             setattr(self, attr, RepeatedList(self.color_list, attr))
@@ -2335,7 +2335,7 @@ class Element:
                 if skip_alpha:
                     astr = ''
                 else:
-                    astr = str(hex(int(alpha.get(ival) * 255)))[-2:].replace('x', '0')
+                    astr = str(hex(int(alpha[ival] * 255)))[-2:].replace('x', '0')
                 if len(val) > 7:
                     new_vals += [val[0:-2] + astr]
                 else:

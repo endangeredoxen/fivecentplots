@@ -393,7 +393,7 @@ class Data:
                 for mm in ['min', 'max']:
                     # User defined
                     key = '{}{}'.format(ax, mm)
-                    val = getattr(self, key).get(plot_num)
+                    val = getattr(self, key)[plot_num]
                     if val is not None and type(val) is not str:
                         self.add_range(ir, ic, ax, mm, val)
 
@@ -728,7 +728,7 @@ class Data:
             axmax += 0.1*axmax
 
         # Check user-specified min values
-        vmin = getattr(self, '%smin' % ax).get(plot_num)
+        vmin = getattr(self, '%smin' % ax)[plot_num]
         if vmin is not None and 'iqr' in str(vmin).lower():
             factor = str(vmin).split('*')
             if len(factor) == 1:
@@ -772,7 +772,7 @@ class Data:
             vmin = None
 
         # Check user-specified max values
-        vmax = getattr(self, '%smax' % ax).get(plot_num)
+        vmax = getattr(self, '%smax' % ax)[plot_num]
         if vmax is not None and 'iqr' in str(vmax).lower():
             factor = str(vmax).split('*')
             if len(factor) == 1:
