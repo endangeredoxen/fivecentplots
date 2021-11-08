@@ -1555,6 +1555,10 @@ class Layout(BaseLayout):
                               self.title.obj.get_window_extent().height
 
         # legend
+        if self.legend.on:
+            self.legend.size = \
+                [self.legend.obj.get_window_extent().width + self.legend_border,
+                 self.legend.obj.get_window_extent().height + self.legend_border]
 
         # tick labels
         ticks = ['x', 'y', 'z']
@@ -3876,16 +3880,21 @@ class Layout(BaseLayout):
             lab = getattr(self, f'label_{label}')
             if not lab.on:
                 continue
-            x, y = map(lab.position.__getitem__, [0, 3])
+            x, y = getattr(self, f'label_{label}').position_xy
             getattr(self, f'label_{label}').obj[0, 0].set_position((x, y))
 
         # Update title position
-        self.get_title_position()
-        x, y = map(self.title.position.__getitem__, [0, 3])
-        self.title.obj.set_position((x, y))
+        if self.title.on:
+            self.get_title_position()
+            x, y = map(self.title.position.__getitem__, [0, 3])
+            self.title.obj.set_position(self.title.position_xy)
 
         # Update the legend position
+        ## TODO:  validate other positions
         self.get_legend_position()
+        x, y = map(self.title.position.__getitem__, [0, 3])
+        self.legend.obj.set_bbox_to_anchor((self.legend.position[1],
+                                            self.legend.position[2]))
 
     def set_figure_title(self):
         """

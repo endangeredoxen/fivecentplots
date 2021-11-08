@@ -2286,6 +2286,11 @@ class Element:
             self._text = self._text_orig
 
     @property
+    def position_xy(self):
+        x, y = map(self.position.__getitem__, [0, 3])
+        return x, y
+
+    @property
     def size(self):
 
         if self.on:
