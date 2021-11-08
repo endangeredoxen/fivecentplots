@@ -24,6 +24,8 @@ fcp.set_theme('gray')
 
 # Other
 SHOW = False
+fcp.KWARGS['save'] = True
+fcp.KWARGS['inline'] = False
 
 
 def make_all():
@@ -59,7 +61,7 @@ def test_xy_scatter(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False,
              show=SHOW, filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -83,7 +85,7 @@ def test_xy_legend(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend='Die', show=SHOW,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -107,7 +109,7 @@ def test_xy_log_scale(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9, xmax=2.1, grid_minor=True,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -131,7 +133,7 @@ def test_xy_categorical(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x='Die', y='I [A]', show=SHOW,
          filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Voltage==1.5',
-         filename=name + '.png', inline=False)
+         filename=name + '.png')
 
     # Compare with master
     if master:
@@ -154,7 +156,7 @@ def test_xy_ts(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.plot(ts, x='Date', y='Happiness Quotient', markers=False, ax_size=[1000, 250],
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -178,7 +180,7 @@ def test_secondary_xy_shared_y(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -202,7 +204,7 @@ def test_secondary_xy_shared_x(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x=['Voltage', 'I [A]'], y='Voltage', legend='Die', twin_y=True, show=SHOW,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -226,7 +228,7 @@ def test_multiple_xy_y(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Boost Level', 'I [A]'], legend='Die', show=SHOW,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -250,7 +252,7 @@ def test_multiple_xy_x(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x=['Boost Level', 'I [A]'], y='Voltage', legend='Die', show=SHOW,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -274,7 +276,7 @@ def test_multiple_xy_both(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x=['Boost Level', 'I [A]'], y=['Voltage', 'Temperature [C]'], legend='Die', show=SHOW,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -298,7 +300,7 @@ def test_row(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend='Die', row='Boost Level', show=SHOW, ax_size=[225, 225],
              filter='Substrate=="Si" & Target Wavelength==450 & Temperature [C]==25',
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -322,7 +324,7 @@ def test_column(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', show=SHOW, ax_size=[225, 225],
              filter='Substrate=="Si" & Target Wavelength==450 & Temperature [C]==25',
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -346,7 +348,7 @@ def test_row_x_column(master=False, remove=True, show=False):
     fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]', show=SHOW,
              ax_size=[225, 225],
              filter='Substrate=="Si" & Target Wavelength==450', label_rc_font_size=13,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -370,7 +372,7 @@ def test_wrap(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend='Die', wrap=['Temperature [C]', 'Boost Level'], show=SHOW,
              ax_size=[225, 225], filter='Substrate=="Si" & Target Wavelength==450', label_rc_font_size=13,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -395,7 +397,7 @@ def test_other_lines(master=False, remove=True, show=False):
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, show=SHOW, legend=True,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              ax_hlines=[(0, '#FF0000', '--', 3, 1, 'Open'), 1.2], ax_vlines=[0, (1, '#00FF00')],
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -421,7 +423,7 @@ def test_other_lines_df(master=False, remove=True, show=False):
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, show=SHOW, legend=True,
             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
             ax_hlines=[('Open', '#FF0000', '--', 3, 1), 1.2], ax_vlines=[0, (1, '#00FF00')],
-            filename=name + '.png', inline=False)
+            filename=name + '.png')
 
     # Compare with master
     if master:
@@ -446,7 +448,7 @@ def test_other_curve_fitting(master=False, remove=True, show=False):
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, show=SHOW,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              fit=4, fit_eqn=True, fit_rsq=True, fit_font_size=9,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -471,7 +473,7 @@ def test_other_curve_fitting_range(master=False, remove=True, show=False):
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, show=SHOW,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              fit=1, fit_eqn=True, fit_rsq=True, fit_font_size=9, fit_range_x=[1.3, 2],
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -496,7 +498,7 @@ def test_other_curve_fitting_legend(master=False, remove=True, show=False):
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              fit=1, fit_range_x=[1.3, 2], fit_width=2, fit_style='--',
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -521,7 +523,7 @@ def test_other_curve_fitting_legend2(master=False, remove=True, show=False):
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, show=SHOW, wrap='Die', legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              fit=1, fit_range_x=[1.3, 2], fit_width=2, fit_color='#555555', ax_size=[250, 250],
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -546,7 +548,7 @@ def test_other_stat_bad(master=False, remove=True, show=False):
     fcp.plot(df, x='I [A]', y='Voltage', title='IV Data', lines=False, show=SHOW,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              stat='median',
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -571,7 +573,7 @@ def test_other_stat_good(master=False, remove=True, show=False):
     fcp.plot(df, x='I [A]', y='Voltage', title='IV Data', lines=False, show=SHOW,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              stat='median', stat_val='I Set',
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -595,7 +597,7 @@ def test_other_stat_good_mult(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Boost Level', 'I [A]'], show=SHOW, legend=True, stat='median',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -620,7 +622,7 @@ def test_other_conf_int(master=False, remove=True, show=False):
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, show=SHOW,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              conf_int=0.95,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -645,7 +647,7 @@ def test_other_ref_line(master=False, remove=True, show=False):
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              ref_line=df['Voltage'], ref_line_legend_text='y=x', xmin=0, ymin=0, xmax=1.6, ymax=1.6,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -672,7 +674,7 @@ def test_other_ref_line_mult(master=False, remove=True, show=False):
             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
             xmin=0, ymin=0, xmax=1.6, ymax=1.6,
             ref_line=['Voltage', '2*Voltage'], ref_line_legend_text=['y=x', 'y=2*x'], ref_line_style=['-', '--'], ref_line_color=[5,6],
-            filename=name + '.png', inline=False)
+            filename=name + '.png')
 
     # Compare with master
     if master:
@@ -697,7 +699,7 @@ def test_other_ref_line_complex(master=False, remove=True, show=False):
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              ref_line=1.555*df['Voltage']**4-3.451*df['Voltage']**3+2.347*df['Voltage']**2-0.496*df['Voltage']+0.014,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:

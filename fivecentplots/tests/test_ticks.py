@@ -22,6 +22,8 @@ fcp.set_theme('gray')
 
 # Other
 SHOW = False
+fcp.KWARGS['save'] = True
+fcp.KWARGS['inline'] = False
 
 
 def make_all():
@@ -57,7 +59,7 @@ def test_grid_major(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
 
     # Compare with master
@@ -83,7 +85,7 @@ def test_grid_major_off(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              grid_major=False,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -108,7 +110,7 @@ def test_grid_major_off_y(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              grid_major_y=False,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -133,7 +135,7 @@ def test_grid_major_secondary(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              grid_major_y2=True, grid_major_y2_style='--',
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -158,7 +160,7 @@ def test_grid_minor(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              grid_minor=True,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -183,7 +185,7 @@ def test_ticks_minor(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              ticks_minor=True,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -208,7 +210,7 @@ def test_ticks_style(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              ticks_major_direction='out', ticks_major_color='#aaaaaa', ticks_major_length=5, ticks_major_width=0.8,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -233,7 +235,7 @@ def test_ticks_inc(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              ticks_major_y_increment=0.2,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -258,7 +260,7 @@ def test_ticks_minor_number(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              ticks_minor_x_number=5, ticks_minor_y_number=10, ticks_minor_y2_number=4,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -283,7 +285,7 @@ def test_ticks_minor_number_log(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              ticks_minor_x_number=5, ticks_minor_y_number=10, ticks_minor_y2_number=4, ax_scale='logy', ax2_scale='linear',
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -308,7 +310,7 @@ def test_tick_labels(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              ticks_major=False,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -333,7 +335,7 @@ def test_tick_labels_minor(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y='I [A]', show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              tick_labels_minor=True,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -358,7 +360,7 @@ def test_tick_cleanup(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              tick_labels_minor=True, ax_scale='logy', ax2_scale='lin', ticks_minor_x_number=5,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -383,7 +385,7 @@ def test_tick_cleanup_off(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              tick_labels_minor=True, ax_scale='logy', ax2_scale='lin', ticks_minor_x_number=5, tick_cleanup=False,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -409,7 +411,7 @@ def test_tick_cleanup2(master=False, remove=True, show=False):
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              tick_labels_minor=True, ax_scale='logy', ax2_scale='lin', ticks_minor_x_number=5,
              ax_size=[600,400], tick_labels_minor_x_rotation=90,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -434,7 +436,7 @@ def test_lin_sci(master=False, remove=True, show=False):
     x = np.linspace(1, 10, 10)
     y = np.linspace(1E-19, 1E-18, 10)
     fcp.plot(pd.DataFrame({'x': x, 'y': y}), x='x', y='y',
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -459,7 +461,7 @@ def test_lin_sci2(master=False, remove=True, show=False):
     x = np.linspace(1, 10, 10)
     y = np.linspace(1E18, 1E19, 10)
     fcp.plot(pd.DataFrame({'x': x, 'y': y}), x='x', y='y',
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -484,7 +486,7 @@ def test_lin_sci_off(master=False, remove=True, show=False):
     x = np.linspace(1, 10, 10)
     y = np.linspace(1E18, 1E19, 10)
     fcp.plot(pd.DataFrame({'x': x, 'y': y}), x='x', y='y', sci_y=False,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -509,7 +511,7 @@ def test_log_sci(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y='Voltage', show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              ax_scale='logy', ymin=0.00001, ymax=100000000,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -534,7 +536,7 @@ def test_log_sci2(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y='Voltage', show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              ax_scale='logy', ymin=0.00001, ymax=100000000, sci_y=False,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -559,7 +561,7 @@ def test_log_exp(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y='Voltage', show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              ax_scale='logy', ymin=0.00001, ymax=100000000, sci_y=True,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -585,7 +587,7 @@ def test_sciz(master=False, remove=True, show=False):
     fcp.contour(df2, x='X', y='Y', z='Value', row='Batch', col='Experiment', filled=True,
                 cbar=True, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250,250], show=SHOW,
                 label_rc_font_size=12, levels=40, sci_z=True,
-                filename=name + '.png', inline=False)
+                filename=name + '.png')
 
     # Compare with master
     if master:

@@ -22,6 +22,8 @@ fcp.set_theme('gray')
 
 # Other
 SHOW = False
+fcp.KWARGS['save'] = True
+fcp.KWARGS['inline'] = False
 
 
 def make_all():
@@ -59,7 +61,7 @@ def test_fill_color(master=False, remove=True, show=False):
              fig_fill_color='#00FF00', legend_fill_color='#FF0000', ax_fill_color='#FFFFFF',
              label_x_fill_color='#0000FF', label_y_fill_color='#FF00FF',
              tick_labels_major_fill_color='#AAFB05',
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -86,7 +88,7 @@ def test_edge_color(master=False, remove=True, show=False):
              fig_edge_color='#00FF00', legend_edge_color='#FF0000', ax_edge_color='#FFFFFF',
              label_x_edge_color='#0000FF', label_y_edge_color='#FF00FF',
              tick_labels_major_edge_color='#AAFB05', tick_labels_major_edge_width=5,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -111,7 +113,7 @@ def test_spines(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              ax_edge_color='#FF0000', spine_left=False, spine_right=False,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -141,7 +143,7 @@ def test_alpha(master=False, remove=True, show=False):
              label_x_fill_color='#0000FF', label_x_fill_alpha=0.2,
              label_y_fill_color='#FF00FF', label_y_fill_alpha=0.2,
              tick_labels_major_fill_color='#AAFB05', tick_labels_major_fill_alpha=0.45,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -166,7 +168,7 @@ def test_alpha_marker(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              marker_edge_alpha=0.3,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -191,7 +193,7 @@ def test_alpha_legend_marker(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              marker_edge_alpha=0.3, legend_marker_alpha=0.3,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -215,7 +217,7 @@ def test_line_color(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df=df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -240,7 +242,7 @@ def test_line_color_custom(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              colors=['#FF0000', '#FF7777', '#FFAAAA'],
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -265,7 +267,7 @@ def test_line_color_index(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              colors=[0, 0, 3, 3, 6, 6],
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -290,7 +292,7 @@ def test_line_color_cmap(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              cmap='inferno',
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -315,7 +317,7 @@ def test_line_style(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              lines_alpha=0.33, lines_style='--', lines_width=3,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -340,7 +342,7 @@ def test_line_style2(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              line_alpha=0.33, line_style='--', line_width=3,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -366,7 +368,7 @@ def test_line_style_by_line(master=False, remove=True, show=False):
              colors=[0, 0, 1, 1, 2, 2],
              lines_width=[3, 1, 3, 1, 3, 1], lines_style=['--', '-'],
              lines_alpha=[0.6, 1],
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -391,7 +393,7 @@ def test_marker_edge(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              marker_edge_color=['#555555'],
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -416,7 +418,7 @@ def test_marker_fill(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              marker_edge_color=['#555555'], marker_fill_color='#FFFFFF',
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -441,7 +443,7 @@ def test_marker_fill_default(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              marker_fill=True,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -466,7 +468,7 @@ def test_marker_fill_alpha(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              marker_fill=True, marker_fill_alpha=0.5,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -493,7 +495,7 @@ def test_marker_boxplot(master=False, remove=True, show=False):
                 box_fill_color=[0, 0, 1, 1, 2, 2], box_fill_alpha=0.3, box_edge_width=0,
                 marker_edge_color=[0, 0, 1, 1, 2, 2], marker_type=['o', '+'],
                 box_whisker_color=[0, 0, 1, 1, 2, 2], box_whisker_width=1, jitter=False,
-                filename=name + '.png', inline=False)
+                filename=name + '.png')
 
     # Compare with master
     if master:
@@ -517,7 +519,7 @@ def test_hist(master=False, remove=True, show=False):
     # Make the plot
     df_hist = pd.read_csv(osjoin(os.path.dirname(fcp.__file__), 'tests', 'fake_data_box.csv'))
     fcp.hist(df=df_hist, x='Value', show=SHOW, legend='Region',
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -542,7 +544,7 @@ def test_hist_color(master=False, remove=True, show=False):
     df_hist = pd.read_csv(osjoin(os.path.dirname(fcp.__file__), 'tests', 'fake_data_box.csv'))
     fcp.hist(df=df_hist, x='Value', show=SHOW, legend='Region', hist_fill_alpha=1,
              colors=['#FF0000', '#00FF11'],
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -567,7 +569,7 @@ def test_marker_type(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              markers=['o', 'd'],
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -592,7 +594,7 @@ def test_marker_type_none(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], \
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              markers=['o', None, '+', '*', 'B', None],
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -617,7 +619,7 @@ def test_marker_size(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              marker_size=2,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -642,7 +644,7 @@ def test_marker_size_legend(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              marker_size=2, legend_marker_size=2,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -670,7 +672,7 @@ def test_fonts(master=False, remove=True, show=False):
              label_y_font_size=25, label_y_style='normal',
              label_x_font_weight='normal',
              tick_labels_major_font='fantasy',
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -695,7 +697,7 @@ def test_theme_white(master=False, remove=True, show=False):
     fcp.set_theme('white')
     fcp.plot(df=df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -720,7 +722,7 @@ def test_theme_gray(master=False, remove=True, show=False):
     fcp.set_theme('gray')
     fcp.plot(df=df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:

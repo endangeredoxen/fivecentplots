@@ -22,6 +22,8 @@ fcp.set_theme('gray')
 
 # Other
 SHOW = False
+fcp.KWARGS['save'] = True
+fcp.KWARGS['inline'] = False
 
 # Read an image
 import imageio
@@ -64,7 +66,7 @@ def test_imshow(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.imshow(img, cmap='inferno', cbar=True, ax_size=[600, 600],
-               filename=name + '.png', inline=False)
+               filename=name + '.png')
 
     # Compare with master
     if master:
@@ -87,7 +89,7 @@ def test_imshow_no_cbar(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.imshow(img, cmap='inferno', cbar=False, ax_size=[600, 600],
-               filename=name + '.png', inline=False)
+               filename=name + '.png')
 
     # Compare with master
     if master:
@@ -112,7 +114,7 @@ def test_imshow_stretched(master=False, remove=True, show=False):
     uu = img.stack().mean()
     ss = img.stack().std()
     fcp.imshow(img, cmap='inferno', cbar=True, ax_size=[600, 600], zmin=uu-3*ss, zmax=uu+3*ss,
-               filename=name + '.png', inline=False)
+               filename=name + '.png')
 
     # Compare with master
     if master:
@@ -136,7 +138,7 @@ def test_imshow_zoomed(master=False, remove=True, show=False):
     # Make the plot
     fcp.imshow(img, cmap='inferno', cbar=True, ax_size=[600, 600], xmin=700, xmax=1100,
                 ymin=300, ymax=400,
-                filename=name + '.png', inline=False)
+                filename=name + '.png')
 
     # Compare with master
     if master:
@@ -156,15 +158,15 @@ def test_imshow_zoomed(master=False, remove=True, show=False):
 def test_wrap(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'wrap_master') if master else 'wrap'
-    
+
     # Get alt data
     url = 'https://upload.wikimedia.org/wikipedia/commons/2/28/RGB_illumination.jpg'
     imgr = imageio.imread(url)
     raw = fcp.utilities.rgb2bayer(imgr)
-    
+
     # Make the plot
     fcp.imshow(raw, cmap='inferno', ax_size=[300, 300], cfa='rggb',
-               filename=name + '.png', inline=False, wrap='Plane')
+               filename=name + '.png', wrap='Plane')
 
     # Compare with master
     if master:

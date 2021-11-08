@@ -22,6 +22,8 @@ fcp.set_theme('gray')
 
 # Other
 SHOW = False
+fcp.KWARGS['save'] = True
+fcp.KWARGS['inline'] = False
 
 
 def make_all():
@@ -56,7 +58,7 @@ def test_basic(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.gantt(df=df, x=['Start', 'Stop'], y='Task',
-              filename=name + '.png', inline=False, ax_size=[600, 400])
+              filename=name + '.png', ax_size=[600, 400])
 
     # Compare with master
     if master:
@@ -78,7 +80,7 @@ def test_legend(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.gantt(df=df, x=['Start', 'Stop'], y='Task', legend='Assigned',
-              filename=name + '.png', inline=False, ax_size=[600, 400])
+              filename=name + '.png', ax_size=[600, 400])
 
     # Compare with master
     if master:

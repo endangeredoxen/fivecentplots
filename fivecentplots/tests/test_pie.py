@@ -25,6 +25,8 @@ fcp.set_theme('gray')
 
 # Other
 SHOW = False
+fcp.KWARGS['save'] = True
+fcp.KWARGS['inline'] = False
 
 
 def make_all():
@@ -58,10 +60,10 @@ def test_basic(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'basic_master') if master else 'basic'
 
     # Make the plot
-    fcp.pie(df, x='Liquid', y='pH', show=SHOW, 
-            filter='Measurement=="A" & T [C]==25', 
-            startangle=90, alpha=0.85, filename=name + '.png', 
-            inline=False, jitter=False)
+    fcp.pie(df, x='Liquid', y='pH', show=SHOW,
+            filter='Measurement=="A" & T [C]==25',
+            startangle=90, alpha=0.85, filename=name + '.png',
+            jitter=False)
 
     # Compare with master
     if master:
@@ -83,10 +85,10 @@ def test_donut(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'donut_master') if master else 'donut'
 
     # Make the plot
-    fcp.pie(df, x='Liquid', y='pH', show=SHOW, 
-            filter='Measurement=="A" & T [C]==25', 
-            startangle=90, alpha=0.85, filename=name + '.png', 
-            inline=False, jitter=False,
+    fcp.pie(df, x='Liquid', y='pH', show=SHOW,
+            filter='Measurement=="A" & T [C]==25',
+            startangle=90, alpha=0.85, filename=name + '.png',
+            jitter=False,
             innerradius=0.5, pctdistance=0.75)
 
     # Compare with master
@@ -109,10 +111,10 @@ def test_legend(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'legend_master') if master else 'legend'
 
     # Make the plot
-    fcp.pie(df, x='Liquid', y='pH', show=SHOW, 
-            filter='Measurement=="A" & T [C]==25', 
+    fcp.pie(df, x='Liquid', y='pH', show=SHOW,
+            filter='Measurement=="A" & T [C]==25',
             startangle=90, alpha=0.85, legend=True,
-            filename=name + '.png', inline=False, jitter=False)
+            filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -134,9 +136,9 @@ def test_legend_rc(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'legend_rc_master') if master else 'legend_rc'
 
     # Make the plot
-    fcp.pie(df, x='Liquid', y='pH', show=SHOW, col='Measurement', 
+    fcp.pie(df, x='Liquid', y='pH', show=SHOW, col='Measurement',
             row='T [C]', legend=True, ax_size=[250, 250],
-            filename=name + '.png', inline=False, jitter=False)
+            filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -158,9 +160,9 @@ def test_legend_wrap(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'legend_wrap_master') if master else 'legend_wrap'
 
     # Make the plot
-    fcp.pie(df, x='Liquid', y='pH', show=SHOW, wrap='Measurement', 
+    fcp.pie(df, x='Liquid', y='pH', show=SHOW, wrap='Measurement',
             legend=True, ax_size=[250, 250],
-            filename=name + '.png', inline=False, jitter=False)
+            filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -182,10 +184,10 @@ def test_percents(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'percents_master') if master else 'percents'
 
     # Make the plot
-    fcp.pie(df, x='Liquid', y='pH', show=SHOW, 
-            filter='Measurement=="A" & T [C]==25', 
+    fcp.pie(df, x='Liquid', y='pH', show=SHOW,
+            filter='Measurement=="A" & T [C]==25',
             startangle=90, alpha=0.85, percents=True,
-            filename=name + '.png', inline=False, jitter=False)
+            filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -207,10 +209,10 @@ def test_explode(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'explode_master') if master else 'explode'
 
     # Make the plot
-    fcp.pie(df, x='Liquid', y='pH', show=SHOW, 
-            filter='Measurement=="A" & T [C]==25', 
+    fcp.pie(df, x='Liquid', y='pH', show=SHOW,
+            filter='Measurement=="A" & T [C]==25',
             explode=(0,0.1), startangle=90, alpha=0.85, percents=True,
-            filename=name + '.png', inline=False, jitter=False)
+            filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -232,10 +234,10 @@ def test_shadow(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'shadow_master') if master else 'shadow'
 
     # Make the plot
-    fcp.pie(df, x='Liquid', y='pH', show=SHOW, 
-            filter='Measurement=="A" & T [C]==25', 
+    fcp.pie(df, x='Liquid', y='pH', show=SHOW,
+            filter='Measurement=="A" & T [C]==25',
             explode=(0,0.1), shadow=True, startangle=90, percents=True,
-            filename=name + '.png', inline=False, jitter=False)
+            filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -257,10 +259,10 @@ def test_angle(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'angle_master') if master else 'angle'
 
     # Make the plot
-    fcp.pie(df, x='Liquid', y='pH', show=SHOW, 
-            filter='Measurement=="A" & T [C]==25', 
+    fcp.pie(df, x='Liquid', y='pH', show=SHOW,
+            filter='Measurement=="A" & T [C]==25',
             explode=(0,0.1), startangle=0, percents=True,
-            filename=name + '.png', inline=False, jitter=False)
+            filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:

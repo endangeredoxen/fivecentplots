@@ -22,6 +22,8 @@ fcp.set_theme('gray')
 
 # Other
 SHOW = False
+fcp.KWARGS['save'] = True
+fcp.KWARGS['inline'] = False
 
 # Read an image
 import imageio
@@ -67,7 +69,7 @@ def test_nq(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'nq_master') if master else 'nq'
 
     # Make the plot
-    fcp.nq(img, filename=name + '.png', inline=False)
+    fcp.nq(img, filename=name + '.png')
 
     # Compare with master
     if master:

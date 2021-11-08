@@ -24,6 +24,8 @@ fcp.set_theme('gray')
 
 # Other
 SHOW = False
+fcp.KWARGS['save'] = True
+fcp.KWARGS['inline'] = False
 
 
 def make_all():
@@ -58,7 +60,7 @@ def test_simple(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.boxplot(df=df, y='Value', show=SHOW, tick_labels_minor=True, grid_minor=True,
-                filename=name + '.png', inline=False, jitter=False)
+                filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -81,7 +83,7 @@ def test_group_single(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.boxplot(df=df, y='Value', groups='Batch', show=SHOW,
-                filename=name + '.png', inline=False, jitter=False)
+                filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -104,7 +106,7 @@ def test_group_multiple(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW,
-                filename=name + '.png', inline=False, jitter=False)
+                filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -127,7 +129,7 @@ def test_group_legend(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], legend='Region', show=SHOW,
-                filename=name + '.png', inline=False, jitter=False)
+                filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -150,7 +152,7 @@ def test_grid_column(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], col='Region', show=SHOW, ax_size=[300, 300],
-                filename=name + '.png', inline=False, jitter=False)
+                filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -173,7 +175,7 @@ def test_grid_row(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], row='Region', show=SHOW, ax_size=[300, 300],
-                filename=name + '.png', inline=False, jitter=False)
+                filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -196,7 +198,7 @@ def test_grid_wrap(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.boxplot(df=df, y='Value', groups=['Sample', 'Region'], wrap='Batch', show=SHOW, ax_size=[300, 300],
-                filename=name + '.png', inline=False, jitter=False)
+                filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -221,7 +223,7 @@ def test_grid_wrap_y(master=False, remove=True, show=False):
     df['Value*2'] = 2*df['Value']
     fcp.boxplot(df=df, y=['Value', 'Value*2'], groups=['Batch', 'Sample', 'Region'], wrap='y', show=SHOW,
                 ax_size=[300, 300],
-                filename=name + '.png', inline=False, jitter=False)
+                filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -246,7 +248,7 @@ def test_grid_wrap_y_no_share(master=False, remove=True, show=False):
     df['Value*2'] = 2*df['Value']
     fcp.boxplot(df=df, y=['Value', 'Value*2'], groups=['Batch', 'Sample', 'Region'], wrap='y', show=SHOW,
                 ax_size=[300, 300], share_y=False,
-                filename=name + '.png', inline=False, jitter=False)
+                filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -269,7 +271,7 @@ def test_grand_means(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, grand_mean=True, grand_median=True,
-                filename=name + '.png', inline=False, jitter=False)
+                filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -292,7 +294,7 @@ def test_group_means(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, group_means=True,
-                filename=name + '.png', inline=False, jitter=False)
+                filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -315,7 +317,7 @@ def test_mean_diamonds(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, mean_diamonds=True, conf_coeff=0.95,
-                filename=name + '.png', inline=False, jitter=False)
+                filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -338,7 +340,7 @@ def test_violin(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, violin=True,
-                filename=name + '.png', inline=False)
+                filename=name + '.png')
 
     # Compare with master
     if master:
@@ -364,7 +366,7 @@ def test_violin_styled(master=False, remove=True, show=False):
                 violin_fill_color='#eaef1a', violin_fill_alpha=1, violin_edge_color='#555555', violin_edge_width=2,
                 violin_box_color='#ffffff', violin_whisker_color='#ff0000',
                 violin_median_marker='+', violin_median_color='#00ffff', violin_median_size=10,
-                filename=name + '.png', inline=False)
+                filename=name + '.png')
 
     # Compare with master
     if master:
@@ -387,7 +389,7 @@ def test_violin_box_off(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, violin=True, violin_box_on=False, violin_markers=True, jitter=False,
-                filename=name + '.png', inline=False)
+                filename=name + '.png')
 
     # Compare with master
     if master:
@@ -410,7 +412,7 @@ def test_stat_mean(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, box_stat_line='mean', ax_size=[300, 300],
-                filename=name + '.png', inline=False, jitter=False)
+                filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -433,7 +435,7 @@ def test_stat_median(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, box_stat_line='median', ax_size=[300, 300],
-                filename=name + '.png', inline=False, jitter=False)
+                filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -456,7 +458,7 @@ def test_stat_std_dev(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, box_stat_line='std', ax_size=[300, 300],
-                filename=name + '.png', inline=False, jitter=False)
+                filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -479,7 +481,7 @@ def test_dividers(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, box_divider=False, ax_size=[300, 300],
-                filename=name + '.png', inline=False, jitter=False)
+                filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -502,7 +504,7 @@ def test_range_lines(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, box_range_lines=False, ax_size=[300, 300],
-                filename=name + '.png', inline=False, jitter=False)
+                filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:

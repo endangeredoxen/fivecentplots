@@ -25,6 +25,8 @@ fcp.set_theme('gray')
 
 # Other
 SHOW = False
+fcp.KWARGS['save'] = True
+fcp.KWARGS['inline'] = False
 
 
 def make_all():
@@ -60,7 +62,7 @@ def test_vertical(master=False, remove=True, show=False):
     # Make the plot
     fcp.bar(df=df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A" & T [C]==25',
             tick_labels_major_x_rotation=90,
-            filename=name + '.png', inline=False, jitter=False)
+            filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -83,7 +85,7 @@ def test_horizontal(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.bar(df=df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A"', horizontal=True,
-            filename=name + '.png', inline=False, jitter=False)
+            filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -106,7 +108,7 @@ def test_error(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.bar(df=df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, error_bars=True,
-            filename=name + '.png', inline=False, jitter=False)
+            filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -129,7 +131,7 @@ def test_legend(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.bar(df=df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, legend='Measurement',
-            filename=name + '.png', inline=False, jitter=False)
+            filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -152,7 +154,7 @@ def test_stacked(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.bar(df=df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, stacked=True, legend='Measurement',
-            filename=name + '.png', inline=False, jitter=False)
+            filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -175,7 +177,7 @@ def test_row_col(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, col='Measurement', row='T [C]', ax_hlines=0, ax_size=[300, 300],
-            filename=name + '.png', inline=False, jitter=False)
+            filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -198,7 +200,7 @@ def test_wrap(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, wrap='Measurement', ax_size=[300, 300],
-            filename=name + '.png', inline=False, jitter=False)
+            filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:

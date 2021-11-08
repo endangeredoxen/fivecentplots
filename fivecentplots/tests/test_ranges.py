@@ -25,6 +25,8 @@ fcp.set_theme('gray')
 
 # Other
 SHOW = False
+fcp.KWARGS['save'] = True
+fcp.KWARGS['inline'] = False
 
 
 def make_all():
@@ -60,7 +62,7 @@ def test_default(master=False, remove=True, show=False):
     # Make the plot
     sub = df[(df.Substrate=='Si')&(df['Target Wavelength']==450)&(df['Boost Level']==0.2)&(df['Temperature [C]']==25)]
     fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', show=SHOW,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -84,7 +86,7 @@ def test_primary(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df=df, x='Voltage', y='I [A]', legend='Die', show=SHOW,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             xmax=1.2, filename=name + '.png', inline=False)
+             xmax=1.2, filename=name + '.png')
 
     # Compare with master
     if master:
@@ -109,7 +111,7 @@ def test_primary_no_scale(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y='I [A]', legend='Die', show=SHOW,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              xmax=1.2, auto_scale=False,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -134,7 +136,7 @@ def test_primary_explicit(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y='I [A]', legend='Die', show=SHOW,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              xmax=1.2, auto_scale=False,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -158,7 +160,7 @@ def test_secondary(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -183,7 +185,7 @@ def test_secondary_limits(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              xmin=1.3,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -208,7 +210,7 @@ def test_secondary_limits_no_scale(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              xmax=1.2, auto_scale=False,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -233,7 +235,7 @@ def test_secondary_limits_y(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              ymin=1,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -257,7 +259,7 @@ def test_multiple(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=False, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -282,7 +284,7 @@ def test_multiple_scaled(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=False, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              ymin=0.05,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -305,7 +307,7 @@ def test_boxplot(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.boxplot(df=df_box, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', show=SHOW,
-                filename=name + '.png', inline=False, jitter=False)
+                filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -328,7 +330,7 @@ def test_boxplot_quantile(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.boxplot(df=df_box, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', show=SHOW, ymax='95q',
-                filename=name + '.png', inline=False, jitter=False)
+                filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -352,7 +354,7 @@ def test_boxplot_iqr(master=False, remove=True, show=False):
     # Make the plot
     fcp.boxplot(df=df_box, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', show=SHOW,
                 ymin='1.5*iqr', ymax='1.5*iqr',
-                filename=name + '.png', inline=False, jitter=False)
+                filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -377,7 +379,7 @@ def test_shared(master=False, remove=True, show=False):
     sub = df[(df.Substrate=='Si') & (df['Target Wavelength']==450)].copy()
     fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',
              show=SHOW, ax_size=[225, 225],
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -401,7 +403,7 @@ def test_shared_false(master=False, remove=True, show=False):
     # Make the plot
     sub = df[(df.Substrate=='Si') & (df['Target Wavelength']==450)].copy()
     fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',          show=SHOW, ax_size=[225, 225], share_x=False, share_y=False,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -427,7 +429,7 @@ def test_shared_separate(master=False, remove=True, show=False):
     fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level',
              row='Temperature [C]', show=SHOW, ax_size=[225, 225],
              separate_ticks=True, separate_labels=True,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -452,7 +454,7 @@ def test_shared_rows(master=False, remove=True, show=False):
     sub = df[(df.Substrate=='Si') & (df['Target Wavelength']==450)].copy()
     fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',
              show=SHOW, ax_size=[225, 225], share_row=True,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -477,7 +479,7 @@ def test_shared_cols(master=False, remove=True, show=False):
     sub = df[(df.Substrate=='Si') & (df['Target Wavelength']==450)].copy()
     fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',
              show=SHOW, ax_size=[225, 225], share_col=True,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -502,7 +504,7 @@ def test_shared_no(master=False, remove=True, show=False):
     fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]', \
              ax_size=[225, 225], filter='Substrate=="Si" & Target Wavelength==450', label_rc_font_size=14,
              xmin=[0, 0.1, 0.2, 0.3, 0.4], ymax=[1, 2, 3, 4, 5, 6],
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:

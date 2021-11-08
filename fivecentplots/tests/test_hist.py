@@ -26,6 +26,8 @@ fcp.set_theme('gray')
 
 # Other
 SHOW = False
+fcp.KWARGS['save'] = True
+fcp.KWARGS['inline'] = False
 
 
 def make_all():
@@ -60,7 +62,7 @@ def test_simple(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.hist(df=df, x='Value', show=SHOW,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -83,7 +85,7 @@ def test_horizontal(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.hist(df=df, x='Value', show=SHOW, horizontal=True,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -106,7 +108,7 @@ def test_legend(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.hist(df=df, x='Value', show=SHOW, legend='Region',
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -129,7 +131,7 @@ def test_kde(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.hist(df=df, x='Value', show=SHOW, legend='Region', kde=True, kde_width=2,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -152,7 +154,7 @@ def test_grid(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.hist(df=df, x='Value', show=SHOW, legend='Region', col='Batch', row='Sample', ax_size=[250, 250],
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -175,7 +177,7 @@ def test_wrap_values(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.hist(df=df, x='Value', show=SHOW, legend='Region', wrap='Batch', ax_size=[250, 250], horizontal=True,
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -200,7 +202,7 @@ def test_wrap_names(master=False, remove=True, show=False):
     df['Value*2'] = 2*df['Value']
     df['Value*3'] = 3*df['Value']
     fcp.hist(df=df, x=['Value', 'Value*2', 'Value*3'], wrap='x', show=SHOW, ncol=3, ax_size=[250, 250],
-             filename=name + '.png', inline=False)
+             filename=name + '.png')
 
     # Compare with master
     if master:
@@ -226,7 +228,7 @@ def test_image(master=False, remove=True, show=False):
     dn = 255
     max_count = (imgr==dn).sum()
     fcp.hist(img, markers=False, ax_scale='logy', ax_size=[600, 400], line_width=2,
-             show=SHOW, filename=name + '.png', inline=False, xmax=dn+5,
+             show=SHOW, filename=name + '.png', xmax=dn+5,
              ax_hlines=max_count, ax_vlines=dn)
 
     # Compare with master
@@ -254,7 +256,7 @@ def test_image_legend(master=False, remove=True, show=False):
     dng = 230
     max_count_r = (img.loc[::2, img.columns[::2]].stack().values==dnr).sum()
     max_count_gb = (img.loc[1::2, img.columns[::2]].stack().values==dng).sum()
-    fcp.hist(img, show=SHOW, filename=name + '.png', inline=False,
+    fcp.hist(img, show=SHOW, filename=name + '.png',
              markers=False, ax_scale='logy', ax_size=[600, 400],
              legend='Plane', cfa='rggb', line_width=2, colors=fcp.BAYER,
              ax_hlines=[max_count_r, max_count_gb], ax_vlines=[dnr, dng])

@@ -22,6 +22,8 @@ fcp.set_theme('gray')
 
 # Other
 SHOW = False
+fcp.KWARGS['save'] = True
+fcp.KWARGS['inline'] = False
 
 # Read an image
 import imageio
@@ -68,7 +70,7 @@ def test_cat_no_label(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.heatmap(df=df, x='Category', y='Player', z='Average', cbar=True, show=SHOW,
-                filename=name + '.png', inline=False)
+                filename=name + '.png')
 
     # Compare with master
     if master:
@@ -93,7 +95,7 @@ def test_cat_label(master=False, remove=True, show=False):
     fcp.heatmap(df=df, x='Category', y='Player', z='Average', cbar=True, data_labels=True,
                 heatmap_font_color='#aaaaaa', show=SHOW, tick_labels_major_y_edge_width=0,
                 ws_ticks_ax=5,
-                filename=name + '.png', inline=False)
+                filename=name + '.png')
 
     # Compare with master
     if master:
@@ -118,7 +120,7 @@ def test_cat_cell_size(master=False, remove=True, show=False):
     fcp.heatmap(df=df, x='Category', y='Player', z='Average', cbar=True, data_labels=True,
             heatmap_font_color='#aaaaaa', show=SHOW, tick_labels_major_y_edge_width=0,
             ws_ticks_ax=5, cell_size=100,
-            filename=name + '.png', inline=False)
+            filename=name + '.png')
 
     # Compare with master
     if master:
@@ -144,7 +146,7 @@ def test_cat_non_uniform(master=False, remove=True, show=False):
     fcp.heatmap(df=df2, x='X', y='Y', z='Value', row='Batch', col='Experiment',
                 cbar=True, show=SHOW, share_z=True, ax_size=[400, 400],
                 data_labels=False, label_rc_font_size=12, filter='Batch==103', cmap='viridis',
-                filename=name + '.png', inline=False)
+                filename=name + '.png')
 
     # Compare with master
     if master:
@@ -167,7 +169,7 @@ def test_heatmap(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.heatmap(img, cmap='inferno', cbar=True, ax_size=[600, 600],
-                filename=name + '.png', inline=False)
+                filename=name + '.png')
 
     # Compare with master
     if master:
@@ -192,7 +194,7 @@ def test_heatmap_stretched(master=False, remove=True, show=False):
     uu = img.stack().mean()
     ss = img.stack().std()
     fcp.heatmap(img, cmap='inferno', cbar=True, ax_size=[600, 600], zmin=uu-3*ss, zmax=uu+3*ss,
-                filename=name + '.png', inline=False)
+                filename=name + '.png')
 
     # Compare with master
     if master:
@@ -216,7 +218,7 @@ def test_heatmap_zoomed(master=False, remove=True, show=False):
     # Make the plot
     fcp.heatmap(img, cmap='inferno', cbar=True, ax_size=[600, 600], xmin=700, xmax=1100,
                 ymin=300, ymax=400,
-                filename=name + '.png', inline=False)
+                filename=name + '.png')
 
     # Compare with master
     if master:
