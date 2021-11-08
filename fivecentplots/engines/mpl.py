@@ -382,8 +382,11 @@ class Layout(BaseLayout):
 
         # Add the label text
         text = self.axes.obj[ir, ic].text(
-            position[0]+size[0]/self.axes.size[0]/2+offsetx,
-            position[3]+size[1]/self.axes.size[1]/2+offsety, text,
+            #position[0]+size[0]/self.axes.size[0]/2+offsetx,
+            position[0] + offsetx,
+            #position[3]+size[1]/self.axes.size[1]/2+offsety,
+            position[3] + offsety,
+            text,
             transform=self.axes.obj[ir, ic].transAxes,
             horizontalalignment='center',
             verticalalignment='center', rotation=rotation,
@@ -578,18 +581,17 @@ class Layout(BaseLayout):
             self.label_@.position --> [left, right, top, bottom]
         """
 
-        self.label_x.position[0] = 0.5 #(self.axes.size[0] - self.label_x.size[0]) \
-                                    #/ (2 * self.axes.size[0])
-        self.label_x.position[3] = -np.floor(self.labtick_x) / self.axes.size[1]
+        self.label_x.position[0] = 0.5
+        self.label_x.position[3] = \
+            (self.label_x.size[1]/2 - self.labtick_x) / self.axes.size[0]
 
-        self.label_x2.position[0] = 0.5 #(self.axes.size[0] - self.label_x2.size[0]) \
-                                    #/ (2 * self.axes.size[0])
+        self.label_x2.position[0] = 0.5
         self.label_x2.position[3] = 1 + (np.floor(self.labtick_x2) - self.label_x2.size[1]) \
                                     / self.axes.size[1]
 
-        self.label_y.position[0] = -np.floor(self.labtick_y) / self.axes.size[0]
-        self.label_y.position[3] = 0.5 #(self.axes.size[1] - self.label_y.size[1]) \
-                                    #/ (2 * self.axes.size[1])
+        self.label_y.position[0] = \
+            (self.label_y.size[0]/2 - self.labtick_y) / self.axes.size[0]
+        self.label_y.position[3] = 0.5
 
         self.label_y2.position[0] = 1 + (np.floor(self.labtick_y2) - self.label_y2.size[0]) \
                                     / self.axes.size[0]
@@ -1531,6 +1533,7 @@ class Layout(BaseLayout):
             filename = '%s%s' % (int(round(time.time() * 1000)), randint(0, 99))
             mpl.pyplot.savefig(filename + '.png')
         if 'pie' in self.name:
+            # TODO:: check if this is still needed
             saved = True
             filename = '%s%s' % (int(round(time.time() * 1000)), randint(0, 99))
             mpl.pyplot.savefig(filename + '.png')
@@ -2007,11 +2010,11 @@ class Layout(BaseLayout):
 
         col_label = (self.label_col.size[1] + \
                      self.ws_label_col * self.label_col.on)
-        self.title.position[0] = (self.axes.size[0] * self.ncol + \
-                                  self.ws_col * (self.ncol - 1) - \
-                                  self.title.size[0])/2/self.axes.size[0]
-        self.title.position[3] = 1+(self.ws_title_ax + col_label + self.label_wrap.size[1] + \
-                                    self.title_wrap.size[1]) / self.axes.size[1]
+        self.title.position[0] = 0.5
+        self.title.position[3] = 1+(self.ws_title_ax + \
+                                    col_label + \
+                                    self.title.size[1] / 2 + \
+                                    self.label_wrap.size[1]) / self.axes.size[1]
         self.title.position[2] = self.title.position[3] + (self.ws_title_ax +
                                  self.title.size[1])/self.axes.size[1]
 
@@ -3867,22 +3870,19 @@ class Layout(BaseLayout):
 
         # Update the label positions
         self.get_axes_label_position()
+        self.get_rc_label_position()
         labels = ['x', 'x2', 'y', 'y2', 'z']
         for label in labels:
             lab = getattr(self, f'label_{label}')
             if not lab.on:
                 continue
             x, y = map(lab.position.__getitem__, [0, 3])
-            print(label, x, y)
             getattr(self, f'label_{label}').obj[0, 0].set_position((x, y))
 
-
-        #self.label_x.obj[0,0].set_position([self.label_x.position[0], self.label_x.position[3]])
-        # ax.set_position([chartBox.x0, chartBox.y0,
-        #          chartBox.width,
-        #          chartBox.height * 0.6])
-        self.get_rc_label_position()
-
+        # Update title position
+        self.get_title_position()
+        x, y = map(self.title.position.__getitem__, [0, 3])
+        self.title.obj.set_position((x, y))
 
         # Update the legend position
         self.get_legend_position()
