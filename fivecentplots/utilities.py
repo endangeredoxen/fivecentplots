@@ -55,13 +55,15 @@ class RepeatedList:
     def __len__(self):
         return len(self.values)
 
-    def get(self, idx, key=None):
-
-        # can we make this a next??
-
+    def __getitem__(self, idx):
+        if isinstance(idx, tuple):  # don't love this
+            idx, key = idx
+        else:
+            key = None
         val = self.values[(idx + self.shift) % len(self.values)]
 
-        if len(list(self.override.keys())) == 0 or key not in self.override.keys():
+        if len(list(self.override.keys())) == 0 or \
+               key not in self.override.keys():
             return val
         else:
             return self.override[key]
