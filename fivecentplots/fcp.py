@@ -947,6 +947,10 @@ def plotter(dobj, **kwargs):
         layout.set_figure_title()
         kwargs['timer'].get('ifig=%s | set_figure_title' % (ifig))
 
+        # Final adjustments
+        layout.set_figure_final_layout(dd, **kwargs)
+        kwargs['timer'].get('ifig=%s | set_figure_final_layout' % (ifig))
+
         # Build the save filename
         filename = set_save_filename(dd.df_fig, ifig, fig_item, fig_cols,
                                      layout, kwargs)
@@ -963,7 +967,6 @@ def plotter(dobj, **kwargs):
 
             if kwargs.get('show', False):
                 show_file(filename)
-
         kwargs['timer'].get('ifig=%s | save' % (ifig))
 
         # Return inline
@@ -981,7 +984,7 @@ def plotter(dobj, **kwargs):
             out = layout.show(filename)
             if out is not None:
                 return out
-        kwargs['timer'].get('ifig=%s | return' % (ifig))
+        kwargs['timer'].get('ifig=%s | return inline' % (ifig))
 
     # Save data used in the figures
     if kwargs.get('save_data', False):

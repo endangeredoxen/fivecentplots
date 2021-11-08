@@ -79,6 +79,7 @@ class BaseLayout:
 
         # init the objects and params
         # TODO: clean up the kwargs passing and use self attribute
+        self._init_layout(data)
         kwargs = self._init_figure(kwargs)
         kwargs = self._init_colors(kwargs)
         kwargs = self._init_axes(kwargs)
@@ -162,6 +163,13 @@ class BaseLayout:
             self.label_y.on = False
         self.kwargs_mod = kwargs
 
+        # Updates from the data object
+        self.update_from_data(data)
+        self.update_wrap(data, kwargs)
+
+        # Update the label keys
+        self.set_label_text(data)
+
     def _init_axes(self, kwargs):
         """
         Create the axes object
@@ -171,6 +179,7 @@ class BaseLayout:
         self.ax = ['x', 'y', 'x2', 'y2']
         spines = utl.kwget(kwargs, self.fcpp, 'spines', True)
         self.axes = Element('ax', self.fcpp, kwargs,
+                            obj=self.obj_array,
                             size=utl.kwget(kwargs, self.fcpp,
                                        'ax_size', [400, 400]),
                             edge_color='#aaaaaa',
@@ -240,6 +249,7 @@ class BaseLayout:
 
         # Axes labels
         label = Element('label', self.fcpp, kwargs,
+                        obj=self.obj_array,
                         font_style='italic',
                         font_weight='bold',
                         )
@@ -1033,6 +1043,11 @@ class BaseLayout:
                         'tick_labels_major_z_font_size'], 10)
 
         return kwargs
+
+    def _init_layout(self, data):
+        self.ncol = data.ncol
+        self.nrow = data.nrow
+        self.obj_array = np.array([[None]*self.ncol]*self.nrow)
 
     def _init_legend(self, kwargs, data):
         """
@@ -1845,6 +1860,13 @@ class BaseLayout:
 
         """
 
+        # Update the label keys from self.kwargs_mod
+        lab_keys = [f for f in self.kwargs_mod.keys() if 'label' in f]
+        kw = kwargs.copy()
+        for lk in lab_keys:
+            kw[lk] = self.kwargs_mod[lk]
+
+        # Set the label text
         labels = ['x', 'y', 'z', 'col', 'row', 'wrap']
         for ilab, lab in enumerate(labels):
             dd = getattr(data, lab)
@@ -1916,9 +1938,7 @@ class BaseLayout:
         """
 
         self.groups = data.groups
-        self.ncol = data.ncol
         self.ngroups = data.ngroups
-        self.nrow = data.nrow
         self.nwrap = data.nwrap
         self.axes.share_x = data.share_x
         self.axes2.share_x = data.share_x2
@@ -2149,9 +2169,12 @@ class BaseLayout:
 
 
 class Element:
-    def __init__(self, label='None', fcpp={}, others={}, **kwargs):
+    def __init__(self, name='None', fcpp={}, others={},
+                obj=None, **kwargs):
         """
         Element style container
+
+        TODO:: docstring
         """
 
         # Update kwargs
@@ -2160,63 +2183,63 @@ class Element:
                 kwargs[k] = v
 
         self._on = kwargs.get('on', True) # visbile or not
-        self.label = label
+        self.name = name
         self.dpi = utl.kwget(kwargs, fcpp, 'dpi', 100)
-        self.obj = None  # plot object reference
+        self.obj = obj  # plot object reference
         self.position = kwargs.get('position', [0, 0, 0, 0])  # left, right, top, bottom
         self._size = kwargs.get('size', [0, 0])  # width, height
         self._size_orig = kwargs.get('size')
         self._text = kwargs.get('text', True)  # text label
         self._text_orig = kwargs.get('text')
-        self.rotation = utl.kwget(kwargs, fcpp, '%s_rotation' % label,
+        self.rotation = utl.kwget(kwargs, fcpp, '%s_rotation' % name,
                                   kwargs.get('rotation', 0))
-        self.zorder = utl.kwget(kwargs, fcpp, '%s_zorder' % label,
+        self.zorder = utl.kwget(kwargs, fcpp, '%s_zorder' % name,
                                 kwargs.get('zorder', 0))
 
         # fill and edge colors
-        self.fill_alpha = utl.kwget(kwargs, fcpp, '%s_fill_alpha' % label,
+        self.fill_alpha = utl.kwget(kwargs, fcpp, '%s_fill_alpha' % name,
                                     kwargs.get('fill_alpha', 1))
-        self.fill_color = utl.kwget(kwargs, fcpp, '%s_fill_color' % label,
+        self.fill_color = utl.kwget(kwargs, fcpp, '%s_fill_color' % name,
                                     kwargs.get('fill_color', '#ffffff'))
         if type(self.fill_color) is not RepeatedList \
                 and self.fill_color is not None \
                 or self.fill_alpha != 1:
             self.color_alpha('fill_color', 'fill_alpha')
 
-        self.edge_width = utl.kwget(kwargs, fcpp, '%s_edge_width' % label,
+        self.edge_width = utl.kwget(kwargs, fcpp, '%s_edge_width' % name,
                                     kwargs.get('edge_width', 1))
-        self.edge_alpha = utl.kwget(kwargs, fcpp, '%s_edge_alpha' % label,
+        self.edge_alpha = utl.kwget(kwargs, fcpp, '%s_edge_alpha' % name,
                                     kwargs.get('edge_alpha', 1))
-        self.edge_color = utl.kwget(kwargs, fcpp, '%s_edge_color' % label,
+        self.edge_color = utl.kwget(kwargs, fcpp, '%s_edge_color' % name,
                                     kwargs.get('edge_color', '#ffffff'))
         if type(self.edge_color) is not RepeatedList \
                 or self.edge_alpha != 1:
             self.color_alpha('edge_color', 'edge_alpha')
 
         # fonts
-        self.font = utl.kwget(kwargs, fcpp, '%s_font' % label,
+        self.font = utl.kwget(kwargs, fcpp, '%s_font' % name,
                               kwargs.get('font', 'sans-serif'))
-        self.font_color = utl.kwget(kwargs, fcpp, '%s_font_color' % label,
+        self.font_color = utl.kwget(kwargs, fcpp, '%s_font_color' % name,
                                     kwargs.get('font_color', '#000000'))
-        self.font_size = utl.kwget(kwargs, fcpp, '%s_font_size' % label,
+        self.font_size = utl.kwget(kwargs, fcpp, '%s_font_size' % name,
                                    kwargs.get('font_size', 14))
-        self.font_style = utl.kwget(kwargs, fcpp, '%s_font_style' % label,
+        self.font_style = utl.kwget(kwargs, fcpp, '%s_font_style' % name,
                                    kwargs.get('font_style', 'normal'))
-        self.font_weight = utl.kwget(kwargs, fcpp, '%s_font_weight' % label,
+        self.font_weight = utl.kwget(kwargs, fcpp, '%s_font_weight' % name,
                                    kwargs.get('font_weight', 'normal'))
 
         # lines
-        self.alpha = utl.kwget(kwargs, fcpp, '%s_alpha' % label,
+        self.alpha = utl.kwget(kwargs, fcpp, '%s_alpha' % name,
                                kwargs.get('alpha', 1))
-        self.color = utl.kwget(kwargs, fcpp, '%s_color' % label,
+        self.color = utl.kwget(kwargs, fcpp, '%s_color' % name,
                                kwargs.get('color', '#000000'))
         if type(self.color) is not RepeatedList or self.alpha != 1:
             self.color_alpha('color', 'alpha')
-        self.width = utl.kwget(kwargs, fcpp, '%s_width' % label,
+        self.width = utl.kwget(kwargs, fcpp, '%s_width' % name,
                                kwargs.get('width', 1))
         if type(self.width) is not RepeatedList:
             self.width = RepeatedList(self.width, 'width')
-        self.style = utl.kwget(kwargs, fcpp, '%s_style' % label,
+        self.style = utl.kwget(kwargs, fcpp, '%s_style' % name,
                                kwargs.get('style', '-'))
         if type(self.style) is not RepeatedList:
             self.style = RepeatedList(self.style, 'style')
@@ -2469,3 +2492,31 @@ class Legend_Element(DF_Element):
     def set_default(self):
         return self.default.copy()
 
+
+class ObjectArray:
+    def __init__(self):
+        """
+        Automatically appending np.array
+        """
+
+        self._obj = np.array([])
+
+    def __len__(self):
+        return len(self.obj)
+
+    def __getitem__(self, idx):
+        return self.obj[idx]
+
+    def __setitem__(self, idx, val):
+        self.obj[r, c] = val
+
+    @property
+    def obj(self):
+        return self._obj
+
+    @obj.setter
+    def obj(self, new_obj):
+        self._obj = np.append(self._obj, new_obj)
+
+    def reshape(r, c):
+        self._obj = self._obj.reshape(r, c)
