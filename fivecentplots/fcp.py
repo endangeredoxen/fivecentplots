@@ -60,8 +60,13 @@ from defaults import *  # use local file
 kw = keywords.make_docstrings()
 
 # install requirements for other packages beyond what is in setup.py
+global INSTALL
 INSTALL = {}
 INSTALL['bokeh'] = ['bokeh']
+
+# Global kwargs to override anything
+global KWARGS
+KWARGS = {}
 
 
 def bar(*args, **kwargs):
@@ -840,6 +845,10 @@ def plotter(dobj, **kwargs):
 
     # Check for deprecated kwargs
     kwargs = deprecated(kwargs)
+
+    # Apply globals
+    for k, v in KWARGS.items():
+        kwargs[k] = v
 
     # Set the plotting engine
     theme = kwargs.get('theme', None)
