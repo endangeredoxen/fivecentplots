@@ -1561,33 +1561,28 @@ class Layout(BaseLayout):
                  self.legend.obj.get_window_extent().height + self.legend_border]
 
         # tick labels
-        ticks = ['x', 'y', 'z']
-        for tick in ticks:
+        for tick in ['x', 'y', 'z']:
             # primary axes
-            if getattr(self, f'tick_labels_major_{tick}').on:
-                tlabs = getattr(self.axes.obj[0,0], f'get_{tick}ticklabels')()
-                getattr(self, f'tick_labels_major_{tick}').size = \
-                    [np.nanmax([t.get_window_extent().width for t in tlabs]),
-                    np.nanmax([t.get_window_extent().height for t in tlabs])]
-            if tick != 'z' and getattr(self, f'tick_labels_minor_{tick}').on:
-                tlabs = getattr(self.axes.obj[0,0], f'get_{tick}ticklabels')(minor=True)
-                getattr(self, f'tick_labels_minor_{tick}').size = \
-                    [np.nanmax([t.get_window_extent().width for t in tlabs]),
-                    np.nanmax([t.get_window_extent().height for t in tlabs])]
+            self.get_tick_label_size(self.axes, tick, 'major')
+            if tick != 'z':
+                self.get_tick_label_size(self.axes, tick, 'minor')
 
             # secondary axes
-            if not self.axes2.on or tick == 'z':
-                continue
-            if getattr(self, f'tick_labels_major_{tick}2').on:
-                tlabs = getattr(self.axes2.obj[0,0], f'get_{tick}ticklabels')()
-                getattr(self, f'tick_labels_major_{tick}2').size = \
-                    [np.nanmax([t.get_window_extent().width for t in tlabs]),
-                    np.nanmax([t.get_window_extent().height for t in tlabs])]
-            if getattr(self, f'tick_labels_minor_{tick}2').on:
-                tlabs = getattr(self.axes2.obj[0,0], f'get_{tick}ticklabels')(minor=True)
-                getattr(self, f'tick_labels_minor_{tick}2').size = \
-                    [np.nanmax([t.get_window_extent().width for t in tlabs]),
-                    np.nanmax([t.get_window_extent().height for t in tlabs])]
+            if tick != 'z' and self.axes2.on:
+                self.get_tick_label_size(self.axes2, tick, 'major')
+                self.get_tick_label_size(self.axes2, tick, 'minor')
+
+        db()
+        # tt.size_all[ir, ic] = \
+        #     [np.nanmax([t.get_window_extent().width for t in tlabs]),
+        #     np.nanmax([t.get_window_extent().height for t in tlabs])]
+        # # tick cleanup
+        # last_tick = self.axes.obj[0, 0].transData.transform(self.tick_labels_major_x.obj[0,0][-1].get_position())
+        # if tick == 'x':
+        #     last_tick = last_tick[0]
+        #     self.x_tick_xs = max(0, tlabs[-1].get_window_extent().width)
+        # else:
+        #     last_tick = last_tick[0]
 
         # box labels
 
@@ -2005,6 +2000,51 @@ class Layout(BaseLayout):
             (self.labtick_x + self.ws_fig_label + self.box_labels + \
              self.legend.overflow + \
              (self.legend.size[1] if self.legend.location==11 else 0)) / self.fig.size[1]
+
+    def get_tick_label_size(self, ax, tick: str, which: str):
+        """
+        Get the size of the tick labels (plot must be rendered)
+
+        Args:
+            ir: row index of object array
+            ic: column index of object array
+            ax: axes obj (self.axes or self.axes2)
+            tick: name of the tick axes
+            which: 'major' or 'minor'
+
+        """
+        if tick == 'x':  # what about z??
+            idx = 0
+        else:
+            idx = 1
+        for ir, ic in np.ndindex(ax.obj.shape):
+            # Get the tick label Element
+            minor = True if which == 'minor' else False
+            tt = getattr(self, f'tick_labels_{which}_{tick}')
+            if not tt.on:
+                return
+
+            # Get the VISIBLE tick labels and add references to the Element object
+            tlabs = getattr(ax.obj[ir, ic], f'get_{tick}ticklabels')(minor=minor)
+            vmin, vmax = getattr(ax.obj[ir, ic], f'get_{tick}lim')()
+            tlabs = [f for f in tlabs if vmin < f.get_position()[idx] < vmax]
+            tt.obj[ir, ic] = tlabs
+
+            # Get the label sizes and store sizes as 2D array
+            bboxes = [t.get_window_extent() for t in tlabs]
+            widths = [f.width for f in bboxes]
+            heights = [f.height for f in bboxes]
+            size = np.zeros([len(widths), 4])
+            size[:, 0] = ir
+            size[:, 1] = ic
+            size[:, 2] = widths
+            size[:, 3] = heights
+            if len(tt.size_all) > 0:
+                tt.size_all = np.concatenate((tt.size_all, size))
+            else:
+                tt.size_all = size
+
+        tt.size = [tt.size_all[:, 2].max(), tt.size_all[:, 3].max()]
 
     def get_title_position(self):
         """
@@ -3886,15 +3926,14 @@ class Layout(BaseLayout):
         # Update title position
         if self.title.on:
             self.get_title_position()
-            x, y = map(self.title.position.__getitem__, [0, 3])
             self.title.obj.set_position(self.title.position_xy)
 
         # Update the legend position
         ## TODO:  validate other positions
-        self.get_legend_position()
-        x, y = map(self.title.position.__getitem__, [0, 3])
-        self.legend.obj.set_bbox_to_anchor((self.legend.position[1],
-                                            self.legend.position[2]))
+        if self.legend.on:
+            self.get_legend_position()
+            self.legend.obj.set_bbox_to_anchor((self.legend.position[1],
+                                                self.legend.position[2]))
 
     def set_figure_title(self):
         """

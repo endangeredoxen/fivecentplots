@@ -1540,6 +1540,7 @@ class BaseLayout:
                         on=utl.kwget(kwargs, self.fcpp,
                                      'tick_labels_major_%s' % ax,
                                      self.tick_labels_major.on),
+                        obj=self.obj_array,
                         edge_color=edge_color,
                         edge_alpha=edge_alpha,
                         edge_width=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_edge_width',
@@ -2185,12 +2186,16 @@ class Element:
         self._on = kwargs.get('on', True) # visbile or not
         self.name = name
         self.dpi = utl.kwget(kwargs, fcpp, 'dpi', 100)
-        self.obj = obj  # plot object reference
+        if obj is None:
+            self.obj = None
+        else:
+            self.obj = obj.copy()  # plot object reference
         self.position = kwargs.get('position', [0, 0, 0, 0])  # left, right, top, bottom
         self._size = kwargs.get('size', [0, 0])  # width, height
         self._size_orig = kwargs.get('size')
         self._text = kwargs.get('text', True)  # text label
         self._text_orig = kwargs.get('text')
+        self.size_all = np.array([])  # for some elements that are unique by axes
         self.rotation = utl.kwget(kwargs, fcpp, '%s_rotation' % name,
                                   kwargs.get('rotation', 0))
         self.zorder = utl.kwget(kwargs, fcpp, '%s_zorder' % name,
