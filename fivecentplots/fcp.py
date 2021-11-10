@@ -846,9 +846,10 @@ def plotter(dobj, **kwargs):
     # Check for deprecated kwargs
     kwargs = deprecated(kwargs)
 
-    # Apply globals
+    # Apply globals if they don't exist
     for k, v in KWARGS.items():
-        kwargs[k] = v
+        if k not in kwargs.keys():
+            kwargs[k] = v
 
     # Set the plotting engine
     theme = kwargs.get('theme', None)
