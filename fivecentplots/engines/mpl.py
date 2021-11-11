@@ -193,6 +193,74 @@ class Layout(BaseLayout):
             kwargs['save_ext'] = '.png'
         self.kwargs = kwargs
 
+    @property
+    def bottom(self):
+        """
+        Height of the space to the bottom of the axes object
+        """
+
+        return 0
+
+    @property
+    def labtick_x(self):
+        """
+        Height of the x label + x tick labels + related whitespace
+        """
+
+        val = self.label_x.size[1] + \
+              self.ws_label_tick * self.label_x.on + \
+              self.tick_x
+
+        return val
+
+    @property
+    def labtick_x2(self):
+        """
+        Height of the secondary x label + x tick labels + related
+        whitespace
+        """
+
+        val = (self.label_x2.size[1] + \
+              self.ws_label_tick + 2*self.ws_ticks_ax + \
+              max(self.tick_labels_major_x2.size[1],
+                  self.tick_labels_minor_x2.size[1])) * self.axes.twin_y
+
+        return val
+
+    # @property
+    # def left(self):
+    #     """
+    #     Width of the space to the left of the axes object
+    #     """
+    #     pass
+
+    # @property
+    # def right(self):
+    #     """
+    #     Width of the space to the right of the axes object
+    #     """
+    #     pass
+
+    @property
+    def tick_x(self):
+        """
+        Height of the primary x ticks and whitespace
+        """
+
+        val = max(self.tick_labels_major_x.size[1],
+                  self.tick_labels_minor_x.size[1]) + \
+              self.ws_ticks_ax * self.tick_labels_major_x.on
+
+        return val
+
+    @property
+    def top(self):
+        """
+        Height of the space to the right of the axes object
+        """
+
+        return 0
+
     def add_box_labels(self, ir, ic, data):
 
         num_cols = len(data.changes.columns)
@@ -1572,7 +1640,6 @@ class Layout(BaseLayout):
                 self.get_tick_label_size(self.axes2, tick, 'major')
                 self.get_tick_label_size(self.axes2, tick, 'minor')
 
-        db()
         # tt.size_all[ir, ic] = \
         #     [np.nanmax([t.get_window_extent().width for t in tlabs]),
         #     np.nanmax([t.get_window_extent().height for t in tlabs])]
@@ -1738,14 +1805,14 @@ class Layout(BaseLayout):
         debug = kwargs.get('debug_size', False)
 
         # Set some values for convenience
-        self.tick_x = max(self.tick_labels_major_x.size[1],
-                          self.tick_labels_minor_x.size[1]) + \
-                      self.ws_ticks_ax * self.tick_labels_major_x.on
-        self.labtick_x = self.label_x.size[1] + \
-                         self.ws_label_tick * self.label_x.on + self.tick_x
-        self.labtick_x2 = (self.label_x2.size[1] + self.ws_label_tick + 2*self.ws_ticks_ax + \
-                           max(self.tick_labels_major_x2.size[1],
-                               self.tick_labels_minor_x2.size[1])) * self.axes.twin_y
+        # self.tick_x = max(self.tick_labels_major_x.size[1],
+        #                   self.tick_labels_minor_x.size[1]) + \
+        #               self.ws_ticks_ax * self.tick_labels_major_x.on
+        # self.labtick_x = self.label_x.size[1] + \
+        #                  self.ws_label_tick * self.label_x.on + self.tick_x
+        # self.labtick_x2 = (self.label_x2.size[1] + self.ws_label_tick + 2*self.ws_ticks_ax + \
+        #                    max(self.tick_labels_major_x2.size[1],
+        #                        self.tick_labels_minor_x2.size[1])) * self.axes.twin_y
         self.tick_y = max(self.tick_labels_major_y.size[0],
                           self.tick_labels_minor_y.size[0]) + self.ws_ticks_ax
         self.labtick_y = self.label_y.size[0] + self.ws_label_tick + self.tick_y
@@ -2032,19 +2099,66 @@ class Layout(BaseLayout):
 
             # Get the label sizes and store sizes as 2D array
             bboxes = [t.get_window_extent() for t in tlabs]
-            widths = [f.width for f in bboxes]
-            heights = [f.height for f in bboxes]
-            size = np.zeros([len(widths), 4])
+            size = np.zeros([len(bboxes), 8])
             size[:, 0] = ir
             size[:, 1] = ic
-            size[:, 2] = widths
-            size[:, 3] = heights
+            size[:, 2] = [f.width for f in bboxes]
+            size[:, 3] = [f.height for f in bboxes]
+            size[:, 4] = [f.x0 for f in bboxes]
+            size[:, 5] = [f.x1 for f in bboxes]
+            size[:, 6] = [f.y0 for f in bboxes]
+            size[:, 7] = [f.y1 for f in bboxes]
             if len(tt.size_all) > 0:
                 tt.size_all = np.concatenate((tt.size_all, size))
             else:
                 tt.size_all = size
 
         tt.size = [tt.size_all[:, 2].max(), tt.size_all[:, 3].max()]
+
+    def get_tick_overlaps(self):
+        """
+        Deal with overlapping and out of range ticks
+        """
+
+        xticks = self.tick_labels_major_x
+        yticks = self.tick_labels_major_y
+
+        # TODO:: decide what to do with the overlapping ticks; remove or font?
+        for ir, ic in np.ndindex(self.axes.obj.shape):
+            xticks_size_all = \
+                xticks.size_all[(xticks.size_all[:, 0]==ir) & \
+                                (xticks.size_all[:, 1]==ic)]
+            yticks_size_all = \
+                yticks.size_all[(yticks.size_all[:, 0]==ir) & \
+                                (yticks.size_all[:, 1]==ic)]
+
+            # Overlapping x-y origin
+            xw, xh, xx0, xx1, xy0, xy1 = xticks_size_all[0][2:]
+            xc = (xx0 + (xx1 - xx0) / 2, xy0 + (xy0- xy1) / 2)
+            yw, yh, yx0, yx1, yy0, yy1 = yticks_size_all[0][2:]
+            yc = (yx0 + (yx1 - yx0) / 2, yy0 + (yy0- yy1) / 2)
+            ol = utl.rectangle_overlap((xw, xh, xc), (yw, yh, yc))
+            if ol:
+                db()
+
+            # Overlapping ticks on same axis
+            xbbox = xticks_size_all[:, 4:6]
+            ol = (xbbox[1:, 0] - xbbox[0:-1, 1]) < 0
+            if any(ol):
+                db()
+            ybbox = yticks_size_all[:, -2:]
+            ol = (ybbox[1:, 0] - ybbox[0:-1, 1]) < 0
+            if any(ol):
+                db()
+
+            # Ticks at the edge of the plot
+            # TODO:: may need to check first, could be bad with weird plot
+            xxs = self.axes.size[0] + self.right - xticks_size_all[-1][5]
+            if xxs < 0:
+                db()
+            yxs = self.axes.size[1] + self.top - yticks_size_all[-1][6]
+            if yxs < 0:
+                db()
 
     def get_title_position(self):
         """
@@ -3896,6 +4010,9 @@ class Layout(BaseLayout):
 
         # Render dummy figure to get the element sizes
         self.get_element_sizes2(data)
+
+        # Clean up tick overlaps
+        self.get_tick_overlaps()
 
         # Resize the figure
         self.get_figure_size(data, **kwargs)
