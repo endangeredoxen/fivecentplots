@@ -2254,6 +2254,8 @@ class Layout(BaseLayout):
         # TODO:: self.axes2
 
         for ir, ic in np.ndindex(self.axes.obj.shape):
+            # size_all by idx:
+            #   ir, ic, width, height, x0, x1, y0, y1
             xticks_size_all = \
                 xticks.size_all[(xticks.size_all[:, 0] == ir) &
                                 (xticks.size_all[:, 1] == ic)]
@@ -2262,8 +2264,6 @@ class Layout(BaseLayout):
                                 (yticks.size_all[:, 1] == ic)]
 
             # Overlapping x-y origin
-            #if ir == 0 and ic == 1:
-            #    db()
             if len(xticks_size_all) > 0 and len(yticks_size_all) > 0:
                 xw, xh, xx0, xx1, xy0, xy1 = xticks_size_all[0][2:]
                 xc = (xx0 + (xx1 - xx0) / 2, xy0 + (xy0 - xy1) / 2)
@@ -2272,6 +2272,16 @@ class Layout(BaseLayout):
                 ol = utl.rectangle_overlap((xw, xh, xc), (yw, yh, yc))
                 if ol:
                     db()
+
+            # Overlapping grid plot at x-origin
+            if ic > 0:
+                ax_x0 = self.axes.obj[ir, ic].get_window_extent().x0
+                tick_x0 = xticks_size_all[0][4]
+                if ax_x0 - tick_x0 > self.ws_col:
+                    xticks.obj[ir, ic][0].set_visible(False)
+                    #xticks.obj[ir, ic][0].set_size(xticks.font_size / 1.5)
+
+            # TODO: Overlapping grid plot at y-origin
 
             # Overlapping ticks on same axis
             if len(xticks_size_all) > 0:
@@ -2311,8 +2321,12 @@ class Layout(BaseLayout):
                     (self.label_wrap.size[1] +
                      self.ws_label_col * self.label_wrap.on)
         self.title.position[0] = self.ncol / 2
+        if self.label_wrap.size[1] > 0:
+            title_height = 0
+        else:
+            title_height = self.title.size[1] / 2 - 2  # this is an offset from somewhere I don't know
         self.title.position[3] = 1+(self.ws_title_ax +
-                                    col_label +
+                                    col_label + title_height +
                                     self.label_wrap.size[1]) / self.axes.size[1]
         self.title.position[2] = self.title.position[3] + (self.ws_title_ax +
                                                            self.title.size[1])/self.axes.size[1]
