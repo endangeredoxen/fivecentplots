@@ -1,0 +1,3 @@
+* fix box plot labels
+* try to cut any steps > 5ms in half
+* need to simplify the add_label function since positioning is all done later
