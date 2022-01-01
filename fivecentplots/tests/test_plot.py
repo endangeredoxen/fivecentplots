@@ -660,7 +660,7 @@ def test_other_stat_good(master=False, remove=True, show=False):
 def test_other_stat_good_mult(master=False, remove=True, show=False):
 
     name = osjoin(
-        MASTER, 'other_stat-lines-good-multipe-y_master') if master else 'other_stat-lines-good-multipe-y'
+        MASTER, 'other_stat-lines-good-multiple-y_master') if master else 'other_stat-lines-good-multipe-y'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Boost Level', 'I [A]'], show=SHOW, legend=True, stat='median',

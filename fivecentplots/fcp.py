@@ -763,8 +763,8 @@ def plot_ref(ir, ic, iline, data, layout, df, x, y):
         return
 
     for iref in range(0, len(layout.ref_line.column.values)):
-        layout.plot_xy(ir, ic, iref, df, x, layout.ref_line.column.get(iref),
-                       layout.ref_line.legend_text.get(iref), False,
+        layout.plot_xy(ir, ic, iref, df, x, layout.ref_line.column[iref],
+                       layout.ref_line.legend_text[iref], False,
                        line_type='ref_line', marker_disable=True)
         layout.legend.ordered_curves = layout.legend.ordered_curves[0:-1]
 

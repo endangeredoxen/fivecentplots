@@ -121,7 +121,9 @@ class BaseLayout:
                                         'separate_ticks', self.separate_labels)
         if self.separate_labels:
             self.separate_ticks = True
-        self.tick_cleanup = utl.kwget(kwargs, self.fcpp, 'tick_cleanup', True)
+        self.tick_cleanup = utl.kwget(kwargs, self.fcpp, 'tick_cleanup', 'shrink')  # 'remove', 'shrink', False
+        if type(self.tick_cleanup) is str:
+            self.tick_cleanup = self.tick_cleanup.lower()
 
         # Plot overrides
         if 'bar' in self.name:
@@ -2304,6 +2306,7 @@ class Element:
         else:
             self.obj = obj.copy()  # plot object reference
             self.obj_bg = obj.copy()  # background rect
+        self.limits = []
 
         # left, right, top, bottom
         self.position = kwargs.get('position', [0, 0, 0, 0])

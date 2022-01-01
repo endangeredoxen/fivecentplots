@@ -2217,6 +2217,7 @@ class Layout(BaseLayout):
             tlabs = getattr(
                 ax.obj[ir, ic], f'get_{tick}ticklabels')(minor=minor)
             vmin, vmax = getattr(ax.obj[ir, ic], f'get_{tick}lim')()
+            tt.limits = [vmin, vmax]
             tlabs = [f for f in tlabs if vmin <= f.get_position()[idx] <= vmax]
             tt.obj[ir, ic] = tlabs
 
@@ -2249,7 +2250,6 @@ class Layout(BaseLayout):
         xticks = self.tick_labels_major_x
         yticks = self.tick_labels_major_y
 
-        # TODO:: decide what to do with the overlapping ticks; remove or font?
         # TODO:: minor overlaps
         # TODO:: self.axes2
 
@@ -2263,23 +2263,36 @@ class Layout(BaseLayout):
                 yticks.size_all[(yticks.size_all[:, 0] == ir) &
                                 (yticks.size_all[:, 1] == ic)]
 
+            # Prevent single tick label axis
+            if len(xticks_size_all) == 1:
+                self.add_text(ir, ic, str(xticks.limits[1]),
+                              position=[self.axes.size[0] - \
+                                        xticks.size_all[0, 2] / 2 / 1.5,
+                                        -xticks.size_all[0, 3]],
+                              font_size=xticks.font_size / 1.5)
+
             # Overlapping x-y origin
             if len(xticks_size_all) > 0 and len(yticks_size_all) > 0:
                 xw, xh, xx0, xx1, xy0, xy1 = xticks_size_all[0][2:]
                 xc = (xx0 + (xx1 - xx0) / 2, xy0 + (xy0 - xy1) / 2)
                 yw, yh, yx0, yx1, yy0, yy1 = yticks_size_all[0][2:]
                 yc = (yx0 + (yx1 - yx0) / 2, yy0 + (yy0 - yy1) / 2)
-                ol = utl.rectangle_overlap((xw, xh, xc), (yw, yh, yc))
-                if ol:
-                    db()
+                if utl.rectangle_overlap((xw, xh, xc), (yw, yh, yc)):
+                    if self.tick_cleanup == 'remove':
+                        yticks.obj[ir, ic][0].set_visible(False)
+                    else:
+                        xticks.obj[ir, ic][0].set_size(xticks.font_size / 1.5)
+                        yticks.obj[ir, ic][0].set_size(yticks.font_size / 1.5)
 
             # Overlapping grid plot at x-origin
             if ic > 0:
                 ax_x0 = self.axes.obj[ir, ic].get_window_extent().x0
                 tick_x0 = xticks_size_all[0][4]
                 if ax_x0 - tick_x0 > self.ws_col:
-                    xticks.obj[ir, ic][0].set_visible(False)
-                    #xticks.obj[ir, ic][0].set_size(xticks.font_size / 1.5)
+                    if self.tick_cleanup == 'remove':
+                        xticks.obj[ir, ic][0].set_visible(False)
+                    else:
+                        xticks.obj[ir, ic][0].set_size(xticks.font_size / 1.5)
 
             # TODO: Overlapping grid plot at y-origin
 
