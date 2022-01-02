@@ -2285,7 +2285,7 @@ class Layout(BaseLayout):
                         yticks.obj[ir, ic][0].set_size(yticks.font_size / 1.5)
 
             # Overlapping grid plot at x-origin
-            if ic > 0:
+            if ic > 0 and len(xticks_size_all) > 0:
                 ax_x0 = self.axes.obj[ir, ic].get_window_extent().x0
                 tick_x0 = xticks_size_all[0][4]
                 if ax_x0 - tick_x0 > self.ws_col:
