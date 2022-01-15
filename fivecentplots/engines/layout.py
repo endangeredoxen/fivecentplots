@@ -902,6 +902,7 @@ class BaseLayout:
         if self.gantt.on and 'label_x' not in kwargs.keys():
             self.label_x.text = self.gantt.label_x
             kwargs['label_x'] = self.gantt.label_x
+            self.label_x.on = False  # disable unless explicitly added
 
         return kwargs
 

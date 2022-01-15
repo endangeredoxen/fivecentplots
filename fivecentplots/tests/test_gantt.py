@@ -2,7 +2,10 @@ import pytest
 import fivecentplots as fcp
 import pandas as pd
 import numpy as np
-import os, sys, pdb, platform
+import os
+import sys
+import pdb
+import platform
 import fivecentplots.utilities as utl
 import inspect
 osjoin = os.path.join
@@ -11,9 +14,11 @@ if platform.system() != 'Windows':
     print('Warning!  Image test files generated in windows.  Compatibility with linux/mac may vary')
 
 MPL = utl.get_mpl_version_dir()
-MASTER = osjoin(os.path.dirname(fcp.__file__), 'tests', 'test_images', MPL, 'gantt.py')
+MASTER = osjoin(os.path.dirname(fcp.__file__), 'tests',
+                'test_images', MPL, 'gantt.py')
 
-df = pd.read_csv(osjoin(os.path.dirname(fcp.__file__), 'tests', 'fake_data_gantt.csv'))
+df = pd.read_csv(osjoin(os.path.dirname(fcp.__file__),
+                 'tests', 'fake_data_gantt.csv'))
 
 
 # Set theme
@@ -32,7 +37,7 @@ def make_all():
     """
 
     members = inspect.getmembers(sys.modules[__name__])
-    members = [f for f in members if 'test_' in f[0]]
+    members = [f for f in members if 'plt_' in f[0]]
     for member in members:
         print('Running %s...' % member[0], end='')
         member[1](master=True)
@@ -45,14 +50,14 @@ def show_all():
     """
 
     members = inspect.getmembers(sys.modules[__name__])
-    members = [f for f in members if 'test_' in f[0]]
+    members = [f for f in members if 'plt_' in f[0]]
     for member in members:
         print('Running %s...' % member[0], end='')
         member[1](show=True)
         db()
 
 
-def test_basic(master=False, remove=True, show=False):
+def plt_basic(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'basic_master') if master else 'basic'
 
@@ -60,23 +65,32 @@ def test_basic(master=False, remove=True, show=False):
     fcp.gantt(df=df, x=['Start', 'Stop'], y='Task',
               filename=name + '.png', ax_size=[600, 400])
 
+    if bm:
+        return
+
     # Compare with master
     if master:
         return
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
         assert not compare
 
-def test_legend(master=False, remove=True, show=False):
+
+def plt_legend(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'legend_master') if master else 'legend'
+
+    if bm:
+        return
 
     # Make the plot
     fcp.gantt(df=df, x=['Start', 'Stop'], y='Task', legend='Assigned',
@@ -88,14 +102,25 @@ def test_legend(master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
         assert not compare
 
+
+def test_basic(benchmark):
+    plt_basic()
+    benchmark(plt_basic, True)
+
+
+def test_legend(benchmark):
+    plt_legend()
+    benchmark(plt_legend, True)
 
 
 if __name__ == '__main__':

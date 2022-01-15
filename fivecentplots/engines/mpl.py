@@ -1911,21 +1911,6 @@ class Layout(BaseLayout):
         debug = kwargs.get('debug_size', False)
 
         # Set some values for convenience
-        # self.tick_x = max(self.tick_labels_major_x.size[1],
-        #                   self.tick_labels_minor_x.size[1]) + \
-        #               self.ws_ticks_ax * self.tick_labels_major_x.on
-        # self.labtick_x = self.label_x.size[1] + \
-        #                  self.ws_label_tick * self.label_x.on + self.tick_x
-        # self.labtick_x2 = (self.label_x2.size[1] + self.ws_label_tick + 2*self.ws_ticks_ax + \
-        #                    max(self.tick_labels_major_x2.size[1],
-        #                        self.tick_labels_minor_x2.size[1])) * self.axes.twin_y
-        # self.tick_y = max(self.tick_labels_major_y.size[0],
-        #                   self.tick_labels_minor_y.size[0]) + self.ws_ticks_ax
-        # self.labtick_y = self.label_y.size[0] + self.ws_label_tick + self.tick_y
-        # self.labtick_y2 = (self.label_y2.size[0] + self.ws_label_tick + 2*self.ws_ticks_ax + \
-        #                    max(self.tick_labels_major_y2.size[0],
-        #                        self.tick_labels_minor_y2.size[0])) * self.axes.twin_x
-        # self.labtick_z = self.ws_label_tick * self.label_z.on + self.tick_labels_major_z.size[0]
         self.ws_ax_leg = max(
             0, self.ws_ax_leg - self.labtick_y2) if self.legend.location == 0 else 0
         self.ws_leg_fig = self.ws_leg_fig if self.legend.location == 0 else 0
@@ -1996,30 +1981,6 @@ class Layout(BaseLayout):
             else:
                 self.axes.size[0] = self.axes.size[1] * data.wh_ratio
 
-        # Left side whitespace
-        # self.left = self.ws_fig_label + self.labtick_y
-        # title_xs_left = self.title.size[0] / 2 - (self.left + \
-        #     (self.axes.size[0] * self.ncol + self.ws_col * (self.ncol - 1)) / 2)
-        # if title_xs_left < 0:
-        #    title_xs_left = 0
-        # self.left += title_xs_left
-
-        # Right side whitespace
-        # rc_label = self.label_row.size[0] + self.ws_label_row * self.label_row.on
-        # ws_ax_fig = (self.ws_ax_fig if not self.legend._on or self.legend.location!=0 else 0)
-        # self.right = ws_ax_fig + \
-        #     self.labtick_y2 + \
-        #     rc_label + \
-        #     self.labtick_z + \
-        #     (self.label_z.size[0] * (self.ncol if self.separate_labels else 1))
-
-        # # Main figure title excess size
-        # title_xs_right = self.title.size[0] / 2 - (self.right + \
-        #     (self.axes.size[0] * self.ncol + self.ws_col * (self.ncol - 1)) / 2)
-        # if title_xs_right < 0:
-        #    title_xs_right = 0
-        # self.right += title_xs_right
-
         # Legend whitespace
         legx, legy = 0, 0
         if self.legend.location == 0 and self.legend._on:
@@ -2027,13 +1988,6 @@ class Layout(BaseLayout):
                 self.fig_legend_border + self.legend.edge_width
         elif self.legend.location == 11 and self.legend._on:
             legy = self.legend.size[1]
-
-        # if self.x_tick_xs > 0 and self.legend._on:
-        #     if self.x_tick_xs > legx - self.fig_legend_border:
-        #         # hack for long x ticks and no legend
-        #         legx += 3 + self.x_tick_xs - legx + self.fig_legend_border
-        # elif self.x_tick_xs > (self.ws_ax_fig + self.rc_label):
-        #     self.right += self.x_tick_xs - self.ws_ax_fig + 3
 
         # Box titles excess size
         if self.box_group_title.on:
