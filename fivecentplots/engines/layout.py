@@ -121,7 +121,9 @@ class BaseLayout:
                                         'separate_ticks', self.separate_labels)
         if self.separate_labels:
             self.separate_ticks = True
-        self.tick_cleanup = utl.kwget(kwargs, self.fcpp, 'tick_cleanup', 'shrink')  # 'remove', 'shrink', False
+        # 'remove', 'shrink', False
+        self.tick_cleanup = utl.kwget(
+            kwargs, self.fcpp, 'tick_cleanup', 'shrink')
         if type(self.tick_cleanup) is str:
             self.tick_cleanup = self.tick_cleanup.lower()
 
@@ -705,6 +707,7 @@ class BaseLayout:
         cbar_size = utl.kwget(kwargs, self.fcpp, 'cbar_size', 30)
         self.cbar = Element('cbar', self.fcpp, kwargs,
                             on=kwargs.get('cbar', False),
+                            obj=self.obj_array,
                             size=[cbar_size if type(cbar_size) is not list else cbar_size[0],
                                   self.axes.size[1]],
                             title='',

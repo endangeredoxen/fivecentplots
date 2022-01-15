@@ -1739,16 +1739,18 @@ class Layout(BaseLayout):
                  self.legend.obj.get_window_extent().height + self.legend_border]
 
         # tick labels
-        for tick in ['x', 'y', 'z']:
+        for tick in ['x', 'y']:
             # primary axes
-            self.get_tick_label_size(False, tick, 'major')
-            if tick != 'z':
-                self.get_tick_label_size(False, tick, 'minor')
+            self.get_tick_label_size(self.axes, tick, '', 'major')
+            self.get_tick_label_size(self.axes, tick, '', 'minor')
 
             # secondary axes
-            if tick != 'z' and self.axes2.on:
-                self.get_tick_label_size(True, tick, 'major')
-                self.get_tick_label_size(True, tick, 'minor')
+            if self.axes2.on:
+                self.get_tick_label_size(self.axes2, tick, '2', 'major')
+                self.get_tick_label_size(self.axes2, tick, '2', 'minor')
+
+        if self.cbar.on:
+            self.get_tick_label_size(self.cbar, 'z', '', 'major')
 
         # tt.size_all[ir, ic] = \
         #     [np.nanmax([t.get_window_extent().width for t in tlabs]),
@@ -2188,23 +2190,19 @@ class Layout(BaseLayout):
              self.legend.overflow +
              (self.legend.size[1] if self.legend.location == 11 else 0)) / self.fig.size[1]
 
-    def get_tick_label_size(self, ax2, tick: str, which: str):
+    def get_tick_label_size(self, ax, tick: str, tick_num: str, which: str,
+                            alias: str = ''):
         """
         Get the size of the tick labels (plot must be rendered)
 
         Args:
-            ax2: secondary axis if True
+            ax: the axes object for the labels of interest
             tick: name of the tick axes
+            tick_num: '' or '2' for secondary
             which: 'major' or 'minor'
 
         """
 
-        if ax2:
-            ax = self.axes2
-            tick2 = '2'
-        else:
-            ax = self.axes
-            tick2 = ''
         if tick == 'x':  # what about z??
             idx = 0
         else:
@@ -2212,14 +2210,19 @@ class Layout(BaseLayout):
         for ir, ic in np.ndindex(ax.obj.shape):
             # Get the tick label Element
             minor = True if which == 'minor' else False
-            tt = getattr(self, f'tick_labels_{which}_{tick}{tick2}')
+            tt = getattr(self, f'tick_labels_{which}_{tick}{tick_num}')
             if not tt.on:
                 return
 
             # Get the VISIBLE tick labels and add references to the Element object
-            tlabs = getattr(
-                ax.obj[ir, ic], f'get_{tick}ticklabels')(minor=minor)
-            vmin, vmax = getattr(ax.obj[ir, ic], f'get_{tick}lim')()
+            if tick == 'z':
+                tlabs = getattr(
+                    ax.obj[ir, ic].ax, f'get_yticklabels')(minor=minor)
+                vmin, vmax = getattr(ax.obj[ir, ic].ax, f'get_ylim')()
+            else:
+                tlabs = getattr(
+                    ax.obj[ir, ic], f'get_{tick}ticklabels')(minor=minor)
+                vmin, vmax = getattr(ax.obj[ir, ic], f'get_{tick}lim')()
             tt.limits = [vmin, vmax]
             tlabs = [f for f in tlabs if vmin <= f.get_position()[idx] <= vmax]
             tt.obj[ir, ic] = tlabs
@@ -2603,7 +2606,7 @@ class Layout(BaseLayout):
 
         return bp
 
-    def plot_contour(self, ax, df, x, y, z, ranges):
+    def plot_contour(self, ir, ic, ax, df, x, y, z, ranges):
         """
         Plot a contour plot
         """
@@ -2641,10 +2644,10 @@ class Layout(BaseLayout):
 
         # Add a colorbar
         if self.cbar.on:
-            self.cbar.obj = self.add_cbar(ax, cc)
+            self.cbar.obj[ir, ic] = self.add_cbar(ax, cc)
             new_ticks = cbar_ticks(
-                self.cbar.obj, ranges['zmin'], ranges['zmax'])
-            self.cbar.obj.set_ticks(new_ticks)
+                self.cbar.obj[ir, ic], ranges['zmin'], ranges['zmax'])
+            self.cbar.obj[ir, ic].set_ticks(new_ticks)
 
         # Show points
         if self.contour.show_points:

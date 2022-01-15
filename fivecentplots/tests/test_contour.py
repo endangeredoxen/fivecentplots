@@ -3,7 +3,10 @@ import pytest
 import fivecentplots as fcp
 import pandas as pd
 import numpy as np
-import os, sys, pdb, platform
+import os
+import sys
+import pdb
+import platform
 import fivecentplots.utilities as utl
 import inspect
 osjoin = os.path.join
@@ -12,10 +15,12 @@ if platform.system() != 'Windows':
     print('Warning!  Image test files generated in windows.  Compatibility with linux/mac may vary')
 
 MPL = utl.get_mpl_version_dir()
-MASTER = osjoin(os.path.dirname(fcp.__file__), 'tests', 'test_images', MPL, 'contour.py')
+MASTER = osjoin(os.path.dirname(fcp.__file__), 'tests',
+                'test_images', MPL, 'contour.py')
 
 # Sample data
-df = pd.read_csv(osjoin(os.path.dirname(fcp.__file__), 'tests', 'fake_data_contour.csv'))
+df = pd.read_csv(osjoin(os.path.dirname(fcp.__file__),
+                 'tests', 'fake_data_contour.csv'))
 
 # Set theme
 fcp.set_theme('gray')
@@ -36,7 +41,7 @@ def make_all():
     """
 
     members = inspect.getmembers(sys.modules[__name__])
-    members = [f for f in members if 'test_' in f[0]]
+    members = [f for f in members if 'plt_' in f[0]]
     for member in members:
         print('Running %s...' % member[0], end='')
         member[1](master=True)
@@ -45,18 +50,19 @@ def make_all():
 
 def show_all():
     """
-    Remake all test master images
+    Run the show=True option on all plt functions
     """
 
     members = inspect.getmembers(sys.modules[__name__])
-    members = [f for f in members if 'test_' in f[0]]
+    members = [f for f in members if 'plt_' in f[0]]
     for member in members:
         print('Running %s...' % member[0], end='')
         member[1](show=True)
         db()
 
 
-def test_basic(master=False, remove=True, show=False):
+# plt_ functions can be used directly outside of pytest for debug
+def plt_basic(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'basic_master') if master else 'basic'
 
@@ -67,31 +73,39 @@ def test_basic(master=False, remove=True, show=False):
                 filename=name + '.png',
                 marker_edge_color='#000000', marker_fill_color='#000000')
 
+    if bm:
+        return
+
     # Compare with master
     if master:
         return
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
         assert not compare
 
 
-def test_basic_rc(master=False, remove=True, show=False):
+def plt_basic_rc(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'basic_rc_master') if master else 'basic_rc'
 
     # Make the plot
     fcp.contour(df=df, x='X', y='Y', z='Value', row='Batch', col='Experiment', filled=False,
-                cbar=False, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250,250], show=SHOW, contour_width=2,
+                cbar=False, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250, 250], show=SHOW, contour_width=2,
                 label_rc_font_size=12, levels=40, show_points=True,
                 filename=name + '.png',
                 marker_edge_color='#000000', marker_fill_color='#000000')
+
+    if bm:
+        return
 
     # Compare with master
     if master:
@@ -99,82 +113,101 @@ def test_basic_rc(master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
         assert not compare
 
 
-def test_filled(master=False, remove=True, show=False):
+def plt_filled(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'filled_master') if master else 'filled'
 
     # Make the plot
     fcp.contour(df=df, x='X', y='Y', z='Value', row='Batch', col='Experiment', filled=True,
-                cbar=True, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250,250], show=SHOW,
+                cbar=True, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250, 250], show=SHOW,
                 label_rc_font_size=12, levels=40,
                 filename=name + '.png')
 
+    if bm:
+        return
+
     # Compare with master
     if master:
         return
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
         assert not compare
 
 
-def test_filled_no_share(master=False, remove=True, show=False):
+def plt_filled_no_share(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'filled_no_share_master') if master else 'filled_no_share'
+    name = osjoin(
+        MASTER, 'filled_no_share_master') if master else 'filled_no_share'
 
     # Make the plot
     fcp.contour(df=df, x='X', y='Y', z='Value', row='Batch', col='Experiment', filled=True,
-                cbar=True, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250,250], show=SHOW,
+                cbar=True, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250, 250], show=SHOW,
                 label_rc_font_size=12, levels=40, share_z=False,
                 filename=name + '.png')
 
+    if bm:
+        return
+
     # Compare with master
     if master:
         return
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
         assert not compare
 
 
-def test_filled_separate(master=False, remove=True, show=False):
+def plt_filled_separate(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'filled_separate_master') if master else 'filled_separate'
+    name = osjoin(
+        MASTER, 'filled_separate_master') if master else 'filled_separate'
 
     # Make the plot
     fcp.contour(df=df, x='X', y='Y', z='Value', row='Batch', col='Experiment', filled=True,
-                cbar=True, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250,250], show=SHOW,
+                cbar=True, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250, 250], show=SHOW,
                 label_rc_font_size=12, levels=40, separate_labels=True,
                 filename=name + '.png')
+
+    if bm:
+        return
 
     # Compare with master
     if master:
@@ -182,28 +215,34 @@ def test_filled_separate(master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
         assert not compare
 
 
-def test_filled_range(master=False, remove=True, show=False):
+def plt_filled_range(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'filled_range_master') if master else 'filled_range'
 
     # Make the plot
     fcp.contour(df=df, x='X', y='Y', z='Value', row='Batch', col='Experiment', filled=True,
-                cbar=True, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250,250], show=SHOW,
+                cbar=True, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250, 250], show=SHOW,
                 label_rc_font_size=12, zmin=1, zmax=3, levels=40,
                 filename=name + '.png')
+
+    if bm:
+        return
 
     # Compare with master
     if master:
@@ -211,13 +250,48 @@ def test_filled_range(master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
         assert not compare
+
+
+# test_ functions call plt_ funcs 2x:
+# 1) do the comparison with saved image
+# 2) do a test plot only with save=False and inline=False and benchmark spead
+def test_basic(benchmark):
+    plt_basic()
+    benchmark(plt_basic, True)
+
+
+def test_basic_rc(benchmark):
+    plt_basic_rc()
+    benchmark(plt_basic_rc, True)
+
+
+def test_filled(benchmark):
+    plt_filled()
+    benchmark(plt_filled, True)
+
+
+def test_filled_no_share(benchmark):
+    plt_filled_no_share()
+    benchmark(plt_filled_no_share, True)
+
+
+def test_filled_separate(benchmark):
+    plt_filled_separate()
+    benchmark(plt_filled_separate, True)
+
+
+def test_filled_range(benchmark):
+    plt_filled_range()
+    benchmark(plt_filled_range, True)
 
 
 if __name__ == '__main__':
