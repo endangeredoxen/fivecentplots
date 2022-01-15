@@ -51,15 +51,15 @@ def show_all():
     """
 
     members = inspect.getmembers(sys.modules[__name__])
-    db()
     members = [f for f in members if 'plt_' in f[0]]
     for member in members:
         print('Running %s...' % member[0], end='')
         member[1](show=True)
         db()
 
-
 # plt_ functions can be used directly outside of pytest for debug
+
+
 def plt_vertical(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'vertical_master') if master else 'vertical'
@@ -257,6 +257,9 @@ def plt_wrap(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
+# test_ functions call plt_ funcs 2x:
+# 1) do the comparison with saved image
+# 2) do a test plot only with save=False and inline=False and benchmark spead
 def test_vertical(benchmark):
     plt_vertical()
     benchmark(plt_vertical, True)
