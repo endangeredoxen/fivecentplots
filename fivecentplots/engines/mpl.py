@@ -1717,10 +1717,13 @@ class Layout(BaseLayout):
                 height = max(
                     height, lab.obj[ir, ic].get_window_extent().height)
                 # text label rect background size
-                width_bg = max(
-                    width, lab.obj_bg[ir, ic].get_window_extent().width)
-                height_bg = max(
-                    height, lab.obj_bg[ir, ic].get_window_extent().height)
+                if label in ['row', 'col', 'wrap']:
+                    width_bg, height_bg = lab.size
+                else:
+                    width_bg = max(
+                        width, lab.obj_bg[ir, ic].get_window_extent().width)
+                    height_bg = max(
+                        height, lab.obj_bg[ir, ic].get_window_extent().height)
 
             lab.size = (max(width, width_bg), max(height, height_bg))
 
@@ -2154,7 +2157,7 @@ class Layout(BaseLayout):
              * self.ncol if self.cbar.on else 0)
 
         self.title_wrap.position[3] = 1 + \
-            (self.label_wrap.size[1] + 1) / self.axes.size[1]
+            self.label_wrap.size[1] / self.axes.size[1]
 
     def get_subplots_adjust(self):
         """
@@ -2266,7 +2269,7 @@ class Layout(BaseLayout):
             # Prevent single tick label axis
             if len(xticks_size_all) == 1:
                 self.add_text(ir, ic, str(xticks.limits[1]),
-                              position=[self.axes.size[0] - \
+                              position=[self.axes.size[0] -
                                         xticks.size_all[0, 2] / 2 / 1.5,
                                         -xticks.size_all[0, 3]],
                               font_size=xticks.font_size / 1.5)
@@ -2337,7 +2340,8 @@ class Layout(BaseLayout):
         if self.label_wrap.size[1] > 0:
             title_height = 0
         else:
-            title_height = self.title.size[1] / 2 - 2  # this is an offset from somewhere I don't know
+            # this is an offset from somewhere I don't know
+            title_height = self.title.size[1] / 2 - 2
         self.title.position[3] = 1+(self.ws_title_ax +
                                     col_label + title_height +
                                     self.label_wrap.size[1]) / self.axes.size[1]
@@ -2485,6 +2489,10 @@ class Layout(BaseLayout):
             tick_off = [f for f in new_ticks if f >= 0][0]
             if self.bar.horizontal:
                 axx = 'y'
+                data.ranges[ir, ic]['xmin'] = data.ranges[ir, ic]['ymin']
+                data.ranges[ir, ic]['xmax'] = data.ranges[ir, ic]['ymax']
+                data.ranges[ir, ic]['ymin'] = None
+                data.ranges[ir, ic]['ymax'] = None
             else:
                 axx = 'x'
             xoff = 3 * self.bar.width / 4

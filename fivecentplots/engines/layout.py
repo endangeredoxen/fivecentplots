@@ -411,8 +411,8 @@ class BaseLayout:
         self.bar.width = self.bar.width[0]
         if 'colors' in kwargs.keys():
             self.bar.color_by_bar = True
-        # need to fix all the kwargs only defaults!!
 
+        # need to fix all the kwargs only defaults!!
         return kwargs
 
     def _init_box(self, kwargs):
@@ -2046,6 +2046,11 @@ class BaseLayout:
                     'label_y_text', 'Normalized Counts')
             else:
                 self.label_y.text = kwargs.get('label_y_text', 'Counts')
+
+        if 'bar' in self.name and self.bar.horizontal:
+            temp = self.label_x.text
+            self.label_x.text = self.label_y.text
+            self.label_y.text = temp
 
     def update_from_data(self, data):
         """

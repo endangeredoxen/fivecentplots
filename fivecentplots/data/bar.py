@@ -37,7 +37,7 @@ class Bar(data.Data):
             # y-axis
             groupby = self.x + self.groupers
             df_rc = self.subset(ir, ic)
-            
+
             if len(df_rc) == 0:
                 self.add_ranges_none(ir, ic)
                 break
