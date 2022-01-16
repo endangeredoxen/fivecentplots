@@ -57,6 +57,7 @@ def show_all():
         db()
 
 
+# plt_ functions can be used directly outside of pytest for debug
 def plt_basic(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'basic_master') if master else 'basic'
@@ -113,6 +114,9 @@ def plt_legend(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
+# test_ functions call plt_ funcs 2x:
+# 1) do the comparison with saved image
+# 2) do a test plot only with save=False and inline=False and benchmark spead
 def test_basic(benchmark):
     plt_basic()
     benchmark(plt_basic, True)

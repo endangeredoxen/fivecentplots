@@ -104,11 +104,11 @@ class Heatmap(data.Data):
                 self.add_range(ir, ic, 'x', 'max', len(df_rc.columns) + 0.5)
 
                 # y (can update all the get plot nums to range?)
-                if self.ymin.get(plot_num) is not None \
-                        and self.ymax.get(plot_num) is not None \
-                        and self.ymin.get(plot_num) < self.ymax.get(plot_num):
-                    ymin = self.ymin.get(plot_num)
-                    self.add_range(ir, ic, 'y', 'min', self.ymax.get(plot_num))
+                if self.ymin[plot_num] is not None \
+                        and self.ymax[plot_num] is not None \
+                        and self.ymin[plot_num] < self.ymax[plot_num]:
+                    ymin = self.ymin[plot_num]
+                    self.add_range(ir, ic, 'y', 'min', self.ymax[plot_num])
                     self.add_range(ir, ic, 'y', 'max', ymin)
                 self.add_range(ir, ic, 'y', 'max', -0.5)
                 self.add_range(ir, ic, 'y', 'min', len(df_rc) + 0.5)
@@ -118,12 +118,16 @@ class Heatmap(data.Data):
                     pass
                 elif self.share_row:
                     pass
-                elif self.share_z and ir==0 and ic==0:
-                    self.add_range(ir, ic, 'z', 'min', self.df_fig[self.z[0]].min())
-                    self.add_range(ir, ic, 'z', 'max', self.df_fig[self.z[0]].max())
+                elif self.share_z and ir == 0 and ic == 0:
+                    self.add_range(ir, ic, 'z', 'min',
+                                   self.df_fig[self.z[0]].min())
+                    self.add_range(ir, ic, 'z', 'max',
+                                   self.df_fig[self.z[0]].max())
                 elif self.share_z:
-                    self.add_range(ir, ic, 'z', 'min', self.ranges[0, 0]['zmin'])
-                    self.add_range(ir, ic, 'z', 'max', self.ranges[0, 0]['zmax'])
+                    self.add_range(ir, ic, 'z', 'min',
+                                   self.ranges[0, 0]['zmin'])
+                    self.add_range(ir, ic, 'z', 'max',
+                                   self.ranges[0, 0]['zmax'])
                 else:
                     self.add_range(ir, ic, 'z', 'min', df_rc.min().min())
                     self.add_range(ir, ic, 'z', 'max', df_rc.max().max())
@@ -154,16 +158,20 @@ class Heatmap(data.Data):
 
             if 'xmin' in self.ranges[ir, ic].keys() and \
                     self.ranges[ir, ic]['xmin'] is not None:
-                df = df[[f for f in df.columns if f >= self.ranges[ir, ic]['xmin']]]
+                df = df[[f for f in df.columns if f >=
+                         self.ranges[ir, ic]['xmin']]]
             if 'xmax' in self.ranges[ir, ic].keys() and \
                     self.ranges[ir, ic]['xmax'] is not None:
-                df = df[[f for f in df.columns if f <= self.ranges[ir, ic]['xmax']]]
+                df = df[[f for f in df.columns if f <=
+                         self.ranges[ir, ic]['xmax']]]
             if 'ymin' in self.ranges[ir, ic].keys() and \
                     self.ranges[ir, ic]['ymin'] is not None:
-                df = df.loc[[f for f in df.index if f >= self.ranges[ir, ic]['ymin']]]
+                df = df.loc[[f for f in df.index if f >=
+                             self.ranges[ir, ic]['ymin']]]
             if 'ymax' in self.ranges[ir, ic].keys() and \
                     self.ranges[ir, ic]['ymax'] is not None:
-                df = df.loc[[f for f in df.index if f <= self.ranges[ir, ic]['ymax']]]
+                df = df.loc[[f for f in df.index if f <=
+                             self.ranges[ir, ic]['ymax']]]
 
         # check dtypes to properly designated tick labels
         dtypes = [int, np.int32, np.int64]

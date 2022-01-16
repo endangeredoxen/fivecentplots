@@ -318,7 +318,8 @@ class Layout(BaseLayout):
             + self.x_tick_xs \
             + self.label_y2.size[0] \
             + (self.label_z.size[0] *
-               (self.ncol if self.separate_labels else 1))
+               (self.ncol if self.separate_labels else 1) +
+               self.ws_ticks_ax * self.label_z.on)
 
         # Main figure title excess size
         title_xs_right = self.title.size[0] / 2 \
@@ -775,7 +776,7 @@ class Layout(BaseLayout):
         self.label_y2.position[3] = 0.5
 
         self.label_z.position[0] = 1 + (self.ws_ax_cbar + self.cbar.size[0] +
-                                        self.tick_labels_major_z.size[0] + self.ws_label_tick) \
+                                        self.tick_labels_major_z.size[0] + 2 * self.ws_label_tick) \
             / self.axes.size[0]
         self.label_z.position[3] = 0.5
 
@@ -2161,6 +2162,7 @@ class Layout(BaseLayout):
             idx = 0
         else:
             idx = 1
+
         for ir, ic in np.ndindex(ax.obj.shape):
             # Get the tick label Element
             minor = True if which == 'minor' else False
@@ -2178,7 +2180,8 @@ class Layout(BaseLayout):
                     ax.obj[ir, ic], f'get_{tick}ticklabels')(minor=minor)
                 vmin, vmax = getattr(ax.obj[ir, ic], f'get_{tick}lim')()
             tt.limits = [vmin, vmax]
-            tlabs = [f for f in tlabs if vmin <= f.get_position()[idx] <= vmax]
+            tlabs = [f for f in tlabs if min(vmin, vmax) <=
+                     f.get_position()[idx] <= max(vmin, vmax)]
             tt.obj[ir, ic] = tlabs
 
             # Get the label sizes and store sizes as 2D array
@@ -2196,6 +2199,9 @@ class Layout(BaseLayout):
                 tt.size_all = np.concatenate((tt.size_all, size))
             else:
                 tt.size_all = size
+
+        if len(tt.size_all) == 0:
+            return
 
         tt.size = [tt.size_all[:, 2].max(), tt.size_all[:, 3].max()]
 
@@ -2264,7 +2270,7 @@ class Layout(BaseLayout):
                     db()
             if len(yticks_size_all) > 0:
                 ybbox = yticks_size_all[:, -2:]
-                ol = (ybbox[1:, 0] - ybbox[0:-1, 1]) < 0
+                ol = (ybbox[0:-1, 0] - ybbox[1:, 1]) < 0
                 if any(ol):
                     db()
 
@@ -2688,6 +2694,16 @@ class Layout(BaseLayout):
                        interpolation=self.heatmap.interp)
         im.set_clim(ranges['zmin'], ranges['zmax'])
 
+        # Adjust the axes and rc label size based on the number of groups
+        cols = len(df.columns)
+        rows = len(df)
+        map_sq = min(self.axes.size[0] / cols, self.axes.size[1] / rows)
+        self.axes.size = [map_sq * cols, map_sq * rows]
+        if self.label_row.on:
+            self.label_row.size[1] = self.axes.size[1]
+        if self.label_col.on:
+            self.label_col.size[0] = self.axes.size[0]
+
         # Set the axes
         dtypes = [int, np.int32, np.int64]
         if df.index.dtype not in dtypes:
@@ -2705,18 +2721,13 @@ class Layout(BaseLayout):
         if ranges['xmin'] is not None and ranges['xmin'] > 0:
             xticks = ax.get_xticks()
             ax.set_xticklabels([int(f + ranges['xmin']) for f in xticks])
-        # don't recall why this is here but it isn't working...
-        # if ranges['ymax'] is not None and ranges['ymax'] > 0:
-        #     yticks = ax.get_yticks()
-        #     ax.set_yticklabels([int(f + ranges['ymax']) for f in yticks])
 
-        # if (self.cbar.on and self.axes.share_z and ic == self.ncol - 1) or \
-        #        (self.cbar.on and not self.axes.share_z):
+        # Add the cbar
         if self.cbar.on:
-            self.cbar.obj = self.add_cbar(ax, im)
+            self.cbar.obj[ir, ic] = self.add_cbar(ax, im)
 
+        # Loop over data dimensions and create text annotations
         if self.heatmap.text:
-            # Loop over data dimensions and create text annotations.
             for iy, yy in enumerate(df.index):
                 for ix, xx in enumerate(df.columns):
                     if type(df.loc[yy, xx]) in [float, np.float32, np.float64] and \
@@ -2804,7 +2815,7 @@ class Layout(BaseLayout):
 
         # Add a cmap
         if self.cbar.on:  # and (self.separate_ticks or ic == self.ncol - 1):
-            self.cbar.obj = self.add_cbar(ax, im)
+            self.cbar.obj[ir, ic] = self.add_cbar(ax, im)
 
         return im
 
