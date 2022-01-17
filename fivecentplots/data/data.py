@@ -1,11 +1,11 @@
+import pdb
+from natsort import natsorted
+import scipy.stats as ss
 import pandas as pd
 import numpy as np
 from .. import utilities
 utl = utilities
-import scipy.stats as ss
-from natsort import natsorted
 
-import pdb
 db = pdb.set_trace
 
 
@@ -71,7 +71,8 @@ class Data:
         self.name = name
 
         # Reload default file
-        self.fcpp, dummy, dummy2 = utl.reload_defaults(kwargs.get('theme', None))
+        self.fcpp, dummy, dummy2 = utl.reload_defaults(
+            kwargs.get('theme', None))
 
         # Default axis attributes
         self.auto_cols = False
@@ -177,7 +178,8 @@ class Data:
         self.stat = kwargs.get('stat', None)
         self.stat_val = kwargs.get('stat_val', None)
         if self.stat_val is not None and self.stat_val not in self.df_all.columns:
-            raise DataError('stat_val column "%s" not in DataFrame' % self.stat_val)
+            raise DataError(
+                'stat_val column "%s" not in DataFrame' % self.stat_val)
         self.stat_idx = []
         self.lcl = []
         self.ucl = []
@@ -185,8 +187,8 @@ class Data:
         # Special for hist
         normalize = utl.kwget(kwargs, self.fcpp, ['hist_normalize', 'normalize'],
                               kwargs.get('normalize', False))
-        kde=utl.kwget(kwargs, self.fcpp, ['hist_kde', 'kde'],
-                      kwargs.get('kde', False))
+        kde = utl.kwget(kwargs, self.fcpp, ['hist_kde', 'kde'],
+                        kwargs.get('kde', False))
         if normalize or kde:
             self.norm = True
         else:
@@ -197,7 +199,8 @@ class Data:
         # Apply an optional filter to the data
         self.filter = kwargs.get('filter', None)
         if self.filter:
-            self.df_all = utl.df_filter(self.df_all, self.filter)#, keep_filtered=True)
+            # , keep_filtered=True)
+            self.df_all = utl.df_filter(self.df_all, self.filter)
             if len(self.df_all) == 0:
                 raise DataError('DataFrame is empty after applying filter')
 
@@ -227,7 +230,8 @@ class Data:
                 self.wrap_vals = [f for f in self.x]
             else:
                 self.wrap = self.check_group_columns('wrap', self.wrap)
-        self.groups = self.check_group_columns('groups', kwargs.get('groups', None))
+        self.groups = self.check_group_columns(
+            'groups', kwargs.get('groups', None))
         self.check_group_errors()
         self.ncols = kwargs.get('ncol', 0)
         self.ncol = 1
@@ -330,8 +334,10 @@ class Data:
                     self.add_range(ir, ic, ax, 'min', vals[0])
                     self.add_range(ir, ic, ax, 'max', vals[1])
                 elif getattr(self, 'share_%s' % ax) and (ir > 0 or ic > 0):
-                    self.add_range(ir, ic, ax, 'min', self.ranges[0, 0]['%smin' % ax])
-                    self.add_range(ir, ic, ax, 'max', self.ranges[0, 0]['%smax' % ax])
+                    self.add_range(ir, ic, ax, 'min',
+                                   self.ranges[0, 0]['%smin' % ax])
+                    self.add_range(ir, ic, ax, 'max',
+                                   self.ranges[0, 0]['%smax' % ax])
 
                 # Share row
                 elif self.share_row and self.row is not None:
@@ -339,12 +345,14 @@ class Data:
                         vals = self.get_data_range(ax, df_fig, plot_num)
                     else:
                         vals = self.get_data_range(ax,
-                            df_fig[self.df_fig[self.row[0]] == self.row_vals[ir]], plot_num)
+                                                   df_fig[self.df_fig[self.row[0]] == self.row_vals[ir]], plot_num)
                     self.add_range(ir, ic, ax, 'min', vals[0])
                     self.add_range(ir, ic, ax, 'max', vals[1])
                 elif self.share_row and self.row is not None and ic > 0:
-                    self.add_range(ir, ic, ax, 'min', self.ranges[ir, 0]['%smin' % ax])
-                    self.add_range(ir, ic, ax, 'max', self.ranges[ir, 0]['%smax' % ax])
+                    self.add_range(ir, ic, ax, 'min',
+                                   self.ranges[ir, 0]['%smin' % ax])
+                    self.add_range(ir, ic, ax, 'max',
+                                   self.ranges[ir, 0]['%smax' % ax])
 
                 # Share col
                 elif self.share_col and self.col is not None:
@@ -352,12 +360,14 @@ class Data:
                         vals = self.get_data_range(ax, df_fig, ir, ic)
                     else:
                         vals = self.get_data_range(ax,
-                            df_fig[df_fig[self.col[0]] == self.col_vals[ic]], plot_num)
+                                                   df_fig[df_fig[self.col[0]] == self.col_vals[ic]], plot_num)
                     self.add_range(ir, ic, ax, 'min', vals[0])
                     self.add_range(ir, ic, ax, 'max', vals[1])
                 elif self.share_col and self.col is not None and ir > 0:
-                    self.add_range(ir, ic, ax, 'min', self.ranges[0, ic]['%smin' % ax])
-                    self.add_range(ir, ic, ax, 'max', self.ranges[0, ic]['%smax' % ax])
+                    self.add_range(ir, ic, ax, 'min',
+                                   self.ranges[0, ic]['%smin' % ax])
+                    self.add_range(ir, ic, ax, 'max',
+                                   self.ranges[0, ic]['%smax' % ax])
 
                 # subplot level when not shared
                 else:
@@ -371,8 +381,8 @@ class Data:
 
                     # Not shared or wrap by x or y
                     elif not getattr(self, 'share_%s' % ax) or \
-                            (self.wrap is not None and \
-                                self.wrap == 'y' or \
+                            (self.wrap is not None and
+                                self.wrap == 'y' or
                                 self.wrap == 'x'):
                         vals = self.get_data_range(ax, df_rc, plot_num)
                         self.add_range(ir, ic, ax, 'min', vals[0])
@@ -380,8 +390,10 @@ class Data:
 
                     # Make them all equal to 0,0
                     elif ir > 0 or ic > 0:
-                        self.add_range(ir, ic, ax, 'min', self.ranges[0, 0]['%smin' % ax])
-                        self.add_range(ir, ic, ax, 'max', self.ranges[0, 0]['%smax' % ax])
+                        self.add_range(ir, ic, ax, 'min',
+                                       self.ranges[0, 0]['%smin' % ax])
+                        self.add_range(ir, ic, ax, 'max',
+                                       self.ranges[0, 0]['%smax' % ax])
 
     def _get_data_ranges_user_defined(self):
         """
@@ -435,7 +447,8 @@ class Data:
         Set padding limits for axis
         """
 
-        self.ax_limit_padding = utl.kwget(kwargs, self.fcpp, 'ax_limit_padding', 0.05)
+        self.ax_limit_padding = utl.kwget(
+            kwargs, self.fcpp, 'ax_limit_padding', 0.05)
         for ax in ['x', 'x2', 'y', 'y2', 'z']:
             if not hasattr(self, 'ax_limit_padding_%smin' % ax):
                 setattr(self, 'ax_limit_padding_%smin' % ax,
@@ -505,7 +518,8 @@ class Data:
 
         """
 
-        equal = set(str(getattr(self, group1))) == set(str(getattr(self, group2)))
+        equal = set(str(getattr(self, group1))) == set(
+            str(getattr(self, group2)))
 
         if equal:
             raise GroupingError('%s and %s grouping columns cannot be the same!'
@@ -517,7 +531,8 @@ class Data:
         """
 
         if self.row and len(self.row) > 1 or self.col and len(self.col) > 1:
-            error = 'Only one value can be specified for "%s"' % ('row' if self.row else 'col')
+            error = 'Only one value can be specified for "%s"' % (
+                'row' if self.row else 'col')
             raise GroupingError(error)
 
         if self.row is not None and self.row == self.col:
@@ -529,7 +544,7 @@ class Data:
             raise GroupingError(error)
 
         if self.groups is not None and \
-                ((self.row and self.row[0] in self.groups) or \
+                ((self.row and self.row[0] in self.groups) or
                  (self.col and self.col[0] in self.groups)):
             error = '"%s" value cannot also be specified as a "group" value' % \
                     ('col' if self.col else 'row')
@@ -563,7 +578,8 @@ class Data:
 
         for val in vals:
             if val not in self.df_all.columns:
-                raise DataError('No column named "%s" found in DataFrame' % val)
+                raise DataError(
+                    'No column named "%s" found in DataFrame' % val)
 
             # Check case
             try:
@@ -577,7 +593,7 @@ class Data:
             except:
                 continue
             #     raise AxisError('Could not convert x-column "%s" to float or '
-                                #  'datetime.' % val)
+                #  'datetime.' % val)
 
         # Check for axis errors
         if self.twin_x and len(self.y) != 2:
@@ -613,13 +629,15 @@ class Data:
             for mm in ['min', 'max']:
                 for ir, ic, _ in self.get_subplot_index():
                     key = '{}{}'.format(ax, mm)
-                    if ir==0 and ic==0 and key in self.ranges[ir][ic].keys():
+                    if ir == 0 and ic == 0 and key in self.ranges[ir][ic].keys():
                         auto_scale_val = self.ranges[ir][ic][key]
                     elif key in self.ranges[ir][ic].keys():
                         if mm == 'min':
-                            auto_scale_val = min(auto_scale_val, self.ranges[ir][ic][key])
+                            auto_scale_val = min(
+                                auto_scale_val, self.ranges[ir][ic][key])
                         else:
-                            auto_scale_val = max(auto_scale_val, self.ranges[ir][ic][key])
+                            auto_scale_val = max(
+                                auto_scale_val, self.ranges[ir][ic][key])
                     else:
                         auto_scale_val = None
                 if type(auto_scale_val) is str or auto_scale_val is None:
@@ -674,7 +692,7 @@ class Data:
                     conf = [0, 0]
                 else:
                     conf = ss.t.interval(self.conf_int, int(row['count'])-1,
-                                        loc=row['mean'], scale=row['sderr'])
+                                         loc=row['mean'], scale=row['sderr'])
                 stat.loc[irow, 'ucl'] = conf[1]
                 stat.loc[irow, 'lcl'] = conf[0]
 
@@ -742,9 +760,9 @@ class Data:
                 vmin = q1 - iqr
             else:
                 q1 = df[self.groupers + cols].groupby(self.groupers) \
-                        .quantile(0.25)[cols].reset_index()
+                    .quantile(0.25)[cols].reset_index()
                 q3 = df[self.groupers + cols].groupby(self.groupers) \
-                         .quantile(0.75)[cols].reset_index()
+                    .quantile(0.75)[cols].reset_index()
                 iqr = factor*(q3[cols] - q1[cols])
                 vmin = (q1[cols] - iqr[cols]).min().iloc[0]
         elif vmin is not None and 'q' in str(vmin).lower():
@@ -753,17 +771,17 @@ class Data:
                 vmin = dfax.quantile(xq).min()
             elif 'box' in self.name:
                 vmin = df[self.groupers + cols].groupby(self.groupers) \
-                        .quantile(xq)[cols].min().iloc[0]
+                    .quantile(xq)[cols].min().iloc[0]
             else:
                 vmin = df[self.groups + cols].groupby(self.groups) \
-                        .quantile(xq)[cols].min().iloc[0]
+                    .quantile(xq)[cols].min().iloc[0]
         elif vmin is not None:
             vmin = vmin
         elif getattr(self, 'ax_limit_padding_%smin' % ax) is not None:
             if self.ax_scale in ['log%s' % ax, 'loglog',
                                  'semilog%s' % ax, 'log']:
                 axmin = np.log10(axmin) - \
-                        getattr(self, 'ax_limit_padding_%smin' % ax) * axdelta
+                    getattr(self, 'ax_limit_padding_%smin' % ax) * axdelta
                 vmin = 10**axmin
             else:
                 axmin -= getattr(self, 'ax_limit_padding_%smin' % ax) * axdelta
@@ -786,21 +804,22 @@ class Data:
                 vmax = q3 + iqr
             else:
                 q1 = df[self.groupers + cols].groupby(self.groupers) \
-                          .quantile(0.25)[cols].reset_index()
+                    .quantile(0.25)[cols].reset_index()
                 q3 = df[self.groupers + cols].groupby(self.groupers) \
-                         .quantile(0.75)[cols].reset_index()
+                    .quantile(0.75)[cols].reset_index()
                 iqr = factor*(q3[cols] - q1[cols])
-                vmax = (q3[cols] + iqr[cols]).max().iloc[0]  # should this be referred to median?
+                # should this be referred to median?
+                vmax = (q3[cols] + iqr[cols]).max().iloc[0]
         elif vmax is not None and 'q' in str(vmax).lower():
             xq = float(str(vmax).lower().replace('q', ''))/100
             if self.groups is None:
                 vmax = dfax.quantile(xq).max()
             elif 'box' in self.name:  # move to data.box.py?
                 vmax = df[self.groupers + cols].groupby(self.groupers) \
-                        .quantile(xq)[cols].max().iloc[0]
+                    .quantile(xq)[cols].max().iloc[0]
             else:
                 vmax = df[self.groups + cols].groupby(self.groups) \
-                        .quantile(xq)[cols].max().iloc[0]
+                    .quantile(xq)[cols].max().iloc[0]
             #getattr(self, '%smax' % ax).values[plot_num]
         elif vmax is not None:
             vmax = vmax
@@ -808,7 +827,7 @@ class Data:
             if self.ax_scale in ['log%s' % ax, 'loglog',
                                  'semilog%s' % ax, 'log']:
                 axmax = np.log10(axmax) + \
-                        getattr(self, 'ax_limit_padding_%smax' % ax) * axdelta
+                    getattr(self, 'ax_limit_padding_%smax' % ax) * axdelta
                 vmax = 10**axmax
             else:
                 axmax += getattr(self, 'ax_limit_padding_%smax' % ax) * axdelta
@@ -852,14 +871,17 @@ class Data:
                 if type(fig_val) is tuple:
                     for ig, gg in enumerate(fig_val):
                         if ig == 0:
-                            self.df_fig = self.df_all[self.df_all[self.fig_groups[ig]] == gg].copy()
+                            self.df_fig = self.df_all[self.df_all[self.fig_groups[ig]] == gg].copy(
+                            )
                         else:
                             self.df_fig = self.df_fig[self.df_fig[self.fig_groups[ig]] == gg]
                 elif self.fig_groups is not None:
                     if type(self.fig_groups) is list:
-                        self.df_fig = self.df_all[self.df_all[self.fig_groups[0]] == fig_val].copy()
+                        self.df_fig = self.df_all[self.df_all[self.fig_groups[0]] == fig_val].copy(
+                        )
                     else:
-                        self.df_fig = self.df_all[self.df_all[self.fig_groups] == fig_val].copy()
+                        self.df_fig = self.df_all[self.df_all[self.fig_groups] == fig_val].copy(
+                        )
                 else:
                     self.df_fig = self.df_all
 
@@ -902,14 +924,14 @@ class Data:
         if self.fit == True or type(self.fit) is int:
 
             if type(self.fit_range_x) is list:
-                df2 = df2[(df2[x] >= self.fit_range_x[0]) & \
+                df2 = df2[(df2[x] >= self.fit_range_x[0]) &
                           (df2[x] <= self.fit_range_x[1])].copy()
                 if self.ranges[ir, ic]['ymin'] is not None:
                     df2 = df2[(df2[y]) >= self.ranges[ir, ic]['ymin']]
                 if self.ranges[ir, ic]['ymax'] is not None:
                     df2 = df2[(df2[y]) <= self.ranges[ir, ic]['ymax']]
             elif type(self.fit_range_y) is list:
-                df2 = df2[(df2[y] >= self.fit_range_y[0]) & \
+                df2 = df2[(df2[y] >= self.fit_range_y[0]) &
                           (df2[y] <= self.fit_range_y[1])].copy()
                 if self.ranges[ir, ic]['xmin'] is not None:
                     df2 = df2[(df2[x]) >= self.ranges[ir, ic]['xmin']]
@@ -1022,7 +1044,7 @@ class Data:
         leg_df = pd.DataFrame(leg_all, columns=['Leg', 'x', 'y'])
 
         # if leg specified
-        if not (leg_df.Leg==None).all():
+        if not (leg_df.Leg == None).all():
             leg_df['names'] = list(leg_df.Leg)
 
         # if more than one y axis and leg specified
@@ -1035,7 +1057,7 @@ class Data:
         elif self.col == 'x':
             del leg_df['x']
             leg_df = leg_df.drop_duplicates().reset_index(drop=True)
-        elif len(leg_df.y.unique()) > 1 and not (leg_df.Leg==None).all() \
+        elif len(leg_df.y.unique()) > 1 and not (leg_df.Leg == None).all() \
                 and len(leg_df.x.unique()) == 1:
             leg_df['names'] = leg_df.Leg.map(str) + ' | ' + leg_df.y.map(str)
 
@@ -1045,7 +1067,8 @@ class Data:
         elif 'x' in leg_df.columns and len(leg_df.x.unique()) > 1 \
                 and not self.twin_x:
             leg_df['names'] = \
-                leg_df['names'].map(str) + ' | ' + leg_df.y.map(str) + ' / ' + leg_df.x.map(str)
+                leg_df['names'].map(str) + ' | ' + \
+                leg_df.y.map(str) + ' / ' + leg_df.x.map(str)
 
         leg_df = leg_df.set_index('names')
         self.legend_vals = leg_df.reset_index()
@@ -1085,13 +1108,14 @@ class Data:
                     irow = self.wrap_vals.index(leg)
 
                 yield irow, df, row['x'], row['y'], \
-                      None if self.z is None else self.z[0], leg, twin, len(vals)
+                    None if self.z is None else self.z[0], leg, twin, len(vals)
 
         else:
             for irow, row in self.legend_vals.iterrows():
                 # Fix unique wrap vals
                 if self.wrap == 'y' or self.wrap == 'x':
-                    wrap_col = list(set(df.columns) & set(getattr(self, self.wrap)))[0]
+                    wrap_col = list(set(df.columns) & set(
+                        getattr(self, self.wrap)))[0]
                     df = df.rename(columns={self.wrap: wrap_col})
                     row[self.wrap] = wrap_col
                 if self.row == 'y':
@@ -1103,7 +1127,7 @@ class Data:
 
                 # Subset by legend value
                 if row['Leg'] is not None:
-                    df2 = df[df[self.legend]==row['Leg']].copy()
+                    df2 = df[df[self.legend] == row['Leg']].copy()
 
                 # Filter out all nan data
                 if row['x'] and row['x'] in df2.columns and len(df2[row['x']].dropna()) == 0 \
@@ -1116,8 +1140,8 @@ class Data:
                         or (row['y'] != self.legend_vals.loc[0, 'y'] and self.twin_x):
                     twin = True
                 yield irow, df2, row['x'], row['y'], \
-                      None if self.z is None else self.z[0], row['names'], \
-                      twin, len(self.legend_vals)
+                    None if self.z is None else self.z[0], row['names'], \
+                    twin, len(self.legend_vals)
 
     def get_rc_groupings(self, df):
         """
@@ -1141,7 +1165,7 @@ class Data:
                 rcnum = int(np.ceil(np.sqrt(len(self.wrap_vals))))
             else:
                 rcnum = self.ncols if self.ncols <= len(self.wrap_vals) \
-                        else len(self.wrap_vals)
+                    else len(self.wrap_vals)
             self.ncol = rcnum
             self.nrow = int(np.ceil(len(self.wrap_vals)/rcnum))
             self.nwrap = len(self.wrap_vals)
@@ -1226,7 +1250,8 @@ class Data:
         try:
             if 'q' in self.stat:
                 q = float(self.stat.replace('q', ''))
-                if q > 1: q = q / 100
+                if q > 1:
+                    q = q / 100
                 return df_stat.quantile(q)
             else:
                 return getattr(df_stat, self.stat)().reset_index()
@@ -1277,8 +1302,8 @@ class Data:
         Prints a readable list of class attributes
         """
 
-        df = pd.DataFrame({'Attribute':list(self.__dict__.copy().keys()),
-             'Name':[str(f) for f in self.__dict__.copy().values()]})
+        df = pd.DataFrame({'Attribute': list(self.__dict__.copy().keys()),
+                           'Name': [str(f) for f in self.__dict__.copy().values()]})
         df = df.sort_values(by='Attribute').reset_index(drop=True)
 
         return df
@@ -1309,9 +1334,9 @@ class Data:
                 attr = k[-3:]
                 for vvv in vv:
                     if attr == 'min':
-                        df = df.loc[df[vvv]>=v]
+                        df = df.loc[df[vvv] >= v]
                     else:
-                        df = df.loc[df[vvv]<=v]
+                        df = df.loc[df[vvv] <= v]
 
         return df
 
@@ -1354,21 +1379,25 @@ class Data:
             cols = (self.x if self.x is not None else []) + \
                    (self.y if self.y is not None else []) + \
                    (self.groups if self.groups is not None else []) + \
-                   (utl.validate_list(self.legend) if self.legend not in [None, True, False] else [])
+                   (utl.validate_list(self.legend)
+                    if self.legend not in [None, True, False] else [])
             return self.df_fig[cols]
         elif self.wrap == 'x':
             self.x = utl.validate_list(self.wrap_vals[ic + ir * self.ncol])
             cols = (self.x if self.x is not None else []) + \
                    (self.y if self.y is not None else []) + \
                    (self.groups if self.groups is not None else []) + \
-                   (utl.validate_list(self.legend) if self.legend is not None else [])
+                   (utl.validate_list(self.legend)
+                    if self.legend is not None else [])
             return self.df_fig[cols]
         else:
             if self.sort:
                 self.wrap_vals = \
-                    natsorted(list(self.df_fig.groupby(self.wrap).groups.keys()))
+                    natsorted(
+                        list(self.df_fig.groupby(self.wrap).groups.keys()))
             else:
-                self.wrap_vals = list(self.df_fig.groupby(self.wrap, sort=False).groups.keys())
+                self.wrap_vals = list(self.df_fig.groupby(
+                    self.wrap, sort=False).groups.keys())
             wrap = dict(zip(self.wrap,
                         utl.validate_list(self.wrap_vals[ir*self.ncol + ic])))
             return self.df_fig.loc[(self.df_fig[list(wrap)] == pd.Series(wrap)).all(axis=1)].copy()
@@ -1393,6 +1422,25 @@ class Data:
         self.tras_x2 = self.trans_y2
         self.trans_y = trans_x
         self.trans_y2 = trans_x2
+
+    def swap_xy_ranges(self):
+        """
+        Swap the x and y range values (used in case of horizontal plots)
+        """
+
+        for ir, ic, plot_num in self.get_subplot_index():
+            xmin = self.ranges[ir, ic]['xmin']
+            xmax = self.ranges[ir, ic]['xmax']
+            x2min = self.ranges[ir, ic]['x2min']
+            x2max = self.ranges[ir, ic]['x2max']
+            self.ranges[ir, ic]['xmin'] = self.ranges[ir, ic]['ymin']
+            self.ranges[ir, ic]['xmax'] = self.ranges[ir, ic]['ymax']
+            self.ranges[ir, ic]['x2min'] = self.ranges[ir, ic]['y2min']
+            self.ranges[ir, ic]['x2max'] = self.ranges[ir, ic]['y2max']
+            self.ranges[ir, ic]['ymin'] = xmin
+            self.ranges[ir, ic]['ymax'] = xmax
+            self.ranges[ir, ic]['y2min'] = x2min
+            self.ranges[ir, ic]['y2max'] = x2max
 
     def transform(self):
         """
@@ -1438,10 +1486,11 @@ class Data:
                     elif getattr(self, 'trans_%s' % ax) == 'inverse' \
                             or getattr(self, 'trans_%s' % ax) == 'inv':
                         gg.loc[:, val] = 1/gg[val]
-                    elif (type(getattr(self, 'trans_%s' % ax)) is tuple \
+                    elif (type(getattr(self, 'trans_%s' % ax)) is tuple
                             or type(getattr(self, 'trans_%s' % ax)) is list) \
                             and getattr(self, 'trans_%s' % ax)[0] == 'pow':
-                        gg.loc[:, val] = gg[val]**getattr(self, 'trans_%s' % ax)[1]
+                        gg.loc[:,
+                               val] = gg[val]**getattr(self, 'trans_%s' % ax)[1]
                     elif getattr(self, 'trans_%s' % ax) == 'flip':
                         maxx = gg.loc[:, val].max()
                         gg.loc[:, val] -= maxx

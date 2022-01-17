@@ -257,7 +257,8 @@ class BaseLayout:
 
     def _init_axes_labels(self, kwargs):
         """
-        Set the axes label elements
+        Set the axes label elements parameters except text which is set later
+        in self.set_label_text (to include any updates after init of data obj)
         """
 
         # Axes labels
@@ -277,8 +278,8 @@ class BaseLayout:
             keys = [f for f in kwargs.keys() if 'label_%s' % lab in f]
             for k in keys:
                 v = kwargs[k]
-                if k == 'label_%s' % lab:
-                    k = 'label_%s_text' % lab
+                if k == 'label_%s' % lab or '_text' in k:
+                    continue  # k = 'label_%s_text' % lab
                 setattr(getattr(self, 'label_%s' % lab),
                         k.replace('label_%s_' % lab, ''), v)
 
@@ -1855,7 +1856,9 @@ class BaseLayout:
         self.ws_label_row = utl.kwget(kwargs, self.fcpp,
                                       'ws_label_row', ws_label_rc)
         self.ws_col = utl.kwget(kwargs, self.fcpp, 'ws_col', 30)
+        self.ws_col_def = int(self.ws_col)
         self.ws_row = utl.kwget(kwargs, self.fcpp, 'ws_row', 30)
+        self.ws_row_def = int(self.ws_row)
 
         # figure
         self.ws_fig_label = utl.kwget(kwargs, self.fcpp, 'ws_fig_label', 10)
@@ -1967,7 +1970,7 @@ class BaseLayout:
 
         return kwargs
 
-    def set_label_text(self, data, **kwargs):
+    def set_label_text(self, data):
         """
         Set the default label text
 
@@ -1976,11 +1979,12 @@ class BaseLayout:
 
         """
 
+        kwargs = self.kwargs_mod.copy()  # alias
         # Update the label keys from self.kwargs_mod
-        lab_keys = [f for f in self.kwargs_mod.keys() if 'label' in f]
-        kw = kwargs.copy()
-        for lk in lab_keys:
-            kw[lk] = self.kwargs_mod[lk]
+        # lab_keys = [f for f in self.kwargs_mod.keys() if 'label' in f]
+        # kw = kwargs.copy()
+        # for lk in lab_keys:  # don't think this is need cause not passing kwargs
+        #     kw[lk] = self.kwargs_mod[lk]
 
         # Set the label text
         labels = ['x', 'y', 'z', 'col', 'row', 'wrap']
@@ -1996,6 +2000,9 @@ class BaseLayout:
             elif 'label_%s' % lab in kwargs.keys():
                 lab_text = str(kwargs.get('label_%s' % lab))
                 lab_text2 = str(kwargs.get('label_%s2' % lab))
+            elif 'label_%s_text' % lab in kwargs.keys():
+                lab_text = str(kwargs.get('label_%s_text' % lab))
+                lab_text2 = str(kwargs.get('label_%s2_text' % lab))
             else:
                 lab_text = None
                 lab_text2 = None
@@ -2048,8 +2055,10 @@ class BaseLayout:
             if self.hist.normalize:
                 self.label_y.text = kwargs.get(
                     'label_y_text', 'Normalized Counts')
-            else:
-                self.label_y.text = kwargs.get('label_y_text', 'Counts')
+            elif self.hist.horizontal:
+                tmp = self.label_y.text
+                self.label_y.text = self.label_x.text
+                self.label_x.text = tmp
 
         if 'bar' in self.name and self.bar.horizontal:
             temp = self.label_x.text
@@ -2090,7 +2099,9 @@ class BaseLayout:
             self.separate_ticks = kwargs.get('separate_ticks', False) \
                 if not self.separate_labels else True
             self.ws_row = kwargs.get('ws_row', self.label_wrap._size[1])
+            self.ws_row_def = int(self.ws_row)
             self.ws_col = kwargs.get('ws_col', 0)
+            self.ws_col_def = 0
             # self.cbar.on = False  # may want to address this someday
 
     def add_box_labels(self, ir, ic, dd):

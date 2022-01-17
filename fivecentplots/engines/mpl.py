@@ -1949,7 +1949,7 @@ class Layout(BaseLayout):
 
         # separate ticks and labels
         if (self.separate_ticks or self.axes.share_y == False) and not self.cbar.on:
-            self.ws_col = max(self.tick_y + self.ws_ax_fig, self.ws_col)
+            self.ws_col = max(self.tick_y + self.ws_ax_fig, self.ws_col_def)
         elif (self.separate_ticks or self.axes.share_y == False) and self.cbar.on:
             self.ws_col += self.tick_y
         if self.separate_ticks or \
@@ -2215,6 +2215,7 @@ class Layout(BaseLayout):
 
         xticks = self.tick_labels_major_x
         yticks = self.tick_labels_major_y
+        sf = 1.5  # scale factor for tick font size
 
         # TODO:: minor overlaps
         # TODO:: self.axes2
@@ -2233,9 +2234,9 @@ class Layout(BaseLayout):
             if len(xticks_size_all) == 1:
                 self.add_text(ir, ic, str(xticks.limits[1]),
                               position=[self.axes.size[0] -
-                                        xticks.size_all[0, 2] / 2 / 1.5,
+                                        xticks.size_all[0, 2] / 2 / sf,
                                         -xticks.size_all[0, 3]],
-                              font_size=xticks.font_size / 1.5)
+                              font_size=xticks.font_size / sf)
 
             # Overlapping x-y origin
             if len(xticks_size_all) > 0 and len(yticks_size_all) > 0:
@@ -2247,18 +2248,20 @@ class Layout(BaseLayout):
                     if self.tick_cleanup == 'remove':
                         yticks.obj[ir, ic][0].set_visible(False)
                     else:
-                        xticks.obj[ir, ic][0].set_size(xticks.font_size / 1.5)
-                        yticks.obj[ir, ic][0].set_size(yticks.font_size / 1.5)
+                        xticks.obj[ir, ic][0].set_size(xticks.font_size / sf)
+                        yticks.obj[ir, ic][0].set_size(yticks.font_size / sf)
 
             # Overlapping grid plot at x-origin
             if ic > 0 and len(xticks_size_all) > 0:
                 ax_x0 = self.axes.obj[ir, ic].get_window_extent().x0
                 tick_x0 = xticks_size_all[0][4]
                 if ax_x0 - tick_x0 > self.ws_col:
-                    if self.tick_cleanup == 'remove':
+                    slop = xticks.obj[ir, ic][0].get_window_extent().width / 2
+                    if self.tick_cleanup == 'remove' or \
+                            slop / sf > self.ws_col:
                         xticks.obj[ir, ic][0].set_visible(False)
                     else:
-                        xticks.obj[ir, ic][0].set_size(xticks.font_size / 1.5)
+                        xticks.obj[ir, ic][0].set_size(xticks.font_size / sf)
 
             # TODO: Overlapping grid plot at y-origin
 
@@ -2270,7 +2273,12 @@ class Layout(BaseLayout):
                     db()
             if len(yticks_size_all) > 0:
                 ybbox = yticks_size_all[:, -2:]
-                ol = (ybbox[0:-1, 0] - ybbox[1:, 1]) < 0
+                if ybbox[0:2, 0].argmax() == 1:
+                    # ascending ticks
+                    ol = (ybbox[1:, 0] - ybbox[0:-1, 1]) < 0
+                else:
+                    # descending ticks
+                    ol = (ybbox[0:-1, 0] - ybbox[1:, 1]) < 0
                 if any(ol):
                     db()
 
@@ -2757,6 +2765,10 @@ class Layout(BaseLayout):
                                               orientation='vertical' if not self.hist.horizontal else 'horizontal',
                                               )
         else:
+            # if self.hist.horizontal:
+            #     xx = y
+            # else:
+            #     xx = x
             hist = self.axes.obj[ir, ic].hist(df[x], bins=self.hist.bins,
                                               color=self.hist.fill_color[iline],
                                               ec=self.hist.edge_color[iline],

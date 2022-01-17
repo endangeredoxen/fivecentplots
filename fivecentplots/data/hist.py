@@ -15,7 +15,8 @@ class Histogram(data.Data):
         name = 'hist'
         req = []
         opt = ['x']
-        self.fcpp, dummy, dummy2 = utl.reload_defaults(kwargs.get('theme', None))
+        self.fcpp, dummy, dummy2 = utl.reload_defaults(
+            kwargs.get('theme', None))
         bars = utl.kwget(kwargs, self.fcpp, 'bars', kwargs.get('bars', True))
         kwargs['2D'] = False
 
@@ -26,7 +27,8 @@ class Histogram(data.Data):
             if cfa is not None:
                 kwargs['df'] = utl.split_color_planes(kwargs['df'], cfa)
             kwargs['2D'] = True
-            bars = utl.kwget(kwargs, self.fcpp, 'bars', kwargs.get('bars', False))
+            bars = utl.kwget(kwargs, self.fcpp, 'bars',
+                             kwargs.get('bars', False))
 
         # overrides
         kwargs['ax_limit_padding_ymax'] = kwargs.get('ax_limit_padding', 0.05)
@@ -153,7 +155,10 @@ class Histogram(data.Data):
                 self.add_range(ir, ic, 'y', 'min', temp_ranges[ir][ic]['ymin'])
                 self.add_range(ir, ic, 'y', 'max', temp_ranges[ir][ic]['ymax'])
 
-        self.y = None
+        # self.y = None
+
+        if hasattr(self, 'horizontal') and self.horizontal:
+            self.swap_xy_ranges()
 
     def subset_modify(self, df, ir, ic):
 
@@ -174,23 +179,27 @@ class Histogram(data.Data):
             cols = (self.x if self.x is not None else []) + \
                    (self.y if self.y is not None else []) + \
                    (self.groups if self.groups is not None else []) + \
-                   (utl.validate_list(self.legend) if self.legend not in [None, True, False] else [])
+                   (utl.validate_list(self.legend)
+                    if self.legend not in [None, True, False] else [])
             return self.df_fig[cols]
         elif self.wrap == 'x':
             self.x = utl.validate_list(self.wrap_vals[ic + ir * self.ncol])
             cols = (self.x if self.x is not None else []) + \
                    (self.y if self.y is not None else []) + \
                    (self.groups if self.groups is not None else []) + \
-                   (utl.validate_list(self.legend) if self.legend is not None else [])
+                   (utl.validate_list(self.legend)
+                    if self.legend is not None else [])
             # need this extra line for hist
             cols = [f for f in cols if f != 'Counts']
             return self.df_fig[cols]
         else:
             if self.sort:
                 self.wrap_vals = \
-                    natsorted(list(self.df_fig.groupby(self.wrap).groups.keys()))
+                    natsorted(
+                        list(self.df_fig.groupby(self.wrap).groups.keys()))
             else:
-                self.wrap_vals = list(self.df_fig.groupby(self.wrap, sort=False).groups.keys())
+                self.wrap_vals = list(self.df_fig.groupby(
+                    self.wrap, sort=False).groups.keys())
             wrap = dict(zip(self.wrap,
                         utl.validate_list(self.wrap_vals[ir*self.ncol + ic])))
             return self.df_fig.loc[(self.df_fig[list(wrap)] == pd.Series(wrap)).all(axis=1)].copy()
