@@ -55,7 +55,7 @@ if not os.path.exists(osjoin(user_dir, '.fivecentplots', 'defaults.py')):
                  osjoin(user_dir, '.fivecentplots', 'defaults.py'))
 sys.path = [osjoin(user_dir, '.fivecentplots')] + sys.path
 
-from defaults import *  # use local file
+from defaults import *  # noqa | use local file
 
 kw = keywords.make_docstrings()
 
@@ -132,8 +132,8 @@ def deprecated(kwargs):
 
     # leg_groups
     if kwargs.get('leg_groups'):
-            kwargs['legend'] = kwargs['leg_groups']
-            print('"leg_groups" is deprecated. Please use "legend" instead')
+        kwargs['legend'] = kwargs['leg_groups']
+        print('"leg_groups" is deprecated. Please use "legend" instead')
 
     # labels
     labels = ['x', 'x2', 'y', 'y2', 'z']
@@ -142,16 +142,17 @@ def deprecated(kwargs):
         keys = [f for f in kwargs.keys() if '%slabel' % lab in f]
         if len(keys) > 0:
             print('"%slabel" is deprecated. Please use "label_%s" instead'
-                    % (lab, lab))
+                  % (lab, lab))
             for k in keys:
-                kwargs[k.replace('%slabel' % lab, 'label_%s' % lab)] = kwargs[k]
+                kwargs[k.replace('%slabel' % lab, 'label_%s' %
+                                 lab)] = kwargs[k]
                 kwargs.pop(k)
 
     # twin + share
     vals = ['sharex', 'sharey', 'twinx', 'twiny']
     for val in vals:
         if val in kwargs:
-            print('"%s" is deprecated.  Please use "%s_%s" instead' % \
+            print('"%s" is deprecated.  Please use "%s_%s" instead' %
                   (val, val[0:-1], val[-1]))
             kwargs['%s_%s' % (val[0:-1], val[-1])] = kwargs[val]
 
@@ -199,7 +200,8 @@ def heatmap(*args, **kwargs):
 
 def help():
     import webbrowser
-    webbrowser.open(r'https://endangeredoxen.github.io/fivecentplots/index.html')
+    webbrowser.open(
+        r'https://endangeredoxen.github.io/fivecentplots/index.html')
 
 
 def hist(*args, **kwargs):
@@ -291,7 +293,8 @@ def plot_bar(data, layout, ir, ic, df_rc, kwargs):
 
     """
 
-    xvals = np.sort(df_rc[data.x[0]].unique())  # would need to update to support multiple x
+    # would need to update to support multiple x
+    xvals = np.sort(df_rc[data.x[0]].unique())
     group_vals = [data.x[0], data.legend] if data.legend else data.x[0]
     groups = df_rc.groupby(group_vals)
     ticks = len(groups)
@@ -306,7 +309,8 @@ def plot_bar(data, layout, ir, ic, df_rc, kwargs):
         for n, g in df_rc.groupby(data.x[0]):
             for ii, (nn, gg) in enumerate(g.groupby(data.legend)):
                 df_rc.loc[df_rc.index.isin(gg.index), 'Instance'] = ii
-                df_rc.loc[df_rc.index.isin(gg.index), 'Total'] = len(g.groupby(data.legend))
+                df_rc.loc[df_rc.index.isin(gg.index), 'Total'] = len(
+                    g.groupby(data.legend))
     else:
         df_rc['Instance'] = 0
         df_rc['Total'] = 1
@@ -399,11 +403,12 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
             # Plot points
             if type(dd.legend_vals) is pd.DataFrame:
                 for jj, jrow in dd.legend_vals.iterrows():
-                    temp = gg.loc[gg[dd.legend]==jrow['names']][dd.y].dropna()
+                    temp = gg.loc[gg[dd.legend] ==
+                                  jrow['names']][dd.y].dropna()
                     temp['x'] = irow + 1
                     if len(temp) > 0:
                         layout.plot_xy(ir, ic, jj, temp, 'x', dd.y[0],
-                                   jrow['names'], False, zorder=10)
+                                       jrow['names'], False, zorder=10)
             else:
                 if len(temp) > 0:
                     layout.plot_xy(ir, ic, irow, temp, 'x', dd.y[0], None, False,
@@ -415,10 +420,10 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
         data[0]['x'] = 1
         if type(dd.legend_vals) is pd.DataFrame:
             for jj, jrow in dd.legend_vals.iterrows():
-                temp = data[0].loc[df_rc[dd.legend]==jrow['names']].index
+                temp = data[0].loc[df_rc[dd.legend] == jrow['names']].index
 
                 layout.plot_xy(ir, ic, jj, data[0].loc[temp], 'x', dd.y[0],
-                           jrow['names'], False, zorder=10)
+                               jrow['names'], False, zorder=10)
         else:
             layout.plot_xy(ir, ic, 0, data[0], 'x', dd.y[0], None, False,
                            zorder=10)
@@ -435,12 +440,12 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
         for id, dat in enumerate(data):
             kwargs = layout.box_range_lines.kwargs.copy()
             layout.plot_line(ir, ic, id+1-0.2, dat.max().iloc[0],
-                            x1=id+1+0.2, y1=dat.max().iloc[0], **kwargs)
+                             x1=id+1+0.2, y1=dat.max().iloc[0], **kwargs)
             layout.plot_line(ir, ic, id+1-0.2, dat.min().iloc[0],
-                            x1=id+1+0.2, y1=dat.min().iloc[0], **kwargs)
+                             x1=id+1+0.2, y1=dat.min().iloc[0], **kwargs)
             kwargs['style'] = kwargs['style2']
             layout.plot_line(ir, ic, id+1, dat.min().iloc[0],
-                            x1=id+1, y1=dat.max().iloc[0], **kwargs)
+                             x1=id+1, y1=dat.max().iloc[0], **kwargs)
 
     # Add boxes
     for ival, val in enumerate(data):
@@ -472,7 +477,8 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
                 x2 = len(mm[dd.groups].drop_duplicates()) + x + 1
             else:
                 x2 = len(mm[dd.groups].drop_duplicates()) + x
-            layout.plot_line(ir, ic, [x, x2], y, **layout.box_group_means.kwargs,)
+            layout.plot_line(ir, ic, [x, x2], y, **
+                             layout.box_group_means.kwargs,)
             x = x2
 
     # add grand mean
@@ -539,7 +545,8 @@ def plot_contour(data, layout, ir, ic, df_rc, kwargs):
     """
 
     for iline, df, x, y, z, leg_name, twin, ngroups in data.get_plot_data(df_rc):
-        layout.plot_contour(layout.axes.obj[ir, ic], df, x, y, z, data.ranges[ir, ic])
+        layout.plot_contour(
+            layout.axes.obj[ir, ic], df, x, y, z, data.ranges[ir, ic])
 
     return data
 
@@ -570,8 +577,8 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin, leg_name, ngroups):
     if layout.legend._on:
         if layout.fit.legend_text is not None:
             leg_name = layout.fit.legend_text
-        elif (data.wrap_vals is not None and ngroups / data.nwrap > 1 \
-                or ngroups / (data.nrow * data.ncol) > 1 \
+        elif (data.wrap_vals is not None and ngroups / data.nwrap > 1
+                or ngroups / (data.nrow * data.ncol) > 1
                 or len(np.unique(layout.fit.color.values)) > 1) \
                 and data.legend_vals is not None \
                 and layout.label_wrap.column is None:
@@ -580,7 +587,7 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin, leg_name, ngroups):
             leg_name = 'Fit'
     else:
         leg_name = None
-    layout.plot_xy(ir, ic, iline, df, '%s Fit' % x, '%s Fit' %y,
+    layout.plot_xy(ir, ic, iline, df, '%s Fit' % x, '%s Fit' % y,
                    leg_name, twin, line_type='fit',
                    marker_disable=True)
 
@@ -593,7 +600,7 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin, leg_name, ngroups):
                 power = '^%s' % str(len(coeffs) - 1 - ico)
             else:
                 power = ''
-            eqn += '%s*x%s' % (round(coeff,3), power)
+            eqn += '%s*x%s' % (round(coeff, 3), power)
         if coeffs[-1] > 0:
             eqn += '+'
         eqn += '%s' % round(coeffs[-1], 3)
@@ -621,14 +628,15 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
     """
 
     # Sort the values
-    ascending = False if layout.gantt.sort.lower()=='descending' else True
+    ascending = False if layout.gantt.sort.lower() == 'descending' else True
     df_rc = df_rc.sort_values(data.x[0], ascending=ascending)
     if layout.gantt.order_by_legend:
         df_rc = df_rc.sort_values(data.legend, ascending=ascending)
 
     cols = data.y
     if data.legend is not None:
-        cols += [f for f in validate_list(data.legend) if f is not None and f not in cols]
+        cols += [f for f in validate_list(data.legend)
+                 if f is not None and f not in cols]
     yvals = [tuple(f) for f in df_rc[cols].values]
 
     for iline, df, x, y, z, leg_name, twin, ngroups in data.get_plot_data(df_rc):
@@ -655,7 +663,8 @@ def plot_heatmap(data, layout, ir, ic, df_rc, kwargs):
     for iline, df, x, y, z, leg_name, twin, ngroups in data.get_plot_data(df_rc):
 
         # Make the plot
-        layout.plot_heatmap(layout.axes.obj[ir, ic], df, ir, ic, x, y, z, data.ranges[ir, ic])
+        layout.plot_heatmap(
+            layout.axes.obj[ir, ic], df, ir, ic, x, y, z, data.ranges[ir, ic])
 
     return data
 
@@ -679,10 +688,12 @@ def plot_hist(data, layout, ir, ic, df_rc, kwargs):
             layout.lines.on = False
         if kwargs.get('groups', False):
             for nn, gg in df.groupby(validate_list(kwargs['groups'])):
-                hist, data = layout.plot_hist(ir, ic, iline, gg, x, y, leg_name, data)
+                hist, data = layout.plot_hist(
+                    ir, ic, iline, gg, x, y, leg_name, data)
 
         else:
-            hist, data = layout.plot_hist(ir, ic, iline, df, x, y, leg_name, data)
+            hist, data = layout.plot_hist(
+                ir, ic, iline, df, x, y, leg_name, data)
 
     return data
 
@@ -709,7 +720,6 @@ def plot_imshow(data, layout, ir, ic, df_rc, kwargs):
 
 
 def plot_nq(data, layout, ir, ic, df_rc, kwargs):
-
     """
     Plot data as normal quantiles by sigma
 
@@ -782,7 +792,8 @@ def plot_stat(ir, ic, iline, data, layout, df, x, y, leg_name=None, twin=False):
         return
 
     layout.lines.on = True
-    layout.plot_xy(ir, ic, iline, df_stat, x, y, leg_name, twin, marker_disable=True)
+    layout.plot_xy(ir, ic, iline, df_stat, x, y,
+                   leg_name, twin, marker_disable=True)
 
     return data
 
@@ -809,10 +820,12 @@ def plot_xy(data, layout, ir, ic, df_rc, kwargs):
         elif kwargs.get('groups', False):
             for nn, gg in df.groupby(validate_list(kwargs['groups']), sort=data.sort):
                 layout.plot_xy(ir, ic, iline, gg, x, y, leg_name, twin)
-                plot_fit(data, layout, ir, ic, iline, gg, x, y, twin, leg_name, ngroups)
+                plot_fit(data, layout, ir, ic, iline, gg,
+                         x, y, twin, leg_name, ngroups)
         else:
             layout.plot_xy(ir, ic, iline, df, x, y, leg_name, twin)
-            plot_fit(data, layout, ir, ic, iline, df, x, y, twin, leg_name, ngroups)
+            plot_fit(data, layout, ir, ic, iline, df,
+                     x, y, twin, leg_name, ngroups)
 
         plot_ref(ir, ic, iline, data, layout, df, x, y)
         if not layout.lines.on and not layout.markers.on:
@@ -907,47 +920,59 @@ def plotter(dobj, **kwargs):
 
             # Set the axes colors
             layout.set_axes_colors(ir, ic)
-            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_colors' % (ifig, ir, ic))
+            kwargs['timer'].get(
+                'ifig=%s | ir=%s | ic=%s | set_axes_colors' % (ifig, ir, ic))
 
             # Add and format gridlines
             layout.set_axes_grid_lines(ir, ic)
-            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_grid_lines' % (ifig, ir, ic))
+            kwargs['timer'].get(
+                'ifig=%s | ir=%s | ic=%s | set_axes_grid_lines' % (ifig, ir, ic))
 
             # Add horizontal and vertical lines
             layout.add_hvlines(ir, ic, df_rc)
-            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | add_hvlines' % (ifig, ir, ic))
+            kwargs['timer'].get(
+                'ifig=%s | ir=%s | ic=%s | add_hvlines' % (ifig, ir, ic))
 
             # Plot the data
-            dd = globals()['plot_{}'.format(dd.name)](dd, layout, ir, ic, df_rc, kwargs)
-            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | plot' % (ifig, ir, ic))
+            dd = globals()['plot_{}'.format(dd.name)](
+                dd, layout, ir, ic, df_rc, kwargs)
+            kwargs['timer'].get(
+                'ifig=%s | ir=%s | ic=%s | plot' % (ifig, ir, ic))
 
             # Set linear or log axes scaling
             layout.set_axes_scale(ir, ic)
-            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_scale' % (ifig, ir, ic))
+            kwargs['timer'].get(
+                'ifig=%s | ir=%s | ic=%s | set_axes_scale' % (ifig, ir, ic))
 
             # Set axis ranges
             layout.set_axes_ranges(ir, ic, dd.ranges)
-            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_ranges' % (ifig, ir, ic))
+            kwargs['timer'].get(
+                'ifig=%s | ir=%s | ic=%s | set_axes_ranges' % (ifig, ir, ic))
 
             # Add axis labels
             layout.set_axes_labels(ir, ic)
-            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_labels' % (ifig, ir, ic))
+            kwargs['timer'].get(
+                'ifig=%s | ir=%s | ic=%s | set_axes_labels' % (ifig, ir, ic))
 
             # Add rc labels
             layout.set_axes_rc_labels(ir, ic)
-            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_rc_labels' % (ifig, ir, ic))
+            kwargs['timer'].get(
+                'ifig=%s | ir=%s | ic=%s | set_axes_rc_labels' % (ifig, ir, ic))
 
             # Adjust tick marks
             layout.set_axes_ticks(ir, ic)
-            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_ticks' % (ifig, ir, ic))
+            kwargs['timer'].get(
+                'ifig=%s | ir=%s | ic=%s | set_axes_ticks' % (ifig, ir, ic))
 
             # Add box labels
             layout.add_box_labels(ir, ic, dd)
-            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | add_box_labels' % (ifig, ir, ic))
+            kwargs['timer'].get(
+                'ifig=%s | ir=%s | ic=%s | add_box_labels' % (ifig, ir, ic))
 
             # Add arbitrary text
             layout.add_text(ir, ic)
-            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | add_text' % (ifig, ir, ic))
+            kwargs['timer'].get(
+                'ifig=%s | ir=%s | ic=%s | add_text' % (ifig, ir, ic))
 
         # Make the legend
         layout.add_legend()
@@ -1073,12 +1098,12 @@ def set_theme(theme=None):
 
         if int(entry) <= len(themes):
             print('Copying %s >> %s' %
-                (themes[int(entry)-1],
-                osjoin(user_dir, '.fivecentplots', 'defaults.py')))
+                  (themes[int(entry)-1],
+                   osjoin(user_dir, '.fivecentplots', 'defaults.py')))
         else:
             print('Copying %s >> %s' %
-                (mythemes[int(entry) - 1 - len(themes)],
-                osjoin(user_dir, '.fivecentplots', 'defaults.py')))
+                  (mythemes[int(entry) - 1 - len(themes)],
+                   osjoin(user_dir, '.fivecentplots', 'defaults.py')))
 
     if os.path.exists(osjoin(user_dir, '.fivecentplots', 'defaults.py')):
         print('Previous theme file found! Renaming to "defaults_old.py" and '
@@ -1125,7 +1150,7 @@ def kw_print(kw):
                                subsequent_indent=indent + '  ')
         kwstr += '\n'
 
-    kwstr = kwstr.replace('`','')
+    kwstr = kwstr.replace('`', '')
 
     return kwstr
 
