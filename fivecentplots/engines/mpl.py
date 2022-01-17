@@ -2096,22 +2096,21 @@ class Layout(BaseLayout):
 
         self.label_wrap.position[3] = 1
 
-        # there is some incredible weirdness with cbars on imshow.  Here is a stupid hack
-        hack = 0
-        if self.name in ['imshow']:
-            hack += 1 * (self.ncol - 1) if self.cbar.on else 0
-            if not self.cbar.on and self.ncol == 1:
-                self.label_wrap.size[0] += 1
-                hack += 1 * (self.ncol)
-            elif self.cbar.on and self.ncol > 1:
-                hack += 2
-            # elif not self.cbar.on:  # may not work on another version of mpl!
-            #     hack += 1
+        # # there is some incredible weirdness with cbars on imshow.  Here is a stupid hack
+        # # the hack is moved to set_fiture_final_layout and may not be needed here
+        # hack = 0
+        # if self.name in ['imshow']:
+        #     hack += 1 * (self.ncol - 1) if self.cbar.on else 0
+        #     if not self.cbar.on and self.ncol == 1:
+        #         self.label_wrap.size[0] += 1
+        #         hack += 1 * (self.ncol)
+        #     elif self.cbar.on and self.ncol > 1:
+        #         hack += 2
 
-        self.title_wrap.size[0] = self.ncol * self.title_wrap.size[0] + \
-            (self.ncol - 1) * self.ws_col + hack + \
-            ((self.cbar.size[0] + self.ws_ax_cbar)
-             * self.ncol if self.cbar.on else 0)
+        # self.title_wrap.size[0] = self.ncol * self.title_wrap.size[0] + \
+        #     (self.ncol - 1) * self.ws_col + hack + \
+        #     ((self.cbar.size[0] + self.ws_ax_cbar)
+        #      * self.ncol if self.cbar.on else 0)
 
         self.title_wrap.position[3] = 1 + \
             self.label_wrap.size[1] / self.axes.size[1]
@@ -4274,6 +4273,12 @@ class Layout(BaseLayout):
                 self.label_col.obj[ir, ic].set_position((0.5, y_text))
                 self.label_col.obj_bg[ir, ic].set_y(y_rect)
         # wrap label
+        if self.name in ['imshow'] and self.ncol > 1:
+            hack = 0  # some weirdness on cbar or imshow plots; here is a stupid hack
+        elif self.name in ['imshow']:
+            hack = -1
+        else:
+            hack = 1
         for ir, ic in np.ndindex(self.label_wrap.obj.shape):
             if self.label_wrap.obj[ir, ic]:
                 offset = 0
@@ -4284,7 +4289,7 @@ class Layout(BaseLayout):
                 self.label_wrap.obj[ir, ic].set_position((0.5, y_text))
                 self.label_wrap.obj_bg[ir, ic].set_y(y_rect)
                 self.label_wrap.obj_bg[ir, ic].set_width(
-                    1 + 1 / self.axes.size[0])
+                    1 + hack / self.axes.size[0])
         # wrap title
         if self.title_wrap.on:
             offset = 0
@@ -4294,7 +4299,8 @@ class Layout(BaseLayout):
                 self.axes.size[1]
             self.title_wrap.obj.set_position((self.ncol / 2, y_text))
             self.title_wrap.obj_bg.set_y(y_rect)
-            self.title_wrap.obj_bg.set_width(self.ncol + 1 / self.axes.size[0])
+            self.title_wrap.obj_bg.set_width(
+                self.ncol + hack / self.axes.size[0])
 
         # Update title position
         if self.title.on:
