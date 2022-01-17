@@ -64,7 +64,7 @@ def plt_basic(bm=False, master=False, remove=True, show=False):
 
     # Make the plot
     fcp.gantt(df=df, x=['Start', 'Stop'], y='Task',
-              filename=name + '.png', ax_size=[600, 400])
+              filename=name + '.png', save=not bm, inline=False, ax_size=[600, 400])
 
     if bm:
         return
@@ -95,7 +95,7 @@ def plt_legend(bm=False, master=False, remove=True, show=False):
 
     # Make the plot
     fcp.gantt(df=df, x=['Start', 'Stop'], y='Task', legend='Assigned',
-              filename=name + '.png', ax_size=[600, 400])
+              filename=name + '.png', save=not bm, inline=False, ax_size=[600, 400])
 
     # Compare with master
     if master:

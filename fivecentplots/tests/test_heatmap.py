@@ -69,13 +69,14 @@ def show_all():
         db()
 
 
+# plt_ functions can be used directly outside of pytest for debug
 def plt_cat_no_label(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'cat_no_label_master') if master else 'cat_no_label'
 
     # Make the plot
     fcp.heatmap(df=df, x='Category', y='Player', z='Average', cbar=True, show=SHOW,
-                filename=name + '.png')
+                filename=name + '.png', save=not bm, inline=False)
 
     if bm:
         return
@@ -105,7 +106,7 @@ def plt_cat_label(bm=False, master=False, remove=True, show=False):
     fcp.heatmap(df=df, x='Category', y='Player', z='Average', cbar=True, data_labels=True,
                 heatmap_font_color='#aaaaaa', show=SHOW, tick_labels_major_y_edge_width=0,
                 ws_ticks_ax=5,
-                filename=name + '.png')
+                filename=name + '.png', save=not bm, inline=False)
 
     if bm:
         return
@@ -136,7 +137,7 @@ def plt_cat_cell_size(bm=False, master=False, remove=True, show=False):
     fcp.heatmap(df=df, x='Category', y='Player', z='Average', cbar=True, data_labels=True,
                 heatmap_font_color='#aaaaaa', show=SHOW, tick_labels_major_y_edge_width=0,
                 ws_ticks_ax=5, cell_size=100,
-                filename=name + '.png')
+                filename=name + '.png', save=not bm, inline=False)
 
     if bm:
         return
@@ -169,7 +170,7 @@ def plt_cat_non_uniform(bm=False, master=False, remove=True, show=False):
     fcp.heatmap(df=df2, x='X', y='Y', z='Value', row='Batch', col='Experiment',
                 cbar=True, show=SHOW, share_z=True, ax_size=[400, 400],
                 data_labels=False, label_rc_font_size=12, filter='Batch==103', cmap='viridis',
-                filename=name + '.png')
+                filename=name + '.png', save=not bm, inline=False)
 
     if bm:
         return
@@ -197,7 +198,7 @@ def plt_heatmap(bm=False, master=False, remove=True, show=False):
 
     # Make the plot
     fcp.heatmap(img, cmap='inferno', cbar=True, ax_size=[600, 600],
-                filename=name + '.png')
+                filename=name + '.png', save=not bm, inline=False)
 
     if bm:
         return
@@ -227,8 +228,9 @@ def plt_heatmap_stretched(bm=False, master=False, remove=True, show=False):
     # Make the plot
     uu = img.stack().mean()
     ss = img.stack().std()
-    fcp.heatmap(img, cmap='inferno', cbar=True, ax_size=[600, 600], zmin=uu-3*ss, zmax=uu+3*ss,
-                filename=name + '.png')
+    fcp.heatmap(img, cmap='inferno', cbar=True, ax_size=[600, 600], zmin=uu-3*ss,
+                zmax=uu+3*ss,
+                filename=name + '.png', save=not bm, inline=False)
 
     if bm:
         return
@@ -258,7 +260,7 @@ def plt_heatmap_zoomed(bm=False, master=False, remove=True, show=False):
     # Make the plot
     fcp.heatmap(img, cmap='inferno', cbar=True, ax_size=[600, 600], xmin=700, xmax=1100,
                 ymin=300, ymax=400,
-                filename=name + '.png')
+                filename=name + '.png', save=not bm, inline=False)
 
     if bm:
         return
