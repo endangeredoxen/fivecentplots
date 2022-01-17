@@ -57,7 +57,7 @@ def show_all():
         db()
 
 
-### plt_ functions can be used directly outside of pytest for debug
+# plt_ functions can be used directly outside of pytest for debug
 def plt_xy_scatter(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'xy_scatter_master') if master else 'xy_scatter'
@@ -322,6 +322,36 @@ def plt_multiple_xy_both(bm=False, master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x=['Boost Level', 'I [A]'], y=['Voltage', 'Temperature [C]'], legend='Die', show=SHOW,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             filename=name + '.png', save=not bm, inline=False)
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_multiple_xy_both_label(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(
+        MASTER, 'multiple-xy_both_label_master') if master else 'multiple-xy_both_label'
+
+    # Make the plot
+    fcp.plot(df, x=['Boost Level', 'I [A]'], y=['Voltage', 'Temperature [C]'], legend='Die', show=SHOW,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             label_x='yep', label_y_text='no way',
              filename=name + '.png', save=not bm, inline=False)
     if bm:
         return
@@ -852,9 +882,9 @@ def plt_other_ref_line_complex(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
-### test_ functions call plt_ funcs 2x:
-###   1) do the comparison with saved image
-###   2) do a test plot only with save=False and inline=False and benchmark spead
+# test_ functions call plt_ funcs 2x:
+# 1) do the comparison with saved image
+# 2) do a test plot only with save=False and inline=False and benchmark spead
 def test_column(benchmark):
     plt_column()
     benchmark(plt_column, True)
@@ -863,6 +893,11 @@ def test_column(benchmark):
 def test_multiple_xy_both(benchmark):
     plt_multiple_xy_both()
     benchmark(plt_multiple_xy_both, True)
+
+
+def test_multiple_xy_both(benchmark):
+    plt_multiple_xy_both_label()
+    benchmark(plt_multiple_xy_both_label, True)
 
 
 def test_multiple_xy_x(benchmark):
