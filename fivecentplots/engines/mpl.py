@@ -294,6 +294,29 @@ class Layout(BaseLayout):
         return left
 
     @property
+    def legx(self):
+        """
+        Legend whitespace x is location == 0
+        """
+
+        if self.legend.location == 0 and self.legend._on:
+            return self.legend.size[0] + self.ws_ax_leg + self.ws_leg_fig + \
+                self.fig_legend_border + self.legend.edge_width
+        else:
+            return 0
+
+    @property
+    def legy(self):
+        """
+        Legend whitespace y is location == 11
+        """
+
+        if self.legend.location == 11 and self.legend._on:
+            return self.legend.size[1]
+        else:
+            return 0
+
+    @property
     def rc_label(self):
         """
         Width of an rc label with whitespace
@@ -308,9 +331,11 @@ class Layout(BaseLayout):
         Width of the space to the right of the axes object
         """
 
+        # axis to fig right side ws with or without legend
         ws_ax_fig = (
             self.ws_ax_fig if not self.legend._on or self.legend.location != 0 else 0)
 
+        # sum all parts
         right = ws_ax_fig \
             + self.labtick_y2 \
             + self.rc_label \
@@ -319,7 +344,16 @@ class Layout(BaseLayout):
             + self.label_y2.size[0] \
             + (self.label_z.size[0] *
                (self.ncol if self.separate_labels else 1) +
-               self.ws_ticks_ax * self.label_z.on)
+               self.ws_ticks_ax * self.label_z.on) \
+
+        # box title excess
+        btitle_xs_right = 0
+        if self.box_group_title.on:
+            btitle_xs_right = (self.ws_ax_box_title + self.box_title) - \
+                right - self.legx + \
+                self.ws_ax_fig  # self.ws_ax_fig if not self.legend._on or self.legend.location != 0 else 0)
+            if btitle_xs_right > 0:
+                right += btitle_xs_right
 
         # Main figure title excess size
         title_xs_right = self.title.size[0] / 2 \
@@ -385,9 +419,11 @@ class Layout(BaseLayout):
                         width = sub.index[j+1] - sub.index[j]
                     width = width * self.axes.size[0] / len(data.changes)
                     label = data.indices.loc[sub.index[j], num_cols-1-i]
-                    hh = max(self.box_group_label.size[i][1],
-                             self.box_group_title.size[i][1])
-                    height = hh * (1 + 2 * self.box_group_label.padding / 100)
+                    db()
+                    # NEED TO RETHINK THIS-- the data structure isn't right b/c size is done later
+                    # hh = max(self.box_group_label.size[i][1],
+                    #          self.box_group_title.size[i][1])
+                    # height = hh * (1 + 2 * self.box_group_label.padding / 100)
                     # if self.box_group_title.on:
                     #     height2 = self.box_group_title.size[i][1] * \
                     #               (1 + 2 * self.box_group_title.padding / 100)
@@ -1919,7 +1955,7 @@ class Layout(BaseLayout):
             self.ws_ax_fig = 0
         self.fig_legend_border = self.fig_legend_border if self.legend.location == 0 else 0
         self.box_labels = 0
-        if self.box_group_label.on:
+        if self.box_group_label.on and self.box_group_label.size != [0, 0]:
             for i, f in enumerate(self.box_group_label.size):
                 hh = max(f[1], self.box_group_title.size[i][1])
                 self.box_labels += hh * \
@@ -1927,7 +1963,7 @@ class Layout(BaseLayout):
         self.box_title = 0
         if self.box_group_title.on and self.legend.size[1] > self.axes.size[1]:
             self.box_title = max(self.box_group_title.size)[0]
-        elif self.box_group_title.on and \
+        elif self.box_group_title.on and self.box_group_title.size != [0, 0] and \
                 max(self.box_group_title.size)[0] > self.legend.size[0]:
             self.box_title = max(self.box_group_title.size)[
                 0] - self.legend.size[0]
@@ -1982,24 +2018,9 @@ class Layout(BaseLayout):
             else:
                 self.axes.size[0] = self.axes.size[1] * data.wh_ratio
 
-        # Legend whitespace
-        legx, legy = 0, 0
-        if self.legend.location == 0 and self.legend._on:
-            legx = self.legend.size[0] + self.ws_ax_leg + self.ws_leg_fig + \
-                self.fig_legend_border + self.legend.edge_width
-        elif self.legend.location == 11 and self.legend._on:
-            legy = self.legend.size[1]
-
-        # Box titles excess size
-        if self.box_group_title.on:
-            btitle_xs_right = (self.ws_ax_box_title + self.box_title) - \
-                self.right - legx + ws_ax_fig
-            if btitle_xs_right > 0:
-                self.right += btitle_xs_right
-
         # Set figure width
         self.fig.size[0] = self.left + self.axes.size[0] * self.ncol + \
-            self.right + legx + self.ws_col * (self.ncol - 1) - \
+            self.right + self.legx + self.ws_col * (self.ncol - 1) - \
             (self.fig_legend_border if self.legend._on else 0) + \
             self.pie.label_sizes[0][0] + self.pie.label_sizes[1][0] + \
             (self.cbar.size[0] + self.ws_ax_cbar) * self.ncol
@@ -2015,7 +2036,7 @@ class Layout(BaseLayout):
             self.ws_fig_label +
             self.ws_row * (self.nrow - 1) +
             self.box_labels) + \
-            legy
+            self.legy
 
         # Debug output
         if debug:
@@ -2166,6 +2187,9 @@ class Layout(BaseLayout):
             # Get the tick label Element
             minor = True if which == 'minor' else False
             tt = getattr(self, f'tick_labels_{which}_{tick}{tick_num}')
+            # or tt.obj[ir, ic] == None: # this doesn't work!
+            if tt.obj is None:
+                continue
             if not tt.on:
                 return
 
@@ -2222,12 +2246,18 @@ class Layout(BaseLayout):
         for ir, ic in np.ndindex(self.axes.obj.shape):
             # size_all by idx:
             #   ir, ic, width, height, x0, x1, y0, y1
-            xticks_size_all = \
-                xticks.size_all[(xticks.size_all[:, 0] == ir) &
-                                (xticks.size_all[:, 1] == ic)]
-            yticks_size_all = \
-                yticks.size_all[(yticks.size_all[:, 0] == ir) &
-                                (yticks.size_all[:, 1] == ic)]
+            if len(xticks.size_all) > 0:
+                xticks_size_all = \
+                    xticks.size_all[(xticks.size_all[:, 0] == ir) &
+                                    (xticks.size_all[:, 1] == ic)]
+            else:
+                xticks_size_all = []
+            if len(yticks.size_all) > 0:
+                yticks_size_all = \
+                    yticks.size_all[(yticks.size_all[:, 0] == ir) &
+                                    (yticks.size_all[:, 1] == ic)]
+            else:
+                yticks_size_all = []
 
             # Prevent single tick label axis
             if len(xticks_size_all) == 1:
@@ -3538,7 +3568,8 @@ class Layout(BaseLayout):
         # Format ticks
         for ia, aa in enumerate(axes):
 
-            tp = mpl_get_ticks(axes[ia], True, True, self.ticks_minor.on)
+            minor_on = max(self.ticks_minor_x.on, self.ticks_minor_y.on)
+            tp = mpl_get_ticks(axes[ia], True, True, minor_on)
 
             if ia == 0:
                 lab = ''
@@ -3675,8 +3706,9 @@ class Layout(BaseLayout):
                     np.arange(tp['y']['min'] + yinc - tp['y']['min'] % yinc,
                               tp['y']['max'], yinc))
                 redo = True
+
             if redo:
-                tp = mpl_get_ticks(axes[ia], True, True, self.ticks_minor.on)
+                tp = mpl_get_ticks(axes[ia], True, True, minor_on)
 
             # Force ticks
             if self.separate_ticks or getattr(self, 'axes%s' % lab).share_x == False:
@@ -3780,151 +3812,6 @@ class Layout(BaseLayout):
             if not tlmajy.on:
                 ll = ['' for f in axes[ia].get_yticklabels()]
                 axes[ia].set_yticklabels(ll)
-
-            # # Check for overlapping major tick labels
-            # lims = {}
-            # valid_maj = {}
-            # buf = 3
-            # if self.tick_cleanup and tlmajx.on:
-            #     # Get rid of out of range labels
-            #     for idx in range(0, tp['x']['first']):
-            #         tp['x']['label_text'][idx] = ''
-            #     for idx in range(tp['x']['last'] + 1, len(tp['x']['label_text'])):
-            #         tp['x']['label_text'][idx] = ''
-            #     for idx in range(0, tp['y']['first']):
-            #         tp['y']['label_text'][idx] = ''
-            #     for idx in range(tp['y']['last'] + 1, len(tp['y']['label_text'])):
-            #         tp['y']['label_text'][idx] = ''
-
-            #     # Get the position of the first major x tick
-            #     xcx = get_tick_position(axes[ia], tp, 'x', 'first', ia)
-            #     xfx = get_tick_position(axes[ia], tp, 'x', 'last', ia)
-            #     xc = [xcx, -tlmajx.size[1]/2-self.ws_ticks_ax + ia*self.axes.size[1]]
-            #     lim = axes[ia].get_xlim()
-            #     valid_x = [f for f in tp['x']['ticks']
-            #                if f >= lim[0] and f <= lim[1]]
-
-            #     # Get spacings
-            #     if len(tp['x']['ticks']) > 2:
-            #         delx = self.axes.size[0]/(len(tp['x']['ticks'])-2)
-            #     else:
-            #         delx = self.axes.size[0] - tlmajx.size[0]
-            #     x2x = []
-            #     xw, xh = tlmajx.size
-
-            #     # Calculate x-only overlaps
-            #     if not skipx:
-            #         for ix in range(0, len(tp['x']['ticks']) - 1):
-            #             x2x += [utl.rectangle_overlap([xw+2*buf, xh+2*buf, [delx*ix,0]],
-            #                                             [xw+2*buf, xh+2*buf, [delx*(ix+1), 0]])]
-            #         if any(x2x) and ((self.axes.share_x and ir==0 and ic==0) \
-            #                 or not self.axes.share_x) \
-            #                 and tp['x']['first'] != -999 and tp['x']['last'] != -999:
-            #             for i in range(tp['x']['first'] + 1, tp['x']['last'] + 1, 2):
-            #                 tp['x']['label_text'][i] = ''
-
-            #         # overlapping labels between row, col, and wrap plots
-            #         if tp['x']['last'] != -999:
-            #             if self.nwrap > 0 and self.nwrap < self.nrow * self.ncol:
-            #                 if xcx - xw/2 + 2 < 0:
-            #                     tp['x']['label_text'][tp['x']['first']] = ''
-
-            #             last_x = tp['x']['labels'][tp['x']['last']][1]
-            #             if getattr(self, 'axes%s' % lab).scale not in LOG_ALLX:
-            #                 last_x_pos = (last_x - tp['x']['min']) / \
-            #                                 (tp['x']['max'] - tp['x']['min'])
-            #             else:
-            #                 last_x_pos = (np.log10(last_x) - np.log10(tp['x']['min'])) / \
-            #                                 (np.log10(tp['x']['max']) - np.log10(tp['x']['min']))
-            #             last_x_px = (1-last_x_pos)*self.axes.size[0]
-            #             if self.ncol > 1 and \
-            #                     xw / 2 - xcx > last_x_px + self.ws_col - \
-            #                                     self.ws_tick_tick_minimum and \
-            #                     ic < self.ncol - 1 and \
-            #                     tp['x']['label_text'][tp['x']['first']] != '':
-            #                 tp['x']['label_text'][tp['x']['last']] = ''
-
-            # if self.tick_cleanup and tlmajy.on:
-            #     # Get the position of the first and last major y tick
-            #     ycy = get_tick_position(axes[ia], tp, 'y', 'first', ia)
-            #     yfy = get_tick_position(axes[ia], tp, 'y', 'last', ia)
-            #     yc = [-tlmajy.size[0]/2-self.ws_ticks_ax, ycy]
-            #     yf = [-tlmajy.size[0]/2-self.ws_ticks_ax, yfy]
-
-            #     xlim = axes[ia].get_xlim()
-            #     if xlim[0] > xlim[1]:
-            #         yyc = yc
-            #         yc = yf
-            #         yf = yyc
-            #     lim = axes[ia].get_ylim()
-            #     valid_y = [f for f in tp['y']['ticks']
-            #                if f >= min(lim) and f <= max(lim)]#if f >= lim[0] and f <= lim[1]]
-
-            #     # Get spacings
-            #     if len(tp['y']['ticks']) > 2:
-            #         dely = self.axes.size[1]/(len(tp['y']['ticks'])-2)
-            #     else:
-            #         dely = self.axes.size[1] - tlmajy.size[1]
-            #     y2y = []
-            #     yw, yh = tlmajy.size
-
-            #     # Calculate y-only overlaps
-            #     if not skipy:
-            #         for iy in range(0, len(tp['y']['ticks']) - 1):
-            #             y2y += [utl.rectangle_overlap([yw+2*buf, yh+2*buf, [0,dely*iy]],
-            #                                         [yw+2*buf, yh+2*buf, [0,dely*(iy+1)]])]
-            #         if any(y2y) and ((self.axes.share_y and ir==0 and ic==0) \
-            #                 or not self.axes.share_y) \
-            #                 and tp['y']['first'] != -999 and tp['y']['last'] != -999:
-            #             for i in range(tp['y']['first'], tp['y']['last'] + 1, 2):
-            #                 tp['y']['label_text'][i] = ''
-
-            #         # overlapping labels between row, col, and wrap plots
-            #         if tp['y']['last'] != -999:
-            #             last_y = tp['y']['labels'][tp['y']['last']][1]
-            #             if getattr(self, 'axes%s' % lab).scale not in LOG_ALLY:
-            #                 last_y_pos = (last_y - tp['y']['min']) / \
-            #                             (tp['y']['max']-tp['y']['min'])
-            #             else:
-            #                 last_y_pos = (np.log10(last_y) - np.log10(tp['y']['min'])) / \
-            #                             (np.log10(tp['y']['max'])-np.log10(tp['y']['min']))
-            #             last_y_px = (1-last_y_pos)*self.axes.size[1]
-            #             # there is a discrepancy here compared with x (yh?)
-            #             if self.nrow > 1 and \
-            #                     yh > last_y_px + self.ws_col - self.ws_tick_tick_minimum and \
-            #                     ir < self.nrow - 1 and self.nwrap == 0:
-            #                 tp['y']['label_text'][tp['y']['last']] = ''
-
-            # if self.tick_cleanup and tlmajx.on and tlmajy.on:
-            #     # Calculate overlaps
-            #     x0y0 = utl.rectangle_overlap([xw+2*buf, xh+2*buf, xc],
-            #                                 [yw+2*buf, yh+2*buf, yc])
-            #     x0yf = utl.rectangle_overlap([xw+2*buf, xh+2*buf, xc],
-            #                                 [yw+2*buf, yh+2*buf, yf])
-
-            #     # x and y at the origin
-            #     if x0y0 and lim[0] < lim[1]:  # and tp['y']['first']==0:  not sure about this
-            #         tp['y']['label_text'][tp['y']['first']] = ''
-            #     # elif x0y0:  # this is failing b/c last is not actually overlapping with the x-origin!
-            #     #     tp['y']['label_text'][tp['y']['last']] = ''
-            #     if x0yf and (self.axes.twin_y or lim[0] > lim[1]):
-            #         tp['y']['label_text'][tp['y']['last']] = ''
-
-            #     # overlapping last y and first x between row, col, and wraps
-            #     if self.nrow > 1 and ir < self.nrow-1:
-            #         x2y = utl.rectangle_overlap([xw, xh, xc],
-            #                                     [yw, yh, [yc[0], yc[1]-self.ws_row]])
-
-            # ## not sure what the purpose of this is
-            # # if self.tick_cleanup and tlmajx.on:# and not skipx:
-            # #     axes[ia].xaxis.set_major_formatter(NullFormatter())
-            # #     nticks = len(axes[ia].get_xticks())
-            # #     axes[ia].set_xticklabels(tp['x']['label_text'][0:nticks])
-
-            # ### need this to remove xy overlap!
-            # if self.tick_cleanup and tlmajy.on and not skipy:
-            #     nticks = len(axes[ia].get_yticks())
-            #     axes[ia].set_yticklabels(tp['y']['label_text'][0:nticks])
 
             # Turn on minor tick labels
             ax = ['x', 'y']

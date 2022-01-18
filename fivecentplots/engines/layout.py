@@ -466,6 +466,11 @@ class BaseLayout:
                                        rotation=0,
                                        )
 
+        # Must have groups to have group labels
+        if 'groups' not in kwargs.keys():
+            self.box_group_title.on = False
+            self.box_group_label.on = False
+
         # Other boxplot elements
         self.violin = Element('violin', self.fcpp, kwargs,
                               on=utl.kwget(kwargs, self.fcpp, ['box_violin', 'violin'],
