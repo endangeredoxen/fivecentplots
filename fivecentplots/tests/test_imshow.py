@@ -273,9 +273,14 @@ def test_imshow_zoomed(benchmark):
     benchmark(plt_imshow_zoomed, True)
 
 
-def test_imshow_wrap(benchmark):
+def test_wrap(benchmark):
     plt_wrap()
     benchmark(plt_wrap, True)
+
+
+def test_wrap_one(benchmark):
+    plt_wrap_one()
+    benchmark(plt_wrap_one, True)
 
 
 if __name__ == '__main__':
