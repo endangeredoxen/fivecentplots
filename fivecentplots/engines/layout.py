@@ -2344,6 +2344,7 @@ class Element:
         # for some elements that are unique by axes
         self._size_all = pd.DataFrame()
         self._size_all_bg = pd.DataFrame()
+        self.size_cols = ['ir', 'ic', 'ii', 'jj', 'width', 'height', 'x0', 'x1', 'y0', 'y1']
         self.rotation = utl.kwget(kwargs, fcpp, '%s_rotation' % name,
                                   kwargs.get('rotation', 0))
         self.zorder = utl.kwget(kwargs, fcpp, '%s_zorder' % name,
@@ -2474,11 +2475,10 @@ class Element:
         """
 
         data = {}
-        columns = ['ir', 'ic', 'ii', 'width', 'height', 'x0', 'x1', 'y0', 'y1']
-        if len(vals) != len(columns):
+        if len(vals) != len(self.size_cols):
             raise ValueError('incorrect size_all table values')
 
-        for icol, col in enumerate(columns):
+        for icol, col in enumerate(self.size_cols):
             data[col] = utl.validate_list(vals[icol])
 
         temp = pd.DataFrame(data)
@@ -2499,16 +2499,15 @@ class Element:
         Add a row to the table
 
         Args:
-            vals: 'ir', 'ic', 'ii', 'width', 'height', 'x0', 'x1', 'y0', 'y1'
+            vals: 'ir', 'ic', 'ii', 'jj', 'width', 'height', 'x0', 'x1', 'y0', 'y1'
                 each value can be a single item or a list
         """
 
         data = {}
-        columns = ['ir', 'ic', 'ii', 'width', 'height', 'x0', 'x1', 'y0', 'y1']
-        if len(vals) != len(columns):
+        if len(vals) != len(self.size_cols):
             raise ValueError('incorrect size_all table values')
 
-        for icol, col in enumerate(columns):
+        for icol, col in enumerate(self.size_cols):
             data[col] = utl.validate_list(vals[icol])
 
         temp = pd.DataFrame(data)
@@ -2743,38 +2742,3 @@ class ObjectArray:
     def reshape(r, c):
         self._obj = self._obj.reshape(r, c)
 
-
-class SizeArray:
-    def __init__(self):
-        """
-        Pandas DataFrame based object size table for tracking real size
-        of plot elements
-        """
-
-        self.df = pd.DataFrame()
-        self.columns = ['ir', 'ic', 'ii', 'width', 'height', 'x0' 'x1', 'y0', 'y1']
-
-    def add(self, ir, ic, ii, width, height, x0, x1, y0, y1):
-        """
-        Add a row to the table
-        """
-
-        ir = utl.validate_list(ir)
-        ic = utl.validate_list(ic)
-        ii = utl.validate_list(ii)
-        width = utl.validate_list(width)
-        height = utl.validate_list(height)
-        x0 = utl.validate_list(x0)
-        x1 = utl.validate_list(x1)
-        y0 = utl.validate_list(y0)
-        y1 = utl.validate_list(y1)
-        db()
-
-        temp = pd.DataFrame(columns=self.columns,
-                            data=vals)
-
-        if len(self.df) == 0:
-            self.df = temp.copy()
-
-        else:
-            self.df = pd.concat([self.df, temp])

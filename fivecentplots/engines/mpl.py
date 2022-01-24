@@ -400,10 +400,27 @@ class Layout(BaseLayout):
 
         return 0
 
-    def add_box_labels(self, ir, ic, data):
+    def add_box_labels(self, ir: int, ic: int, data):
+        """
+        Add box group labels and titles (JMP style)
+
+        Args:
+            ir: current axes row index
+            ic: current axes column index
+            data: fcp.data obj
+
+        """
 
         num_cols = len(data.changes.columns)
-        bottom = 0
+
+        # Set up the label/title arrays to reflect the groups
+        max_labels = data.changes.sum().max()
+        self.box_group_label.obj[ir, ic] = np.array([[None] * max_labels] * num_cols)
+        self.box_group_label.obj_bg[ir, ic] = np.array([[None] * max_labels] * num_cols)
+        self.box_group_title.obj[ir, ic] = np.array([[None]] * num_cols)
+        self.box_group_title.obj_bg[ir, ic] = np.array([[None]] * num_cols)
+
+        # Create the labels
         for i in range(0, num_cols):
             k = num_cols-1-i
             sub = data.changes[num_cols-1-i][data.changes[num_cols-1-i] == 1]
@@ -412,9 +429,9 @@ class Layout(BaseLayout):
 
             # Group labels
             if self.box_group_label.on:
-                if i == 0:
-                    self.box_group_label.obj[ir, ic] = np.array([None] * len(sub))
-                    self.box_group_label.obj_bg[ir, ic] = np.array([None] * len(sub))
+                ## This array structure just makes one big list of all the labels
+                ## can we use it with multiple groups or do we need to reshape??
+                ## Probably need a 2D but that will mess up size_all indexing
                 for j in range(0, len(sub)):
 
                     # set the width now since it is a factor of the axis size
@@ -424,16 +441,8 @@ class Layout(BaseLayout):
                         width = sub.index[j+1] - sub.index[j]
                     width = width * self.axes.size[0] / len(data.changes)
                     label = data.indices.loc[sub.index[j], num_cols-1-i]
-                    # NEED TO RETHINK THIS-- the data structure isn't right b/c size is done later
-                    # hh = max(self.box_group_label.size[i][1],
-                    #          self.box_group_title.size[i][1])
-                    # height = hh * (1 + 2 * self.box_group_label.padding / 100)
-                    # if self.box_group_title.on:
-                    #     height2 = self.box_group_title.size[i][1] * \
-                    #               (1 + 2 * self.box_group_title.padding / 100)
-                    #     height = max(height, height2)
-                    self.box_group_label.obj[ir, ic][j], \
-                    self.box_group_label.obj_bg[ir, ic][j] = \
+                    self.box_group_label.obj[ir, ic][i, j], \
+                    self.box_group_label.obj_bg[ir, ic][i, j] = \
                         self.add_label(ir, ic, label,
                                    (sub.index[j]/len(data.changes), 0, 0, 0),
                                    rotation=0, size=[width, 20], offset=True,
@@ -442,21 +451,18 @@ class Layout(BaseLayout):
 
             # Group titles
             if self.box_group_title.on and ic == data.ncol - 1:
-                if i == 0:
-                    self.box_group_title.obj[ir, ic] = np.array([None] * num_cols)
-                    self.box_group_title.obj_bg[ir, ic] = np.array([None] * num_cols)
-                for j in range(0, num_cols):
-                    self.box_group_title.obj[ir, ic][j], \
-                    self.box_group_title.obj_bg[ir, ic][j] = \
-                        self.add_label(ir, ic, data.groups[k],
-                                    (1, 0, 0, 0), #+ self.ws_ax_box_title / self.axes.size[0],
-                                    #0, 0, 0),
-                                    # (bottom - height/2 - 2 -
-                                    #     self.box_group_title.size[k][1]/2) /
-                                    #     self.axes.size[1]),
-                                    size=[0, 20], #self.box_group_title.size[k],
-                                    **self.make_kwargs(self.box_group_title,
-                                    ['position', 'size']))
+                self.box_group_title.obj[ir, ic][i, 0], \
+                self.box_group_title.obj_bg[ir, ic][i, 0] = \
+                    self.add_label(ir, ic, data.groups[k],
+                                (1, 0, 0, 0), #+ self.ws_ax_box_title / self.axes.size[0],
+                                #0, 0, 0),
+                                # (bottom - height/2 - 2 -
+                                #     self.box_group_title.size[k][1]/2) /
+                                #     self.axes.size[1]),
+                                size=[0, 20], #self.box_group_title.size[k],
+                                **self.make_kwargs(self.box_group_title,
+                                ['position', 'size']))
+
 
     def add_box_points(self, ir, ic, x, y):
         """
@@ -1759,12 +1765,12 @@ class Layout(BaseLayout):
 
                 # text label size
                 bbox = lab.obj[ir, ic].get_window_extent()
-                lab.size_all = (ir, ic, 0, bbox.width, bbox.height, bbox.x0,
+                lab.size_all = (ir, ic, 0, 0, bbox.width, bbox.height, bbox.x0,
                                 bbox.x1, bbox.y0, bbox.y1)
 
                 # text label rect background size
                 bbox = lab.obj_bg[ir, ic].get_window_extent()
-                lab.size_all_bg = (ir, ic, 0, bbox.width, bbox.height, bbox.x0,
+                lab.size_all_bg = (ir, ic, 0, 0, bbox.width, bbox.height, bbox.x0,
                                   bbox.x1, bbox.y0, bbox.y1)
 
             # set max size
@@ -1807,14 +1813,16 @@ class Layout(BaseLayout):
         if self.box_group_label.on:
             lab = self.box_group_label
             for ir, ic in np.ndindex(lab.obj.shape):
-                for ii in range(0, len(lab.obj[ir, ic])):
+                for ii, jj in np.ndindex(lab.obj[ir, ic].shape):
                     # text label size
-                    bbox = lab.obj[ir, ic][ii].get_window_extent()
-                    lab.size_all = (ir, ic, ii, bbox.width, bbox.height, bbox.x0,
+                    if lab.obj[ir, ic][ii, jj] is None:
+                        continue
+                    bbox = lab.obj[ir, ic][ii, jj].get_window_extent()
+                    lab.size_all = (ir, ic, ii, jj, bbox.width, bbox.height, bbox.x0,
                                     bbox.x1, bbox.y0, bbox.y1)
                     # text label bg size
-                    bbox = lab.obj_bg[ir, ic][ii].get_window_extent()
-                    lab.size_all_bg = (ir, ic, ii, bbox.width, bbox.height, bbox.x0,
+                    bbox = lab.obj_bg[ir, ic][ii, 0].get_window_extent()
+                    lab.size_all_bg = (ir, ic, ii, jj, bbox.width, bbox.height, bbox.x0,
                                       bbox.x1, bbox.y0, bbox.y1)
 
             # set max size
@@ -1858,13 +1866,13 @@ class Layout(BaseLayout):
             for ir, ic in np.ndindex(lab.obj.shape):
                 for ii in range(0, len(lab.obj[ir, ic])):
                     # text label size
-                    bbox = lab.obj[ir, ic][ii].get_window_extent()
-                    lab.size_all = (ir, ic, ii, bbox.width, bbox.height, bbox.x0,
+                    bbox = lab.obj[ir, ic][ii, 0].get_window_extent()
+                    lab.size_all = (ir, ic, ii, 0, bbox.width, bbox.height, bbox.x0,
                                     bbox.x1, bbox.y0, bbox.y1)
 
                     # text label rect background size
-                    bbox = lab.obj_bg[ir, ic][ii].get_window_extent()
-                    lab.size_all_bg = (ir, ic, ii, bbox.width, bbox.height, bbox.x0,
+                    bbox = lab.obj_bg[ir, ic][ii, 0].get_window_extent()
+                    lab.size_all_bg = (ir, ic, ii, 0, bbox.width, bbox.height, bbox.x0,
                                     bbox.x1, bbox.y0, bbox.y1)
 
             # set max size
@@ -2044,8 +2052,12 @@ class Layout(BaseLayout):
         self.fig_legend_border = self.fig_legend_border if self.legend.location == 0 else 0
         self.box_labels = 0
         if self.box_group_label.on and self.box_group_label.size != [0, 0]:
+            # get number of rows of labels
+            nrows = 0
+            for ir, ic in np.ndindex(self.box_group_label.obj.shape):
+                nrows = max(nrows, self.box_group_label.obj[ir, ic].shape[0])
             hh = max(self.box_group_label.size[1], self.box_group_title.size[1])
-            self.box_labels += hh * (1 + 2 * self.box_group_label.padding / 100) * self.box_group_label.obj.shape[0]
+            self.box_labels += hh * (1 + 2 * self.box_group_label.padding / 100) * nrows
         self.box_title = 0
         if self.box_group_title.on and self.legend.size[1] > self.axes.size[1]:
             self.box_title = self.box_group_title.size[0]
@@ -2351,6 +2363,7 @@ class Layout(BaseLayout):
             tt.size_all = ([ir for f in bboxes],
                            [ic for f in bboxes],
                            [0 for f in bboxes],
+                           [0 for f in bboxes],
                            [f.width for f in bboxes],
                            [f.height for f in bboxes],
                            [f.x0 for f in bboxes],
@@ -2407,9 +2420,10 @@ class Layout(BaseLayout):
 
             # Overlapping x-y origin
             if len(xticks_size_all) > 0 and len(yticks_size_all) > 0:
-                xw, xh, xx0, xx1, xy0, xy1 = xticks_size_all[0][3:]
+                idx = xticks.size_cols.index('width')
+                xw, xh, xx0, xx1, xy0, xy1 = xticks_size_all[0][idx:]
                 xc = (xx0 + (xx1 - xx0) / 2, xy0 + (xy0 - xy1) / 2)
-                yw, yh, yx0, yx1, yy0, yy1 = yticks_size_all[0][3:]
+                yw, yh, yx0, yx1, yy0, yy1 = yticks_size_all[0][idx:]
                 yc = (yx0 + (yx1 - yx0) / 2, yy0 + (yy0 - yy1) / 2)
                 if utl.rectangle_overlap((xw, xh, xc), (yw, yh, yc)):
                     if self.tick_cleanup == 'remove':
@@ -2420,8 +2434,9 @@ class Layout(BaseLayout):
 
             # Overlapping grid plot at x-origin
             if ic > 0 and len(xticks_size_all) > 0:
+                idx = xticks.size_cols.index('x0')
                 ax_x0 = self.axes.obj[ir, ic].get_window_extent().x0
-                tick_x0 = xticks_size_all[0][5]
+                tick_x0 = xticks_size_all[0][idx]
                 if ax_x0 - tick_x0 > self.ws_col:
                     slop = xticks.obj[ir, ic][0].get_window_extent().width / 2
                     if self.tick_cleanup == 'remove' or \
@@ -2434,7 +2449,8 @@ class Layout(BaseLayout):
 
             # Overlapping ticks on same axis
             if len(xticks_size_all) > 0:
-                xbbox = xticks_size_all[:, 5:7]
+                idx = xticks.size_cols.index('x0')
+                xbbox = xticks_size_all[:, idx:idx+2]
                 ol = (xbbox[1:, 0] - xbbox[0:-1, 1]) < 0
                 if any(ol):
                     db()
@@ -2451,15 +2467,17 @@ class Layout(BaseLayout):
 
             # Ticks at the right edge of the plot
             if len(xticks_size_all) > 0:
+                idx = xticks.size_cols.index('x1')
                 xxs = self.axes.obj[ir, ic].get_window_extent().x1 \
                     + self.right \
-                    - xticks_size_all[-1][6]
+                    - xticks_size_all[-1][idx]
                 if xxs < 0:
                     self.x_tick_xs = -int(np.floor(xxs)) + 1
             if len(yticks_size_all) > 0:
+                idx = xticks.size_cols.index('y0')
                 yxs = self.axes.obj[ir, ic].get_window_extent().y1 \
                     + self.top \
-                    - yticks_size_all[-1][7]
+                    - yticks_size_all[-1][idx]
                 if yxs < 0:
                     self.y_tick_xs = -int(np.floor(yxs)) + \
                         1  # not currently used
@@ -4344,21 +4362,29 @@ class Layout(BaseLayout):
             lab = self.box_group_label
             labt = self.box_group_title
             for ir, ic in np.ndindex(self.box_group_label.obj.shape):
-                for ii in range(0, len(lab.obj[ir, ic])):
-                    box_label_size = self.box_labels / self.box_group_label.obj.shape[0]
+                for ii, jj in np.ndindex(lab.obj[ir, ic].shape):
+                    if lab.obj[ir, ic][ii, jj] is None:
+                        continue
+                    nrows = self.box_group_label.obj[ir, ic].shape[0]
+                    box_label_size = self.box_labels / nrows
                     # group label background rectangle
-                    lab.obj_bg[ir, ic][ii].set_height(box_label_size / self.axes.size[1])
-                    lab.obj_bg[ir, ic][ii].set_y(-(ir + 1) * box_label_size/ self.axes.size[1])
+                    lab.obj_bg[ir, ic][ii, jj].set_height(box_label_size / self.axes.size[1])
+                    lab.obj_bg[ir, ic][ii, jj].set_y(-(ii + 1) * box_label_size/ self.axes.size[1])
 
                     # group label text strings
-                    ytext = (-0.5 * box_label_size - 1) * (ir + 1) / self.axes.size[1]
-                    lab.obj[ir, ic][ii].set_position((1 / len(lab.obj[ir, ic]) * (ii + 0.5), ytext))
+                    changes = data.changes[data.changes[len(data.changes.columns) - ii - 1]==1].index.values
+                    changes = np.diff(np.append(changes, len(data.changes)))
+                    divider = self.axes.size[0] / len(data.changes)
+                    xtext = (divider * (changes[jj] / 2 + changes[0:jj].sum())) / self.axes.size[0]#1 / len(lab.obj[ir, ic]) * (ii + 0.5)
+                    ytext = -(box_label_size + 2) * (ii + 0.5)/ self.axes.size[1]
+                    lab.obj[ir, ic][ii, jj].set_position((xtext, ytext))
 
                 # group title
-                for ii in range(0, len(labt.obj[ir, ic])):
+                for ii, jj in np.ndindex(labt.obj[ir, ic].shape):
                     wtitle = labt.size_all.loc[(labt.size_all.ir==ir)&(labt.size_all.ic==ic)&(labt.size_all.ii==ii), 'width']
                     xtitle = 1 + (self.ws_ax_box_title + wtitle / 2) / self.axes.size[0]
-                    labt.obj[ir, ic][ii].set_position((xtitle, ytext))
+                    ytitle = -(box_label_size + 2) * (ii + 0.5)/ self.axes.size[1]
+                    labt.obj[ir, ic][ii, 0].set_position((xtitle, ytitle))
 
     def set_figure_title(self):
         """
