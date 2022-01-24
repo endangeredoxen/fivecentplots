@@ -1001,13 +1001,14 @@ def split_color_planes(img, cfa='rggb', asdict=False):
 
 def validate_list(items):
     """
-    Make sure a list variable is actually a list and not a single string
+    Make sure a list variable is actually a list and not a single item
+    Excludes None
 
     Args:
-        items (str|list): values to check dtype
+        items (single value | list): values to check dtype
 
     Return:
-        items as a list
+        items as a list unless items is None
     """
 
     if items is None:
