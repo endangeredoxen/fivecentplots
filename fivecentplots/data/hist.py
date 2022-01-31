@@ -216,12 +216,13 @@ class Histogram(data.Data):
 
         # Update the bins to integer values if not specified and 2D image data
         bins = utl.kwget(kwargs, self.fcpp, 'bins', kwargs.get('bars', None))
-        if not bins and kwargs['2D']:
+        if kwargs['2D']:
             cols = utl.df_int_cols(self.df_all)
             vals = self.df_all[cols].values
             vmin = int(np.nanmin(vals))
             vmax = int(np.nanmax(vals))
-            self.bins = vmax - vmin + 1  # add 1 to get the last bin
+            if not bins:
+                self.bins = vmax - vmin + 1  # add 1 to get the last bin
         elif not kwargs.get('vmin') and not kwargs.get('vmax'):
             vmin = int(np.nanmin(self.df_all.Value))
             vmax = int(np.nanmax(self.df_all.Value))
