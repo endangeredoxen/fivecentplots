@@ -2344,7 +2344,8 @@ class Element:
         # for some elements that are unique by axes
         self._size_all = pd.DataFrame()
         self._size_all_bg = pd.DataFrame()
-        self.size_cols = ['ir', 'ic', 'ii', 'jj', 'width', 'height', 'x0', 'x1', 'y0', 'y1']
+        self.size_cols = ['ir', 'ic', 'ii', 'jj',
+                          'width', 'height', 'x0', 'x1', 'y0', 'y1']
         self.rotation = utl.kwget(kwargs, fcpp, '%s_rotation' % name,
                                   kwargs.get('rotation', 0))
         self.zorder = utl.kwget(kwargs, fcpp, '%s_zorder' % name,
@@ -2487,13 +2488,14 @@ class Element:
             self._size_all = temp.copy()
 
         else:
-            self._size_all = pd.concat([self._size_all, temp]).reset_index(drop=True)
+            self._size_all = pd.concat(
+                [self._size_all, temp]).reset_index(drop=True)
 
     @property
     def size_all_bg(self):
         return self._size_all_bg
 
-    @size_all.setter
+    @size_all_bg.setter
     def size_all_bg(self, vals: tuple):
         """
         Add a row to the table
@@ -2512,11 +2514,12 @@ class Element:
 
         temp = pd.DataFrame(data)
 
-        if len(self._size_all) == 0:
+        if len(self._size_all_bg) == 0:
             self._size_all_bg = temp.copy()
 
         else:
-            self._size_all_bg = pd.concat([self._size_all_bg, temp]).reset_index(drop=True)
+            self._size_all_bg = pd.concat(
+                [self._size_all_bg, temp]).reset_index(drop=True)
 
     @property
     def size_inches(self):
@@ -2741,4 +2744,3 @@ class ObjectArray:
 
     def reshape(r, c):
         self._obj = self._obj.reshape(r, c)
-

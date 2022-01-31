@@ -18,6 +18,12 @@ class Box(data.Data):
 
         super().__init__(name, req, opt, **kwargs)
 
+    def get_groups(self, df):
+        if self.groups is not None:
+            return pd.DataFrame(df.groupby(self.groups).groups.keys())
+        else:
+            return pd.DataFrame()
+
     def get_box_index_changes(self):
         """
         Make a DataFrame that shows when groups vals change; used for grouping labels
@@ -30,12 +36,16 @@ class Box(data.Data):
             new DataFrame with 1's showing where group levels change for each row of df
         """
 
+        if len(self.df_rc) == 0:
+            return False
+
         # Check for nan columns
         if self.groups is not None:
             for group in self.groups:
                 if len(self.df_rc[group].dropna()) == 0:
                     self.groups.remove(group)
-                    print('Column "%s" for a subplot is all NaN and will be excluded from plot' % group)
+                    print(
+                        'Column "%s" for a subplot is all NaN and will be excluded from plot' % group)
 
         # Get the changes df
         if self.groups is None or self.groups == []:
@@ -95,7 +105,8 @@ class Box(data.Data):
                     self.df_rc = pd.DataFrame()
 
                 # Get boxplot changes DataFrame
-                if 'box' in self.name and len(self.df_rc) > 0:  # think we are doing this twice
+                # think we are doing this twice
+                if 'box' in self.name and len(self.df_rc) > 0:
                     if (self.groups is not None and self.groups != []) and \
                             len(self.df_rc.groupby(self.groups)) == 0:
                         continue
@@ -109,8 +120,20 @@ class Box(data.Data):
         self.df_sub = None
 
     def subset_modify(self, df, ir, ic):
+        """
+        Deal with share x axis range
+        """
 
-        return self._subset_modify(df, ir, ic)
+        if self.share_x and self.groups is not None and len(df) > 0:
+            df1 = self.get_groups(self.df_all)
+            df2 = self.get_groups(df)
+            dfm = pd.merge(df1, df2, how='outer',
+                           suffixes=('', '_y'), indicator=True)
+            missing = dfm[dfm['_merge'] == 'left_only'][dfm.columns[0:-1]]
+            missing.columns = self.groups
+            df = pd.concat([df, missing])
+
+        return df
 
     def subset_wrap(self, ir, ic):
 
