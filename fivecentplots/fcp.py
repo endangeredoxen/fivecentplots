@@ -965,9 +965,10 @@ def plotter(dobj, **kwargs):
                 'ifig=%s | ir=%s | ic=%s | set_axes_ticks' % (ifig, ir, ic))
 
             # Add box labels
-            layout.add_box_labels(ir, ic, dd)
-            kwargs['timer'].get(
-                'ifig=%s | ir=%s | ic=%s | add_box_labels' % (ifig, ir, ic))
+            if dd.name == 'box':
+                layout.add_box_labels(ir, ic, dd)
+                kwargs['timer'].get(
+                    'ifig=%s | ir=%s | ic=%s | add_box_labels' % (ifig, ir, ic))
 
             # Add arbitrary text
             layout.add_text(ir, ic)
