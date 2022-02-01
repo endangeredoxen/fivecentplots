@@ -2608,6 +2608,14 @@ class Element:
 
         return df
 
+    def size_all_reset(self):
+        """
+        Reset the size_all arrays
+        """
+
+        self._size_all = pd.DataFrame()
+        self._size_all_bg = pd.DataFrame()
+
 
 class DF_Element(Element):
     def __init__(self, label='None', fcpp={}, others={}, **kwargs):

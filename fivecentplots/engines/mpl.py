@@ -179,7 +179,7 @@ class Layout(BaseLayout):
         else:
             mplp.style.use('default')
         # Unless specified, close previous plots
-        if kwargs.get('hold', False):
+        if not kwargs.get('hold', False):
             mplp.close('all')
 
         # Inherit the base layout properties
@@ -1800,15 +1800,7 @@ class Layout(BaseLayout):
                  self.legend.obj.get_window_extent().height + self.legend_border]
 
         # tick labels
-        for tick in ['x', 'y']:
-            # primary axes
-            self.get_tick_label_size(self.axes, tick, '', 'major')
-            self.get_tick_label_size(self.axes, tick, '', 'minor')
-
-            # secondary axes
-            if self.axes2.on:
-                self.get_tick_label_size(self.axes2, tick, '2', 'major')
-                self.get_tick_label_size(self.axes2, tick, '2', 'minor')
+        self.get_tick_label_sizes()
 
         if self.cbar.on:
             self.get_tick_label_size(self.cbar, 'z', '', 'major')
@@ -1859,34 +1851,6 @@ class Layout(BaseLayout):
             width_bg = lab.size_all_bg.width.max()  # do we want this?
             height_bg = lab.size_all_bg.height.max()
             lab.size = (max(width, width_bg), max(height, height_bg))
-
-            # adjust rotations
-            #     rotations = np.array([0] * len(data.groups))
-            #     sizes = np.array([[0,0]] * len(data.groups))
-            #     for ir in range(0, self.nrow):
-            #         for ic in range(0, self.ncol):
-            #             if box_group_label[ir, ic] is None:
-            #                 continue
-            #             for irow, row in enumerate(box_group_label[ir, ic]):
-            #                 # Find the smallest group label box in the row
-            #                 labidx = list(changes[ir, ic][changes[ir, ic][irow]>0].index) + \
-            #                             [len(changes[ir, ic])]
-            #                 smallest = min(np.diff(labidx))
-            #                 max_label_width = self.axes.size[0]/len(changes[ir, ic]) * smallest
-            #                 widest = max([f.get_window_extent().width for f in row])
-            #                 tallest = max([f.get_window_extent().height for f in row])
-            #                 if widest > max_label_width:
-            #                     rotations[irow] = 90
-            #                     sizes[irow] = [tallest, widest]
-            #                 elif rotations[irow] != 90:
-            #                     sizes[irow] = [widest, tallest]
-
-            #     sizes = sizes.tolist()
-            #     sizes.reverse()
-            #     rotations = rotations.tolist()
-            #     rotations.reverse()
-            #     self.box_group_label._size = sizes
-            #     self.box_group_label.rotation = rotations
 
         if self.box_group_title.on:
             lab = self.box_group_title
@@ -2404,6 +2368,24 @@ class Layout(BaseLayout):
 
         tt.size = [tt.size_all.width.max(), tt.size_all.height.max()]
 
+    def get_tick_label_sizes(self):
+        """
+        Get the tick label sizes
+        """
+
+        for tick in ['x', 'y']:
+            getattr(self, f'tick_labels_major_{tick}').size_all_reset()
+            getattr(self, f'tick_labels_minor_{tick}').size_all_reset()
+
+            # primary axes
+            self.get_tick_label_size(self.axes, tick, '', 'major')
+            self.get_tick_label_size(self.axes, tick, '', 'minor')
+
+            # secondary axes
+            if self.axes2.on:
+                self.get_tick_label_size(self.axes2, tick, '2', 'major')
+                self.get_tick_label_size(self.axes2, tick, '2', 'minor')
+
     def get_tick_overlaps(self):
         """
         Deal with overlapping and out of range ticks
@@ -2480,20 +2462,63 @@ class Layout(BaseLayout):
                 idx = xticks.size_cols.index('x0')
                 xbbox = xticks_size_all[:, idx:idx+2]
                 ol = (xbbox[1:, 0] - xbbox[0:-1, 1]) < 0
+                # pad to account for last tick
+                ol = np.concatenate([ol, [True]])
                 if any(ol):
-                    db()
+                    for iol, ool in enumerate(ol[:-1]):
+                        if ool and ol[iol + 1] and \
+                                xticks.obj[ir, ic][iol+1].get_visible():
+                            xticks.obj[ir, ic][iol+1].set_visible(False)
+                            ol[iol+1] = False
+
             if len(yticks_size_all) > 0:
                 ybbox = yticks_size_all[:, -2:]
-                if ybbox[0:2, 0].argmax() == 1:
-                    # ascending ticks
-                    ol = (ybbox[1:, 0] - ybbox[0:-1, 1]) < 0
-                else:
-                    # descending ticks
-                    ol = (ybbox[0:-1, 0] - ybbox[1:, 1]) < 0
+                # don't think this matters
+                # if ybbox[0:2, 0].argmax() == 1:
+                #     # ascending ticks
+                #     ol = (ybbox[1:, 0] - ybbox[0:-1, 1]) < 0
+                # else:
+                #     # descending ticks
+                #     ol = (ybbox[0:-1, 0] - ybbox[1:, 1]) < 0
+                ol = (ybbox[1:, 0] - ybbox[0:-1, 1]) < 0
+                # pad to account for last tick
+                ol = np.concatenate([ol, [True]])
                 if any(ol):
-                    db()
+                    for iol, ool in enumerate(ol[:-1]):
+                        if ool and ol[iol + 1] and \
+                                yticks.obj[ir, ic][iol+1].get_visible():
+                            yticks.obj[ir, ic][iol+1].set_visible(False)
+                            ol[iol+1] = False
 
-            # Ticks at the right edge of the plot
+    def get_tick_xs(self):
+
+        # Ticks at the edge of the plot
+
+        xticks = self.tick_labels_major_x
+        yticks = self.tick_labels_major_y
+        sf = 1.5  # scale factor for tick font size
+
+        # TODO:: minor overlaps
+        # TODO:: self.axes2
+
+        for ir, ic in np.ndindex(self.axes.obj.shape):
+            # size_all by idx:
+            #   ir, ic, width, height, x0, x1, y0, y1
+            if len(xticks.size_all) > 0:
+                xticks_size_all = \
+                    xticks.size_all[(xticks.size_all.ir == ir) &
+                                    (xticks.size_all.ic == ic)]
+                xticks_size_all = np.array(xticks_size_all)
+            else:
+                xticks_size_all = []
+            if len(yticks.size_all) > 0:
+                yticks_size_all = \
+                    yticks.size_all[(yticks.size_all.ir == ir) &
+                                    (yticks.size_all.ic == ic)]
+                yticks_size_all = np.array(yticks_size_all)
+            else:
+                yticks_size_all = []
+
             if len(xticks_size_all) > 0:
                 idx = xticks.size_cols.index('x1')
                 xxs = self.axes.obj[ir, ic].get_window_extent().x1 \
@@ -4285,7 +4310,7 @@ class Layout(BaseLayout):
         self.get_element_sizes2(data)
 
         # Clean up tick overlaps
-        self.get_tick_overlaps()
+        self.get_tick_xs()
 
         # Resize the figure
         self.get_figure_size(data, **kwargs)
@@ -4301,6 +4326,10 @@ class Layout(BaseLayout):
                                      hspace=1.0*self.ws_row/self.axes.size[1],
                                      wspace=1.0*self.ws_col/self.axes.size[0],
                                      )
+
+        # Tick overlap cleanup
+        self.get_tick_label_sizes()  # update after axes reshape
+        self.get_tick_overlaps()
 
         # Update the axes label positions
         self.get_axes_label_position()
