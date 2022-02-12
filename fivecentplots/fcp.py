@@ -501,8 +501,8 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
         for ii, (nn, mm) in enumerate(mgroups):
             low, high = ci(mm[dd.y[0]], layout.box_mean_diamonds.conf_coeff)
             mm = mm[dd.y[0]].mean()
-            x1 = -layout.box_mean_diamonds.width.get(0)/2
-            x2 = layout.box_mean_diamonds.width.get(0)/2
+            x1 = -layout.box_mean_diamonds.width[0]/2
+            x2 = layout.box_mean_diamonds.width[0]/2
             points = [[ii + 1 + x1, mm],
                       [ii + 1, high],
                       [ii + 1 + x2, mm],

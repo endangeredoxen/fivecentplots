@@ -4426,6 +4426,7 @@ class Layout(BaseLayout):
             heights /= self.axes.size[1]
 
             # Iterate through labels
+            offset = 1
             for ir, ic in np.ndindex(self.box_group_label.obj.shape):
                 data.df_rc = data.subset(ir, ic)
                 data.get_box_index_changes()
@@ -4450,19 +4451,29 @@ class Layout(BaseLayout):
                         divider * (changes[jj] / 2 + changes[0:jj].sum())) / self.axes.size[0]
                     # ytext = -(box_label_size + 2) * \
                     #     (ii + 0.5) / self.axes.size[1]
-                    ytext = -heights[ii] / 2 - heights[0:ii].sum()
+                    ytext = -heights[ii] / 2 - heights[0:ii].sum() - offset / self.axes.size[1]
+
+                    # apply an offset to better align the text
+                    if lab.obj[ir, ic][ii, jj].get_rotation() == 90:
+                        xtext += offset / self.axes.size[0]
+                    else:
+                        ytext -= offset / self.axes.size[1]
+
+                    # set the position
                     lab.obj[ir, ic][ii, jj].set_position((xtext, ytext))
 
                 # group title
                 for ii, jj in np.ndindex(labt.obj[ir, ic].shape):
+                    # find and set the label position
                     if labt.obj[ir, ic][ii, 0] is None:
                         continue
                     wtitle = labt.size_all.loc[(labt.size_all.ir == ir) & (
                         labt.size_all.ic == ic) & (labt.size_all.ii == ii), 'width']
                     xtitle = 1 + (self.ws_ax_box_title +
                                   wtitle / 2) / self.axes.size[0]
-                    ytitle = -(box_label_size + 2) * \
-                        (ii + 0.5) / self.axes.size[1]
+                    # ytitle = -(box_label_size + 2) * \
+                    #     (ii + 0.5) / self.axes.size[1]
+                    ytitle = -heights[ii] / 2 - heights[0:ii].sum() - (ii+2)*offset / self.axes.size[1]
                     labt.obj[ir, ic][ii, 0].set_position((xtitle, ytitle))
 
     def set_figure_title(self):
