@@ -634,14 +634,26 @@ def img_compare(img1, img2, show=False):
     img2 = cv2.imread(img2)
 
     # compare
-    if img1 is None or img2 is None or img1.shape != img2.shape:
+    if img1 is None:
         is_diff = True
-        if show and img1.shape != img2.shape:
-            print('image sizes do not match')
+        print('master image not available')
+
+    elif img2 is None:
+        is_diff = True
+        print('test image not availble')
 
     else:
-        difference = cv2.subtract(img1, img2)
-        is_diff = np.any(np.where(difference>1))  # 1 gives buffere for slight aliasing differences
+        if img1.shape != img2.shape:
+            print('image sizes do not match')
+            bigger = img1 if img1.size > img2.size else img2
+            smaller = img1 if img1.size < img2.size else img2
+            smaller2 = np.zeros(bigger.shape)
+            smaller2[:smaller.shape[0], :smaller.shape[1]] = smaller
+            difference = cv2.subtract(bigger, smaller2.astype('uint8'))
+            is_diff = True
+        else:
+            difference = cv2.subtract(img1, img2)
+            is_diff = np.any(np.where(difference>1))  # 1 gives buffere for slight aliasing differences
         if show and is_diff:
             cv2.imwrite('difference.png', 10 * difference)
             show_file('difference.png')
