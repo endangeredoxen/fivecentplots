@@ -645,11 +645,14 @@ def img_compare(img1, img2, show=False):
     else:
         if img1.shape != img2.shape:
             print('image sizes do not match')
-            bigger = img1 if img1.size > img2.size else img2
-            smaller = img1 if img1.size < img2.size else img2
-            smaller2 = np.zeros(bigger.shape)
-            smaller2[:smaller.shape[0], :smaller.shape[1]] = smaller
-            difference = cv2.subtract(bigger, smaller2.astype('uint8'))
+            # actually need to recast both and get biggest row and widht!
+            nrows = max(img1.shape[0], img2.shape[0])
+            ncols = max(img1.shape[1], img2.shape[1])
+            img1b = np.zeros((nrows, ncols, 3)).astype('uint8')
+            img2b = np.zeros((nrows, ncols, 3)).astype('uint8')
+            img1b[:img1.shape[0], :img1.shape[1]] = img1
+            img2b[:img2.shape[0], :img2.shape[1]] = img2
+            difference = cv2.subtract(img1b, img2b)
             is_diff = True
         else:
             difference = cv2.subtract(img1, img2)
