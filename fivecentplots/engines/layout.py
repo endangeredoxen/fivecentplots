@@ -1308,6 +1308,11 @@ class BaseLayout:
                            startangle=utl.kwget(kwargs, self.fcpp, ['pie_startangle', 'startangle'],
                                                 kwargs.get('startangle', 90)),
                            )
+        self.pie.xs_left = 0
+        self.pie.xs_right = 0
+        self.pie.xs_top = 0
+        self.pie.xs_bottom = 0
+
         if self.pie.autopct == True:
             self.pie.autopct = '%1.1f%%'
         elif self.pie.autopct == False:

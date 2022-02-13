@@ -293,6 +293,9 @@ class Layout(BaseLayout):
             title_xs_left = 0
         left += title_xs_left
 
+        # pie labels
+        left += self.pie.xs_left
+
         return left
 
     @property
@@ -365,6 +368,9 @@ class Layout(BaseLayout):
         if title_xs_right < 0:
             title_xs_right = 0
         right += title_xs_right
+
+        # pie labels
+        right += self.pie.xs_right
 
         return right
 
@@ -1743,19 +1749,19 @@ class Layout(BaseLayout):
         # Render the figure to extract true dimensions of various elements
         saved = False
         self.fig.obj.canvas.draw()
-        try:
-            self.axes.obj[0, 0].get_window_extent().width
-        except:
-            saved = True
-            filename = '%s%s' % (
-                int(round(time.time() * 1000)), randint(0, 99))
-            mpl.pyplot.savefig(filename + '.png')
-        if 'pie' in self.name:
-            # TODO:: check if this is still needed
-            saved = True
-            filename = '%s%s' % (
-                int(round(time.time() * 1000)), randint(0, 99))
-            mpl.pyplot.savefig(filename + '.png')
+        # try:
+        #     self.axes.obj[0, 0].get_window_extent().width
+        # except:
+        #     saved = True
+        #     filename = '%s%s' % (
+        #         int(round(time.time() * 1000)), randint(0, 99))
+        #     mpl.pyplot.savefig(filename + '.png')
+        # if 'pie' in self.name:
+        #     # TODO:: check if this is still needed
+        #     saved = True
+        #     filename = '%s%s' % (
+        #         int(round(time.time() * 1000)), randint(0, 99))
+        #     mpl.pyplot.savefig(filename + '.png')
 
         # labels
         for label in ['x', 'x2', 'y', 'y2', 'z', 'row', 'col', 'wrap']:
@@ -1878,154 +1884,48 @@ class Layout(BaseLayout):
 
             lab.size = (max(width, width_bg), max(height, height_bg))
 
-        # tt.size_all[ir, ic] = \
-        #     [np.nanmax([t.get_window_extent().width for t in tlabs]),
-        #     np.nanmax([t.get_window_extent().height for t in tlabs])]
-        # # tick cleanup
-        # last_tick = self.axes.obj[0, 0].transData.transform(self.tick_labels_major_x.obj[0,0][-1].get_position())
-        # if tick == 'x':
-        #     last_tick = last_tick[0]
-        #     self.x_tick_xs = max(0, tlabs[-1].get_window_extent().width)
-        # else:
-        #     last_tick = last_tick[0]
-
-        # box labels
-
         # pie labels
+        if self.pie.on:
+            for ir, ic in np.ndindex(lab.obj.shape):
+                bboxes = [f.get_window_extent() for f in self.pie.obj[1]]
+                for ibox, bbox in enumerate(bboxes):
+                    self.pie.size_all = (ir, ic, ibox, 0, bbox.width, bbox.height,
+                                         bbox.x0, bbox.x1, bbox.y0, bbox.y1)
+            left = (self.pie.size_all['x0'] - self.pie.size_all['width'] / 2).min()
+            self.pie.xs_left = -left if left < 0 else 0
 
-        # rotations for hist and bar plots
+            right = self.pie.size_all['x1'].max()  - self.axes.size[0]
+            self.pie.xs_right = right if right > 0 else 0
 
-        # turn on for debugging
-        # mpl.pyplot.savefig(r'test.png')
-        # utl.show_file(r'test.png')
-        # db()
+            bottom = (self.pie.size_all['y0'] - self.pie.size_all['height'] / 2).min()
+            self.pie.xs_bottom = -bottom if bottom < 0 else 0
 
-        # # Get actual sizes
+            top = (self.pie.size_all['y1'] + \
+                   self.pie.size_all['height'] / 2) .max()- self.axes.size[1]
+            self.pie.xs_top = top if top > 0 else 0
 
-        # # Hack to get extra figure spacing for tick marks at the right
-        # # edge of an axis and when no legend present
-        # ## TODO:: expand this to other axes and minor ticks?
-        # if self.tick_labels_major_x.on and len(xticklabelsmaj) > 0:
-        #     xy = 'x' if utl.kwget(self.kwargs, self.fcpp, 'horizontal', False) \
-        #          is False else 'y'
-        #     smax = data.ranges[ir, ic]['%smax' % xy]
-        #     if type(smax) == pd.Timestamp:
-        #         smax = mdates.date2num(smax)
-        #     smin = data.ranges[ir, ic]['%smin' % xy]
-        #     if type(smin) == pd.Timestamp:
-        #         smin = mdates.date2num(smin)
-        #     if tp[xy]['max'] == tp[xy]['ticks'][-1] \
-        #             and data.ranges[ir, ic]['%smax' % xy] is None:
-        #         self.x_tick_xs = self.tick_labels_major_x.size[0] / 2
-        #     elif smax is not None and smin is not None:
-        #         last_x = [f for f in tp[xy]['ticks'] if f <= smax][-1]
-        #         delta = (last_x - smin) / (smax - smin)
-        #         x_tick_xs = self.axes.size[0] * (delta - 1) + \
-        #                     getattr(self, 'tick_labels_major_%s' % xy).size[0] / 2
-        #         if x_tick_xs > 0:
-        #             self.x_tick_xs = x_tick_xs
+            # # someday move labels to edge and draw a line from wedges to label
+            # theta1 = self.pie.obj[0][0].theta1
+            # theta2 = self.pie.obj[0][0].theta2
+            # r = self.pie.obj[0][0].r
+            # delta = (theta2 - theta1) / 2
+            # x1, y1 = -1., 1.
+            # x2 = -0.95 * r * np.sin(np.pi / 180 * delta)
+            # y2 = 0.95 * r * np.cos(np.pi / 180 * delta)
+            # self.axes.obj[0, 0].plot([x1, x2], [y1, y2], ".")
+            # self.axes.obj[0, 0].annotate("",
+            #             xy=(x1, y1), xycoords='data',
+            #             xytext=(x2, y2), textcoords='data',
+            #             arrowprops=dict(arrowstyle="-", color="0.5",
+            #                             shrinkA=5, shrinkB=5,
+            #                             patchA=None, patchB=None,
+            #                             connectionstyle="arc,angleA=-90,angleB=0,armA=0,armB=40,rad=0",
+            #                             ),
+            #             )
 
-        # for ir in range(0, self.nrow):
-        #     for ic in range(0, self.ncol):
-        #         if wrap_labels[ir, ic] is not None:
-        #             wrap_labels[ir, ic] = \
-        #                 (wrap_labels[ir, ic].get_window_extent().width,
-        #                  wrap_labels[ir, ic].get_window_extent().height)
-        #         if row_labels[ir, ic] is not None:
-        #             row_labels[ir, ic] = \
-        #                 (row_labels[ir, ic].get_window_extent().width,
-        #                  row_labels[ir, ic].get_window_extent().height)
-        #         if col_labels[ir, ic] is not None:
-        #             col_labels[ir, ic] = \
-        #                 (col_labels[ir, ic].get_window_extent().width,
-        #                  col_labels[ir, ic].get_window_extent().height)
 
-        # self.label_wrap.text_size = wrap_labels
-        # self.label_row.text_size = row_labels
-        # self.label_col.text_size = col_labels
-
-        # if leg:
-        #     self.legend.size = \
-        #         [leg.get_window_extent().width + self.legend_border,
-        #          leg.get_window_extent().height + self.legend_border]
-        # else:
-        #     self.legend.size = [0, 0]
-
-        # # box labels
-        # if 'box' in self.name and self.box_group_label.on \
-        #         and data.groups is not None:
-        #     # Get the size of group labels and adjust the rotation if needed
-        #     rotations = np.array([0] * len(data.groups))
-        #     sizes = np.array([[0,0]] * len(data.groups))
-        #     for ir in range(0, self.nrow):
-        #         for ic in range(0, self.ncol):
-        #             if box_group_label[ir, ic] is None:
-        #                 continue
-        #             for irow, row in enumerate(box_group_label[ir, ic]):
-        #                 # Find the smallest group label box in the row
-        #                 labidx = list(changes[ir, ic][changes[ir, ic][irow]>0].index) + \
-        #                             [len(changes[ir, ic])]
-        #                 smallest = min(np.diff(labidx))
-        #                 max_label_width = self.axes.size[0]/len(changes[ir, ic]) * smallest
-        #                 widest = max([f.get_window_extent().width for f in row])
-        #                 tallest = max([f.get_window_extent().height for f in row])
-        #                 if widest > max_label_width:
-        #                     rotations[irow] = 90
-        #                     sizes[irow] = [tallest, widest]
-        #                 elif rotations[irow] != 90:
-        #                     sizes[irow] = [widest, tallest]
-
-        #     sizes = sizes.tolist()
-        #     sizes.reverse()
-        #     rotations = rotations.tolist()
-        #     rotations.reverse()
-        #     self.box_group_label._size = sizes
-        #     self.box_group_label.rotation = rotations
-
-        # if 'box' in self.name and self.box_group_title.on \
-        #         and data.groups is not None:
-        #     self.box_group_title._size = [(f.get_window_extent().width,
-        #                                    f.get_window_extent().height)
-        #                                    for f in box_group_title]
-
-        # if 'pie' in self.name and not self.legend.on:
-        #     sizes = [(f.get_window_extent().width, f.get_window_extent().height)
-        #               for f in pie_labels]
-        #     left, right = utl.pie_wedge_labels(x, y, self.pie.startangle)
-        #     if data.legend is None:
-        #         self.pie.label_sizes = [sizes[left], sizes[right]]
-
-        # # Horizontal shifts
-        # if self.hist.horizontal or self.bar.horizontal:
-        #     # Swap axes labels
-        #     ylab = copy.copy(self.label_y)
-        #     xrot = self.label_x.rotation
-        #     self.label_y = copy.copy(self.label_x)
-        #     self.label_y.size = [self.label_y.size[1], self.label_y.size[0]]
-        #     self.label_y.rotation = ylab.rotation
-        #     self.label_x = ylab
-        #     self.label_x.size = [self.label_x.size[1], self.label_x.size[0]]
-        #     self.label_x.rotation = xrot
-
-        #     # Swap tick labels
-        #     ylab = copy.copy(self.tick_labels_major_y)
-        #     self.tick_labels_major_y = copy.copy(self.tick_labels_major_x)
-        #     self.tick_labels_major_x = ylab
-
-        #     # Rotate ranges
-        #     for irow in range(0, self.nrow):
-        #         for icol in range(0, self.ncol):
-        #             ymin = data.ranges[irow, icol]['ymin']
-        #             ymax = data.ranges[irow, icol]['ymax']
-        #             data.ranges[irow, icol]['ymin'] = data.ranges[irow, icol]['xmin']
-        #             data.ranges[irow, icol]['ymax'] = data.ranges[irow, icol]['xmax']
-        #             data.ranges[irow, icol]['xmin'] = ymin
-        #             data.ranges[irow, icol]['xmax'] = ymax
-
-        # Destroy the dummy figure
-        # mpl.pyplot.close(fig)
-        if saved:
-            os.remove(filename + '.png')
+        # if saved:
+        #     os.remove(filename + '.png')
 
         return data
 
@@ -2110,7 +2010,6 @@ class Layout(BaseLayout):
         self.fig.size[0] = self.left + self.axes.size[0] * self.ncol + \
             self.right + self.legx + self.ws_col * (self.ncol - 1) - \
             (self.fig_legend_border if self.legend._on else 0) + \
-            self.pie.label_sizes[0][0] + self.pie.label_sizes[1][0] + \
             (self.cbar.size[0] + self.ws_ax_cbar) * self.ncol
 
         # Figure height
@@ -2124,7 +2023,8 @@ class Layout(BaseLayout):
             self.ws_fig_label +
             self.ws_row * (self.nrow - 1) +
             self.box_labels) + \
-            self.legy
+            self.legy + \
+            self.pie.xs_top + self.pie.xs_bottom
 
         # Debug output
         if debug:
@@ -3139,21 +3039,15 @@ class Layout(BaseLayout):
             xx = [f for f in x]
             x = ['' for f in x]
 
-        pie = self.axes.obj[ir, ic].pie(y, labels=x,
-                                        explode=self.pie.explode,
-                                        # center=[40,40],
-                                        colors=self.pie.colors,
-                                        autopct=self.pie.autopct,
-                                        counterclock=self.pie.counterclock,
-                                        labeldistance=self.pie.labeldistance,
-                                        pctdistance=self.pie.pctdistance,
-                                        radius=self.pie.radius,
-                                        rotatelabels=self.pie.rotatelabels,
-                                        shadow=self.pie.shadow,
-                                        startangle=self.pie.startangle,
-                                        wedgeprops=wedgeprops,
-                                        textprops=textprops,
-                                        )
+        self.pie.obj = self.axes.obj[ir, ic].pie(
+            y, labels=x, explode=self.pie.explode, # center=[40,40],
+            colors=self.pie.colors, autopct=self.pie.autopct,
+            counterclock=self.pie.counterclock,
+            labeldistance=self.pie.labeldistance,
+            pctdistance=self.pie.pctdistance, radius=self.pie.radius,
+            rotatelabels=self.pie.rotatelabels, shadow=self.pie.shadow,
+            startangle=self.pie.startangle, wedgeprops=wedgeprops,
+            textprops=textprops)
 
         self.axes.obj[ir, ic].set_xlim(left=-1)
         self.axes.obj[ir, ic].set_xlim(right=1)
@@ -3168,7 +3062,7 @@ class Layout(BaseLayout):
                     (0, 0), 1, 1, color=self.pie.colors[i])]
                 self.legend.add_value(xx[i], handle, 'lines')
 
-        return pie
+        return self.pie.obj
 
     def plot_polygon(self, ir, ic, points, **kwargs):
         """
@@ -4426,7 +4320,7 @@ class Layout(BaseLayout):
             heights /= self.axes.size[1]
 
             # Iterate through labels
-            offset = 1
+            offset = 1  # to make labels line up better at default font sizes
             for ir, ic in np.ndindex(self.box_group_label.obj.shape):
                 data.df_rc = data.subset(ir, ic)
                 data.get_box_index_changes()
@@ -4449,8 +4343,6 @@ class Layout(BaseLayout):
                     divider = self.axes.size[0] / len(data.changes)
                     xtext = (
                         divider * (changes[jj] / 2 + changes[0:jj].sum())) / self.axes.size[0]
-                    # ytext = -(box_label_size + 2) * \
-                    #     (ii + 0.5) / self.axes.size[1]
                     ytext = -heights[ii] / 2 - heights[0:ii].sum() - offset / self.axes.size[1]
 
                     # apply an offset to better align the text
@@ -4471,10 +4363,11 @@ class Layout(BaseLayout):
                         labt.size_all.ic == ic) & (labt.size_all.ii == ii), 'width']
                     xtitle = 1 + (self.ws_ax_box_title +
                                   wtitle / 2) / self.axes.size[0]
-                    # ytitle = -(box_label_size + 2) * \
-                    #     (ii + 0.5) / self.axes.size[1]
                     ytitle = -heights[ii] / 2 - heights[0:ii].sum() - (ii+2)*offset / self.axes.size[1]
                     labt.obj[ir, ic][ii, 0].set_position((xtitle, ytitle))
+
+        # Pie adjustments?
+
 
     def set_figure_title(self):
         """
