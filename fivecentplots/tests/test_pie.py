@@ -152,7 +152,6 @@ def plt_legend(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
-# FAILS SPACING
 def plt_legend_rc(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'legend_rc_master') if master else 'legend_rc'
@@ -182,7 +181,6 @@ def plt_legend_rc(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
-# LEGEND IS JUST WRONG IN MASTER
 def plt_legend_wrap(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'legend_wrap_master') if master else 'legend_wrap'
@@ -302,7 +300,6 @@ def plt_shadow(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
-# VERTICAL HEIGHT ADJUSTMENT NOT WORKING CORRECTLY
 def plt_angle(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'angle_master') if master else 'angle'

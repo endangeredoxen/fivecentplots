@@ -247,6 +247,9 @@ class Layout(BaseLayout):
         Width of the y label + y tick labels + related whitespace
         """
 
+        if self.pie.on:
+            return 0
+
         val = self.label_y.size[0] \
             + self.ws_label_tick \
             + self.tick_y
@@ -1888,21 +1891,39 @@ class Layout(BaseLayout):
         if self.pie.on:
             for ir, ic in np.ndindex(lab.obj.shape):
                 bboxes = [f.get_window_extent() for f in self.pie.obj[1]]
+                ax_bbox = self.axes.obj[ir, ic].get_window_extent()
                 for ibox, bbox in enumerate(bboxes):
+                    if self.pie.obj[1][ibox].get_text() == '':
+                        continue
                     self.pie.size_all = (ir, ic, ibox, 0, bbox.width, bbox.height,
                                          bbox.x0, bbox.x1, bbox.y0, bbox.y1)
-            left = (self.pie.size_all['x0'] - self.pie.size_all['width'] / 2).min()
-            self.pie.xs_left = -left if left < 0 else 0
 
-            right = self.pie.size_all['x1'].max()  - self.axes.size[0]
-            self.pie.xs_right = right if right > 0 else 0
+                if len(self.pie.size_all) > 0:
+                    left = self.pie.size_all['x0'].min() - ax_bbox.x0
+                    self.pie.xs_left = max(-left if left < 0 else 0, self.pie.xs_left)
 
-            bottom = (self.pie.size_all['y0'] - self.pie.size_all['height'] / 2).min()
-            self.pie.xs_bottom = -bottom if bottom < 0 else 0
+                    right = self.pie.size_all['x1'].max() - ax_bbox.x1
+                    self.pie.xs_right = max(right if right > 0 else 0, self.pie.xs_right)
 
-            top = (self.pie.size_all['y1'] + \
-                   self.pie.size_all['height'] / 2) .max()- self.axes.size[1]
-            self.pie.xs_top = top if top > 0 else 0
+                    bottom = self.pie.size_all['y0'].min() - ax_bbox.y0
+                    self.pie.xs_bottom = max(-bottom if bottom < 0 else 0, self.pie.xs_bottom)
+
+                    top = self.pie.size_all['y1'].max() - ax_bbox.y1
+                    self.pie.xs_top = max(top if top > 0 else 0, self.pie.xs_top)
+
+                if self.pie.explode:
+                    for iwedge, wedge in enumerate(self.pie.explode):
+                        if wedge == 0:
+                            continue
+                        # this is a bit of a hack and may not hold for all cases
+                        # and ignores the orientation of the wedge that is
+                        # exploding
+                        self.pie.xs_left += wedge * self.axes.size[0] / 4
+                        self.pie.xs_right += wedge * self.axes.size[0] / 4
+                        self.pie.xs_top += wedge * self.axes.size[0] / 4
+                        self.pie.xs_bottom += wedge * self.axes.size[0] / 4
+
+
 
             # # someday move labels to edge and draw a line from wedges to label
             # theta1 = self.pie.obj[0][0].theta1
@@ -2184,8 +2205,7 @@ class Layout(BaseLayout):
             self.axes.position --> [left, right, top, bottom]
         """
 
-        self.axes.position[0] = int(self.left + self.pie.label_sizes[0][0]) \
-            / self.fig.size[0]
+        self.axes.position[0] = int(self.left) / self.fig.size[0]
 
         # note: if using cbar, self.axes.position[1] = 1 means the edge of the
         # cbar is at the edge of the figure (+2 is a fudge to get the right image size)
@@ -2200,11 +2220,11 @@ class Layout(BaseLayout):
         self.axes.position[2] = \
             1 - (self.ws_title + self.title_wrap.size[1] +
                  (self.label_col.size[1] + self.ws_label_col) * self.label_col.on +
-                 self.label_wrap.size[1] + self.labtick_x2) / self.fig.size[1]
+                 self.label_wrap.size[1] + self.labtick_x2 + self.pie.xs_top) / self.fig.size[1]
 
         self.axes.position[3] = \
-            (self.labtick_x + self.ws_fig_label + self.box_labels +
-             self.legend.overflow +
+            (self.labtick_x + self.ws_fig_label + self.box_labels + \
+             self.legend.overflow + self.pie.xs_bottom + \
              (self.legend.size[1] if self.legend.location == 11 else 0)) / self.fig.size[1]
 
     def get_tick_label_size(self, ax, tick: str, tick_num: str, which: str,
@@ -3048,6 +3068,13 @@ class Layout(BaseLayout):
             rotatelabels=self.pie.rotatelabels, shadow=self.pie.shadow,
             startangle=self.pie.startangle, wedgeprops=wedgeprops,
             textprops=textprops)
+
+        # change percent font style
+        if self.pie.autopct is not None:
+            for lab in self.pie.obj[2]:
+                lab.set_fontsize(self.pie.pct_font_size)
+                lab.set_color(self.pie.pct_font_color)
+                lab.set_fontweight(self.pie.pct_font_weight)
 
         self.axes.obj[ir, ic].set_xlim(left=-1)
         self.axes.obj[ir, ic].set_xlim(right=1)

@@ -752,8 +752,11 @@ def plot_pie(data, layout, ir, ic, df, kwargs):
 
     """
 
-    x = df[data.x[0]].values
-    y = df[data.y[0]].values
+    if data.sort:
+        x = df.groupby(data.x[0]).sum().index.values
+    else:
+        x = df[data.x[0]].drop_duplicates()
+    y = df.groupby(data.x[0]).sum().loc[x][data.y[0]].values
 
     if any(y < 0):
         print('Pie plot had negative values.  Skipping...')
