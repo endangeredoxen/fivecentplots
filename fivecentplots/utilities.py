@@ -645,7 +645,6 @@ def img_compare(img1, img2, show=False):
     else:
         if img1.shape != img2.shape:
             print('image sizes do not match')
-            # actually need to recast both and get biggest row and widht!
             nrows = max(img1.shape[0], img2.shape[0])
             ncols = max(img1.shape[1], img2.shape[1])
             img1b = np.zeros((nrows, ncols, 3)).astype('uint8')
