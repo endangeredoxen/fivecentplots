@@ -461,6 +461,37 @@ def plt_row_x_column(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
+def plt_row_x_column_sep_labels(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(
+        MASTER, 'grid-plots-row-x-column_sep_labels_master') if master else 'grid-plots-row-x-column_sep_labels'
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]', show=SHOW,
+             ax_size=[225, 225],
+             filter='Substrate=="Si" & Target Wavelength==450',
+             label_rc_font_size=13, separate_labels=True, share_y=False,
+             filename=name + '.png', save=not bm, inline=False)
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def plt_wrap(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(

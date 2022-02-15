@@ -1276,6 +1276,10 @@ class BaseLayout:
         if self.name != 'pie':
             self.pie = Element('pie', self.fcpp, kwargs, on=False,
                                label_sizes=[(0, 0), (0, 0)])
+            self.pie.xs_left = 0
+            self.pie.xs_right = 0
+            self.pie.xs_top = 0
+            self.pie.xs_bottom = 0
             return kwargs
 
         self.pie = Element('pie', self.fcpp, kwargs,
