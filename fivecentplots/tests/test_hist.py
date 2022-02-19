@@ -68,7 +68,7 @@ def plt_simple(bm=False, master=False, remove=True, show=False):
 
     # Make the plot
     fcp.hist(df=df, x='Value', show=SHOW,
-             filename=name + '.png')
+             inline=False, save=not bm, filename=name + '.png')
 
     if bm:
         return
@@ -97,7 +97,7 @@ def plt_horizontal(bm=False, master=False, remove=True, show=False):
 
     # Make the plot
     fcp.hist(df=df, x='Value', show=SHOW, horizontal=True,
-             filename=name + '.png')
+             inline=False, save=not bm, filename=name + '.png')
 
     if bm:
         return
@@ -125,7 +125,7 @@ def plt_legend(bm=False, master=False, remove=True, show=False):
 
     # Make the plot
     fcp.hist(df=df, x='Value', show=SHOW, legend='Region',
-             filename=name + '.png')
+             inline=False, save=not bm, filename=name + '.png')
 
     if bm:
         return
@@ -153,7 +153,7 @@ def plt_kde(bm=False, master=False, remove=True, show=False):
 
     # Make the plot
     fcp.hist(df=df, x='Value', show=SHOW, legend='Region', kde=True, kde_width=2,
-             filename=name + '.png')
+             inline=False, save=not bm, filename=name + '.png')
 
     if bm:
         return
@@ -181,7 +181,7 @@ def plt_grid(bm=False, master=False, remove=True, show=False):
 
     # Make the plot
     fcp.hist(df=df, x='Value', show=SHOW, legend='Region', col='Batch', row='Sample', ax_size=[250, 250],
-             filename=name + '.png')
+             inline=False, save=not bm, filename=name + '.png')
 
     if bm:
         return
@@ -209,7 +209,7 @@ def plt_wrap_values(bm=False, master=False, remove=True, show=False):
 
     # Make the plot
     fcp.hist(df=df, x='Value', show=SHOW, legend='Region', wrap='Batch',
-             ax_size=[250, 250], horizontal=True, filename=name + '.png')
+             ax_size=[250, 250], horizontal=True, inline=False, save=not bm, filename=name + '.png')
 
     if bm:
         return
@@ -239,7 +239,7 @@ def plt_wrap_names(bm=False, master=False, remove=True, show=False):
     df['Value*2'] = 2*df['Value']
     df['Value*3'] = 3*df['Value']
     fcp.hist(df=df, x=['Value', 'Value*2', 'Value*3'], wrap='x', show=SHOW, ncol=3, ax_size=[250, 250],
-             filename=name + '.png')
+             inline=False, save=not bm, filename=name + '.png')
 
     if bm:
         return
@@ -270,7 +270,7 @@ def plt_image(bm=False, master=False, remove=True, show=False):
     dn = 255
     max_count = (imgr == dn).sum()
     fcp.hist(img, markers=False, ax_scale='logy', ax_size=[600, 400], line_width=2,
-             show=SHOW, filename=name + '.png', xmax=dn+5,
+             show=SHOW, inline=False, save=not bm, filename=name + '.png', xmax=dn+5,
              ax_hlines=max_count, ax_vlines=dn)
 
     if bm:
@@ -304,7 +304,7 @@ def plt_image_legend(bm=False, master=False, remove=True, show=False):
     max_count_r = (img.loc[::2, img.columns[::2]].stack().values == dnr).sum()
     max_count_gb = (img.loc[1::2, img.columns[::2]
                             ].stack().values == dng).sum()
-    fcp.hist(img, show=SHOW, filename=name + '.png',
+    fcp.hist(img, show=SHOW, inline=False, save=not bm, filename=name + '.png',
              markers=False, ax_scale='logy', ax_size=[600, 400],
              legend='Plane', cfa='rggb', line_width=2, colors=fcp.BAYER,
              ax_hlines=[max_count_r, max_count_gb], ax_vlines=[dnr, dng])
