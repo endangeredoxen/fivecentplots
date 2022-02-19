@@ -57,9 +57,8 @@ def show_all():
         member[1](show=True)
         db()
 
+
 # plt_ functions can be used directly outside of pytest for debug
-
-
 def plt_vertical(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'vertical_master') if master else 'vertical'
