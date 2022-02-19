@@ -302,7 +302,7 @@ def test_cat_cell_size(benchmark):
 
 def test_cat_non_uniform(benchmark):
     plt_cat_non_uniform()
-    benchmark(plt_non_uniform, True)
+    benchmark(plt_cat_non_uniform, True)
 
 
 def test_heatmap(benchmark):
@@ -311,8 +311,8 @@ def test_heatmap(benchmark):
 
 
 def test_heatmap_streched(benchmark):
-    plt_heatmap_streched()
-    benchmark(plt_heatmap_streched, True)
+    plt_heatmap_stretched()
+    benchmark(plt_heatmap_stretched, True)
 
 
 def test_heatmap_zoomed(benchmark):

@@ -1429,14 +1429,13 @@ class Layout(BaseLayout):
 
             if len(yticks_size_all) > 0:
                 ybbox = yticks_size_all[:, -2:]
-                # don't think this matters
-                # if ybbox[0:2, 0].argmax() == 1:
-                #     # ascending ticks
-                #     ol = (ybbox[1:, 0] - ybbox[0:-1, 1]) < 0
-                # else:
-                #     # descending ticks
-                #     ol = (ybbox[0:-1, 0] - ybbox[1:, 1]) < 0
-                ol = (ybbox[1:, 0] - ybbox[0:-1, 1]) < 0
+                if ybbox[0:2, 0].argmax() == 1:
+                    # ascending ticks
+                    ol = (ybbox[1:, 0] - ybbox[0:-1, 1]) < 0
+                else:
+                    # descending ticks
+                    ol = (ybbox[0:-1, 0] - ybbox[1:, 1]) < 0
+
                 # pad to account for last tick
                 ol = np.concatenate([ol, [True]])
                 if any(ol):
