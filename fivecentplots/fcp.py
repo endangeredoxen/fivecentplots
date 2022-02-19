@@ -546,7 +546,7 @@ def plot_contour(data, layout, ir, ic, df_rc, kwargs):
 
     for iline, df, x, y, z, leg_name, twin, ngroups in data.get_plot_data(df_rc):
         layout.plot_contour(
-            layout.axes.obj[ir, ic], df, x, y, z, data.ranges[ir, ic])
+            ir, ic, layout.axes.obj[ir, ic], df, x, y, z, data.ranges[ir, ic])
 
     return data
 
