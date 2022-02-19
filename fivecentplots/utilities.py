@@ -770,12 +770,6 @@ def rgb2bayer(img, cfa='rggb', bit_depth=np.uint8):
             col = 0 if ii % 2 == 0 else 1
             raw[row::2, col::2] = img[row::2, col::2, channel[cpp]]
 
-    # db()
-    # raw[1::2, 1::2] = img[1::2, 1::2, 2]  # blue
-    # raw[1::2, ::2] = img[1::2, ::2, 1]  # green_blue
-    # raw[::2, ::2] = img[::2, ::2, 0]  # red
-    # raw[::2, 1::2] = img[::2, 1::2, 1]  # green_red
-
     return pd.DataFrame(raw)
 
 
