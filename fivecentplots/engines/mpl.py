@@ -1377,12 +1377,21 @@ class Layout(BaseLayout):
 
             # Prevent single tick label axis
             if len(xticks_size_all) == 1:
-                self.add_text(ir, ic, str(xticks.limits[1]),
-                              position=[self.axes.size[0] -
-                                        xticks.size_all.loc[0,
-                                                            'width'] / 2 / sf,
-                                        -xticks.size_all.loc[0, 'height']],
-                              font_size=xticks.font_size / sf)
+                kw = {}
+                kw['rotation'] = xticks.rotation
+                kw['font_color'] = xticks.font_color
+                kw['font'] = xticks.font
+                kw['fill_color'] = xticks.fill_color[0]
+                kw['edge_color'] = xticks.edge_color[0]
+                kw['font_style'] = xticks.font_style
+                kw['font_weight'] = xticks.font_weight
+                kw['font_size'] = xticks.font_size / sf
+                kw['position'] = \
+                    [self.axes.size[0] - xticks.size_all.loc[0, 'width'] / 2 / sf,
+                     -xticks.size_all.loc[0, 'height']]
+                precision = utl.get_decimals(xticks.limits[1], 8)
+                txt = f'{xticks.limits[1]:.{precision}}'
+                self.add_text(ir, ic, txt, **kw)
 
             # Overlapping x-y origin
             if len(xticks_size_all) > 0 and len(yticks_size_all) > 0:
@@ -3407,7 +3416,8 @@ class Layout(BaseLayout):
                         offset / self.axes.size[1]
                     labt.obj[ir, ic][ii, 0].set_position((xtitle, ytitle))
 
-        # Pie adjustments?
+        # Text label adjustments - support different position coords
+        # need to port from line 726 mpl.py
 
     def set_figure_title(self):
         """

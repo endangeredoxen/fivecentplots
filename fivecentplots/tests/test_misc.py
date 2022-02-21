@@ -3,7 +3,10 @@ import pytest
 import fivecentplots as fcp
 import pandas as pd
 import numpy as np
-import os, sys, pdb, platform
+import os
+import sys
+import pdb
+import platform
 import fivecentplots.utilities as utl
 import inspect
 osjoin = os.path.join
@@ -12,10 +15,12 @@ if platform.system() != 'Windows':
     print('Warning!  Image test files generated in windows.  Compatibility with linux/mac may vary')
 
 MPL = utl.get_mpl_version_dir()
-MASTER = osjoin(os.path.dirname(fcp.__file__), 'tests', 'test_images', MPL, 'misc.py')
+MASTER = osjoin(os.path.dirname(fcp.__file__),
+                'tests', 'test_images', MPL, 'misc.py')
 
 # Sample data
-df = pd.read_csv(osjoin(os.path.dirname(fcp.__file__), 'tests', 'fake_data.csv'))
+df = pd.read_csv(osjoin(os.path.dirname(
+    fcp.__file__), 'tests', 'fake_data.csv'))
 
 # Set theme
 fcp.set_theme('gray')
@@ -56,13 +61,14 @@ def show_all():
 
 def test_text_box_single(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'text_box_single_master') if master else 'text_box_single'
+    name = osjoin(
+        MASTER, 'text_box_single_master') if master else 'text_box_single'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9,
-         filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-         text='Die (-1,2) shows best response', text_position=[0, 380],
-         filename=name + '.png', jitter=False)
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             text='Die (-1,2) shows best response', text_position=[0, 380],
+             save=True, inline=False, filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -70,9 +76,11 @@ def test_text_box_single(master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -81,14 +89,15 @@ def test_text_box_single(master=False, remove=True, show=False):
 
 def test_text_box_single_style(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'text_box_single_style_master') if master else 'text_box_single_style'
+    name = osjoin(
+        MASTER, 'text_box_single_style_master') if master else 'text_box_single_style'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              text='Die (-1,2) shows\nbest response', text_position=[10, 340], text_font_size=20,
              text_edge_color='#FF0000', text_font_color='#00FF00', text_fill_color='#ffffff',
-             filename=name + '.png', jitter=False)
+             save=True, inline=False, filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -96,9 +105,11 @@ def test_text_box_single_style(master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -107,7 +118,8 @@ def test_text_box_single_style(master=False, remove=True, show=False):
 
 def test_text_box_multiple(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'text_box_multiple_master') if master else 'text_box_multiple'
+    name = osjoin(
+        MASTER, 'text_box_multiple_master') if master else 'text_box_multiple'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9,
@@ -115,7 +127,7 @@ def test_text_box_multiple(master=False, remove=True, show=False):
              text=['Die (-1,2) shows best response', '(c) 2019', 'Boom!'],
              text_position=[[10, 379], [10, 10], [320, 15]], text_font_color=['#000000', '#FF00FF'],
              text_font_size=[14, 8, 18], text_fill_color='#FFFFFF',
-             filename=name + '.png', jitter=False)
+             save=True, inline=False, filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -123,24 +135,28 @@ def test_text_box_multiple(master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
         assert not compare
 
 
+# failed
 def test_text_box_position_figure(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'text_box_position_figure_master') if master else 'text_box_position_figure'
+    name = osjoin(
+        MASTER, 'text_box_position_figure_master') if master else 'text_box_position_figure'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              text='Die (-1,2) shows best response', text_position=[110, 440], text_coordinate='figure',
-             filename=name + '.png', jitter=False)
+             save=True, inline=False, filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -148,9 +164,11 @@ def test_text_box_position_figure(master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -159,13 +177,14 @@ def test_text_box_position_figure(master=False, remove=True, show=False):
 
 def test_text_box_position_data(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'text_box_position_data_master') if master else 'text_box_position_data'
+    name = osjoin(
+        MASTER, 'text_box_position_data_master') if master else 'text_box_position_data'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              text='Die (-1,2) shows best response', text_position=[0.903, 1.2], text_coordinate='data',
-             filename=name + '.png', jitter=False)
+             save=True, inline=False, filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -173,9 +192,11 @@ def test_text_box_position_data(master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -184,13 +205,14 @@ def test_text_box_position_data(master=False, remove=True, show=False):
 
 def test_text_box_position_units(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'text_box_position_units_master') if master else 'text_box_position_units'
+    name = osjoin(
+        MASTER, 'text_box_position_units_master') if master else 'text_box_position_units'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              text='Die (-1,2) shows best response', text_position=[0, 0.95], text_units='relative',
-             filename=name + '.png', jitter=False)
+             save=True, inline=False, filename=name + '.png', jitter=False)
 
     # Compare with master
     if master:
@@ -198,9 +220,11 @@ def test_text_box_position_units(master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
