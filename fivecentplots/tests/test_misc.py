@@ -67,7 +67,7 @@ def test_text_box_single(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             text='Die (-1,2) shows best response', text_position=[0, 380],
+             text='Die (-1,2) shows best response', text_position=[120, 10],
              save=True, inline=False, filename=name + '.png', jitter=False)
 
     # Compare with master
@@ -146,7 +146,6 @@ def test_text_box_multiple(master=False, remove=True, show=False):
         assert not compare
 
 
-# failed
 def test_text_box_position_figure(master=False, remove=True, show=False):
 
     name = osjoin(
@@ -155,7 +154,7 @@ def test_text_box_position_figure(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             text='Die (-1,2) shows best response', text_position=[110, 440], text_coordinate='figure',
+             text='Die (-1,2) shows best response', text_position=[208, 70], text_coordinate='figure',
              save=True, inline=False, filename=name + '.png', jitter=False)
 
     # Compare with master
@@ -183,7 +182,7 @@ def test_text_box_position_data(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             text='Die (-1,2) shows best response', text_position=[0.903, 1.2], text_coordinate='data',
+             text='Die (-1,2) shows best response', text_position=[1.077, 0.00085], text_coordinate='data',
              save=True, inline=False, filename=name + '.png', jitter=False)
 
     # Compare with master
@@ -211,7 +210,7 @@ def test_text_box_position_units(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             text='Die (-1,2) shows best response', text_position=[0, 0.95], text_units='relative',
+             text='Die (-1,2) shows best response', text_position=[0.3,0.025], text_units='relative',
              save=True, inline=False, filename=name + '.png', jitter=False)
 
     # Compare with master

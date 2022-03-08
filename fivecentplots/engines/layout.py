@@ -1546,6 +1546,8 @@ class BaseLayout:
                             text=RepeatedList(utl.kwget(kwargs, self.fcpp,
                                                         'text', ''), 'text'),
                             )
+        
+        self.text.obj = np.zeros(len(self.text.text.values), dtype=object)
 
         return kwargs
 
