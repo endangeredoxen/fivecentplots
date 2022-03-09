@@ -52,6 +52,7 @@ def show_all():
         db()
 
 
+# fails label background color
 def test_fill_color(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'fill_color_master') if master else 'fill_color'
@@ -78,6 +79,7 @@ def test_fill_color(master=False, remove=True, show=False):
         assert not compare
 
 
+# fails label edge color
 def test_edge_color(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'edge_color_master') if master else 'edge_color'
@@ -130,6 +132,7 @@ def test_spines(master=False, remove=True, show=False):
         assert not compare
 
 
+# fails label background color
 def test_alpha(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'alpha_master') if master else 'alpha'
@@ -485,6 +488,7 @@ def test_marker_fill_alpha(master=False, remove=True, show=False):
         assert not compare
 
 
+# fail box group labels have black background (maybe make it this way by default?)
 def test_marker_boxplot(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'boxplot_master') if master else 'boxplot'

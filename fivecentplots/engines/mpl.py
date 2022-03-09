@@ -608,8 +608,8 @@ class Layout(BaseLayout):
 
         # Define the label background
         rect = patches.Rectangle((position[0], position[3]),
-                                 size[0] / self.axes.size[0],
-                                 size[1]/self.axes.size[1],
+                                 size[0] / self.axes.size[0], #font_size * len(text) / self.axes.size[0],
+                                 size[1] / self.axes.size[0], #font_size / self.axes.size[1],
                                  fill=True,
                                  transform=self.axes.obj[ir, ic].transAxes,
                                  facecolor=fill_color if type(fill_color) is str
@@ -619,8 +619,9 @@ class Layout(BaseLayout):
                                  lw=edge_width if type(
                                      edge_width) is int else 1,
                                  clip_on=False, zorder=1)
+        
         self.axes.obj[ir, ic].add_patch(rect)
-
+        
         # Add the label text
         text = self.axes.obj[ir, ic].text(
             position[0] + offsetx,
@@ -631,7 +632,7 @@ class Layout(BaseLayout):
             verticalalignment='center', rotation=rotation,
             color=font_color, fontname=font, style=font_style,
             weight=font_weight, size=font_size)
-
+        
         return text, rect
 
     def add_legend(self):
@@ -882,13 +883,18 @@ class Layout(BaseLayout):
 
                 # text label size
                 bbox = lab.obj[ir, ic].get_window_extent()
-                lab.size_all = (ir, ic, 0, 0, bbox.width, bbox.height, bbox.x0,
+                width = bbox.width
+                height = bbox.height
+                lab.size_all = (ir, ic, 0, 0, width, height, bbox.x0,
                                 bbox.x1, bbox.y0, bbox.y1)
 
-                # text label rect background size
+                # text label rect background (ax label has to be resized!)
                 bbox = lab.obj_bg[ir, ic].get_window_extent()
                 lab.size_all_bg = (ir, ic, 0, 0, bbox.width, bbox.height, bbox.x0,
                                    bbox.x1, bbox.y0, bbox.y1)
+                if label not in ['row', 'col', 'wrap']:
+                    lab.obj_bg[ir, ic].set_width((width + lab.bg_padding * 2) / self.axes.size[0])
+                    lab.obj_bg[ir, ic].set_height((height + lab.bg_padding * 2) / self.axes.size[1])
                 
             # set max size
             width = lab.size_all.width.max()
@@ -2415,8 +2421,8 @@ class Layout(BaseLayout):
 
         if self.name in ['pie']:
             return
-
-        self.get_axes_label_position()
+        # do we need this?
+        #self.get_axes_label_position()
 
         axis = ['x', 'x2', 'y', 'y2', 'z']
         for ax in axis:
@@ -3145,6 +3151,14 @@ class Layout(BaseLayout):
             for ir, ic in np.ndindex(lab.obj.shape):
                 if lab.obj[ir, ic]:
                     lab.obj[ir, ic].set_position((x, y))
+                    if label in ['x', 'x2', 'y', 'y2', 'z']:
+                        offsetx = lab.size[0] / 2 + lab.bg_padding
+                        offsety = lab.size[1] / 2 + lab.bg_padding
+                        if lab.obj[ir, ic].get_rotation() == 90: 
+                            offsetx += 2  # this may not hold for all cases
+                            offsety += 1
+                        lab.obj_bg[ir, ic].set_x(x - offsetx / self.axes.size[0])
+                        lab.obj_bg[ir, ic].set_y(y - offsety / self.axes.size[1])
 
         # Update the rc label positions
         self.get_rc_label_position()

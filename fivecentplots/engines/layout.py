@@ -266,6 +266,8 @@ class BaseLayout:
                         obj=self.obj_array,
                         font_style='italic',
                         font_weight='bold',
+                        bg_padding=utl.kwget(kwargs, self.fcpp,
+                                           'label_bg_padding', 2), 
                         )
         labels = ['x', 'x2', 'y', 'y2', 'z']
         rotations = [0, 0, 90, 270, 270]
