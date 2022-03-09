@@ -937,7 +937,11 @@ class Layout(BaseLayout):
                     if lab.obj[ir, ic][ii, jj] is None:
                         continue
                     bbox = lab.obj[ir, ic][ii, jj].get_window_extent()
-                    label_max_width = lens[ii] * divider
+                    if ii < len(lens):
+                        label_max_width = lens[ii] * divider
+                    else:
+                        label_max_width = bbox.width + 1
+                    
                     if bbox.width > label_max_width:
                         # rotate labels that are longer than the box axis size
                         lab.obj[ir, ic][ii, jj].set_rotation(90)
@@ -1099,7 +1103,7 @@ class Layout(BaseLayout):
 
         # separate ticks and labels
         if (self.separate_ticks or self.axes.share_y == False) and not self.cbar.on:
-            self.ws_col = max(self.tick_y + self.ws_ax_fig, self.ws_col_def)
+            self.ws_col = max(self.tick_y + self.ws_label_tick, self.ws_col_def)
         elif (self.separate_ticks or self.axes.share_y == False) and self.cbar.on:
             self.ws_col += self.tick_y
         if self.separate_ticks or \

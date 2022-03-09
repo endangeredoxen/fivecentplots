@@ -88,6 +88,34 @@ def plt_simple(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
+def plt_one_group(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'one_group_master') if master else 'one_group'
+
+    # Make the plot
+    fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', 
+                show=SHOW, filename=name + '.png', jitter=False)
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def plt_group_single(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'group_single_master') if master else 'group_single'
@@ -638,6 +666,11 @@ def plt_range_lines(bm=False, master=False, remove=True, show=False):
 def test_simple(benchmark):
     plt_simple()
     benchmark(plt_simple, True)
+
+
+def test_one_group(benchmark):
+    plt_one_group()
+    benchmark(plt_one_group, True)
 
 
 def test_group_single(benchmark):
