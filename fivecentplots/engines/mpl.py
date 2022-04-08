@@ -48,6 +48,13 @@ warnings.filterwarnings(
 db = pdb.set_trace
 
 
+def isInRange(n, tbl):
+    ol = np.apply_along_axis(lambda row: row[0] <= n <= row[1], 1, tbl).tolist()
+    if True in ol:
+        return True
+    return False
+
+
 def cbar_ticks(cbar, zmin, zmax):
     """
     Format cbar ticks and labels
@@ -608,8 +615,8 @@ class Layout(BaseLayout):
 
         # Define the label background
         rect = patches.Rectangle((position[0], position[3]),
-                                 size[0] / self.axes.size[0], #font_size * len(text) / self.axes.size[0],
-                                 size[1] / self.axes.size[0], #font_size / self.axes.size[1],
+                                 size[0] / self.axes.size[0],
+                                 size[1] / self.axes.size[0],
                                  fill=True,
                                  transform=self.axes.obj[ir, ic].transAxes,
                                  facecolor=fill_color if type(fill_color) is str
@@ -619,9 +626,8 @@ class Layout(BaseLayout):
                                  lw=edge_width if type(
                                      edge_width) is int else 1,
                                  clip_on=False, zorder=1)
-        
         self.axes.obj[ir, ic].add_patch(rect)
-        
+
         # Add the label text
         text = self.axes.obj[ir, ic].text(
             position[0] + offsetx,
@@ -632,7 +638,7 @@ class Layout(BaseLayout):
             verticalalignment='center', rotation=rotation,
             color=font_color, fontname=font, style=font_style,
             weight=font_weight, size=font_size)
-        
+
         return text, rect
 
     def add_legend(self):
@@ -791,8 +797,8 @@ class Layout(BaseLayout):
                                 edgecolor=kw['edge_color']),
                         zorder=45)
             else:
-                obj.obj[itext] = ax.text(0, 
-                                         0, 
+                obj.obj[itext] = ax.text(0,
+                                         0,
                                          txt, transform=transform,
                                          rotation=kw['rotation'],
                                          color=kw['font_color'],
@@ -876,7 +882,6 @@ class Layout(BaseLayout):
             lab = getattr(self, f'label_{label}')
             if not lab.on or lab.obj is None:
                 continue
-            #width, height = 0, 0
             for ir, ic in np.ndindex(lab.obj.shape):
                 if lab.obj[ir, ic] is None:
                     continue
@@ -895,7 +900,7 @@ class Layout(BaseLayout):
                 if label not in ['row', 'col', 'wrap']:
                     lab.obj_bg[ir, ic].set_width((width + lab.bg_padding * 2) / self.axes.size[0])
                     lab.obj_bg[ir, ic].set_height((height + lab.bg_padding * 2) / self.axes.size[1])
-                
+
             # set max size
             width = lab.size_all.width.max()
             height = lab.size_all.height.max()
@@ -947,7 +952,7 @@ class Layout(BaseLayout):
                         label_max_width = lens[ii] * divider
                     else:
                         label_max_width = bbox.width + 1
-                    
+
                     if bbox.width > label_max_width:
                         # rotate labels that are longer than the box axis size
                         lab.obj[ir, ic][ii, jj].set_rotation(90)
@@ -1310,7 +1315,7 @@ class Layout(BaseLayout):
             # Get the tick label Element
             minor = True if which == 'minor' else False
             tt = getattr(self, f'tick_labels_{which}_{tick}{tick_num}')
-            # or tt.obj[ir, ic] == None: # this doesn't work!
+
             if tt.obj is None:
                 continue
             if not tt.on:
@@ -1329,7 +1334,7 @@ class Layout(BaseLayout):
             tlabs = [f for f in tlabs if min(vmin, vmax) <=
                      f.get_position()[idx] <= max(vmin, vmax)]
             tt.obj[ir, ic] = tlabs
-            
+
             # Get the label sizes and store sizes as 2D array
             bboxes = [t.get_window_extent() for t in tlabs]
             tt.size_all = ([ir for f in bboxes],
@@ -1357,6 +1362,8 @@ class Layout(BaseLayout):
         for tick in ['x', 'y']:
             getattr(self, f'tick_labels_major_{tick}').size_all_reset()
             getattr(self, f'tick_labels_minor_{tick}').size_all_reset()
+            getattr(self, f'tick_labels_major_{tick}2').size_all_reset()
+            getattr(self, f'tick_labels_minor_{tick}2').size_all_reset()
 
             # primary axes
             self.get_tick_label_size(self.axes, tick, '', 'major')
@@ -1366,8 +1373,8 @@ class Layout(BaseLayout):
             if self.axes2.on:
                 self.get_tick_label_size(self.axes2, tick, '2', 'major')
                 self.get_tick_label_size(self.axes2, tick, '2', 'minor')
-        
-    def get_tick_overlaps(self):
+
+    def get_tick_overlaps(self, axis=''):
         """
         Deal with overlapping and out of range ticks
         """
@@ -1375,16 +1382,19 @@ class Layout(BaseLayout):
         if not self.tick_cleanup:
             return
 
-        xticks = self.tick_labels_major_x
-        yticks = self.tick_labels_major_y
-        sf = 1.5  # scale factor for tick font size
+        if not getattr(self, f'axes{axis}').on:
+            return
 
-        # TODO:: minor overlaps
-        # TODO:: self.axes2
+        xticks = getattr(self, f'tick_labels_major_x{axis}')
+        yticks = getattr(self, f'tick_labels_major_y{axis}')
+        xticksm = getattr(self, f'tick_labels_minor_x{axis}')
+        yticksm = getattr(self, f'tick_labels_minor_y{axis}')
+        sf = 1.5  # scale factor for tick font size
 
         for ir, ic in np.ndindex(self.axes.obj.shape):
             # size_all by idx:
             #   ir, ic, width, height, x0, x1, y0, y1
+            # major
             if len(xticks.size_all) > 0:
                 xticks_size_all = \
                     xticks.size_all[(xticks.size_all.ir == ir) &
@@ -1399,6 +1409,22 @@ class Layout(BaseLayout):
                 yticks_size_all = np.array(yticks_size_all)
             else:
                 yticks_size_all = []
+
+            # minor
+            if len(xticksm.size_all) > 0:
+                xticksm_size_all = \
+                    xticksm.size_all[(xticksm.size_all.ir == ir) &
+                                    (xticksm.size_all.ic == ic)]
+                xticksm_size_all = np.array(xticksm_size_all)
+            else:
+                xticksm_size_all = []
+            if len(yticksm.size_all) > 0:
+                yticksm_size_all = \
+                    yticksm.size_all[(yticksm.size_all.ir == ir) &
+                                    (yticksm.size_all.ic == ic)]
+                yticksm_size_all = np.array(yticksm_size_all)
+            else:
+                yticksm_size_all = []
 
             # Prevent single tick label axis
             if len(xticks_size_all) == 1:
@@ -1460,6 +1486,32 @@ class Layout(BaseLayout):
                                 xticks.obj[ir, ic][iol+1].get_visible():
                             xticks.obj[ir, ic][iol+1].set_visible(False)
                             ol[iol+1] = False
+                # -minor x
+                if len(xticksm_size_all) > 0:
+                    # overlap with major
+                    xbboxm = np.ones((len(xticksm_size_all), 3))
+                    xbboxm[:, 0:2] = xticksm_size_all[:, idx:idx+2]
+                    ol = [isInRange(x, xbbox) for x in np.nditer(xbboxm[:, 0])]
+                    for iol, ool in enumerate(ol):
+                        if ool:
+                            xticksm.obj[ir, ic][iol].set_visible(False)
+                            xbboxm[iol, 2] = 0
+                    ol = [isInRange(x, xbbox) for x in np.nditer(xbboxm[:, 1])]
+                    for iol, ool in enumerate(ol):
+                        if ool:
+                            xticksm.obj[ir, ic][iol].set_visible(False)
+                            xbboxm[iol, 2] = 0
+
+                    # minor to minor overlap
+                    ol = (xbboxm[1:, 0] - xbboxm[0:-1, 1]) < 0
+                    ol = np.concatenate([ol, [True]])  # pad to account for last tick
+                    ol = (ol * xbboxm[:, 2]).astype(bool)
+                    if any(ol):
+                        for iol, ool in enumerate(ol[:-1]):
+                            if ool and ol[iol + 1] and \
+                                    xticksm.obj[ir, ic][iol+1].get_visible():
+                                xticksm.obj[ir, ic][iol+1].set_visible(False)
+                                ol[iol+1] = False
 
             if len(yticks_size_all) > 0:
                 ybbox = yticks_size_all[:, -2:]
@@ -1478,6 +1530,42 @@ class Layout(BaseLayout):
                                 yticks.obj[ir, ic][iol+1].get_visible():
                             yticks.obj[ir, ic][iol+1].set_visible(False)
                             ol[iol+1] = False
+
+                # -minor y
+                if len(yticksm_size_all) > 0:
+                    # overlap with major
+                    ybboxm = np.ones((len(yticksm_size_all), 3))
+                    ybboxm[:, 0:2] = yticksm_size_all[:, -2:]
+                    ybboxm[:, 0] -= 1  # padding
+                    ybboxm[:, 1] += 1  # padding
+                    ol = [isInRange(y, ybbox) for y in np.nditer(ybboxm[:, 0])]
+                    for iol, ool in enumerate(ol):
+                        if ool:
+                            yticksm.obj[ir, ic][iol].set_visible(False)
+                            ybboxm[iol, 2] = 0
+                    ol = [isInRange(y, ybbox) for y in np.nditer(ybboxm[:, 1])]
+                    for iol, ool in enumerate(ol):
+                        if ool:
+                            yticksm.obj[ir, ic][iol].set_visible(False)
+                            ybboxm[iol, 2] = 0
+
+                    # minor to minor overlap
+                    if ybbox[0:2, 0].argmax() == 1:
+                        # ascending ticks
+                        ol = (ybboxm[1:, 0] - ybboxm[0:-1, 1]) < 0
+                    else:
+                        # descending ticks
+                        ol = (ybboxm[0:-1, 0] - ybboxm[1:, 1]) < 0
+
+                    # pad to account for last tick
+                    ol = np.concatenate([ol, [True]])
+                    ol = (ol * ybboxm[:, 2]).astype(bool)
+                    if any(ol):
+                        for iol, ool in enumerate(ol[:-1]):
+                            if ool and ol[iol + 1] and \
+                                    yticksm.obj[ir, ic][iol+1].get_visible():
+                                yticksm.obj[ir, ic][iol+1].set_visible(False)
+                                ol[iol+1] = False
 
     def get_tick_xs(self):
 
@@ -2984,6 +3072,10 @@ class Layout(BaseLayout):
                         loc = AutoMinorLocator(num_minor+1)
                         getattr(axes[ia], '%saxis' %
                                 axx).set_minor_locator(loc)
+                        tp = mpl_get_ticks(axes[ia],
+                                           getattr(self, 'ticks_major_x%s' % lab).on,
+                                           getattr(self, 'ticks_major_y%s' % lab).on,
+                                           True)
 
                 if not self.separate_ticks and axl == 'x' and ir != self.nrow - 1 and self.nwrap == 0 or \
                         not self.separate_ticks and axl == 'y2' and ic != self.ncol - 1 and self.nwrap == 0 or \
@@ -3003,11 +3095,6 @@ class Layout(BaseLayout):
                         tlminon = True
 
                     # Determine the minimum number of decimals needed to display the minor ticks
-                    # think we already have this so don't need to call again
-                    # tp = mpl_get_ticks(axes[ia],
-                    #                    getattr(self, 'ticks_major_x%s' %
-                    #                            lab).on,
-                    #                    getattr(self, 'ticks_major_y%s' % lab).on)
                     m0 = len(tp[axx]['ticks'])
                     lim = getattr(axes[ia], 'get_%slim' % axx)()
                     vals = [f for f in tp[axx]['ticks'] if f > lim[0]]
@@ -3027,7 +3114,7 @@ class Layout(BaseLayout):
                     minor_ticks2 = [f for f in minor_ticks if f not in dups]
                     number = len([f for f in minor_ticks2 if f >
                                  vals[0] and f < vals[1]]) + 1
-                    decimals = utl.get_decimals(inc/number)
+                    decimals = utl.get_decimals(inc / number)
 
                     # Check for minor ticks below the first major tick for log axes
                     if getattr(self, 'axes%s' % lab).scale in (LOGX if axx == 'x' else LOGY):
@@ -3138,6 +3225,7 @@ class Layout(BaseLayout):
         # Tick overlap cleanup
         self.get_tick_label_sizes()  # update after axes reshape
         self.get_tick_overlaps()
+        self.get_tick_overlaps('2')
 
         # Update the axes label positions
         self.get_axes_label_position()
@@ -3154,7 +3242,7 @@ class Layout(BaseLayout):
                     if label in ['x', 'x2', 'y', 'y2', 'z']:
                         offsetx = lab.size[0] / 2 + lab.bg_padding
                         offsety = lab.size[1] / 2 + lab.bg_padding
-                        if lab.obj[ir, ic].get_rotation() == 90: 
+                        if lab.obj[ir, ic].get_rotation() == 90:
                             offsetx += 2  # this may not hold for all cases
                             offsety += 1
                         lab.obj_bg[ir, ic].set_x(x - offsetx / self.axes.size[0])
@@ -3251,7 +3339,6 @@ class Layout(BaseLayout):
                     if lab.obj[ir, ic][ii, jj] is None:
                         continue
                     nrows = self.box_group_label.obj[ir, ic].shape[0]
-                    box_label_size = self.box_labels / nrows
 
                     # group label background rectangle
                     lab.obj_bg[ir, ic][ii, jj].set_height(heights[ii])
@@ -3293,7 +3380,7 @@ class Layout(BaseLayout):
         # Text label adjustments
         if self.text.on:
             self.set_text_position()
-        
+
     def set_figure_title(self):
         """
         Add a figure title
@@ -3453,12 +3540,15 @@ class Layout(BaseLayout):
             ax.get_yaxis().set_major_formatter(ticker.FormatStrFormatter(dec))
 
         # Cbar z-axis
-        if self.tick_labels_major_z.sci == True and self.cbar.on:
-            ax = self.cbar.obj.ax
-            ylim = ax.get_ylim()
-            tp = mpl_get_ticks(ax, minor=False)
-            dec = get_sci(tp['y']['ticks'], ylim)
-            ax.get_yaxis().set_major_formatter(ticker.FormatStrFormatter(dec))
+        if self.tick_labels_major_z.sci is True and self.cbar.on:
+            for ir, ic in np.ndindex(self.axes.obj.shape):
+                if not self.cbar.obj[ir, ic]:
+                    continue
+                ax = self.cbar.obj[ir, ic].ax
+                ylim = ax.get_ylim()
+                tp = mpl_get_ticks(ax, minor=False)
+                dec = get_sci(tp['y']['ticks'], ylim)
+                ax.get_yaxis().set_major_formatter(ticker.FormatStrFormatter(dec))
         elif self.tick_labels_major_z.sci == False and self.cbar.on:
             try:
                 self.cbar.obj.ax.get_yaxis().set_major_formatter(ticker.ScalarFormatter())
@@ -3474,10 +3564,10 @@ class Layout(BaseLayout):
         """
 
         obj = self.text
-        
+
         for ir, ic in np.ndindex(self.axes.obj.shape):
             ax = self.axes.obj[ir, ic]
-        
+
             for itext, txt in enumerate(obj.text.values):
                 kw = {}
                 offsetx = 0
@@ -3494,7 +3584,7 @@ class Layout(BaseLayout):
                 else:
                     transform = ax.transAxes
                 units = 'pixel' if not hasattr(obj, 'units') else getattr(obj, 'units')
-                
+
                 # Get position ## TODO:: need to support multiple positions
                 if 'position' in self.kwargs.keys():
                     position = copy.copy(self.kwargs['position'])
@@ -3523,7 +3613,7 @@ class Layout(BaseLayout):
                 # position
                 obj.obj[itext].set_x(position[0])
                 obj.obj[itext].set_y(position[1])
-    
+
     def show(self, filename=None):
         """
         Handle display of the plot window

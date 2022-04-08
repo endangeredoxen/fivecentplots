@@ -585,7 +585,7 @@ def test_sciz(master=False, remove=True, show=False):
     # Make the plot
     df2 = pd.read_csv(osjoin(os.path.dirname(fcp.__file__), 'tests', 'fake_data_contour.csv'))
     fcp.contour(df2, x='X', y='Y', z='Value', row='Batch', col='Experiment', filled=True,
-                cbar=True, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250,250], show=SHOW,
+                cbar=True, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250, 250], show=SHOW,
                 label_rc_font_size=12, levels=40, sci_z=True,
                 filename=name + '.png')
 

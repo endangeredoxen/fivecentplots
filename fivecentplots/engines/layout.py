@@ -267,7 +267,7 @@ class BaseLayout:
                         font_style='italic',
                         font_weight='bold',
                         bg_padding=utl.kwget(kwargs, self.fcpp,
-                                           'label_bg_padding', 2), 
+                                           'label_bg_padding', 2),
                         )
         labels = ['x', 'x2', 'y', 'y2', 'z']
         rotations = [0, 0, 90, 270, 270]
@@ -1548,7 +1548,7 @@ class BaseLayout:
                             text=RepeatedList(utl.kwget(kwargs, self.fcpp,
                                                         'text', ''), 'text'),
                             )
-        
+
         self.text.obj = np.zeros(len(self.text.text.values), dtype=object)
 
         return kwargs
@@ -1810,6 +1810,7 @@ class BaseLayout:
                             on=utl.kwget(kwargs, self.fcpp,
                                          'tick_labels_minor_%s' % ax,
                                          self.tick_labels_minor.on),
+                            obj=self.obj_array,
                             edge_color=kwargs.get('tick_labels_minor.edge_color',
                                                   self.tick_labels_minor.edge_color),
                             edge_alpha=kwargs.get('tick_labels_minor_edge_alpha',
