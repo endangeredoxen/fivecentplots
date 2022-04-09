@@ -702,6 +702,7 @@ def test_theme_white(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              filename=name + '.png')
+    fcp.set_theme('gray')  # return to default gray
 
     # Compare with master
     if master:
