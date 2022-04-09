@@ -616,7 +616,7 @@ class Layout(BaseLayout):
         # Define the label background
         rect = patches.Rectangle((position[0], position[3]),
                                  size[0] / self.axes.size[0],
-                                 size[1] / self.axes.size[0],
+                                 size[1] / self.axes.size[1],
                                  fill=True,
                                  transform=self.axes.obj[ir, ic].transAxes,
                                  facecolor=fill_color if type(fill_color) is str
@@ -1245,22 +1245,6 @@ class Layout(BaseLayout):
                                       self.labtick_x2)/self.axes.size[1]
 
         self.label_wrap.position[3] = 1
-
-        # # there is some incredible weirdness with cbars on imshow.  Here is a stupid hack
-        # # the hack is moved to set_figure_final_layout and may not be needed here
-        # hack = 0
-        # if self.name in ['imshow']:
-        #     hack += 1 * (self.ncol - 1) if self.cbar.on else 0
-        #     if not self.cbar.on and self.ncol == 1:
-        #         self.label_wrap.size[0] += 1
-        #         hack += 1 * (self.ncol)
-        #     elif self.cbar.on and self.ncol > 1:
-        #         hack += 2
-
-        # self.title_wrap.size[0] = self.ncol * self.title_wrap.size[0] + \
-        #     (self.ncol - 1) * self.ws_col + hack + \
-        #     ((self.cbar.size[0] + self.ws_ax_cbar)
-        #      * self.ncol if self.cbar.on else 0)
 
         self.title_wrap.position[3] = 1 + \
             self.label_wrap.size[1] / self.axes.size[1]
