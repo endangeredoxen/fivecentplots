@@ -926,7 +926,7 @@ def test_multiple_xy_both(benchmark):
     benchmark(plt_multiple_xy_both, True)
 
 
-def test_multiple_xy_both(benchmark):
+def test_multiple_xy_both_label(benchmark):
     plt_multiple_xy_both_label()
     benchmark(plt_multiple_xy_both_label, True)
 

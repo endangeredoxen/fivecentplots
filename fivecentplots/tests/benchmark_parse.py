@@ -4,6 +4,7 @@ import pdb
 import pandas as pd
 db = pdb.set_trace
 
+
 def benchmarks(file=None):
     if file is None:
         path = Path('.benchmarks')
@@ -23,3 +24,9 @@ def benchmarks(file=None):
         df = pd.concat([df, temp])
 
     return df
+
+
+def compare(old, new):
+    comp = pd.merge(old.reset_index(), new.reset_index(), on='index', how='left')
+    comp['% reduction'] = 1 - comp['mean_y']/comp['mean_x']
+    return comp[['index', 'mean_x', 'mean_y', '% reduction']].set_index('index')

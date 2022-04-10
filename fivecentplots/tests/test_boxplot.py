@@ -93,8 +93,8 @@ def plt_one_group(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'one_group_master') if master else 'one_group'
 
     # Make the plot
-    fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', 
-                show=SHOW, filename=name + '.png', jitter=False)
+    fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], filter='Batch==101',
+                show=SHOW, filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
         return

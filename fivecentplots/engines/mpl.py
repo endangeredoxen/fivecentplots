@@ -2493,8 +2493,6 @@ class Layout(BaseLayout):
 
         if self.name in ['pie']:
             return
-        # do we need this?
-        #self.get_axes_label_position()
 
         axis = ['x', 'x2', 'y', 'y2', 'z']
         for ax in axis:

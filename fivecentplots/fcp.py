@@ -904,9 +904,9 @@ def plotter(dobj, **kwargs):
         dd = layout.make_figure(dd, **kwargs)
         kwargs['timer'].get('ifig=%s | make_figure' % ifig)
 
-        # Turn off empty subplots (COULD THIS BE FASTER WITHOUT AN EXTRA CALL TO GET_RC_SUBSET? using this to populate layout.axes.visible)
+        # Turn off empty subplots and populate layout.axes.visible)
         for ir, ic, df_rc in dd.get_rc_subset():
-            if len(df_rc) == 0:  # don't loop again, but set this value in Data
+            if len(df_rc) == 0:  # could set this value in Data after first time to avoid recalc
                 if dd.wrap is None:
                     layout.set_axes_rc_labels(ir, ic)
                 layout.axes.obj[ir, ic].axis('off')
