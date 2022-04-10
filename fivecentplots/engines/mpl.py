@@ -1684,8 +1684,6 @@ class Layout(BaseLayout):
                         stacked = stacked.loc[xvals[idx]].values
                     kwargs['bottom'] = stacked
             else:
-                #kwargs['height'] = self.bar.width / ngroups
-                #idx = [f + iline * (kwargs['height']) for f in idx]
                 kwargs['height'] = self.bar.width / ngroups
                 width_offset = self.bar.width / total.values
                 idx = [f + inst[i] * kwargs['height']
@@ -1731,8 +1729,12 @@ class Layout(BaseLayout):
                  ecolor=self.bar.error_color, **kwargs)
 
         # Set ticks
-        getattr(ax, 'set_%sticks' % axx)(ixvals)
-        getattr(ax, 'set_%sticklabels' % axx)(xvals)
+        allowed_ticks = getattr(ax, 'get_%sticks' % axx)()  # mpl selected ticks
+        allowed_ticks = [int(f) for f in allowed_ticks if f >= 0 and f < len(xvals)]
+        getattr(ax, 'set_%sticklabels' % axx)(xvals[allowed_ticks])
+        #getattr(ax, 'set_%sticks' % axx)(ixvals)
+        #getattr(ax, 'set_%sticklabels' % axx)(xvals)  # note this adds all tick labels
+
         if iline == 0:
             # Update ranges
             new_ticks = getattr(ax, 'get_%sticks' % axx)()

@@ -301,8 +301,6 @@ def plot_bar(data, layout, ir, ic, df_rc, kwargs):
     stacked = pd.DataFrame(index=xvals)
     ss = []
 
-    # xvals can't come from df_rc if grouping is happening
-
     if data.legend:
         df_rc_new = pd.DataFrame()
         df_rc = df_rc.reset_index(drop=True)
@@ -331,6 +329,16 @@ def plot_bar(data, layout, ir, ic, df_rc, kwargs):
 
         data = layout.plot_bar(ir, ic, iline, df2, x, y, leg_name, data, ss,
                                std, ngroups, xvals, inst, total)
+
+        if layout.rolling_mean.on and not layout.bar.stacked:
+            dfrm = df2.rolling(layout.rolling_mean.window).mean()
+            dfrm = dfrm.reset_index().reset_index()
+            if layout.legend._on:
+                legend_name = f'Moving Average = {layout.rolling_mean.window}'
+            else:
+                legend_name = None
+            layout.plot_xy(ir, ic, iline, dfrm, 'index', data.y[0], legend_name, False,
+                           line_type='rolling_mean')
 
         if layout.bar.stacked:
             ss = stacked.groupby(stacked.index).sum()[0]

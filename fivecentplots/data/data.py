@@ -589,6 +589,11 @@ class Data:
                 pass
             try:
                 self.df_all[val] = self.df_all[val].astype('datetime64[ns]')
+                # if all are 00:00:00 time, leave only date
+                if len(self.df_all.loc[self.df_all[val].dt.hour != 0, val]) == 0 and \
+                        len(self.df_all.loc[self.df_all[val].dt.minute != 0, val]) == 0 and \
+                        len(self.df_all.loc[self.df_all[val].dt.second != 0, val]) == 0:
+                    self.df_all[val] = pd.DatetimeIndex(self.df_all[val]).date
                 continue
             except:
                 continue
