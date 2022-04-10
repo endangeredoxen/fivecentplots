@@ -22,6 +22,8 @@ MASTER = osjoin(os.path.dirname(fcp.__file__), 'tests',
 # Sample data
 df = pd.read_csv(osjoin(os.path.dirname(fcp.__file__),
                  'tests', 'fake_data_bar.csv'))
+df2 = pd.read_csv(osjoin(os.path.dirname(fcp.__file__),
+                 'tests', 'real_data_bar.csv'))
 
 # Set theme
 fcp.set_theme('gray')
@@ -256,6 +258,65 @@ def plt_wrap(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
+def plt_rolling_mean(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'rolling_mean_master') if master else 'rolling_mean'
+
+    # Make the plot
+    fcp.bar(df2, x='date', y='cases', show=SHOW, ax_size=[800, 500],
+            tick_labels_major_x_rotation=90, rolling_mean=14,
+            filename=name + '.png', save=not bm, inline=False, jitter=False)
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_rolling_mean_styled(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'rolling_mean_styled_master') if master else 'rolling_mean_styled'
+
+    # Make the plot
+    fcp.bar(df2, x='date', y='cases', show=SHOW, ax_size=[800, 500],
+            tick_labels_major_x_rotation=90, rolling_mean=14, bar_fill_color='#aaaaaa',
+            rolling_mean_line_color='#000000', markers=True, marker_size=4,
+            filename=name + '.png', save=not bm, inline=False, jitter=False)
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 # test_ functions call plt_ funcs 2x:
 # 1) do the comparison with saved image
 # 2) do a test plot only with save=False and inline=False and benchmark spead
@@ -292,3 +353,13 @@ def test_row_col(benchmark):
 def test_wrap(benchmark):
     plt_wrap()
     benchmark(plt_wrap, True)
+
+
+def test_rolling_mean(benchmark):
+    plt_rolling_mean()
+    benchmark(plt_rolling_mean, True)
+
+
+def test_rolling_mean_styled(benchmark):
+    plt_rolling_mean_styled()
+    benchmark(plt_rolling_mean_styled, True)

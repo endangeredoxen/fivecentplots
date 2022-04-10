@@ -1730,9 +1730,10 @@ class Layout(BaseLayout):
 
         # Set ticks
         allowed_ticks = getattr(ax, 'get_%sticks' % axx)()  # mpl selected ticks
-        allowed_ticks = [int(f) for f in allowed_ticks if f >= 0 and f < len(xvals)]
+        allowed_ticks = list(set([int(f) for f in allowed_ticks if f >= 0 and f < len(xvals)]))
+        getattr(ax, 'set_%sticks' % axx)(np.array(ixvals)[allowed_ticks])
         getattr(ax, 'set_%sticklabels' % axx)(xvals[allowed_ticks])
-        #getattr(ax, 'set_%sticks' % axx)(ixvals)
+        #getattr(ax, 'set_%sticks' % axx)(np.array(ixvals))
         #getattr(ax, 'set_%sticklabels' % axx)(xvals)  # note this adds all tick labels
 
         if iline == 0:

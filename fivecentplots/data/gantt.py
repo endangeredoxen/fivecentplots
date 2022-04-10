@@ -22,9 +22,16 @@ class Gantt(data.Data):
         if len(self.x) !=2:
             raise data.DataError('Gantt charts require both a start and a stop column')
         if self.df_all[self.x[0]].dtype != 'datetime64[ns]':
-            raise data.DataError('Start column in gantt chart must be of type datetime')
+            try:
+                # check to see if 'O' type is still a valid datetime
+                self.df_all[self.x[0]].astype('datetime64[ns]')
+            except:
+                raise data.DataError('Start column in gantt chart must be of type datetime')
         if self.df_all[self.x[1]].dtype != 'datetime64[ns]':
-            raise data.DataError('Stop column in gantt chart must be of type datetime')
+            try:
+                self.df_all[self.x[1]].astype('datetime64[ns]')
+            except:
+                raise data.DataError('Stop column in gantt chart must be of type datetime')
 
     def get_data_ranges(self):
 
@@ -69,7 +76,7 @@ class Gantt(data.Data):
             self.add_range(ir, ic, 'y2', 'max', None)
             self.add_range(ir, ic, 'z', 'min', None)
             self.add_range(ir, ic, 'z', 'max', None)
-        
+
     def get_plot_data(self, df):
         """
         Generator to subset into discrete sets of data for each curve

@@ -137,7 +137,7 @@ class BaseLayout:
             else:
                 self.grid_major_x.on = False
                 self.grid_minor_x.on = False
-                self.ticks_major_x.on = False  # may want to not do this
+                self.ticks_major_x.on = False  # may want to not do this but hard to see the ticks anyway
                 self.ticks_minor_x.on = False
         if 'box' in self.name:
             self.grid_major_x.on = False
@@ -417,10 +417,13 @@ class BaseLayout:
         if 'colors' in kwargs.keys():
             self.bar.color_by_bar = True
 
+        # rolling mean options
         rolling = utl.kwget(kwargs, self.fcpp, ['bar_rolling_mean', 'rolling_mean',
                                                 'bar_rolling', 'rolling'], False)
         if isinstance(rolling, int):
             self.rolling_mean = Element('rolling_mean', self.fcpp, kwargs,
+                                        on=utl.kwget(kwargs, self.fcpp,
+                                            'rolling_mean', False),
                                         color=utl.kwget(kwargs, self.fcpp,
                                                 ['rolling_mean_line_color', 'rolling_mean_color'],
                                                 DEFAULT_COLORS[1]),
