@@ -109,7 +109,7 @@ class BaseLayout:
         kwargs = self._init_axhvlines(kwargs)
         kwargs = self._init_grid(kwargs)
         kwargs = self._init_rc_labels(kwargs)
-        kwargs = self._init_confidence_intervals(kwargs)
+        kwargs = self._init_intervals(kwargs)
         kwargs = self._init_text_box(kwargs)
         self._init_white_space(kwargs)
 
@@ -787,31 +787,6 @@ class BaseLayout:
 
         return kwargs
 
-    def _init_confidence_intervals(self, kwargs):
-        """
-        Confidence interval for xyplot elements
-        """
-
-        # Confidence interval
-        self.conf_int = Element('conf_int', self.fcpp, kwargs,
-                                on=True if kwargs.get(
-                                    'conf_int', False) else False,
-                                edge_color=utl.kwget(kwargs, self.fcpp,
-                                                     'conf_int_edge_color',
-                                                     copy.copy(self.color_list)),
-                                edge_alpha=utl.kwget(kwargs, self.fcpp,
-                                                     'conf_int_edge_alpha',
-                                                     0.25),
-                                fill_color=utl.kwget(kwargs, self.fcpp,
-                                                     'conf_int_fill_color',
-                                                     copy.copy(self.color_list)),
-                                fill_alpha=utl.kwget(kwargs, self.fcpp,
-                                                     'conf_int_fill_alpha',
-                                                     0.2),
-                                )
-
-        return kwargs
-
     def _init_contour(self, kwargs):
         """
         Contour plot elements
@@ -856,7 +831,9 @@ class BaseLayout:
 
         self.fit = Element('fit', self.fcpp, kwargs,
                            on=True if kwargs.get('fit', False) else False,
-                           color='#000000',
+                           color=utl.kwget(kwargs, self.fcpp,
+                                           ['fit_color', 'fit_line_color'],
+                                           '#000000'),
                            edge_color='none',
                            eqn=utl.kwget(kwargs, self.fcpp, 'fit_eqn', False),
                            fill_color='none',
@@ -867,6 +844,7 @@ class BaseLayout:
                            rsq=utl.kwget(kwargs, self.fcpp, 'fit_rsq', False),
                            size=[0, 0],
                            )
+
         self.fit.legend_text = utl.kwget(
             kwargs, self.fcpp, 'fit_legend_text', None)
         self.fit.position[0] = self.fit.padding
@@ -1152,6 +1130,53 @@ class BaseLayout:
 
         return kwargs
 
+    def _init_intervals(self, kwargs):
+        """
+        Point-by-point intervals for xyplot elements
+        """
+
+        # Interval
+        if kwargs.get('perc_int'):
+            itype = 'percentile'
+            on = True
+            key = 'perc_int'
+        elif kwargs.get('nq_int'):
+            itype = 'nq'
+            on = True
+            key = 'nq_int'
+        elif kwargs.get('conf_int'):
+            itype = 'confidence'
+            on = True
+            key = 'conf_int'
+        else:
+            itype = None
+            on = False
+        self.interval = Element('interval', self.fcpp, kwargs,
+                                on=on,
+                                type=itype,
+                                edge_color=utl.kwget(kwargs, self.fcpp,
+                                                     f'{key}_edge_color',
+                                                     copy.copy(self.color_list)),
+                                edge_alpha=utl.kwget(kwargs, self.fcpp,
+                                                     f'{key}_edge_alpha',
+                                                     0.25),
+                                fill_color=utl.kwget(kwargs, self.fcpp,
+                                                     f'{key}_fill_color',
+                                                     copy.copy(self.color_list)),
+                                fill_alpha=utl.kwget(kwargs, self.fcpp,
+                                                     f'{key}_fill_alpha',
+                                                     0.2),
+                                value=kwargs.get(key, None),
+                                key=key,
+                                )
+
+        # error check
+        if itype in ['percentile', 'nq'] and \
+                len(utl.validate_list(self.interval.value)) != 2:
+            raise ValueError(f'{itype} interval must have only two values (lower and upper limits)')
+
+        return kwargs
+
     def _init_layout(self, data):
         self.ncol = data.ncol
         self.nrow = data.nrow
@@ -1205,12 +1230,13 @@ class BaseLayout:
             self.legend.on = True
             self.legend.text = ''
         if not self.legend._on and self.fit.on \
-                and not (('legend' in kwargs.keys() and kwargs['legend'] == False) or
-                         ('legend_on' in kwargs.keys() and kwargs['legend_on'] == False)):
+                and not (('legend' in kwargs.keys() and kwargs['legend'] is False) or
+                         ('legend_on' in kwargs.keys() and kwargs['legend_on'] is False)):
             #self.legend.values['fit_line'] = []
             self.legend.on = True
             self.legend.text = ''
-        if self.legend._on and self.fit.on and 'fit_color' not in kwargs.keys():
+        if self.legend._on and self.fit.on and \
+                not ('fit_color' not in kwargs.keys() or 'fit_line_color' not in kwargs.keys()):
             self.fit.color = copy.copy(self.lines.color)
         y = utl.validate_list(kwargs.get('y'))
         if not self.axes.twin_x and y is not None and len(y) > 1 and \

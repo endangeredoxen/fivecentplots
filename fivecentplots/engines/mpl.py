@@ -832,6 +832,7 @@ class Layout(BaseLayout):
         obj = getattr(self, obj)
         fc = obj.fill_color
         ec = obj.edge_color
+
         ax.fill_between(x, lcl, ucl,
                         facecolor=fc[iline] if type(
                             fc) is RepeatedList else fc,

@@ -522,6 +522,7 @@ def get_decimals(value, max_places=4):
     """
 
     last = np.nan
+    value = abs(value)
     for i in range(0, max_places+1):
         current = round(value, i)
         if current == last and current > 0:
@@ -698,7 +699,7 @@ def nq(data, column='Value', **kwargs):
     if not sig:
         sig = sigma(data)
     index = np.concatenate([np.arange(-sig, -tail, step_tail),
-                            np.arange(-tail, tail, step_tail),
+                            np.arange(-tail, tail, step_inner),
                             np.arange(tail, sig + 1e-9, step_tail)])
 
     # Get the sigma value

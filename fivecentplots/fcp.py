@@ -525,12 +525,13 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
 
 def plot_conf_int(ir, ic, iline, data, layout, df, x, y, twin):
     """
+    Add a confidence interval based color band around a line plot
     """
 
     if not layout.conf_int.on:
         return
 
-    data.get_conf_int(df, x, y)
+    data.get_interval_confidence(df, x, y)
 
     layout.fill_between_lines(ir, ic, iline, data.stat_idx, data.lcl, data.ucl,
                               'conf_int', twin)
@@ -746,6 +747,19 @@ def plot_nq(data, layout, ir, ic, df_rc, kwargs):
     return data
 
 
+def plot_interval(ir, ic, iline, data, layout, df, x, y, twin):
+    """
+    Add a point-by-point interval based color band around a line plot
+    """
+
+    getattr(data, f'get_interval_{layout.interval.type}')(df, x, y)
+
+    layout.fill_between_lines(ir, ic, iline, data.stat_idx, data.lcl, data.ucl,
+                              'interval', twin)
+
+    return data
+
+
 def plot_pie(data, layout, ir, ic, df, kwargs):
     """
     Plot a pie chart
@@ -843,7 +857,10 @@ def plot_xy(data, layout, ir, ic, df_rc, kwargs):
             plot_stat(ir, ic, iline, data, layout, df, x, y, leg_name, twin)
         else:
             plot_stat(ir, ic, iline, data, layout, df, x, y, twin=twin)
-        plot_conf_int(ir, ic, iline, data, layout, df, x, y, twin)
+
+        # add intervals (prioritized so multiple cannot be added)
+        if layout.interval.on:
+            plot_interval(ir, ic, iline, data, layout, df, x, y, twin)
 
     return data
 

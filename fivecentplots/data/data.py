@@ -82,11 +82,11 @@ class Data:
         self.ax2_scale = kwargs.get('ax2_scale', self.ax_scale)
         # validate list? repeated list and all to lower
         self.ax_limit_pad(**kwargs)
-        self.conf_int = kwargs.get('conf_int', False)
         self.error_bars = False
         self.fit = kwargs.get('fit', False)
         self.fit_range_x = utl.kwget(kwargs, self.fcpp, 'fit_range_x', None)
         self.fit_range_y = utl.kwget(kwargs, self.fcpp, 'fit_range_y', None)
+        self.interval = kwargs.get('perc_int', kwargs.get('nq_int', kwargs.get('conf_int', False)))
         self.legend = None
         self.legend_vals = None
         self.pivot = False
@@ -657,34 +657,30 @@ class Data:
 
         return df
 
-    def get_conf_int(self, df, x, y, **kwargs):
+    def get_interval_confidence(self, df, x, y, **kwargs):
         """
-        Calculate confidence intervals around a curve
+        Calculate confidence intervals point by point for a curve
 
         Args:
-            df:
-            x:
-            y:
-            ax:
-            color:
-            kw:
+            df: data subset
+            x: x column name
+            y: y column name
+            kwargs
 
         Returns:
+            None but calculates ucl and lcl data columns
 
         """
 
-        if not self.conf_int:
-            return
-
-        if str(self.conf_int).lower() == 'range':
+        if str(self.interval).lower() == 'range':
             ymin = df.groupby(x).min()[y]
             self.stat_idx = ymin.index
             self.lcl = ymin.reset_index(drop=True)
             self.ucl = df.groupby(x).max()[y].reset_index(drop=True)
 
         else:
-            if float(self.conf_int) > 1:
-                self.conf_int = float(self.conf_int)/100
+            if float(self.interval) > 1:
+                self.interval = float(self.interval)/100
             stat = pd.DataFrame()
             stat['mean'] = df[[x, y]].groupby(x).mean().reset_index()[y]
             stat['count'] = df[[x, y]].groupby(x).count().reset_index()[y]
@@ -696,7 +692,7 @@ class Data:
                 if row['std'] == 0:
                     conf = [0, 0]
                 else:
-                    conf = ss.t.interval(self.conf_int, int(row['count'])-1,
+                    conf = ss.t.interval(self.interval, int(row['count'])-1,
                                          loc=row['mean'], scale=row['sderr'])
                 stat.loc[irow, 'ucl'] = conf[1]
                 stat.loc[irow, 'lcl'] = conf[0]
@@ -704,6 +700,79 @@ class Data:
             self.stat_idx = df.groupby(x).mean().index
             self.lcl = stat['lcl']
             self.ucl = stat['ucl']
+
+    def get_interval_nq(self, df, x, y, **kwargs):
+        """
+        Calculate normal quantile intervals point by point for a curve
+
+        Args:
+            df: data subset
+            x: x column name
+            y: y column name
+            kwargs
+
+        Returns:
+            None but calculates ucl and lcl data columns
+
+        """
+
+        # figure out the nq range kwargs
+        decimals = max(utl.get_decimals(self.interval[0]),
+                       utl.get_decimals(self.interval[1]))
+        if self.interval[0] >= -3 and self.interval[1] <= 3:
+            step_inner = 1 / 10**decimals
+            step_tail = 1
+        else:
+            step_inner = 1
+            step_tail = 1 / 10**decimals
+
+        # also what about not in range?
+        lcl, ucl = [], []
+        lower = df[[x, y]].groupby(x).quantile(0.5)  # is this the best way?
+
+        for idx, (nn, gg) in enumerate(df[[x, y]].groupby(x)):
+            nq = utl.nq(gg[y], step_inner=step_inner, step_tail=step_tail)
+            nq.Sigma = nq.Sigma.apply(lambda x: round(x, decimals))
+            if self.interval[0] in nq.Sigma.values:
+                lcl += [nq.loc[nq.Sigma == self.interval[0], 'Value'].iloc[0]]
+            else:
+                closest = nq['Sigma'].sub(self.interval[0]).abs().idxmin()
+                sigma = nq.Sigma.iloc[closest]
+                if idx == 0:
+                    print(f'IntervalCalc: sigma={self.interval[0]} not available; using closest value of {sigma}')
+                lcl += [nq.Value.iloc[closest]]
+            if self.interval[1] in nq.Sigma.values:
+                ucl += [nq.loc[nq.Sigma == self.interval[1], 'Value'].iloc[0]]
+            else:
+                closest = nq['Sigma'].sub(self.interval[1]).abs().idxmin()
+                sigma = nq.Sigma.iloc[closest]
+                if idx == 0:
+                    print(f'IntervalCalc: sigma={self.interval[1]} not available; using closest value of {sigma}')
+                ucl += [nq.Value.iloc[closest]]
+
+        self.lcl = pd.Series(lcl)
+        self.ucl = pd.Series(ucl)
+        self.stat_idx = lower.reset_index()[x]
+
+    def get_interval_percentile(self, df, x, y, **kwargs):
+        """
+        Calculate percentile intervals point by point for a curve
+
+        Args:
+            df: data subset
+            x: x column name
+            y: y column name
+            kwargs
+
+        Returns:
+            None but calculates ucl and lcl data columns
+
+        """
+
+        lower = df[[x, y]].groupby(x).quantile(self.interval[0])
+        self.lcl = lower.reset_index()[y]
+        self.ucl = df[[x, y]].groupby(x).quantile(self.interval[1]).reset_index()[y]
+        self.stat_idx = lower.reset_index()[x]
 
     def get_data_range(self, ax, df, plot_num):
         """
