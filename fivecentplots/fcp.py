@@ -754,8 +754,17 @@ def plot_interval(ir, ic, iline, data, layout, df, x, y, twin):
 
     getattr(data, f'get_interval_{layout.interval.type}')(df, x, y)
 
+    leg_name = None
+    if layout.legend.on:
+        if layout.interval.type == 'nq':
+            leg_name = f'nq = [{layout.interval.value[0]}, {layout.interval.value[1]}]'
+        elif layout.interval.type == 'percentile':
+            leg_name = f'q = [{layout.interval.value[0]}, {layout.interval.value[1]}]'
+        else:
+            leg_name = f'ci = {layout.interval.value[0]}'
+
     layout.fill_between_lines(ir, ic, iline, data.stat_idx, data.lcl, data.ucl,
-                              'interval', twin)
+                              'interval', leg_name=leg_name, twin=twin)
 
     return data
 

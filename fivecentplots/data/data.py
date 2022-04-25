@@ -86,7 +86,7 @@ class Data:
         self.fit = kwargs.get('fit', False)
         self.fit_range_x = utl.kwget(kwargs, self.fcpp, 'fit_range_x', None)
         self.fit_range_y = utl.kwget(kwargs, self.fcpp, 'fit_range_y', None)
-        self.interval = kwargs.get('perc_int', kwargs.get('nq_int', kwargs.get('conf_int', False)))
+        self.interval = utl.validate_list(kwargs.get('perc_int', kwargs.get('nq_int', kwargs.get('conf_int', False))))
         self.legend = None
         self.legend_vals = None
         self.pivot = False
@@ -672,34 +672,36 @@ class Data:
 
         """
 
-        if str(self.interval).lower() == 'range':
-            ymin = df.groupby(x).min()[y]
-            self.stat_idx = ymin.index
-            self.lcl = ymin.reset_index(drop=True)
-            self.ucl = df.groupby(x).max()[y].reset_index(drop=True)
+        # # can't recall this
+        # if str(self.interval).lower() == 'range':
+        #     ymin = df.groupby(x).min()[y]
+        #     self.stat_idx = ymin.index
+        #     self.lcl = ymin.reset_index(drop=True)
+        #     self.ucl = df.groupby(x).max()[y].reset_index(drop=True)
 
-        else:
-            if float(self.interval) > 1:
-                self.interval = float(self.interval)/100
-            stat = pd.DataFrame()
-            stat['mean'] = df[[x, y]].groupby(x).mean().reset_index()[y]
-            stat['count'] = df[[x, y]].groupby(x).count().reset_index()[y]
-            stat['std'] = df[[x, y]].groupby(x).std().reset_index()[y]
-            stat['sderr'] = stat['std'] / np.sqrt(stat['count'])
-            stat['ucl'] = np.nan
-            stat['lcl'] = np.nan
-            for irow, row in stat.iterrows():
-                if row['std'] == 0:
-                    conf = [0, 0]
-                else:
-                    conf = ss.t.interval(self.interval, int(row['count'])-1,
-                                         loc=row['mean'], scale=row['sderr'])
-                stat.loc[irow, 'ucl'] = conf[1]
-                stat.loc[irow, 'lcl'] = conf[0]
+        # else:
 
-            self.stat_idx = df.groupby(x).mean().index
-            self.lcl = stat['lcl']
-            self.ucl = stat['ucl']
+        if float(self.interval[0]) > 1:
+            self.interval[0] = float(self.interval[0])/100
+        stat = pd.DataFrame()
+        stat['mean'] = df[[x, y]].groupby(x).mean().reset_index()[y]
+        stat['count'] = df[[x, y]].groupby(x).count().reset_index()[y]
+        stat['std'] = df[[x, y]].groupby(x).std().reset_index()[y]
+        stat['sderr'] = stat['std'] / np.sqrt(stat['count'])
+        stat['ucl'] = np.nan
+        stat['lcl'] = np.nan
+        for irow, row in stat.iterrows():
+            if row['std'] == 0:
+                conf = [0, 0]
+            else:
+                conf = ss.t.interval(self.interval[0], int(row['count'])-1,
+                                     loc=row['mean'], scale=row['sderr'])
+            stat.loc[irow, 'ucl'] = conf[1]
+            stat.loc[irow, 'lcl'] = conf[0]
+
+        self.stat_idx = df.groupby(x).mean().index
+        self.lcl = stat['lcl']
+        self.ucl = stat['ucl']
 
     def get_interval_nq(self, df, x, y, **kwargs):
         """

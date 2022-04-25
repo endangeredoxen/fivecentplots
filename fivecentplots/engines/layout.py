@@ -834,6 +834,9 @@ class BaseLayout:
                            color=utl.kwget(kwargs, self.fcpp,
                                            ['fit_color', 'fit_line_color'],
                                            '#000000'),
+                           conf_band=utl.kwget(kwargs, self.fcpp,
+                                               ['fit_conf_band', 'conf_band'],
+                                               False),
                            edge_color='none',
                            eqn=utl.kwget(kwargs, self.fcpp, 'fit_eqn', False),
                            fill_color='none',
@@ -1151,6 +1154,7 @@ class BaseLayout:
         else:
             itype = None
             on = False
+            key = None
         self.interval = Element('interval', self.fcpp, kwargs,
                                 on=on,
                                 type=itype,
@@ -1166,9 +1170,15 @@ class BaseLayout:
                                 fill_alpha=utl.kwget(kwargs, self.fcpp,
                                                      f'{key}_fill_alpha',
                                                      0.2),
-                                value=kwargs.get(key, None),
+                                value=utl.validate_list(kwargs.get(key, None)),
                                 key=key,
                                 )
+
+        # deal with percentages
+        if self.interval.type and self.interval.type != 'nq':
+            for ival, val in enumerate(self.interval.value):
+                if float(val) > 1:
+                    self.interval.value[ival] = val / 100
 
         # error check
         if itype in ['percentile', 'nq'] and \
@@ -2751,11 +2761,13 @@ class Legend_Element(DF_Element):
 
         # Re-order single fit lines
         if 'Fit' in self._values.Key.values \
-                or 'ref_line' in self._values.LineType.values:
+                or 'ref_line' in self._values.LineType.values \
+                or 'fill' in self._values.LineType.values:
             df = self._values[self._values.LineType == 'lines']
             fit = self._values[self._values.LineType == 'fit']
             ref = self._values[self._values.LineType == 'ref_line']
-            return pd.concat([df, fit, ref]).reset_index(drop=True)
+            fill = self._values[self._values.LineType == 'fill']
+            return pd.concat([df, fit, ref, fill]).reset_index(drop=True)
         else:
             return self._values.sort_index()
 

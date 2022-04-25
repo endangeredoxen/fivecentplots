@@ -652,6 +652,8 @@ class Layout(BaseLayout):
             for itext, text in enumerate(leg.get_texts()):
                 text.set_color(self.legend.font_color)
                 if self.name not in ['hist', 'bar', 'pie', 'gantt']:
+                    if isinstance(leg.legendHandles[itext], mpl.patches.Rectangle):
+                        continue
                     leg.legendHandles[itext]. \
                         _legmarker.set_markersize(self.legend.marker_size)
                     if self.legend.marker_alpha is not None:
@@ -817,7 +819,8 @@ class Layout(BaseLayout):
 
         mplp.close('all')
 
-    def fill_between_lines(self, ir, ic, iline, x, lcl, ucl, obj, twin=False):
+    def fill_between_lines(self, ir, ic, iline, x, lcl, ucl, obj, leg_name=None,
+                           twin=False):
         """
         Shade a region between two curves
 
@@ -833,10 +836,14 @@ class Layout(BaseLayout):
         fc = obj.fill_color
         ec = obj.edge_color
 
-        ax.fill_between(x, lcl, ucl,
-                        facecolor=fc[iline] if type(
-                            fc) is RepeatedList else fc,
-                        edgecolor=ec[iline] if type(ec) is RepeatedList else ec)
+        fill = ax.fill_between(x, lcl, ucl,
+                               facecolor=fc[iline] if type(fc) is RepeatedList else fc,
+                               edgecolor=ec[iline] if type(ec) is RepeatedList else ec,
+                               label='hi')
+
+        # Add a reference to the line to self.lines
+        if leg_name is not None:
+            self.legend.add_value(leg_name, fill, 'fill')
 
     def get_axes_label_position(self):
         """
