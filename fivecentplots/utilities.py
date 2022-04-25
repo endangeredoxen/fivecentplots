@@ -28,7 +28,7 @@ if os.path.exists(default_path) and default_path not in sys.path:
 
 
 # Convenience kwargs
-HIST = {'ax_scale': 'logy', 'markers': False, 'line_width': 2}
+HIST = {'ax_scale': 'logy', 'markers': False, 'line_width': 2, 'preset': 'HIST'}
 
 
 class RepeatedList:
@@ -336,6 +336,22 @@ def df_filter(df, filt_orig, drop_cols=False, keep_filtered=False):
         df.columns = cols_orig
 
         return df
+
+
+def df_from_array2d(arr: np.ndarray) -> pd.DataFrame:
+    """
+    Convert 2D numpy array to DataFrame
+
+    Args:
+        arr: input numpy array
+
+    Returns:
+        DataFrame of arr or original DataFrame if arr already of this dtype
+    """
+    if isinstance(arr, np.ndarray) and len(arr.shape) == 2:
+        return pd.DataFrame(arr)
+    else:
+        return arr
 
 
 def df_from_array3d(arr, labels=[], name='Item', verbose=True):
