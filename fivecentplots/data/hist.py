@@ -15,6 +15,8 @@ class Histogram(data.Data):
         name = 'hist'
         req = []
         opt = ['x']
+        kwargs['df'] = utl.df_from_array2d(kwargs['df'])
+
         self.fcpp, dummy, dummy2 = utl.reload_defaults(
             kwargs.get('theme', None))
         bars = utl.kwget(kwargs, self.fcpp, 'bars', kwargs.get('bars', True))
@@ -35,6 +37,12 @@ class Histogram(data.Data):
         kwargs['ax_limit_padding'] = kwargs.get('ax_limit_padding', 0)
 
         super().__init__(name, req, opt, **kwargs)
+
+        # cdf/pdf option (if conflict, prefer cdf)
+        self.cdf = utl.kwget(kwargs, self.fcpp, ['cdf'], kwargs.get('cdf', False))
+        self.pdf = utl.kwget(kwargs, self.fcpp, ['pdf'], kwargs.get('pdf', False))
+        if self.cdf and kwargs.get('preset') == 'HIST':
+            self.ax_scale = 'lin'
 
         # Toggle bars vs lines
         if not bars:
@@ -92,6 +100,13 @@ class Histogram(data.Data):
             else:
                 counts, vals = np.histogram(dfx[~np.isnan(dfx)], bins=self.bins,
                                             normed=self.norm)
+            if self.cdf:
+                pdf = counts / sum(counts)
+                counts = np.cumsum(pdf)
+                self.y = ['Cumulative Probability']
+            elif self.pdf:
+                counts = counts / sum(counts)
+                self.y = ['Probability Density']
             hist = pd.DataFrame({self.x[0]: vals[:-1], self.y[0]: counts})
 
         return hist

@@ -14,7 +14,7 @@ class ImShow(data.Data):
         name = 'imshow'
         req = []
         opt = []
-
+        kwargs['df'] = utl.df_from_array2d(kwargs['df'])
         kwargs['ax_limit_padding'] = kwargs.get('ax_limit_padding', None)
 
         # Color plane splitting

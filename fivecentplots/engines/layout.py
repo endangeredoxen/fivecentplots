@@ -1032,9 +1032,10 @@ class BaseLayout:
         """
         Histogram and KDE elements
         """
-
         if self.name != 'hist':
             self.hist = Element('hist', self.fcpp, kwargs, on=False,
+                                cdf=utl.kwget(kwargs, self.fcpp, ['cdf'],
+                                              kwargs.get('cdf', False)),
                                 horizontal=False)
             return kwargs
 
@@ -1055,6 +1056,8 @@ class BaseLayout:
                                           kwargs.get('kde', False)),
                             normalize=utl.kwget(kwargs, self.fcpp, ['hist_normalize', 'normalize'],
                                                 kwargs.get('normalize', False)),
+                            pdf=utl.kwget(kwargs, self.fcpp, ['pdf'],
+                                           kwargs.get('pdf', False)),
                             rwidth=utl.kwget(
                                 kwargs, self.fcpp, 'hist_rwidth', None),
                             stacked=utl.kwget(kwargs, self.fcpp, ['hist_stacked', 'stacked'],
