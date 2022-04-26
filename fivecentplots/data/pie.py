@@ -1,9 +1,7 @@
 from . import data
 import pdb
 import pandas as pd
-import numpy as np
 from .. import utilities
-import scipy.stats as ss
 from natsort import natsorted
 utl = utilities
 db = pdb.set_trace
@@ -19,7 +17,6 @@ class Pie(data.Data):
         super().__init__(name, req, opt, **kwargs)
 
         # overrides
-
 
     def get_data_ranges(self):
 
@@ -47,12 +44,12 @@ class Pie(data.Data):
             updated kwargs dict
         """
 
-        if self.legend == True and self.twin_x \
-                or self.legend == True and len(self.y) > 1:
+        if self.legend is True and self.twin_x \
+                or self.legend is True and len(self.y) > 1:
             self.legend_vals = self.y + self.y2
             self.nleg_vals = len(self.y + self.y2)
             return
-        elif self.legend == True and self.twin_y:
+        elif self.legend is True and self.twin_y:
             self.legend_vals = self.x + self.x2
             self.nleg_vals = len(self.x + self.x2)
             return
@@ -65,7 +62,7 @@ class Pie(data.Data):
         # custom for pie plot
         self.legend = self.x[0]
 
-        if self.legend == True:
+        if self.legend is True:
             self.legend = None  # no option for legend here so disable
             return
 
@@ -107,7 +104,7 @@ class Pie(data.Data):
         leg_df = pd.DataFrame(leg_all, columns=['Leg', 'x', 'y'])
 
         # if leg specified
-        if not (leg_df.Leg==None).all():
+        if not (leg_df.Leg.isnull()).all():
             leg_df['names'] = list(leg_df.Leg)
 
         # if more than one y axis and leg specified
@@ -120,7 +117,7 @@ class Pie(data.Data):
         elif self.col == 'x':
             del leg_df['x']
             leg_df = leg_df.drop_duplicates().reset_index(drop=True)
-        elif len(leg_df.y.unique()) > 1 and not (leg_df.Leg==None).all() \
+        elif len(leg_df.y.unique()) > 1 and not (leg_df.Leg.isnull()).all() \
                 and len(leg_df.x.unique()) == 1:
             leg_df['names'] = leg_df.Leg.map(str) + ' | ' + leg_df.y.map(str)
 
@@ -142,4 +139,3 @@ class Pie(data.Data):
     def subset_wrap(self, ir, ic):
 
         return self._subset_wrap(ir, ic)
-

@@ -1,9 +1,7 @@
 from . import data
 import pdb
 import pandas as pd
-import numpy as np
 from .. import utilities
-import scipy.stats as ss
 utl = utilities
 db = pdb.set_trace
 
@@ -13,7 +11,7 @@ class Bar(data.Data):
 
         name = 'bar'
 
-        super().__init__('bar', **kwargs)
+        super().__init__(name, **kwargs)
 
         # overrides
         self.stacked = utl.kwget(kwargs, self.fcpp, ['bar_stacked', 'stacked'],

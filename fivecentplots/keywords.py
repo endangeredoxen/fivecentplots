@@ -1,11 +1,11 @@
-### Keyword docstrings
+""" Keyword docstrings """
 import pandas as pd
 import os
 import pdb
+from distutils.version import LooseVersion
 db = pdb.set_trace
 osjoin = os.path.join
 cur_dir = os.path.dirname(__file__)
-from distutils.version import LooseVersion
 
 
 def make_docstrings():
@@ -20,10 +20,10 @@ def make_docstrings():
         kw[k]['Keyword'] = kw[k]['Keyword'].apply(lambda x: str(x).split(':')[-1])
         if 'Example' in kw[k].columns:
             kw[k]['Example'] = kw[k]['Example'].apply(lambda x: 'see online docs'
-                                                    if '.html' in str(x) else x)
+                                                      if '.html' in str(x) else x)
         else:
             kw[k]['Example'] = 'None'
-        nans = kw[k][kw[k]['Keyword']=='nan']
+        nans = kw[k][kw[k]['Keyword'] == 'nan']
         if len(nans) > 0:
             kw[k] = kw[k].dropna()
             for irow, row in nans.iterrows():
@@ -34,4 +34,3 @@ def make_docstrings():
                         kw[k].loc[idx, col] += ' | ' + row[col]
 
     return kw
-

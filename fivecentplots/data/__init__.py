@@ -1,10 +1,10 @@
-from . bar import Bar
-from . box import Box
-from . contour import Contour
-from . gantt import Gantt
-from . heatmap import Heatmap
-from . hist import Histogram
-from . imshow import ImShow
-from . nq import NQ
-from . pie import Pie
-from . xy import XY
+from . bar import Bar  # noqa
+from . box import Box  # noqa
+from . contour import Contour  # noqa
+from . gantt import Gantt  # noqa
+from . heatmap import Heatmap  # noqa
+from . hist import Histogram  # noqa
+from . imshow import ImShow  # noqa
+from . nq import NQ  # noqa
+from . pie import Pie  # noqa
+from . xy import XY  # noqa

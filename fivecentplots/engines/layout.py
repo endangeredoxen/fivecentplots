@@ -1,23 +1,13 @@
-from ..import fcp
-import importlib
-import os
-import sys
 import pandas as pd
 import pdb
-import datetime
-import time
 import numpy as np
 import copy
-import decimal
-import math
 from .. colors import *
 from .. utilities import RepeatedList
 from .. import utilities as utl
 from distutils.version import LooseVersion
-from random import randint
 from collections import defaultdict
 import warnings
-from natsort import natsorted
 
 
 def custom_formatwarning(msg, *args, **kwargs):
@@ -32,10 +22,10 @@ warnings.filterwarnings(
 
 db = pdb.set_trace
 
-DEFAULT_MARKERS = ['o', '+', 's', 'x', 'd', 'Z', '^', 'Y', 'v', '\infty',
-                   '\#', '<', u'\u2B21', u'\u263A', '>', u'\u29C6', '\$',
+DEFAULT_MARKERS = ['o', '+', 's', 'x', 'd', 'Z', '^', 'Y', 'v', r'\infty',
+                   r'\#', r'<', u'\u2B21', u'\u263A', '>', u'\u29C6', r'\$',
                    u'\u2B14', u'\u2B1A', u'\u25A6', u'\u229E', u'\u22A0',
-                   u'\u22A1', u'\u20DF', '\gamma', '\sigma', '\star', ]
+                   u'\u22A1', u'\u20DF', r'\gamma', r'\sigma', r'\star', ]
 
 LEGEND_LOCATION = defaultdict(int,
                               {'outside': 0,  # always "best" outside of the damn plot
@@ -267,7 +257,7 @@ class BaseLayout:
                         font_style='italic',
                         font_weight='bold',
                         bg_padding=utl.kwget(kwargs, self.fcpp,
-                                           'label_bg_padding', 2),
+                                             'label_bg_padding', 2),
                         )
         labels = ['x', 'x2', 'y', 'y2', 'z']
         rotations = [0, 0, 90, 270, 270]
@@ -423,10 +413,10 @@ class BaseLayout:
         if isinstance(rolling, int):
             self.rolling_mean = Element('rolling_mean', self.fcpp, kwargs,
                                         on=utl.kwget(kwargs, self.fcpp,
-                                            'rolling_mean', False),
+                                                     'rolling_mean', False),
                                         color=utl.kwget(kwargs, self.fcpp,
-                                                ['rolling_mean_line_color', 'rolling_mean_color'],
-                                                DEFAULT_COLORS[1]),
+                                                        ['rolling_mean_line_color', 'rolling_mean_color'],
+                                                        DEFAULT_COLORS[1]),
                                         width=utl.kwget(kwargs, self.fcpp, 'rolling_mean_line_width', 2),
                                         window=rolling,
                                         )
@@ -638,8 +628,8 @@ class BaseLayout:
 
         self.box_stat_line = \
             Element('box_stat_line', self.fcpp, kwargs,
-                    on=True if 'box' in self.name and
-                    kwargs.get('box_stat_line_on', True) else False,
+                    on=True if 'box' in self.name
+                    and kwargs.get('box_stat_line_on', True) else False,
                     color='#666666',
                     stat=kwargs.get('box_stat_line', 'mean'),
                     zorder=utl.kwget(kwargs, self.fcpp,
@@ -893,20 +883,20 @@ class BaseLayout:
                                                               kwargs.get('gantt_tick_labels_x_rotation', 90)),
                              )
         if self.gantt.on and \
-                ('tick_labels_major_rotation' not in kwargs.keys() or
-                 'tick_labels_major_x_rotation' not in kwargs.keys() or
-                 'tick_labels_x_rotation' not in kwargs.keys()):
+                ('tick_labels_major_rotation' not in kwargs.keys()
+                 or 'tick_labels_major_x_rotation' not in kwargs.keys()
+                 or 'tick_labels_x_rotation' not in kwargs.keys()):
             self.tick_labels_major_x.rotation = self.gantt.tick_labels_x_rotation
         if self.gantt.on and \
-                ('grid_major' not in kwargs.keys() or
-                 'grid_major_y' not in kwargs.keys()):
+                ('grid_major' not in kwargs.keys()
+                 or 'grid_major_y' not in kwargs.keys()):
             kwargs['grid_major_y'] = False
         if self.gantt.on and \
                 'grid_minor_y' not in kwargs.keys():
             kwargs['grid_minor_y'] = False
         if self.gantt.on and \
-                ('ticks_major' not in kwargs.keys() or
-                 'ticks_major_y' not in kwargs.keys()):
+                ('ticks_major' not in kwargs.keys()
+                 or 'ticks_major_y' not in kwargs.keys()):
             self.ticks_major_y.on = False
         if self.gantt.on and 'label_x' not in kwargs.keys():
             self.label_x.text = self.gantt.label_x
@@ -940,14 +930,15 @@ class BaseLayout:
                             width=self.grid_major.width,
                             zorder=self.grid_major.zorder,
                             ))
-            if getattr(getattr(self, 'grid_major_%s' % ax), 'on') and \
-                    ('ticks' not in kwargs.keys() or kwargs['ticks'] != False) and \
-                    ('ticks_%s' % ax not in kwargs.keys() or
-                     kwargs['ticks_%s' % ax] != False) and \
-                    ('ticks_major' not in kwargs.keys() or
-                     kwargs['ticks_major'] != False) and \
-                    ('ticks_major_%s' % ax not in kwargs.keys() or
-                     kwargs['ticks_major_%s' % ax] != False):
+            if getattr(getattr(self, 'grid_major_%s' % ax), 'on') \
+                    and ('ticks' not in kwargs.keys()
+                         or kwargs['ticks'] is not False) \
+                    and ('ticks_%s' % ax not in kwargs.keys()
+                         or kwargs['ticks_%s' % ax] is not False) \
+                    and ('ticks_major' not in kwargs.keys()
+                         or kwargs['ticks_major'] is not False) \
+                    and ('ticks_major_%s' % ax not in kwargs.keys()
+                         or kwargs['ticks_major_%s' % ax] is not False):
                 setattr(getattr(self, 'ticks_major_%s' % ax), 'on', True)
 
         self.grid_minor = Element('grid_minor', self.fcpp, kwargs,
@@ -971,9 +962,9 @@ class BaseLayout:
                             zorder=self.grid_minor.zorder,
                             ))
             if getattr(self, 'grid_minor_%s' % ax).on and \
-                    ('ticks' not in kwargs.keys() or kwargs['ticks'] != False) and \
-                    ('ticks_minor' not in kwargs.keys() or kwargs['ticks_minor'] != False) and \
-                    ('ticks_minor_%s' % ax not in kwargs.keys() or kwargs['ticks_minor_%s' % ax] != False):
+                    ('ticks' not in kwargs.keys() or kwargs['ticks'] is not False) and \
+                    ('ticks_minor' not in kwargs.keys() or kwargs['ticks_minor'] is not False) and \
+                    ('ticks_minor_%s' % ax not in kwargs.keys() or kwargs['ticks_minor_%s' % ax] is not False):
                 getattr(self, 'ticks_minor_%s' % ax).on = True
 
         return kwargs
@@ -1057,7 +1048,7 @@ class BaseLayout:
                             normalize=utl.kwget(kwargs, self.fcpp, ['hist_normalize', 'normalize'],
                                                 kwargs.get('normalize', False)),
                             pdf=utl.kwget(kwargs, self.fcpp, ['pdf'],
-                                           kwargs.get('pdf', False)),
+                                          kwargs.get('pdf', False)),
                             rwidth=utl.kwget(
                                 kwargs, self.fcpp, 'hist_rwidth', None),
                             stacked=utl.kwget(kwargs, self.fcpp, ['hist_stacked', 'stacked'],
@@ -1193,7 +1184,7 @@ class BaseLayout:
     def _init_layout(self, data):
         self.ncol = data.ncol
         self.nrow = data.nrow
-        self.obj_array = np.array([[None]*self.ncol]*self.nrow)
+        self.obj_array = np.array([[None] * self.ncol] * self.nrow)
 
     def _init_legend(self, kwargs, data):
         """
@@ -1203,10 +1194,9 @@ class BaseLayout:
         kwargs['legend'] = kwargs.get('legend', None)
         if type(kwargs['legend']) is list:
             kwargs['legend'] = ' | '.join(utl.validate_list(kwargs['legend']))
-        legend_none = pd.DataFrame({'Key': ['NaN'], 'Line': None}, index=[0])
         self.legend = Legend_Element('legend', self.fcpp, kwargs,
-                                     on=True if (kwargs.get('legend') and
-                                                 kwargs.get('legend_on', True)) else False,
+                                     on=True if (kwargs.get('legend')
+                                                 and kwargs.get('legend_on', True)) else False,
                                      column=kwargs['legend'],
                                      edge_color=utl.kwget(kwargs, self.fcpp,
                                                           'legend_edge_color',
@@ -1232,8 +1222,7 @@ class BaseLayout:
                                      ordered_ref_lines=[],
                                      overflow=0,
                                      text=kwargs.get('legend_title',
-                                                     kwargs.get('legend') if kwargs.get('legend') != True else ''),
-                                     #values={} if not kwargs.get('legend') else {'NaN': None},
+                                                     kwargs.get('legend') if kwargs.get('legend') is not True else ''),
                                      )
         if self.legend._on and self.name == 'pie':
             self.legend.on = True
@@ -1243,9 +1232,8 @@ class BaseLayout:
             self.legend.on = True
             self.legend.text = ''
         if not self.legend._on and self.fit.on \
-                and not (('legend' in kwargs.keys() and kwargs['legend'] is False) or
-                         ('legend_on' in kwargs.keys() and kwargs['legend_on'] is False)):
-            #self.legend.values['fit_line'] = []
+                and not (('legend' in kwargs.keys() and kwargs['legend'] is False)
+                         or ('legend_on' in kwargs.keys() and kwargs['legend_on'] is False)):
             self.legend.on = True
             self.legend.text = ''
         if self.legend._on and self.fit.on and \
@@ -1254,10 +1242,10 @@ class BaseLayout:
         y = utl.validate_list(kwargs.get('y'))
         if not self.axes.twin_x and y is not None and len(y) > 1 and \
                 self.name != 'box' and \
-                (kwargs.get('wrap') != 'y' and
-                 kwargs.get('row') != 'y' and
-                 kwargs.get('col') != 'y') and \
-                kwargs.get('legend') != False:
+                (kwargs.get('wrap') != 'y'
+                 and kwargs.get('row') != 'y'
+                 and kwargs.get('col') != 'y') \
+                and kwargs.get('legend') is not False:
             self.legend.values = self.legend.set_default()
             self.legend.on = True
 
@@ -1363,11 +1351,11 @@ class BaseLayout:
                            pctdistance=utl.kwget(kwargs, self.fcpp, ['pie_pctdistance', 'pctdistance'],
                                                  kwargs.get('pctdistance', 0.6)),
                            pct_font_color=utl.kwget(kwargs, self.fcpp, ['pie_pct_font_color', 'pct_font_color'],
-                                                 kwargs.get('pct_font_color', '#444444')),
+                                                    kwargs.get('pct_font_color', '#444444')),
                            pct_font_size=utl.kwget(kwargs, self.fcpp, ['pie_pct_font_size', 'pct_font_size'],
-                                                 kwargs.get('pct_font_size', 11)),
+                                                   kwargs.get('pct_font_size', 11)),
                            pct_font_weight=utl.kwget(kwargs, self.fcpp, ['pie_pct_font_weight', 'pct_font_weight'],
-                                                 kwargs.get('pct_font_weight', 'normal')),
+                                                     kwargs.get('pct_font_weight', 'normal')),
                            radius=utl.kwget(kwargs, self.fcpp, ['pie_radius', 'radius'],
                                             kwargs.get('radius', 1)),
                            rotatelabels=utl.kwget(kwargs, self.fcpp, ['pie_rotatelabels', 'rotatelabels'],
@@ -1382,9 +1370,9 @@ class BaseLayout:
         self.pie.xs_top = 0
         self.pie.xs_bottom = 0
 
-        if self.pie.autopct == True:
+        if self.pie.autopct is True:
             self.pie.autopct = '%1.1f%%'
-        elif self.pie.autopct == False:
+        elif self.pie.autopct is False:
             self.pie.autopct = None
 
         return kwargs
@@ -1668,13 +1656,13 @@ class BaseLayout:
                     on=utl.kwget(kwargs, self.fcpp,
                                  'tick_labels_major',
                                  kwargs.get('tick_labels', True)),
-                    edge_alpha=0 if not kwargs.get('tick_labels_edge_alpha', None) and
-                    not kwargs.get('tick_labels_major_edge_alpha', None) and
-                    not kwargs.get('tick_labels_major_edge_color', None)
+                    edge_alpha=0 if not kwargs.get('tick_labels_edge_alpha', None)
+                    and not kwargs.get('tick_labels_major_edge_alpha', None)
+                    and not kwargs.get('tick_labels_major_edge_color', None)
                     else 1,
-                    fill_alpha=0 if not kwargs.get('tick_labels_fill_alpha', None) and
-                    not kwargs.get('tick_labels_major_fill_alpha', None) and
-                    not kwargs.get('tick_labels_major_fill_color', None)
+                    fill_alpha=0 if not kwargs.get('tick_labels_fill_alpha', None)
+                    and not kwargs.get('tick_labels_major_fill_alpha', None)
+                    and not kwargs.get('tick_labels_major_fill_color', None)
                     else 1,
                     font_size=13,
                     offset=utl.kwget(kwargs, self.fcpp,
@@ -1781,10 +1769,10 @@ class BaseLayout:
                                                      4),
                                    size=[utl.kwget(kwargs, self.fcpp,
                                                    'ticks_minor_length',
-                                                   ticks_length*0.67),
+                                                   ticks_length * 0.67),
                                          utl.kwget(kwargs, self.fcpp,
                                                    'ticks_minor_width',
-                                                   ticks_width*0.6)],
+                                                   ticks_width * 0.6)],
                                    )
         kwargs = self.from_list(self.ticks_minor,
                                 ['color', 'number', 'padding'],
@@ -1811,13 +1799,13 @@ class BaseLayout:
                     on=utl.kwget(kwargs, self.fcpp,
                                  'tick_labels_minor',
                                  False),
-                    edge_alpha=0 if not kwargs.get('tick_labels_edge_alpha', None) and
-                    not kwargs.get('tick_labels_minor_edge_alpha', None) and
-                    not kwargs.get('tick_labels_minor_edge_color', None)
+                    edge_alpha=0 if not kwargs.get('tick_labels_edge_alpha', None)
+                    and not kwargs.get('tick_labels_minor_edge_alpha', None)
+                    and not kwargs.get('tick_labels_minor_edge_color', None)
                     else 1,
-                    fill_alpha=0 if not kwargs.get('tick_labels_fill_alpha', None) and
-                    not kwargs.get('tick_labels_minor_fill_alpha', None) and
-                    not kwargs.get('tick_labels_minor_fill_color', None)
+                    fill_alpha=0 if not kwargs.get('tick_labels_fill_alpha', None)
+                    and not kwargs.get('tick_labels_minor_fill_alpha', None)
+                    and not kwargs.get('tick_labels_minor_fill_color', None)
                     else 1,
                     font_size=10,
                     padding=utl.kwget(kwargs, self.fcpp,
@@ -1980,7 +1968,7 @@ class BaseLayout:
         df['names'] = ''
 
         # level_0 = legend
-        if not (df.level_0 == None).all():
+        if not (df.level_0 is None).all():
             df['names'] = df.level_0
 
         # level_2 = y
@@ -2017,8 +2005,8 @@ class BaseLayout:
 
         for attr in attrs:
             if type(getattr(base, attr)) is list:
-                setattr(base, attr, getattr(base, attr) +
-                        [None] * (len(getattr(base, attr)) - 3))
+                setattr(base, attr, getattr(base, attr)
+                        + [None] * (len(getattr(base, attr)) - 3))
                 kwargs['%s_%s_x' % (name, attr)] = getattr(base, attr)[0]
                 kwargs['%s_%s_y' % (name, attr)] = getattr(base, attr)[1]
                 if 'twin_x' in kwargs.keys() and kwargs['twin_x']:
@@ -2198,9 +2186,6 @@ class BaseLayout:
         pass
 
     def add_legend(self):
-        pass
-
-    def make_figure(self):
         pass
 
     def get_axes(self):
@@ -2488,7 +2473,7 @@ class Element:
             try:
                 if not hasattr(self, k) and k not in skip_keys:
                     setattr(self, k, v)
-            except:
+            except AttributeError:
                 pass
 
     @property
@@ -2602,7 +2587,7 @@ class Element:
     def size_inches(self):
 
         if self.on:
-            return [self._size[0]/self.dpi, self._size[1]/self.dpi]
+            return [self._size[0] / self.dpi, self._size[1] / self.dpi]
         else:
             return [0, 0]
 
@@ -2733,7 +2718,7 @@ class Legend_Element(DF_Element):
             self._values = pd.DataFrame(columns=self.cols)
         else:
             self._values = self.set_default()
-        if kwargs.get('sort') == True:
+        if kwargs.get('sort') is True:
             self.sort = True
         else:
             self.sort = False
@@ -2792,8 +2777,8 @@ class Legend_Element(DF_Element):
                             index=[len(self._values)])
 
         # don't add duplicates - this could miss a case where the curve type is actually different
-        if len(self.values.loc[(self.values.Key == key) &
-                               (self.values.LineType == line_type_name)]) == 0:
+        if len(self.values.loc[(self.values.Key == key)
+               & (self.values.LineType == line_type_name)]) == 0:
             self._values = pd.concat([self.values, temp], sort=True)
 
     def del_value(self, key):

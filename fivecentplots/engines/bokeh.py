@@ -1,33 +1,23 @@
-from .. import fcp
-import importlib
-import os, sys
 import pandas as pd
 import pdb
-import datetime
-import time
 import numpy as np
-import copy
-import decimal
-import math
 from .. colors import *
-from .. utilities import RepeatedList
 from .. import utilities as utl
-from distutils.version import LooseVersion
-from random import randint
-from collections import defaultdict
 from . layout import *
 import warnings
 import bokeh.plotting as bp
 import bokeh.layouts as bl
 import bokeh.models as bm
+
+
 def custom_formatwarning(msg, *args, **kwargs):
     # ignore everything except the message
     return 'Warning: ' + str(msg) + '\n'
 
-warnings.formatwarning = custom_formatwarning
-warnings.filterwarnings("ignore", "invalid value encountered in double_scalars")  # weird error in boxplot with no groups
 
-from natsort import natsorted
+warnings.formatwarning = custom_formatwarning
+warnings.filterwarnings("ignore", "invalid value encountered in double_scalars")  # weird error in boxplot w/ no groups
+
 
 db = pdb.set_trace
 
@@ -56,23 +46,23 @@ def fill_alpha(hexstr):
 
 
 def format_marker(fig, marker):
-            """
-            Format the marker string to mathtext
-            """
+    """
+    Format the marker string to mathtext
+    """
 
-            markers = {'o': fig.circle,
-                       'circle': fig.circle,
-                       '+': fig.cross,
-                       'cross': fig.cross,
-                       's': fig.square,
-                       'square': fig.square,
-                       'x': fig.x,
-                       'd': fig.diamond,
-                       'diamond': fig.diamond,
-                       't': fig.triangle,
-                       'triangle': fig.triangle}
+    markers = {'o': fig.circle,
+               'circle': fig.circle,
+               '+': fig.cross,
+               'cross': fig.cross,
+               's': fig.square,
+               'square': fig.square,
+               'x': fig.x,
+               'd': fig.diamond,
+               'diamond': fig.diamond,
+               't': fig.triangle,
+               'triangle': fig.triangle}
 
-            return markers[marker]
+    return markers[marker]
 
 
 class Layout(BaseLayout):
@@ -105,9 +95,8 @@ class Layout(BaseLayout):
         x = 0
         y = self.ncol - 1
         tt = list(self.legend.values.items())
-        tt = [f for f in tt if f[0] is not 'NaN']
-        title = self.axes.obj[x, y].circle(0, 0, size=0.00000001,
-                                             color=None)
+        tt = [f for f in tt if f[0] != 'NaN']
+        title = self.axes.obj[x, y].circle(0, 0, size=0.00000001, color=None)
         tt = [(self.legend.text, [title])] + tt
         legend = bm.Legend(items=tt, location='top_right')
         self.axes.obj[x, y].add_layout(legend, 'right')
@@ -123,37 +112,37 @@ class Layout(BaseLayout):
     def get_element_sizes(self, data):
 
         # Add label size
-        self.label_x.size = utl.get_text_dimensions(self.label_x.text,
-                                **self.make_kwargs(self.label_x))
-        self.label_y.size += utl.get_text_dimensions(self.label_y.text,
-                                **self.make_kwargs(self.label_y))
+        self.label_x.size = \
+            utl.get_text_dimensions(self.label_x.text, **self.make_kwargs(self.label_x))
+        self.label_y.size += \
+            utl.get_text_dimensions(self.label_y.text, **self.make_kwargs(self.label_y))
 
         # Ticks (rough)
         xlab = '%s.0' % int(data.ranges[0, 0]['xmax'])
         ylab = '%s.0' % int(data.ranges[0, 0]['ymax'])
-        self.tick_labels_major_x.size = utl.get_text_dimensions(xlab,
-            **self.make_kwargs(self.tick_labels_major_x))
-        self.tick_labels_major_y.size += utl.get_text_dimensions(ylab,
-            **self.make_kwargs(self.tick_labels_major_y))
+        self.tick_labels_major_x.size = \
+            utl.get_text_dimensions(xlab, **self.make_kwargs(self.tick_labels_major_x))
+        self.tick_labels_major_y.size += \
+            utl.get_text_dimensions(ylab, **self.make_kwargs(self.tick_labels_major_y))
 
         # title
         if self.title.text is not None:
-            self.title.size = utl.get_text_dimensions(self.title.text,
-                                **self.make_kwargs(self.title))
+            self.title.size = \
+                utl.get_text_dimensions(self.title.text, **self.make_kwargs(self.title))
 
         # rc labels
         for ir in range(0, self.nrow):
             for ic in range(0, self.ncol):
                 if self.label_row.text is not None:
                     text = '%s=%s' % (self.label_row.text, self.label_row.values[ir])
-                    self.label_row.size[1] = max(self.label_row.size[1],  \
-                        utl.get_text_dimensions(text,
-                                    **self.make_kwargs(self.label_row))[1])
+                    self.label_row.size[1] = \
+                        max(self.label_row.size[1],
+                            utl.get_text_dimensions(text, **self.make_kwargs(self.label_row))[1])
                 if self.label_col.text is not None:
                     text = '%s=%s' % (self.label_col.text, self.label_col.values[ir])
-                    self.label_col.size[1] = max(self.label_col.size[1],  \
-                        utl.get_text_dimensions(text,
-                                    **self.make_kwargs(self.label_col))[1])
+                    self.label_col.size[1] = \
+                        max(self.label_col.size[1],
+                            utl.get_text_dimensions(text, **self.make_kwargs(self.label_col))[1])
 
         # Legend
         if data.legend_vals is None:
@@ -162,9 +151,7 @@ class Layout(BaseLayout):
         # Get approx legend size
         name_size = 0
         for name in data.legend_vals['names']:
-            name_size = max(name_size,
-                            utl.get_text_dimensions(str(name),
-                                **self.make_kwargs(self.legend))[0])
+            name_size = max(name_size, utl.get_text_dimensions(str(name), **self.make_kwargs(self.legend))[0])
 
         if self.legend.on:
             self.legend.size = [10 + 20 + 5 + name_size + 10, 0]
@@ -184,9 +171,8 @@ class Layout(BaseLayout):
         self.update_wrap(data, kwargs)
         self.set_label_text(data, **kwargs)
         data = self.get_element_sizes(data)
-        #self.get_figure_size(data, **kwargs)
 
-        self.axes.obj = np.array([[None]*self.ncol]*self.nrow)
+        self.axes.obj = np.array([[None] * self.ncol] * self.nrow)
         for ir in range(0, self.nrow):
             for ic in range(0, self.ncol):
                 x_scale, y_scale = self.set_axes_scale2(ir, ic)
@@ -212,11 +198,11 @@ class Layout(BaseLayout):
                                                   x_axis_type=x_scale,
                                                   y_axis_type=y_scale)
 
-        self.axes.visible = np.array([[True]*self.ncol]*self.nrow)
+        self.axes.visible = np.array([[True] * self.ncol] * self.nrow)
 
         return data
 
-    def plot_box(self, ir, ic, data,**kwargs):
+    def plot_box(self, ir, ic, data, **kwargs):
         """ Plot boxplot data
 
         Args:
@@ -261,7 +247,7 @@ class Layout(BaseLayout):
 
         pass
 
-    def plot_line(self, ir, ic, x0, y0, x1=None, y1=None,**kwargs):
+    def plot_line(self, ir, ic, x0, y0, x1=None, y1=None, **kwargs):
         """
         Plot a simple line
 
@@ -322,7 +308,6 @@ class Layout(BaseLayout):
                                 size=self.markers.size.get(iline),
                                 )
             else:
-                #??
                 points = marker(df[x], df[y],
                                 color=line_type.color.get(iline),
                                 linestyle=line_type.style.get(iline),
@@ -358,7 +343,7 @@ class Layout(BaseLayout):
         # grid
         else:
             self.saved = bl.gridplot(self.axes.obj.tolist(),
-                                      ncols=self.ncol if self.ncol > 1 else None)
+                                     ncols=self.ncol if self.ncol > 1 else None)
         bp.save(self.saved)
 
     def see(self):
@@ -366,8 +351,8 @@ class Layout(BaseLayout):
         Prints a readable list of class attributes
         """
 
-        df = pd.DataFrame({'Attribute':list(self.__dict__.copy().keys()),
-             'Name':[str(f) for f in self.__dict__.copy().values()]})
+        df = pd.DataFrame({'Attribute': list(self.__dict__.copy().keys()),
+                           'Name': [str(f) for f in self.__dict__.copy().values()]})
         df = df.sort_values(by='Attribute').reset_index(drop=True)
 
         return df
@@ -402,13 +387,13 @@ class Layout(BaseLayout):
 
         for ax in axis:
             grid = getattr(self.axes.obj[ir, ic], '%sgrid' % ax)
-            grid.grid_line_color = self.grid_major.color.get(0)[0:7] if self.grid_major.on \
-                                   else None
+            grid.grid_line_color = \
+                self.grid_major.color.get(0)[0:7] if self.grid_major.on else None
             grid.grid_line_width = self.grid_major.width.get(0)
             grid.grid_line_dash = DASHES[self.grid_major.style.get(0)]
 
-            grid.minor_grid_line_color = self.grid_minor.color.get(0)[0:7] if self.grid_minor.on \
-                                   else None
+            grid.minor_grid_line_color = \
+                self.grid_minor.color.get(0)[0:7] if self.grid_minor.on else None
             grid.minor_grid_line_width = self.grid_minor.width.get(0)
             grid.minor_grid_line_dash = DASHES[self.grid_minor.style.get(0)]
 
@@ -423,7 +408,7 @@ class Layout(BaseLayout):
 
         """
 
-        axis = ['x', 'y'] #x2', 'y', 'y2', 'z']
+        axis = ['x', 'y']  # x2', 'y', 'y2', 'z']
         for ax in axis:
             label = getattr(self, 'label_%s' % ax)
             if not label.on:
@@ -440,7 +425,7 @@ class Layout(BaseLayout):
             # Toggle label visibility
             if not self.separate_labels:
                 if ax == 'x' and ir != self.nrow - 1 and \
-                        self.nwrap == 0 and self.axes.visible[ir+1, ic]:
+                        self.nwrap == 0 and self.axes.visible[ir + 1, ic]:
                     continue
                 if ax == 'x2' and ir != 0:
                     continue
@@ -488,22 +473,22 @@ class Layout(BaseLayout):
                                 xx = max(xx, ranges[irow, icol][xval])
 
                 if xx is not None and xval == 'xmin':
-                    self.axes.obj[ir, ic].x_range=bm.Range1d(start=xx)
+                    self.axes.obj[ir, ic].x_range = bm.Range1d(start=xx)
                 elif xx is not None and xval == 'x2min':
-                    self.axes2.obj[ir, ic].x_range=bm.Range1d(start=xx)
+                    self.axes2.obj[ir, ic].x_range = bm.Range1d(start=xx)
                 elif xx is not None and xval == 'xmax':
-                    self.axes.obj[ir, ic].x_range=bm.Range1d(end=xx)
+                    self.axes.obj[ir, ic].x_range = bm.Range1d(end=xx)
                 elif xx is not None and xval == 'x2max':
-                    self.axes2.obj[ir, ic].x_range=bm.Range1d(end=xx)
+                    self.axes2.obj[ir, ic].x_range = bm.Range1d(end=xx)
         else:
             if ranges[ir, ic]['xmin'] is not None:
-                self.axes.obj[ir, ic].x_range=bm.Range1d(start=ranges[ir, ic]['xmin'])
+                self.axes.obj[ir, ic].x_range = bm.Range1d(start=ranges[ir, ic]['xmin'])
             if ranges[ir, ic]['x2min'] is not None:
-                self.axes2.obj[ir, ic].x_range=bm.Range1d(start=ranges[ir, ic]['x2min'])
+                self.axes2.obj[ir, ic].x_range = bm.Range1d(start=ranges[ir, ic]['x2min'])
             if ranges[ir, ic]['xmax'] is not None:
-                self.axes.obj[ir, ic].x_range=bm.Range1d(end=ranges[ir, ic]['xmax'])
+                self.axes.obj[ir, ic].x_range = bm.Range1d(end=ranges[ir, ic]['xmax'])
             if ranges[ir, ic]['x2max'] is not None:
-                self.axes2.obj[ir, ic].x_range=bm.Range1d(end=ranges[ir, ic]['x2max'])
+                self.axes2.obj[ir, ic].x_range = bm.Range1d(end=ranges[ir, ic]['x2max'])
 
         # Y-axis
         if self.axes.share_y:
@@ -521,29 +506,29 @@ class Layout(BaseLayout):
                                 yy = max(yy, ranges[irow, icol][yval])
 
                 if yy is not None and yval == 'ymin':
-                    self.axes.obj[ir, ic].y_range=bm.Range1d(start=yy)
+                    self.axes.obj[ir, ic].y_range = bm.Range1d(start=yy)
                 elif yy is not None and yval == 'y2min':
-                    self.axes2.obj[ir, ic].y_range=bm.Range1d(start=yy)
+                    self.axes2.obj[ir, ic].y_range = bm.Range1d(start=yy)
                 elif yy is not None and yval == 'ymax':
-                    self.axes.obj[ir, ic].y_range=bm.Range1d(end=yy)
+                    self.axes.obj[ir, ic].y_range = bm.Range1d(end=yy)
                 elif yy is not None and yval == 'y2max':
-                    self.axes2.obj[ir, ic].y_range=bm.Range1d(end=yy)
+                    self.axes2.obj[ir, ic].y_range = bm.Range1d(end=yy)
         else:
             if ranges[ir, ic]['ymin'] is not None:
-                self.axes.obj[ir, ic].y_range=bm.Range1d(start=ranges[ir, ic]['ymin'])
+                self.axes.obj[ir, ic].y_range = bm.Range1d(start=ranges[ir, ic]['ymin'])
             if ranges[ir, ic]['y2min'] is not None:
-                self.axes2.obj[ir, ic].y_range=bm.Range1d(start=ranges[ir, ic]['y2min'])
+                self.axes2.obj[ir, ic].y_range = bm.Range1d(start=ranges[ir, ic]['y2min'])
             if ranges[ir, ic]['ymax'] is not None:
-                self.axes.obj[ir, ic].y_range=bm.Range1d(end=ranges[ir, ic]['ymax'])
+                self.axes.obj[ir, ic].y_range = bm.Range1d(end=ranges[ir, ic]['ymax'])
             if ranges[ir, ic]['y2max'] is not None:
-                self.axes2.obj[ir, ic].y_range=bm.Range1d(end=ranges[ir, ic]['y2max'])
+                self.axes2.obj[ir, ic].y_range = bm.Range1d(end=ranges[ir, ic]['y2max'])
 
     def set_axes_rc_labels(self, ir, ic):
 
         title = self.axes.obj[ir, ic].title
 
         # Row labels
-        if ic == self.ncol-1 and self.label_row.on and not self.label_wrap.on:
+        if ic == self.ncol - 1 and self.label_row.on and not self.label_wrap.on:
             title.text = ' %s=%s ' % (self.label_row.text, self.label_row.values[ir])
             title.align = self.label_row.align
             title.text_color = self.label_row.font_color
@@ -606,7 +591,7 @@ class Layout(BaseLayout):
         """
 
         if self.title.on:
-            title = self.axes.obj[0,0].title
+            title = self.axes.obj[0, 0].title
             title.text = self.title.text
             title.align = self.title.align
             title.text_color = self.title.font_color
@@ -621,13 +606,13 @@ class Layout(BaseLayout):
 
         try:
             app = str(get_ipython())
-        except:
+        except:  # noqa
             app = ''
 
         # jupyter notebook special
         if 'zmqshell.ZMQInteractiveShell' in app:
-            #bp.output_notebook()
-            #bp.show(bl.gridplot(self.axes.obj.flatten(), ncols=self.ncol))
+            # bp.output_notebook()
+            # bp.show(bl.gridplot(self.axes.obj.flatten(), ncols=self.ncol))
             from IPython.core.display import HTML
             return HTML(filename)
 

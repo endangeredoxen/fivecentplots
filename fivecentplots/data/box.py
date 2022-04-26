@@ -1,9 +1,7 @@
 from . import data
 import pdb
 import pandas as pd
-import numpy as np
 from .. import utilities
-import scipy.stats as ss
 from natsort import natsorted
 utl = utilities
 db = pdb.set_trace
@@ -71,7 +69,7 @@ class Box(data.Data):
         # Determines values for all other rows
         for i in range(1, self.ngroups):
             for col in self.indices.columns:
-                if self.indices[col].iloc[i-1] == self.indices[col].iloc[i]:
+                if self.indices[col].iloc[i - 1] == self.indices[col].iloc[i]:
                     self.changes.loc[i, col] = 0
                 else:
                     self.changes.loc[i, col] = 1

@@ -4,3 +4,4 @@
 * if filepath specified save should default to True
 * wrap plots unshared labels
 * fix no sorting option
+* CDF / PDF tests + percentile interval tests

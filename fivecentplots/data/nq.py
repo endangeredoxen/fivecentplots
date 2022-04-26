@@ -1,9 +1,6 @@
 from . import data
 import pdb
-import pandas as pd
-import numpy as np
 from .. import utilities
-import scipy.stats as ss
 utl = utilities
 db = pdb.set_trace
 
@@ -18,7 +15,7 @@ class NQ(data.Data):
         if not kwargs.get('x', None):
             kwargs = data.reshape_2D(kwargs)
         kwargs['trans_x'] = 'nq'
-                    
+
         super().__init__(name, req, opt, **kwargs)
 
         # overrides
@@ -35,4 +32,3 @@ class NQ(data.Data):
     def subset_wrap(self, ir, ic):
 
         return self._subset_wrap(ir, ic)
-

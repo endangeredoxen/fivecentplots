@@ -1,9 +1,7 @@
 from . import data
 import pdb
 import pandas as pd
-import numpy as np
 from .. import utilities
-import scipy.stats as ss
 utl = utilities
 db = pdb.set_trace
 
@@ -19,7 +17,7 @@ class ImShow(data.Data):
 
         # Color plane splitting
         self.fcpp, dummy, dummy2 = utl.reload_defaults(kwargs.get('theme', None))
-        cfa=utl.kwget(kwargs, self.fcpp, 'cfa', kwargs.get('cfa', None))
+        cfa = utl.kwget(kwargs, self.fcpp, 'cfa', kwargs.get('cfa', None))
         if cfa is not None:
             kwargs['df'] = utl.split_color_planes(kwargs['df'], cfa)
 
@@ -45,7 +43,6 @@ class ImShow(data.Data):
 
         self.df_all = utl.df_int_cols_convert(self.df_all)
 
-
     def check_xyz(self, xyz):
         """
         Validate the name and column data provided for x, y, and/or z
@@ -64,21 +61,21 @@ class ImShow(data.Data):
         vals = getattr(self, xyz)
 
         if vals is None and xyz not in self.opt:
-            raise AxisError('Must provide a column name for "%s"' % xyz)
+            raise data.AxisError('Must provide a column name for "%s"' % xyz)
 
         # Skip standard case check
 
         # Check for axis errors
         if self.twin_x and len(self.y) != 2:
-            raise AxisError('twin_x error! %s y values were specified but'
-                            ' two are required' % len(self.y))
+            raise data.AxisError('twin_x error! %s y values were specified but'
+                                 ' two are required' % len(self.y))
         if self.twin_x and len(self.x) > 1:
-            raise AxisError('twin_x error! only one x value can be specified')
+            raise data.AxisError('twin_x error! only one x value can be specified')
         if self.twin_y and len(self.x) != 2:
-            raise AxisError('twin_y error! %s x values were specified but'
-                            ' two are required' % len(self.x))
+            raise data.AxisError('twin_y error! %s x values were specified but'
+                                 ' two are required' % len(self.x))
         if self.twin_y and len(self.y) > 1:
-            raise AxisError('twin_y error! only one y value can be specified')
+            raise data.AxisError('twin_y error! only one y value can be specified')
 
         return vals
 
@@ -120,7 +117,7 @@ class ImShow(data.Data):
                 vmax = df.groupby(self.groupers).size().max()
             else:
                 vmax = len(df.index)
-        elif getattr(self, ax) == ['Value']:# and self.auto_cols:
+        elif getattr(self, ax) == ['Value']:  # and self.auto_cols:
             vmin = df[utl.df_int_cols(df)].min().min()
             vmax = df[utl.df_int_cols(df)].max().max()
 
@@ -155,7 +152,8 @@ class ImShow(data.Data):
                         vals = self.get_data_range(ax, df_fig, plot_num)
                     else:
                         vals = self.get_data_range(ax,
-                            df_fig[self.df_fig[self.row[0]] == self.row_vals[ir]], plot_num)
+                                                   df_fig[self.df_fig[self.row[0]] == self.row_vals[ir]],
+                                                   plot_num)
                     self.add_range(ir, ic, ax, 'min', vals[0])
                     self.add_range(ir, ic, ax, 'max', vals[1])
                 elif self.share_row and self.row is not None and ic > 0:
@@ -168,7 +166,8 @@ class ImShow(data.Data):
                         vals = self.get_data_range(ax, df_fig, ir, ic)
                     else:
                         vals = self.get_data_range(ax,
-                            df_fig[df_fig[self.col[0]] == self.col_vals[ic]], plot_num)
+                                                   df_fig[df_fig[self.col[0]] == self.col_vals[ic]],
+                                                   plot_num)
                     self.add_range(ir, ic, ax, 'min', vals[0])
                     self.add_range(ir, ic, ax, 'max', vals[1])
                 elif self.share_col and self.col is not None and ir > 0:
@@ -187,9 +186,9 @@ class ImShow(data.Data):
 
                     # Not shared or wrap by x or y
                     elif not getattr(self, 'share_%s' % ax) or \
-                            (self.wrap is not None and \
-                                self.wrap == 'y' or \
-                                self.wrap == 'x'):
+                            (self.wrap is not None
+                             and self.wrap == 'y'
+                             or self.wrap == 'x'):
                         vals = self.get_data_range(ax, df_rc, plot_num)
                         self.add_range(ir, ic, ax, 'min', vals[0])
                         self.add_range(ir, ic, ax, 'max', vals[1])
@@ -263,4 +262,3 @@ class ImShow(data.Data):
     def subset_wrap(self, ir, ic):
 
         return self._subset_wrap(ir, ic)
-

@@ -1,21 +1,20 @@
 import importlib
-import os, sys
+import os
+import sys
 import pdb
 import numpy as np
 import pandas as pd
 import scipy.stats as ss
-import importlib
 import datetime
 import subprocess
-#import ctypes
 from matplotlib.font_manager import FontProperties, findfont
 try:
     from PIL import ImageFont
-except:
+except ImportError:
     pass
 try:
     import cv2
-except:
+except (ImportError, ModuleNotFoundError):
     pass
 db = pdb.set_trace
 
@@ -62,8 +61,7 @@ class RepeatedList:
             key = None
         val = self.values[(idx + self.shift) % len(self.values)]
 
-        if len(list(self.override.keys())) == 0 or \
-               key not in self.override.keys():
+        if len(list(self.override.keys())) == 0 or key not in self.override.keys():
             return val
         else:
             return self.override[key]
@@ -125,8 +123,7 @@ class Timer:
 
         delta = self.now - self.init
         if self.units == 'ms':
-            delta = delta.seconds * 1000 + \
-                    delta.microseconds / 1000
+            delta = delta.seconds * 1000 + delta.microseconds / 1000
         elif self.units == 's':
             delta = delta.seconds + delta.microseconds / 1E6
         else:
@@ -226,9 +223,9 @@ def df_filter(df, filt_orig, drop_cols=False, keep_filtered=False):
             formatted string
         """
 
-        chars = {' ': '_', '.': 'dot', '[': '',']': '', '(': '', ')': '',
-                    '-': '_', '^': '', '>': '', '<': '', '/': '_', '@': 'at',
-                    '%': 'percent', '*': '_', ':': 'sc'}
+        chars = {' ': '_', '.': 'dot', '[': '', ']': '', '(': '', ')': '',
+                 '-': '_', '^': '', '>': '', '<': '', '/': '_', '@': 'at',
+                 '%': 'percent', '*': '_', ':': 'sc'}
         for sk in skip:
             chars.pop(sk)
         for k, v in chars.items():
@@ -258,7 +255,6 @@ def df_filter(df, filt_orig, drop_cols=False, keep_filtered=False):
             for iv, vv in enumerate(vals):
                 vals[iv] = vv.lstrip().rstrip()
             key2 = '&' + key + '!='
-            val_str = key2.join(vals)
             ands[ia] = '(%s%s)' % (key + '!=', key2.join(vals))
             continue
         elif 'in [' in aa:
@@ -269,7 +265,6 @@ def df_filter(df, filt_orig, drop_cols=False, keep_filtered=False):
             for iv, vv in enumerate(vals):
                 vals[iv] = vv.lstrip().rstrip()
             key2 = '|' + key + '=='
-            val_str = key2.join(vals)
             ands[ia] = '(%s%s)' % (key + '==', key2.join(vals))
             continue
         ors = [f.lstrip() for f in aa.split('|')]
@@ -329,7 +324,7 @@ def df_filter(df, filt_orig, drop_cols=False, keep_filtered=False):
 
         return df
 
-    except:
+    except:  # noqa
         print('Could not filter data!\n   Original filter string: %s\n   '
               'Modified filter string: %s' % (filt_orig, filt))
 
@@ -539,7 +534,7 @@ def get_decimals(value, max_places=4):
 
     last = np.nan
     value = abs(value)
-    for i in range(0, max_places+1):
+    for i in range(0, max_places + 1):
         current = round(value, i)
         if current == last and current > 0:
             break
@@ -582,7 +577,7 @@ def get_text_dimensions(text, **kwargs):
 
     try:
         ImageFont
-    except:
+    except NameError:
         print('get_text_dimensions requires pillow which was not found.  Please '
               'run pip install pillow and try again.')
         return False
@@ -593,9 +588,9 @@ def get_text_dimensions(text, **kwargs):
     font.set_weight(kwargs['font_weight'])
     fontfile = findfont(font, fallback_to_default=True)
 
-    size = ImageFont.truetype(fontfile , kwargs['font_size']).getsize(text)
+    size = ImageFont.truetype(fontfile, kwargs['font_size']).getsize(text)
 
-    return size[0]*1.125, size[1]*1.125  # no idea why it is off
+    return size[0] * 1.125, size[1] * 1.125  # no idea why it is off
 
 
 def kwget(dict1, dict2, vals, default):
@@ -641,7 +636,7 @@ def img_compare(img1, img2, show=False):
 
     try:
         cv2
-    except:
+    except NameError:
         print('img_compare requires opencv which was not found.  Please '
               'run pip install opencv-python and try again.')
         return False
@@ -672,7 +667,7 @@ def img_compare(img1, img2, show=False):
             is_diff = True
         else:
             difference = cv2.subtract(img1, img2)
-            is_diff = np.any(np.where(difference>1))  # 1 gives buffere for slight aliasing differences
+            is_diff = np.any(np.where(difference > 1))  # 1 gives buffere for slight aliasing differences
         if show and is_diff:
             cv2.imwrite('difference.png', 10 * difference)
             show_file('difference.png')
@@ -692,7 +687,7 @@ def img_grayscale(img):
 
     """
 
-    r, g, b = img[:,:,0], img[:,:,1], img[:,:,2]
+    r, g, b = img[:, :, 0], img[:, :, 1], img[:, :, 2]
 
     return pd.DataFrame(0.2989 * r + 0.5870 * g + 0.1140 * b)
 
@@ -744,7 +739,6 @@ def pie_wedge_labels(x, y, startangle):
     yperrad = yper * 2 * np.pi
     csr = yperrad.cumsum()
     startangle = startangle * np.pi / 180
-    csradj = csr - startangle
     left = np.where((csr - (np.pi - startangle)) > 0)[0][0]
     right = np.where((csr - (2 * np.pi - startangle)) > 0)
     if len(right[0]) > 0:
@@ -803,10 +797,10 @@ def rectangle_overlap(r1, r2):
     """
 
     # Get bounds
-    b1 = [r1[2][0] - r1[0]/2, r1[2][0] + r1[0]/2,
-          r1[2][1] + r1[1]/2, r1[2][1] - r1[1]/2]
-    b2 = [r2[2][0] - r2[0]/2, r2[2][0] + r2[0]/2,
-          r2[2][1] + r2[1]/2, r2[2][1] - r2[1]/2]
+    b1 = [r1[2][0] - r1[0] / 2, r1[2][0] + r1[0] / 2,
+          r1[2][1] + r1[1] / 2, r1[2][1] - r1[1] / 2]
+    b2 = [r2[2][0] - r2[0] / 2, r2[2][0] + r2[0] / 2,
+          r2[2][1] + r2[1] / 2, r2[2][1] - r2[1] / 2]
 
     if b1[0] < b2[1] and b1[1] > b2[0] \
             and b1[2] > b2[3] and b1[3] < b2[2]:
@@ -833,19 +827,19 @@ def reload_defaults(theme=None):
         try:
             defaults = importlib.import_module(theme.replace('.py', ''), theme_dir)
             importlib.reload(defaults)
-        except:
+        except (TypeError, NameError, ImportError):
             print(err_msg)
             import defaults
             importlib.reload(defaults)
 
     elif theme is not None and \
-            (theme in os.listdir(theme_dir) or theme+'.py' in os.listdir(theme_dir)):
+            (theme in os.listdir(theme_dir) or theme + '.py' in os.listdir(theme_dir)):
         sys.path = [theme_dir] + sys.path
         reset_path = True
         try:
             defaults = importlib.import_module(theme.replace('.py', ''), theme_dir)
             importlib.reload(defaults)
-        except:
+        except (TypeError, NameError, ImportError):
             print(err_msg)
             import defaults
             importlib.reload(defaults)
@@ -859,7 +853,7 @@ def reload_defaults(theme=None):
     markers = defaults.markers if hasattr(defaults, 'markers') else None
 
     if reset_path:
-        sys.path = sys.path [1:]
+        sys.path = sys.path[1:]
 
     return fcp_params, colors, markers
 
@@ -992,8 +986,8 @@ def split_color_planes(img, cfa='rggb', asdict=False):
         raise CFAError('Only CFAs with a 2x2 grid of colors is supported')
 
     # Check for a repeated cfa
-    counts = {i:cp.count(i) for i in cp}
-    dup = [k for k, v in counts.items() if v==2]
+    counts = {i: cp.count(i) for i in cp}
+    dup = [k for k, v in counts.items() if v == 2]
     if len(dup) > 0:
         dup = dup[0]
         idx = [i for i, f in enumerate(cp) if f == dup]
@@ -1010,7 +1004,7 @@ def split_color_planes(img, cfa='rggb', asdict=False):
         img2 = pd.DataFrame()
 
     for ic, cc in enumerate(cp):
-        temp = img.loc[ic//2::2, (ic%2)::2]
+        temp = img.loc[ic // 2::2, (ic % 2)::2]
         if asdict:
             img2[cc] = temp
         else:

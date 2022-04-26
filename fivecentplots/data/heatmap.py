@@ -3,7 +3,6 @@ import pdb
 import pandas as pd
 import numpy as np
 from .. import utilities
-import scipy.stats as ss
 from natsort import natsorted
 utl = utilities
 db = pdb.set_trace
@@ -51,21 +50,21 @@ class Heatmap(data.Data):
         vals = getattr(self, xyz)
 
         if vals is None and xyz not in self.opt:
-            raise AxisError('Must provide a column name for "%s"' % xyz)
+            raise data.AxisError('Must provide a column name for "%s"' % xyz)
 
         # Skip standard case check
 
         # Check for axis errors
         if self.twin_x and len(self.y) != 2:
-            raise AxisError('twin_x error! %s y values were specified but'
-                            ' two are required' % len(self.y))
+            raise data.AxisError('twin_x error! %s y values were specified but'
+                                 ' two are required' % len(self.y))
         if self.twin_x and len(self.x) > 1:
-            raise AxisError('twin_x error! only one x value can be specified')
+            raise data.AxisError('twin_x error! only one x value can be specified')
         if self.twin_y and len(self.x) != 2:
-            raise AxisError('twin_y error! %s x values were specified but'
-                            ' two are required' % len(self.x))
+            raise data.AxisError('twin_y error! %s x values were specified but'
+                                 ' two are required' % len(self.x))
         if self.twin_y and len(self.y) > 1:
-            raise AxisError('twin_y error! only one y value can be specified')
+            raise data.AxisError('twin_y error! only one y value can be specified')
 
         return vals
 
@@ -158,20 +157,16 @@ class Heatmap(data.Data):
 
             if 'xmin' in self.ranges[ir, ic].keys() and \
                     self.ranges[ir, ic]['xmin'] is not None:
-                df = df[[f for f in df.columns if f >=
-                         self.ranges[ir, ic]['xmin']]]
+                df = df[[f for f in df.columns if f >= self.ranges[ir, ic]['xmin']]]
             if 'xmax' in self.ranges[ir, ic].keys() and \
                     self.ranges[ir, ic]['xmax'] is not None:
-                df = df[[f for f in df.columns if f <=
-                         self.ranges[ir, ic]['xmax']]]
+                df = df[[f for f in df.columns if f <= self.ranges[ir, ic]['xmax']]]
             if 'ymin' in self.ranges[ir, ic].keys() and \
                     self.ranges[ir, ic]['ymin'] is not None:
-                df = df.loc[[f for f in df.index if f >=
-                             self.ranges[ir, ic]['ymin']]]
+                df = df.loc[[f for f in df.index if f >= self.ranges[ir, ic]['ymin']]]
             if 'ymax' in self.ranges[ir, ic].keys() and \
                     self.ranges[ir, ic]['ymax'] is not None:
-                df = df.loc[[f for f in df.index if f <=
-                             self.ranges[ir, ic]['ymax']]]
+                df = df.loc[[f for f in df.index if f <= self.ranges[ir, ic]['ymax']]]
 
         # check dtypes to properly designated tick labels
         dtypes = [int, np.int32, np.int64]

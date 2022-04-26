@@ -3,7 +3,6 @@ import pdb
 import pandas as pd
 import numpy as np
 from .. import utilities
-import scipy.stats as ss
 from natsort import natsorted
 utl = utilities
 db = pdb.set_trace

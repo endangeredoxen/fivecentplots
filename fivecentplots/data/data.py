@@ -381,9 +381,9 @@ class Data:
 
                     # Not shared or wrap by x or y
                     elif not getattr(self, 'share_%s' % ax) or \
-                            (self.wrap is not None and
-                                self.wrap == 'y' or
-                                self.wrap == 'x'):
+                            (self.wrap is not None
+                             and self.wrap == 'y'
+                             or self.wrap == 'x'):
                         vals = self.get_data_range(ax, df_rc, plot_num)
                         self.add_range(ir, ic, ax, 'min', vals[0])
                         self.add_range(ir, ic, ax, 'max', vals[1])
@@ -544,8 +544,8 @@ class Data:
             raise GroupingError(error)
 
         if self.groups is not None and \
-                ((self.row and self.row[0] in self.groups) or
-                 (self.col and self.col[0] in self.groups)):
+                ((self.row and self.row[0] in self.groups)
+                 or (self.col and self.col[0] in self.groups)):
             error = '"%s" value cannot also be specified as a "group" value' % \
                     ('col' if self.col else 'row')
             raise GroupingError(error)
@@ -585,7 +585,7 @@ class Data:
             try:
                 self.df_all[val] = self.df_all[val].astype(float)
                 continue
-            except:
+            except ValueError:
                 pass
             try:
                 self.df_all[val] = self.df_all[val].astype('datetime64[ns]')
@@ -595,7 +595,7 @@ class Data:
                         len(self.df_all.loc[self.df_all[val].dt.second != 0, val]) == 0:
                     self.df_all[val] = pd.DatetimeIndex(self.df_all[val]).date
                 continue
-            except:
+            except:  # noqa
                 continue
             #     raise AxisError('Could not convert x-column "%s" to float or '
                 #  'datetime.' % val)
@@ -682,7 +682,7 @@ class Data:
         # else:
 
         if float(self.interval[0]) > 1:
-            self.interval[0] = float(self.interval[0])/100
+            self.interval[0] = float(self.interval[0]) / 100
         stat = pd.DataFrame()
         stat['mean'] = df[[x, y]].groupby(x).mean().reset_index()[y]
         stat['count'] = df[[x, y]].groupby(x).count().reset_index()[y]
@@ -694,7 +694,7 @@ class Data:
             if row['std'] == 0:
                 conf = [0, 0]
             else:
-                conf = ss.t.interval(self.interval[0], int(row['count'])-1,
+                conf = ss.t.interval(self.interval[0], int(row['count']) - 1,
                                      loc=row['mean'], scale=row['sderr'])
             stat.loc[irow, 'ucl'] = conf[1]
             stat.loc[irow, 'lcl'] = conf[0]
@@ -812,14 +812,14 @@ class Data:
         if self.ax_scale in ['log%s' % ax, 'loglog', 'semilog%s' % ax, 'log']:
             axmin = dfax[dfax > 0].stack().min()
             axmax = dfax.stack().max()
-            axdelta = np.log10(axmax)-np.log10(axmin)
+            axdelta = np.log10(axmax) - np.log10(axmin)
         else:
             axmin = dfax.stack().min()
             axmax = dfax.stack().max()
-            axdelta = axmax-axmin
+            axdelta = axmax - axmin
         if axdelta <= 0:
-            axmin -= 0.1*axmin
-            axmax += 0.1*axmax
+            axmin -= 0.1 * axmin
+            axmax += 0.1 * axmax
 
         # Check user-specified min values
         vmin = getattr(self, '%smin' % ax)[plot_num]
@@ -832,17 +832,17 @@ class Data:
             if 'box' not in self.name or self.groups is None:
                 q1 = dfax.quantile(0.25).min()
                 q3 = dfax.quantile(0.75).max()
-                iqr = factor*(q3 - q1)
+                iqr = factor * (q3 - q1)
                 vmin = q1 - iqr
             else:
                 q1 = df[self.groupers + cols].groupby(self.groupers) \
                     .quantile(0.25)[cols].reset_index()
                 q3 = df[self.groupers + cols].groupby(self.groupers) \
                     .quantile(0.75)[cols].reset_index()
-                iqr = factor*(q3[cols] - q1[cols])
+                iqr = factor * (q3[cols] - q1[cols])
                 vmin = (q1[cols] - iqr[cols]).min().iloc[0]
         elif vmin is not None and 'q' in str(vmin).lower():
-            xq = float(str(vmin).lower().replace('q', ''))/100
+            xq = float(str(vmin).lower().replace('q', '')) / 100
             if self.groups is None:
                 vmin = dfax.quantile(xq).min()
             elif 'box' in self.name:
@@ -876,18 +876,18 @@ class Data:
             if 'box' not in self.name or self.groups is None:
                 q1 = dfax.quantile(0.25).min()
                 q3 = dfax.quantile(0.75).max()
-                iqr = factor*(q3 - q1)
+                iqr = factor * (q3 - q1)
                 vmax = q3 + iqr
             else:
                 q1 = df[self.groupers + cols].groupby(self.groupers) \
                     .quantile(0.25)[cols].reset_index()
                 q3 = df[self.groupers + cols].groupby(self.groupers) \
                     .quantile(0.75)[cols].reset_index()
-                iqr = factor*(q3[cols] - q1[cols])
+                iqr = factor * (q3[cols] - q1[cols])
                 # should this be referred to median?
                 vmax = (q3[cols] + iqr[cols]).max().iloc[0]
         elif vmax is not None and 'q' in str(vmax).lower():
-            xq = float(str(vmax).lower().replace('q', ''))/100
+            xq = float(str(vmax).lower().replace('q', '')) / 100
             if self.groups is None:
                 vmax = dfax.quantile(xq).max()
             elif 'box' in self.name:  # move to data.box.py?
@@ -896,7 +896,6 @@ class Data:
             else:
                 vmax = df[self.groups + cols].groupby(self.groups) \
                     .quantile(xq)[cols].max().iloc[0]
-            #getattr(self, '%smax' % ax).values[plot_num]
         elif vmax is not None:
             vmax = vmax
         elif getattr(self, 'ax_limit_padding_%smax' % ax) is not None:
@@ -997,18 +996,18 @@ class Data:
         if not self.fit:
             return df, np.nan
 
-        if self.fit == True or type(self.fit) is int:
+        if self.fit is True or type(self.fit) is int:
 
             if type(self.fit_range_x) is list:
-                df2 = df2[(df2[x] >= self.fit_range_x[0]) &
-                          (df2[x] <= self.fit_range_x[1])].copy()
+                df2 = df2[(df2[x] >= self.fit_range_x[0])
+                          & (df2[x] <= self.fit_range_x[1])].copy()
                 if self.ranges[ir, ic]['ymin'] is not None:
                     df2 = df2[(df2[y]) >= self.ranges[ir, ic]['ymin']]
                 if self.ranges[ir, ic]['ymax'] is not None:
                     df2 = df2[(df2[y]) <= self.ranges[ir, ic]['ymax']]
             elif type(self.fit_range_y) is list:
-                df2 = df2[(df2[y] >= self.fit_range_y[0]) &
-                          (df2[y] <= self.fit_range_y[1])].copy()
+                df2 = df2[(df2[y] >= self.fit_range_y[0])
+                          & (df2[y] <= self.fit_range_y[1])].copy()
                 if self.ranges[ir, ic]['xmin'] is not None:
                     df2 = df2[(df2[x]) >= self.ranges[ir, ic]['xmin']]
                 if self.ranges[ir, ic]['xmax'] is not None:
@@ -1034,10 +1033,10 @@ class Data:
 
             # Find R^2
             yval = np.polyval(coeffs, xx)
-            ybar = yy.sum()/len(yy)
-            ssreg = np.sum((yval-ybar)**2)
-            sstot = np.sum((yy-ybar)**2)
-            rsq = ssreg/sstot
+            ybar = yy.sum() / len(yy)
+            ssreg = np.sum((yval - ybar)**2)
+            sstot = np.sum((yy - ybar)**2)
+            rsq = ssreg / sstot
 
             # Add fit line
             df['%s Fit' % x] = np.linspace(self.ranges[ir, ic]['xmin'],
@@ -1063,12 +1062,12 @@ class Data:
             updated kwargs dict
         """
 
-        if self.legend == True and self.twin_x \
-                or self.legend == True and len(self.y) > 1:
+        if self.legend is True and self.twin_x \
+                or self.legend is True and len(self.y) > 1:
             self.legend_vals = self.y + self.y2
             self.nleg_vals = len(self.y + self.y2)
             return
-        elif self.legend == True and self.twin_y:
+        elif self.legend is True and self.twin_y:
             self.legend_vals = self.x + self.x2
             self.nleg_vals = len(self.x + self.x2)
             return
@@ -1078,7 +1077,7 @@ class Data:
 
         leg_all = []
 
-        if self.legend == True:
+        if self.legend is True:
             self.legend = None  # no option for legend here so disable
             return
 
@@ -1120,7 +1119,7 @@ class Data:
         leg_df = pd.DataFrame(leg_all, columns=['Leg', 'x', 'y'])
 
         # if leg specified
-        if not (leg_df.Leg == None).all():
+        if not (leg_df.Leg.isnull()).all():
             leg_df['names'] = list(leg_df.Leg)
 
         # if more than one y axis and leg specified
@@ -1133,7 +1132,7 @@ class Data:
         elif self.col == 'x':
             del leg_df['x']
             leg_df = leg_df.drop_duplicates().reset_index(drop=True)
-        elif len(leg_df.y.unique()) > 1 and not (leg_df.Leg == None).all() \
+        elif len(leg_df.y.unique()) > 1 and not (leg_df.Leg.isnull()).all() \
                 and len(leg_df.x.unique()) == 1:
             leg_df['names'] = leg_df.Leg.map(str) + ' | ' + leg_df.y.map(str)
 
@@ -1165,8 +1164,8 @@ class Data:
             yy = [] if not self.y else self.y + self.y2
             lenx = 1 if not self.x else len(xx)
             leny = 1 if not self.y else len(yy)
-            vals = pd.DataFrame({'x': self.x if not self.x else xx*leny,
-                                 'y': self.y if not self.y else yy*lenx})
+            vals = pd.DataFrame({'x': self.x if not self.x else xx * leny,
+                                 'y': self.y if not self.y else yy * lenx})
 
             for irow, row in vals.iterrows():
                 # Set twin ax status
@@ -1243,7 +1242,7 @@ class Data:
                 rcnum = self.ncols if self.ncols <= len(self.wrap_vals) \
                     else len(self.wrap_vals)
             self.ncol = rcnum
-            self.nrow = int(np.ceil(len(self.wrap_vals)/rcnum))
+            self.nrow = int(np.ceil(len(self.wrap_vals) / rcnum))
             self.nwrap = len(self.wrap_vals)
 
         # Non-wrapping option
@@ -1323,17 +1322,17 @@ class Data:
             return pd.DataFrame()
 
         df_stat = df.groupby(x if not self.stat_val else self.stat_val)
-        try:
-            if 'q' in self.stat:
-                q = float(self.stat.replace('q', ''))
-                if q > 1:
-                    q = q / 100
-                return df_stat.quantile(q)
-            else:
+        if 'q' in self.stat:
+            q = float(self.stat.replace('q', ''))
+            if q > 1:
+                q = q / 100
+            return df_stat.quantile(q)
+        else:
+            try:
                 return getattr(df_stat, self.stat)().reset_index()
-        except:
-            print('stat "%s" is not supported...skipping stat calculation' % self.stat)
-            return None
+            except AttributeError:
+                print('stat "%s" is not supported...skipping stat calculation' % self.stat)
+                return None
 
     def get_stat_groupings(self, df):
         """
@@ -1366,7 +1365,7 @@ class Data:
         Make a list of empty dicts for axes range limits
         """
 
-        ranges = np.array([[None]*self.ncol]*self.nrow)
+        ranges = np.array([[None] * self.ncol] * self.nrow)
         for ir in range(0, self.nrow):
             for ic in range(0, self.ncol):
                 ranges[ir, ic] = {}
@@ -1429,8 +1428,8 @@ class Data:
                 and self.col not in [None, 'x']:
             row = self.row_vals[ir]
             col = self.col_vals[ic]
-            return self.df_fig[(self.df_fig[self.row[0]] == row) &
-                               (self.df_fig[self.col[0]] == col)].copy()
+            return self.df_fig[(self.df_fig[self.row[0]] == row)
+                               & (self.df_fig[self.col[0]] == col)].copy()
         elif self.row not in [None, 'y'] and \
                 (not self.col or self.col in [None, 'x']):
             row = self.row_vals[ir]
@@ -1447,16 +1446,16 @@ class Data:
         For wrap plots, select the revelant subset from self.df_fig
         """
 
-        if ir * self.ncol + ic > self.nwrap-1:
+        if ir * self.ncol + ic > self.nwrap - 1:
             return pd.DataFrame()
         elif self.wrap == 'y':
-            # can we drop these validate calls for speed
+            # NOTE: can we drop these validate calls for speed?
             self.y = utl.validate_list(self.wrap_vals[ic + ir * self.ncol])
-            cols = (self.x if self.x is not None else []) + \
-                   (self.y if self.y is not None else []) + \
-                   (self.groups if self.groups is not None else []) + \
-                   (utl.validate_list(self.legend)
-                    if self.legend not in [None, True, False] else [])
+            cols = (self.x if self.x is not None else []) \
+                + (self.y if self.y is not None else []) \
+                + (self.groups if self.groups is not None else []) \
+                + (utl.validate_list(self.legend)
+                   if self.legend not in [None, True, False] else [])
             return self.df_fig[cols]
         elif self.wrap == 'x':
             self.x = utl.validate_list(self.wrap_vals[ic + ir * self.ncol])
@@ -1475,7 +1474,7 @@ class Data:
                 self.wrap_vals = list(self.df_fig.groupby(
                     self.wrap, sort=False).groups.keys())
             wrap = dict(zip(self.wrap,
-                        utl.validate_list(self.wrap_vals[ir*self.ncol + ic])))
+                        utl.validate_list(self.wrap_vals[ir * self.ncol + ic])))
             return self.df_fig.loc[(self.df_fig[list(wrap)] == pd.Series(wrap)).all(axis=1)].copy()
 
     def swap_xy(self):
@@ -1561,7 +1560,7 @@ class Data:
                             gg = utl.nq(gg[val], val, **self.kwargs)
                     elif getattr(self, 'trans_%s' % ax) == 'inverse' \
                             or getattr(self, 'trans_%s' % ax) == 'inv':
-                        gg.loc[:, val] = 1/gg[val]
+                        gg.loc[:, val] = 1 / gg[val]
                     elif (type(getattr(self, 'trans_%s' % ax)) is tuple
                             or type(getattr(self, 'trans_%s' % ax)) is list) \
                             and getattr(self, 'trans_%s' % ax)[0] == 'pow':

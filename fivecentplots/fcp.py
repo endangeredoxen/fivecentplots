@@ -19,30 +19,22 @@ __url__ = 'https://github.com/endangeredoxen/fivecentplots'
 import numpy as np
 import pandas as pd
 import pdb
-import re
 import copy
-import importlib
-import itertools
 import shutil
-import datetime
 import sys
 import textwrap
-#from . data import Data
 from . import data
 from . colors import *
 from . import engines
 from . import keywords
 from . utilities import *
-import warnings
-import subprocess
 try:
     # optional import - only used for paste_kwargs to use windows clipboard
     # to directly copy kwargs from ini file
     import fivecentfileio as fileio
-    import win32clipboard
-except:
+    import win32clipboard  # noqa
+except (ModuleNotFoundError, ImportError, NameError):
     pass
-from natsort import natsorted
 db = pdb.set_trace
 
 osjoin = os.path.join
@@ -265,7 +257,7 @@ def paste_kwargs(kwargs):
 
         return new_kw
 
-    except:
+    except:  # noqa
         print('This feature requires the fivecentfileio package '
               '(download @ https://github.com/endangeredoxen/fivecentfileio) '
               'and pywin32 for the win32clipboard module')
@@ -295,14 +287,10 @@ def plot_bar(data, layout, ir, ic, df_rc, kwargs):
 
     # would need to update to support multiple x
     xvals = np.sort(df_rc[data.x[0]].unique())
-    group_vals = [data.x[0], data.legend] if data.legend else data.x[0]
-    groups = df_rc.groupby(group_vals)
-    ticks = len(groups)
     stacked = pd.DataFrame(index=xvals)
     ss = []
 
     if data.legend:
-        df_rc_new = pd.DataFrame()
         df_rc = df_rc.reset_index(drop=True)
         for n, g in df_rc.groupby(data.x[0]):
             for ii, (nn, gg) in enumerate(g.groupby(data.legend)):
@@ -367,7 +355,6 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
     labels = []
     dividers = []
     stats = []
-    medians = []
 
     if dd.groups is not None:
         col = dd.changes.columns
@@ -394,7 +381,7 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
                 if float(ss.strip('q')) < 1:
                     stats += [temp.quantile(float(ss.strip('q'))).iloc[0]]
                 else:
-                    stats += [temp.quantile(float(ss.strip('q'))/100).iloc[0]]
+                    stats += [temp.quantile(float(ss.strip('q')) / 100).iloc[0]]
             else:
                 stats += [temp.mean().iloc[0]]
             if type(row) is not tuple:
@@ -411,8 +398,7 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
             # Plot points
             if type(dd.legend_vals) is pd.DataFrame:
                 for jj, jrow in dd.legend_vals.iterrows():
-                    temp = gg.loc[gg[dd.legend] ==
-                                  jrow['names']][dd.y].dropna()
+                    temp = gg.loc[gg[dd.legend] == jrow['names']][dd.y].dropna()
                     temp['x'] = irow + 1
                     if len(temp) > 0:
                         layout.plot_xy(ir, ic, jj, temp, 'x', dd.y[0],
@@ -447,18 +433,18 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
     if layout.box_range_lines.on:
         for id, dat in enumerate(data):
             kwargs = layout.box_range_lines.kwargs.copy()
-            layout.plot_line(ir, ic, id+1-0.2, dat.max().iloc[0],
-                             x1=id+1+0.2, y1=dat.max().iloc[0], **kwargs)
-            layout.plot_line(ir, ic, id+1-0.2, dat.min().iloc[0],
-                             x1=id+1+0.2, y1=dat.min().iloc[0], **kwargs)
+            layout.plot_line(ir, ic, id + 1 - 0.2, dat.max().iloc[0],
+                             x1=id + 1 + 0.2, y1=dat.max().iloc[0], **kwargs)
+            layout.plot_line(ir, ic, id + 1 - 0.2, dat.min().iloc[0],
+                             x1=id + 1 + 0.2, y1=dat.min().iloc[0], **kwargs)
             kwargs['style'] = kwargs['style2']
-            layout.plot_line(ir, ic, id+1, dat.min().iloc[0],
-                             x1=id+1, y1=dat.max().iloc[0], **kwargs)
+            layout.plot_line(ir, ic, id + 1, dat.min().iloc[0],
+                             x1=id + 1, y1=dat.max().iloc[0], **kwargs)
 
     # Add boxes
     for ival, val in enumerate(data):
         data[ival] = val[dd.y[0]].values
-    bp = layout.plot_box(ir, ic, data, **kwargs)
+    layout.plot_box(ir, ic, data, **kwargs)
 
     # Add divider lines
     if layout.box_divider.on and len(dividers) > 0:
@@ -475,7 +461,7 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
         layout.plot_line(ir, ic, x, stats, **layout.box_stat_line.kwargs,)
 
     # add group means
-    if layout.box_group_means.on == True:
+    if layout.box_group_means.on is True:
         mgroups = df_rc.groupby(dd.groups[0:1])
         x = -0.5
         for ii, (nn, mm) in enumerate(mgroups):
@@ -485,12 +471,11 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
                 x2 = len(mm[dd.groups].drop_duplicates()) + x + 1
             else:
                 x2 = len(mm[dd.groups].drop_duplicates()) + x
-            layout.plot_line(ir, ic, [x, x2], y, **
-                             layout.box_group_means.kwargs,)
+            layout.plot_line(ir, ic, [x, x2], y, **layout.box_group_means.kwargs,)
             x = x2
 
     # add grand mean
-    if layout.box_grand_mean.on == True:
+    if layout.box_grand_mean.on is True:
         x = np.linspace(0.5, dd.ngroups + 0.5, dd.ngroups)
         mm = df_rc[dd.y[0]].mean()
         y = [mm for f in x]
@@ -509,8 +494,8 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
         for ii, (nn, mm) in enumerate(mgroups):
             low, high = ci(mm[dd.y[0]], layout.box_mean_diamonds.conf_coeff)
             mm = mm[dd.y[0]].mean()
-            x1 = -layout.box_mean_diamonds.width[0]/2
-            x2 = layout.box_mean_diamonds.width[0]/2
+            x1 = -layout.box_mean_diamonds.width[0] / 2
+            x2 = layout.box_mean_diamonds.width[0] / 2
             points = [[ii + 1 + x1, mm],
                       [ii + 1, high],
                       [ii + 1 + x2, mm],
@@ -617,7 +602,7 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin, leg_name, ngroups):
 
     if layout.fit.rsq:
         layout.add_text(ir, ic, 'R^2=%s' % round(rsq, 4), 'fit',
-                        offsety=-2.2*layout.fit.font_size)
+                        offsety=-2.2 * layout.fit.font_size)
 
     return data
 
@@ -793,7 +778,7 @@ def plot_pie(data, layout, ir, ic, df, kwargs):
         print('Pie plot had negative values.  Skipping...')
         return data
 
-    pie = layout.plot_pie(ir, ic, df, x, y, data, layout.pie.__dict__)
+    layout.plot_pie(ir, ic, df, x, y, data, layout.pie.__dict__)
 
     return data
 
@@ -1117,7 +1102,7 @@ def set_theme(theme=None):
         print('Select default styling theme:')
         print('   Built-in theme list:')
         for i, th in enumerate(themes):
-            print('      %s) %s' % (i+1, th))
+            print('      %s) %s' % (i + 1, th))
         if len(themes) > 0:
             print('   User theme list:')
             for i, th in enumerate(mythemes):
@@ -1126,7 +1111,7 @@ def set_theme(theme=None):
 
         try:
             int(entry)
-        except:
+        except TypeError:
             print('Invalid selection!  Please try again')
             return
 
@@ -1136,7 +1121,7 @@ def set_theme(theme=None):
 
         if int(entry) <= len(themes):
             print('Copying %s >> %s' %
-                  (themes[int(entry)-1],
+                  (themes[int(entry) - 1],
                    osjoin(user_dir, '.fivecentplots', 'defaults.py')))
         else:
             print('Copying %s >> %s' %
@@ -1153,10 +1138,10 @@ def set_theme(theme=None):
         os.makedirs(osjoin(user_dir, '.fivecentplots'))
 
     if entry is not None and int(entry) <= len(themes):
-        shutil.copy2(osjoin(cur_dir, 'themes', themes[int(entry)-1] + '.py'),
+        shutil.copy2(osjoin(cur_dir, 'themes', themes[int(entry) - 1] + '.py'),
                      osjoin(user_dir, '.fivecentplots', 'defaults.py'))
     else:
-        shutil.copy2(osjoin(my_theme_dir, mythemes[int(entry)-1-len(themes)] + '.py'),
+        shutil.copy2(osjoin(my_theme_dir, mythemes[int(entry) - 1 - len(themes)] + '.py'),
                      osjoin(user_dir, '.fivecentplots', 'defaults.py'))
 
     print('done!')

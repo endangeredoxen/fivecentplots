@@ -1,9 +1,7 @@
 from . import data
 import pdb
 import pandas as pd
-import numpy as np
 from .. import utilities
-import scipy.stats as ss
 utl = utilities
 db = pdb.set_trace
 
@@ -19,18 +17,18 @@ class Gantt(data.Data):
         super().__init__(name, req, opt, **kwargs)
 
         # error checks
-        if len(self.x) !=2:
+        if len(self.x) != 2:
             raise data.DataError('Gantt charts require both a start and a stop column')
         if self.df_all[self.x[0]].dtype != 'datetime64[ns]':
             try:
                 # check to see if 'O' type is still a valid datetime
                 self.df_all[self.x[0]].astype('datetime64[ns]')
-            except:
+            except:  # noqa
                 raise data.DataError('Start column in gantt chart must be of type datetime')
         if self.df_all[self.x[1]].dtype != 'datetime64[ns]':
             try:
                 self.df_all[self.x[1]].astype('datetime64[ns]')
-            except:
+            except:  # noqa
                 raise data.DataError('Stop column in gantt chart must be of type datetime')
 
     def get_data_ranges(self):
@@ -93,8 +91,8 @@ class Gantt(data.Data):
             yy = [] if not self.y else self.y + self.y2
             lenx = 1 if not self.x else len(xx)
             leny = 1 if not self.y else len(yy)
-            vals = pd.DataFrame({'x': self.x if not self.x else xx*leny,
-                                 'y': self.y if not self.y else yy*lenx})
+            vals = pd.DataFrame({'x': self.x if not self.x else xx * leny,
+                                 'y': self.y if not self.y else yy * lenx})
 
             for irow, row in vals.iterrows():
                 # Set twin ax status
@@ -112,7 +110,7 @@ class Gantt(data.Data):
                     irow = self.wrap_vals.index(leg)
 
                 yield irow, df, row['x'], row['y'], \
-                      None if self.z is None else self.z[0], leg, twin, len(vals)
+                    None if self.z is None else self.z[0], leg, twin, len(vals)
 
         else:
             for irow, row in self.legend_vals.iterrows():
@@ -130,7 +128,7 @@ class Gantt(data.Data):
 
                 # Subset by legend value
                 if row['Leg'] is not None:
-                    df2 = df[df[self.legend]==row['Leg']].copy()
+                    df2 = df[df[self.legend] == row['Leg']].copy()
 
                 # Filter out all nan data
                 if row['x'] and row['x'] in df2.columns and len(df2[row['x']].dropna()) == 0 \
@@ -143,8 +141,8 @@ class Gantt(data.Data):
                         or (row['y'] != self.legend_vals.loc[0, 'y'] and self.twin_x):
                     twin = True
                 yield irow, df2, row['x'], row['y'], \
-                      None if self.z is None else self.z[0], row['names'], \
-                      twin, len(self.legend_vals)
+                    None if self.z is None else self.z[0], row['names'], \
+                    twin, len(self.legend_vals)
 
     def subset_modify(self, df, ir, ic):
 
@@ -162,4 +160,3 @@ class Gantt(data.Data):
     def subset_wrap(self, ir, ic):
 
         return self._subset_wrap(ir, ic)
-
