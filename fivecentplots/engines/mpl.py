@@ -832,7 +832,7 @@ class Layout(BaseLayout):
         if leg_name is not None:
             self.legend.add_value(leg_name, fill, 'fill')
 
-    def get_axes_label_position(self):
+    def _get_axes_label_position(self):
         """
         Get the position of the axes labels
             self.label_@.position --> [left, right, top, bottom]
@@ -2366,7 +2366,7 @@ class Layout(BaseLayout):
 
         """
 
-        axes = self.get_axes()
+        axes = self._get_axes()
 
         # for ax in axes:
         try:
@@ -2399,7 +2399,7 @@ class Layout(BaseLayout):
 
         """
 
-        axes = self.get_axes()
+        axes = self._get_axes()
 
         for ax in axes:
             # Turn off secondary gridlines
@@ -2530,7 +2530,7 @@ class Layout(BaseLayout):
             axes scale type
         """
 
-        axes = self.get_axes()
+        axes = self._get_axes()
 
         for ax in axes:
             if ax.scale is None:
@@ -3193,7 +3193,7 @@ class Layout(BaseLayout):
         self.get_tick_overlaps('2')
 
         # Update the axes label positions
-        self.get_axes_label_position()
+        self._get_axes_label_position()
         labels = ['x', 'x2', 'y', 'y2', 'z', 'row', 'col']
         for label in labels:
             # for ir, ic in np.ndindex(ax.obj.shape):

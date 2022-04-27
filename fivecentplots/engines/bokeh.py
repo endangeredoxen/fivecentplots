@@ -167,9 +167,9 @@ class Layout(BaseLayout):
         Make the figure and axes objects
         """
 
-        self.update_from_data(data)
-        self.update_wrap(data, kwargs)
-        self.set_label_text(data, **kwargs)
+        self._update_from_data(data)
+        self._update_wrap(data, kwargs)
+        self._set_label_text(data, **kwargs)
         data = self.get_element_sizes(data)
 
         self.axes.obj = np.array([[None] * self.ncol] * self.nrow)
@@ -367,7 +367,7 @@ class Layout(BaseLayout):
 
         """
 
-        axes = self.get_axes()
+        axes = self._get_axes()
 
         fill, alpha = fill_alpha(axes[0].fill_color.get(utl.plot_num(ir, ic, self.ncol)))
         self.axes.obj[ir, ic].background_fill_color = fill

@@ -8,6 +8,8 @@ from .. import utilities as utl
 from distutils.version import LooseVersion
 from collections import defaultdict
 import warnings
+import abc
+from typing import Type
 
 
 def custom_formatwarning(msg, *args, **kwargs):
@@ -56,11 +58,10 @@ ENGINE = ''
 
 class BaseLayout:
     def __init__(self, data, **kwargs):
-        """
-        Generic layout properties class
+        """Generic layout properties class
 
         Args:
-            data (Data class): data values
+            data (data obj): Data class object for the plot
             **kwargs: styling, spacing kwargs
 
         """
@@ -74,7 +75,6 @@ class BaseLayout:
             utl.reload_defaults(kwargs.get('theme', None))
 
         # init the objects and params
-        # TODO: clean up the kwargs passing and use self attribute
         self._init_layout(data)
         kwargs = self._init_figure(kwargs)
         kwargs = self._init_colors(kwargs)
@@ -103,7 +103,7 @@ class BaseLayout:
         kwargs = self._init_text_box(kwargs)
         self._init_white_space(kwargs)
 
-        # Extras
+        # Some extra kwargs
         self.inline = utl.kwget(kwargs, self.fcpp, 'inline', None)
         self.separate_labels = utl.kwget(kwargs, self.fcpp,
                                          'separate_labels', False)
@@ -111,13 +111,12 @@ class BaseLayout:
                                         'separate_ticks', self.separate_labels)
         if self.separate_labels:
             self.separate_ticks = True
-        # 'remove', 'shrink', False
         self.tick_cleanup = utl.kwget(
             kwargs, self.fcpp, 'tick_cleanup', 'shrink')
         if type(self.tick_cleanup) is str:
             self.tick_cleanup = self.tick_cleanup.lower()
 
-        # Plot overrides
+        # Overrides for specific plot types
         if 'bar' in self.name:
             if self.bar.horizontal:
                 self.grid_major_y.on = False
@@ -163,16 +162,21 @@ class BaseLayout:
             self.label_y.on = False
         self.kwargs_mod = kwargs
 
-        # Updates from the data object
-        self.update_from_data(data)
-        self.update_wrap(data, kwargs)
+        # kwargs changes made in the data object
+        self._update_from_data(data)
+        self._update_wrap(data, kwargs)
 
-        # Update the label keys
-        self.set_label_text(data)
+        # Update the label text
+        self._set_label_text(data)
 
-    def _init_axes(self, kwargs):
-        """
-        Create the axes object
+    def _init_axes(self, kwargs: dict):
+        """Create the axes object
+
+        Args:
+            kwargs: user-defined keyword args
+
+        Returns:
+            updated kwargs
         """
 
         # Axis
@@ -248,7 +252,7 @@ class BaseLayout:
     def _init_axes_labels(self, kwargs):
         """
         Set the axes label elements parameters except text which is set later
-        in self.set_label_text (to include any updates after init of data obj)
+        in self._set_label_text (to include any updates after init of data obj)
         """
 
         # Axes labels
@@ -1627,9 +1631,9 @@ class BaseLayout:
                                                    'ticks_major_width',
                                                    ticks_width)],
                                    )
-        kwargs = self.from_list(self.ticks_major,
-                                ['color', 'increment', 'padding'],
-                                'ticks_major', kwargs)
+        kwargs = self._from_list(self.ticks_major,
+                                 ['color', 'increment', 'padding'],
+                                 'ticks_major', kwargs)
         for ia, ax in enumerate(self.ax):
             setattr(self, 'ticks_major_%s' % ax,
                     Element('ticks_major_%s' % ax, self.fcpp, kwargs,
@@ -1670,10 +1674,10 @@ class BaseLayout:
                     padding=utl.kwget(kwargs, self.fcpp,
                                       'tick_labels_major_padding', 4),
                     )
-        kwargs = self.from_list(self.tick_labels_major,
-                                ['font', 'font_color', 'font_size',
-                                 'font_style', 'font_weight', 'padding',
-                                 'rotation'], 'tick_labels_major', kwargs)
+        kwargs = self._from_list(self.tick_labels_major,
+                                 ['font', 'font_color', 'font_size',
+                                  'font_style', 'font_weight', 'padding',
+                                  'rotation'], 'tick_labels_major', kwargs)
 
         for ax in self.ax + ['z']:
             fill_alpha = utl.kwget(kwargs, self.fcpp,
@@ -1774,9 +1778,9 @@ class BaseLayout:
                                                    'ticks_minor_width',
                                                    ticks_width * 0.6)],
                                    )
-        kwargs = self.from_list(self.ticks_minor,
-                                ['color', 'number', 'padding'],
-                                'ticks_minor', kwargs)
+        kwargs = self._from_list(self.ticks_minor,
+                                 ['color', 'number', 'padding'],
+                                 'ticks_minor', kwargs)
         for ax in self.ax:
             setattr(self, 'ticks_minor_%s' % ax,
                     Element('ticks_minor_%s' % ax, self.fcpp, kwargs,
@@ -1811,10 +1815,10 @@ class BaseLayout:
                     padding=utl.kwget(kwargs, self.fcpp,
                                       'tick_labels_minor_padding', 3),
                     )
-        kwargs = self.from_list(self.tick_labels_minor,
-                                ['font', 'font_color', 'font_size',
-                                 'font_style', 'font_weight', 'padding',
-                                 'rotation'], 'tick_labels_minor', kwargs)
+        kwargs = self._from_list(self.tick_labels_minor,
+                                 ['font', 'font_color', 'font_size',
+                                  'font_style', 'font_weight', 'padding',
+                                  'rotation'], 'tick_labels_minor', kwargs)
         for ax in self.ax:
             fill_alpha = utl.kwget(kwargs, self.fcpp,
                                    'tick_labels_minor_%s_fill_alpha' % ax,
@@ -1956,35 +1960,7 @@ class BaseLayout:
         self.ws_ax_box_title = utl.kwget(
             kwargs, self.fcpp, 'ws_ax_box_title', 10)
 
-    def format_legend_values(self):
-        """
-        Reformat legend values
-        """
-
-        if not self.legend.on:
-            return
-
-        df = pd.DataFrame.from_dict(self.legend.values).T.reset_index()
-        df['names'] = ''
-
-        # level_0 = legend
-        if not (df.level_0 is None).all():
-            df['names'] = df.level_0
-
-        # level_2 = y
-        if len(df.level_2.unique()) > 1:
-            df['names'] = df.level_0.map(str) + ': ' + df.level_2.map(str)
-
-        # level_1 = x
-        if len(df.level_1.unique()) > 1:
-            df['names'] = df['names'].map(str) + ' / ' + df.level_1.map(str)
-
-        for irow, row in df.iterrows():
-            key = (row['level_0'], row['level_1'], row['level_2'])
-            self.legend.values[row['names']] = self.legend.values[key]
-            del self.legend.values[key]
-
-    def from_list(self, base, attrs, name, kwargs):
+    def _from_list(self, base, attrs, name, kwargs):
         """
         Supports definition of object attributes for multiple axes using
         a list
@@ -2016,6 +1992,7 @@ class BaseLayout:
 
         return kwargs
 
+    @abc.abstractmethod
     def make_figure(self, data, **kwargs):
         pass
 
@@ -2042,7 +2019,7 @@ class BaseLayout:
 
         return kwargs
 
-    def set_label_text(self, data):
+    def _set_label_text(self, data):
         """
         Set the default label text
 
@@ -2137,7 +2114,7 @@ class BaseLayout:
             self.label_x.text = self.label_y.text
             self.label_y.text = temp
 
-    def update_from_data(self, data):
+    def _update_from_data(self, data):
         """
         Make properties updates from the Data class
         """
@@ -2155,7 +2132,7 @@ class BaseLayout:
         self.axes.scale = data.ax_scale
         self.axes2.scale = data.ax2_scale
 
-    def update_wrap(self, data, kwargs):
+    def _update_wrap(self, data, kwargs):
         """
         Update figure props based on wrap selections
         """
@@ -2176,41 +2153,37 @@ class BaseLayout:
             self.ws_col_def = 0
             # self.cbar.on = False  # may want to address this someday
 
+    @abc.abstractmethod
     def add_box_labels(self, ir, ic, dd):
         pass
 
+    @abc.abstractmethod
     def add_hvlines(self, ir, ic):
+        """Add horizontal/vertical lines"""
         pass
 
+    @abc.abstractmethod
     def close(self):
+        """Close an inline plot"""
         pass
 
+    @abc.abstractmethod
     def add_legend(self):
+        """Add a legend"""
         pass
 
-    def get_axes(self):
-        """
-        Return list of active axes
-        """
+    def _get_axes(self):
+        """Return list of active axes"""
 
         return [f for f in [self.axes, self.axes2] if f.on]
 
-    def plot_bar(self, ax, df, x, y, z, ranges):
-        """
-        Plot a bar plot
-
-        Args:
-            ax (mpl.axes): current axes obj
-            df (pd.DataFrame):  data to plot
-            x (str): x-column name
-            y (str): y-column name
-            z (str): z-column name
-            range (dict):  ax limits
-
-        """
+    @abc.abstractmethod
+    def plot_bar(self):
+        """Plot a bar plot"""
 
         pass
 
+    @abc.abstractmethod
     def plot_box(self, ir, ic, data, **kwargs):
         """ Plot boxplot data
 
@@ -2228,6 +2201,7 @@ class BaseLayout:
 
         pass
 
+    @abc.abstractmethod
     def plot_contour(self, ax, df, x, y, z, ranges):
         """
         Plot a contour plot
@@ -2235,6 +2209,7 @@ class BaseLayout:
 
         pass
 
+    @abc.abstractmethod
     def plot_gantt(self, ax, df, x, y, z, ranges):
         """
         Plot a bar plot
@@ -2251,6 +2226,7 @@ class BaseLayout:
 
         pass
 
+    @abc.abstractmethod
     def plot_heatmap(self, ax, df, x, y, z, ranges):
         """
         Plot a heatmap
@@ -2267,11 +2243,13 @@ class BaseLayout:
 
         pass
 
+    @abc.abstractmethod
     def plot_hist(self, ir, ic, iline, df, x, y, leg_name, data, zorder=1,
                   line_type=None, marker_disable=False):
 
         pass
 
+    @abc.abstractmethod
     def plot_imshow(self, ax, df, x, y, z, ranges):
         """
         Plot a image
@@ -2288,6 +2266,7 @@ class BaseLayout:
 
         pass
 
+    @abc.abstractmethod
     def plot_line(self, ir, ic, x0, y0, x1=None, y1=None, **kwargs):
         """
         Plot a simple line
@@ -2302,6 +2281,11 @@ class BaseLayout:
             kwargs: keyword args
         """
 
+    @abc.abstractmethod
+    def plot_pie(self):
+        pass
+
+    @abc.abstractmethod
     def plot_xy(self, ir, ic, iline, df, x, y, leg_name, twin, zorder=1,
                 line_type=None, marker_disable=False):
         """ Plot xy data
@@ -2323,6 +2307,7 @@ class BaseLayout:
 
         pass
 
+    @abc.abstractmethod
     def restore(self):
         """
         Restore any changed settings to the original
@@ -2330,6 +2315,7 @@ class BaseLayout:
 
         pass
 
+    @abc.abstractmethod
     def save(self, filename):
         pass
 
@@ -2344,30 +2330,39 @@ class BaseLayout:
 
         return df
 
+    @abc.abstractmethod
     def set_axes_colors(self, ir, ic):
         pass
 
+    @abc.abstractmethod
     def set_axes_grid_lines(self, ir, ic):
         pass
 
+    @abc.abstractmethod
     def set_axes_labels(self, ir, ic):
         pass
 
+    @abc.abstractmethod
     def set_axes_ranges(self, ir, ic):
         pass
 
+    @abc.abstractmethod
     def set_axes_rc_labels(self, ir, ic):
         pass
 
+    @abc.abstractmethod
     def set_axes_scale(self, ir, ic):
         pass
 
+    @abc.abstractmethod
     def set_axes_ticks(self, ir, ic):
         pass
 
+    @abc.abstractmethod
     def set_figure_title(self):
         pass
 
+    @abc.abstractmethod
     def show(self, inline=True):
         pass
 
