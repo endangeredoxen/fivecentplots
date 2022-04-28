@@ -9,11 +9,10 @@ from distutils.version import LooseVersion
 from collections import defaultdict
 import warnings
 import abc
-from typing import Type
 
 
 def custom_formatwarning(msg, *args, **kwargs):
-    # ignore everything except the message
+    """Ignore everything except the message."""
     return 'Warning: ' + str(msg) + '\n'
 
 
@@ -61,21 +60,23 @@ class BaseLayout:
         """Generic layout properties class
 
         Args:
-            data (data obj): Data class object for the plot
-            **kwargs: styling, spacing kwargs
+            data: Data class object for the plot
+            kwargs: user-defined keyword args
 
         """
-
+        # Retain the original kwargs as the kwargs variable will be modified
+        # during the various _init functions
         kwargs_orig = kwargs.copy()
 
+        # Set the plot type name
         self.name = data.name
 
         # Reload default file
         self.fcpp, self.color_list, marker_list = \
             utl.reload_defaults(kwargs.get('theme', None))
 
-        # init the objects and params
-        self._init_layout(data)
+        # Init the elements and their parameters
+        self._init_layout_rc(data)
         kwargs = self._init_figure(kwargs)
         kwargs = self._init_colors(kwargs)
         kwargs = self._init_axes(kwargs)
@@ -169,7 +170,7 @@ class BaseLayout:
         # Update the label text
         self._set_label_text(data)
 
-    def _init_axes(self, kwargs: dict):
+    def _init_axes(self, kwargs: dict) -> dict:
         """Create the axes object
 
         Args:
@@ -178,7 +179,6 @@ class BaseLayout:
         Returns:
             updated kwargs
         """
-
         # Axis
         self.ax = ['x', 'y', 'x2', 'y2']
         spines = utl.kwget(kwargs, self.fcpp, 'spines', True)
@@ -249,12 +249,17 @@ class BaseLayout:
 
         return kwargs
 
-    def _init_axes_labels(self, kwargs):
-        """
-        Set the axes label elements parameters except text which is set later
-        in self._set_label_text (to include any updates after init of data obj)
-        """
+    def _init_axes_labels(self, kwargs: dict) -> dict:
+        """Set the axes label elements parameters except for text related
+        parameters which are set later in self._set_label_text (to make sure
+        any updates after init of data obj are included)
 
+        Args:
+            kwargs: user-defined keyword args
+
+        Returns:
+            updated kwargs
+        """
         # Axes labels
         label = Element('label', self.fcpp, kwargs,
                         obj=self.obj_array,
@@ -305,11 +310,15 @@ class BaseLayout:
 
         return kwargs
 
-    def _init_axhvlines(self, kwargs):
-        """
-        Axhvline elements
-        """
+    def _init_axhvlines(self, kwargs: dict) -> dict:
+        """Set the vertical/horizontal line element parameters
 
+        Args:
+            kwargs: user-defined keyword args
+
+        Returns:
+            updated kwargs
+        """
         # Axhlines/axvlines
         axlines = ['ax_hlines', 'ax_vlines', 'ax2_hlines', 'ax2_vlines']
         # Todo: list
@@ -370,11 +379,16 @@ class BaseLayout:
 
         return kwargs
 
-    def _init_bar(self, kwargs):
-        """
-        Bar plot elements
-        """
+    def _init_bar(self, kwargs: dict) -> dict:
+        """Set the bar plot element parameters
 
+        Args:
+            kwargs: user-defined keyword args
+
+        Returns:
+            updated kwargs
+        """
+        # If this plot type is disabled, create minimal set of element parameters
         if self.name != 'bar':
             self.bar = Element('bar', self.fcpp, kwargs, on=False,
                                horizontal=False)
@@ -432,11 +446,30 @@ class BaseLayout:
         # need to fix all the kwargs only defaults!!
         return kwargs
 
-    def _init_box(self, kwargs):
-        """
-        Boxplot elements
-        """
+    def _init_box(self, kwargs: dict) -> dict:
+        """Set the box plot element parameters.  Creates the following box-plot
+        required elements:
 
+        * box: main element
+        * box_grand_mean: element to control style of overall mean value of plot
+        * box_grand_median: element to control style of overall median value of plot
+        * box_mean_diamonds: element to control style of discrete box mean diamonds
+        * box_whisker: element to control style of box whisker lines
+        * box_divider: element to control style of divider lines between groups in box plot
+        * box_range_lines: element to control style of range lines from a given box
+        * box_stat_line: element to control style of stat line connecting various boxes in a plot
+        * box_group_title: element to control style of the title text of a grouping row
+        * box_group_label: element to control style of the value label for a given group
+            (displayed under the box)
+        * violin: element to control style of violin plots if used instead of boxes
+
+        Args:
+            kwargs: user-defined keyword args
+
+        Returns:
+            updated kwargs
+        """
+        # If this plot type is disabled, create minimal set of element parameters
         if self.name != 'box':
             self.box = Element('box', self.fcpp, kwargs, on=False)
             self.box_grand_mean = Element(
@@ -721,11 +754,15 @@ class BaseLayout:
 
         return kwargs
 
-    def _init_cbar(self, kwargs):
-        """
-        Cbar elements
-        """
+    def _init_cbar(self, kwargs: dict) -> dict:
+        """Set the color bar element parameters
 
+        Args:
+            kwargs: user-defined keyword args
+
+        Returns:
+            updated kwargs
+        """
         cbar_size = utl.kwget(kwargs, self.fcpp, 'cbar_size', 30)
         self.cbar = Element('cbar', self.fcpp, kwargs,
                             on=kwargs.get('cbar', False),
@@ -740,12 +777,16 @@ class BaseLayout:
 
         return kwargs
 
-    def _init_colors(self, kwargs):
-        """
-        Set the list of colors for plots and cmap
-        """
+    def _init_colors(self, kwargs: dict) -> dict:
+        """Set the color elements (color_list, cmap)
 
-        # Set the color list
+        Args:
+            kwargs: user-defined keyword args
+
+        Returns:
+            updated kwargs
+        """
+        # Set the color list which determines line color order
         if 'line_color' in kwargs.keys():
             self.color_list = kwargs['line_color']
         elif kwargs.get('colors'):
@@ -768,7 +809,7 @@ class BaseLayout:
         if self.name in ['contour', 'heatmap', 'imshow']:
             self.cmap = utl.kwget(kwargs, self.fcpp, 'cmap', 'inferno')
 
-        # program any legend value specific color overrides
+        # Program any legend value specific color overrides
         vals = ['fill_alpha', 'fill_color',
                 'edge_alpha', 'edge_color', 'color']
         for val in vals:
@@ -781,11 +822,16 @@ class BaseLayout:
 
         return kwargs
 
-    def _init_contour(self, kwargs):
-        """
-        Contour plot elements
-        """
+    def _init_contour(self, kwargs: dict) -> dict:
+        """Set the contour plot element parameters
 
+        Args:
+            kwargs: user-defined keyword args
+
+        Returns:
+            updated kwargs
+        """
+        # If this plot type is disabled, create minimal set of element parameters
         if self.name != 'contour':
             self.contour = Element('contour', self.fcpp, kwargs, on=False)
             return kwargs
@@ -809,20 +855,28 @@ class BaseLayout:
 
         return kwargs
 
-    def _init_figure(self, kwargs):
-        """
-        Create the figure object
-        """
+    def _init_figure(self, kwargs: dict) -> dict:
+        """Set the figure element parameters
 
+        Args:
+            kwargs: user-defined keyword args
+
+        Returns:
+            updated kwargs
+        """
         self.fig = Element('fig', self.fcpp, kwargs, edge_width=3)
 
         return kwargs
 
-    def _init_fit(self, kwargs):
-        """
-        Line fit elements
-        """
+    def _init_fit(self, kwargs: dict) -> dict:
+        """Set the line fit element parameters
 
+        Args:
+            kwargs: user-defined keyword args
+
+        Returns:
+            updated kwargs
+        """
         self.fit = Element('fit', self.fcpp, kwargs,
                            on=True if kwargs.get('fit', False) else False,
                            color=utl.kwget(kwargs, self.fcpp,
@@ -850,11 +904,16 @@ class BaseLayout:
 
         return kwargs
 
-    def _init_gantt(self, kwargs):
-        """
-        Gantt element
-        """
+    def _init_gantt(self, kwargs: dict) -> dict:
+        """Set the gantt chart element parameters
 
+        Args:
+            kwargs: user-defined keyword args
+
+        Returns:
+            updated kwargs
+        """
+        # If this plot type is disabled, create minimal set of element parameters
         if self.name != 'gantt':
             self.gantt = Element('gantt', self.fcpp, kwargs, on=False)
             return kwargs
@@ -909,11 +968,16 @@ class BaseLayout:
 
         return kwargs
 
-    def _init_grid(self, kwargs):
+    def _init_grid(self, kwargs: dict) -> dict:
+        """Set the gridline element parameters
+
+        Args:
+            kwargs: user-defined keyword args
+
+        Returns:
+            updated kwargs
         """
-        Gridline elements
-        """
-        # Gridlines
+        # Major gridlines
         self.grid_major = Element('grid_major', self.fcpp, kwargs,
                                   on=kwargs.get('grid_major', True),
                                   color=utl.kwget(kwargs, self.fcpp,
@@ -945,6 +1009,7 @@ class BaseLayout:
                          or kwargs['ticks_major_%s' % ax] is not False):
                 setattr(getattr(self, 'ticks_major_%s' % ax), 'on', True)
 
+        # Minor gridlines
         self.grid_minor = Element('grid_minor', self.fcpp, kwargs,
                                   on=kwargs.get('grid_minor', False),
                                   color='#ffffff',
@@ -973,11 +1038,18 @@ class BaseLayout:
 
         return kwargs
 
-    def _init_heatmap(self, kwargs, kwargs_orig, data):
-        """
-        Heatmap elements
-        """
+    def _init_heatmap(self, kwargs: dict, kwargs_orig: dict, data: 'Data') -> dict:
+        """Set the heatmap element parameters.
 
+        Args:
+            kwargs: user-defined keyword args (modified by other _init functions)
+            kwargs_orig: original, unmodified user-defined keyword args
+            data: Data class object for the plot
+
+        Returns:
+            updated kwargs
+        """
+        # If this plot type is disabled, create minimal set of element parameters
         if self.name != 'heatmap':
             self.heatmap = Element('heatmap', self.fcpp, kwargs, on=False)
             return kwargs
@@ -1003,6 +1075,7 @@ class BaseLayout:
             self.tick_labels_major_x.rotation = \
                 utl.kwget(kwargs, self.fcpp, 'tick_labels_major_x', 90)
 
+        # Special gridline/tick/axes defaults for heatmap
         grids = [f for f in kwargs.keys() if f in
                  ['grid_major', 'grid_major_x', 'grid_major_y',
                      'grid_minor', 'grid_minor_x', 'grid_minor_y']]
@@ -1023,10 +1096,16 @@ class BaseLayout:
 
         return kwargs
 
-    def _init_hist(self, kwargs):
+    def _init_hist(self, kwargs: dict) -> dict:
+        """Set the hist and kde plot element parameters
+
+        Args:
+            kwargs: user-defined keyword args
+
+        Returns:
+            updated kwargs
         """
-        Histogram and KDE elements
-        """
+        # If this plot type is disabled, create minimal set of element parameters
         if self.name != 'hist':
             self.hist = Element('hist', self.fcpp, kwargs, on=False,
                                 cdf=utl.kwget(kwargs, self.fcpp, ['cdf'],
@@ -1063,6 +1142,7 @@ class BaseLayout:
                                                  kwargs.get('horizontal', False)),
                             )
 
+        # kde element defined separately from self.hist to store unique parameters
         self.kde = Element('kde', self.fcpp, kwargs,
                            on=utl.kwget(kwargs, self.fcpp, ['hist_kde', 'kde'],
                                         kwargs.get('kde', False)),
@@ -1075,11 +1155,16 @@ class BaseLayout:
 
         return kwargs
 
-    def _init_imshow(self, kwargs, kwargs_orig):
-        """
-        imshow elements
-        """
+    def _init_imshow(self, kwargs, kwargs_orig) -> dict:
+        """Set the imshow plot element parameters
 
+        Args:
+            kwargs: user-defined keyword args
+
+        Returns:
+            updated kwargs
+        """
+        # If this plot type is disabled, create minimal set of element parameters
         if self.name != 'imshow':
             self.imshow = Element('imshow', self.fcpp, kwargs, on=False)
             return kwargs
@@ -1093,9 +1178,10 @@ class BaseLayout:
                                                ['imshow_interp', 'interp'],
                                                kwargs.get('interp', 'none')),
                               )
+        # Special gridline/tick/axes defaults for heatmap
         grids = [f for f in kwargs.keys() if f in
                  ['grid_major', 'grid_major_x', 'grid_major_y',
-                     'grid_minor', 'grid_minor_x', 'grid_minor_y']]
+                  'grid_minor', 'grid_minor_x', 'grid_minor_y']]
         if len(grids) == 0:
             kwargs['grid_major'] = False
             kwargs['grid_minor'] = False
@@ -1131,12 +1217,16 @@ class BaseLayout:
 
         return kwargs
 
-    def _init_intervals(self, kwargs):
-        """
-        Point-by-point intervals for xyplot elements
-        """
+    def _init_intervals(self, kwargs: dict) -> dict:
+        """Set the interval element parameters which determines point-by-point
+        confidence/percentile/nq intervals around a data point
 
-        # Interval
+        Args:
+            kwargs: user-defined keyword args
+
+        Returns:
+            updated kwargs
+        """
         if kwargs.get('perc_int'):
             itype = 'percentile'
             on = True
@@ -1172,7 +1262,7 @@ class BaseLayout:
                                 key=key,
                                 )
 
-        # deal with percentages
+        # Case of percentages instead of decimals between 0 and 1
         if self.interval.type and self.interval.type != 'nq':
             for ival, val in enumerate(self.interval.value):
                 if float(val) > 1:
@@ -1185,16 +1275,26 @@ class BaseLayout:
 
         return kwargs
 
-    def _init_layout(self, data):
+    def _init_layout_rc(self, data: 'Data') -> dict:
+        """Initialize layout attributes for rows and columns
+
+        Args:
+            data: Data class object for the plot
+
+        """
         self.ncol = data.ncol
         self.nrow = data.nrow
         self.obj_array = np.array([[None] * self.ncol] * self.nrow)
 
-    def _init_legend(self, kwargs, data):
-        """
-        Legend elements
-        """
+    def _init_legend(self, kwargs, data: 'Data') -> dict:
+        """Set the legend element parameters
 
+        Args:
+            kwargs: user-defined keyword args
+
+        Returns:
+            updated kwargs
+        """
         kwargs['legend'] = kwargs.get('legend', None)
         if type(kwargs['legend']) is list:
             kwargs['legend'] = ' | '.join(utl.validate_list(kwargs['legend']))
@@ -1228,13 +1328,19 @@ class BaseLayout:
                                      text=kwargs.get('legend_title',
                                                      kwargs.get('legend') if kwargs.get('legend') is not True else ''),
                                      )
+
+        # For pie plot user must force legend enabled
         if self.legend._on and self.name == 'pie':
             self.legend.on = True
+
+        # Special case: reference line
         if not self.legend._on and self.ref_line.on:
             for ref_line_legend_text in self.ref_line.legend_text.values:
                 self.legend.values[ref_line_legend_text] = []
             self.legend.on = True
             self.legend.text = ''
+
+        # Special case: fit line
         if not self.legend._on and self.fit.on \
                 and not (('legend' in kwargs.keys() and kwargs['legend'] is False)
                          or ('legend_on' in kwargs.keys() and kwargs['legend_on'] is False)):
@@ -1243,6 +1349,8 @@ class BaseLayout:
         if self.legend._on and self.fit.on and \
                 not ('fit_color' not in kwargs.keys() or 'fit_line_color' not in kwargs.keys()):
             self.fit.color = copy.copy(self.lines.color)
+
+        # Set legend.values for some specific cases
         y = utl.validate_list(kwargs.get('y'))
         if not self.axes.twin_x and y is not None and len(y) > 1 and \
                 self.name != 'box' and \
@@ -1250,16 +1358,20 @@ class BaseLayout:
                  and kwargs.get('row') != 'y'
                  and kwargs.get('col') != 'y') \
                 and kwargs.get('legend') is not False:
-            self.legend.values = self.legend.set_default()
+            self.legend.values = self.legend.get_default_values_df()
             self.legend.on = True
 
         return kwargs
 
-    def _init_lines(self, kwargs):
-        """
-        Line elements
-        """
+    def _init_lines(self, kwargs: dict) -> dict:
+        """Set the line element parameters
 
+        Args:
+            kwargs: user-defined keyword args
+
+        Returns:
+            updated kwargs
+        """
         for k in list(kwargs.keys()):
             if 'line_' in k and '%ss_%s' % (k.split('_')[0], k.split('_')[1]) \
                     not in kwargs.keys():
@@ -1274,11 +1386,15 @@ class BaseLayout:
 
         return kwargs
 
-    def _init_markers(self, kwargs):
-        """
-        Marker/points elements
-        """
+    def _init_markers(self, kwargs: dict) -> dict:
+        """Set the markers element parameters
 
+        Args:
+            kwargs: user-defined keyword args
+
+        Returns:
+            updated kwargs
+        """
         if 'marker_type' in kwargs.keys():
             marker_list = kwargs['marker_type']
         elif kwargs.get('markers') not in [None, True]:
@@ -1319,11 +1435,16 @@ class BaseLayout:
 
         return kwargs
 
-    def _init_pie(self, kwargs):
-        """
-        Pie chart elements
-        """
+    def _init_pie(self, kwargs: dict) -> dict:
+        """Set the pie chart element parameters
 
+        Args:
+            kwargs: user-defined keyword args
+
+        Returns:
+            updated kwargs
+        """
+        # If this plot type is disabled, create minimal set of element parameters
         if self.name != 'pie':
             self.pie = Element('pie', self.fcpp, kwargs, on=False,
                                label_sizes=[(0, 0), (0, 0)])
@@ -1381,19 +1502,25 @@ class BaseLayout:
 
         return kwargs
 
-    def _init_ref(self, kwargs):
-        """
-        Reference line elements
-        """
+    def _init_ref(self, kwargs: dict) -> dict:
+        """Set the reference line plot element parameters
 
+        Args:
+            kwargs: user-defined keyword args
+
+        Returns:
+            updated kwargs
+        """
         ref_line = kwargs.get('ref_line', False)
         if isinstance(ref_line, bool):
             self.ref_line = Element('ref_line', self.fcpp, kwargs, on=False)
             return kwargs
 
         if type(ref_line) is pd.Series:
+            # dtype == pandas Series
             ref_col = 'Ref Line'
         elif type(ref_line) is list:
+            # dtype == list
             ref_col = [f for f in ref_line if f in kwargs['df'].columns]
             missing = [f for f in ref_line if f not in ref_col]
             if len(missing) > 0:
@@ -1403,8 +1530,10 @@ class BaseLayout:
                 kwargs['ref_line_legend_text'] = ref_col
         elif type(kwargs.get('ref_line', False)) is str and \
                 kwargs.get('ref_line', False) in kwargs['df'].columns:
+            # dtype == column name in pandas DataFrame
             ref_col = kwargs.get('ref_line')
         else:
+            # disabled
             ref_col = None
 
         self.ref_line = Element('ref_line', self.fcpp, kwargs,
@@ -1419,11 +1548,15 @@ class BaseLayout:
 
         return kwargs
 
-    def _init_rc_labels(self, kwargs):
-        """
-        Row/column/wrap label elements
-        """
+    def _init_rc_labels(self, kwargs: dict) -> dict:
+        """Set the row/column/wrap label element parameters
 
+        Args:
+            kwargs: user-defined keyword args
+
+        Returns:
+            updated kwargs
+        """
         # Row column label
         label_rc = DF_Element('label_rc', self.fcpp, kwargs,
                               on=True,
@@ -1551,16 +1684,18 @@ class BaseLayout:
 
         if type(self.title_wrap.size) is not list:
             self.title_wrap.size = [self.axes.size[0], self.title_wrap.size]
-        # if self.title_wrap.on and not self.title_wrap.text:
-        #     self.title_wrap.text = ' | '.join(self.label_wrap.values)
 
         return kwargs
 
-    def _init_text_box(self, kwargs):
-        """
-        Text box elements
-        """
+    def _init_text_box(self, kwargs: dict) -> dict:
+        """Set the text box element parameters
 
+        Args:
+            kwargs: user-defined keyword args
+
+        Returns:
+            updated kwargs
+        """
         position = utl.kwget(kwargs, self.fcpp, 'text_position', [0, 0])
         if type(position[0]) is not list:
             position = [position]
@@ -1602,11 +1737,16 @@ class BaseLayout:
 
         return kwargs
 
-    def _init_ticks(self, kwargs):
-        """
-        Tick mark and label elements
-        """
+    def _init_ticks(self, kwargs: dict) -> dict:
+        """Set the tick marks and tick labels element parameters
 
+        Args:
+            kwargs: user-defined keyword args
+
+        Returns:
+            updated kwargs
+        """
+        # Major ticks
         if 'ticks' in kwargs.keys() and 'ticks_major' not in kwargs.keys():
             kwargs['ticks_major'] = kwargs['ticks']
         ticks_length = utl.kwget(kwargs, self.fcpp, 'ticks_length', 6.2)
@@ -1758,6 +1898,7 @@ class BaseLayout:
         self.auto_tick_threshold = utl.kwget(kwargs, self.fcpp,
                                              'auto_tick_threshold', [1e-6, 1e6])
 
+        # Minor ticks
         self.ticks_minor = Element('ticks_minor', self.fcpp, kwargs,
                                    on=utl.kwget(kwargs, self.fcpp,
                                                 'ticks_minor', False),
@@ -1893,11 +2034,15 @@ class BaseLayout:
 
         return kwargs
 
-    def _init_title(self, kwargs):
-        """
-        Figure title element
-        """
+    def _init_title(self, kwargs: dict) -> dict:
+        """Set the plot title element parameters
 
+        Args:
+            kwargs: user-defined keyword args
+
+        Returns:
+            updated kwargs
+        """
         title = utl.kwget(kwargs, self.fcpp, 'title', None)
         self.title = Element('title', self.fcpp, kwargs,
                              on=True if title is not None else False,
@@ -1912,13 +2057,15 @@ class BaseLayout:
 
         return kwargs
 
-    def _init_white_space(self, kwargs):
-        """
-        Set the default spacing parameters (plot engine specific)
-        Args:
-            kwargs: input args from user
-        """
+    def _init_white_space(self, kwargs: dict) -> dict:
+        """Set the whitespace for various elements defined previously
 
+        Args:
+            kwargs: user-defined keyword args
+
+        Returns:
+            updated kwargs
+        """
         # cbar
         if self.cbar.on:
             self.ws_ax_cbar = utl.kwget(kwargs, self.fcpp, 'ws_ax_cbar', 10)
@@ -1960,9 +2107,8 @@ class BaseLayout:
         self.ws_ax_box_title = utl.kwget(
             kwargs, self.fcpp, 'ws_ax_box_title', 10)
 
-    def _from_list(self, base, attrs, name, kwargs):
-        """
-        Supports definition of object attributes for multiple axes using
+    def _from_list(self, base, attrs, name, kwargs) -> dict:
+        """Supports definition of object attributes for multiple axes using
         a list
 
         Index 0 is always 'x'
@@ -1978,7 +2124,6 @@ class BaseLayout:
         Returns:
             updated kwargs
         """
-
         for attr in attrs:
             if type(getattr(base, attr)) is list:
                 setattr(base, attr, getattr(base, attr)
@@ -1992,48 +2137,18 @@ class BaseLayout:
 
         return kwargs
 
-    @abc.abstractmethod
-    def make_figure(self, data, **kwargs):
-        pass
+    def _get_axes(self):
+        """Return list of active axes."""
+        return [f for f in [self.axes, self.axes2] if f.on]
 
-    def make_kwargs(self, element, pop=[]):
-        kwargs = {}
-        kwargs['position'] = copy.copy(element.position)
-        kwargs['size'] = copy.copy(element.size)
-        kwargs['rotation'] = copy.copy(element.rotation)
-        kwargs['fill_color'] = copy.copy(element.fill_color)
-        kwargs['edge_color'] = copy.copy(element.edge_color)
-        kwargs['edge_width'] = copy.copy(element.edge_width)
-        kwargs['font'] = copy.copy(element.font)
-        kwargs['font_weight'] = copy.copy(element.font_weight)
-        kwargs['font_style'] = copy.copy(element.font_style)
-        kwargs['font_color'] = copy.copy(element.font_color)
-        kwargs['font_size'] = copy.copy(element.font_size)
-        kwargs['color'] = copy.copy(element.color)
-        kwargs['width'] = copy.copy(element.width)
-        kwargs['style'] = copy.copy(element.style)
-        kwargs['zorder'] = copy.copy(element.zorder)
-        for pp in pop:
-            if pp in kwargs.keys():
-                kwargs.pop(pp)
-
-        return kwargs
-
-    def _set_label_text(self, data):
-        """
-        Set the default label text
+    def _set_label_text(self, data: 'Data'):
+        """Set the default label text for x, y, z axes and col, row, wrap
+        grouping labels
 
         Args:
-            data (Data object): current Data object
-
+            data: Data class object for the plot
         """
-
         kwargs = self.kwargs_mod.copy()  # alias
-        # Update the label keys from self.kwargs_mod
-        # lab_keys = [f for f in self.kwargs_mod.keys() if 'label' in f]
-        # kw = kwargs.copy()
-        # for lk in lab_keys:  # don't think this is need cause not passing kwargs
-        #     kw[lk] = self.kwargs_mod[lk]
 
         # Set the label text
         labels = ['x', 'y', 'z', 'col', 'row', 'wrap']
@@ -2114,11 +2229,13 @@ class BaseLayout:
             self.label_x.text = self.label_y.text
             self.label_y.text = temp
 
-    def _update_from_data(self, data):
-        """
-        Make properties updates from the Data class
-        """
+    def _update_from_data(self, data: 'Data'):
+        """Update certain attributes of the layout based on values calculated
+        in the data object
 
+        Args:
+            data: Data class object for the plot
+        """
         self.groups = data.groups
         self.ngroups = data.ngroups
         self.nwrap = data.nwrap
@@ -2133,10 +2250,12 @@ class BaseLayout:
         self.axes2.scale = data.ax2_scale
 
     def _update_wrap(self, data, kwargs):
-        """
-        Update figure props based on wrap selections
-        """
+        """Update certain figure properties based on wrap plot parameters
 
+        Args:
+            data: Data class object for the plot
+            kwargs: user-defined keyword args
+        """
         if data.wrap == 'y' or data.wrap == 'x':
             self.title_wrap.on = False
             self.label_wrap.on = False
@@ -2151,178 +2270,128 @@ class BaseLayout:
             self.ws_row_def = int(self.ws_row)
             self.ws_col = kwargs.get('ws_col', 0)
             self.ws_col_def = 0
-            # self.cbar.on = False  # may want to address this someday
 
     @abc.abstractmethod
     def add_box_labels(self, ir, ic, dd):
+        """Add box group labels and titles (JMP style)."""
         pass
 
     @abc.abstractmethod
     def add_hvlines(self, ir, ic):
-        """Add horizontal/vertical lines"""
+        """Add horizontal/vertical lines."""
         pass
 
     @abc.abstractmethod
     def close(self):
-        """Close an inline plot"""
+        """Close an inline plot window."""
         pass
 
     @abc.abstractmethod
     def add_legend(self):
-        """Add a legend"""
+        """Add a legend to a figure."""
         pass
 
-    def _get_axes(self):
-        """Return list of active axes"""
+    @abc.abstractmethod
+    def make_figure(self):
+        """Make the figure and axes objects"""
+        pass
 
-        return [f for f in [self.axes, self.axes2] if f.on]
+    def make_kw_dict(self, element: 'Element', pop: list = []) -> dict:
+        """Extract certain parameters from a given element as a dictionary
+        that can be passed to another function as **kwargs
+
+        Args:
+            element: an element object [ex. self.label_x, self.box_group_label]
+            pop: optional list of parameters that can be dropped from the output
+                dictionary. Defaults to [].
+
+        Returns:
+            dict
+        """
+        kwargs = {}
+        kwargs['position'] = copy.copy(element.position)
+        kwargs['size'] = copy.copy(element.size)
+        kwargs['rotation'] = copy.copy(element.rotation)
+        kwargs['fill_color'] = copy.copy(element.fill_color)
+        kwargs['edge_color'] = copy.copy(element.edge_color)
+        kwargs['edge_width'] = copy.copy(element.edge_width)
+        kwargs['font'] = copy.copy(element.font)
+        kwargs['font_weight'] = copy.copy(element.font_weight)
+        kwargs['font_style'] = copy.copy(element.font_style)
+        kwargs['font_color'] = copy.copy(element.font_color)
+        kwargs['font_size'] = copy.copy(element.font_size)
+        kwargs['color'] = copy.copy(element.color)
+        kwargs['width'] = copy.copy(element.width)
+        kwargs['style'] = copy.copy(element.style)
+        kwargs['zorder'] = copy.copy(element.zorder)
+        for pp in pop:
+            if pp in kwargs.keys():
+                kwargs.pop(pp)
+
+        return kwargs
 
     @abc.abstractmethod
     def plot_bar(self):
-        """Plot a bar plot"""
-
+        """Plot a bar graph."""
         pass
 
     @abc.abstractmethod
-    def plot_box(self, ir, ic, data, **kwargs):
-        """ Plot boxplot data
-
-        Args:
-            ir (int): subplot row index
-            ic (int): subplot column index
-            data (pd.DataFrame): data to plot
-
-        Keyword Args:
-            any kwargs allowed by the plotter function selected
-
-        Returns:
-            return the box plot object
-        """
-
+    def plot_box(self):
+        """Plot boxplot."""
         pass
 
     @abc.abstractmethod
-    def plot_contour(self, ax, df, x, y, z, ranges):
-        """
-        Plot a contour plot
-        """
-
+    def plot_contour(self):
+        """Plot a contour plot."""
         pass
 
     @abc.abstractmethod
-    def plot_gantt(self, ax, df, x, y, z, ranges):
-        """
-        Plot a bar plot
-
-        Args:
-            ax (mpl.axes): current axes obj
-            df (pd.DataFrame):  data to plot
-            x (str): x-column name
-            y (str): y-column name
-            z (str): z-column name
-            range (dict):  ax limits
-
-        """
-
+    def plot_gantt(self):
+        """Plot a gantt chart."""
         pass
 
     @abc.abstractmethod
-    def plot_heatmap(self, ax, df, x, y, z, ranges):
-        """
-        Plot a heatmap
-
-        Args:
-            ax (mpl.axes): current axes obj
-            df (pd.DataFrame):  data to plot
-            x (str): x-column name
-            y (str): y-column name
-            z (str): z-column name
-            range (dict):  ax limits
-
-        """
-
+    def plot_heatmap(self):
+        """Plot a heatmap."""
         pass
 
     @abc.abstractmethod
-    def plot_hist(self, ir, ic, iline, df, x, y, leg_name, data, zorder=1,
-                  line_type=None, marker_disable=False):
-
+    def plot_hist(self):
+        """Plot a histogram."""
         pass
 
     @abc.abstractmethod
-    def plot_imshow(self, ax, df, x, y, z, ranges):
-        """
-        Plot a image
-
-        Args:
-            ax (mpl.axes): current axes obj
-            df (pd.DataFrame):  data to plot
-            x (str): x-column name
-            y (str): y-column name
-            z (str): z-column name
-            range (dict):  ax limits
-
-        """
-
+    def plot_imshow(self):
+        """Plot a image."""
         pass
 
     @abc.abstractmethod
-    def plot_line(self, ir, ic, x0, y0, x1=None, y1=None, **kwargs):
-        """
-        Plot a simple line
-
-        Args:
-            ir (int): subplot row index
-            ic (int): subplot column index
-            x0 (float): min x coordinate of line
-            x1 (float): max x coordinate of line
-            y0 (float): min y coordinate of line
-            y1 (float): max y coordinate of line
-            kwargs: keyword args
-        """
+    def plot_line(self):
+        """Plot a simple line."""
+        pass
 
     @abc.abstractmethod
     def plot_pie(self):
+        """Plot a pie chart."""
         pass
 
     @abc.abstractmethod
-    def plot_xy(self, ir, ic, iline, df, x, y, leg_name, twin, zorder=1,
-                line_type=None, marker_disable=False):
-        """ Plot xy data
-
-        Args:
-            x (np.array):  x data to plot
-            y (np.array):  y data to plot
-            color (str):  hex color code for line color (default='#000000')
-            marker (str):  marker char string (default='o')
-            points (bool):  toggle points on|off (default=False)
-            line (bool):  toggle plot lines on|off (default=True)
-
-        Keyword Args:
-            any kwargs allowed by the plotter function selected
-
-        Returns:
-            return the line plot object
-        """
-
+    def plot_xy(self):
+        """Plot xy data."""
         pass
 
     @abc.abstractmethod
     def restore(self):
-        """
-        Restore any changed settings to the original
-        """
-
+        """Undo changes to default plotting library parameters."""
         pass
 
     @abc.abstractmethod
-    def save(self, filename):
+    def save(self):
+        """Save a plot window."""
         pass
 
     def see(self):
-        """
-        Prints a readable list of class attributes
-        """
+        """Prints a readable list of class attributes."""
 
         df = pd.DataFrame({'Attribute': list(self.__dict__.copy().keys()),
                            'Name': [str(f) for f in self.__dict__.copy().values()]})
@@ -2332,55 +2401,78 @@ class BaseLayout:
 
     @abc.abstractmethod
     def set_axes_colors(self, ir, ic):
+        """Set axes colors (fill, alpha, edge)."""
         pass
 
     @abc.abstractmethod
     def set_axes_grid_lines(self, ir, ic):
+        """Style the grid lines and toggle visibility."""
         pass
 
     @abc.abstractmethod
     def set_axes_labels(self, ir, ic):
+        """Set the axes labels text."""
         pass
 
     @abc.abstractmethod
     def set_axes_ranges(self, ir, ic):
+        """Set the axes ranges."""
         pass
 
     @abc.abstractmethod
     def set_axes_rc_labels(self, ir, ic):
+        """Add the row/column label boxes and wrap titles."""
         pass
 
     @abc.abstractmethod
     def set_axes_scale(self, ir, ic):
+        """Set the scale type of the axes."""
         pass
 
     @abc.abstractmethod
     def set_axes_ticks(self, ir, ic):
+        """Configure the axes tick marks."""
         pass
 
     @abc.abstractmethod
     def set_figure_title(self):
+        """Set a figure title."""
         pass
 
     @abc.abstractmethod
     def show(self, inline=True):
+        """Display the plot window."""
         pass
 
 
 class Element:
-    def __init__(self, name='None', fcpp={}, others={},
-                 obj=None, **kwargs):
-        """
-        Element style container
+    def __init__(self, name: str = 'None', fcpp: dict = {}, others: dict = {},
+                 obj: [None, 'ObjectArray'] = None, **kwargs):
+        """Element object is a container for storing/accessing the attributes
+        that are applied to a given plot element.  Examples of plot elements
+        include axes labels, ticks, fit lines, or a type of plot (box, hist, etc.).
+        The attributes of the elements may differ based on the use of an object
+        but can include things like font (size, weight, type), color, padding, or
+        specific options relevant to a plot type (for example, a hist plot contains
+        attributes to set the number of bins or enable/disable a kde overlay.
 
-        TODO:: docstring
+        Args:
+            name (optional): Name of the element. Defaults to 'None'.
+            fcpp (optional): Default kwargs loaded from a theme file.
+                Defaults to {}.
+            others (optional): Other kwargs which override those in fcpp.
+                Typically, these are the user-defined kwargs set in the
+                plotting function call.  Defaults to {}.
+            obj (optional): if this element is unique on each subplot,
+                pass an ObjectArray class to define one for each row x column
+                index; else defaults to None.
         """
-
         # Update kwargs
         for k, v in others.items():
             if k not in kwargs.keys():
                 kwargs[k] = v
 
+        # Defaults
         self._on = kwargs.get('on', True)  # visbile or not
         self.name = name
         self.dpi = utl.kwget(kwargs, fcpp, 'dpi', 100)
@@ -2391,22 +2483,21 @@ class Element:
             self.obj = obj.copy()  # plot object reference
             self.obj_bg = obj.copy()  # background rect
         self.limits = []
-
-        # left, right, top, bottom
-        self.position = kwargs.get('position', [0, 0, 0, 0])
+        self.position = kwargs.get('position', [0, 0, 0, 0])  # left, right, top, bottom
         self._size = kwargs.get('size', [0, 0])  # width, height
         self._size_orig = kwargs.get('size', [0, 0])
         self._text = kwargs.get('text', True)  # text label
         self._text_orig = kwargs.get('text')
-        # for some elements that are unique by axes
-        self._size_all = pd.DataFrame()
-        self._size_all_bg = pd.DataFrame()
-        self.size_cols = ['ir', 'ic', 'ii', 'jj',
-                          'width', 'height', 'x0', 'x1', 'y0', 'y1']
         self.rotation = utl.kwget(kwargs, fcpp, '%s_rotation' % name,
                                   kwargs.get('rotation', 0))
         self.zorder = utl.kwget(kwargs, fcpp, '%s_zorder' % name,
                                 kwargs.get('zorder', 0))
+
+        # For some elements that are unique by axes, track sizes as DataFrame
+        self._size_all = pd.DataFrame()
+        self._size_all_bg = pd.DataFrame()
+        self.size_cols = ['ir', 'ic', 'ii', 'jj',
+                          'width', 'height', 'x0', 'x1', 'y0', 'y1']
 
         # fill and edge colors
         self.fill_alpha = utl.kwget(kwargs, fcpp, '%s_fill_alpha' % name,
@@ -2417,7 +2508,6 @@ class Element:
                 and self.fill_color is not None \
                 or self.fill_alpha != 1:
             self.color_alpha('fill_color', 'fill_alpha')
-
         self.edge_width = utl.kwget(kwargs, fcpp, '%s_edge_width' % name,
                                     kwargs.get('edge_width', 1))
         self.edge_alpha = utl.kwget(kwargs, fcpp, '%s_edge_alpha' % name,
@@ -2463,6 +2553,7 @@ class Element:
                 continue
             getattr(self, attr).override = others.get('%s_override' % attr, {})
 
+        # kwargs to ignore
         skip_keys = ['df', 'x', 'y', 'z']
         for k, v in kwargs.items():
             try:
@@ -2473,7 +2564,7 @@ class Element:
 
     @property
     def kwargs(self):
-
+        """kwargs without df."""
         temp = self.__dict__
         if 'df' in temp.keys():
             temp.pop('df')
@@ -2481,16 +2572,20 @@ class Element:
 
     @property
     def on(self):
-
+        """Check if element is visible."""
         return self._on
 
     @on.setter
-    def on(self, state):
+    def on(self, state: bool):
+        """Set element visibility.
 
+        Args:
+            state: True = visible | False = not visible
+        """
         self._on = state
 
         if not self.on:
-            self._size = [0, 0]
+            self._size = [0, 0]  # no size if not visible
             self._text = None
 
         else:
@@ -2499,20 +2594,25 @@ class Element:
 
     @property
     def position_xy(self):
+        """Return the x, y coordinates of the element."""
         x, y = map(self.position.__getitem__, [0, 3])
         return x, y
 
     @property
     def size(self):
-
+        """Return the element size, if enabled."""
         if self.on:
             return self._size
         else:
             return [0, 0]
 
     @size.setter
-    def size(self, value):
+    def size(self, value: list):
+        """Set the element size.
 
+        Args:
+            value: width, height
+        """
         if self._size_orig is None and value is not None:
             self._size_orig = value
 
@@ -2520,18 +2620,17 @@ class Element:
 
     @property
     def size_all(self):
+        """Return the DataFrame of all the element sizes by subplot index."""
         return self._size_all
 
     @size_all.setter
     def size_all(self, vals: tuple):
-        """
-        Add a row to the table
+        """Add a row to the table tracking element size by subplot index.
 
         Args:
             vals: 'ir', 'ic', 'ii', 'width', 'height', 'x0', 'x1', 'y0', 'y1'
-                each value can be a single item or a list
+                   each value can be a single item or a list
         """
-
         data = {}
         if len(vals) != len(self.size_cols):
             raise ValueError('incorrect size_all table values')
@@ -2550,18 +2649,17 @@ class Element:
 
     @property
     def size_all_bg(self):
+        """Some elements have a background with a different size (like labels)."""
         return self._size_all_bg
 
     @size_all_bg.setter
     def size_all_bg(self, vals: tuple):
-        """
-        Add a row to the table
+        """Add a row to the table tracking element background size by subplot index.
 
         Args:
             vals: 'ir', 'ic', 'ii', 'jj', 'width', 'height', 'x0', 'x1', 'y0', 'y1'
                 each value can be a single item or a list
         """
-
         data = {}
         if len(vals) != len(self.size_cols):
             raise ValueError('incorrect size_all table values')
@@ -2580,7 +2678,7 @@ class Element:
 
     @property
     def size_inches(self):
-
+        """Return the element size in inches, not pixels."""
         if self.on:
             return [self._size[0] / self.dpi, self._size[1] / self.dpi]
         else:
@@ -2588,22 +2686,30 @@ class Element:
 
     @property
     def text(self):
-
+        """Return the element text."""
         return self._text
 
     @text.setter
-    def text(self, value):
+    def text(self, value: str):
+        """Set the element text.
 
+        Args:
+            value: element text value
+        """
         if self._text_orig is None and value is not None:
             self._text_orig = value
 
         self._text = value
 
-    def color_alpha(self, attr, alpha):
-        """
-        Add alpha to each color in the color list and make it a RepeatedList
-        """
+    def color_alpha(self, attr: str, alpha: str):
+        """Add alpha to each color in the color list and make it a RepeatedList.
 
+        Args:
+            attr: kwarg key of the "color" attribute to set of the element
+                Ex: 'fill_color'
+            alpha:  kwarg key of the "alpha" attribute to set of the element
+                Ex: 'fill_alpha'
+        """
         # MPL < v2 does not support alpha in hex color code
         skip_alpha = False
         if ENGINE == 'mpl' and LooseVersion(mpl.__version__) < LooseVersion('2'):
@@ -2646,10 +2752,7 @@ class Element:
             getattr(self, attr).values = new_vals
 
     def see(self):
-        """
-        Prints a readable list of class attributes
-        """
-
+        """Prints a readable list of class attributes."""
         df = pd.DataFrame({'Attribute': list(self.__dict__.copy().keys()),
                            'Name': [str(f) for f in self.__dict__.copy().values()]})
 
@@ -2666,17 +2769,27 @@ class Element:
         return df
 
     def size_all_reset(self):
-        """
-        Reset the size_all arrays
-        """
+        """Reset the size_all arrays."""
 
         self._size_all = pd.DataFrame()
         self._size_all_bg = pd.DataFrame()
 
 
 class DF_Element(Element):
-    def __init__(self, label='None', fcpp={}, others={}, **kwargs):
-        Element.__init__(self, label=label, fcpp=fcpp, others=others, **kwargs)
+    def __init__(self, name: str = 'None', fcpp: dict = {}, others: dict = {}, **kwargs):
+        """Wrapper for Element that is only visible if the `values` attribute
+        exists and contains items.  Used for rc labels and legends
+
+        Args:
+            name (optional): Name of the element. Defaults to 'None'.
+            fcpp (optional): Default kwargs loaded from a theme file.
+                Defaults to {}.
+            others (optional): Other kwargs which override those in fcpp.
+                Typically, these are the user-defined kwargs set in the
+                plotting function call.  Defaults to {}.
+            kwargs
+        """
+        super().__init__(name=name, fcpp=fcpp, others=others, **kwargs)
 
         if not hasattr(self, 'column'):
             self.column = None
@@ -2685,13 +2798,17 @@ class DF_Element(Element):
 
     @property
     def on(self):
-
+        """Return visibility state; True only if self.values is not None."""
         return True if self._on and self.values is not None \
             and len(self.values) > 0 else False
 
     @on.setter
     def on(self, state):
+        """Set element visibility.
 
+        Args:
+            state: True = visible | False = not visible
+        """
         self._on = state
 
         if not self.on:
@@ -2705,6 +2822,17 @@ class DF_Element(Element):
 
 class Legend_Element(DF_Element):
     def __init__(self, name='None', fcpp={}, others={}, **kwargs):
+        """Wrapper for DF_Elements for legends
+
+        Args:
+            name (optional): Name of the element. Defaults to 'None'.
+            fcpp (optional): Default kwargs loaded from a theme file.
+                Defaults to {}.
+            others (optional): Other kwargs which override those in fcpp.
+                Typically, these are the user-defined kwargs set in the
+                plotting function call.  Defaults to {}.
+            kwargs
+        """
         self.cols = ['Key', 'Curve', 'LineType']
         self.default = pd.DataFrame(columns=self.cols, data=[
                                     ['NaN', None, None]], index=[0])
@@ -2712,33 +2840,17 @@ class Legend_Element(DF_Element):
         if not kwargs.get('legend'):
             self._values = pd.DataFrame(columns=self.cols)
         else:
-            self._values = self.set_default()
+            self._values = self.get_default_values_df()
         if kwargs.get('sort') is True:
             self.sort = True
         else:
             self.sort = False
 
-        DF_Element.__init__(self, name=name, fcpp=fcpp,
-                            others=others, **kwargs)
-
-    @property
-    def size(self):
-
-        if self._on:
-            return self._size
-        else:
-            return [0, 0]
-
-    @size.setter
-    def size(self, value):
-
-        if self._size_orig is None and value is not None:
-            self._size_orig = value
-
-        self._size = value
+        super().__init__(name=name, fcpp=fcpp, others=others, **kwargs)
 
     @property
     def values(self):
+        """Get the legend values properly ordered."""
         if len(self._values) <= 1:
             return self._values
 
@@ -2755,19 +2867,23 @@ class Legend_Element(DF_Element):
             return self._values.sort_index()
 
     @values.setter
-    def values(self, value):
-        self._values = value
-
-    def add_value(self, key, curve, line_type_name):
-        """
-        Add a new curve to the values dataframe
+    def values(self, value: pd.DataFrame):
+        """Set the legend values.
 
         Args:
-            key (str): string name for legend label
-            curve (obj): reference to curve obj
-            line_type_name (str): line type description
+            value: a new legend value formulated as a legend-style DataFrame
+                with columns 'Key', 'Curve', and 'LineType'
         """
+        self._values = value
 
+    def add_value(self, key: str, curve: 'PlotObj', line_type_name: str):
+        """Add a new curve to the values dataframe.
+
+        Args:
+            key: string name for legend label
+            curve: reference to curve obj (plotting engine specific)
+            line_type_name: line type description
+        """
         temp = pd.DataFrame({'Key': key, 'Curve': curve, 'LineType': line_type_name},
                             index=[len(self._values)])
 
@@ -2776,38 +2892,66 @@ class Legend_Element(DF_Element):
                & (self.values.LineType == line_type_name)]) == 0:
             self._values = pd.concat([self.values, temp], sort=True)
 
-    def del_value(self, key):
+    def del_value(self, key: str):
+        """Delete a value from the values DataFrame.
+
+        Args:
+            key: key name to delete
+        """
         df = self.values.copy()
         self._values = df[df.Key != key].copy()
 
-    def set_default(self):
+    def get_default_values_df(self):
+        """Return the default values DataFrame."""
         return self.default.copy()
 
 
 class ObjectArray:
     def __init__(self):
-        """
-        Automatically appending np.array
-        """
-
+        """Automatically appending np.array."""
         self._obj = np.array([])
 
     def __len__(self):
+        """Return the array length."""
         return len(self.obj)
 
-    def __getitem__(self, idx):
+    def __getitem__(self, idx: int):
+        """Get an array by index.
+
+        Args:
+            idx: index of the item to get
+
+        """
         return self.obj[idx]
 
-    def __setitem__(self, idx, val):
+    def __setitem__(self, idx: int, val):
+        """Set an item of the array by index.
+
+        Args:
+            idx: the array index
+            val (multiple): the value at the given array index
+        """
         self.obj[r, c] = val
 
     @property
     def obj(self):
+        """Return the objects."""
         return self._obj
 
     @obj.setter
     def obj(self, new_obj):
+        """Append a new object to the array.
+
+        Args:
+            new_obj (multiple): the new object to add to the array
+        """
         self._obj = np.append(self._obj, new_obj)
 
-    def reshape(r, c):
+    def reshape(r: int, c: int):
+        """Reshape the object array.
+
+        Args:
+            r: new object array row size
+            c: new object array column size
+        """
         self._obj = self._obj.reshape(r, c)

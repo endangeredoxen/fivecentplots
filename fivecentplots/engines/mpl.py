@@ -405,8 +405,7 @@ class Layout(BaseLayout):
         return 0
 
     def add_box_labels(self, ir: int, ic: int, data):
-        """
-        Add box group labels and titles (JMP style)
+        """Add box group labels and titles (JMP style)
 
         Args:
             ir: current axes row index
@@ -452,8 +451,8 @@ class Layout(BaseLayout):
                         self.add_label(ir, ic, label,
                                        (sub.index[j] / len(data.changes), 0, 0, 0),
                                        rotation=0, size=[width, 20], offset=True,
-                                       **self.make_kwargs(self.box_group_label,
-                                                          ['size', 'rotation', 'position']))
+                                       **self.make_kw_dict(self.box_group_label,
+                                                           ['size', 'rotation', 'position']))
 
             # Group titles
             if self.box_group_title.on and ic == data.ncol - 1:
@@ -468,8 +467,8 @@ class Layout(BaseLayout):
                                    #     self.axes.size[1]),
                                    # self.box_group_title.size[k],
                                    size=[0, 20],
-                                   **self.make_kwargs(self.box_group_title,
-                                                      ['position', 'size']))
+                                   **self.make_kw_dict(self.box_group_title,
+                                                       ['position', 'size']))
 
     def add_box_points(self, ir, ic, x, y):
         """
@@ -534,8 +533,7 @@ class Layout(BaseLayout):
         return cbar
 
     def add_hvlines(self, ir, ic, df=None):
-        """
-        Add axhlines and axvlines
+        """Add horizontal/vertical lines
 
         Args:
             ir (int): subplot row index
@@ -629,10 +627,8 @@ class Layout(BaseLayout):
         return text, rect
 
     def add_legend(self):
-        """
-        Add a figure legend
-            TODO: add separate_label support?
-
+        """Add a legend to a figure
+           TODO: add separate_label support?
         """
 
         def format_legend(self, leg):
@@ -800,10 +796,7 @@ class Layout(BaseLayout):
                                          zorder=45)
 
     def close(self):
-        """
-        Close existing plot windows
-        """
-
+        """Close an inline plot window"""
         mplp.close('all')
 
     def fill_between_lines(self, ir, ic, iline, x, lcl, ucl, obj, leg_name=None,
@@ -2060,7 +2053,7 @@ class Layout(BaseLayout):
                 y0 = np.linspace(data.ranges[ir, ic]['ymin'],
                                  data.ranges[ir, ic]['ymax'], 1000)
                 x0 = kde(y0)
-            kwargs = self.make_kwargs(self.kde)
+            kwargs = self.make_kw_dict(self.kde)
             kwargs['color'] = RepeatedList(kwargs['color'][iline], 'color')
             kde = self.plot_line(ir, ic, x0, y0, **kwargs)
 
@@ -2323,9 +2316,7 @@ class Layout(BaseLayout):
                     leg_name, points if points is not None else lines, line_type_name)
 
     def restore(self):
-        """
-        Undo changes to rcParams
-        """
+        """Undo changes to MPL rcParams"""
 
         for k, v in self.rc_orig.items():
             mpl.rcParams[k] = self.rc_orig[k]
@@ -2516,7 +2507,7 @@ class Layout(BaseLayout):
 
             # Add the label
             label.obj[ir, ic], label.obj_bg[ir, ic] = \
-                self.add_label(ir, ic, labeltext, **self.make_kwargs(label))
+                self.add_label(ir, ic, labeltext, **self.make_kw_dict(label))
 
     def set_axes_scale(self, ir, ic):
         """
@@ -2693,7 +2684,7 @@ class Layout(BaseLayout):
 
         # Wrap title
         if ir == 0 and ic == 0 and self.title_wrap.on:
-            kwargs = self.make_kwargs(self.title_wrap)
+            kwargs = self.make_kw_dict(self.title_wrap)
             if self.axes.edge_width == 0:
                 kwargs['size'][0] -= 1
             if self.name == 'imshow' and not self.cbar.on and self.nrow == 1:
@@ -2713,7 +2704,7 @@ class Layout(BaseLayout):
                 self.add_label(ir, ic, '%s=%s' %
                                (self.label_row.text,
                                 self.label_row.values[ir]),
-                               offset=True, **self.make_kwargs(self.label_row))
+                               offset=True, **self.make_kw_dict(self.label_row))
 
         # Col/wrap labels
         if (ir == 0 and self.label_col.on) or self.label_wrap.on:
@@ -2722,7 +2713,7 @@ class Layout(BaseLayout):
             else:
                 text_size = None  # noqa
             if self.label_wrap.on:
-                kwargs = self.make_kwargs(self.label_wrap)
+                kwargs = self.make_kw_dict(self.label_wrap)
                 if self.axes.edge_width == 0:
                     kwargs['size'][0] -= 1
                 if self.name == 'imshow' and not self.cbar.on and self.nrow == 1:
@@ -2735,7 +2726,7 @@ class Layout(BaseLayout):
                 text = '%s=%s' % (self.label_col.text,
                                   self.label_col.values[ic])
                 self.label_col.obj[ir, ic], self.label_col.obj_bg[ir, ic] = \
-                    self.add_label(ir, ic, text, **self.make_kwargs(self.label_col))
+                    self.add_label(ir, ic, text, **self.make_kw_dict(self.label_col))
 
     def set_axes_ticks(self, ir, ic):
         """
@@ -3345,14 +3336,14 @@ class Layout(BaseLayout):
 
     def set_figure_title(self):
         """
-        Add a figure title
+        Set a figure title
         """
 
         if self.title.on:
             self.get_title_position()
             self.title.obj, self.title.obj_bg = \
                 self.add_label(0, 0, self.title.text, offset=True,
-                               **self.make_kwargs(self.title))
+                               **self.make_kw_dict(self.title))
 
     def set_scientific(self, ax, tp, idx=0):
         """
@@ -3577,7 +3568,7 @@ class Layout(BaseLayout):
 
     def show(self, filename=None):
         """
-        Handle display of the plot window
+        Display the plot window
         """
 
         mplp.show(block=False)

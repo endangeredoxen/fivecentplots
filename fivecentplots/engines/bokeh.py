@@ -113,22 +113,22 @@ class Layout(BaseLayout):
 
         # Add label size
         self.label_x.size = \
-            utl.get_text_dimensions(self.label_x.text, **self.make_kwargs(self.label_x))
+            utl.get_text_dimensions(self.label_x.text, **self.make_kw_dict(self.label_x))
         self.label_y.size += \
-            utl.get_text_dimensions(self.label_y.text, **self.make_kwargs(self.label_y))
+            utl.get_text_dimensions(self.label_y.text, **self.make_kw_dict(self.label_y))
 
         # Ticks (rough)
         xlab = '%s.0' % int(data.ranges[0, 0]['xmax'])
         ylab = '%s.0' % int(data.ranges[0, 0]['ymax'])
         self.tick_labels_major_x.size = \
-            utl.get_text_dimensions(xlab, **self.make_kwargs(self.tick_labels_major_x))
+            utl.get_text_dimensions(xlab, **self.make_kw_dict(self.tick_labels_major_x))
         self.tick_labels_major_y.size += \
-            utl.get_text_dimensions(ylab, **self.make_kwargs(self.tick_labels_major_y))
+            utl.get_text_dimensions(ylab, **self.make_kw_dict(self.tick_labels_major_y))
 
         # title
         if self.title.text is not None:
             self.title.size = \
-                utl.get_text_dimensions(self.title.text, **self.make_kwargs(self.title))
+                utl.get_text_dimensions(self.title.text, **self.make_kw_dict(self.title))
 
         # rc labels
         for ir in range(0, self.nrow):
@@ -137,12 +137,12 @@ class Layout(BaseLayout):
                     text = '%s=%s' % (self.label_row.text, self.label_row.values[ir])
                     self.label_row.size[1] = \
                         max(self.label_row.size[1],
-                            utl.get_text_dimensions(text, **self.make_kwargs(self.label_row))[1])
+                            utl.get_text_dimensions(text, **self.make_kw_dict(self.label_row))[1])
                 if self.label_col.text is not None:
                     text = '%s=%s' % (self.label_col.text, self.label_col.values[ir])
                     self.label_col.size[1] = \
                         max(self.label_col.size[1],
-                            utl.get_text_dimensions(text, **self.make_kwargs(self.label_col))[1])
+                            utl.get_text_dimensions(text, **self.make_kw_dict(self.label_col))[1])
 
         # Legend
         if data.legend_vals is None:
@@ -151,7 +151,7 @@ class Layout(BaseLayout):
         # Get approx legend size
         name_size = 0
         for name in data.legend_vals['names']:
-            name_size = max(name_size, utl.get_text_dimensions(str(name), **self.make_kwargs(self.legend))[0])
+            name_size = max(name_size, utl.get_text_dimensions(str(name), **self.make_kw_dict(self.legend))[0])
 
         if self.legend.on:
             self.legend.size = [10 + 20 + 5 + name_size + 10, 0]
@@ -435,7 +435,7 @@ class Layout(BaseLayout):
                         utl.plot_num(ir, ic, self.ncol) != self.nwrap:
                     continue
 
-            lkwargs = self.make_kwargs(label)
+            lkwargs = self.make_kw_dict(label)
             laxis = getattr(self.axes.obj[ir, ic], '%saxis' % ax)
             laxis.axis_label = labeltext
             laxis.axis_label_text_font = lkwargs['font']
@@ -542,7 +542,7 @@ class Layout(BaseLayout):
             #     text = ' | '.join([str(f) for f in utl.validate_list(
             #         self.label_wrap.values[ir*self.ncol + ic])])
             #     scol = self.add_label(ir, ic, text,
-            #                          **self.make_kwargs(self.label_wrap))
+            #                          **self.make_kw_dict(self.label_wrap))
             # else:
             title.text = ' %s=%s ' % (self.label_col.text, self.label_col.values[ic])
             title.align = self.label_col.align
