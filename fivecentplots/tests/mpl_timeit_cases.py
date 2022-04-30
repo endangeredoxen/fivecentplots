@@ -64,7 +64,7 @@ def test_plot(data):
         dd.get_df_figure: 4.815 [ms]
         **layout class: 14.333 [ms]
         **ifig=None | make_figure: 170.611 [ms]
-            --> 140ms is get_element_sizes
+            --> 140ms is _get_element_sizes
             --> 70ms is the render and post render
         ifig=None | ir=0 | ic=0 | plot: 2.166 [ms]
         ifig=None | ir=0 | ic=0 | set_axes_ranges: 1.286 [ms]

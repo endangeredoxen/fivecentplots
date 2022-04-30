@@ -315,8 +315,8 @@ def plot_bar(data, layout, ir, ic, df_rc, kwargs):
         if layout.bar.stacked:
             stacked = pd.concat([stacked, df2])
 
-        data = layout.plot_bar(ir, ic, iline, df2, x, y, leg_name, data, ss,
-                               std, ngroups, xvals, inst, total)
+        data = layout.plot_bar(ir, ic, iline, df2, leg_name, data, ngroups, ss,
+                               std, xvals, inst, total)
 
         if layout.rolling_mean.on and not layout.bar.stacked:
             dfrm = df2.rolling(layout.rolling_mean.window).mean()
@@ -508,22 +508,6 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
     return dd
 
 
-def plot_conf_int(ir, ic, iline, data, layout, df, x, y, twin):
-    """
-    Add a confidence interval based color band around a line plot
-    """
-
-    if not layout.conf_int.on:
-        return
-
-    data.get_interval_confidence(df, x, y)
-
-    layout.fill_between_lines(ir, ic, iline, data.stat_idx, data.lcl, data.ucl,
-                              'conf_int', twin)
-
-    return data
-
-
 def plot_contour(data, layout, ir, ic, df_rc, kwargs):
     """
     Plot contour data
@@ -539,8 +523,7 @@ def plot_contour(data, layout, ir, ic, df_rc, kwargs):
     """
 
     for iline, df, x, y, z, leg_name, twin, ngroups in data.get_plot_data(df_rc):
-        layout.plot_contour(
-            ir, ic, layout.axes.obj[ir, ic], df, x, y, z, data.ranges[ir, ic])
+        layout.plot_contour(ir, ic, df, x, y, z, data)
 
     return data
 
@@ -634,8 +617,7 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
     yvals = [tuple(f) for f in df_rc[cols].values]
 
     for iline, df, x, y, z, leg_name, twin, ngroups in data.get_plot_data(df_rc):
-        layout.plot_gantt(ir, ic, df, data.x, y, iline, leg_name,
-                          data.ranges[ir, ic], yvals, ngroups)
+        layout.plot_gantt(ir, ic, iline, df, data.x, y, leg_name, yvals, ngroups)
 
     return data
 
@@ -657,8 +639,7 @@ def plot_heatmap(data, layout, ir, ic, df_rc, kwargs):
     for iline, df, x, y, z, leg_name, twin, ngroups in data.get_plot_data(df_rc):
 
         # Make the plot
-        layout.plot_heatmap(
-            layout.axes.obj[ir, ic], df, ir, ic, x, y, z, data.ranges[ir, ic])
+        layout.plot_heatmap(ir, ic, df, x, y, z, data)
 
     return data
 
@@ -676,18 +657,15 @@ def plot_hist(data, layout, ir, ic, df_rc, kwargs):
         kwargs (dict): keyword args
 
     """
-
     for iline, df, x, y, z, leg_name, twin, ngroups in data.get_plot_data(df_rc):
         if data.stat is not None:
             layout.lines.on = False
         if kwargs.get('groups', False):
             for nn, gg in df.groupby(validate_list(kwargs['groups'])):
-                hist, data = layout.plot_hist(
-                    ir, ic, iline, gg, x, y, leg_name, data)
+                hist, data = layout.plot_hist(ir, ic, iline, gg, x, y, leg_name, data)
 
         else:
-            hist, data = layout.plot_hist(
-                ir, ic, iline, df, x, y, leg_name, data)
+            hist, data = layout.plot_hist(ir, ic, iline, df, x, y, leg_name, data)
 
     return data
 
@@ -707,27 +685,7 @@ def plot_imshow(data, layout, ir, ic, df_rc, kwargs):
     """
 
     for iline, df, x, y, z, leg_name, twin, ngroups in data.get_plot_data(df_rc):
-        layout.plot_imshow(ir, ic, layout.axes.obj[ir, ic], df, x, y, z,
-                           data.ranges[ir, ic])
-
-    return data
-
-
-def plot_nq(data, layout, ir, ic, df_rc, kwargs):
-    """
-    Plot data as normal quantiles by sigma
-
-    Args:
-        data (obj): Data object
-        layout (obj): layout object
-        ir (int): current subplot row number
-        ic (int): current subplot column number
-        df_rc (pd.DataFrame): data subset
-        kwargs (dict): keyword args
-
-    """
-
-    plot_xy(data, layout, ir, ic, df_rc, kwargs)
+        layout.plot_imshow(ir, ic, df, data)
 
     return data
 
@@ -750,6 +708,25 @@ def plot_interval(ir, ic, iline, data, layout, df, x, y, twin):
 
     layout.fill_between_lines(ir, ic, iline, data.stat_idx, data.lcl, data.ucl,
                               'interval', leg_name=leg_name, twin=twin)
+
+    return data
+
+
+def plot_nq(data, layout, ir, ic, df_rc, kwargs):
+    """
+    Plot data as normal quantiles by sigma
+
+    Args:
+        data (obj): Data object
+        layout (obj): layout object
+        ir (int): current subplot row number
+        ic (int): current subplot column number
+        df_rc (pd.DataFrame): data subset
+        kwargs (dict): keyword args
+
+    """
+
+    plot_xy(data, layout, ir, ic, df_rc, kwargs)
 
     return data
 

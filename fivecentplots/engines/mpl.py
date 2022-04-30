@@ -36,26 +36,17 @@ warnings.filterwarnings(
 db = pdb.set_trace
 
 
-def isInRange(n, tbl):
-    ol = np.apply_along_axis(lambda row: row[0] <= n <= row[1], 1, tbl).tolist()
-    if True in ol:
-        return True
-    return False
-
-
-def cbar_ticks(cbar, zmin, zmax):
-    """
-    Format cbar ticks and labels
+def cbar_ticks(cbar: 'Colorbar_Object', zmin: float, zmax: float):
+    """Format cbar ticks and labels.
 
     Args:
-        cbar (colorbar obj)
-        zmin (float): min z-value
-        zmax (float): max z-value
+        cbar: colorbar
+        zmin: min z-value (vmin)
+        zmax: max z-value (vmax)
 
     Returns:
         new tick labels
     """
-
     num_ticks = len(cbar.get_ticks())
     new_ticks = np.linspace(zmin, zmax, num_ticks)
     decimals = [utl.get_decimals(f) for f in new_ticks]
@@ -65,9 +56,38 @@ def cbar_ticks(cbar, zmin, zmax):
     return new_ticks
 
 
-def iterticks(ax, minor=False):
-    # this is deprecated in later versions of mpl but used in fcp so just
-    # copying it here to avoid warnings or future removal
+def is_in_range(n: float, tbl: np.ndarray):
+    """Convenience function for tick marks to check whether particular number
+    (n) is in the range between borders defined by each row in a 2-column
+    table (tbl).
+
+    From: https://stackoverflow.com/a/71380003
+
+    Args:
+        n: number to check if it is in range
+        tbl: 2-column array defining borders in which to check if n is in range
+
+    Returns:
+        bool True if in range else False
+    """
+    ol = np.apply_along_axis(lambda row: row[0] <= n <= row[1], 1, tbl).tolist()
+    if True in ol:
+        return True
+    return False
+
+
+def iterticks(ax: mplp.Axes, minor: bool = False):
+    """Replication of iterticks function which was deprecated in later versions
+    of mpl but used in fcp, so just copying it here to avoid warnings or future
+    removal.
+
+    Args:
+        ax: axes object
+        minor: True = minor ticks, False = major ticks. Defaults to False.
+
+    Yields:
+       ticks
+    """
     if LooseVersion(mpl.__version__) >= LooseVersion('3.1'):
         major_locs = ax.get_majorticklocs()
         major_labels = ax.major.formatter.format_ticks(major_locs)
@@ -83,15 +103,16 @@ def iterticks(ax, minor=False):
         yield from getattr(ax, 'iter_ticks')()
 
 
-def mplc_to_hex(color, alpha=True):
-    """
-    Convert mpl color to hex
+def mplc_to_hex(color: tuple, alpha: bool = True):
+    """Convert mpl color to hex.
 
     Args:
-        color (tuple): matplotlib style color code
-        alpha (boolean): include or exclude the alpha value
-    """
+        color: matplotlib style color code
+        alpha: include or exclude the alpha value
 
+    Returns:
+        hex string
+    """
     hexc = '#'
     for ic, cc in enumerate(color):
         if not alpha and ic == 3:
@@ -101,18 +122,19 @@ def mplc_to_hex(color, alpha=True):
     return hexc
 
 
-def mpl_get_ticks(ax, xon=True, yon=True, minor=False):
-    """
-    Divine a bunch of tick and label parameters for mpl layouts
+def mpl_get_ticks(ax: mplp.Axes, xon: bool = True, yon: bool = True,
+                  minor: bool = False):
+    """Divine a bunch of tick and label parameters for mpl layouts.
 
     Args:
-        ax (mpl.axes)
+        ax: axes object
+        xon: True = get x-axis ticks. Defaults to True.
+        yon: True = get y-axis ticks. Defaults to True.
+        minor: True = minor ticks, False = major ticks. Defaults to False.
 
     Returns:
         dict of x and y ax tick parameters
-
     """
-
     tp = {}
     xy = []
     if xon:
@@ -155,24 +177,27 @@ def mpl_get_ticks(ax, xon=True, yon=True, minor=False):
 
 class Layout(BaseLayout):
 
-    def __init__(self, data, **kwargs):
-        """
-        Layout attributes and methods for matplotlib Figure
+    def __init__(self, data: 'Data', **kwargs):
+        """Layout attributes and methods for matplotlib Figure.
 
         Args:
-            data (Data class): data values
+            data: fcp Data object
             **kwargs: input args from user
         """
 
+        # Set the layout engine
         global ENGINE
         ENGINE = 'mpl'
 
+        # Backup the rcParams for future reference
         self.rc_orig = mpl.rcParams.copy()
 
+        # Set tick style to classic if using fcp tick_cleanup (default)
         if kwargs.get('tick_cleanup', True):
             mplp.style.use('classic')
         else:
             mplp.style.use('default')
+
         # Unless specified, close previous plots
         if not kwargs.get('hold', False):
             mplp.close('all')
@@ -187,8 +212,6 @@ class Layout(BaseLayout):
         self.title_wrap_bottom = 0
 
         # Weird spacing defaults out of our control
-        self.fig_right_border = 6  # extra border on right side that shows up by default
-        # this is differnt for inline; do we need to toggle on/off with show?
         self.legend_top_offset = 8
         self.legend_border = 3
         self.fig_legend_border = 5
@@ -203,32 +226,17 @@ class Layout(BaseLayout):
         self.kwargs = kwargs
 
     @property
-    def bottom(self):
-        """
-        Height of the space to the bottom of the axes object
-        """
-
-        return 0
-
-    @property
-    def labtick_x(self):
-        """
-        Height of the x label + x tick labels + related whitespace
-        """
-
+    def _labtick_x(self) -> float:
+        """Height of the x label + x tick labels + related whitespace."""
         val = self.label_x.size[1] \
             + self.ws_label_tick * self.label_x.on \
-            + self.tick_x
+            + self._tick_x
 
         return val
 
     @property
-    def labtick_x2(self):
-        """
-        Height of the secondary x label + x tick labels + related
-        whitespace
-        """
-
+    def _labtick_x2(self) -> float:
+        """Height of the secondary x label + x tick labels + related whitespace."""
         val = (self.label_x2.size[1]
                + self.ws_label_tick + 2 * self.ws_ticks_ax
                + max(self.tick_labels_major_x2.size[1],
@@ -237,26 +245,20 @@ class Layout(BaseLayout):
         return val
 
     @property
-    def labtick_y(self):
-        """
-        Width of the y label + y tick labels + related whitespace
-        """
-
+    def _labtick_y(self) -> float:
+        """Width of the y label + y tick labels + related whitespace."""
         if self.pie.on:
             return 0
 
         val = self.label_y.size[0] \
             + self.ws_label_tick \
-            + self.tick_y
+            + self._tick_y
 
         return val
 
     @property
-    def labtick_y2(self):
-        """
-        Width of the secondary y label + y tick labels + related whitespace
-        """
-
+    def _labtick_y2(self) -> float:
+        """Width of the secondary y label + y tick labels + related whitespace."""
         val = (self.label_y2.size[0]
                + self.ws_label_tick
                + self.ws_ticks_ax
@@ -266,23 +268,17 @@ class Layout(BaseLayout):
         return val
 
     @property
-    def labtick_z(self):
-        """
-        Width of the z label + z tick labels + related whitespace
-        """
-
+    def _labtick_z(self) -> float:
+        """Width of the z label + z tick labels + related whitespace."""
         val = self.ws_label_tick * self.label_z.on \
             + self.tick_labels_major_z.size[0]
 
         return val
 
     @property
-    def left(self):
-        """
-        Width of the space to the left of the axes object
-        """
-
-        left = self.ws_fig_label + self.labtick_y
+    def _left(self) -> float:
+        """Width of the space to the left of the axes object."""
+        left = self.ws_fig_label + self._labtick_y
         title_xs_left = self.title.size[0] / 2 \
             - (left
                + (self.axes.size[0] * self.ncol
@@ -297,11 +293,8 @@ class Layout(BaseLayout):
         return left
 
     @property
-    def legx(self):
-        """
-        Legend whitespace x is location == 0
-        """
-
+    def _legx(self) -> float:
+        """Legend whitespace x is location == 0."""
         if self.legend.location == 0 and self.legend._on:
             return self.legend.size[0] + self.ws_ax_leg + self.ws_leg_fig + \
                 self.fig_legend_border + self.legend.edge_width
@@ -309,40 +302,31 @@ class Layout(BaseLayout):
             return 0
 
     @property
-    def legy(self):
-        """
-        Legend whitespace y is location == 11
-        """
-
+    def _legy(self) -> float:
+        """Legend whitespace y is location == 11."""
         if self.legend.location == 11 and self.legend._on:
             return self.legend.size[1]
         else:
             return 0
 
     @property
-    def rc_label(self):
-        """
-        Width of an rc label with whitespace
-        """
-
+    def _rc_label(self) -> float:
+        """Width of an rc label with whitespace."""
         return (self.label_row.size[0] + self.ws_label_row
                 + 2 * self.label_row.edge_width) * self.label_row.on
 
     @property
-    def right(self):
-        """
-        Width of the space to the right of the axes object
-        """
-
+    def _right(self) -> float:
+        """Width of the space to the right of the axes object."""
         # axis to fig right side ws with or without legend
         ws_ax_fig = (
             self.ws_ax_fig if not self.legend._on or self.legend.location != 0 else 0)
 
         # sum all parts
         right = ws_ax_fig \
-            + self.labtick_y2 \
-            + self.rc_label \
-            + self.labtick_z \
+            + self._labtick_y2 \
+            + self._rc_label \
+            + self._labtick_z \
             + self.x_tick_xs \
             + self.label_y2.size[0] \
             + (self.label_z.size[0]
@@ -353,7 +337,7 @@ class Layout(BaseLayout):
         btitle_xs_right = 0
         if self.box_group_title.on:
             btitle_xs_right = (self.ws_ax_box_title + self.box_title) - \
-                right - self.legx + \
+                right - self._legx + \
                 self.ws_ax_fig  # self.ws_ax_fig if not self.legend._on or self.legend.location != 0 else 0)
             if btitle_xs_right > 0:
                 right += btitle_xs_right
@@ -373,47 +357,34 @@ class Layout(BaseLayout):
         return right
 
     @property
-    def tick_x(self):
-        """
-        Height of the primary x ticks and whitespace
-        """
-
+    def _tick_x(self) -> float:
+        """Height of the primary x ticks and whitespace."""
         val = max(self.tick_labels_major_x.size[1],
                   self.tick_labels_minor_x.size[1]) \
             + self.ws_ticks_ax * self.tick_labels_major_x.on
-
         return val
 
     @property
-    def tick_y(self):
-        """
-        Width of the primary y ticks and whitespace
-        """
-
+    def _tick_y(self) -> float:
+        """Width of the primary y ticks and whitespace."""
         val = max(self.tick_labels_major_y.size[0],
                   self.tick_labels_minor_y.size[0]) \
             + self.ws_ticks_ax
-
         return val
 
     @property
-    def top(self):
-        """
-        Height of the space to the right of the axes object
-        """
-
+    def _top(self) -> float:
+        """Height of the space to the right of the axes object."""
         return 0
 
     def add_box_labels(self, ir: int, ic: int, data):
-        """Add box group labels and titles (JMP style)
+        """Add box group labels and titles (JMP style).
 
         Args:
             ir: current axes row index
             ic: current axes column index
-            data: fcp.data obj
-
+            data: fcp Data object
         """
-
         num_cols = len(data.changes.columns)
 
         # Set up the label/title arrays to reflect the groups
@@ -470,33 +441,16 @@ class Layout(BaseLayout):
                                    **self.make_kw_dict(self.box_group_title,
                                                        ['position', 'size']))
 
-    def add_box_points(self, ir, ic, x, y):
-        """
-        Plot x y points with or without jitter
-        """
+    def add_cbar(self, ax: mplp.Axes, contour: 'MPL_Contour_Plot_Object') -> 'MPL_Colorbar_Object':
+        """Add a color bar.
 
-        if self.box_points.jitter:
-            x = np.random.normal(x + 1, 0.04, size=len(y))
-        else:
-            x = np.array([x + 1] * len(y))
-        if len(x) > 0 and len(y) > 0:
-            pts = self.axes[ir, ic].plot(
-                x, y,
-                color=self.box_marker.fill_color,
-                markersize=self.box_marker.size,
-                marker=self.box_marker.type,
-                markeredgecolor=self.box_points.edge_color,
-                markerfacecolor='none',
-                markeredgewidth=self.box_marker.edge_width,
-                linestyle='none',
-                zorder=2)
-            return pts
+        Args:
+            ax: current axes object
+            contour: current contour plot obj
 
-    def add_cbar(self, ax, contour):
+        Returns:
+            reference to the colorbar object
         """
-        Add a color bar
-        """
-
         from mpl_toolkits.axes_grid1 import make_axes_locatable
         divider = make_axes_locatable(ax)
         size = '%s%%' % (100 * self.cbar.size[0] / self.axes.size[0])
@@ -527,20 +481,16 @@ class Layout(BaseLayout):
                                    self, 'tick_labels_major_z').fill_color[0],
                                linewidth=getattr(self, 'tick_labels_major_z').edge_width))
 
-        # cbar.dividers.set_color('white')  # could enable
-        # cbar.dividers.set_linewidth(2)
-
         return cbar
 
-    def add_hvlines(self, ir, ic, df=None):
-        """Add horizontal/vertical lines
+    def add_hvlines(self, ir: int, ic: int, df: [pd.DataFrame, None] = None):
+        """Add horizontal/vertical lines.
 
         Args:
-            ir (int): subplot row index
-            ic (int): subplot col index
-            df (pd.DataFrame): current data
+            ir: subplot row index
+            ic: subplot column index
+            df: current data. Defaults to None.
         """
-
         # Set default line attributes
         for axline in ['ax_hlines', 'ax_vlines', 'ax2_hlines', 'ax2_vlines']:
             ll = getattr(self, axline)
@@ -570,24 +520,41 @@ class Layout(BaseLayout):
                             self.legend.add_value(
                                 ll.text[ival], [line], 'ref_line')
 
-    def add_label(self, ir, ic, text='', position=None, rotation=0, size=None,
-                  fill_color='#ffffff', edge_color='#aaaaaa', edge_width=1,
-                  font='sans-serif', font_weight='normal', font_style='normal',
-                  font_color='#666666', font_size=14, offset=False, **kwargs):
-        """ Add a label to the plot
+    def add_label(self, ir: int, ic: int, text: str = '', position: [tuple, None] = None,
+                  rotation: int = 0, size: [list, None] = None,
+                  fill_color: str = '#ffffff', edge_color: str = '#aaaaaa',
+                  edge_width: int = 1, font: str = 'sans-serif', font_weight: str = 'normal',
+                  font_style: str = 'normal', font_color: str = '#666666', font_size: int = 14,
+                  offset: bool = False, **kwargs) -> ['Text_Object', 'Rectangle_Object']:
+        """Add a label to the plot.
+
         This function can be used for title labels or for group labels applied
         to rows and columns when plotting facet grid style plots.
         Args:
-            text (str):  label text
-            position (tuple): label position tuple of form (left, right, top, bottom)
-            rotation (int):  degrees of rotation
-            fillcolor (str):  hex color code for label fill (default='#ffffff')
-            edgecolor (str):  hex color code for label edge (default='#aaaaaa')
-            color (str):  hex color code for label text (default='#666666')
-            weight (str):  label font weight (use standard mpl weights like 'bold')
-            font_size (int):  label font size (default=14)
-        """
+            ir: subplot row index
+            ic: subplot column index
+            text:  label text. Defaults to ''.
+            position: label position tuple of form (left, right, top, bottom) or None.
+                Defaults to None.
+            rotation:  degrees of rotation. Defaults to 0.
+            size: list of [height, weight] or None. Defaults to None.
+            fill_color: hex color code for label fill. Defaults to '#ffffff'.
+            edge_color: hex color code for label edge. Defaults to '#aaaaaa'.
+            edge_width: width of the label bounding box edge. Defaults to 1.
+            font: name of the font for the label. Defaults to 'sans-serif'.
+            font_weight: mpl font weight str ('normal', 'bold', etc.). Defaults to 'normal'.
+            font_style: mpl font style str ('normal', 'italic', etc.). Defaults to 'normal'.
+            font_color:  hex color code for label text. Defaults to '#666666'.
+            font_size: label font size (default=14)
+            offset: use an offset for positioning the text of the label. Defaults to False.
+            kwargs: any other keyword args (they won't be used but a sloppy way to ignore
+                any extra keywords that get passed to this function)
 
+        Returns:
+            reference to the text box object
+            reference to the background rectangle patch object
+
+        """
         # Set slight text offset
         if rotation == 270 and offset:
             offsetx = -2 / self.axes.size[0]  # -font_size/self.axes.size[0]/4
@@ -627,11 +594,15 @@ class Layout(BaseLayout):
         return text, rect
 
     def add_legend(self):
-        """Add a legend to a figure
-           TODO: add separate_label support?
-        """
+        """Add a legend to a figure."""
+        # TODO: add separate_label support to have a unique legend per subplot
 
-        def format_legend(self, leg):
+        def format_legend(self, leg: mpl.legend.Legend):
+            """Format the legend object based on the Legend Element object attributes.
+
+            Args:
+                leg: legend object
+            """
             for itext, text in enumerate(leg.get_texts()):
                 text.set_color(self.legend.font_color)
                 if self.name not in ['hist', 'bar', 'pie', 'gantt']:
@@ -697,12 +668,22 @@ class Layout(BaseLayout):
                         self.legend.obj.set_zorder(102)
                         format_legend(self, self.legend.obj)
 
-    def add_text(self, ir, ic, text=None, element=None, offsetx=0, offsety=0,
-                 coord=None, units=None, **kwargs):
-        """
-        Add a text box
-        """
+    def add_text(self, ir: int, ic: int, text: [str, None] = None,
+                 element: [str, None] = None, offsetx: int = 0,
+                 offsety: int = 0, coord: ['mpl_coordinate', None] = None,
+                 units: [str, None] = None, **kwargs):
+        """Add a text box.
 
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            text (optional): text str to add. Defaults to None.
+            element (optional): name of the Element object. Defaults to None.
+            offsetx (optional): x-axis shift. Defaults to 0.
+            offsety (optional): y-axis shift. Defaults to 0.
+            coord (optional): MPL coordinate type. Defaults to None.
+            units (optional): pixel or inches. Defaults to None which is 'pixel'.
+        """
         # Shortcuts
         ax = self.axes.obj[ir, ic]
         if element is None:
@@ -796,25 +777,37 @@ class Layout(BaseLayout):
                                          zorder=45)
 
     def close(self):
-        """Close an inline plot window"""
+        """Close an inline plot window."""
         mplp.close('all')
 
-    def fill_between_lines(self, ir, ic, iline, x, lcl, ucl, obj, leg_name=None,
-                           twin=False):
-        """
-        Shade a region between two curves
+    def fill_between_lines(self, ir: int, ic: int, iline: int,
+                           x: [np.ndarray, pd.Index],
+                           lcl: [np.ndarray, pd.Series],
+                           ucl: [np.ndarray, pd.Series],
+                           element: str, leg_name: [str, None] = None,
+                           twin: bool = False):
+        """Shade a region between two curves.
 
         Args:
-
+            ir: subplot row index
+            ic: subplot column index
+            iline: data subset index (from Data.get_plot_data)
+            x: x-axis values
+            lcl: y-axis values for the lower bound of the fill
+            ucl: y-axis values for the upper bound of the fill
+            element: name of the Element object associated with this fill
+            leg_name (optional): legend value name if legend enabled.
+                Defaults to None.
+            twin (optional): denotes if twin axis is enabled or not.
+                Defaults to False.
         """
-
         if twin:
             ax = self.axes2.obj[ir, ic]
         else:
             ax = self.axes.obj[ir, ic]
-        obj = getattr(self, obj)
-        fc = obj.fill_color
-        ec = obj.edge_color
+        element = getattr(self, element)
+        fc = element.fill_color
+        ec = element.edge_color
 
         fill = ax.fill_between(x, lcl, ucl,
                                facecolor=fc[iline] if type(fc) is RepeatedList else fc,
@@ -827,24 +820,24 @@ class Layout(BaseLayout):
 
     def _get_axes_label_position(self):
         """
-        Get the position of the axes labels
-            self.label_@.position --> [left, right, top, bottom]
-        """
+        Get the position of the axes labels.
 
+        self.label_@.position --> [left, right, top, bottom]
+        """
         self.label_x.position[0] = 0.5
         self.label_x.position[3] = \
-            (self.label_x.size[1] / 2 - self.labtick_x) / self.axes.size[1]
+            (self.label_x.size[1] / 2 - self._labtick_x) / self.axes.size[1]
 
         self.label_x2.position[0] = 0.5
         self.label_x2.position[3] = \
-            1 + (self.labtick_x2 - self.label_x2.size[1] / 2) \
+            1 + (self._labtick_x2 - self.label_x2.size[1] / 2) \
             / self.axes.size[1]
 
         self.label_y.position[0] = \
-            (self.label_y.size[0] / 2 - self.labtick_y) / self.axes.size[0]
+            (self.label_y.size[0] / 2 - self._labtick_y) / self.axes.size[0]
         self.label_y.position[3] = 0.5
 
-        self.label_y2.position[0] = 1 + self.labtick_y2 / self.axes.size[0]
+        self.label_y2.position[0] = 1 + self._labtick_y2 / self.axes.size[0]
         self.label_y2.position[3] = 0.5
 
         self.label_z.position[0] = 1 + (self.ws_ax_cbar + self.cbar.size[0]
@@ -853,15 +846,16 @@ class Layout(BaseLayout):
             / self.axes.size[0]
         self.label_z.position[3] = 0.5
 
-    def get_element_sizes(self, data):
-        """
-        Calculate the actual rendered size of select elements by pre-plotting
-        them.  This is needed to correctly adjust the figure dimensions
+    def _get_element_sizes(self, data: 'Data'):
+        """Calculate the actual rendered size of select elements by pre-plotting
+        them.  This is needed to correctly adjust the figure dimensions.
 
         Args:
-            data (obj): data class object
-        """
+            data: fcp Data object
 
+        Returns:
+            updated version of `data`
+        """
         # Render the figure to extract true dimensions of various elements
         self.fig.obj.canvas.draw()
 
@@ -912,10 +906,10 @@ class Layout(BaseLayout):
                  self.legend.obj.get_window_extent().height + self.legend_border]
 
         # tick labels
-        self.get_tick_label_sizes()
+        self._get_tick_label_sizes()
 
         if self.cbar.on:
-            self.get_tick_label_size(self.cbar, 'z', '', 'major')
+            self._get_tick_label_size(self.cbar, 'z', '', 'major')
 
         # box labels and titles
         if self.box_group_label.on:
@@ -1051,21 +1045,20 @@ class Layout(BaseLayout):
             #                             ),
             #             )
 
-        # if saved:
-        #     os.remove(filename + '.png')
-
         return data
 
-    def get_figure_size(self, data, **kwargs):
-        """
-        Determine the size of the mpl figure canvas in pixels and inches
-        """
+    def _get_figure_size(self, data: 'Data', **kwargs):
+        """Determine the size of the mpl figure canvas in pixels and inches.
 
+        Args:
+            data: Data object
+            kwargs: user-defined keyword args
+        """
         debug = kwargs.get('debug_size', False)
 
         # Set some values for convenience
         self.ws_ax_leg = max(
-            0, self.ws_ax_leg - self.labtick_y2) if self.legend.location == 0 else 0
+            0, self.ws_ax_leg - self._labtick_y2) if self.legend.location == 0 else 0
         self.ws_leg_fig = self.ws_leg_fig if self.legend.location == 0 else 0
         if self.legend.location == 0 and self.legend.on:
             self.ws_ax_fig = 0
@@ -1096,13 +1089,13 @@ class Layout(BaseLayout):
             self.ws_title = self.ws_fig_ax
 
         if self.cbar.on and utl.kwget(kwargs, self.fcpp, 'ws_col', -999) == -999:
-            self.ws_col = self.labtick_z
+            self.ws_col = self._labtick_z
 
         # separate ticks and labels
         if (self.separate_ticks or self.axes.share_y is False) and not self.cbar.on:
-            self.ws_col = max(self.tick_y + self.ws_label_tick, self.ws_col_def)
+            self.ws_col = max(self._tick_y + self.ws_label_tick, self.ws_col_def)
         elif (self.separate_ticks or self.axes.share_y is False) and self.cbar.on:
-            self.ws_col += self.tick_y
+            self.ws_col += self._tick_y
         if self.separate_ticks or \
                 (self.axes.share_x is False and self.box.on is False):
             self.ws_row += max(self.tick_labels_major_x.size[1],
@@ -1113,7 +1106,7 @@ class Layout(BaseLayout):
             self.ws_row += self.label_x.size[1] + \
                 self.ws_label_tick + self.ws_fig_label
         elif self.separate_labels:
-            self.ws_col += self.labtick_y - self.tick_y + self.ws_ax_label_xs
+            self.ws_col += self._labtick_y - self._tick_y + self.ws_ax_label_xs
             if self.cbar.on:
                 self.ws_col += self.ws_label_tick
 
@@ -1133,8 +1126,8 @@ class Layout(BaseLayout):
                 self.axes.size[0] = self.axes.size[1] * data.wh_ratio
 
         # Set figure width
-        self.fig.size[0] = self.left + self.axes.size[0] * self.ncol + \
-            self.right + self.legx + self.ws_col * (self.ncol - 1) - \
+        self.fig.size[0] = self._left + self.axes.size[0] * self.ncol + \
+            self._right + self._legx + self.ws_col * (self.ncol - 1) - \
             (self.fig_legend_border if self.legend._on else 0) + \
             (self.cbar.size[0] + self.ws_ax_cbar) * self.ncol
 
@@ -1143,13 +1136,13 @@ class Layout(BaseLayout):
             self.ws_title
             + (self.label_col.size[1] + self.ws_label_col) * self.label_col.on
             + self.title_wrap.size[1] + self.label_wrap.size[1]
-            + self.labtick_x2
+            + self._labtick_x2
             + self.axes.size[1] * self.nrow
-            + self.labtick_x
+            + self._labtick_x
             + self.ws_fig_label
             + self.ws_row * (self.nrow - 1)
             + self.box_labels) \
-            + self.legy \
+            + self._legy \
             + self.pie.xs_top \
             + self.pie.xs_bottom
 
@@ -1161,7 +1154,7 @@ class Layout(BaseLayout):
                     'ws_col', 'ws_ax_leg', 'legend', 'ws_leg_fig', 'label_y2',
                     'ws_label_tick', 'ws_ticks_ax', 'tick_labels_major_y2', 'label_row',
                     'ws_label_row', 'label_z', 'tick_labels_major_z', 'box_title',
-                    'ncol', 'labtick_y', 'labtick_y2', 'labtick_z']
+                    'ncol', '_labtick_y', '_labtick_y2', '_labtick_z']
             for val in vals:
                 if isinstance(getattr(self, val), Element):
                     print('   %s.size[0] = %s' %
@@ -1174,7 +1167,7 @@ class Layout(BaseLayout):
                     'label_wrap', 'label_x2', 'ws_ticks_ax', 'tick_labels_major_x2',
                     'axes', 'label_x', 'ws_label_tick', 'tick_labels_major_x', 'ws_ticks_ax',
                     'ws_fig_label', 'ws_row', 'box_labels',
-                    'nrow', 'labtick_x', 'labtick_x2', 'ws_title']
+                    'nrow', '_labtick_x', '_labtick_x2', 'ws_title']
             for val in vals:
                 if isinstance(getattr(self, val), Element):
                     print('   %s.size[1] = %s' %
@@ -1186,18 +1179,15 @@ class Layout(BaseLayout):
         header = self.ws_title + \
             (self.label_col.size[1] + self.ws_label_col) * self.label_col.on + \
             self.title_wrap.size[1] + self.label_wrap.size[1] + \
-            self.labtick_x2
+            self._labtick_x2
 
         if self.legend.size[1] + header > self.fig.size[1]:
             self.legend.overflow = self.legend.size[1] + \
                 header - self.fig.size[1]
         self.fig.size[1] += self.legend.overflow
 
-    def get_legend_position(self):
-        """
-        Get legend position
-        """
-
+    def _get_legend_position(self):
+        """Get legend position."""
         if self.legend.location == 0:
             if self.box_group_title.on and self.legend.size[1] > self.axes.size[1]:
                 self.legend.position[1] = 1 + \
@@ -1212,32 +1202,30 @@ class Layout(BaseLayout):
             self.legend.position[1] = 0.5
             self.legend.position[2] = 0
 
-    def get_rc_label_position(self):
-        """
-        Get option group label positions
-            self.label.position --> [left, right, top, bottom]
-        """
+    def _get_rc_label_position(self):
+        """Get option group label positions.
 
+        self.label.position --> [left, right, top, bottom]
+        """
         self.label_row.position[0] = \
-            (self.axes.size[0] + self.labtick_y2 + self.ws_label_row
+            (self.axes.size[0] + self._labtick_y2 + self.ws_label_row
              + self.label_row.edge_width
              + (self.ws_ax_cbar if self.cbar.on else 0) + self.cbar.size[0]
-             + self.labtick_z + self.label_z.size[0]) / self.axes.size[0]
+             + self._labtick_z + self.label_z.size[0]) / self.axes.size[0]
 
         self.label_col.position[3] = (self.axes.size[1] + self.ws_label_col
-                                      + self.labtick_x2) / self.axes.size[1]
+                                      + self._labtick_x2) / self.axes.size[1]
 
         self.label_wrap.position[3] = 1
 
         self.title_wrap.position[3] = 1 + self.label_wrap.size[1] / self.axes.size[1]
 
-    def get_subplots_adjust(self):
-        """
-        Calculate the subplots_adjust parameters for the axes
-            self.axes.position --> [left, right, top, bottom]
-        """
+    def _get_subplots_adjust(self):
+        """Calculate the subplots_adjust parameters for the axes.
 
-        self.axes.position[0] = int(self.left) / self.fig.size[0]
+        self.axes.position --> [left, right, top, bottom]
+        """
+        self.axes.position[0] = int(self._left) / self.fig.size[0]
 
         # note: if using cbar, self.axes.position[1] = 1 means the edge of the
         # cbar is at the edge of the figure (+2 is a fudge to get the right image size)
@@ -1252,27 +1240,25 @@ class Layout(BaseLayout):
         self.axes.position[2] = \
             1 - (self.ws_title + self.title_wrap.size[1]
                  + (self.label_col.size[1] + self.ws_label_col) * self.label_col.on
-                 + self.label_wrap.size[1] + self.labtick_x2 + self.pie.xs_top) \
+                 + self.label_wrap.size[1] + self._labtick_x2 + self.pie.xs_top) \
             / self.fig.size[1]
 
         self.axes.position[3] = \
-            (self.labtick_x + self.ws_fig_label + self.box_labels
+            (self._labtick_x + self.ws_fig_label + self.box_labels
              + self.legend.overflow + self.pie.xs_bottom
              + (self.legend.size[1] if self.legend.location == 11 else 0)) / self.fig.size[1]
 
-    def get_tick_label_size(self, ax, tick: str, tick_num: str, which: str,
-                            alias: str = ''):
-        """
-        Get the size of the tick labels (plot must be rendered)
+    def _get_tick_label_size(self, ax: mplp.Axes, tick: str, tick_num: str,
+                             which: str):
+        """Get the size of the tick labels on a specific axes (plot must be
+        already rendered).
 
         Args:
             ax: the axes object for the labels of interest
             tick: name of the tick axes
             tick_num: '' or '2' for secondary
             which: 'major' or 'minor'
-
         """
-
         if tick == 'x':  # what about z??
             idx = 0
         else:
@@ -1320,10 +1306,8 @@ class Layout(BaseLayout):
 
         tt.size = [tt.size_all.width.max(), tt.size_all.height.max()]
 
-    def get_tick_label_sizes(self):
-        """
-        Get the tick label sizes
-        """
+    def _get_tick_label_sizes(self):
+        """Get the tick label sizes for each axis."""
 
         for tick in ['x', 'y']:
             getattr(self, f'tick_labels_major_{tick}').size_all_reset()
@@ -1332,19 +1316,21 @@ class Layout(BaseLayout):
             getattr(self, f'tick_labels_minor_{tick}2').size_all_reset()
 
             # primary axes
-            self.get_tick_label_size(self.axes, tick, '', 'major')
-            self.get_tick_label_size(self.axes, tick, '', 'minor')
+            self._get_tick_label_size(self.axes, tick, '', 'major')
+            self._get_tick_label_size(self.axes, tick, '', 'minor')
 
             # secondary axes
             if self.axes2.on:
-                self.get_tick_label_size(self.axes2, tick, '2', 'major')
-                self.get_tick_label_size(self.axes2, tick, '2', 'minor')
+                self._get_tick_label_size(self.axes2, tick, '2', 'major')
+                self._get_tick_label_size(self.axes2, tick, '2', 'minor')
 
-    def get_tick_overlaps(self, axis=''):
-        """
-        Deal with overlapping and out of range ticks
-        """
+    def _get_tick_overlaps(self, axis: str = ''):
+        """Deal with overlapping and out of range ticks.
 
+        Args:
+            axis: str name of an axis to check for overlaps (Ex: 'x', 'y', etc)
+
+        """
         if not self.tick_cleanup:
             return
 
@@ -1457,12 +1443,12 @@ class Layout(BaseLayout):
                     # overlap with major
                     xbboxm = np.ones((len(xticksm_size_all), 3))
                     xbboxm[:, 0:2] = xticksm_size_all[:, idx:idx + 2]
-                    ol = [isInRange(x, xbbox) for x in np.nditer(xbboxm[:, 0])]
+                    ol = [is_in_range(x, xbbox) for x in np.nditer(xbboxm[:, 0])]
                     for iol, ool in enumerate(ol):
                         if ool:
                             xticksm.obj[ir, ic][iol].set_visible(False)
                             xbboxm[iol, 2] = 0
-                    ol = [isInRange(x, xbbox) for x in np.nditer(xbboxm[:, 1])]
+                    ol = [is_in_range(x, xbbox) for x in np.nditer(xbboxm[:, 1])]
                     for iol, ool in enumerate(ol):
                         if ool:
                             xticksm.obj[ir, ic][iol].set_visible(False)
@@ -1504,12 +1490,12 @@ class Layout(BaseLayout):
                     ybboxm[:, 0:2] = yticksm_size_all[:, -2:]
                     ybboxm[:, 0] -= 1  # padding
                     ybboxm[:, 1] += 1  # padding
-                    ol = [isInRange(y, ybbox) for y in np.nditer(ybboxm[:, 0])]
+                    ol = [is_in_range(y, ybbox) for y in np.nditer(ybboxm[:, 0])]
                     for iol, ool in enumerate(ol):
                         if ool:
                             yticksm.obj[ir, ic][iol].set_visible(False)
                             ybboxm[iol, 2] = 0
-                    ol = [isInRange(y, ybbox) for y in np.nditer(ybboxm[:, 1])]
+                    ol = [is_in_range(y, ybbox) for y in np.nditer(ybboxm[:, 1])]
                     for iol, ool in enumerate(ol):
                         if ool:
                             yticksm.obj[ir, ic][iol].set_visible(False)
@@ -1533,10 +1519,8 @@ class Layout(BaseLayout):
                                 yticksm.obj[ir, ic][iol + 1].set_visible(False)
                                 ol[iol + 1] = False
 
-    def get_tick_xs(self):
-
-        # Ticks at the edge of the plot
-
+    def _get_tick_xs(self):
+        """Calculate extra whitespace at the edge of the plot for the last tick."""
         xticks = self.tick_labels_major_x
         yticks = self.tick_labels_major_y
 
@@ -1564,25 +1548,23 @@ class Layout(BaseLayout):
             if len(xticks_size_all) > 0:
                 idx = xticks.size_cols.index('x1')
                 xxs = self.axes.obj[ir, ic].get_window_extent().x1 \
-                    + self.right \
+                    + self._right \
                     - xticks_size_all[-1][idx]
                 if xxs < 0:
                     self.x_tick_xs = -int(np.floor(xxs)) + 1
             if len(yticks_size_all) > 0:
                 idx = xticks.size_cols.index('y0')
                 yxs = self.axes.obj[ir, ic].get_window_extent().y1 \
-                    + self.top \
+                    + self._top \
                     - yticks_size_all[-1][idx]
                 if yxs < 0:
-                    self.y_tick_xs = -int(np.floor(yxs)) + \
-                        1  # not currently used
+                    self.y_tick_xs = -int(np.floor(yxs)) + 1  # not currently used
 
-    def get_title_position(self):
-        """
-        Calculate the title position
-            self.title.position --> [left, right, top, bottom]
-        """
+    def _get_title_position(self):
+        """Calculate the title position.
 
+        self.title.position --> [left, right, top, bottom]
+        """
         col_label = (self.label_col.size[1]
                      + self.ws_label_col * self.label_col.on) \
             + (self.label_wrap.size[1] + self.ws_label_col * self.label_wrap.on)
@@ -1599,14 +1581,11 @@ class Layout(BaseLayout):
             self.title.position[3] + (self.ws_title_ax + self.title.size[1]) / self.axes.size[1]
 
     def make_figure(self, data, **kwargs):
-        """
-        Make the figure and axes objects
-        """
-
+        """Make the figure and axes objects."""
         # Create the subplots
         #   Note we don't have the actual element sizes until rendereing
         #   so we use an approximate size based upon what is known
-        self.get_figure_size(data, **kwargs)
+        self._get_figure_size(data, **kwargs)
         self.fig.obj, self.axes.obj = \
             mplp.subplots(data.nrow, data.ncol,
                           figsize=[self.fig.size_inches[0],
@@ -1642,12 +1621,32 @@ class Layout(BaseLayout):
 
         return data
 
-    def plot_bar(self, ir, ic, iline, df, x, y, leg_name, data, stacked, std,
-                 ngroups, xvals, inst, total):
-        """
-        Plot bar graph
-        """
+    def plot_bar(self, ir: int, ic: int, iline: int, df: pd.DataFrame,
+                 leg_name: str, data: 'Data', ngroups: int, stacked: bool,
+                 std: [None, float], xvals: np.ndarray, inst: pd.Series,
+                 total: pd.Series) -> 'Data':
+        """Plot bar graph.
 
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            iline: data subset index (from Data.get_plot_data)
+            df: summed column "y" values grouped by x-column -->
+                df.groupby(x).sum()[y]
+            leg_name: legend value name if legend enabled
+            data: Data object
+            ngroups: total number of groups in the full data set based on
+                data.get_plot_data
+            stacked: enables stacked histograms if True
+            std: std dev to create error bars if not None
+            xvals: sorted array of x-column unique values
+            inst: instance value to get the correct alignment of a group
+                in the plot when legending
+            total: number of instances of x-column when grouped by the legend
+
+        Returns:
+            updated Data Object with new axes ranges
+        """
         ax = self.axes.obj[ir, ic]
         idx = np.where(np.isin(xvals, df.index))[0]
         ixvals = list(range(0, len(xvals)))
@@ -1743,21 +1742,18 @@ class Layout(BaseLayout):
 
         return data
 
-    def plot_box(self, ir, ic, data, **kwargs):
-        """ Plot boxplot data
+    def plot_box(self, ir: int, ic: int, data: 'Data', **kwargs) -> 'MPL_Boxplot_Object':
+        """Plot boxplot.
 
         Args:
-            ir (int): subplot row index
-            ic (int): subplot column index
-            data (pd.DataFrame): data to plot
-
-        Keyword Args:
-            any kwargs allowed by the plotter function selected
+            ir: subplot row index
+            ic: subplot column index
+            data: Data object
+            kwargs: keyword args
 
         Returns:
-            return the box plot object
+            box plot MPL object
         """
-
         bp = None
 
         if self.violin.on:
@@ -1832,10 +1828,25 @@ class Layout(BaseLayout):
 
         return bp
 
-    def plot_contour(self, ir, ic, ax, df, x, y, z, ranges):
+    def plot_contour(self, ir: int, ic: int, df: pd.DataFrame, x: str, y: str, z: str,
+                     data: 'Data') -> ['MPL_contour_object', 'MPL_colorbar_object']:
+        """Plot a contour plot.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            df: data to plot
+            x: x-column name
+            y: y-column name
+            z: z-column name
+            data: Data object
+
+        Returns:
+            reference to the contour plot object
+            reference to the colorbar object
         """
-        Plot a contour plot
-        """
+        ax = self.axes.obj[ir, ic]
+        ranges = data.ranges[ir, ic]
 
         # Convert data type
         xx = np.array(df[x])
@@ -1887,11 +1898,23 @@ class Layout(BaseLayout):
 
         return cc, self.cbar.obj
 
-    def plot_gantt(self, ir, ic, df, x, y, iline, leg_name, ranges, yvals, ngroups):
-        """
-        Plot gantt graph
-        """
+    def plot_gantt(self, ir: int, ic: int, iline: int, df: pd.DataFrame, x: str, y: str,
+                   leg_name: str, yvals: list, ngroups: int):
+        """Plot gantt graph.
 
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            iline: data subset index (from Data.get_plot_data)
+            df: input data
+            x: x-column name
+            y: y-column name
+            leg_name: legend value name if legend enabled
+            yvals: list of tuples of groupling column values
+            ngroups: total number of groups in the full data set based on
+                data.get_plot_data
+
+        """
         ax = self.axes.obj[ir, ic]
         bar = ax.broken_barh
 
@@ -1913,8 +1936,6 @@ class Layout(BaseLayout):
                 yi = yvals.index((row[y], leg_name))
             else:
                 yi = yvals.index((row[y],))
-            # offset = ((ranges['ymax'] - ranges['ymin']) - len(yvals)) / \
-            #         (ranges['ymax'] - ranges['ymin'])
             bar([(row[x[0]], row[x[1]] - row[x[0]])],
                 (yi - self.gantt.height / 2, self.gantt.height),
                 facecolor=fillcolor[ii],
@@ -1934,21 +1955,24 @@ class Layout(BaseLayout):
                       color=self.gantt.fill_color[(iline, leg_name)])]
             self.legend.add_value(leg_name, handle, 'lines')
 
-        return df
-
-    def plot_heatmap(self, ax, df, ir, ic, x, y, z, ranges):
-        """
-        Plot a heatmap
+    def plot_heatmap(self, ir: int, ic: int, df: pd.DataFrame, x: str, y: str,
+                     z: str, data: 'Data') -> 'MPL_imshow_object':
+        """Plot a heatmap.
 
         Args:
-            ax (mpl.axes): current axes obj
-            df (pd.DataFrame):  data to plot
-            x (str): x-column name
-            y (str): y-column name
-            z (str): z-column name
-            range (dict):  ax limits
+            ir: subplot row index
+            ic: subplot column index
+            df: data to plot
+            x: x-column name
+            y: y-column name
+            z: z-column name
+            data: Data object
 
+        Returns:
+            MPL imshow plot obj
         """
+        ax = self.axes.obj[ir, ic]
+        ranges = data.ranges[ir, ic]
 
         # Make the heatmap
         im = ax.imshow(df, self.cmap, vmin=ranges['zmin'],
@@ -2002,9 +2026,25 @@ class Layout(BaseLayout):
 
         return im
 
-    def plot_hist(self, ir, ic, iline, df, x, y, leg_name, data, zorder=1,
-                  line_type=None, marker_disable=False):
+    def plot_hist(self, ir: int, ic: int, iline: int, df: pd.DataFrame, x: str,
+                  y: str, leg_name: str, data: 'Data') -> ['MPL_histogram_object', 'Data']:
+        """Plot a histogram.
 
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            iline: data subset index (from Data.get_plot_data)
+            df: summed column "y" values grouped by x-column -->
+                df.groupby(x).sum()[y]
+            x: x-column name
+            y: y-column name
+            leg_name: legend value name if legend enabled
+            data: Data object
+
+        Returns:
+            MPL histogram plot object
+            updated Data object
+        """
         if LooseVersion(mpl.__version__) < LooseVersion('2.2'):
             hist = self.axes.obj[ir, ic].hist(df[x], bins=self.hist.bins,
                                               color=self.hist.fill_color[iline],
@@ -2015,14 +2055,9 @@ class Layout(BaseLayout):
                                               normed=self.hist.normalize,
                                               rwidth=self.hist.rwidth,
                                               stacked=self.hist.stacked,
-                                              # type=self.hist.type,
                                               orientation='vertical' if not self.hist.horizontal else 'horizontal',
                                               )
         else:
-            # if self.hist.horizontal:
-            #     xx = y
-            # else:
-            #     xx = x
             hist = self.axes.obj[ir, ic].hist(df[x], bins=self.hist.bins,
                                               color=self.hist.fill_color[iline],
                                               ec=self.hist.edge_color[iline],
@@ -2032,7 +2067,6 @@ class Layout(BaseLayout):
                                               density=self.hist.normalize,
                                               rwidth=self.hist.rwidth,
                                               stacked=self.hist.stacked,
-                                              # type=self.hist.type,
                                               orientation='vertical' if not self.hist.horizontal else 'horizontal',
                                               )
 
@@ -2059,19 +2093,20 @@ class Layout(BaseLayout):
 
         return hist, data
 
-    def plot_imshow(self, ir, ic, ax, df, x, y, z, ranges):
-        """
-        Plot a image
+    def plot_imshow(self, ir: int, ic: int, df: pd.DataFrame, data: 'Data'):
+        """Plot an image.
 
         Args:
-            ax (mpl.axes): current axes obj
-            df (pd.DataFrame):  data to plot
-            x (str): x-column name
-            y (str): y-column name
-            z (str): z-column name
-            range (dict):  ax limits
+            ir: subplot row index
+            ic: subplot column index
+            df: data to plot
+            data: Data object
 
+        Returns:
+            MPL imshow plot obj
         """
+        ax = self.axes.obj[ir, ic]
+        ranges = data.ranges[ir, ic]
 
         # Make the heatmap (maybe pull these kwargs out to an imshow obj?)
         im = ax.imshow(df.dropna(axis=1, how='all'), self.cmap,
@@ -2085,20 +2120,22 @@ class Layout(BaseLayout):
 
         return im
 
-    def plot_line(self, ir, ic, x0, y0, x1=None, y1=None, **kwargs):
-        """
-        Plot a simple line
+    def plot_line(self, ir: int, ic: int, x0: float, y0: float, x1: float = None,
+                  y1: float = None, **kwargs):
+        """Plot a simple line.
 
         Args:
-            ir (int): subplot row index
-            ic (int): subplot column index
-            x0 (float): min x coordinate of line
-            x1 (float): max x coordinate of line
-            y0 (float): min y coordinate of line
-            y1 (float): max y coordinate of line
+            ir: subplot row index
+            ic: subplot column index
+            x0: min x coordinate of line
+            x1: max x coordinate of line
+            y0: min y coordinate of line
+            y1: max y coordinate of line
             kwargs: keyword args
-        """
 
+        Returns:
+            MPL plot object
+        """
         if x1 is not None:
             x0 = [x0, x1]
         if y1 is not None:
@@ -2118,19 +2155,20 @@ class Layout(BaseLayout):
                                           zorder=kwargs.get('zorder', 1))
         return line
 
-    def plot_pie(self, ir, ic, df, x, y, data, kwargs):
-        """
-        Plot a pie chart
+    def plot_pie(self, ir: int, ic: int, df: pd.DataFrame, x: str, y: str, data: 'Data',
+                 kwargs) -> 'MPL_pie_chart_object':
+        """Plot a pie chart.
 
         Args:
-            ax (mpl.axes): current axes obj
-            df (pd.DataFrame):  data to plot
-            x (str): x-column name with label data
-            y (str): y-column name with values
-            kwargs (dict):  options
-
+            ir: subplot row index
+            ic: subplot column index
+            df: input data
+            x: x-column name
+            y: y-column name
+            data: Data object
+            kwargs: keyword args
         """
-
+        # Define various properties
         wedgeprops = {'linewidth': self.pie.edge_width,
                       'alpha': self.pie.alpha,
                       'linestyle': self.pie.edge_style,
@@ -2187,17 +2225,15 @@ class Layout(BaseLayout):
 
         return self.pie.obj
 
-    def plot_polygon(self, ir, ic, points, **kwargs):
-        """
-        Plot a polygon
+    def plot_polygon(self, ir: int, ic: int, points: list, **kwargs):
+        """Plot a polygon.
 
         Args:
-            ir (int): subplot row index
-            ic (int): subplot column index
-            points (list of float): points on the polygon
+            ir: subplot row index
+            ic: subplot column index
+            points: list of floats that defint the points on the polygon
             kwargs: keyword args
         """
-
         if kwargs['fill_color'] is None:
             fill_color = 'none'
         else:
@@ -2214,30 +2250,28 @@ class Layout(BaseLayout):
 
         self.axes.obj[ir, ic].add_collection(p)
 
-    def plot_xy(self, ir, ic, iline, df, x, y, leg_name, twin, zorder=1,
-                line_type=None, marker_disable=False):
+    def plot_xy(self, ir: int, ic: int, iline: int, df: pd.DataFrame, x: str, y: str,
+                leg_name: str, twin: bool, zorder: int = 1, line_type: [str, None] = None,
+                marker_disable: bool = False):
         """ Plot xy data
 
         Args:
-            x (np.array):  x data to plot
-            y (np.array):  y data to plot
-            color (str):  hex color code for line color (default='#000000')
-            marker (str):  marker char string (default='o')
-            points (bool):  toggle points on|off (default=False)
-            line (bool):  toggle plot lines on|off (default=True)
-
-        Keyword Args:
-            any kwargs allowed by the plotter function selected
-
-        Returns:
-            return the line plot object
+            ir: subplot row index
+            ic: subplot column index
+            iline: data subset index (from Data.get_plot_data)
+            df: summed column "y" values grouped by x-column -->
+                df.groupby(x).sum()[y]
+            x: x-column name
+            y: y-column name
+            leg_name: legend value name if legend enabled
+            twin: denotes if twin axis is enabled or not
+            zorder (optional): z-height of the plot lines. Defaults to 1.
+            line_type (optional): set the line type to reference the correct Element.
+                Defaults to None.
+            marker_disable (optional): flag to disable markers. Defaults to False.
         """
-
         def format_marker(marker):
-            """
-            Format the marker string to mathtext
-            """
-
+            """Format the marker string to mathtext."""
             if marker in ['o', '+', 's', 'x', 'd', '^']:
                 return marker
             elif marker is None:
@@ -2316,20 +2350,18 @@ class Layout(BaseLayout):
                     leg_name, points if points is not None else lines, line_type_name)
 
     def restore(self):
-        """Undo changes to MPL rcParams"""
-
+        """Undo changes to MPL rcParams."""
         for k, v in self.rc_orig.items():
             mpl.rcParams[k] = self.rc_orig[k]
 
-    def save(self, filename, idx=0):
-        """
-        Save a plot window
+    def save(self, filename: str, idx: int = 0):
+        """Save a plot window.
 
         Args:
-            filename (str): name of the file
-
+            filename: name of the file
+            idx (optional): figure index in order to set the edge and face color of the
+                figure correctly when saving. Defaults to 0.
         """
-
         kwargs = {'edgecolor': self.fig.edge_color[idx],
                   'facecolor': self.fig.fill_color[idx]}
         if LooseVersion(mpl.__version__) < LooseVersion('3.3'):
@@ -2337,26 +2369,21 @@ class Layout(BaseLayout):
         self.fig.obj.savefig(filename, **kwargs)
 
     def see(self):
-        """
-        Prints a readable list of class attributes
-        """
-
+        """Prints a readable list of class attributes."""
         df = pd.DataFrame({'Attribute': list(self.__dict__.copy().keys()),
                            'Name': [str(f) for f in self.__dict__.copy().values()]})
         df = df.sort_values(by='Attribute').reset_index(drop=True)
 
         return df
 
-    def set_axes_colors(self, ir, ic):
-        """
-        Set axes colors (fill, alpha, edge)
+    def set_axes_colors(self, ir: int, ic: int):
+        """Set axes colors (fill, alpha, edge).
 
         Args:
-            ir (int): subplot row index
-            ic (int): subplot col index
+            ir: subplot row index
+            ic: subplot column index
 
         """
-
         axes = self._get_axes()
 
         # for ax in axes:
@@ -2380,16 +2407,14 @@ class Layout(BaseLayout):
                 axes[-1].obj[ir,
                              ic].spines[f].set_linewidth(self.axes.edge_width)
 
-    def set_axes_grid_lines(self, ir, ic):
-        """
-        Style the grid lines and toggle visibility
+    def set_axes_grid_lines(self, ir: int, ic: int):
+        """Style the grid lines and toggle visibility.
 
         Args:
             ir (int): subplot row index
-            ic (int): subplot col index
+            ic (int): subplot column index
 
         """
-
         axes = self._get_axes()
 
         for ax in axes:
@@ -2456,17 +2481,14 @@ class Layout(BaseLayout):
                                           linestyle=self.grid_minor_y.style[0],
                                           linewidth=self.grid_minor_y.width[0])
 
-    def set_axes_labels(self, ir, ic):
-        """
-        Set the axes labels
+    def set_axes_labels(self, ir: int, ic: int):
+        """Set the axes labels.
 
         Args:
-            ir (int): current row index
-            ic (int): current column index
-            kw (dict): kwargs dict
+            ir: subplot row index
+            ic: subplot column index
 
         """
-
         if self.name in ['pie']:
             return
 
@@ -2509,18 +2531,14 @@ class Layout(BaseLayout):
             label.obj[ir, ic], label.obj_bg[ir, ic] = \
                 self.add_label(ir, ic, labeltext, **self.make_kw_dict(label))
 
-    def set_axes_scale(self, ir, ic):
-        """
-        Set the scale type of the axes
+    def set_axes_scale(self, ir: int, ic: int):
+        """Set the scale type of the axes.
 
         Args:
-            ir (int): subplot row index
-            ic (int): subplot col index
+            ir: subplot row index
+            ic: subplot column index
 
-        Returns:
-            axes scale type
         """
-
         axes = self._get_axes()
 
         for ax in axes:
@@ -2540,18 +2558,16 @@ class Layout(BaseLayout):
                 elif str(ax.scale).lower() in LOGITY:
                     ax.obj[ir, ic].set_yscale('logit')
 
-    def set_axes_ranges(self, ir, ic, ranges):
-        """
-        Set the axes ranges
+    def set_axes_ranges(self, ir: int, ic: int, ranges: dict):
+        """Set the axes ranges.
 
         Args:
-            ir (int): subplot row index
-            ic (int): subplot col index
-            limits (dict): min/max axes limits for each axis
+            ir: subplot row index
+            ic: subplot column index
+            ranges: min/max axes limits for each axis
 
         """
-
-        if self.name in ['heatmap', 'pie']:
+        if self.name in ['heatmap', 'pie']:  # skip these plot types
             return
 
         # X-axis
@@ -2620,19 +2636,21 @@ class Layout(BaseLayout):
             if ranges[ir, ic]['y2max'] is not None:
                 self.axes2.obj[ir, ic].set_ylim(top=ranges[ir, ic]['y2max'])
 
-    def set_axes_ranges_hist(self, ir, ic, data, hist, iline):
-        """
-        Special range overrides for histogram plot
-            Needed to deal with the late computation of bin counts
+    def set_axes_ranges_hist(self, ir: int, ic: int, data: 'Data',
+                             hist: 'MPL_histogram_object', iline: int) -> 'Data':
+        """Special range overrides for histogram plot.
+           Needed to deal with the late computation of bin counts.
 
         Args:
-            ir (int): subplot row index
-            ic (int): subplot col index
-            data (Data obj): current data object
-            hist (mpl.hist obj): result of hist plot
+            ir: subplot row index
+            ic: subplot column index
+            data: Data object
+            hist: result of hist plot
+            iline: data subset index (from Data.get_plot_data)
 
+        Returns:
+            updated Data object
         """
-
         if not self.hist.horizontal:
             if data.ymin:
                 data.ranges[ir, ic]['ymin'] = data.ymin
@@ -2672,16 +2690,14 @@ class Layout(BaseLayout):
 
         return data
 
-    def set_axes_rc_labels(self, ir, ic):
-        """
-        Add the row/column label boxes and wrap titles
+    def set_axes_rc_labels(self, ir: int, ic: int):
+        """Add the row/column label boxes and wrap titles.
 
         Args:
-            ir (int): current row index
-            ic (int): current column index
+            ir: subplot row index
+            ic: subplot column index
 
         """
-
         # Wrap title
         if ir == 0 and ic == 0 and self.title_wrap.on:
             kwargs = self.make_kw_dict(self.title_wrap)
@@ -2728,18 +2744,15 @@ class Layout(BaseLayout):
                 self.label_col.obj[ir, ic], self.label_col.obj_bg[ir, ic] = \
                     self.add_label(ir, ic, text, **self.make_kw_dict(self.label_col))
 
-    def set_axes_ticks(self, ir, ic):
-        """
-        Configure the axes tick marks
+    def set_axes_ticks(self, ir: int, ic: int):
+        """Configure the axes tick marks.
 
         Args:
-            ax (mpl axes): current axes to scale
-            kw (dict): kwargs dict
-            y_only (bool): flag to access on the y-axis ticks
+            ir: subplot row index
+            ic: subplot column index
 
         """
-
-        if self.name in ['pie']:
+        if self.name in ['pie']:  # skip this plot type
             return
 
         axes = [f.obj[ir, ic] for f in [self.axes, self.axes2] if f.on]
@@ -3103,14 +3116,13 @@ class Layout(BaseLayout):
                         for text in getattr(axes[ia], 'get_%sminorticklabels' % axx)():
                             text.set_rotation(tlminlab.rotation)
 
-    def set_colormap(self, data, **kwargs):
-        """
-        Replace the color list with discrete values from a colormap
+    def set_colormap(self, data: 'Data', **kwargs):
+        """Replace the color list with discrete values from a colormap.
 
         Args:
-            data (Data object)
+            data: Data object
+            kwargs: keyword args
         """
-
         if not self.cmap or self.name in \
                 ['contour', 'heatmap', 'imshow']:
             return
@@ -3152,24 +3164,26 @@ class Layout(BaseLayout):
             print('Could not find a colormap called "%s". '
                   'Using default colors...' % self.cmap)
 
-    def set_figure_final_layout(self, data, **kwargs):
-        """
-        Final adjustment of the figure size and plot spacing
-        """
+    def set_figure_final_layout(self, data: 'Data', **kwargs):
+        """Final adjustment of the figure size and plot spacing.
 
+        Args:
+            data: Data object
+            kwargs: keyword args
+        """
         # Render dummy figure to get the element sizes
-        self.get_element_sizes(data)
+        self._get_element_sizes(data)
 
         # Clean up tick overlaps
-        self.get_tick_xs()
+        self._get_tick_xs()
 
         # Resize the figure
-        self.get_figure_size(data, **kwargs)
+        self._get_figure_size(data, **kwargs)
         self.fig.obj.set_size_inches((self.fig.size_inches[0],
                                       self.fig.size_inches[1]))
 
         # Adjust subplot spacing
-        self.get_subplots_adjust()
+        self._get_subplots_adjust()
         self.fig.obj.subplots_adjust(left=self.axes.position[0],
                                      right=self.axes.position[1],
                                      top=self.axes.position[2],
@@ -3179,9 +3193,9 @@ class Layout(BaseLayout):
                                      )
 
         # Tick overlap cleanup
-        self.get_tick_label_sizes()  # update after axes reshape
-        self.get_tick_overlaps()
-        self.get_tick_overlaps('2')
+        self._get_tick_label_sizes()  # update after axes reshape
+        self._get_tick_overlaps()
+        self._get_tick_overlaps('2')
 
         # Update the axes label positions
         self._get_axes_label_position()
@@ -3205,7 +3219,7 @@ class Layout(BaseLayout):
                         lab.obj_bg[ir, ic].set_y(y - offsety / self.axes.size[1])
 
         # Update the rc label positions
-        self.get_rc_label_position()
+        self._get_rc_label_position()
         # row
         for ir, ic in np.ndindex(self.label_row.obj.shape):
             if self.label_row.obj[ir, ic]:
@@ -3264,12 +3278,12 @@ class Layout(BaseLayout):
 
         # Update title position
         if self.title.on:
-            self.get_title_position()
+            self._get_title_position()
             self.title.obj.set_position(self.title.position_xy)
 
         # Update the legend position
         if self.legend.on and self.legend.location in [0, 11]:
-            self.get_legend_position()
+            self._get_legend_position()
             self.legend.obj.set_bbox_to_anchor((self.legend.position[1],
                                                 self.legend.position[2]))
 
@@ -3335,12 +3349,10 @@ class Layout(BaseLayout):
             self.set_text_position()
 
     def set_figure_title(self):
-        """
-        Set a figure title
-        """
+        """Set a figure title."""
 
         if self.title.on:
-            self.get_title_position()
+            self._get_title_position()
             self.title.obj, self.title.obj_bg = \
                 self.add_label(0, 0, self.title.text, offset=True,
                                **self.make_kw_dict(self.title))

@@ -2272,13 +2272,18 @@ class BaseLayout:
             self.ws_col_def = 0
 
     @abc.abstractmethod
-    def add_box_labels(self, ir, ic, dd):
+    def add_box_labels(self):
         """Add box group labels and titles (JMP style)."""
         pass
 
     @abc.abstractmethod
     def add_hvlines(self, ir, ic):
         """Add horizontal/vertical lines."""
+        pass
+
+    @abc.abstractmethod
+    def add_label(self):
+        """Add a label to the plot."""
         pass
 
     @abc.abstractmethod
@@ -2292,8 +2297,13 @@ class BaseLayout:
         pass
 
     @abc.abstractmethod
+    def fill_between_lines(self):
+        """Shade a region between two curves."""
+        pass
+
+    @abc.abstractmethod
     def make_figure(self):
-        """Make the figure and axes objects"""
+        """Make the figure and axes objects."""
         pass
 
     def make_kw_dict(self, element: 'Element', pop: list = []) -> dict:
@@ -2362,7 +2372,7 @@ class BaseLayout:
 
     @abc.abstractmethod
     def plot_imshow(self):
-        """Plot a image."""
+        """Plot an image."""
         pass
 
     @abc.abstractmethod
@@ -2373,6 +2383,11 @@ class BaseLayout:
     @abc.abstractmethod
     def plot_pie(self):
         """Plot a pie chart."""
+        pass
+
+    @abc.abstractmethod
+    def plot_polygon(self):
+        """Plot a polygon."""
         pass
 
     @abc.abstractmethod

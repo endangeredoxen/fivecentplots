@@ -84,6 +84,10 @@ class Layout(BaseLayout):
     def add_hvlines(self, ir, ic, df=None):
         pass
 
+    def add_label(self):
+        """Add a label to the plot."""
+        pass
+
     def add_legend(self):
         """
         Add a figure legend
@@ -109,7 +113,7 @@ class Layout(BaseLayout):
 
         pass
 
-    def get_element_sizes(self, data):
+    def _get_element_sizes(self, data):
 
         # Add label size
         self.label_x.size = \
@@ -158,7 +162,7 @@ class Layout(BaseLayout):
 
         return data
 
-    def get_figure_size(self, data, **kwargs):
+    def _get_figure_size(self, data, **kwargs):
 
         self.axes.size[0] += self.legend.size[0]
 
@@ -170,7 +174,7 @@ class Layout(BaseLayout):
         self._update_from_data(data)
         self._update_wrap(data, kwargs)
         self._set_label_text(data, **kwargs)
-        data = self.get_element_sizes(data)
+        data = self._get_element_sizes(data)
 
         self.axes.obj = np.array([[None] * self.ncol] * self.nrow)
         for ir in range(0, self.nrow):
