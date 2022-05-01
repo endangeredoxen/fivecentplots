@@ -2141,6 +2141,28 @@ class BaseLayout:
         """Return list of active axes."""
         return [f for f in [self.axes, self.axes2] if f.on]
 
+    @abc.abstractmethod
+    def _get_element_sizes(self, data: 'Data'):
+        """Calculate the actual rendered size of select elements by pre-plotting
+        them.  This is needed to correctly adjust the figure dimensions.
+
+        Args:
+            data: fcp Data object
+
+        Returns:
+            updated version of `data`
+        """
+
+    @abc.abstractmethod
+    def _get_figure_size(self, data: 'Data', **kwargs):
+        """Determine the size of the mpl figure canvas in pixels and inches.
+
+        Args:
+            data: Data object
+            kwargs: user-defined keyword args
+        """
+        pass
+
     def _set_label_text(self, data: 'Data'):
         """Set the default label text for x, y, z axes and col, row, wrap
         grouping labels
@@ -2272,23 +2294,63 @@ class BaseLayout:
             self.ws_col_def = 0
 
     @abc.abstractmethod
-    def add_box_labels(self):
-        """Add box group labels and titles (JMP style)."""
+    def add_box_labels(self, ir: int, ic: int, data):
+        """Add box group labels and titles (JMP style).
+
+        Args:
+            ir: current axes row index
+            ic: current axes column index
+            data: fcp Data object
+        """
         pass
 
     @abc.abstractmethod
-    def add_hvlines(self, ir, ic):
-        """Add horizontal/vertical lines."""
+    def add_hvlines(self, ir: int, ic: int, df: [pd.DataFrame, None] = None):
+        """Add horizontal/vertical lines.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            df: current data. Defaults to None.
+        """
         pass
 
     @abc.abstractmethod
-    def add_label(self):
-        """Add a label to the plot."""
-        pass
+    def add_label(self, ir: int, ic: int, text: str = '', position: [tuple, None] = None,
+                  rotation: int = 0, size: [list, None] = None,
+                  fill_color: str = '#ffffff', edge_color: str = '#aaaaaa',
+                  edge_width: int = 1, font: str = 'sans-serif', font_weight: str = 'normal',
+                  font_style: str = 'normal', font_color: str = '#666666', font_size: int = 14,
+                  offset: bool = False, **kwargs) -> ['Text_Object', 'Rectangle_Object']:
+        """Add a label to the plot.
 
-    @abc.abstractmethod
-    def close(self):
-        """Close an inline plot window."""
+        This function can be used for title labels or for group labels applied
+        to rows and columns when plotting facet grid style plots.
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            text:  label text. Defaults to ''.
+            position: label position tuple of form (left, right, top, bottom) or None.
+                Defaults to None.
+            rotation:  degrees of rotation. Defaults to 0.
+            size: list of [height, weight] or None. Defaults to None.
+            fill_color: hex color code for label fill. Defaults to '#ffffff'.
+            edge_color: hex color code for label edge. Defaults to '#aaaaaa'.
+            edge_width: width of the label bounding box edge. Defaults to 1.
+            font: name of the font for the label. Defaults to 'sans-serif'.
+            font_weight: mpl font weight str ('normal', 'bold', etc.). Defaults to 'normal'.
+            font_style: mpl font style str ('normal', 'italic', etc.). Defaults to 'normal'.
+            font_color:  hex color code for label text. Defaults to '#666666'.
+            font_size: label font size (default=14)
+            offset: use an offset for positioning the text of the label. Defaults to False.
+            kwargs: any other keyword args (they won't be used but a sloppy way to ignore
+                any extra keywords that get passed to this function)
+
+        Returns:
+            reference to the text box object
+            reference to the background rectangle patch object
+
+        """
         pass
 
     @abc.abstractmethod
@@ -2297,13 +2359,42 @@ class BaseLayout:
         pass
 
     @abc.abstractmethod
-    def fill_between_lines(self):
-        """Shade a region between two curves."""
+    def close(self):
+        """Close an inline plot window."""
         pass
 
     @abc.abstractmethod
-    def make_figure(self):
-        """Make the figure and axes objects."""
+    def fill_between_lines(self, ir: int, ic: int, iline: int,
+                           x: [np.ndarray, pd.Index],
+                           lcl: [np.ndarray, pd.Series],
+                           ucl: [np.ndarray, pd.Series],
+                           element: str, leg_name: [str, None] = None,
+                           twin: bool = False):
+        """Shade a region between two curves.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            iline: data subset index (from Data.get_plot_data)
+            x: x-axis values
+            lcl: y-axis values for the lower bound of the fill
+            ucl: y-axis values for the upper bound of the fill
+            element: name of the Element object associated with this fill
+            leg_name (optional): legend value name if legend enabled.
+                Defaults to None.
+            twin (optional): denotes if twin axis is enabled or not.
+                Defaults to False.
+        """
+        pass
+
+    @abc.abstractmethod
+    def make_figure(self, data: 'Data', **kwargs):
+        """Make the figure and axes objects.
+
+        Args:
+            data: fcp Data object
+            **kwargs: input args from user
+        """
         pass
 
     def make_kw_dict(self, element: 'Element', pop: list = []) -> dict:
@@ -2340,59 +2431,217 @@ class BaseLayout:
 
         return kwargs
 
+    # Note: plot functions follow the following ordering scheme for input args
+    # -> ir, ic, iline, df, x, y, z, leg_name, data, ngroups, twin, others at will...
+    # simply skip any that are not relevant for a give plot function
     @abc.abstractmethod
-    def plot_bar(self):
-        """Plot a bar graph."""
+    def plot_bar(self, ir: int, ic: int, iline: int, df: pd.DataFrame,
+                 leg_name: str, data: 'Data', ngroups: int, stacked: bool,
+                 std: [None, float], xvals: np.ndarray, inst: pd.Series,
+                 total: pd.Series) -> 'Data':
+        """Plot bar graph.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            iline: data subset index (from Data.get_plot_data)
+            df: summed column "y" values grouped by x-column -->
+                df.groupby(x).sum()[y]
+            leg_name: legend value name if legend enabled
+            data: Data object
+            ngroups: total number of groups in the full data set based on
+                data.get_plot_data
+            stacked: enables stacked histograms if True
+            std: std dev to create error bars if not None
+            xvals: sorted array of x-column unique values
+            inst: instance value to get the correct alignment of a group
+                in the plot when legending
+            total: number of instances of x-column when grouped by the legend
+
+        Returns:
+            updated Data Object with new axes ranges
+        """
         pass
 
     @abc.abstractmethod
-    def plot_box(self):
-        """Plot boxplot."""
+    def plot_box(self, ir: int, ic: int, data: 'Data', **kwargs) -> 'MPL_Boxplot_Object':
+        """Plot boxplot.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            data: Data object
+            kwargs: keyword args
+
+        Returns:
+            box plot MPL object
+        """
         pass
 
     @abc.abstractmethod
-    def plot_contour(self):
-        """Plot a contour plot."""
+    def plot_contour(self, ir: int, ic: int, df: pd.DataFrame, x: str, y: str, z: str,
+                     data: 'Data') -> ['MPL_contour_object', 'MPL_colorbar_object']:
+        """Plot a contour plot.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            df: data to plot
+            x: x-column name
+            y: y-column name
+            z: z-column name
+            data: Data object
+
+        Returns:
+            reference to the contour plot object
+            reference to the colorbar object
+        """
         pass
 
     @abc.abstractmethod
-    def plot_gantt(self):
-        """Plot a gantt chart."""
+    def plot_gantt(self, ir: int, ic: int, iline: int, df: pd.DataFrame, x: str, y: str,
+                   leg_name: str, yvals: list, ngroups: int):
+        """Plot gantt graph.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            iline: data subset index (from Data.get_plot_data)
+            df: input data
+            x: x-column name
+            y: y-column name
+            leg_name: legend value name if legend enabled
+            yvals: list of tuples of groupling column values
+            ngroups: total number of groups in the full data set based on
+                data.get_plot_data
+
+        """
         pass
 
     @abc.abstractmethod
-    def plot_heatmap(self):
-        """Plot a heatmap."""
+    def plot_heatmap(self, ir: int, ic: int, df: pd.DataFrame, x: str, y: str,
+                     z: str, data: 'Data') -> 'MPL_imshow_object':
+        """Plot a heatmap.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            df: data to plot
+            x: x-column name
+            y: y-column name
+            z: z-column name
+            data: Data object
+
+        Returns:
+            imshow plot obj
+        """
         pass
 
     @abc.abstractmethod
-    def plot_hist(self):
-        """Plot a histogram."""
+    def plot_hist(self, ir: int, ic: int, iline: int, df: pd.DataFrame, x: str,
+                  y: str, leg_name: str, data: 'Data') -> ['MPL_histogram_object', 'Data']:
+        """Plot a histogram.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            iline: data subset index (from Data.get_plot_data)
+            df: summed column "y" values grouped by x-column -->
+                df.groupby(x).sum()[y]
+            x: x-column name
+            y: y-column name
+            leg_name: legend value name if legend enabled
+            data: Data object
+
+        Returns:
+            histogram plot object
+            updated Data object
+        """
         pass
 
     @abc.abstractmethod
-    def plot_imshow(self):
-        """Plot an image."""
+    def plot_imshow(self, ir: int, ic: int, df: pd.DataFrame, data: 'Data'):
+        """Plot an image.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            df: data to plot
+            data: Data object
+
+        Returns:
+            imshow plot obj
+        """
         pass
 
     @abc.abstractmethod
-    def plot_line(self):
-        """Plot a simple line."""
+    def plot_line(self, ir: int, ic: int, x0: float, y0: float, x1: float = None,
+                  y1: float = None, **kwargs):
+        """Plot a simple line.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            x0: min x coordinate of line
+            x1: max x coordinate of line
+            y0: min y coordinate of line
+            y1: max y coordinate of line
+            kwargs: keyword args
+
+        Returns:
+            plot object
+        """
         pass
 
     @abc.abstractmethod
-    def plot_pie(self):
-        """Plot a pie chart."""
+    def plot_pie(self, ir: int, ic: int, df: pd.DataFrame, x: str, y: str, data: 'Data',
+                 kwargs) -> 'MPL_pie_chart_object':
+        """Plot a pie chart.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            df: input data
+            x: x-column name
+            y: y-column name
+            data: Data object
+            kwargs: keyword args
+        """
         pass
 
     @abc.abstractmethod
-    def plot_polygon(self):
-        """Plot a polygon."""
+    def plot_polygon(self, ir: int, ic: int, points: list, **kwargs):
+        """Plot a polygon.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            points: list of floats that defint the points on the polygon
+            kwargs: keyword args
+        """
         pass
 
     @abc.abstractmethod
-    def plot_xy(self):
-        """Plot xy data."""
+    def plot_xy(self, ir: int, ic: int, iline: int, df: pd.DataFrame, x: str, y: str,
+                leg_name: str, twin: bool, zorder: int = 1, line_type: [str, None] = None,
+                marker_disable: bool = False):
+        """ Plot xy data
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            iline: data subset index (from Data.get_plot_data)
+            df: summed column "y" values grouped by x-column -->
+                df.groupby(x).sum()[y]
+            x: x-column name
+            y: y-column name
+            leg_name: legend value name if legend enabled
+            twin: denotes if twin axis is enabled or not
+            zorder (optional): z-height of the plot lines. Defaults to 1.
+            line_type (optional): set the line type to reference the correct Element.
+                Defaults to None.
+            marker_disable (optional): flag to disable markers. Defaults to False.
+        """
         pass
 
     @abc.abstractmethod
@@ -2401,13 +2650,18 @@ class BaseLayout:
         pass
 
     @abc.abstractmethod
-    def save(self):
-        """Save a plot window."""
+    def save(self, filename: str, idx: int = 0):
+        """Save a plot window.
+
+        Args:
+            filename: name of the file
+            idx (optional): figure index in order to set the edge and face color of the
+                figure correctly when saving. Defaults to 0.
+        """
         pass
 
     def see(self):
         """Prints a readable list of class attributes."""
-
         df = pd.DataFrame({'Attribute': list(self.__dict__.copy().keys()),
                            'Name': [str(f) for f in self.__dict__.copy().values()]})
         df = df.sort_values(by='Attribute').reset_index(drop=True)
@@ -2415,38 +2669,81 @@ class BaseLayout:
         return df
 
     @abc.abstractmethod
-    def set_axes_colors(self, ir, ic):
-        """Set axes colors (fill, alpha, edge)."""
+    def set_axes_colors(self, ir: int, ic: int):
+        """Set axes colors (fill, alpha, edge).
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+
+        """
         pass
 
     @abc.abstractmethod
-    def set_axes_grid_lines(self, ir, ic):
-        """Style the grid lines and toggle visibility."""
+    def set_axes_grid_lines(self, ir: int, ic: int):
+        """Style the grid lines and toggle visibility.
+
+        Args:
+            ir (int): subplot row index
+            ic (int): subplot column index
+
+        """
         pass
 
     @abc.abstractmethod
-    def set_axes_labels(self, ir, ic):
-        """Set the axes labels text."""
+    def set_axes_labels(self, ir: int, ic: int):
+        """Set the axes labels.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+
+        """
         pass
 
     @abc.abstractmethod
-    def set_axes_ranges(self, ir, ic):
-        """Set the axes ranges."""
+    def set_axes_ranges(self, ir: int, ic: int, ranges: dict):
+        """Set the axes ranges.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            ranges: min/max axes limits for each axis
+
+        """
         pass
 
     @abc.abstractmethod
-    def set_axes_rc_labels(self, ir, ic):
-        """Add the row/column label boxes and wrap titles."""
+    def set_axes_rc_labels(self, ir: int, ic: int):
+        """Add the row/column label boxes and wrap titles.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+
+        """
         pass
 
     @abc.abstractmethod
-    def set_axes_scale(self, ir, ic):
-        """Set the scale type of the axes."""
+    def set_axes_scale(self, ir: int, ic: int):
+        """Set the scale type of the axes.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+
+        """
         pass
 
     @abc.abstractmethod
-    def set_axes_ticks(self, ir, ic):
-        """Configure the axes tick marks."""
+    def set_axes_ticks(self, ir: int, ic: int):
+        """Configure the axes tick marks.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+
+        """
         pass
 
     @abc.abstractmethod
@@ -2455,8 +2752,13 @@ class BaseLayout:
         pass
 
     @abc.abstractmethod
-    def show(self, inline=True):
-        """Display the plot window."""
+    def show(self, filename: str = None):
+        """Display the plot window.
+
+        Args:
+            filename (optional): name of the file to show. Defaults to None.
+
+        """
         pass
 
 

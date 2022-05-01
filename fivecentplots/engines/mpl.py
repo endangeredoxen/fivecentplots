@@ -82,7 +82,7 @@ def iterticks(ax: mplp.Axes, minor: bool = False):
     removal.
 
     Args:
-        ax: axes object
+        ax: MPL axes object
         minor: True = minor ticks, False = major ticks. Defaults to False.
 
     Yields:
@@ -184,7 +184,6 @@ class Layout(BaseLayout):
             data: fcp Data object
             **kwargs: input args from user
         """
-
         # Set the layout engine
         global ENGINE
         ENGINE = 'mpl'
@@ -203,7 +202,7 @@ class Layout(BaseLayout):
             mplp.close('all')
 
         # Inherit the base layout properties
-        BaseLayout.__init__(self, data, **kwargs)
+        super().__init__(data, **kwargs)
 
         # Initialize other class variables
         self.label_col_height = 0
@@ -1580,8 +1579,13 @@ class Layout(BaseLayout):
         self.title.position[2] = \
             self.title.position[3] + (self.ws_title_ax + self.title.size[1]) / self.axes.size[1]
 
-    def make_figure(self, data, **kwargs):
-        """Make the figure and axes objects."""
+    def make_figure(self, data: 'Data', **kwargs):
+        """Make the figure and axes objects.
+
+        Args:
+            data: fcp Data object
+            **kwargs: input args from user
+        """
         # Create the subplots
         #   Note we don't have the actual element sizes until rendereing
         #   so we use an approximate size based upon what is known
@@ -2368,14 +2372,6 @@ class Layout(BaseLayout):
             kwargs['linewidth'] = self.fig.edge_width
         self.fig.obj.savefig(filename, **kwargs)
 
-    def see(self):
-        """Prints a readable list of class attributes."""
-        df = pd.DataFrame({'Attribute': list(self.__dict__.copy().keys()),
-                           'Name': [str(f) for f in self.__dict__.copy().values()]})
-        df = df.sort_values(by='Attribute').reset_index(drop=True)
-
-        return df
-
     def set_axes_colors(self, ir: int, ic: int):
         """Set axes colors (fill, alpha, edge).
 
@@ -2531,33 +2527,6 @@ class Layout(BaseLayout):
             label.obj[ir, ic], label.obj_bg[ir, ic] = \
                 self.add_label(ir, ic, labeltext, **self.make_kw_dict(label))
 
-    def set_axes_scale(self, ir: int, ic: int):
-        """Set the scale type of the axes.
-
-        Args:
-            ir: subplot row index
-            ic: subplot column index
-
-        """
-        axes = self._get_axes()
-
-        for ax in axes:
-            if ax.scale is None:
-                continue
-            else:
-                if str(ax.scale).lower() in LOGX:
-                    ax.obj[ir, ic].set_xscale('log')
-                elif str(ax.scale).lower() in SYMLOGX:
-                    ax.obj[ir, ic].set_xscale('symlog')
-                elif str(ax.scale).lower() in LOGITX:
-                    ax.obj[ir, ic].set_xscale('logit')
-                if str(ax.scale).lower() in LOGY:
-                    ax.obj[ir, ic].set_yscale('log')
-                elif str(ax.scale).lower() in SYMLOGY:
-                    ax.obj[ir, ic].set_yscale('symlog')
-                elif str(ax.scale).lower() in LOGITY:
-                    ax.obj[ir, ic].set_yscale('logit')
-
     def set_axes_ranges(self, ir: int, ic: int, ranges: dict):
         """Set the axes ranges.
 
@@ -2636,60 +2605,6 @@ class Layout(BaseLayout):
             if ranges[ir, ic]['y2max'] is not None:
                 self.axes2.obj[ir, ic].set_ylim(top=ranges[ir, ic]['y2max'])
 
-    def set_axes_ranges_hist(self, ir: int, ic: int, data: 'Data',
-                             hist: 'MPL_histogram_object', iline: int) -> 'Data':
-        """Special range overrides for histogram plot.
-           Needed to deal with the late computation of bin counts.
-
-        Args:
-            ir: subplot row index
-            ic: subplot column index
-            data: Data object
-            hist: result of hist plot
-            iline: data subset index (from Data.get_plot_data)
-
-        Returns:
-            updated Data object
-        """
-        if not self.hist.horizontal:
-            if data.ymin:
-                data.ranges[ir, ic]['ymin'] = data.ymin
-            else:
-                data.ranges[ir, ic]['ymin'] = None
-            if data.ymax:
-                data.ranges[ir, ic]['ymax'] = data.ymax
-            elif data.ranges[ir, ic]['ymax'] is None:
-                data.ranges[ir, ic]['ymax'] = \
-                    max(hist[0]) * (1 + data.ax_limit_padding_y_max)
-            else:
-                data.ranges[ir, ic]['ymax'] = \
-                    max(data.ranges[ir, ic]['ymax'], max(hist[0])
-                        * (1 + data.ax_limit_padding_y_max))
-        elif self.hist.horizontal:
-            if data.ymin:
-                data.ranges[ir, ic]['ymin'] = data.ymin
-            elif iline == 0:
-                data.ranges[ir, ic]['ymin'] = data.ranges[ir, ic]['xmin']
-            if data.ymax:
-                data.ranges[ir, ic]['ymax'] = data.ymax
-            elif iline == 0:
-                data.ranges[ir, ic]['ymax'] = data.ranges[ir, ic]['xmax']
-            if data.xmin:
-                data.ranges[ir, ic]['xmin'] = data.xmin
-            else:
-                data.ranges[ir, ic]['xmin'] = None
-            if data.xmax:
-                data.ranges[ir, ic]['xmax'] = data.xmax
-            elif iline == 0:
-                data.ranges[ir, ic]['xmax'] = \
-                    max(hist[0]) * (1 + data.ax_limit_padding_y_max)
-            else:
-                data.ranges[ir, ic]['xmax'] = \
-                    max(data.ranges[ir, ic]['xmax'], max(hist[0])
-                        * (1 + data.ax_limit_padding_x_max))
-
-        return data
-
     def set_axes_rc_labels(self, ir: int, ic: int):
         """Add the row/column label boxes and wrap titles.
 
@@ -2743,6 +2658,33 @@ class Layout(BaseLayout):
                                   self.label_col.values[ic])
                 self.label_col.obj[ir, ic], self.label_col.obj_bg[ir, ic] = \
                     self.add_label(ir, ic, text, **self.make_kw_dict(self.label_col))
+
+    def set_axes_scale(self, ir: int, ic: int):
+        """Set the scale type of the axes.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+
+        """
+        axes = self._get_axes()
+
+        for ax in axes:
+            if ax.scale is None:
+                continue
+            else:
+                if str(ax.scale).lower() in LOGX:
+                    ax.obj[ir, ic].set_xscale('log')
+                elif str(ax.scale).lower() in SYMLOGX:
+                    ax.obj[ir, ic].set_xscale('symlog')
+                elif str(ax.scale).lower() in LOGITX:
+                    ax.obj[ir, ic].set_xscale('logit')
+                if str(ax.scale).lower() in LOGY:
+                    ax.obj[ir, ic].set_yscale('log')
+                elif str(ax.scale).lower() in SYMLOGY:
+                    ax.obj[ir, ic].set_yscale('symlog')
+                elif str(ax.scale).lower() in LOGITY:
+                    ax.obj[ir, ic].set_yscale('logit')
 
     def set_axes_ticks(self, ir: int, ic: int):
         """Configure the axes tick marks.
@@ -3350,33 +3292,33 @@ class Layout(BaseLayout):
 
     def set_figure_title(self):
         """Set a figure title."""
-
         if self.title.on:
             self._get_title_position()
             self.title.obj, self.title.obj_bg = \
                 self.add_label(0, 0, self.title.text, offset=True,
                                **self.make_kw_dict(self.title))
 
-    def set_scientific(self, ax, tp, idx=0):
-        """
-        Turn off scientific notation
+    def set_scientific(self, ax: mplp.Axes, tp: dict, idx: int = 0) -> mplp.Axes:
+        """Turn off scientific notation.
 
         Args:
-            ax: axis to adjust
-            tp (dict): tick label, position dict from mpl_get_ticks
-            idx (int): axis number
+            ax: MPL axes object
+            tp: tick label, position dict from mpl_get_ticks
+            idx: axis number
 
         Returns:
-            updated axise
+            updated axis
         """
 
         def get_sci(ticks, limit):
-            """
-            Get the scientific notation format string
+            """Get the scientific notation format string.
 
             Args:
                 ticks: tp['?']['ticks']
                 limit: ax.get_?lim()
+
+            Returns:
+                format string
             """
 
             max_dec = 0
@@ -3524,10 +3466,7 @@ class Layout(BaseLayout):
         return ax
 
     def set_text_position(self):
-        """
-        Move text labels to the correct location
-        """
-
+        """Move text labels to the correct location."""
         obj = self.text
 
         for ir, ic in np.ndindex(self.axes.obj.shape):
@@ -3578,17 +3517,12 @@ class Layout(BaseLayout):
                 obj.obj[itext].set_x(position[0])
                 obj.obj[itext].set_y(position[1])
 
-    def show(self, filename=None):
-        """
-        Display the plot window
-        """
-
+    def show(self):
+        """Display the plot window."""
         mplp.show(block=False)
 
     def update_subplot_spacing(self):
-        """
-        Update spacing for long labels
-        """
+        """Update spacing for long labels."""
         if self.label_y.size[1] > self.axes.size[1]:
             self.ws_row += self.label_y.size[1] - self.axes.size[1]
         if self.label_x.size[0] > self.axes.size[0]:
