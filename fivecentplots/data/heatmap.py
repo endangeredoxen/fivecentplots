@@ -10,7 +10,12 @@ db = pdb.set_trace
 
 class Heatmap(data.Data):
     def __init__(self, **kwargs):
+        """Heatmap-specific Data class to deal with operations applied to the
+        input data (i.e., non-plotting operations)
 
+        Args:
+            kwargs: user-defined keyword args
+        """
         name = 'heatmap'
         req = []
         opt = ['x', 'y', 'z']
@@ -32,15 +37,12 @@ class Heatmap(data.Data):
 
         self.ax_limit_padding = kwargs.get('ax_limit_padding', None)
 
-    def check_xyz(self, xyz):
-        """
-        Validate the name and column data provided for x, y, and/or z
-        Args:
-            xyz (str): name of variable to check
-        TODO:
-            add option to recast non-float/datetime column as categorical str
-        """
+    def _check_xyz(self, xyz: str):
+        """Validate the name and column data provided for x, y, and/or z.
 
+        Args:
+            xyz: name of variable to check
+        """
         if xyz not in self.req and xyz not in self.opt:
             return
 
@@ -51,8 +53,6 @@ class Heatmap(data.Data):
 
         if vals is None and xyz not in self.opt:
             raise data.AxisError('Must provide a column name for "%s"' % xyz)
-
-        # Skip standard case check
 
         # Check for axis errors
         if self.twin_x and len(self.y) != 2:
@@ -68,16 +68,16 @@ class Heatmap(data.Data):
 
         return vals
 
-    def get_data_ranges(self):
-
+    def _get_data_ranges(self):
+        """Heatmap-specific data range calculator by subplot."""
         # First get any user defined range values and apply optional auto scaling
         df_fig = self.df_fig.copy()  # use temporarily for setting ranges
         self._get_data_ranges_user_defined()
-        df_fig = self.get_auto_scale(df_fig)
+        df_fig = self._get_auto_scale(df_fig)
 
         # set ranges by subset
-        for ir, ic, plot_num in self.get_subplot_index():
-            df_rc = self.subset(ir, ic)
+        for ir, ic, plot_num in self._get_subplot_index():
+            df_rc = self._subset(ir, ic)
 
             # auto cols option
             if self.auto_cols:
@@ -85,32 +85,32 @@ class Heatmap(data.Data):
 
                 # x
                 cols = [f for f in df_rc.columns if type(f) is int]
-                self.add_range(ir, ic, 'x', 'min', min(cols))
-                self.add_range(ir, ic, 'x', 'max', max(cols))
+                self._add_range(ir, ic, 'x', 'min', min(cols))
+                self._add_range(ir, ic, 'x', 'max', max(cols))
 
                 # y
                 rows = [f for f in df_rc.index if type(f) is int]
-                self.add_range(ir, ic, 'y', 'min', min(rows))
-                self.add_range(ir, ic, 'y', 'max', max(rows))
+                self._add_range(ir, ic, 'y', 'min', min(rows))
+                self._add_range(ir, ic, 'y', 'max', max(rows))
 
                 # z
-                self.add_range(ir, ic, 'z', 'min', df_rc.min().min())
-                self.add_range(ir, ic, 'z', 'max', df_rc.max().max())
+                self._add_range(ir, ic, 'z', 'min', df_rc.min().min())
+                self._add_range(ir, ic, 'z', 'max', df_rc.max().max())
 
             else:
                 # x
-                self.add_range(ir, ic, 'x', 'min', -0.5)
-                self.add_range(ir, ic, 'x', 'max', len(df_rc.columns) + 0.5)
+                self._add_range(ir, ic, 'x', 'min', -0.5)
+                self._add_range(ir, ic, 'x', 'max', len(df_rc.columns) + 0.5)
 
                 # y (can update all the get plot nums to range?)
                 if self.ymin[plot_num] is not None \
                         and self.ymax[plot_num] is not None \
                         and self.ymin[plot_num] < self.ymax[plot_num]:
                     ymin = self.ymin[plot_num]
-                    self.add_range(ir, ic, 'y', 'min', self.ymax[plot_num])
-                    self.add_range(ir, ic, 'y', 'max', ymin)
-                self.add_range(ir, ic, 'y', 'max', -0.5)
-                self.add_range(ir, ic, 'y', 'min', len(df_rc) + 0.5)
+                    self._add_range(ir, ic, 'y', 'min', self.ymax[plot_num])
+                    self._add_range(ir, ic, 'y', 'max', ymin)
+                self._add_range(ir, ic, 'y', 'max', -0.5)
+                self._add_range(ir, ic, 'y', 'min', len(df_rc) + 0.5)
 
                 # z
                 if self.share_col:
@@ -118,27 +118,36 @@ class Heatmap(data.Data):
                 elif self.share_row:
                     pass
                 elif self.share_z and ir == 0 and ic == 0:
-                    self.add_range(ir, ic, 'z', 'min',
-                                   self.df_fig[self.z[0]].min())
-                    self.add_range(ir, ic, 'z', 'max',
-                                   self.df_fig[self.z[0]].max())
+                    self._add_range(ir, ic, 'z', 'min',
+                                    self.df_fig[self.z[0]].min())
+                    self._add_range(ir, ic, 'z', 'max',
+                                    self.df_fig[self.z[0]].max())
                 elif self.share_z:
-                    self.add_range(ir, ic, 'z', 'min',
-                                   self.ranges[0, 0]['zmin'])
-                    self.add_range(ir, ic, 'z', 'max',
-                                   self.ranges[0, 0]['zmax'])
+                    self._add_range(ir, ic, 'z', 'min',
+                                    self.ranges[0, 0]['zmin'])
+                    self._add_range(ir, ic, 'z', 'max',
+                                    self.ranges[0, 0]['zmax'])
                 else:
-                    self.add_range(ir, ic, 'z', 'min', df_rc.min().min())
-                    self.add_range(ir, ic, 'z', 'max', df_rc.max().max())
+                    self._add_range(ir, ic, 'z', 'min', df_rc.min().min())
+                    self._add_range(ir, ic, 'z', 'max', df_rc.max().max())
 
             # not used
-            self.add_range(ir, ic, 'x2', 'min', None)
-            self.add_range(ir, ic, 'y2', 'min', None)
-            self.add_range(ir, ic, 'x2', 'max', None)
-            self.add_range(ir, ic, 'y2', 'max', None)
+            self._add_range(ir, ic, 'x2', 'min', None)
+            self._add_range(ir, ic, 'y2', 'min', None)
+            self._add_range(ir, ic, 'x2', 'max', None)
+            self._add_range(ir, ic, 'y2', 'max', None)
 
-    def subset_modify(self, df, ir, ic):
+    def _subset_modify(self, ir: int, ic: int, df: pd.DataFrame) -> pd.DataFrame:
+        """Extra modifications for Heatmap subsets
 
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            df: data subset
+
+        Returns:
+            modified DataFrame subset
+        """
         if len(df) == 0:
             return df
 
@@ -192,11 +201,3 @@ class Heatmap(data.Data):
             self.num_y = None
 
         return df
-
-    def subset_wrap(self, ir, ic):
-
-        return self._subset_wrap(ir, ic)
-
-
-# fix tick labels, need excess ws_ax_fig?  test_simple
-# sharing options not right

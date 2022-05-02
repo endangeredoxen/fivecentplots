@@ -2660,14 +2660,6 @@ class BaseLayout:
         """
         pass
 
-    def see(self):
-        """Prints a readable list of class attributes."""
-        df = pd.DataFrame({'Attribute': list(self.__dict__.copy().keys()),
-                           'Name': [str(f) for f in self.__dict__.copy().values()]})
-        df = df.sort_values(by='Attribute').reset_index(drop=True)
-
-        return df
-
     @abc.abstractmethod
     def set_axes_colors(self, ir: int, ic: int):
         """Set axes colors (fill, alpha, edge).
@@ -2675,7 +2667,6 @@ class BaseLayout:
         Args:
             ir: subplot row index
             ic: subplot column index
-
         """
         pass
 
@@ -3067,23 +3058,6 @@ class Element:
                     new_vals += [val + astr]
 
             getattr(self, attr).values = new_vals
-
-    def see(self):
-        """Prints a readable list of class attributes."""
-        df = pd.DataFrame({'Attribute': list(self.__dict__.copy().keys()),
-                           'Name': [str(f) for f in self.__dict__.copy().values()]})
-
-        if '_on' in df.columns:
-            del df['_on']
-            df['on'] = self.on
-
-        if '_text' in df.columns:
-            del df['_text']
-            df['text'] = self.text
-
-        df = df.sort_values(by='Attribute').reset_index(drop=True)
-
-        return df
 
     def size_all_reset(self):
         """Reset the size_all arrays."""

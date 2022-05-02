@@ -8,7 +8,12 @@ db = pdb.set_trace
 
 class Bar(data.Data):
     def __init__(self, **kwargs):
+        """Barplot-specific Data class to deal with operations applied to the
+        input data (i.e., non-plotting operations)
 
+        Args:
+            kwargs: user-defined keyword args
+        """
         name = 'bar'
 
         super().__init__(name, **kwargs)
@@ -20,24 +25,21 @@ class Bar(data.Data):
                      kwargs.get('error_bars', False)):
             self.error_bars = True
 
-    def get_data_ranges(self):
-        """
-        Get the data ranges for bar plot data
-        """
-
+    def _get_data_ranges(self):
+        """Barplot-specific data range calculator by subplot."""
         # First get any user defined range values and apply optional auto scaling
         df_fig = self.df_fig.copy()  # use temporarily for setting ranges
         self._get_data_ranges_user_defined()
-        df_fig = self.get_auto_scale(df_fig)
+        df_fig = self._get_auto_scale(df_fig)
         df_bar = pd.DataFrame()
 
-        for ir, ic, plot_num in self.get_subplot_index():
+        for ir, ic, plot_num in self._get_subplot_index():
             # y-axis
-            groupby = self.x + self.groupers
-            df_rc = self.subset(ir, ic)
+            groupby = self.x + self._groupers
+            df_rc = self._subset(ir, ic)
 
             if len(df_rc) == 0:
-                self.add_ranges_none(ir, ic)
+                self._add_ranges_none(ir, ic)
                 break
             if self.share_y and ir == 0 and ic == 0:
                 df_rc = df_fig
@@ -46,8 +48,8 @@ class Bar(data.Data):
             elif self.share_col:
                 df_rc = df_rc[df_rc[self.col[0]] == self.col_vals[ic]].copy
             elif self.share_y and ir > 0 or ic > 0:
-                self.add_range(ir, ic, 'y', 'min', self.ranges[0, 0]['ymin'])
-                self.add_range(ir, ic, 'y', 'max', self.ranges[0, 0]['ymax'])
+                self._add_range(ir, ic, 'y', 'min', self.ranges[0, 0]['ymin'])
+                self._add_range(ir, ic, 'y', 'max', self.ranges[0, 0]['ymax'])
                 continue
             elif self.wrap is not None:
                 df_rc = df_fig
@@ -68,26 +70,18 @@ class Bar(data.Data):
                 df_bar = df_bar.groupby(self.x[0]).sum()
 
             # get the ranges
-            vals = self.get_data_range('y', df_bar, plot_num)
+            vals = self._get_data_range('y', df_bar, plot_num)
             if any(df_bar[self.y[0]].values < 0):
-                self.add_range(ir, ic, 'y', 'min', vals[0])
+                self._add_range(ir, ic, 'y', 'min', vals[0])
             else:
-                self.add_range(ir, ic, 'y', 'min', 0)
-            self.add_range(ir, ic, 'y', 'max', vals[1])
+                self._add_range(ir, ic, 'y', 'min', 0)
+            self._add_range(ir, ic, 'y', 'max', vals[1])
 
-        for ir, ic, plot_num in self.get_subplot_index():
+        for ir, ic, plot_num in self._get_subplot_index():
             # other axes
-            self.add_range(ir, ic, 'x', 'min', None)
-            self.add_range(ir, ic, 'x2', 'min', None)
-            self.add_range(ir, ic, 'y2', 'min', None)
-            self.add_range(ir, ic, 'x', 'max', None)
-            self.add_range(ir, ic, 'x2', 'max', None)
-            self.add_range(ir, ic, 'y2', 'max', None)
-
-    def subset_modify(self, df, ir, ic):
-
-        return self._subset_modify(df, ir, ic)
-
-    def subset_wrap(self, ir, ic):
-
-        return self._subset_wrap(ir, ic)
+            self._add_range(ir, ic, 'x', 'min', None)
+            self._add_range(ir, ic, 'x2', 'min', None)
+            self._add_range(ir, ic, 'y2', 'min', None)
+            self._add_range(ir, ic, 'x', 'max', None)
+            self._add_range(ir, ic, 'x2', 'max', None)
+            self._add_range(ir, ic, 'y2', 'max', None)

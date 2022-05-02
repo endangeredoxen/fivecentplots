@@ -9,7 +9,12 @@ db = pdb.set_trace
 
 class Pie(data.Data):
     def __init__(self, **kwargs):
+        """Pie-specific Data class to deal with operations applied to the
+        input data (i.e., non-plotting operations)
 
+        Args:
+            kwargs: user-defined keyword args
+        """
         name = 'pie'
         req = ['x', 'y']
         opt = []
@@ -18,9 +23,9 @@ class Pie(data.Data):
 
         # overrides
 
-    def get_data_ranges(self):
-
-        for ir, ic, plot_num in self.get_subplot_index():
+    def _get_data_ranges(self):
+        """Pie-specific data range calculator by subplot."""
+        for ir, ic, plot_num in self._get_subplot_index():
             self.ranges[ir, ic]['xmin'] = -1
             self.ranges[ir, ic]['xmax'] = 1
             self.ranges[ir, ic]['ymin'] = -1
@@ -33,17 +38,12 @@ class Pie(data.Data):
             self.ranges[ir, ic]['zmin'] = None
             self.ranges[ir, ic]['zmax'] = None
 
-    def get_legend_groupings(self, df):
-        """
-        Determine the legend groupings
+    def _get_legend_groupings(self, df: pd.DataFrame):
+        """Determine the legend groupings.
 
         Args:
-            df (pd.DataFrame):  data being plotted
-
-        Returns:
-            updated kwargs dict
+            df: data subset
         """
-
         if self.legend is True and self.twin_x \
                 or self.legend is True and len(self.y) > 1:
             self.legend_vals = self.y + self.y2
@@ -131,11 +131,3 @@ class Pie(data.Data):
 
         leg_df = leg_df.set_index('names')
         self.legend_vals = leg_df.reset_index()
-
-    def subset_modify(self, df, ir, ic):
-
-        return self._subset_modify(df, ir, ic)
-
-    def subset_wrap(self, ir, ic):
-
-        return self._subset_wrap(ir, ic)

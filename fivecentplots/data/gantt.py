@@ -8,7 +8,12 @@ db = pdb.set_trace
 
 class Gantt(data.Data):
     def __init__(self, **kwargs):
+        """Gantt-specific Data class to deal with operations applied to the
+        input data (i.e., non-plotting operations)
 
+        Args:
+            kwargs: user-defined keyword args
+        """
         name = 'gantt'
         req = ['x', 'y']
         opt = []
@@ -31,61 +36,67 @@ class Gantt(data.Data):
             except:  # noqa
                 raise data.DataError('Stop column in gantt chart must be of type datetime')
 
-    def get_data_ranges(self):
-
+    def _get_data_ranges(self):
+        """Gantt-specific data range calculator by subplot."""
         # First get any user defined range values and apply optional auto scaling
         df_fig = self.df_fig.copy()  # use temporarily for setting ranges
         self._get_data_ranges_user_defined()
-        df_fig = self.get_auto_scale(df_fig)
+        df_fig = self._get_auto_scale(df_fig)
 
-        for ir, ic, plot_num in self.get_subplot_index():
-            df_rc = self.subset(ir, ic)
+        for ir, ic, plot_num in self._get_subplot_index():
+            df_rc = self._subset(ir, ic)
 
             if len(df_rc) == 0:
                 for ax in self.axs:
-                    self.add_range(ir, ic, ax, 'min', None)
-                    self.add_range(ir, ic, ax, 'max', None)
+                    self._add_range(ir, ic, ax, 'min', None)
+                    self._add_range(ir, ic, ax, 'max', None)
                 continue
 
-            self.add_range(ir, ic, 'y', 'min', -0.5)
+            self._add_range(ir, ic, 'y', 'min', -0.5)
 
             # shared axes
             if self.share_x or (self.nrow == 1 and self.ncol == 1):
-                self.add_range(ir, ic, 'x', 'min', df_fig[self.x[0]].min())
-                self.add_range(ir, ic, 'x', 'max', df_fig[self.x[1]].max())
+                self._add_range(ir, ic, 'x', 'min', df_fig[self.x[0]].min())
+                self._add_range(ir, ic, 'x', 'max', df_fig[self.x[1]].max())
             if self.share_y or (self.nrow == 1 and self.ncol == 1):
                 if self.legend is not None:
-                    self.add_range(ir, ic, 'y', 'max', len(df_fig[self.y[0]]) - 0.5)
+                    self._add_range(ir, ic, 'y', 'max', len(df_fig[self.y[0]]) - 0.5)
                 else:
-                    self.add_range(ir, ic, 'y', 'max', len(df_fig[self.y[0]].unique()) - 0.5)
+                    self._add_range(ir, ic, 'y', 'max', len(df_fig[self.y[0]].unique()) - 0.5)
 
             # non-shared axes
             if not self.share_x:
-                self.add_range(ir, ic, 'x', 'min', df_rc[self.x[0]].min())
-                self.add_range(ir, ic, 'x', 'max', df_rc[self.x[1]].max())
+                self._add_range(ir, ic, 'x', 'min', df_rc[self.x[0]].min())
+                self._add_range(ir, ic, 'x', 'max', df_rc[self.x[1]].max())
             if not self.share_y:
-                self.add_range(ir, ic, 'y', 'max', len(df_rc[self.y[0]]) - 0.5)
+                self._add_range(ir, ic, 'y', 'max', len(df_rc[self.y[0]]) - 0.5)
                 # ymaxes += [len(df_rc[self.y[0]]) - 0.5]
 
             # not used
-            self.add_range(ir, ic, 'x2', 'min', None)
-            self.add_range(ir, ic, 'y2', 'min', None)
-            self.add_range(ir, ic, 'x2', 'max', None)
-            self.add_range(ir, ic, 'y2', 'max', None)
-            self.add_range(ir, ic, 'z', 'min', None)
-            self.add_range(ir, ic, 'z', 'max', None)
+            self._add_range(ir, ic, 'x2', 'min', None)
+            self._add_range(ir, ic, 'y2', 'min', None)
+            self._add_range(ir, ic, 'x2', 'max', None)
+            self._add_range(ir, ic, 'y2', 'max', None)
+            self._add_range(ir, ic, 'z', 'min', None)
+            self._add_range(ir, ic, 'z', 'max', None)
 
     def get_plot_data(self, df):
-        """
-        Generator to subset into discrete sets of data for each curve
+        """Gantt-specific generator to subset into discrete sets of data for
+        each curve.
 
         Args:
-            df (pd.DataFrame): main DataFrame
+            df: data subset to plot
 
-        Returns:
-            subset
+        Yields:
+            iline: legend index
+            df: data subset to plot
+            row['x'] [x]: x-column name
+            row['y'] [y]: y-column name
+            self.z [z]: z-column name
+            leg [leg_name]: legend value name if legend enabled
+            twin: denotes if twin axis is enabled or not
+            len(vals) [ngroups]: total number of groups in the full data
         """
-
         if type(self.legend_vals) != pd.DataFrame:
             xx = [self.x[0]]  # make sure we only get one group for self.x
             yy = [] if not self.y else self.y + self.y2
@@ -144,9 +155,17 @@ class Gantt(data.Data):
                     None if self.z is None else self.z[0], row['names'], \
                     twin, len(self.legend_vals)
 
-    def subset_modify(self, df, ir, ic):
+    def _subset_modify(self, ir: int, ic: int, df: pd.DataFrame) -> pd.DataFrame:
+        """Modify subset to deal with duplicate Gantt entries
 
-        # deal with duplicate gantt entries
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            df: data subset
+
+        Returns:
+            modified DataFrame subset
+        """
         if self.legend is None and len(df) > 0:
             idx = []
             [idx.append(x) for x in df.set_index(self.y).index if x not in idx]
@@ -156,7 +175,3 @@ class Gantt(data.Data):
             df = df_start.reindex(idx).reset_index()
 
         return df
-
-    def subset_wrap(self, ir, ic):
-
-        return self._subset_wrap(ir, ic)

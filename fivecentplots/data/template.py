@@ -16,14 +16,3 @@ class YourPlot(data.Data):
 
         # overrides
 
-    def get_data_ranges(self):
-
-        self._get_data_ranges()
-
-    def subset_modify(self, df, ir, ic):
-
-        return self._subset_modify(df, ir, ic)
-
-    def subset_wrap(self, ir, ic):
-
-        return self._subset_wrap(ir, ic)

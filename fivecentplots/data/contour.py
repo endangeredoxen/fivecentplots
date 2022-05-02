@@ -7,7 +7,12 @@ db = pdb.set_trace
 
 class Contour(data.Data):
     def __init__(self, **kwargs):
+        """Contour-specific Data class to deal with operations applied to the
+        input data (i.e., non-plotting operations)
 
+        Args:
+            kwargs: user-defined keyword args
+        """
         name = 'contour'
         req = ['x', 'y', 'z']
         opt = []
@@ -17,15 +22,3 @@ class Contour(data.Data):
         super().__init__(name, req, opt, **kwargs)
 
         self.auto_scale = False
-
-    def get_data_ranges(self):
-
-        self._get_data_ranges()
-
-    def subset_modify(self, df, ir, ic):
-
-        return self._subset_modify(df, ir, ic)
-
-    def subset_wrap(self, ir, ic):
-
-        return self._subset_wrap(ir, ic)

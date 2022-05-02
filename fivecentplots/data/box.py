@@ -9,33 +9,42 @@ db = pdb.set_trace
 
 class Box(data.Data):
     def __init__(self, **kwargs):
+        """Boxplot-specific Data class to deal with operations applied to the
+        input data (i.e., non-plotting operations)
 
+        Args:
+            kwargs: user-defined keyword args
+        """
         name = 'box'
         req = ['y']
         opt = []
 
         super().__init__(name, req, opt, **kwargs)
 
-    def get_groups(self, df):
+    def _get_groups(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Return the groupby keys of a DataFrame
+
+        Args:
+            df: input DataFrame
+
+        Returns:
+            DataFrame of the groupby keys
+        """
         if self.groups is not None:
             return pd.DataFrame(df.groupby(self.groups).groups.keys())
         else:
             return pd.DataFrame()
 
     def get_box_index_changes(self):
-        """
-        Make a DataFrame that shows when groups vals change; used for grouping labels
+        """Make a DataFrame that shows when groups vals change; used for grouping
+        labels
 
         Args:
             df (pd.DataFrame): grouping values
             num_groups (int): number of unique groups
-
-        Returns:
-            new DataFrame with 1's showing where group levels change for each row of df
         """
-
         if len(self.df_rc) == 0:
-            return False
+            return
 
         # Check for nan columns
         if self.groups is not None:
@@ -74,36 +83,26 @@ class Box(data.Data):
                 else:
                     self.changes.loc[i, col] = 1
 
-        return True
-
-    def get_data_ranges(self):
-
-        self._get_data_ranges()
-
     def get_rc_subset(self):
+        """Override of parent method to subset the data by the row/col/wrap values.
+
+        Yields:
+            ir: subplot row index
+            ic: subplot column index
+            row/col data subset
         """
-        Subset the data by the row/col/wrap values
-
-        Args:
-            df (pd.DataFrame): main DataFrame
-
-        Returns:
-            subset DataFrame
-        """
-
         for ir in range(0, self.nrow):
             for ic in range(0, self.ncol):
-                self.df_rc = self.subset(ir, ic)
+                self.df_rc = self._subset(ir, ic)
 
                 # Plot specific subsetting
-                self.subset_modify(self.df_rc, ir, ic)
+                self._subset_modify(ir, ic, self.df_rc)
 
                 # Deal with empty dfs
                 if len(self.df_rc) == 0:
                     self.df_rc = pd.DataFrame()
 
                 # Get boxplot changes DataFrame
-                # think we are doing this twice
                 if 'box' in self.name and len(self.df_rc) > 0:
                     if (self.groups is not None and self.groups != []) and \
                             len(self.df_rc.groupby(self.groups)) == 0:
@@ -117,14 +116,21 @@ class Box(data.Data):
 
         self.df_sub = None
 
-    def subset_modify(self, df, ir, ic):
-        """
-        Deal with share x axis range
+    def _subset_modify(self, ir: int, ic: int, df: pd.DataFrame) -> pd.DataFrame:
+        """Modify the subset to deal with share x axis range.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            df: data subset
+
+        Returns:
+            modified DataFrame subset
         """
 
         if self.share_x and self.groups is not None and len(df) > 0:
-            df1 = self.get_groups(self.df_all)
-            df2 = self.get_groups(df)
+            df1 = self._get_groups(self.df_all)
+            df2 = self._get_groups(df)
             dfm = pd.merge(df1, df2, how='outer',
                            suffixes=('', '_y'), indicator=True)
             missing = dfm[dfm['_merge'] == 'left_only'][dfm.columns[0:-1]]
@@ -132,7 +138,3 @@ class Box(data.Data):
             df = pd.concat([df, missing])
 
         return df
-
-    def subset_wrap(self, ir, ic):
-
-        return self._subset_wrap(ir, ic)

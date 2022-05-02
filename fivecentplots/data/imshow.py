@@ -8,7 +8,12 @@ db = pdb.set_trace
 
 class ImShow(data.Data):
     def __init__(self, **kwargs):
+        """ImShow-specific Data class to deal with operations applied to the
+        input data (i.e., non-plotting operations)
 
+        Args:
+            kwargs: user-defined keyword args
+        """
         name = 'imshow'
         req = []
         opt = []
@@ -22,7 +27,7 @@ class ImShow(data.Data):
             kwargs['df'] = utl.split_color_planes(kwargs['df'], cfa)
 
         # auto stretching
-        self.stretch(kwargs)
+        self._stretch(kwargs)
 
         super().__init__(name, req, opt, **kwargs)
 
@@ -43,20 +48,17 @@ class ImShow(data.Data):
 
         self.df_all = utl.df_int_cols_convert(self.df_all)
 
-    def check_xyz(self, xyz):
-        """
-        Validate the name and column data provided for x, y, and/or z
-        Args:
-            xyz (str): name of variable to check
-        TODO:
-            add option to recast non-float/datetime column as categorical str
-        """
+    def _check_xyz(self, xyz: str):
+        """Validate the name and column data provided for x, y, and/or z.
 
+        Args:
+            xyz: name of variable to check
+        """
         if xyz not in self.req and xyz not in self.opt:
             return
 
         if xyz in self.opt and getattr(self, xyz) is None:
-            return None
+            return
 
         vals = getattr(self, xyz)
 
@@ -79,18 +81,18 @@ class ImShow(data.Data):
 
         return vals
 
-    def get_data_range(self, ax, df, plot_num):
-        """
-        Determine the min/max values for a given axis based on user inputs
+    def _get_data_range(self, ax: str, df: pd.DataFrame, plot_num: int) -> tuple:
+        """Determine the min/max values for a given axis based on user inputs.
+        ImShow-specific modifications applied.
 
         Args:
-            axis (str): x, x2, y, y2, z
-            df (pd.DataFrame): data table to use for range calculation
+            ax: name of the axis ('x', 'y', etc)
+            df: data table to use for range calculation
+            plot_num: index number of the current subplot
 
         Returns:
             min, max tuple
         """
-
         if not hasattr(self, ax) or getattr(self, ax) in [None, []]:
             return None, None
         elif self.col == 'x' and self.share_x and ax == 'x':
@@ -102,7 +104,7 @@ class ImShow(data.Data):
 
         # imshow special case
         df = df.dropna(axis=1, how='all')
-        groups = self.groupers
+        groups = self._groupers
         if getattr(self, ax) == ['Column']:
             vmin = 0
             if len(groups) > 0:
@@ -114,7 +116,7 @@ class ImShow(data.Data):
         elif getattr(self, ax) == ['Row']:
             vmin = 0
             if len(groups) > 0:
-                vmax = df.groupby(self.groupers).size().max()
+                vmax = df.groupby(self._groupers).size().max()
             else:
                 vmax = len(df.index)
         elif getattr(self, ax) == ['Value']:  # and self.auto_cols:
@@ -123,65 +125,61 @@ class ImShow(data.Data):
 
         return vmin, vmax
 
-    def get_data_ranges(self):
-
-        """
-        Updated data range calculator by subplot for imshow
-        """
-
+    def _get_data_ranges(self):
+        """ImShow-specific data range calculator by subplot."""
         # First get any user defined range values and apply optional auto scaling
         df_fig = self.df_fig.copy()  # use temporarily for setting ranges
         self._get_data_ranges_user_defined()
-        df_fig = self.get_auto_scale(df_fig)
+        df_fig = self._get_auto_scale(df_fig)
 
         # Apply shared axes
-        for ir, ic, plot_num in self.get_subplot_index():
+        for ir, ic, plot_num in self._get_subplot_index():
             for ax in self.axs:
                 # Share axes (use self.df_fig to get global min/max)
                 if getattr(self, 'share_%s' % ax):
-                    vals = self.get_data_range(ax, df_fig, plot_num)
-                    self.add_range(ir, ic, ax, 'min', vals[0])
-                    self.add_range(ir, ic, ax, 'max', vals[1])
+                    vals = self._get_data_range(ax, df_fig, plot_num)
+                    self._add_range(ir, ic, ax, 'min', vals[0])
+                    self._add_range(ir, ic, ax, 'max', vals[1])
                 elif getattr(self, 'share_%s' % ax) and (ir > 0 or ic > 0):
-                    self.add_range(ir, ic, ax, 'min', self.ranges[0, 0]['%smin' % ax])
-                    self.add_range(ir, ic, ax, 'max', self.ranges[0, 0]['%smax' % ax])
+                    self._add_range(ir, ic, ax, 'min', self.ranges[0, 0]['%smin' % ax])
+                    self._add_range(ir, ic, ax, 'max', self.ranges[0, 0]['%smax' % ax])
 
                 # Share row
                 elif self.share_row and self.row is not None:
                     if self.row == 'y':
-                        vals = self.get_data_range(ax, df_fig, plot_num)
+                        vals = self._get_data_range(ax, df_fig, plot_num)
                     else:
-                        vals = self.get_data_range(ax,
-                                                   df_fig[self.df_fig[self.row[0]] == self.row_vals[ir]],
-                                                   plot_num)
-                    self.add_range(ir, ic, ax, 'min', vals[0])
-                    self.add_range(ir, ic, ax, 'max', vals[1])
+                        vals = self._get_data_range(ax,
+                                                    df_fig[self.df_fig[self.row[0]] == self.row_vals[ir]],
+                                                    plot_num)
+                    self._add_range(ir, ic, ax, 'min', vals[0])
+                    self._add_range(ir, ic, ax, 'max', vals[1])
                 elif self.share_row and self.row is not None and ic > 0:
-                    self.add_range(ir, ic, ax, 'min', self.ranges[ir, 0]['%smin' % ax])
-                    self.add_range(ir, ic, ax, 'max', self.ranges[ir, 0]['%smax' % ax])
+                    self._add_range(ir, ic, ax, 'min', self.ranges[ir, 0]['%smin' % ax])
+                    self._add_range(ir, ic, ax, 'max', self.ranges[ir, 0]['%smax' % ax])
 
                 # Share col
                 elif self.share_col and self.col is not None:
                     if self.col == 'x':
-                        vals = self.get_data_range(ax, df_fig, ir, ic)
+                        vals = self._get_data_range(ax, df_fig, ir, ic)
                     else:
-                        vals = self.get_data_range(ax,
-                                                   df_fig[df_fig[self.col[0]] == self.col_vals[ic]],
-                                                   plot_num)
-                    self.add_range(ir, ic, ax, 'min', vals[0])
-                    self.add_range(ir, ic, ax, 'max', vals[1])
+                        vals = self._get_data_range(ax,
+                                                    df_fig[df_fig[self.col[0]] == self.col_vals[ic]],
+                                                    plot_num)
+                    self._add_range(ir, ic, ax, 'min', vals[0])
+                    self._add_range(ir, ic, ax, 'max', vals[1])
                 elif self.share_col and self.col is not None and ir > 0:
-                    self.add_range(ir, ic, ax, 'min', self.ranges[0, ic]['%smin' % ax])
-                    self.add_range(ir, ic, ax, 'max', self.ranges[0, ic]['%smax' % ax])
+                    self._add_range(ir, ic, ax, 'min', self.ranges[0, ic]['%smin' % ax])
+                    self._add_range(ir, ic, ax, 'max', self.ranges[0, ic]['%smax' % ax])
 
                 # subplot level when not shared
                 else:
-                    df_rc = self.subset(ir, ic)
+                    df_rc = self._subset(ir, ic)
 
                     # Empty rc
                     if len(df_rc) == 0:  # this doesn't exist yet!
-                        self.add_range(ir, ic, ax, 'min', None)
-                        self.add_range(ir, ic, ax, 'max', None)
+                        self._add_range(ir, ic, ax, 'min', None)
+                        self._add_range(ir, ic, ax, 'max', None)
                         continue
 
                     # Not shared or wrap by x or y
@@ -189,21 +187,21 @@ class ImShow(data.Data):
                             (self.wrap is not None
                              and self.wrap == 'y'
                              or self.wrap == 'x'):
-                        vals = self.get_data_range(ax, df_rc, plot_num)
-                        self.add_range(ir, ic, ax, 'min', vals[0])
-                        self.add_range(ir, ic, ax, 'max', vals[1])
+                        vals = self._get_data_range(ax, df_rc, plot_num)
+                        self._add_range(ir, ic, ax, 'min', vals[0])
+                        self._add_range(ir, ic, ax, 'max', vals[1])
 
                     # Make them all equal to 0,0
                     elif ir > 0 or ic > 0:
-                        self.add_range(ir, ic, ax, 'min', self.ranges[0, 0]['%smin' % ax])
-                        self.add_range(ir, ic, ax, 'max', self.ranges[0, 0]['%smax' % ax])
+                        self._add_range(ir, ic, ax, 'min', self.ranges[0, 0]['%smin' % ax])
+                        self._add_range(ir, ic, ax, 'max', self.ranges[0, 0]['%smax' % ax])
 
         # some extras
         width = len(self.df_fig.dropna(axis=1, how='all').columns)
         height = len(self.df_fig.dropna(axis=0, how='all').index)
         self.wh_ratio = width / height
 
-        for ir, ic, plot_num in self.get_subplot_index():
+        for ir, ic, plot_num in self._get_subplot_index():
             # invert ymin and ymax
             temp = self.ranges[ir, ic]['ymax']
             self.ranges[ir, ic]['ymax'] = self.ranges[ir, ic]['ymin']
@@ -215,19 +213,16 @@ class ImShow(data.Data):
             self.wh_ratio = max(self.wh_ratio, width / height)
 
     def get_rc_subset(self):
+        """Subset the ImShow data by the row/col/wrap values.
+
+        Yields:
+            ir: subplot row index
+            ic: subplot column index
+            row/col data subset
         """
-        Subset the data by the row/col/wrap values
-
-        Args:
-            df (pd.DataFrame): main DataFrame
-
-        Returns:
-            subset DataFrame
-        """
-
         for ir in range(0, self.nrow):
             for ic in range(0, self.ncol):
-                self.df_rc = self.subset(ir, ic)
+                self.df_rc = self._subset(ir, ic)
 
                 # imshow addition
                 self.df_rc.index.astype = int
@@ -244,7 +239,12 @@ class ImShow(data.Data):
 
         self.df_sub = None
 
-    def stretch(self, kwargs):
+    def _stretch(self, kwargs):
+        """Perform contrast strectching on an image
+
+        Args:
+            kwargs: user-defined keyword args
+        """
         stretch = utl.kwget(kwargs, self.fcpp, 'stretch', kwargs.get('stretch', None))
         if stretch is not None:
             stretch = utl.validate_list(stretch)
@@ -255,10 +255,3 @@ class ImShow(data.Data):
             kwargs['zmin'] = uu - abs(stretch[0]) * ss
             kwargs['zmax'] = uu + stretch[1] * ss
 
-    def subset_modify(self, df, ir, ic):
-
-        return self._subset_modify(df, ir, ic)
-
-    def subset_wrap(self, ir, ic):
-
-        return self._subset_wrap(ir, ic)

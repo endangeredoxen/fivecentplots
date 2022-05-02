@@ -31,18 +31,16 @@ HIST = {'ax_scale': 'logy', 'markers': False, 'line_width': 2, 'preset': 'HIST'}
 
 
 class RepeatedList:
-    def __init__(self, values, name, override={}):
-        """
-        Set a default list of items and loop through it beyond the maximum
-        index value
+    def __init__(self, values: list, name: str, override: dict = {}):
+        """Set a default list of items and loop through it beyond the maximum
+        index value.
 
         Args:
-            values (list): user-defined list of values
-            name (str): label to describe contents of class
-            override (dict): override the RepeatedList value based on the
+            values: user-defined list of values
+            name: label to describe contents of class
+            override: override the RepeatedList value based on the
                 legend value for this item
         """
-
         self.values = validate_list(values)
         self.shift = 0
         self.override = override
@@ -52,9 +50,12 @@ class RepeatedList:
                               'list with more at least one element')
 
     def __len__(self):
+        """Custom length."""
         return len(self.values)
 
     def __getitem__(self, idx):
+        """Custom __get__ to cycle back to start of list for index value >
+        length of the array."""
         if isinstance(idx, tuple):  # don't love this
             idx, key = idx
         else:
@@ -67,28 +68,21 @@ class RepeatedList:
             return self.override[key]
 
 
-class PlatformError(Exception):
-    def __init__(self):
-        super().__init__('Image tests currently require Windows 10 installation to run')
-
-
 class CFAError(Exception):
     def __init__(self, *args, **kwargs):
+        """Exception class for CFA definition issues."""
         Exception.__init__(self, *args, **kwargs)
 
 
 class Timer:
-    def __init__(self, print=True, start=False, units='s'):
-        """
-        Quick timer class to optimize speed of various functions
+    def __init__(self, print: bool = True, start: bool = False, units: str = 's'):
+        """Quick timer class to optimize/debug speed of various functions.
 
         Args:
-            print (bool): enable/disable print messages
-            start (bool): start timer on class init
-            units (str): convert timedelta into "s" or "ms"
-
+            print (optional): enable/disable print messages. Defaults to True.
+            start (optional): start timer on class init. Defaults to False.
+            units (optional): convert timedelta into "s" or "ms". Defaults to 's'.
         """
-
         self.print = print
         self.init = None
         self.units = units
@@ -98,25 +92,27 @@ class Timer:
 
     @property
     def now(self):
+        """Current datetime."""
         return datetime.datetime.now()
 
     @property
     def total(self):
+        """Total time."""
         return self._total
 
     @total.setter
     def total(self, val):
+        """Add to the running total."""
         self._total += val
 
-    def get(self, label='', restart=True, stop=False):
-        """
-        Get the timer
+    def get(self, label: str = '', restart: bool = True, stop: bool = False):
+        """Get the current timer value.
 
         Args:
-            reset (bool): restart the timer on get call
-            label (str): prepend the time with a string label
+            label (optional): prepend the time with a string label. Defaults to ''.
+            reset (optional): restart the timer on get call. Defaults to True.
+            stop (optional): ends the timer. Defaults to False.
         """
-
         if not self.init:
             print('timer has not been started')
             return
@@ -143,29 +139,30 @@ class Timer:
             self.stop()
 
     def get_total(self):
+        """Return the total time."""
         if self.print:
             print(f'Total time: {self.total} [{self.units}]')
 
     def start(self):
+        """Start the timer."""
         self.init = self.now
 
     def stop(self):
+        """Stop the timer."""
         self.init = None
 
 
-def ci(data, coeff=0.95):
-    """
-    Compute the confidence interval
+def ci(data: pd.Series, coeff: float = 0.95) -> [float, float]:
+    """Compute a confidence interval.
 
     Args:
-        data (pd.Series): raw data for computation
+        data: raw data column for computation
+        coeff (optional): the confidence value. Defaults to 0.95.
 
     Returns:
         lower confidence interval, upper confidence interval
         returns np.nan if standard err < 0
-
     """
-
     sem = data.sem()
     size = len(data.dropna()) - 1
 
@@ -176,28 +173,25 @@ def ci(data, coeff=0.95):
         return np.nan, np.nan
 
 
-def dfkwarg(args, kwargs):
-    """
-    Add the DataFrame to kwargs
+def dfkwarg(args: tuple, kwargs: dict) -> dict:
+    """Add the DataFrame to kwargs.
 
     Args:
-        args (tuple):  *args sent to plot
-        kwargs (dict):  **kwargs sent to plot
+        args:  *args sent to plot
+        kwargs:  **kwargs sent to plot
 
     Returns:
         updated kwargs
-
     """
-
     if len(args) > 0:
         kwargs['df'] = args[0]
 
     return kwargs
 
 
-def df_filter(df, filt_orig, drop_cols=False, keep_filtered=False):
-    """
-    Filter the DataFrame
+def df_filter(df: pd.DataFrame, filt_orig: str, drop_cols: bool = False,
+              keep_filtered: bool = False) -> pd.DataFrame:
+    """Filter the DataFrame.
 
     Due to limitations in pd.query, column names must not have spaces.  This
     function will temporarily replace spaces in the column names with
@@ -205,24 +199,24 @@ def df_filter(df, filt_orig, drop_cols=False, keep_filtered=False):
     without any spaces
 
     Args:
-        df (pd.DataFrame):  DataFrame to filter
-        filt_orig (str):  query expression for filtering
-        drop_cols (bool): drop filtered columns from results
+        df:  DataFrame to filter
+        filt_orig:  query expression for filtering
+        drop_cols (optional): drop filtered columns from results. Defaults to False.
+        keep_filtered (optional): make a copy of the original data. Defaults to False.
 
     Returns:
         filtered DataFrame
     """
+    def special_chars(text: str, skip: list = []) -> str:
+        """Replace special characters in a text string.
 
-    def special_chars(text, skip=[]):
-        """
-        Replace special characters in a text string
         Args:
-            text (str): input string
-            skip (list): characters to skip
+            text: input string
+            skip: characters to skip
+
         Returns:
             formatted string
         """
-
         chars = {' ': '_', '.': 'dot', '[': '', ']': '', '(': '', ')': '',
                  '-': '_', '^': '', '>': '', '<': '', '/': '_', '@': 'at',
                  '%': 'percent', '*': '_', ':': 'sc'}
@@ -334,8 +328,7 @@ def df_filter(df, filt_orig, drop_cols=False, keep_filtered=False):
 
 
 def df_from_array2d(arr: np.ndarray) -> pd.DataFrame:
-    """
-    Convert 2D numpy array to DataFrame
+    """Convert 2D numpy array to DataFrame.
 
     Args:
         arr: input numpy array
@@ -349,22 +342,21 @@ def df_from_array2d(arr: np.ndarray) -> pd.DataFrame:
         return arr
 
 
-def df_from_array3d(arr, labels=[], name='Item', verbose=True):
-    """
-    Convert a 3d numpy array to a DataFrame
+def df_from_array3d(arr: np.ndarray, labels: [list, np.ndarray] = [],
+                    name: str = 'Item', verbose: bool = True) -> pd.DataFrame:
+    """Convert a 3d numpy array to a DataFrame.
 
     Args:
-        arr (np.array): input data to stack into a DataFrame
-        label (list | np.array): optional list of labels to designate each
+        arr: input data to stack into a DataFrame
+        label (optional): list of labels to designate each
             sub array in the 3d input array; added to DataFrame in column
-            named ``label`` [default = []]
-        name (str): name of label column [default = "Item"]
-        verbose (bool): toggle error print statements [default = True]
+            named ``label``. Defaults to [].
+        name (optional): name of label column. Defaults to 'Item'.
+        verbose (optional): toggle error print statements. Defaults to True.
 
     Returns:
         pd.DataFrame
     """
-
     shape = arr.shape
     if len(shape) != 3:
         print('Input numpy array is not 3d')
@@ -385,21 +377,17 @@ def df_from_array3d(arr, labels=[], name='Item', verbose=True):
     return df
 
 
-def df_int_cols(df, non_int=False):
-    """
-    Return column names that are integers (or not)
+def df_int_cols(df: pd.DataFrame, non_int: bool = False) -> list:
+    """Return column names that are integers (or not).
 
     Args:
-        df (pd.DataFrame): input DataFrame
-        non_int (bool): if False, return column names that are
-            integers; if True, return column names that are
-            not integers
+        df: input DataFrame
+        non_int (optional): if False, return column names that are integers;
+            if True, return column names that are not integers
 
     Returns:
         list of column names
-
     """
-
     int_types = [np.int32, np.int64, int]
 
     if non_int:
@@ -408,20 +396,18 @@ def df_int_cols(df, non_int=False):
         return [f for f in df.columns if type(f) in int_types]
 
 
-def df_int_cols_convert(df, force=False):
-    """
-    Convert integer column names to int type
-        - in case column names are ints but cast as string (after read_csv, etc)
+def df_int_cols_convert(df: pd.DataFrame, force: bool = False) -> pd.DataFrame:
+    """Convert integer column names to int type.
+        - in case column names are ints but cast as string (after read_csv, etc).
 
     Args:
-        df (pd.DataFrame): input DataFrame
-        force (bool): force the conversion even if int cols are initially found
+        df: input DataFrame
+        force (optional): force the conversion even if int cols are initially
+            found. Defaults to False.
 
     Returns:
         DataFrame with updated column names
-
     """
-
     int_cols = df_int_cols(df)
 
     if len(int_cols) == 0 or force:
@@ -431,23 +417,25 @@ def df_int_cols_convert(df, force=False):
     return df
 
 
-def df_summary(df, columns=[], exclude=[], multiple=False):
-    """
-    Return a summary table of unique conditions in a DataFrame
+def df_summary(df: pd.DataFrame, columns: list = [], exclude: list = [],
+               multiple: bool = False) -> pd.DataFrame:
+    """Return a summary table of unique conditions in a DataFrame.
 
     If more than one value exists, replace with "Multiple" or a
-    string list of the values
+    string list of the values.
 
     Args:
-        df (pd.DataFrame): input DataFrame
-        columns (list): list of column names to include; if empty,
-            include all columns
-        exclude(list): list of column names to ignore
-        multiple (bool): toggle between showing discrete values or
-            "Multiple" when a column contains more than one value
+        df: input DataFrame
+        columns (optional): list of column names to include; if empty,
+            include all columns. Defaults to [].
+        exclude(optional): list of column names to ignore. Defaults to [].
+        multiple (optional): toggle between showing discrete values or
+            "Multiple" when a column contains more than one value. Defaults
+            to False.
 
+    Returns:
+        summary DataFrame
     """
-
     # Filter the DataFrame
     if columns:
         df = df[columns]
@@ -469,18 +457,15 @@ def df_summary(df, columns=[], exclude=[], multiple=False):
     return summ
 
 
-def df_unique(df):
-    """
-    Get column names with one unique value
+def df_unique(df: pd.DataFrame) -> dict:
+    """Get column names with one unique value.
 
     Args:
         df (pd.DataFrame): data to check
 
     Returns:
         dict of col names and unique values
-
     """
-
     unq = {}
 
     for col in df.columns:
@@ -491,20 +476,19 @@ def df_unique(df):
     return unq
 
 
-def get_current_values(df, text, key='@'):
-    """
-    Parse a string looking for text enclosed by 'key' and replace with the
-    current value from the DataFrame
+def get_current_values(df: pd.DataFrame, text: str, key: str = '@') -> str:
+    """Parse a string looking for text enclosed by 'key' and replace with the
+    current value from the DataFrame.
 
     Args:
-        df (pd.DataFrame): DataFrame containing values we are looking for
-        text (str): string to parse
-        key (str): matching chars that enclose the value to replace from df
+        df: DataFrame containing values we are looking for
+        text: string to parse
+        key (optional): matching chars that enclose the value to replace from
+            df. Defaults to '@'
 
     Returns:
         updated string
     """
-
     if key in text:
         rr = re.search(r'\%s(.*)\%s' % (key, key), text)
         if rr is not None:
@@ -519,19 +503,18 @@ def get_current_values(df, text, key='@'):
     return text
 
 
-def get_decimals(value, max_places=4):
-    """
-    Get the number of decimal places of a float number excluding
-    rounding errors
+def get_decimals(value: [int, float], max_places: int = 4):
+    """Get the number of decimal places of a float number excluding
+    rounding errors.
 
     Args:
-        value (int|float): value to check
-        max_places (int): maximum number of decimal places to check
+        value: value to check
+        max_places (optional): maximum number of decimal places to check. Defaults
+            to 4
 
     Returns:
         number of decimal places
     """
-
     last = np.nan
     value = abs(value)
     for i in range(0, max_places + 1):
@@ -545,11 +528,8 @@ def get_decimals(value, max_places=4):
 
 
 def get_mpl_version_dir():
-    """
-    Get the matplotlib version directory for test images based
-    on the current version of mpl
-    """
-
+    """Get the matplotlib version directory for test images based
+    on the current version of mpl."""
     from distutils.version import LooseVersion
     import matplotlib as mpl
     version = LooseVersion(mpl.__version__)
@@ -561,20 +541,16 @@ def get_mpl_version_dir():
         return 'mpl_v3'
 
 
-def get_text_dimensions(text, **kwargs):
-    # class SIZE(ctypes.Structure):
-    #     _fields_ = [("cx", ctypes.c_long), ("cy", ctypes.c_long)]
+def get_text_dimensions(text: str, **kwargs) -> tuple:
+    """Use pillow to try and figure out actual dimensions of text.
 
-    # hdc = ctypes.windll.user32.GetDC(0)
-    # hfont = ctypes.windll.gdi32.CreateFontW(-points, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, font)
-    # hfont_old = ctypes.windll.gdi32.SelectObject(hdc, hfont)
-    # size = SIZE(0, 0)
-    # ctypes.windll.gdi32.GetTextExtentPoint32W(hdc, text, len(text), ctypes.byref(size))
-    # ctypes.windll.gdi32.SelectObject(hdc, hfont_old)
-    # ctypes.windll.gdi32.DeleteObject(hfont)
+    Args:
+        text: the text from which to calculate size
+        kwargs: user-defined keyword args
 
-    # return (size.cx, size.cy)
-
+    Returns:
+        size tuple
+    """
     try:
         ImageFont
     except NameError:
@@ -593,19 +569,17 @@ def get_text_dimensions(text, **kwargs):
     return size[0] * 1.125, size[1] * 1.125  # no idea why it is off
 
 
-def kwget(dict1, dict2, vals, default):
-    """
-    Augmented kwargs.get function
+def kwget(dict1: dict, dict2: dict, vals: [str, list], default: [list, dict]) -> 'many_types':
+    """Augmented kwargs.get function.
 
     Args:
-        dict1 (dict): first dictionary to check for the value
-        dict2 (dict): second dictionary to check for the value
-        vals (str | list): value to look for
-        default (multiple): default value if not found in
-            dict1 or dict2 keys
+        dict1: first dictionary to check for the value
+        dict2: second dictionary to check for the value
+        vals: value(s) to look for
+        default: default value if not found in dict1 or dict2 keys
 
     Returns:
-        value to use
+        value to use (dtype varies)
     """
     vals = validate_list(vals)
 
@@ -619,21 +593,19 @@ def kwget(dict1, dict2, vals, default):
     return default
 
 
-def img_compare(img1, img2, show=False):
-    """
-    Read two images and compare for difference by pixel
-    This is an optional utility used only for developer tests, so
-    the function will only work if opencv is installed
+def img_compare(img1: str, img2: str, show: bool = False) -> bool:
+    """Read two images and compare for difference by pixel. This is an optional
+    utility used only for developer tests, so the function will only work if
+    opencv is installed.
+
     Args:
-        img1 (str): path to file #1
-        img2 (str): path to file #2
-        show (bool): display the difference
+        img1: path to file #1
+        img2: path to file #2
+        show: display the difference
 
     Returns:
         True/False of existence of differences
-
     """
-
     try:
         cv2
     except NameError:
@@ -675,28 +647,29 @@ def img_compare(img1, img2, show=False):
     return is_diff
 
 
-def img_grayscale(img):
-    """
-    Convert an RGB image to grayscale
+def img_grayscale(img: np.ndarray) -> pd.DataFrame:
+    """Convert an RGB image to grayscale.
 
     Args:
-        img (np.array): 3D array of image data
+        img: 3D array of image data
 
     Returns:
         DataFrame with grayscale pixel values
-
     """
-
     r, g, b = img[:, :, 0], img[:, :, 1], img[:, :, 2]
 
     return pd.DataFrame(0.2989 * r + 0.5870 * g + 0.1140 * b)
 
 
-def nq(data, column='Value', **kwargs):
-    """
-    Normal quantile calculation
-    """
+def nq(data, column: str = 'Value', **kwargs) -> pd.DataFrame:
+    """Normal quantile calculation.
 
+    Args:
+        columns (optional): new name for the output column in the nq DataFrame
+
+    Returns:
+        DataFrame with normal quantile calculated values
+    """
     # Defaults
     sig = kwargs.get('sigma', None)
     tail = kwargs.get('tail', 3)
@@ -721,20 +694,17 @@ def nq(data, column='Value', **kwargs):
     return pd.DataFrame({'Sigma': index, column: values})
 
 
-def pie_wedge_labels(x, y, startangle):
-    """
-    Identify the wedge labels that extend furthest on the horizontal axis
+def pie_wedge_labels(x: np.ndarray, y: np.ndarray, startangle: float) -> [float, float]:
+    """Identify the wedge labels that extend furthest on the horizontal axis.
 
     Args:
-        x (array): pie wedge labels
-        y (array): pie wedge values
-        startangle (float): the starting angle (0 = right | 90 = top, etc)
+        x: pie wedge labels
+        y: pie wedge values
+        startangle: the starting angle (0 = right | 90 = top, etc)
 
     Returns:
         indices of the longest labels on the horizontal axis
-
     """
-
     yper = y / sum(y)
     yperrad = yper * 2 * np.pi
     csr = yperrad.cumsum()
@@ -749,27 +719,32 @@ def pie_wedge_labels(x, y, startangle):
     return left, right
 
 
-def plot_num(ir, ic, ncol):
-    """
-    Get the plot number based on grid location
-    """
+def plot_num(ir: int, ic: int, ncol: int) -> int:
+    """Get the subplot index number based on grid location.
 
+    Args:
+        ir: axes row index
+        ic: axes column index
+        ncol: number of columns in the row x column grid
+
+    Return:
+        index number of the subplot
+    """
     return (ic + ir * ncol + 1)
 
 
-def rgb2bayer(img, cfa='rggb', bit_depth=np.uint8):
-    """
-    Approximate a Bayer raw image using an RGB image
+def rgb2bayer(img: np.ndarray, cfa: str = 'rggb',
+              bit_depth: int = np.uint8) -> pd.DataFrame:
+    """Approximate a Bayer raw image using an RGB image.
 
     Args:
-        img (np.array): 3D numpy array of RGB pixel values
-        cfa (str):  Bayer pattern
+        img: 3D numpy array of RGB pixel values
+        cfa (optional):  Bayer pattern. Defaults to 'rggb'.
+        bit_depth (optional): bit depth of the input data. Defaults to 8-bit
 
     Returns:
         DataFrame containing Bayer pixel values
-
     """
-
     raw = np.zeros((img.shape[0], img.shape[1]), dtype=bit_depth)
     cp = list(cfa)
     channel = {'r': 0, 'g': 1, 'b': 2}
@@ -784,18 +759,16 @@ def rgb2bayer(img, cfa='rggb', bit_depth=np.uint8):
     return pd.DataFrame(raw)
 
 
-def rectangle_overlap(r1, r2):
-    """
-    Determine if the bounds of two rectangles overlap
+def rectangle_overlap(r1: [list, tuple], r2: [list, tuple]) -> bool:
+    """Determine if the bounds of two rectangles overlap.
 
     Args:
-        r1 (list|tuple): width, height, center point (x, y) of left rectangle
-        r2 (list|tuple): width, height, center point (x, y) of right rectangle
+        r1: width, height, center point (x, y) of left rectangle
+        r2: width, height, center point (x, y) of right rectangle
 
     Returns:
         True if overlap | False if not
     """
-
     # Get bounds
     b1 = [r1[2][0] - r1[0] / 2, r1[2][0] + r1[0] / 2,
           r1[2][1] + r1[1] / 2, r1[2][1] - r1[1] / 2]
@@ -809,11 +782,12 @@ def rectangle_overlap(r1, r2):
         return False
 
 
-def reload_defaults(theme=None):
-    """
-    Reload the fcp params
-    """
+def reload_defaults(theme: [str, None] = None):
+    """Reload the fcp params.
 
+    Args:
+        theme (optional): name of the theme file to load. Defaults to None.
+    """
     theme_dir = os.path.join(os.path.dirname(__file__), 'themes')
     reset_path = False
     err_msg = 'Requested theme not found; using default'
@@ -858,21 +832,38 @@ def reload_defaults(theme=None):
     return fcp_params, colors, markers
 
 
-def set_save_filename(df, ifig, fig_item, fig_cols, layout, kwargs):
-    """
-    Build a filename based on the plot setup parameters
+def see(obj) -> pd.DataFrame:
+    """Prints a readable list of class attributes.
 
     Args:
-        df (pd.DataFrame): input data used for the plot
-        fig_item (None | str): unique figure item
-        fig_cols (None | str | list): names of columns used to generate fi
-        layout (obj): plot layout object
-        kwargs (dict): input keyword args
+        some object (Data, Layout, etc)
+
+    Returns:
+        DataFrame of all the attributes of the object
+    """
+    df = pd.DataFrame({'Attribute': list(self.__dict__.copy().keys()),
+                       'Name': [str(f) for f in self.__dict__.copy().values()]})
+    df = df.sort_values(by='Attribute').reset_index(drop=True)
+
+    return df
+
+
+def set_save_filename(df: pd.DataFrame, ifig: int, fig_item: [None, str],
+                      fig_cols: [None, str], layout: 'Layout',
+                      kwargs: dict) -> str:
+    """Build a filename based on the plot setup parameters.
+
+    Args:
+        df: input data used for the plot
+        ifig: current figure number
+        fig_item: unique figure item
+        fig_cols: names of columns used to generate fi
+        layout: plot layout object
+        kwargs: user-defined keyword args
 
     Returns:
         str filename
     """
-
     # Use provided filename
     if 'filename' in kwargs.keys() and type(kwargs['filename']) is str:
         filename = kwargs['filename']
@@ -935,30 +926,24 @@ def set_save_filename(df, ifig, fig_item, fig_cols, layout, kwargs):
     return filename + kwargs.get('save_ext')
 
 
-def sigma(x):
-    """
-    Calculate the sigma range for a data set
+def sigma(x: [pd.Series, np.ndarray]) -> int:
+    """Calculate the sigma range for a data set.
 
     Args:
-        x (pd.Series | np.array): data set
+        x: data set
 
     Returns:
         int value to use for +/- max sigma
-
     """
-
     return np.round(np.trunc(10 * abs(ss.norm.ppf(1 / len(x)))) / 10)
 
 
-def show_file(filename):
-    """
-    Platform independent show saved plot func
+def show_file(filename: str):
+    """Platform independent show saved plot func.
 
     Args:
-        filename (str): path to image
-
+        filename: path to image
     """
-
     if sys.platform == "win32":
         os.startfile(filename)
     else:
@@ -966,19 +951,19 @@ def show_file(filename):
         subprocess.call([opener, filename])
 
 
-def split_color_planes(img, cfa='rggb', asdict=False):
-    """
-    Split image data into respective color planes
+def split_color_planes(img: pd.DataFrame, cfa: str = 'rggb',
+                       asdict: bool = False) -> pd.DataFrame:
+    """Split image data into respective color planes.
 
     Args:
-        img (pd.DataFrame): image data
-        cfa (str): four-digit cfa pattern
+        img: image data
+        cfa (optional): four-character cfa pattern. Defaults to 'rggb'.
+        asdict (optional): return each plane DataFrame as a value in a dict.
+            Defaults to False.
 
     Returns:
         updated DataFrame
-
     """
-
     # Break the cfa code to list
     cfa = cfa.lower()  # force lowercase for now
     cp = list(cfa)
@@ -1018,18 +1003,16 @@ def split_color_planes(img, cfa='rggb', asdict=False):
     return img2[cols]
 
 
-def validate_list(items):
-    """
-    Make sure a list variable is actually a list and not a single item
-    Excludes None
+def validate_list(items: [str, int, float, list]) -> list:
+    """Make sure a list variable is actually a list and not a single item.
+    Excludes None.
 
     Args:
-        items (single value | list): values to check dtype
+        items: value(s) that will be returned as a list
 
     Return:
         items as a list unless items is None
     """
-
     if items is None:
         return None
     if type(items) is tuple or type(items) is np.ndarray:

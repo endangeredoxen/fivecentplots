@@ -914,7 +914,7 @@ class Layout(BaseLayout):
         if self.box_group_label.on:
             lab = self.box_group_label
             for ir, ic in np.ndindex(lab.obj.shape):
-                data.df_rc = data.subset(ir, ic)
+                data.df_rc = data._subset(ir, ic)
                 data.get_box_index_changes()
                 divider = self.axes.size[0] / len(data.changes)
                 if lab.obj[ir, ic] is None:
@@ -3243,7 +3243,7 @@ class Layout(BaseLayout):
             # Iterate through labels
             offset = 1  # to make labels line up better at default font sizes
             for ir, ic in np.ndindex(self.box_group_label.obj.shape):
-                data.df_rc = data.subset(ir, ic)
+                data.df_rc = data._subset(ir, ic)
                 data.get_box_index_changes()
                 if lab.obj[ir, ic] is None:
                     continue

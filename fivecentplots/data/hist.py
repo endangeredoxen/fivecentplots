@@ -10,7 +10,12 @@ db = pdb.set_trace
 
 class Histogram(data.Data):
     def __init__(self, **kwargs):
+        """Histogram-specific Data class to deal with operations applied to the
+        input data (i.e., non-plotting operations)
 
+        Args:
+            kwargs: user-defined keyword args
+        """
         name = 'hist'
         req = []
         opt = ['x']
@@ -37,6 +42,8 @@ class Histogram(data.Data):
 
         super().__init__(name, req, opt, **kwargs)
 
+        self.use_parent_ranges = False
+
         # cdf/pdf option (if conflict, prefer cdf)
         self.cdf = utl.kwget(kwargs, self.fcpp, ['cdf'], kwargs.get('cdf', False))
         self.pdf = utl.kwget(kwargs, self.fcpp, ['pdf'], kwargs.get('pdf', False))
@@ -54,17 +61,22 @@ class Histogram(data.Data):
                                  ['hist_stacked', 'stacked'],
                                  kwargs.get('stacked', False))
 
-    def df_hist(self, df_in, brange=None):
-        """
-        Iterate over groups and build a dataframe of counts
-        """
+    def df_hist(self, df_in: pd.DataFrame, brange: [float, None] = None) -> pd.DataFrame:
+        """Iterate over groups and build a dataframe of counts.
 
+        Args:
+            df_in: input DataFrame
+            brange (optional): range for histogram calculation
+
+        Returns:
+            new DataFrame with histogram counts and values
+        """
         hist = pd.DataFrame()
 
-        groups = self.groupers
+        groups = self._groupers
 
         if len(groups) > 0:
-            for nn, df in df_in.groupby(self.groupers):
+            for nn, df in df_in.groupby(self._groupers):
                 if self.kwargs['2D']:
                     dfx = df[utl.df_int_cols(df)].values
                     self.x = ['Value']
@@ -81,7 +93,7 @@ class Histogram(data.Data):
                                                 normed=self.norm)
 
                 temp = pd.DataFrame({self.x[0]: vals[:-1], self.y[0]: counts})
-                for ig, group in enumerate(self.groupers):
+                for ig, group in enumerate(self._groupers):
                     if type(nn) is tuple:
                         temp[group] = nn[ig]
                     else:
@@ -110,16 +122,21 @@ class Histogram(data.Data):
 
         return hist
 
-    def get_data_ranges(self):
+    def _get_data_ranges(self):
+        """Histogram-specific data range calculator by subplot."""
+        # If switch_type applied, just use the parent range function
+        if self.use_parent_ranges:
+            data.Data._get_data_ranges(self)
+            return
 
         # Handle all but y-axis which needs histogram binning
         self.axs = [f for f in self.axs if f != 'y']
-        self._get_data_ranges()
+        data.Data._get_data_ranges(self)  # call original parent function
         self.axs += ['y']
 
         # set ranges by subset
         self.y = ['Counts']
-        temp_ranges = self.range_dict()
+        temp_ranges = self._range_dict()
         max_y = 0
         max_y_row = np.zeros(self.nrow)
         max_y_col = np.zeros(self.ncol)
@@ -128,8 +145,8 @@ class Histogram(data.Data):
         min_y_col = np.zeros(self.ncol)
 
         # iterate through all rc_subsets in order to compute histogram counts
-        for ir, ic, plot_num in self.get_subplot_index():
-            df_rc = self.subset(ir, ic)
+        for ir, ic, plot_num in self._get_subplot_index():
+            df_rc = self._subset(ir, ic)
 
             if len(df_rc) == 0:
                 temp_ranges[ir, ic]['ymin'] = None
@@ -137,7 +154,7 @@ class Histogram(data.Data):
                 continue
 
             hist = self.df_hist(df_rc)
-            vals = self.get_data_range('y', hist, plot_num)
+            vals = self._get_data_range('y', hist, plot_num)
             temp_ranges[ir, ic]['ymin'] = vals[0]
             temp_ranges[ir, ic]['ymin'] = vals[1]
             min_y = min(min_y, vals[0])
@@ -148,44 +165,42 @@ class Histogram(data.Data):
             max_y_col[ic] = min(max_y_col[ir], vals[1])
 
         # compute actual ranges with option y-axis sharing
-        for ir, ic, plot_num in self.get_subplot_index():
+        for ir, ic, plot_num in self._get_subplot_index():
             # share y
             if self.share_y:
-                self.add_range(ir, ic, 'y', 'min', min_y)
-                self.add_range(ir, ic, 'y', 'max', max_y)
+                self._add_range(ir, ic, 'y', 'min', min_y)
+                self._add_range(ir, ic, 'y', 'max', max_y)
 
             # share row
             elif self.share_row:
-                self.add_range(ir, ic, 'y', 'min', min_y_row[ir])
-                self.add_range(ir, ic, 'y', 'max', max_y_row[ir])
+                self._add_range(ir, ic, 'y', 'min', min_y_row[ir])
+                self._add_range(ir, ic, 'y', 'max', max_y_row[ir])
 
             # share col
             elif self.share_col:
-                self.add_range(ir, ic, 'y', 'min', min_y_col[ic])
-                self.add_range(ir, ic, 'y', 'max', max_y_col[ic])
+                self._add_range(ir, ic, 'y', 'min', min_y_col[ic])
+                self._add_range(ir, ic, 'y', 'max', max_y_col[ic])
 
             # not share y
             else:
-                self.add_range(ir, ic, 'y', 'min', temp_ranges[ir][ic]['ymin'])
-                self.add_range(ir, ic, 'y', 'max', temp_ranges[ir][ic]['ymax'])
-
-        # self.y = None
+                self._add_range(ir, ic, 'y', 'min', temp_ranges[ir][ic]['ymin'])
+                self._add_range(ir, ic, 'y', 'max', temp_ranges[ir][ic]['ymax'])
 
         if hasattr(self, 'horizontal') and self.horizontal:
             self.swap_xy_ranges()
 
-    def subset_modify(self, df, ir, ic):
+    def _subset_wrap(self, ir: int, ic: int) -> pd.DataFrame:
+        """Histogram-specific version of subset_wrap.  Select the revelant subset
+        from self.df_fig with one additional line of code compared with parent func
 
-        return self._subset_modify(df, ir, ic)
+        Args:
+            ir: subplot row index
+            ic: subplot column index
 
-    def subset_wrap(self, ir, ic):
+        Returns:
+            self.df_fig DataFrame subset based on self.wrap value
         """
-        For wrap plots, select the revelant subset from self.df_fig
-
-        Need one additional line of code compared with data.subset_wrap
-        """
-
-        if ir * self.ncol + ic > self.nwrap-1:
+        if ir * self.ncol + ic > self.nwrap - 1:
             return pd.DataFrame()
         elif self.wrap == 'y':
             # can we drop these validate calls for speed
@@ -215,17 +230,18 @@ class Histogram(data.Data):
                 self.wrap_vals = list(self.df_fig.groupby(
                     self.wrap, sort=False).groups.keys())
             wrap = dict(zip(self.wrap,
-                        utl.validate_list(self.wrap_vals[ir*self.ncol + ic])))
+                        utl.validate_list(self.wrap_vals[ir * self.ncol + ic])))
             return self.df_fig.loc[(self.df_fig[list(wrap)] == pd.Series(wrap)).all(axis=1)].copy()
 
     def switch_type(self, kwargs):
-        """
-        If bars are not enabled, switch everything to line plot
-        """
+        """If bars are not enabled, switch everything to line plot.
 
+        Args:
+            kwargs: user-defined keyword args
+        """
         self.name = 'xy'
         self.y = ['Counts']
-        self.get_data_ranges = self._get_data_ranges
+        self.use_parent_ranges = True
         self.subset_wrap = self._subset_wrap
 
         # Update the bins to integer values if not specified and 2D image data
@@ -243,6 +259,6 @@ class Histogram(data.Data):
 
         # Convert the image data to a histogram
         temp = self.legend
-        self.get_legend_groupings(self.df_all)
+        self._get_legend_groupings(self.df_all)
         self.df_all = self.df_hist(self.df_all, [vmin, vmax + 1])
         self.legend = temp  # reset the original legend param
