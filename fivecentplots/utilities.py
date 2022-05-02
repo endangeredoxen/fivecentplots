@@ -952,13 +952,13 @@ def show_file(filename: str):
 
 
 def split_color_planes(img: pd.DataFrame, cfa: str = 'rggb',
-                       asdict: bool = False) -> pd.DataFrame:
+                       as_dict: bool = False) -> pd.DataFrame:
     """Split image data into respective color planes.
 
     Args:
         img: image data
         cfa (optional): four-character cfa pattern. Defaults to 'rggb'.
-        asdict (optional): return each plane DataFrame as a value in a dict.
+        as_dict (optional): return each plane DataFrame as a value in a dict.
             Defaults to False.
 
     Returns:
@@ -972,31 +972,38 @@ def split_color_planes(img: pd.DataFrame, cfa: str = 'rggb',
 
     # Check for a repeated cfa
     counts = {i: cp.count(i) for i in cp}
-    dup = [k for k, v in counts.items() if v == 2]
-    if len(dup) > 0:
-        dup = dup[0]
-        idx = [i for i, f in enumerate(cp) if f == dup]
+    doubles = [k for k, v in counts.items() if v == 2]
+    triples = [k for k, v in counts.items() if v == 3]
+
+    if len(doubles) > 0:
+        # cfa has one color plane repeated 2x (rggb, rccb)
+        idx = [i for i, f in enumerate(cp) if f == doubles[0]]
         for ii in idx:
             if ii % 2 == 0:
-                cp[ii] = '{}{}'.format(cp[ii], cp[ii + 1])
+                cp[ii] = f'{cp[ii]}{cp[ii + 1]}'
             else:
-                cp[ii] = '{}{}'.format(cp[ii], cp[ii - 1])
+                cp[ii] = f'{cp[ii]}{cp[ii - 1]}'
+    elif len(triples) > 0:
+        # cfa has one color plane repeated 3x (rccc)
+        idx = [i for i, f in enumerate(cp) if f == triples[0]]
+        for ii in idx:
+            cp[ii] = f'{cp[ii]}{ii}'
 
     # Separate planes
-    if asdict:
+    if as_dict:
         img2 = {}
     else:
         img2 = pd.DataFrame()
 
     for ic, cc in enumerate(cp):
         temp = img.loc[ic // 2::2, (ic % 2)::2]
-        if asdict:
+        if as_dict:
             img2[cc] = temp
         else:
             temp['Plane'] = cc
             img2 = pd.concat([img2, temp])
 
-    if asdict:
+    if as_dict:
         return img2
 
     cols = df_int_cols(img2) + ['Plane']
