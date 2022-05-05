@@ -993,7 +993,7 @@ def plotter(dobj, **kwargs):
             filename = os.path.join(kwargs['filepath'], filename)
 
         # Optionally save and open
-        if kwargs.get('save', False):
+        if kwargs.get('save', False) or kwargs.get('show', False):
             if ifig:
                 idx = ifig
             else:
