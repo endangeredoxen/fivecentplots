@@ -83,7 +83,7 @@ class BaseLayout:
         kwargs = self._init_axes_labels(kwargs)
         kwargs = self._init_title(kwargs)
         kwargs = self._init_ticks(kwargs)
-        kwargs = self._init_markers(kwargs)
+        kwargs = self._init_markers(kwargs, data)
         kwargs = self._init_lines(kwargs)
         kwargs = self._init_fit(kwargs)
         kwargs = self._init_ref(kwargs)
@@ -1291,6 +1291,7 @@ class BaseLayout:
 
         Args:
             kwargs: user-defined keyword args
+            data: Data class object for the plot
 
         Returns:
             updated kwargs
@@ -1386,11 +1387,12 @@ class BaseLayout:
 
         return kwargs
 
-    def _init_markers(self, kwargs: dict) -> dict:
+    def _init_markers(self, kwargs: dict, data: 'Data') -> dict:
         """Set the markers element parameters
 
         Args:
             kwargs: user-defined keyword args
+            data: Data class object for the plot
 
         Returns:
             updated kwargs
@@ -1427,9 +1429,12 @@ class BaseLayout:
                                zorder=utl.kwget(kwargs, self.fcpp,
                                                 'zorder', 2),
                                )
-        if type(self.markers.size) is not RepeatedList:
+        if isinstance(self.markers.size, str) \
+                and self.markers.size in data.df_all.columns:
+            pass
+        elif not isinstance(self.markers.size, RepeatedList):
             self.markers.size = RepeatedList(self.markers.size, 'marker_size')
-        if type(self.markers.edge_width) is not RepeatedList:
+        if not isinstance(self.markers.edge_width, RepeatedList):
             self.markers.edge_width = RepeatedList(self.markers.edge_width,
                                                    'marker_edge_width')
 

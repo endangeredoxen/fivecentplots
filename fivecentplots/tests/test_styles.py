@@ -488,7 +488,6 @@ def test_marker_fill_alpha(master=False, remove=True, show=False):
         assert not compare
 
 
-# fail box group labels have black background (maybe make it this way by default?)
 def test_marker_boxplot(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'boxplot_master') if master else 'boxplot'
@@ -659,6 +658,33 @@ def test_marker_size_legend(master=False, remove=True, show=False):
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_marker_size_column(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'marker_size_column_master') if master else 'marker_size_column'
+
+    # Make the plot
+    df['marker_size'] = df['Voltage'] * 10
+    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', show=SHOW,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             filename=name + '.png', inline=False, marker_size='marker_size')
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 

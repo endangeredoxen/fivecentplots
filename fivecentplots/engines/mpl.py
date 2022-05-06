@@ -607,11 +607,15 @@ class Layout(BaseLayout):
                 if self.name not in ['hist', 'bar', 'pie', 'gantt']:
                     if isinstance(leg.legendHandles[itext], mpl.patches.Rectangle):
                         continue
-                    leg.legendHandles[itext]. \
-                        _legmarker.set_markersize(self.legend.marker_size)
-                    if self.legend.marker_alpha is not None:
+                    # leg.legendHandles[itext]. \
+                    #     _legmarker.set_markersize(self.legend.marker_size)
+                    leg.legendHandles[itext]._sizes = \
+                        np.ones(len(self.legend.values) + 1) * self.legend.marker_size**2
+                    if not self.markers.on and self.legend.marker_alpha is not None:
                         leg.legendHandles[itext]. \
                             _legmarker.set_alpha(self.legend.marker_alpha)
+                    elif self.legend.marker_alpha is not None:
+                        leg.legendHandles[itext].set_alpha(self.legend.marker_alpha)
 
             leg.get_title().set_fontsize(self.legend.font_size)
             leg.get_frame().set_facecolor(self.legend.fill_color[0])
@@ -642,7 +646,8 @@ class Layout(BaseLayout):
                                         bbox_to_anchor=(self.legend.position[1],
                                                         self.legend.position[2]),
                                         numpoints=self.legend.points,
-                                        prop=fontp)
+                                        prop=fontp,
+                                        scatterpoints=self.legend.points)
                 format_legend(self, self.legend.obj)
             elif self.legend.location == 11:
                 self.legend.obj = \
@@ -651,7 +656,8 @@ class Layout(BaseLayout):
                                         bbox_to_anchor=(self.legend.position[0],
                                                         self.legend.position[2]),
                                         numpoints=self.legend.points,
-                                        prop=fontp)
+                                        prop=fontp,
+                                        scatterpoints=self.legend.points)
                 format_legend(self, self.legend.obj)
             else:
                 for irow, row in enumerate(self.axes.obj):
@@ -663,9 +669,11 @@ class Layout(BaseLayout):
                             col.legend(lines, keys, loc=self.legend.location,
                                        title=self.legend.text if self.legend is not True else '',
                                        numpoints=self.legend.points,
-                                       prop=fontp)
+                                       prop=fontp,
+                                       scatterpoints=self.legend.points)
                         self.legend.obj.set_zorder(102)
                         format_legend(self, self.legend.obj)
+
 
     def add_text(self, ir: int, ic: int, text: [str, None] = None,
                  element: [str, None] = None, offsetx: int = 0,
@@ -2310,19 +2318,23 @@ class Layout(BaseLayout):
                 df[x] = np.random.normal(df[x], 0.03, size=len(df[y]))
             marker = format_marker(self.markers.type[iline])
             if marker != 'None':
-                points = ax.plot(dfx, df[y],
-                                 marker=marker,
-                                 markerfacecolor=self.markers.fill_color[(
-                                     iline, leg_name)]
-                                 if self.markers.filled else 'none',
-                                 markeredgecolor=self.markers.edge_color[(
-                                     iline, leg_name)],
-                                 markeredgewidth=self.markers.edge_width[(
-                                     iline, leg_name)],
-                                 linewidth=0,
-                                 markersize=self.markers.size[iline],
-                                 zorder=40)
+                # use scatter plot for points
+                if marker in ['+', 'x']:
+                    c = self.markers.edge_color[(iline, leg_name)]
+                else:
+                    c = self.markers.fill_color[(iline, leg_name)] if self.markers.filled else 'none'
+                points = ax.scatter(dfx, df[y],
+                                    s=df['marker_size']**2 if isinstance(self.markers.size, str)
+                                    else self.markers.size[iline]**2,
+                                    marker=marker,
+                                    c=c,
+                                    edgecolors=self.markers.edge_color[(iline, leg_name)],
+                                    linewidth=self.markers.edge_width[(iline, leg_name)],
+                                    alpha=self.markers.edge_alpha,
+                                    zorder=40
+                                    )
             else:
+                # what is the use case here?
                 points = ax.plot(dfx, df[y],
                                  marker=marker,
                                  color=line_type.color[(iline, leg_name)],
@@ -3517,7 +3529,7 @@ class Layout(BaseLayout):
                 obj.obj[itext].set_x(position[0])
                 obj.obj[itext].set_y(position[1])
 
-    def show(self):
+    def show(self, *args):
         """Display the plot window."""
         mplp.show(block=False)
 
