@@ -1,8 +1,5 @@
-
-import pytest
 import fivecentplots as fcp
 import pandas as pd
-import numpy as np
 import os
 import sys
 import pdb
@@ -255,12 +252,9 @@ def test_legend_position_below(master=False, remove=True, show=False):
         MASTER, 'legend_position_below_master') if master else 'legend_position_below'
 
     # Make the plot
-    df1.loc[df1.Die == '(1,1)',
-            'Long Legend'] = 'Sample #ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    df1.loc[df1.Die == '(2,-1)',
-            'Long Legend'] = 'Sample #RUNFORYOURLIFEWITHME'
-    df1.loc[df1.Die ==
-            '(-1,2)', 'Long Legend'] = 'Sample #THESKYISANEIGHBORHOOD!!!!!!!!!'
+    df1.loc[df1.Die == '(1,1)', 'Long Legend'] = 'Sample #ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    df1.loc[df1.Die == '(2,-1)', 'Long Legend'] = 'Sample #RUNFORYOURLIFEWITHME'
+    df1.loc[df1.Die == '(-1,2)', 'Long Legend'] = 'Sample #THESKYISANEIGHBORHOOD!!!!!!!!!'
     fcp.plot(df1, x='Voltage', y='I [A]', legend='Long Legend', show=SHOW,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              legend_location='below', save=True, inline=False, filename=name + '.png')
@@ -423,8 +417,8 @@ def test_groups_row_col_y(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.plot(df=df1, x='Voltage', y=['Voltage', 'I [A]'], legend='Die', col='Boost Level', row='y',
-             ax_size=[225, 225], filter='Substrate=="Si" & Target Wavelength==450 & Temperature [C]==75', label_rc_font_size=14,
-             save=True, inline=False, filename=name + '.png')
+             ax_size=[225, 225], filter='Substrate=="Si" & Target Wavelength==450 & Temperature [C]==75',
+             label_rc_font_size=14, save=True, inline=False, filename=name + '.png')
 
     # Compare with master
     if master:
@@ -450,8 +444,8 @@ def test_groups_row_col_x(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.plot(df=df1, x=['Voltage', 'I [A]'], y='Voltage', legend='Die', row='Boost Level', col='x',
-             ax_size=[225, 225], filter='Substrate=="Si" & Target Wavelength==450 & Temperature [C]==75', label_rc_font_size=14,
-             save=True, inline=False, filename=name + '.png')
+             ax_size=[225, 225], filter='Substrate=="Si" & Target Wavelength==450 & Temperature [C]==75',
+             label_rc_font_size=14, save=True, inline=False, filename=name + '.png')
 
     # Compare with master
     if master:

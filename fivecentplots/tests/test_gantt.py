@@ -1,7 +1,5 @@
-import pytest
 import fivecentplots as fcp
 import pandas as pd
-import numpy as np
 import os
 import sys
 import pdb

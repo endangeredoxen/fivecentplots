@@ -1,10 +1,13 @@
-import pytest
 import fivecentplots as fcp
 import pandas as pd
-import numpy as np
-import os, sys, pdb, platform
+import os
+import sys
+import pdb
+import platform
 import fivecentplots.utilities as utl
 import inspect
+import imageio
+
 osjoin = os.path.join
 db = pdb.set_trace
 if platform.system() != 'Windows':
@@ -26,12 +29,11 @@ fcp.KWARGS['save'] = True
 fcp.KWARGS['inline'] = False
 
 # Read an image
-import imageio
-url = 'https://imagesvc.meredithcorp.io/v3/mm/image?q=85&c=sc&rect=0%2C214%2C2000%2C1214&poi=%5B920%2C546%5D&w=2000&h=1000&url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F47%2F2020%2F10%2F07%2Fcat-in-pirate-costume-380541532-2000.jpg'
+url = 'https://imagesvc.meredithcorp.io/v3/mm/image?q=85&c=sc&rect=0%2C214%2C2000%2C1214&poi=%5B920%2C546%5D&w=2000&h=1000&url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F47%2F2020%2F10%2F07%2Fcat-in-pirate-costume-380541532-2000.jpg'  # noqa
 imgr = imageio.imread(url)
 
 # Convert to grayscale
-r, g, b = imgr[:,:,0], imgr[:,:,1], imgr[:,:,2]
+r, g, b = imgr[:, :, 0], imgr[:, :, 1], imgr[:, :, 2]
 gray = 0.2989 * r + 0.5870 * g + 0.1140 * b
 
 # Convert image data to pandas DataFrame

@@ -1,8 +1,5 @@
-
-import pytest
 import fivecentplots as fcp
 import pandas as pd
-import numpy as np
 import os
 import sys
 import pdb
@@ -65,7 +62,7 @@ def plt_simple(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'simple_master') if master else 'simple'
 
     # Make the plot
-    fcp.boxplot(df=df, y='Value', show=SHOW,  tick_labels_minor=True, grid_minor=True,
+    fcp.boxplot(df=df, y='Value', show=SHOW, tick_labels_minor=True, grid_minor=True,
                 filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -290,7 +287,7 @@ def plt_grid_wrap_y(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'grid_y_master') if master else 'grid_y'
 
     # Make the plot
-    df['Value*2'] = 2*df['Value']
+    df['Value*2'] = 2 * df['Value']
     fcp.boxplot(df=df, y=['Value', 'Value*2'], groups=['Batch', 'Sample', 'Region'], wrap='y', show=SHOW,
                 ax_size=[300, 300],
                 filename=name + '.png', save=not bm, inline=False, jitter=False)
@@ -321,7 +318,7 @@ def plt_grid_wrap_y_no_share(bm=False, master=False, remove=True, show=False):
         MASTER, 'grid_y-no-share_master') if master else 'grid_y-no-share'
 
     # Make the plot
-    df['Value*2'] = 2*df['Value']
+    df['Value*2'] = 2 * df['Value']
     fcp.boxplot(df=df, y=['Value', 'Value*2'], groups=['Batch', 'Sample', 'Region'], wrap='y', show=SHOW,
                 ax_size=[300, 300], share_y=False,
                 filename=name + '.png', save=not bm, inline=False, jitter=False)
@@ -497,7 +494,8 @@ def plt_violin_box_off(bm=False, master=False, remove=True, show=False):
         MASTER, 'violin_box_off_master') if master else 'violin_box_off'
 
     # Make the plot
-    fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, violin=True, violin_box_on=False, violin_markers=True, jitter=False,
+    fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW,
+                violin=True, violin_box_on=False, violin_markers=True, jitter=False,
                 filename=name + '.png', save=not bm, inline=False)
 
     if bm:
@@ -681,11 +679,6 @@ def test_group_single(benchmark):
 def test_group_multiple(benchmark):
     plt_group_multiple()
     benchmark(plt_group_multiple, True)
-
-
-def test_simple(benchmark):
-    plt_simple()
-    benchmark(plt_simple, True)
 
 
 def test_group_legend(benchmark):

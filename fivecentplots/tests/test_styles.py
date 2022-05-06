@@ -1,8 +1,9 @@
-import pytest
 import fivecentplots as fcp
 import pandas as pd
-import numpy as np
-import os, sys, pdb, platform
+import os
+import sys
+import pdb
+import platform
 import fivecentplots.utilities as utl
 import inspect
 osjoin = os.path.join
@@ -58,7 +59,8 @@ def test_fill_color(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'fill_color_master') if master else 'fill_color'
 
     # Make the plot
-    fcp.plot(df=df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],          filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+    fcp.plot(df=df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
+             filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              fig_fill_color='#00FF00', legend_fill_color='#FF0000', ax_fill_color='#FFFFFF',
              label_x_fill_color='#0000FF', label_y_fill_color='#FF00FF',
              tick_labels_major_fill_color='#AAFB05',
@@ -367,7 +369,8 @@ def test_line_style_by_line(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'line_style_by_line_master') if master else 'line_style_by_line'
 
     # Make the plot
-    fcp.plot(df=df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], markers=False,          filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+    fcp.plot(df=df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], markers=False,
+             filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              colors=[0, 0, 1, 1, 2, 2],
              lines_width=[3, 1, 3, 1, 3, 1], lines_style=['--', '-'],
              lines_alpha=[0.6, 1],
@@ -594,7 +597,7 @@ def test_marker_type_none(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'marker_type_none_master') if master else 'marker_type_none'
 
     # Make the plot
-    fcp.plot(df=df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], \
+    fcp.plot(df=df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              markers=['o', None, '+', '*', 'B', None],
              filename=name + '.png')

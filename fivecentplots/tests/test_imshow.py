@@ -1,8 +1,6 @@
 import imageio
-import pytest
 import fivecentplots as fcp
 import pandas as pd
-import numpy as np
 import os
 import sys
 import pdb
@@ -32,7 +30,7 @@ fcp.KWARGS['save'] = True
 fcp.KWARGS['inline'] = False
 
 # Read an image
-url = 'https://imagesvc.meredithcorp.io/v3/mm/image?q=85&c=sc&rect=0%2C214%2C2000%2C1214&poi=%5B920%2C546%5D&w=2000&h=1000&url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F47%2F2020%2F10%2F07%2Fcat-in-pirate-costume-380541532-2000.jpg'
+url = 'https://imagesvc.meredithcorp.io/v3/mm/image?q=85&c=sc&rect=0%2C214%2C2000%2C1214&poi=%5B920%2C546%5D&w=2000&h=1000&url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F47%2F2020%2F10%2F07%2Fcat-in-pirate-costume-380541532-2000.jpg'  # noqa
 imgr = imageio.imread(url)
 
 # Convert to a grayscale DataFrame
@@ -131,7 +129,8 @@ def plt_imshow_stretched(bm=False, master=False, remove=True, show=False):
     # Make the plot
     uu = img.stack().mean()
     ss = img.stack().std()
-    fcp.imshow(img, cmap='inferno', cbar=True, ax_size=[600, 600], zmin=uu-3*ss, zmax=uu+3*ss,
+    fcp.imshow(img, cmap='inferno', cbar=True, ax_size=[600, 600],
+               zmin=uu - 3 * ss, zmax=uu + 3 * ss,
                filename=name + '.png', save=not bm, inline=False)
 
     if bm:
@@ -194,7 +193,7 @@ def plt_wrap(bm=False, master=False, remove=True, show=False):
     raw = fcp.utilities.rgb2bayer(imgr)
 
     # Make the plot
-    fcp.imshow(raw, cmap='inferno', ax_size=[300, 300],  cfa='rggb',
+    fcp.imshow(raw, cmap='inferno', ax_size=[300, 300], cfa='rggb',
                filename=name + '.png', save=not bm, inline=False, wrap='Plane')
 
     if bm:
@@ -227,7 +226,7 @@ def plt_wrap_one(bm=False, master=False, remove=True, show=False):
     raw = fcp.utilities.rgb2bayer(imgr)
 
     # Make the plot
-    fcp.imshow(raw, cmap='inferno', ax_size=[300, 300],  cfa='rggb', filter='Plane=="gb"',
+    fcp.imshow(raw, cmap='inferno', ax_size=[300, 300], cfa='rggb', filter='Plane=="gb"',
                filename=name + '.png', save=not bm, inline=False, wrap='Plane')
 
     if bm:

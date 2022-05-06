@@ -1,9 +1,7 @@
 
 import imageio
-import pytest
 import fivecentplots as fcp
 import pandas as pd
-import numpy as np
 import os
 import sys
 import pdb
@@ -22,7 +20,7 @@ MASTER = osjoin(os.path.dirname(fcp.__file__),
 # Sample data
 df = pd.read_csv(osjoin(os.path.dirname(fcp.__file__),
                  'tests', 'fake_data_box.csv'))
-url = 'https://imgs.michaels.com/MAM/assets/1/D730994AF28E498A909A1002BBF38107/img/16F309E5F1CF4742B4AACD8E0CCF08E0/D203087S_1.jpg?fit=inside|1024:1024'
+url = 'https://imgs.michaels.com/MAM/assets/1/D730994AF28E498A909A1002BBF38107/img/16F309E5F1CF4742B4AACD8E0CCF08E0/D203087S_1.jpg?fit=inside|1024:1024'  # noqa
 imgr = imageio.imread(url)
 
 # Set theme
@@ -236,8 +234,8 @@ def plt_wrap_names(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'wrap_names_master') if master else 'wrap_names'
 
     # Make the plot
-    df['Value*2'] = 2*df['Value']
-    df['Value*3'] = 3*df['Value']
+    df['Value*2'] = 2 * df['Value']
+    df['Value*3'] = 3 * df['Value']
     fcp.hist(df=df, x=['Value', 'Value*2', 'Value*3'], wrap='x', show=SHOW, ncol=3, ax_size=[250, 250],
              inline=False, save=not bm, filename=name + '.png')
 
@@ -270,7 +268,7 @@ def plt_image(bm=False, master=False, remove=True, show=False):
     dn = 255
     max_count = (imgr == dn).sum()
     fcp.hist(img, markers=False, ax_scale='logy', ax_size=[600, 400], line_width=2,
-             show=SHOW, inline=False, save=not bm, filename=name + '.png', xmax=dn+5,
+             show=SHOW, inline=False, save=not bm, filename=name + '.png', xmax=dn + 5,
              ax_hlines=max_count, ax_vlines=dn)
 
     if bm:

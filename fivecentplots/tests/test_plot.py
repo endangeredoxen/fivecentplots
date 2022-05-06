@@ -1,7 +1,5 @@
-import pytest
 import fivecentplots as fcp
 import pandas as pd
-import numpy as np
 import os
 import sys
 import pdb
@@ -119,9 +117,9 @@ def plt_xy_log_scale(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'xy_log-scale_master') if master else 'xy_log-scale'
 
     # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9, xmax=2.1, grid_minor=True,
+    fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9, xmax=2.1,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             filename=name + '.png', save=not bm, inline=False)
+             grid_minor=True, filename=name + '.png', save=not bm, inline=False)
     if bm:
         return
 
@@ -856,12 +854,12 @@ def plt_other_ref_line_mult(bm=False, master=False, remove=True, show=False):
         MASTER, 'other_ref-line_mult_master') if master else 'other_ref-line_mult'
 
     # Make the plot
-    df['2*Voltage'] = 2*df['Voltage']
+    df['2*Voltage'] = 2 * df['Voltage']
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              xmin=0, ymin=0, xmax=1.6, ymax=1.6,
-             ref_line=['Voltage', '2*Voltage'], ref_line_legend_text=['y=x', 'y=2*x'], ref_line_style=['-', '--'], ref_line_color=[5, 6],
-             filename=name + '.png', save=not bm, inline=False)
+             ref_line=['Voltage', '2*Voltage'], ref_line_legend_text=['y=x', 'y=2*x'], ref_line_style=['-', '--'],
+             ref_line_color=[5, 6], filename=name + '.png', save=not bm, inline=False)
     if bm:
         return
 
@@ -890,8 +888,8 @@ def plt_other_ref_line_complex(bm=False, master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             ref_line=1.555*df['Voltage']**4-3.451*df['Voltage']**3 +
-             2.347*df['Voltage']**2-0.496*df['Voltage']+0.014,
+             ref_line=1.555 * df['Voltage']**4 - 3.451 * df['Voltage']**3
+             + 2.347 * df['Voltage']**2 - 0.496 * df['Voltage'] + 0.014,
              filename=name + '.png', save=not bm, inline=False)
     if bm:
         return

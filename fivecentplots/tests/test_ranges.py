@@ -1,9 +1,10 @@
 
-import pytest
 import fivecentplots as fcp
 import pandas as pd
-import numpy as np
-import os, sys, pdb, platform
+import os
+import sys
+import pdb
+import platform
 import fivecentplots.utilities as utl
 import inspect
 osjoin = os.path.join
@@ -60,7 +61,8 @@ def test_default(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'default_master') if master else 'default'
 
     # Make the plot
-    sub = df[(df.Substrate=='Si')&(df['Target Wavelength']==450)&(df['Boost Level']==0.2)&(df['Temperature [C]']==25)]
+    sub = df[(df.Substrate == 'Si') & (df['Target Wavelength'] == 450)
+             & (df['Boost Level'] == 0.2) & (df['Temperature [C]'] == 25)]
     fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', show=SHOW,
              filename=name + '.png')
 
@@ -376,7 +378,7 @@ def test_shared(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'shared_master') if master else 'shared'
 
     # Make the plot
-    sub = df[(df.Substrate=='Si') & (df['Target Wavelength']==450)].copy()
+    sub = df[(df.Substrate == 'Si') & (df['Target Wavelength'] == 450)].copy()
     fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',
              show=SHOW, ax_size=[225, 225],
              filename=name + '.png')
@@ -401,8 +403,9 @@ def test_shared_false(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'shared_false_master') if master else 'shared_false'
 
     # Make the plot
-    sub = df[(df.Substrate=='Si') & (df['Target Wavelength']==450)].copy()
-    fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',          show=SHOW, ax_size=[225, 225], share_x=False, share_y=False,
+    sub = df[(df.Substrate == 'Si') & (df['Target Wavelength'] == 450)].copy()
+    fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',
+             show=SHOW, ax_size=[225, 225], share_x=False, share_y=False,
              filename=name + '.png')
 
     # Compare with master
@@ -425,7 +428,7 @@ def test_shared_separate(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'shared_separate_master') if master else 'shared_separate'
 
     # Make the plot
-    sub = df[(df.Substrate=='Si') & (df['Target Wavelength']==450)].copy()
+    sub = df[(df.Substrate == 'Si') & (df['Target Wavelength'] == 450)].copy()
     fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level',
              row='Temperature [C]', show=SHOW, ax_size=[225, 225],
              separate_ticks=True, separate_labels=True,
@@ -451,9 +454,9 @@ def test_shared_rows(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'shared_rows_master') if master else 'shared_rows'
 
     # Make the plot
-    sub = df[(df.Substrate=='Si') & (df['Target Wavelength']==450)].copy()
-    fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',
-             show=SHOW, ax_size=[225, 225], share_row=True,
+    sub = df[(df.Substrate == 'Si') & (df['Target Wavelength'] == 450)].copy()
+    fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level',
+             row='Temperature [C]', show=SHOW, ax_size=[225, 225], share_row=True,
              filename=name + '.png')
 
     # Compare with master
@@ -476,7 +479,7 @@ def test_shared_cols(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'shared_columns_master') if master else 'shared_columns'
 
     # Make the plot
-    sub = df[(df.Substrate=='Si') & (df['Target Wavelength']==450)].copy()
+    sub = df[(df.Substrate == 'Si') & (df['Target Wavelength'] == 450)].copy()
     fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',
              show=SHOW, ax_size=[225, 225], share_col=True,
              filename=name + '.png')
@@ -501,7 +504,7 @@ def test_shared_no(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'shared_no_master') if master else 'shared_no'
 
     # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]', \
+    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',
              ax_size=[225, 225], filter='Substrate=="Si" & Target Wavelength==450', label_rc_font_size=14,
              xmin=[0, 0.1, 0.2, 0.3, 0.4], ymax=[1, 2, 3, 4, 5, 6],
              filename=name + '.png')

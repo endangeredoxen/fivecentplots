@@ -1,8 +1,10 @@
-import pytest
 import fivecentplots as fcp
 import pandas as pd
 import numpy as np
-import os, sys, pdb, platform
+import os
+import sys
+import pdb
+import platform
 import fivecentplots.utilities as utl
 import inspect
 osjoin = os.path.join
@@ -60,7 +62,6 @@ def test_grid_major(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              filename=name + '.png')
-
 
     # Compare with master
     if master:
@@ -284,8 +285,8 @@ def test_ticks_minor_number_log(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             ticks_minor_x_number=5, ticks_minor_y_number=10, ticks_minor_y2_number=4, ax_scale='logy', ax2_scale='linear',
-             filename=name + '.png')
+             ticks_minor_x_number=5, ticks_minor_y_number=10, ticks_minor_y2_number=4, ax_scale='logy',
+             ax2_scale='linear', filename=name + '.png')
 
     # Compare with master
     if master:
@@ -410,7 +411,7 @@ def test_tick_cleanup2(master=False, remove=True, show=False):
     fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              tick_labels_minor=True, ax_scale='logy', ax2_scale='lin', ticks_minor_x_number=5,
-             ax_size=[600,400], tick_labels_minor_x_rotation=90,
+             ax_size=[600, 400], tick_labels_minor_x_rotation=90,
              filename=name + '.png')
 
     # Compare with master

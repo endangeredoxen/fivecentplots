@@ -1,8 +1,5 @@
-
-import pytest
 import fivecentplots as fcp
 import pandas as pd
-import numpy as np
 import os
 import sys
 import pdb
@@ -16,7 +13,7 @@ if platform.system() != 'Windows':
 
 MPL = utl.get_mpl_version_dir()
 MASTER = osjoin(os.path.dirname(fcp.__file__),
-                'tests', 'test_images', MPL,  'pie.py')
+                'tests', 'test_images', MPL, 'pie.py')
 
 # Sample data
 df = pd.read_csv(osjoin(os.path.dirname(fcp.__file__),

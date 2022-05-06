@@ -1,8 +1,5 @@
-
-import pytest
 import fivecentplots as fcp
 import pandas as pd
-import numpy as np
 import os
 import sys
 import pdb
@@ -210,7 +207,7 @@ def test_text_box_position_units(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             text='Die (-1,2) shows best response', text_position=[0.3,0.025], text_units='relative',
+             text='Die (-1,2) shows best response', text_position=[0.3, 0.025], text_units='relative',
              save=True, inline=False, filename=name + '.png', jitter=False)
 
     # Compare with master
