@@ -2437,55 +2437,73 @@ class Layout(BaseLayout):
             ax.obj[ir, ic].set_axisbelow(True)
             if self.grid_major_x.on:
                 ax.obj[ir, ic].xaxis.grid(b=True, which='major',
-                                          # zorder=self.grid_major_x.zorder,
                                           color=self.grid_major_x.color[0],
                                           linestyle=self.grid_major_x.style[0],
                                           linewidth=self.grid_major_x.width[0])
             else:
                 ax.obj[ir, ic].xaxis.grid(b=False, which='major')
 
-            if hasattr(self, 'grid_major_x2') and not ax.primary:
-                if self.grid_major_x.on:
+            if self.grid_major_x2 and not ax.primary:
+                if self.grid_major_x2.on:
                     ax.obj[ir, ic].xaxis.grid(b=True, which='major',
-                                              # zorder=self.grid_major_x.zorder,
                                               color=self.grid_major_x2.color[0],
                                               linestyle=self.grid_major_x2.style[0],
                                               linewidth=self.grid_major_x2.width[0])
                 else:
                     ax.obj[ir, ic].xaxis.grid(b=False, which='major')
+            elif not self.grid_major_x2 and not ax.primary:
+                ax.obj[ir, ic].xaxis.grid(b=False, which='major')
 
             if self.grid_major_y.on:
                 ax.obj[ir, ic].yaxis.grid(b=True, which='major',
-                                          # zorder=self.grid_major_y.zorder,
                                           color=self.grid_major_y.color[0],
                                           linestyle=self.grid_major_y.style[0],
                                           linewidth=self.grid_major_y.width[0])
             else:
                 ax.obj[ir, ic].yaxis.grid(b=False, which='major')
 
-            if hasattr(self, 'grid_major_y2') and not ax.primary:
+            if self.grid_major_y2 and not ax.primary:
                 if self.grid_major_y2.on:
                     ax.obj[ir, ic].yaxis.grid(b=True, which='major',
-                                              # zorder=self.grid_major_y.zorder,
                                               color=self.grid_major_y2.color[0],
                                               linestyle=self.grid_major_y2.style[0],
                                               linewidth=self.grid_major_y2.width[0])
                 else:
                     ax.obj[ir, ic].yaxis.grid(b=False, which='major')
+            elif not self.grid_major_y2 and not ax.primary:
+                ax.obj[ir, ic].yaxis.grid(b=False, which='major')
 
             # Set minor grid
             if self.grid_minor_x.on:
                 ax.obj[ir, ic].xaxis.grid(b=True, which='minor',
-                                          # zorder=self.grid_minor_x.zorder,
                                           color=self.grid_minor_x.color[0],
                                           linestyle=self.grid_minor_x.style[0],
                                           linewidth=self.grid_minor_x.width[0])
             if self.grid_minor_y.on:
                 ax.obj[ir, ic].yaxis.grid(b=True, which='minor',
-                                          # zorder=self.grid_minor_y.zorder,
                                           color=self.grid_minor_y.color[0],
                                           linestyle=self.grid_minor_y.style[0],
                                           linewidth=self.grid_minor_y.width[0])
+            if self.grid_minor_x2 and not ax.primary:
+                if self.grid_minor_x2.on:
+                    ax.obj[ir, ic].xaxis.grid(b=True, which='minor',
+                                              color=self.grid_minor_x2.color[0],
+                                              linestyle=self.grid_minor_x2.style[0],
+                                              linewidth=self.grid_minor_x2.width[0])
+                else:
+                    ax.obj[ir, ic].xaxis.grid(b=False, which='minor')
+            elif not self.grid_minor_x2 and not ax.primary:
+                ax.obj[ir, ic].xaxis.grid(b=False, which='minor')
+            if self.grid_minor_y2 and not ax.primary:
+                if self.grid_minor_y2.on:
+                    ax.obj[ir, ic].yaxis.grid(b=True, which='minor',
+                                              color=self.grid_minor_y2.color[0],
+                                              linestyle=self.grid_minor_y2.style[0],
+                                              linewidth=self.grid_minor_y2.width[0])
+                else:
+                    ax.obj[ir, ic].xaxis.grid(b=False, which='minor')
+            elif not self.grid_minor_y2 and not ax.primary:
+                ax.obj[ir, ic].yaxis.grid(b=False, which='minor')
 
     def set_axes_labels(self, ir: int, ic: int):
         """Set the axes labels.

@@ -75,6 +75,116 @@ class BaseLayout:
         self.fcpp, self.color_list, marker_list = \
             utl.reload_defaults(kwargs.get('theme', None))
 
+        # Class attribute definition (alphabetical)
+        self.auto_tick_threshold = None  # Threshold value for placement of auto-generated ticks
+        self.ax = ['x', 'y', 'x2', 'y2']  # list of valid axes
+        self.ax_hlines = None  # Element object for horizontal lines
+        self.ax_vlines = None  # Element object for vertical lines
+        self.ax2_hlines = None  # Element object for horizontal lines on secondary axis
+        self.ax2_vlines = None  # Element object for vertical lines on secondary axis
+        self.axes = None  # Element object for the axis
+        self.axes2 = None  # Element object for the secondary axis
+        self.bar = None  # Element object for barchart plot
+        self.box = None  # Element object for box plot
+        self.box_divider = None  # Element object for divider lines between box groups
+        self.box_group_label = None  # Element object for box plot group label text
+        self.box_grand_mean = None  # Element object for grand mean line plot on box plot
+        self.box_grand_median = None  # Element object for grand median line plot on box plot
+        self.box_group_means = None  # Element object for group mean line plots on box plot
+        self.box_group_title = None  # Element object for box plot group title text
+        self.box_mean_diamonds = None  # Element object for mean diamond overlays on box plot
+        self.box_range_lines = None  # Element object for box plot range line styling
+        self.box_stat_line = None  # Element object for arbitrary stat line plot on box plot
+        self.box_whisker = None  # Element object for bow wisker line styling
+        self.cbar = None  # Element object for colorbar
+        self.color_list = None  # default color list
+        self.color_list_unique = None  # color list sans duplicates
+        self.contour = None  # Element object for contour plot
+        self.cmap = None  # color map to use in plot
+        self.fig = None  # Element object for the figure
+        self.fit = None  # Element object for fit line
+        self.gantt = None  # Element object for gannt chart
+        self.grid_major = None  # Element object with default values for major grids not explicitly defined
+        self.grid_major_x = None  # Element object for x major grid (defaults to self.grid_major)
+        self.grid_major_x2 = None  # Element object for x2 major grid (defaults to self.grid_major)
+        self.grid_major_y = None  # Element object for y major grid (defaults to self.grid_major)
+        self.grid_major_y2 = None  # Element object for y2 major grid (defaults to self.grid_major)
+        self.grid_minor = None  # same as above but for minor grid
+        self.grid_minor_x = None  # same as above but for minor grid
+        self.grid_minor_x2 = None  # same as above but for minor grid
+        self.grid_minor_y = None  # same as above but for minor grid
+        self.grid_minor_y2 = None  # same as above but for minor grid
+        self.heatmap = None  # Element object for heatmap plot
+        self.hist = None  # Element object for histogram plot
+        self.imshow = None  # Element object for imshow plot
+        self.interval = None  # Element object for conf, percentile, nq interval ranges
+        self.label_col = None  # Element object for col label text
+        self.label_row = None  # Element object for row label text
+        self.label_wrap = None  # Element object for wrap label text
+        self.label_x = None  # Element object for the x-label
+        self.label_x2 = None  # Element object for the secondary x-label
+        self.label_y = None  # Element object for the y-label
+        self.label_y2 = None  # Element object for the secondary y-label
+        self.label_z = None  # Element object for the z-label
+        self.legend = None  # Legend_Element for figure legend
+        self.lines = None  # Element object for plot lines
+        self.markers = None  # Element object for markers
+        self.ncol = None  # number of subplot columns
+        self.nrow = None  # number of subplot rows
+        self.obj_array = None  # row x column array for Element objects
+        self.pie = None  # Element object for pie chart
+        self.ref_line = None  # Element object for reference line
+        self.rolling_mean = None  # Element object for the rolling mean XY plot on bar chart
+        self.text = None  # Element object for arbitrary text
+        self.tick_labels_major = None  # Element object with default values for tick labels not explicitly defined
+        self.tick_labels_major_x = None  # Element object for x major tick labels (defaults to self.tick_labels_major)
+        self.tick_labels_major_x2 = None  # Element object for x2 major tick labels (defaults to self.tick_labels_major)
+        self.tick_labels_major_y = None  # Element object for y major tick labels (defaults to self.tick_labels_major)
+        self.tick_labels_major_y2 = None  # Element object for y2 major tick labels (defaults to self.tick_labels_major)
+        self.tick_labels_major_z = None  # Element object for z major tick labels (defaults to self.tick_labels_major)
+        self.tick_labels_minor = None  # same as above but for minor tick labels
+        self.tick_labels_minor_x = None  # same as above but for minor tick labels
+        self.tick_labels_minor_x2 = None  # same as above but for minor tick labels
+        self.tick_labels_minor_y = None  # same as above but for minor tick labels
+        self.tick_labels_minor_y2 = None  # same as above but for minor tick labels
+        self.ticks_major = None  # Element object with default values for ticks not explicitly defined
+        self.ticks_major_x = None  # Element object for x major ticks (defaults to self.ticks_major)
+        self.ticks_major_x2 = None  # Element object for x2 major ticks (defaults to self.ticks_major)
+        self.ticks_major_y = None  # Element object for y major ticks (defaults to self.ticks_major)
+        self.ticks_major_y2 = None  # Element object for y2 major ticks (defaults to self.ticks_major)
+        self.ticks_minor = None  # same as above but for minor ticks
+        self.ticks_minor_x = None  # same as above but for minor ticks
+        self.ticks_minor_x2 = None  # same as above but for minor ticks
+        self.ticks_minor_y = None  # same as above but for minor ticks
+        self.ticks_minor_y2 = None  # same as above but for minor ticks
+        self.ticks_minor_x_number = None  # number of x-axis minor ticks
+        self.ticks_minor_x2_number = None  # number of x2-axis minor ticks
+        self.ticks_minor_y_number = None  # number of y-axis minor ticks
+        self.ticks_minor_y2_number = None  # number of y2-axis minor ticks
+        self.title = None  # Element object for the plot title
+        self.title_wrap = None  # Element object for title text in wrap plot
+        self.violin = None  # Element object for box plot violins
+        self.ws_ax_box_title = 0  # white space between axis right edge and left edge of box label text
+        self.ws_ax_cbar = 0  # white space between axis right edge and cbar
+        self.ws_ax_fig = 0  # white space between axis right edge and figure right edge (w/ no legend)
+        self.ws_ax_label_xs = 0  # excess white space needed for long labels
+        self.ws_ax_leg = 0  # white space between right axis edge and legend left edge
+        self.ws_col = 0  # white space between columns (gets adjusted to fit unless explicitly defined)
+        self.ws_col_def = 0  # default white space between columns
+        self.ws_fig_ax = 0  # white space between figure left edge and axis left edge
+        self.ws_fig_label = 0  # white space between left figure edge and y-axis label
+        self.ws_fig_title = 0  # white space between figure top edge and title top edge
+        self.ws_label_col = 0  # white space between x label and col label
+        self.ws_label_fig = 0  # white space between x-axis label bottom edge and figure bottom edge
+        self.ws_label_row = 0  # white space between y label and row label
+        self.ws_label_tick = 0  # white space between axis label and tick labels
+        self.ws_leg_fig = 0  # white space between legend right edge and figure right edge
+        self.ws_row = 0  # white space between rows (gets adjusted to fit unless explicitly defined)
+        self.ws_row_def = 0  # default white space between
+        self.ws_tick_minimum = 0  # minimum white space between ticks
+        self.ws_ticks_ax = 0  # white space between tick labels and axis edge
+        self.ws_title_ax = 0  # white space between plot title and top axis edge
+
         # Init the elements and their parameters
         self._init_layout_rc(data)
         kwargs = self._init_figure(kwargs)
@@ -180,7 +290,6 @@ class BaseLayout:
             updated kwargs
         """
         # Axis
-        self.ax = ['x', 'y', 'x2', 'y2']
         spines = utl.kwget(kwargs, self.fcpp, 'spines', True)
         self.axes = Element('ax', self.fcpp, kwargs,
                             obj=self.obj_array,
@@ -2074,8 +2183,6 @@ class BaseLayout:
         # cbar
         if self.cbar.on:
             self.ws_ax_cbar = utl.kwget(kwargs, self.fcpp, 'ws_ax_cbar', 10)
-        else:
-            self.ws_ax_cbar = 0
 
         # rc labels
         ws_label_rc = utl.kwget(kwargs, self.fcpp, 'ws_label_rc', 10)
@@ -2105,8 +2212,8 @@ class BaseLayout:
         self.ws_ax_label_xs = utl.kwget(kwargs, self.fcpp, 'ws_ax_label_xs', 5)
 
         # ticks
-        self.ws_tick_tick_minimum = utl.kwget(kwargs, self.fcpp,
-                                              'ws_tick_tick_minimum', 10)
+        self.ws_tick_minimum = utl.kwget(kwargs, self.fcpp,
+                                         'ws_tick_minimum', 10)
 
         # box
         self.ws_ax_box_title = utl.kwget(
