@@ -25,6 +25,29 @@ class Bar(data.Data):
                      kwargs.get('error_bars', False)):
             self.error_bars = True
 
+    def _filter_data(self, kwargs):
+        """Apply an optional filter to the data but allow showing of all groups
+        with kwarg `show_all_groups`
+
+        Args:
+            kwargs: user-defined keyword args
+        """
+        if kwargs.get('show_all_groups', False):
+            groups = self.df_all[self.x[0]].unique()
+
+        if self.filter:
+            self.df_all = utl.df_filter(self.df_all, self.filter)
+            if len(self.df_all) == 0:
+                raise data.DataError('DataFrame is empty after applying filter')
+
+        if kwargs.get('show_all_groups', False):
+            missing = [f for f in groups if f not in self.df_all[self.x[0]].unique()]
+            temp = pd.DataFrame(columns=self.df_all.columns, index=range(0, len(missing)))
+            for mm in missing:
+                temp[self.x[0]] = mm
+                temp[self.y[0]] = 0
+            self.df_all = pd.concat([self.df_all, temp]).reset_index(drop=True)
+
     def _get_data_ranges(self):
         """Barplot-specific data range calculator by subplot."""
         # First get any user defined range values and apply optional auto scaling

@@ -607,8 +607,7 @@ class Layout(BaseLayout):
                 if self.name not in ['hist', 'bar', 'pie', 'gantt']:
                     if isinstance(leg.legendHandles[itext], mpl.patches.Rectangle):
                         continue
-                    # leg.legendHandles[itext]. \
-                    #     _legmarker.set_markersize(self.legend.marker_size)
+                    # Set legend point color and alpha
                     leg.legendHandles[itext]._sizes = \
                         np.ones(len(self.legend.values) + 1) * self.legend.marker_size**2
                     if not self.markers.on and self.legend.marker_alpha is not None:
@@ -673,7 +672,6 @@ class Layout(BaseLayout):
                                        scatterpoints=self.legend.points)
                         self.legend.obj.set_zorder(102)
                         format_legend(self, self.legend.obj)
-
 
     def add_text(self, ir: int, ic: int, text: [str, None] = None,
                  element: [str, None] = None, offsetx: int = 0,

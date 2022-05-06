@@ -1,8 +1,5 @@
-
-import pytest
 import fivecentplots as fcp
 import pandas as pd
-import numpy as np
 import os
 import sys
 import pdb
@@ -17,13 +14,13 @@ if platform.system() != 'Windows':
 
 MPL = utl.get_mpl_version_dir()
 MASTER = osjoin(os.path.dirname(fcp.__file__), 'tests',
-                'test_images', MPL,  'barplot.py')
+                'test_images', MPL, 'barplot.py')
 
 # Sample data
 df = pd.read_csv(osjoin(os.path.dirname(fcp.__file__),
                  'tests', 'fake_data_bar.csv'))
 df2 = pd.read_csv(osjoin(os.path.dirname(fcp.__file__),
-                 'tests', 'real_data_bar.csv'))
+                  'tests', 'real_data_bar.csv'))
 
 # Set theme
 fcp.set_theme('gray')
@@ -68,6 +65,38 @@ def plt_vertical(bm=False, master=False, remove=True, show=False):
     # Make the plot
     fcp.bar(df=df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A" & T [C]==25',
             tick_labels_major_x_rotation=90,
+            filename=name + '.png', save=not bm, inline=False, jitter=False)
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_vertical_zero_group(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'vertical_zero_group_master') if master else 'vertical_zero_group'
+
+    # Make the plot
+    temp = pd.DataFrame({'Liquid': ['Air'], 'pH': [0], 'Measurement': ['A'],
+                         'T [C]': [125]}, index=[30])
+    fcp.bar(df=pd.concat([df, temp]), x='Liquid', y='pH', show=SHOW,
+            filter='Measurement=="A" & T [C]==25',
+            tick_labels_major_x_rotation=90, show_all_groups=True,
             filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -207,7 +236,8 @@ def plt_row_col(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'row_col_master') if master else 'row_col'
 
     # Make the plot
-    fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, col='Measurement', row='T [C]', ax_hlines=0, ax_size=[300, 300],
+    fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, col='Measurement', row='T [C]',
+            ax_hlines=0, ax_size=[300, 300],
             filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:

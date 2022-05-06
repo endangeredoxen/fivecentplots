@@ -172,10 +172,11 @@ class Data:
 
         # Apply an optional filter to the data
         self.filter = kwargs.get('filter', None)
-        if self.filter:
-            self.df_all = utl.df_filter(self.df_all, self.filter)
-            if len(self.df_all) == 0:
-                raise DataError('DataFrame is empty after applying filter')
+        # if self.filter:
+        #     self.df_all = utl.df_filter(self.df_all, self.filter)
+        #     if len(self.df_all) == 0:
+        #         raise DataError('DataFrame is empty after applying filter')
+        self._filter_data(kwargs)
 
         # Define rc grouping column names
         self.col = kwargs.get('col', None)
@@ -478,6 +479,17 @@ class Data:
             raise AxisError('twin_y error! only one y value can be specified')
 
         return vals
+
+    def _filter_data(self, kwargs):
+        """Apply an optional filter to the data.
+
+        Args:
+            kwargs: user-defined keyword args
+        """
+        if self.filter:
+            self.df_all = utl.df_filter(self.df_all, self.filter)
+            if len(self.df_all) == 0:
+                raise DataError('DataFrame is empty after applying filter')
 
     def _get_auto_scale(self, df: pd.DataFrame) -> pd.DataFrame:
         """Auto-scale the plot data.
