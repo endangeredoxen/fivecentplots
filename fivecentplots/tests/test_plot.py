@@ -911,6 +911,124 @@ def plt_other_ref_line_complex(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
+def plt_other_lcl_only(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'other_lcl_only_master') if master else 'other_lcl_only'
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False,
+             show=False, filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             filename=name + '.png', save=not bm, inline=False,
+             lcl=-0.5, ymin=-1, lcl_fill_color='#FF0000')
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_other_ucl_only(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'other_ucl_only_master') if master else 'other_ucl_only'
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False,
+             show=False, filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             filename=name + '.png', save=not bm, inline=False,
+             ucl=1.0, ymax=3, ucl_fill_alpha=0.8)
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_other_ucl_lcl_inside(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'other_ucl_lcl_inside_master') if master else 'other_ucl_lcl_inside'
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False,
+             show=False, filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             filename=name + '.png', save=not bm, inline=False,
+             ucl=1.0, ymax=3, lcl=-0.5, ymin=-1, control_limit_side='inside',
+             legend=True)
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_other_ucl_lcl_outside(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'other_ucl_lcl_outside_master') if master else 'other_ucl_lcl_outside'
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False,
+             show=False, filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             filename=name + '.png', save=not bm, inline=False,
+             ucl=1.0, ymax=3, lcl=-0.5, ymin=-1, ucl_fill_color='#FFFF00',
+             legend=True)
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 # test_ functions call plt_ funcs 2x:
 # 1) do the comparison with saved image
 # 2) do a test plot only with save=False and inline=False and benchmark spead
@@ -972,6 +1090,26 @@ def test_other_lines(benchmark):
 def test_other_lines_df(benchmark):
     plt_other_lines_df()
     benchmark(plt_other_lines_df, True)
+
+
+def test_other_lcl_only(benchmark):
+    plt_other_lcl_only()
+    benchmark(plt_other_lcl_only, True)
+
+
+def test_other_ucl_only(benchmark):
+    plt_other_ucl_only()
+    benchmark(plt_other_ucl_only, True)
+
+
+def test_other_ucl_lcl_inside(benchmark):
+    plt_other_ucl_lcl_inside()
+    benchmark(plt_other_ucl_lcl_inside, True)
+
+
+def test_other_ucl_lcl_outside(benchmark):
+    plt_other_ucl_lcl_outside()
+    benchmark(plt_other_ucl_lcl_outside, True)
 
 
 def test_other_ref_line(benchmark):

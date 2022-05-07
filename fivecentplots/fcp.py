@@ -528,6 +528,49 @@ def plot_contour(data, layout, ir, ic, df_rc, kwargs):
     return data
 
 
+def plot_control_limit(ir: int, ic: int, iline: int, layout: 'Layout', data: 'Data'):
+    """Add control limit shading to a plot.
+
+    Args:
+
+    """
+
+    x = [data.ranges[ir, ic]['xmin'], data.ranges[ir, ic]['xmax']]
+    if layout.lcl.on:
+        if layout.ucl.on and layout.control_limit_side == 'inside':
+            lower = np.ones(2) * layout.lcl.value[0]
+            upper = np.ones(2) * layout.ucl.value[0]
+            leg_name = u'lcl \u2192 ucl'
+        elif layout.lcl.on and layout.control_limit_side == 'inside':  # use the ucl for this
+            lower = np.ones(2) * layout.lcl.value[0]
+            upper = np.ones(2) * data.ranges[ir, ic]['ymax']
+            leg_name = 'lcl'
+        elif layout.lcl.on:
+            upper = np.ones(2) * layout.lcl.value[0]
+            lower = np.ones(2) * data.ranges[ir, ic]['ymin']
+            leg_name = 'lcl'
+        if not layout.legend._on:
+            leg_name = None
+        layout.fill_between_lines(ir, ic, iline, x, lower, upper, 'lcl', leg_name=leg_name, twin=False)
+
+    if layout.ucl.on and layout.lcl.on and layout.control_limit_side == 'inside':
+        return data
+    if layout.ucl.on:
+        if layout.control_limit_side == 'inside':
+            upper = np.ones(2) * layout.ucl.value[0]
+            lower = np.ones(2) * data.ranges[ir, ic]['ymin']
+            leg_name = 'ucl'
+        else:
+            lower = np.ones(2) * layout.ucl.value[0]
+            upper = np.ones(2) * data.ranges[ir, ic]['ymax']
+            leg_name = 'ucl'
+        if not layout.legend._on:
+            leg_name = None
+        layout.fill_between_lines(ir, ic, iline, x, lower, upper, 'ucl', leg_name=leg_name, twin=False)
+
+    return data
+
+
 def plot_fit(data, layout, ir, ic, iline, df, x, y, twin, leg_name, ngroups):
     """
     Plot a fit line
@@ -832,6 +875,10 @@ def plot_xy(data, layout, ir, ic, df_rc, kwargs):
         # add intervals (prioritized so multiple cannot be added)
         if layout.interval.on:
             plot_interval(ir, ic, iline, data, layout, df, x, y, twin)
+
+        # add control limits
+        if layout.lcl.on or layout.ucl.on:
+            plot_control_limit(ir, ic, iline, layout, data)
 
     return data
 

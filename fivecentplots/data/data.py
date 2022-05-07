@@ -155,8 +155,8 @@ class Data:
             raise DataError(
                 'stat_val column "%s" not in DataFrame' % self.stat_val)
         self.stat_idx = []
-        self.lcl = []
-        self.ucl = []
+        self.lcl = kwargs.get('lcl', [])
+        self.ucl = kwargs.get('ucl', [])
 
         # Special for hist
         normalize = utl.kwget(kwargs, self.fcpp, ['hist_normalize', 'normalize'],

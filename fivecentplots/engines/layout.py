@@ -126,6 +126,7 @@ class BaseLayout:
         self.label_y = None  # Element object for the y-label
         self.label_y2 = None  # Element object for the secondary y-label
         self.label_z = None  # Element object for the z-label
+        self.lcl = None  # Element object for lower control limit shading
         self.legend = None  # Legend_Element for figure legend
         self.lines = None  # Element object for plot lines
         self.markers = None  # Element object for markers
@@ -164,6 +165,7 @@ class BaseLayout:
         self.title = None  # Element object for the plot title
         self.title_wrap = None  # Element object for title text in wrap plot
         self.violin = None  # Element object for box plot violins
+        self.ucl = None  # Element object for upper control limit shading
         self.ws_ax_box_title = 0  # white space between axis right edge and left edge of box label text
         self.ws_ax_cbar = 0  # white space between axis right edge and cbar
         self.ws_ax_fig = 0  # white space between axis right edge and figure right edge (w/ no legend)
@@ -196,6 +198,7 @@ class BaseLayout:
         kwargs = self._init_markers(kwargs, data)
         kwargs = self._init_lines(kwargs)
         kwargs = self._init_fit(kwargs)
+        kwargs = self._init_control_limit(kwargs)
         kwargs = self._init_ref(kwargs)
         kwargs = self._init_legend(kwargs, data)
         kwargs = self._init_cbar(kwargs)
@@ -887,7 +890,7 @@ class BaseLayout:
         return kwargs
 
     def _init_colors(self, kwargs: dict) -> dict:
-        """Set the color elements (color_list, cmap)
+        """Set the color elements (color_list, cmap).
 
         Args:
             kwargs: user-defined keyword args
@@ -928,6 +931,38 @@ class BaseLayout:
             else:
                 kwargs['%s_override' % val] = utl.kwget(kwargs, self.fcpp,
                                                         'color_override', {})
+
+        return kwargs
+
+    def _init_control_limit(self, kwargs: dict) -> dict:
+        """_summary_
+
+        Args:
+            kwargs: user-defined keyword args
+
+        Returns:
+            updated kwargs
+        """
+        keys = ['lcl', 'ucl']
+        for key in keys:
+            setattr(self, key, Element(key, self.fcpp, kwargs,
+                                       on=True if kwargs.get(key, False) else False,
+                                       edge_color=utl.kwget(kwargs, self.fcpp,
+                                                            f'{key}_edge_color',
+                                                            copy.copy(self.color_list)),
+                                       edge_alpha=utl.kwget(kwargs, self.fcpp,
+                                                            f'{key}_edge_alpha',
+                                                            0.25),
+                                       fill_color=utl.kwget(kwargs, self.fcpp,
+                                                            f'{key}_fill_color',
+                                                            copy.copy(self.color_list)),
+                                       fill_alpha=utl.kwget(kwargs, self.fcpp,
+                                                            f'{key}_fill_alpha',
+                                                            0.2),
+                                       value=utl.validate_list(kwargs.get(key, None)),
+                                       key=key,
+                                       ))
+        self.control_limit_side = utl.kwget(kwargs, self.fcpp, 'control_limit_side', 'outside')
 
         return kwargs
 
