@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>plot function tests &mdash; fivecentplots beta documentation</title>
   
@@ -20,7 +20,10 @@
   
     <link rel="shortcut icon" href="_static/favicon.ico"/>
   
+
   
+  
+
   
 
   
@@ -30,11 +33,13 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "document", "processHtmlClass": "math|output_area"}}</script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -54,7 +59,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> fivecentplots
+            <a href="index.html" class="icon icon-home"> fivecentplots
           
 
           
@@ -89,7 +94,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Basics</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layout.html">Layout</a></li>
@@ -99,7 +104,7 @@
 <li class="toctree-l1"><a class="reference internal" href="ranges.html">Data ranges</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ticks.html">Grids and ticks</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Examples</span></p>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="plot.html">plot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="barplot.html">barplot</a></li>
@@ -112,7 +117,7 @@
 <li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pie.html">pie</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Other</span></p>
+<p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
@@ -157,6 +162,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -168,7 +175,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/df_filter.ipynb.txt" rel="nofollow"> View page source</a>
           
         
@@ -187,21 +194,35 @@
 /* CSS for nbsphinx extension */
 
 /* remove conflicting styling from Sphinx themes */
-div.nbinput.container,
-div.nbinput.container div.prompt,
-div.nbinput.container div.input_area,
-div.nbinput.container div[class*=highlight],
-div.nbinput.container div[class*=highlight] pre,
-div.nboutput.container,
-div.nboutput.container div.prompt,
-div.nboutput.container div.output_area,
-div.nboutput.container div[class*=highlight],
-div.nboutput.container div[class*=highlight] pre {
-    background: none;
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
     border: none;
-    padding: 0 0;
+    padding: 0;
     margin: 0;
     box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
 }
 
 /* avoid gaps between output lines */
@@ -302,7 +323,7 @@ div.nboutput.container div.output_area {
 div.nbinput.container div.input_area {
     border: 1px solid #e0e0e0;
     border-radius: 2px;
-    background: #f5f5f5;
+    /*background: #f5f5f5;*/
 }
 
 /* override MathJax center alignment in output cells */
@@ -368,6 +389,7 @@ div.nboutput.container div.output_area.rendered_html,
 div.nboutput.container div.output_area > div.output_javascript,
 div.nboutput.container div.output_area:not(.rendered_html) > img{
     padding: 5px;
+    margin: 0;
 }
 
 /* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
@@ -447,9 +469,8 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="section" id="plot-function-tests">
-<h1>plot function tests<a class="headerlink" href="#plot-function-tests" title="Permalink to this headline">¶</a></h1>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<h1>plot function tests<a class="headerlink" href="#plot-function-tests" title="Permalink to this headline">¶</a></h1># plot function tests<br><div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -461,7 +482,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -486,7 +507,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -499,7 +520,7 @@ div.rendered_html tbody tr:hover {
 <div class="section" id="test-file">
 <h1>test file<a class="headerlink" href="#test-file" title="Permalink to this headline">¶</a></h1>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -513,52 +534,69 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-<span class="ansi-red-intense-fg ansi-bold">---------------------------------------------------------------------------</span>
-<span class="ansi-red-intense-fg ansi-bold">FileNotFoundError</span>                         Traceback (most recent call last)
-<span class="ansi-green-intense-fg ansi-bold">&lt;ipython-input-4-4e2ff728b381&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
-<span class="ansi-green-intense-fg ansi-bold">----&gt; 1</span><span class="ansi-yellow-intense-fg ansi-bold"> </span>df <span class="ansi-yellow-intense-fg ansi-bold">=</span> pd<span class="ansi-yellow-intense-fg ansi-bold">.</span>read_csv<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-blue-intense-fg ansi-bold">r&#39;.\fake_data.csv&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">)</span>
-<span class="ansi-green-fg">      2</span> df<span class="ansi-yellow-intense-fg ansi-bold">.</span>head<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">.</span>T
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">FileNotFoundError</span>                         Traceback (most recent call last)
+<span class="ansi-green-fg">/tmp/ipykernel_2428979/2301197191.py</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
+<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>df <span class="ansi-blue-fg">=</span> pd<span class="ansi-blue-fg">.</span>read_csv<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">r&#39;.\fake_data.csv&#39;</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">      2</span> df<span class="ansi-blue-fg">.</span>head<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>T
 
-<span class="ansi-green-intense-fg ansi-bold">C:\Miniconda3\envs\pychar37\lib\site-packages\pandas\io\parsers.py</span> in <span class="ansi-cyan-fg">read_csv</span><span class="ansi-blue-intense-fg ansi-bold">(filepath_or_buffer, sep, delimiter, header, names, index_col, usecols, squeeze, prefix, mangle_dupe_cols, dtype, engine, converters, true_values, false_values, skipinitialspace, skiprows, skipfooter, nrows, na_values, keep_default_na, na_filter, verbose, skip_blank_lines, parse_dates, infer_datetime_format, keep_date_col, date_parser, dayfirst, cache_dates, iterator, chunksize, compression, thousands, decimal, lineterminator, quotechar, quoting, doublequote, escapechar, comment, encoding, dialect, error_bad_lines, warn_bad_lines, delim_whitespace, low_memory, memory_map, float_precision)</span>
-<span class="ansi-green-fg">    684</span>     )
-<span class="ansi-green-fg">    685</span>
-<span class="ansi-green-intense-fg ansi-bold">--&gt; 686</span><span class="ansi-yellow-intense-fg ansi-bold">     </span><span class="ansi-green-intense-fg ansi-bold">return</span> _read<span class="ansi-yellow-intense-fg ansi-bold">(</span>filepath_or_buffer<span class="ansi-yellow-intense-fg ansi-bold">,</span> kwds<span class="ansi-yellow-intense-fg ansi-bold">)</span>
-<span class="ansi-green-fg">    687</span>
-<span class="ansi-green-fg">    688</span>
+<span class="ansi-green-fg">~/miniconda3/envs/aug21/lib/python3.8/site-packages/pandas/util/_decorators.py</span> in <span class="ansi-cyan-fg">wrapper</span><span class="ansi-blue-fg">(*args, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">    309</span>                     stacklevel<span class="ansi-blue-fg">=</span>stacklevel<span class="ansi-blue-fg">,</span>
+<span class="ansi-green-intense-fg ansi-bold">    310</span>                 )
+<span class="ansi-green-fg">--&gt; 311</span><span class="ansi-red-fg">             </span><span class="ansi-green-fg">return</span> func<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">*</span>args<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    312</span>
+<span class="ansi-green-intense-fg ansi-bold">    313</span>         <span class="ansi-green-fg">return</span> wrapper
 
-<span class="ansi-green-intense-fg ansi-bold">C:\Miniconda3\envs\pychar37\lib\site-packages\pandas\io\parsers.py</span> in <span class="ansi-cyan-fg">_read</span><span class="ansi-blue-intense-fg ansi-bold">(filepath_or_buffer, kwds)</span>
-<span class="ansi-green-fg">    450</span>
-<span class="ansi-green-fg">    451</span>     <span class="ansi-red-intense-fg ansi-bold"># Create the parser.</span>
-<span class="ansi-green-intense-fg ansi-bold">--&gt; 452</span><span class="ansi-yellow-intense-fg ansi-bold">     </span>parser <span class="ansi-yellow-intense-fg ansi-bold">=</span> TextFileReader<span class="ansi-yellow-intense-fg ansi-bold">(</span>fp_or_buf<span class="ansi-yellow-intense-fg ansi-bold">,</span> <span class="ansi-yellow-intense-fg ansi-bold">**</span>kwds<span class="ansi-yellow-intense-fg ansi-bold">)</span>
-<span class="ansi-green-fg">    453</span>
-<span class="ansi-green-fg">    454</span>     <span class="ansi-green-intense-fg ansi-bold">if</span> chunksize <span class="ansi-green-intense-fg ansi-bold">or</span> iterator<span class="ansi-yellow-intense-fg ansi-bold">:</span>
+<span class="ansi-green-fg">~/miniconda3/envs/aug21/lib/python3.8/site-packages/pandas/io/parsers/readers.py</span> in <span class="ansi-cyan-fg">read_csv</span><span class="ansi-blue-fg">(filepath_or_buffer, sep, delimiter, header, names, index_col, usecols, squeeze, prefix, mangle_dupe_cols, dtype, engine, converters, true_values, false_values, skipinitialspace, skiprows, skipfooter, nrows, na_values, keep_default_na, na_filter, verbose, skip_blank_lines, parse_dates, infer_datetime_format, keep_date_col, date_parser, dayfirst, cache_dates, iterator, chunksize, compression, thousands, decimal, lineterminator, quotechar, quoting, doublequote, escapechar, comment, encoding, encoding_errors, dialect, error_bad_lines, warn_bad_lines, on_bad_lines, delim_whitespace, low_memory, memory_map, float_precision, storage_options)</span>
+<span class="ansi-green-intense-fg ansi-bold">    584</span>     kwds<span class="ansi-blue-fg">.</span>update<span class="ansi-blue-fg">(</span>kwds_defaults<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    585</span>
+<span class="ansi-green-fg">--&gt; 586</span><span class="ansi-red-fg">     </span><span class="ansi-green-fg">return</span> _read<span class="ansi-blue-fg">(</span>filepath_or_buffer<span class="ansi-blue-fg">,</span> kwds<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    587</span>
+<span class="ansi-green-intense-fg ansi-bold">    588</span>
 
-<span class="ansi-green-intense-fg ansi-bold">C:\Miniconda3\envs\pychar37\lib\site-packages\pandas\io\parsers.py</span> in <span class="ansi-cyan-fg">__init__</span><span class="ansi-blue-intense-fg ansi-bold">(self, f, engine, **kwds)</span>
-<span class="ansi-green-fg">    934</span>             self<span class="ansi-yellow-intense-fg ansi-bold">.</span>options<span class="ansi-yellow-intense-fg ansi-bold">[</span><span class="ansi-blue-intense-fg ansi-bold">&#34;has_index_names&#34;</span><span class="ansi-yellow-intense-fg ansi-bold">]</span> <span class="ansi-yellow-intense-fg ansi-bold">=</span> kwds<span class="ansi-yellow-intense-fg ansi-bold">[</span><span class="ansi-blue-intense-fg ansi-bold">&#34;has_index_names&#34;</span><span class="ansi-yellow-intense-fg ansi-bold">]</span>
-<span class="ansi-green-fg">    935</span>
-<span class="ansi-green-intense-fg ansi-bold">--&gt; 936</span><span class="ansi-yellow-intense-fg ansi-bold">         </span>self<span class="ansi-yellow-intense-fg ansi-bold">.</span>_make_engine<span class="ansi-yellow-intense-fg ansi-bold">(</span>self<span class="ansi-yellow-intense-fg ansi-bold">.</span>engine<span class="ansi-yellow-intense-fg ansi-bold">)</span>
-<span class="ansi-green-fg">    937</span>
-<span class="ansi-green-fg">    938</span>     <span class="ansi-green-intense-fg ansi-bold">def</span> close<span class="ansi-yellow-intense-fg ansi-bold">(</span>self<span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">:</span>
+<span class="ansi-green-fg">~/miniconda3/envs/aug21/lib/python3.8/site-packages/pandas/io/parsers/readers.py</span> in <span class="ansi-cyan-fg">_read</span><span class="ansi-blue-fg">(filepath_or_buffer, kwds)</span>
+<span class="ansi-green-intense-fg ansi-bold">    480</span>
+<span class="ansi-green-intense-fg ansi-bold">    481</span>     <span class="ansi-red-fg"># Create the parser.</span>
+<span class="ansi-green-fg">--&gt; 482</span><span class="ansi-red-fg">     </span>parser <span class="ansi-blue-fg">=</span> TextFileReader<span class="ansi-blue-fg">(</span>filepath_or_buffer<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>kwds<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    483</span>
+<span class="ansi-green-intense-fg ansi-bold">    484</span>     <span class="ansi-green-fg">if</span> chunksize <span class="ansi-green-fg">or</span> iterator<span class="ansi-blue-fg">:</span>
 
-<span class="ansi-green-intense-fg ansi-bold">C:\Miniconda3\envs\pychar37\lib\site-packages\pandas\io\parsers.py</span> in <span class="ansi-cyan-fg">_make_engine</span><span class="ansi-blue-intense-fg ansi-bold">(self, engine)</span>
-<span class="ansi-green-fg">   1166</span>     <span class="ansi-green-intense-fg ansi-bold">def</span> _make_engine<span class="ansi-yellow-intense-fg ansi-bold">(</span>self<span class="ansi-yellow-intense-fg ansi-bold">,</span> engine<span class="ansi-yellow-intense-fg ansi-bold">=</span><span class="ansi-blue-intense-fg ansi-bold">&#34;c&#34;</span><span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">:</span>
-<span class="ansi-green-fg">   1167</span>         <span class="ansi-green-intense-fg ansi-bold">if</span> engine <span class="ansi-yellow-intense-fg ansi-bold">==</span> <span class="ansi-blue-intense-fg ansi-bold">&#34;c&#34;</span><span class="ansi-yellow-intense-fg ansi-bold">:</span>
-<span class="ansi-green-intense-fg ansi-bold">-&gt; 1168</span><span class="ansi-yellow-intense-fg ansi-bold">             </span>self<span class="ansi-yellow-intense-fg ansi-bold">.</span>_engine <span class="ansi-yellow-intense-fg ansi-bold">=</span> CParserWrapper<span class="ansi-yellow-intense-fg ansi-bold">(</span>self<span class="ansi-yellow-intense-fg ansi-bold">.</span>f<span class="ansi-yellow-intense-fg ansi-bold">,</span> <span class="ansi-yellow-intense-fg ansi-bold">**</span>self<span class="ansi-yellow-intense-fg ansi-bold">.</span>options<span class="ansi-yellow-intense-fg ansi-bold">)</span>
-<span class="ansi-green-fg">   1169</span>         <span class="ansi-green-intense-fg ansi-bold">else</span><span class="ansi-yellow-intense-fg ansi-bold">:</span>
-<span class="ansi-green-fg">   1170</span>             <span class="ansi-green-intense-fg ansi-bold">if</span> engine <span class="ansi-yellow-intense-fg ansi-bold">==</span> <span class="ansi-blue-intense-fg ansi-bold">&#34;python&#34;</span><span class="ansi-yellow-intense-fg ansi-bold">:</span>
+<span class="ansi-green-fg">~/miniconda3/envs/aug21/lib/python3.8/site-packages/pandas/io/parsers/readers.py</span> in <span class="ansi-cyan-fg">__init__</span><span class="ansi-blue-fg">(self, f, engine, **kwds)</span>
+<span class="ansi-green-intense-fg ansi-bold">    809</span>             self<span class="ansi-blue-fg">.</span>options<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#34;has_index_names&#34;</span><span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">=</span> kwds<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#34;has_index_names&#34;</span><span class="ansi-blue-fg">]</span>
+<span class="ansi-green-intense-fg ansi-bold">    810</span>
+<span class="ansi-green-fg">--&gt; 811</span><span class="ansi-red-fg">         </span>self<span class="ansi-blue-fg">.</span>_engine <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>_make_engine<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">.</span>engine<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    812</span>
+<span class="ansi-green-intense-fg ansi-bold">    813</span>     <span class="ansi-green-fg">def</span> close<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
 
-<span class="ansi-green-intense-fg ansi-bold">C:\Miniconda3\envs\pychar37\lib\site-packages\pandas\io\parsers.py</span> in <span class="ansi-cyan-fg">__init__</span><span class="ansi-blue-intense-fg ansi-bold">(self, src, **kwds)</span>
-<span class="ansi-green-fg">   1996</span>         kwds<span class="ansi-yellow-intense-fg ansi-bold">[</span><span class="ansi-blue-intense-fg ansi-bold">&#34;usecols&#34;</span><span class="ansi-yellow-intense-fg ansi-bold">]</span> <span class="ansi-yellow-intense-fg ansi-bold">=</span> self<span class="ansi-yellow-intense-fg ansi-bold">.</span>usecols
-<span class="ansi-green-fg">   1997</span>
-<span class="ansi-green-intense-fg ansi-bold">-&gt; 1998</span><span class="ansi-yellow-intense-fg ansi-bold">         </span>self<span class="ansi-yellow-intense-fg ansi-bold">.</span>_reader <span class="ansi-yellow-intense-fg ansi-bold">=</span> parsers<span class="ansi-yellow-intense-fg ansi-bold">.</span>TextReader<span class="ansi-yellow-intense-fg ansi-bold">(</span>src<span class="ansi-yellow-intense-fg ansi-bold">,</span> <span class="ansi-yellow-intense-fg ansi-bold">**</span>kwds<span class="ansi-yellow-intense-fg ansi-bold">)</span>
-<span class="ansi-green-fg">   1999</span>         self<span class="ansi-yellow-intense-fg ansi-bold">.</span>unnamed_cols <span class="ansi-yellow-intense-fg ansi-bold">=</span> self<span class="ansi-yellow-intense-fg ansi-bold">.</span>_reader<span class="ansi-yellow-intense-fg ansi-bold">.</span>unnamed_cols
-<span class="ansi-green-fg">   2000</span>
+<span class="ansi-green-fg">~/miniconda3/envs/aug21/lib/python3.8/site-packages/pandas/io/parsers/readers.py</span> in <span class="ansi-cyan-fg">_make_engine</span><span class="ansi-blue-fg">(self, engine)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1038</span>             )
+<span class="ansi-green-intense-fg ansi-bold">   1039</span>         <span class="ansi-red-fg"># error: Too many arguments for &#34;ParserBase&#34;</span>
+<span class="ansi-green-fg">-&gt; 1040</span><span class="ansi-red-fg">         </span><span class="ansi-green-fg">return</span> mapping<span class="ansi-blue-fg">[</span>engine<span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">.</span>f<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>self<span class="ansi-blue-fg">.</span>options<span class="ansi-blue-fg">)</span>  <span class="ansi-red-fg"># type: ignore[call-arg]</span>
+<span class="ansi-green-intense-fg ansi-bold">   1041</span>
+<span class="ansi-green-intense-fg ansi-bold">   1042</span>     <span class="ansi-green-fg">def</span> _failover_to_python<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
 
-<span class="ansi-green-intense-fg ansi-bold">pandas\_libs\parsers.pyx</span> in <span class="ansi-cyan-fg">pandas._libs.parsers.TextReader.__cinit__</span><span class="ansi-blue-intense-fg ansi-bold">()</span>
+<span class="ansi-green-fg">~/miniconda3/envs/aug21/lib/python3.8/site-packages/pandas/io/parsers/c_parser_wrapper.py</span> in <span class="ansi-cyan-fg">__init__</span><span class="ansi-blue-fg">(self, src, **kwds)</span>
+<span class="ansi-green-intense-fg ansi-bold">     49</span>
+<span class="ansi-green-intense-fg ansi-bold">     50</span>         <span class="ansi-red-fg"># open handles</span>
+<span class="ansi-green-fg">---&gt; 51</span><span class="ansi-red-fg">         </span>self<span class="ansi-blue-fg">.</span>_open_handles<span class="ansi-blue-fg">(</span>src<span class="ansi-blue-fg">,</span> kwds<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     52</span>         <span class="ansi-green-fg">assert</span> self<span class="ansi-blue-fg">.</span>handles <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">not</span> <span class="ansi-green-fg">None</span>
+<span class="ansi-green-intense-fg ansi-bold">     53</span>
 
-<span class="ansi-green-intense-fg ansi-bold">pandas\_libs\parsers.pyx</span> in <span class="ansi-cyan-fg">pandas._libs.parsers.TextReader._setup_parser_source</span><span class="ansi-blue-intense-fg ansi-bold">()</span>
+<span class="ansi-green-fg">~/miniconda3/envs/aug21/lib/python3.8/site-packages/pandas/io/parsers/base_parser.py</span> in <span class="ansi-cyan-fg">_open_handles</span><span class="ansi-blue-fg">(self, src, kwds)</span>
+<span class="ansi-green-intense-fg ansi-bold">    220</span>         Let the readers open IOHandles after they are done <span class="ansi-green-fg">with</span> their potential raises<span class="ansi-blue-fg">.</span>
+<span class="ansi-green-intense-fg ansi-bold">    221</span>         &#34;&#34;&#34;
+<span class="ansi-green-fg">--&gt; 222</span><span class="ansi-red-fg">         self.handles = get_handle(
+</span><span class="ansi-green-intense-fg ansi-bold">    223</span>             src<span class="ansi-blue-fg">,</span>
+<span class="ansi-green-intense-fg ansi-bold">    224</span>             <span class="ansi-blue-fg">&#34;r&#34;</span><span class="ansi-blue-fg">,</span>
 
-<span class="ansi-red-intense-fg ansi-bold">FileNotFoundError</span>: [Errno 2] No such file or directory: &#39;.\\fake_data.csv&#39;
+<span class="ansi-green-fg">~/miniconda3/envs/aug21/lib/python3.8/site-packages/pandas/io/common.py</span> in <span class="ansi-cyan-fg">get_handle</span><span class="ansi-blue-fg">(path_or_buf, mode, encoding, compression, memory_map, is_text, errors, storage_options)</span>
+<span class="ansi-green-intense-fg ansi-bold">    699</span>         <span class="ansi-green-fg">if</span> ioargs<span class="ansi-blue-fg">.</span>encoding <span class="ansi-green-fg">and</span> <span class="ansi-blue-fg">&#34;b&#34;</span> <span class="ansi-green-fg">not</span> <span class="ansi-green-fg">in</span> ioargs<span class="ansi-blue-fg">.</span>mode<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    700</span>             <span class="ansi-red-fg"># Encoding</span>
+<span class="ansi-green-fg">--&gt; 701</span><span class="ansi-red-fg">             handle = open(
+</span><span class="ansi-green-intense-fg ansi-bold">    702</span>                 handle<span class="ansi-blue-fg">,</span>
+<span class="ansi-green-intense-fg ansi-bold">    703</span>                 ioargs<span class="ansi-blue-fg">.</span>mode<span class="ansi-blue-fg">,</span>
+
+<span class="ansi-red-fg">FileNotFoundError</span>: [Errno 2] No such file or directory: &#39;.\\fake_data.csv&#39;
 </pre></div></div>
 </div>
 <div class="section" id="filter-for-temperature">
@@ -566,7 +604,7 @@ div.rendered_html tbody tr:hover {
 <div class="section" id="unique-from-file">
 <h3>unique from file<a class="headerlink" href="#unique-from-file" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -579,19 +617,19 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-<span class="ansi-red-intense-fg ansi-bold">---------------------------------------------------------------------------</span>
-<span class="ansi-red-intense-fg ansi-bold">NameError</span>                                 Traceback (most recent call last)
-<span class="ansi-green-intense-fg ansi-bold">&lt;ipython-input-5-50293772db91&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
-<span class="ansi-green-intense-fg ansi-bold">----&gt; 1</span><span class="ansi-yellow-intense-fg ansi-bold"> </span>df<span class="ansi-yellow-intense-fg ansi-bold">[</span><span class="ansi-blue-intense-fg ansi-bold">&#39;Temperature [C]&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">]</span><span class="ansi-yellow-intense-fg ansi-bold">.</span>unique<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-yellow-intense-fg ansi-bold">)</span>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+<span class="ansi-green-fg">/tmp/ipykernel_2428979/1474966134.py</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
+<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>df<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;Temperature [C]&#39;</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">.</span>unique<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
 
-<span class="ansi-red-intense-fg ansi-bold">NameError</span>: name &#39;df&#39; is not defined
+<span class="ansi-red-fg">NameError</span>: name &#39;df&#39; is not defined
 </pre></div></div>
 </div>
 </div>
 <div class="section" id="unique-after-filter">
 <h3>unique after filter<a class="headerlink" href="#unique-after-filter" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -604,12 +642,12 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-<span class="ansi-red-intense-fg ansi-bold">---------------------------------------------------------------------------</span>
-<span class="ansi-red-intense-fg ansi-bold">NameError</span>                                 Traceback (most recent call last)
-<span class="ansi-green-intense-fg ansi-bold">&lt;ipython-input-6-959c18bcb575&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
-<span class="ansi-green-intense-fg ansi-bold">----&gt; 1</span><span class="ansi-yellow-intense-fg ansi-bold"> </span>fcp<span class="ansi-yellow-intense-fg ansi-bold">.</span>df_filter<span class="ansi-yellow-intense-fg ansi-bold">(</span>df<span class="ansi-yellow-intense-fg ansi-bold">,</span> <span class="ansi-blue-intense-fg ansi-bold">&#39;Temperature_C &gt; 30&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">[</span><span class="ansi-blue-intense-fg ansi-bold">&#39;Temperature [C]&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">]</span><span class="ansi-yellow-intense-fg ansi-bold">.</span>unique<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-yellow-intense-fg ansi-bold">)</span>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+<span class="ansi-green-fg">/tmp/ipykernel_2428979/242091516.py</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
+<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>fcp<span class="ansi-blue-fg">.</span>df_filter<span class="ansi-blue-fg">(</span>df<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#39;Temperature_C &gt; 30&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;Temperature [C]&#39;</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">.</span>unique<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
 
-<span class="ansi-red-intense-fg ansi-bold">NameError</span>: name &#39;df&#39; is not defined
+<span class="ansi-red-fg">NameError</span>: name &#39;df&#39; is not defined
 </pre></div></div>
 </div>
 </div>
@@ -620,7 +658,7 @@ div.rendered_html tbody tr:hover {
 <li><p>returns same with nothing filtered</p></li>
 </ul>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -633,12 +671,12 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-<span class="ansi-red-intense-fg ansi-bold">---------------------------------------------------------------------------</span>
-<span class="ansi-red-intense-fg ansi-bold">NameError</span>                                 Traceback (most recent call last)
-<span class="ansi-green-intense-fg ansi-bold">&lt;ipython-input-7-4de282dd8ab1&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
-<span class="ansi-green-intense-fg ansi-bold">----&gt; 1</span><span class="ansi-yellow-intense-fg ansi-bold"> </span>fcp<span class="ansi-yellow-intense-fg ansi-bold">.</span>df_filter<span class="ansi-yellow-intense-fg ansi-bold">(</span>df<span class="ansi-yellow-intense-fg ansi-bold">,</span> <span class="ansi-blue-intense-fg ansi-bold">&#39;blah &gt; 0&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">.</span>head<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">.</span>T
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+<span class="ansi-green-fg">/tmp/ipykernel_2428979/3465247175.py</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
+<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>fcp<span class="ansi-blue-fg">.</span>df_filter<span class="ansi-blue-fg">(</span>df<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#39;blah &gt; 0&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>head<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>T
 
-<span class="ansi-red-intense-fg ansi-bold">NameError</span>: name &#39;df&#39; is not defined
+<span class="ansi-red-fg">NameError</span>: name &#39;df&#39; is not defined
 </pre></div></div>
 </div>
 </div>
@@ -646,7 +684,7 @@ div.rendered_html tbody tr:hover {
 <div class="section" id="get_current_values">
 <h1>get_current_values<a class="headerlink" href="#get_current_values" title="Permalink to this headline">¶</a></h1>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -659,14 +697,14 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-
-    Parse a string looking for text enclosed by &#39;key&#39; and replace with the
-    current value from the DataFrame
+Parse a string looking for text enclosed by &#39;key&#39; and replace with the
+    current value from the DataFrame.
 
     Args:
-        df (pd.DataFrame): DataFrame containing values we are looking for
-        text (str): string to parse
-        key (str): matching chars that enclose the value to replace from df
+        df: DataFrame containing values we are looking for
+        text: string to parse
+        key (optional): matching chars that enclose the value to replace from
+            df. Defaults to &#39;@&#39;
 
     Returns:
         updated string
@@ -677,7 +715,7 @@ div.rendered_html tbody tr:hover {
 <div class="section" id="df_filter">
 <h1>df_filter<a class="headerlink" href="#df_filter" title="Permalink to this headline">¶</a></h1>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -690,8 +728,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-
-    Filter the DataFrame
+Filter the DataFrame.
 
     Due to limitations in pd.query, column names must not have spaces.  This
     function will temporarily replace spaces in the column names with
@@ -699,9 +736,10 @@ div.rendered_html tbody tr:hover {
     without any spaces
 
     Args:
-        df (pd.DataFrame):  DataFrame to filter
-        filt_orig (str):  query expression for filtering
-        drop_cols (bool): drop filtered columns from results
+        df:  DataFrame to filter
+        filt_orig:  query expression for filtering
+        drop_cols (optional): drop filtered columns from results. Defaults to False.
+        keep_filtered (optional): make a copy of the original data. Defaults to False.
 
     Returns:
         filtered DataFrame
@@ -776,43 +814,43 @@ Warning: scipy.randn is deprecated and will be removed in SciPy 2.0.0, use numpy
   <tbody>
     <tr>
       <th>a</th>
-      <td>1.996846</td>
-      <td>-0.510044</td>
-      <td>1.133669</td>
-      <td>-0.254249</td>
-      <td>0.456459</td>
+      <td>0.464123</td>
+      <td>1.072075</td>
+      <td>-0.782499</td>
+      <td>-1.281311</td>
+      <td>0.162054</td>
     </tr>
     <tr>
       <th>b</th>
-      <td>-0.213753</td>
-      <td>-0.201530</td>
-      <td>0.530026</td>
-      <td>1.858969</td>
-      <td>-0.006413</td>
+      <td>-0.607744</td>
+      <td>-0.930819</td>
+      <td>0.180600</td>
+      <td>-1.237291</td>
+      <td>0.633077</td>
     </tr>
     <tr>
       <th>c [spam]</th>
-      <td>0.254844</td>
-      <td>-1.836668</td>
-      <td>0.844998</td>
-      <td>-0.381578</td>
-      <td>-1.696516</td>
+      <td>0.203786</td>
+      <td>-0.215896</td>
+      <td>0.588199</td>
+      <td>0.024202</td>
+      <td>-0.532523</td>
     </tr>
     <tr>
       <th>d [spam/eggs]</th>
-      <td>-0.885702</td>
-      <td>0.600850</td>
-      <td>0.025040</td>
-      <td>0.919736</td>
-      <td>-1.926990</td>
+      <td>2.596389</td>
+      <td>-0.323081</td>
+      <td>0.917594</td>
+      <td>-1.510548</td>
+      <td>0.066283</td>
     </tr>
     <tr>
       <th>e (blah)</th>
-      <td>0.045454</td>
-      <td>-0.965429</td>
-      <td>-0.536117</td>
-      <td>1.454517</td>
-      <td>0.123342</td>
+      <td>-0.698226</td>
+      <td>-0.644931</td>
+      <td>-2.345317</td>
+      <td>0.189340</td>
+      <td>-0.024109</td>
     </tr>
   </tbody>
 </table>
@@ -881,48 +919,46 @@ Could not filter data!
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-<span class="ansi-red-intense-fg ansi-bold">---------------------------------------------------------------------------</span>
-<span class="ansi-red-intense-fg ansi-bold">DataError</span>                                 Traceback (most recent call last)
-<span class="ansi-green-intense-fg ansi-bold">&lt;ipython-input-14-afe25acefe99&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
-<span class="ansi-green-fg">      1</span> filt_orig <span class="ansi-yellow-intense-fg ansi-bold">=</span> <span class="ansi-blue-intense-fg ansi-bold">&#39;c_spam &gt; 0&#39;</span>
-<span class="ansi-green-intense-fg ansi-bold">----&gt; 2</span><span class="ansi-yellow-intense-fg ansi-bold"> </span>fcp<span class="ansi-yellow-intense-fg ansi-bold">.</span>plot<span class="ansi-yellow-intense-fg ansi-bold">(</span>df<span class="ansi-yellow-intense-fg ansi-bold">=</span>filt<span class="ansi-yellow-intense-fg ansi-bold">(</span>df<span class="ansi-yellow-intense-fg ansi-bold">,</span> filt_orig<span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">,</span> x<span class="ansi-yellow-intense-fg ansi-bold">=</span><span class="ansi-blue-intense-fg ansi-bold">&#39;a&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">,</span> y<span class="ansi-yellow-intense-fg ansi-bold">=</span><span class="ansi-blue-intense-fg ansi-bold">&#39;c [spam]&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">,</span> inline<span class="ansi-yellow-intense-fg ansi-bold">=</span><span class="ansi-green-intense-fg ansi-bold">True</span><span class="ansi-yellow-intense-fg ansi-bold">)</span>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">DataError</span>                                 Traceback (most recent call last)
+<span class="ansi-green-fg">/tmp/ipykernel_2428979/2572813306.py</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
+<span class="ansi-green-intense-fg ansi-bold">      1</span> filt_orig <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">&#39;c_spam &gt; 0&#39;</span>
+<span class="ansi-green-fg">----&gt; 2</span><span class="ansi-red-fg"> </span>fcp<span class="ansi-blue-fg">.</span>plot<span class="ansi-blue-fg">(</span>df<span class="ansi-blue-fg">=</span>filt<span class="ansi-blue-fg">(</span>df<span class="ansi-blue-fg">,</span> filt_orig<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">,</span> x<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">&#39;a&#39;</span><span class="ansi-blue-fg">,</span> y<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">&#39;c [spam]&#39;</span><span class="ansi-blue-fg">,</span> inline<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">True</span><span class="ansi-blue-fg">)</span>
 
-<span class="ansi-green-intense-fg ansi-bold">C:\GitHub\fivecentplots\fivecentplots\fcp.py</span> in <span class="ansi-cyan-fg">plot</span><span class="ansi-blue-intense-fg ansi-bold">(*args, **kwargs)</span>
-<span class="ansi-green-fg">    274</span>     &#34;&#34;&#34;
-<span class="ansi-green-fg">    275</span>
-<span class="ansi-green-intense-fg ansi-bold">--&gt; 276</span><span class="ansi-yellow-intense-fg ansi-bold">     </span><span class="ansi-green-intense-fg ansi-bold">return</span> plotter<span class="ansi-yellow-intense-fg ansi-bold">(</span>data<span class="ansi-yellow-intense-fg ansi-bold">.</span>XY<span class="ansi-yellow-intense-fg ansi-bold">,</span> <span class="ansi-yellow-intense-fg ansi-bold">**</span>dfkwarg<span class="ansi-yellow-intense-fg ansi-bold">(</span>args<span class="ansi-yellow-intense-fg ansi-bold">,</span> kwargs<span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">)</span>
-<span class="ansi-green-fg">    277</span>
-<span class="ansi-green-fg">    278</span>
+<span class="ansi-green-fg">~/Code/fivecentplots/fivecentplots/fcp.py</span> in <span class="ansi-cyan-fg">plot</span><span class="ansi-blue-fg">(*args, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">    262</span>     &#34;&#34;&#34;
+<span class="ansi-green-intense-fg ansi-bold">    263</span>
+<span class="ansi-green-fg">--&gt; 264</span><span class="ansi-red-fg">     </span><span class="ansi-green-fg">return</span> plotter<span class="ansi-blue-fg">(</span>data<span class="ansi-blue-fg">.</span>XY<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>dfkwarg<span class="ansi-blue-fg">(</span>args<span class="ansi-blue-fg">,</span> kwargs<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    265</span>
+<span class="ansi-green-intense-fg ansi-bold">    266</span>
 
-<span class="ansi-green-intense-fg ansi-bold">C:\GitHub\fivecentplots\fivecentplots\fcp.py</span> in <span class="ansi-cyan-fg">plotter</span><span class="ansi-blue-intense-fg ansi-bold">(dobj, **kwargs)</span>
-<span class="ansi-green-fg">    864</span>
-<span class="ansi-green-fg">    865</span>     <span class="ansi-red-intense-fg ansi-bold"># Build the data object and update kwargs</span>
-<span class="ansi-green-intense-fg ansi-bold">--&gt; 866</span><span class="ansi-yellow-intense-fg ansi-bold">     </span>dd <span class="ansi-yellow-intense-fg ansi-bold">=</span> dobj<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-yellow-intense-fg ansi-bold">**</span>kwargs<span class="ansi-yellow-intense-fg ansi-bold">)</span>
-<span class="ansi-green-fg">    867</span>     <span class="ansi-green-intense-fg ansi-bold">for</span> k<span class="ansi-yellow-intense-fg ansi-bold">,</span> v <span class="ansi-green-intense-fg ansi-bold">in</span> kwargs<span class="ansi-yellow-intense-fg ansi-bold">.</span>items<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">:</span>
-<span class="ansi-green-fg">    868</span>         <span class="ansi-green-intense-fg ansi-bold">if</span> k <span class="ansi-green-intense-fg ansi-bold">in</span> dd<span class="ansi-yellow-intense-fg ansi-bold">.</span>__dict__<span class="ansi-yellow-intense-fg ansi-bold">.</span>keys<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">:</span>
+<span class="ansi-green-fg">~/Code/fivecentplots/fivecentplots/fcp.py</span> in <span class="ansi-cyan-fg">plotter</span><span class="ansi-blue-fg">(dobj, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">    923</span>
+<span class="ansi-green-intense-fg ansi-bold">    924</span>     <span class="ansi-red-fg"># Build the data object and update kwargs</span>
+<span class="ansi-green-fg">--&gt; 925</span><span class="ansi-red-fg">     </span>dd <span class="ansi-blue-fg">=</span> dobj<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    926</span>     <span class="ansi-green-fg">for</span> k<span class="ansi-blue-fg">,</span> v <span class="ansi-green-fg">in</span> kwargs<span class="ansi-blue-fg">.</span>items<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    927</span>         <span class="ansi-green-fg">if</span> k <span class="ansi-green-fg">in</span> dd<span class="ansi-blue-fg">.</span>__dict__<span class="ansi-blue-fg">.</span>keys<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
 
-<span class="ansi-green-intense-fg ansi-bold">C:\GitHub\fivecentplots\fivecentplots\data\xy.py</span> in <span class="ansi-cyan-fg">__init__</span><span class="ansi-blue-intense-fg ansi-bold">(self, **kwargs)</span>
-<span class="ansi-green-fg">     12</span>     <span class="ansi-green-intense-fg ansi-bold">def</span> __init__<span class="ansi-yellow-intense-fg ansi-bold">(</span>self<span class="ansi-yellow-intense-fg ansi-bold">,</span> <span class="ansi-yellow-intense-fg ansi-bold">**</span>kwargs<span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">:</span>
-<span class="ansi-green-fg">     13</span>
-<span class="ansi-green-intense-fg ansi-bold">---&gt; 14</span><span class="ansi-yellow-intense-fg ansi-bold">         </span>super<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">.</span>__init__<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-yellow-intense-fg ansi-bold">**</span>kwargs<span class="ansi-yellow-intense-fg ansi-bold">)</span>
-<span class="ansi-green-fg">     15</span>
-<span class="ansi-green-fg">     16</span>         <span class="ansi-red-intense-fg ansi-bold"># overrides</span>
+<span class="ansi-green-fg">~/Code/fivecentplots/fivecentplots/data/xy.py</span> in <span class="ansi-cyan-fg">__init__</span><span class="ansi-blue-fg">(self, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">     16</span>         name <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">&#39;xy&#39;</span>
+<span class="ansi-green-intense-fg ansi-bold">     17</span>
+<span class="ansi-green-fg">---&gt; 18</span><span class="ansi-red-fg">         </span>super<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>__init__<span class="ansi-blue-fg">(</span>name<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span>
 
-<span class="ansi-green-intense-fg ansi-bold">C:\GitHub\fivecentplots\fivecentplots\data\data.py</span> in <span class="ansi-cyan-fg">__init__</span><span class="ansi-blue-intense-fg ansi-bold">(self, name, req, opt, **kwargs)</span>
-<span class="ansi-green-fg">    156</span>         self<span class="ansi-yellow-intense-fg ansi-bold">.</span>y_vals <span class="ansi-yellow-intense-fg ansi-bold">=</span> <span class="ansi-yellow-intense-fg ansi-bold">[</span>f <span class="ansi-green-intense-fg ansi-bold">for</span> f <span class="ansi-green-intense-fg ansi-bold">in</span> self<span class="ansi-yellow-intense-fg ansi-bold">.</span>y<span class="ansi-yellow-intense-fg ansi-bold">]</span> <span class="ansi-green-intense-fg ansi-bold">if</span> self<span class="ansi-yellow-intense-fg ansi-bold">.</span>y <span class="ansi-green-intense-fg ansi-bold">else</span> <span class="ansi-green-intense-fg ansi-bold">None</span>
-<span class="ansi-green-fg">    157</span>         self<span class="ansi-yellow-intense-fg ansi-bold">.</span>z <span class="ansi-yellow-intense-fg ansi-bold">=</span> utl<span class="ansi-yellow-intense-fg ansi-bold">.</span>validate_list<span class="ansi-yellow-intense-fg ansi-bold">(</span>kwargs<span class="ansi-yellow-intense-fg ansi-bold">.</span>get<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-blue-intense-fg ansi-bold">&#39;z&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">)</span>
-<span class="ansi-green-intense-fg ansi-bold">--&gt; 158</span><span class="ansi-yellow-intense-fg ansi-bold">         </span>self<span class="ansi-yellow-intense-fg ansi-bold">.</span>x <span class="ansi-yellow-intense-fg ansi-bold">=</span> self<span class="ansi-yellow-intense-fg ansi-bold">.</span>check_xyz<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-blue-intense-fg ansi-bold">&#39;x&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">)</span>
-<span class="ansi-green-fg">    159</span>         self<span class="ansi-yellow-intense-fg ansi-bold">.</span>y <span class="ansi-yellow-intense-fg ansi-bold">=</span> self<span class="ansi-yellow-intense-fg ansi-bold">.</span>check_xyz<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-blue-intense-fg ansi-bold">&#39;y&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">)</span>
-<span class="ansi-green-fg">    160</span>         self<span class="ansi-yellow-intense-fg ansi-bold">.</span>z <span class="ansi-yellow-intense-fg ansi-bold">=</span> self<span class="ansi-yellow-intense-fg ansi-bold">.</span>check_xyz<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-blue-intense-fg ansi-bold">&#39;z&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">)</span>
+<span class="ansi-green-fg">~/Code/fivecentplots/fivecentplots/data/data.py</span> in <span class="ansi-cyan-fg">__init__</span><span class="ansi-blue-fg">(self, name, req, opt, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">    128</span>         self<span class="ansi-blue-fg">.</span>y_vals <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">[</span>f <span class="ansi-green-fg">for</span> f <span class="ansi-green-fg">in</span> self<span class="ansi-blue-fg">.</span>y<span class="ansi-blue-fg">]</span> <span class="ansi-green-fg">if</span> self<span class="ansi-blue-fg">.</span>y <span class="ansi-green-fg">else</span> <span class="ansi-green-fg">None</span>
+<span class="ansi-green-intense-fg ansi-bold">    129</span>         self<span class="ansi-blue-fg">.</span>z <span class="ansi-blue-fg">=</span> utl<span class="ansi-blue-fg">.</span>validate_list<span class="ansi-blue-fg">(</span>kwargs<span class="ansi-blue-fg">.</span>get<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;z&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-fg">--&gt; 130</span><span class="ansi-red-fg">         </span>self<span class="ansi-blue-fg">.</span>x <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>_check_xyz<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;x&#39;</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    131</span>         self<span class="ansi-blue-fg">.</span>y <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>_check_xyz<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;y&#39;</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    132</span>         self<span class="ansi-blue-fg">.</span>z <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>_check_xyz<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;z&#39;</span><span class="ansi-blue-fg">)</span>
 
-<span class="ansi-green-intense-fg ansi-bold">C:\GitHub\fivecentplots\fivecentplots\data\data.py</span> in <span class="ansi-cyan-fg">check_xyz</span><span class="ansi-blue-intense-fg ansi-bold">(self, xyz)</span>
-<span class="ansi-green-fg">    567</span>         <span class="ansi-green-intense-fg ansi-bold">for</span> val <span class="ansi-green-intense-fg ansi-bold">in</span> vals<span class="ansi-yellow-intense-fg ansi-bold">:</span>
-<span class="ansi-green-fg">    568</span>             <span class="ansi-green-intense-fg ansi-bold">if</span> val <span class="ansi-green-intense-fg ansi-bold">not</span> <span class="ansi-green-intense-fg ansi-bold">in</span> self<span class="ansi-yellow-intense-fg ansi-bold">.</span>df_all<span class="ansi-yellow-intense-fg ansi-bold">.</span>columns<span class="ansi-yellow-intense-fg ansi-bold">:</span>
-<span class="ansi-green-intense-fg ansi-bold">--&gt; 569</span><span class="ansi-yellow-intense-fg ansi-bold">                 </span><span class="ansi-green-intense-fg ansi-bold">raise</span> DataError<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-blue-intense-fg ansi-bold">&#39;No column named &#34;%s&#34; found in DataFrame&#39;</span> <span class="ansi-yellow-intense-fg ansi-bold">%</span> val<span class="ansi-yellow-intense-fg ansi-bold">)</span>
-<span class="ansi-green-fg">    570</span>
-<span class="ansi-green-fg">    571</span>             <span class="ansi-red-intense-fg ansi-bold"># Check case</span>
+<span class="ansi-green-fg">~/Code/fivecentplots/fivecentplots/data/data.py</span> in <span class="ansi-cyan-fg">_check_xyz</span><span class="ansi-blue-fg">(self, xyz)</span>
+<span class="ansi-green-intense-fg ansi-bold">    445</span>         <span class="ansi-green-fg">for</span> val <span class="ansi-green-fg">in</span> vals<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    446</span>             <span class="ansi-green-fg">if</span> val <span class="ansi-green-fg">not</span> <span class="ansi-green-fg">in</span> self<span class="ansi-blue-fg">.</span>df_all<span class="ansi-blue-fg">.</span>columns<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 447</span><span class="ansi-red-fg">                 raise DataError(
+</span><span class="ansi-green-intense-fg ansi-bold">    448</span>                     &#39;No column named &#34;%s&#34; found in DataFrame&#39; % val)
+<span class="ansi-green-intense-fg ansi-bold">    449</span>
 
-<span class="ansi-red-intense-fg ansi-bold">DataError</span>: No column named &#34;a&#34; found in DataFrame
+<span class="ansi-red-fg">DataError</span>: No column named &#34;a&#34; found in DataFrame
 </pre></div></div>
 </div>
 </div>
@@ -953,48 +989,46 @@ Could not filter data!
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-<span class="ansi-red-intense-fg ansi-bold">---------------------------------------------------------------------------</span>
-<span class="ansi-red-intense-fg ansi-bold">DataError</span>                                 Traceback (most recent call last)
-<span class="ansi-green-intense-fg ansi-bold">&lt;ipython-input-15-2ba2f87faeba&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
-<span class="ansi-green-fg">      1</span> filt_orig <span class="ansi-yellow-intense-fg ansi-bold">=</span> <span class="ansi-blue-intense-fg ansi-bold">&#39;d_spam_eggs &gt; 0&#39;</span>
-<span class="ansi-green-intense-fg ansi-bold">----&gt; 2</span><span class="ansi-yellow-intense-fg ansi-bold"> </span>fcp<span class="ansi-yellow-intense-fg ansi-bold">.</span>plot<span class="ansi-yellow-intense-fg ansi-bold">(</span>df<span class="ansi-yellow-intense-fg ansi-bold">=</span>filt<span class="ansi-yellow-intense-fg ansi-bold">(</span>df<span class="ansi-yellow-intense-fg ansi-bold">,</span> filt_orig<span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">,</span> x<span class="ansi-yellow-intense-fg ansi-bold">=</span><span class="ansi-blue-intense-fg ansi-bold">&#39;a&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">,</span> y<span class="ansi-yellow-intense-fg ansi-bold">=</span><span class="ansi-blue-intense-fg ansi-bold">&#39;d [spam/eggs]&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">,</span> inline<span class="ansi-yellow-intense-fg ansi-bold">=</span><span class="ansi-green-intense-fg ansi-bold">True</span><span class="ansi-yellow-intense-fg ansi-bold">)</span>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">DataError</span>                                 Traceback (most recent call last)
+<span class="ansi-green-fg">/tmp/ipykernel_2428979/3296904623.py</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
+<span class="ansi-green-intense-fg ansi-bold">      1</span> filt_orig <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">&#39;d_spam_eggs &gt; 0&#39;</span>
+<span class="ansi-green-fg">----&gt; 2</span><span class="ansi-red-fg"> </span>fcp<span class="ansi-blue-fg">.</span>plot<span class="ansi-blue-fg">(</span>df<span class="ansi-blue-fg">=</span>filt<span class="ansi-blue-fg">(</span>df<span class="ansi-blue-fg">,</span> filt_orig<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">,</span> x<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">&#39;a&#39;</span><span class="ansi-blue-fg">,</span> y<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">&#39;d [spam/eggs]&#39;</span><span class="ansi-blue-fg">,</span> inline<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">True</span><span class="ansi-blue-fg">)</span>
 
-<span class="ansi-green-intense-fg ansi-bold">C:\GitHub\fivecentplots\fivecentplots\fcp.py</span> in <span class="ansi-cyan-fg">plot</span><span class="ansi-blue-intense-fg ansi-bold">(*args, **kwargs)</span>
-<span class="ansi-green-fg">    274</span>     &#34;&#34;&#34;
-<span class="ansi-green-fg">    275</span>
-<span class="ansi-green-intense-fg ansi-bold">--&gt; 276</span><span class="ansi-yellow-intense-fg ansi-bold">     </span><span class="ansi-green-intense-fg ansi-bold">return</span> plotter<span class="ansi-yellow-intense-fg ansi-bold">(</span>data<span class="ansi-yellow-intense-fg ansi-bold">.</span>XY<span class="ansi-yellow-intense-fg ansi-bold">,</span> <span class="ansi-yellow-intense-fg ansi-bold">**</span>dfkwarg<span class="ansi-yellow-intense-fg ansi-bold">(</span>args<span class="ansi-yellow-intense-fg ansi-bold">,</span> kwargs<span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">)</span>
-<span class="ansi-green-fg">    277</span>
-<span class="ansi-green-fg">    278</span>
+<span class="ansi-green-fg">~/Code/fivecentplots/fivecentplots/fcp.py</span> in <span class="ansi-cyan-fg">plot</span><span class="ansi-blue-fg">(*args, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">    262</span>     &#34;&#34;&#34;
+<span class="ansi-green-intense-fg ansi-bold">    263</span>
+<span class="ansi-green-fg">--&gt; 264</span><span class="ansi-red-fg">     </span><span class="ansi-green-fg">return</span> plotter<span class="ansi-blue-fg">(</span>data<span class="ansi-blue-fg">.</span>XY<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>dfkwarg<span class="ansi-blue-fg">(</span>args<span class="ansi-blue-fg">,</span> kwargs<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    265</span>
+<span class="ansi-green-intense-fg ansi-bold">    266</span>
 
-<span class="ansi-green-intense-fg ansi-bold">C:\GitHub\fivecentplots\fivecentplots\fcp.py</span> in <span class="ansi-cyan-fg">plotter</span><span class="ansi-blue-intense-fg ansi-bold">(dobj, **kwargs)</span>
-<span class="ansi-green-fg">    864</span>
-<span class="ansi-green-fg">    865</span>     <span class="ansi-red-intense-fg ansi-bold"># Build the data object and update kwargs</span>
-<span class="ansi-green-intense-fg ansi-bold">--&gt; 866</span><span class="ansi-yellow-intense-fg ansi-bold">     </span>dd <span class="ansi-yellow-intense-fg ansi-bold">=</span> dobj<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-yellow-intense-fg ansi-bold">**</span>kwargs<span class="ansi-yellow-intense-fg ansi-bold">)</span>
-<span class="ansi-green-fg">    867</span>     <span class="ansi-green-intense-fg ansi-bold">for</span> k<span class="ansi-yellow-intense-fg ansi-bold">,</span> v <span class="ansi-green-intense-fg ansi-bold">in</span> kwargs<span class="ansi-yellow-intense-fg ansi-bold">.</span>items<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">:</span>
-<span class="ansi-green-fg">    868</span>         <span class="ansi-green-intense-fg ansi-bold">if</span> k <span class="ansi-green-intense-fg ansi-bold">in</span> dd<span class="ansi-yellow-intense-fg ansi-bold">.</span>__dict__<span class="ansi-yellow-intense-fg ansi-bold">.</span>keys<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">:</span>
+<span class="ansi-green-fg">~/Code/fivecentplots/fivecentplots/fcp.py</span> in <span class="ansi-cyan-fg">plotter</span><span class="ansi-blue-fg">(dobj, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">    923</span>
+<span class="ansi-green-intense-fg ansi-bold">    924</span>     <span class="ansi-red-fg"># Build the data object and update kwargs</span>
+<span class="ansi-green-fg">--&gt; 925</span><span class="ansi-red-fg">     </span>dd <span class="ansi-blue-fg">=</span> dobj<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    926</span>     <span class="ansi-green-fg">for</span> k<span class="ansi-blue-fg">,</span> v <span class="ansi-green-fg">in</span> kwargs<span class="ansi-blue-fg">.</span>items<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    927</span>         <span class="ansi-green-fg">if</span> k <span class="ansi-green-fg">in</span> dd<span class="ansi-blue-fg">.</span>__dict__<span class="ansi-blue-fg">.</span>keys<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
 
-<span class="ansi-green-intense-fg ansi-bold">C:\GitHub\fivecentplots\fivecentplots\data\xy.py</span> in <span class="ansi-cyan-fg">__init__</span><span class="ansi-blue-intense-fg ansi-bold">(self, **kwargs)</span>
-<span class="ansi-green-fg">     12</span>     <span class="ansi-green-intense-fg ansi-bold">def</span> __init__<span class="ansi-yellow-intense-fg ansi-bold">(</span>self<span class="ansi-yellow-intense-fg ansi-bold">,</span> <span class="ansi-yellow-intense-fg ansi-bold">**</span>kwargs<span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">:</span>
-<span class="ansi-green-fg">     13</span>
-<span class="ansi-green-intense-fg ansi-bold">---&gt; 14</span><span class="ansi-yellow-intense-fg ansi-bold">         </span>super<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">.</span>__init__<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-yellow-intense-fg ansi-bold">**</span>kwargs<span class="ansi-yellow-intense-fg ansi-bold">)</span>
-<span class="ansi-green-fg">     15</span>
-<span class="ansi-green-fg">     16</span>         <span class="ansi-red-intense-fg ansi-bold"># overrides</span>
+<span class="ansi-green-fg">~/Code/fivecentplots/fivecentplots/data/xy.py</span> in <span class="ansi-cyan-fg">__init__</span><span class="ansi-blue-fg">(self, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">     16</span>         name <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">&#39;xy&#39;</span>
+<span class="ansi-green-intense-fg ansi-bold">     17</span>
+<span class="ansi-green-fg">---&gt; 18</span><span class="ansi-red-fg">         </span>super<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>__init__<span class="ansi-blue-fg">(</span>name<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span>
 
-<span class="ansi-green-intense-fg ansi-bold">C:\GitHub\fivecentplots\fivecentplots\data\data.py</span> in <span class="ansi-cyan-fg">__init__</span><span class="ansi-blue-intense-fg ansi-bold">(self, name, req, opt, **kwargs)</span>
-<span class="ansi-green-fg">    156</span>         self<span class="ansi-yellow-intense-fg ansi-bold">.</span>y_vals <span class="ansi-yellow-intense-fg ansi-bold">=</span> <span class="ansi-yellow-intense-fg ansi-bold">[</span>f <span class="ansi-green-intense-fg ansi-bold">for</span> f <span class="ansi-green-intense-fg ansi-bold">in</span> self<span class="ansi-yellow-intense-fg ansi-bold">.</span>y<span class="ansi-yellow-intense-fg ansi-bold">]</span> <span class="ansi-green-intense-fg ansi-bold">if</span> self<span class="ansi-yellow-intense-fg ansi-bold">.</span>y <span class="ansi-green-intense-fg ansi-bold">else</span> <span class="ansi-green-intense-fg ansi-bold">None</span>
-<span class="ansi-green-fg">    157</span>         self<span class="ansi-yellow-intense-fg ansi-bold">.</span>z <span class="ansi-yellow-intense-fg ansi-bold">=</span> utl<span class="ansi-yellow-intense-fg ansi-bold">.</span>validate_list<span class="ansi-yellow-intense-fg ansi-bold">(</span>kwargs<span class="ansi-yellow-intense-fg ansi-bold">.</span>get<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-blue-intense-fg ansi-bold">&#39;z&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">)</span>
-<span class="ansi-green-intense-fg ansi-bold">--&gt; 158</span><span class="ansi-yellow-intense-fg ansi-bold">         </span>self<span class="ansi-yellow-intense-fg ansi-bold">.</span>x <span class="ansi-yellow-intense-fg ansi-bold">=</span> self<span class="ansi-yellow-intense-fg ansi-bold">.</span>check_xyz<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-blue-intense-fg ansi-bold">&#39;x&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">)</span>
-<span class="ansi-green-fg">    159</span>         self<span class="ansi-yellow-intense-fg ansi-bold">.</span>y <span class="ansi-yellow-intense-fg ansi-bold">=</span> self<span class="ansi-yellow-intense-fg ansi-bold">.</span>check_xyz<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-blue-intense-fg ansi-bold">&#39;y&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">)</span>
-<span class="ansi-green-fg">    160</span>         self<span class="ansi-yellow-intense-fg ansi-bold">.</span>z <span class="ansi-yellow-intense-fg ansi-bold">=</span> self<span class="ansi-yellow-intense-fg ansi-bold">.</span>check_xyz<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-blue-intense-fg ansi-bold">&#39;z&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">)</span>
+<span class="ansi-green-fg">~/Code/fivecentplots/fivecentplots/data/data.py</span> in <span class="ansi-cyan-fg">__init__</span><span class="ansi-blue-fg">(self, name, req, opt, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">    128</span>         self<span class="ansi-blue-fg">.</span>y_vals <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">[</span>f <span class="ansi-green-fg">for</span> f <span class="ansi-green-fg">in</span> self<span class="ansi-blue-fg">.</span>y<span class="ansi-blue-fg">]</span> <span class="ansi-green-fg">if</span> self<span class="ansi-blue-fg">.</span>y <span class="ansi-green-fg">else</span> <span class="ansi-green-fg">None</span>
+<span class="ansi-green-intense-fg ansi-bold">    129</span>         self<span class="ansi-blue-fg">.</span>z <span class="ansi-blue-fg">=</span> utl<span class="ansi-blue-fg">.</span>validate_list<span class="ansi-blue-fg">(</span>kwargs<span class="ansi-blue-fg">.</span>get<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;z&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-fg">--&gt; 130</span><span class="ansi-red-fg">         </span>self<span class="ansi-blue-fg">.</span>x <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>_check_xyz<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;x&#39;</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    131</span>         self<span class="ansi-blue-fg">.</span>y <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>_check_xyz<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;y&#39;</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    132</span>         self<span class="ansi-blue-fg">.</span>z <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>_check_xyz<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;z&#39;</span><span class="ansi-blue-fg">)</span>
 
-<span class="ansi-green-intense-fg ansi-bold">C:\GitHub\fivecentplots\fivecentplots\data\data.py</span> in <span class="ansi-cyan-fg">check_xyz</span><span class="ansi-blue-intense-fg ansi-bold">(self, xyz)</span>
-<span class="ansi-green-fg">    567</span>         <span class="ansi-green-intense-fg ansi-bold">for</span> val <span class="ansi-green-intense-fg ansi-bold">in</span> vals<span class="ansi-yellow-intense-fg ansi-bold">:</span>
-<span class="ansi-green-fg">    568</span>             <span class="ansi-green-intense-fg ansi-bold">if</span> val <span class="ansi-green-intense-fg ansi-bold">not</span> <span class="ansi-green-intense-fg ansi-bold">in</span> self<span class="ansi-yellow-intense-fg ansi-bold">.</span>df_all<span class="ansi-yellow-intense-fg ansi-bold">.</span>columns<span class="ansi-yellow-intense-fg ansi-bold">:</span>
-<span class="ansi-green-intense-fg ansi-bold">--&gt; 569</span><span class="ansi-yellow-intense-fg ansi-bold">                 </span><span class="ansi-green-intense-fg ansi-bold">raise</span> DataError<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-blue-intense-fg ansi-bold">&#39;No column named &#34;%s&#34; found in DataFrame&#39;</span> <span class="ansi-yellow-intense-fg ansi-bold">%</span> val<span class="ansi-yellow-intense-fg ansi-bold">)</span>
-<span class="ansi-green-fg">    570</span>
-<span class="ansi-green-fg">    571</span>             <span class="ansi-red-intense-fg ansi-bold"># Check case</span>
+<span class="ansi-green-fg">~/Code/fivecentplots/fivecentplots/data/data.py</span> in <span class="ansi-cyan-fg">_check_xyz</span><span class="ansi-blue-fg">(self, xyz)</span>
+<span class="ansi-green-intense-fg ansi-bold">    445</span>         <span class="ansi-green-fg">for</span> val <span class="ansi-green-fg">in</span> vals<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    446</span>             <span class="ansi-green-fg">if</span> val <span class="ansi-green-fg">not</span> <span class="ansi-green-fg">in</span> self<span class="ansi-blue-fg">.</span>df_all<span class="ansi-blue-fg">.</span>columns<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 447</span><span class="ansi-red-fg">                 raise DataError(
+</span><span class="ansi-green-intense-fg ansi-bold">    448</span>                     &#39;No column named &#34;%s&#34; found in DataFrame&#39; % val)
+<span class="ansi-green-intense-fg ansi-bold">    449</span>
 
-<span class="ansi-red-intense-fg ansi-bold">DataError</span>: No column named &#34;a&#34; found in DataFrame
+<span class="ansi-red-fg">DataError</span>: No column named &#34;a&#34; found in DataFrame
 </pre></div></div>
 </div>
 </div>
@@ -1006,28 +1040,25 @@ Could not filter data!
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2016, Steve Nicholes
+        &#169; Copyright 2016, Steve Nicholes.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

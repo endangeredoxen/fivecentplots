@@ -1094,8 +1094,8 @@ class Data:
         Yields:
             iline: legend index
             df: data subset to plot
-            row['x'] [x]: x-column name
-            row['y'] [y]: y-column name
+            row['x'] [x]: x-axis column name
+            row['y'] [y]: y-axis column name
             self.z [z]: z-column name
             leg [leg_name]: legend value name if legend enabled
             twin: denotes if twin axis is enabled or not
@@ -1254,8 +1254,8 @@ class Data:
 
         Args:
             df: data subset
-            x: x-column name
-            y: y-column name
+            x: x-axis column name
+            y: y-axis column name
 
         Returns:
             DataFrame with the new calculated stats or None

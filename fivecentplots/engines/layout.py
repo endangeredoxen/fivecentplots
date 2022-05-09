@@ -87,10 +87,10 @@ class BaseLayout:
         self.bar = None  # Element object for barchart plot
         self.box = None  # Element object for box plot
         self.box_divider = None  # Element object for divider lines between box groups
-        self.box_group_label = None  # Element object for box plot group label text
         self.box_grand_mean = None  # Element object for grand mean line plot on box plot
         self.box_grand_median = None  # Element object for grand median line plot on box plot
         self.box_group_means = None  # Element object for group mean line plots on box plot
+        self.box_group_label = None  # Element object for box plot group label text
         self.box_group_title = None  # Element object for box plot group title text
         self.box_mean_diamonds = None  # Element object for mean diamond overlays on box plot
         self.box_range_lines = None  # Element object for box plot range line styling
@@ -520,14 +520,12 @@ class BaseLayout:
                                kwargs, self.fcpp, 'bar_fill_alpha', 0.75),
                            fill_color=utl.kwget(kwargs, self.fcpp, 'bar_fill_color',
                                                 copy.copy(self.color_list)),
-                           line=utl.kwget(kwargs, self.fcpp, 'bar_line',
-                                          kwargs.get('line', False) | kwargs.get('lines', False)),
                            horizontal=utl.kwget(kwargs, self.fcpp, ['bar_horizontal', 'horizontal'],
                                                 kwargs.get('horizontal', False)),
                            stacked=utl.kwget(kwargs, self.fcpp, ['bar_stacked', 'stacked'],
                                              kwargs.get('stacked', False)),
                            error_bars=utl.kwget(kwargs, self.fcpp, ['bar_error_bars', 'error_bars'],
-                                                kwargs.get('error_bars', None)),
+                                                kwargs.get('error_bars', False)),
                            error_color=utl.kwget(kwargs, self.fcpp, ['bar_error_color', 'error_color'],
                                                  kwargs.get('error_color', '#555555')),
                            color_by_bar=utl.kwget(kwargs, self.fcpp, ['bar_color_by_bar', 'color_by_bar'],
@@ -671,7 +669,7 @@ class BaseLayout:
                            edge_width=0.5,
                            fill_color=box_fill_color,
                            median_color=utl.kwget(kwargs, self.fcpp,
-                                                  'box_median_line_color',
+                                                  'box_median_color',
                                                   '#ff7f0e'),
                            notch=utl.kwget(kwargs, self.fcpp, ['box_notch', 'notch'],
                                            kwargs.get('notch', False)),
@@ -679,22 +677,23 @@ class BaseLayout:
                                            kwargs.get('width', 0.5 if not self.violin.on
                                                       else 0.15)),
                            )
+
         self.box_grand_mean = Element('box_grand_mean', self.fcpp, kwargs,
                                       on=utl.kwget(kwargs, self.fcpp,
                                                    ['box_grand_mean',
-                                                       'grand_mean'],
+                                                    'grand_mean'],
                                                    kwargs.get('grand_mean', False)),
                                       color=utl.kwget(kwargs, self.fcpp,
                                                       ['box_grand_mean_color',
-                                                          'grand_mean_color'],
+                                                       'grand_mean_color'],
                                                       kwargs.get('grand_mean_color', '#555555')),
                                       style=utl.kwget(kwargs, self.fcpp,
                                                       ['box_grand_mean_style',
-                                                          'grand_mean_style'],
+                                                       'grand_mean_style'],
                                                       kwargs.get('grand_mean_style', '--')),
                                       width=utl.kwget(kwargs, self.fcpp,
                                                       ['box_grand_mean_width',
-                                                          'grand_mean_width'],
+                                                       'grand_mean_width'],
                                                       kwargs.get('grand_mean_width', 1)),
                                       zorder=30)
 
@@ -770,10 +769,14 @@ class BaseLayout:
                                          zorder=30)
 
         self.box_whisker = Element('box_whisker', self.fcpp, kwargs,
-                                   on=self.box.on,
+                                   on=utl.kwget(kwargs, self.fcpp,
+                                                ['box_mean_diamonds', 'mean_diamonds'],
+                                                self.box.on),
                                    color=self.box.edge_color,
                                    style=self.box.style,
                                    width=self.box.edge_width)
+        if not self.box_whisker.on:
+            self.box_whisker.width.values = [0]
 
         self.box_stat_line = \
             Element('box_stat_line', self.fcpp, kwargs,
@@ -788,7 +791,10 @@ class BaseLayout:
         self.box_divider = Element('box_divider', self.fcpp, kwargs,
                                    on=kwargs.get(
                                        'box_divider', kwargs.get('box', True)),
-                                   color='#bbbbbb', text=None,
+                                   color=utl.kwget(kwargs, self.fcpp,
+                                                   ['box_divider_color', 'box_divider_line_color'],
+                                                   '#bbbbbb'),
+                                   text=None,
                                    zorder=2,
                                    )
 
@@ -2634,8 +2640,8 @@ class BaseLayout:
             ir: subplot row index
             ic: subplot column index
             df: data to plot
-            x: x-column name
-            y: y-column name
+            x: x-axis column name
+            y: y-axis column name
             z: z-column name
             data: Data object
 
@@ -2655,8 +2661,8 @@ class BaseLayout:
             ic: subplot column index
             iline: data subset index (from Data.get_plot_data)
             df: input data
-            x: x-column name
-            y: y-column name
+            x: x-axis column name
+            y: y-axis column name
             leg_name: legend value name if legend enabled
             yvals: list of tuples of groupling column values
             ngroups: total number of groups in the full data set based on
@@ -2674,8 +2680,8 @@ class BaseLayout:
             ir: subplot row index
             ic: subplot column index
             df: data to plot
-            x: x-column name
-            y: y-column name
+            x: x-axis column name
+            y: y-axis column name
             z: z-column name
             data: Data object
 
@@ -2695,8 +2701,8 @@ class BaseLayout:
             iline: data subset index (from Data.get_plot_data)
             df: summed column "y" values grouped by x-column -->
                 df.groupby(x).sum()[y]
-            x: x-column name
-            y: y-column name
+            x: x-axis column name
+            y: y-axis column name
             leg_name: legend value name if legend enabled
             data: Data object
 
@@ -2749,8 +2755,8 @@ class BaseLayout:
             ir: subplot row index
             ic: subplot column index
             df: input data
-            x: x-column name
-            y: y-column name
+            x: x-axis column name
+            y: y-axis column name
             data: Data object
             kwargs: keyword args
         """
@@ -2780,8 +2786,8 @@ class BaseLayout:
             iline: data subset index (from Data.get_plot_data)
             df: summed column "y" values grouped by x-column -->
                 df.groupby(x).sum()[y]
-            x: x-column name
-            y: y-column name
+            x: x-axis column name
+            y: y-axis column name
             leg_name: legend value name if legend enabled
             twin: denotes if twin axis is enabled or not
             zorder (optional): z-height of the plot lines. Defaults to 1.
@@ -2988,7 +2994,7 @@ class Element:
         # lines
         self.alpha = utl.kwget(kwargs, fcpp, '%s_alpha' % name,
                                kwargs.get('alpha', 1))
-        self.color = utl.kwget(kwargs, fcpp, '%s_color' % name,
+        self.color = utl.kwget(kwargs, fcpp, ['%s_color' % name, 'color'],
                                kwargs.get('color', '#000000'))
         if type(self.color) is not RepeatedList or self.alpha != 1:
             self.color_alpha('color', 'alpha')

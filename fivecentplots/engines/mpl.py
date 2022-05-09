@@ -1813,10 +1813,7 @@ class Layout(BaseLayout):
                                                    'color': self.box.median_color},
                                                notch=self.box.notch,
                                                patch_artist=True,
-                                               zorder=3)  # ,
-            # widths=self.box.width.values[0]
-            #      if len(self.box.width.values) == 1
-            #     else self.box.width.values)
+                                               zorder=3)
             for ipatch, patch in enumerate(bp['boxes']):
                 patch.set_edgecolor(self.box.edge_color[ipatch])
                 patch.set_facecolor(self.box.fill_color[ipatch])
@@ -1825,7 +1822,7 @@ class Layout(BaseLayout):
                 patch.set_ls(self.box.style[ipatch])
             for ipatch, patch in enumerate(bp['whiskers']):
                 patch.set_color(self.box_whisker.color[int(ipatch / 2)])
-                patch.set_lw(1)  # self.box_whisker.width[ipatch])
+                patch.set_lw(self.box_whisker.width[ipatch])
                 patch.set_ls(self.box_whisker.style[ipatch])
             for ipatch, patch in enumerate(bp['caps']):
                 patch.set_color(self.box_whisker.color[int(ipatch / 2)])
@@ -1846,8 +1843,8 @@ class Layout(BaseLayout):
             ir: subplot row index
             ic: subplot column index
             df: data to plot
-            x: x-column name
-            y: y-column name
+            x: x-axis column name
+            y: y-axis column name
             z: z-column name
             data: Data object
 
@@ -1917,8 +1914,8 @@ class Layout(BaseLayout):
             ic: subplot column index
             iline: data subset index (from Data.get_plot_data)
             df: input data
-            x: x-column name
-            y: y-column name
+            x: x-axis column name
+            y: y-axis column name
             leg_name: legend value name if legend enabled
             yvals: list of tuples of groupling column values
             ngroups: total number of groups in the full data set based on
@@ -1973,8 +1970,8 @@ class Layout(BaseLayout):
             ir: subplot row index
             ic: subplot column index
             df: data to plot
-            x: x-column name
-            y: y-column name
+            x: x-axis column name
+            y: y-axis column name
             z: z-column name
             data: Data object
 
@@ -2046,8 +2043,8 @@ class Layout(BaseLayout):
             iline: data subset index (from Data.get_plot_data)
             df: summed column "y" values grouped by x-column -->
                 df.groupby(x).sum()[y]
-            x: x-column name
-            y: y-column name
+            x: x-axis column name
+            y: y-axis column name
             leg_name: legend value name if legend enabled
             data: Data object
 
@@ -2173,8 +2170,8 @@ class Layout(BaseLayout):
             ir: subplot row index
             ic: subplot column index
             df: input data
-            x: x-column name
-            y: y-column name
+            x: x-axis column name
+            y: y-axis column name
             data: Data object
             kwargs: keyword args
         """
@@ -2271,8 +2268,8 @@ class Layout(BaseLayout):
             iline: data subset index (from Data.get_plot_data)
             df: summed column "y" values grouped by x-column -->
                 df.groupby(x).sum()[y]
-            x: x-column name
-            y: y-column name
+            x: x-axis column name
+            y: y-axis column name
             leg_name: legend value name if legend enabled
             twin: denotes if twin axis is enabled or not
             zorder (optional): z-height of the plot lines. Defaults to 1.

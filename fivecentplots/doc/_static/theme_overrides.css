@@ -1,5 +1,8 @@
 /* override table width restrictions */
 
+p{
+    margin: 0;
+}
 .hh {
     background-color: #d5f4e6
 }
@@ -192,4 +195,14 @@ div.nbinput div.input_area {
 }
 .s1 {
     color: #32a44d !important;
+}
+.highlight {
+    background: #eeeeee;
+}
+.highlight .nn {
+    color: #0e84b5;
+    font-weight: normal;
+}
+.nbinput.container .prompt, .nboutput.container .prompt{
+    width: 0 !important;
 }

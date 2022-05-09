@@ -90,8 +90,8 @@ class Gantt(data.Data):
         Yields:
             iline: legend index
             df: data subset to plot
-            row['x'] [x]: x-column name
-            row['y'] [y]: y-column name
+            row['x'] [x]: x-axis column name
+            row['y'] [y]: y-axis column name
             self.z [z]: z-column name
             leg [leg_name]: legend value name if legend enabled
             twin: denotes if twin axis is enabled or not

@@ -22,7 +22,6 @@ import pdb
 import copy
 import shutil
 import sys
-import textwrap
 from . import data
 from . colors import *
 from . import engines
@@ -61,40 +60,34 @@ global KWARGS
 KWARGS = {}
 
 
-def bar(*args, **kwargs):
-    """ Main bar chart plotting function
-    At minimum, it requires a pandas DataFrame with at
-    least one column for the y axis.  Plots can be customized and enhanced by
-    passing keyword arguments.  Default values that must be defined in order to
-    generate the plot are pulled from the fcp_params default dictionary
-    Args:
-        df (DataFrame): DataFrame containing data to plot
-        x (str):        name of x column in df
-        y (str|list):   name or list of names of y column(s) in df
-    Keyword Args:
-        see online docs
-    Returns:
-        plots
-    """
-
-    return plotter(data.Bar, **dfkwarg(args, kwargs))
-
-
-def boxplot(*args, **kwargs):
-    """ Main boxplot plotting function
-    At minimum, it requires a pandas DataFrame with at
-    least one column for the y axis.  Plots can be customized and enhanced by
-    passing keyword arguments.  Default values that must be defined in order to
-    generate the plot are pulled from the fcp_params default dictionary
+def bar(df, **kwargs):
+    """Bar chart
 
     Args:
-        df (DataFrame): DataFrame containing data to plot
-        y (str|list):   column name in df to use for the box(es)
+        df (pandas.DataFrame): DataFrame containing data to plot
 
-    Keyword Args:
+    Required Keyword Args:
+        x (str): x-axis column name
+        y (str): y-axis column name
+
+    Optional Keyword Args:
     """
+    return plotter(data.Bar, **dfkwarg(df, kwargs))
 
-    return plotter(data.Box, **dfkwarg(args, kwargs))
+
+def boxplot(df, **kwargs):
+    """ Box plot modeled after the "Variability Chart" in JMP which provides convenient,
+    multi-level group labels automatically along the x-axis
+
+    Args:
+        df (pandas.DataFrame): DataFrame containing data to plot
+
+    Required Keyword Args:
+        y (str): y-axis column name contining the box plot data
+
+    Optional Keyword Args:
+    """
+    return plotter(data.Box, **dfkwarg(df, kwargs))
 
 
 def contour(*args, **kwargs):
@@ -113,7 +106,6 @@ def contour(*args, **kwargs):
 
     Keyword Args:
     """
-
     return plotter(data.Contour, **dfkwarg(args, kwargs))
 
 
@@ -450,6 +442,7 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
     if layout.box_divider.on and len(dividers) > 0:
         layout.ax_vlines = copy.deepcopy(layout.box_divider)
         layout.ax_vlines.values = dividers
+        layout.ax_vlines.color = copy.copy(layout.box_divider.color)
         layout.ax_vlines.style = copy.copy(layout.box_divider.style)
         layout.ax_vlines.width = copy.copy(layout.box_divider.width)
         layout.add_hvlines(ir, ic)
@@ -582,8 +575,8 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin, leg_name, ngroups):
         ic (int): current subplot column number
         iline (int): iterator
         df (pd.DataFrame): input data
-        x (str): x-column name
-        y (str): y-column name
+        x (str): x-axis column name
+        y (str): y-axis column name
         twin (bool): denote twin axis
         leg_name (str): legend value
         ngroups (int): number of groups in this data set
@@ -1171,37 +1164,6 @@ def set_theme(theme=None):
     print('done!')
 
 
-def kw_header(val, indent='       '):
-    """
-    Indent header names
-    """
-
-    return '%s%s\n' % (indent, val)
-
-
-def kw_print(kw):
-    """
-    Print friendly version of kw dicts
-    """
-
-    indent = '          '
-    kwstr = ''
-
-    for irow, row in kw.iterrows():
-        kw = row['Keyword'].split(':')[-1]
-        line = kw + ' (%s)' % row['Data Type'] + ': ' +\
-            row['Description'] + '; default: %s' % row['Default'] + \
-            '; ex: %s' % row['Example']
-
-        kwstr += textwrap.fill(line, 80, initial_indent=indent,
-                               subsequent_indent=indent + '  ')
-        kwstr += '\n'
-
-    kwstr = kwstr.replace('`', '')
-
-    return kwstr
-
-
 # DOC only
 def axes():
     """
@@ -1304,27 +1266,30 @@ def ws():
     pass
 
 
-bar.__doc__ += \
-    ''
+bar.__doc__ += keywords.kw_print(kw['Bar'])
 
 
 boxplot.__doc__ += \
-    kw_header('Box Dividers:', indent='   ') + \
-    kw_print(kw['BoxDivider']) + \
-    kw_header('Box Range Lines:') + \
-    kw_print(kw['BoxRange']) + \
-    kw_header('Box Stat Lines:') + \
-    kw_print(kw['BoxStat'])
+    keywords.kw_header('Basic:', indent='   ') + \
+    keywords.kw_print(kw['Box']) + \
+    keywords.kw_header('Grouping text:') + \
+    keywords.kw_print(kw['BoxLabel']) + \
+    keywords.kw_header('Stat Lines:') + \
+    keywords.kw_print(kw['BoxStat']) + \
+    keywords.kw_header('Diamonds:') + \
+    keywords.kw_print(kw['BoxDiamond']) + \
+    keywords.kw_header('Violins:') + \
+    keywords.kw_print(kw['BoxViolin'])
 
 
 contour.__doc__ += \
-    kw_header('Color bar:', indent='   ') + \
-    kw_print(kw['Cbar'])
+    keywords.kw_header('Color bar:', indent='   ') + \
+    keywords.kw_print(kw['Cbar'])
 
 
 heatmap.__doc__ += \
-    kw_header('Color bar:', indent='   ') + \
-    kw_print(kw['Cbar'])
+    keywords.kw_header('Color bar:', indent='   ') + \
+    keywords.kw_print(kw['Cbar'])
 
 
 hist.__doc__ += ''
@@ -1337,50 +1302,50 @@ plot.__doc__ += ''
 
 
 axes.__doc__ = \
-    kw_print(kw['Axes'])
+    keywords.kw_print(kw['Axes'])
 
 
 cbar.__doc__ = \
-    kw_print(kw['Cbar'])
+    keywords.kw_print(kw['Cbar'])
 
 
 figure.__doc__ = \
-    kw_print(kw['Figure'])
+    keywords.kw_print(kw['Figure'])
 
 
 fit.__doc__ = \
-    kw_print(kw['Fit'])
+    keywords.kw_print(kw['Fit'])
 
 
 gridlines.__doc__ = ''
 
 
 labels.__doc__ = \
-    kw_print(kw['Label'])
+    keywords.kw_print(kw['Label'])
 
 
 legend.__doc__ = \
-    kw_print(kw['Legend'])
+    keywords.kw_print(kw['Legend'])
 
 
 lines.__doc__ = \
-    kw_print(kw['Lines'])
+    keywords.kw_print(kw['Lines'])
 
 
 markers.__doc__ = \
-    kw_print(kw['Markers'])
+    keywords.kw_print(kw['Markers'])
 
 
 ref_line.__doc__ = \
-    kw_print(kw['Ref Line'])
+    keywords.kw_print(kw['Ref Line'])
 
 
 ticks.__doc__ = \
-    kw_print(kw['Ticks'])
+    keywords.kw_print(kw['Ticks'])
 
 
 tick_labels.__doc__ = ''
 
 
 ws.__doc__ = \
-    kw_print(kw['WS'])
+    keywords.kw_print(kw['WS'])

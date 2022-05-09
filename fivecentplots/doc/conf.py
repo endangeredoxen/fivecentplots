@@ -27,15 +27,15 @@ db = pdb.set_trace
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('.'))
 
-# copy over latest ipynb files from tests folder
-cur_dir = os.path.dirname(os.path.realpath(__file__))
-test_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'tests', 'notebooks')
-nbs = [f for f in os.listdir(test_dir) if '.ipynb' in f]
-nbs = [f for f in nbs if 'checkpoint' not in f]
-for nb in nbs:
-    if os.path.exists(os.path.join(cur_dir, nb)):
-        os.remove(os.path.join(cur_dir, nb))
-    shutil.copyfile(os.path.join(test_dir, nb), os.path.join(cur_dir, nb))
+# # copy over latest ipynb files from tests folder
+# cur_dir = os.path.dirname(os.path.realpath(__file__))
+# test_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'tests', 'notebooks')
+# nbs = [f for f in os.listdir(test_dir) if '.ipynb' in f]
+# nbs = [f for f in nbs if 'checkpoint' not in f]
+# for nb in nbs:
+#     if os.path.exists(os.path.join(cur_dir, nb)):
+#         os.remove(os.path.join(cur_dir, nb))
+#     shutil.copyfile(os.path.join(test_dir, nb), os.path.join(cur_dir, nb))
 
 # -- General configuration ------------------------------------------------
 
