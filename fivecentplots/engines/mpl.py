@@ -897,7 +897,7 @@ class Layout(BaseLayout):
                 width_bg = lab.size_all_bg.width.max()
                 height_bg = lab.size_all_bg.height.max()
 
-            lab.size = (max(width, width_bg), max(height, height_bg))
+            lab.size = [max(width, width_bg), max(height, height_bg)]
 
         # titles
         if self.title.on and type(self.title.text) is str:
@@ -965,7 +965,7 @@ class Layout(BaseLayout):
             height = lab.size_all.height.max()
             width_bg = lab.size_all_bg.width.max()  # do we want this?
             height_bg = lab.size_all_bg.height.max()
-            lab.size = (max(width, width_bg), max(height, height_bg))
+            lab.size = [max(width, width_bg), max(height, height_bg)]
 
         if self.box_group_title.on:
             lab = self.box_group_title
@@ -991,7 +991,7 @@ class Layout(BaseLayout):
             width_bg = lab.size_all_bg.width.max()
             height_bg = lab.size_all_bg.height.max()
 
-            lab.size = (max(width, width_bg), max(height, height_bg))
+            lab.size = [max(width, width_bg), max(height, height_bg)]
 
         # pie labels
         if self.pie.on:
@@ -1122,13 +1122,17 @@ class Layout(BaseLayout):
                               self.heatmap.cell_size * data.num_y]
             self.label_col.size[0] = self.axes.size[0]
             self.label_row.size[1] = self.axes.size[1]
+            self.label_wrap.size[1] = self.axes.size[0]
 
         # imshow ax adjustment
         if self.name == 'imshow':
             if data.wh_ratio >= 1:
                 self.axes.size[1] = self.axes.size[0] / data.wh_ratio
+                self.label_row.size[1] = self.axes.size[1]
             else:
                 self.axes.size[0] = self.axes.size[1] * data.wh_ratio
+                self.label_col.size[0] = self.axes.size[0]
+                self.label_wrap.size[0] = self.axes.size[0]
 
         # Set figure width
         self.fig.size[0] = self._left + self.axes.size[0] * self.ncol + \
@@ -1992,10 +1996,6 @@ class Layout(BaseLayout):
         rows = len(df)
         map_sq = min(self.axes.size[0] / cols, self.axes.size[1] / rows)
         self.axes.size = [map_sq * cols, map_sq * rows]
-        if self.label_row.on:
-            self.label_row.size[1] = self.axes.size[1]
-        if self.label_col.on:
-            self.label_col.size[0] = self.axes.size[0]
 
         # Set the axes
         dtypes = [int, np.int32, np.int64]
@@ -2310,7 +2310,7 @@ class Layout(BaseLayout):
         points = None
         if self.markers.on and not marker_disable:
             if self.markers.jitter:
-                df[x] = np.random.normal(df[x], 0.03, size=len(df[y]))
+                dfx = np.random.normal(df[x], 0.03, size=len(df[y]))
             marker = format_marker(self.markers.type[iline])
             if marker != 'None':
                 # use scatter plot for points
