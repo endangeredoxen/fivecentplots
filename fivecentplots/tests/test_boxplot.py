@@ -62,7 +62,7 @@ def plt_simple(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'simple_master') if master else 'simple'
 
     # Make the plot
-    fcp.boxplot(df=df, y='Value', show=SHOW, tick_labels_minor=True, grid_minor=True,
+    fcp.boxplot(df, y='Value', show=SHOW, tick_labels_minor=True, grid_minor=True,
                 filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -90,7 +90,7 @@ def plt_one_group(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'one_group_master') if master else 'one_group'
 
     # Make the plot
-    fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], filter='Batch==101',
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], filter='Batch==101',
                 show=SHOW, filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -118,7 +118,7 @@ def plt_group_single(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'group_single_master') if master else 'group_single'
 
     # Make the plot
-    fcp.boxplot(df=df, y='Value', groups='Batch', show=SHOW,
+    fcp.boxplot(df, y='Value', groups='Batch', show=SHOW,
                 filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -147,7 +147,7 @@ def plt_group_multiple(bm=False, master=False, remove=True, show=False):
         MASTER, 'group_multiple_master') if master else 'group_multiple'
 
     # Make the plot
-    fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW,
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW,
                 filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -175,7 +175,7 @@ def plt_group_legend(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'group_legend_master') if master else 'group_legend'
 
     # Make the plot
-    fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], legend='Region', show=SHOW,
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], legend='Region', show=SHOW,
                 filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -203,7 +203,7 @@ def plt_grid_column(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'grid_column_master') if master else 'grid_column'
 
     # Make the plot
-    fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], col='Region', show=SHOW, ax_size=[300, 300],
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], col='Region', show=SHOW, ax_size=[300, 300],
                 filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -231,7 +231,7 @@ def plt_grid_row(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'grid_row_master') if master else 'grid_row'
 
     # Make the plot
-    fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], row='Region', show=SHOW, ax_size=[300, 300],
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], row='Region', show=SHOW, ax_size=[300, 300],
                 filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -259,7 +259,7 @@ def plt_grid_wrap(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'grid_wrap_master') if master else 'grid_wrap'
 
     # Make the plot
-    fcp.boxplot(df=df, y='Value', groups=['Sample', 'Region'], wrap='Batch', show=SHOW, ax_size=[300, 300],
+    fcp.boxplot(df, y='Value', groups=['Sample', 'Region'], wrap='Batch', show=SHOW, ax_size=[300, 300],
                 filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -288,7 +288,7 @@ def plt_grid_wrap_y(bm=False, master=False, remove=True, show=False):
 
     # Make the plot
     df['Value*2'] = 2 * df['Value']
-    fcp.boxplot(df=df, y=['Value', 'Value*2'], groups=['Batch', 'Sample', 'Region'], wrap='y', show=SHOW,
+    fcp.boxplot(df, y=['Value', 'Value*2'], groups=['Batch', 'Sample', 'Region'], wrap='y', show=SHOW,
                 ax_size=[300, 300],
                 filename=name + '.png', save=not bm, inline=False, jitter=False)
 
@@ -319,7 +319,7 @@ def plt_grid_wrap_y_no_share(bm=False, master=False, remove=True, show=False):
 
     # Make the plot
     df['Value*2'] = 2 * df['Value']
-    fcp.boxplot(df=df, y=['Value', 'Value*2'], groups=['Batch', 'Sample', 'Region'], wrap='y', show=SHOW,
+    fcp.boxplot(df, y=['Value', 'Value*2'], groups=['Batch', 'Sample', 'Region'], wrap='y', show=SHOW,
                 ax_size=[300, 300], share_y=False,
                 filename=name + '.png', save=not bm, inline=False, jitter=False)
 
@@ -348,7 +348,7 @@ def plt_grand_means(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'grand_means_master') if master else 'grand_means'
 
     # Make the plot
-    fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, grand_mean=True, grand_median=True,
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW, grand_mean=True, grand_median=True,
                 filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -376,7 +376,7 @@ def plt_group_means(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'group_means_master') if master else 'group_means'
 
     # Make the plot
-    fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, group_means=True,
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW, group_means=True,
                 filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -405,7 +405,7 @@ def plt_mean_diamonds(bm=False, master=False, remove=True, show=False):
         MASTER, 'mean_diamonds_master') if master else 'mean_diamonds'
 
     # Make the plot
-    fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, mean_diamonds=True, conf_coeff=0.95,
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW, mean_diamonds=True, conf_coeff=0.95,
                 filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -433,7 +433,7 @@ def plt_violin(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'violin_master') if master else 'violin'
 
     # Make the plot
-    fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, violin=True,
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW, violin=True,
                 filename=name + '.png', save=not bm, inline=False)
 
     if bm:
@@ -462,7 +462,7 @@ def plt_violin_styled(bm=False, master=False, remove=True, show=False):
         MASTER, 'violin_styled_master') if master else 'violin_styled'
 
     # Make the plot
-    fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, violin=True,
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW, violin=True,
                 violin_fill_color='#eaef1a', violin_fill_alpha=1, violin_edge_color='#555555', violin_edge_width=2,
                 violin_box_color='#ffffff', violin_whisker_color='#ff0000',
                 violin_median_marker='+', violin_median_color='#00ffff', violin_median_size=10,
@@ -494,7 +494,7 @@ def plt_violin_box_off(bm=False, master=False, remove=True, show=False):
         MASTER, 'violin_box_off_master') if master else 'violin_box_off'
 
     # Make the plot
-    fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW,
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW,
                 violin=True, violin_box_on=False, violin_markers=True, jitter=False,
                 filename=name + '.png', save=not bm, inline=False)
 
@@ -523,7 +523,7 @@ def plt_stat_mean(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'stat_mean_master') if master else 'stat_mean'
 
     # Make the plot
-    fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, box_stat_line='mean', ax_size=[300, 300],
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW, box_stat_line='mean', ax_size=[300, 300],
                 filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -551,7 +551,7 @@ def plt_stat_median(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'stat_median_master') if master else 'stat_median'
 
     # Make the plot
-    fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, box_stat_line='median', ax_size=[300, 300],
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW, box_stat_line='median', ax_size=[300, 300],
                 filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -579,7 +579,7 @@ def plt_stat_std_dev(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'stat_std-dev_master') if master else 'stat_std-dev'
 
     # Make the plot
-    fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, box_stat_line='std', ax_size=[300, 300],
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW, box_stat_line='std', ax_size=[300, 300],
                 filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -607,7 +607,7 @@ def plt_dividers(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'dividers_master') if master else 'dividers'
 
     # Make the plot
-    fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, box_divider=False, ax_size=[300, 300],
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW, box_divider=False, ax_size=[300, 300],
                 filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -635,7 +635,7 @@ def plt_range_lines(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'range_lines_master') if master else 'range_lines'
 
     # Make the plot
-    fcp.boxplot(df=df, y='Value', groups=['Batch', 'Sample'], show=SHOW, box_range_lines=False, ax_size=[300, 300],
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW, box_range_lines=False, ax_size=[300, 300],
                 filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:

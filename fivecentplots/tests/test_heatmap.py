@@ -73,7 +73,7 @@ def plt_cat_no_label(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'cat_no_label_master') if master else 'cat_no_label'
 
     # Make the plot
-    fcp.heatmap(df=df, x='Category', y='Player', z='Average', cbar=True, show=SHOW,
+    fcp.heatmap(df, x='Category', y='Player', z='Average', cbar=True, show=SHOW,
                 filename=name + '.png', save=not bm, inline=False)
 
     if bm:
@@ -101,7 +101,7 @@ def plt_cat_label(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'cat_label_master') if master else 'cat_label'
 
     # Make the plot
-    fcp.heatmap(df=df, x='Category', y='Player', z='Average', cbar=True, data_labels=True,
+    fcp.heatmap(df, x='Category', y='Player', z='Average', cbar=True, data_labels=True,
                 heatmap_font_color='#aaaaaa', show=SHOW, tick_labels_major_y_edge_width=0,
                 ws_ticks_ax=5,
                 filename=name + '.png', save=not bm, inline=False)
@@ -132,7 +132,7 @@ def plt_cat_cell_size(bm=False, master=False, remove=True, show=False):
         MASTER, 'cat_cell_size_master') if master else 'cat_cell_size'
 
     # Make the plot
-    fcp.heatmap(df=df, x='Category', y='Player', z='Average', cbar=True, data_labels=True,
+    fcp.heatmap(df, x='Category', y='Player', z='Average', cbar=True, data_labels=True,
                 heatmap_font_color='#aaaaaa', show=SHOW, tick_labels_major_y_edge_width=0,
                 ws_ticks_ax=5, cell_size=100,
                 filename=name + '.png', save=not bm, inline=False)
@@ -165,7 +165,7 @@ def plt_cat_non_uniform(bm=False, master=False, remove=True, show=False):
     # Make the plot
     df2 = pd.read_csv(osjoin(os.path.dirname(fcp.__file__),
                       'tests', 'fake_data_contour.csv'))
-    fcp.heatmap(df=df2, x='X', y='Y', z='Value', row='Batch', col='Experiment',
+    fcp.heatmap(df2, x='X', y='Y', z='Value', row='Batch', col='Experiment',
                 cbar=True, show=SHOW, share_z=True, ax_size=[400, 400],
                 data_labels=False, label_rc_font_size=12, filter='Batch==103', cmap='viridis',
                 filename=name + '.png', save=not bm, inline=False)

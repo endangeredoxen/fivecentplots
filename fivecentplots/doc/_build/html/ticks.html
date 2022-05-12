@@ -763,7 +763,7 @@ div.rendered_html tbody tr:hover {
 <h3>Visibility<a class="headerlink" href="#Visibility" title="Permalink to this headline">¶</a></h3>
 <p>Tick marks are controlled by keywords with the prefix <code class="docutils literal notranslate"><span class="pre">ticks_major</span></code> or <code class="docutils literal notranslate"><span class="pre">ticks_minor</span></code> and, like gridlines, can be controlled as one for major and minor ticks or by specific axis. They enabled by default on the inside of the plot whenever a grid line is enabled. However, you can enable tick marks without enabling grid lines:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -785,7 +785,7 @@ div.rendered_html tbody tr:hover {
 <h3>Style<a class="headerlink" href="#Style" title="Permalink to this headline">¶</a></h3>
 <p>All tick mark parameters can be changed via keywords at the time of plot execution or in the theme file. Consider the option below:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -807,7 +807,7 @@ div.rendered_html tbody tr:hover {
 <h3>Increment<a class="headerlink" href="#Increment" title="Permalink to this headline">¶</a></h3>
 <p>Instead of specifying a number of tick marks to display, for major tick marks in fivecentplots we specify the tick increment.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -826,7 +826,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>For minor ticks however, it is easier to specify the number of minor ticks to use via the <code class="docutils literal notranslate"><span class="pre">ticks_minor_&lt;x|y|x2|y2&gt;_number</span></code> keyword. The interval between minor ticks will then be calculated automatically. Setting the number of ticks automatically turns on the tick marks without setting <code class="docutils literal notranslate"><span class="pre">ticks_minor_&lt;x|y|x2|y2&gt;=True</span></code>. Note that this option only works for linearly scaled axis. Minor log axis will always have 8 minor ticks with log spacing.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -845,7 +845,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>Or with a log scale on the y-axis (notice the number keywords for the y-axis are ignored):</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -875,7 +875,7 @@ div.rendered_html tbody tr:hover {
 </li><li><p>Minor tick labels are always off by default and must be turned on intentionally</p>
 </li></ul><p>Turn off all ticks (Notice the labels are also turned off)</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -894,7 +894,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>Turn on minor ticks This is done using the <code class="docutils literal notranslate"><span class="pre">tick_labels_minor</span></code> family of keywords:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -916,7 +916,7 @@ div.rendered_html tbody tr:hover {
 <h3>Tick cleanup<a class="headerlink" href="#Tick-cleanup" title="Permalink to this headline">¶</a></h3>
 <p>One issue with tick labels is the potential for overlap depeding on the number of ticks displayed and the size of the plot. fivecentplots employs an algorithm that looks for tick label collision problems within a plot and between subplots and throws out certain labels while leaving the actual tick mark intact. Consider the following example:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -935,7 +935,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>Notice that not all ticks have labels, but not all ticks have labels. For instance, the x-axis has 5 ticks as specified by <code class="docutils literal notranslate"><span class="pre">ticks_major_x_number=5</span></code>, but only the 2nd and 4th tick labels are displayed. This is the result of tick cleanup. We can disable the cleanup algorithm by setting the keyword <code class="docutils literal notranslate"><span class="pre">tick_cleanup=False</span></code>. This may produce an undesirable result:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -954,7 +954,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>To fit more tick labels in, try increasing the axes size and rotating the tick labels (if applicable):</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -979,7 +979,7 @@ div.rendered_html tbody tr:hover {
 <h4>Linear scale axis<a class="headerlink" href="#Linear-scale-axis" title="Permalink to this headline">¶</a></h4>
 <p>By default, fivecentplots will attempt to make an intelligent decision about how to display tick labels when the range of data and/or the discrete tick values are very small/large. Consider the following example with very small <code class="docutils literal notranslate"><span class="pre">y</span></code> values. Notice that the values on the y axis default to exponential notation rather than explictly writing out 18 zeros after the decimal place.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -997,7 +997,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1016,7 +1016,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>You can disable the auto-formatting of ticks by setting the keywords <code class="docutils literal notranslate"><span class="pre">sci_x</span></code> and/or <code class="docutils literal notranslate"><span class="pre">sci_y</span></code> to <code class="docutils literal notranslate"><span class="pre">False</span></code>. In this particular example, this would be a really poor choice.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1038,7 +1038,7 @@ div.rendered_html tbody tr:hover {
 <h4>Log scale axis<a class="headerlink" href="#Log-scale-axis" title="Permalink to this headline">¶</a></h4>
 <p>Now consider the following log-scaled plot. By default, the major tick labels for a log axis are powers of 10 if the values are large.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1057,7 +1057,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>We can force the tick values to regular numerals as we did above by setting the keywords <code class="docutils literal notranslate"><span class="pre">sci_x</span></code> and/or <code class="docutils literal notranslate"><span class="pre">sci_y</span></code> to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1076,7 +1076,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>We can force tick marks of a log-scaled axis to exponential notation by setting the keywords <code class="docutils literal notranslate"><span class="pre">sci_x</span></code> and/or <code class="docutils literal notranslate"><span class="pre">sci_y</span></code> to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1098,7 +1098,7 @@ div.rendered_html tbody tr:hover {
 <h4>Colorbar<a class="headerlink" href="#Colorbar" title="Permalink to this headline">¶</a></h4>
 <p>We can force scientific notation on the color bar axis by setting the kwargs <code class="docutils literal notranslate"><span class="pre">sci_z=True</span></code>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>

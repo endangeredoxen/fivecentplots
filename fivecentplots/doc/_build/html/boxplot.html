@@ -794,7 +794,7 @@ array([101, 106, 103])
 <h3>Dividers<a class="headerlink" href="#Dividers" title="Permalink to this headline">¶</a></h3>
 <p>By default, when multiple <code class="docutils literal notranslate"><span class="pre">groups</span></code> are specified gray divider lines are drawn between the bottom-level groups.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -812,7 +812,7 @@ array([101, 106, 103])
 <p>These divider lines can be disabled or styled using the appropriate keywords.</p>
 <p>Disabled:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -829,7 +829,7 @@ array([101, 106, 103])
 </div>
 <p>Styled:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -852,7 +852,7 @@ array([101, 106, 103])
 at the end of the whisker lines shares the same style as the whiskers themselves.</p>
 <div class="admonition note"><p class="admonition-title"></p><p><p>The dashed lines that span to the outlier points are controlled by <code class="docutils literal notranslate"><span class="pre">box_range_lines</span></code> described in the next section.</p>
 </p></div><div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -870,7 +870,7 @@ at the end of the whisker lines shares the same style as the whiskers themselves
 </div>
 <p>Whiskers can be disabled (be careful with the lack of plurality in the prefix!) but beware that if the range lines are still enabled you will see similar lines and horizontal caps.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -891,7 +891,7 @@ at the end of the whisker lines shares the same style as the whiskers themselves
 <p>Outlier points by definition fall outside of the box whiskers, but with range lines we can span the entire range of the data (from absolute minimum to absolute maximum). This is particularly useful to indicate when there are outlier data points that fall outside of the limits of the visible y-axis. These range lines are enabled by default but can be disabled or styled through keywords with the prefix <code class="docutils literal notranslate"><span class="pre">box_range_lines</span></code>.</p>
 <p>Default behavior is a dashed gray line 0.5 pixel in width:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -908,7 +908,7 @@ at the end of the whisker lines shares the same style as the whiskers themselves
 </div>
 <p>If we disable range lines and leave whiskers enabled we get this:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -925,7 +925,7 @@ at the end of the whisker lines shares the same style as the whiskers themselves
 </div>
 <p>Styled:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -949,7 +949,7 @@ at the end of the whisker lines shares the same style as the whiskers themselves
 <h3>Legend<a class="headerlink" href="#Legend" title="Permalink to this headline">¶</a></h3>
 <p>Boxplots also support legending for another level of data visualization:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -966,7 +966,7 @@ at the end of the whisker lines shares the same style as the whiskers themselves
 </div>
 <p>Note: if there are a lot of legend items, the position of the legend will be automatically adjusted to avoid rendering over the box group titles.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -987,7 +987,7 @@ at the end of the whisker lines shares the same style as the whiskers themselves
 <h3>Column plots<a class="headerlink" href="#Column-plots" title="Permalink to this headline">¶</a></h3>
 <p>boxplots can also be broken into subplots based on “row” and/or “col” values or “wrap” keywords. In each case, a column name in the <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> is supplied as the keyword value.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1006,7 +1006,7 @@ at the end of the whisker lines shares the same style as the whiskers themselves
 <div class="section" id="Row-plots">
 <h3>Row plots<a class="headerlink" href="#Row-plots" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1025,7 +1025,7 @@ at the end of the whisker lines shares the same style as the whiskers themselves
 <div class="section" id="Wrap-plots">
 <h3>Wrap plots<a class="headerlink" href="#Wrap-plots" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1042,7 +1042,7 @@ at the end of the whisker lines shares the same style as the whiskers themselves
 </div>
 <p>Alternatively, we can wrap multiple <code class="docutils literal notranslate"><span class="pre">y</span></code> column values and create a unique subplot for each column:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1064,7 +1064,7 @@ at the end of the whisker lines shares the same style as the whiskers themselves
 </div>
 <p>Or if we disable y-axis range sharing:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1088,7 +1088,7 @@ at the end of the whisker lines shares the same style as the whiskers themselves
 <h3>Grand Mean/Median<a class="headerlink" href="#Grand-Mean/Median" title="Permalink to this headline">¶</a></h3>
 <p>The “grand mean” or “grand median” is the mean/median value for the entire data set in a given plot window. By default, the “grand mean” line is a dashed gray line and the “grand median” is a dashed blue line. Individual line color, styles, and widths can be controlled via the typically-named keywords prefixed by <code class="docutils literal notranslate"><span class="pre">box_grand_mean</span></code> or <code class="docutils literal notranslate"><span class="pre">box_grand_median</span></code>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1105,7 +1105,7 @@ at the end of the whisker lines shares the same style as the whiskers themselves
 </div>
 <p>Both long form and short form keywords are available: i.e., <code class="docutils literal notranslate"><span class="pre">box_grand_mean_ATTRIBUTE</span></code> or <code class="docutils literal notranslate"><span class="pre">grand_mean_ATTRIBUTE</span></code></p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1126,7 +1126,7 @@ at the end of the whisker lines shares the same style as the whiskers themselves
 <h3>Group Means<a class="headerlink" href="#Group-Means" title="Permalink to this headline">¶</a></h3>
 <p>Group means that correspond to the first level of grouping (i.e., same as the vertical divider lines). By default, the mean values are depicted with horizontal dashed magenta lines. Style are controlled by <code class="docutils literal notranslate"><span class="pre">box_group_means_ATTRIBUTE</span></code> or <code class="docutils literal notranslate"><span class="pre">group_means_ATTRIBUTE</span></code>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1146,7 +1146,7 @@ at the end of the whisker lines shares the same style as the whiskers themselves
 <h3>Mean Diamonds<a class="headerlink" href="#Mean-Diamonds" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">box_mean_diamonds</span></code> or <code class="docutils literal notranslate"><span class="pre">mean_diamonds</span></code> keyword allows you to overlay a diamond on the box which shows vertically the span of the data for a given confidence interval (default = 95%) and a horizontal line for the mean value of each group. Using default parameters the diamonds are green (like the program that inspired them :) )</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1168,7 +1168,7 @@ at the end of the whisker lines shares the same style as the whiskers themselves
 <div class="section" id="Mean">
 <h4>Mean<a class="headerlink" href="#Mean" title="Permalink to this headline">¶</a></h4>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1187,7 +1187,7 @@ at the end of the whisker lines shares the same style as the whiskers themselves
 <div class="section" id="Median">
 <h4>Median<a class="headerlink" href="#Median" title="Permalink to this headline">¶</a></h4>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1206,7 +1206,7 @@ at the end of the whisker lines shares the same style as the whiskers themselves
 <div class="section" id="Std-dev">
 <h4>Std dev<a class="headerlink" href="#Std-dev" title="Permalink to this headline">¶</a></h4>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1226,7 +1226,7 @@ at the end of the whisker lines shares the same style as the whiskers themselves
 <h4>Quantile<a class="headerlink" href="#Quantile" title="Permalink to this headline">¶</a></h4>
 <p>To define a quantile, use the convention “q{number between 0-100}”:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1248,7 +1248,7 @@ at the end of the whisker lines shares the same style as the whiskers themselves
 <h2>Violins<a class="headerlink" href="#Violins" title="Permalink to this headline">¶</a></h2>
 <p>We can also plot distributions with violin plots that show kernal density estimates of the data. By default, these violin plots also contain a small boxes with whiskers to indicate Q1, Q3, 1.5 * IQR, and the median of the distribution (the white point). Discrete data points are disabled by default but can be turned on with the keyword <code class="docutils literal notranslate"><span class="pre">violin_markers=True</span></code> (default box style shamelessly appropriated from <code class="docutils literal notranslate"><span class="pre">seaborn</span></code>).</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1265,7 +1265,7 @@ at the end of the whisker lines shares the same style as the whiskers themselves
 </div>
 <p>We can change the style of the violin density profiles and the associated boxplot using keywords starting with <code class="docutils literal notranslate"><span class="pre">violin</span></code>. Note that the standard box styling attributes are ignored when adding the violin plot. The reason for this is to make it possilbe to maintain different default settings for regular box plots and violin plots in the same theme file.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1285,7 +1285,7 @@ at the end of the whisker lines shares the same style as the whiskers themselves
 </div>
 <p>We can also disable the box overlay on the violin plot as follows:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1305,7 +1305,7 @@ at the end of the whisker lines shares the same style as the whiskers themselves
 <h2>Notch<a class="headerlink" href="#Notch" title="Permalink to this headline">¶</a></h2>
 <p>Notch-style boxes can also be created using the <code class="docutils literal notranslate"><span class="pre">notch</span></code> keyword:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>

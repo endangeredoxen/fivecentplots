@@ -783,7 +783,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>However, there are instances when we want alpha on the plot markers and on the legend markers. To achieve this, use the keyword <code class="docutils literal notranslate"><span class="pre">legend_marker_alpha</span></code> to set both the edge and fill alpha of the legend markers to a different value:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -808,7 +808,7 @@ div.rendered_html tbody tr:hover {
 <p>All connecting lines drawn through markers in a plot can be colored. fivecentplots comes with a built-in list of line (and marker) colors (an expanded set of colors from the terrific default palette in the seaborn plotting library). This color pattern repeats indefinetly in case the number of plotted lines exceeds the length of the built-in list.</p>
 <img alt="_images/colors.png" src="_images/colors.png" />
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -829,7 +829,7 @@ div.rendered_html tbody tr:hover {
 <h4>Custom color list<a class="headerlink" href="#Custom-color-list" title="Permalink to this headline">¶</a></h4>
 <p>The built-in list of colors can be overriden by passing a list of hex-based color codes to the <code class="docutils literal notranslate"><span class="pre">colors</span></code> keyword. Like the built-in list, the custom list will also cycle back to the start if there are more lines than colors.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -848,7 +848,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>We can also select certain colors from the default color list by index rather than specifying the full hex color code:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -870,7 +870,7 @@ div.rendered_html tbody tr:hover {
 <h4>Colormap<a class="headerlink" href="#Colormap" title="Permalink to this headline">¶</a></h4>
 <p>The color list can also be replaced by a discretized colormap using the keyword <code class="docutils literal notranslate"><span class="pre">cmap</span></code></p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -892,7 +892,7 @@ div.rendered_html tbody tr:hover {
 <h4>Line styling<a class="headerlink" href="#Line-styling" title="Permalink to this headline">¶</a></h4>
 <p>Plot lines do not have a fill or edge so the typical styling parameters like <code class="docutils literal notranslate"><span class="pre">&lt;element</span> <span class="pre">name&gt;_fill_color</span></code> do not exist. Instead, lines have just a unary styling keywords: <code class="docutils literal notranslate"><span class="pre">lines_color</span></code>, <code class="docutils literal notranslate"><span class="pre">lines_width</span></code>, <code class="docutils literal notranslate"><span class="pre">lines_style</span></code> and <code class="docutils literal notranslate"><span class="pre">lines_alpha</span></code>. In this case, we apply global style settings to all lines in the data set.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -911,7 +911,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>The nomenclature above of <code class="docutils literal notranslate"><span class="pre">lines_&lt;some</span> <span class="pre">property&gt;</span></code> stems from the fact that plot line properties are contained in the <code class="docutils literal notranslate"><span class="pre">lines</span></code> Element class. However, because this naming scheme may be cumbersome to some users, the non-plural version of these keywords is also supported: * <code class="docutils literal notranslate"><span class="pre">lines_color</span></code> –&gt; <code class="docutils literal notranslate"><span class="pre">line_color</span></code> * <code class="docutils literal notranslate"><span class="pre">lines_width</span></code> –&gt; <code class="docutils literal notranslate"><span class="pre">line_width</span></code> * <code class="docutils literal notranslate"><span class="pre">lines_style</span></code> –&gt; <code class="docutils literal notranslate"><span class="pre">line_style</span></code> * <code class="docutils literal notranslate"><span class="pre">lines_alpha</span></code> –&gt; <code class="docutils literal notranslate"><span class="pre">line_alpha</span></code></p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -930,7 +930,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>We can also set line styles for each line, instead of applying them globally:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -955,7 +955,7 @@ div.rendered_html tbody tr:hover {
 <p>A data point marker has both an edge and a fill color, each with its own unique value of transparency (or alpha). By default, marker fill is disabled and marker edge color is matched to the line color with no transparency. However, we can override any of these as shown below.</p>
 <p>Change the marker edge color for all markers:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -974,7 +974,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>All a custom fill color:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -993,7 +993,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>Use the default color scheme with marker fill:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1012,7 +1012,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>Add fill alpha:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1034,7 +1034,7 @@ div.rendered_html tbody tr:hover {
 <h3>Boxplot example<a class="headerlink" href="#Boxplot-example" title="Permalink to this headline">¶</a></h3>
 <p>Boxplots have color options for the boxes or violins that are drawn behind the markers:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1058,7 +1058,7 @@ div.rendered_html tbody tr:hover {
 <h3>Histogram example<a class="headerlink" href="#Histogram-example" title="Permalink to this headline">¶</a></h3>
 <p>By default, histograms have a fill alpha value of 0.5 (unless overriden by the theme file or keyword). This can easily be tailored for a different style. Compare the default plot:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1076,7 +1076,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>with this one, that employs the <code class="docutils literal notranslate"><span class="pre">hist_fill_alpha</span></code> keyword:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1102,7 +1102,7 @@ div.rendered_html tbody tr:hover {
 <img alt="_images/markers.png" src="_images/markers.png" />
 <p>You can specify your own markers by passing a list of marker string names to the <code class="docutils literal notranslate"><span class="pre">markers</span></code> keyword. These string names can be special characters for the selected plotting engine (for example, with <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> as an engine <code class="docutils literal notranslate"><span class="pre">'d'</span></code> = diamond) or other alpha-numeric values. As with colors, the marker list will loop back on itself if the number of curves exceeds the number of items in the list.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1121,7 +1121,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>We can also remove markers for specific curves in the legend using the keyword <code class="docutils literal notranslate"><span class="pre">None</span></code>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1143,7 +1143,7 @@ div.rendered_html tbody tr:hover {
 <h3>Marker size<a class="headerlink" href="#Marker-size" title="Permalink to this headline">¶</a></h3>
 <p>The size of the markers within the plot window are controlled by the <code class="docutils literal notranslate"><span class="pre">marker_size</span></code> keyword. All data sets share the same marker size. Notice that the legend markers do not scale their size with the markers on the plot.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1162,7 +1162,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>The legend marker size can be controlled independently if needed using the keyword <code class="docutils literal notranslate"><span class="pre">legend_marker_size</span></code>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1185,7 +1185,7 @@ div.rendered_html tbody tr:hover {
 <h2>Fonts<a class="headerlink" href="#Fonts" title="Permalink to this headline">¶</a></h2>
 <p>All text elements (plot title, labels, etc.) can be styled via the font attributes associated with the object (see Default Attributes). Please note that the font family “fantasy” below looks an awful lot like comic sans which really should be banned globally.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1246,7 +1246,7 @@ custom theme file in your user directory with the same name as one of the master
 <div class="section" id="White-default-theme">
 <h3>White default theme<a class="headerlink" href="#White-default-theme" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1263,7 +1263,7 @@ Previous theme file found! Renaming to &#34;defaults_old.py&#34; and copying new
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1283,7 +1283,7 @@ Previous theme file found! Renaming to &#34;defaults_old.py&#34; and copying new
 <div class="section" id="Gray-default-theme">
 <h3>Gray default theme<a class="headerlink" href="#Gray-default-theme" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1300,7 +1300,7 @@ Previous theme file found! Renaming to &#34;defaults_old.py&#34; and copying new
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1327,7 +1327,7 @@ Previous theme file found! Renaming to &#34;defaults_old.py&#34; and copying new
 <li><p>Plotting engine overrides: plotting-engine specific values; for example we might include <code class="docutils literal notranslate"><span class="pre">rcParams</span></code> for <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> fonts:</p></li>
 </ol>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1362,7 +1362,7 @@ Previous theme file found! Renaming to &#34;defaults_old.py&#34; and copying new
 <p>As of version 0.4.0, themes can also be swapped on the fly without globally settting the theme using the <code class="docutils literal notranslate"><span class="pre">theme</span></code> keyword. The value of the keyword is the full path to the alternate theme file or the just the name of a theme file.</p>
 <p>In the example below, the default theme is set to gray but we override at the plot call and use the built-in “white” theme:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>

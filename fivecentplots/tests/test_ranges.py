@@ -86,7 +86,7 @@ def test_primary(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'primary_master') if master else 'primary'
 
     # Make the plot
-    fcp.plot(df=df, x='Voltage', y='I [A]', legend='Die', show=SHOW,
+    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', show=SHOW,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              xmax=1.2, filename=name + '.png')
 
@@ -110,7 +110,7 @@ def test_primary_no_scale(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'primary_no-auto-scale_master') if master else 'primary_no-auto-scale'
 
     # Make the plot
-    fcp.plot(df=df, x='Voltage', y='I [A]', legend='Die', show=SHOW,
+    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', show=SHOW,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              xmax=1.2, auto_scale=False,
              filename=name + '.png')
@@ -135,7 +135,7 @@ def test_primary_explicit(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'primary_explicit_master') if master else 'primary_explicit'
 
     # Make the plot
-    fcp.plot(df=df, x='Voltage', y='I [A]', legend='Die', show=SHOW,
+    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', show=SHOW,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              xmax=1.2, auto_scale=False,
              filename=name + '.png')
@@ -160,7 +160,7 @@ def test_secondary(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'secondary_master') if master else 'secondary'
 
     # Make the plot
-    fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              filename=name + '.png')
 
@@ -184,7 +184,7 @@ def test_secondary_limits(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'secondary_limits_master') if master else 'secondary_limits'
 
     # Make the plot
-    fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              xmin=1.3,
              filename=name + '.png')
@@ -209,7 +209,7 @@ def test_secondary_limits_no_scale(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'secondary_no-auto-scale_master') if master else 'secondary_no-auto-scale'
 
     # Make the plot
-    fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              xmax=1.2, auto_scale=False,
              filename=name + '.png')
@@ -234,7 +234,7 @@ def test_secondary_limits_y(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'secondary_y-limit_master') if master else 'secondary_y-limit'
 
     # Make the plot
-    fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              ymin=1,
              filename=name + '.png')
@@ -259,7 +259,7 @@ def test_multiple(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'multiple_master') if master else 'multiple'
 
     # Make the plot
-    fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=False, show=SHOW, legend='Die',
+    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=False, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              filename=name + '.png')
 
@@ -283,7 +283,7 @@ def test_multiple_scaled(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'multiple_scaled_master') if master else 'multiple_scaled'
 
     # Make the plot
-    fcp.plot(df=df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=False, show=SHOW, legend='Die',
+    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=False, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              ymin=0.05,
              filename=name + '.png')
@@ -308,7 +308,7 @@ def test_boxplot(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'boxplot_master') if master else 'boxplot'
 
     # Make the plot
-    fcp.boxplot(df=df_box, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', show=SHOW,
+    fcp.boxplot(df_box, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', show=SHOW,
                 filename=name + '.png', jitter=False)
 
     # Compare with master
@@ -331,7 +331,7 @@ def test_boxplot_quantile(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'boxplot_quantile_master') if master else 'boxplot_quantile'
 
     # Make the plot
-    fcp.boxplot(df=df_box, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', show=SHOW, ymax='95q',
+    fcp.boxplot(df_box, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', show=SHOW, ymax='95q',
                 filename=name + '.png', jitter=False)
 
     # Compare with master
@@ -354,7 +354,7 @@ def test_boxplot_iqr(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'boxplot_iqr_master') if master else 'boxplot_iqr'
 
     # Make the plot
-    fcp.boxplot(df=df_box, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', show=SHOW,
+    fcp.boxplot(df_box, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', show=SHOW,
                 ymin='1.5*iqr', ymax='1.5*iqr',
                 filename=name + '.png', jitter=False)
 

@@ -63,7 +63,7 @@ def plt_vertical(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'vertical_master') if master else 'vertical'
 
     # Make the plot
-    fcp.bar(df=df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A" & T [C]==25',
+    fcp.bar(df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A" & T [C]==25',
             tick_labels_major_x_rotation=90,
             filename=name + '.png', save=not bm, inline=False, jitter=False)
 
@@ -124,7 +124,7 @@ def plt_horizontal(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'horizontal_master') if master else 'horizontal'
 
     # Make the plot
-    fcp.bar(df=df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A"', horizontal=True,
+    fcp.bar(df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A"', horizontal=True,
             filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -152,7 +152,7 @@ def plt_error(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'error_master') if master else 'error'
 
     # Make the plot
-    fcp.bar(df=df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, error_bars=True,
+    fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, error_bars=True,
             filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -180,7 +180,7 @@ def plt_legend(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'legend_master') if master else 'legend'
 
     # Make the plot
-    fcp.bar(df=df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, legend='Measurement',
+    fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, legend='Measurement',
             filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -208,7 +208,7 @@ def plt_stacked(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'stacked_master') if master else 'stacked'
 
     # Make the plot
-    fcp.bar(df=df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, stacked=True, legend='Measurement',
+    fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, stacked=True, legend='Measurement',
             filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:

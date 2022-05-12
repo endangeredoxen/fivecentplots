@@ -11,7 +11,7 @@ print('Cleaning ipynb files...')
 # get the names of the ipynb files
 cur_dir = Path(__file__).parent.absolute()
 ipynb = [Path(f).stem + '.html' for f in os.listdir(cur_dir) if '.ipynb' in f and 'check' not in f]
-regex = r'\[[0-9]\]:'
+regex = r'\[[0-9][0-9]?\]:'
 
 for nb in ipynb:
     with open(cur_dir / '_build/html' / nb, 'r') as input:

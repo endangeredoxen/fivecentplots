@@ -65,7 +65,7 @@ def plt_simple(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'simple_master') if master else 'simple'
 
     # Make the plot
-    fcp.hist(df=df, x='Value', show=SHOW,
+    fcp.hist(df, x='Value', show=SHOW,
              inline=False, save=not bm, filename=name + '.png')
 
     if bm:
@@ -94,7 +94,7 @@ def plt_horizontal(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'horizontal_master') if master else 'horizontal'
 
     # Make the plot
-    fcp.hist(df=df, x='Value', show=SHOW, horizontal=True,
+    fcp.hist(df, x='Value', show=SHOW, horizontal=True,
              inline=False, save=not bm, filename=name + '.png')
 
     if bm:
@@ -122,7 +122,7 @@ def plt_legend(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'legend_master') if master else 'legend'
 
     # Make the plot
-    fcp.hist(df=df, x='Value', show=SHOW, legend='Region',
+    fcp.hist(df, x='Value', show=SHOW, legend='Region',
              inline=False, save=not bm, filename=name + '.png')
 
     if bm:
@@ -150,7 +150,7 @@ def plt_kde(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'kde_master') if master else 'kde'
 
     # Make the plot
-    fcp.hist(df=df, x='Value', show=SHOW, legend='Region', kde=True, kde_width=2,
+    fcp.hist(df, x='Value', show=SHOW, legend='Region', kde=True, kde_width=2,
              inline=False, save=not bm, filename=name + '.png')
 
     if bm:
@@ -178,7 +178,7 @@ def plt_grid(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'grid_master') if master else 'grid'
 
     # Make the plot
-    fcp.hist(df=df, x='Value', show=SHOW, legend='Region', col='Batch', row='Sample', ax_size=[250, 250],
+    fcp.hist(df, x='Value', show=SHOW, legend='Region', col='Batch', row='Sample', ax_size=[250, 250],
              inline=False, save=not bm, filename=name + '.png')
 
     if bm:
@@ -206,7 +206,7 @@ def plt_wrap_values(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'wrap_values_master') if master else 'wrap_values'
 
     # Make the plot
-    fcp.hist(df=df, x='Value', show=SHOW, legend='Region', wrap='Batch',
+    fcp.hist(df, x='Value', show=SHOW, legend='Region', wrap='Batch',
              ax_size=[250, 250], horizontal=True, inline=False, save=not bm, filename=name + '.png')
 
     if bm:
@@ -236,7 +236,7 @@ def plt_wrap_names(bm=False, master=False, remove=True, show=False):
     # Make the plot
     df['Value*2'] = 2 * df['Value']
     df['Value*3'] = 3 * df['Value']
-    fcp.hist(df=df, x=['Value', 'Value*2', 'Value*3'], wrap='x', show=SHOW, ncol=3, ax_size=[250, 250],
+    fcp.hist(df, x=['Value', 'Value*2', 'Value*3'], wrap='x', show=SHOW, ncol=3, ax_size=[250, 250],
              inline=False, save=not bm, filename=name + '.png')
 
     if bm:

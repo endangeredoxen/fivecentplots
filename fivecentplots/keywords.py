@@ -121,6 +121,9 @@ def html_param(argx: list) -> list:
     argx = [f for f in argx if f != '']
     argx = [f.replace('. None', '') for f in argx]
 
+    #db()
+    # <span id="rectangle" style="height: 12px; width: 12px; background-color:blue; display:inline-block"></span>
+
     return argx
 
 

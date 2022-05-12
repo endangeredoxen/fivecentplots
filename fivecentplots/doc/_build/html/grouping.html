@@ -681,7 +681,7 @@ div.rendered_html tbody tr:hover {
 <div class="section" id="Legend-by-another-column">
 <h4>Legend by another column<a class="headerlink" href="#Legend-by-another-column" title="Permalink to this headline">¶</a></h4>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -721,7 +721,7 @@ div.rendered_html tbody tr:hover {
 <h4>Outside right<a class="headerlink" href="#Outside-right" title="Permalink to this headline">¶</a></h4>
 <p>Placing the legend on the outside right of the plot ensures that the legend will overlap the plotted data. fivecentplots uses this as a convenient default (i.e., no <code class="docutils literal notranslate"><span class="pre">legend_location</span></code> is required). There is no need to mess with <code class="docutils literal notranslate"><span class="pre">bbox_to_anchor</span></code> arguments as would be required with a pure <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> solution.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -742,7 +742,7 @@ div.rendered_html tbody tr:hover {
 <h4>Inside the plot<a class="headerlink" href="#Inside-the-plot" title="Permalink to this headline">¶</a></h4>
 <p>Locations 1 through 10 will place the legend within the plot window. While this can result in a more compact figure, there is a also a risk that the legend will obscure the data in the plot. Care should be exercised when placing the legend inside the plot.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -763,7 +763,7 @@ div.rendered_html tbody tr:hover {
 <h4>Below the plot<a class="headerlink" href="#Below-the-plot" title="Permalink to this headline">¶</a></h4>
 <p>Long legend values can by annoying to deal with. If the legend is placed outside the axis, the figure size will have a large width. If the legend is placed within the axis window, it can extend longer than the axis itself. fivecentplots provides the option of placing the legend “below” the plot:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -796,7 +796,7 @@ div.rendered_html tbody tr:hover {
 <h3>xy plots<a class="headerlink" href="#xy-plots" title="Permalink to this headline">¶</a></h3>
 <p>Some data sets contain multiple sets of similar data. Consider the following example where we plot all the data together and connect the points with lines. Notice how the line loops from the end of the data back to the begining for each “group” of the data. This occurs because we have provided no information about how to segment the data set.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -814,7 +814,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>To handle cases like this, we can add the keyword <code class="docutils literal notranslate"><span class="pre">groups</span></code> and specify another DataFrame column name that indicates how the data are grouped (in this case by “Die”). Now we get distinct lines for each instance of the measurement data. The <code class="docutils literal notranslate"><span class="pre">groups</span></code> keyword can still be combined with a legend from a different DataFrame column.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -832,7 +832,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">groups</span></code> also supports multiple column names. Here is the above plot without legending by “Temperature [C]”:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -853,7 +853,7 @@ div.rendered_html tbody tr:hover {
 <h3>boxplots<a class="headerlink" href="#boxplots" title="Permalink to this headline">¶</a></h3>
 <p>Like x-y plots, the <code class="docutils literal notranslate"><span class="pre">groups</span></code> keyword is used to break the data set into subsets. However, for boxplots the group column names and values are actually displayed along the x-axis:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -877,7 +877,7 @@ div.rendered_html tbody tr:hover {
 <h3>By unique values<a class="headerlink" href="#By-unique-values" title="Permalink to this headline">¶</a></h3>
 <p>To see a larger subset of the main DataFrame, we can make a grid of subplots based on the unique values within DataFrame columns other than the primary x and y columns we are using. In this case, we remove the “Temperature [C]” and “Boost Level” columns from the filter keyword and add them to the row and column commands, respectively. This gives a grid of plots where each plot represents the intersection of a unique Boost Level and Temperature.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -898,7 +898,7 @@ div.rendered_html tbody tr:hover {
 <h3>By x or y<a class="headerlink" href="#By-x-or-y" title="Permalink to this headline">¶</a></h3>
 <p>Alternatively, we can use row vs column grids to compare different <code class="docutils literal notranslate"><span class="pre">x</span></code> or <code class="docutils literal notranslate"><span class="pre">y</span></code> values. For example, we can plot two y-columns (one per row) by adding the keyword <code class="docutils literal notranslate"><span class="pre">&quot;y&quot;</span></code> to the <code class="docutils literal notranslate"><span class="pre">row</span></code> parameter. Each column in this plot shares the same x-axis variable.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -917,7 +917,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>We can make a similar plot with common <code class="docutils literal notranslate"><span class="pre">row</span></code> values and different x-axes by setting <code class="docutils literal notranslate"><span class="pre">col='x'</span></code>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -942,7 +942,7 @@ div.rendered_html tbody tr:hover {
 <p>We can create a plot similar to the row/column plot above using the <code class="docutils literal notranslate"><span class="pre">wrap</span></code> keyword. The key differences are that spacing and ticks between subplots is removed by default (can be changed via keywords), axis sharing is forced (cannot override), and the row/column value labels are condensed to a single label above each subplot. To do this, remove the <code class="docutils literal notranslate"><span class="pre">row</span></code> and <code class="docutils literal notranslate"><span class="pre">column</span></code> keywords from the previous function call and pass the “Temperature [C]” and “Boost Level” column names as a list to the
 <code class="docutils literal notranslate"><span class="pre">wrap</span></code> keyword.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -960,7 +960,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>By default, wrap plots will be arranged in a square grid. If the number of subplots does not match a perfectly square grid, you will have an incomplete row of subplots in the grid. All tick and axes labels are handled appropriately for this case. If you want to override the default grid size, specify the keyword <code class="docutils literal notranslate"><span class="pre">ncol</span></code> which sets the number of columns. The number of rows will be automatically determined from the number of subplots.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -982,7 +982,7 @@ div.rendered_html tbody tr:hover {
 <p>We can also “wrap” by column names instead of unique column values. In this case we list the columns to plot in the <code class="docutils literal notranslate"><span class="pre">x</span></code> or <code class="docutils literal notranslate"><span class="pre">y</span></code> keywords as usual but we add “x” or “y” to the <code class="docutils literal notranslate"><span class="pre">wrap</span></code> keyword. This will create a unique subplot in a grid for each <code class="docutils literal notranslate"><span class="pre">wrap</span></code> value. Unlike the case of wrapping column values, this plot will not have wrap labels and axis sharing can be overriden. As before, used <code class="docutils literal notranslate"><span class="pre">ncol</span></code> to override the default gridding. Unlike a row vs column plot by x and y, a wrap plot by x and y
 can be displayed without the extra grouping factor.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1000,7 +1000,7 @@ can be displayed without the extra grouping factor.</p>
 </div>
 <p>Or an alternatively styled version of this plot with tick and label sharing off:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1023,7 +1023,7 @@ can be displayed without the extra grouping factor.</p>
 <h2>figure plots<a class="headerlink" href="#figure-plots" title="Permalink to this headline">¶</a></h2>
 <p>To add another dimension of grouping, fivecentplots supports grouping by figure. In this case, a separate figure (i.e., a separate png) is created for each unique value in the DataFrame column(s) listed in the <code class="docutils literal notranslate"><span class="pre">fig_groups</span></code> keyword. Here we will plot a single figure for each value of the “Die” column.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>

@@ -770,11 +770,12 @@ class BaseLayout:
 
         self.box_whisker = Element('box_whisker', self.fcpp, kwargs,
                                    on=utl.kwget(kwargs, self.fcpp,
-                                                ['box_mean_diamonds', 'mean_diamonds'],
+                                                ['box_whisker', 'whisker'],
                                                 self.box.on),
                                    color=self.box.edge_color,
                                    style=self.box.style,
                                    width=self.box.edge_width)
+
         if not self.box_whisker.on:
             self.box_whisker.width.values = [0]
 
