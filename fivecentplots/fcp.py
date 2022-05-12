@@ -90,7 +90,7 @@ def boxplot(df, **kwargs):
     return plotter(data.Box, **dfkwarg(df, kwargs))
 
 
-def contour(*args, **kwargs):
+def contour(df, **kwargs):
     """ Main contour plotting function
     At minimum, it requires a pandas DataFrame with at
     least three columns and three column names for the x, y, and z axis.
@@ -106,7 +106,7 @@ def contour(*args, **kwargs):
 
     Keyword Args:
     """
-    return plotter(data.Contour, **dfkwarg(args, kwargs))
+    return plotter(data.Contour, **dfkwarg(df, kwargs))
 
 
 def deprecated(kwargs):
@@ -143,7 +143,7 @@ def deprecated(kwargs):
     return kwargs
 
 
-def gantt(*args, **kwargs):
+def gantt(df, **kwargs):
     """ Main gantt chart plotting function
     xxxxxxxAt minimum, it requires a pandas DataFrame with at
     least one column for the y axis.  Plots can be customized and enhanced by
@@ -159,10 +159,10 @@ def gantt(*args, **kwargs):
         plots
     """
 
-    return plotter(data.Gantt, **dfkwarg(args, kwargs))
+    return plotter(data.Gantt, **dfkwarg(df, kwargs))
 
 
-def heatmap(*args, **kwargs):
+def heatmap(df, **kwargs):
     """ Main heatmap plotting function
     At minimum, it requires a pandas DataFrame with at
     least three columns and three column names for the x, y, and z axis.
@@ -179,7 +179,7 @@ def heatmap(*args, **kwargs):
     Keyword Args:
     """
 
-    return plotter(data.Heatmap, **dfkwarg(args, kwargs))
+    return plotter(data.Heatmap, **dfkwarg(df, kwargs))
 
 
 def help():
@@ -188,15 +188,15 @@ def help():
         r'https://endangeredoxen.github.io/fivecentplots/index.html')
 
 
-def hist(*args, **kwargs):
+def hist(df, **kwargs):
     """
     Histogram plot
     """
 
-    return plotter(data.Histogram, **dfkwarg(args, kwargs))
+    return plotter(data.Histogram, **dfkwarg(df, kwargs))
 
 
-def imshow(*args, **kwargs):
+def imshow(df, **kwargs):
     """ Main imshow plotting function
     At minimum, it requires a pandas DataFrame with at
     least three columns and three column names for the x, y, and z axis.
@@ -215,15 +215,15 @@ def imshow(*args, **kwargs):
 
     kwargs['tick_labels'] = kwargs.get('tick_labels', True)
 
-    return plotter(data.ImShow, **dfkwarg(args, kwargs))
+    return plotter(data.ImShow, **dfkwarg(df, kwargs))
 
 
-def nq(*args, **kwargs):
+def nq(df, **kwargs):
     """
     Plot normal quantiles of a data set
     """
 
-    return plotter(data.NQ, **dfkwarg(args, kwargs))
+    return plotter(data.NQ, **dfkwarg(df, kwargs))
 
 
 def paste_kwargs(kwargs):
@@ -255,12 +255,12 @@ def paste_kwargs(kwargs):
               'and pywin32 for the win32clipboard module')
 
 
-def plot(*args, **kwargs):
+def plot(df, **kwargs):
     """
     XY plot
     """
 
-    return plotter(data.XY, **dfkwarg(args, kwargs))
+    return plotter(data.XY, **dfkwarg(df, kwargs))
 
 
 def plot_bar(data, layout, ir, ic, df_rc, kwargs):
@@ -1076,12 +1076,12 @@ def plotter(dobj, **kwargs):
     kwargs['timer'].get_total()
 
 
-def pie(*args, **kwargs):
+def pie(df, **kwargs):
     """
     Pie chart
     """
 
-    return plotter(data.Pie, **dfkwarg(args, kwargs))
+    return plotter(data.Pie, **dfkwarg(df, kwargs))
 
 
 def set_theme(theme=None):
