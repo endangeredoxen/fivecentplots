@@ -91,7 +91,13 @@ class Histogram(data.Data):
                     counts, vals = np.histogram(dfx[~np.isnan(dfx)],
                                                 bins=self.bins,
                                                 normed=self.norm)
-
+                if self.cdf:
+                    pdf = counts / sum(counts)
+                    counts = np.cumsum(pdf)
+                    self.y = ['Cumulative Probability']
+                elif self.pdf:
+                    counts = counts / sum(counts)
+                    self.y = ['Probability Density']
                 temp = pd.DataFrame({self.x[0]: vals[:-1], self.y[0]: counts})
                 for ig, group in enumerate(self._groupers):
                     if type(nn) is tuple:
