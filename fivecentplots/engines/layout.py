@@ -1858,6 +1858,7 @@ class BaseLayout:
         self.text = Element('text', self.fcpp, {},
                             on=True if utl.kwget(kwargs, self.fcpp, 'text', None)
                             is not None else False,
+                            obj=self.obj_array,
                             edge_color=RepeatedList(utl.kwget(kwargs, self.fcpp,
                                                     'text_edge_color', 'none'),
                                                     'text_edge_color'),
@@ -1889,7 +1890,8 @@ class BaseLayout:
                                                         'text', ''), 'text'),
                             )
 
-        self.text.obj = np.zeros(len(self.text.text.values), dtype=object)
+        for ir, ic in np.ndindex(self.axes.obj.shape):
+            self.text.obj[ir, ic] = np.zeros(len(self.text.text.values), dtype=object)
 
         return kwargs
 

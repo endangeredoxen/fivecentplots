@@ -693,8 +693,10 @@ class Layout(BaseLayout):
         ax = self.axes.obj[ir, ic]
         if element is None:
             obj = self.text
+            is_array = True
         else:
             obj = getattr(self, element)
+            is_array = False
         text = text if text is not None else obj.text.values
         if type(text) is str:
             text = [text]
@@ -768,18 +770,30 @@ class Layout(BaseLayout):
                                   edgecolor=kw['edge_color']),
                         zorder=45)
             else:
-                obj.obj[itext] = ax.text(0,
-                                         0,
-                                         txt, transform=transform,
-                                         rotation=kw['rotation'],
-                                         color=kw['font_color'],
-                                         fontname=kw['font'],
-                                         style=kw['font_style'],
-                                         weight=kw['font_weight'],
-                                         size=kw['font_size'],
-                                         bbox=dict(facecolor=kw['fill_color'],
-                                                   edgecolor=kw['edge_color']),
-                                         zorder=45)
+                if is_array:
+                    obj.obj[ir, ic][itext] = ax.text(0, 0,
+                                                     txt, transform=transform,
+                                                     rotation=kw['rotation'],
+                                                     color=kw['font_color'],
+                                                     fontname=kw['font'],
+                                                     style=kw['font_style'],
+                                                     weight=kw['font_weight'],
+                                                     size=kw['font_size'],
+                                                     bbox=dict(facecolor=kw['fill_color'],
+                                                               edgecolor=kw['edge_color']),
+                                                     zorder=45)
+                else:
+                    obj.obj[itext] = ax.text(0, 0,
+                                             txt, transform=transform,
+                                             rotation=kw['rotation'],
+                                             color=kw['font_color'],
+                                             fontname=kw['font'],
+                                             style=kw['font_style'],
+                                             weight=kw['font_weight'],
+                                             size=kw['font_size'],
+                                             bbox=dict(facecolor=kw['fill_color'],
+                                                       edgecolor=kw['edge_color']),
+                                             zorder=45)
 
     def close(self):
         """Close an inline plot window."""
@@ -3496,11 +3510,10 @@ class Layout(BaseLayout):
 
         for ir, ic in np.ndindex(self.axes.obj.shape):
             ax = self.axes.obj[ir, ic]
+            offsetx = ir * self.axes.size[0]
+            offsety = ic * self.axes.size[1]
 
             for itext, txt in enumerate(obj.text.values):
-                offsetx = 0
-                offsety = 0
-
                 # Set the coordinate so text is anchored to figure, axes, or the current
                 #    data range
                 coord = None if not hasattr(obj, 'coordinate') \
@@ -3513,7 +3526,7 @@ class Layout(BaseLayout):
                     transform = ax.transAxes  # noqa
                 units = 'pixel' if not hasattr(obj, 'units') else getattr(obj, 'units')
 
-                # Get position ## TODO:: need to support multiple positions with `transform`
+                # Get position
                 if 'position' in self.kwargs.keys():
                     position = copy.copy(self.kwargs['position'])
                 elif hasattr(obj, 'position') and \
@@ -3539,8 +3552,8 @@ class Layout(BaseLayout):
                     position[0] = 0.01
 
                 # position
-                obj.obj[itext].set_x(position[0])
-                obj.obj[itext].set_y(position[1])
+                obj.obj[ir, ic][itext].set_x(position[0])
+                obj.obj[ir, ic][itext].set_y(position[1])
 
     def show(self, *args):
         """Display the plot window."""
