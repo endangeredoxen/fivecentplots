@@ -1,0 +1,8 @@
+Keyword,Data Type,Description,Default,Example
+cell_size,int,Width of a heatmap cell in pixels,60,`cell size <heatmap.html#Cell-size>`_
+cmap,boolean,Name of a color map to apply to the plot,inferno,`basic heatmap <heatmap.html#No-data-labels>`_
+data_labels,boolean,Toggle visibility of value text labels on the heatmap cells,False,`data labels <heatmap.html#With-data-labels>`_
+heatmap_edge_width,float,Width of the edges of the heat map cells,0,None
+heatmap_font_color,str,Hex color string for the value label text,#ffffff,None
+heatmap_font_size,int,Font size of the value label text,12,None
+heatmap_interp | interp,str,imshow interpolation scheme (see https://matplotlib.org/stable/gallery/images_contours_and_fields/interpolation_methods.html),'none’,None

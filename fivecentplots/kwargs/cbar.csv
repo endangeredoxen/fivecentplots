@@ -1,0 +1,3 @@
+Keyword,Data Type,Description,Default,Example
+cbar,bool,Toggle colorbar on/off for contour and heatmap plots,False,contour.html#Filled-contour
+size,int,cbar width [height will match the height of the axes],30,None

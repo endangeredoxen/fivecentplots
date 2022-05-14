@@ -1,0 +1,21 @@
+Keyword,Data Type,Description,Default,Example
+groups,str | list,Grouping columns for the box plot,None,boxplot.html#Groups
+box_on,bool,Toggle box visibility,True,None
+box_divider,bool,Toggle box divider visibility,True,boxplot.html#Dividers
+box_divider_color,str,Hex color string for the vertical line between groups,#bbbbbb,None
+box_divider_style,str,"Line style for the box divider lines {‘-’, ‘--’, ‘-.’, ‘:’}",-,None
+box_divider_width,float,Width of the divider lines in pixels,1,None
+box_edge_color,str,Hex color string for the edge of the box,#aaaaaa,styles.html#Boxplot-example
+box_edge_width,float,Width of the edge of the boxes in pixels,0.5,None
+box_fill_color,str,Hex color string of the bar fill ,#ffffff,styles.html#Boxplot-example
+box_median_color,str,Hex color string of the median line inside each box,#ff7f0e,None
+box_range_lines,bool,Toggle the horizontal lines showing the min/max of the data range,True,boxplot.html#Range-lines
+box_range_lines_color,str,Hex color string for the box range lines,#cccccc,None
+box_range_lines_style,str,"Line style for the box range lines {‘-’, ‘--’, ‘-.’, ‘:’}",--,None
+box_range_lines_width,float,Width of the range lines in pixels,1,None
+box_whisker,bool,Toggle range lines that extend from the box Q1/Q3 edges to the data min/max,True,boxplot.html#Whiskers
+box_whisker_color,str,Hex color string for the box whisker lines,#cccccc,None
+box_whisker_style,str,"Line style for the box whisker lines {‘-’, ‘--’, ‘-.’, ‘:’}",-,None
+box_whisker_width,float,Width of the whisker lines in pixels,0.5,None
+box_width,float,Set the fractional width of the boxes between 0-1,"0.5 [if violin on, 0.15]",None
+notch,bool,Use a notched-style box instead of a rectangular box,False,boxplot.html#Notch
