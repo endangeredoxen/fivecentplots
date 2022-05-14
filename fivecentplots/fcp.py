@@ -159,20 +159,17 @@ def gantt(df, **kwargs):
 
 
 def heatmap(df, **kwargs):
-    """ Main heatmap plotting function
-    At minimum, it requires a pandas DataFrame with at
-    least three columns and three column names for the x, y, and z axis.
-    Plots can be customized and enhanced by passing keyword arguments as
-    defined below. Default values that must be defined in order to
-    generate the plot are pulled from the fcp_params default dictionary
+    """Heatmap plot
 
     Args:
         df (DataFrame): DataFrame containing data to plot
-        x (str|list):   name of list of names of x column in df
-        y (str|list):   name or list of names of y column(s) in df
-        z (str):   name of z column(s) in df
 
-    Keyword Args:
+    Required Keyword Args:
+        x (str): x-axis column name
+        y (str): y-axis column name
+        z (str): z-axis column name
+
+    Optional Keyword Args:
     """
 
     return plotter(data.Heatmap, **dfkwarg(df, kwargs))
@@ -1292,6 +1289,8 @@ gantt.__doc__ += keywords.kw_print(kw['Gantt'])
 
 
 heatmap.__doc__ += \
+    keywords.kw_header('Basic:', indent='   ') + \
+    keywords.kw_print(kw['Heatmap']) + \
     keywords.kw_header('Color bar:', indent='   ') + \
     keywords.kw_print(kw['Cbar'])
 

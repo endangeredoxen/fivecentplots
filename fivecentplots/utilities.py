@@ -640,6 +640,10 @@ def img_compare(img1: str, img2: str, show: bool = False) -> bool:
         else:
             difference = cv2.subtract(img1, img2)
             is_diff = np.any(np.where(difference > 1))  # 1 gives buffere for slight aliasing differences
+            if not is_diff:
+                # no negative pixels so now double check the other way
+                difference = cv2.subtract(img2, img1)
+                is_diff = np.any(np.where(difference > 1))
         if show and is_diff:
             cv2.imwrite('difference.png', 10 * difference)
             show_file('difference.png')

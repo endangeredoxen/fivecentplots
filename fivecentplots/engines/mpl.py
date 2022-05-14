@@ -3227,6 +3227,7 @@ class Layout(BaseLayout):
                     self.axes.size[1]
                 self.label_col.obj[ir, ic].set_position((0.5, y_text))
                 self.label_col.obj_bg[ir, ic].set_y(y_rect)
+                self.label_col.obj_bg[ir, ic].set_width(1)
         # wrap label
         if self.name in ['imshow'] and self.ncol > 1:
             hack = 0  # some weirdness on cbar or imshow plots; here is a stupid hack

@@ -1221,10 +1221,16 @@ class BaseLayout:
             self.tick_labels_major_x.rotation = \
                 utl.kwget(kwargs, self.fcpp, 'tick_labels_major_x', 90)
 
+        # Enable cbars by default
+        if self.heatmap.on and kwargs.get('cbar', True):
+            self.cbar.on = True
+            self.label_z.on = True
+            self.tick_labels_major_z.on = True
+
         # Special gridline/tick/axes defaults for heatmap
         grids = [f for f in kwargs.keys() if f in
                  ['grid_major', 'grid_major_x', 'grid_major_y',
-                     'grid_minor', 'grid_minor_x', 'grid_minor_y']]
+                  'grid_minor', 'grid_minor_x', 'grid_minor_y']]
         if len(grids) == 0:
             kwargs['grid_major'] = False
             kwargs['grid_minor'] = False
