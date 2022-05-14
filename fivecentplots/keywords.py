@@ -63,7 +63,7 @@ def kw_print(kw, width=100):
         else:
             default = '. Defaults to %s' % row['Default']
         line = kw + ' (%s)' % row['Data Type'] + ': ' + \
-            row['Description'] + default + '. Example: %s' % row['Example']
+            str(row['Description']) + default + '. Example: %s' % row['Example']
 
         if irow == 0:
             kwstr += textwrap.fill(line, width, initial_indent='    ',

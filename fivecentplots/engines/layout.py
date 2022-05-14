@@ -888,7 +888,6 @@ class BaseLayout:
                             obj=self.obj_array,
                             size=[cbar_size if type(cbar_size) is not list else cbar_size[0],
                                   self.axes.size[1]],
-                            title='',
                             )
         if not self.cbar.on:
             self.label_z.on = False
@@ -1073,8 +1072,6 @@ class BaseLayout:
                              on=True,
                              height=utl.kwget(kwargs, self.fcpp, 'gantt_height',
                                               kwargs.get('height', 0.9)),
-                             align=utl.kwget(kwargs, self.fcpp, 'gantt_align',
-                                             kwargs.get('align', 'center')),
                              sort=utl.kwget(kwargs, self.fcpp,
                                             'sort', 'descending'),
                              edge_color=utl.kwget(kwargs, self.fcpp, 'gantt_edge_color',
@@ -1085,8 +1082,6 @@ class BaseLayout:
                                  kwargs, self.fcpp, 'gantt_fill_alpha', 0.75),
                              fill_color=utl.kwget(kwargs, self.fcpp, 'gantt_fill_color',
                                                   copy.copy(self.color_list)),
-                             stacked=utl.kwget(kwargs, self.fcpp, ['bar_stacked', 'stacked'],
-                                               kwargs.get('stacked', False)),
                              color_by_bar=utl.kwget(kwargs, self.fcpp, ['gantt_color_by_bar', 'color_by_bar'],
                                                     kwargs.get('color_by_bar', False)),
                              order_by_legend=utl.kwget(kwargs, self.fcpp, ['gantt_order_by_legend', 'order_by_legend'],

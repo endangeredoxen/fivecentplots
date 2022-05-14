@@ -48,6 +48,7 @@ sys.path = [osjoin(user_dir, '.fivecentplots')] + sys.path
 
 from defaults import *  # noqa | use local file
 
+# Load the keywords for docstrings from an Excel file
 kw = keywords.make_docstrings()
 
 # install requirements for other packages beyond what is in setup.py
@@ -76,7 +77,7 @@ def bar(df, **kwargs):
 
 
 def boxplot(df, **kwargs):
-    """ Box plot modeled after the "Variability Chart" in JMP which provides convenient,
+    """Box plot modeled after the "Variability Chart" in JMP which provides convenient,
     multi-level group labels automatically along the x-axis
 
     Args:
@@ -91,28 +92,23 @@ def boxplot(df, **kwargs):
 
 
 def contour(df, **kwargs):
-    """ Main contour plotting function
-    At minimum, it requires a pandas DataFrame with at
-    least three columns and three column names for the x, y, and z axis.
-    Plots can be customized and enhanced by passing keyword arguments as
-    defined below. Default values that must be defined in order to
-    generate the plot are pulled from the fcp_params default dictionary
+    """Contour plot module
 
     Args:
         df (DataFrame): DataFrame containing data to plot
-        x (str|list):   name of list of names of x column in df
-        y (str|list):   name or list of names of y column(s) in df
-        z (str):   name of z column(s) in df
 
-    Keyword Args:
+    Required Keyword Args:
+        x (str): x-axis column name
+        y (str): y-axis column name
+        z (str): z-axis column name
+
+    Optional Keyword Args:
     """
     return plotter(data.Contour, **dfkwarg(df, kwargs))
 
 
 def deprecated(kwargs):
-    """
-    Fix deprecated keyword args
-    """
+    """Automatically fix deprecated keyword args."""
 
     # leg_groups
     if kwargs.get('leg_groups'):
@@ -144,19 +140,19 @@ def deprecated(kwargs):
 
 
 def gantt(df, **kwargs):
-    """ Main gantt chart plotting function
-    xxxxxxxAt minimum, it requires a pandas DataFrame with at
-    least one column for the y axis.  Plots can be customized and enhanced by
-    passing keyword arguments.  Default values that must be defined in order to
-    generate the plot are pulled from the fcp_params default dictionary
+    """Gantt chart plotting function.  This plot is built off of a horizontal implementation of `fcp.bar`.
+
     Args:
         df (DataFrame): DataFrame containing data to plot
-        x (str):        name of x column in df
-        y (str|list):   name or list of names of y column(s) in df
-    Keyword Args:
-        see online docs
-    Returns:
-        plots
+
+    Required Keyword Args:
+        x (list): two x-axis column names containing Datetime values
+            1) the start time for each item in the Gantt chart
+            2) the stop time for each item in the Gantt chart
+        y (str): y-axis column name
+        z (str): z-axis column name
+
+    Optional Keyword Args:
     """
 
     return plotter(data.Gantt, **dfkwarg(df, kwargs))
@@ -650,6 +646,7 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
     if data.legend is not None:
         cols += [f for f in validate_list(data.legend)
                  if f is not None and f not in cols]
+
     yvals = [tuple(f) for f in df_rc[cols].values]
 
     for iline, df, x, y, z, leg_name, twin, ngroups in data.get_plot_data(df_rc):
@@ -1266,6 +1263,8 @@ def ws():
     pass
 
 
+# Update the docstrings for the primary plot types with keywords
+# found in an Excel spreadsheet
 bar.__doc__ += keywords.kw_print(kw['Bar'])
 
 
@@ -1283,8 +1282,13 @@ boxplot.__doc__ += \
 
 
 contour.__doc__ += \
+    keywords.kw_header('Basic:', indent='   ') + \
+    keywords.kw_print(kw['Contour']) + \
     keywords.kw_header('Color bar:', indent='   ') + \
     keywords.kw_print(kw['Cbar'])
+
+
+gantt.__doc__ += keywords.kw_print(kw['Gantt'])
 
 
 heatmap.__doc__ += \
