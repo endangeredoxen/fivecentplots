@@ -84,6 +84,64 @@ def plt_basic(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
+def plt_sort_ascending(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'sort_ascending_master') if master else 'sort_ascending'
+
+    # Make the plot
+    fcp.gantt(df, x=['Start', 'Stop'], y='Task', sort='ascending',
+              filename=name + '.png', save=not bm, inline=False, ax_size=[600, 400])
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_style(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'style_master') if master else 'style'
+
+    # Make the plot
+    fcp.gantt(df, x=['Start', 'Stop'], y='Task',
+              color_by_bar=True, gantt_edge_width=2, gantt_edge_color='#555555',
+              gantt_height=0.2, gantt_fill_alpha=1,
+              filename=name + '.png', save=not bm, inline=False, ax_size=[600, 400])
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def plt_legend(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'legend_master') if master else 'legend'
@@ -112,6 +170,119 @@ def plt_legend(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
+def plt_legend_order_by(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'legend_order_by_master') if master else 'legend_order_by'
+
+    if bm:
+        return
+
+    # Make the plot
+    fcp.gantt(df, x=['Start', 'Stop'], y='Task', legend='Assigned',
+              gantt_tick_labels_x_rotation=45, order_by_legend=True,
+              filename=name + '.png', save=not bm, inline=False, ax_size=[600, 400])
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_row(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'row_master') if master else 'row'
+
+    if bm:
+        return
+
+    # Make the plot
+    fcp.gantt(df, x=['Start', 'Stop'], y='Task', row='Category',
+              filename=name + '.png', save=not bm, inline=False, ax_size=[600, 400])
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_col(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'col_master') if master else 'col'
+
+    if bm:
+        return
+
+    # Make the plot
+    fcp.gantt(df, x=['Start', 'Stop'], y='Task', col='Category',
+              filename=name + '.png', save=not bm, inline=False, ax_size=[600, 400])
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_wrap(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'wrap_master') if master else 'wrap'
+
+    if bm:
+        return
+
+    # Make the plot
+    fcp.gantt(df, x=['Start', 'Stop'], y='Task', wrap='Category',
+              filename=name + '.png', save=not bm, inline=False, ax_size=[600, 400])
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 # test_ functions call plt_ funcs 2x:
 # 1) do the comparison with saved image
 # 2) do a test plot only with save=False and inline=False and benchmark spead
@@ -120,9 +291,39 @@ def test_basic(benchmark):
     benchmark(plt_basic, True)
 
 
+def test_sort_ascending(benchmark):
+    plt_sort_ascending()
+    benchmark(plt_sort_ascending, True)
+
+
+def test_style(benchmark):
+    plt_style()
+    benchmark(plt_style, True)
+
+
 def test_legend(benchmark):
     plt_legend()
     benchmark(plt_legend, True)
+
+
+def test_legend_order_by(benchmark):
+    plt_legend_order_by()
+    benchmark(plt_legend_order_by, True)
+
+
+def test_row(benchmark):
+    plt_row()
+    benchmark(plt_row, True)
+
+
+def test_col(benchmark):
+    plt_col()
+    benchmark(plt_col, True)
+
+
+def test_wrap(benchmark):
+    plt_wrap()
+    benchmark(plt_wrap, True)
 
 
 if __name__ == '__main__':

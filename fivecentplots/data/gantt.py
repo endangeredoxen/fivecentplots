@@ -97,7 +97,7 @@ class Gantt(data.Data):
             twin: denotes if twin axis is enabled or not
             len(vals) [ngroups]: total number of groups in the full data
         """
-        if type(self.legend_vals) != pd.DataFrame:
+        if not isinstance(self.legend_vals, pd.DataFrame):
             xx = [self.x[0]]  # make sure we only get one group for self.x
             yy = [] if not self.y else self.y + self.y2
             lenx = 1 if not self.x else len(xx)
@@ -119,7 +119,6 @@ class Gantt(data.Data):
                     leg = None
                 if self.wrap == 'y':
                     irow = self.wrap_vals.index(leg)
-
                 yield irow, df, row['x'], row['y'], \
                     None if self.z is None else self.z[0], leg, twin, len(vals)
 
@@ -166,6 +165,7 @@ class Gantt(data.Data):
         Returns:
             modified DataFrame subset
         """
+        # remove duplicates with legend
         if self.legend is None and len(df) > 0:
             idx = []
             [idx.append(x) for x in df.set_index(self.y).index if x not in idx]
@@ -173,5 +173,21 @@ class Gantt(data.Data):
             df_stop = df.groupby(self.y).max()
             df_start[self.x[1]] = df_stop.loc[df_start.index, self.x[1]]
             df = df_start.reindex(idx).reset_index()
+
+        # account for rc plots with shared y-axis
+        if (self.wrap is not None or self.col is not None or self.row is not None) \
+                and self.share_y:
+            # set the top level index
+            idx = []
+            [idx.append(x) for x in self.df_all.set_index(self.y).index if x not in idx]
+            df_start = self.df_all.groupby(self.y).min()
+            df_stop = self.df_all.groupby(self.y).max()
+            df_start[self.x[1]] = df_stop.loc[df_start.index, self.x[1]]
+            df_all = df_start.reindex(idx).reset_index()
+
+            # check for matches in the subset
+            df = pd.merge(df_all, df, how='left', indicator='Exist')
+            df.loc[df.Exist != 'both', self.x[1]] = df[self.x[0]]  # set start/stop date to the same for sorting
+            del df['Exist']
 
         return df

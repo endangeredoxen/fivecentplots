@@ -1,4 +1,3 @@
-
 import imageio
 import fivecentplots as fcp
 import pandas as pd
