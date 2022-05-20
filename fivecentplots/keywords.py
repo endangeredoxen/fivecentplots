@@ -3,6 +3,7 @@ import pandas as pd
 import os
 import pdb
 import textwrap
+from pathlib import Path
 with open(os.path.join(os.path.dirname(__file__), r'version.txt'), 'r') as fid:
     __version__ = fid.readlines()[0].replace('\n', '')
 from distutils.version import LooseVersion
@@ -12,14 +13,14 @@ cur_dir = os.path.dirname(__file__)
 
 
 def make_docstrings():
-    """Parse the keywords in the excel doc."""
+    """Parse the keyword arg lists from csv files."""
     url = f'https://endangeredoxen.github.io/fivecentplots/{__version__}/'
-    if LooseVersion(pd.__version__) >= LooseVersion('1.2'):
-        kw = pd.read_excel(osjoin(cur_dir, 'keywords.xlsx'), engine='openpyxl', sheet_name=None)
-    else:
-        kw = pd.read_excel(osjoin(cur_dir, 'keywords.xlsx'), sheet_name=None)
-
-    for k, v in kw.items():
+    path = Path(cur_dir) / 'kwargs'
+    files = os.listdir(path)
+    kw = {}
+    for ff in files:
+        k = ff.split('.')[0]
+        kw[k] = pd.read_csv(path / ff)
         kw[k] = kw[k].replace('`', '', regex=True)
         kw[k]['Keyword'] = kw[k]['Keyword'].apply(lambda x: str(x).split(':')[-1])
         if 'Example' in kw[k].columns:

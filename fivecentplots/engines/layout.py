@@ -1282,14 +1282,8 @@ class BaseLayout:
                                           kwargs.get('kde', False)),
                             normalize=utl.kwget(kwargs, self.fcpp, ['hist_normalize', 'normalize'],
                                                 kwargs.get('normalize', False)),
-                            pdf=utl.kwget(kwargs, self.fcpp, ['pdf'],
-                                          kwargs.get('pdf', False)),
                             rwidth=utl.kwget(
                                 kwargs, self.fcpp, 'hist_rwidth', None),
-                            stacked=utl.kwget(kwargs, self.fcpp, ['hist_stacked', 'stacked'],
-                                              kwargs.get('stacked', False)),
-                            type=utl.kwget(kwargs, self.fcpp,
-                                           'hist_type', 'bar'),
                             horizontal=utl.kwget(kwargs, self.fcpp, ['hist_horizontal', 'horizontal'],
                                                  kwargs.get('horizontal', False)),
                             )

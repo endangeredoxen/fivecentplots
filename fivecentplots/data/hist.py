@@ -50,6 +50,10 @@ class Histogram(data.Data):
         if self.cdf and kwargs.get('preset') == 'HIST':
             self.ax_scale = 'lin'
 
+        # Other options
+        self.cumulative = utl.kwget(kwargs, self.fcpp, ['hist_cumulative', 'cumulative'],
+                                    kwargs.get('cumulative', False))
+
         # Toggle bars vs lines
         if not bars:
             self.switch_type(kwargs)
@@ -57,9 +61,6 @@ class Histogram(data.Data):
         # overrides post
         self.auto_scale = False
         self.ax_limit_padding_ymax = kwargs['ax_limit_padding_ymax']
-        self.stacked = utl.kwget(kwargs, self.fcpp,
-                                 ['hist_stacked', 'stacked'],
-                                 kwargs.get('stacked', False))
 
     def df_hist(self, df_in: pd.DataFrame, brange: [float, None] = None) -> pd.DataFrame:
         """Iterate over groups and build a dataframe of counts.
@@ -91,6 +92,7 @@ class Histogram(data.Data):
                     counts, vals = np.histogram(dfx[~np.isnan(dfx)],
                                                 bins=self.bins,
                                                 normed=self.norm)
+                # cdf + pdf
                 if self.cdf:
                     pdf = counts / sum(counts)
                     counts = np.cumsum(pdf)
@@ -98,6 +100,7 @@ class Histogram(data.Data):
                 elif self.pdf:
                     counts = counts / sum(counts)
                     self.y = ['Probability Density']
+
                 temp = pd.DataFrame({self.x[0]: vals[:-1], self.y[0]: counts})
                 for ig, group in enumerate(self._groupers):
                     if type(nn) is tuple:
@@ -117,6 +120,15 @@ class Histogram(data.Data):
             else:
                 counts, vals = np.histogram(dfx[~np.isnan(dfx)], bins=self.bins,
                                             normed=self.norm)
+            # special case of all values being equal
+            if len(counts) == 1:
+                vals = np.insert(vals, 0, vals[0])
+                if self.ax_scale in ['logy', 'log']:
+                    counts = np.insert(counts, 0, 1)
+                else:
+                    counts = np.insert(counts, 0, 0)
+
+            # cdf + pdf
             if self.cdf:
                 pdf = counts / sum(counts)
                 counts = np.cumsum(pdf)
@@ -124,6 +136,7 @@ class Histogram(data.Data):
             elif self.pdf:
                 counts = counts / sum(counts)
                 self.y = ['Probability Density']
+
             hist = pd.DataFrame({self.x[0]: vals[:-1], self.y[0]: counts})
 
         return hist
@@ -160,6 +173,8 @@ class Histogram(data.Data):
                 continue
 
             hist = self.df_hist(df_rc)
+            if self.cumulative:
+                hist.Counts = hist.Counts.sum()
             vals = self._get_data_range('y', hist, plot_num)
             temp_ranges[ir, ic]['ymin'] = vals[0]
             temp_ranges[ir, ic]['ymin'] = vals[1]

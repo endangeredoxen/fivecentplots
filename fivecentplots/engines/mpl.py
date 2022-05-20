@@ -1367,8 +1367,7 @@ class Layout(BaseLayout):
         sf = 1.5  # scale factor for tick font size
 
         for ir, ic in np.ndindex(self.axes.obj.shape):
-            # size_all by idx:
-            #   ir, ic, width, height, x0, x1, y0, y1
+            # size_all by idx: ir, ic, width, height, x0, x1, y0, y1
             # major
             if len(xticks.size_all) > 0:
                 xticks_size_all = \
@@ -1402,7 +1401,7 @@ class Layout(BaseLayout):
                 yticksm_size_all = []
 
             # Prevent single tick label axis
-            if len(xticks_size_all) == 1:
+            if len(xticks_size_all) <= 1:
                 kw = {}
                 kw['rotation'] = xticks.rotation
                 kw['font_color'] = xticks.font_color
@@ -1418,6 +1417,33 @@ class Layout(BaseLayout):
                 precision = utl.get_decimals(xticks.limits[1], 8)
                 txt = f'{xticks.limits[1]:.{precision}f}'
                 self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', **kw)
+
+            if len(yticks_size_all) <= 1:
+                kw = {}
+                kw['rotation'] = yticks.rotation
+                kw['font_color'] = yticks.font_color
+                kw['font'] = yticks.font
+                kw['fill_color'] = yticks.fill_color[0]
+                kw['edge_color'] = yticks.edge_color[0]
+                kw['font_style'] = yticks.font_style
+                kw['font_weight'] = yticks.font_weight
+                kw['font_size'] = yticks.font_size / sf
+                if len(yticks_size_all) == 0:
+                    precision = utl.get_decimals(yticks.limits[0], 3)
+                    txt = f'{yticks.limits[0]:.{precision}f}'
+                    kw['position'] = [0 - len(txt) * kw['font_size'] * 0.9, -kw['font_size'] / 2]
+                    self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', **kw)
+                    precision = utl.get_decimals(yticks.limits[1], 3)
+                    txt = f'{yticks.limits[1]:.{precision}f}'
+                    kw['position'] = [0 - len(txt) * kw['font_size'] * 0.9, self.axes.size[1] - kw['font_size'] / 2]
+                    self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', **kw)
+                else:
+                    kw['position'] = \
+                        [self.axes.size[1] - yticks.size_all.loc[0, 'width'] / 2 / sf,
+                         -yticks.size_all.loc[0, 'height']]
+                    precision = utl.get_decimals(yticks.limits[1], 8)
+                    txt = f'{yticks.limits[1]:.{precision}f}'
+                    self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', **kw)
 
             # Overlapping x-y origin
             if len(xticks_size_all) > 0 and len(yticks_size_all) > 0:
@@ -3155,7 +3181,7 @@ class Layout(BaseLayout):
         # Render dummy figure to get the element sizes
         self._get_element_sizes(data)
 
-        # Clean up tick overlaps
+        # Determine if extra whitespace is needed at the plot edge for the last tick
         self._get_tick_xs()
 
         # Resize the figure

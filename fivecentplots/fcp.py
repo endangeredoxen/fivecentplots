@@ -48,7 +48,7 @@ sys.path = [osjoin(user_dir, '.fivecentplots')] + sys.path
 
 from defaults import *  # noqa | use local file
 
-# Load the keywords for docstrings from an Excel file
+# Load the keywords for docstrings from an csv files
 kw = keywords.make_docstrings()
 
 # install requirements for other packages beyond what is in setup.py
@@ -182,8 +182,15 @@ def help():
 
 
 def hist(df, **kwargs):
-    """
-    Histogram plot
+    """Histogram plot
+
+    Args:
+        df (DataFrame): DataFrame containing data to plot
+
+    Required Keyword Args:
+        x (str): x-axis column name [the "value" column from which "counts" are calculated]
+
+    Optional Keyword Args:
     """
 
     return plotter(data.Histogram, **dfkwarg(df, kwargs))
@@ -1158,11 +1165,9 @@ def set_theme(theme=None):
     print('done!')
 
 
-# DOC only
+# functions for docstring purposes only
 def axes():
-    """
-    Axes
-    """
+    """Axes."""
 
     pass
 
@@ -1261,41 +1266,41 @@ def ws():
 
 
 # Update the docstrings for the primary plot types with keywords
-# found in an Excel spreadsheet
-bar.__doc__ += keywords.kw_print(kw['Bar'])
+# found in an csv files
+bar.__doc__ += keywords.kw_print(kw['bar'])
 
 
 boxplot.__doc__ += \
     keywords.kw_header('Basic:', indent='   ') + \
-    keywords.kw_print(kw['Box']) + \
+    keywords.kw_print(kw['box']) + \
     keywords.kw_header('Grouping text:') + \
-    keywords.kw_print(kw['BoxLabel']) + \
+    keywords.kw_print(kw['box_label']) + \
     keywords.kw_header('Stat Lines:') + \
-    keywords.kw_print(kw['BoxStat']) + \
+    keywords.kw_print(kw['box_stat']) + \
     keywords.kw_header('Diamonds:') + \
-    keywords.kw_print(kw['BoxDiamond']) + \
+    keywords.kw_print(kw['box_diamond']) + \
     keywords.kw_header('Violins:') + \
-    keywords.kw_print(kw['BoxViolin'])
+    keywords.kw_print(kw['box_violin'])
 
 
 contour.__doc__ += \
     keywords.kw_header('Basic:', indent='   ') + \
-    keywords.kw_print(kw['Contour']) + \
+    keywords.kw_print(kw['contour']) + \
     keywords.kw_header('Color bar:', indent='   ') + \
-    keywords.kw_print(kw['Cbar'])
+    keywords.kw_print(kw['cbar'])
 
 
-gantt.__doc__ += keywords.kw_print(kw['Gantt'])
+gantt.__doc__ += keywords.kw_print(kw['gantt'])
 
 
 heatmap.__doc__ += \
     keywords.kw_header('Basic:', indent='   ') + \
-    keywords.kw_print(kw['Heatmap']) + \
+    keywords.kw_print(kw['heatmap']) + \
     keywords.kw_header('Color bar:', indent='   ') + \
-    keywords.kw_print(kw['Cbar'])
+    keywords.kw_print(kw['cbar'])
 
 
-hist.__doc__ += ''
+hist.__doc__ += keywords.kw_print(kw['hist'])
 
 
 nq.__doc__ += ''
@@ -1304,51 +1309,51 @@ nq.__doc__ += ''
 plot.__doc__ += ''
 
 
-axes.__doc__ = \
-    keywords.kw_print(kw['Axes'])
+# axes.__doc__ = \
+#     keywords.kw_print(kw['Axes'])
 
 
-cbar.__doc__ = \
-    keywords.kw_print(kw['Cbar'])
+# cbar.__doc__ = \
+#     keywords.kw_print(kw['Cbar'])
 
 
-figure.__doc__ = \
-    keywords.kw_print(kw['Figure'])
+# figure.__doc__ = \
+#     keywords.kw_print(kw['Figure'])
 
 
-fit.__doc__ = \
-    keywords.kw_print(kw['Fit'])
+# fit.__doc__ = \
+#     keywords.kw_print(kw['Fit'])
 
 
-gridlines.__doc__ = ''
+# gridlines.__doc__ = ''
 
 
-labels.__doc__ = \
-    keywords.kw_print(kw['Label'])
+# labels.__doc__ = \
+#     keywords.kw_print(kw['Label'])
 
 
-legend.__doc__ = \
-    keywords.kw_print(kw['Legend'])
+# legend.__doc__ = \
+#     keywords.kw_print(kw['Legend'])
 
 
-lines.__doc__ = \
-    keywords.kw_print(kw['Lines'])
+# lines.__doc__ = \
+#     keywords.kw_print(kw['Lines'])
 
 
-markers.__doc__ = \
-    keywords.kw_print(kw['Markers'])
+# markers.__doc__ = \
+#     keywords.kw_print(kw['Markers'])
 
 
-ref_line.__doc__ = \
-    keywords.kw_print(kw['Ref Line'])
+# ref_line.__doc__ = \
+#     keywords.kw_print(kw['Ref Line'])
 
 
-ticks.__doc__ = \
-    keywords.kw_print(kw['Ticks'])
+# ticks.__doc__ = \
+#     keywords.kw_print(kw['Ticks'])
 
 
-tick_labels.__doc__ = ''
+# tick_labels.__doc__ = ''
 
 
-ws.__doc__ = \
-    keywords.kw_print(kw['WS'])
+# ws.__doc__ = \
+#     keywords.kw_print(kw['WS'])

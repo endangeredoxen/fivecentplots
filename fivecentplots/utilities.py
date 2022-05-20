@@ -183,7 +183,7 @@ def dfkwarg(args: tuple, kwargs: dict) -> dict:
     Returns:
         updated kwargs
     """
-    if isinstance(args, pd.DataFrame):
+    if isinstance(args, pd.DataFrame) or isinstance(args, np.ndarray):
         kwargs['df'] = args
 
     return kwargs
