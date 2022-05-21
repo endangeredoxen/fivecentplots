@@ -3,10 +3,14 @@ import pandas as pd
 import os
 import pdb
 import textwrap
+import re
+try:
+    from colors import DEFAULT_COLORS
+except ModuleNotFoundError:
+    from .colors import DEFAULT_COLORS
 from pathlib import Path
 with open(os.path.join(os.path.dirname(__file__), r'version.txt'), 'r') as fid:
     __version__ = fid.readlines()[0].replace('\n', '')
-from distutils.version import LooseVersion
 db = pdb.set_trace
 osjoin = os.path.join
 cur_dir = os.path.dirname(__file__)
@@ -88,42 +92,90 @@ def html_param(argx: list) -> list:
     Returns:
         cleaned up version
     """
-    space = '&nbsp;'
-    indent = space * 4
-    indentr = '    '
+    # format the arg names
+    argx = [f.replace('(', '(<i><font color="#0c9c6e">').replace('): ', '</font></i>):<br>') for f in argx]
+    argx = [f.replace("'", '"') for f in argx]
 
-    # style the dtype and move subsequent to next line
-    argx = [f.replace('(', '(<i><font color="#0c9c6e">').replace('): ', f'</font></i>):<br>{indentr * 2}')
-            for f in argx]
-    # textwrap for alignment
-    argx = [textwrap.fill(f, 250, initial_indent=indentr, subsequent_indent=indentr * 2)
-            for f in argx]
-
-    # clean up example
+    # clean up web link
     argx = [f.replace('Example: None', '') for f in argx]
     argx = [f.replace('Example:', '') for f in argx]
-    argx = [f'{indentr * 2}<a href={f.lstrip()}>See example</a>' if 'https' in f else f for f in argx]
+    for iargx, aaa in enumerate(argx):
+        if 'https' in aaa:
+            aaa = aaa.lstrip().split('https')
+            if len(aaa) == 1:
+                argx[iargx] = f'<a href=https{aaa[0]}>See example</a>'
+            elif aaa[0] == '':
+                aaa.pop(0)
+                argx[iargx] = f'<a href=https{aaa[0]}>See example</a>'
+            else:
+                argx[iargx - 1] += f' {aaa[0]}'
+                argx[iargx] = f'<a href=https{aaa[1]}>See example</a>'
 
-    # # bold kewyords
-    argx = [f'{indentr}<b>{f.lstrip()}' if '):<br>' in f else f for f in argx]
+    # bold kewyords
+    argx = [f'<b>{f.lstrip()}' if '):<br>' in f else f for f in argx]
     argx = [f.replace(' (<i>', '</b> (<i>') for f in argx]
 
     # check next line and clean
     for i in range(0, len(argx) - 1):
-        if f'{indentr}<b>' not in argx[i + 1] and argx[i + 1] != '' and 'https' not in argx[i + 1] \
+        if '<b>' not in argx[i + 1] and argx[i + 1] != '' and 'https' not in argx[i + 1] \
                 and ':</font></i>' not in argx[i + 1]:
             argx[i] += f' {argx[i + 1].lstrip()}'
             argx[i + 1] = ''
 
     # add html spaces
-    argx = [f.replace(f'{indentr}', f'{indent}') for f in argx]
+    argx = [' '.join(f.split()) for f in argx]
 
     # remove empties and None
     argx = [f for f in argx if f != '']
     argx = [f.replace('. None', '') for f in argx]
 
-    #db()
-    # <span id="rectangle" style="height: 12px; width: 12px; background-color:blue; display:inline-block"></span>
+    # add color patches
+    for iargx, aaa in enumerate(argx):
+        has_hex = re.findall(r' #(?:[0-9a-fA-F]{1,2}){3}', aaa)
+        if 'Defaults' in aaa and len(has_hex) > 0:
+            idx = aaa.find(has_hex[0].strip())  # this could break in some cases
+            if has_hex[0].strip().lower() == '#ffffff':
+                border = '; border: 1px solid #cccccc;'
+            else:
+                border = ''
+            argx[iargx] = aaa[0:idx + 7] \
+                + f' <span id="rectangle" style="height: 12px; width: 12px; background-color:{has_hex[0].strip()};' \
+                + f'{border}display:inline-block"></span>' \
+                + aaa[idx + 7:]
+
+        elif 'fcp.DEFAULT_COLORS' in aaa:
+            color_str = ''
+            for color in DEFAULT_COLORS[0:10]:
+                color_str += f'<span id="rectangle" style="height: 12px; width: 12px; background-color:{color};' \
+                    + 'display:inline-block"></span>'
+            idx = aaa.find('fcp.DEFAULT_COLORS')
+            argx[iargx] = aaa[:idx + 18] \
+                + f' {color_str}' \
+                + aaa[idx + 18:]
+
+    # add section divs
+    arg0 = argx[0]
+    argx = '<br>'.join(argx).split('<b>')[1:]
+    for iargx, aaa in enumerate(argx):
+        aaa = aaa.split(':<br>')
+        aaa[1] = f'<div style="padding-left: 30px">{aaa[1]}'
+        aaa[-1] += '</div>'
+        aaa = [f.replace('<br>', ' ') for f in aaa]
+        aaa = [f.replace('<a href', '<br><a href') for f in aaa]
+        aaa = ':<br>'.join(aaa)
+        argx[iargx] = f'<div style="padding-left: 30px"><b>{aaa}</div>'
+    if not arg0.split(':')[0] in argx[0]:
+        argx = [arg0] + argx
+
+    # fix category labels
+    idx = [i for (i, f) in enumerate(argx) if '#cc00ff' in f]
+    for ii in idx:
+        if ii == 0:
+            argx[ii + 1] = f'<div style="padding-left: 30px">{argx[ii]}</div>{argx[ii + 1]}'
+        else:
+            argx[ii + 1] = argx[ii].replace('<font color="#cc00ff"', f'</div><br><font color="#cc00ff"') + argx[ii + 1]  # noqa
+        argx[ii] = ''
+    argx = [f for f in argx if f != '']
 
     return argx
 
@@ -171,17 +223,19 @@ def markdown(docstring: str) -> str:
 
     # rebuild in markdown-friendly code
     func = ['<p style="line-height:30px"><b><font color="#999999" '
-            + f'style="font-family:Arial; font-size:24px">fivecentplots.{doclist[0]}</font></b>']
-    func_desc = [f'<b><i>{" ".join(doclist[1: arg - 1])}</i></b>']
+            + f'style="font-family:Arial; font-size:24px">fivecentplots.{doclist[0]}</font></b><br>']
+    func_desc = [f'<b><i>{" ".join(doclist[1: arg - 1])}</i></b><br>']
 
-    h_arg = [f'<b>{doclist[arg]}</b>']
+    h_arg = [f'<br><b>{doclist[arg]}</b><br>']
     argv = html_param(doclist[arg + 1: rkw])
 
-    h_rkw = [f'<b>{doclist[rkw]}</b>']
+    h_rkw = [f'<br><b>{doclist[rkw]}</b><br>']
     rkwv = html_param(doclist[rkw + 1: okw])
 
-    h_okw = [f'<b>{doclist[okw]}</b>']
+    h_okw = [f'<br><b>{doclist[okw]}</b><br>']
     okwv = html_param(doclist[okw + 1:])
 
-    return '<br>'.join(func + func_desc + br + h_arg + argv + br
-                       + h_rkw + rkwv + br + h_okw + okwv) + '</p>'
+    output = ''.join(func + func_desc + br + h_arg + argv + br
+                     + h_rkw + rkwv + br + h_okw + okwv) + '</p>'
+
+    return output
