@@ -25,13 +25,16 @@ for nb in ipynb:
 
     # fix the docstring
     docstring0 = ff.index('</h1>') + 5
-    docstring1 = ff[docstring0:].index('<div') + docstring0
-    nn = open(cur_dir / nb.replace('.html', '.ipynb'))
-    nn = json.load(nn)
     try:
-        cell = nn['cells'][1]['source'][0]
-        ff = ff[0:docstring0] + cell + '<br>' + ff[docstring1:]
-    except IndexError:
+        docstring1 = ff.index('<div class="section" id="Setup">')
+        nn = open(cur_dir / nb.replace('.html', '.ipynb'))
+        nn = json.load(nn)
+        try:
+            cell = nn['cells'][1]['source'][0]
+            ff = ff[0:docstring0] + cell + '<br>' + ff[docstring1:]
+        except IndexError:
+            pass
+    except ValueError:
         pass
 
     with open(cur_dir / '_build/html' / nb, 'w') as output:

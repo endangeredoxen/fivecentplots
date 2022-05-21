@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Gantt Charts &mdash; fivecentplots beta documentation</title>
+  <title>gantt charts &mdash; fivecentplots beta documentation</title>
   
 
   
@@ -112,16 +112,17 @@
 <li class="toctree-l1"><a class="reference internal" href="barplot.html">barplot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Gantt Charts</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#Setup">Setup</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#Imports">Imports</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Sample-data">Sample data</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Set-theme">Set theme</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Other">Other</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">gantt charts</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Setup">Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Basic-chart">Basic chart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Grouping">Grouping</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Legends">Legends</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Row/column-plot">Row/column plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Wrap-plot">Wrap plot</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#Basic-chart">Basic chart</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Legends">Legends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Styling">Styling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Sorting">Sorting</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="heatmap.html">heatmap</a></li>
@@ -183,7 +184,7 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Gantt Charts</li>
+      <li>gantt charts</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -472,39 +473,28 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<div class="section" id="Gantt-Charts">
-<h1>Gantt Charts<a class="headerlink" href="#Gantt-Charts" title="Permalink to this headline">¶</a></h1><b><font color="blue" style="font-family:'Courier New'">fivecentplots </font></b> can be used to make basic Gantt charts for project management using  `fcp.gantt`.  At a minimum, the `gantt` function requires the following keywords:
-<br><div class="section" id="Setup">
+<div class="section" id="gantt-charts">
+<h1>gantt charts<a class="headerlink" href="#gantt-charts" title="Permalink to this headline">¶</a></h1><p style="line-height:30px"><b><font color="#999999" style="font-family:Arial; font-size:24px">fivecentplots.gantt(df, **kwargs)</font></b><br><b><i>Gantt chart plotting function.  This plot is built off of a horizontal implementation of `fcp.bar`.</i></b><br><br><b>Args:</b><br>&nbsp;&nbsp;&nbsp;&nbsp;<b>df</b> (<i><font color="#0c9c6e">DataFrame</font></i>):<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DataFrame containing data to plot<br><br><b>Required Keyword Args:</b><br>&nbsp;&nbsp;&nbsp;&nbsp;<b>x</b> (<i><font color="#0c9c6e">list</font></i>):<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;two x-axis column names containing Datetime values 1) the start time for each item in the Gantt chart<br> 2) the stop time for each item in the Gantt chart<br>&nbsp;&nbsp;&nbsp;&nbsp;<b>y</b> (<i><font color="#0c9c6e">str</font></i>):<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y-axis column name<br>&nbsp;&nbsp;&nbsp;&nbsp;<b>z</b> (<i><font color="#0c9c6e">str</font></i>):<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;z-axis column name<br><br><b>Optional Keyword Args:</b><br>&nbsp;&nbsp;&nbsp;&nbsp;<b>gantt_color_by_bar | color_by_bar</b> (<i><font color="#0c9c6e">bool</font></i>):<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Color each Gantt bar differently. Defaults to False.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Styling>See example</a><br>&nbsp;&nbsp;&nbsp;&nbsp;<b>gantt_height | height</b> (<i><font color="#0c9c6e">float</font></i>):<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Set the fractional height of the Gantt bars between 0-1. Defaults to 0.9. <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Styling>See example</a><br>&nbsp;&nbsp;&nbsp;&nbsp;<b>gantt_edge_color</b> (<i><font color="#0c9c6e">str</font></i>):<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hex color string for the edge of the Gantt bars. Defaults to fcp.DEFAULT_COLORS. <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Styling>See example</a><br>&nbsp;&nbsp;&nbsp;&nbsp;<b>gantt_edge_width</b> (<i><font color="#0c9c6e">float</font></i>):<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Width of the edge of the Gantt bars in pixels. Defaults to 0.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Styling>See example</a><br>&nbsp;&nbsp;&nbsp;&nbsp;<b>gantt_order_by_legend | order by legend</b> (<i><font color="#0c9c6e">bool</font></i>):<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Order the y-axis values based on the sort order of the legend values [requires legend]. Defaults to False. <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Legends>See example</a><br>&nbsp;&nbsp;&nbsp;&nbsp;<b>gantt_fill_alpha</b> (<i><font color="#0c9c6e">int</font></i>):<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Transparency value for the Gantt bars between 0-1. Defaults to 0.75.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Styling>See example</a><br>&nbsp;&nbsp;&nbsp;&nbsp;<b>gantt_fill_color</b> (<i><font color="#0c9c6e">str</font></i>):<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hex color string of the Gantt bar fill . Defaults to fcp.DEFAULT_COLORS. <br>&nbsp;&nbsp;&nbsp;&nbsp;<b>gantt_label_x</b> (<i><font color="#0c9c6e">str</font></i>):<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;By default, x-axis labels are disabled for this plot type. Defaults to \'’. <br>&nbsp;&nbsp;&nbsp;&nbsp;<b>gantt_tick_labels_x_rotation | tick_labels_x_rotation</b> (<i><font color="#0c9c6e">int</font></i>):<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Gantt-specific version of the this kwarg to ensure rotations are not applied globably to all plots from a theme file.<br> Defaults to 90. <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Legends>See example</a><br>&nbsp;&nbsp;&nbsp;&nbsp;<b>sort</b> (<i><font color="#0c9c6e">str</font></i>):<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sort order for the Gantt bars {‘ascending’, ‘descending’}. Defaults to \'descending’. <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Sorting>See example</a></p><br><div class="section" id="Setup">
 <h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="Imports">
-<h3>Imports<a class="headerlink" href="#Imports" title="Permalink to this headline">¶</a></h3>
+<p>Import packages:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="o">%</span><span class="k">load_ext</span> autoreload
-<span class="o">%</span><span class="k">autoreload</span> 2
-<span class="o">%</span><span class="k">matplotlib</span> inline
-<span class="kn">import</span> <span class="nn">fivecentplots</span> <span class="k">as</span> <span class="nn">fcp</span>
+<span></span><span class="kn">import</span> <span class="nn">fivecentplots</span> <span class="k">as</span> <span class="nn">fcp</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">pdb</span>
-<span class="n">osjoin</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span>
-<span class="n">db</span> <span class="o">=</span> <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="Sample-data">
-<h3>Sample data<a class="headerlink" href="#Sample-data" title="Permalink to this headline">¶</a></h3>
-<p>Read some fake bar chart data</p>
+<p>Read some made-up Gantt chart data for the recording schedule of one of the greatest albums of one of the greatest bands:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">osjoin</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;tests&#39;</span><span class="p">,</span> <span class="s1">&#39;fake_data_gantt.csv&#39;</span><span class="p">))</span>
+<span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;tests/fake_data_gantt.csv&#39;</span><span class="p">)</span>
 <span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -536,6 +526,7 @@ div.rendered_html tbody tr:hover {
       <th>Assigned</th>
       <th>Start</th>
       <th>Stop</th>
+      <th>Category</th>
     </tr>
   </thead>
   <tbody>
@@ -545,6 +536,7 @@ div.rendered_html tbody tr:hover {
       <td>Taylor</td>
       <td>2010-09-01</td>
       <td>2010-09-05</td>
+      <td>Recording</td>
     </tr>
     <tr>
       <th>1</th>
@@ -552,6 +544,7 @@ div.rendered_html tbody tr:hover {
       <td>Nate</td>
       <td>2010-09-04</td>
       <td>2010-09-06</td>
+      <td>Recording</td>
     </tr>
     <tr>
       <th>2</th>
@@ -559,6 +552,7 @@ div.rendered_html tbody tr:hover {
       <td>Pat</td>
       <td>2010-09-06</td>
       <td>2010-09-08</td>
+      <td>Recording</td>
     </tr>
     <tr>
       <th>3</th>
@@ -566,6 +560,7 @@ div.rendered_html tbody tr:hover {
       <td>Dave</td>
       <td>2010-09-06</td>
       <td>2010-09-08</td>
+      <td>Recording</td>
     </tr>
     <tr>
       <th>4</th>
@@ -573,17 +568,15 @@ div.rendered_html tbody tr:hover {
       <td>Chris</td>
       <td>2010-09-07</td>
       <td>2010-09-09</td>
+      <td>Recording</td>
     </tr>
   </tbody>
 </table>
 </div></div>
 </div>
-</div>
-<div class="section" id="Set-theme">
-<h3>Set theme<a class="headerlink" href="#Set-theme" title="Permalink to this headline">¶</a></h3>
-<p>Optionally set the design theme</p>
+<p>Optionally set the design theme (skipping here and using default):</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -593,28 +586,15 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 </div>
-<div class="section" id="Other">
-<h3>Other<a class="headerlink" href="#Other" title="Permalink to this headline">¶</a></h3>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">SHOW</span> <span class="o">=</span> <span class="kc">False</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
 <div class="section" id="Basic-chart">
 <h2>Basic chart<a class="headerlink" href="#Basic-chart" title="Permalink to this headline">¶</a></h2>
-<p>A basic Gantt chart showing tasks across a time axis is created as follows:</p>
+<p>We create a basic Gantt chart showing tasks across a time axis specified by start and stop column containing <code class="docutils literal notranslate"><span class="pre">Datetime</span></code> values:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -622,20 +602,47 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/gantt_15_0.png" src="_images/gantt_15_0.png" />
+<img alt="_images/gantt_11_0.png" src="_images/gantt_11_0.png" />
 </div>
 </div>
 <p>As with other plots, tick label fonts, sizes, and rotations can all be controlled using the correct <code class="docutils literal notranslate"><span class="pre">kwarg</span></code>. See Grids and ticks for more details.</p>
 </div>
+<div class="section" id="Grouping">
+<h2>Grouping<a class="headerlink" href="#Grouping" title="Permalink to this headline">¶</a></h2>
+<p>Like all other plots in fivecentplots , Gantt charts can grouped in various ways to provide further insight into the data set. This includes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">legend</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">row</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">col</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">wrap</span></code></p></li>
+</ul>
+<p>keyword options. A couple of examples are shown below.</p>
 <div class="section" id="Legends">
-<h2>Legends<a class="headerlink" href="#Legends" title="Permalink to this headline">¶</a></h2>
+<h3>Legends<a class="headerlink" href="#Legends" title="Permalink to this headline">¶</a></h3>
 <p>Legends can be used to further distinguish various tasks by assignee or other factors. If the same task has multiple assignees, they will be split into two different bars in the chart.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Assigned&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Assigned&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span> <span class="n">gantt_tick_labels_x_rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/gantt_17_0.png" src="_images/gantt_17_0.png" />
+</div>
+</div>
+<p>When using a legend, we can also sort the y-axis values based on the order in the legend using keyword <code class="docutils literal notranslate"><span class="pre">order_by_legend=True</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Assigned&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span> <span class="n">gantt_tick_labels_x_rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">order_by_legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -646,7 +653,122 @@ div.rendered_html tbody tr:hover {
 <img alt="_images/gantt_19_0.png" src="_images/gantt_19_0.png" />
 </div>
 </div>
-<p>Additional features may be added to this plot type in the future</p>
+</div>
+<div class="section" id="Row/column-plot">
+<h3>Row/column plot<a class="headerlink" href="#Row/column-plot" title="Permalink to this headline">¶</a></h3>
+<p>Row grouping (<code class="docutils literal notranslate"><span class="pre">share_y</span></code> is automatically disabled):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Category&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">400</span><span class="p">,</span> <span class="mi">240</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/gantt_22_0.png" src="_images/gantt_22_0.png" />
+</div>
+</div>
+<p>Column grouping (<code class="docutils literal notranslate"><span class="pre">share_y</span></code> is automatically disabled):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Category&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">400</span><span class="p">,</span> <span class="mi">240</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/gantt_24_0.png" src="_images/gantt_24_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Wrap-plot">
+<h3>Wrap plot<a class="headerlink" href="#Wrap-plot" title="Permalink to this headline">¶</a></h3>
+<p>Notice that <code class="docutils literal notranslate"><span class="pre">share_y</span></code> is enabled for this type of grouping:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;Category&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">400</span><span class="p">,</span> <span class="mi">240</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/gantt_27_0.png" src="_images/gantt_27_0.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Styling">
+<h2>Styling<a class="headerlink" href="#Styling" title="Permalink to this headline">¶</a></h2>
+<p>Default style:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/gantt_30_0.png" src="_images/gantt_30_0.png" />
+</div>
+</div>
+<p>Now with various style modifications:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span> <span class="n">color_by_bar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+          <span class="n">gantt_edge_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">gantt_edge_color</span><span class="o">=</span><span class="s1">&#39;#555555&#39;</span><span class="p">,</span> <span class="n">gantt_height</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">gantt_fill_alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/gantt_32_0.png" src="_images/gantt_32_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Sorting">
+<h2>Sorting<a class="headerlink" href="#Sorting" title="Permalink to this headline">¶</a></h2>
+<p>By default, the sorting order of tasks is “descending” from top to bottom by date. We can flip that behavior with the keyword <code class="docutils literal notranslate"><span class="pre">sort='ascending'</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">gantt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Stop&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="s1">&#39;ascending&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/gantt_35_0.png" src="_images/gantt_35_0.png" />
+</div>
+</div>
 </div>
 </div>
 
