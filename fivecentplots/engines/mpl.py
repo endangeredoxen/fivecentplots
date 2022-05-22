@@ -1401,7 +1401,10 @@ class Layout(BaseLayout):
                 yticksm_size_all = []
 
             # Prevent single tick label axis
-            if len(xticks_size_all) <= 1:
+            if len(xticks_size_all) <= 1 \
+                    and self.name not in ['box', 'bar', 'pie'] \
+                    and (not self.axes.share_x or len(self.axes.obj) == 1) \
+                    and axis != '2':
                 kw = {}
                 kw['rotation'] = xticks.rotation
                 kw['font_color'] = xticks.font_color
@@ -1413,12 +1416,12 @@ class Layout(BaseLayout):
                 kw['font_size'] = xticks.font_size / sf
                 kw['position'] = \
                     [self.axes.size[0] - xticks.size_all.loc[0, 'width'] / 2 / sf,
-                     -xticks.size_all.loc[0, 'height']]
+                    -xticks.size_all.loc[0, 'height']]
                 precision = utl.get_decimals(xticks.limits[1], 8)
                 txt = f'{xticks.limits[1]:.{precision}f}'
                 self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', **kw)
 
-            if len(yticks_size_all) <= 1:
+            if len(yticks_size_all) <= 1 and not self.axes.share_y:
                 kw = {}
                 kw['rotation'] = yticks.rotation
                 kw['font_color'] = yticks.font_color
@@ -2113,7 +2116,6 @@ class Layout(BaseLayout):
                                               cumulative=self.hist.cumulative,
                                               density=self.hist.normalize,
                                               rwidth=self.hist.rwidth,
-                                              stacked=self.hist.stacked,
                                               orientation='vertical' if not self.hist.horizontal else 'horizontal',
                                               )
 
