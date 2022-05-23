@@ -92,6 +92,10 @@ def html_param(argx: list) -> list:
     Returns:
         cleaned up version
     """
+    # case of none
+    if argx[0] == 'None':
+        return [f'<div style="padding-left: 30px">{argx[0]}</div>']
+
     # format the arg names
     argx = [f.replace('(', '(<i><font color="#0c9c6e">').replace('): ', '</font></i>):<br>') for f in argx]
     argx = [f.replace("'", '"') for f in argx]

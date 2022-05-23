@@ -185,7 +185,8 @@ def hist(df, **kwargs):
     """Histogram plot
 
     Args:
-        df (DataFrame): DataFrame containing data to plot
+        df (DataFrame | numpy array): DataFrame or numpy array containing data to plot
+            [when passing a numpy array it is automatically converted to a DataFrame]
 
     Required Keyword Args:
         x (str): x-axis column name [the "value" column from which "counts" are calculated]
@@ -197,20 +198,17 @@ def hist(df, **kwargs):
 
 
 def imshow(df, **kwargs):
-    """ Main imshow plotting function
-    At minimum, it requires a pandas DataFrame with at
-    least three columns and three column names for the x, y, and z axis.
-    Plots can be customized and enhanced by passing keyword arguments as
-    defined below. Default values that must be defined in order to
-    generate the plot are pulled from the fcp_params default dictionary
+    """Image show plotting function
 
     Args:
-        df (DataFrame): DataFrame containing data to plot
-        x (str|list):   name of list of names of x column in df
-        y (str|list):   name or list of names of y column(s) in df
-        z (str):   name of z column(s) in df
+        df (DataFrame | numpy array): DataFrame or numpy array containing 2D row/column
+            image data to plot [when passing a numpy array it is automatically converted
+            to a DataFrame]
 
-    Keyword Args:
+    Required Keyword Args:
+        None
+
+    Optional Keyword Args:
     """
 
     kwargs['tick_labels'] = kwargs.get('tick_labels', True)
@@ -1078,8 +1076,16 @@ def plotter(dobj, **kwargs):
 
 
 def pie(df, **kwargs):
-    """
-    Pie chart
+    """Pie chart
+
+    Args:
+        df (DataFrame): DataFrame containing data to plot
+
+    Required Keyword Args:
+        x (str): x-axis column name with categorical data
+        y (str): y-axis column name with values
+
+    Optional Keyword Args:
     """
 
     return plotter(data.Pie, **dfkwarg(df, kwargs))
@@ -1301,6 +1307,12 @@ heatmap.__doc__ += \
 
 
 hist.__doc__ += keywords.kw_print(kw['hist'])
+
+
+imshow.__doc__ += keywords.kw_print(kw['imshow'])
+
+
+pie.__doc__ += keywords.kw_print(kw['pie'])
 
 
 nq.__doc__ += ''

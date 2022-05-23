@@ -65,7 +65,7 @@ def plt_basic(bm=False, master=False, remove=True, show=False):
     # Make the plot
     fcp.pie(df, x='Liquid', y='pH', show=SHOW,
             filter='Measurement=="A" & T [C]==25',
-            startangle=90, alpha=0.85, filename=name + '.png', save=not bm, inline=False,
+            start_angle=90, alpha=0.85, filename=name + '.png', save=not bm, inline=False,
             jitter=False)
 
     if bm:
@@ -95,9 +95,9 @@ def plt_donut(bm=False, master=False, remove=True, show=False):
     # Make the plot
     fcp.pie(df, x='Liquid', y='pH', show=SHOW,
             filter='Measurement=="A" & T [C]==25',
-            startangle=90, alpha=0.85, filename=name + '.png', save=not bm, inline=False,
+            start_angle=90, alpha=0.85, filename=name + '.png', save=not bm, inline=False,
             jitter=False,
-            innerradius=0.5, pctdistance=0.75)
+            inner_radius=0.5, percents_distance=0.75)
 
     if bm:
         return
@@ -126,7 +126,7 @@ def plt_legend(bm=False, master=False, remove=True, show=False):
     # Make the plot
     fcp.pie(df, x='Liquid', y='pH', show=SHOW,
             filter='Measurement=="A" & T [C]==25',
-            startangle=90, alpha=0.85, legend=True,
+            start_angle=90, alpha=0.85, legend=True,
             filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -214,7 +214,7 @@ def plt_percents(bm=False, master=False, remove=True, show=False):
     # Make the plot
     fcp.pie(df, x='Liquid', y='pH', show=SHOW,
             filter='Measurement=="A" & T [C]==25',
-            startangle=90, alpha=0.85, percents=True,
+            start_angle=90, alpha=0.85, percents=True,
             filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -244,7 +244,7 @@ def plt_explode(bm=False, master=False, remove=True, show=False):
     # Make the plot
     fcp.pie(df, x='Liquid', y='pH', show=SHOW,
             filter='Measurement=="A" & T [C]==25',
-            explode=(0, 0.1), startangle=90, alpha=0.85, percents=True,
+            explode=(0, 0.1), start_angle=90, alpha=0.85, percents=True,
             filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -274,7 +274,7 @@ def plt_shadow(bm=False, master=False, remove=True, show=False):
     # Make the plot
     fcp.pie(df, x='Liquid', y='pH', show=SHOW,
             filter='Measurement=="A" & T [C]==25',
-            explode=(0, 0.1), shadow=True, startangle=90, percents=True,
+            explode=(0, 0.1), shadow=True, start_angle=90, percents=True,
             filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -304,7 +304,7 @@ def plt_angle(bm=False, master=False, remove=True, show=False):
     # Make the plot
     fcp.pie(df, x='Liquid', y='pH', show=SHOW,
             filter='Measurement=="A" & T [C]==25',
-            explode=(0, 0.1), startangle=0, percents=True,
+            explode=(0, 0.1), start_angle=0, percents=True,
             filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:

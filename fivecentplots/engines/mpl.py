@@ -1404,7 +1404,8 @@ class Layout(BaseLayout):
             if len(xticks_size_all) <= 1 \
                     and self.name not in ['box', 'bar', 'pie'] \
                     and (not self.axes.share_x or len(self.axes.obj) == 1) \
-                    and axis != '2':
+                    and axis != '2' \
+                    and self.tick_labels_major_x.on:
                 kw = {}
                 kw['rotation'] = xticks.rotation
                 kw['font_color'] = xticks.font_color
@@ -2244,20 +2245,20 @@ class Layout(BaseLayout):
 
         self.pie.obj = self.axes.obj[ir, ic].pie(
             y, labels=x, explode=self.pie.explode,  # center=[40,40],
-            colors=self.pie.colors, autopct=self.pie.autopct,
-            counterclock=self.pie.counterclock,
-            labeldistance=self.pie.labeldistance,
-            pctdistance=self.pie.pctdistance, radius=self.pie.radius,
-            rotatelabels=self.pie.rotatelabels, shadow=self.pie.shadow,
-            startangle=self.pie.startangle, wedgeprops=wedgeprops,
+            colors=self.pie.colors, autopct=self.pie.percents,
+            counterclock=self.pie.counter_clock,
+            labeldistance=self.pie.label_distance,
+            pctdistance=self.pie.percents_distance, radius=self.pie.radius,
+            rotatelabels=self.pie.rotate_labels, shadow=self.pie.shadow,
+            startangle=self.pie.start_angle, wedgeprops=wedgeprops,
             textprops=textprops)
 
         # change percent font style
-        if self.pie.autopct is not None:
+        if self.pie.percents is not None:
             for lab in self.pie.obj[2]:
-                lab.set_fontsize(self.pie.pct_font_size)
-                lab.set_color(self.pie.pct_font_color)
-                lab.set_fontweight(self.pie.pct_font_weight)
+                lab.set_fontsize(self.pie.percents_font_size)
+                lab.set_color(self.pie.percents_font_color)
+                lab.set_fontweight(self.pie.percents_font_weight)
 
         self.axes.obj[ir, ic].set_xlim(left=-1)
         self.axes.obj[ir, ic].set_xlim(right=1)

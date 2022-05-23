@@ -1317,13 +1317,16 @@ class BaseLayout:
 
         self.imshow = Element('imshow', self.fcpp, kwargs,
                               on=True,
-                              edge_width=0,
-                              font_color='#ffffff',
-                              font_size=12,
                               interp=utl.kwget(kwargs, self.fcpp,
                                                ['imshow_interp', 'interp'],
                                                kwargs.get('interp', 'none')),
                               )
+
+        # unless the color map is explicity defined in kwargs or self.fcpp,
+        # override the inferno default for imshow
+        if self.imshow.on and not utl.kwget(kwargs, self.fcpp, 'cmap', None):
+            self.cmap = 'gray'
+
         # Special gridline/tick/axes defaults for heatmap
         grids = [f for f in kwargs.keys() if f in
                  ['grid_major', 'grid_major_x', 'grid_major_y',
@@ -1348,10 +1351,18 @@ class BaseLayout:
             utl.kwget(kwargs_orig, self.fcpp, ['label_y'], False)
         self.tick_labels_major_x.rotation = \
             utl.kwget(kwargs_orig, self.fcpp, 'tick_labels_major_x', 0)
+        self.tick_labels_major_x.on = \
+            utl.kwget(kwargs_orig, self.fcpp,
+                      ['tick_labels_major', 'tick_labels_major_x'],
+                      False)
         self.tick_labels_major_x.font_size = \
             utl.kwget(kwargs_orig, self.fcpp,
                       ['tick_labels_major_font_size',
                        'tick_labels_major_x_font_size'], 10)
+        self.tick_labels_major_y.on = \
+            utl.kwget(kwargs_orig, self.fcpp,
+                      ['tick_labels_major', 'tick_labels_major_y'],
+                      False)
         self.tick_labels_major_y.font_size = \
             utl.kwget(kwargs_orig, self.fcpp,
                       ['tick_labels_major_font_size',
@@ -1607,49 +1618,58 @@ class BaseLayout:
 
         self.pie = Element('pie', self.fcpp, kwargs,
                            on=True,
-                           autopct=utl.kwget(kwargs, self.fcpp, ['pie_autopct', 'percents'],
-                                             kwargs.get('percents', None)),
+                           alpha=utl.kwget(kwargs, self.fcpp, ['pie_fill_alpha', 'fill_alpha'],
+                                           kwargs.get('fill_alpha', 0.85)),
                            colors=utl.kwget(
                                kwargs, self.fcpp, 'pie_colors', copy.copy(self.color_list)),
-                           counterclock=utl.kwget(kwargs, self.fcpp, ['pie_counterclock', 'counterclock'],
-                                                  kwargs.get('counterclock', True)),
+                           counter_clock=utl.kwget(kwargs, self.fcpp, ['pie_counter_clock', 'counter_clock'],
+                                                   kwargs.get('counter_clock', False)),
                            edge_color=utl.kwget(kwargs, self.fcpp, 'pie_edge_color',
                                                 kwargs.get('pie_edge_color', '#ffffff')),
                            edge_style=utl.kwget(kwargs, self.fcpp, 'pie_edge_style',
                                                 kwargs.get('pie_edge_style', '-')),
                            edge_width=1,
-                           explode=kwargs.get('explode', None),
-                           inner_radius=utl.kwget(kwargs, self.fcpp, ['pie_innerradius', 'innerradius'],
-                                                  kwargs.get('innerradius', 1)),
-                           labeldistance=utl.kwget(kwargs, self.fcpp, ['pie_labeldistance', 'labeldistance'],
-                                                   kwargs.get('labeldistance', 1.1)),
+                           explode=utl.kwget(kwargs, self.fcpp, ['pie_explode', 'explode'],
+                                             kwargs.get('explode', None)),
+                           inner_radius=utl.kwget(kwargs, self.fcpp, ['pie_inner_radius', 'inner_radius'],
+                                                  kwargs.get('inner_radius', None)),
+                           label_distance=utl.kwget(kwargs, self.fcpp, ['pie_label_distance', 'label_distance'],
+                                                    kwargs.get('label_distance', 1.1)),
                            label_sizes=[(0, 0), (0, 0)],
-                           pctdistance=utl.kwget(kwargs, self.fcpp, ['pie_pctdistance', 'pctdistance'],
-                                                 kwargs.get('pctdistance', 0.6)),
-                           pct_font_color=utl.kwget(kwargs, self.fcpp, ['pie_pct_font_color', 'pct_font_color'],
-                                                    kwargs.get('pct_font_color', '#444444')),
-                           pct_font_size=utl.kwget(kwargs, self.fcpp, ['pie_pct_font_size', 'pct_font_size'],
-                                                   kwargs.get('pct_font_size', 11)),
-                           pct_font_weight=utl.kwget(kwargs, self.fcpp, ['pie_pct_font_weight', 'pct_font_weight'],
-                                                     kwargs.get('pct_font_weight', 'normal')),
+                           percents=utl.kwget(kwargs, self.fcpp, ['pie_percents', 'percents'],
+                                              kwargs.get('percents', None)),
+                           percents_distance=utl.kwget(kwargs, self.fcpp,
+                                                       ['pie_percents_distance', 'percents_distance'],
+                                                       kwargs.get('percents_distance', 0.6)),
+                           percents_font_color=utl.kwget(kwargs, self.fcpp,
+                                                         ['pie_percents_font_color', 'percents_font_color'],
+                                                         kwargs.get('percents_font_color', '#444444')),
+                           percents_font_size=utl.kwget(kwargs, self.fcpp,
+                                                        ['pie_percents_font_size', 'percents_font_size'],
+                                                        kwargs.get('percents_font_size', 11)),
+                           percents_font_weight=utl.kwget(kwargs, self.fcpp,
+                                                          ['pie_percents_font_weight', 'percents_font_weight'],
+                                                          kwargs.get('percents_font_weight', 'normal')),
                            radius=utl.kwget(kwargs, self.fcpp, ['pie_radius', 'radius'],
                                             kwargs.get('radius', 1)),
-                           rotatelabels=utl.kwget(kwargs, self.fcpp, ['pie_rotatelabels', 'rotatelabels'],
-                                                  kwargs.get('rotatelabels', False)),
+                           rotate_labels=utl.kwget(kwargs, self.fcpp, ['pie_rotate_labels', 'rotate_labels'],
+                                                   kwargs.get('rotate_labels', False)),
                            shadow=utl.kwget(kwargs, self.fcpp, ['pie_shadow', 'shadow'],
                                             kwargs.get('shadow', False)),
-                           startangle=utl.kwget(kwargs, self.fcpp, ['pie_startangle', 'startangle'],
-                                                kwargs.get('startangle', 90)),
+                           start_angle=utl.kwget(kwargs, self.fcpp, ['pie_start_angle', 'start_angle'],
+                                                 kwargs.get('start_angle', 90)),
                            )
+        if self.pie.inner_radius is None:
+            self.pie.inner_radius = self.pie.radius
         self.pie.xs_left = 0
         self.pie.xs_right = 0
         self.pie.xs_top = 0
         self.pie.xs_bottom = 0
 
-        if self.pie.autopct is True:
-            self.pie.autopct = '%1.1f%%'
-        elif self.pie.autopct is False:
-            self.pie.autopct = None
+        if self.pie.percents is True:
+            self.pie.percents = '%1.1f%%'
+        elif self.pie.percents is False:
+            self.pie.percents = None
 
         return kwargs
 

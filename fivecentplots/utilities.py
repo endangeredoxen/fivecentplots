@@ -698,13 +698,13 @@ def nq(data, column: str = 'Value', **kwargs) -> pd.DataFrame:
     return pd.DataFrame({'Sigma': index, column: values})
 
 
-def pie_wedge_labels(x: np.ndarray, y: np.ndarray, startangle: float) -> [float, float]:
+def pie_wedge_labels(x: np.ndarray, y: np.ndarray, start_angle: float) -> [float, float]:
     """Identify the wedge labels that extend furthest on the horizontal axis.
 
     Args:
         x: pie wedge labels
         y: pie wedge values
-        startangle: the starting angle (0 = right | 90 = top, etc)
+        start_angle: the starting angle (0 = right | 90 = top, etc)
 
     Returns:
         indices of the longest labels on the horizontal axis
@@ -712,13 +712,13 @@ def pie_wedge_labels(x: np.ndarray, y: np.ndarray, startangle: float) -> [float,
     yper = y / sum(y)
     yperrad = yper * 2 * np.pi
     csr = yperrad.cumsum()
-    startangle = startangle * np.pi / 180
-    left = np.where((csr - (np.pi - startangle)) > 0)[0][0]
-    right = np.where((csr - (2 * np.pi - startangle)) > 0)
+    start_angle = start_angle * np.pi / 180
+    left = np.where((csr - (np.pi - start_angle)) > 0)[0][0]
+    right = np.where((csr - (2 * np.pi - start_angle)) > 0)
     if len(right[0]) > 0:
         right = right[0][0]
     else:
-        right = (csr - (2 * np.pi - startangle)).argmax()
+        right = (csr - (2 * np.pi - start_angle)).argmax()
 
     return left, right
 
