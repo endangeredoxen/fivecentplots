@@ -1,5 +1,6 @@
 Keyword,Data Type,Description,Default,Example
 cdf,bool,Convert the histogram into a cumulative distribution plot,False,hist.html#cdf
+cfa,str,Color-filter array pattern that is used to split data from a Bayer image into separate color planes,None,imshow.html#split-color-planes
 hist_align,str,If "mid" aligns center of histogram bar to x-axis value; if "left" aligns the left edge of the histogram bar to the x-axis value {"left"; "mid"; "right"},"mid",hist.html#alignment
 hist_bins | bins,int,Number of histogram bins to use; when plotting the histogram of a raw image file the number of bins is automatically adjusted to enable one bin per DN code,20,hist.html#bin-counts
 hist_cumulative | cumulative,bool,From matplotlib: If True then a histogram is computed where each bin gives the counts in that bin plus all bins for smaller values; if -1 direction of accumulation is reversed,False,hist.html#cumulative
