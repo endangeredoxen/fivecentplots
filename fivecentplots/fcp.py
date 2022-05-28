@@ -217,9 +217,22 @@ def imshow(df, **kwargs):
 
 
 def nq(df, **kwargs):
+    """Plot the normal quantiles of a data set
+
+    Args:
+        df (DataFrame | numpy array): DataFrame containing a column of
+            values data or a DataFrame or numpy array containing a set of 2D values
+            that can be used to calculate quantiles at various "sigma" intervals
+
+    Required Keyword Args:
+        None
+
+    Optional Keyword Args:
     """
-    Plot normal quantiles of a data set
-    """
+
+    kwargs['tick_labels'] = kwargs.get('tick_labels', True)
+
+    return plotter(data.ImShow, **dfkwarg(df, kwargs))
 
     return plotter(data.NQ, **dfkwarg(df, kwargs))
 
@@ -1315,7 +1328,12 @@ imshow.__doc__ += keywords.kw_print(kw['imshow'])
 pie.__doc__ += keywords.kw_print(kw['pie'])
 
 
-nq.__doc__ += ''
+nq.__doc__ += \
+    keywords.kw_header('Basic:', indent='   ') + \
+    keywords.kw_print(kw['nq']) + \
+    keywords.kw_header('Calculation:', indent='   ') + \
+    keywords.kw_print(kw['nq_calc'])
+# add line stuff from plot here
 
 
 plot.__doc__ += ''

@@ -58,12 +58,15 @@ class NQ(data.Data):
         """NQ-specific Data class to deal with operations applied to the
         input data (i.e., non-plotting operations)
 
+        **Note that the actual nq calculation is performed in Data.transform
+
         Args:
             kwargs: user-defined keyword args
         """
         name = 'nq'
         req = []
         opt = ['x']
+        kwargs['df'] = utl.df_from_array2d(kwargs['df'])
 
         if not kwargs.get('x', None):
             kwargs = reshape_2D(kwargs)

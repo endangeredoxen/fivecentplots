@@ -686,6 +686,8 @@ def nq(data, column: str = 'Value', **kwargs) -> pd.DataFrame:
     # Get sigma
     if not sig:
         sig = sigma(data)
+    else:
+        sig = abs(sig)
     index = np.concatenate([np.arange(-sig, -tail, step_tail),
                             np.arange(-tail, tail, step_inner),
                             np.arange(tail, sig + 1e-9, step_tail)])
