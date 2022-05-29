@@ -1,0 +1,3 @@
+﻿Keyword,Data Type,Description,Default,Example
+color,Hex color string str,color of the reference line,#000000,`Reference line <plot.html#Reference-line>`_
+text,str,legend text for the reference line,"""Ref Line""",
