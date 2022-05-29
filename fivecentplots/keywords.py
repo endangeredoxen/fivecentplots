@@ -19,7 +19,7 @@ cur_dir = os.path.dirname(__file__)
 def make_docstrings():
     """Parse the keyword arg lists from csv files."""
     url = f'https://endangeredoxen.github.io/fivecentplots/{__version__}/'
-    path = Path(cur_dir) / 'kwargs'
+    path = Path(cur_dir) / 'kwargs/csv'
     files = os.listdir(path)
     kw = {}
     for ff in files:

@@ -62,7 +62,7 @@ KWARGS = {}
 
 
 def bar(df, **kwargs):
-    """Bar chart
+    """Bar chart.
 
     Args:
         df (pandas.DataFrame): DataFrame containing data to plot
@@ -78,7 +78,7 @@ def bar(df, **kwargs):
 
 def boxplot(df, **kwargs):
     """Box plot modeled after the "Variability Chart" in JMP which provides convenient,
-    multi-level group labels automatically along the x-axis
+    multi-level group labels automatically along the x-axis.
 
     Args:
         df (pandas.DataFrame): DataFrame containing data to plot
@@ -92,7 +92,7 @@ def boxplot(df, **kwargs):
 
 
 def contour(df, **kwargs):
-    """Contour plot module
+    """Contour plot module.
 
     Args:
         df (DataFrame): DataFrame containing data to plot
@@ -140,7 +140,8 @@ def deprecated(kwargs):
 
 
 def gantt(df, **kwargs):
-    """Gantt chart plotting function.  This plot is built off of a horizontal implementation of `fcp.bar`.
+    """Gantt chart plotting function.  This plot is built off of a horizontal
+       implementation of `fcp.bar`.
 
     Args:
         df (DataFrame): DataFrame containing data to plot
@@ -159,7 +160,7 @@ def gantt(df, **kwargs):
 
 
 def heatmap(df, **kwargs):
-    """Heatmap plot
+    """Heatmap plot.
 
     Args:
         df (DataFrame): DataFrame containing data to plot
@@ -182,7 +183,7 @@ def help():
 
 
 def hist(df, **kwargs):
-    """Histogram plot
+    """Histogram plot.
 
     Args:
         df (DataFrame | numpy array): DataFrame or numpy array containing data to plot
@@ -198,7 +199,7 @@ def hist(df, **kwargs):
 
 
 def imshow(df, **kwargs):
-    """Image show plotting function
+    """Image show plotting function.
 
     Args:
         df (DataFrame | numpy array): DataFrame or numpy array containing 2D row/column
@@ -217,7 +218,7 @@ def imshow(df, **kwargs):
 
 
 def nq(df, **kwargs):
-    """Plot the normal quantiles of a data set
+    """Plot the normal quantiles of a data set.
 
     Args:
         df (DataFrame | numpy array): DataFrame containing a column of
@@ -237,17 +238,15 @@ def nq(df, **kwargs):
     return plotter(data.NQ, **dfkwarg(df, kwargs))
 
 
-def paste_kwargs(kwargs):
-    """
-    Get the kwargs from contents of the clipboard in ini file format
+def paste_kwargs(kwargs: dict) -> dict:
+    """Get the kwargs from contents of the clipboard in ini file format.
 
     Args:
-        kwargs (dict): originally inputted kwargs
+        kwargs: originally inputted kwargs
 
     Returns:
-        kwargs
+        copied kwargs
     """
-
     # Read the pasted data using the ConfigFile class and convert to dict
     try:
         fileio.ConfigFile
@@ -267,8 +266,16 @@ def paste_kwargs(kwargs):
 
 
 def plot(df, **kwargs):
-    """
-    XY plot
+    """XY plot.
+    
+    Args:
+        df (DataFrame): DataFrame containing data to plot
+
+    Required Keyword Args:
+        x (str): x-axis column name
+        y (str): y-axis column name
+        
+    Optional Keyword Args:
     """
 
     return plotter(data.XY, **dfkwarg(df, kwargs))
