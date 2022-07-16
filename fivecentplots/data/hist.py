@@ -75,7 +75,6 @@ class Histogram(data.Data):
         hist = pd.DataFrame()
 
         groups = self._groupers
-
         if len(groups) > 0:
             for nn, df in df_in.groupby(self._groupers):
                 if self.kwargs['2D']:

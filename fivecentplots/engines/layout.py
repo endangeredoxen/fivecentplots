@@ -2206,6 +2206,8 @@ class BaseLayout:
             if getattr(self, 'tick_labels_minor_%s' % ax).on:
                 getattr(self, 'ticks_minor_%s' % ax).on = True
 
+        self.tick_y_top_xs = 0
+
         return kwargs
 
     def _init_title(self, kwargs: dict) -> dict:
@@ -2258,7 +2260,7 @@ class BaseLayout:
         # figure
         self.ws_fig_label = utl.kwget(kwargs, self.fcpp, 'ws_fig_label', 10)
         self.ws_leg_fig = utl.kwget(kwargs, self.fcpp, 'ws_leg_fig', 10)
-        self.ws_fig_ax = utl.kwget(kwargs, self.fcpp, 'ws_fig_ax', 20)
+        self.ws_fig_ax = utl.kwget(kwargs, self.fcpp, 'ws_fig_ax', 10)
         self.ws_fig_title = utl.kwget(kwargs, self.fcpp, 'ws_fig_title', 10)
         self.ws_label_fig = utl.kwget(kwargs, self.fcpp, 'ws_label_fig',
                                       self.ws_fig_label)

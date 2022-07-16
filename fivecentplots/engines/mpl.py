@@ -36,6 +36,44 @@ warnings.filterwarnings(
 db = pdb.set_trace
 
 
+def approx_gte(x: float, y: float):
+    """Check if a float is approximately ?= to another float.
+    Stolen from stack overflow answer from Barmar
+
+    Args:
+        x: float #1
+        y: float #2
+
+    Returns:
+        bool
+    """
+    atol = 1e-8
+    if y > 0:
+        # set tolerance for very small numbers
+        expo = round(np.log10(y))
+        atol = expo - 3 if expo < 0 else 1e-8
+    return x >= y or np.isclose(x, y, atol=atol)
+
+
+def approx_lte(x: float, y: float):
+    """Check if a float is approximately <= to another float.
+    Stolen from stack overflow answer from Barmar
+
+    Args:
+        x: float #1
+        y: float #2
+
+    Returns:
+        bool
+    """
+    atol = 1e-8
+    if y > 0:
+        # set tolerance for very small numbers
+        expo = round(np.log10(y))
+        atol = expo - 3 if expo < 0 else 1e-8
+    return x <= y or np.isclose(x, y, atol=atol)
+
+
 def cbar_ticks(cbar: 'Colorbar_Object', zmin: float, zmax: float):
     """Format cbar ticks and labels.
 
@@ -250,7 +288,7 @@ class Layout(BaseLayout):
             return 0
 
         val = self.label_y.size[0] \
-            + self.ws_label_tick \
+            + self.ws_label_tick * (self.tick_labels_major_y.on | self.tick_labels_minor_y.on) \
             + self._tick_y
 
         return val
@@ -318,8 +356,7 @@ class Layout(BaseLayout):
     def _right(self) -> float:
         """Width of the space to the right of the axes object."""
         # axis to fig right side ws with or without legend
-        ws_ax_fig = (
-            self.ws_ax_fig if not self.legend._on or self.legend.location != 0 else 0)
+        ws_ax_fig = (self.ws_ax_fig if not self.legend._on or self.legend.location != 0 else 0)
 
         # sum all parts
         right = ws_ax_fig \
@@ -368,12 +405,14 @@ class Layout(BaseLayout):
         """Width of the primary y ticks and whitespace."""
         val = max(self.tick_labels_major_y.size[0],
                   self.tick_labels_minor_y.size[0]) \
-            + self.ws_ticks_ax
+            + self.ws_ticks_ax * (self.tick_labels_major_y.on | self.tick_labels_minor_y.on)
         return val
 
     @property
     def _top(self) -> float:
-        """Height of the space to the right of the axes object."""
+        """Excess height at the top of the axes.
+        Placeholder only
+        """
         return 0
 
     def add_box_labels(self, ir: int, ic: int, data):
@@ -1167,7 +1206,8 @@ class Layout(BaseLayout):
             + self.box_labels) \
             + self._legy \
             + self.pie.xs_top \
-            + self.pie.xs_bottom
+            + self.pie.xs_bottom \
+            + self.tick_y_top_xs
 
         # Debug output
         if debug:
@@ -1263,6 +1303,7 @@ class Layout(BaseLayout):
         self.axes.position[2] = \
             1 - (self.ws_title + self.title_wrap.size[1]
                  + (self.label_col.size[1] + self.ws_label_col) * self.label_col.on
+                 + self.tick_y_top_xs
                  + self.label_wrap.size[1] + self._labtick_x2 + self.pie.xs_top) \
             / self.fig.size[1]
 
@@ -1302,12 +1343,13 @@ class Layout(BaseLayout):
                 tlabs = getattr(ax.obj[ir, ic].ax, 'get_yticklabels')(minor=minor)
                 vmin, vmax = getattr(ax.obj[ir, ic].ax, 'get_ylim')()
             else:
-                tlabs = getattr(
-                    ax.obj[ir, ic], f'get_{tick}ticklabels')(minor=minor)
+                tlabs = getattr(ax.obj[ir, ic], f'get_{tick}ticklabels')(minor=minor)
                 vmin, vmax = getattr(ax.obj[ir, ic], f'get_{tick}lim')()
             tt.limits = [vmin, vmax]
-            tlabs = [f for f in tlabs if min(vmin, vmax)
-                     <= f.get_position()[idx] <= max(vmin, vmax)]
+            tlabs = [f for f in tlabs if approx_gte(f.get_position()[idx], min(vmin, vmax))
+                     and approx_lte(f.get_position()[idx], max(vmin, vmax))]
+            # tlabs = [f for f in tlabs if min(vmin, vmax)
+            #          <= f.get_position()[idx] <= max(vmin, vmax)]
             tt.obj[ir, ic] = tlabs
 
             # Get the label sizes and store sizes as 2D array
@@ -1323,6 +1365,11 @@ class Layout(BaseLayout):
                            [f.y0 for f in bboxes],
                            [f.y1 for f in bboxes],
                            )
+            if tick == 'y' and ir == 0 and ic == 0 and not self.title.on and not self.label_col.on:
+                # Padding for top y-tick label that extends beyond top of axes
+                # doesn't capture every possible case yet
+                ax_y1 = ax.obj[0, 0].get_window_extent().y1
+                self.tick_y_top_xs = max(0, self.tick_y_top_xs, tt.size_all['y1'].max() - ax_y1)
 
         if len(tt.size_all) == 0:
             return
@@ -1417,7 +1464,7 @@ class Layout(BaseLayout):
                 kw['font_size'] = xticks.font_size / sf
                 kw['position'] = \
                     [self.axes.size[0] - xticks.size_all.loc[0, 'width'] / 2 / sf,
-                    -xticks.size_all.loc[0, 'height']]
+                     -xticks.size_all.loc[0, 'height']]
                 precision = utl.get_decimals(xticks.limits[1], 8)
                 txt = f'{xticks.limits[1]:.{precision}f}'
                 self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', **kw)
@@ -1764,6 +1811,12 @@ class Layout(BaseLayout):
                  ecolor=self.bar.error_color, **kwargs)
 
         # Set ticks
+        try:
+            # Special case of datetime where you don't want to show all tick labels
+            df.index.astype('datetime64[ns]')
+        except TypeError:
+            # Show all labels
+            getattr(ax, 'set_%sticks' % axx)(np.arange(0, len(xvals), 1))
         allowed_ticks = getattr(ax, 'get_%sticks' % axx)()  # mpl selected ticks
         allowed_ticks = list(set([int(f) for f in allowed_ticks if f >= 0 and f < len(xvals)]))
         getattr(ax, 'set_%sticks' % axx)(np.array(ixvals)[allowed_ticks])
