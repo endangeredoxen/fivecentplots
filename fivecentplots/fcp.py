@@ -233,8 +233,6 @@ def nq(df, **kwargs):
 
     kwargs['tick_labels'] = kwargs.get('tick_labels', True)
 
-    return plotter(data.ImShow, **dfkwarg(df, kwargs))
-
     return plotter(data.NQ, **dfkwarg(df, kwargs))
 
 
@@ -267,14 +265,14 @@ def paste_kwargs(kwargs: dict) -> dict:
 
 def plot(df, **kwargs):
     """XY plot.
-    
+
     Args:
         df (DataFrame): DataFrame containing data to plot
 
     Required Keyword Args:
         x (str): x-axis column name
         y (str): y-axis column name
-        
+
     Optional Keyword Args:
     """
 
@@ -296,7 +294,11 @@ def plot_bar(data, layout, ir, ic, df_rc, kwargs):
     """
 
     # would need to update to support multiple x
-    xvals = np.sort(df_rc[data.x[0]].unique())
+    if not kwargs.get('sort', True):
+        xvals = df_rc[data.x[0]].unique()
+    else:
+        xvals = np.sort(df_rc[data.x[0]].unique())
+
     stacked = pd.DataFrame(index=xvals)
     ss = []
 
@@ -313,7 +315,7 @@ def plot_bar(data, layout, ir, ic, df_rc, kwargs):
 
     for iline, df, x, y, z, leg_name, twin, ngroups in data.get_plot_data(df_rc):
 
-        df2 = df.groupby(x).sum()[y]
+        df2 = df.groupby(x).sum()[y].loc[xvals]
         inst = df.groupby(x).mean()['Instance']
         total = df.groupby(x).mean()['Total']
 
