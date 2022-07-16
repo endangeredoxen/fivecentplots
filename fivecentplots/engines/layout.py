@@ -1581,7 +1581,7 @@ class BaseLayout:
                                                 ['marker_jitter', 'jitter'],
                                                 kwargs.get('jitter', False)),
                                size=utl.kwget(kwargs, self.fcpp,
-                                              'marker_size', 7),
+                                              'marker_size', 6),
                                type=markers,
                                zorder=utl.kwget(kwargs, self.fcpp,
                                                 'zorder', 2),
