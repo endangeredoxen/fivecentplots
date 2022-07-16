@@ -104,7 +104,7 @@
 <li class="toctree-l1"><a class="reference internal" href="ranges.html">Data ranges</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ticks.html">Grids and ticks</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<p class="caption" role="heading"><span class="caption-text">Plot Types</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="plot.html">plot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="barplot.html">barplot</a></li>
@@ -234,7 +234,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="fivecentplots.fcp.bar">
 <span class="sig-prename descclassname"><span class="pre">fivecentplots.fcp.</span></span><span class="sig-name descname"><span class="pre">bar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.bar" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bar chart</p>
+<dd><p>Bar chart.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>df</strong> (<em>pandas.DataFrame</em>) – DataFrame containing data to plot</p>
@@ -288,7 +288,7 @@ style</p>
 <dt class="sig sig-object py" id="fivecentplots.fcp.boxplot">
 <span class="sig-prename descclassname"><span class="pre">fivecentplots.fcp.</span></span><span class="sig-name descname"><span class="pre">boxplot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.boxplot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Box plot modeled after the “Variability Chart” in JMP which provides convenient,
-multi-level group labels automatically along the x-axis</p>
+multi-level group labels automatically along the x-axis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>df</strong> (<em>pandas.DataFrame</em>) – DataFrame containing data to plot</p>
@@ -484,7 +484,7 @@ box_divider (bool): Toggle box divider visibility. Defaults to True. Example:</p
 <dl class="py function">
 <dt class="sig sig-object py" id="fivecentplots.fcp.contour">
 <span class="sig-prename descclassname"><span class="pre">fivecentplots.fcp.</span></span><span class="sig-name descname"><span class="pre">contour</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.contour" title="Permalink to this definition">¶</a></dt>
-<dd><p>Contour plot module</p>
+<dd><p>Contour plot module.</p>
 <blockquote>
 <div><dl class="simple">
 <dt>Args:</dt><dd><p>df (DataFrame): DataFrame containing data to plot</p>
@@ -546,7 +546,10 @@ z (str): z-axis column name</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="fivecentplots.fcp.gantt">
 <span class="sig-prename descclassname"><span class="pre">fivecentplots.fcp.</span></span><span class="sig-name descname"><span class="pre">gantt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.gantt" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gantt chart plotting function.  This plot is built off of a horizontal implementation of <cite>fcp.bar</cite>.</p>
+<dd><dl class="simple">
+<dt>Gantt chart plotting function.  This plot is built off of a horizontal</dt><dd><p>implementation of <cite>fcp.bar</cite>.</p>
+</dd>
+</dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>df</strong> (<em>DataFrame</em>) – DataFrame containing data to plot</p>
@@ -604,7 +607,7 @@ Defaults to 90. Example:
 <dl class="py function">
 <dt class="sig sig-object py" id="fivecentplots.fcp.heatmap">
 <span class="sig-prename descclassname"><span class="pre">fivecentplots.fcp.</span></span><span class="sig-name descname"><span class="pre">heatmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.heatmap" title="Permalink to this definition">¶</a></dt>
-<dd><p>Heatmap plot</p>
+<dd><p>Heatmap plot.</p>
 <blockquote>
 <div><dl>
 <dt>Args:</dt><dd><p>df (DataFrame): DataFrame containing data to plot</p>
@@ -617,9 +620,9 @@ z (str): z-axis column name</p>
 <dt>Basic:</dt><dd><dl class="simple">
 <dt>cell_size (int): Width of a heatmap cell in pixels. Defaults to 60. Example:</dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/heatmap.html#Cell-size">https://endangeredoxen.github.io/fivecentplots/0.5.0/heatmap.html#Cell-size</a></p>
 </dd>
-<dt>cmap (boolean): Name of a color map to apply to the plot. Defaults to inferno. Example:</dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/heatmap.html#No-data-labels">https://endangeredoxen.github.io/fivecentplots/0.5.0/heatmap.html#No-data-labels</a></p>
+<dt>cmap (bool): Name of a color map to apply to the plot. Defaults to inferno. Example:</dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/heatmap.html#No-data-labels">https://endangeredoxen.github.io/fivecentplots/0.5.0/heatmap.html#No-data-labels</a></p>
 </dd>
-<dt>data_labels (boolean): Toggle visibility of value text labels on the heatmap cells. Defaults</dt><dd><p>to False. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/heatmap.html#With">https://endangeredoxen.github.io/fivecentplots/0.5.0/heatmap.html#With</a>-
+<dt>data_labels (bool): Toggle visibility of value text labels on the heatmap cells. Defaults to</dt><dd><p>False. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/heatmap.html#With">https://endangeredoxen.github.io/fivecentplots/0.5.0/heatmap.html#With</a>-
 data-labels</p>
 </dd>
 <dt>heatmap_edge_width (float): Width of the edges of the heat map cells. Defaults to 0.</dt><dd><p>Example: None</p>
@@ -628,10 +631,9 @@ data-labels</p>
 </dd>
 </dl>
 <p>heatmap_font_size (int): Font size of the value label text. Defaults to 12. Example: None
-heatmap_interp | interp (str): imshow interpolation scheme (see <a class="reference external" href="https://matplotlib.org/stabl">https://matplotlib.org/stabl</a></p>
+heatmap_interp | interp (str): imshow interpolation scheme [see matplotlib docs for more</p>
 <blockquote>
-<div><p>e/gallery/images_contours_and_fields/interpolation_methods.html). Defaults to ‘none’.
-Example: None</p>
+<div><p>details]. Defaults to ‘none’. Example: None</p>
 </div></blockquote>
 </dd>
 </dl>
@@ -657,10 +659,11 @@ Example: None</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="fivecentplots.fcp.hist">
 <span class="sig-prename descclassname"><span class="pre">fivecentplots.fcp.</span></span><span class="sig-name descname"><span class="pre">hist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.hist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Histogram plot</p>
+<dd><p>Histogram plot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>df</strong> (<em>DataFrame</em>) – DataFrame containing data to plot</p>
+<dd class="field-odd"><p><strong>df</strong> (<em>DataFrame</em><em> | </em><em>numpy array</em>) – DataFrame or numpy array containing data to plot
+[when passing a numpy array it is automatically converted to a DataFrame]</p>
 </dd>
 </dl>
 <dl class="simple">
@@ -668,6 +671,9 @@ Example: None</p>
 </dd>
 <dt>Optional Keyword Args:</dt><dd><dl class="simple">
 <dt>cdf (bool): Convert the histogram into a cumulative distribution plot. Defaults to False.</dt><dd><p>Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#cdf">https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#cdf</a></p>
+</dd>
+<dt>cfa (str): Color-filter array pattern that is used to split data from a Bayer image into</dt><dd><p>separate color planes. Defaults to None. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#split-color-planes">https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#split-color-planes</a></p>
 </dd>
 <dt>hist_align (str): If “mid” aligns center of histogram bar to x-axis value; if “left” aligns</dt><dd><p>the left edge of the histogram bar to the x-axis value {“left”; “mid”; “right”}. Defaults
 to mid. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#alignment">https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#alignment</a></p>
@@ -714,23 +720,32 @@ Example: <a class="reference external" href="https://endangeredoxen.github.io/fi
 <dl class="py function">
 <dt class="sig sig-object py" id="fivecentplots.fcp.imshow">
 <span class="sig-prename descclassname"><span class="pre">fivecentplots.fcp.</span></span><span class="sig-name descname"><span class="pre">imshow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.imshow" title="Permalink to this definition">¶</a></dt>
-<dd><p>Main imshow plotting function
-At minimum, it requires a pandas DataFrame with at
-least three columns and three column names for the x, y, and z axis.
-Plots can be customized and enhanced by passing keyword arguments as
-defined below. Default values that must be defined in order to
-generate the plot are pulled from the fcp_params default dictionary</p>
+<dd><p>Image show plotting function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>df</strong> (<em>DataFrame</em>) – DataFrame containing data to plot</p></li>
-<li><p><strong>x</strong> (<em>str</em><em>|</em><em>list</em>) – name of list of names of x column in df</p></li>
-<li><p><strong>y</strong> (<em>str</em><em>|</em><em>list</em>) – name or list of names of y column(s) in df</p></li>
-<li><p><strong>z</strong> (<em>str</em>) – name of z column(s) in df</p></li>
-</ul>
+<dd class="field-odd"><p><strong>df</strong> (<em>DataFrame</em><em> | </em><em>numpy array</em>) – DataFrame or numpy array containing 2D row/column
+image data to plot [when passing a numpy array it is automatically converted
+to a DataFrame]</p>
 </dd>
 </dl>
-<p>Keyword Args:</p>
+<dl class="simple">
+<dt>Required Keyword Args:</dt><dd><p>None</p>
+</dd>
+<dt>Optional Keyword Args:</dt><dd><dl class="simple">
+<dt>cfa (str): Color-filter array pattern that is used to split data from a Bayer image into</dt><dd><p>separate color planes. Defaults to None. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#split-color-planes">https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#split-color-planes</a></p>
+</dd>
+<dt>cmap (bool): Name of a color map to apply to the plot. Defaults to gray. Example:</dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#color-maps">https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#color-maps</a></p>
+</dd>
+<dt>imshow_interp | interp (str): imshow interpolation scheme [see matplotlib docs for more</dt><dd><p>details]. Defaults to ‘none’. Example: None</p>
+</dd>
+<dt>stretch (float | list): Calculate “stretch” times the standard deviation above and below the</dt><dd><p>mean to set new z-limits. Can be a single value used as +/- limits or a two-value list for
+the lower/upper multiplier values. Defaults to None. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#contrast-stretching">https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#contrast-stretching</a></p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -760,19 +775,56 @@ generate the plot are pulled from the fcp_params default dictionary</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="fivecentplots.fcp.nq">
 <span class="sig-prename descclassname"><span class="pre">fivecentplots.fcp.</span></span><span class="sig-name descname"><span class="pre">nq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.nq" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot normal quantiles of a data set</p>
+<dd><p>Plot the normal quantiles of a data set.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>df (DataFrame | numpy array): DataFrame containing a column of</dt><dd><p>values data or a DataFrame or numpy array containing a set of 2D values
+that can be used to calculate quantiles at various “sigma” intervals</p>
+</dd>
+</dl>
+</dd>
+<dt>Required Keyword Args:</dt><dd><p>None</p>
+</dd>
+<dt>Optional Keyword Args:</dt><dd><dl class="simple">
+<dt>Basic:</dt><dd><dl class="simple">
+<dt>x (str): x-axis column name (if using a 1D dataset). Defaults to None. Example:</dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#1D-dataset">https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#1D-dataset</a></p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="simple">
+<dt>Calculation:</dt><dd><dl class="simple">
+<dt>sigma (float): Maximum sigma value to use for the calculation; range will be +/- this value.</dt><dd><p>Defaults to Auto-calculated based on the dataset using “fcp.utilities.sigma”. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#custom-sigma-range">https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#custom-sigma-range</a></p>
+</dd>
+<dt>step_inner (float): Delta between sigma values outside of the tail (around sigma=0).</dt><dd><p>Defaults to 0.5. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#point-density">https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#point-density</a></p>
+</dd>
+<dt>step_tail (float): Delta between sigma values in the tails (all value &gt;= and &lt;= to keyword</dt><dd><p>“tail”). Defaults to 0.2. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#point-density">https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#point-density</a></p>
+</dd>
+<dt>tail (float): Sigma value that represents the start of the tail of the distribution.</dt><dd><p>Defaults to 3. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#custom-tail">https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#custom-tail</a></p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fivecentplots.fcp.paste_kwargs">
-<span class="sig-prename descclassname"><span class="pre">fivecentplots.fcp.</span></span><span class="sig-name descname"><span class="pre">paste_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.paste_kwargs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the kwargs from contents of the clipboard in ini file format</p>
+<span class="sig-prename descclassname"><span class="pre">fivecentplots.fcp.</span></span><span class="sig-name descname"><span class="pre">paste_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#fivecentplots.fcp.paste_kwargs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the kwargs from contents of the clipboard in ini file format.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>kwargs</strong> (<em>dict</em>) – originally inputted kwargs</p>
+<dd class="field-odd"><p><strong>kwargs</strong> – originally inputted kwargs</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>kwargs</p>
+<dd class="field-even"><p>copied kwargs</p>
 </dd>
 </dl>
 </dd></dl>
@@ -781,12 +833,90 @@ generate the plot are pulled from the fcp_params default dictionary</p>
 <dt class="sig sig-object py" id="fivecentplots.fcp.pie">
 <span class="sig-prename descclassname"><span class="pre">fivecentplots.fcp.</span></span><span class="sig-name descname"><span class="pre">pie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.pie" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pie chart</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>df</strong> (<em>DataFrame</em>) – DataFrame containing data to plot</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Required Keyword Args:</dt><dd><p>x (str): x-axis column name with categorical data
+y (str): y-axis column name with values</p>
+</dd>
+<dt>Optional Keyword Args:</dt><dd><dl class="simple">
+<dt>pie_colors | colors (str | list): Wedge fill colors. Defaults to fcp.DEFAULT_COLORS. Example:</dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#colors">https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#colors</a></p>
+</dd>
+<dt>pie_counter_clock | counter_clock (bool): Places wedges in a counter-clockwise fashion.</dt><dd><p>Defaults to False. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#counter-clockwise">https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#counter-clockwise</a></p>
+</dd>
+<dt>pie_edge_color | edge_color (str): Hex color string for the edge of the pie wedges. Defaults</dt><dd><p>to #ffffff. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#colors">https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#colors</a></p>
+</dd>
+<dt>pie_edge_style | edge_style (str): Line style for the wedge edge lines {‘-’, ‘–’, ‘-.’,</dt><dd><p>‘:’}. Defaults to ‘-’. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#colors">https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#colors</a></p>
+</dd>
+<dt>pie_edge_width | edge_width (float): Width of the wedge edge lines in pixels. Defaults to 1.</dt><dd><p>Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#colors">https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#colors</a></p>
+</dd>
+<dt>pie_explode | explode (list of float): Emphasize one or more wedges by offsetting it from</dt><dd><p>the center of the pie by some amount. Defaults to None. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#explode">https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#explode</a></p>
+</dd>
+<dt>pie_font_color | font_color (str): Font color for the wedge labels. Defaults to #444444.</dt><dd><p>Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#wedge-labels">https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#wedge-labels</a></p>
+</dd>
+<dt>pie_font_size | font_size (float): Font size for the wedge labels. Defaults to 11. Example:</dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#wedge-labels">https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#wedge-labels</a></p>
+</dd>
+<dt>pie_font_weight | font_weight (str): Font weight for the wedge labels {‘light’, ‘normal’,</dt><dd><p>‘medium’, ‘semibold’, ‘bold’, ‘heavy’, ‘black’}. Defaults to ‘normal’. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#wedge-labels">https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#wedge-labels</a></p>
+</dd>
+<dt>pie_fill_alpha | fill_alpha (float): Transparency value for the bars between 0-1. Defaults</dt><dd><p>to 0.85. Example: None</p>
+</dd>
+<dt>pie_inner_radius | inner_radius (float): Distance from the center of the pie to the inner</dt><dd><p>edge; used to make donut plots. Defaults to pie.html#donut. Example: nan</p>
+</dd>
+<dt>pie_label_distance | label_distance (float): Distance from the center of the pie to the</dt><dd><p>category labels. Defaults to 1.1. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#wedge-labels">https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#wedge-labels</a></p>
+</dd>
+<dt>pie_percents | percents (bool): Label each pie wedge with the percentage for that category.</dt><dd><p>Defaults to False. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#labeled-percents">https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#labeled-percents</a></p>
+</dd>
+<dt>pie_percents_distance | percents_distance (float): Distance from center [0] to edge</dt><dd><p>[pie_radius] at which percentage labels are placed. Defaults to 0.6. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#labeled-percents">https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#labeled-percents</a></p>
+</dd>
+<dt>pie_percents_font_color | percents_font_color (str): Font color for the percentage labels.</dt><dd><p>Defaults to #444444. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#labeled-percents">https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#labeled-percents</a></p>
+</dd>
+<dt>pie_percents_font_size | percents_font_size (float): Font size for the percentage labels.</dt><dd><p>Defaults to 11. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#labeled-percents">https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#labeled-percents</a></p>
+</dd>
+<dt>pie_percents_font_weight | percents_font_weight (str): Font weight for the percentage labels</dt><dd><p>{‘light’, ‘normal’, ‘medium’, ‘semibold’, ‘bold’, ‘heavy’, ‘black’}. Defaults to ‘normal’.
+Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#labeled-percents">https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#labeled-percents</a></p>
+</dd>
+<dt>pie_radius | radius (float): Sets the radius of the pie chart. Defaults to 1. Example:</dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#basic-plot">https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#basic-plot</a></p>
+</dd>
+<dt>pie_rotate_labels | rotate_labels (bool): Rotate the pie labels to align with the bisection</dt><dd><p>line from center of the pie through the wedge. Defaults to False. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#wedge-labels">https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#wedge-labels</a></p>
+</dd>
+<dt>pie_shadow | shadow (bool): Add a shadow to give a 3D appearance to the pie chart. Defaults</dt><dd><p>to False. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#shadow">https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#shadow</a></p>
+</dd>
+<dt>pie_start_angle | start_angle (float): The angle at which the first wedge starts with [3</dt><dd><p>o’clock = 0; 12 o’clock =90; etc]. Defaults to 90. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#start-angle">https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#start-angle</a></p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fivecentplots.fcp.plot">
 <span class="sig-prename descclassname"><span class="pre">fivecentplots.fcp.</span></span><span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>XY plot</p>
+<dd><p>XY plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>df</strong> (<em>DataFrame</em>) – DataFrame containing data to plot</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Required Keyword Args:</dt><dd><p>x (str): x-axis column name
+y (str): y-axis column name</p>
+</dd>
+</dl>
+<p>Optional Keyword Args:</p>
 </dd></dl>
 
 <dl class="py function">
@@ -2350,6 +2480,42 @@ figure correctly when saving. Defaults to 0.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="fivecentplots.engines.mpl.approx_gte">
+<span class="sig-prename descclassname"><span class="pre">fivecentplots.engines.mpl.</span></span><span class="sig-name descname"><span class="pre">approx_gte</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.engines.mpl.approx_gte" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if a float is approximately ?= to another float.
+Stolen from stack overflow answer from Barmar</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – float #1</p></li>
+<li><p><strong>y</strong> – float #2</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fivecentplots.engines.mpl.approx_lte">
+<span class="sig-prename descclassname"><span class="pre">fivecentplots.engines.mpl.</span></span><span class="sig-name descname"><span class="pre">approx_lte</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.engines.mpl.approx_lte" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if a float is approximately &lt;= to another float.
+Stolen from stack overflow answer from Barmar</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – float #1</p></li>
+<li><p><strong>y</strong> – float #2</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="fivecentplots.engines.mpl.cbar_ticks">
 <span class="sig-prename descclassname"><span class="pre">fivecentplots.engines.mpl.</span></span><span class="sig-name descname"><span class="pre">cbar_ticks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cbar</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Colorbar_Object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zmin</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zmax</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.engines.mpl.cbar_ticks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Format cbar ticks and labels.</p>
@@ -3333,7 +3499,7 @@ opencv is installed.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> – pie wedge labels</p></li>
 <li><p><strong>y</strong> – pie wedge values</p></li>
-<li><p><strong>startangle</strong> – the starting angle (0 = right | 90 = top, etc)</p></li>
+<li><p><strong>start_angle</strong> – the starting angle (0 = right | 90 = top, etc)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

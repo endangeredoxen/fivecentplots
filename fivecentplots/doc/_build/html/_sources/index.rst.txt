@@ -252,7 +252,7 @@ Documentation
 
 .. toctree::
    :maxdepth: 1
-   :caption: Examples
+   :caption: Plot Types
 
    plot.ipynb
    barplot.ipynb
