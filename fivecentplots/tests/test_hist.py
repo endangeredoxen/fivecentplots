@@ -5,6 +5,7 @@ import os
 import sys
 import pdb
 import platform
+import numpy as np
 import fivecentplots.utilities as utl
 import inspect
 osjoin = os.path.join
@@ -87,7 +88,6 @@ def plt_simple(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
-# y range is wrong
 def plt_horizontal(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'horizontal_master') if master else 'horizontal'
@@ -326,6 +326,41 @@ def plt_image_legend(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
+def plt_patch_solid(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'patch_solid_master') if master else 'patch_solid'
+
+    # Make the patch
+    img_rgb = np.zeros([25, 25]).astype(np.uint8)
+    img_rgb[::2, ::2] = 180  # green_red
+    img_rgb[1::2, 1::2] = 180  # green_blue
+    img_rgb[::2, 1::2] = 10  # red
+    img_rgb[1::2, ::2] = 255  # blue
+
+    fcp.hist(img_rgb, show=SHOW, inline=False, save=not bm, filename=name + '.png',
+             markers=False, ax_scale='logy', ax_size=[600, 400], legend='Plane',
+             cfa='grbg', line_width=2, xmin=-5, xmax=260, colors=fcp.BAYER)
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 # test_ functions call plt_ funcs 2x:
 # 1) do the comparison with saved image
 # 2) do a test plot only with save=False and inline=False and benchmark spead
@@ -372,6 +407,11 @@ def test_image(benchmark):
 def test_image_legend(benchmark):
     plt_image_legend()
     benchmark(plt_image_legend, True)
+
+
+def test_patch_solid(benchmark):
+    plt_patch_solid()
+    benchmark(plt_patch_solid, True)
 
 
 if __name__ == '__main__':

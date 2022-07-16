@@ -121,6 +121,34 @@ def plt_imshow_no_cbar(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
+def plt_imshow_tick_labels(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'imshow_tick_labels_master') if master else 'imshow_tick_labels'
+
+    # Make the plot
+    fcp.imshow(img, cmap='inferno', cbar=True, ax_size=[600, 600], tick_labels_major=True,
+               filename=name + '.png', save=not bm, inline=False)
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(
+            name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def plt_imshow_stretched(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(
@@ -260,6 +288,11 @@ def test_imshow(benchmark):
 def test_imshow_no_cbar(benchmark):
     plt_imshow_no_cbar()
     benchmark(plt_imshow_no_cbar, True)
+
+
+def test_imshow_tick_labels(benchmark):
+    plt_imshow_tick_labels()
+    benchmark(plt_imshow_tick_labels, True)
 
 
 def test_imshow_stretched(benchmark):

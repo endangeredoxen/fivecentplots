@@ -89,7 +89,7 @@ def plt_xy_legend(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'xy_legend_master') if master else 'xy_legend'
 
     # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', show=SHOW,
+    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', show=SHOW, ymax=1.4,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              filename=name + '.png', save=not bm, inline=False)
     if bm:
