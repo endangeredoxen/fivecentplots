@@ -600,9 +600,9 @@ class Layout(BaseLayout):
                 continue
             if type(label.text) not in [str, list]:
                 continue
-            if type(label.text) is str:
+            if isinstance(label.text, str):
                 labeltext = label.text
-            if type(label.text) is list:
+            if isinstance(label.text, list):
                 labeltext = label.text[ic + ir * self.ncol]
 
             # Twinning?

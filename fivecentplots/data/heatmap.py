@@ -84,12 +84,12 @@ class Heatmap(data.Data):
                 df_rc = df_rc[utl.df_int_cols(df_rc)]
 
                 # x
-                cols = [f for f in df_rc.columns if type(f) is int]
+                cols = [f for f in df_rc.columns if isinstance(f, int)]
                 self._add_range(ir, ic, 'x', 'min', min(cols))
                 self._add_range(ir, ic, 'x', 'max', max(cols))
 
                 # y
-                rows = [f for f in df_rc.index if type(f) is int]
+                rows = [f for f in df_rc.index if isinstance(f, int)]
                 self._add_range(ir, ic, 'y', 'min', min(rows))
                 self._add_range(ir, ic, 'y', 'max', max(rows))
 

@@ -542,19 +542,19 @@ class Layout(BaseLayout):
                                     linestyle=ll.style[ival],
                                     linewidth=ll.width[ival],
                                     zorder=ll.zorder)
-                        if type(ll.text) is list and ll.text[ival] is not None:
+                        if isinstance(ll.text, list) and ll.text[ival] is not None:
                             self.legend.add_value(
                                 ll.text[ival], [line], 'ref_line')
 
                 else:
                     for ival, val in enumerate(ll.values):
-                        if type(val) is str and type(df) is pd.DataFrame:
+                        if isinstance(val, str) and isinstance(df, pd.DataFrame):
                             val = df[val].iloc[0]
                         line = func(val, color=ll.color[ival],
                                     linestyle=ll.style[ival],
                                     linewidth=ll.width[ival],
                                     zorder=ll.zorder)
-                        if type(ll.text) is list and ll.text[ival] is not None:
+                        if isinstance(ll.text, list) and ll.text[ival] is not None:
                             self.legend.add_value(
                                 ll.text[ival], [line], 'ref_line')
 
@@ -609,12 +609,11 @@ class Layout(BaseLayout):
                                  size[1] / self.axes.size[1],
                                  fill=True,
                                  transform=self.axes.obj[ir, ic].transAxes,
-                                 facecolor=fill_color if type(fill_color) is str
+                                 facecolor=fill_color if isinstance(fill_color, str)
                                  else fill_color[utl.plot_num(ir, ic, self.ncol)],
-                                 edgecolor=edge_color if type(edge_color) is str
+                                 edgecolor=edge_color if isinstance(edge_color, str)
                                  else edge_color[utl.plot_num(ir, ic, self.ncol)],
-                                 lw=edge_width if type(
-                                     edge_width) is int else 1,
+                                 lw=edge_width if isinstance(edge_width, int) else 1,
                                  clip_on=False, zorder=1)
         self.axes.obj[ir, ic].add_patch(rect)
 
@@ -737,7 +736,7 @@ class Layout(BaseLayout):
             obj = getattr(self, element)
             is_array = False
         text = text if text is not None else obj.text.values
-        if type(text) is str:
+        if isinstance(text, str):
             text = [text]
 
         # Set the coordinate so text is anchored to figure, axes, or the current
@@ -764,7 +763,7 @@ class Layout(BaseLayout):
                 if attr in kwargs.keys():
                     kw[attr] = kwargs[attr]
                 elif hasattr(obj, attr) and \
-                        type(getattr(obj, attr)) is RepeatedList:
+                        isinstance(getattr(obj, attr), RepeatedList):
                     kw[attr] = getattr(obj, attr)[itext]
                 elif hasattr(obj, attr):
                     kw[attr] = getattr(obj, attr)
@@ -774,7 +773,7 @@ class Layout(BaseLayout):
                 if 'position' in kwargs.keys():
                     position = copy.copy(kwargs['position'])
                 elif hasattr(obj, 'position') and \
-                        type(getattr(obj, 'position')) is RepeatedList:
+                        isinstance(getattr(obj, 'position'), RepeatedList):
                     position = copy.copy(getattr(obj, 'position')[itext])
                 elif hasattr(obj, 'position'):
                     position = copy.copy(getattr(obj, 'position'))
@@ -955,7 +954,7 @@ class Layout(BaseLayout):
             lab.size = [max(width, width_bg), max(height, height_bg)]
 
         # titles
-        if self.title.on and type(self.title.text) is str:
+        if self.title.on and isinstance(self.title.text, str):
             self.title.size = self.title.obj.get_window_extent().width, \
                 self.title.obj.get_window_extent().height
 
@@ -1709,7 +1708,7 @@ class Layout(BaseLayout):
         self.axes.visible = np.array([[True] * self.ncol] * self.nrow)
 
         # Reformat the axes variable if it is only one plot
-        if not type(self.axes.obj) is np.ndarray:
+        if not isinstance(self.axes.obj, np.ndarray):
             self.axes.obj = np.array([self.axes.obj])
         if len(self.axes.obj.shape) == 1:
             if data.nrow == 1:
@@ -1766,7 +1765,7 @@ class Layout(BaseLayout):
             if self.bar.stacked:
                 kwargs['height'] = self.bar.width
                 if iline > 0:
-                    if type(stacked) is pd.Series:
+                    if isinstance(stacked, pd.Series):
                         stacked = stacked.loc[xvals[idx]].values
                     kwargs['bottom'] = stacked
             else:
@@ -1781,7 +1780,7 @@ class Layout(BaseLayout):
             if self.bar.stacked:
                 kwargs['width'] = self.bar.width
                 if iline > 0:
-                    if type(stacked) is pd.Series:
+                    if isinstance(stacked, pd.Series):
                         stacked = stacked.loc[xvals[idx]].values
                     kwargs['bottom'] = stacked
             else:
@@ -2618,9 +2617,9 @@ class Layout(BaseLayout):
                 continue
             if type(label.text) not in [str, list]:
                 continue
-            if type(label.text) is str:
+            if isinstance(label.text, str):
                 labeltext = label.text
-            if type(label.text) is list:
+            if isinstance(label.text, list):
                 labeltext = label.text[ic + ir * self.ncol]
 
             if '2' in ax:
@@ -3615,7 +3614,7 @@ class Layout(BaseLayout):
                 if 'position' in self.kwargs.keys():
                     position = copy.copy(self.kwargs['position'])
                 elif hasattr(obj, 'position') and \
-                        type(getattr(obj, 'position')) is RepeatedList:
+                        isinstance(getattr(obj, 'position'), RepeatedList):
                     position = copy.copy(getattr(obj, 'position')[itext])
                 elif hasattr(obj, 'position'):
                     position = copy.copy(getattr(obj, 'position'))

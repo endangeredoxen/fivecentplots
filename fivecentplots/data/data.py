@@ -145,7 +145,7 @@ class Data:
 
         # Ref line
         self.ref_line = kwargs.get('ref_line', None)
-        if type(self.ref_line) is pd.Series:
+        if isinstance(self.ref_line,pd.Series):
             self.df_all['Ref Line'] = self.ref_line
 
         # Stats
@@ -237,7 +237,7 @@ class Data:
 
         # Make sure groups, legend, and fig_groups are not the same
         if self.legend and self.groups and self.name != 'box':
-            if type(self.legend) is not bool:
+            if not isinstance(self.legend, bool):
                 self._check_group_matching('legend', 'groups')
         if self.legend and self.fig:
             self._check_group_matching('legend', 'fig')
@@ -254,7 +254,7 @@ class Data:
         self.cols_all += self.col if self.col is not None else []
         self.cols_all += self.row if self.row is not None else []
         self.cols_all += self.wrap if self.wrap is not None else []
-        if type(self.legend) is list:
+        if isinstance(self.legend, list):
             self.cols_all += self.legend
 
         # Add all non-dataframe kwargs to self
@@ -519,7 +519,7 @@ class Data:
                                 auto_scale_val, self.ranges[ir][ic][key])
                     else:
                         auto_scale_val = None
-                if type(auto_scale_val) is str or auto_scale_val is None:
+                if isinstance(auto_scale_val, str) or auto_scale_val is None:
                     continue
 
                 axx = getattr(self, ax)
@@ -618,7 +618,7 @@ class Data:
                     # User defined
                     key = '{}{}'.format(ax, mm)
                     val = getattr(self, key)[plot_num]
-                    if val is not None and type(val) is not str:
+                    if val is not None and not isinstance(val, str):
                         self._add_range(ir, ic, ax, mm, val)
 
     def get_interval_confidence(self, df: pd.DataFrame, x: str, y: str, **kwargs) -> None:
@@ -886,7 +886,7 @@ class Data:
         else:
             # with fig grouping
             for ifig, fig_val in enumerate(self.fig_vals):
-                if type(fig_val) is tuple:
+                if isinstance(fig_val, tuple):
                     for ig, gg in enumerate(fig_val):
                         if ig == 0:
                             self.df_fig = self.df_all[self.df_all[self.fig_groups[ig]] == gg].copy(
@@ -894,7 +894,7 @@ class Data:
                         else:
                             self.df_fig = self.df_fig[self.df_fig[self.fig_groups[ig]] == gg]
                 elif self.fig_groups is not None:
-                    if type(self.fig_groups) is list:
+                    if isinstance(self.fig_groups, list):
                         self.df_fig = self.df_all[self.df_all[self.fig_groups[0]] == fig_val].copy(
                         )
                     else:
@@ -938,16 +938,16 @@ class Data:
         if not self.fit:
             return df, np.nan
 
-        if self.fit is True or type(self.fit) is int:
+        if self.fit is True or isinstance(self.fit, int):
 
-            if type(self.fit_range_x) is list:
+            if isinstance(self.fit_range_x, list):
                 df2 = df2[(df2[x] >= self.fit_range_x[0])
                           & (df2[x] <= self.fit_range_x[1])].copy()
                 if self.ranges[ir, ic]['ymin'] is not None:
                     df2 = df2[(df2[y]) >= self.ranges[ir, ic]['ymin']]
                 if self.ranges[ir, ic]['ymax'] is not None:
                     df2 = df2[(df2[y]) <= self.ranges[ir, ic]['ymax']]
-            elif type(self.fit_range_y) is list:
+            elif isinstance(self.fit_range_y, list):
                 df2 = df2[(df2[y] >= self.fit_range_y[0])
                           & (df2[y] <= self.fit_range_y[1])].copy()
                 if self.ranges[ir, ic]['xmin'] is not None:
@@ -1019,9 +1019,9 @@ class Data:
             return
 
         if self.legend:
-            if type(self.legend) is str and ' | ' in self.legend:
+            if isinstance(self.legend, str) and ' | ' in self.legend:
                 self.legend = self.legend.split(' | ')
-            if type(self.legend) is list:
+            if isinstance(self.legend, list):
                 for ileg, leg in enumerate(self.legend):
                     if ileg == 0:
                         temp = df[leg].copy()
@@ -1101,7 +1101,7 @@ class Data:
             twin: denotes if twin axis is enabled or not
             len(vals) [ngroups]: total number of groups in the full data
         """
-        if type(self.legend_vals) != pd.DataFrame:
+        if not isinstance(self.legend_vals, pd.DataFrame):
             xx = [] if not self.x else self.x + self.x2
             yy = [] if not self.y else self.y + self.y2
             lenx = 1 if not self.x else len(xx)
@@ -1492,7 +1492,7 @@ class Data:
         else:
             groups = [self.df_all]
         for group in groups:
-            if type(group) is tuple:
+            if isinstance(group, tuple):
                 gg = group[1]
             else:
                 gg = group
@@ -1515,8 +1515,8 @@ class Data:
                     elif getattr(self, 'trans_%s' % ax) == 'inverse' \
                             or getattr(self, 'trans_%s' % ax) == 'inv':
                         gg.loc[:, val] = 1 / gg[val]
-                    elif (type(getattr(self, 'trans_%s' % ax)) is tuple
-                            or type(getattr(self, 'trans_%s' % ax)) is list) \
+                    elif (isinstance(getattr(self, 'trans_%s' % ax), tuple)
+                            or isinstance(getattr(self, 'trans_%s' % ax), list)) \
                             and getattr(self, 'trans_%s' % ax)[0] == 'pow':
                         gg.loc[:,
                                val] = gg[val]**getattr(self, 'trans_%s' % ax)[1]
@@ -1525,8 +1525,8 @@ class Data:
                         gg.loc[:, val] -= maxx
                         gg.loc[:, val] = abs(gg[val])
 
-            if type(group) is tuple:
-                vals = group[0] if type(group[0]) is tuple else [group[0]]
+            if isinstance(group, tuple):
+                vals = group[0] if isinstance(group[0], tuple) else [group[0]]
                 for k, v in dict(zip(groups_all, vals)).items():
                     gg[k] = v
 

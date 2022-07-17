@@ -102,7 +102,7 @@ class Histogram(data.Data):
 
                 temp = pd.DataFrame({self.x[0]: vals[:-1], self.y[0]: counts})
                 for ig, group in enumerate(self._groupers):
-                    if type(nn) is tuple:
+                    if isinstance(nn, tuple):
                         temp[group] = nn[ig]
                     else:
                         temp[group] = nn

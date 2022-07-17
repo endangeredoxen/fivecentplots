@@ -227,7 +227,7 @@ class BaseLayout:
             self.separate_ticks = True
         self.tick_cleanup = utl.kwget(
             kwargs, self.fcpp, 'tick_cleanup', 'shrink')
-        if type(self.tick_cleanup) is str:
+        if isinstance(self.tick_cleanup, str):
             self.tick_cleanup = self.tick_cleanup.lower()
 
         # Overrides for specific plot types
@@ -436,7 +436,7 @@ class BaseLayout:
         # Todo: list
         for axline in axlines:
             val = kwargs.get(axline, False)
-            if type(val) is not tuple:
+            if not isinstance(val, tuple):
                 vals = utl.validate_list(val)
             else:
                 vals = [val]
@@ -447,33 +447,33 @@ class BaseLayout:
             alphas = []
             labels = []
             for ival, val in enumerate(vals):
-                if (type(val) is list or type(val) is tuple) and len(val) > 1:
+                if (isinstance(val, list) or isinstance(val, tuple)) and len(val) > 1:
                     values += [val[0]]
                 else:
                     values += [val]
-                if (type(val) is list or type(val) is tuple) and len(val) > 1:
+                if (isinstance(val, list) or isinstance(val, tuple)) and len(val) > 1:
                     colors += [val[1]]
                 else:
                     colors += [utl.kwget(kwargs, self.fcpp,
                                          '%s_color' % axline, '#000000')]
-                if (type(val) is list or type(val) is tuple) and len(val) > 2:
+                if (isinstance(val, list) or isinstance(val, tuple)) and len(val) > 2:
                     styles += [val[2]]
                 else:
                     styles += [utl.kwget(kwargs, self.fcpp,
                                          '%s_style' % axline, '-')]
-                if (type(val) is list or type(val) is tuple) and len(val) > 3:
+                if (isinstance(val, list) or isinstance(val, tuple)) and len(val) > 3:
                     widths += [val[3]]
                 else:
                     widths += [utl.kwget(kwargs, self.fcpp,
                                          '%s_width' % axline, 1)]
-                if (type(val) is list or type(val) is tuple) and len(val) > 4:
+                if (isinstance(val, list) or isinstance(val, tuple)) and len(val) > 4:
                     alphas += [val[4]]
                 else:
                     alphas += [utl.kwget(kwargs, self.fcpp,
                                          '%s_alpha' % axline, 1)]
-                if (type(val) is list or type(val) is tuple) and len(val) > 5:
+                if (isinstance(val, list) or isinstance(val, tuple)) and len(val) > 5:
                     labels += [val[5]]
-                elif (type(val) is list or type(val) is tuple) and type(val[0]) is str:
+                elif (isinstance(val, list) or isinstance(val, tuple)) and isinstance(val[0], str):
                     labels += [val[0]]
                 else:
                     labels += [utl.kwget(kwargs, self.fcpp,
@@ -864,10 +864,10 @@ class BaseLayout:
                 self.markers.type = RepeatedList('o', 'marker_type')
             if 'box_marker_zorder' in self.fcpp.keys():
                 self.markers.zorder = self.fcpp['box_marker_zorder']
-            if type(self.markers.size) is not RepeatedList:
+            if not isinstance(self.markers.size, RepeatedList):
                 self.markers.size = RepeatedList(
                     self.markers.size, 'marker_size')
-            if type(self.markers.edge_width) is not RepeatedList:
+            if not isinstance(self.markers.edge_width, RepeatedList):
                 self.markers.edge_width = RepeatedList(self.markers.edge_width,
                                                        'marker_edge_width')
 
@@ -886,7 +886,7 @@ class BaseLayout:
         self.cbar = Element('cbar', self.fcpp, kwargs,
                             on=kwargs.get('cbar', False),
                             obj=self.obj_array,
-                            size=[cbar_size if type(cbar_size) is not list else cbar_size[0],
+                            size=[cbar_size if not isinstance(cbar_size, list) else cbar_size[0],
                                   self.axes.size[1]],
                             )
         if not self.cbar.on:
@@ -908,13 +908,13 @@ class BaseLayout:
         if kwargs.get('colors'):
             colors = utl.validate_list(kwargs.get('colors'))
             for icolor, color in enumerate(colors):
-                if type(color) is int:
+                if isinstance(color, int):
                     colors[icolor] = DEFAULT_COLORS[color]
             self.color_list = colors
         elif 'colors' in self.fcpp.keys():
             colors = utl.validate_list(self.fcpp['colors'])
             for icolor, color in enumerate(colors):
-                if type(color) is int:
+                if isinstance(color, int):
                     colors[icolor] = DEFAULT_COLORS[color]
             self.color_list = colors
         elif not self.color_list:
@@ -1464,7 +1464,7 @@ class BaseLayout:
             updated kwargs
         """
         kwargs['legend'] = kwargs.get('legend', None)
-        if type(kwargs['legend']) is list:
+        if isinstance(kwargs['legend'], list):
             kwargs['legend'] = ' | '.join(utl.validate_list(kwargs['legend']))
         self.legend = Legend_Element('legend', self.fcpp, kwargs,
                                      on=True if (kwargs.get('legend')
@@ -1839,7 +1839,7 @@ class BaseLayout:
                                      text_size=None,
                                      )
 
-        if type(self.label_wrap.size) is not list:
+        if not isinstance(self.label_wrap.size, list):
             self.label_wrap.size = [self.label_wrap.size, self.axes.size[1]]
 
         self.title_wrap = Element('title_wrap', self.fcpp, kwargs,
@@ -1862,7 +1862,7 @@ class BaseLayout:
                                   text=kwargs.get('title_wrap', None),
                                   )
 
-        if type(self.title_wrap.size) is not list:
+        if not isinstance(self.title_wrap.size, list):
             self.title_wrap.size = [self.axes.size[0], self.title_wrap.size]
 
         return kwargs
@@ -1877,7 +1877,7 @@ class BaseLayout:
             updated kwargs
         """
         position = utl.kwget(kwargs, self.fcpp, 'text_position', [0, 0])
-        if type(position[0]) is not list:
+        if not isinstance(position[0], list):
             position = [position]
         self.text = Element('text', self.fcpp, {},
                             on=True if utl.kwget(kwargs, self.fcpp, 'text', None)
@@ -2237,7 +2237,7 @@ class BaseLayout:
                              font_weight='bold',
                              align='center',
                              )
-        if type(self.title.size) is not list:
+        if not isinstance(self.title.size, list):
             self.title.size = [self.axes.size[0], self.title.size]
 
         return kwargs
@@ -2308,7 +2308,7 @@ class BaseLayout:
             updated kwargs
         """
         for attr in attrs:
-            if type(getattr(base, attr)) is list:
+            if isinstance(getattr(base, attr), list):
                 setattr(base, attr, getattr(base, attr)
                         + [None] * (len(getattr(base, attr)) - 3))
                 kwargs['%s_%s_x' % (name, attr)] = getattr(base, attr)[0]
@@ -2394,7 +2394,7 @@ class BaseLayout:
                     val = 'title_wrap'
                 else:
                     val = 'label_%s' % lab
-                if type(dd) is list:
+                if isinstance(dd, list):
                     if data.wrap == 'y' and lab == 'y' \
                             or data.wrap == 'x' and lab == 'x':
                         getattr(self, val).text = data.wrap_vals
@@ -2995,7 +2995,7 @@ class Element:
                                     kwargs.get('fill_alpha', 1))
         self.fill_color = utl.kwget(kwargs, fcpp, '%s_fill_color' % name,
                                     kwargs.get('fill_color', '#ffffff'))
-        if type(self.fill_color) is not RepeatedList \
+        if not isinstance(self.fill_color, RepeatedList) \
                 and self.fill_color is not None \
                 or self.fill_alpha != 1:
             self.color_alpha('fill_color', 'fill_alpha')
@@ -3005,7 +3005,7 @@ class Element:
                                     kwargs.get('edge_alpha', 1))
         self.edge_color = utl.kwget(kwargs, fcpp, '%s_edge_color' % name,
                                     kwargs.get('edge_color', '#ffffff'))
-        if type(self.edge_color) is not RepeatedList \
+        if not isinstance(self.edge_color, RepeatedList) \
                 or self.edge_alpha != 1:
             self.color_alpha('edge_color', 'edge_alpha')
 
@@ -3026,15 +3026,15 @@ class Element:
                                kwargs.get('alpha', 1))
         self.color = utl.kwget(kwargs, fcpp, ['%s_color' % name, 'color'],
                                kwargs.get('color', '#000000'))
-        if type(self.color) is not RepeatedList or self.alpha != 1:
+        if not isinstance(self.color, RepeatedList) or self.alpha != 1:
             self.color_alpha('color', 'alpha')
         self.width = utl.kwget(kwargs, fcpp, '%s_width' % name,
                                kwargs.get('width', 1))
-        if type(self.width) is not RepeatedList:
+        if not isinstance(self.width, RepeatedList):
             self.width = RepeatedList(self.width, 'width')
         self.style = utl.kwget(kwargs, fcpp, '%s_style' % name,
                                kwargs.get('style', '-'))
-        if type(self.style) is not RepeatedList:
+        if not isinstance(self.style, RepeatedList):
             self.style = RepeatedList(self.style, 'style')
 
         # overrides
@@ -3208,11 +3208,11 @@ class Element:
 
         alpha = RepeatedList(getattr(self, alpha), 'temp')
 
-        if type(getattr(self, attr)) is not RepeatedList:
+        if not isinstance(getattr(self, attr), RepeatedList):
             self.color_list = utl.validate_list(getattr(self, attr))
 
             for ic, color in enumerate(self.color_list):
-                if type(color) is int:
+                if isinstance(color, int):
                     color = DEFAULT_COLORS[color]
                 if color[0] != '#' and color != 'none':
                     color = '#' + color

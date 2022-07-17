@@ -45,7 +45,7 @@ class RepeatedList:
         self.shift = 0
         self.override = override
 
-        if type(self.values) is not list and len(self.values) < 1:
+        if not isinstance(self.values, list) and len(self.values) < 1:
             raise(ValueError, 'RepeatedList for "%s" must contain an actual '
                               'list with more at least one element')
 
@@ -871,7 +871,7 @@ def set_save_filename(df: pd.DataFrame, ifig: int, fig_item: [None, str],
         str filename
     """
     # Use provided filename
-    if 'filename' in kwargs.keys() and type(kwargs['filename']) is str:
+    if 'filename' in kwargs.keys() and isinstance(kwargs['filename'], str):
         filename = kwargs['filename']
         ext = os.path.splitext(filename)[-1]
         if ext == '':
@@ -1028,9 +1028,9 @@ def validate_list(items: [str, int, float, list]) -> list:
     """
     if items is None:
         return None
-    if type(items) is tuple or type(items) is np.ndarray:
+    if isinstance(items, tuple) or isinstance(items, np.ndarray):
         return list(items)
-    elif type(items) is not list:
+    elif not isinstance(items, list):
         return [items]
     else:
         return items

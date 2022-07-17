@@ -377,7 +377,7 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
             gg = gg.set_index(dd.groups)
             if len(gg) > 1:
                 gg = gg.loc[tuple(row)]
-            if type(gg) == pd.Series:
+            if isinstance(gg, pd.Series):
                 gg = pd.DataFrame(gg).T
             else:
                 gg = gg.reset_index()
@@ -396,7 +396,7 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
                     stats += [temp.quantile(float(ss.strip('q')) / 100).iloc[0]]
             else:
                 stats += [temp.mean().iloc[0]]
-            if type(row) is not tuple:
+            if not isinstance(row, tuple):
                 row = [row]
             else:
                 row = [str(f) for f in row]
@@ -408,7 +408,7 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
                 dividers += [irow + 0.5]
 
             # Plot points
-            if type(dd.legend_vals) is pd.DataFrame:
+            if isinstance(dd.legend_vals, pd.DataFrame):
                 for jj, jrow in dd.legend_vals.iterrows():
                     temp = gg.loc[gg[dd.legend] == jrow['names']][dd.y].dropna()
                     temp['x'] = irow + 1
@@ -424,7 +424,7 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
         data = [df_rc[dd.y].dropna()]
         labels = ['']
         data[0]['x'] = 1
-        if type(dd.legend_vals) is pd.DataFrame:
+        if isinstance(dd.legend_vals, pd.DataFrame):
             for jj, jrow in dd.legend_vals.iterrows():
                 temp = data[0].loc[df_rc[dd.legend] == jrow['names']].index
 
@@ -1084,7 +1084,7 @@ def plotter(dobj, **kwargs):
 
     # Save data used in the figures
     if kwargs.get('save_data', False):
-        if type(kwargs['save_data']) is str:
+        if isinstance(kwargs['save_data'], str):
             filename = kwargs['save_data']
         else:
             filename = filename.split('.')[0] + '.csv'

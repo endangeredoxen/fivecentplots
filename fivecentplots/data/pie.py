@@ -67,9 +67,9 @@ class Pie(data.Data):
             return
 
         if self.legend:
-            if type(self.legend) is str and ' | ' in self.legend:
+            if isinstance(self.legend, str) and ' | ' in self.legend:
                 self.legend = self.legend.split(' | ')
-            if type(self.legend) is list:
+            if isinstance(self.legend, list):
                 for ileg, leg in enumerate(self.legend):
                     if ileg == 0:
                         temp = df[leg].copy()
