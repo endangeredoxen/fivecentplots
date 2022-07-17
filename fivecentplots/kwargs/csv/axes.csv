@@ -1,0 +1,3 @@
+Keyword,Data Type,Description,Default,Example
+obj,numpy.ndarray,Array of indexed by row and column axes objects [specific object depends on the plotting engine],"[0,0]",None
+size,list of int,"Axes size [width, height]","[400, 400]",plot.html#Time-series

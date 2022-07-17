@@ -217,23 +217,7 @@ What issues does fivecentplots address?
 
 |
 
-Current Options
----------------
-
-The following plot types are supported in **fivecentplots**:
-
-  1) `XY plots <plot.html>`_
-  2) `box plots <boxplot.html>`_
-  3) `contour plots <contour.html>`_
-  4) `heatmaps <heatmap.html>`_
-  5) `histograms <hist.html>`_
-  6) `bar plots <barplot.html>`_
-  7) `imshow plots <imshow.html>`_
-  8) `gantt charts <gantt.html>`_
-
-Follow the links to the example section to see the many options
-available within each plot category.
-
+See the sidebar for more details on plot types and options.
 
 Documentation
 ^^^^^^^^^^^^^
@@ -249,6 +233,7 @@ Documentation
    styles.ipynb
    ranges.ipynb
    ticks.ipynb
+   misc.ipynb
 
 .. toctree::
    :maxdepth: 1
@@ -262,7 +247,7 @@ Documentation
    heatmap.ipynb
    hist.ipynb
    imshow.ipynb
-   misc.ipynb
+   nq.ipynb
    pie.ipynb
 
 .. toctree::

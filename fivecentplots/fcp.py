@@ -270,8 +270,8 @@ def plot(df, **kwargs):
         df (DataFrame): DataFrame containing data to plot
 
     Required Keyword Args:
-        x (str): x-axis column name
-        y (str): y-axis column name
+        x (str | list): x-axis column name(s)
+        y (str | list): y-axis column name(s)
 
     Optional Keyword Args:
     """
@@ -1345,7 +1345,23 @@ nq.__doc__ += \
 # add line stuff from plot here
 
 
-plot.__doc__ += ''
+plot.__doc__ += \
+    keywords.kw_header('Lines:', indent='   ') + \
+    keywords.kw_print(kw['lines']) + \
+    keywords.kw_header('Markers:', indent='   ') + \
+    keywords.kw_print(kw['markers']) + \
+    keywords.kw_header('Ax_HVLines:', indent='   ') + \
+    keywords.kw_print(kw['ax_lines']) + \
+    keywords.kw_header('Control limits:', indent='   ') + \
+    keywords.kw_print(kw['control_limits']) + \
+    keywords.kw_header('Confidence intervals:', indent='   ') + \
+    keywords.kw_print(kw['conf_int']) + \
+    keywords.kw_header('Fit:', indent='   ') + \
+    keywords.kw_print(kw['fit']) + \
+    keywords.kw_header('Reference line:', indent='   ') + \
+    keywords.kw_print(kw['ref_line']) + \
+    keywords.kw_header('Stat lines:', indent='   ') + \
+    keywords.kw_print(kw['stat_line'])
 
 
 # axes.__doc__ = \
@@ -1375,16 +1391,12 @@ plot.__doc__ += ''
 #     keywords.kw_print(kw['Legend'])
 
 
-# lines.__doc__ = \
-#     keywords.kw_print(kw['Lines'])
+lines.__doc__ = \
+    keywords.kw_print(kw['lines'])
 
 
-# markers.__doc__ = \
-#     keywords.kw_print(kw['Markers'])
-
-
-# ref_line.__doc__ = \
-#     keywords.kw_print(kw['Ref Line'])
+markers.__doc__ = \
+    keywords.kw_print(kw['markers'])
 
 
 # ticks.__doc__ = \

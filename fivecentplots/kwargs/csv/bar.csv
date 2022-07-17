@@ -5,7 +5,7 @@ bar_edge_color,str,Hex color string for the edge of the bar,fcp.DEFAULT_COLORS,N
 bar_edge_width,float,Width of the edge of the bar in pixels,0,None
 bar_error_bars | error_bars,bool,Display error bars on each bar,False,`error bars <barplot.html#Error-bars>`_
 bar_error_color | error_color,str,Hex color string of the error bar lines,#555555,None
-bar_fill_alpha,int,Transparency value for the bars between 0-1,0.75,None
+bar_fill_alpha,float,Transparency value for the bars between 0-1,0.75,None
 bar_fill_color,str,Hex color string of the bar fill ,fcp.DEFAULT_COLORS,None
 bar_horizontal | horizontal,bool,Display bars horizontally,False,`horizontal box plot <barplot.html#Horizontal-bars>`_
 bar_rolling | bar_rolling_mean | rolling | rolling_mean,int,Rolling mean window size [enables this curve],No default,`rolling mean <barplot.html#Rolling-mean>`_

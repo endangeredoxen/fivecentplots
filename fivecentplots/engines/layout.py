@@ -905,9 +905,7 @@ class BaseLayout:
             updated kwargs
         """
         # Set the color list which determines line color order
-        if 'line_color' in kwargs.keys():
-            self.color_list = kwargs['line_color']
-        elif kwargs.get('colors'):
+        if kwargs.get('colors'):
             colors = utl.validate_list(kwargs.get('colors'))
             for icolor, color in enumerate(colors):
                 if type(color) is int:
@@ -959,6 +957,12 @@ class BaseLayout:
                                        edge_alpha=utl.kwget(kwargs, self.fcpp,
                                                             f'{key}_edge_alpha',
                                                             0.25),
+                                       edge_style=utl.kwget(kwargs, self.fcpp,
+                                                            f'{key}_edge_style',
+                                                            '-'),
+                                       edge_width=utl.kwget(kwargs, self.fcpp,
+                                                            f'{key}_edge_width',
+                                                            1),
                                        fill_color=utl.kwget(kwargs, self.fcpp,
                                                             f'{key}_fill_color',
                                                             copy.copy(self.color_list)),
@@ -1409,6 +1413,12 @@ class BaseLayout:
                                 edge_alpha=utl.kwget(kwargs, self.fcpp,
                                                      f'{key}_edge_alpha',
                                                      0.25),
+                                edge_style=utl.kwget(kwargs, self.fcpp,
+                                                            f'{key}_edge_style',
+                                                            '-'),
+                                edge_width=utl.kwget(kwargs, self.fcpp,
+                                                    f'{key}_edge_width',
+                                                    1),
                                 fill_color=utl.kwget(kwargs, self.fcpp,
                                                      f'{key}_fill_color',
                                                      copy.copy(self.color_list)),
@@ -1531,14 +1541,13 @@ class BaseLayout:
             updated kwargs
         """
         for k in list(kwargs.keys()):
+            # Update any kwargs with `line_` to `lines_` to match the actual element name
             if 'line_' in k and '%ss_%s' % (k.split('_')[0], k.split('_')[1]) \
                     not in kwargs.keys():
-                kwargs['%ss_%s' %
-                       (k.split('_')[0], k.split('_')[1])] = kwargs[k]
+                kwargs['%ss_%s' % (k.split('_')[0], k.split('_')[1])] = kwargs[k]
         self.lines = Element('lines', self.fcpp, kwargs,
                              on=kwargs.get('lines', True),
-                             color=RepeatedList(
-                                 copy.copy(self.color_list), 'colors'),
+                             color=RepeatedList(copy.copy(self.color_list), 'colors'),
                              values=[],
                              )
 
@@ -1687,10 +1696,10 @@ class BaseLayout:
             self.ref_line = Element('ref_line', self.fcpp, kwargs, on=False)
             return kwargs
 
-        if type(ref_line) is pd.Series:
+        if isinstance(ref_line, pd.Series):
             # dtype == pandas Series
             ref_col = 'Ref Line'
-        elif type(ref_line) is list:
+        elif isinstance(ref_line, list):
             # dtype == list
             ref_col = [f for f in ref_line if f in kwargs['df'].columns]
             missing = [f for f in ref_line if f not in ref_col]
@@ -1699,7 +1708,7 @@ class BaseLayout:
                       ', '.join(missing))
             if not kwargs.get('ref_line_legend_text'):
                 kwargs['ref_line_legend_text'] = ref_col
-        elif type(kwargs.get('ref_line', False)) is str and \
+        elif isinstance(kwargs.get('ref_line', False), str) and \
                 kwargs.get('ref_line', False) in kwargs['df'].columns:
             # dtype == column name in pandas DataFrame
             ref_col = kwargs.get('ref_line')

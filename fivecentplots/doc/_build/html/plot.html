@@ -47,7 +47,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="barplot" href="barplot.html" />
-    <link rel="prev" title="Grids and ticks" href="ticks.html" /> 
+    <link rel="prev" title="Miscellaneous" href="misc.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -105,6 +105,7 @@
 <li class="toctree-l1"><a class="reference internal" href="styles.html">Styles and formatting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ranges.html">Data ranges</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ticks.html">Grids and ticks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plot Types</span></p>
 <ul class="current">
@@ -140,7 +141,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#Other-options">Other options</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#Horizontal-and-vertical-lines">Horizontal and vertical lines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Horizontal-&amp;-vertical-lines">Horizontal &amp; vertical lines</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Curve-fitting">Curve fitting</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Stat-lines">Stat lines</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Confidence-intervals">Confidence intervals</a></li>
@@ -161,7 +162,7 @@
 <li class="toctree-l1"><a class="reference internal" href="heatmap.html">heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hist.html">hist</a></li>
 <li class="toctree-l1"><a class="reference internal" href="imshow.html">imshow</a></li>
-<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nq.html">nq</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pie.html">pie</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Other</span></p>
@@ -507,8 +508,7 @@ div.rendered_html tbody tr:hover {
 }
 </style>
 <div class="section" id="plot">
-<h1>plot<a class="headerlink" href="#plot" title="Permalink to this headline">¶</a></h1>The `plot` function is the primary vehicle for visualizing x-y data.  At a minimum, the `plot` function requires the following keywords:
-<br><div class="section" id="Setup">
+<h1>plot<a class="headerlink" href="#plot" title="Permalink to this headline">¶</a></h1><p style="line-height:30px"><b><font color="#999999" style="font-family:Arial; font-size:24px">fivecentplots.plot(df, **kwargs)</font></b><br><b><i>XY plot.</i></b><br><br><b>Args:</b><br><div style="padding-left: 30px"><b>df</b> (<i><font color="#0c9c6e">DataFrame</font></i>):<br><div style="padding-left: 30px">DataFrame containing data to plot</div></div><br><b>Required Keyword Args:</b><br><div style="padding-left: 30px"><b>x</b> (<i><font color="#0c9c6e">str | list</font></i>):<br><div style="padding-left: 30px">x-axis column name(<i><font color="#0c9c6e">s) </div></div><div style="padding-left: 30px"><b>y</b> (<i><font color="#0c9c6e">str | list</font></i>):<br><div style="padding-left: 30px">y-axis column name(<i><font color="#0c9c6e">s)</div></div><br><b>Optional Keyword Args:</b><br><div style="padding-left: 30px"><font color="#cc00ff"><i>Lines:</font></i></div><div style="padding-left: 30px"><b>lines</b> (<i><font color="#0c9c6e">boolean</font></i>):<br><div style="padding-left: 30px">Enable/disable plotting of lines. Defaults to True. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Scatter>See example</a> </div></div><div style="padding-left: 30px"><b>line_alpha</b> (<i><font color="#0c9c6e">str|list</font></i>):<br><div style="padding-left: 30px">Transparency value for the line(<i><font color="#0c9c6e">s) between 0-1. Defaults to 1. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling>See example</a> </div></div><div style="padding-left: 30px"><b>line_color</b> (<i><font color="#0c9c6e">str|list</font></i>):<br><div style="padding-left: 30px">Hex color string or list of hex color strings for the plot lines. Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span>. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling>See example</a> </div></div><div style="padding-left: 30px"><b>line_style</b> (<i><font color="#0c9c6e">str|list</font></i>):<br><div style="padding-left: 30px">Matplotlib string character for line style {"-"; "--"; "-." ":"}. Defaults to "-". <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling>See example</a> </div></div><div style="padding-left: 30px"><b>line_width</b> (<i><font color="#0c9c6e">int|list</font></i>):<br><div style="padding-left: 30px">Line width in pixels. Defaults to 1. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling>See example</a> </div><br><font color="#cc00ff"><i>Markers:</font></i> </div></div><div style="padding-left: 30px"><b>markers</b> (<i><font color="#0c9c6e">boolean</font></i>):<br><div style="padding-left: 30px">Enable/disable data point markers. Defaults to True. </div></div><div style="padding-left: 30px"><b>marker_fill</b> (<i><font color="#0c9c6e">boolean</font></i>):<br><div style="padding-left: 30px">Enable/disable color fill in markers. Defaults to False. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors>See example</a> </div></div><div style="padding-left: 30px"><b>marker_edge_color</b> (<i><font color="#0c9c6e">str|list</font></i>):<br><div style="padding-left: 30px">Hex color string for the marker edges. Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span>. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors>See example</a> </div></div><div style="padding-left: 30px"><b>marker_edge_width</b> (<i><font color="#0c9c6e">float</font></i>):<br><div style="padding-left: 30px">Marker edge line width in pixels. Defaults to 1. </div></div><div style="padding-left: 30px"><b>marker_fill_color</b> (<i><font color="#0c9c6e">str|list</font></i>):<br><div style="padding-left: 30px">Hex color string for the fill color of markers. Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span>. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors>See example</a> </div></div><div style="padding-left: 30px"><b>marker_jitter | jitter</b> (<i><font color="#0c9c6e">boolean</font></i>):<br><div style="padding-left: 30px">For boxplots add random noise on x-axis to show separation between markers. Defaults to True. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/boxplot.html#Jitter>See example</a> </div></div><div style="padding-left: 30px"><b>marker_size</b> (<i><font color="#0c9c6e">float</font></i>):<br><div style="padding-left: 30px">Size in pixels of the data point markers. Defaults to 6. </div><br><font color="#cc00ff"><i>Ax_HVLines:</font></i> </div></div><div style="padding-left: 30px"><b>ax_hlines|ax2_hlines</b> (<i><font color="#0c9c6e">float|list of tuples and floats</font></i>):<br><div style="padding-left: 30px">Add horizontal lines to the plot; if only float value is provided add a solid black line with width=1 pixel at that value; if tuple add any one or more of the following in order: [1] float value or DataFrame column name [required]; [2] hex string for line color; [3] line style str; [4] line width in pixels; [5] line alpha transparency value from 0-1; [6] legend text [added automatically if using a column name for value]. Defaults to None. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Horizontal-&-vertical-lines>See example</a> </div></div><div style="padding-left: 30px"><b>ax_vlines|ax2_vlines</b> (<i><font color="#0c9c6e">float|list of tuples and floats</font></i>):<br><div style="padding-left: 30px">Add vertical lines to the plot [same parameters as ax_hlines]. Defaults to None. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Horizontal-&-vertical-lines>See example</a> </div><br><font color="#cc00ff"><i>Control limits:</font></i> </div></div><div style="padding-left: 30px"><b>lcl</b> (<i><font color="#0c9c6e">float</font></i>):<br><div style="padding-left: 30px">Float value to start the lower control limit shading region. Defaults to None. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits>See example</a> </div></div><div style="padding-left: 30px"><b>ucl</b> (<i><font color="#0c9c6e">float</font></i>):<br><div style="padding-left: 30px">Float value to start the upper control limit shading region. Defaults to None. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits>See example</a> </div></div><div style="padding-left: 30px"><b>control_limit_side</b> (<i><font color="#0c9c6e">str</font></i>):<br><div style="padding-left: 30px">Determines if shaded region is <= lcl and >= ucl {"outside"} or between the lcl and ucl {"inside"}. Defaults to outside. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits>See example</a> </div></div><div style="padding-left: 30px"><b>lcl|ucl_edge_alpha</b> (<i><font color="#0c9c6e">float</font></i>):<br><div style="padding-left: 30px">Transparency value for the line starting the control limit shaded region between 0-1. Defaults to 0.25. </div></div><div style="padding-left: 30px"><b>lcl|ucl_edge_color</b> (<i><font color="#0c9c6e">str</font></i>):<br><div style="padding-left: 30px">Hex color string for the the line starting the control limit shaded region. Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span>. </div></div><div style="padding-left: 30px"><b>lcl|ucl_edge_style</b> (<i><font color="#0c9c6e">str</font></i>):<br><div style="padding-left: 30px">Line style for the line starting the control limit shaded region {‘-’, ‘--’, ‘-.’, ‘:’}. Defaults to "-". </div></div><div style="padding-left: 30px"><b>lcl|ucl_edge_width</b> (<i><font color="#0c9c6e">float</font></i>):<br><div style="padding-left: 30px">Width of the line starting the control limit shaded region in pixels. Defaults to 1. </div></div><div style="padding-left: 30px"><b>lcl|ucl_fill_alpha</b> (<i><font color="#0c9c6e">float</font></i>):<br><div style="padding-left: 30px">Transparency value for the control limit shaded region fill between 0-1. Defaults to 0.20. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits>See example</a> </div></div><div style="padding-left: 30px"><b>lcl|ucl_fill_color</b> (<i><font color="#0c9c6e">str</font></i>):<br><div style="padding-left: 30px">Hex color string for the control limit shaded region fill. Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span>. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits>See example</a> </div><br><font color="#cc00ff"><i>Confidence intervals:</font></i> </div></div><div style="padding-left: 30px"><b>conf_int</b> (<i><font color="#0c9c6e">float</font></i>):<br><div style="padding-left: 30px">Interval with upper and lower bounds based on a single confidence value between 0-1</b> (<i><font color="#0c9c6e">typical=0.95). Defaults to None. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval>See example</a> </div></div><div style="padding-left: 30px"><b>perc_int</b> (<i><font color="#0c9c6e">list of float</font></i>):<br><div style="padding-left: 30px">Interval with upper and lower bounds based on percentiles between 0-1. Defaults to None. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval>See example</a> </div></div><div style="padding-left: 30px"><b>nq_int</b> (<i><font color="#0c9c6e">list of float</font></i>):<br><div style="padding-left: 30px">Interval with upper and lower bounds based on values of sigma</b> (<i><font color="#0c9c6e">where the mean of a distribution is sigma=0). Defaults to None. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval>See example</a> </div></div><div style="padding-left: 30px"><b>conf_int|perc_int|nq_int_edge_alpha</b> (<i><font color="#0c9c6e">float</font></i>):<br><div style="padding-left: 30px">Transparency value for the lines bounding the interval shaded region between 0-1. Defaults to 0.25. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval>See example</a> </div></div><div style="padding-left: 30px"><b>conf_int|perc_int|nq_int_edge_color</b> (<i><font color="#0c9c6e">str</font></i>):<br><div style="padding-left: 30px">Hex color string for the the lines bounding the interval shaded region. Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span>. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval>See example</a> </div></div><div style="padding-left: 30px"><b>conf_int|perc_int|nq_int_edge_style</b> (<i><font color="#0c9c6e">str</font></i>):<br><div style="padding-left: 30px">Line style for the lines bounding the interval shaded region {‘-’, ‘--’, ‘-.’, ‘:’}. Defaults to "-". <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval>See example</a> </div></div><div style="padding-left: 30px"><b>conf_int|perc_int|nq_int_edge_width</b> (<i><font color="#0c9c6e">float</font></i>):<br><div style="padding-left: 30px">Width of the lines bounding the interval shaded region in pixels. Defaults to 1. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval>See example</a> </div></div><div style="padding-left: 30px"><b>conf_int|perc_int|nq_int_fill_alpha</b> (<i><font color="#0c9c6e">float</font></i>):<br><div style="padding-left: 30px">Transparency value for the interval shaded region fill between 0-1. Defaults to 0.20. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval>See example</a> </div></div><div style="padding-left: 30px"><b>conf_int|perc_int|nq_int_fill_color</b> (<i><font color="#0c9c6e">str</font></i>):<br><div style="padding-left: 30px">Hex color string for the interval shaded region fill. Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span>. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval>See example</a> </div><br><font color="#cc00ff"><i>Fit:</font></i> </div></div><div style="padding-left: 30px"><b>fit</b> (<i><font color="#0c9c6e">int</font></i>):<br><div style="padding-left: 30px">Polynomial degree for the fit. Defaults to None. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Line-fit>See example</a> </div></div><div style="padding-left: 30px"><b>fit_color</b> (<i><font color="#0c9c6e">str</font></i>):<br><div style="padding-left: 30px">Hex color string for the fit line. Defaults to #000000 <span id="rectangle" style="height: 12px; width: 12px; background-color:#000000;display:inline-block"></span>. </div></div><div style="padding-left: 30px"><b>fit_eqn</b> (<i><font color="#0c9c6e">boolean</font></i>):<br><div style="padding-left: 30px">Display the fit equation on the plot. Defaults to False. </div></div><div style="padding-left: 30px"><b>fit_font_size</b> (<i><font color="#0c9c6e">float</font></i>):<br><div style="padding-left: 30px">Font size of the fit eqn and rsq value. Defaults to 12. </div></div><div style="padding-left: 30px"><b>fit_padding</b> (<i><font color="#0c9c6e">int</font></i>):<br><div style="padding-left: 30px">Padding in pixels from the top of the plot to the location of the fit eqn. Defaults to 10. </div></div><div style="padding-left: 30px"><b>fit_range_x</b> (<i><font color="#0c9c6e">list</font></i>):<br><div style="padding-left: 30px">Compute the fit only over a given range of x-values. Defaults to None. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Curve-fitting>See example</a> </div></div><div style="padding-left: 30px"><b>fit_range_y</b> (<i><font color="#0c9c6e">list</font></i>):<br><div style="padding-left: 30px">Compute the fit only over a given range of y-values. Defaults to None. </div></div><div style="padding-left: 30px"><b>fit_rsq</b> (<i><font color="#0c9c6e">boolean</font></i>):<br><div style="padding-left: 30px">Display the rsq of the fit on the plot. Defaults to False. </div><br><font color="#cc00ff"><i>Reference line:</font></i> </div></div><div style="padding-left: 30px"><b>ref_line</b> (<i><font color="#0c9c6e">list|pd.Series</font></i>):<br><div style="padding-left: 30px">The name of one or more columns in the DataFrame or a pandas Series with the same number of rows as the x column. Defaults to None. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line>See example</a> </div></div><div style="padding-left: 30px"><b>ref_line_alpha</b> (<i><font color="#0c9c6e">str|list</font></i>):<br><div style="padding-left: 30px">Transparency value for the reference line(<i><font color="#0c9c6e">s) between 0-1</b> (<i><font color="#0c9c6e">use list if more than one ref_line plotted). Defaults to 1. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line>See example</a> </div></div><div style="padding-left: 30px"><b>ref_line_color</b> (<i><font color="#0c9c6e">str|list</font></i>):<br><div style="padding-left: 30px">Hex color string or list of hex color strings for the reference line</b> (<i><font color="#0c9c6e">use list if more than one ref_line plotted). Defaults to #000000 <span id="rectangle" style="height: 12px; width: 12px; background-color:#000000;display:inline-block"></span>. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line>See example</a> </div></div><div style="padding-left: 30px"><b>ref_line_legend_text</b> (<i><font color="#0c9c6e">str|list</font></i>):<br><div style="padding-left: 30px">Custom string label(<i><font color="#0c9c6e">s) to add to a legend for the reference line data</b> (<i><font color="#0c9c6e">use list if more than one ref_line plotted). Defaults to None. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line>See example</a> </div></div><div style="padding-left: 30px"><b>ref_line_style</b> (<i><font color="#0c9c6e">str|list</font></i>):<br><div style="padding-left: 30px">Matplotlib string character for reference line style {"-"; "--"; "-." ":"}</b> (<i><font color="#0c9c6e">use list if more than one ref_line plotted). Defaults to "-". <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line>See example</a> </div></div><div style="padding-left: 30px"><b>ref_line_width</b> (<i><font color="#0c9c6e">int|list</font></i>):<br><div style="padding-left: 30px">Reference line width in pixels</b> (<i><font color="#0c9c6e">use list if more than one ref_line plotted). Defaults to 1. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line>See example</a> </div><br><font color="#cc00ff"><i>Stat lines:</font></i> </div></div><div style="padding-left: 30px"><b>stat</b> (<i><font color="#0c9c6e">str</font></i>):<br><div style="padding-left: 30px">Calculate a statistic on a data set</b> (<i><font color="#0c9c6e">any stat value supported by pandas.groupby is valid {"mean", "std", etc}. Defaults to None. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Stat-lines>See example</a> </div></div><div style="padding-left: 30px"><b>stat_val</b> (<i><font color="#0c9c6e">str</font></i>):<br><div style="padding-left: 30px">Alternate column name used as a pseudo x-axis for the stat calculation for cases in which the plotted x-column values are not perfectly aligned. Defaults to None. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Stat-lines>See example</a> </div></div><div style="padding-left: 30px"><b>stat_line_xxx</b> (<i><font color="#0c9c6e">various</font></i>):<br><div style="padding-left: 30px">Stat-line styling is controlled by the regular line_xxx values. Defaults to None.</div></div></p><br><div class="section" id="Setup">
 <h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this headline">¶</a></h2>
 <p>Import packages</p>
 <div class="nbinput nblast docutils container">
@@ -516,9 +516,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="o">%</span><span class="k">load_ext</span> autoreload
-<span class="o">%</span><span class="k">autoreload</span> 2
-<span class="kn">import</span> <span class="nn">fivecentplots</span> <span class="k">as</span> <span class="nn">fcp</span>
+<span></span><span class="kn">import</span> <span class="nn">fivecentplots</span> <span class="k">as</span> <span class="nn">fcp</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 </pre></div>
@@ -769,7 +767,24 @@ div.rendered_html tbody tr:hover {
 <h2>Basic XY Plots<a class="headerlink" href="#Basic-XY-Plots" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="Scatter">
 <h3>Scatter<a class="headerlink" href="#Scatter" title="Permalink to this headline">¶</a></h3>
-<p>A simple XY plot of current vs voltage for a subset of fake diodes in our dataset is shown below. This subset actually consists of data for three diodes so we disable the lines between data points for visual simplicity.</p>
+<p>A simple XY plot of current vs voltage is shown below for a sample set of fake diodes.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;IV Data&#39;</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_14_0.png" src="_images/plot_14_0.png" />
+</div>
+</div>
+<p>For better visibility, we can subset the data to show only diodes that meet certain criteria. This is accomplished using the <code class="docutils literal notranslate"><span class="pre">filter</span></code> kwarg from fivecentplots :</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -784,14 +799,16 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_14_0.png" src="_images/plot_14_0.png" />
+<img alt="_images/plot_16_0.png" src="_images/plot_16_0.png" />
 </div>
 </div>
-<div class="admonition note"><p class="admonition-title"></p><p><p>Note above that we use the built-in “filter” option from fivecentplots to sample the dataset. In this case we are selecting specific data based on values in four DataFrame columns (“Substrate”, “Target Wavelength”, “Boost Level”, and “Temperature”). We could also have applied filtering directly to the input DataFrame but fivecentplots ’s filtering provides a nicer, human-readable interface. Read more about filtering here.</p>
+<div class="admonition note"><p class="admonition-title"></p><p><p>In the example above, we are selecting specific data based on values in four different <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> columns (“Substrate”, “Target Wavelength”, “Boost Level”, and “Temperature”). This is conveniently achieved using fivecentplots ’s built-in <code class="docutils literal notranslate"><span class="pre">filter</span></code> tool, which uses an easy, human-readable string to sub-sample a dataset. Alternatively, could also have applied filtering directly to the input DataFrame as shown below, but this feels a bit cumbersome:</p>
+<p><code class="docutils literal notranslate"><span class="pre">df_sub</span> <span class="pre">=</span> <span class="pre">df[(df['Substrate']==&quot;Si&quot;)&amp;(df['Target</span> <span class="pre">Wavelength']==450)&amp;(df['Boost</span> <span class="pre">Level']==0.2)&amp;(df['Temperature</span> <span class="pre">[C]']==25)]</span></code></p>
+<p>Read more about fivecentplots filtering here.</p>
 </p></div></div>
 <div class="section" id="Legend">
 <h3>Legend<a class="headerlink" href="#Legend" title="Permalink to this headline">¶</a></h3>
-<p>Next, we add a legend on the column “Die” to separate out the unique diodes in our subset. Now we leave the connecting lines between points enabled because we have separated out all unique data groupings with our filter and legend.</p>
+<p>Our sampled data set actually contains IV data for three different diodes, which are named based on their coordinates on a Si wafer. To easily separate them, we add a legend using the column “Die”. Because we are now grouping each die individually, we enable the connecting lines between points.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -806,10 +823,10 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_18_0.png" src="_images/plot_18_0.png" />
+<img alt="_images/plot_20_0.png" src="_images/plot_20_0.png" />
 </div>
 </div>
-<p>By default, the values in the legend are sorted using so-called “natural” sorting via the <code class="docutils literal notranslate"><span class="pre">natsort</span></code> library. To disable this and order the legend based on the order in which the group was found in the dataframe, add the keyword <code class="docutils literal notranslate"><span class="pre">sort=False</span></code>:</p>
+<p>By default, the values in the legend are sorted using so-called “natural” sorting via the <code class="docutils literal notranslate"><span class="pre">natsort</span></code> library. To disable this and order the legend based on the order in which the group was actually found in the dataframe, add the keyword <code class="docutils literal notranslate"><span class="pre">sort=False</span></code>:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -824,19 +841,19 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_20_0.png" src="_images/plot_20_0.png" />
+<img alt="_images/plot_22_0.png" src="_images/plot_22_0.png" />
 </div>
 </div>
 </div>
 <div class="section" id="Axes-scales">
 <h3>Axes scales<a class="headerlink" href="#Axes-scales" title="Permalink to this headline">¶</a></h3>
-<p>Log- and other-scaled axes can be enabled through the kwargs <code class="docutils literal notranslate"><span class="pre">ax_scale</span></code>. Valid options:</p>
+<p>Log- and other-scaled axes can be enabled through the kwarg <code class="docutils literal notranslate"><span class="pre">ax_scale</span></code>. Valid options:</p>
 <ul><li><p>x-only: logx | semilogx</p>
 </li><li><p>y-only: logy | semilogy</p>
 </li><li><p>both: loglog | log</p>
 </li><li><p>symlog: symlog</p>
 </li><li><p>logit: logit</p>
-</li></ul><p>Consdier the legend plot from above, now with log-log axes:</p>
+</li></ul><p>Consider the legend plot from above, now with log-log axes:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -851,7 +868,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_24_0.png" src="_images/plot_24_0.png" />
+<img alt="_images/plot_26_0.png" src="_images/plot_26_0.png" />
 </div>
 </div>
 </div>
@@ -863,8 +880,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span>
-         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Voltage==1.5&#39;</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Voltage==1.5&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -872,13 +888,13 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_27_0.png" src="_images/plot_27_0.png" />
+<img alt="_images/plot_29_0.png" src="_images/plot_29_0.png" />
 </div>
 </div>
 </div>
 <div class="section" id="Time-series">
 <h3>Time series<a class="headerlink" href="#Time-series" title="Permalink to this headline">¶</a></h3>
-<p>We can also use <code class="docutils literal notranslate"><span class="pre">plot</span></code> to visualize DataFrames containing time series data. In this example, we use the <code class="docutils literal notranslate"><span class="pre">ts</span></code> dataset loaded previously and place the “Date” column on the x-axis. For clarity, we disable markers and widen the horizontal size of the plot area.</p>
+<p>We can also use <code class="docutils literal notranslate"><span class="pre">plot</span></code> to visualize time series data. In this example, we use the <code class="docutils literal notranslate"><span class="pre">ts</span></code> dataset loaded previously and place the “Date” column on the x-axis. For clarity, we disable markers and widen the horizontal size of the plot area.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -892,16 +908,16 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_30_0.png" src="_images/plot_30_0.png" />
+<img alt="_images/plot_32_0.png" src="_images/plot_32_0.png" />
 </div>
 </div>
 </div>
 </div>
 <div class="section" id="Secondary-axes">
 <h2>Secondary axes<a class="headerlink" href="#Secondary-axes" title="Permalink to this headline">¶</a></h2>
-<p>Secondary x- and y-axes can be added to an xy plot using the <code class="docutils literal notranslate"><span class="pre">twin_[x|y]</span></code> keyword. An additional DataFrame column name must be provided in a list to the alternate axes that is not twinned. Lines and markers will be colored to match the axis label. Grid lines default to the primary axis but secondary gridlines can also be enabled as shown below.</p>
-<p>Keywords related to the primary axes are suffixed with <code class="docutils literal notranslate"><span class="pre">_x</span></code> or <code class="docutils literal notranslate"><span class="pre">_y</span></code>. Keywords related to the secondary axis are suffixed with <code class="docutils literal notranslate"><span class="pre">_x2</span></code> and <code class="docutils literal notranslate"><span class="pre">_y2</span></code>.</p>
-<div class="section" id="Shared-x-axis-(twin_x)">
+<p>Secondary x- and y-axes can be added to an xy plot using the <code class="docutils literal notranslate"><span class="pre">twin_[x|y]</span></code> keyword. We must also provide an additional DataFrame column name for the alternate axes to the kwarg for the axis that is not twinned (i.e., <code class="docutils literal notranslate"><span class="pre">twin_x</span></code> means two column names are required for <code class="docutils literal notranslate"><span class="pre">y</span></code> and <code class="docutils literal notranslate"><span class="pre">twin_y</span></code> means two column names are required for <code class="docutils literal notranslate"><span class="pre">x</span></code>). Lines and markers will be colored to match the axis label. Grid lines default to the primary axis but secondary gridlines can also be enabled as shown below.</p>
+<div class="admonition note"><p class="admonition-title"></p><p><p>Note: kwargs related to the primary axes are suffixed with <code class="docutils literal notranslate"><span class="pre">_x</span></code> or <code class="docutils literal notranslate"><span class="pre">_y</span></code>. Keywords related to the secondary axis are suffixed with <code class="docutils literal notranslate"><span class="pre">_x2</span></code> and <code class="docutils literal notranslate"><span class="pre">_y2</span></code>.</p>
+</p></div><div class="section" id="Shared-x-axis-(twin_x)">
 <h3>Shared x-axis (twin_x)<a class="headerlink" href="#Shared-x-axis-(twin_x)" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
@@ -917,10 +933,10 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_34_0.png" src="_images/plot_34_0.png" />
+<img alt="_images/plot_37_0.png" src="_images/plot_37_0.png" />
 </div>
 </div>
-<p>The same plot but with a legend enabled. Not that the legend will describe the value from the <code class="docutils literal notranslate"><span class="pre">legend</span></code> column and the value associated with the curve (either the primary or the secondary axis):</p>
+<p>Next, the same plot but with a legend enabled. Note that the legend will describe the value from the <code class="docutils literal notranslate"><span class="pre">legend</span></code> column and the value associated with the curve (either the primary or the secondary axis):</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -935,10 +951,10 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_36_0.png" src="_images/plot_36_0.png" />
+<img alt="_images/plot_39_0.png" src="_images/plot_39_0.png" />
 </div>
 </div>
-<p>The same plot but with secondary gridlines enabled:</p>
+<p>Next, the same plot but with secondary gridlines enabled:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -954,7 +970,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_38_0.png" src="_images/plot_38_0.png" />
+<img alt="_images/plot_41_0.png" src="_images/plot_41_0.png" />
 </div>
 </div>
 </div>
@@ -966,7 +982,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">twin_y</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">twin_y</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -975,7 +991,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_41_0.png" src="_images/plot_41_0.png" />
+<img alt="_images/plot_44_0.png" src="_images/plot_44_0.png" />
 </div>
 </div>
 </div>
@@ -1000,39 +1016,16 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_46_0.png" src="_images/plot_46_0.png" />
+<img alt="_images/plot_49_0.png" src="_images/plot_49_0.png" />
 </div>
 </div>
-</div>
-<div class="section" id="Multiple-x-only">
-<h3>Multiple x only<a class="headerlink" href="#Multiple-x-only" title="Permalink to this headline">¶</a></h3>
+<p>And with a custom <code class="docutils literal notranslate"><span class="pre">label_y</span></code>:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span>
-         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/plot_48_0.png" src="_images/plot_48_0.png" />
-</div>
-</div>
-</div>
-<div class="section" id="Multiple-x-and-y">
-<h3>Multiple x and y<a class="headerlink" href="#Multiple-x-and-y" title="Permalink to this headline">¶</a></h3>
-<p>We can also provide both a list of <code class="docutils literal notranslate"><span class="pre">x</span></code> and a list of <code class="docutils literal notranslate"><span class="pre">y</span></code> column names:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;Temperature [C]&#39;</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">label_y</span><span class="o">=</span><span class="s1">&#39;Data&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1045,20 +1038,62 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 </div>
+<div class="section" id="Multiple-x-only">
+<h3>Multiple x only<a class="headerlink" href="#Multiple-x-only" title="Permalink to this headline">¶</a></h3>
+<p>We can do the same thing with the x-axis:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_54_0.png" src="_images/plot_54_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Multiple-x-and-y">
+<h3>Multiple x and y<a class="headerlink" href="#Multiple-x-and-y" title="Permalink to this headline">¶</a></h3>
+<p>We can also add multiple columns to both <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> kwargs:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;Temperature [C]&#39;</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_57_0.png" src="_images/plot_57_0.png" />
+</div>
+</div>
+</div>
 </div>
 <div class="section" id="Grouping">
 <h2>Grouping<a class="headerlink" href="#Grouping" title="Permalink to this headline">¶</a></h2>
-<p>xy plots can be grouped based on other DataFrame columns to better visualize a dataset. Grouping options include:</p>
+<p>As explained in Grouping data, we can group xy plots based on other DataFrame columns to better visualize a dataset. Grouping options include:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">row</span></code>: a single column of subplots</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">column</span></code>: a single row of subplots</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">row</span></code> x <code class="docutils literal notranslate"><span class="pre">column</span></code>: a 2D grid of subplots based on two different DataFrame columns</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">wrap</span></code>: a 2D grid of subplots wrapped in sequence (based on one or more DataFrame columns)</p></li>
 </ul>
-<p>These grouped plots share a legend (if enabled) and will share common ranges unless this is explicity disabled. For more information on grouping see the grouping tutorial.</p>
+<p>These grouped plots share a legend (if enabled) and will share common ranges unless sharing is explicity disabled</p>
 <div class="section" id="Row-plot">
 <h3>Row plot<a class="headerlink" href="#Row-plot" title="Permalink to this headline">¶</a></h3>
-<p>Row plots create multiple subplots in a single column. Each unique value in the DataFrame column provided for keyword <code class="docutils literal notranslate"><span class="pre">row</span></code> creates a new row in the subplot grid. Plot order is defined alphabetically from top to bottom. Each row contains a special label indicating the unique value of the <code class="docutils literal notranslate"><span class="pre">row</span></code> column.</p>
+<p>Row plots create multiple subplots in a single column. Each unique value in the DataFrame column provided for keyword <code class="docutils literal notranslate"><span class="pre">row</span></code> creates a new row in the subplot grid. Plot order is defined alphabetically from top to bottom. Each row contains a row label indicating the unique value of the <code class="docutils literal notranslate"><span class="pre">row</span></code> column.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -1073,13 +1108,13 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_56_0.png" src="_images/plot_56_0.png" />
+<img alt="_images/plot_62_0.png" src="_images/plot_62_0.png" />
 </div>
 </div>
 </div>
 <div class="section" id="Column-plot">
 <h3>Column plot<a class="headerlink" href="#Column-plot" title="Permalink to this headline">¶</a></h3>
-<p>Column plots create multiple subplots in a single row. Each unique value in the DataFrame column provided for keyword <code class="docutils literal notranslate"><span class="pre">col</span></code> creates a new column in the subplot grid. Plot order is defined alphabetically from left to right. Each column contains a special label indicating the unique value of the <code class="docutils literal notranslate"><span class="pre">col</span></code> column.</p>
+<p>Column plots create multiple subplots in a single row. Each unique value in the DataFrame column provided for keyword <code class="docutils literal notranslate"><span class="pre">col</span></code> creates a new column in the subplot grid. Plot order is defined alphabetically from left to right. Each column contains a column label indicating the unique value of the <code class="docutils literal notranslate"><span class="pre">col</span></code> column.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -1094,7 +1129,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_59_0.png" src="_images/plot_59_0.png" />
+<img alt="_images/plot_65_0.png" src="_images/plot_65_0.png" />
 </div>
 </div>
 </div>
@@ -1115,7 +1150,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_62_0.png" src="_images/plot_62_0.png" />
+<img alt="_images/plot_68_0.png" src="_images/plot_68_0.png" />
 </div>
 </div>
 </div>
@@ -1138,7 +1173,7 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_65_0.png" src="_images/plot_65_0.png" />
+<img alt="_images/plot_71_0.png" src="_images/plot_71_0.png" />
 </div>
 </div>
 <p>Custom number of columns:</p>
@@ -1147,7 +1182,7 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> <span class="s1">&#39;Boost Level&#39;</span><span class="p">],</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> <span class="s1">&#39;Boost Level&#39;</span><span class="p">],</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
          <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450&#39;</span><span class="p">,</span> <span class="n">label_rc_font_size</span><span class="o">=</span><span class="mi">13</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1156,7 +1191,7 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_67_0.png" src="_images/plot_67_0.png" />
+<img alt="_images/plot_73_0.png" src="_images/plot_73_0.png" />
 </div>
 </div>
 </div>
@@ -1164,8 +1199,8 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 <div class="section" id="Other-options">
 <h2>Other options<a class="headerlink" href="#Other-options" title="Permalink to this headline">¶</a></h2>
 <p>Several additional options available to enhance data analysis in xy plots are describe below.</p>
-<div class="section" id="Horizontal-and-vertical-lines">
-<h3>Horizontal and vertical lines<a class="headerlink" href="#Horizontal-and-vertical-lines" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="Horizontal-&amp;-vertical-lines">
+<h3>Horizontal &amp; vertical lines<a class="headerlink" href="#Horizontal-&-vertical-lines" title="Permalink to this headline">¶</a></h3>
 <p>We can add horizontal and vertical reference lines to a plot using one or more of the following keywords: <code class="docutils literal notranslate"><span class="pre">ax_hlines</span></code>, <code class="docutils literal notranslate"><span class="pre">ax_vlines</span></code>, <code class="docutils literal notranslate"><span class="pre">ax2_hlines</span></code>, <code class="docutils literal notranslate"><span class="pre">ax2_vlines</span></code> where “h” stands for “horizontal”, “v” stands for “vertical”, “ax” stands for primary axes, and “ax2” stands for secondary axes (if they exists). The keywords except several different types of inputs:</p>
 <ul class="simple">
 <li><p>a single float number</p></li>
@@ -1177,7 +1212,7 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 <li><p>item 3: line style</p></li>
 <li><p>item 4: line width</p></li>
 <li><p>item 5: line alpha</p></li>
-<li><p>item 6: legend text (won’t appear in legend without this unless item 1 is a name of a DataFrame column)</p></li>
+<li><p>item 6: legend text (added automatically is using a DataFrame column name for the value)</p></li>
 </ul>
 </li>
 </ul>
@@ -1197,7 +1232,7 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_73_0.png" src="_images/plot_73_0.png" />
+<img alt="_images/plot_79_0.png" src="_images/plot_79_0.png" />
 </div>
 </div>
 <p>Next we plot multiple horizontal and vertical lines at the same time and use the tuple formulation to style them independently (note one line contains the tuple value for legend name and thus is shown in the legend):</p>
@@ -1217,7 +1252,7 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_75_0.png" src="_images/plot_75_0.png" />
+<img alt="_images/plot_81_0.png" src="_images/plot_81_0.png" />
 </div>
 </div>
 <p>We can also plot ax_lines using data from a DataFrame column. Below we define a new column and plot the value from the first row as a horizontal line:</p>
@@ -1237,13 +1272,13 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_77_0.png" src="_images/plot_77_0.png" />
+<img alt="_images/plot_83_0.png" src="_images/plot_83_0.png" />
 </div>
 </div>
 </div>
 <div class="section" id="Curve-fitting">
 <h3>Curve fitting<a class="headerlink" href="#Curve-fitting" title="Permalink to this headline">¶</a></h3>
-<p>fivecentplots provide automatic curve fitting using only keyword args starting with <code class="docutils literal notranslate"><span class="pre">fit</span></code>. The value of fit specifies the degree and style parameters follow the normal pattern but are prefixed by <code class="docutils literal notranslate"><span class="pre">fit_</span></code>. We can display the fit equation and R^2 values via keywords <code class="docutils literal notranslate"><span class="pre">fit_eqn=True</span></code> and <code class="docutils literal notranslate"><span class="pre">fit_rsq==True</span></code>, respectively. By default, a legend is displayed to designate the style of the fit line (this can be disabled by supplying keyword <code class="docutils literal notranslate"><span class="pre">legend=False</span></code>).</p>
+<p>fivecentplots provide automatic curve fitting using kwargs starting with <code class="docutils literal notranslate"><span class="pre">fit</span></code>. The value of fit specifies the degree and style parameters follow the normal pattern but are prefixed by <code class="docutils literal notranslate"><span class="pre">fit_</span></code>. We can display the fit equation and R^2 values via keywords <code class="docutils literal notranslate"><span class="pre">fit_eqn=True</span></code> and <code class="docutils literal notranslate"><span class="pre">fit_rsq==True</span></code>, respectively. By default, a legend is displayed to designate the style of the fit line (this can be disabled by supplying keyword <code class="docutils literal notranslate"><span class="pre">legend=False</span></code>).</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -1259,10 +1294,10 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_80_0.png" src="_images/plot_80_0.png" />
+<img alt="_images/plot_86_0.png" src="_images/plot_86_0.png" />
 </div>
 </div>
-<p>Since this fit is garbage, let’s make it a polynomial of degree 5 and disable the legend:</p>
+<p>Since this fit is garbage, let’s make it a polynomial of degree 5. We’ll also disable the legend just because:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -1278,7 +1313,7 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_82_0.png" src="_images/plot_82_0.png" />
+<img alt="_images/plot_88_0.png" src="_images/plot_88_0.png" />
 </div>
 </div>
 <p>Let’s return to our linear fit example. After about Voltage = 1.3V, the response looks somewhat linear. We can constrain the region of interest for the fit by supplying a start and stop value to the keywords <code class="docutils literal notranslate"><span class="pre">fit_range_x</span></code> (which selects data points that fall within this range on the x-axis) or <code class="docutils literal notranslate"><span class="pre">fit_range_y</span></code> (which selects data points that fall within this range on the y-axis). The R^2 of this fit looks much better than before.</p>
@@ -1297,7 +1332,7 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_84_0.png" src="_images/plot_84_0.png" />
+<img alt="_images/plot_90_0.png" src="_images/plot_90_0.png" />
 </div>
 </div>
 <p>In the case of multiple datasets, we can also add a line of fit for each item in a legend by specifying a DataFrame column in the <code class="docutils literal notranslate"><span class="pre">legend</span></code> keyword:</p>
@@ -1316,7 +1351,7 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_86_0.png" src="_images/plot_86_0.png" />
+<img alt="_images/plot_92_0.png" src="_images/plot_92_0.png" />
 </div>
 </div>
 <p>Fits also work with subplot grouping:</p>
@@ -1325,7 +1360,7 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;IV Data&#39;</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;IV Data&#39;</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">,</span>
          <span class="n">fit</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fit_range_x</span><span class="o">=</span><span class="p">[</span><span class="mf">1.3</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">fit_eqn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fit_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">fit_color</span><span class="o">=</span><span class="s1">&#39;#555555&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">250</span><span class="p">,</span> <span class="mi">250</span><span class="p">])</span>
 </pre></div>
@@ -1335,7 +1370,7 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_88_0.png" src="_images/plot_88_0.png" />
+<img alt="_images/plot_94_0.png" src="_images/plot_94_0.png" />
 </div>
 </div>
 </div>
@@ -1356,7 +1391,7 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_91_0.png" src="_images/plot_91_0.png" />
+<img alt="_images/plot_97_0.png" src="_images/plot_97_0.png" />
 </div>
 </div>
 <p>One option to deal with this is to sort the DataFrame by x-value. Unfortunately, this can result in a very jagged mess as lines are drawn between points with similar x-value but different y-value.</p>
@@ -1376,7 +1411,7 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_93_0.png" src="_images/plot_93_0.png" />
+<img alt="_images/plot_99_0.png" src="_images/plot_99_0.png" />
 </div>
 </div>
 <p>Rather than drawing connecting lines between all points, fivecentplots allows you to select a representative statistic of the data at each value (such as the median) and plot a line based on this value instead. This is accomplished using the <code class="docutils literal notranslate"><span class="pre">stat</span></code> keyword (any stats that can be applied to a pandas <code class="docutils literal notranslate"><span class="pre">groupby</span></code> object are valid).</p>
@@ -1395,7 +1430,7 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_95_0.png" src="_images/plot_95_0.png" />
+<img alt="_images/plot_101_0.png" src="_images/plot_101_0.png" />
 </div>
 </div>
 <p>Alternatively, if we plot Current vs Voltage, our mean stat line becomes jagged and nasty. This is due to the fact that the current values for each voltage point vary between datasets. This is not any better than just plotting a simple connecting line between points.</p>
@@ -1413,7 +1448,7 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_97_0.png" src="_images/plot_97_0.png" />
+<img alt="_images/plot_103_0.png" src="_images/plot_103_0.png" />
 </div>
 </div>
 <p>For cases where the x-values are not identical and have some jitter from one dataset to the next, you can use the keyword <code class="docutils literal notranslate"><span class="pre">stat_val</span></code> and specify an alternative DataFrame column to use for the statistical calculation (the actual plotted x-axis will still be whatever is specified for the <code class="docutils literal notranslate"><span class="pre">x</span></code> keyword). Here we use a column called “I Set” which represents the setpoint current while “I [A]” represents the actual measured current. We still have some jaggedness in the stat line but it is now
@@ -1432,7 +1467,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_99_0.png" src="_images/plot_99_0.png" />
+<img alt="_images/plot_105_0.png" src="_images/plot_105_0.png" />
 </div>
 </div>
 <p>Stat lines also work with multiple DataFrame columns are plotted on a given axis. For example, consider the following with two values on the y-axis:</p>
@@ -1450,7 +1485,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_101_0.png" src="_images/plot_101_0.png" />
+<img alt="_images/plot_107_0.png" src="_images/plot_107_0.png" />
 </div>
 </div>
 </div>
@@ -1458,9 +1493,9 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <h3>Confidence intervals<a class="headerlink" href="#Confidence-intervals" title="Permalink to this headline">¶</a></h3>
 <p>fivecentplots can display confidence intervals around a data set. Three different methods are available to calculate these intervals:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">conf_int</span></code>: upper and lower bounds based on a single confidence value between 0-1 (default = 0.95)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">conf_int</span></code>: upper and lower bounds based on a single confidence value between 0-1 (typical = 0.95)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">perc_int</span></code>: upper and lower bounds based on percentiles between 0-1</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">nq_int</span></code>: upper and lower bounds based on values of sigma (where the mean is sigma=0)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nq_int</span></code>: upper and lower bounds based on values of sigma (where the mean of a distribution is sigma=0)</p></li>
 </ul>
 <p>By default these intervals are shown as partially transparent filled regions around a curve. These intervals are calculated point-by-point so they are different than confidence bands that are computed from a regression. These intervals are useful mainly for datasets where multiple points exist at each x-value.</p>
 <p>To demonstrate this feature we will use a special dataset:</p>
@@ -1545,7 +1580,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_107_0.png" src="_images/plot_107_0.png" />
+<img alt="_images/plot_113_0.png" src="_images/plot_113_0.png" />
 </div>
 </div>
 <p>Next we show the IQR around each point based on the 25th and 75th percentiles:</p>
@@ -1562,7 +1597,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_109_0.png" src="_images/plot_109_0.png" />
+<img alt="_images/plot_115_0.png" src="_images/plot_115_0.png" />
 </div>
 </div>
 <p>Lastly we show the +/-2 sigma range of each data point:</p>
@@ -1579,7 +1614,25 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_111_0.png" src="_images/plot_111_0.png" />
+<img alt="_images/plot_117_0.png" src="_images/plot_117_0.png" />
+</div>
+</div>
+<p>We can style the shaded interval region using kwargs that relate to the type of interval. Here is an example for the <code class="docutils literal notranslate"><span class="pre">nq_int</span></code> option:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df_interval</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">nq_int</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+         <span class="n">nq_int_fill_color</span><span class="o">=</span><span class="s1">&#39;#FF0000&#39;</span><span class="p">,</span> <span class="n">nq_int_fill_alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">nq_int_edge_color</span><span class="o">=</span><span class="s1">&#39;#000000&#39;</span><span class="p">,</span> <span class="n">nq_int_edge_width</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">nq_int_edge_alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_119_0.png" src="_images/plot_119_0.png" />
 </div>
 </div>
 </div>
@@ -1600,7 +1653,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_114_0.png" src="_images/plot_114_0.png" />
+<img alt="_images/plot_122_0.png" src="_images/plot_122_0.png" />
 </div>
 </div>
 <p>Now consider the case where we have both an upper and a lower control limit. Again, notice that the ranges outside of the limits are shaded. We will also enable a legend to make the meaning of the shaded region obvious.</p>
@@ -1617,17 +1670,17 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_116_0.png" src="_images/plot_116_0.png" />
+<img alt="_images/plot_124_0.png" src="_images/plot_124_0.png" />
 </div>
 </div>
-<p>We can invert the shading behavior to show points that fall within our target range using the keyword <code class="docutils literal notranslate"><span class="pre">control_limit_side=&quot;inside&quot;</span></code> (“outside” is used by default). If both ucl and lcl are defined, use the fill color value for lcl to change the shaded region color):</p>
+<p>We can invert the shading behavior to show points that fall within our target range using the keyword <code class="docutils literal notranslate"><span class="pre">control_limit_side=&quot;inside&quot;</span></code> (“outside” is used by default). If both ucl and lcl are defined, use kwargs for lcl to style the shaded region):</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df_interval</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ucl</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">lcl</span><span class="o">=-</span><span class="mi">50</span><span class="p">,</span>
-         <span class="n">control_limit_side</span><span class="o">=</span><span class="s1">&#39;inside&#39;</span><span class="p">,</span> <span class="n">lcl_fill_color</span><span class="o">=</span><span class="s1">&#39;#00FF00&#39;</span><span class="p">)</span>
+         <span class="n">control_limit_side</span><span class="o">=</span><span class="s1">&#39;inside&#39;</span><span class="p">,</span> <span class="n">lcl_fill_color</span><span class="o">=</span><span class="s1">&#39;#00FF00&#39;</span><span class="p">,</span> <span class="n">lcl_edge_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">lcl_edge_style</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1635,13 +1688,13 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_118_0.png" src="_images/plot_118_0.png" />
+<img alt="_images/plot_126_0.png" src="_images/plot_126_0.png" />
 </div>
 </div>
 </div>
 <div class="section" id="Reference-line">
 <h3>Reference line<a class="headerlink" href="#Reference-line" title="Permalink to this headline">¶</a></h3>
-<p>We can add an arbitrary reference line to the plot using the keyword <code class="docutils literal notranslate"><span class="pre">ref_line</span></code>. The value of this keyword is: (1) an equation applied to an existing DataFrame column; or (2) a simple int or float. This value is used to create a new column in the DataFrame that is plotted vs the value of <code class="docutils literal notranslate"><span class="pre">x</span></code></p>
+<p>We can add an arbitrary reference line to the plot using the keyword <code class="docutils literal notranslate"><span class="pre">ref_line</span></code>. The value of this keyword is: (1) the name of one or more columns in the <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>; or (2) a pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code> with the same number of rows as the <code class="docutils literal notranslate"><span class="pre">x</span></code> column. These data will be plotted against the values for <code class="docutils literal notranslate"><span class="pre">x</span></code> so there must be a matching number of rows.</p>
 <div class="section" id="y=x-reference">
 <h4>y=x reference<a class="headerlink" href="#y=x-reference" title="Permalink to this headline">¶</a></h4>
 <div class="nbinput docutils container">
@@ -1659,7 +1712,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_122_0.png" src="_images/plot_122_0.png" />
+<img alt="_images/plot_130_0.png" src="_images/plot_130_0.png" />
 </div>
 </div>
 <p>We can also add multiple reference lines to a single plot:</p>
@@ -1681,7 +1734,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_124_0.png" src="_images/plot_124_0.png" />
+<img alt="_images/plot_132_0.png" src="_images/plot_132_0.png" />
 </div>
 </div>
 </div>
@@ -1703,7 +1756,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_127_0.png" src="_images/plot_127_0.png" />
+<img alt="_images/plot_135_0.png" src="_images/plot_135_0.png" />
 </div>
 </div>
 </div>
@@ -1718,7 +1771,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="barplot.html" class="btn btn-neutral float-right" title="barplot" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="ticks.html" class="btn btn-neutral float-left" title="Grids and ticks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="misc.html" class="btn btn-neutral float-left" title="Miscellaneous" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

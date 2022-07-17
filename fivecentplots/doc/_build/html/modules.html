@@ -103,6 +103,7 @@
 <li class="toctree-l1"><a class="reference internal" href="styles.html">Styles and formatting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ranges.html">Data ranges</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ticks.html">Grids and ticks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plot Types</span></p>
 <ul>
@@ -114,7 +115,7 @@
 <li class="toctree-l1"><a class="reference internal" href="heatmap.html">heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hist.html">hist</a></li>
 <li class="toctree-l1"><a class="reference internal" href="imshow.html">imshow</a></li>
-<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nq.html">nq</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pie.html">pie</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Other</span></p>
@@ -260,7 +261,7 @@ bar_error_bars | error_bars (bool): Display error bars on each bar. Defaults to 
 <dl class="simple">
 <dt>bar_error_color | error_color (str): Hex color string of the error bar lines. Defaults to</dt><dd><p>#555555. Example: None</p>
 </dd>
-<dt>bar_fill_alpha (int): Transparency value for the bars between 0-1. Defaults to 0.75.</dt><dd><p>Example: None</p>
+<dt>bar_fill_alpha (float): Transparency value for the bars between 0-1. Defaults to 0.75.</dt><dd><p>Example: None</p>
 </dd>
 <dt>bar_fill_color (str): Hex color string of the bar fill . Defaults to fcp.DEFAULT_COLORS.</dt><dd><p>Example: None</p>
 </dd>
@@ -906,17 +907,176 @@ Example: <a class="reference external" href="https://endangeredoxen.github.io/fi
 <dt class="sig sig-object py" id="fivecentplots.fcp.plot">
 <span class="sig-prename descclassname"><span class="pre">fivecentplots.fcp.</span></span><span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>XY plot.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>df</strong> (<em>DataFrame</em>) – DataFrame containing data to plot</p>
+<blockquote>
+<div><dl class="simple">
+<dt>Args:</dt><dd><p>df (DataFrame): DataFrame containing data to plot</p>
+</dd>
+<dt>Required Keyword Args:</dt><dd><p>x (str | list): x-axis column name(s)
+y (str | list): y-axis column name(s)</p>
+</dd>
+<dt>Optional Keyword Args:</dt><dd><dl class="simple">
+<dt>Lines:</dt><dd><dl class="simple">
+<dt>lines (boolean): Enable/disable plotting of lines. Defaults to True. Example:</dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Scatter">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Scatter</a></p>
+</dd>
+<dt>line_alpha (str|list): Transparency value for the line(s) between 0-1. Defaults to 1.</dt><dd><p>Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling</a></p>
+</dd>
+<dt>line_color (str|list): Hex color string or list of hex color strings for the plot lines.</dt><dd><p>Defaults to fcp.DEFAULT_COLORS. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling</a></p>
+</dd>
+<dt>line_style (str|list): Matplotlib string character for line style {‘-‘; ‘–’; ‘-.’ ‘:’}.</dt><dd><p>Defaults to ‘-‘. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling</a></p>
+</dd>
+<dt>line_width (int|list): Line width in pixels. Defaults to 1. Example:</dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling</a></p>
 </dd>
 </dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+<dl>
+<dt>Markers:</dt><dd><p>markers (boolean): Enable/disable data point markers. Defaults to True. Example: None
+marker_fill (boolean): Enable/disable color fill in markers. Defaults to False. Example:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors</a></p>
+</div></blockquote>
 <dl class="simple">
-<dt>Required Keyword Args:</dt><dd><p>x (str): x-axis column name
-y (str): y-axis column name</p>
+<dt>marker_edge_color (str|list): Hex color string for the marker edges. Defaults to</dt><dd><p>fcp.DEFAULT_COLORS. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors</a></p>
 </dd>
 </dl>
-<p>Optional Keyword Args:</p>
+<p>marker_edge_width (float): Marker edge line width in pixels. Defaults to 1. Example: None
+marker_fill_color (str|list): Hex color string for the fill color of markers. Defaults to</p>
+<blockquote>
+<div><p>fcp.DEFAULT_COLORS. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors</a></p>
+</div></blockquote>
+<dl class="simple">
+<dt>marker_jitter | jitter (boolean): For boxplots add random noise on x-axis to show separation</dt><dd><p>between markers. Defaults to True. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/boxplot.html#Jitter">https://endangeredoxen.github.io/fivecentplots/0.5.0/boxplot.html#Jitter</a></p>
+</dd>
+</dl>
+<p>marker_size (float): Size in pixels of the data point markers. Defaults to 6. Example: None</p>
+</dd>
+<dt>Ax_HVLines:</dt><dd><dl class="simple">
+<dt>ax_hlines|ax2_hlines (float|list of tuples and floats): Add horizontal lines to the plot; if</dt><dd><p>only float value is provided add a solid black line with width=1 pixel at that value; if
+tuple add any one or more of the following in order: [1] float value or DataFrame column
+name [required]; [2] hex string for line color; [3] line style str; [4] line width in
+pixels; [5] line alpha transparency value from 0-1; [6] legend text  [added automatically
+if using a column name for value]. Defaults to None. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Horizontal-&amp;-vertical-lines">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Horizontal-&amp;-vertical-lines</a></p>
+</dd>
+<dt>ax_vlines|ax2_vlines (float|list of tuples and floats): Add vertical lines to the plot [same</dt><dd><p>parameters as ax_hlines]. Defaults to None. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Horizontal-&amp;-vertical-lines">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Horizontal-&amp;-vertical-lines</a></p>
+</dd>
+</dl>
+</dd>
+<dt>Control limits:</dt><dd><dl class="simple">
+<dt>lcl (float): Float value to start the lower control limit shading region. Defaults to None.</dt><dd><p>Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits</a></p>
+</dd>
+<dt>ucl (float): Float value to start the upper control limit shading region. Defaults to None.</dt><dd><p>Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits</a></p>
+</dd>
+<dt>control_limit_side (str): Determines if shaded region is &lt;= lcl and &gt;= ucl {“outside”} or</dt><dd><p>between the lcl and ucl {“inside”}. Defaults to outside. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits</a></p>
+</dd>
+<dt>lcl|ucl_edge_alpha (float): Transparency value for the line starting the control limit</dt><dd><p>shaded region between 0-1. Defaults to 0.25. Example: None</p>
+</dd>
+<dt>lcl|ucl_edge_color (str): Hex color string for the the line starting the control limit</dt><dd><p>shaded region. Defaults to fcp.DEFAULT_COLORS. Example: None</p>
+</dd>
+<dt>lcl|ucl_edge_style (str): Line style for the line starting the control limit shaded region</dt><dd><p>{‘-’, ‘–’, ‘-.’, ‘:’}. Defaults to ‘-‘. Example: None</p>
+</dd>
+<dt>lcl|ucl_edge_width (float): Width of the line starting the control limit shaded region in</dt><dd><p>pixels. Defaults to 1. Example: None</p>
+</dd>
+<dt>lcl|ucl_fill_alpha (float): Transparency value for the control limit shaded region fill</dt><dd><p>between 0-1. Defaults to 0.20. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits</a></p>
+</dd>
+<dt>lcl|ucl_fill_color (str): Hex color string for the control limit shaded region fill.</dt><dd><p>Defaults to fcp.DEFAULT_COLORS. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits</a></p>
+</dd>
+</dl>
+</dd>
+<dt>Confidence intervals:</dt><dd><dl class="simple">
+<dt>conf_int (float): Interval with upper and lower bounds based on a single confidence value</dt><dd><p>between 0-1 (typical=0.95). Defaults to None. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval</a></p>
+</dd>
+<dt>perc_int (list of float): Interval with upper and lower bounds based on percentiles between</dt><dd><p>0-1. Defaults to None. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval</a></p>
+</dd>
+<dt>nq_int (list of float): Interval with upper and lower bounds based on values of sigma (where</dt><dd><p>the mean of a distribution is sigma=0). Defaults to None. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval</a></p>
+</dd>
+<dt>conf_int|perc_int|nq_int_edge_alpha (float): Transparency value for the lines bounding the</dt><dd><p>interval shaded region between 0-1. Defaults to 0.25. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval</a></p>
+</dd>
+<dt>conf_int|perc_int|nq_int_edge_color (str): Hex color string for the the lines bounding the</dt><dd><p>interval shaded region. Defaults to fcp.DEFAULT_COLORS. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval</a></p>
+</dd>
+<dt>conf_int|perc_int|nq_int_edge_style (str): Line style for the lines bounding the interval</dt><dd><p>shaded region {‘-’, ‘–’, ‘-.’, ‘:’}. Defaults to ‘-‘. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval</a></p>
+</dd>
+<dt>conf_int|perc_int|nq_int_edge_width (float): Width of the lines bounding the interval shaded</dt><dd><p>region in pixels. Defaults to 1. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval</a></p>
+</dd>
+<dt>conf_int|perc_int|nq_int_fill_alpha (float): Transparency value for the interval shaded</dt><dd><p>region fill between 0-1. Defaults to 0.20. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval</a></p>
+</dd>
+<dt>conf_int|perc_int|nq_int_fill_color (str): Hex color string for the interval shaded region</dt><dd><p>fill. Defaults to fcp.DEFAULT_COLORS. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval</a></p>
+</dd>
+</dl>
+</dd>
+<dt>Fit:</dt><dd><dl class="simple">
+<dt>fit (int): Polynomial degree for the fit. Defaults to None. Example:</dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Line-fit">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Line-fit</a></p>
+</dd>
+</dl>
+<p>fit_color (str): Hex color string for the fit line. Defaults to #000000. Example: None
+fit_eqn (boolean): Display the fit equation on the plot. Defaults to False. Example: None
+fit_font_size (float): Font size of the fit eqn and rsq value. Defaults to 12. Example: None
+fit_padding (int): Padding in pixels from the top of the plot to the location of the fit</p>
+<blockquote>
+<div><p>eqn. Defaults to 10. Example: None</p>
+</div></blockquote>
+<dl class="simple">
+<dt>fit_range_x (list): Compute the fit only over a given range of x-values. Defaults to None.</dt><dd><p>Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Curve-fitting">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Curve-fitting</a></p>
+</dd>
+<dt>fit_range_y (list): Compute the fit only over a given range of y-values. Defaults to None.</dt><dd><p>Example: None</p>
+</dd>
+</dl>
+<p>fit_rsq (boolean): Display the rsq of the fit on the plot. Defaults to False. Example: None</p>
+</dd>
+<dt>Reference line:</dt><dd><dl class="simple">
+<dt>ref_line (list|pd.Series): The name of one or more columns in the DataFrame or a pandas Series</dt><dd><p>with the same number of rows as the x column. Defaults to None. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line</a></p>
+</dd>
+<dt>ref_line_alpha (str|list): Transparency value for the reference line(s) between 0-1 (use</dt><dd><p>list if more than one ref_line plotted). Defaults to 1. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line</a></p>
+</dd>
+<dt>ref_line_color (str|list): Hex color string or list of hex color strings for the reference</dt><dd><p>line (use list if more than one ref_line plotted). Defaults to #000000. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line</a></p>
+</dd>
+<dt>ref_line_legend_text (str|list): Custom string label(s) to add to a legend for the reference</dt><dd><p>line data (use list if more than one ref_line plotted). Defaults to None. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line</a></p>
+</dd>
+<dt>ref_line_style (str|list): Matplotlib string character for reference line style {‘-‘; ‘–’;</dt><dd><p>‘-.’ ‘:’} (use list if more than one ref_line plotted). Defaults to ‘-‘. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line</a></p>
+</dd>
+<dt>ref_line_width (int|list): Reference line width in pixels (use list if more than one</dt><dd><p>ref_line plotted). Defaults to 1. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line</a></p>
+</dd>
+</dl>
+</dd>
+<dt>Stat lines:</dt><dd><dl class="simple">
+<dt>stat (str): Calculate a statistic on a data set (any stat value supported by pandas.groupby is</dt><dd><p>valid {‘mean’, ‘std’, etc}. Defaults to None. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Stat-lines">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Stat-lines</a></p>
+</dd>
+<dt>stat_val (str): Alternate column name used as a pseudo x-axis for the stat calculation for</dt><dd><p>cases in which the plotted x-column values are not perfectly aligned. Defaults to None.
+Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Stat-lines">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Stat-lines</a></p>
+</dd>
+<dt>stat_line_xxx (various): Stat-line styling is controlled by the regular line_xxx values.</dt><dd><p>Defaults to None. Example: None</p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">

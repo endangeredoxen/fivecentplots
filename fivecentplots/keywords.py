@@ -24,7 +24,12 @@ def make_docstrings():
     kw = {}
     for ff in files:
         k = ff.split('.')[0]
-        kw[k] = pd.read_csv(path / ff)
+        try:
+            kw[k] = pd.read_csv(path / ff)
+        except pd.errors.ParserError as e:
+            print(e)
+            print(f'fivecentplots could not read {path / ff}; import failed')
+            raise SystemExit()
         kw[k] = kw[k].replace('`', '', regex=True)
         kw[k]['Keyword'] = kw[k]['Keyword'].apply(lambda x: str(x).split(':')[-1])
         if 'Example' in kw[k].columns:

@@ -868,8 +868,10 @@ class Layout(BaseLayout):
         ec = element.edge_color
 
         fill = ax.fill_between(x, lcl, ucl,
-                               facecolor=fc[iline] if type(fc) is RepeatedList else fc,
-                               edgecolor=ec[iline] if type(ec) is RepeatedList else ec,
+                               facecolor=fc[iline] if isinstance(fc, RepeatedList) else fc,
+                               edgecolor=ec[iline] if isinstance(ec, RepeatedList) else ec,
+                               linestyle=element.edge_style,
+                               linewidth=element.edge_width,
                                label='hi')
 
         # Add a reference to the line to self.lines

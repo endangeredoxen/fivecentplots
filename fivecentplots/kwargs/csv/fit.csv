@@ -1,9 +1,9 @@
 ﻿Keyword,Data Type,Description,Default,Example
-fit,int,polynomial degree for the fit,None,`Line fit <plot.html#Line-fit>`_
-fit_color,Hex color string str,color of the fit line,#000000,None
-fit_eqn,boolean,display the fit equation on the plot,False,None
-fit_font_size,float,font size of the fit eqn and rsq value,12,None
-fit_padding,int,padding in pixels from the top of the plot to the location of the fit eqn,10,None
-fit_range_x,list,compute the fit only over a given range of x-values,None,`third example here <plot.html#Curve-fitting>`_
-fit_range_y,list,compute the fit only over a given range of y-values,None,
-fit_rsq,boolean,display the rsq of the fit on the plot,False,None
+fit,int,Polynomial degree for the fit,None,plot.html#Line-fit
+fit_color,str,Hex color string for the fit line,#000000,None
+fit_eqn,boolean,Display the fit equation on the plot,False,None
+fit_font_size,float,Font size of the fit eqn and rsq value,12,None
+fit_padding,int,Padding in pixels from the top of the plot to the location of the fit eqn,10,None
+fit_range_x,list,Compute the fit only over a given range of x-values,None,`third example here <plot.html#Curve-fitting>`_
+fit_range_y,list,Compute the fit only over a given range of y-values,None,None
+fit_rsq,boolean,Display the rsq of the fit on the plot,False,None
