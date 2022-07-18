@@ -1195,101 +1195,74 @@ def set_theme(theme=None):
 
 # functions for docstring purposes only
 def axes():
-    """Axes."""
+    """Axes API."""
 
     pass
 
 
 def cbar():
-    """
-    Color bar
-    """
+    """Color bars API."""
 
     pass
 
 
 def figure():
-    """
-    Figure
-    """
+    """Figure API."""
 
     pass
 
 
-def fit():
-    """
-    Fit
-    """
+def grouping():
+    """Grouping API."""
 
     pass
 
 
 def gridlines():
-    """
-    Gridlines
-    """
+    """Gridline API."""
 
     pass
 
 
 def labels():
-    """
-    Labels
-    """
+    """Labels API."""
 
     pass
 
 
 def legend():
-    """
-    Legend
-    """
+    """Legend API."""
 
     pass
 
 
 def lines():
-    """
-    Lines
-    """
+    """Lines API."""
 
     pass
 
 
 def markers():
-    """
-    Markers
-    """
-
-    pass
-
-
-def ref_line():
-    """
-    Reference line
-    """
+    """Markers API."""
 
     pass
 
 
 def ticks():
-    """
-    Ticks
-    """
+    """Ticks API."""
 
     pass
 
 
 def tick_labels():
-    """
-    Tick labels
-    """
+    """Tick labels API."""
 
     pass
 
 
 def ws():
-    """"""
+    """White space API."""
+
     pass
 
 
@@ -1342,7 +1315,6 @@ nq.__doc__ += \
     keywords.kw_print(kw['nq']) + \
     keywords.kw_header('Calculation:', indent='   ') + \
     keywords.kw_print(kw['nq_calc'])
-# add line stuff from plot here
 
 
 plot.__doc__ += \
@@ -1364,47 +1336,34 @@ plot.__doc__ += \
     keywords.kw_print(kw['stat_line'])
 
 
-# axes.__doc__ = \
-#     keywords.kw_print(kw['Axes'])
+axes.__doc__ = keywords.kw_print(kw['axes'])
 
 
-# cbar.__doc__ = \
-#     keywords.kw_print(kw['Cbar'])
+cbar.__doc__ = keywords.kw_print(kw['cbar'])
 
 
-# figure.__doc__ = \
-#     keywords.kw_print(kw['Figure'])
+figure.__doc__ = keywords.kw_print(kw['figure'])
 
 
-# fit.__doc__ = \
-#     keywords.kw_print(kw['Fit'])
+gridlines.__doc__ = keywords.kw_print(kw['gridlines'])
 
 
-# gridlines.__doc__ = ''
+labels.__doc__ = keywords.kw_print(kw['labels'])
 
 
-# labels.__doc__ = \
-#     keywords.kw_print(kw['Label'])
+legend.__doc__ = keywords.kw_print(kw['legend'])
 
 
-# legend.__doc__ = \
-#     keywords.kw_print(kw['Legend'])
+lines.__doc__ = keywords.kw_print(kw['lines'])
 
 
-lines.__doc__ = \
-    keywords.kw_print(kw['lines'])
+markers.__doc__ = keywords.kw_print(kw['markers'])
 
 
-markers.__doc__ = \
-    keywords.kw_print(kw['markers'])
+ticks.__doc__ = keywords.kw_print(kw['ticks'])
 
 
-# ticks.__doc__ = \
-#     keywords.kw_print(kw['Ticks'])
+tick_labels.__doc__ = keywords.kw_print(kw['tick_labels'])
 
 
-# tick_labels.__doc__ = ''
-
-
-# ws.__doc__ = \
-#     keywords.kw_print(kw['WS'])
+ws.__doc__ = keywords.kw_print(kw['ws'])

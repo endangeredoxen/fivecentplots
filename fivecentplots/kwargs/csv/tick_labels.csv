@@ -1,0 +1,15 @@
+Keyword,Data Type,Description,Default,Example
+tick_labels,boolean,Enable/disable all tick labels,True,None
+tick_labels_major,boolean,Enable/disable all major tick labels,True,None
+tick_labels_minor,boolean,Enable/disable all minor tick labels,True,None
+tick_labels_q,str,"Custom text for a specific axes label [where q = x, y, x2, y2]",DataFrame column name,plot.html#Multiple-y-only
+tick_labels_q_font,str,"Font for a specific axes label [where q = x, y, x2, y2]",sans-serif,styles.html#Fonts
+tick_labels_q_font_color,str,"Hex color string for font color of a specific axes label [where q = x, y, x2, y2]",#000000,styles.html#Fonts
+tick_labels_q_font_size,str,"Font size for a specific axes label [where q = x, y, x2, y2]",14,styles.html#Fonts
+tick_labels_q_font_style,str,"Font style {'normal' | 'italic' | 'oblique'} for a specific axes label [where q = x, y, x2, y2]",italic,styles.html#Fonts
+tick_labels_q_font_weight,str,"Font weight {'normal' | 'bold' | 'heavy' | 'light' | 'ultrabold' | 'ultralight'} for a specific axes label [where q = x, y, x2, y2]",bold,styles.html#Fonts
+tick_labels_q_edge_alpha,float,"Transparency value for the label edge between 0-1  [where q = x, y, x2, y2]",1,styles.html#Edge-colors
+tick_labels_q_edge_color,str,"Hex color string for the label edge  [where q = x, y, x2, y2]",#ffffff,styles.html#Edge-colors
+tick_labels_q_edge_width,float,"Width of the border edge of a label in pixels  [where q = x, y, x2, y2]",1,styles.html#Edge-colors
+tick_labels_q_fill_alpha,float,"Transparency value for the label background fill between 0-1  [where q = x, y, x2, y2]",1,styles.html#Fill-colors
+tick_labels_q_fill_color,str,"Hex color string for the label edge  [where q = x, y, x2, y2]",#ffffff,styles.html#Fill-colors

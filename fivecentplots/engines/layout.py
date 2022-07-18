@@ -1414,11 +1414,9 @@ class BaseLayout:
                                                      f'{key}_edge_alpha',
                                                      0.25),
                                 edge_style=utl.kwget(kwargs, self.fcpp,
-                                                            f'{key}_edge_style',
-                                                            '-'),
+                                                     f'{key}_edge_style', '-'),
                                 edge_width=utl.kwget(kwargs, self.fcpp,
-                                                    f'{key}_edge_width',
-                                                    1),
+                                                     f'{key}_edge_width', 1),
                                 fill_color=utl.kwget(kwargs, self.fcpp,
                                                      f'{key}_fill_color',
                                                      copy.copy(self.color_list)),
@@ -1762,8 +1760,8 @@ class BaseLayout:
                               font_weight=utl.kwget(kwargs, self.fcpp,
                                                     'label_rc_font_weight',
                                                     'bold'),
-                              align=utl.kwget(kwargs, self.fcpp,
-                                              'label_rc_align', 'center'),
+                            #   align=utl.kwget(kwargs, self.fcpp,
+                            #                   'label_rc_align', 'center'),  # not implement?
                               )
         self.label_row = copy.deepcopy(label_rc)
         self.label_row.on = \
@@ -1850,7 +1848,7 @@ class BaseLayout:
                                                  'title_wrap_size',
                                                  label_rc.size),
                                   edge_color='#5f5f5f',
-                                  edge_width=label_rc.edge_width,
+                                  edge_width=label_rc.edge_width,  # should these be wrap?
                                   edge_alpha=label_rc.edge_alpha,
                                   fill_color='#5f5f5f',
                                   fill_alpha=label_rc.fill_alpha,
@@ -1944,9 +1942,6 @@ class BaseLayout:
                                    increment=utl.kwget(kwargs, self.fcpp,
                                                        'ticks_major_increment',
                                                        None),
-                                   padding=utl.kwget(kwargs, self.fcpp,
-                                                     'ticks_major_padding',
-                                                     4),
                                    size=[utl.kwget(kwargs, self.fcpp,
                                                    'ticks_major_length',
                                                    ticks_length),
@@ -1955,7 +1950,7 @@ class BaseLayout:
                                                    ticks_width)],
                                    )
         kwargs = self._from_list(self.ticks_major,
-                                 ['color', 'increment', 'padding'],
+                                 ['color', 'increment'],
                                  'ticks_major', kwargs)
         for ia, ax in enumerate(self.ax):
             setattr(self, 'ticks_major_%s' % ax,
@@ -1966,9 +1961,6 @@ class BaseLayout:
                             increment=utl.kwget(kwargs, self.fcpp,
                                                 'ticks_major_%s_increment' % ax,
                                                 self.ticks_major.increment),
-                            padding=utl.kwget(kwargs, self.fcpp,
-                                              'ticks_major_%s_padding' % ax,
-                                              self.ticks_major.padding),
                             size=self.ticks_major.size,
                             ))
 
@@ -2092,9 +2084,6 @@ class BaseLayout:
                                    number=utl.kwget(kwargs, self.fcpp,
                                                     'ticks_minor_number',
                                                     3),
-                                   padding=utl.kwget(kwargs, self.fcpp,
-                                                     'ticks_minor_padding',
-                                                     4),
                                    size=[utl.kwget(kwargs, self.fcpp,
                                                    'ticks_minor_length',
                                                    ticks_length * 0.67),
@@ -2103,7 +2092,7 @@ class BaseLayout:
                                                    ticks_width * 0.6)],
                                    )
         kwargs = self._from_list(self.ticks_minor,
-                                 ['color', 'number', 'padding'],
+                                 ['color', 'number'],
                                  'ticks_minor', kwargs)
         for ax in self.ax:
             setattr(self, 'ticks_minor_%s' % ax,
@@ -2114,9 +2103,6 @@ class BaseLayout:
                             number=utl.kwget(kwargs, self.fcpp,
                                              'ticks_minor_%s_number' % ax,
                                              self.ticks_minor.number),
-                            padding=utl.kwget(kwargs, self.fcpp,
-                                              'ticks_minor_%s_padding' % ax,
-                                              self.ticks_minor.padding),
                             size=self.ticks_minor._size,
                             ))
             if 'ticks_minor_%s_number' % ax in kwargs.keys():

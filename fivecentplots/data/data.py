@@ -145,7 +145,7 @@ class Data:
 
         # Ref line
         self.ref_line = kwargs.get('ref_line', None)
-        if isinstance(self.ref_line,pd.Series):
+        if isinstance(self.ref_line, pd.Series):
             self.df_all['Ref Line'] = self.ref_line
 
         # Stats
