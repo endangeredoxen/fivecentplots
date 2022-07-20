@@ -1760,9 +1760,7 @@ class BaseLayout:
                               font_weight=utl.kwget(kwargs, self.fcpp,
                                                     'label_rc_font_weight',
                                                     'bold'),
-                            #   align=utl.kwget(kwargs, self.fcpp,
-                            #                   'label_rc_align', 'center'),  # not implement?
-                              )
+                            )
         self.label_row = copy.deepcopy(label_rc)
         self.label_row.on = \
             utl.kwget(kwargs, self.fcpp, 'label_row_on', True) \
@@ -1970,6 +1968,8 @@ class BaseLayout:
         for k, v in kwargs.copy().items():
             if 'tick_labels' in k and 'major' not in k and 'minor' not in k:
                 kwargs['tick_labels_major%s' % k.split('tick_labels')[1]] = v
+                if k != 'tick_labels':
+                    kwargs['tick_labels_minor%s' % k.split('tick_labels')[1]] = v
         self.tick_labels_major = \
             Element('tick_labels_major', self.fcpp, kwargs,
                     on=utl.kwget(kwargs, self.fcpp,
@@ -1993,7 +1993,6 @@ class BaseLayout:
                                  ['font', 'font_color', 'font_size',
                                   'font_style', 'font_weight', 'padding',
                                   'rotation'], 'tick_labels_major', kwargs)
-
         for ax in self.ax + ['z']:
             fill_alpha = utl.kwget(kwargs, self.fcpp,
                                    'tick_labels_major_%s_fill_alpha' % ax,
@@ -2062,8 +2061,6 @@ class BaseLayout:
                                                   self.tick_labels_major.font_style),
                             offset=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_offset',
                                              self.tick_labels_major.offset),
-                            padding=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_padding',
-                                              self.tick_labels_major.padding),
                             rotation=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_rotation',
                                                self.tick_labels_major.rotation),
                             size=[0, 0],
@@ -2190,8 +2187,6 @@ class BaseLayout:
                                                   self.tick_labels_minor.font_style),
                             font_weight=kwargs.get('tick_labels_minor_font_style',
                                                    self.tick_labels_minor.font_style),
-                            padding=kwargs.get('tick_labels_minor_padding',
-                                               self.tick_labels_minor.padding),
                             rotation=kwargs.get('tick_labels_minor_rotation',
                                                 self.tick_labels_minor.rotation),
                             size=[0, 0],
