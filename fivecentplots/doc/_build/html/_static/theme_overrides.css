@@ -35,26 +35,50 @@ ul {
     padding: 0.809em;
     margin-bottom: 0.809em;
     z-index: 200;
-    background-color: #AEB6BF;
+    background-color: #0b0b0b;
     text-align: center;
     padding: 0.809em;
     display: block;
-    color: #fcfcfc;
     margin-bottom: 0.809em
 }
 
 .wy-side-nav-search input[type=text] {
+    background-image: url(images/mag.png);
+    background-position: 7px 7px;
+    background-repeat: no-repeat;
     width: 100%;
-    border-radius: 50px;
-    padding: 6px 12px;
-    border-color: #AEB6BF
+    border-radius: 0px;
+    padding: 6px 26px;
+    border-color: #0b0b0b;
+    border-bottom: 1px solid #555555;
+    outline: none;
+    box-shadow: none;
+    color: #dddddd;
+    background-color: #0b0b0b;
 }
 
 .wy-side-nav-search>div.version {
-    margin-top: -0.4045em;
+    margin-top: 0.1045em;
     margin-bottom: 0.809em;
+    padding-left: 4px;
+    padding-top: 1px;
+    padding-right: 4px;
     font-weight: normal;
-    color: rgba(255, 255, 255, 0.8)
+    font-size: 14px;
+    color: #FFFFFF;
+    float: right;
+    border: solid 1px #485988;
+    background-color: #485988;
+    border-radius: 3px;
+    font-family: arial;
+}
+
+/* .wy-breadcrumbs{
+    display: none;
+} */
+
+.rst-content div[role=navigation]{
+    display: none;
 }
 
 .wy-breadcrumbs .title {
@@ -205,4 +229,11 @@ div.nbinput div.input_area {
 }
 .nbinput.container .prompt, .nboutput.container .prompt{
     width: 0 !important;
+}
+.icon{
+    float: left !important;
+}
+
+.wy-nav-top{
+    background: #0b0b0b;
 }

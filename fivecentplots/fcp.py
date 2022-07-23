@@ -77,7 +77,7 @@ def bar(df, **kwargs):
 
 
 def boxplot(df, **kwargs):
-    """Box plot modeled after the "Variability Chart" in JMP which provides convenient,
+    """Box plot modeled after the "Variability Chart" in JMP which Dummy function to return convenient,
     multi-level group labels automatically along the x-axis.
 
     Args:
@@ -1195,73 +1195,73 @@ def set_theme(theme=None):
 
 # functions for docstring purposes only
 def axes():
-    """Axes API."""
+    """Dummy function to return the axes API with `help()` (not used directly for plotting)."""
 
     pass
 
 
 def cbar():
-    """Color bars API."""
+    """Dummy function to return the colorbar API with `help()` (not used directly for plotting)."""
 
     pass
 
 
 def figure():
-    """Figure API."""
+    """Dummy function to return the figure API with `help()` (not used directly for plotting)."""
 
     pass
 
 
 def grouping():
-    """Grouping API."""
+    """Dummy function to return the grouping API with `help()` (not used directly for plotting)."""
 
     pass
 
 
 def gridlines():
-    """Gridline API."""
+    """Dummy function to return the gridline API with `help()` (not used directly for plotting)."""
 
     pass
 
 
 def labels():
-    """Labels API."""
+    """Dummy function to return the labels API with `help()` (not used directly for plotting)."""
 
     pass
 
 
 def legend():
-    """Legend API."""
+    """Dummy function to return the legend API with `help()` (not used directly for plotting)."""
 
     pass
 
 
 def lines():
-    """Lines API."""
+    """Dummy function to return the lines API with `help()` (not used directly for plotting)."""
 
     pass
 
 
 def markers():
-    """Markers API."""
+    """Dummy function to return the markers API with `help()` (not used directly for plotting)."""
 
     pass
 
 
 def ticks():
-    """Ticks API."""
+    """Dummy function to return the ticks API with `help()` (not used directly for plotting)."""
 
     pass
 
 
 def tick_labels():
-    """Tick labels API."""
+    """Dummy function to return the tick labels API with `help()` (not used directly for plotting)."""
 
     pass
 
 
 def ws():
-    """White space API."""
+    """Dummy function to return the white space API with `help()` (not used directly for plotting)."""
 
     pass
 
@@ -1322,7 +1322,7 @@ plot.__doc__ += \
     keywords.kw_print(kw['lines']) + \
     keywords.kw_header('Markers:', indent='   ') + \
     keywords.kw_print(kw['markers']) + \
-    keywords.kw_header('Ax_HVLines:', indent='   ') + \
+    keywords.kw_header('ax_[h|v]lines:', indent='   ') + \
     keywords.kw_print(kw['ax_lines']) + \
     keywords.kw_header('Control limits:', indent='   ') + \
     keywords.kw_print(kw['control_limits']) + \

@@ -1,13 +1,15 @@
 Installation
 ============
 
-**fivecentplots** is hosted on GitHub and can be installed via ``pip``:
+Released versions of **fivecentplots** are hosted on `Pypi <https://pypi.org/project/fivecentplots/>`_ and can be installed via ``pip``:
 
 .. code-block:: python
 
-   pip install https://github.com/endangeredoxen/fivecentplots/zipball/master
+   pip install fivecentplots
 
-Dependencies
+Development versions can be installed via `GitHub <https://github.com/endangeredoxen/fivecentplots>`_
+
+Dependencies UPDATE
 ------------
 
 * Python 3

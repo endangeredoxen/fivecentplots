@@ -119,8 +119,8 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#Tick-marks">Tick marks</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Visibility">Visibility</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Style">Style</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Increment">Increment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Tick-Style">Tick Style</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Tick-increment">Tick increment</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#Tick-labels">Tick labels</a><ul>
@@ -733,7 +733,26 @@ div.rendered_html tbody tr:hover {
 <img alt="_images/ticks_22_0.png" src="_images/ticks_22_0.png" />
 </div>
 </div>
-<p>Unfortunately when using the matplotlib engine, the secondary grid lies above the plot on the primary grid which is not ideal. This is why the secondary grid lines are disabled by default.</p>
+<p>We can also customize the gridline color and style:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">,</span>
+         <span class="n">grid_major_y2</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">grid_major_y2_style</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">grid_major_y2_width</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+         <span class="n">grid_major_x_color</span><span class="o">=</span><span class="s1">&#39;#00FF00&#39;</span><span class="p">,</span> <span class="n">grid_major_x_alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">grid_major_y_color</span><span class="o">=</span><span class="s1">&#39;#FF00FF&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/ticks_24_0.png" src="_images/ticks_24_0.png" />
+</div>
+</div>
 </div>
 <div class="section" id="Minor-grid">
 <h3>Minor grid<a class="headerlink" href="#Minor-grid" title="Permalink to this headline">¶</a></h3>
@@ -753,7 +772,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_26_0.png" src="_images/ticks_26_0.png" />
+<img alt="_images/ticks_27_0.png" src="_images/ticks_27_0.png" />
 </div>
 </div>
 </div>
@@ -778,12 +797,12 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_30_0.png" src="_images/ticks_30_0.png" />
+<img alt="_images/ticks_31_0.png" src="_images/ticks_31_0.png" />
 </div>
 </div>
 </div>
-<div class="section" id="Style">
-<h3>Style<a class="headerlink" href="#Style" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="Tick-Style">
+<h3>Tick Style<a class="headerlink" href="#Tick-Style" title="Permalink to this headline">¶</a></h3>
 <p>All tick mark parameters can be changed via keywords at the time of plot execution or in the theme file. Consider the option below:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
@@ -800,12 +819,12 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_33_0.png" src="_images/ticks_33_0.png" />
+<img alt="_images/ticks_34_0.png" src="_images/ticks_34_0.png" />
 </div>
 </div>
 </div>
-<div class="section" id="Increment">
-<h3>Increment<a class="headerlink" href="#Increment" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="Tick-increment">
+<h3>Tick increment<a class="headerlink" href="#Tick-increment" title="Permalink to this headline">¶</a></h3>
 <p>Instead of specifying a number of tick marks to display, for major tick marks in fivecentplots we specify the tick increment.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
@@ -822,7 +841,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_36_0.png" src="_images/ticks_36_0.png" />
+<img alt="_images/ticks_37_0.png" src="_images/ticks_37_0.png" />
 </div>
 </div>
 <p>For minor ticks however, it is easier to specify the number of minor ticks to use via the <code class="docutils literal notranslate"><span class="pre">ticks_minor_&lt;x|y|x2|y2&gt;_number</span></code> keyword. The interval between minor ticks will then be calculated automatically. Setting the number of ticks automatically turns on the tick marks without setting <code class="docutils literal notranslate"><span class="pre">ticks_minor_&lt;x|y|x2|y2&gt;=True</span></code>. Note that this option only works for linearly scaled axis. Minor log axis will always have 8 minor ticks with log spacing.</p>
@@ -841,7 +860,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_38_0.png" src="_images/ticks_38_0.png" />
+<img alt="_images/ticks_39_0.png" src="_images/ticks_39_0.png" />
 </div>
 </div>
 <p>Or with a log scale on the y-axis (notice the number keywords for the y-axis are ignored):</p>
@@ -860,7 +879,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_40_0.png" src="_images/ticks_40_0.png" />
+<img alt="_images/ticks_41_0.png" src="_images/ticks_41_0.png" />
 </div>
 </div>
 </div>
@@ -890,7 +909,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_45_0.png" src="_images/ticks_45_0.png" />
+<img alt="_images/ticks_46_0.png" src="_images/ticks_46_0.png" />
 </div>
 </div>
 <p>Turn on minor ticks This is done using the <code class="docutils literal notranslate"><span class="pre">tick_labels_minor</span></code> family of keywords:</p>
@@ -909,7 +928,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_47_0.png" src="_images/ticks_47_0.png" />
+<img alt="_images/ticks_48_0.png" src="_images/ticks_48_0.png" />
 </div>
 </div>
 </div>
@@ -931,7 +950,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_50_0.png" src="_images/ticks_50_0.png" />
+<img alt="_images/ticks_51_0.png" src="_images/ticks_51_0.png" />
 </div>
 </div>
 <p>Notice that not all ticks have labels, but not all ticks have labels. For instance, the x-axis has 5 ticks as specified by <code class="docutils literal notranslate"><span class="pre">ticks_major_x_number=5</span></code>, but only the 2nd and 4th tick labels are displayed. This is the result of tick cleanup. We can disable the cleanup algorithm by setting the keyword <code class="docutils literal notranslate"><span class="pre">tick_cleanup=False</span></code>. This may produce an undesirable result:</p>
@@ -950,7 +969,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_52_0.png" src="_images/ticks_52_0.png" />
+<img alt="_images/ticks_53_0.png" src="_images/ticks_53_0.png" />
 </div>
 </div>
 <p>To fit more tick labels in, try increasing the axes size and rotating the tick labels (if applicable):</p>
@@ -970,7 +989,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_54_0.png" src="_images/ticks_54_0.png" />
+<img alt="_images/ticks_55_0.png" src="_images/ticks_55_0.png" />
 </div>
 </div>
 </div>
@@ -994,7 +1013,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_58_0.png" src="_images/ticks_58_0.png" />
+<img alt="_images/ticks_59_0.png" src="_images/ticks_59_0.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -1012,7 +1031,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_59_0.png" src="_images/ticks_59_0.png" />
+<img alt="_images/ticks_60_0.png" src="_images/ticks_60_0.png" />
 </div>
 </div>
 <p>You can disable the auto-formatting of ticks by setting the keywords <code class="docutils literal notranslate"><span class="pre">sci_x</span></code> and/or <code class="docutils literal notranslate"><span class="pre">sci_y</span></code> to <code class="docutils literal notranslate"><span class="pre">False</span></code>. In this particular example, this would be a really poor choice.</p>
@@ -1031,7 +1050,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_61_0.png" src="_images/ticks_61_0.png" />
+<img alt="_images/ticks_62_0.png" src="_images/ticks_62_0.png" />
 </div>
 </div>
 </div>
@@ -1053,7 +1072,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_64_0.png" src="_images/ticks_64_0.png" />
+<img alt="_images/ticks_65_0.png" src="_images/ticks_65_0.png" />
 </div>
 </div>
 <p>We can force the tick values to regular numerals as we did above by setting the keywords <code class="docutils literal notranslate"><span class="pre">sci_x</span></code> and/or <code class="docutils literal notranslate"><span class="pre">sci_y</span></code> to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
@@ -1072,7 +1091,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_66_0.png" src="_images/ticks_66_0.png" />
+<img alt="_images/ticks_67_0.png" src="_images/ticks_67_0.png" />
 </div>
 </div>
 <p>We can force tick marks of a log-scaled axis to exponential notation by setting the keywords <code class="docutils literal notranslate"><span class="pre">sci_x</span></code> and/or <code class="docutils literal notranslate"><span class="pre">sci_y</span></code> to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
@@ -1091,7 +1110,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_68_0.png" src="_images/ticks_68_0.png" />
+<img alt="_images/ticks_69_0.png" src="_images/ticks_69_0.png" />
 </div>
 </div>
 </div>
@@ -1114,7 +1133,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_71_0.png" src="_images/ticks_71_0.png" />
+<img alt="_images/ticks_72_0.png" src="_images/ticks_72_0.png" />
 </div>
 </div>
 </div>

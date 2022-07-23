@@ -229,7 +229,55 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="fivecentplots.fcp.axes">
 <span class="sig-prename descclassname"><span class="pre">fivecentplots.fcp.</span></span><span class="sig-name descname"><span class="pre">axes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.axes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Axes.</p>
+<dd><dl class="simple">
+<dt>ax_size (list of int): Axes size [width, height]; note this is not the size of the figure.</dt><dd><p>Defaults to [400, 400]. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Time-series">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Time-series</a></p>
+</dd>
+<dt>ax_edge_alpha (str): Transparency value for axes edge between 0-1. Defaults to 1. Example:</dt><dd><p>None</p>
+</dd>
+<dt>ax_edge_color (str): Hex color string for the border edge of the axes region. Defaults to</dt><dd><p>#aaaaaa. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Typical-elements">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Typical-elements</a></p>
+</dd>
+<dt>ax_edge_bottom (boolean): Enable/disable the bottom axes edge (or spine). Defaults to True.</dt><dd><p>Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges</a></p>
+</dd>
+<dt>ax_edge_left (boolean): Enable/disable the left axes edge (or spine). Defaults to True.</dt><dd><p>Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges</a></p>
+</dd>
+<dt>ax_edge_right (boolean): Enable/disable the right axes edge (or spine). Defaults to True.</dt><dd><p>Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges</a></p>
+</dd>
+<dt>ax_edge_top (boolean): Enable/disable the top axes edge (or spine). Defaults to True.</dt><dd><p>Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges</a></p>
+</dd>
+<dt>ax_fill_alpha (str): Transparency value for axes fill between 0-1. Defaults to 1. Example:</dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Alpha">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Alpha</a></p>
+</dd>
+<dt>ax_fill_color (str): Hex color string for the fill color of the axes region. Defaults to</dt><dd><p>#eaeaea. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Alpha">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Alpha</a></p>
+</dd>
+<dt>ax_scale|ax2_scale (str): Set the scale type of the axes {‘linear’; ‘logx’; ‘semilogx’;</dt><dd><p>‘logy’; ‘semilogy’; ‘loglog’; ‘log’; ‘symlog’; ‘logit’}. Defaults to ‘linear’. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Log-scale">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Log-scale</a></p>
+</dd>
+<dt>share_x (boolean): Share the x-axis range across grouped plots with multiple axes. Defaults</dt><dd><p>to True. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes">https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes</a>-
+sharing</p>
+</dd>
+<dt>share_x2 (boolean): Share the secondary x-axis range across grouped plots with multiple</dt><dd><p>axes. Defaults to True. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes-sharing">https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes-sharing</a></p>
+</dd>
+<dt>share_y (boolean): Share the y-axis range across grouped plots with multiple axes. Defaults</dt><dd><p>to True. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes">https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes</a>-
+sharing</p>
+</dd>
+<dt>share_y2 (boolean): Share the secondary y-axis range across grouped plots with multiple</dt><dd><p>axes. Defaults to True. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes-sharing">https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes-sharing</a></p>
+</dd>
+<dt>share_col (boolean): Share the x and y axis ranges of subplots in the same column when</dt><dd><p>grouping. Defaults to True. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Share-columns">https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Share-columns</a></p>
+</dd>
+<dt>share_row (boolean): Share the x and y axis ranges of subplots in the same row when</dt><dd><p>grouping. Defaults to True. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Share-row">https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Share-row</a></p>
+</dd>
+<dt>twin_x (boolean): Add a secondary y-axis by “twinning” the x-axis. Defaults to False.</dt><dd><p>Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Shared-x">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Shared-x</a>-
+axis-(twin_x)</p>
+</dd>
+<dt>twin_y (boolean): Add a secondary x-axis by “twinning” the y-axis. Defaults to False.</dt><dd><p>Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Shared-y">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Shared-y</a>-
+axis-(twin_y)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -479,7 +527,12 @@ box_divider (bool): Toggle box divider visibility. Defaults to True. Example:</p
 <dl class="py function">
 <dt class="sig sig-object py" id="fivecentplots.fcp.cbar">
 <span class="sig-prename descclassname"><span class="pre">fivecentplots.fcp.</span></span><span class="sig-name descname"><span class="pre">cbar</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.cbar" title="Permalink to this definition">¶</a></dt>
-<dd><p>Color bar</p>
+<dd><dl class="simple">
+<dt>cbar (bool): Toggle colorbar on/off for contour and heatmap plots. Defaults to False. Example:</dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Filled-contour">https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Filled-contour</a></p>
+</dd>
+<dt>size (int): cbar width [height will match the height of the axes]. Defaults to 30. Example:</dt><dd><p>None</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -535,13 +588,17 @@ z (str): z-axis column name</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="fivecentplots.fcp.figure">
 <span class="sig-prename descclassname"><span class="pre">fivecentplots.fcp.</span></span><span class="sig-name descname"><span class="pre">figure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.figure" title="Permalink to this definition">¶</a></dt>
-<dd><p>Figure</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="fivecentplots.fcp.fit">
-<span class="sig-prename descclassname"><span class="pre">fivecentplots.fcp.</span></span><span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.fit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fit</p>
+<dd><dl class="simple">
+<dt>fig_edge_alpha (str): Transparency value for figure edge between 0-1. Defaults to 1. Example:</dt><dd><p>None</p>
+</dd>
+<dt>fig_edge_color (str): Hex color string for the border edge of the figure region. Defaults to</dt><dd><p>#aaaaaa. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Typical-elements">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Typical-elements</a></p>
+</dd>
+<dt>fig_fill_alpha (str): Transparency value for figure fill between 0-1. Defaults to 1.</dt><dd><p>Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Alpha">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Alpha</a></p>
+</dd>
+<dt>fig_fill_color (str): Hex color string for the fill color of the figure region. Defaults to</dt><dd><p>#eaeaea. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Alpha">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Alpha</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -602,7 +659,112 @@ Defaults to 90. Example:
 <dl class="py function">
 <dt class="sig sig-object py" id="fivecentplots.fcp.gridlines">
 <span class="sig-prename descclassname"><span class="pre">fivecentplots.fcp.</span></span><span class="sig-name descname"><span class="pre">gridlines</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.gridlines" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gridlines</p>
+<dd><dl class="simple">
+<dt>grid_major (boolean): Enable/disable major x-axis and y-axis gridlines. Defaults to True.</dt><dd><p>Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_major_x (boolean): Enable/disable major x-axis gridlines. Defaults to True. Example:</dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_major_x2 (boolean): Enable/disable secondary-axis major x-axis gridlines. Defaults to</dt><dd><p>True. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_major_y (boolean): Enable/disable major y-axis gridlines. Defaults to True. Example:</dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_major_y2 (boolean): Enable/disable secondary-axis major y-axis gridlines. Defaults to</dt><dd><p>True. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_major_alpha (str): Transparency value for major gridlines between 0-1. Defaults to 1.</dt><dd><p>Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_major_x_alpha (str): Transparency value for major x-axis gridlines between 0-1.</dt><dd><p>Defaults to 1. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_major_x2_alpha (str): Transparency value for secondary-axis major x-axis gridlines</dt><dd><p>between 0-1. Defaults to 1. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_major_y_alpha (str): Transparency value for major y-axis gridlines between 0-1.</dt><dd><p>Defaults to 1. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_major_y2_alpha (str): Transparency value for secondary-axis major y-axis gridlines</dt><dd><p>between 0-1. Defaults to 1. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_major_color (str): Hex-axis color string for x-axis and y-axis major gridlines.</dt><dd><p>Defaults to #ffffff. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_major_x_color (str): Hex-axis color string for x-axis major gridlines. Defaults to</dt><dd><p>#ffffff. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_major_x2_color (str): Hex-axis color string for secondary-axis x-axis major gridlines.</dt><dd><p>Defaults to #ffffff. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_major_y_color (str): Hex-axis color string for y-axis major gridlines. Defaults to</dt><dd><p>#ffffff. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_major_y2_color (str): Hex-axis color string for secondary-axis y-axis major gridlines.</dt><dd><p>Defaults to #ffffff. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_major_width (float): Major gridline width in pixels (float ok). Defaults to 1.3.</dt><dd><p>Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_major_x_width (float): Major x-axis gridline width in pixels (float ok). Defaults to</dt><dd><p>1.3. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_major_x2_width (float): Major secondary x-axis gridline width in pixels (float ok).</dt><dd><p>Defaults to 1.3. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_major_y_width (float): Major y-axis gridline width in pixels (float ok). Defaults to</dt><dd><p>1.3. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_major_y2_width (float): Major secondary y-axis gridline width in pixels (float ok).</dt><dd><p>Defaults to 1.3. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_minor (boolean): Enable/disable minor x-axis and y-axis gridlines. Defaults to True.</dt><dd><p>Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_minor_x (boolean): Enable/disable minor x-axis gridlines. Defaults to True. Example:</dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_minor_x2 (boolean): Enable/disable secondary-axis minor x-axis gridlines. Defaults to</dt><dd><p>True. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_minor_y (boolean): Enable/disable minor y-axis gridlines. Defaults to True. Example:</dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_minor_y2 (boolean): Enable/disable secondary-axis minor y-axis gridlines. Defaults to</dt><dd><p>True. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_minor_alpha (str): Transparency value for minor gridlines between 0-1. Defaults to 1.</dt><dd><p>Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_minor_x_alpha (str): Transparency value for minor x-axis gridlines between 0-1.</dt><dd><p>Defaults to 1. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_minor_x2_alpha (str): Transparency value for secondary-axis minor x-axis gridlines</dt><dd><p>between 0-1. Defaults to 1. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_minor_y_alpha (str): Transparency value for minor y-axis gridlines between 0-1.</dt><dd><p>Defaults to 1. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_minor_y2_alpha (str): Transparency value for secondary-axis minor y-axis gridlines</dt><dd><p>between 0-1. Defaults to 1. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_minor_color (str): Hex-axis color string for x-axis and y-axis minor gridlines.</dt><dd><p>Defaults to #ffffff. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_minor_x_color (str): Hex-axis color string for x-axis minor gridlines. Defaults to</dt><dd><p>#ffffff. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_minor_x2_color (str): Hex-axis color string for secondary-axis x-axis minor gridlines.</dt><dd><p>Defaults to #ffffff. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_minor_y_color (str): Hex-axis color string for y-axis minor gridlines. Defaults to</dt><dd><p>#ffffff. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_minor_y2_color (str): Hex-axis color string for secondary-axis y-axis minor gridlines.</dt><dd><p>Defaults to #ffffff. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_minor_width (float): minor gridline width in pixels (float ok). Defaults to 0.5.</dt><dd><p>Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_minor_x_width (float): minor x-axis gridline width in pixels (float ok). Defaults to</dt><dd><p>0.5. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_minor_x2_width (float): minor secondary x-axis gridline width in pixels (float ok).</dt><dd><p>Defaults to 0.5. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_minor_y_width (float): minor y-axis gridline width in pixels (float ok). Defaults to</dt><dd><p>0.5. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+<dt>grid_minor_y2_width (float): minor secondary y-axis gridline width in pixels (float ok).</dt><dd><p>Defaults to 0.5. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fivecentplots.fcp.grouping">
+<span class="sig-prename descclassname"><span class="pre">fivecentplots.fcp.</span></span><span class="sig-name descname"><span class="pre">grouping</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.grouping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides the grouping API only with <cite>help()</cite> (not used directly for plotting).</p>
 </dd></dl>
 
 <dl class="py function">
@@ -752,25 +914,123 @@ the lower/upper multiplier values. Defaults to None. Example:
 <dl class="py function">
 <dt class="sig sig-object py" id="fivecentplots.fcp.labels">
 <span class="sig-prename descclassname"><span class="pre">fivecentplots.fcp.</span></span><span class="sig-name descname"><span class="pre">labels</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.labels" title="Permalink to this definition">¶</a></dt>
-<dd><p>Labels</p>
+<dd><dl>
+<dt>label_bg_padding (float): Padding around the label text for the background object behind the</dt><dd><p>text. Defaults to 2. Example: None</p>
+</dd>
+<dt>label_q (str): Custom text for a specific axes label [where q = x, y, x2, y2]. Defaults to</dt><dd><p>DataFrame column name. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Multiple-y-only">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Multiple-y-only</a></p>
+</dd>
+<dt>label_q_font (str): Font for a specific axes label [where q = x, y, x2, y2]. Defaults to</dt><dd><p>sans-serif. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fonts">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fonts</a></p>
+</dd>
+<dt>label_q_font_color (str): Hex color string for font color of a specific axes label [where q</dt><dd><p>= x, y, x2, y2]. Defaults to #000000. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fonts">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fonts</a></p>
+</dd>
+<dt>label_q_font_size (str): Font size for a specific axes label [where q = x, y, x2, y2].</dt><dd><p>Defaults to 14. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fonts">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fonts</a></p>
+</dd>
+<dt>label_q_font_style (str): Font style {‘normal’ | ‘italic’ | ‘oblique’} for a specific axes</dt><dd><p>label [where q = x, y, x2, y2]. Defaults to italic. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fonts">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fonts</a></p>
+</dd>
+<dt>label_q_font_weight (str): Font weight {‘normal’ | ‘bold’ | ‘heavy’ | ‘light’ | ‘ultrabold’</dt><dd><div class="line-block">
+<div class="line">‘ultralight’} for a specific axes label [where q = x, y, x2, y2]. Defaults to bold.</div>
+</div>
+<p>Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fonts">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fonts</a></p>
+</dd>
+<dt>label_q_edge_alpha (float): Transparency value for the label edge between 0-1 [where q = x,</dt><dd><p>y, x2, y2]. Defaults to 1. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Edge-colors">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Edge-colors</a></p>
+</dd>
+<dt>label_q_edge_color (str): Hex color string for the label edge [where q = x, y, x2, y2].</dt><dd><p>Defaults to #ffffff. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Edge-colors">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Edge-colors</a></p>
+</dd>
+<dt>label_q_edge_width (float): Width of the border edge of a label in pixels [where q = x, y,</dt><dd><p>x2, y2]. Defaults to 1. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Edge-colors">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Edge-colors</a></p>
+</dd>
+<dt>label_q_fill_alpha (float): Transparency value for the label background fill between 0-1</dt><dd><p>[where q = x, y, x2, y2]. Defaults to 1. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fill-colors">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fill-colors</a></p>
+</dd>
+<dt>label_q_fill_color (str): Hex color string for the label edge [where q = x, y, x2, y2].</dt><dd><p>Defaults to #ffffff. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fill-colors">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fill-colors</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fivecentplots.fcp.legend">
 <span class="sig-prename descclassname"><span class="pre">fivecentplots.fcp.</span></span><span class="sig-name descname"><span class="pre">legend</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.legend" title="Permalink to this definition">¶</a></dt>
-<dd><p>Legend</p>
+<dd><dl class="simple">
+<dt>legend_on (boolean): Enable/disable visibility of legend that has been created using the legend</dt><dd><p>kwarg. Defaults to True [if legend enabled]. Example: None</p>
+</dd>
+<dt>legend_edge_color (str): Hex color string for the legend border. Defaults to #ffffff.</dt><dd><p>Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Typical-elements">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Typical-elements</a></p>
+</dd>
+<dt>legend_edge_width (float): Width of the legend border in pixels. Defaults to 1. Example:</dt><dd><p>None</p>
+</dd>
+</dl>
+<p>legend_font_size (float): Font size of the legend text. Defaults to 12. Example: None
+legend_location (int): Position of the legend {0 = outside; 1 = upper right; 2 = upper left;</p>
+<blockquote>
+<div><p>3 = lower left; 4 = lower right; 5 = right; 6 = center left; 7 = center right; 8 = lower
+center; 9 = upper center; 10 = center; 11 = below}. Defaults to  0. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/grouping.html#Location">https://endangeredoxen.github.io/fivecentplots/0.5.0/grouping.html#Location</a></p>
+</div></blockquote>
+<dl class="simple">
+<dt>legend_marker_alpha (float): Transparency value for legend markers between 0-1. Defaults to</dt><dd><ol class="arabic simple">
+<li><p>Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Alpha">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Alpha</a></p></li>
+</ol>
+</dd>
+<dt>legend_marker_size (float): Marker size in the legend in pixels. Defaults to 7. Example:</dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-size">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-size</a></p>
+</dd>
+<dt>legend_points (int): Number of points in the legend region for each entry [to enable</dt><dd><p>multiple markers as in matplotlib]. Defaults to 1. Example: None</p>
+</dd>
+<dt>legend_title (str): Custom title for the legend region [default is the column name used for</dt><dd><p>the legend grouping]. Defaults to None. Example: None</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fivecentplots.fcp.lines">
 <span class="sig-prename descclassname"><span class="pre">fivecentplots.fcp.</span></span><span class="sig-name descname"><span class="pre">lines</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.lines" title="Permalink to this definition">¶</a></dt>
-<dd><p>Lines</p>
+<dd><dl class="simple">
+<dt>lines (boolean): Enable/disable plotting of lines. Defaults to True. Example:</dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Scatter">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Scatter</a></p>
+</dd>
+<dt>line_alpha (str|list): Transparency value for the line(s) between 0-1. Defaults to 1.</dt><dd><p>Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling</a></p>
+</dd>
+<dt>line_color (str|list): Hex color string or list of hex color strings for the plot lines.</dt><dd><p>Defaults to fcp.DEFAULT_COLORS. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling</a></p>
+</dd>
+<dt>line_style (str|list): Matplotlib string character for line style {‘-‘; ‘–’; ‘-.’ ‘:’}.</dt><dd><p>Defaults to ‘-‘. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling</a></p>
+</dd>
+<dt>line_width (int|list): Line width in pixels. Defaults to 1. Example:</dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fivecentplots.fcp.markers">
 <span class="sig-prename descclassname"><span class="pre">fivecentplots.fcp.</span></span><span class="sig-name descname"><span class="pre">markers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.markers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Markers</p>
+<dd><p>markers (boolean): Enable/disable data point markers. Defaults to True. Example: None
+marker_fill (boolean): Enable/disable color fill in markers. Defaults to False. Example:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors</a></p>
+</div></blockquote>
+<dl class="simple">
+<dt>marker_edge_color (str|list): Hex color string for the marker edges. Defaults to</dt><dd><p>fcp.DEFAULT_COLORS. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors</a></p>
+</dd>
+</dl>
+<p>marker_edge_width (float): Marker edge line width in pixels. Defaults to 1. Example: None
+marker_fill_color (str|list): Hex color string for the fill color of markers. Defaults to</p>
+<blockquote>
+<div><p>fcp.DEFAULT_COLORS. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors</a></p>
+</div></blockquote>
+<dl class="simple">
+<dt>marker_jitter | jitter (boolean): For boxplots add random noise on x-axis to show separation</dt><dd><p>between markers. Defaults to True. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/boxplot.html#Jitter">https://endangeredoxen.github.io/fivecentplots/0.5.0/boxplot.html#Jitter</a></p>
+</dd>
+</dl>
+<p>marker_size (float): Size in pixels of the data point markers. Defaults to 6. Example: None</p>
 </dd></dl>
 
 <dl class="py function">
@@ -958,7 +1218,7 @@ marker_fill_color (str|list): Hex color string for the fill color of markers. De
 </dl>
 <p>marker_size (float): Size in pixels of the data point markers. Defaults to 6. Example: None</p>
 </dd>
-<dt>Ax_HVLines:</dt><dd><dl class="simple">
+<dt>ax_[h|v]lines:</dt><dd><dl class="simple">
 <dt>ax_hlines|ax2_hlines (float|list of tuples and floats): Add horizontal lines to the plot; if</dt><dd><p>only float value is provided add a solid black line with width=1 pixel at that value; if
 tuple add any one or more of the following in order: [1] float value or DataFrame column
 name [required]; [2] hex string for line color; [3] line style str; [4] line width in
@@ -1331,12 +1591,6 @@ pulled from the fcp_params default dictionary</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="fivecentplots.fcp.ref_line">
-<span class="sig-prename descclassname"><span class="pre">fivecentplots.fcp.</span></span><span class="sig-name descname"><span class="pre">ref_line</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.ref_line" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reference line</p>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="fivecentplots.fcp.set_theme">
 <span class="sig-prename descclassname"><span class="pre">fivecentplots.fcp.</span></span><span class="sig-name descname"><span class="pre">set_theme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.set_theme" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select a “defaults” file and copy to the user directory</p>
@@ -1345,19 +1599,310 @@ pulled from the fcp_params default dictionary</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="fivecentplots.fcp.tick_labels">
 <span class="sig-prename descclassname"><span class="pre">fivecentplots.fcp.</span></span><span class="sig-name descname"><span class="pre">tick_labels</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.tick_labels" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tick labels</p>
+<dd><p>tick_labels (boolean): Enable/disable all tick labels. Defaults to True. Example: None
+tick_labels_major (boolean): Enable/disable all major tick labels. Defaults to True.</p>
+<blockquote>
+<div><p>Example: None</p>
+</div></blockquote>
+<dl class="simple">
+<dt>tick_labels_major_q (boolean): Enable/disable major tick labels of a specific axes [where q</dt><dd><p>= x, y, x2, y2]. Defaults to True. Example: None</p>
+</dd>
+<dt>tick_labels_minor (boolean): Enable/disable all minor tick labels. Defaults to False.</dt><dd><p>Example: None</p>
+</dd>
+<dt>tick_labels_minor_q (boolean): Enable/disable minor tick labels of a specific axes [where q</dt><dd><p>= x, y, x2, y2]. Defaults to False. Example: None</p>
+</dd>
+</dl>
+<p>tick_labels_font (str): Font for all tick labels. Defaults to sans-serif. Example: None
+tick_labels_major_font (str): Font for all major tick labels. Defaults to sans-serif.</p>
+<blockquote>
+<div><p>Example: None</p>
+</div></blockquote>
+<dl class="simple">
+<dt>tick_labels_major_q_font (str): Font for major tick labels of a specific axes [where q = x,</dt><dd><p>y, x2, y2]. Defaults to sans-serif. Example: None</p>
+</dd>
+<dt>tick_labels_minor_font (str): Font for all minor tick labels. Defaults to sans-serif.</dt><dd><p>Example: None</p>
+</dd>
+<dt>tick_labels_minor_q_font (str): Font for minor tick labels of a specific axes [where q = x,</dt><dd><p>y, x2, y2]. Defaults to sans-serif. Example: None</p>
+</dd>
+<dt>tick_labels_font_color (str): Hex color string for font color of all tick labels. Defaults</dt><dd><p>to #000000. Example: None</p>
+</dd>
+<dt>tick_labels_major_font_color (str): Hex color string for font color of all major tick</dt><dd><p>labels. Defaults to #000000. Example: None</p>
+</dd>
+<dt>tick_labels_major_q_font_color (str): Hex color string for font color of major tick labels</dt><dd><p>of a specific axes [where q = x, y, x2, y2]. Defaults to #000000. Example: None</p>
+</dd>
+<dt>tick_labels_minor_font_color (str): Hex color string for font color of all minor tick</dt><dd><p>labels. Defaults to #000000. Example: None</p>
+</dd>
+<dt>tick_labels_minor_q_font_color (str): Hex color string for font color of minor tick labels</dt><dd><p>of a specific axes [where q = x, y, x2, y2]. Defaults to #000000. Example: None</p>
+</dd>
+</dl>
+<p>tick_labels_font_size (str): Font size for all tick labels. Defaults to 13. Example: None
+tick_labels_major_font_size (str): Font size for all major tick labels. Defaults to 13.</p>
+<blockquote>
+<div><p>Example: None</p>
+</div></blockquote>
+<dl class="simple">
+<dt>tick_labels_major_q_font_size (str): Font size for major tick labels of a specific axes</dt><dd><p>label [where q = x, y, x2, y2]. Defaults to 13. Example: None</p>
+</dd>
+<dt>tick_labels_minor_font_size (str): Font size of a specific axes label [where q = x, y, x2,</dt><dd><p>y2]. Defaults to 10. Example: None</p>
+</dd>
+<dt>tick_labels_minor_q_font_size (str): Font size for all minor tick labels. Defaults to 10.</dt><dd><p>Example: None</p>
+</dd>
+<dt>tick_labels_font_style (str): Font style {‘normal’ | ‘italic’ | ‘oblique’} for all tick</dt><dd><p>labels. Defaults to normal. Example: None</p>
+</dd>
+<dt>tick_labels_major_font_style (str): Font style {‘normal’ | ‘italic’ | ‘oblique’} for all</dt><dd><p>major tick labels. Defaults to normal. Example: None</p>
+</dd>
+<dt>tick_labels_major_q_font_style (str): Font style {‘normal’ | ‘italic’ | ‘oblique’} for major</dt><dd><p>tick labels of a specific axes [where q = x, y, x2, y2]. Defaults to normal. Example: None</p>
+</dd>
+<dt>tick_labels_minor_font_style (str): Font style {‘normal’ | ‘italic’ | ‘oblique’} for all</dt><dd><p>minor tick labels. Defaults to normal. Example: None</p>
+</dd>
+<dt>tick_labels_minor_q_font_style (str): Font style {‘normal’ | ‘italic’ | ‘oblique’} for minor</dt><dd><p>tick labels of a specific axes [where q = x, y, x2, y2]. Defaults to normal. Example: None</p>
+</dd>
+<dt>tick_labels_font_weight (str): Font weight {‘normal’ | ‘bold’ | ‘heavy’ | ‘light’ |</dt><dd><p>‘ultrabold’ | ‘ultralight’} of all tick labels. Defaults to normal. Example: None</p>
+</dd>
+<dt>tick_labels_major_font_weight (str): Font weight {‘normal’ | ‘bold’ | ‘heavy’ | ‘light’ |</dt><dd><p>‘ultrabold’ | ‘ultralight’} of all major tick labels. Defaults to normal. Example: None</p>
+</dd>
+<dt>tick_labels_major_q_font_weight (str): Font weight {‘normal’ | ‘bold’ | ‘heavy’ | ‘light’ |</dt><dd><p>‘ultrabold’ | ‘ultralight’} of major tick labels of a specific axes [where q = x, y, x2,
+y2]. Defaults to normal. Example: None</p>
+</dd>
+<dt>tick_labels_minor_font_weight (str): Font weight {‘normal’ | ‘bold’ | ‘heavy’ | ‘light’ |</dt><dd><p>‘ultrabold’ | ‘ultralight’} of all minor tick labels. Defaults to normal. Example: None</p>
+</dd>
+<dt>tick_labels_minor_q_font_weight (str): Font weight {‘normal’ | ‘bold’ | ‘heavy’ | ‘light’ |</dt><dd><p>‘ultrabold’ | ‘ultralight’} of minor tick labels of a specific axes [where q = x, y, x2,
+y2]. Defaults to normal. Example: None</p>
+</dd>
+<dt>tick_labels_edge_alpha (float): Transparency value for all tick labels background edges</dt><dd><p>between 0-1. Defaults to 0. Example: None</p>
+</dd>
+<dt>tick_labels_major_edge_alpha (float): Transparency value for all major tick labels</dt><dd><p>background edges between 0-1. Defaults to 0. Example: None</p>
+</dd>
+<dt>tick_labels_major_q_edge_alpha (float): Transparency value for major tick labels background</dt><dd><p>edges of a specific axes between 0-1 [where q = x, y, x2, y2]. Defaults to 0. Example:
+None</p>
+</dd>
+<dt>tick_labels_minor_edge_alpha (float): Transparency value for all minor tick labels</dt><dd><p>background edges between 0-1. Defaults to 0. Example: None</p>
+</dd>
+<dt>tick_labels_minor_q_edge_alpha (float): Transparency value for the label edge of a specific</dt><dd><p>axes between 0-1 [where q = x, y, x2, y2]. Defaults to 0. Example: None</p>
+</dd>
+<dt>tick_labels_edge_color (str): Hex color string for all tick label background edges. Defaults</dt><dd><p>to #ffffff. Example: None</p>
+</dd>
+<dt>tick_labels_major_edge_color (str): Hex color string for all major tick label background</dt><dd><p>edges. Defaults to #ffffff. Example: None</p>
+</dd>
+<dt>tick_labels_major_q_edge_color (str): Hex color string for major tick label background edges</dt><dd><p>of a specific axis [where q = x, y, x2, y2]. Defaults to #ffffff. Example: None</p>
+</dd>
+<dt>tick_labels_minor_edge_color (str): Hex color string for all minor tick label background</dt><dd><p>edges. Defaults to #ffffff. Example: None</p>
+</dd>
+<dt>tick_labels_minor_q_edge_color (str): Hex color string for minor tick label background edges</dt><dd><p>of a specific axis [where q = x, y, x2, y2]. Defaults to #ffffff. Example: None</p>
+</dd>
+<dt>tick_labels_edge_width (float): Width of the border edge of all tick labels in pixels.</dt><dd><p>Defaults to 0. Example: None</p>
+</dd>
+<dt>tick_labels_major_edge_width (float): Width of the border edge of all major tick labels in</dt><dd><p>pixels. Defaults to 0. Example: None</p>
+</dd>
+<dt>tick_labels_major_q_edge_width (float): Width of the border edge of all major tick labels of</dt><dd><p>a specific axis in pixels [where q = x, y, x2, y2]. Defaults to 0. Example: None</p>
+</dd>
+<dt>tick_labels_minor_edge_width (float): Width of the border edge of all minor tick labels in</dt><dd><p>pixels. Defaults to 0. Example: None</p>
+</dd>
+<dt>tick_labels_minor_q_edge_width (float): Width of the border edge of all minor tick labels of</dt><dd><p>a specific axis in pixels [where q = x, y, x2, y2]. Defaults to 0. Example: None</p>
+</dd>
+<dt>tick_labels_fill_alpha (float): Transparency value for the background fill of all tick</dt><dd><p>labels between 0-1. Defaults to 1. Example: None</p>
+</dd>
+<dt>tick_labels_major_fill_alpha (float): Transparency value for the background fill of all</dt><dd><p>major tick labels between 0-1. Defaults to 1. Example: None</p>
+</dd>
+<dt>tick_labels_major_q_fill_alpha (float): Transparency value for the background fill of all</dt><dd><p>major tick labels of a specific axis between 0-1 [where q = x, y, x2, y2]. Defaults to 1.
+Example: None</p>
+</dd>
+<dt>tick_labels_minor_fill_alpha (float): Transparency value for the background fill of all</dt><dd><p>minor tick labels between 0-1. Defaults to 1. Example: None</p>
+</dd>
+<dt>tick_labels_minor_q_fill_alpha (float): Transparency value for the background fill of all</dt><dd><p>minor tick labels of a specific axis between 0-1 [where q = x, y, x2, y2]. Defaults to 1.
+Example: None</p>
+</dd>
+<dt>tick_labels_fill_color (str): Hex color string for all tick label background edges. Defaults</dt><dd><p>to #ffffff. Example: None</p>
+</dd>
+<dt>tick_labels_major_fill_color (str): Hex color string for all major tick label background</dt><dd><p>edges. Defaults to #ffffff. Example: None</p>
+</dd>
+<dt>tick_labels_major_q_fill_color (str): Hex color string for major tick label background edges</dt><dd><p>of a specific axis [where q = x, y, x2, y2]. Defaults to #ffffff. Example: None</p>
+</dd>
+<dt>tick_labels_minor_fill_color (str): Hex color string for all minor tick label background</dt><dd><p>edges. Defaults to #ffffff. Example: None</p>
+</dd>
+<dt>tick_labels_minor_q_fill_color (str): Hex color string for minor tick label background edges</dt><dd><p>of a specific axes [where q = x, y, x2, y2]. Defaults to #ffffff. Example: None</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fivecentplots.fcp.ticks">
 <span class="sig-prename descclassname"><span class="pre">fivecentplots.fcp.</span></span><span class="sig-name descname"><span class="pre">ticks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.ticks" title="Permalink to this definition">¶</a></dt>
-<dd><p>Ticks</p>
+<dd><dl class="simple">
+<dt>ticks_major (boolean): Enable/disable major x-axis and y-axis tick marks. Defaults to True.</dt><dd><p>Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_major_direction (str): Point tick marks ‘in’ or ‘out’ from the axes area. Defaults to</dt><dd><p>‘in’. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-style">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-style</a></p>
+</dd>
+<dt>ticks_major_increment (float): Specify the spacing of major tick marks. Defaults to None.</dt><dd><p>Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-increment">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-increment</a></p>
+</dd>
+<dt>ticks_major_length (float): Specify the length of the major tick marks in pixels. Defaults</dt><dd><p>to 6.2. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick</a>-
+style</p>
+</dd>
+<dt>ticks_major_width (float): Specify the width of the major tick marks in pixels. Defaults to</dt><dd><p>2.2. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-style">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-style</a></p>
+</dd>
+<dt>ticks_major_x (boolean): Enable/disable major x-axis tick marks. Defaults to True. Example:</dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_major_x2 (boolean): Enable/disable secondary-axis major x-axis tick marks. Defaults to</dt><dd><p>True. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_major_y (boolean): Enable/disable major y-axis tick marks. Defaults to True. Example:</dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_major_y2 (boolean): Enable/disable secondary-axis major y-axis tick marks. Defaults to</dt><dd><p>True. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_major_alpha (str): Transparency-axis value for major tick marks between 0-1. Defaults</dt><dd><p>to 1. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_major_x_alpha (str): Transparency-axis value for major x-axis tickslines between 0-1.</dt><dd><p>Defaults to 1. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_major_x2_alpha (str): Transparency-axis value for secondary-axis major x-axis tick</dt><dd><p>marks between 0-1. Defaults to 1. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_major_y_alpha (str): Transparency-axis value for major y-axis tick marks between 0-1.</dt><dd><p>Defaults to 1. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_major_y2_alpha (str): Transparency-axis value for secondary-axis major y-axis tick</dt><dd><p>marks between 0-1. Defaults to 1. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_major_color (str): Hex-axis color string for x-axis and y-axis major tick marks.</dt><dd><p>Defaults to #ffffff. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_major_x_color (str): Hex-axis color string for x-axis major tick marks. Defaults to</dt><dd><p>#ffffff. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick</a>-
+marks</p>
+</dd>
+<dt>ticks_major_x2_color (str): Hex-axis color string for secondary-axis x-axis major tick</dt><dd><p>marks. Defaults to #ffffff. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_major_y_color (str): Hex-axis color string for y-axis major tick marks. Defaults to</dt><dd><p>#ffffff. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick</a>-
+marks</p>
+</dd>
+<dt>ticks_major_y2_color (str): Hex-axis color string for secondary-axis y-axis major tick</dt><dd><p>marks. Defaults to #ffffff. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_major_width (float): Major tickline width in pixels (float ok). Defaults to 1.3.</dt><dd><p>Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_major_x_width (float): Major x-axis tickline width in pixels (float ok). Defaults to</dt><dd><p>1.3. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_major_x2_width (float): Major secondary x-axis tickline width in pixels (float ok).</dt><dd><p>Defaults to 1.3. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_major_y_width (float): Major y-axis tickline width in pixels (float ok). Defaults to</dt><dd><p>1.3. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_major_y2_width (float): Major secondary y-axis tickline width in pixels (float ok).</dt><dd><p>Defaults to 1.3. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_minor (boolean): Enable/disable minor x-axis and y-axis tick marks. Defaults to True.</dt><dd><p>Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_minor_direction (str): Point tick marks ‘in’ or ‘out’ from the axes area. Defaults to</dt><dd><p>‘in’. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-style">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-style</a></p>
+</dd>
+<dt>ticks_minor_length (float): Specify the length of the minor tick marks in pixels. Defaults</dt><dd><p>to 0.67 * ticks_major_length. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-style">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-style</a></p>
+</dd>
+<dt>ticks_minor_number (float): Specify the number of minor tick marks. Defaults to None.</dt><dd><p>Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-increment">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-increment</a></p>
+</dd>
+<dt>ticks_minor_width (float): Specify the width of the minor tick marks in pixels. Defaults to</dt><dd><p>0.6 * ticks_major_width. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-style">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-style</a></p>
+</dd>
+<dt>ticks_minor_x (boolean): Enable/disable minor x-axis tick marks. Defaults to True. Example:</dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_minor_x2 (boolean): Enable/disable secondary-axis minor x-axis tick marks. Defaults to</dt><dd><p>True. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_minor_y (boolean): Enable/disable minor y-axis tick marks. Defaults to True. Example:</dt><dd><p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_minor_y2 (boolean): Enable/disable secondary-axis minor y-axis tick marks. Defaults to</dt><dd><p>True. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_minor_alpha (str): Transparency-axis value for minor tick marks between 0-1. Defaults</dt><dd><p>to 1. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_minor_x_alpha (str): Transparency-axis value for minor x-axis tick marks between 0-1.</dt><dd><p>Defaults to 1. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_minor_x2_alpha (str): Transparency-axis value for secondary-axis minor x-axis tick</dt><dd><p>marks between 0-1. Defaults to 1. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_minor_y_alpha (str): Transparency-axis value for minor y-axis tick marks between 0-1.</dt><dd><p>Defaults to 1. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_minor_y2_alpha (str): Transparency-axis value for secondary-axis minor y-axis tick</dt><dd><p>marks between 0-1. Defaults to 1. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_minor_color (str): Hex-axis color string for x-axis and y-axis minor tick marks.</dt><dd><p>Defaults to #ffffff. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_minor_x_color (str): Hex-axis color string for x-axis minor tick marks. Defaults to</dt><dd><p>#ffffff. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick</a>-
+marks</p>
+</dd>
+<dt>ticks_minor_x2_color (str): Hex-axis color string for secondary-axis x-axis minor tick</dt><dd><p>marks. Defaults to #ffffff. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_minor_y_color (str): Hex-axis color string for y-axis minor tick marks. Defaults to</dt><dd><p>#ffffff. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick</a>-
+marks</p>
+</dd>
+<dt>ticks_minor_y2_color (str): Hex-axis color string for secondary-axis y-axis minor tick</dt><dd><p>marks. Defaults to #ffffff. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_minor_width (float): minor tickline width in pixels (float ok). Defaults to 0.5.</dt><dd><p>Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_minor_x_width (float): minor x-axis tickline width in pixels (float ok). Defaults to</dt><dd><p>0.5. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_minor_x2_width (float): minor secondary x-axis tickline width in pixels (float ok).</dt><dd><p>Defaults to 0.5. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_minor_y_width (float): minor y-axis tickline width in pixels (float ok). Defaults to</dt><dd><p>0.5. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+<dt>ticks_minor_y2_width (float): minor secondary y-axis tickline width in pixels (float ok).</dt><dd><p>Defaults to 0.5. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks">https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fivecentplots.fcp.ws">
 <span class="sig-prename descclassname"><span class="pre">fivecentplots.fcp.</span></span><span class="sig-name descname"><span class="pre">ws</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.ws" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><dl class="simple">
+<dt>ws_ax_box_title (int): White space between axes edge and box plot titles. Defaults to 10.</dt><dd><p>Example: None</p>
+</dd>
+<dt>ws_ax_cbar (int): White space from right axes edge to left side of cbar. Defaults to 10.</dt><dd><p>Example: None</p>
+</dd>
+<dt>ws_ax_leg (int): White space from right edge of axes to left edge of legend [if present].</dt><dd><p>Defaults to 5. Example: None</p>
+</dd>
+<dt>ws_ax_fig (int): White space right edge of axes to right edge of figure [if no legend</dt><dd><p>present]. Defaults to 10. Example: None</p>
+</dd>
+<dt>ws_ax_label_xs (int): Extra white space between axes and label when using separate labels.</dt><dd><p>Defaults to 5. Example: None</p>
+</dd>
+<dt>ws_col (int): White space between column subplots [ignored if tick labels or axes labels are</dt><dd><p>present and wider than this]. Defaults to 30. Example: None</p>
+</dd>
+<dt>ws_fig_label (int): White space between top of figure and x2 label [if present]. Defaults to</dt><dd><ol class="arabic simple" start="10">
+<li><p>Example: None</p></li>
+</ol>
+</dd>
+<dt>ws_label_col (int): White space from axes and col labels. Defaults to ws_label_rc. Example:</dt><dd><p>None</p>
+</dd>
+<dt>ws_label_rc (int): White space between axes and row &amp; col labels. Defaults to 10. Example:</dt><dd><p>None</p>
+</dd>
+<dt>ws_label_row (int): White space from axes to row labels. Defaults to ws_label_rc. Example:</dt><dd><p>None</p>
+</dd>
+<dt>ws_leg_fig (int): White space from right of legend in position 0 and figure right edge.</dt><dd><p>Defaults to 10. Example: None</p>
+</dd>
+<dt>ws_fig_ax (int): White space from left figure edge to axes left edge. Defaults to 10.</dt><dd><p>Example: None</p>
+</dd>
+<dt>ws_fig_title (int): White space from top of figure to top of title [if present]. Defaults to</dt><dd><ol class="arabic simple" start="10">
+<li><p>Example: None</p></li>
+</ol>
+</dd>
+<dt>ws_label_fig (int): White space from bottom of x label to bottom of figure. Defaults to</dt><dd><p>ws_fig_label. Example: None</p>
+</dd>
+<dt>ws_label_tick (int): White space from edge of axes label to edge of tick labels. Defaults to</dt><dd><ol class="arabic simple" start="10">
+<li><p>Example: None</p></li>
+</ol>
+</dd>
+<dt>ws_row (int): White space between row subplots [ignored if tick labels or axes labels are</dt><dd><p>present and wider than this]. Defaults to 30. Example: None</p>
+</dd>
+</dl>
+<p>ws_tick_minimum (int): Minimum width for tick labels. Defaults to 10. Example: None
+ws_ticks_ax (int): White space from tick labels to edge of axes. Defaults to 5. Example:</p>
+<blockquote>
+<div><p>None</p>
+</div></blockquote>
+<p>ws_title_ax (int): White space bottom of title to top of axes. Defaults to 10. Example: None</p>
+</dd></dl>
 
 </div>
 <div class="section" id="module-fivecentplots.data">
