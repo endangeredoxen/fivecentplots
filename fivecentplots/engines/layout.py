@@ -1760,7 +1760,7 @@ class BaseLayout:
                               font_weight=utl.kwget(kwargs, self.fcpp,
                                                     'label_rc_font_weight',
                                                     'bold'),
-                            )
+                              )
         self.label_row = copy.deepcopy(label_rc)
         self.label_row.on = \
             utl.kwget(kwargs, self.fcpp, 'label_row_on', True) \
