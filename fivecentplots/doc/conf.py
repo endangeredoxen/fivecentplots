@@ -68,7 +68,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'fivecentplots'
-copyright = '2016, Steve Nicholes'
+copyright = '2022, Steve Nicholes'
 author = 'Steve Nicholes'
 
 # The version info for the project you're documenting, acts as replacement for
