@@ -1760,6 +1760,8 @@ class BaseLayout:
                               font_weight=utl.kwget(kwargs, self.fcpp,
                                                     'label_rc_font_weight',
                                                     'bold'),
+                              align=utl.kwget(kwargs, self.fcpp,
+                                              'label_rc_align', 'center'),
                               )
         self.label_row = copy.deepcopy(label_rc)
         self.label_row.on = \
@@ -2899,6 +2901,11 @@ class BaseLayout:
             ic: subplot column index
 
         """
+        pass
+
+    @abc.abstractmethod
+    def set_figure_final_layout(self, data: 'Data', **kwargs):
+        """Final adjustment of the figure size and plot spacing."""
         pass
 
     @abc.abstractmethod

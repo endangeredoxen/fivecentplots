@@ -24,7 +24,7 @@ db = pdb.set_trace
 
 DASHES = {'-': 'solid',
           'solid': 'solid',
-          '--': 'dashed ',
+          '--': 'dashed',
           'dashed': 'dashed',
           '.': 'dotted',
           'dotted': 'dotted',
@@ -243,7 +243,7 @@ class Layout(BaseLayout):
         """
         self._update_from_data(data)
         self._update_wrap(data, kwargs)
-        self._set_label_text(data, **kwargs)
+        self._set_label_text(data)#, **kwargs)
         data = self._get_element_sizes(data)
 
         self.axes.obj = np.array([[None] * self.ncol] * self.nrow)
@@ -489,30 +489,30 @@ class Layout(BaseLayout):
             if self.markers.jitter:
                 df[x] = np.random.normal(df[x], 0.03, size=len(df[y]))
             marker = format_marker(self.axes.obj[ir, ic],
-                                   self.markers.type.get(iline))
-            ecolor, ealpha = fill_alpha(self.markers.edge_color.get(iline))
-            fcolor, falpha = fill_alpha(self.markers.fill_color.get(iline))
+                                   self.markers.type[iline])
+            ecolor, ealpha = fill_alpha(self.markers.edge_color[iline])
+            fcolor, falpha = fill_alpha(self.markers.fill_color[iline])
             if marker != 'None':
                 points = marker(df[x], df[y],
                                 fill_color=fcolor if self.markers.filled else None,
                                 fill_alpha=falpha,
                                 line_color=ecolor,
                                 line_alpha=ealpha,
-                                size=self.markers.size.get(iline),
+                                size=self.markers.size[iline],
                                 )
             else:
                 points = marker(df[x], df[y],
-                                color=line_type.color.get(iline),
-                                linestyle=line_type.style.get(iline),
-                                linewidth=line_type.width.get(iline))
+                                color=line_type.color[iline],
+                                linestyle=line_type.style[iline],
+                                linewidth=line_type.width[iline])
 
         # Make the line
         lines = None
         if line_type.on:
             lines = self.axes.obj[ir, ic].line(df[x], df[y],
-                                               color=line_type.color.get(iline)[0:7],
-                                               line_dash=DASHES[line_type.style.get(iline)],
-                                               line_width=line_type.width.get(iline),
+                                               color=line_type.color[iline][0:7],
+                                               line_dash=DASHES[line_type.style[iline]],
+                                               line_width=line_type.width[iline],
                                                )
 
         # Add a reference to the line to self.lines
@@ -522,7 +522,8 @@ class Layout(BaseLayout):
                 leg_vals += [points]
             if line_type.on:
                 leg_vals += [lines]
-            self.legend.values[leg_name] = leg_vals
+            #db()
+            #self.legend.values[leg_name] = leg_vals
 
     def restore(self):
         """Undo changes to default plotting library parameters."""
@@ -559,7 +560,7 @@ class Layout(BaseLayout):
         """
         axes = self._get_axes()
 
-        fill, alpha = fill_alpha(axes[0].fill_color.get(utl.plot_num(ir, ic, self.ncol)))
+        fill, alpha = fill_alpha(axes[0].fill_color[utl.plot_num(ir, ic, self.ncol)])
         self.axes.obj[ir, ic].background_fill_color = fill
         self.axes.obj[ir, ic].background_fill_alpha = alpha
 
@@ -576,14 +577,14 @@ class Layout(BaseLayout):
         for ax in axis:
             grid = getattr(self.axes.obj[ir, ic], '%sgrid' % ax)
             grid.grid_line_color = \
-                self.grid_major.color.get(0)[0:7] if self.grid_major.on else None
-            grid.grid_line_width = self.grid_major.width.get(0)
-            grid.grid_line_dash = DASHES[self.grid_major.style.get(0)]
+                self.grid_major.color[0][0:7] if self.grid_major.on else None
+            grid.grid_line_width = self.grid_major.width[0]
+            grid.grid_line_dash = DASHES[self.grid_major.style[0]]
 
             grid.minor_grid_line_color = \
-                self.grid_minor.color.get(0)[0:7] if self.grid_minor.on else None
-            grid.minor_grid_line_width = self.grid_minor.width.get(0)
-            grid.minor_grid_line_dash = DASHES[self.grid_minor.style.get(0)]
+                self.grid_minor.color[0][0:7] if self.grid_minor.on else None
+            grid.minor_grid_line_width = self.grid_minor.width[0]
+            grid.minor_grid_line_dash = DASHES[self.grid_minor.style[0]]
 
     def set_axes_labels(self, ir: int, ic: int):
         """Set the axes labels.
@@ -656,7 +657,7 @@ class Layout(BaseLayout):
             title.text_color = self.label_row.font_color
             title.text_font_size = '%spt' % self.label_row.font_size
             title.background_fill_alpha = self.label_row.fill_alpha
-            title.background_fill_color = self.label_row.fill_color.get(0)[0:7]
+            title.background_fill_color = self.label_row.fill_color[0][0:7]
 
         # Col/wrap labels
         if (ir == 0 and self.label_col.on) or self.label_wrap.on:
@@ -665,7 +666,7 @@ class Layout(BaseLayout):
             title.text_color = self.label_col.font_color
             title.text_font_size = '%spt' % self.label_col.font_size
             title.background_fill_alpha = self.label_col.fill_alpha
-            title.background_fill_color = self.label_col.fill_color.get(0)[0:7]
+            title.background_fill_color = self.label_col.fill_color[0][0:7]
 
     def set_axes_scale(self, ir, ic):
         pass
@@ -707,6 +708,9 @@ class Layout(BaseLayout):
         self.axes.obj[ir, ic].yaxis.major_label_text_font_size = \
             '%spt' % self.tick_labels_major.font_size
 
+    def set_figure_final_layout(self, data, **kwargs):
+        pass
+
     def set_figure_title(self):
         """Set a figure title."""
         if self.title.on:
@@ -716,7 +720,7 @@ class Layout(BaseLayout):
             title.text_color = self.title.font_color
             title.text_font_size = '%spt' % self.title.font_size
             title.background_fill_alpha = self.title.fill_alpha
-            title.background_fill_color = self.title.fill_color.get(0)[0:7]
+            title.background_fill_color = self.title.fill_color[0][0:7]
 
     def show(self, filename=None):
         """Display the plot window.

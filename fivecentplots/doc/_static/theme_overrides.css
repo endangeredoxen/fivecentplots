@@ -28,10 +28,11 @@ ul {
     padding: 0.618em 3.236em;
     height: 100%;
     max-width: 1200px;
-    margin: auto
+    margin: auto;
+    background: #ffffff;
 }
 .wy-nav-content-wrap {
-    background: #fcfcfc;
+    background: #ffffff;
 }
 
 .wy-side-nav-search {
@@ -227,7 +228,7 @@ div.rightside {
     float: left;
 }
 .imgidx{
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
 }
 div[class^='highlight'] pre {
     font-family: monospace !important;
