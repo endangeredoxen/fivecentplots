@@ -1346,7 +1346,7 @@ class Layout(BaseLayout):
             else:
                 tlabs = getattr(ax.obj[ir, ic], f'get_{tick}ticklabels')(minor=minor)
                 vmin, vmax = getattr(ax.obj[ir, ic], f'get_{tick}lim')()
-            tt.limits = [vmin, vmax]
+            tt.limits[ir, ic] = [vmin, vmax]
             tlabs = [f for f in tlabs if approx_gte(f.get_position()[idx], min(vmin, vmax))
                      and approx_lte(f.get_position()[idx], max(vmin, vmax))]
             # tlabs = [f for f in tlabs if min(vmin, vmax)
@@ -1466,11 +1466,11 @@ class Layout(BaseLayout):
                 kw['position'] = \
                     [self.axes.size[0] - xticks.size_all.loc[0, 'width'] / 2 / sf,
                      -xticks.size_all.loc[0, 'height']]
-                precision = utl.get_decimals(xticks.limits[1], 8)
-                txt = f'{xticks.limits[1]:.{precision}f}'
+                precision = utl.get_decimals(xticks.limits[ir, ic][1], 8)
+                txt = f'{xticks.limits[ir, ic][1]:.{precision}f}'
                 self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', **kw)
 
-            if len(yticks_size_all) <= 1 and not self.axes.share_y:
+            if len(yticks_size_all) <= 1 and not self.axes.share_y and axis != '2':
                 kw = {}
                 kw['rotation'] = yticks.rotation
                 kw['font_color'] = yticks.font_color
@@ -1481,20 +1481,20 @@ class Layout(BaseLayout):
                 kw['font_weight'] = yticks.font_weight
                 kw['font_size'] = yticks.font_size / sf
                 if len(yticks_size_all) == 0:
-                    precision = utl.get_decimals(yticks.limits[0], 3)
-                    txt = f'{yticks.limits[0]:.{precision}f}'
+                    precision = utl.get_decimals(yticks.limits[ir, ic][0], 3)
+                    txt = f'{yticks.limits[ir, ic][0]:.{precision}f}'
                     kw['position'] = [0 - len(txt) * kw['font_size'] * 0.9, -kw['font_size'] / 2]
                     self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', **kw)
-                    precision = utl.get_decimals(yticks.limits[1], 3)
-                    txt = f'{yticks.limits[1]:.{precision}f}'
+                    precision = utl.get_decimals(yticks.limits[ir, ic][1], 3)
+                    txt = f'{yticks.limits[ir, ic][1]:.{precision}f}'
                     kw['position'] = [0 - len(txt) * kw['font_size'] * 0.9, self.axes.size[1] - kw['font_size'] / 2]
                     self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', **kw)
                 else:
                     kw['position'] = \
                         [self.axes.size[1] - yticks.size_all.loc[0, 'width'] / 2 / sf,
                          -yticks.size_all.loc[0, 'height']]
-                    precision = utl.get_decimals(yticks.limits[1], 8)
-                    txt = f'{yticks.limits[1]:.{precision}f}'
+                    precision = utl.get_decimals(yticks.limits[ir, ic][1], 8)
+                    txt = f'{yticks.limits[ir, ic][1]:.{precision}f}'
                     self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', **kw)
 
             # Overlapping x-y origin
@@ -2533,7 +2533,8 @@ class Layout(BaseLayout):
                 ax.obj[ir, ic].xaxis.grid(b=True, which='major',
                                           color=self.grid_major_x.color[0],
                                           linestyle=self.grid_major_x.style[0],
-                                          linewidth=self.grid_major_x.width[0])
+                                          linewidth=self.grid_major_x.width[0],
+                                          alpha=self.grid_major_x.alpha)
             else:
                 ax.obj[ir, ic].xaxis.grid(b=False, which='major')
 
@@ -2542,7 +2543,8 @@ class Layout(BaseLayout):
                     ax.obj[ir, ic].xaxis.grid(b=True, which='major',
                                               color=self.grid_major_x2.color[0],
                                               linestyle=self.grid_major_x2.style[0],
-                                              linewidth=self.grid_major_x2.width[0])
+                                              linewidth=self.grid_major_x2.width[0],
+                                              alpha=self.grid_major_x2.alpha)
                 else:
                     ax.obj[ir, ic].xaxis.grid(b=False, which='major')
             elif not self.grid_major_x2 and not ax.primary:
@@ -2552,7 +2554,8 @@ class Layout(BaseLayout):
                 ax.obj[ir, ic].yaxis.grid(b=True, which='major',
                                           color=self.grid_major_y.color[0],
                                           linestyle=self.grid_major_y.style[0],
-                                          linewidth=self.grid_major_y.width[0])
+                                          linewidth=self.grid_major_y.width[0],
+                                          alpha=self.grid_major_y.alpha)
             else:
                 ax.obj[ir, ic].yaxis.grid(b=False, which='major')
 
@@ -2561,7 +2564,8 @@ class Layout(BaseLayout):
                     ax.obj[ir, ic].yaxis.grid(b=True, which='major',
                                               color=self.grid_major_y2.color[0],
                                               linestyle=self.grid_major_y2.style[0],
-                                              linewidth=self.grid_major_y2.width[0])
+                                              linewidth=self.grid_major_y2.width[0],
+                                              alpha=self.grid_major_y2.alpha)
                 else:
                     ax.obj[ir, ic].yaxis.grid(b=False, which='major')
             elif not self.grid_major_y2 and not ax.primary:
@@ -2572,18 +2576,21 @@ class Layout(BaseLayout):
                 ax.obj[ir, ic].xaxis.grid(b=True, which='minor',
                                           color=self.grid_minor_x.color[0],
                                           linestyle=self.grid_minor_x.style[0],
-                                          linewidth=self.grid_minor_x.width[0])
+                                          linewidth=self.grid_minor_x.width[0],
+                                          alpha=self.grid_minor_x.alpha)
             if self.grid_minor_y.on:
                 ax.obj[ir, ic].yaxis.grid(b=True, which='minor',
                                           color=self.grid_minor_y.color[0],
                                           linestyle=self.grid_minor_y.style[0],
-                                          linewidth=self.grid_minor_y.width[0])
+                                          linewidth=self.grid_minor_y.width[0],
+                                          alpha=self.grid_minor_y.alpha)
             if self.grid_minor_x2 and not ax.primary:
                 if self.grid_minor_x2.on:
                     ax.obj[ir, ic].xaxis.grid(b=True, which='minor',
                                               color=self.grid_minor_x2.color[0],
                                               linestyle=self.grid_minor_x2.style[0],
-                                              linewidth=self.grid_minor_x2.width[0])
+                                              linewidth=self.grid_minor_x2.width[0],
+                                              alpha=self.grid_minor_x2.alpha)
                 else:
                     ax.obj[ir, ic].xaxis.grid(b=False, which='minor')
             elif not self.grid_minor_x2 and not ax.primary:
@@ -2593,7 +2600,8 @@ class Layout(BaseLayout):
                     ax.obj[ir, ic].yaxis.grid(b=True, which='minor',
                                               color=self.grid_minor_y2.color[0],
                                               linestyle=self.grid_minor_y2.style[0],
-                                              linewidth=self.grid_minor_y2.width[0])
+                                              linewidth=self.grid_minor_y2.width[0],
+                                              alpha=self.grid_minor_y2.alpha)
                 else:
                     ax.obj[ir, ic].xaxis.grid(b=False, which='minor')
             elif not self.grid_minor_y2 and not ax.primary:
@@ -2871,60 +2879,89 @@ class Layout(BaseLayout):
                 else:
                     # have to force this sometimes
                     axes[0].minorticks_off()
-                axes[0].tick_params(axis='both',
+                axes[0].tick_params(axis='x',
                                     which='major',
                                     pad=self.ws_ticks_ax,
-                                    colors=self.ticks_major.color[0],
-                                    labelcolor=self.tick_labels_major.font_color,
-                                    labelsize=self.tick_labels_major.font_size,
+                                    colors=self.ticks_major_x.color[0],
+                                    labelcolor=self.tick_labels_major_x.font_color,
+                                    labelsize=self.tick_labels_major_x.font_size,
                                     top=False,
                                     bottom=self.ticks_major_x.on,
-                                    right=False if self.axes.twin_x
-                                    else self.ticks_major_y.on,
-                                    left=self.ticks_major_y.on,
-                                    length=self.ticks_major._size[0],
-                                    width=self.ticks_major._size[1],
+                                    right=False,
+                                    left=False,
+                                    length=self.ticks_major_x._size[0],
+                                    width=self.ticks_major_x._size[1],
                                     direction=self.ticks_major.direction,
                                     zorder=100,
                                     )
-                axes[0].tick_params(axis='both',
+                axes[0].tick_params(axis='y',
+                                    which='major',
+                                    pad=self.ws_ticks_ax,
+                                    colors=self.ticks_major_y.color[0],
+                                    labelcolor=self.tick_labels_major_y.font_color,
+                                    labelsize=self.tick_labels_major_y.font_size,
+                                    top=False,
+                                    bottom=False,
+                                    right=False if self.axes.twin_x
+                                    else self.ticks_major_y.on,
+                                    left=self.ticks_major_y.on,
+                                    length=self.ticks_major_y._size[0],
+                                    width=self.ticks_major_y._size[1],
+                                    direction=self.ticks_major_y.direction,
+                                    zorder=100,
+                                    )
+                axes[0].tick_params(axis='x',
                                     which='minor',
                                     pad=self.ws_ticks_ax,
-                                    colors=self.ticks_minor.color[0],
-                                    labelcolor=self.tick_labels_minor.font_color,
-                                    labelsize=self.tick_labels_minor.font_size,
+                                    colors=self.ticks_minor_x.color[0],
+                                    labelcolor=self.tick_labels_minor_x.font_color,
+                                    labelsize=self.tick_labels_minor_x.font_size,
                                     top=False,
                                     bottom=self.ticks_minor_x.on,
+                                    right=False,
+                                    left=False,
+                                    length=self.ticks_minor_x._size[0],
+                                    width=self.ticks_minor_x._size[1],
+                                    direction=self.ticks_minor_x.direction,
+                                    )
+                axes[0].tick_params(axis='y',
+                                    which='minor',
+                                    pad=self.ws_ticks_ax,
+                                    colors=self.ticks_minor_y.color[0],
+                                    labelcolor=self.tick_labels_minor_y.font_color,
+                                    labelsize=self.tick_labels_minor_y.font_size,
+                                    top=False,
+                                    bottom=False,
                                     right=False if self.axes.twin_x
                                     else self.ticks_minor_y.on,
                                     left=self.ticks_minor_y.on,
-                                    length=self.ticks_minor._size[0],
-                                    width=self.ticks_minor._size[1],
-                                    direction=self.ticks_minor.direction,
+                                    length=self.ticks_minor_y._size[0],
+                                    width=self.ticks_minor_y._size[1],
+                                    direction=self.ticks_minor_y.direction,
                                     )
                 if self.axes.twin_x:
                     if self.ticks_minor_y2.on:
                         axes[1].minorticks_on()
                     axes[1].tick_params(which='major',
                                         pad=self.ws_ticks_ax,
-                                        colors=self.ticks_major.color[0],
-                                        labelcolor=self.tick_labels_major.font_color,
-                                        labelsize=self.tick_labels_major.font_size,
+                                        colors=self.ticks_major_y2.color[0],
+                                        labelcolor=self.tick_labels_major_y2.font_color,
+                                        labelsize=self.tick_labels_major_y2.font_size,
                                         right=self.ticks_major_y2.on,
-                                        length=self.ticks_major.size[0],
-                                        width=self.ticks_major.size[1],
-                                        direction=self.ticks_major.direction,
+                                        length=self.ticks_major_y2.size[0],
+                                        width=self.ticks_major_y2.size[1],
+                                        direction=self.ticks_major_y2.direction,
                                         zorder=0,
                                         )
                     axes[1].tick_params(which='minor',
                                         pad=self.ws_ticks_ax,
-                                        colors=self.ticks_minor.color[0],
-                                        labelcolor=self.tick_labels_minor.font_color,
-                                        labelsize=self.tick_labels_minor.font_size,
+                                        colors=self.ticks_minor_y2.color[0],
+                                        labelcolor=self.tick_labels_minor_y2.font_color,
+                                        labelsize=self.tick_labels_minor_y2.font_size,
                                         right=self.ticks_minor_y2.on,
-                                        length=self.ticks_minor._size[0],
-                                        width=self.ticks_minor._size[1],
-                                        direction=self.ticks_minor.direction,
+                                        length=self.ticks_minor_y2._size[0],
+                                        width=self.ticks_minor_y2._size[1],
+                                        direction=self.ticks_minor_y2.direction,
                                         zorder=0,
                                         )
                 elif self.axes.twin_y:
@@ -2932,13 +2969,13 @@ class Layout(BaseLayout):
                         axes[1].minorticks_on()
                     axes[1].tick_params(which='major',
                                         pad=self.ws_ticks_ax,
-                                        colors=self.ticks_major.color[0],
-                                        labelcolor=self.tick_labels_major.font_color,
-                                        labelsize=self.tick_labels_major.font_size,
+                                        colors=self.ticks_major_x2.color[0],
+                                        labelcolor=self.tick_labels_major_x2.font_color,
+                                        labelsize=self.tick_labels_major_x2.font_size,
                                         top=self.ticks_major_x2.on,
-                                        length=self.ticks_major.size[0],
-                                        width=self.ticks_major.size[1],
-                                        direction=self.ticks_major.direction,
+                                        length=self.ticks_major_x2.size[0],
+                                        width=self.ticks_major_x2.size[1],
+                                        direction=self.ticks_major_x2.direction,
                                         )
                     axes[1].tick_params(which='minor',
                                         pad=self.ws_ticks_ax * 2,
@@ -3025,40 +3062,27 @@ class Layout(BaseLayout):
                 mplp.setp(axes[ia].get_xticklabels(), visible=False)
 
             # Major rotation
-            if getattr(self, 'tick_labels_major_x%s' % lab).on:
-                ticks_font = \
-                    font_manager.FontProperties(family=getattr(self, 'tick_labels_major_x%s' % lab).font,
-                                                size=getattr(
-                                                    self, 'tick_labels_major_x%s' % lab).font_size,
-                                                style=getattr(
-                                                    self, 'tick_labels_major_x%s' % lab).font_style,
-                                                weight=getattr(self, 'tick_labels_major_x%s' % lab).font_weight)
-                for text in axes[ia].get_xticklabels():
-                    if getattr(self, 'tick_labels_major_x%s' % lab).rotation != 0:
-                        text.set_rotation(
-                            getattr(self, 'tick_labels_major_x%s' % lab).rotation)
-                    text.set_fontproperties(ticks_font)
-                    text.set_bbox(dict(edgecolor=getattr(self, 'tick_labels_major_x%s' % lab).edge_color[0],
-                                       facecolor=getattr(
-                                           self, 'tick_labels_major_x%s' % lab).fill_color[0],
-                                       linewidth=getattr(self, 'tick_labels_major_x%s' % lab).edge_width))
-            if getattr(self, 'tick_labels_major_y%s' % lab).on:
-                ticks_font = \
-                    font_manager.FontProperties(family=getattr(self, 'tick_labels_major_y%s' % lab).font,
-                                                size=getattr(
-                                                    self, 'tick_labels_major_y%s' % lab).font_size,
-                                                style=getattr(
-                                                    self, 'tick_labels_major_y%s' % lab).font_style,
-                                                weight=getattr(self, 'tick_labels_major_y%s' % lab).font_weight)
-                for text in axes[ia].get_yticklabels():
-                    if getattr(self, 'tick_labels_major_y%s' % lab).rotation != 0:
-                        text.set_rotation(
-                            getattr(self, 'tick_labels_major_y%s' % lab).rotation)
-                    text.set_fontproperties(ticks_font)
-                    text.set_bbox(dict(edgecolor=getattr(self, 'tick_labels_major_y%s' % lab).edge_color[0],
-                                       facecolor=getattr(
-                                           self, 'tick_labels_major_y%s' % lab).fill_color[0],
-                                       linewidth=getattr(self, 'tick_labels_major_y%s' % lab).edge_width))
+            axx = ['x', 'y']
+            majmin = ['major', 'minor']
+            for ax in axx:
+                for mm in majmin:
+                    if getattr(self, f'tick_labels_{mm}_x{lab}').on:
+                        ticks_font = font_manager.FontProperties(
+                            family=getattr(self, f'tick_labels_{mm}_{ax}{lab}').font,
+                            size=getattr(self, f'tick_labels_{mm}_{ax}{lab}').font_size,
+                            style=getattr(self, f'tick_labels_{mm}_{ax}{lab}').font_style,
+                            weight=getattr(self, f'tick_labels_{mm}_{ax}{lab}').font_weight)
+                        style = dict(edgecolor=getattr(self, f'tick_labels_{mm}_{ax}{lab}').edge_color[0],
+                                     facecolor=getattr(self, f'tick_labels_{mm}_{ax}{lab}').fill_color[0],
+                                     linewidth=getattr(self, f'tick_labels_{mm}_{ax}{lab}').edge_width,
+                                     alpha=max(getattr(self, f'tick_labels_{mm}_{ax}{lab}').edge_alpha,
+                                               getattr(self, f'tick_labels_{mm}_{ax}{lab}').fill_alpha))
+                        rotation = getattr(self, f'tick_labels_{mm}_{ax}{lab}').rotation
+                        for text in getattr(axes[ia], f'get_{ax}ticklabels')(which=mm):
+                            if rotation != 0:
+                                text.set_rotation(rotation)
+                            text.set_fontproperties(ticks_font)
+                            text.set_bbox(style)
 
             # Tick label shorthand
             tlmajx = getattr(self, 'tick_labels_major_x%s' % lab)
@@ -3160,25 +3184,25 @@ class Layout(BaseLayout):
                     getattr(axes[ia], '%saxis' % axx).set_minor_formatter(
                         ticker.FormatStrFormatter('%%.%sf' % (decimals)))
 
-                    # Text formatting
-                    tlminlab = getattr(self, 'tick_labels_minor_%s' % axl)
-                    ticks_font_minor = \
-                        font_manager.FontProperties(family=tlminlab.font,
-                                                    size=tlminlab.font_size,
-                                                    style=tlminlab.font_style,
-                                                    weight=tlminlab.font_weight)
-                    for text in getattr(axes[ia], 'get_%sminorticklabels' % axx)():
-                        if tlminlab.rotation != 0:
-                            text.set_rotation(
-                                getattr(self, 'tick_labels_major_%s' % axx).rotation)
-                        text.set_fontproperties(ticks_font_minor)
-                        text.set_bbox(dict(edgecolor=tlminlab.edge_color[0],
-                                           facecolor=tlminlab.fill_color[0],
-                                           linewidth=tlminlab.edge_width))
+                    # # Text formatting
+                    # tlminlab = getattr(self, 'tick_labels_minor_%s' % axl)
+                    # ticks_font_minor = \
+                    #     font_manager.FontProperties(family=tlminlab.font,
+                    #                                 size=tlminlab.font_size,
+                    #                                 style=tlminlab.font_style,
+                    #                                 weight=tlminlab.font_weight)
+                    # for text in getattr(axes[ia], 'get_%sminorticklabels' % axx)():
+                    #     if tlminlab.rotation != 0:
+                    #         text.set_rotation(
+                    #             getattr(self, 'tick_labels_major_%s' % axx).rotation)
+                    #     text.set_fontproperties(ticks_font_minor)
+                    #     text.set_bbox(dict(edgecolor=tlminlab.edge_color[0],
+                    #                        facecolor=tlminlab.fill_color[0],
+                    #                        linewidth=tlminlab.edge_width))
 
-                    if tlminlab.rotation != 0:
-                        for text in getattr(axes[ia], 'get_%sminorticklabels' % axx)():
-                            text.set_rotation(tlminlab.rotation)
+                    # if tlminlab.rotation != 0:
+                    #     for text in getattr(axes[ia], 'get_%sminorticklabels' % axx)():
+                    #         text.set_rotation(tlminlab.rotation)
 
     def set_colormap(self, data: 'Data', **kwargs):
         """Replace the color list with discrete values from a colormap.
@@ -3345,6 +3369,9 @@ class Layout(BaseLayout):
         if self.title.on:
             self._get_title_position()
             self.title.obj.set_position(self.title.position_xy)
+            self.title.obj_bg.set_width(1)
+            self.title.obj_bg.set_height((self.title.size[1] + 5)/ self.axes.size[1])
+            self.title.obj_bg.set_x(0)
 
         # Update the legend position
         if self.legend.on and self.legend.location in [0, 11]:

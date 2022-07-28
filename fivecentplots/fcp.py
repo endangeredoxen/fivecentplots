@@ -22,6 +22,7 @@ import pdb
 import copy
 import shutil
 import sys
+from pathlib import Path
 from . import data
 from . colors import *
 from . import engines
@@ -36,14 +37,13 @@ except (ModuleNotFoundError, ImportError, NameError):    pass
 db = pdb.set_trace
 
 osjoin = os.path.join
-cur_dir = os.path.dirname(__file__)
-user_dir = os.path.expanduser('~')
-if not os.path.exists(osjoin(user_dir, '.fivecentplots')):
-    os.makedirs(osjoin(user_dir, '.fivecentplots'))
-if not os.path.exists(osjoin(user_dir, '.fivecentplots', 'defaults.py')):
-    shutil.copy2(osjoin(cur_dir, 'themes', 'gray.py'),
-                 osjoin(user_dir, '.fivecentplots', 'defaults.py'))
-sys.path = [osjoin(user_dir, '.fivecentplots')] + sys.path
+cur_dir = Path(__file__).parent
+user_dir = Path.home()
+if not (user_dir / '.fivecentplots').exists():
+    os.makedirs(user_dir / '.fivecentplots')
+if not (user_dir / '.fivecentplots' / 'defaults.py'):
+    shutil.copy(cur_dir / 'themes' / 'gray.py', user_dir / '.fivecentplots' / 'defaults.py')
+sys.path = [str(user_dir / '.fivecentplots')] + sys.path
 
 from defaults import *  # noqa | use local file
 
@@ -1471,7 +1471,7 @@ def plotter(dobj, **kwargs):
         dobj (Data object):  data class for the specific plot type
 
     Keyword Args:
-        UPDATE
+        Defined by the specific plot type
 
     Returns:
         plots
@@ -1541,60 +1541,49 @@ def plotter(dobj, **kwargs):
 
             # Set the axes colors
             layout.set_axes_colors(ir, ic)
-            kwargs['timer'].get(
-                'ifig=%s | ir=%s | ic=%s | set_axes_colors' % (ifig, ir, ic))
+            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_colors' % (ifig, ir, ic))
 
             # Add and format gridlines
             layout.set_axes_grid_lines(ir, ic)
-            kwargs['timer'].get(
-                'ifig=%s | ir=%s | ic=%s | set_axes_grid_lines' % (ifig, ir, ic))
+            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_grid_lines' % (ifig, ir, ic))
 
             # Add horizontal and vertical lines
             layout.add_hvlines(ir, ic, df_rc)
-            kwargs['timer'].get(
-                'ifig=%s | ir=%s | ic=%s | add_hvlines' % (ifig, ir, ic))
+            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | add_hvlines' % (ifig, ir, ic))
 
             # Plot the data
             dd = globals()['plot_{}'.format(dd.name)](
                 dd, layout, ir, ic, df_rc, kwargs)
-            kwargs['timer'].get(
-                'ifig=%s | ir=%s | ic=%s | plot' % (ifig, ir, ic))
+            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | plot' % (ifig, ir, ic))
 
             # Set linear or log axes scaling
             layout.set_axes_scale(ir, ic)
-            kwargs['timer'].get(
-                'ifig=%s | ir=%s | ic=%s | set_axes_scale' % (ifig, ir, ic))
+            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_scale' % (ifig, ir, ic))
 
             # Set axis ranges
             layout.set_axes_ranges(ir, ic, dd.ranges)
-            kwargs['timer'].get(
-                'ifig=%s | ir=%s | ic=%s | set_axes_ranges' % (ifig, ir, ic))
+            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_ranges' % (ifig, ir, ic))
 
             # Add axis labels
             layout.set_axes_labels(ir, ic)
-            kwargs['timer'].get(
-                'ifig=%s | ir=%s | ic=%s | set_axes_labels' % (ifig, ir, ic))
+            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_labels' % (ifig, ir, ic))
 
             # Add rc labels
             layout.set_axes_rc_labels(ir, ic)
-            kwargs['timer'].get(
-                'ifig=%s | ir=%s | ic=%s | set_axes_rc_labels' % (ifig, ir, ic))
+            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_rc_labels' % (ifig, ir, ic))
 
             # Adjust tick marks
             layout.set_axes_ticks(ir, ic)
-            kwargs['timer'].get(
-                'ifig=%s | ir=%s | ic=%s | set_axes_ticks' % (ifig, ir, ic))
+            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_ticks' % (ifig, ir, ic))
 
             # Add box labels
             if dd.name == 'box':
                 layout.add_box_labels(ir, ic, dd)
-                kwargs['timer'].get(
-                    'ifig=%s | ir=%s | ic=%s | add_box_labels' % (ifig, ir, ic))
+                kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | add_box_labels' % (ifig, ir, ic))
 
             # Add arbitrary text
             layout.add_text(ir, ic)
-            kwargs['timer'].get(
-                'ifig=%s | ir=%s | ic=%s | add_text' % (ifig, ir, ic))
+            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | add_text' % (ifig, ir, ic))
 
         # Make the legend
         layout.add_legend()
@@ -2369,6 +2358,30 @@ def markers():
                      markers=['o', None, '+', '*', 'B', None], marker_edge_color=[3, 0, 6, 1, '#FF0000'])
 
             .. figure:: ../_static/images/example_markers3.png
+
+    """
+    pass
+
+
+def options():
+    """Dummy function to return the API for other control options with `help()` (not used directly for plotting).
+
+    Keyword Args:
+
+    Examples
+    --------
+
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'tests' / 'fake_data.csv')
+        >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], ax_size=[400, 300],
+                     filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
+                     markers=False)
+
+            .. figure:: ../_static/images/example_markers1.png
+
+
 
     """
     pass

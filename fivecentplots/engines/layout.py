@@ -1958,12 +1958,14 @@ class BaseLayout:
                             on=utl.kwget(kwargs, self.fcpp,
                                          'ticks_major_%s' % ax, self.ticks_major.on),
                             color=copy.copy(self.ticks_major.color),
+                            direction=utl.kwget(kwargs, self.fcpp,
+                                                'ticks_major_%s_direction' % ax,
+                                                self.ticks_major.direction),
                             increment=utl.kwget(kwargs, self.fcpp,
                                                 'ticks_major_%s_increment' % ax,
                                                 self.ticks_major.increment),
                             size=self.ticks_major.size,
                             ))
-
         if 'tick_labels' in kwargs.keys() \
                 and 'tick_labels_major' not in kwargs.keys():
             kwargs['tick_labels_major'] = kwargs['tick_labels']
@@ -2012,7 +2014,6 @@ class BaseLayout:
                 fill_alpha = 0
             if not fill_color:
                 fill_color = copy.copy(self.tick_labels_major.fill_color)
-
             edge_alpha = utl.kwget(kwargs, self.fcpp,
                                    'tick_labels_major_%s_edge_alpha' % ax,
                                    utl.kwget(kwargs, self.fcpp,
@@ -2099,6 +2100,9 @@ class BaseLayout:
                             on=utl.kwget(kwargs, self.fcpp,
                                          'ticks_minor_%s' % ax, self.ticks_minor.on),
                             color=copy.copy(self.ticks_minor.color),
+                            direction=utl.kwget(kwargs, self.fcpp,
+                                                'ticks_minor_%s_direction' % ax,
+                                                self.ticks_minor.direction),
                             number=utl.kwget(kwargs, self.fcpp,
                                              'ticks_minor_%s_number' % ax,
                                              self.ticks_minor.number),
@@ -2169,16 +2173,12 @@ class BaseLayout:
                                          'tick_labels_minor_%s' % ax,
                                          self.tick_labels_minor.on),
                             obj=self.obj_array,
-                            edge_color=kwargs.get('tick_labels_minor.edge_color',
-                                                  self.tick_labels_minor.edge_color),
-                            edge_alpha=kwargs.get('tick_labels_minor_edge_alpha',
-                                                  self.tick_labels_minor.edge_alpha),
+                            edge_color=edge_color,
+                            edge_alpha=edge_alpha,
                             edge_width=kwargs.get('tick_labels_minor_edge_width',
                                                   self.tick_labels_minor.edge_width),
-                            fill_color=kwargs.get('tick_labels_minor_fill_color',
-                                                  self.tick_labels_minor.fill_color),
-                            fill_alpha=kwargs.get('tick_labels_minor_fill_alpha',
-                                                  self.tick_labels_minor.fill_alpha),
+                            fill_color=fill_color,
+                            fill_alpha=fill_alpha,
                             font=kwargs.get('tick_labels_minor_font',
                                             self.tick_labels_minor.font),
                             font_color=kwargs.get('tick_labels_minor_font_color',
@@ -2195,6 +2195,7 @@ class BaseLayout:
                             sci=utl.kwget(kwargs, self.fcpp,
                                           'sci_%s' % ax, False),
                             ))
+
             if getattr(self, 'tick_labels_minor_%s' % ax).on:
                 getattr(self, 'ticks_minor_%s' % ax).on = True
 
@@ -2958,10 +2959,11 @@ class Element:
         if obj is None:
             self.obj = None
             self.obj_bk = None
+            self.limits = []
         else:
             self.obj = obj.copy()  # plot object reference
             self.obj_bg = obj.copy()  # background rect
-        self.limits = []
+            self.limits = obj.copy()
         self.position = kwargs.get('position', [0, 0, 0, 0])  # left, right, top, bottom
         self._size = kwargs.get('size', [0, 0])  # width, height
         self._size_orig = kwargs.get('size', [0, 0])
