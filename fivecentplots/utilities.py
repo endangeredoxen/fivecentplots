@@ -7,6 +7,7 @@ import pandas as pd
 import scipy.stats as ss
 import datetime
 import subprocess
+import pathlib
 from matplotlib.font_manager import FontProperties, findfont
 try:
     from PIL import ImageFont
@@ -19,10 +20,10 @@ except (ImportError, ModuleNotFoundError):
 db = pdb.set_trace
 
 # Get user default file
-user_dir = os.path.expanduser('~')
-default_path = os.path.join(user_dir, '.fivecentplots')
-if os.path.exists(default_path) and default_path not in sys.path:
-    sys.path = [default_path] + sys.path
+user_dir = pathlib.Path.home()
+default_path = user_dir / '.fivecentplots'
+if default_path.exists() and default_path not in sys.path:
+    sys.path = [str(default_path)] + sys.path
     from defaults import *
 
 
@@ -871,6 +872,8 @@ def set_save_filename(df: pd.DataFrame, ifig: int, fig_item: [None, str],
         str filename
     """
     # Use provided filename
+    if 'filename' in kwargs.keys() and isinstance(kwargs['filename'], pathlib.PosixPath):
+        kwargs['filename'] = str(kwargs['filename'])
     if 'filename' in kwargs.keys() and isinstance(kwargs['filename'], str):
         filename = kwargs['filename']
         ext = os.path.splitext(filename)[-1]
