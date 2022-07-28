@@ -364,6 +364,9 @@ legend = kw_print(kw['legend'])
 lines = kw_print(kw['lines'])
 
 
+options = kw_print(kw['options'])
+
+
 markers = kw_print(kw['markers'])
 
 
@@ -382,7 +385,7 @@ ws = kw_print(kw['ws'])
 if __name__ == '__main__':
     docs = ['bar', 'boxplot', 'contour', 'gantt', 'heatmap', 'hist', 'imshow', 'pie', 'nq',
             'plot', 'axes', 'cbar', 'figure', 'gridlines', 'labels', 'legend', 'lines',
-            'markers', 'ticks', 'tick_labels', 'ws', 'grouping', 'titles']
+            'markers', 'ticks', 'tick_labels', 'ws', 'grouping', 'titles', 'options']
     for doc in docs:
         with open(Path('docstrings', f'{doc}.txt'), 'w') as output:
             output.write(globals()[doc])
