@@ -99,9 +99,12 @@
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layout.html">Layout</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Keyword Arguments</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#mandatory">Mandatory</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#elements">Elements</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#required-args-and-kwargs">Required args and kwargs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#optional-kwargs">Optional kwargs</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#nomenclature">Nomenclature</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#getting-help">Getting Help</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#base-attributes">Base attributes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#axes">Axes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#boxplots">Boxplots</a></li>
@@ -133,6 +136,7 @@
 <li class="toctree-l1"><a class="reference internal" href="ranges.html">Data ranges</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ticks.html">Grids and ticks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/fcp.html">API</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plot Types</span></p>
 <ul>
@@ -150,7 +154,6 @@
 <p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="older.html">Older Versions</a></li>
 </ul>
 
@@ -245,18 +248,24 @@
 </style>
 <div class="section" id="keyword-arguments">
 <h1>Keyword Arguments<a class="headerlink" href="#keyword-arguments" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="mandatory">
-<h2>Mandatory<a class="headerlink" href="#mandatory" title="Permalink to this headline">¶</a></h2>
-<p>All inputs to <strong>fivecentplots</strong> are treated as keyword arguments.  The function call (<code class="docutils literal notranslate"><span class="pre">plot</span></code>, <code class="docutils literal notranslate"><span class="pre">boxplot</span></code>, <code class="docutils literal notranslate"><span class="pre">hist</span></code>, etc.)
-determines the <em>kind</em> of plot, but keywords determine what data is included and how the plot is styled and arranged.
-Most keywords are completely optional or can be loaded automatically from a <a class="reference external" href="styles.html#Themes">user theme file</a>.  The
-only mandatory inputs to plot functions involve the basics of the data that should be plotted:</p>
+<div class="section" id="required-args-and-kwargs">
+<h2>Required args and kwargs<a class="headerlink" href="#required-args-and-kwargs" title="Permalink to this headline">¶</a></h2>
+<p>All plot types require input data in the form  of a pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A few plot types that use 2D arrays of data where <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> column names are meaningless (like <code class="docutils literal notranslate"><span class="pre">`imshow`</span></code>) will
+also allow <code class="docutils literal notranslate"><span class="pre">`numpy.ndarrays`</span></code>.  However, in order to do grouping into multiple subplots a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> is still needed
+to provide the grouping columns.</p>
+</div>
+<p>Additionally, plots will require at least one column name to specify what data should be plotted.  These values are supplied
+as kwargs, not args, so that order of the arguments doesn’t matter.  The table below describes the required args and kwargs
+for various plot types:</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 4%" />
-<col style="width: 8%" />
+<col style="width: 10%" />
 <col style="width: 33%" />
-<col style="width: 54%" />
+<col style="width: 53%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Keyword</p></th>
@@ -267,19 +276,34 @@ only mandatory inputs to plot functions involve the basics of the data that shou
 </thead>
 <tbody>
 <tr class="row-even"><td><p>df</p></td>
-<td><p>pandas DataFrame</p></td>
+<td><p>pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code></p></td>
 <td><p>DataFrame containing all data to be plotted including grouping columns</p></td>
 <td><p>always (<strong>note:</strong> <code class="docutils literal notranslate"><span class="pre">df</span></code> can also be specified as the first function argument withouth the keyword name of <code class="docutils literal notranslate"><span class="pre">df==</span></code>)</p></td>
 </tr>
 <tr class="row-odd"><td><p>x</p></td>
-<td><p>str</p></td>
-<td><p>Column name of the x-axis data</p></td>
-<td><p>all except boxplot</p></td>
+<td><p>str
+or
+list of str</p></td>
+<td><p>Column name of the x-axis data (horizontal axis)</p></td>
+<td><p>all except:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">boxplot</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">imshow</span></code> (if using 2D array of data)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nq</span></code> (if using 2D array of data)</p></li>
+</ul>
+</td>
 </tr>
 <tr class="row-even"><td><p>y</p></td>
-<td><p>str</p></td>
-<td><p>Column name of the y-axis data</p></td>
-<td><p>all except histogram</p></td>
+<td><p>str
+or
+list of str</p></td>
+<td><p>Column name of the y-axis data (vertical axis)</p></td>
+<td><p>all except:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">imshow</span></code> (if using 2D array of data)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nq</span></code> (if using 2D array of data)</p></li>
+</ul>
+</td>
 </tr>
 <tr class="row-odd"><td><p>z</p></td>
 <td><p>str</p></td>
@@ -288,50 +312,47 @@ only mandatory inputs to plot functions involve the basics of the data that shou
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A full description of all required args is provided in the documentation for each plot type or in the <a class="reference external" href="modules.html">API section</a></p>
 </div>
-<div class="section" id="elements">
-<h2>Elements<a class="headerlink" href="#elements" title="Permalink to this headline">¶</a></h2>
-<p>Each item in a plot layout (axis, labels, legend, etc.) is represented by an
-<code class="docutils literal notranslate"><span class="pre">Element</span></code> object that contains important attributes like edge color, fill color,
-size, font, etc., that fully describe the <a class="reference external" href="layout.html">element</a>.  All the
-base attributes of a particular <code class="docutils literal notranslate"><span class="pre">Element</span></code> can be overriden by keywords provided
-either in a user theme file or at the time of the plot function call.</p>
+</div>
+<div class="section" id="optional-kwargs">
+<h2>Optional kwargs<a class="headerlink" href="#optional-kwargs" title="Permalink to this headline">¶</a></h2>
+<p>The characteristics of all other “elements” in the plot and the layout of these “elements” within the plot or subplots are defined completely by
+optional keyword arguments.  These kwargs can be specified in the plot function call or they can be pulled from a simple <a class="reference external" href="themes.html">theme file</a>.
+If the kwarg is not found in either of these locations, a hard-coded default value is used.</p>
+<p>Because the number of kwargs is vast, we will not outline all of them here.  However, we will give some general guidelines and refer the user to
+the <a class="reference external" href="modules.html">full API</a>.</p>
 <div class="section" id="nomenclature">
 <h3>Nomenclature<a class="headerlink" href="#nomenclature" title="Permalink to this headline">¶</a></h3>
-<p>Keywords that access the attributes of an element <em>mostly</em> follow a specific formula:</p>
+<p>Keywords that access the attributes of an “element” <em>typically</em> follow a specific formula:</p>
 <div class="admonition note">
 <p class="first admonition-title">Keyword Naming Scheme</p>
 <p class="last">&lt;element name&gt;_&lt;major|minor axis type (if any)&gt;_&lt;x|y|z axis (if any)&gt;_&lt;element attribute name&gt;</p>
-</div><p>Consider the following examples:</p>
+</div><p>Consider some examples:</p>
 <blockquote>
 <div><ol class="arabic">
-<li><p>Change the x label font color to red:</p>
+<li><p>Set the x label font color to red:</p>
 <blockquote>
 <div><p><strong>label_x_font_color = ‘#FF0000’</strong></p>
 </div></blockquote>
 </li>
-<li><p>Change the y-axis minor gridline width:</p>
+<li><p>Set the y-axis minor gridline width to 2 pixels:</p>
 <blockquote>
 <div><p><strong>grid_major_y_width = 2</strong></p>
 </div></blockquote>
 </li>
-<li><p>Change the axes edge color to black:</p>
+<li><p>Set the axes edge color to black:</p>
 <blockquote>
 <div><p><strong>ax_edge_color = ‘#000000’</strong></p>
 </div></blockquote>
 </li>
-<li><p>Change the whisker color in a box plot:</p>
+<li><p>Set the whisker color in a box plot:</p>
 <blockquote>
 <div><p><strong>box_whisker_color = #FF00FF</strong></p>
 </div></blockquote>
 </li>
-</ol>
-</div></blockquote>
-<p>Some elements have attributes that fall outside of the scope of the
-<a class="reference external" href="keyword.html#default-attributes">Default Attributes</a>.  These still
-follow the general nomenclature found above.  For example:</p>
-<blockquote>
-<div><ol class="arabic">
 <li><p>Display the fit equation and rsq value of a line fit:</p>
 <blockquote>
 <div><p><strong>fit_eqn = True</strong>
@@ -343,28 +364,48 @@ follow the general nomenclature found above.  For example:</p>
 <div><p><strong>legend_marker_size = 8</strong></p>
 </div></blockquote>
 </li>
-<li><p>Change the statistic of the connecting line on a boxplot:</p>
+</ol>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For convenience, there are a handful of keywords that allow a shorthand notation when
+defining them within the function call.  For example, if you are calling <code class="docutils literal notranslate"><span class="pre">fcp.boxplot</span></code>
+and want to convert the box to a violin, you can use either <code class="docutils literal notranslate"><span class="pre">box_violin=True</span></code>
+or <code class="docutils literal notranslate"><span class="pre">violin=True</span></code>.  Since it is obvious from the function call that these violins belong
+to this plot type, we allow the user to abbreviate.  However, the long form of such values
+is still required in theme files in case of overlap with other plot types.</p>
+</div>
+</div>
+</div>
+<div class="section" id="getting-help">
+<h2>Getting Help<a class="headerlink" href="#getting-help" title="Permalink to this headline">¶</a></h2>
+<p>Help regarding keywords is available by:</p>
 <blockquote>
-<div><p><strong>box_stat_line = ‘std’</strong></p>
+<div><ol class="arabic">
+<li><p><code class="docutils literal notranslate"><span class="pre">fcp.docs()</span></code>: loads the docs where you can find the API section</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">help(fcp.some_function_or_element)</span></code>: prints the args and kwargs that apply</p>
+<blockquote>
+<div><a class="reference internal image-reference" href="_images/help.png"><img alt="_images/help.png" src="_images/help.png" style="width: 800px;" /></a>
+<p>To help with finding kwargs, <code class="docutils literal notranslate"><span class="pre">fcp.py</span></code> contains a number of dummy functions for various “elements”.  These functions
+have no actual function in the plotting, but exist solely to provide docstrings.  These include:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">axes</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cbar</span></code> (color bars)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">figure</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">grouping</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gridlines</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">labels</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">legend</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lines</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">markers</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ticks</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tick_labels</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ws</span></code> (whitespace)</p></li>
+</ul>
 </div></blockquote>
 </li>
 </ol>
 </div></blockquote>
-<p>There are also a handful of keywords that allow a shorthand notation when
-defining them in the function call.  For example, if you are calling <code class="docutils literal notranslate"><span class="pre">boxplot</span></code>
-and want to convert the box to a violin, you can use either <code class="docutils literal notranslate"><span class="pre">box_violin=True</span></code>
-or <code class="docutils literal notranslate"><span class="pre">violin=True</span></code>.  However, the long form of such values is still required in
-theme files.</p>
-<p>Listed below are the keyword arguments of specific elements. Note that some
-keywords deviate from the standard nomenclature given what they represent.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>We only list the base <code class="docutils literal notranslate"><span class="pre">Element</span></code> attributes below which have a
-default value different than what is specified in the table
-<a class="reference external" href="keyword.html#base-attributes">above</a> for base attributes.  Base attributes that
-do not apply to a given <code class="docutils literal notranslate"><span class="pre">Element</span></code> are also listed.</p>
-</div>
-</div>
 <div class="section" id="base-attributes">
 <h3>Base attributes<a class="headerlink" href="#base-attributes" title="Permalink to this headline">¶</a></h3>
 <p>Each <code class="docutils literal notranslate"><span class="pre">Element</span></code> object contains a basic set of attributes which may or may not be used
@@ -2073,7 +2114,7 @@ keywords.</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2016, Steve Nicholes.
+        &#169; Copyright 2022, Steve Nicholes.
 
     </p>
   </div>

@@ -98,6 +98,9 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Layout</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#example-plot">Example plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simple-layout-schematic">Simple Layout Schematic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#grid-layout-schematic">Grid Layout Schematic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#engine">Engine</a></li>
 </ul>
 </li>
@@ -107,6 +110,7 @@
 <li class="toctree-l1"><a class="reference internal" href="ranges.html">Data ranges</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ticks.html">Grids and ticks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/fcp.html">API</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plot Types</span></p>
 <ul>
@@ -124,7 +128,6 @@
 <p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="older.html">Older Versions</a></li>
 </ul>
 
@@ -219,86 +222,85 @@
 </style>
 <div class="section" id="layout">
 <h1>Layout<a class="headerlink" href="#layout" title="Permalink to this headline">¶</a></h1>
-<p>All plots consist of a number of “elements” arranged in a specific
-spatial “layout”.  These “elements” define the look and feel of the plot and
-include items like the axes area, text and tick labels, legends, etc.
-In <strong>fivecentplots</strong>, these components are defined by an
-<code class="docutils literal notranslate"><span class="pre">Element</span></code> object that contains all of the attributes that define
-the components style (i.e., color, font, size, etc).  The placement of these <code class="docutils literal notranslate"><span class="pre">Element</span></code>
-objects within the plot figure is handled by a <code class="docutils literal notranslate"><span class="pre">Layout</span></code> class that is defined
-around an existing plotting engine in Python (such as <cite>matplotlib</cite> or <cite>bokeh</cite>).
-Each engine when used in a stand-alone fashion requires its own unique set of commands
-and parameters to generate a plot, but the <code class="docutils literal notranslate"><span class="pre">Layout</span></code> class in <strong>fivecentplots</strong> serves
-to unify access to these specific parameters across any plotting engines.  This is
-accomplished using a combination of a predefined theme file and optional keyword arguments
-specified by the user.  This section will explain the important details of the
-plot layout.  <strong>fivecentplots</strong> <a class="reference external" href="keyword.html">kwargs</a> will be covered in the next section.</p>
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
-<p><strong>Example Plot:</strong></p>
-<p>An simple x-y plot is shown below.  Example of <code class="docutils literal notranslate"><span class="pre">`Element</span></code> objects found in this plot include:</p>
+<p>All plots consist of some number of “elements” that are arranged in a spatial “layout”.
+Each of these “elements” can be styled to adjust the look and feel of a plot.  Examples
+of common plot “elements” include: the axes area, text and tick labels, lines, legends, etc.</p>
+<p>In <strong>fivecentplots</strong>, an <code class="docutils literal notranslate"><span class="pre">Element</span></code> class contains all of the format/style attributes
+of that component.  The placement of these <code class="docutils literal notranslate"><span class="pre">Element</span></code> objects in the plot area is controlled
+by a <code class="docutils literal notranslate"><span class="pre">Layout</span></code> class.  A <code class="docutils literal notranslate"><span class="pre">Layout</span></code> is built upon existing plotting library (aka “engine”) in Python, such as
+<strong>matplotlib</strong> or <strong>bokeh</strong>.  Although these engines have custom APIs, the <code class="docutils literal notranslate"><span class="pre">Layout</span></code> class
+unifies access to various <code class="docutils literal notranslate"><span class="pre">Element</span></code> and <code class="docutils literal notranslate"><span class="pre">Layout</span></code> parameters across plotting modules.
+This is accomplished using optional keyword arguments provided by the user in the plotting function call
+or a simple theme file.</p>
+<p>This section will explain the important details of the plot layout in <strong>fivecentplots</strong>.  Keyword arguments
+will be covered in the <a class="reference external" href="keyword.html">next</a> section.</p>
+<div class="section" id="example-plot">
+<h2>Example plot<a class="headerlink" href="#example-plot" title="Permalink to this headline">¶</a></h2>
+<p>An simple x-y plot is shown below, which includes the following <code class="docutils literal notranslate"><span class="pre">`Element</span></code> objects:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><cite>fig</cite>: defines the area outside of the axes area where the plot is displayed</p></li>
-<li><p><cite>axes</cite>: defines the plot background color, size, axes scale, etc.</p></li>
-<li><p><cite>label_x</cite> and <cite>label_y</cite>: define the x and y label text, color, font size, etc</p></li>
-<li><p><cite>tick_labels</cite> and <cite>tick_marks</cite>: define the look of the ticks and labels around the axes</p></li>
-<li><p><cite>legend</cite>: defines the location, edge color, background color, and font size of the legend on the right side of the plot</p></li>
-<li><p><cite>grid_major</cite>: defines the color, width, and style of the major gridlines</p></li>
-<li><p><cite>title</cite>: defines the text format of the title</p></li>
-<li><p><cite>lines</cite>: defines the width, style, and color of the plot lines</p></li>
-<li><p><cite>markers</cite>: defines the marker edge color, fill color, and type</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fig</span></code>: defines the area outside of the axes area where the plot is displayed</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">axes</span></code>: defines the plot background color, size, axes scale, etc.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">label_x</span></code> and <code class="docutils literal notranslate"><span class="pre">label_y</span></code>: define the x and y label text, color, font size, etc</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tick_labels</span></code> and <code class="docutils literal notranslate"><span class="pre">tick_marks</span></code>: define the look of the ticks and labels around the axes</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">legend</span></code>: defines the location, edge color, background color, and font size of the legend on the right side of the plot</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">grid_major</span></code>: defines the color, width, and style of the major gridlines</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">title</span></code>: defines the text format of the title</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lines</span></code>: defines the width, style, and color of the plot lines</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">markers</span></code>: defines the marker edge color, fill color, and type</p></li>
 </ul>
 </div></blockquote>
 <img alt="_images/my_favorite_ever.png" src="_images/my_favorite_ever.png" />
-<div class="line-block">
-<div class="line"><br /></div>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>All of the <code class="docutils literal notranslate"><span class="pre">Element</span></code> parameters mentioned above have defaults that can be changed with a custom theme file or as kwargs in the plot function.</p>
-</div>
-<p><strong>Simple Layout Schematic:</strong></p>
-<p>All of these elements are positioned by the <code class="docutils literal notranslate"><span class="pre">Layout</span></code> class as shown in the diagram below.
-Within the <code class="docutils literal notranslate"><span class="pre">Layout</span></code> there are many user-adjustable options for the amount of whitespace separating all items.
-Each of these whitespace parameters is illustrated in this drawing.</p>
+<div class="section" id="simple-layout-schematic">
+<h2>Simple Layout Schematic<a class="headerlink" href="#simple-layout-schematic" title="Permalink to this headline">¶</a></h2>
+<p>All <code class="docutils literal notranslate"><span class="pre">Element</span></code> objects are positioned by the <code class="docutils literal notranslate"><span class="pre">Layout</span></code> class as shown in the schematic diagram below.
+Within the <code class="docutils literal notranslate"><span class="pre">Layout</span></code> there are many user-adjustable options for <code class="docutils literal notranslate"><span class="pre">Element</span></code> sizes and the amount of whitespace
+separating all items, as illustrated in this drawing.</p>
 <img alt="_images/layout.png" src="_images/layout.png" />
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>All of these whitespace parameters have defaults that can be changed with a custom theme file or as kwargs in the plot function.</p>
+<p>All of these size and whitespace parameters have defaults that can be changed with a custom theme file or kwargs in the plot function.</p>
 </div>
-<p><strong>Grid Layout Schematic:</strong></p>
+</div>
+<div class="section" id="grid-layout-schematic">
+<h2>Grid Layout Schematic<a class="headerlink" href="#grid-layout-schematic" title="Permalink to this headline">¶</a></h2>
 <p>With <strong>fivecentplots</strong> we can easily extend the simple single-axis plot and make a grid of subplots.
 This plot option enables some additional <code class="docutils literal notranslate"><span class="pre">Layout</span></code> parameters illustrated below:</p>
 <img alt="_images/layout_grid.png" src="_images/layout_grid.png" />
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>All of these size, grid, and whitespace parameters have defaults that can be changed with a custom theme file or kwargs in the plot function.</p>
+</div>
+</div>
 <div class="section" id="engine">
 <h2>Engine<a class="headerlink" href="#engine" title="Permalink to this headline">¶</a></h2>
-<p><strong>fivecentplots</strong> is not a new graphics library.  In fact, plots are created using existing Python plotting
+<p><strong>fivecentplots</strong> is <em>not a new graphics generation library</em>.  In fact, plots are created using existing Python plotting
 packages.  These “engines” are wrapped by <strong>fivecentplots</strong> to provide a new, simpler API that allows complex
-plotting using kwargs to invoke the more complicated API of the plotting package.  The most mature “engine”
-supported by <strong>fivecentplots</strong> is <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> which is enabled by default, but limited support is available for <code class="docutils literal notranslate"><span class="pre">bokeh</span></code>.  Additional
-“engines” could easily be supported through the creation of a new <code class="docutils literal notranslate"><span class="pre">Layout</span></code> class (volunteers welcome!).  With
-this approach of API unification through kwargs, <strong>fivecentplots</strong> enables the user to switch between plotting engines
-with <em>the same plot command</em>.  The only kwarg that must change in the call is that of the <cite>engine</cite>.</p>
-<p>For example, if you needed a high-quality plot for a paper and wanted to use <strong>matplotlib</strong>, you
+plotting via kwargs.  All unique and complicated API calls of a given plotting package are handled behind the scenes.
+The most mature “engine” supported by <strong>fivecentplots</strong> is <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> which is enabled by default.  Currently,
+there is limited support for <code class="docutils literal notranslate"><span class="pre">bokeh</span></code>, but this will grow in the future.  Additional “engines” could easily be supported
+through the creation of a new <code class="docutils literal notranslate"><span class="pre">Layout</span></code> class (volunteers welcome!).  Using this approach of API unification through kwargs,
+<strong>fivecentplots</strong> enables the user to switch between plotting engines by changing only one kwarg, <code class="docutils literal notranslate"><span class="pre">engine</span></code>.  Besides this
+the plot call remains <em>exactly the same</em>.</p>
+<p>For example, say you need a high-quality plot for a paper and prefer to use <strong>matplotlib</strong>, you
 could do the following:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="_images/engine_mpl.png" src="_images/engine_mpl.png" />
-<p>But what if you needed to interactively manipulate the same data set, making a static image less attractive?  It may be more
-convenient to plot via <strong>bokeh</strong>.  To switch engines, we simply add the keyword <code class="docutils literal notranslate"><span class="pre">engine</span></code> and
-set to “bokeh”:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Notice that <code class="docutils literal notranslate"><span class="pre">engine</span></code> is not explicitly called above because <strong>matplotlib</strong> is assumed by default.</p>
+</div>
+<p>Now suppose you need to interactively manipulate the same data set, thus making a static image less attractive.
+You could switch “engines” and plot via <strong>bokeh</strong>, all with the addition of just one keyword <code class="docutils literal notranslate"><span class="pre">engine='bokeh'</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;bokeh&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/engine_bokeh.png" src="_images/engine_bokeh.png" />
+<a class="reference internal image-reference" href="_images/engine_bokeh.png"><img alt="_images/engine_bokeh.png" src="_images/engine_bokeh.png" style="height: 471px;" /></a>
 <p>All with only <strong>one</strong> kwarg change!</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -322,7 +324,7 @@ development is needed.  Not all plot types are available at this time.</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2016, Steve Nicholes.
+        &#169; Copyright 2022, Steve Nicholes.
 
     </p>
   </div>

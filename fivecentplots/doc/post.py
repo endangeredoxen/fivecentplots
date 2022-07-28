@@ -3,6 +3,7 @@ import os
 import pdb
 import re
 import json
+import shutil
 db = pdb.set_trace
 
 # clean up ipynb doc files post build script
@@ -47,3 +48,17 @@ for nb in ipynb:
 #     if os.path.exists(os.path.join(cur_dir, nb)):
 #         os.remove(os.path.join(cur_dir, nb))
 #     shutil.copyfile(os.path.join(test_dir, nb), os.path.join(cur_dir, nb))
+
+
+# COPY SPECIAL IMAGES
+print('Copying special images...')
+images = {'_build/html/_images':
+          ['_static/images/index.png']
+}
+
+for k, v in images.items():
+    for f in v:
+        shutil.copy(f, k)
+
+
+# FIX API PAGES

@@ -2,9 +2,9 @@
 lcl,float,Float value to start the lower control limit shading region,None,plot.html#Control-limits
 ucl,float,Float value to start the upper control limit shading region,None,plot.html#Control-limits
 control_limit_side,str,Determines if shaded region is <= `lcl` and >= `ucl` {"outside"} or between the lcl and ucl {"inside"},"outside",plot.html#Control-limits
-lcl|ucl_edge_alpha,float,Transparency value for the line starting the control limit shaded region between 0-1,0.25,None
-lcl|ucl_edge_color,str,Hex color string for the the line starting the control limit shaded region,fcp.DEFAULT_COLORS,None
-lcl|ucl_edge_style,str,"Line style for the line starting the control limit shaded region {‘-’, ‘--’, ‘-.’, ‘:’}",'-',None
-lcl|ucl_edge_width,float,Width of the line starting the control limit shaded region in pixels,1,None
-lcl|ucl_fill_alpha,float,Transparency value for the control limit shaded region fill between 0-1,0.20,plot.html#Control-limits
-lcl|ucl_fill_color,str,Hex color string for the control limit shaded region fill,fcp.DEFAULT_COLORS,plot.html#Control-limits
+lcl | ucl_edge_alpha,float,Transparency value for the line starting the control limit shaded region between 0-1,0.25,None
+lcl | ucl_edge_color,str,Hex color string for the the line starting the control limit shaded region,fcp.DEFAULT_COLORS,None
+lcl | ucl_edge_style,str,"Line style for the line starting the control limit shaded region {‘-’, ‘--’, ‘-.’, ‘:’}",'-',None
+lcl | ucl_edge_width,float,Width of the line starting the control limit shaded region in pixels,1,None
+lcl | ucl_fill_alpha,float,Transparency value for the control limit shaded region fill between 0-1,0.20,plot.html#Control-limits
+lcl | ucl_fill_color,str,Hex color string for the control limit shaded region fill,fcp.DEFAULT_COLORS,plot.html#Control-limits

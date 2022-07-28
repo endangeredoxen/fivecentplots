@@ -3,38 +3,52 @@
 Keyword Arguments
 =================
 
-Mandatory
----------
+Required args and kwargs
+------------------------
 
-All inputs to **fivecentplots** are treated as keyword arguments.  The function call (``plot``, ``boxplot``, ``hist``, etc.)
-determines the *kind* of plot, but keywords determine what data is included and how the plot is styled and arranged.
-Most keywords are completely optional or can be loaded automatically from a `user theme file <styles.html#Themes>`_.  The
-only mandatory inputs to plot functions involve the basics of the data that should be plotted:
+All plot types require input data in the form  of a pandas ``DataFrame``.
 
-+---------+------------------+------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------+
-| Keyword | Data Type        | Description                                                            | Required?                                                                                                            |
-+=========+==================+========================================================================+======================================================================================================================+
-| df      | pandas DataFrame | DataFrame containing all data to be plotted including grouping columns | always (**note:** ``df`` can also be specified as the first function argument withouth the keyword name of ``df==``) |
-+---------+------------------+------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------+
-| x       | str              | Column name of the x-axis data                                         | all except boxplot                                                                                                   |
-+---------+------------------+------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------+
-| y       | str              | Column name of the y-axis data                                         | all except histogram                                                                                                 |
-+---------+------------------+------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------+
-| z       | str              | Column name of the z-axis data                                         | only for contour and heatmap                                                                                         |
-+---------+------------------+------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------+
+.. note:: A few plot types that use 2D arrays of data where ``DataFrame`` column names are meaningless (like ```imshow```) will
+          also allow ```numpy.ndarrays```.  However, in order to do grouping into multiple subplots a ``DataFrame`` is still needed
+          to provide the grouping columns.
 
+Additionally, plots will require at least one column name to specify what data should be plotted.  These values are supplied
+as kwargs, not args, so that order of the arguments doesn't matter.  The table below describes the required args and kwargs
+for various plot types:
 
-Elements
---------
-Each item in a plot layout (axis, labels, legend, etc.) is represented by an
-``Element`` object that contains important attributes like edge color, fill color,
-size, font, etc., that fully describe the `element <layout.html>`_.  All the
-base attributes of a particular ``Element`` can be overriden by keywords provided
-either in a user theme file or at the time of the plot function call.
++---------+----------------------+------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------+
+| Keyword | Data Type            | Description                                                            | Required?                                                                                                            |
++=========+======================+========================================================================+======================================================================================================================+
+| df      | pandas ``DataFrame`` | DataFrame containing all data to be plotted including grouping columns | always (**note:** ``df`` can also be specified as the first function argument withouth the keyword name of ``df==``) |
++---------+----------------------+------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------+
+| x       | str                  | Column name of the x-axis data (horizontal axis)                       | all except:                                                                                                          |
+|         | or                   |                                                                        |                                                                                                                      |
+|         | list of str          |                                                                        | * ``boxplot``                                                                                                        |
+|         |                      |                                                                        | * ``imshow`` (if using 2D array of data)                                                                             |
+|         |                      |                                                                        | * ``nq`` (if using 2D array of data)                                                                                 |
++---------+----------------------+------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------+
+| y       | str                  | Column name of the y-axis data (vertical axis)                         | all except:                                                                                                          |
+|         | or                   |                                                                        |                                                                                                                      |
+|         | list of str          |                                                                        | * ``imshow`` (if using 2D array of data)                                                                             |
+|         |                      |                                                                        | * ``nq`` (if using 2D array of data)                                                                                 |
++---------+----------------------+------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------+
+| z       | str                  | Column name of the z-axis data                                         | only for contour and heatmap                                                                                         |
++---------+----------------------+------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------+
+
+.. note:: A full description of all required args is provided in the documentation for each plot type or in the `API section <modules.html>`_
+
+Optional kwargs
+---------------
+The characteristics of all other "elements" in the plot and the layout of these "elements" within the plot or subplots are defined completely by
+optional keyword arguments.  These kwargs can be specified in the plot function call or they can be pulled from a simple `theme file <themes.html>`_.
+If the kwarg is not found in either of these locations, a hard-coded default value is used.
+
+Because the number of kwargs is vast, we will not outline all of them here.  However, we will give some general guidelines and refer the user to
+the `full API <modules.html>`_.
 
 Nomenclature
 ^^^^^^^^^^^^
-Keywords that access the attributes of an element *mostly* follow a specific formula:
+Keywords that access the attributes of an "element" *typically* follow a specific formula:
 
 .. raw:: html
 
@@ -44,54 +58,67 @@ Keywords that access the attributes of an element *mostly* follow a specific for
     </div>
 
 
-Consider the following examples:
+Consider some examples:
 
-    1) Change the x label font color to red:
+    1) Set the x label font color to red:
 
         **label_x_font_color = '#FF0000'**
 
-    2) Change the y-axis minor gridline width:
+    2) Set the y-axis minor gridline width to 2 pixels:
 
         **grid_major_y_width = 2**
 
-    3) Change the axes edge color to black:
+    3) Set the axes edge color to black:
 
         **ax_edge_color = '#000000'**
 
-    4) Change the whisker color in a box plot:
+    4) Set the whisker color in a box plot:
 
         **box_whisker_color = #FF00FF**
 
-Some elements have attributes that fall outside of the scope of the
-`Default Attributes <keyword.html#default-attributes>`_.  These still
-follow the general nomenclature found above.  For example:
-
-    1) Display the fit equation and rsq value of a line fit:
+    5) Display the fit equation and rsq value of a line fit:
 
         **fit_eqn = True**
         **fit_rsq = True**
 
-    2) Set a different marker size just for the legend
+    6) Set a different marker size just for the legend
 
         **legend_marker_size = 8**
 
-    3) Change the statistic of the connecting line on a boxplot:
+.. note:: For convenience, there are a handful of keywords that allow a shorthand notation when
+          defining them within the function call.  For example, if you are calling ``fcp.boxplot``
+          and want to convert the box to a violin, you can use either ``box_violin=True``
+          or ``violin=True``.  Since it is obvious from the function call that these violins belong
+          to this plot type, we allow the user to abbreviate.  However, the long form of such values
+          is still required in theme files in case of overlap with other plot types.
 
-        **box_stat_line = 'std'**
 
-There are also a handful of keywords that allow a shorthand notation when
-defining them in the function call.  For example, if you are calling ``boxplot``
-and want to convert the box to a violin, you can use either ``box_violin=True``
-or ``violin=True``.  However, the long form of such values is still required in
-theme files.
+Getting Help
+------------
+Help regarding keywords is available by:
 
-Listed below are the keyword arguments of specific elements. Note that some
-keywords deviate from the standard nomenclature given what they represent.
+    1) ``fcp.docs()``: loads the docs where you can find the API section
 
-.. note:: We only list the base ``Element`` attributes below which have a
-          default value different than what is specified in the table
-          `above <keyword.html#base-attributes>`_ for base attributes.  Base attributes that
-          do not apply to a given ``Element`` are also listed.
+    2) ``help(fcp.some_function_or_element)``: prints the args and kwargs that apply
+
+        .. image:: _static/images/help.png
+           :width: 800px
+
+        To help with finding kwargs, ``fcp.py`` contains a number of dummy functions for various "elements".  These functions
+        have no actual function in the plotting, but exist solely to provide docstrings.  These include:
+
+        * ``axes``
+        * ``cbar`` (color bars)
+        * ``figure``
+        * ``grouping``
+        * ``gridlines``
+        * ``labels``
+        * ``legend``
+        * ``lines``
+        * ``markers``
+        * ``ticks``
+        * ``tick_labels``
+        * ``ws`` (whitespace)
 
 Base attributes
 ^^^^^^^^^^^^^^^

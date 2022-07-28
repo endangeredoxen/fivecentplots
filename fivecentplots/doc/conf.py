@@ -52,6 +52,8 @@ extensions = [
     'nbsphinx',
 ]
 
+#napoleon_custom_sections = [('Required', 'params_style')]#[('Required Keyword Args', 'params_style'), ('Optional Keyword Args', 'params_style')]
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 

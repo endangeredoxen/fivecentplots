@@ -2,9 +2,9 @@
 conf_int,float,Interval with upper and lower bounds based on a single confidence value between 0-1 (typical=0.95),None,plot.html#Confidence-interval
 perc_int,list of float,Interval with upper and lower bounds based on percentiles between 0-1,None,plot.html#Confidence-interval
 nq_int,list of float,Interval with upper and lower bounds based on values of sigma (where the mean of a distribution is sigma=0),None,plot.html#Confidence-interval
-conf_int|perc_int|nq_int_edge_alpha,float,Transparency value for the lines bounding the interval shaded region between 0-1,0.25,plot.html#Confidence-interval
-conf_int|perc_int|nq_int_edge_color,str,Hex color string for the the lines bounding the interval shaded region,fcp.DEFAULT_COLORS,plot.html#Confidence-interval
-conf_int|perc_int|nq_int_edge_style,str,"Line style for the lines bounding the interval shaded region {‘-’, ‘--’, ‘-.’, ‘:’}",'-',plot.html#Confidence-interval
-conf_int|perc_int|nq_int_edge_width,float,Width of the lines bounding the interval shaded region in pixels,1,plot.html#Confidence-interval
-conf_int|perc_int|nq_int_fill_alpha,float,Transparency value for the interval shaded region fill between 0-1,0.20,plot.html#Confidence-interval
-conf_int|perc_int|nq_int_fill_color,str,Hex color string for the interval shaded region fill,fcp.DEFAULT_COLORS,plot.html#Confidence-interval
+conf_int | perc_int | nq_int_edge_alpha,float,Transparency value for the lines bounding the interval shaded region between 0-1,0.25,plot.html#Confidence-interval
+conf_int | perc_int | nq_int_edge_color,str,Hex color string for the the lines bounding the interval shaded region,fcp.DEFAULT_COLORS,plot.html#Confidence-interval
+conf_int | perc_int | nq_int_edge_style,str,"Line style for the lines bounding the interval shaded region {‘-’, ‘--’, ‘-.’, ‘:’}",'-',plot.html#Confidence-interval
+conf_int | perc_int | nq_int_edge_width,float,Width of the lines bounding the interval shaded region in pixels,1,plot.html#Confidence-interval
+conf_int | perc_int | nq_int_fill_alpha,float,Transparency value for the interval shaded region fill between 0-1,0.20,plot.html#Confidence-interval
+conf_int | perc_int | nq_int_fill_color,str,Hex color string for the interval shaded region fill,fcp.DEFAULT_COLORS,plot.html#Confidence-interval

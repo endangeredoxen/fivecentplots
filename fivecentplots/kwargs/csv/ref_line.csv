@@ -1,7 +1,7 @@
 ﻿Keyword,Data Type,Description,Default,Example
-ref_line,list|pd.Series,The name of one or more columns in the DataFrame or a pandas Series with the same number of rows as the x column,None,plot.html#Reference-line
-ref_line_alpha,str|list,Transparency value for the reference line(s) between 0-1 (use list if more than one ref_line plotted),1,plot.html#Reference-line
-ref_line_color,str|list,Hex color string or list of hex color strings for the reference line (use list if more than one ref_line plotted),#000000,plot.html#Reference-line
-ref_line_legend_text,str|list,Custom string label(s) to add to a legend for the reference line data (use list if more than one ref_line plotted),None,plot.html#Reference-line
-ref_line_style,str|list,Matplotlib string character for reference line style {'-'; '--'; '-.' ':'} (use list if more than one ref_line plotted),'-',plot.html#Reference-line
-ref_line_width,int|list,Reference line width in pixels (use list if more than one ref_line plotted),1,plot.html#Reference-line
+ref_line,list | pd.Series,The name of one or more columns in the DataFrame or a pandas Series with the same number of rows as the x column,None,plot.html#Reference-line
+ref_line_alpha,str | list,Transparency value for the reference line(s) between 0-1 (use list if more than one ref_line plotted),1,plot.html#Reference-line
+ref_line_color,str | list,Hex color string or list of hex color strings for the reference line (use list if more than one ref_line plotted),#000000,plot.html#Reference-line
+ref_line_legend_text,str | list,Custom string label(s) to add to a legend for the reference line data (use list if more than one ref_line plotted),None,plot.html#Reference-line
+ref_line_style,str | list,Matplotlib string character for reference line style {'-'; '--'; '-.' ':'} (use list if more than one ref_line plotted),'-',plot.html#Reference-line
+ref_line_width,int | list,Reference line width in pixels (use list if more than one ref_line plotted),1,plot.html#Reference-line

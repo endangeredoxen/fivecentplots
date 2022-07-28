@@ -98,6 +98,7 @@ in **pandas** DataFrames.
                <ul>
                   <li><a href='http://www.jmp.com/support/help/Variability_Gauge_Charts.shtml'>JMP-style variability gauge charts </a></li>
                   <li><a href='http://www.jmp.com/support/help/Additional_Examples_of_the_Overlay_Plot_Platform.shtml#192569'>Grouped overlay plots</a> </li>
+                  <li><a href='https://www.jmp.com/support/help/en/16.2/index.shtml#page/jmp/example-of-a-normal-quantile-plot.shtml'>Normal quantile plots</a> </li>
                </ul>
             </p>
          </div>
@@ -299,6 +300,7 @@ Refer to the topics on the sidebar for more details on plot types and options.
    ranges.ipynb
    ticks.ipynb
    misc.ipynb
+   api/fcp
 
 .. toctree::
    :maxdepth: 1
@@ -320,7 +322,6 @@ Refer to the topics on the sidebar for more details on plot types and options.
    :caption: Other
 
    changelog
-   modules
    older
 
 Indices and tables

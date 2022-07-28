@@ -211,8 +211,14 @@ def markdown(docstring: str) -> str:
     param_idx = [i for i, s in enumerate(doclist) if ')' in s and '): ' in s]
 
     # find the keyword type section indices
-    arg = doclist.index('Args:')
-    rkw = doclist.index('Required Keyword Args:')
+    try:
+        arg = doclist.index('Args:')
+    except:
+        arg = 0
+    try:
+        rkw = doclist.index('Required Keyword Args:')
+    except:
+        rkw = 0
     okw = doclist.index('Optional Keyword Args:')
 
     # find subheadings
@@ -233,13 +239,24 @@ def markdown(docstring: str) -> str:
     # rebuild in markdown-friendly code
     func = ['<p style="line-height:30px"><b><font color="#999999" '
             + f'style="font-family:Arial; font-size:24px">fivecentplots.{doclist[0]}</font></b><br>']
-    func_desc = [f'<b><i>{" ".join(doclist[1: arg - 1])}</i></b><br>']
+    if arg != 0:
+        func_desc = [f'<b><i>{" ".join(doclist[1: arg - 1])}</i></b><br>']
+    else:
+        func_desc = [f'<b><i>{" ".join(doclist[1: okw - 1])}</i></b><br>']
 
-    h_arg = [f'<br><b>{doclist[arg]}</b><br>']
-    argv = html_param(doclist[arg + 1: rkw])
+    if arg != 0:
+        h_arg = [f'<br><b>{doclist[arg]}</b><br>']
+        argv = html_param(doclist[arg + 1: rkw])
+    else:
+        h_arg = []
+        argv = []
 
-    h_rkw = [f'<br><b>{doclist[rkw]}</b><br>']
-    rkwv = html_param(doclist[rkw + 1: okw])
+    if arg != 0:
+        h_rkw = [f'<br><b>{doclist[rkw]}</b><br>']
+        rkwv = html_param(doclist[rkw + 1: okw])
+    else:
+        h_rkw = []
+        rkwv = []
 
     h_okw = [f'<br><b>{doclist[okw]}</b><br>']
     okwv = html_param(doclist[okw + 1:])

@@ -1,8 +1,8 @@
 Keyword,Data Type,Description,Default,Example
 markers,boolean,Enable/disable data point markers,True,None
 marker_fill,boolean,Enable/disable color fill in markers,False,styles.html#Marker-colors
-marker_edge_color,str|list,Hex color string for the marker edges,fcp.DEFAULT_COLORS,styles.html#Marker-colors
+marker_edge_color,str | list,Hex color string for the marker edges,fcp.DEFAULT_COLORS,styles.html#Marker-colors
 marker_edge_width,float,Marker edge line width in pixels,1,None
-marker_fill_color,str|list,Hex color string for the fill color of markers,fcp.DEFAULT_COLORS,styles.html#Marker-colors
+marker_fill_color,str | list,Hex color string for the fill color of markers,fcp.DEFAULT_COLORS,styles.html#Marker-colors
 marker_jitter | jitter,boolean,For boxplots add random noise on x-axis to show separation between markers,True,boxplot.html#Jitter
 marker_size,float,Size in pixels of the data point markers,6,None

@@ -1362,7 +1362,7 @@
     "left": "0px",
     "right": "1161px",
     "top": "119px",
-    "width": "212px"
+    "width": "211.989px"
    },
    "toc_section_display": true,
    "toc_window_display": true

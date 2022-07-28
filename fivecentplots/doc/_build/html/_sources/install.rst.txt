@@ -12,7 +12,7 @@ Development versions can be installed via `GitHub <https://github.com/endangered
 Dependencies UPDATE
 ------------
 
-* Python 3
+* Python 3 (CHECK VERSIONS!)
 * pandas (0.17 or higher)
 * matplotlib (2.0.2 or higher recommended; most features will work with 1.5 or higher)
 * numpy (1.3 or higher)

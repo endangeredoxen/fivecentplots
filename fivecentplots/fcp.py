@@ -32,8 +32,7 @@ try:
     # to directly copy kwargs from ini file
     import fivecentfileio as fileio
     import win32clipboard  # noqa
-except (ModuleNotFoundError, ImportError, NameError):
-    pass
+except (ModuleNotFoundError, ImportError, NameError):    pass
 db = pdb.set_trace
 
 osjoin = os.path.join
@@ -67,11 +66,46 @@ def bar(df, **kwargs):
     Args:
         df (pandas.DataFrame): DataFrame containing data to plot
 
-    Required Keyword Args:
-        x (str): x-axis column name
-        y (str): y-axis column name
+    Keyword Args:
+        x (str): x-axis column name [REQUIRED]
+        y (str): y-axis column name [REQUIRED]
+        bar_align (str): If ‘center’ aligns center of bar to x-axis value; if ‘edge’ aligns the left edge of
+          the bar to the x-axis value. Defaults to ‘center’ . Example: None
+        bar_color_by_bar | color_by_bar (bool): Color each bar differently. Defaults to False. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Color-by-bar
+        bar_edge_color (str): Hex color string for the edge of the bar. Defaults to fcp.DEFAULT_COLORS.
+          Example: None
+        bar_edge_width (float): Width of the edge of the bar in pixels. Defaults to 0. Example: None
+        bar_error_bars | error_bars (bool): Display error bars on each bar. Defaults to False. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Error-bars
+        bar_error_color | error_color (str): Hex color string of the error bar lines. Defaults to #555555.
+          Example: None
+        bar_fill_alpha (float): Transparency value for the bars between 0-1. Defaults to 0.75. Example: None
+        bar_fill_color (str): Hex color string of the bar fill . Defaults to fcp.DEFAULT_COLORS. Example: None
+        bar_horizontal | horizontal (bool): Display bars horizontally. Defaults to False. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Horizontal-bars
+        bar_rolling | bar_rolling_mean | rolling | rolling_mean (int): Rolling mean window size [enables this
+          curve]. No default. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Rolling-mean
+        bar_stacked | stacked (bool): Stack bars of a given group . Defaults to False. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Stacked
+        bar_width (float): Set the fractional width of the bars between 0-1. Defaults to 0.8. Example: None
+        rolling_mean_line_color (str): Hex color string for the rolling mean line. Defaults to
+          fcp.DEFAULT_COLORS. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Custom-line-style
+        rolling_mean_line_width (int): Width for the rolling mean line in pixels. Defaults to 2. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Custom-line-style
 
-    Optional Keyword Args:
+    Examples
+    --------
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'tests/fake_data_bar.csv')
+        >>> fcp.bar(df, x='Liquid', y='pH', filter='Measurement=="A" & T [C]==25',
+                    tick_labels_major_x_rotation=90)
+
+            .. figure:: ../_static/images/example_bar.png
     """
     return plotter(data.Bar, **dfkwarg(df, kwargs))
 
@@ -83,10 +117,166 @@ def boxplot(df, **kwargs):
     Args:
         df (pandas.DataFrame): DataFrame containing data to plot
 
-    Required Keyword Args:
-        y (str): y-axis column name contining the box plot data
+    Keyword Args:
+        y (str): y-axis column name contining the box plot data [REQUIRED]
+        BASIC:
+        box_divider (bool): Toggle box divider visibility. Defaults to True. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/boxplot.html#Dividers
+        box_divider_color (str): Hex color string for the vertical line between groups. Defaults to #bbbbbb.
+          Example: None
+        box_divider_style (str): Line style for the box divider lines {‘-’, ‘--’, ‘-.’, ‘:’}. Defaults to -.
+          Example: None
+        box_divider_width (float): Width of the divider lines in pixels. Defaults to 1. Example: None
+        box_edge_color (str): Hex color string for the edge of the box. Defaults to #aaaaaa. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Boxplot-example
+        box_edge_width (float): Width of the edge of the boxes in pixels. Defaults to 0.5. Example: None
+        box_fill_color (str): Hex color string of the bar fill . Defaults to #ffffff. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Boxplot-example
+        box_median_color (str): Hex color string of the median line inside each box. Defaults to #ff7f0e.
+          Example: None
+        box_on (bool): Toggle box visibility. Defaults to True. Example: None
+        box_range_lines (bool): Toggle the horizontal lines showing the min/max of the data range. Defaults to
+          True. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/boxplot.html#Range-lines
+        box_range_lines_color (str): Hex color string for the box range lines. Defaults to #cccccc. Example:
+          None
+        box_range_lines_style (str): Line style for the box range lines {‘-’, ‘--’, ‘-.’, ‘:’}. Defaults to
+          --. Example: None
+        box_range_lines_width (float): Width of the range lines in pixels. Defaults to 1. Example: None
+        box_whisker (bool): Toggle range lines that extend from the box Q1/Q3 edges to the data min/max.
+          Defaults to True. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/boxplot.html#Whiskers
+        box_whisker_color (str): Hex color string for the box whisker lines. Defaults to #cccccc. Example:
+          None
+        box_whisker_style (str): Line style for the box whisker lines {‘-’, ‘--’, ‘-.’, ‘:’}. Defaults to -.
+          Example: None
+        box_whisker_width (float): Width of the whisker lines in pixels. Defaults to 0.5. Example: None
+        box_width (float): Set the fractional width of the boxes between 0-1. Defaults to 0.5 [if violin on,
+          0.15]. Example: None
+        groups (str | list): Grouping columns for the box plot. Defaults to None. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/boxplot.html#Groups
+        notch (bool): Use a notched-style box instead of a rectangular box. Defaults to False. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/boxplot.html#Notch
+        GROUPING_TEXT:
+        box_group_label_edge_alpha (float): Transparency value for group label line edge between 0-1. Defaults
+          to 1. Example: None
+        box_group_label_edge_color (str): Hex color string for the group label rectangle edge. Defaults to
+          #ffffff. Example: None
+        box_group_label_edge_width (float): Width of the edge of the line around the group labels in pixels.
+          Defaults to 1. Example: None
+        box_group_label_fill_alpha (float): Transparency value for group label fill between 0-1. Defaults to
+          1. Example: None
+        box_group_label_fill_color (str): Hex color string for the group label background color. Defaults to
+          #ffffff. Example: None
+        box_group_label_font (str): Font name for box group label. Defaults to Sans-serif. Example: None
+        box_group_label_font_color (str): Hex color string for group label font. Defaults to #000000. Example:
+          None
+        box_group_label_font_size (float): Font size for group label text in pixels. Defaults to 14. Example:
+          None
+        box_group_label_font_style (str): Font style for the group label text {'normal', 'italic', 'oblique'}.
+          Defaults to 'normal’. Example: None
+        box_group_label_font_weight (str): Font weight for the group label text {'light', 'normal', 'medium',
+          'semibold', 'bold', 'heavy', 'black'}. Defaults to 'normal’. Example: None
+        box_group_title_edge_alpha (float): Transparency value for group title line edge between 0-1. Defaults
+          to 1. Example: None
+        box_group_title_edge_color (str): Hex color string for the group title rectangle edge. Defaults to
+          #ffffff. Example: None
+        box_group_title_edge_width (float): Width of the edge of the line around the group titles in pixels.
+          Defaults to 1. Example: None
+        box_group_title_fill_alpha (float): Transparency value for group title fill between 0-1. Defaults to
+          1. Example: None
+        box_group_title_fill_color (str): Hex color string for the group title background color. Defaults to
+          #ffffff. Example: None
+        box_group_title_font (str): Font name for box group title. Defaults to Sans-serif. Example: None
+        box_group_title_font_color (str): Hex color string for group title font. Defaults to #000000. Example:
+          None
+        box_group_title_font_size (float): Font size for group title text in pixels. Defaults to 14. Example:
+          None
+        box_group_title_font_style (str): Font style for the group title text {'normal', 'italic', 'oblique'}.
+          Defaults to 'normal’. Example: None
+        box_group_title_font_weight (str): Font weight for the group title text {'light', 'normal', 'medium',
+          'semibold', 'bold', 'heavy', 'black'}. Defaults to 'normal’. Example: None
+        STAT_LINES:
+        box_grand_mean (bool): Toggle visibility of a line showing the mean of all data on the plot. Defaults
+          to False. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/boxplot.html#Grand-
+          Mean/Median
+        box_grand_mean_color | grand_mean_color (str): Hex color string for the grand mean line. Defaults to
+          #555555. Example: None
+        box_grand_mean_style | grand_mean_style (str): Line style for the box grand mean lines {‘-’, ‘--’,
+          ‘-.’, ‘:’}. Defaults to '-’. Example: None
+        box_grand_mean_width | grand_mean_width (float): Width of the grand mean line in pixels. Defaults to
+          1. Example: None
+        box_grand_median (bool): Toggle visibility of a line showing the median of all data on the plot.
+          Defaults to False. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/boxplot.html#Grand-
+          Mean/Median
+        box_grand_median_color | grand_median_color (str): Hex color string for the grand median line.
+          Defaults to #0000ff. Example: None
+        box_grand_median_style | grand_median_style (str): Line style for the box grand median lines {‘-’,
+          ‘--’, ‘-.’, ‘:’}. Defaults to '-’. Example: None
+        box_grand_median_width | grand_median_width (float): Width of the grand median line in pixels.
+          Defaults to 1. Example: None
+        box_group_mean (bool): Toggle visibility of a line showing the mean of each data group on the plot.
+          Defaults to False. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/boxplot.html#Group-
+          Means
+        box_group_mean_color | group_mean_color (str): Hex color string for the group mean line. Defaults to
+          #555555. Example: None
+        box_group_mean_style | group_mean_style (str): Line style for the box group mean lines {‘-’, ‘--’,
+          ‘-.’, ‘:’}. Defaults to '-’. Example: None
+        box_group_mean_width | group_mean_width (float): Width of the group mean line in pixels. Defaults to
+          1. Example: None
+        box_stat_line (str): Set the statistic for the connecting line {‘mean’, ‘median’, ‘std’, ‘qXX’
+          [qunatile where XX is a number between 0-100]}. Defaults to mean. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/boxplot.html#Stat-line
+        box_stat_line_color (str): Hex color string for the stat line. Defaults to #666666. Example: None
+        box_stat_line_on (bool): Toggle visibility of the stat line between boxes. Defaults to True. Example:
+          None
+        box_stat_line_width (float): Width of the stat line in pixels. Defaults to 1. Example: None
+        DIAMONDS:
+        box_mean_diamonds | mean_diamonds (bool): Toggle visibility of a diamond overlay on the box showing
+          the group mean and a confidence interval. Defaults to False. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/boxplot.html#Mean-Diamonds
+        box_mean_diamonds_alpha | mean_diamonds_alpha (float): Transparency value for the diamonds between
+          0-1. Defaults to 1. Example: None
+        box_mean_diamonds_edge_color | mean_diamonds_edge_color (str): Hex color string for the edges of the
+          diamond. Defaults to #FF0000. Example: None
+        box_mean_diamonds_edge_style | mean_diamonds_edge_style (str): Line style for the diamonds lines {‘-’,
+          ‘--’, ‘-.’, ‘:’}. Defaults to '-’. Example: None
+        box_mean_diamonds_edge_width | mean_diamonds_edge_width (float): Width of the diamond lines in pixels.
+          Defaults to 0.7. Example: None
+        box_mean_diamonds_fill_color | mean_diamonds_fill_color (str): Hex color string for the fill of the
+          diamond. Defaults to None. Example: None
+        box_mean_diamonds_width | mean_diamonds_width (float): Set the fractional width of the diamonds
+          between 0-1. Defaults to 0.8. Example: None
+        conf_coeff (float): Confidence interval from 0 to 1. Defaults to 0.95. Example: None
+        VIOLINS:
+        box_violin | violin (bool): Toggle visibility of violin plot showing the distribution of box plot
+          data. Defaults to False. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/boxplot.html#Violins
+        violin_box_color (str): Hex color string for the fill of an optional box overlay on the violin.
+          Defaults to #555555. Example: None
+        violin_box_on (bool): Toggle visibility of a box over the violin plot. Defaults to True. Example: None
+        violin_edge_color (str): Hex color string for the edge of the violins. Defaults to #aaaaaa. Example:
+          None
+        violin_fill_alpha (float): Transparency value for the violin plots between 0-1. Defaults to 0.5.
+          Example: None
+        violin_fill_color (str): Hex color string for the fill of the violins. Defaults to fcp.DEFAULT_COLORS.
+          Example: None
+        violin_markers (bool): Toggle visibility of data point markers on the violin plots. Defaults to False.
+          Example: None
+        violin_median_color (str): Hex color string for the median point in each violin. Defaults to #ffffff.
+          Example: None
+        violin_median_marker (str): Marker type for the median point in each violin. Defaults to 'o’. Example:
+          None
+        violin_median_size (int): Size of the median point marker in each violin. Defaults to 2. Example: None
 
-    Optional Keyword Args:
+    Examples
+    --------
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'tests/fake_data_box.csv')
+        >>> fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'])
+
+            .. figure:: ../_static/images/example_boxplot.png
     """
     return plotter(data.Box, **dfkwarg(df, kwargs))
 
@@ -97,12 +287,40 @@ def contour(df, **kwargs):
     Args:
         df (DataFrame): DataFrame containing data to plot
 
-    Required Keyword Args:
-        x (str): x-axis column name
-        y (str): y-axis column name
-        z (str): z-axis column name
+    Keyword Args:
+        x (str): x-axis column name [REQUIRED]
+        y (str): y-axis column name [REQUIRED]
+        z (str): z-axis column name [REQUIRED]
+        BASIC:
+        cmap (str): Name of a color map . Defaults to inferno. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Filled-contour
+        contour_width (float): Width of the contour lines. Defaults to 1. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Contour-lines
+        filled (bool): Color area between contour lines. Defaults to True. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Filled-contour
+        interp (str): Scipy interpolate.griddata method to make Z points {‘linear’, ‘nearest’, ‘cubic’}.
+          Defaults to 'cubic’. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Data-interpolation
+        levels (int): Number of contour lines/levels to draw. Defaults to 20. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Contour-lines
+        show_points (bool): Show points on top of the contour plot. Defaults to False. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Contour-points
+        COLOR_BAR:
+        cbar (bool): Toggle colorbar on/off for contour and heatmap plots. Defaults to False. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Filled-contour
+        size (int): cbar width [height will match the height of the axes]. Defaults to 30. Example: None
 
-    Optional Keyword Args:
+
+    Examples
+    --------
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'tests/fake_data_contour.csv')
+        >>> fcp.contour(cc, x='X', y='Y', z='Value', cbar=True, cbar_size=40, xmin=-4, xmax=2, ymin=-4, ymax=2)
+
+            .. figure:: ../_static/images/example_contour.png
+
     """
     return plotter(data.Contour, **dfkwarg(df, kwargs))
 
@@ -139,6 +357,11 @@ def deprecated(kwargs):
     return kwargs
 
 
+def docs():
+    import webbrowser
+    webbrowser.open(r'https://endangeredoxen.github.io/fivecentplots/index.html')
+
+
 def gantt(df, **kwargs):
     """Gantt chart plotting function.  This plot is built off of a horizontal
        implementation of `fcp.bar`.
@@ -146,14 +369,43 @@ def gantt(df, **kwargs):
     Args:
         df (DataFrame): DataFrame containing data to plot
 
-    Required Keyword Args:
-        x (list): two x-axis column names containing Datetime values
-            1) the start time for each item in the Gantt chart
-            2) the stop time for each item in the Gantt chart
-        y (str): y-axis column name
-        z (str): z-axis column name
+    Keyword Args:
+        x (list): two x-axis column names containing Datetime values [REQUIRED]
+            - 1) the start time for each item in the Gantt chart
+            - 2) the stop time for each item in the Gantt chart
+        y (str): y-axis column name [REQUIRED]
+        gantt_color_by_bar | color_by_bar (bool): Color each Gantt bar differently. Defaults to False.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Styling
+        gantt_edge_color (str): Hex color string for the edge of the Gantt bars. Defaults to
+          fcp.DEFAULT_COLORS. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Styling
+        gantt_edge_width (float): Width of the edge of the Gantt bars in pixels. Defaults to 0. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Styling
+        gantt_fill_alpha (int): Transparency value for the Gantt bars between 0-1. Defaults to 0.75. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Styling
+        gantt_fill_color (str): Hex color string of the Gantt bar fill . Defaults to fcp.DEFAULT_COLORS.
+          Example: None
+        gantt_height | height (float): Set the fractional height of the Gantt bars between 0-1. Defaults to
+          0.9. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Styling
+        gantt_label_x (str): By default, x-axis labels are disabled for this plot type. Defaults to '’.
+          Example: None
+        gantt_order_by_legend | order by legend (bool): Order the y-axis values based on the sort order of the
+          legend values [requires legend]. Defaults to False. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Legends
+        gantt_tick_labels_x_rotation | tick_labels_x_rotation (int): Gantt-specific version of the this kwarg
+          to ensure rotations are not applied globably to all plots from a theme file. Defaults to 90.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Legends
+        sort (str): Sort order for the Gantt bars {‘ascending’, ‘descending’}. Defaults to 'descending’.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Sorting
 
-    Optional Keyword Args:
+    Examples
+    --------
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'tests/fake_data_gantt.csv')
+        >>> fcp.gantt(df, x=['Start', 'Stop'], y='Task', ax_size=[600, 400])
+
+            .. figure:: ../_static/images/example_gantt.png
     """
 
     return plotter(data.Gantt, **dfkwarg(df, kwargs))
@@ -165,21 +417,54 @@ def heatmap(df, **kwargs):
     Args:
         df (DataFrame): DataFrame containing data to plot
 
-    Required Keyword Args:
-        x (str): x-axis column name
-        y (str): y-axis column name
-        z (str): z-axis column name
+    Keyword Args:
+        x (str): x-axis column name [REQUIRED]
+        y (str): y-axis column name [REQUIRED]
+        z (str): z-axis column name [REQUIRED]
+        BASIC:
+        cell_size (int): Width of a heatmap cell in pixels. Defaults to 60. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/heatmap.html#Cell-size
+        cmap (bool): Name of a color map to apply to the plot. Defaults to inferno. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/heatmap.html#No-data-labels
+        data_labels (bool): Toggle visibility of value text labels on the heatmap cells. Defaults to False.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/heatmap.html#With-data-labels
+        heatmap_edge_width (float): Width of the edges of the heat map cells. Defaults to 0. Example: None
+        heatmap_font_color (str): Hex color string for the value label text. Defaults to #ffffff. Example:
+          None
+        heatmap_font_size (int): Font size of the value label text. Defaults to 12. Example: None
+        heatmap_interp | interp (str): imshow interpolation scheme [see matplotlib docs for more details].
+          Defaults to 'none’. Example: None
+        COLOR_BAR:
+        cbar (bool): Toggle colorbar on/off for contour and heatmap plots. Defaults to False. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Filled-contour
+        size (int): cbar width [height will match the height of the axes]. Defaults to 30. Example: None
 
-    Optional Keyword Args:
+    Examples
+    --------
+    Categorical heatmap:
+
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'tests/fake_data_heatmap.csv')
+        >>> fcp.heatmap(df, x='Category', y='Player', z='Average')
+
+            .. figure:: ../_static/images/example_heatmap1.png
+
+    Non-uniform numerical data:
+
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'tests/fake_data_contour.csv')
+        >>> fcp.heatmap(df, x='X', y='Y', z='Value', row='Batch', col='Experiment',
+                        cbar=True, share_z=True, ax_size=[400, 400], data_labels=False,
+                        label_rc_font_size=12, filter='Batch==103', cmap='viridis')
+
+            .. figure:: ../_static/images/example_heatmap2.png
+
     """
-
     return plotter(data.Heatmap, **dfkwarg(df, kwargs))
-
-
-def help():
-    import webbrowser
-    webbrowser.open(
-        r'https://endangeredoxen.github.io/fivecentplots/index.html')
 
 
 def hist(df, **kwargs):
@@ -189,10 +474,88 @@ def hist(df, **kwargs):
         df (DataFrame | numpy array): DataFrame or numpy array containing data to plot
             [when passing a numpy array it is automatically converted to a DataFrame]
 
-    Required Keyword Args:
-        x (str): x-axis column name [the "value" column from which "counts" are calculated]
+    Keyword Args:
+        x (str): x-axis column name (i.e., the "value" column from which "counts" are calculated) [REQUIRED]
+        cdf (bool): Convert the histogram into a cumulative distribution plot. Defaults to False. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#cdf
+        cfa (str): Color-filter array pattern that is used to split data from a Bayer image into separate
+          color planes. Defaults to None. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#split-color-planes
+        hist_align (str): If "mid" aligns center of histogram bar to x-axis value; if "left" aligns the left
+          edge of the histogram bar to the x-axis value {"left"; "mid"; "right"}. Defaults to mid. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#alignment
+        hist_bins | bins (int): Number of histogram bins to use; when plotting the histogram of a raw image
+          file the number of bins is automatically adjusted to enable one bin per DN code. Defaults to 20.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#bin-counts
+        hist_cumulative | cumulative (bool): From matplotlib: If True then a histogram is computed where each
+          bin gives the counts in that bin plus all bins for smaller values; if -1 direction of accumulation
+          is reversed. Defaults to False. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#cumulative
+        hist_edge_color (str): Hex color string for the edge of the histogram bar. Defaults to
+          fcp.DEFAULT_COLORS. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#colors
+        hist_edge_width (float): Width of the edge of the histogram bar in pixels. Defaults to 0. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#colors
+        hist_fill_alpha (int): Transparency value for the histogram bars between 0-1. Defaults to 0.5.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#colors
+        hist_fill_color (str): Hex color string of the histogram bar fill . Defaults to fcp.DEFAULT_COLORS.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#colors
+        hist_horizontal | horizontal (bool): Enable a horizontal histogram plot [default is vertical].
+          Defaults to False. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#horizontal-bars
+        hist_kde | kde (bool): Toggle visibility of a kernel-density estimator curve over the histogram bars.
+          Defaults to False. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#kernel-
+          density-estimator
+        hist_normalize | normalize (bool): Sets the "density" parameter for matplotlib-based plots; from
+          matplotlib: if True draw and return a probability density: each bin will display each bin"s raw
+          count divided by the total number of counts and the bin width so that the area under the histogram
+          integrates to 1; automatically enabled if kde=True. Defaults to False. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#cumulative
+        hist_rwidth (float | None): From matplotlib: the relative width of the bars as a fraction of the bin
+          width; None means auto-calculation. Defaults to None. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#width
+        pdf (bool): Convert the histogram into a probability density function plot. Defaults to False.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#pdf
 
-    Optional Keyword Args:
+    Examples
+    --------
+    Simple histogram:
+
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'tests/fake_data_box.csv')
+        >>> fcp.hist(df, x='Value')
+
+            .. figure:: ../_static/images/example_hist1.png
+
+    Bayer-image histogram:
+
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> import numpy as np
+        >>> # Make a dummy blue patch through an RGB filter
+        >>> img_rgb = np.zeros([300, 300]).astype(np.uint16)
+        >>> img_rgb[::2, ::2] = 180  # green_red
+        >>> img_rgb[1::2, 1::2] = 180  # green_blue
+        >>> img_rgb[::2, 1::2] = 10
+        >>> img_rgb[1::2, ::2] = 255
+        >>> # Add gaussian shading
+        >>> x, y = np.meshgrid(np.linspace(-1,1,300), np.linspace(-1,1,300))
+        >>> dst = np.sqrt(x*x+y*y)
+        >>> sigma = 1
+        >>> muu = 0.001
+        >>> gauss = np.exp(-( (dst-muu)**2 / ( 2.0 * sigma**2 ) ) )
+        >>> img_rgb = (gauss * img_rgb).astype(float)
+        >>> # Add random noise
+        >>> img_rgb[::2, ::2] += np.random.normal(-0.1*img_rgb[::2, ::2].mean(), 0.1*img_rgb[::2, ::2].mean(), img_rgb[::2, ::2].shape)
+        >>> img_rgb[1::2, ::2] += np.random.normal(-0.1*img_rgb[1::2, ::2].mean(), 0.1*img_rgb[1::2, ::2].mean(), img_rgb[1::2, ::2].shape)
+        >>> img_rgb[1::2, 1::2] += np.random.normal(-0.1*img_rgb[1::2, 1::2].mean(), 0.1*img_rgb[1::2, 1::2].mean(), img_rgb[1::2, 1::2].shape)
+        >>> img_rgb[::2, 1::2] += np.random.normal(-0.1*img_rgb[::2, 1::2].mean(), 0.1*img_rgb[::2, 1::2].mean(), img_rgb[::2, 1::2].shape)
+        >>> img_rgb = img_rgb.astype(np.uint16)
+        >>> fcp.hist(img_rgb, ax_size=[600, 400], legend='Plane', cfa='grbg', colors=fcp.BAYER, **fcp.HIST)
+
+            .. figure:: ../_static/images/example_hist2.png
     """
 
     return plotter(data.Histogram, **dfkwarg(df, kwargs))
@@ -206,10 +569,43 @@ def imshow(df, **kwargs):
             image data to plot [when passing a numpy array it is automatically converted
             to a DataFrame]
 
-    Required Keyword Args:
-        None
+    Keyword Args:
+        cfa (str): Color-filter array pattern that is used to split data from a Bayer image into separate
+          color planes. Defaults to None. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#split-color-planes
+        cmap (bool): Name of a color map to apply to the plot. Defaults to gray. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#color-maps
+        imshow_interp | interp (str): imshow interpolation scheme [see matplotlib docs for more details].
+          Defaults to 'none’. Example: None
+        stretch (float | list): Calculate "stretch" times the standard deviation above and below the mean to
+          set new z-limits. Can be a single value used as +/- limits or a two-value list for the lower/upper
+          multiplier values. Defaults to None. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#contrast-stretching
 
-    Optional Keyword Args:
+    Examples
+    --------
+    Basic:
+
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> import imageio
+        >>> # Read an image from the world-wide web
+        >>> url = 'https://imagesvc.meredithcorp.io/v3/mm/image?q=85&c=sc&rect=0%2C214%2C2000%2C1214&poi=%5B920%2C546%5D&w=2000&h=1000&url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F47%2F2020%2F10%2F07%2Fcat-in-pirate-costume-380541532-2000.jpg'
+        >>> imgr = imageio.imread(url)
+        >>> # Convert to grayscale
+        >>> img = fcp.utilities.img_grayscale(imgr)
+        >>> fcp.imshow(img, ax_size=[600, 600])
+
+            .. figure:: ../_static/images/example_imshow1.png
+
+    With +/- 3 sigma contrast stretching:
+
+        >>> uu = img.stack().mean()
+        >>> ss = img.stack().std()
+        >>> fcp.imshow(img, cmap='inferno', cbar=True, ax_size=[600, 600], zmin=uu-3*ss, zmax=uu+3*ss)
+
+            .. figure:: ../_static/images/example_imshow2.png
     """
 
     kwargs['tick_labels'] = kwargs.get('tick_labels', True)
@@ -225,10 +621,35 @@ def nq(df, **kwargs):
             values data or a DataFrame or numpy array containing a set of 2D values
             that can be used to calculate quantiles at various "sigma" intervals
 
-    Required Keyword Args:
-        None
+    Keyword Args:
+        BASIC:
+        x (str): x-axis column name (if using a 1D dataset). Defaults to None. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#1D-dataset
+        CALCULATION:
+        sigma (float): Maximum sigma value to use for the calculation; range will be +/- this value. Defaults
+          to Auto-calculated based on the dataset using "fcp.utilities.sigma". Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#custom-sigma-range
+        step_inner (float): Delta between sigma values outside of the tail (around sigma=0). Defaults to 0.5.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#point-density
+        step_tail (float): Delta between sigma values in the tails (all value >= and <= to keyword "tail").
+          Defaults to 0.2. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#point-density
+        tail (float): Sigma value that represents the start of the tail of the distribution. Defaults to 3.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#custom-tail
 
-    Optional Keyword Args:
+    Examples
+    --------
+    "Normal" distribution:
+
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> import numpy as np
+        >>> # Make a normal distribution from noise
+        >>> img = np.ones([1000, 1000]) * 2**12 / 2
+        >>> img += np.random.normal(-0.025*img.mean(), 0.025*img.mean(), img.shape)
+        >>> fcp.nq(img, marker_size=4, line_width=2)
+
+            .. figure:: ../_static/images/example_nq.png
     """
 
     kwargs['tick_labels'] = kwargs.get('tick_labels', True)
@@ -269,13 +690,153 @@ def plot(df, **kwargs):
     Args:
         df (DataFrame): DataFrame containing data to plot
 
-    Required Keyword Args:
-        x (str | list): x-axis column name(s)
-        y (str | list): y-axis column name(s)
+    Keyword Args:
+        x (str | list): x-axis column name(s) [REQUIRED]
+        y (str | list): y-axis column name(s) [REQUIRED]
+        LINES:
+        cmap (str): Color map name (overrides all other color parameters). Defaults to None. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Colormap
+        line_alpha (str | list): Transparency value for the line(s) between 0-1. Defaults to 1. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling
+        line_color (str | list): Hex color string or list of hex color strings for the plot lines. Defaults to
+          fcp.DEFAULT_COLORS. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-
+          styling
+        line_style (str | list): Matplotlib string character for line style {'-'; '--'; '-.' ':'}. Defaults to
+          '-'. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling
+        line_width (int | list): Line width in pixels. Defaults to 1. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling
+        lines (boolean): Enable/disable plotting of lines. Defaults to True. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Scatter
+        MARKERS:
+        marker_edge_color (str | list): Hex color string for the marker edges. Defaults to fcp.DEFAULT_COLORS.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors
+        marker_edge_width (float): Marker edge line width in pixels. Defaults to 1. Example: None
+        marker_fill (boolean): Enable/disable color fill in markers. Defaults to False. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors
+        marker_fill_color (str | list): Hex color string for the fill color of markers. Defaults to
+          fcp.DEFAULT_COLORS. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors
+        marker_jitter | jitter (boolean): For boxplots add random noise on x-axis to show separation between
+          markers. Defaults to True. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/boxplot.html#Jitter
+        marker_size (float): Size in pixels of the data point markers. Defaults to 6. Example: None
+        markers (boolean): Enable/disable data point markers. Defaults to True. Example: None
+        AX_[H|V]LINES:
+        ax_hlines|ax2_hlines (float|list of tuples and floats): Add horizontal lines to the plot; if only
+          float value is provided add a solid black line with width=1 pixel at that value; if tuple add any
+          one or more of the following in order: [1] float value or DataFrame column name [required]; [2] hex
+          string for line color; [3] line style str; [4] line width in pixels; [5] line alpha transparency
+          value from 0-1; [6] legend text  [added automatically if using a column name for value]. Defaults to
+          None. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Horizontal-&-vertical-
+          lines
+        ax_vlines|ax2_vlines (float|list of tuples and floats): Add vertical lines to the plot [same
+          parameters as ax_hlines]. Defaults to None. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Horizontal-&-vertical-lines
+        CONTROL_LIMITS:
+        control_limit_side (str): Determines if shaded region is <= lcl and >= ucl {"outside"} or between the
+          lcl and ucl {"inside"}. Defaults to outside. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits
+        lcl (float): Float value to start the lower control limit shading region. Defaults to None. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits
+        lcl | ucl_edge_alpha (float): Transparency value for the line starting the control limit shaded region
+          between 0-1. Defaults to 0.25. Example: None
+        lcl | ucl_edge_color (str): Hex color string for the the line starting the control limit shaded
+          region. Defaults to fcp.DEFAULT_COLORS. Example: None
+        lcl | ucl_edge_style (str): Line style for the line starting the control limit shaded region {‘-’,
+          ‘--’, ‘-.’, ‘:’}. Defaults to '-'. Example: None
+        lcl | ucl_edge_width (float): Width of the line starting the control limit shaded region in pixels.
+          Defaults to 1. Example: None
+        lcl | ucl_fill_alpha (float): Transparency value for the control limit shaded region fill between 0-1.
+          Defaults to 0.20. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-
+          limits
+        lcl | ucl_fill_color (str): Hex color string for the control limit shaded region fill. Defaults to
+          fcp.DEFAULT_COLORS. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-
+          limits
+        ucl (float): Float value to start the upper control limit shading region. Defaults to None. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits
+        CONFIDENCE_INTERVALS:
+        conf_int (float): Interval with upper and lower bounds based on a single confidence value between 0-1
+          (typical=0.95). Defaults to None. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval
+        conf_int | perc_int | nq_int_edge_alpha (float): Transparency value for the lines bounding the
+          interval shaded region between 0-1. Defaults to 0.25. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval
+        conf_int | perc_int | nq_int_edge_color (str): Hex color string for the the lines bounding the
+          interval shaded region. Defaults to fcp.DEFAULT_COLORS. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval
+        conf_int | perc_int | nq_int_edge_style (str): Line style for the lines bounding the interval shaded
+          region {‘-’, ‘--’, ‘-.’, ‘:’}. Defaults to '-'. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval
+        conf_int | perc_int | nq_int_edge_width (float): Width of the lines bounding the interval shaded
+          region in pixels. Defaults to 1. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval
+        conf_int | perc_int | nq_int_fill_alpha (float): Transparency value for the interval shaded region
+          fill between 0-1. Defaults to 0.20. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval
+        conf_int | perc_int | nq_int_fill_color (str): Hex color string for the interval shaded region fill.
+          Defaults to fcp.DEFAULT_COLORS. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval
+        nq_int (list of float): Interval with upper and lower bounds based on values of sigma (where the mean
+          of a distribution is sigma=0). Defaults to None. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval
+        perc_int (list of float): Interval with upper and lower bounds based on percentiles between 0-1.
+          Defaults to None. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval
+        FIT:
+        fit (int): Polynomial degree for the fit. Defaults to None. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Line-fit
+        fit_color (str): Hex color string for the fit line. Defaults to #000000. Example: None
+        fit_eqn (boolean): Display the fit equation on the plot. Defaults to False. Example: None
+        fit_font_size (float): Font size of the fit eqn and rsq value. Defaults to 12. Example: None
+        fit_padding (int): Padding in pixels from the top of the plot to the location of the fit eqn. Defaults
+          to 10. Example: None
+        fit_range_x (list): Compute the fit only over a given range of x-values. Defaults to None. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Curve-fitting
+        fit_range_y (list): Compute the fit only over a given range of y-values. Defaults to None. Example:
+          None
+        fit_rsq (boolean): Display the rsq of the fit on the plot. Defaults to False. Example: None
+        REFERENCE_LINES:
+        ref_line (list | pd.Series): The name of one or more columns in the DataFrame or a pandas Series with
+          the same number of rows as the x column. Defaults to None. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line
+        ref_line_alpha (str | list): Transparency value for the reference line(s) between 0-1 (use list if
+          more than one ref_line plotted). Defaults to 1. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line
+        ref_line_color (str | list): Hex color string or list of hex color strings for the reference line (use
+          list if more than one ref_line plotted). Defaults to #000000. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line
+        ref_line_legend_text (str | list): Custom string label(s) to add to a legend for the reference line
+          data (use list if more than one ref_line plotted). Defaults to None. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line
+        ref_line_style (str | list): Matplotlib string character for reference line style {'-'; '--'; '-.'
+          ':'} (use list if more than one ref_line plotted). Defaults to '-'. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line
+        ref_line_width (int | list): Reference line width in pixels (use list if more than one ref_line
+          plotted). Defaults to 1. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line
+        STAT_LINES:
+        stat (str): Calculate a statistic on a data set (any stat value supported by pandas.groupby is valid
+          {'mean', 'std', etc}. Defaults to None. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Stat-lines
+        stat_line_xxx (various): Stat-line styling is controlled by the regular line_xxx values. Defaults to
+          None. Example: None
+        stat_val (str): Alternate column name used as a pseudo x-axis for the stat calculation for cases in
+          which the plotted x-column values are not perfectly aligned. Defaults to None. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Stat-lines
 
-    Optional Keyword Args:
+
+    Examples
+    --------
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'tests' / 'fake_data.csv')
+        >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], ax_size=[400, 300],
+                     filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2')
+
+            .. figure:: ../_static/images/example_plot.png
+
     """
-
     return plotter(data.XY, **dfkwarg(df, kwargs))
 
 
@@ -1103,13 +1664,70 @@ def pie(df, **kwargs):
     Args:
         df (DataFrame): DataFrame containing data to plot
 
-    Required Keyword Args:
-        x (str): x-axis column name with categorical data
-        y (str): y-axis column name with values
+    Keyword Args:
+        x (str): x-axis column name with categorical data [REQUIRED]
+        y (str): y-axis column name with values [REQUIRED]
+        pie_colors | colors (str | list): Wedge fill colors. Defaults to fcp.DEFAULT_COLORS. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#colors
+        pie_counter_clock | counter_clock (bool): Places wedges in a counter-clockwise fashion. Defaults to
+          False. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#counter-clockwise
+        pie_edge_color | edge_color (str): Hex color string for the edge of the pie wedges. Defaults to
+          #ffffff. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#colors
+        pie_edge_style | edge_style (str): Line style for the wedge edge lines {‘-’, ‘--’, ‘-.’, ‘:’}.
+          Defaults to '-’. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#colors
+        pie_edge_width | edge_width (float): Width of the wedge edge lines in pixels. Defaults to 1. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#colors
+        pie_explode | explode (list of float): Emphasize one or more wedges by offsetting it from the center
+          of the pie by some amount. Defaults to None. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#explode
+        pie_fill_alpha | fill_alpha (float): Transparency value for the bars between 0-1. Defaults to 0.85.
+          Example: None
+        pie_font_color | font_color (str): Font color for the wedge labels. Defaults to #444444. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#wedge-labels
+        pie_font_size | font_size (float): Font size for the wedge labels. Defaults to 11. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#wedge-labels
+        pie_font_weight | font_weight (str): Font weight for the wedge labels {'light', 'normal', 'medium',
+          'semibold', 'bold', 'heavy', 'black'}. Defaults to 'normal'. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#wedge-labels
+        pie_inner_radius | inner_radius (float): Distance from the center of the pie to the inner edge; used
+          to make donut plots. Defaults to pie.html#donut. Example: nan
+        pie_label_distance | label_distance (float): Distance from the center of the pie to the category
+          labels. Defaults to 1.1. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#wedge-labels
+        pie_percents | percents (bool): Label each pie wedge with the percentage for that category. Defaults
+          to False. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#labeled-percents
+        pie_percents_distance | percents_distance (float): Distance from center [0] to edge [pie_radius] at
+          which percentage labels are placed. Defaults to 0.6. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#labeled-percents
+        pie_percents_font_color | percents_font_color (str): Font color for the percentage labels. Defaults to
+          #444444. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#labeled-percents
+        pie_percents_font_size | percents_font_size (float): Font size for the percentage labels. Defaults to
+          11. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#labeled-percents
+        pie_percents_font_weight | percents_font_weight (str): Font weight for the percentage labels {'light',
+          'normal', 'medium', 'semibold', 'bold', 'heavy', 'black'}. Defaults to 'normal'. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#labeled-percents
+        pie_radius | radius (float): Sets the radius of the pie chart. Defaults to 1. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#basic-plot
+        pie_rotate_labels | rotate_labels (bool): Rotate the pie labels to align with the bisection line from
+          center of the pie through the wedge. Defaults to False. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#wedge-labels
+        pie_shadow | shadow (bool): Add a shadow to give a 3D appearance to the pie chart. Defaults to False.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#shadow
+        pie_start_angle | start_angle (float): The angle at which the first wedge starts with [3 o'clock = 0;
+          12 o'clock =90; etc]. Defaults to 90. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/pie.html#start-angle
 
-    Optional Keyword Args:
+    Examples
+    --------
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'tests/fake_data_bar.csv')
+        >>> df.loc[df.pH < 0, 'pH'] = -df.pH
+        >>> fcp.pie(df, x='Liquid', y='pH', filter='Measurement=="A" & T [C]==25')
+
+            .. figure:: ../_static/images/example_pie.png
     """
-
     return plotter(data.Pie, **dfkwarg(df, kwargs))
 
 
@@ -1195,175 +1813,920 @@ def set_theme(theme=None):
 
 # functions for docstring purposes only
 def axes():
-    """Dummy function to return the axes API with `help()` (not used directly for plotting)."""
+    """Dummy function to return the axes API with ``help()`` (not used directly for plotting).
 
+    Keyword Args:
+        ax_edge_alpha (str): Transparency value for axes edge between 0-1. Defaults to 1. Example: None
+        ax_edge_bottom (boolean): Enable/disable the bottom axes edge (or spine). Defaults to True. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges
+        ax_edge_color (str): Hex color string for the border edge of the axes region. Defaults to #aaaaaa.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Typical-elements
+        ax_edge_left (boolean): Enable/disable the left axes edge (or spine). Defaults to True. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges
+        ax_edge_right (boolean): Enable/disable the right axes edge (or spine). Defaults to True. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges
+        ax_edge_top (boolean): Enable/disable the top axes edge (or spine). Defaults to True. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges
+        ax_edge_width (float): Width of the axes border in pixels. Defaults to 1. Example: None
+        ax_fill_alpha (str): Transparency value for axes fill between 0-1. Defaults to 1. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Alpha
+        ax_fill_color (str): Hex color string for the fill color of the axes region. Defaults to #eaeaea.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Alpha
+        ax_scale | ax2_scale (str): Set the scale type of the axes {'linear'; 'logx'; 'semilogx'; 'logy';
+          'semilogy'; 'loglog'; 'log'; 'symlog'; 'logit'}. Defaults to 'linear'. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Log-scale
+        ax_size (list of int): Axes size [width, height]; note this is not the size of the figure. Defaults to
+          [400, 400]. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Time-series
+        share_col (boolean): Share the x and y axis ranges of subplots in the same column when grouping.
+          Defaults to True. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Share-
+          columns
+        share_row (boolean): Share the x and y axis ranges of subplots in the same row when grouping. Defaults
+          to True. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Share-row
+        share_x (boolean): Share the x-axis range across grouped plots with multiple axes. Defaults to True.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes-sharing
+        share_x2 (boolean): Share the secondary x-axis range across grouped plots with multiple axes. Defaults
+          to True. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes-sharing
+        share_y (boolean): Share the y-axis range across grouped plots with multiple axes. Defaults to True.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes-sharing
+        share_y2 (boolean): Share the secondary y-axis range across grouped plots with multiple axes. Defaults
+          to True. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes-sharing
+        twin_x (boolean): Add a secondary y-axis by "twinning" the x-axis. Defaults to False. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Shared-x-axis-(twin_x)
+        twin_y (boolean): Add a secondary x-axis by "twinning" the y-axis. Defaults to False. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Shared-y-axis-(twin_y)
+
+    Examples
+    --------
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'tests' / 'fake_data.csv')
+        >>> fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], legend=['Die', 'Substrate'],
+                     col='Boost Level', twin_x=True,
+                     share_y=False, share_y2=False, share_x=True,
+                     filter='Target Wavelength==450 & Temperature [C]==25',
+                     ax_edge_color='#FF0000', ax_edge_left=False, ax_edge_right=False, ax_edge_width=2,
+                     ax_fill_color='#96BEAA', ax_fill_alpha=0.5,
+                     ax_scale='logx', ax_size=[400, 300])
+
+            .. figure:: ../_static/images/example_axes.png
+
+               Axes element is shown in olive green with red borders
+
+    """
     pass
 
 
 def cbar():
-    """Dummy function to return the colorbar API with `help()` (not used directly for plotting)."""
+    """Dummy function to return the colorbar API with `help()` (not used directly for plotting).
 
+    Keyword Args:
+        cbar (bool): Toggle colorbar on/off for contour and heatmap plots. Defaults to False.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Filled-contour
+        size (int): cbar width [height will match the height of the axes]. Defaults to 30. Example: None
+
+    Examples
+    --------
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'tests/fake_data_contour.csv')
+        >>> fcp.contour(cc, x='X', y='Y', z='Value', cbar=True, cbar_size=20, xmin=-4, xmax=2, ymin=-4, ymax=2)
+
+            .. figure:: ../_static/images/example_cbar.png
+
+    """
     pass
 
 
 def figure():
-    """Dummy function to return the figure API with `help()` (not used directly for plotting)."""
+    """Dummy function to return the figure API with `help()` (not used directly for plotting).
 
-    pass
+    Keyword Args:
+        fig_edge_alpha (str): Transparency value for figure edge between 0-1. Defaults to 1. Example: None
+        fig_edge_color (str): Hex color string for the border edge of the figure region. Defaults to #aaaaaa.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Typical-elements
+        fig_edge_width (float): Width of the figure border in pixels. Defaults to 3. Example: None
+        fig_fill_alpha (str): Transparency value for figure fill between 0-1. Defaults to 1. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Alpha
+        fig_fill_color (str): Hex color string for the fill color of the figure region. Defaults to #eaeaea.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Alpha
 
+    Examples
+    --------
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'tests' / 'fake_data.csv')
+        >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
+                     filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
+                     fig_edge_color='#000000', fig_edge_width=3, fig_edge_alpha=0.5,
+                     fig_fill_color='#96BEAA', fig_fill_alpha=0.8,
+                     ax_size=[400, 300]
 
-def grouping():
-    """Dummy function to return the grouping API with `help()` (not used directly for plotting)."""
+            .. figure:: ../_static/images/example_figure.png
 
+               Figure element is shown in olive green with red border
+    """
     pass
 
 
 def gridlines():
-    """Dummy function to return the gridline API with `help()` (not used directly for plotting)."""
+    """Dummy function to return the gridline API with `help()` (not used directly for plotting).
 
+    Keyword Args:
+        grid_major (boolean): Enable/disable major x-axis and y-axis gridlines. Defaults to True. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_major_alpha (str): Transparency value for major gridlines between 0-1. Defaults to 1. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_major_color (str): Hex-axis color string for x-axis and y-axis major gridlines. Defaults to
+          #ffffff. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_major_width (float): Major gridline width in pixels (float ok). Defaults to 1.3. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_major_x (boolean): Enable/disable major x-axis gridlines. Defaults to True. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_major_x2 (boolean): Enable/disable secondary-axis major x-axis gridlines. Defaults to True.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_major_x2_alpha (str): Transparency value for secondary-axis major x-axis gridlines between 0-1.
+          Defaults to 1. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_major_x2_color (str): Hex-axis color string for secondary-axis x-axis major gridlines. Defaults
+          to #ffffff. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_major_x2_width (float): Major secondary x-axis gridline width in pixels (float ok). Defaults to
+          1.3. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_major_x_alpha (str): Transparency value for major x-axis gridlines between 0-1. Defaults to 1.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_major_x_color (str): Hex-axis color string for x-axis major gridlines. Defaults to #ffffff.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_major_x_width (float): Major x-axis gridline width in pixels (float ok). Defaults to 1.3.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_major_y (boolean): Enable/disable major y-axis gridlines. Defaults to True. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_major_y2 (boolean): Enable/disable secondary-axis major y-axis gridlines. Defaults to True.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_major_y2_alpha (str): Transparency value for secondary-axis major y-axis gridlines between 0-1.
+          Defaults to 1. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_major_y2_color (str): Hex-axis color string for secondary-axis y-axis major gridlines. Defaults
+          to #ffffff. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_major_y2_width (float): Major secondary y-axis gridline width in pixels (float ok). Defaults to
+          1.3. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_major_y_alpha (str): Transparency value for major y-axis gridlines between 0-1. Defaults to 1.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_major_y_color (str): Hex-axis color string for y-axis major gridlines. Defaults to #ffffff.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_major_y_width (float): Major y-axis gridline width in pixels (float ok). Defaults to 1.3.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_minor (boolean): Enable/disable minor x-axis and y-axis gridlines. Defaults to True. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_minor_alpha (str): Transparency value for minor gridlines between 0-1. Defaults to 1. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_minor_color (str): Hex-axis color string for x-axis and y-axis minor gridlines. Defaults to
+          #ffffff. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_minor_width (float): minor gridline width in pixels (float ok). Defaults to 0.5. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_minor_x (boolean): Enable/disable minor x-axis gridlines. Defaults to True. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_minor_x2 (boolean): Enable/disable secondary-axis minor x-axis gridlines. Defaults to True.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_minor_x2_alpha (str): Transparency value for secondary-axis minor x-axis gridlines between 0-1.
+          Defaults to 1. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_minor_x2_color (str): Hex-axis color string for secondary-axis x-axis minor gridlines. Defaults
+          to #ffffff. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_minor_x2_width (float): minor secondary x-axis gridline width in pixels (float ok). Defaults to
+          0.5. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_minor_x_alpha (str): Transparency value for minor x-axis gridlines between 0-1. Defaults to 1.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_minor_x_color (str): Hex-axis color string for x-axis minor gridlines. Defaults to #ffffff.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_minor_x_width (float): minor x-axis gridline width in pixels (float ok). Defaults to 0.5.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_minor_y (boolean): Enable/disable minor y-axis gridlines. Defaults to True. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_minor_y2 (boolean): Enable/disable secondary-axis minor y-axis gridlines. Defaults to True.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_minor_y2_alpha (str): Transparency value for secondary-axis minor y-axis gridlines between 0-1.
+          Defaults to 1. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_minor_y2_color (str): Hex-axis color string for secondary-axis y-axis minor gridlines. Defaults
+          to #ffffff. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_minor_y2_width (float): minor secondary y-axis gridline width in pixels (float ok). Defaults to
+          0.5. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_minor_y_alpha (str): Transparency value for minor y-axis gridlines between 0-1. Defaults to 1.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_minor_y_color (str): Hex-axis color string for y-axis minor gridlines. Defaults to #ffffff.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        grid_minor_y_width (float): minor y-axis gridline width in pixels (float ok). Defaults to 0.5.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+
+    Examples
+    --------
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'tests' / 'fake_data.csv')
+        >>> fcp.plot(df, x='Voltage', y='I [A]', lines=False, ax_size=[400, 300],
+                     filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
+                     grid_major_x_style='--', grid_major_y_color='#00EE00',
+                     grid_minor=True, grid_minor_color='#BB0000', grid_minor_y_alpha=0.3, grid_minor_x_width=2
+
+            .. figure:: ../_static/images/example_gridlines.png
+    """
+    pass
+
+
+def grouping():
+    """Dummy function to return the grouping API with `help()` (not used directly for plotting).
+
+    Keyword Args:
+        col (str): [1] name of DataFrame column for grouping into columns of subplots based on each unique
+          value; or [2] col="x" with multiple values defined for "x" creates columns of subplots for each
+          x-value. Defaults to None. Example: None
+        groups (str|list):
+          *for boxplot* = name or list of names of DataFrame column(s) used to split the data
+          into separate boxes. Defaults to None. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/grouping.html#boxplots
+
+          *for xy plot* = name of DataFrame column that can be used to separate the data into unique
+          groups so plot lines do not circle back on themselves. Defaults to None. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/grouping.html#xy-plots
+        row (str): [1] name of DataFrame column for grouping into rows of subplots based on each unique value;
+          or [2] row="y" with multiple values defined for "y" creates rows of subplots for each y-value.
+          Defaults to None. Example: None
+        wrap (str | list): [1] name or list of names of DataFrame column(s) for grouping into a grid of
+          subplots; [2] wrap="x" with multiple values defined for "x" creates a grid of subplots for each
+          x-value; or [3] wrap="y" with multiple values defined for "y" creates a grid of subplots for each
+          y-value. Defaults to None. Example: None
+
+    Examples
+    --------
+    Row by column style:
+
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'tests' / 'fake_data.csv')
+        >>> fcp.plot(df, x='Voltage', y='I [A]', col='Die', row='Substrate',
+                     filter='Target Wavelength==450 & Temperature [C]==25 & Boost  Level==0.2', ax_size=[300, 250])
+
+            .. figure:: ../_static/images/example_grouping1.png
+               :width: 1078px
+
+    Wrap style:
+
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'tests' / 'fake_data.csv')
+        >>> fcp.plot(df, x='Voltage', y='I [A]', wrap=['Die', 'Substrate'],
+                     filter='Target Wavelength==450 & Temperature [C]==25 & Boost  Level==0.2', ax_size=[300, 250])
+
+            .. figure:: ../_static/images/example_grouping2.png
+                :width: 977px
+
+    Box plot:
+
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'tests' / 'fake_data.csv')
+        >>> fcp.plot(df, y='Value', groups=['Batch', 'Sample'])
+
+            .. figure:: ../_static/images/example_grouping3.png
+               :width: 544px
+
+    """
     pass
 
 
 def labels():
-    """Dummy function to return the labels API with `help()` (not used directly for plotting)."""
+    """Dummy function to return the labels API with `help()` (not used directly for plotting).
 
+    Keyword Args:
+        AXES_LABELS:
+        label_bg_padding (float): Padding around the label text for the background object behind the text.
+          Defaults to 2. Example: None
+        label_q (str): Custom text for a specific axes label [where q = x, y, x2, y2]. Defaults to DataFrame
+          column name. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Multiple-y-only
+        label_q_edge_alpha (float): Transparency value for the label edge between 0-1 [where q = x, y, x2,
+          y2]. Defaults to 1. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Edge-
+          colors
+        label_q_edge_color (str): Hex color string for the label edge [where q = x, y, x2, y2]. Defaults to
+          #ffffff. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Edge-colors
+        label_q_edge_width (float): Width of the border edge of a label in pixels [where q = x, y, x2, y2].
+          Defaults to 1. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Edge-colors
+        label_q_fill_alpha (float): Transparency value for the label background fill between 0-1 [where q = x,
+          y, x2, y2]. Defaults to 1. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fill-colors
+        label_q_fill_color (str): Hex color string for the label edge [where q = x, y, x2, y2]. Defaults to
+          #ffffff. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fill-colors
+        label_q_font (str): Font for a specific axes label [where q = x, y, x2, y2]. Defaults to sans-serif.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fonts
+        label_q_font_color (str): Hex color string for font color of a specific axes label [where q = x, y,
+          x2, y2]. Defaults to #000000. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fonts
+        label_q_font_size (str): Font size for a specific axes label [where q = x, y, x2, y2]. Defaults to 14.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fonts
+        label_q_font_style (str): Font style {'normal' | 'italic' | 'oblique'} for a specific axes label
+          [where q = x, y, x2, y2]. Defaults to italic. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fonts
+        label_q_font_weight (str): Font weight {'normal' | 'bold' | 'heavy' | 'light' | 'ultrabold' |
+          'ultralight'} for a specific axes label [where q = x, y, x2, y2]. Defaults to bold. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fonts
+        RC_LABELS:
+        label_q_edge_alpha (float): Transparency value for the label edge between 0-1 [where q = rc, col, row,
+          wrap; rc changes all]. Defaults to 1. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Edge-colors
+        label_q_edge_color (str): Hex color string for the label edge [where q = rc, col, row, wrap; rc
+          changes all]. Defaults to #8c8c8c. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Edge-colors
+        label_q_edge_width (float): Width of the border edge of a label in pixels [where q = rc, col, row,
+          wrap; rc changes all]. Defaults to 0. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Edge-colors
+        label_q_fill_alpha (float): Transparency value for the label background fill between 0-1 [where q =
+          rc, col, row, wrap; rc changes all]. Defaults to 1. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fill-colors
+        label_q_fill_color (str): Hex color string for the label edge [where q = rc, col, row, wrap; rc
+          changes all]. Defaults to #8c8c8c. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fill-colors
+        label_q_font (str): Font for a specific axes label [where q = rc, col, row, wrap; rc changes all].
+          Defaults to sans-serif. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fonts
+        label_q_font_color (str): Hex color string for font color of a specific axes label [where q = rc, col,
+          row, wrap; rc changes all]. Defaults to #ffffff. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fonts
+        label_q_font_size (str): Font size for a specific axes label [where q = rc, col, row, wrap; rc changes
+          all]. Defaults to 16. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fonts
+        label_q_font_style (str): Font style {'normal' | 'italic' | 'oblique'} for a specific axes label
+          [where q = rc, col, row, wrap; rc changes all]. Defaults to normal. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fonts
+        label_q_font_weight (str): Font weight {'normal' | 'bold' | 'heavy' | 'light' | 'ultrabold' |
+          'ultralight'} for a specific axes label [where q = rc, col, row, wrap; rc changes all]. Defaults to
+          bold. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fonts
+        label_q_size (str): Label background rectangle height for an col/wrap label OR width for row
+          label,30,None title_wrap_font,str,Font for the wrap title bar text". Defaults to label_wrap_font.
+          Example: None
+        title_wrap_edge_alpha (float): Transparency value for the wrap title bar edge between 0-1. Defaults to
+          label_rc_. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Edge-colors
+        title_wrap_edge_color (str): Hex color string for the wrap title bar edge. Defaults to #5f5f5f.
+          Example: None
+        title_wrap_edge_width (float): Width of the wrap title bar edge in pixels. Defaults to
+          label_wrap_edge_width. Example: None
+        title_wrap_fill_alpha (float): Transparency value for the wrap title bar background fill between 0-1.
+          Defaults to label_wrap_fill_alpha. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fill-colors
+        title_wrap_fill_color (str): Hex color string for the wrap title bar. Defaults to #5f5f5f. Example:
+          None
+        title_wrap_font_color (str): Hex color string for the wrap title bar text. Defaults to
+          label_wrap_font_color. Example: None
+        title_wrap_font_size (str): Font size for the wrap title bar text. Defaults to label_wrap_font_size.
+          Example: None
+        title_wrap_font_style (str): Font style {'normal' | 'italic' | 'oblique'} for the wrap title bar text.
+          Defaults to label_wrap_font_style. Example: None
+        title_wrap_font_weight (str): Font weight {'normal' | 'bold' | 'heavy' | 'light' | 'ultrabold' |
+          'ultralight'} for the wrap title bar text. Defaults to label_wrap_font_weight. Example: None
+        title_wrap_size (str): Label background rectangle height for the wrap title bar. Defaults to
+          label_wrap_size. Example: None
+
+    Examples
+    --------
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'tests' / 'fake_data.csv')
+        >>> fcp.plot(df, x='Voltage', y='I [A]', col='Die', row='Substrate',
+                     filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2', ax_size=[300, 250],
+                     label_rc_edge_color='#000000', label_rc_edge_width=2,
+                     label_row_font_color='#AA0000', label_row_fill_alpha=0.5, label_row_fill_color='#00AA00',
+                     label_col_fill_color='#0000AA',
+                     label_x_font_style='normal', label_y_font_color='#AABBCC', label_x_fill_color='#DDDDDD')
+
+            .. figure:: ../_static/images/example_labels.png
+    """
     pass
 
 
 def legend():
-    """Dummy function to return the legend API with `help()` (not used directly for plotting)."""
+    """Dummy function to return the legend API with `help()` (not used directly for plotting).
 
+    Keyword Args:
+        legend_edge_color (str): Hex color string for the legend border. Defaults to #ffffff. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Typical-elements
+        legend_edge_width (float): Width of the legend border in pixels. Defaults to 1. Example: None
+        legend_font_size (float): Font size of the legend text. Defaults to 12. Example: None
+        legend_location (int): Position of the legend {0 = outside; 1 = upper right; 2 = upper left; 3 = lower
+          left; 4 = lower right; 5 = right; 6 = center left; 7 = center right; 8 = lower center; 9 = upper
+          center; 10 = center; 11 = below}. Defaults to  0. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/grouping.html#Location
+        legend_marker_alpha (float): Transparency value for legend markers between 0-1. Defaults to 1.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Alpha
+        legend_marker_size (float): Marker size in the legend in pixels. Defaults to 7. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-size
+        legend_on (boolean): Enable/disable visibility of legend that has been created using the legend kwarg.
+          Defaults to True [if legend enabled]. Example: None
+        legend_points (int): Number of points in the legend region for each entry [to enable multiple markers
+          as in matplotlib]. Defaults to 1. Example: None
+        legend_title (str): Custom title for the legend region [default is the column name used for the legend
+          grouping]. Defaults to None. Example: None
+
+    Examples
+    --------
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'tests' / 'fake_data.csv')
+        >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
+                     filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2', ax_size=[400, 300],
+                     legend_edge_color='#555555', legend_edge_width=2, legend_font_size=10,
+                     legend_marker_size=10, legend_marker_alpha=0.5, legend_title='DS9')
+
+            .. figure:: ../_static/images/example_legend.png
+    """
     pass
 
 
 def lines():
-    """Dummy function to return the lines API with `help()` (not used directly for plotting)."""
+    """Dummy function to return the lines API with `help()` (not used directly for plotting).
 
+    Keyword Args:
+        cmap (str): Color map name (overrides all other color parameters). Defaults to None. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Colormap
+        line_alpha (str | list): Transparency value for the line(s) between 0-1. Defaults to 1. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling
+        line_color (str | list): Hex color string or list of hex color strings for the plot lines. Defaults to
+          fcp.DEFAULT_COLORS. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-
+          styling
+        line_style (str | list): Matplotlib string character for line style {'-'; '--'; '-.' ':'}. Defaults to
+          '-'. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling
+        line_width (int | list): Line width in pixels. Defaults to 1. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling
+        lines (boolean): Enable/disable plotting of lines. Defaults to True. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Scatter
+
+    Examples
+    --------
+    All lines the same color:
+
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'tests' / 'fake_data.csv')
+        >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], ax_size=[400, 300],
+                     filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
+                     line_color='#000000', line_width=2)
+
+            .. figure:: ../_static/images/example_lines1.png
+
+    Patterns of alternating custom color and style:
+
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'tests' / 'fake_data.csv')
+        >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], ax_size=[400, 300],
+                     filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
+                     line_color=['#AA00AA', '#00AA00', '#0000AA'],  line_width=2, line_style=['-', '--'])
+
+            .. figure:: ../_static/images/example_lines2.png
+
+    Use a colormap with alpha:
+
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'tests' / 'fake_data.csv')
+        >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], ax_size=[400, 300],
+                     filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
+                     cmap='viridis', lines_alpha=0.7)
+
+            .. figure:: ../_static/images/example_lines3.png
+
+    No lines:
+
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'tests' / 'fake_data.csv')
+        >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], ax_size=[400, 300],
+                     filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
+                     lines=False)
+
+            .. figure:: ../_static/images/example_lines4.png
+    """
     pass
 
 
 def markers():
-    """Dummy function to return the markers API with `help()` (not used directly for plotting)."""
+    """Dummy function to return the markers API with `help()` (not used directly for plotting).
 
-    pass
+    Keyword Args:
+        marker_edge_color (str | list): Hex color string for the marker edges. Defaults to fcp.DEFAULT_COLORS.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors
+        marker_edge_width (float): Marker edge line width in pixels. Defaults to 1. Example: None
+        marker_fill (boolean): Enable/disable color fill in markers. Defaults to False. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors
+        marker_fill_color (str | list): Hex color string for the fill color of markers. Defaults to
+          fcp.DEFAULT_COLORS. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors
+        marker_jitter | jitter (boolean): For boxplots add random noise on x-axis to show separation between
+          markers. Defaults to True. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/boxplot.html#Jitter
+        marker_size (float): Size in pixels of the data point markers. Defaults to 6. Example: None
+        markers (boolean): Enable/disable data point markers. Defaults to True. Example: None
 
+    Examples
+    --------
+    No markers:
 
-def ticks():
-    """Dummy function to return the ticks API with `help()` (not used directly for plotting)."""
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'tests' / 'fake_data.csv')
+        >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], ax_size=[400, 300],
+                     filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
+                     markers=False)
 
+            .. figure:: ../_static/images/example_markers1.png
+
+    Styled markers:
+
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'tests' / 'fake_data.csv')
+        >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], ax_size=[400, 300],
+                     filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
+                     marker_size=10, marker_edge_width=2, marker_fill=True)
+
+            .. figure:: ../_static/images/example_markers2.png
+
+    Custom markers types and color (a mix of indices from the ``fcp.DEFAULT_COLORS`` list and a custom hex color):
+
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'tests' / 'fake_data.csv')
+        >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], ax_size=[400, 300],
+                     filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
+                     markers=['o', None, '+', '*', 'B', None], marker_edge_color=[3, 0, 6, 1, '#FF0000'])
+
+            .. figure:: ../_static/images/example_markers3.png
+
+    """
     pass
 
 
 def tick_labels():
-    """Dummy function to return the tick labels API with `help()` (not used directly for plotting)."""
+    """Dummy function to return the tick labels API with `help()` (not used directly for plotting).
 
+    Keyword Args:
+        tick_labels (boolean): Enable/disable all tick labels. Defaults to True. Example: None
+        tick_labels_edge_alpha (float): Transparency value for all tick labels background edges between 0-1.
+          Defaults to 0. Example: None
+        tick_labels_edge_color (str): Hex color string for all tick label background edges. Defaults to
+          #ffffff. Example: None
+        tick_labels_edge_width (float): Width of the border edge of all tick labels in pixels. Defaults to 0.
+          Example: None
+        tick_labels_fill_alpha (float): Transparency value for the background fill of all tick labels between
+          0-1. Defaults to 1. Example: None
+        tick_labels_fill_color (str): Hex color string for all tick label background edges. Defaults to
+          #ffffff. Example: None
+        tick_labels_font (str): Font for all tick labels. Defaults to sans-serif. Example: None
+        tick_labels_font_color (str): Hex color string for font color of all tick labels. Defaults to #000000.
+          Example: None
+        tick_labels_font_size (str): Font size for all tick labels. Defaults to 13. Example: None
+        tick_labels_font_style (str): Font style {'normal' | 'italic' | 'oblique'} for all tick labels.
+          Defaults to normal. Example: None
+        tick_labels_font_weight (str): Font weight {'normal' | 'bold' | 'heavy' | 'light' | 'ultrabold' |
+          'ultralight'} of all tick labels. Defaults to normal. Example: None
+        tick_labels_major (boolean): Enable/disable all major tick labels. Defaults to True. Example: None
+        tick_labels_major_edge_alpha (float): Transparency value for all major tick labels background edges
+          between 0-1. Defaults to 0. Example: None
+        tick_labels_major_edge_color (str): Hex color string for all major tick label background edges.
+          Defaults to #ffffff. Example: None
+        tick_labels_major_edge_width (float): Width of the border edge of all major tick labels in pixels.
+          Defaults to 0. Example: None
+        tick_labels_major_fill_alpha (float): Transparency value for the background fill of all major tick
+          labels between 0-1. Defaults to 1. Example: None
+        tick_labels_major_fill_color (str): Hex color string for all major tick label background edges.
+          Defaults to #ffffff. Example: None
+        tick_labels_major_font (str): Font for all major tick labels. Defaults to sans-serif. Example: None
+        tick_labels_major_font_color (str): Hex color string for font color of all major tick labels. Defaults
+          to #000000. Example: None
+        tick_labels_major_font_size (str): Font size for all major tick labels. Defaults to 13. Example: None
+        tick_labels_major_font_style (str): Font style {'normal' | 'italic' | 'oblique'} for all major tick
+          labels. Defaults to normal. Example: None
+        tick_labels_major_font_weight (str): Font weight {'normal' | 'bold' | 'heavy' | 'light' | 'ultrabold'
+          | 'ultralight'} of all major tick labels. Defaults to normal. Example: None
+        tick_labels_major_q (boolean): Enable/disable major tick labels of a specific axes [where q = x, y,
+          x2, y2]. Defaults to True. Example: None
+        tick_labels_major_q_edge_alpha (float): Transparency value for major tick labels background edges of a
+          specific axes between 0-1 [where q = x, y, x2, y2]. Defaults to 0. Example: None
+        tick_labels_major_q_edge_color (str): Hex color string for major tick label background edges of a
+          specific axis [where q = x, y, x2, y2]. Defaults to #ffffff. Example: None
+        tick_labels_major_q_edge_width (float): Width of the border edge of all major tick labels of a
+          specific axis in pixels [where q = x, y, x2, y2]. Defaults to 0. Example: None
+        tick_labels_major_q_fill_alpha (float): Transparency value for the background fill of all major tick
+          labels of a specific axis between 0-1 [where q = x, y, x2, y2]. Defaults to 1. Example: None
+        tick_labels_major_q_fill_color (str): Hex color string for major tick label background edges of a
+          specific axis [where q = x, y, x2, y2]. Defaults to #ffffff. Example: None
+        tick_labels_major_q_font (str): Font for major tick labels of a specific axes [where q = x, y, x2,
+          y2]. Defaults to sans-serif. Example: None
+        tick_labels_major_q_font_color (str): Hex color string for font color of major tick labels of a
+          specific axes [where q = x, y, x2, y2]. Defaults to #000000. Example: None
+        tick_labels_major_q_font_size (str): Font size for major tick labels of a specific axes label [where q
+          = x, y, x2, y2]. Defaults to 13. Example: None
+        tick_labels_major_q_font_style (str): Font style {'normal' | 'italic' | 'oblique'} for major tick
+          labels of a specific axes [where q = x, y, x2, y2]. Defaults to normal. Example: None
+        tick_labels_major_q_font_weight (str): Font weight {'normal' | 'bold' | 'heavy' | 'light' |
+          'ultrabold' | 'ultralight'} of major tick labels of a specific axes [where q = x, y, x2, y2].
+          Defaults to normal. Example: None
+        tick_labels_minor (boolean): Enable/disable all minor tick labels. Defaults to False. Example: None
+        tick_labels_minor_edge_alpha (float): Transparency value for all minor tick labels background edges
+          between 0-1. Defaults to 0. Example: None
+        tick_labels_minor_edge_color (str): Hex color string for all minor tick label background edges.
+          Defaults to #ffffff. Example: None
+        tick_labels_minor_edge_width (float): Width of the border edge of all minor tick labels in pixels.
+          Defaults to 0. Example: None
+        tick_labels_minor_fill_alpha (float): Transparency value for the background fill of all minor tick
+          labels between 0-1. Defaults to 1. Example: None
+        tick_labels_minor_fill_color (str): Hex color string for all minor tick label background edges.
+          Defaults to #ffffff. Example: None
+        tick_labels_minor_font (str): Font for all minor tick labels. Defaults to sans-serif. Example: None
+        tick_labels_minor_font_color (str): Hex color string for font color of all minor tick labels. Defaults
+          to #000000. Example: None
+        tick_labels_minor_font_size (str): Font size of a specific axes label [where q = x, y, x2, y2].
+          Defaults to 10. Example: None
+        tick_labels_minor_font_style (str): Font style {'normal' | 'italic' | 'oblique'} for all minor tick
+          labels. Defaults to normal. Example: None
+        tick_labels_minor_font_weight (str): Font weight {'normal' | 'bold' | 'heavy' | 'light' | 'ultrabold'
+          | 'ultralight'} of all minor tick labels. Defaults to normal. Example: None
+        tick_labels_minor_q (boolean): Enable/disable minor tick labels of a specific axes [where q = x, y,
+          x2, y2]. Defaults to False. Example: None
+        tick_labels_minor_q_edge_alpha (float): Transparency value for the label edge of a specific axes
+          between 0-1 [where q = x, y, x2, y2]. Defaults to 0. Example: None
+        tick_labels_minor_q_edge_color (str): Hex color string for minor tick label background edges of a
+          specific axis [where q = x, y, x2, y2]. Defaults to #ffffff. Example: None
+        tick_labels_minor_q_edge_width (float): Width of the border edge of all minor tick labels of a
+          specific axis in pixels [where q = x, y, x2, y2]. Defaults to 0. Example: None
+        tick_labels_minor_q_fill_alpha (float): Transparency value for the background fill of all minor tick
+          labels of a specific axis between 0-1 [where q = x, y, x2, y2]. Defaults to 1. Example: None
+        tick_labels_minor_q_fill_color (str): Hex color string for minor tick label background edges of a
+          specific axes [where q = x, y, x2, y2]. Defaults to #ffffff. Example: None
+        tick_labels_minor_q_font (str): Font for minor tick labels of a specific axes [where q = x, y, x2,
+          y2]. Defaults to sans-serif. Example: None
+        tick_labels_minor_q_font_color (str): Hex color string for font color of minor tick labels of a
+          specific axes [where q = x, y, x2, y2]. Defaults to #000000. Example: None
+        tick_labels_minor_q_font_size (str): Font size for all minor tick labels. Defaults to 10. Example:
+          None
+        tick_labels_minor_q_font_style (str): Font style {'normal' | 'italic' | 'oblique'} for minor tick
+          labels of a specific axes [where q = x, y, x2, y2]. Defaults to normal. Example: None
+        tick_labels_minor_q_font_weight (str): Font weight {'normal' | 'bold' | 'heavy' | 'light' |
+          'ultrabold' | 'ultralight'} of minor tick labels of a specific axes [where q = x, y, x2, y2].
+          Defaults to normal. Example: None
+
+    Examples
+    --------
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'tests' / 'fake_data.csv')
+        >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], ax_size=[400, 300],
+                     filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
+                     tick_labels_major_x_font_color='#FF0000', tick_labels_major_x_font_style='italic',
+                     tick_labels_major_x_fill_color='#EEEEEE', tick_labels_major_x_edge_color='#0000FF',
+                     tick_labels_minor=True, tick_labels_minor_y_font_weight='bold', tick_labels_minor_x_edge_width=1,
+                     tick_labels_minor_y_edge_color='#00FF00', tick_labels_minor_y_edge_width=1,
+                     tick_labels_minor_y_font_color='#FF00FF', tick_labels_minor_x_rotation=45,
+                     tick_labels_minor_y_fill_color='#000000', tick_labels_minor_font_size=6)
+
+            .. figure:: ../_static/images/example_tick_labels.png
+    """
+    pass
+
+
+def ticks():
+    """Dummy function to return the ticks API with `help()` (not used directly for plotting).
+
+    Keyword Args:
+        ticks_major (boolean): Enable/disable major x-axis and y-axis tick marks. Defaults to True. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_major_alpha (str): Transparency-axis value for major tick marks between 0-1. Defaults to 1.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_major_color (str): Hex-axis color string for x-axis and y-axis major tick marks. Defaults to
+          #ffffff. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_major_direction (str): Point tick marks 'in' or 'out' from the axes area. Defaults to 'in'.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-style
+        ticks_major_increment (float): Specify the spacing of major tick marks. Defaults to None. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-increment
+        ticks_major_length (float): Specify the length of the major tick marks in pixels. Defaults to 6.2.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-style
+        ticks_major_width (float): Major tickline width in pixels (float ok). Defaults to 1.3. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_major_width (float): Specify the width of the major tick marks in pixels. Defaults to 2.2.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-style
+        ticks_major_x (boolean): Enable/disable major x-axis tick marks. Defaults to True. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_major_x2 (boolean): Enable/disable secondary-axis major x-axis tick marks. Defaults to True.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_major_x2_alpha (str): Transparency-axis value for secondary-axis major x-axis tick marks between
+          0-1. Defaults to 1. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_major_x2_color (str): Hex-axis color string for secondary-axis x-axis major tick marks. Defaults
+          to #ffffff. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_major_x2_width (float): Major secondary x-axis tickline width in pixels (float ok). Defaults to
+          1.3. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_major_x_alpha (str): Transparency-axis value for major x-axis tickslines between 0-1. Defaults
+          to 1. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_major_x_color (str): Hex-axis color string for x-axis major tick marks. Defaults to #ffffff.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_major_x_width (float): Major x-axis tickline width in pixels (float ok). Defaults to 1.3.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_major_y (boolean): Enable/disable major y-axis tick marks. Defaults to True. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_major_y2 (boolean): Enable/disable secondary-axis major y-axis tick marks. Defaults to True.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_major_y2_alpha (str): Transparency-axis value for secondary-axis major y-axis tick marks between
+          0-1. Defaults to 1. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_major_y2_color (str): Hex-axis color string for secondary-axis y-axis major tick marks. Defaults
+          to #ffffff. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_major_y2_width (float): Major secondary y-axis tickline width in pixels (float ok). Defaults to
+          1.3. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_major_y_alpha (str): Transparency-axis value for major y-axis tick marks between 0-1. Defaults
+          to 1. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_major_y_color (str): Hex-axis color string for y-axis major tick marks. Defaults to #ffffff.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_major_y_width (float): Major y-axis tickline width in pixels (float ok). Defaults to 1.3.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_minor (boolean): Enable/disable minor x-axis and y-axis tick marks. Defaults to True. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_minor_alpha (str): Transparency-axis value for minor tick marks between 0-1. Defaults to 1.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_minor_color (str): Hex-axis color string for x-axis and y-axis minor tick marks. Defaults to
+          #ffffff. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_minor_direction (str): Point tick marks 'in' or 'out' from the axes area. Defaults to 'in'.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-style
+        ticks_minor_length (float): Specify the length of the minor tick marks in pixels. Defaults to 0.67 *
+          ticks_major_length. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-style
+        ticks_minor_number (float): Specify the number of minor tick marks. Defaults to None. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-increment
+        ticks_minor_width (float): Specify the width of the minor tick marks in pixels. Defaults to 0.6 *
+          ticks_major_width. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-style
+        ticks_minor_width (float): minor tickline width in pixels (float ok). Defaults to 0.5. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_minor_x (boolean): Enable/disable minor x-axis tick marks. Defaults to True. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_minor_x2 (boolean): Enable/disable secondary-axis minor x-axis tick marks. Defaults to True.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_minor_x2_alpha (str): Transparency-axis value for secondary-axis minor x-axis tick marks between
+          0-1. Defaults to 1. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_minor_x2_color (str): Hex-axis color string for secondary-axis x-axis minor tick marks. Defaults
+          to #ffffff. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_minor_x2_width (float): minor secondary x-axis tickline width in pixels (float ok). Defaults to
+          0.5. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_minor_x_alpha (str): Transparency-axis value for minor x-axis tick marks between 0-1. Defaults
+          to 1. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_minor_x_color (str): Hex-axis color string for x-axis minor tick marks. Defaults to #ffffff.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_minor_x_width (float): minor x-axis tickline width in pixels (float ok). Defaults to 0.5.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_minor_y (boolean): Enable/disable minor y-axis tick marks. Defaults to True. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_minor_y2 (boolean): Enable/disable secondary-axis minor y-axis tick marks. Defaults to True.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_minor_y2_alpha (str): Transparency-axis value for secondary-axis minor y-axis tick marks between
+          0-1. Defaults to 1. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_minor_y2_color (str): Hex-axis color string for secondary-axis y-axis minor tick marks. Defaults
+          to #ffffff. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_minor_y2_width (float): minor secondary y-axis tickline width in pixels (float ok). Defaults to
+          0.5. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_minor_y_alpha (str): Transparency-axis value for minor y-axis tick marks between 0-1. Defaults
+          to 1. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_minor_y_color (str): Hex-axis color string for y-axis minor tick marks. Defaults to #ffffff.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+        ticks_minor_y_width (float): minor y-axis tickline width in pixels (float ok). Defaults to 0.5.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-marks
+
+    Examples
+    --------
+    Default styling:
+
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'tests' / 'fake_data.csv')
+        >>> fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], legend=['Die', 'Substrate'], ax_size=[400, 300],
+                     filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2')
+
+            .. figure:: ../_static/images/example_ticks1.png
+
+    Ugly styling:
+
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'tests' / 'fake_data.csv')
+        >>> fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], legend=['Die', 'Substrate'], ax_size=[400, 300],
+                     filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
+                     ticks_major_increment=0.1,
+                     ticks_major_x_color='#000000', ticks_major_x_length=15, ticks_major_x_width=4,
+                     ticks_major_y_color='#0000FF', ticks_major_y_direction='out',
+                     ticks_minor=True, ticks_minor_number=3, ticks_minor_color='#00FF00')
+
+            .. figure:: ../_static/images/example_ticks2.png
+    """
+    pass
+
+
+def titles():
+    """Dummy function to return the figure title API with `help()` (not used directly for plotting).
+
+    Keyword Args:
+        title (str): Figure title text. Defaults to None. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fonts
+        title_edge_alpha (float): Transparency value for the title area edge between 0-1. Defaults to 1.
+          Example: None
+        title_edge_color (str): Hex color string for the title area edge. Defaults to #ffffff. Example: None
+        title_edge_width (float): Width of the border edge of a title area in pixels. Defaults to 1. Example:
+          None
+        title_fill_alpha (float): Transparency value for the title area background fill between 0-1. Defaults
+          to 1. Example: None
+        title_fill_color (str): Hex color string for the title area edge. Defaults to #ffffff. Example: None
+        title_font (str): Font for the figure title. Defaults to sans-serif. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fonts
+        title_font_color (str): Hex color string for font color of the figure title. Defaults to #000000.
+          Example: None
+        title_font_size (str): Font size for the figure title. Defaults to 18. Example: None
+        title_font_style (str): Font style {'normal' | 'italic' | 'oblique'} for the figure title. Defaults to
+          italic. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fonts
+        title_font_weight (str): Font weight {a numeric value in range 0-1000 | 'ultralight' | 'light' |
+          'normal' | 'regular' | 'book' | 'medium' | 'roman' | 'semibold' | 'demibold' | 'demi' | 'bold' |
+          'heavy' | 'extra bold' | 'black'} for the figure title. Defaults to bold. Example: None
+
+    Examples
+    --------
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'tests' / 'fake_data.csv')
+        >>> fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], ax_size=[400, 300],
+                     filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2',
+                     title='Vaxis III', title_edge_alpha=0.5, title_edge_color='#333333',
+                     title_edge_width=2, title_fill_alpha=0.2, title_fill_color='#00AA88',
+                     title_font='monospace', title_font_size=24, title_font_style='oblique',
+                     title_font_weight=700)
+
+            .. figure:: ../_static/images/example_title.png
+    """
     pass
 
 
 def ws():
-    """Dummy function to return the white space API with `help()` (not used directly for plotting)."""
+    """Dummy function to return the white space API with `help()` (not used directly for plotting).
 
+    Keyword Args:
+        ws_ax_box_title (int): White space between axes edge and box plot titles. Defaults to 10. Example:
+          None
+        ws_ax_cbar (int): White space from right axes edge to left side of cbar. Defaults to 10. Example: None
+        ws_ax_fig (int): White space right edge of axes to right edge of figure [if no legend present].
+          Defaults to 10. Example: None
+        ws_ax_label_xs (int): Extra white space between axes and label when using separate labels. Defaults to
+          5. Example: None
+        ws_ax_leg (int): White space from right edge of axes to left edge of legend [if present]. Defaults to
+          5. Example: None
+        ws_col (int): White space between column subplots [ignored if tick labels or axes labels are present
+          and wider than this]. Defaults to 30. Example: None
+        ws_fig_ax (int): White space from left figure edge to axes left edge. Defaults to 10. Example: None
+        ws_fig_label (int): White space between top of figure and x2 label [if present]. Defaults to 10.
+          Example: None
+        ws_fig_title (int): White space from top of figure to top of title [if present]. Defaults to 10.
+          Example: None
+        ws_label_col (int): White space from axes and col labels. Defaults to ws_label_rc. Example: None
+        ws_label_fig (int): White space from bottom of x label to bottom of figure. Defaults to ws_fig_label.
+          Example: None
+        ws_label_rc (int): White space between axes and row & col labels. Defaults to 10. Example: None
+        ws_label_row (int): White space from axes to row labels. Defaults to ws_label_rc. Example: None
+        ws_label_tick (int): White space from edge of axes label to edge of tick labels. Defaults to 10.
+          Example: None
+        ws_leg_fig (int): White space from right of legend in position 0 and figure right edge. Defaults to
+          10. Example: None
+        ws_row (int): White space between row subplots [ignored if tick labels or axes labels are present and
+          wider than this]. Defaults to 30. Example: None
+        ws_tick_minimum (int): Minimum width for tick labels. Defaults to 10. Example: None
+        ws_ticks_ax (int): White space from tick labels to edge of axes. Defaults to 5. Example: None
+        ws_title_ax (int): White space bottom of title to top of axes. Defaults to 10. Example: None
+
+    Examples
+    --------
+        >>> import fivecentplots as fcp
+        >>> from pathlib import Path
+        >>> import pandas as pd
+        >>> df = pd.read_csv(Path(fcp.__file__).parent / 'tests' / 'fake_data.csv')
+        >>> fcp.plot(df, x='Voltage', y='I [A]', row='Die', col='Substrate', ax_size=[400, 300],
+                     filter='Target Wavelength==450 & Temperature [C]==25 & Boost Level==0.2', save=True,
+                     fig_edge_color='#000000',
+                     ws_col=100, ws_row=0, ws_ax_fig=250, ws_label_rc=30, ws_ticks_ax=25, ws_label_tick=25)
+
+            .. figure:: ../_static/images/example_ws.png
+    """
     pass
 
 
-# Update the docstrings for the primary plot types with keywords
-# found in an csv files
-bar.__doc__ += keywords.kw_print(kw['bar'])
 
-
-boxplot.__doc__ += \
-    keywords.kw_header('Basic:', indent='   ') + \
-    keywords.kw_print(kw['box']) + \
-    keywords.kw_header('Grouping text:') + \
-    keywords.kw_print(kw['box_label']) + \
-    keywords.kw_header('Stat Lines:') + \
-    keywords.kw_print(kw['box_stat']) + \
-    keywords.kw_header('Diamonds:') + \
-    keywords.kw_print(kw['box_diamond']) + \
-    keywords.kw_header('Violins:') + \
-    keywords.kw_print(kw['box_violin'])
-
-
-contour.__doc__ += \
-    keywords.kw_header('Basic:', indent='   ') + \
-    keywords.kw_print(kw['contour']) + \
-    keywords.kw_header('Color bar:', indent='   ') + \
-    keywords.kw_print(kw['cbar'])
-
-
-gantt.__doc__ += keywords.kw_print(kw['gantt'])
-
-
-heatmap.__doc__ += \
-    keywords.kw_header('Basic:', indent='   ') + \
-    keywords.kw_print(kw['heatmap']) + \
-    keywords.kw_header('Color bar:', indent='   ') + \
-    keywords.kw_print(kw['cbar'])
-
-
-hist.__doc__ += keywords.kw_print(kw['hist'])
-
-
-imshow.__doc__ += keywords.kw_print(kw['imshow'])
-
-
-pie.__doc__ += keywords.kw_print(kw['pie'])
-
-
-nq.__doc__ += \
-    keywords.kw_header('Basic:', indent='   ') + \
-    keywords.kw_print(kw['nq']) + \
-    keywords.kw_header('Calculation:', indent='   ') + \
-    keywords.kw_print(kw['nq_calc'])
-
-
-plot.__doc__ += \
-    keywords.kw_header('Lines:', indent='   ') + \
-    keywords.kw_print(kw['lines']) + \
-    keywords.kw_header('Markers:', indent='   ') + \
-    keywords.kw_print(kw['markers']) + \
-    keywords.kw_header('ax_[h|v]lines:', indent='   ') + \
-    keywords.kw_print(kw['ax_lines']) + \
-    keywords.kw_header('Control limits:', indent='   ') + \
-    keywords.kw_print(kw['control_limits']) + \
-    keywords.kw_header('Confidence intervals:', indent='   ') + \
-    keywords.kw_print(kw['conf_int']) + \
-    keywords.kw_header('Fit:', indent='   ') + \
-    keywords.kw_print(kw['fit']) + \
-    keywords.kw_header('Reference line:', indent='   ') + \
-    keywords.kw_print(kw['ref_line']) + \
-    keywords.kw_header('Stat lines:', indent='   ') + \
-    keywords.kw_print(kw['stat_line'])
-
-
-axes.__doc__ = keywords.kw_print(kw['axes'])
-
-
-cbar.__doc__ = keywords.kw_print(kw['cbar'])
-
-
-figure.__doc__ = keywords.kw_print(kw['figure'])
-
-
-gridlines.__doc__ = keywords.kw_print(kw['gridlines'])
-
-
-labels.__doc__ = keywords.kw_print(kw['labels'])
-
-
-legend.__doc__ = keywords.kw_print(kw['legend'])
-
-
-lines.__doc__ = keywords.kw_print(kw['lines'])
-
-
-markers.__doc__ = keywords.kw_print(kw['markers'])
-
-
-ticks.__doc__ = keywords.kw_print(kw['ticks'])
-
-
-tick_labels.__doc__ = keywords.kw_print(kw['tick_labels'])
-
-
-ws.__doc__ = keywords.kw_print(kw['ws'])
