@@ -1,16 +1,13 @@
-        col (str): [1] name of DataFrame column for grouping into columns of subplots based on each unique
-          value; or [2] col="x" with multiple values defined for "x" creates columns of subplots for each
-          x-value. Defaults to None. Example: None
-        groups (str): for xy plot = name of DataFrame column that can be used to separate the data into unique
-          groups so plot lines do not circle back on themselves. Defaults to None. Example:
+        col (str): [1] name of DataFrame column for grouping into columns of subplots based on each unique value; or [2]
+          col="x" with multiple values defined for "x" creates columns of subplots for each x-value. Defaults to None.
+        groups (str): for xy plot = name of DataFrame column that can be used to separate the data into unique groups so
+          plot lines do not circle back on themselves. Defaults to None. Example:
           https://endangeredoxen.github.io/fivecentplots/0.5.0/grouping.html#xy-plots
-        groups (str | list): for boxplot = name or list of names of DataFrame column(s) used to split the data
-          into separate boxes. Defaults to None. Example:
+        groups (str|list): for boxplot = name or list of names of DataFrame column(s) used to split the data into
+          separate boxes. Defaults to None. Example:
           https://endangeredoxen.github.io/fivecentplots/0.5.0/grouping.html#boxplots
-        row (str): [1] name of DataFrame column for grouping into rows of subplots based on each unique value;
-          or [2] row="y" with multiple values defined for "y" creates rows of subplots for each y-value.
-          Defaults to None. Example: None
-        wrap (str | list): [1] name or list of names of DataFrame column(s) for grouping into a grid of
-          subplots; [2] wrap="x" with multiple values defined for "x" creates a grid of subplots for each
-          x-value; or [3] wrap="y" with multiple values defined for "y" creates a grid of subplots for each
-          y-value. Defaults to None. Example: None
+        row (str): [1] name of DataFrame column for grouping into rows of subplots based on each unique value; or [2]
+          row="y" with multiple values defined for "y" creates rows of subplots for each y-value. Defaults to None.
+        wrap (str|list): [1] name or list of names of DataFrame column(s) for grouping into a grid of subplots; [2]
+          wrap="x" with multiple values defined for "x" creates a grid of subplots for each x-value; or [3] wrap="y"
+          with multiple values defined for "y" creates a grid of subplots for each y-value. Defaults to None.

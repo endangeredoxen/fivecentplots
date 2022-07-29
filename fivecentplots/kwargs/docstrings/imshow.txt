@@ -1,11 +1,10 @@
-        cfa (str): Color-filter array pattern that is used to split data from a Bayer image into separate
-          color planes. Defaults to None. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#split-color-planes
+        cfa (str): Color-filter array pattern that is used to split data from a Bayer image into separate color planes.
+          Defaults to None. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#split-color-planes
         cmap (bool): Name of a color map to apply to the plot. Defaults to gray. Example:
           https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#color-maps
-        imshow_interp | interp (str): imshow interpolation scheme [see matplotlib docs for more details].
-          Defaults to 'none’. Example: None
-        stretch (float | list): Calculate "stretch" times the standard deviation above and below the mean to
-          set new z-limits. Can be a single value used as +/- limits or a two-value list for the lower/upper
-          multiplier values. Defaults to None. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#contrast-stretching
+        imshow_interp|interp (str): imshow interpolation scheme [see matplotlib docs for more details]. Defaults to
+          'none’.
+        stretch (float|list): Calculate "stretch" times the standard deviation above and below the mean to set new
+          z-limits. Can be a single value used as +/- limits or a two-value list for the lower/upper multiplier values.
+          Defaults to None. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#contrast-
+          stretching

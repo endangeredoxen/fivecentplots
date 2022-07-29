@@ -122,6 +122,7 @@
 <li class="toctree-l2"><a class="reference internal" href="lines.html">lines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="markers.html">markers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nq.html">nq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html">options</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pie.html">pie</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot.html">plot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tick_labels.html">tick_labels</a></li>
@@ -253,27 +254,20 @@
 </dd>
 <dt class="field-even">Keyword Arguments</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>x</strong> (<em>str</em>) – x-axis column name [REQUIRED]</p></li>
-<li><p><strong>y</strong> (<em>str</em>) – y-axis column name [REQUIRED]</p></li>
-<li><p><strong>z</strong> (<em>str</em>) – z-axis column name [REQUIRED]</p></li>
-<li><p><strong>BASIC</strong> – </p></li>
-<li><p><strong>cmap</strong> (<em>str</em>) – Name of a color map . Defaults to inferno. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Filled-contour">https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Filled-contour</a></p></li>
-<li><p><strong>contour_width</strong> (<em>float</em>) – Width of the contour lines. Defaults to 1. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Contour-lines">https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Contour-lines</a></p></li>
-<li><p><strong>filled</strong> (<em>bool</em>) – Color area between contour lines. Defaults to True. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Filled-contour">https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Filled-contour</a></p></li>
-<li><p><strong>interp</strong> (<em>str</em>) – Scipy interpolate.griddata method to make Z points {‘linear’, ‘nearest’, ‘cubic’}.
-Defaults to ‘cubic’. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Data-interpolation">https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Data-interpolation</a></p></li>
-<li><p><strong>levels</strong> (<em>int</em>) – Number of contour lines/levels to draw. Defaults to 20. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Contour-lines">https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Contour-lines</a></p></li>
-<li><p><strong>show_points</strong> (<em>bool</em>) – Show points on top of the contour plot. Defaults to False. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Contour-points">https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Contour-points</a></p></li>
-<li><p><strong>COLOR_BAR</strong> – </p></li>
-<li><p><strong>cbar</strong> (<em>bool</em>) – Toggle colorbar on/off for contour and heatmap plots. Defaults to False. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Filled-contour">https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Filled-contour</a></p></li>
-<li><p><strong>size</strong> (<em>int</em>) – cbar width [height will match the height of the axes]. Defaults to 30. Example: None</p></li>
+<li><p><strong>x</strong> (<em>str</em>) – x-axis column name <span style="color:#ff0000; display:inline; font-weight:bold">[REQUIRED]</span></p></li>
+<li><p><strong>y</strong> (<em>str</em>) – y-axis column name <span style="color:#ff0000; display:inline; font-weight:bold">[REQUIRED]</span></p></li>
+<li><p><strong>z</strong> (<em>str</em>) – z-axis column name <span style="color:#ff0000; display:inline; font-weight:bold">[REQUIRED]</span></p></li>
+<hr style="margin-top:10px; margin-bottom:10px">
+<li><p><strong>cmap</strong> (<em>str</em>) – Name of a color map . Defaults to inferno. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Filled-contour">More details</a></p></li>
+<li><p><strong>contour_width</strong> (<em>float</em>) – Width of the contour lines. Defaults to 1. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Contour-lines">More details</a></p></li>
+<li><p><strong>filled</strong> (<em>bool</em>) – Color area between contour lines. Defaults to True. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Filled-contour">More details</a></p></li>
+<li><p><strong>interp</strong> (<em>str</em>) – Scipy interpolate.griddata method to make Z points {‘linear’, ‘nearest’, ‘cubic’}. Defaults to
+‘cubic’. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Data-interpolation">More details</a></p></li>
+<li><p><strong>levels</strong> (<em>int</em>) – Number of contour lines/levels to draw. Defaults to 20. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Contour-lines">More details</a></p></li>
+<li><p><strong>show_points</strong> (<em>bool</em>) – Show points on top of the contour plot. Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Contour-points">More details</a></p></li>
+<hr style="margin-top:10px; margin-bottom:10px">
+<li><p><strong>cbar</strong> (<em>bool</em>) – Toggle colorbar on/off for contour and heatmap plots. Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Filled-contour">More details</a></p></li>
+<li><p><strong>size</strong> (<em>int</em>) – cbar width [height will match the height of the axes]. Defaults to 30.</p></li>
 </ul>
 </dd>
 </dl>

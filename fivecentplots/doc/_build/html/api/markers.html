@@ -122,6 +122,7 @@
 <li class="toctree-l2"><a class="reference internal" href="lines.html">lines</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">markers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nq.html">nq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html">options</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pie.html">pie</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot.html">plot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tick_labels.html">tick_labels</a></li>
@@ -250,19 +251,15 @@
 <dl class="field-list simple">
 <dt class="field-odd">Keyword Arguments</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>marker_edge_color</strong> (<em>str</em><em> | </em><em>list</em>) – Hex color string for the marker edges. Defaults to fcp.DEFAULT_COLORS.
-Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors</a></p></li>
-<li><p><strong>marker_edge_width</strong> (<em>float</em>) – Marker edge line width in pixels. Defaults to 1. Example: None</p></li>
-<li><p><strong>marker_fill</strong> (<em>boolean</em>) – Enable/disable color fill in markers. Defaults to False. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors</a></p></li>
-<li><p><strong>marker_fill_color</strong> (<em>str</em><em> | </em><em>list</em>) – Hex color string for the fill color of markers. Defaults to
-fcp.DEFAULT_COLORS. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors</a></p></li>
-<li><p><strong>jitter</strong> (<em>marker_jitter</em><em> |</em>) – For boxplots add random noise on x-axis to show separation between
-markers. Defaults to True. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/boxplot.html#Jitter">https://endangeredoxen.github.io/fivecentplots/0.5.0/boxplot.html#Jitter</a></p></li>
-<li><p><strong>marker_size</strong> (<em>float</em>) – Size in pixels of the data point markers. Defaults to 6. Example: None</p></li>
-<li><p><strong>markers</strong> (<em>boolean</em>) – Enable/disable data point markers. Defaults to True. Example: None</p></li>
+<li><p><strong>marker_edge_color</strong> (<em>str</em><em>|</em><em>list</em>) – Hex color string for the marker edges. <br>Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#b3b2b2;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8cd3c6;display:inline-block"></span>. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors">More details</a></p></li>
+<li><p><strong>marker_edge_width</strong> (<em>float</em>) – Marker edge line width in pixels. Defaults to 1.</p></li>
+<li><p><strong>marker_fill</strong> (<em>boolean</em>) – Enable/disable color fill in markers. Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors">More details</a></p></li>
+<li><p><strong>marker_fill_color</strong> (<em>str</em><em>|</em><em>list</em>) – Hex color string for the fill color of markers. <br>Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#b3b2b2;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8cd3c6;display:inline-block"></span>.
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors">More details</a></p></li>
+<li><p><strong>marker_jitter</strong><strong>|</strong><strong>jitter</strong> (<em>boolean</em>) – For boxplots add random noise on x-axis to show separation between markers.
+Defaults to True. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/boxplot.html#Jitter">More details</a></p></li>
+<li><p><strong>marker_size</strong> (<em>float</em>) – Size in pixels of the data point markers. Defaults to 6.</p></li>
+<li><p><strong>markers</strong> (<em>boolean</em>) – Enable/disable data point markers. Defaults to True.</p></li>
 </ul>
 </dd>
 </dl>

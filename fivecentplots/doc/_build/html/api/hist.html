@@ -122,6 +122,7 @@
 <li class="toctree-l2"><a class="reference internal" href="lines.html">lines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="markers.html">markers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nq.html">nq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html">options</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pie.html">pie</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot.html">plot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tick_labels.html">tick_labels</a></li>
@@ -254,46 +255,33 @@
 </dd>
 <dt class="field-even">Keyword Arguments</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>x</strong> (<em>str</em>) – x-axis column name (i.e., the “value” column from which “counts” are calculated) [REQUIRED]</p></li>
-<li><p><strong>cdf</strong> (<em>bool</em>) – Convert the histogram into a cumulative distribution plot. Defaults to False. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#cdf">https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#cdf</a></p></li>
-<li><p><strong>cfa</strong> (<em>str</em>) – Color-filter array pattern that is used to split data from a Bayer image into separate
-color planes. Defaults to None. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#split-color-planes">https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#split-color-planes</a></p></li>
-<li><p><strong>hist_align</strong> (<em>str</em>) – If “mid” aligns center of histogram bar to x-axis value; if “left” aligns the left
-edge of the histogram bar to the x-axis value {“left”; “mid”; “right”}. Defaults to mid. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#alignment">https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#alignment</a></p></li>
-<li><p><strong>bins</strong> (<em>hist_bins</em><em> |</em>) – Number of histogram bins to use; when plotting the histogram of a raw image
-file the number of bins is automatically adjusted to enable one bin per DN code. Defaults to 20.
-Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#bin-counts">https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#bin-counts</a></p></li>
-<li><p><strong>cumulative</strong> (<em>hist_cumulative</em><em> |</em>) – From matplotlib: If True then a histogram is computed where each
-bin gives the counts in that bin plus all bins for smaller values; if -1 direction of accumulation
-is reversed. Defaults to False. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#cumulative">https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#cumulative</a></p></li>
-<li><p><strong>hist_edge_color</strong> (<em>str</em>) – Hex color string for the edge of the histogram bar. Defaults to
-fcp.DEFAULT_COLORS. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#colors">https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#colors</a></p></li>
-<li><p><strong>hist_edge_width</strong> (<em>float</em>) – Width of the edge of the histogram bar in pixels. Defaults to 0. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#colors">https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#colors</a></p></li>
-<li><p><strong>hist_fill_alpha</strong> (<em>int</em>) – Transparency value for the histogram bars between 0-1. Defaults to 0.5.
-Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#colors">https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#colors</a></p></li>
-<li><p><strong>hist_fill_color</strong> (<em>str</em>) – Hex color string of the histogram bar fill . Defaults to fcp.DEFAULT_COLORS.
-Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#colors">https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#colors</a></p></li>
-<li><p><strong>horizontal</strong> (<em>hist_horizontal</em><em> |</em>) – Enable a horizontal histogram plot [default is vertical].
-Defaults to False. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#horizontal-bars">https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#horizontal-bars</a></p></li>
-<li><p><strong>kde</strong> (<em>hist_kde</em><em> |</em>) – Toggle visibility of a kernel-density estimator curve over the histogram bars.
-Defaults to False. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#kernel">https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#kernel</a>-
-density-estimator</p></li>
-<li><p><strong>normalize</strong> (<em>hist_normalize</em><em> |</em>) – Sets the “density” parameter for matplotlib-based plots; from
-matplotlib: if True draw and return a probability density: each bin will display each bin”s raw
-count divided by the total number of counts and the bin width so that the area under the histogram
-integrates to 1; automatically enabled if kde=True. Defaults to False. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#cumulative">https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#cumulative</a></p></li>
-<li><p><strong>hist_rwidth</strong> (<em>float</em><em> | </em><em>None</em>) – From matplotlib: the relative width of the bars as a fraction of the bin
-width; None means auto-calculation. Defaults to None. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#width">https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#width</a></p></li>
-<li><p><strong>pdf</strong> (<em>bool</em>) – Convert the histogram into a probability density function plot. Defaults to False.
-Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#pdf">https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#pdf</a></p></li>
+<li><p><strong>x</strong> (<em>str</em>) – x-axis column name (i.e., the “value” column from which “counts” are calculated) <span style="color:#ff0000; display:inline; font-weight:bold">[REQUIRED]</span></p></li>
+<li><p><strong>cdf</strong> (<em>bool</em>) – Convert the histogram into a cumulative distribution plot. Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#cdf">More details</a></p></li>
+<li><p><strong>cfa</strong> (<em>str</em>) – Color-filter array pattern that is used to split data from a Bayer image into separate color planes.
+Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#split-color-planes">More details</a></p></li>
+<li><p><strong>hist_align</strong> (<em>str</em>) – If “mid” aligns center of histogram bar to x-axis value; if “left” aligns the left edge of the
+histogram bar to the x-axis value {“left”; “mid”; “right”}. Defaults to mid. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#alignment">More details</a></p></li>
+<li><p><strong>hist_bins</strong><strong>|</strong><strong>bins</strong> (<em>int</em>) – Number of histogram bins to use; when plotting the histogram of a raw image file the
+number of bins is automatically adjusted to enable one bin per DN code. Defaults to 20. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#bin-counts">More details</a></p></li>
+<li><p><strong>hist_cumulative</strong><strong>|</strong><strong>cumulative</strong> (<em>bool</em>) – From matplotlib: If True then a histogram is computed where each bin gives
+the counts in that bin plus all bins for smaller values; if -1 direction of accumulation is reversed. Defaults
+to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#cumulative">More details</a></p></li>
+<li><p><strong>hist_edge_color</strong> (<em>str</em>) – Hex color string for the edge of the histogram bar. <br>Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#b3b2b2;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8cd3c6;display:inline-block"></span>.
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#colors">More details</a></p></li>
+<li><p><strong>hist_edge_width</strong> (<em>float</em>) – Width of the edge of the histogram bar in pixels. Defaults to 0. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#colors">More details</a></p></li>
+<li><p><strong>hist_fill_alpha</strong> (<em>int</em>) – Transparency value for the histogram bars between 0-1. Defaults to 0.5. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#colors">More details</a></p></li>
+<li><p><strong>hist_fill_color</strong> (<em>str</em>) – Hex color string of the histogram bar fill . <br>Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#b3b2b2;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8cd3c6;display:inline-block"></span>. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#colors">More details</a></p></li>
+<li><p><strong>hist_horizontal</strong><strong>|</strong><strong>horizontal</strong> (<em>bool</em>) – Enable a horizontal histogram plot [default is vertical]. Defaults to False.
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#horizontal-bars">More details</a></p></li>
+<li><p><strong>hist_kde</strong><strong>|</strong><strong>kde</strong> (<em>bool</em>) – Toggle visibility of a kernel-density estimator curve over the histogram bars. Defaults to
+False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#kernel-density-estimator">More details</a></p></li>
+<li><p><strong>hist_normalize</strong><strong>|</strong><strong>normalize</strong> (<em>bool</em>) – Sets the “density” parameter for matplotlib-based plots; from matplotlib: if
+True draw and return a probability density: each bin will display each bin”s raw count divided by the total
+number of counts and the bin width so that the area under the histogram integrates to 1; automatically enabled
+if kde=True. Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#cumulative">More details</a></p></li>
+<li><p><strong>hist_rwidth</strong> (<em>float</em><em>|</em><em>None</em>) – From matplotlib: the relative width of the bars as a fraction of the bin width; None
+means auto-calculation. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#width">More details</a></p></li>
+<li><p><strong>pdf</strong> (<em>bool</em>) – Convert the histogram into a probability density function plot. Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#pdf">More details</a></p></li>
 </ul>
 </dd>
 </dl>

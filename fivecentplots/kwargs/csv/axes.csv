@@ -9,7 +9,7 @@ ax_edge_top,boolean,Enable/disable the top axes edge (or spine),True,styles.html
 ax_edge_width,float,Width of the axes border in pixels,1,None
 ax_fill_alpha,str,Transparency value for axes fill between 0-1,1,styles.html#Alpha
 ax_fill_color,str,Hex color string for the fill color of the axes region,#eaeaea,styles.html#Alpha
-ax_scale | ax2_scale,str,Set the scale type of the axes {'linear'; 'logx'; 'semilogx'; 'logy'; 'semilogy'; 'loglog'; 'log'; 'symlog'; 'logit'},'linear',plot.html#Log-scale
+ax_scale|ax2_scale,str,Set the scale type of the axes {'linear'; 'logx'; 'semilogx'; 'logy'; 'semilogy'; 'loglog'; 'log'; 'symlog'; 'logit'},'linear',plot.html#Log-scale
 share_x,boolean,Share the x-axis range across grouped plots with multiple axes,True,ranges.html#Axes-sharing
 share_x2,boolean,Share the secondary x-axis range across grouped plots with multiple axes,True,ranges.html#Axes-sharing
 share_y,boolean,Share the y-axis range across grouped plots with multiple axes,True,ranges.html#Axes-sharing

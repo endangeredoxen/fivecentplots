@@ -1,11 +1,11 @@
 Keyword,Data Type,Description,Default,Example
-markers | box_markers,bool,Toggle marker visibility,True,`Markers <styles.html#Markers>`_
-marker_edge_alpha | box_marker_edge_alpha,float,Transparency value for the marker edge between 0-1,1,None
-marker_edge_color | box_marker_edge_color,str,Hex color string for the marker edge,#c34e52,None
-marker_edge_width | box_marker_edge_width,float,Width of the marker edge in pixels,1.5,None
-marker_fill | box_marker_fill,bool,Toggle marker fill on/off,,
-marker_fill_alpha | box_marker_fill_alpha,float,Transparency value for the marker edge between 0-1,,
-marker_fill_color | box_marker_fill_color,str,Hex color string for the marker fill,True,None
-jitter | box_marker_jitter,bool,Add a random offset or jitter to the points around their x-value (useful for box plots),`True for boxplots | `False for all other plot types,None
-marker_size | box_marker_size,float,Size of the markers in pixels,7,`Marker size <styles.html#Marker-size>`_
-marker_type | box_marker_type,str | list,Marker characters,,
+markers|box_markers,bool,Toggle marker visibility,True,`Markers <styles.html#Markers>`_
+marker_edge_alpha|box_marker_edge_alpha,float,Transparency value for the marker edge between 0-1,1,None
+marker_edge_color|box_marker_edge_color,str,Hex color string for the marker edge,#c34e52,None
+marker_edge_width|box_marker_edge_width,float,Width of the marker edge in pixels,1.5,None
+marker_fill|box_marker_fill,bool,Toggle marker fill on/off,,
+marker_fill_alpha|box_marker_fill_alpha,float,Transparency value for the marker edge between 0-1,,
+marker_fill_color|box_marker_fill_color,str,Hex color string for the marker fill,True,None
+jitter|box_marker_jitter,bool,Add a random offset or jitter to the points around their x-value (useful for box plots),`True for boxplots|`False for all other plot types,None
+marker_size|box_marker_size,float,Size of the markers in pixels,7,`Marker size <styles.html#Marker-size>`_
+marker_type|box_marker_type,str|list,Marker characters,,

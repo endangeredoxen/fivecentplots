@@ -1,5 +1,5 @@
 Keyword,Data Type,Description,Default,Example
-box_violin | violin,bool,Toggle visibility of violin plot showing the distribution of box plot data,False,boxplot.html#Violins
+box_violin|violin,bool,Toggle visibility of violin plot showing the distribution of box plot data,False,boxplot.html#Violins
 violin_box_color,str,Hex color string for the fill of an optional box overlay on the violin,#555555,None
 violin_box_on,bool,Toggle visibility of a box over the violin plot,True,None
 violin_edge_color,str,Hex color string for the edge of the violins,#aaaaaa,None

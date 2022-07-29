@@ -122,6 +122,7 @@
 <li class="toctree-l2"><a class="reference internal" href="lines.html">lines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="markers.html">markers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nq.html">nq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html">options</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pie.html">pie</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot.html">plot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tick_labels.html">tick_labels</a></li>
@@ -253,34 +254,25 @@
 </dd>
 <dt class="field-even">Keyword Arguments</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>x</strong> (<em>str</em>) – x-axis column name [REQUIRED]</p></li>
-<li><p><strong>y</strong> (<em>str</em>) – y-axis column name [REQUIRED]</p></li>
-<li><p><strong>bar_align</strong> (<em>str</em>) – If ‘center’ aligns center of bar to x-axis value; if ‘edge’ aligns the left edge of
-the bar to the x-axis value. Defaults to ‘center’ . Example: None</p></li>
-<li><p><strong>color_by_bar</strong> (<em>bar_color_by_bar</em><em> |</em>) – Color each bar differently. Defaults to False. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Color-by-bar">https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Color-by-bar</a></p></li>
-<li><p><strong>bar_edge_color</strong> (<em>str</em>) – Hex color string for the edge of the bar. Defaults to fcp.DEFAULT_COLORS.
-Example: None</p></li>
-<li><p><strong>bar_edge_width</strong> (<em>float</em>) – Width of the edge of the bar in pixels. Defaults to 0. Example: None</p></li>
-<li><p><strong>error_bars</strong> (<em>bar_error_bars</em><em> |</em>) – Display error bars on each bar. Defaults to False. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Error-bars">https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Error-bars</a></p></li>
-<li><p><strong>error_color</strong> (<em>bar_error_color</em><em> |</em>) – Hex color string of the error bar lines. Defaults to #555555.
-Example: None</p></li>
-<li><p><strong>bar_fill_alpha</strong> (<em>float</em>) – Transparency value for the bars between 0-1. Defaults to 0.75. Example: None</p></li>
-<li><p><strong>bar_fill_color</strong> (<em>str</em>) – Hex color string of the bar fill . Defaults to fcp.DEFAULT_COLORS. Example: None</p></li>
-<li><p><strong>horizontal</strong> (<em>bar_horizontal</em><em> |</em>) – Display bars horizontally. Defaults to False. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Horizontal-bars">https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Horizontal-bars</a></p></li>
-<li><p><strong>rolling_mean</strong> (<em>bar_rolling</em><em> | </em><em>bar_rolling_mean</em><em> | </em><em>rolling</em><em> |</em>) – Rolling mean window size [enables this
-curve]. No default. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Rolling-mean">https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Rolling-mean</a></p></li>
-<li><p><strong>stacked</strong> (<em>bar_stacked</em><em> |</em>) – Stack bars of a given group . Defaults to False. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Stacked">https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Stacked</a></p></li>
-<li><p><strong>bar_width</strong> (<em>float</em>) – Set the fractional width of the bars between 0-1. Defaults to 0.8. Example: None</p></li>
-<li><p><strong>rolling_mean_line_color</strong> (<em>str</em>) – Hex color string for the rolling mean line. Defaults to
-fcp.DEFAULT_COLORS. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Custom-line-style">https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Custom-line-style</a></p></li>
-<li><p><strong>rolling_mean_line_width</strong> (<em>int</em>) – Width for the rolling mean line in pixels. Defaults to 2. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Custom-line-style">https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Custom-line-style</a></p></li>
+<li><p><strong>x</strong> (<em>str</em>) – x-axis column name <span style="color:#ff0000; display:inline; font-weight:bold">[REQUIRED]</span></p></li>
+<li><p><strong>y</strong> (<em>str</em>) – y-axis column name <span style="color:#ff0000; display:inline; font-weight:bold">[REQUIRED]</span></p></li>
+<li><p><strong>bar_align</strong> (<em>str</em>) – If ‘center’ aligns center of bar to x-axis value; if ‘edge’ aligns the left edge of the bar to
+the x-axis value. Defaults to ‘center’ .</p></li>
+<li><p><strong>bar_color_by_bar</strong><strong>|</strong><strong>color_by_bar</strong> (<em>bool</em>) – Color each bar differently. Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Color-by-bar">More details</a></p></li>
+<li><p><strong>bar_edge_color</strong> (<em>str</em>) – Hex color string for the edge of the bar. <br>Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#b3b2b2;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8cd3c6;display:inline-block"></span>.</p></li>
+<li><p><strong>bar_edge_width</strong> (<em>float</em>) – Width of the edge of the bar in pixels. Defaults to 0.</p></li>
+<li><p><strong>bar_error_bars</strong><strong>|</strong><strong>error_bars</strong> (<em>bool</em>) – Display error bars on each bar. Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Error-bars">More details</a></p></li>
+<li><p><strong>bar_error_color</strong><strong>|</strong><strong>error_color</strong> (<em>str</em>) – Hex color string of the error bar lines. Defaults to #555555 <span id="rectangle" style="height: 12px; width: 12px; background-color:#555555;  display:inline-block"></span>.</p></li>
+<li><p><strong>bar_fill_alpha</strong> (<em>float</em>) – Transparency value for the bars between 0-1. Defaults to 0.75.</p></li>
+<li><p><strong>bar_fill_color</strong> (<em>str</em>) – Hex color string of the bar fill . <br>Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#b3b2b2;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8cd3c6;display:inline-block"></span>.</p></li>
+<li><p><strong>bar_horizontal</strong><strong>|</strong><strong>horizontal</strong> (<em>bool</em>) – Display bars horizontally. Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Horizontal-bars">More details</a></p></li>
+<li><p><strong>bar_rolling</strong><strong>|</strong><strong>bar_rolling_mean</strong><strong>|</strong><strong>rolling</strong><strong>|</strong><strong>rolling_mean</strong> (<em>int</em>) – Rolling mean window size [enables this curve]. No
+default. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Rolling-mean">More details</a></p></li>
+<li><p><strong>bar_stacked</strong><strong>|</strong><strong>stacked</strong> (<em>bool</em>) – Stack bars of a given group . Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Stacked">More details</a></p></li>
+<li><p><strong>bar_width</strong> (<em>float</em>) – Set the fractional width of the bars between 0-1. Defaults to 0.8.</p></li>
+<li><p><strong>rolling_mean_line_color</strong> (<em>str</em>) – Hex color string for the rolling mean line. <br>Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#b3b2b2;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8cd3c6;display:inline-block"></span>.
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Custom-line-style">More details</a></p></li>
+<li><p><strong>rolling_mean_line_width</strong> (<em>int</em>) – Width for the rolling mean line in pixels. Defaults to 2. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Custom-line-style">More details</a></p></li>
 </ul>
 </dd>
 </dl>

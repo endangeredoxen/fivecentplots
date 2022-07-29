@@ -122,6 +122,7 @@
 <li class="toctree-l2"><a class="reference internal" href="lines.html">lines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="markers.html">markers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nq.html">nq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html">options</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pie.html">pie</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot.html">plot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tick_labels.html">tick_labels</a></li>
@@ -250,44 +251,31 @@
 <dl class="field-list simple">
 <dt class="field-odd">Keyword Arguments</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ax_edge_alpha</strong> (<em>str</em>) – Transparency value for axes edge between 0-1. Defaults to 1. Example: None</p></li>
-<li><p><strong>ax_edge_bottom</strong> (<em>boolean</em>) – Enable/disable the bottom axes edge (or spine). Defaults to True. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges</a></p></li>
-<li><p><strong>ax_edge_color</strong> (<em>str</em>) – Hex color string for the border edge of the axes region. Defaults to #aaaaaa.
-Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Typical-elements">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Typical-elements</a></p></li>
-<li><p><strong>ax_edge_left</strong> (<em>boolean</em>) – Enable/disable the left axes edge (or spine). Defaults to True. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges</a></p></li>
-<li><p><strong>ax_edge_right</strong> (<em>boolean</em>) – Enable/disable the right axes edge (or spine). Defaults to True. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges</a></p></li>
-<li><p><strong>ax_edge_top</strong> (<em>boolean</em>) – Enable/disable the top axes edge (or spine). Defaults to True. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges</a></p></li>
-<li><p><strong>ax_edge_width</strong> (<em>float</em>) – Width of the axes border in pixels. Defaults to 1. Example: None</p></li>
-<li><p><strong>ax_fill_alpha</strong> (<em>str</em>) – Transparency value for axes fill between 0-1. Defaults to 1. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Alpha">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Alpha</a></p></li>
-<li><p><strong>ax_fill_color</strong> (<em>str</em>) – Hex color string for the fill color of the axes region. Defaults to #eaeaea.
-Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Alpha">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Alpha</a></p></li>
-<li><p><strong>ax2_scale</strong> (<em>ax_scale</em><em> |</em>) – Set the scale type of the axes {‘linear’; ‘logx’; ‘semilogx’; ‘logy’;
-‘semilogy’; ‘loglog’; ‘log’; ‘symlog’; ‘logit’}. Defaults to ‘linear’. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Log-scale">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Log-scale</a></p></li>
-<li><p><strong>ax_size</strong> (<em>list of int</em>) – Axes size [width, height]; note this is not the size of the figure. Defaults to
-[400, 400]. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Time-series">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Time-series</a></p></li>
-<li><p><strong>share_col</strong> (<em>boolean</em>) – Share the x and y axis ranges of subplots in the same column when grouping.
-Defaults to True. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Share">https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Share</a>-
-columns</p></li>
-<li><p><strong>share_row</strong> (<em>boolean</em>) – Share the x and y axis ranges of subplots in the same row when grouping. Defaults
-to True. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Share-row">https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Share-row</a></p></li>
-<li><p><strong>share_x</strong> (<em>boolean</em>) – Share the x-axis range across grouped plots with multiple axes. Defaults to True.
-Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes-sharing">https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes-sharing</a></p></li>
-<li><p><strong>share_x2</strong> (<em>boolean</em>) – Share the secondary x-axis range across grouped plots with multiple axes. Defaults
-to True. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes-sharing">https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes-sharing</a></p></li>
-<li><p><strong>share_y</strong> (<em>boolean</em>) – Share the y-axis range across grouped plots with multiple axes. Defaults to True.
-Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes-sharing">https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes-sharing</a></p></li>
-<li><p><strong>share_y2</strong> (<em>boolean</em>) – Share the secondary y-axis range across grouped plots with multiple axes. Defaults
-to True. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes-sharing">https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes-sharing</a></p></li>
-<li><p><strong>twin_x</strong> (<em>boolean</em>) – Add a secondary y-axis by “twinning” the x-axis. Defaults to False. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Shared-x-axis-(twin_x">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Shared-x-axis-(twin_x</a>)</p></li>
-<li><p><strong>twin_y</strong> (<em>boolean</em>) – Add a secondary x-axis by “twinning” the y-axis. Defaults to False. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Shared-y-axis-(twin_y">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Shared-y-axis-(twin_y</a>)</p></li>
+<li><p><strong>ax_edge_alpha</strong> (<em>str</em>) – Transparency value for axes edge between 0-1. Defaults to 1.</p></li>
+<li><p><strong>ax_edge_bottom</strong> (<em>boolean</em>) – Enable/disable the bottom axes edge (or spine). Defaults to True. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges">More details</a></p></li>
+<li><p><strong>ax_edge_color</strong> (<em>str</em>) – Hex color string for the border edge of the axes region. Defaults to #aaaaaa <span id="rectangle" style="height: 12px; width: 12px; background-color:#aaaaaa;  display:inline-block"></span>. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Typical-elements">More details</a></p></li>
+<li><p><strong>ax_edge_left</strong> (<em>boolean</em>) – Enable/disable the left axes edge (or spine). Defaults to True. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges">More details</a></p></li>
+<li><p><strong>ax_edge_right</strong> (<em>boolean</em>) – Enable/disable the right axes edge (or spine). Defaults to True. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges">More details</a></p></li>
+<li><p><strong>ax_edge_top</strong> (<em>boolean</em>) – Enable/disable the top axes edge (or spine). Defaults to True. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges">More details</a></p></li>
+<li><p><strong>ax_edge_width</strong> (<em>float</em>) – Width of the axes border in pixels. Defaults to 1.</p></li>
+<li><p><strong>ax_fill_alpha</strong> (<em>str</em>) – Transparency value for axes fill between 0-1. Defaults to 1. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Alpha">More details</a></p></li>
+<li><p><strong>ax_fill_color</strong> (<em>str</em>) – Hex color string for the fill color of the axes region. Defaults to #eaeaea <span id="rectangle" style="height: 12px; width: 12px; background-color:#eaeaea;  display:inline-block"></span>. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Alpha">More details</a></p></li>
+<li><p><strong>ax_scale</strong><strong>|</strong><strong>ax2_scale</strong> (<em>str</em>) – Set the scale type of the axes {‘linear’; ‘logx’; ‘semilogx’; ‘logy’; ‘semilogy’;
+‘loglog’; ‘log’; ‘symlog’; ‘logit’}. Defaults to ‘linear’. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Log-scale">More details</a></p></li>
+<li><p><strong>ax_size</strong> (<em>list of int</em>) – Axes size [width, height]; note this is not the size of the figure. Defaults to [400,
+400]. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Time-series">More details</a></p></li>
+<li><p><strong>share_col</strong> (<em>boolean</em>) – Share the x and y axis ranges of subplots in the same column when grouping. Defaults to
+True. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Share-columns">More details</a></p></li>
+<li><p><strong>share_row</strong> (<em>boolean</em>) – Share the x and y axis ranges of subplots in the same row when grouping. Defaults to True.
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Share-row">More details</a></p></li>
+<li><p><strong>share_x</strong> (<em>boolean</em>) – Share the x-axis range across grouped plots with multiple axes. Defaults to True. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes-sharing">More details</a></p></li>
+<li><p><strong>share_x2</strong> (<em>boolean</em>) – Share the secondary x-axis range across grouped plots with multiple axes. Defaults to True.
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes-sharing">More details</a></p></li>
+<li><p><strong>share_y</strong> (<em>boolean</em>) – Share the y-axis range across grouped plots with multiple axes. Defaults to True. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes-sharing">More details</a></p></li>
+<li><p><strong>share_y2</strong> (<em>boolean</em>) – Share the secondary y-axis range across grouped plots with multiple axes. Defaults to True.
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes-sharing">More details</a></p></li>
+<li><p><strong>twin_x</strong> (<em>boolean</em>) – Add a secondary y-axis by “twinning” the x-axis. Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Shared-x-axis-(twin_x">More details</a>)</p></li>
+<li><p><strong>twin_y</strong> (<em>boolean</em>) – Add a secondary x-axis by “twinning” the y-axis. Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Shared-y-axis-(twin_y">More details</a>)</p></li>
 </ul>
 </dd>
 </dl>

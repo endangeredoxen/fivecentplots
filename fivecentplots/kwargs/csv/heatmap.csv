@@ -5,4 +5,4 @@ data_labels,bool,Toggle visibility of value text labels on the heatmap cells,Fal
 heatmap_edge_width,float,Width of the edges of the heat map cells,0,None
 heatmap_font_color,str,Hex color string for the value label text,#ffffff,None
 heatmap_font_size,int,Font size of the value label text,12,None
-heatmap_interp | interp,str,imshow interpolation scheme [see matplotlib docs for more details],'none’,None
+heatmap_interp|interp,str,imshow interpolation scheme [see matplotlib docs for more details],'none’,None

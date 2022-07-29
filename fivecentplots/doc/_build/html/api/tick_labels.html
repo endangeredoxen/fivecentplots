@@ -122,6 +122,7 @@
 <li class="toctree-l2"><a class="reference internal" href="lines.html">lines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="markers.html">markers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nq.html">nq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html">options</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pie.html">pie</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot.html">plot</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">tick_labels</a></li>
@@ -250,110 +251,101 @@
 <dl class="field-list simple">
 <dt class="field-odd">Keyword Arguments</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>tick_labels</strong> (<em>boolean</em>) – Enable/disable all tick labels. Defaults to True. Example: None</p></li>
-<li><p><strong>tick_labels_edge_alpha</strong> (<em>float</em>) – Transparency value for all tick labels background edges between 0-1.
-Defaults to 0. Example: None</p></li>
-<li><p><strong>tick_labels_edge_color</strong> (<em>str</em>) – Hex color string for all tick label background edges. Defaults to
-#ffffff. Example: None</p></li>
-<li><p><strong>tick_labels_edge_width</strong> (<em>float</em>) – Width of the border edge of all tick labels in pixels. Defaults to 0.
-Example: None</p></li>
-<li><p><strong>tick_labels_fill_alpha</strong> (<em>float</em>) – Transparency value for the background fill of all tick labels between
-0-1. Defaults to 1. Example: None</p></li>
-<li><p><strong>tick_labels_fill_color</strong> (<em>str</em>) – Hex color string for all tick label background edges. Defaults to
-#ffffff. Example: None</p></li>
-<li><p><strong>tick_labels_font</strong> (<em>str</em>) – Font for all tick labels. Defaults to sans-serif. Example: None</p></li>
-<li><p><strong>tick_labels_font_color</strong> (<em>str</em>) – Hex color string for font color of all tick labels. Defaults to #000000.
-Example: None</p></li>
-<li><p><strong>tick_labels_font_size</strong> (<em>str</em>) – Font size for all tick labels. Defaults to 13. Example: None</p></li>
-<li><p><strong>tick_labels_font_style</strong> (<em>str</em>) – Font style {‘normal’ | ‘italic’ | ‘oblique’} for all tick labels.
-Defaults to normal. Example: None</p></li>
-<li><p><strong>tick_labels_font_weight</strong> (<em>str</em>) – Font weight {‘normal’ | ‘bold’ | ‘heavy’ | ‘light’ | ‘ultrabold’ |
-‘ultralight’} of all tick labels. Defaults to normal. Example: None</p></li>
-<li><p><strong>tick_labels_major</strong> (<em>boolean</em>) – Enable/disable all major tick labels. Defaults to True. Example: None</p></li>
-<li><p><strong>tick_labels_major_edge_alpha</strong> (<em>float</em>) – Transparency value for all major tick labels background edges
-between 0-1. Defaults to 0. Example: None</p></li>
-<li><p><strong>tick_labels_major_edge_color</strong> (<em>str</em>) – Hex color string for all major tick label background edges.
-Defaults to #ffffff. Example: None</p></li>
-<li><p><strong>tick_labels_major_edge_width</strong> (<em>float</em>) – Width of the border edge of all major tick labels in pixels.
-Defaults to 0. Example: None</p></li>
-<li><p><strong>tick_labels_major_fill_alpha</strong> (<em>float</em>) – Transparency value for the background fill of all major tick
-labels between 0-1. Defaults to 1. Example: None</p></li>
-<li><p><strong>tick_labels_major_fill_color</strong> (<em>str</em>) – Hex color string for all major tick label background edges.
-Defaults to #ffffff. Example: None</p></li>
-<li><p><strong>tick_labels_major_font</strong> (<em>str</em>) – Font for all major tick labels. Defaults to sans-serif. Example: None</p></li>
-<li><p><strong>tick_labels_major_font_color</strong> (<em>str</em>) – Hex color string for font color of all major tick labels. Defaults
-to #000000. Example: None</p></li>
-<li><p><strong>tick_labels_major_font_size</strong> (<em>str</em>) – Font size for all major tick labels. Defaults to 13. Example: None</p></li>
-<li><p><strong>tick_labels_major_font_style</strong> (<em>str</em>) – Font style {‘normal’ | ‘italic’ | ‘oblique’} for all major tick
-labels. Defaults to normal. Example: None</p></li>
-<li><p><strong>tick_labels_major_font_weight</strong> (<em>str</em>) – Font weight {‘normal’ | ‘bold’ | ‘heavy’ | ‘light’ | ‘ultrabold’
-| ‘ultralight’} of all major tick labels. Defaults to normal. Example: None</p></li>
-<li><p><strong>tick_labels_major_q</strong> (<em>boolean</em>) – Enable/disable major tick labels of a specific axes [where q = x, y,
-x2, y2]. Defaults to True. Example: None</p></li>
-<li><p><strong>tick_labels_major_q_edge_alpha</strong> (<em>float</em>) – Transparency value for major tick labels background edges of a
-specific axes between 0-1 [where q = x, y, x2, y2]. Defaults to 0. Example: None</p></li>
-<li><p><strong>tick_labels_major_q_edge_color</strong> (<em>str</em>) – Hex color string for major tick label background edges of a
-specific axis [where q = x, y, x2, y2]. Defaults to #ffffff. Example: None</p></li>
-<li><p><strong>tick_labels_major_q_edge_width</strong> (<em>float</em>) – Width of the border edge of all major tick labels of a
-specific axis in pixels [where q = x, y, x2, y2]. Defaults to 0. Example: None</p></li>
-<li><p><strong>tick_labels_major_q_fill_alpha</strong> (<em>float</em>) – Transparency value for the background fill of all major tick
-labels of a specific axis between 0-1 [where q = x, y, x2, y2]. Defaults to 1. Example: None</p></li>
-<li><p><strong>tick_labels_major_q_fill_color</strong> (<em>str</em>) – Hex color string for major tick label background edges of a
-specific axis [where q = x, y, x2, y2]. Defaults to #ffffff. Example: None</p></li>
-<li><p><strong>tick_labels_major_q_font</strong> (<em>str</em>) – Font for major tick labels of a specific axes [where q = x, y, x2,
-y2]. Defaults to sans-serif. Example: None</p></li>
-<li><p><strong>tick_labels_major_q_font_color</strong> (<em>str</em>) – Hex color string for font color of major tick labels of a
-specific axes [where q = x, y, x2, y2]. Defaults to #000000. Example: None</p></li>
-<li><p><strong>tick_labels_major_q_font_size</strong> (<em>str</em>) – Font size for major tick labels of a specific axes label [where q
-= x, y, x2, y2]. Defaults to 13. Example: None</p></li>
-<li><p><strong>tick_labels_major_q_font_style</strong> (<em>str</em>) – Font style {‘normal’ | ‘italic’ | ‘oblique’} for major tick
-labels of a specific axes [where q = x, y, x2, y2]. Defaults to normal. Example: None</p></li>
-<li><p><strong>tick_labels_major_q_font_weight</strong> (<em>str</em>) – Font weight {‘normal’ | ‘bold’ | ‘heavy’ | ‘light’ |
-‘ultrabold’ | ‘ultralight’} of major tick labels of a specific axes [where q = x, y, x2, y2].
-Defaults to normal. Example: None</p></li>
-<li><p><strong>tick_labels_minor</strong> (<em>boolean</em>) – Enable/disable all minor tick labels. Defaults to False. Example: None</p></li>
-<li><p><strong>tick_labels_minor_edge_alpha</strong> (<em>float</em>) – Transparency value for all minor tick labels background edges
-between 0-1. Defaults to 0. Example: None</p></li>
-<li><p><strong>tick_labels_minor_edge_color</strong> (<em>str</em>) – Hex color string for all minor tick label background edges.
-Defaults to #ffffff. Example: None</p></li>
-<li><p><strong>tick_labels_minor_edge_width</strong> (<em>float</em>) – Width of the border edge of all minor tick labels in pixels.
-Defaults to 0. Example: None</p></li>
-<li><p><strong>tick_labels_minor_fill_alpha</strong> (<em>float</em>) – Transparency value for the background fill of all minor tick
-labels between 0-1. Defaults to 1. Example: None</p></li>
-<li><p><strong>tick_labels_minor_fill_color</strong> (<em>str</em>) – Hex color string for all minor tick label background edges.
-Defaults to #ffffff. Example: None</p></li>
-<li><p><strong>tick_labels_minor_font</strong> (<em>str</em>) – Font for all minor tick labels. Defaults to sans-serif. Example: None</p></li>
-<li><p><strong>tick_labels_minor_font_color</strong> (<em>str</em>) – Hex color string for font color of all minor tick labels. Defaults
-to #000000. Example: None</p></li>
-<li><p><strong>tick_labels_minor_font_size</strong> (<em>str</em>) – Font size of a specific axes label [where q = x, y, x2, y2].
-Defaults to 10. Example: None</p></li>
-<li><p><strong>tick_labels_minor_font_style</strong> (<em>str</em>) – Font style {‘normal’ | ‘italic’ | ‘oblique’} for all minor tick
-labels. Defaults to normal. Example: None</p></li>
-<li><p><strong>tick_labels_minor_font_weight</strong> (<em>str</em>) – Font weight {‘normal’ | ‘bold’ | ‘heavy’ | ‘light’ | ‘ultrabold’
-| ‘ultralight’} of all minor tick labels. Defaults to normal. Example: None</p></li>
-<li><p><strong>tick_labels_minor_q</strong> (<em>boolean</em>) – Enable/disable minor tick labels of a specific axes [where q = x, y,
-x2, y2]. Defaults to False. Example: None</p></li>
-<li><p><strong>tick_labels_minor_q_edge_alpha</strong> (<em>float</em>) – Transparency value for the label edge of a specific axes
-between 0-1 [where q = x, y, x2, y2]. Defaults to 0. Example: None</p></li>
-<li><p><strong>tick_labels_minor_q_edge_color</strong> (<em>str</em>) – Hex color string for minor tick label background edges of a
-specific axis [where q = x, y, x2, y2]. Defaults to #ffffff. Example: None</p></li>
-<li><p><strong>tick_labels_minor_q_edge_width</strong> (<em>float</em>) – Width of the border edge of all minor tick labels of a
-specific axis in pixels [where q = x, y, x2, y2]. Defaults to 0. Example: None</p></li>
-<li><p><strong>tick_labels_minor_q_fill_alpha</strong> (<em>float</em>) – Transparency value for the background fill of all minor tick
-labels of a specific axis between 0-1 [where q = x, y, x2, y2]. Defaults to 1. Example: None</p></li>
-<li><p><strong>tick_labels_minor_q_fill_color</strong> (<em>str</em>) – Hex color string for minor tick label background edges of a
-specific axes [where q = x, y, x2, y2]. Defaults to #ffffff. Example: None</p></li>
-<li><p><strong>tick_labels_minor_q_font</strong> (<em>str</em>) – Font for minor tick labels of a specific axes [where q = x, y, x2,
-y2]. Defaults to sans-serif. Example: None</p></li>
-<li><p><strong>tick_labels_minor_q_font_color</strong> (<em>str</em>) – Hex color string for font color of minor tick labels of a
-specific axes [where q = x, y, x2, y2]. Defaults to #000000. Example: None</p></li>
-<li><p><strong>tick_labels_minor_q_font_size</strong> (<em>str</em>) – Font size for all minor tick labels. Defaults to 10. Example:
-None</p></li>
-<li><p><strong>tick_labels_minor_q_font_style</strong> (<em>str</em>) – Font style {‘normal’ | ‘italic’ | ‘oblique’} for minor tick
-labels of a specific axes [where q = x, y, x2, y2]. Defaults to normal. Example: None</p></li>
-<li><p><strong>tick_labels_minor_q_font_weight</strong> (<em>str</em>) – Font weight {‘normal’ | ‘bold’ | ‘heavy’ | ‘light’ |
-‘ultrabold’ | ‘ultralight’} of minor tick labels of a specific axes [where q = x, y, x2, y2].
-Defaults to normal. Example: None</p></li>
+<li><p><strong>tick_labels</strong> (<em>boolean</em>) – Enable/disable all tick labels. Defaults to True.</p></li>
+<li><p><strong>tick_labels_edge_alpha</strong> (<em>float</em>) – Transparency value for all tick labels background edges between 0-1. Defaults to
+0.</p></li>
+<li><p><strong>tick_labels_edge_color</strong> (<em>str</em>) – Hex color string for all tick label background edges. Defaults to #ffffff <span id="rectangle" style="height: 12px; width: 12px; background-color:#ffffff; border: 1px solid #cccccc; display:inline-block"></span>.</p></li>
+<li><p><strong>tick_labels_edge_width</strong> (<em>float</em>) – Width of the border edge of all tick labels in pixels. Defaults to 0.</p></li>
+<li><p><strong>tick_labels_fill_alpha</strong> (<em>float</em>) – Transparency value for the background fill of all tick labels between 0-1.
+Defaults to 1.</p></li>
+<li><p><strong>tick_labels_fill_color</strong> (<em>str</em>) – Hex color string for all tick label background edges. Defaults to #ffffff <span id="rectangle" style="height: 12px; width: 12px; background-color:#ffffff; border: 1px solid #cccccc; display:inline-block"></span>.</p></li>
+<li><p><strong>tick_labels_font</strong> (<em>str</em>) – Font for all tick labels. Defaults to sans-serif.</p></li>
+<li><p><strong>tick_labels_font_color</strong> (<em>str</em>) – Hex color string for font color of all tick labels. Defaults to #000000 <span id="rectangle" style="height: 12px; width: 12px; background-color:#000000;  display:inline-block"></span>.</p></li>
+<li><p><strong>tick_labels_font_size</strong> (<em>str</em>) – Font size for all tick labels. Defaults to 13.</p></li>
+<li><p><strong>tick_labels_font_style</strong> (<em>str</em>) – Font style {‘normal’|’italic’|’oblique’} for all tick labels. Defaults to normal.</p></li>
+<li><p><strong>tick_labels_font_weight</strong> (<em>str</em>) – Font weight {‘normal’|’bold’|’heavy’|’light’|’ultrabold’|’ultralight’} of all
+tick labels. Defaults to normal.</p></li>
+<li><p><strong>tick_labels_major</strong> (<em>boolean</em>) – Enable/disable all major tick labels. Defaults to True.</p></li>
+<li><p><strong>tick_labels_major_edge_alpha</strong> (<em>float</em>) – Transparency value for all major tick labels background edges between 0-1.
+Defaults to 0.</p></li>
+<li><p><strong>tick_labels_major_edge_color</strong> (<em>str</em>) – Hex color string for all major tick label background edges. Defaults to
+#ffffff.</p></li>
+<li><p><strong>tick_labels_major_edge_width</strong> (<em>float</em>) – Width of the border edge of all major tick labels in pixels. Defaults to
+0.</p></li>
+<li><p><strong>tick_labels_major_fill_alpha</strong> (<em>float</em>) – Transparency value for the background fill of all major tick labels
+between 0-1. Defaults to 1.</p></li>
+<li><p><strong>tick_labels_major_fill_color</strong> (<em>str</em>) – Hex color string for all major tick label background edges. Defaults to
+#ffffff.</p></li>
+<li><p><strong>tick_labels_major_font</strong> (<em>str</em>) – Font for all major tick labels. Defaults to sans-serif.</p></li>
+<li><p><strong>tick_labels_major_font_color</strong> (<em>str</em>) – Hex color string for font color of all major tick labels. Defaults to
+#000000.</p></li>
+<li><p><strong>tick_labels_major_font_size</strong> (<em>str</em>) – Font size for all major tick labels. Defaults to 13.</p></li>
+<li><p><strong>tick_labels_major_font_style</strong> (<em>str</em>) – Font style {‘normal’|’italic’|’oblique’} for all major tick labels. Defaults
+to normal.</p></li>
+<li><p><strong>tick_labels_major_font_weight</strong> (<em>str</em>) – Font weight {‘normal’|’bold’|’heavy’|’light’|’ultrabold’|’ultralight’} of
+all major tick labels. Defaults to normal.</p></li>
+<li><p><strong>tick_labels_major_q</strong> (<em>boolean</em>) – Enable/disable major tick labels of a specific axes [where q = x, y, x2, y2].
+Defaults to True.</p></li>
+<li><p><strong>tick_labels_major_q_edge_alpha</strong> (<em>float</em>) – Transparency value for major tick labels background edges of a specific
+axes between 0-1 [where q = x, y, x2, y2]. Defaults to 0.</p></li>
+<li><p><strong>tick_labels_major_q_edge_color</strong> (<em>str</em>) – Hex color string for major tick label background edges of a specific axis
+[where q = x, y, x2, y2]. Defaults to #ffffff <span id="rectangle" style="height: 12px; width: 12px; background-color:#ffffff; border: 1px solid #cccccc; display:inline-block"></span>.</p></li>
+<li><p><strong>tick_labels_major_q_edge_width</strong> (<em>float</em>) – Width of the border edge of all major tick labels of a specific axis in
+pixels [where q = x, y, x2, y2]. Defaults to 0.</p></li>
+<li><p><strong>tick_labels_major_q_fill_alpha</strong> (<em>float</em>) – Transparency value for the background fill of all major tick labels of a
+specific axis between 0-1 [where q = x, y, x2, y2]. Defaults to 1.</p></li>
+<li><p><strong>tick_labels_major_q_fill_color</strong> (<em>str</em>) – Hex color string for major tick label background edges of a specific axis
+[where q = x, y, x2, y2]. Defaults to #ffffff <span id="rectangle" style="height: 12px; width: 12px; background-color:#ffffff; border: 1px solid #cccccc; display:inline-block"></span>.</p></li>
+<li><p><strong>tick_labels_major_q_font</strong> (<em>str</em>) – Font for major tick labels of a specific axes [where q = x, y, x2, y2]. Defaults
+to sans-serif.</p></li>
+<li><p><strong>tick_labels_major_q_font_color</strong> (<em>str</em>) – Hex color string for font color of major tick labels of a specific axes
+[where q = x, y, x2, y2]. Defaults to #000000 <span id="rectangle" style="height: 12px; width: 12px; background-color:#000000;  display:inline-block"></span>.</p></li>
+<li><p><strong>tick_labels_major_q_font_size</strong> (<em>str</em>) – Font size for major tick labels of a specific axes label [where q = x, y,
+x2, y2]. Defaults to 13.</p></li>
+<li><p><strong>tick_labels_major_q_font_style</strong> (<em>str</em>) – Font style {‘normal’|’italic’|’oblique’} for major tick labels of a
+specific axes [where q = x, y, x2, y2]. Defaults to normal.</p></li>
+<li><p><strong>tick_labels_major_q_font_weight</strong> (<em>str</em>) – Font weight {‘normal’|’bold’|’heavy’|’light’|’ultrabold’|’ultralight’} of
+major tick labels of a specific axes [where q = x, y, x2, y2]. Defaults to normal.</p></li>
+<li><p><strong>tick_labels_minor</strong> (<em>boolean</em>) – Enable/disable all minor tick labels. Defaults to False.</p></li>
+<li><p><strong>tick_labels_minor_edge_alpha</strong> (<em>float</em>) – Transparency value for all minor tick labels background edges between 0-1.
+Defaults to 0.</p></li>
+<li><p><strong>tick_labels_minor_edge_color</strong> (<em>str</em>) – Hex color string for all minor tick label background edges. Defaults to
+#ffffff.</p></li>
+<li><p><strong>tick_labels_minor_edge_width</strong> (<em>float</em>) – Width of the border edge of all minor tick labels in pixels. Defaults to
+0.</p></li>
+<li><p><strong>tick_labels_minor_fill_alpha</strong> (<em>float</em>) – Transparency value for the background fill of all minor tick labels
+between 0-1. Defaults to 1.</p></li>
+<li><p><strong>tick_labels_minor_fill_color</strong> (<em>str</em>) – Hex color string for all minor tick label background edges. Defaults to
+#ffffff.</p></li>
+<li><p><strong>tick_labels_minor_font</strong> (<em>str</em>) – Font for all minor tick labels. Defaults to sans-serif.</p></li>
+<li><p><strong>tick_labels_minor_font_color</strong> (<em>str</em>) – Hex color string for font color of all minor tick labels. Defaults to
+#000000.</p></li>
+<li><p><strong>tick_labels_minor_font_size</strong> (<em>str</em>) – Font size of a specific axes label [where q = x, y, x2, y2]. Defaults to 10.</p></li>
+<li><p><strong>tick_labels_minor_font_style</strong> (<em>str</em>) – Font style {‘normal’|’italic’|’oblique’} for all minor tick labels. Defaults
+to normal.</p></li>
+<li><p><strong>tick_labels_minor_font_weight</strong> (<em>str</em>) – Font weight {‘normal’|’bold’|’heavy’|’light’|’ultrabold’|’ultralight’} of
+all minor tick labels. Defaults to normal.</p></li>
+<li><p><strong>tick_labels_minor_q</strong> (<em>boolean</em>) – Enable/disable minor tick labels of a specific axes [where q = x, y, x2, y2].
+Defaults to False.</p></li>
+<li><p><strong>tick_labels_minor_q_edge_alpha</strong> (<em>float</em>) – Transparency value for the label edge of a specific axes between 0-1
+[where q = x, y, x2, y2]. Defaults to 0.</p></li>
+<li><p><strong>tick_labels_minor_q_edge_color</strong> (<em>str</em>) – Hex color string for minor tick label background edges of a specific axis
+[where q = x, y, x2, y2]. Defaults to #ffffff <span id="rectangle" style="height: 12px; width: 12px; background-color:#ffffff; border: 1px solid #cccccc; display:inline-block"></span>.</p></li>
+<li><p><strong>tick_labels_minor_q_edge_width</strong> (<em>float</em>) – Width of the border edge of all minor tick labels of a specific axis in
+pixels [where q = x, y, x2, y2]. Defaults to 0.</p></li>
+<li><p><strong>tick_labels_minor_q_fill_alpha</strong> (<em>float</em>) – Transparency value for the background fill of all minor tick labels of a
+specific axis between 0-1 [where q = x, y, x2, y2]. Defaults to 1.</p></li>
+<li><p><strong>tick_labels_minor_q_fill_color</strong> (<em>str</em>) – Hex color string for minor tick label background edges of a specific axes
+[where q = x, y, x2, y2]. Defaults to #ffffff <span id="rectangle" style="height: 12px; width: 12px; background-color:#ffffff; border: 1px solid #cccccc; display:inline-block"></span>.</p></li>
+<li><p><strong>tick_labels_minor_q_font</strong> (<em>str</em>) – Font for minor tick labels of a specific axes [where q = x, y, x2, y2]. Defaults
+to sans-serif.</p></li>
+<li><p><strong>tick_labels_minor_q_font_color</strong> (<em>str</em>) – Hex color string for font color of minor tick labels of a specific axes
+[where q = x, y, x2, y2]. Defaults to #000000 <span id="rectangle" style="height: 12px; width: 12px; background-color:#000000;  display:inline-block"></span>.</p></li>
+<li><p><strong>tick_labels_minor_q_font_size</strong> (<em>str</em>) – Font size for all minor tick labels. Defaults to 10.</p></li>
+<li><p><strong>tick_labels_minor_q_font_style</strong> (<em>str</em>) – Font style {‘normal’|’italic’|’oblique’} for minor tick labels of a
+specific axes [where q = x, y, x2, y2]. Defaults to normal.</p></li>
+<li><p><strong>tick_labels_minor_q_font_weight</strong> (<em>str</em>) – Font weight {‘normal’|’bold’|’heavy’|’light’|’ultrabold’|’ultralight’} of
+minor tick labels of a specific axes [where q = x, y, x2, y2]. Defaults to normal.</p></li>
 </ul>
 </dd>
 </dl>

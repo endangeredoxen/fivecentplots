@@ -37,8 +37,9 @@ def make_docstrings():
         if 'Example' in kw[k].columns:
             kw[k]['Example'] = kw[k]['Example'].apply(lambda x: f'{url}{x.split("<")[-1].split(">")[0]}'
                                                       if '.html' in str(x) else x)
+            kw[k]['Example'] = kw[k]['Example'].replace('None', '')
         else:
-            kw[k]['Example'] = 'None'
+            kw[k]['Example'] = ''
         nans = kw[k][kw[k]['Keyword'] == 'nan']
         if len(nans) > 0:
             kw[k] = kw[k].dropna()
@@ -60,7 +61,7 @@ def kw_header(val, indent=' ' * 8):
     return '%s%s:\n' % (indent, val)
 
 
-def kw_print(kw, width=110):
+def kw_print(kw, width=120):
     """
     Print friendly version of kw dicts
     """
@@ -74,8 +75,12 @@ def kw_print(kw, width=110):
             default = '. No default'
         else:
             default = '. Defaults to %s' % row['Default']
-        line = kw + ' (%s)' % row['Data Type'] + ': ' + \
-            str(row['Description']) + default + '. Example: %s' % row['Example']
+        if row['Example'] == '':
+            line = kw + ' (%s)' % row['Data Type'] + ': ' + \
+                str(row['Description']) + default + '.'
+        else:
+            line = kw + ' (%s)' % row['Data Type'] + ': ' + \
+                str(row['Description']) + default + '. Example: %s' % row['Example']
 
         kwstr += textwrap.fill(line, width, initial_indent=indent,
                                subsequent_indent=indent + '  ')

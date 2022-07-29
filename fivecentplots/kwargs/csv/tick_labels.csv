@@ -19,16 +19,16 @@ tick_labels_major_font_size,str,"Font size for all major tick labels",13,None
 tick_labels_major_q_font_size,str,"Font size for major tick labels of a specific axes label [where q = x, y, x2, y2]",13,None
 tick_labels_minor_font_size,str,"Font size of a specific axes label [where q = x, y, x2, y2]",10,None
 tick_labels_minor_q_font_size,str,"Font size for all minor tick labels",10,None
-tick_labels_font_style,str,"Font style {'normal' | 'italic' | 'oblique'} for all tick labels",normal,None
-tick_labels_major_font_style,str,"Font style {'normal' | 'italic' | 'oblique'} for all major tick labels",normal,None
-tick_labels_major_q_font_style,str,"Font style {'normal' | 'italic' | 'oblique'} for major tick labels of a specific axes [where q = x, y, x2, y2]",normal,None
-tick_labels_minor_font_style,str,"Font style {'normal' | 'italic' | 'oblique'} for all minor tick labels",normal,None
-tick_labels_minor_q_font_style,str,"Font style {'normal' | 'italic' | 'oblique'} for minor tick labels of a specific axes [where q = x, y, x2, y2]",normal,None
-tick_labels_font_weight,str,"Font weight {'normal' | 'bold' | 'heavy' | 'light' | 'ultrabold' | 'ultralight'} of all tick labels",normal,None
-tick_labels_major_font_weight,str,"Font weight {'normal' | 'bold' | 'heavy' | 'light' | 'ultrabold' | 'ultralight'} of all major tick labels",normal,None
-tick_labels_major_q_font_weight,str,"Font weight {'normal' | 'bold' | 'heavy' | 'light' | 'ultrabold' | 'ultralight'} of major tick labels of a specific axes [where q = x, y, x2, y2]",normal,None
-tick_labels_minor_font_weight,str,"Font weight {'normal' | 'bold' | 'heavy' | 'light' | 'ultrabold' | 'ultralight'} of all minor tick labels",normal,None
-tick_labels_minor_q_font_weight,str,"Font weight {'normal' | 'bold' | 'heavy' | 'light' | 'ultrabold' | 'ultralight'} of minor tick labels of a specific axes [where q = x, y, x2, y2]",normal,None
+tick_labels_font_style,str,"Font style {'normal'|'italic'|'oblique'} for all tick labels",normal,None
+tick_labels_major_font_style,str,"Font style {'normal'|'italic'|'oblique'} for all major tick labels",normal,None
+tick_labels_major_q_font_style,str,"Font style {'normal'|'italic'|'oblique'} for major tick labels of a specific axes [where q = x, y, x2, y2]",normal,None
+tick_labels_minor_font_style,str,"Font style {'normal'|'italic'|'oblique'} for all minor tick labels",normal,None
+tick_labels_minor_q_font_style,str,"Font style {'normal'|'italic'|'oblique'} for minor tick labels of a specific axes [where q = x, y, x2, y2]",normal,None
+tick_labels_font_weight,str,"Font weight {'normal'|'bold'|'heavy'|'light'|'ultrabold'|'ultralight'} of all tick labels",normal,None
+tick_labels_major_font_weight,str,"Font weight {'normal'|'bold'|'heavy'|'light'|'ultrabold'|'ultralight'} of all major tick labels",normal,None
+tick_labels_major_q_font_weight,str,"Font weight {'normal'|'bold'|'heavy'|'light'|'ultrabold'|'ultralight'} of major tick labels of a specific axes [where q = x, y, x2, y2]",normal,None
+tick_labels_minor_font_weight,str,"Font weight {'normal'|'bold'|'heavy'|'light'|'ultrabold'|'ultralight'} of all minor tick labels",normal,None
+tick_labels_minor_q_font_weight,str,"Font weight {'normal'|'bold'|'heavy'|'light'|'ultrabold'|'ultralight'} of minor tick labels of a specific axes [where q = x, y, x2, y2]",normal,None
 tick_labels_edge_alpha,float,"Transparency value for all tick labels background edges between 0-1",0,None
 tick_labels_major_edge_alpha,float,"Transparency value for all major tick labels background edges between 0-1",0,None
 tick_labels_major_q_edge_alpha,float,"Transparency value for major tick labels background edges of a specific axes between 0-1 [where q = x, y, x2, y2]",0,None

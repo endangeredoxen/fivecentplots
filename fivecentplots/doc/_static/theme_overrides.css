@@ -289,20 +289,20 @@ div.contain {
 h1, h2, h3, h4, h5, h6{
     font-family: 'Lato', sans-serif;
 }
-/* module/api section */
-/* .sig-prename, .sig-name, .sig-paren{
-    font-size: 20px;
-    color: #555555;
-
+html.writer-html4 .rst-content dl:not(.docutils)>dt, html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple)>dt {
+    display: table;
+    margin: 6px 0;
+    font-family: 'Lato', sans-serif;
+    font-size: 15px;
+    font-style: italic;
+    line-height: normal;
+    background: #e4e4e4;
+    color: #2f2f2f;
+    border-top: 3px solid #080c0f;
+    padding: 6px;
+    position: relative;
 }
-html.writer-html4 .rst-content dl:not(.docutils)>dt, html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple)>dt{
-    background: #eeeeee;
-    border-top: 3px solid #333333;
+html.writer-html4 .rst-content dl:not(.docutils)>dt:first-child, html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple)>dt:first-child{
+    background: #e4e4e4;
+    width: 100%;
 }
-html.writer-html4 .rst-content dl:not(.docutils) dl:not(.field-list)>dt, html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple) dl:not(.field-list)>dt {
-    margin-bottom: 6px;
-    border: none;
-    border-left: 3px solid #ccc;
-    background: none;
-    color: #555;
-} */

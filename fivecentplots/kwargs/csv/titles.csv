@@ -3,8 +3,8 @@ title,str,Figure title text,None,styles.html#Fonts
 title_font,str,"Font for the figure title",sans-serif,styles.html#Fonts
 title_font_color,str,"Hex color string for font color of the figure title",#000000,None
 title_font_size,str,"Font size for the figure title",18,None
-title_font_style,str,"Font style {'normal' | 'italic' | 'oblique'} for the figure title",italic,styles.html#Fonts
-title_font_weight,str,"Font weight {a numeric value in range 0-1000 | 'ultralight' | 'light' | 'normal' | 'regular' | 'book' | 'medium' | 'roman' | 'semibold' | 'demibold' | 'demi' | 'bold' | 'heavy' | 'extra bold' | 'black'} for the figure title",bold,None
+title_font_style,str,"Font style {'normal'|'italic'|'oblique'} for the figure title",italic,styles.html#Fonts
+title_font_weight,str,"Font weight {a numeric value in range 0-1000|'ultralight'|'light'|'normal'|'regular'|'book'|'medium'|'roman'|'semibold'|'demibold'|'demi'|'bold'|'heavy'|'extra bold'|'black'} for the figure title",bold,None
 title_edge_alpha,float,"Transparency value for the title area edge between 0-1",1,None
 title_edge_color,str,"Hex color string for the title area edge",#ffffff,None
 title_edge_width,float,"Width of the border edge of a title area in pixels",1,None

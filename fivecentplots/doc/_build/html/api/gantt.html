@@ -122,6 +122,7 @@
 <li class="toctree-l2"><a class="reference internal" href="lines.html">lines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="markers.html">markers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nq.html">nq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html">options</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pie.html">pie</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot.html">plot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tick_labels.html">tick_labels</a></li>
@@ -256,32 +257,23 @@
 </dd>
 <dt class="field-even">Keyword Arguments</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>x</strong> (<em>list</em>) – two x-axis column names containing Datetime values [REQUIRED]
+<li><p><strong>x</strong> (<em>list</em>) – two x-axis column names containing Datetime values <span style="color:#ff0000; display:inline; font-weight:bold">[REQUIRED]</span>
 - 1) the start time for each item in the Gantt chart
 - 2) the stop time for each item in the Gantt chart</p></li>
-<li><p><strong>y</strong> (<em>str</em>) – y-axis column name [REQUIRED]</p></li>
-<li><p><strong>color_by_bar</strong> (<em>gantt_color_by_bar</em><em> |</em>) – Color each Gantt bar differently. Defaults to False.
-Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Styling">https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Styling</a></p></li>
-<li><p><strong>gantt_edge_color</strong> (<em>str</em>) – Hex color string for the edge of the Gantt bars. Defaults to
-fcp.DEFAULT_COLORS. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Styling">https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Styling</a></p></li>
-<li><p><strong>gantt_edge_width</strong> (<em>float</em>) – Width of the edge of the Gantt bars in pixels. Defaults to 0. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Styling">https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Styling</a></p></li>
-<li><p><strong>gantt_fill_alpha</strong> (<em>int</em>) – Transparency value for the Gantt bars between 0-1. Defaults to 0.75. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Styling">https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Styling</a></p></li>
-<li><p><strong>gantt_fill_color</strong> (<em>str</em>) – Hex color string of the Gantt bar fill . Defaults to fcp.DEFAULT_COLORS.
-Example: None</p></li>
-<li><p><strong>height</strong> (<em>gantt_height</em><em> |</em>) – Set the fractional height of the Gantt bars between 0-1. Defaults to
-0.9. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Styling">https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Styling</a></p></li>
-<li><p><strong>gantt_label_x</strong> (<em>str</em>) – By default, x-axis labels are disabled for this plot type. Defaults to ‘’.
-Example: None</p></li>
-<li><p><strong>legend</strong> (<em>gantt_order_by_legend</em><em> | </em><em>order by</em>) – Order the y-axis values based on the sort order of the
-legend values [requires legend]. Defaults to False. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Legends">https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Legends</a></p></li>
-<li><p><strong>tick_labels_x_rotation</strong> (<em>gantt_tick_labels_x_rotation</em><em> |</em>) – Gantt-specific version of the this kwarg
-to ensure rotations are not applied globably to all plots from a theme file. Defaults to 90.
-Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Legends">https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Legends</a></p></li>
-<li><p><strong>sort</strong> (<em>str</em>) – Sort order for the Gantt bars {‘ascending’, ‘descending’}. Defaults to ‘descending’.
-Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Sorting">https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Sorting</a></p></li>
+<li><p><strong>y</strong> (<em>str</em>) – y-axis column name <span style="color:#ff0000; display:inline; font-weight:bold">[REQUIRED]</span></p></li>
+<li><p><strong>gantt_color_by_bar</strong><strong>|</strong><strong>color_by_bar</strong> (<em>bool</em>) – Color each Gantt bar differently. Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Styling">More details</a></p></li>
+<li><p><strong>gantt_edge_color</strong> (<em>str</em>) – Hex color string for the edge of the Gantt bars. <br>Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#b3b2b2;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8cd3c6;display:inline-block"></span>.
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Styling">More details</a></p></li>
+<li><p><strong>gantt_edge_width</strong> (<em>float</em>) – Width of the edge of the Gantt bars in pixels. Defaults to 0. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Styling">More details</a></p></li>
+<li><p><strong>gantt_fill_alpha</strong> (<em>int</em>) – Transparency value for the Gantt bars between 0-1. Defaults to 0.75. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Styling">More details</a></p></li>
+<li><p><strong>gantt_fill_color</strong> (<em>str</em>) – Hex color string of the Gantt bar fill . <br>Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#b3b2b2;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8cd3c6;display:inline-block"></span>.</p></li>
+<li><p><strong>gantt_height</strong><strong>|</strong><strong>height</strong> (<em>float</em>) – Set the fractional height of the Gantt bars between 0-1. Defaults to 0.9. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Styling">More details</a></p></li>
+<li><p><strong>gantt_label_x</strong> (<em>str</em>) – By default, x-axis labels are disabled for this plot type. Defaults to ‘’.</p></li>
+<li><p><strong>legend</strong> (<em>gantt_order_by_legend</em><em>|</em><em>order by</em>) – Order the y-axis values based on the sort order of the legend
+values [requires legend]. Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Legends">More details</a></p></li>
+<li><p><strong>gantt_tick_labels_x_rotation</strong><strong>|</strong><strong>tick_labels_x_rotation</strong> (<em>int</em>) – Gantt-specific version of the this kwarg to ensure
+rotations are not applied globably to all plots from a theme file. Defaults to 90. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Legends">More details</a></p></li>
+<li><p><strong>sort</strong> (<em>str</em>) – Sort order for the Gantt bars {‘ascending’, ‘descending’}. Defaults to ‘descending’. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/gantt.html#Sorting">More details</a></p></li>
 </ul>
 </dd>
 </dl>

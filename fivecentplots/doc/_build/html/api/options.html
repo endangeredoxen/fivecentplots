@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>heatmap &mdash; fivecentplots beta documentation</title>
+  <title>options &mdash; fivecentplots beta documentation</title>
   
 
   
@@ -44,8 +44,8 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="hist" href="hist.html" />
-    <link rel="prev" title="grouping" href="grouping.html" /> 
+    <link rel="next" title="pie" href="pie.html" />
+    <link rel="prev" title="nq" href="nq.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -114,7 +114,7 @@
 <li class="toctree-l2"><a class="reference internal" href="gantt.html">gantt</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gridlines.html">gridlines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="grouping.html">grouping</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">heatmap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="heatmap.html">heatmap</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hist.html">hist</a></li>
 <li class="toctree-l2"><a class="reference internal" href="imshow.html">imshow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="labels.html">labels</a></li>
@@ -122,7 +122,7 @@
 <li class="toctree-l2"><a class="reference internal" href="lines.html">lines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="markers.html">markers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nq.html">nq</a></li>
-<li class="toctree-l2"><a class="reference internal" href="options.html">options</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">options</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pie.html">pie</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot.html">plot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tick_labels.html">tick_labels</a></li>
@@ -199,13 +199,13 @@
         
           <li><a href="fcp.html">API</a> &raquo;</li>
         
-      <li>heatmap</li>
+      <li>options</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../_sources/api/heatmap.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/api/options.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -242,69 +242,38 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="heatmap">
-<h1>heatmap<a class="headerlink" href="#heatmap" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="options">
+<h1>options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h1>
 <dl class="py method">
-<dt class="sig sig-object py" id="fivecentplots.fcp.heatmap">
-<span class="sig-prename descclassname"><span class="pre">fcp.</span></span><span class="sig-name descname"><span class="pre">heatmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.heatmap" title="Permalink to this definition">¶</a></dt>
-<dd><p>Heatmap plot.</p>
+<dt class="sig sig-object py" id="fivecentplots.fcp.options">
+<span class="sig-prename descclassname"><span class="pre">fcp.</span></span><span class="sig-name descname"><span class="pre">options</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.options" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dummy function to return the API for other control options with <cite>help()</cite> (not used directly for plotting).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>df</strong> (<em>DataFrame</em>) – DataFrame containing data to plot</p>
-</dd>
-<dt class="field-even">Keyword Arguments</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>x</strong> (<em>str</em>) – x-axis column name <span style="color:#ff0000; display:inline; font-weight:bold">[REQUIRED]</span></p></li>
-<li><p><strong>y</strong> (<em>str</em>) – y-axis column name <span style="color:#ff0000; display:inline; font-weight:bold">[REQUIRED]</span></p></li>
-<li><p><strong>z</strong> (<em>str</em>) – z-axis column name <span style="color:#ff0000; display:inline; font-weight:bold">[REQUIRED]</span></p></li>
-<hr style="margin-top:10px; margin-bottom:10px">
-<li><p><strong>cell_size</strong> (<em>int</em>) – Width of a heatmap cell in pixels. Defaults to 60. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/heatmap.html#Cell-size">More details</a></p></li>
-<li><p><strong>cmap</strong> (<em>bool</em>) – Name of a color map to apply to the plot. Defaults to inferno. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/heatmap.html#No-data-labels">More details</a></p></li>
-<li><p><strong>data_labels</strong> (<em>bool</em>) – Toggle visibility of value text labels on the heatmap cells. Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/heatmap.html#With-data-labels">More details</a></p></li>
-<li><p><strong>heatmap_edge_width</strong> (<em>float</em>) – Width of the edges of the heat map cells. Defaults to 0.</p></li>
-<li><p><strong>heatmap_font_color</strong> (<em>str</em>) – Hex color string for the value label text. Defaults to #ffffff <span id="rectangle" style="height: 12px; width: 12px; background-color:#ffffff; border: 1px solid #cccccc; display:inline-block"></span>.</p></li>
-<li><p><strong>heatmap_font_size</strong> (<em>int</em>) – Font size of the value label text. Defaults to 12.</p></li>
-<li><p><strong>heatmap_interp</strong><strong>|</strong><strong>interp</strong> (<em>str</em>) – imshow interpolation scheme [see matplotlib docs for more details]. Defaults to
-‘none’.</p></li>
-<hr style="margin-top:10px; margin-bottom:10px">
-<li><p><strong>cbar</strong> (<em>bool</em>) – Toggle colorbar on/off for contour and heatmap plots. Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Filled-contour">More details</a></p></li>
-<li><p><strong>size</strong> (<em>int</em>) – cbar width [height will match the height of the axes]. Defaults to 30.</p></li>
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>BAYER</strong> (<em>list</em>) – Color scheme for RGGB channel data so lines and markers match CFA type. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#RGB">More details</a></p></li>
+<li><p><strong>DEFAULT_COLORS</strong> (<em>list</em>) – Default color scheme used for lines and markers (from colors.py). Defaults to None.</p></li>
+<li><p><strong>HIST</strong> (<em>dict</em>) – Shortcut of useful kwargs to format hist plots {‘ax_scale’: ‘logy’, ‘markers’: False, ‘line_width’:
+2, ‘preset’: ‘HIST’}. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#fcp.HIST">More details</a></p></li>
+<li><p><strong>engine</strong> (<em>str</em>) – Specify the plotting engine {‘mpl’, ‘bokeh’}. Defaults to ‘mpl’. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/layout.html#engine">More details</a></p></li>
+<li><p><strong>filename</strong> (<em>str</em>) – Name of the saved image (with or without path and/or extension). Defaults to Automatic name
+based on conditions with extention ‘.png’. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/grouping.html#figure-plots">More details</a></p></li>
+<li><p><strong>filepath</strong> (<em>str</em>) – Name of the directory to save images (convenient if you want to use the default naming but save
+in a different directory. Defaults to current directory.</p></li>
+<li><p><strong>inline</strong> (<em>boolean</em>) – Flag to display the rendered plot in the native plotting viewer or jupyter notebook
+(convenient to disable if doing automated batch plotting). Defaults to True.</p></li>
+<li><p><strong>print_filename</strong> (<em>boolean</em>) – Print the output filename. Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/grouping.html#figure-plots">More details</a></p></li>
+<li><p><strong>return_filename</strong> (<em>boolean</em>) – Return the output filename. Defaults to False.</p></li>
+<li><p><strong>save</strong> (<em>boolean</em>) – Save the plot to disc. Defaults to False.</p></li>
+<li><p><strong>save_data</strong> (<em>boolean</em>) – Save the DataFrame subset that is created and used by a given plot. Defaults to False.</p></li>
+<li><p><strong>save_ext</strong> (<em>str</em>) – Set the file extension of saved plots to determine the format. Defaults to depends on plotting
+engine {‘mpl’: ‘.png’, ‘bokeh’: ‘.html’}.</p></li>
+<li><p><strong>show</strong> (<em>str</em>) – Show the saved plot image using the default image viewer of the host PC. Defaults to False.</p></li>
+<li><p><strong>theme</strong> (<em>str</em>) – Select a theme file for the current plot only. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#On-the-fly">More details</a></p></li>
+<li><p><strong>timer</strong> (<em>boolean</em>) – Debug feature to get a time log for each step in the plotting process. Defaults to False.</p></li>
 </ul>
 </dd>
 </dl>
-<p class="rubric">Examples</p>
-<p>Categorical heatmap:</p>
-<blockquote>
-<div><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">fivecentplots</span> <span class="k">as</span> <span class="nn">fcp</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;tests/fake_data_heatmap.csv&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fcp</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Category&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Player&#39;</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="s1">&#39;Average&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<blockquote>
-<div><div class="figure align-default">
-<img alt="../_images/example_heatmap1.png" src="../_images/example_heatmap1.png" />
-</div>
-</div></blockquote>
-</div></blockquote>
-<p>Non-uniform numerical data:</p>
-<blockquote>
-<div><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">fivecentplots</span> <span class="k">as</span> <span class="nn">fcp</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;tests/fake_data_contour.csv&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fcp</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Experiment&#39;</span><span class="p">,</span>
-<span class="go">                cbar=True, share_z=True, ax_size=[400, 400], data_labels=False,</span>
-<span class="go">                label_rc_font_size=12, filter=&#39;Batch==103&#39;, cmap=&#39;viridis&#39;)</span>
-</pre></div>
-</div>
-<blockquote>
-<div><div class="figure align-default">
-<img alt="../_images/example_heatmap2.png" src="../_images/example_heatmap2.png" />
-</div>
-</div></blockquote>
-</div></blockquote>
 </dd></dl>
 
 </div>
@@ -315,8 +284,8 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="hist.html" class="btn btn-neutral float-right" title="hist" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="grouping.html" class="btn btn-neutral float-left" title="grouping" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pie.html" class="btn btn-neutral float-right" title="pie" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="nq.html" class="btn btn-neutral float-left" title="nq" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

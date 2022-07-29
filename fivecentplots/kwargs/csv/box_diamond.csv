@@ -1,9 +1,9 @@
 Keyword,Data Type,Description,Default,Example
-box_mean_diamonds | mean_diamonds,bool,Toggle visibility of a diamond overlay on the box showing the group mean and a confidence interval,False,boxplot.html#Mean-Diamonds
-box_mean_diamonds_alpha | mean_diamonds_alpha,float,Transparency value for the diamonds between 0-1,1,None
-box_mean_diamonds_edge_color | mean_diamonds_edge_color,str,Hex color string for the edges of the diamond,#FF0000,None
-box_mean_diamonds_edge_style | mean_diamonds_edge_style,str,"Line style for the diamonds lines {‘-’, ‘--’, ‘-.’, ‘:’}",'-’,None
-box_mean_diamonds_edge_width | mean_diamonds_edge_width,float,Width of the diamond lines in pixels,0.7,None
-box_mean_diamonds_fill_color | mean_diamonds_fill_color,str,Hex color string for the fill of the diamond,None,None
-box_mean_diamonds_width | mean_diamonds_width,float,Set the fractional width of the diamonds between 0-1,0.8,None
+box_mean_diamonds|mean_diamonds,bool,Toggle visibility of a diamond overlay on the box showing the group mean and a confidence interval,False,boxplot.html#Mean-Diamonds
+box_mean_diamonds_alpha|mean_diamonds_alpha,float,Transparency value for the diamonds between 0-1,1,None
+box_mean_diamonds_edge_color|mean_diamonds_edge_color,str,Hex color string for the edges of the diamond,#FF0000,None
+box_mean_diamonds_edge_style|mean_diamonds_edge_style,str,"Line style for the diamonds lines {‘-’, ‘--’, ‘-.’, ‘:’}",'-’,None
+box_mean_diamonds_edge_width|mean_diamonds_edge_width,float,Width of the diamond lines in pixels,0.7,None
+box_mean_diamonds_fill_color|mean_diamonds_fill_color,str,Hex color string for the fill of the diamond,None,None
+box_mean_diamonds_width|mean_diamonds_width,float,Set the fractional width of the diamonds between 0-1,0.8,None
 conf_coeff,float,Confidence interval from 0 to 1,0.95,None

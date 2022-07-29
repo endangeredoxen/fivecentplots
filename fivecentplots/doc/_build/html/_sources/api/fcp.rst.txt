@@ -21,6 +21,7 @@ API
    lines
    markers
    nq
+   options
    pie
    plot
    tick_labels

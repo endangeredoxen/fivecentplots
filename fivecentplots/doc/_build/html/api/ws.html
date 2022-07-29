@@ -122,6 +122,7 @@
 <li class="toctree-l2"><a class="reference internal" href="lines.html">lines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="markers.html">markers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nq.html">nq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html">options</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pie.html">pie</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot.html">plot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tick_labels.html">tick_labels</a></li>
@@ -250,36 +251,27 @@
 <dl class="field-list simple">
 <dt class="field-odd">Keyword Arguments</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ws_ax_box_title</strong> (<em>int</em>) – White space between axes edge and box plot titles. Defaults to 10. Example:
-None</p></li>
-<li><p><strong>ws_ax_cbar</strong> (<em>int</em>) – White space from right axes edge to left side of cbar. Defaults to 10. Example: None</p></li>
-<li><p><strong>ws_ax_fig</strong> (<em>int</em>) – White space right edge of axes to right edge of figure [if no legend present].
-Defaults to 10. Example: None</p></li>
-<li><p><strong>ws_ax_label_xs</strong> (<em>int</em>) – Extra white space between axes and label when using separate labels. Defaults to
-5. Example: None</p></li>
-<li><p><strong>ws_ax_leg</strong> (<em>int</em>) – White space from right edge of axes to left edge of legend [if present]. Defaults to
-5. Example: None</p></li>
-<li><p><strong>ws_col</strong> (<em>int</em>) – White space between column subplots [ignored if tick labels or axes labels are present
-and wider than this]. Defaults to 30. Example: None</p></li>
-<li><p><strong>ws_fig_ax</strong> (<em>int</em>) – White space from left figure edge to axes left edge. Defaults to 10. Example: None</p></li>
-<li><p><strong>ws_fig_label</strong> (<em>int</em>) – White space between top of figure and x2 label [if present]. Defaults to 10.
-Example: None</p></li>
-<li><p><strong>ws_fig_title</strong> (<em>int</em>) – White space from top of figure to top of title [if present]. Defaults to 10.
-Example: None</p></li>
-<li><p><strong>ws_label_col</strong> (<em>int</em>) – White space from axes and col labels. Defaults to ws_label_rc. Example: None</p></li>
-<li><p><strong>ws_label_fig</strong> (<em>int</em>) – White space from bottom of x label to bottom of figure. Defaults to ws_fig_label.
-Example: None</p></li>
-<li><p><strong>ws_label_rc</strong> (<em>int</em>) – White space between axes and row &amp; col labels. Defaults to 10. Example: None</p></li>
-<li><p><strong>ws_label_row</strong> (<em>int</em>) – White space from axes to row labels. Defaults to ws_label_rc. Example: None</p></li>
-<li><p><strong>ws_label_tick</strong> (<em>int</em>) – White space from edge of axes label to edge of tick labels. Defaults to 10.
-Example: None</p></li>
-<li><p><strong>ws_leg_fig</strong> (<em>int</em>) – White space from right of legend in position 0 and figure right edge. Defaults to
-10. Example: None</p></li>
-<li><p><strong>ws_row</strong> (<em>int</em>) – White space between row subplots [ignored if tick labels or axes labels are present and
-wider than this]. Defaults to 30. Example: None</p></li>
-<li><p><strong>ws_tick_minimum</strong> (<em>int</em>) – Minimum width for tick labels. Defaults to 10. Example: None</p></li>
-<li><p><strong>ws_ticks_ax</strong> (<em>int</em>) – White space from tick labels to edge of axes. Defaults to 5. Example: None</p></li>
-<li><p><strong>ws_title_ax</strong> (<em>int</em>) – White space bottom of title to top of axes. Defaults to 10. Example: None</p></li>
+<li><p><strong>ws_ax_box_title</strong> (<em>int</em>) – White space between axes edge and box plot titles. Defaults to 10.</p></li>
+<li><p><strong>ws_ax_cbar</strong> (<em>int</em>) – White space from right axes edge to left side of cbar. Defaults to 10.</p></li>
+<li><p><strong>ws_ax_fig</strong> (<em>int</em>) – White space right edge of axes to right edge of figure [if no legend present]. Defaults to 10.</p></li>
+<li><p><strong>ws_ax_label_xs</strong> (<em>int</em>) – Extra white space between axes and label when using separate labels. Defaults to 5.</p></li>
+<li><p><strong>ws_ax_leg</strong> (<em>int</em>) – White space from right edge of axes to left edge of legend [if present]. Defaults to 5.</p></li>
+<li><p><strong>ws_col</strong> (<em>int</em>) – White space between column subplots [ignored if tick labels or axes labels are present and wider
+than this]. Defaults to 30.</p></li>
+<li><p><strong>ws_fig_ax</strong> (<em>int</em>) – White space from left figure edge to axes left edge. Defaults to 10.</p></li>
+<li><p><strong>ws_fig_label</strong> (<em>int</em>) – White space between top of figure and x2 label [if present]. Defaults to 10.</p></li>
+<li><p><strong>ws_fig_title</strong> (<em>int</em>) – White space from top of figure to top of title [if present]. Defaults to 10.</p></li>
+<li><p><strong>ws_label_col</strong> (<em>int</em>) – White space from axes and col labels. Defaults to ws_label_rc.</p></li>
+<li><p><strong>ws_label_fig</strong> (<em>int</em>) – White space from bottom of x label to bottom of figure. Defaults to ws_fig_label.</p></li>
+<li><p><strong>ws_label_rc</strong> (<em>int</em>) – White space between axes and row &amp; col labels. Defaults to 10.</p></li>
+<li><p><strong>ws_label_row</strong> (<em>int</em>) – White space from axes to row labels. Defaults to ws_label_rc.</p></li>
+<li><p><strong>ws_label_tick</strong> (<em>int</em>) – White space from edge of axes label to edge of tick labels. Defaults to 10.</p></li>
+<li><p><strong>ws_leg_fig</strong> (<em>int</em>) – White space from right of legend in position 0 and figure right edge. Defaults to 10.</p></li>
+<li><p><strong>ws_row</strong> (<em>int</em>) – White space between row subplots [ignored if tick labels or axes labels are present and wider than
+this]. Defaults to 30.</p></li>
+<li><p><strong>ws_tick_minimum</strong> (<em>int</em>) – Minimum width for tick labels. Defaults to 10.</p></li>
+<li><p><strong>ws_ticks_ax</strong> (<em>int</em>) – White space from tick labels to edge of axes. Defaults to 5.</p></li>
+<li><p><strong>ws_title_ax</strong> (<em>int</em>) – White space bottom of title to top of axes. Defaults to 10.</p></li>
 </ul>
 </dd>
 </dl>

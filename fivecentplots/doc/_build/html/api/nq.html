@@ -44,7 +44,7 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pie" href="pie.html" />
+    <link rel="next" title="options" href="options.html" />
     <link rel="prev" title="markers" href="markers.html" /> 
 </head>
 
@@ -122,6 +122,7 @@
 <li class="toctree-l2"><a class="reference internal" href="lines.html">lines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="markers.html">markers</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">nq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html">options</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pie.html">pie</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot.html">plot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tick_labels.html">tick_labels</a></li>
@@ -255,19 +256,15 @@ that can be used to calculate quantiles at various “sigma” intervals</p>
 </dd>
 <dt class="field-even">Keyword Arguments</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>BASIC</strong> – </p></li>
-<li><p><strong>x</strong> (<em>str</em>) – x-axis column name (if using a 1D dataset). Defaults to None. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#1D-dataset">https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#1D-dataset</a></p></li>
-<li><p><strong>CALCULATION</strong> – </p></li>
-<li><p><strong>sigma</strong> (<em>float</em>) – Maximum sigma value to use for the calculation; range will be +/- this value. Defaults
-to Auto-calculated based on the dataset using “fcp.utilities.sigma”. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#custom-sigma-range">https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#custom-sigma-range</a></p></li>
-<li><p><strong>step_inner</strong> (<em>float</em>) – Delta between sigma values outside of the tail (around sigma=0). Defaults to 0.5.
-Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#point-density">https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#point-density</a></p></li>
-<li><p><strong>step_tail</strong> (<em>float</em>) – Delta between sigma values in the tails (all value &gt;= and &lt;= to keyword “tail”).
-Defaults to 0.2. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#point-density">https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#point-density</a></p></li>
-<li><p><strong>tail</strong> (<em>float</em>) – Sigma value that represents the start of the tail of the distribution. Defaults to 3.
-Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#custom-tail">https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#custom-tail</a></p></li>
+<hr style="margin-top:10px; margin-bottom:10px">
+<li><p><strong>x</strong> (<em>str</em>) – x-axis column name (if using a 1D dataset). Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#1D-dataset">More details</a></p></li>
+<hr style="margin-top:10px; margin-bottom:10px">
+<li><p><strong>sigma</strong> (<em>float</em>) – Maximum sigma value to use for the calculation; range will be +/- this value. Defaults to Auto-
+calculated based on the dataset using “fcp.utilities.sigma”. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#custom-sigma-range">More details</a></p></li>
+<li><p><strong>step_inner</strong> (<em>float</em>) – Delta between sigma values outside of the tail (around sigma=0). Defaults to 0.5. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#point-density">More details</a></p></li>
+<li><p><strong>step_tail</strong> (<em>float</em>) – Delta between sigma values in the tails (all value &gt;= and &lt;= to keyword “tail”). Defaults to
+0.2. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#point-density">More details</a></p></li>
+<li><p><strong>tail</strong> (<em>float</em>) – Sigma value that represents the start of the tail of the distribution. Defaults to 3. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#custom-tail">More details</a></p></li>
 </ul>
 </dd>
 </dl>
@@ -300,7 +297,7 @@ Example: <a class="reference external" href="https://endangeredoxen.github.io/fi
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="pie.html" class="btn btn-neutral float-right" title="pie" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="options.html" class="btn btn-neutral float-right" title="options" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="markers.html" class="btn btn-neutral float-left" title="markers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 

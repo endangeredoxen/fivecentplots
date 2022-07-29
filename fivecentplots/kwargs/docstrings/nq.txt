@@ -2,12 +2,12 @@
         x (str): x-axis column name (if using a 1D dataset). Defaults to None. Example:
           https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#1D-dataset
         CALCULATION:
-        sigma (float): Maximum sigma value to use for the calculation; range will be +/- this value. Defaults
-          to Auto-calculated based on the dataset using "fcp.utilities.sigma". Example:
+        sigma (float): Maximum sigma value to use for the calculation; range will be +/- this value. Defaults to Auto-
+          calculated based on the dataset using "fcp.utilities.sigma". Example:
           https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#custom-sigma-range
-        step_inner (float): Delta between sigma values outside of the tail (around sigma=0). Defaults to 0.5.
-          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#point-density
-        step_tail (float): Delta between sigma values in the tails (all value >= and <= to keyword "tail").
-          Defaults to 0.2. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#point-density
-        tail (float): Sigma value that represents the start of the tail of the distribution. Defaults to 3.
-          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#custom-tail
+        step_inner (float): Delta between sigma values outside of the tail (around sigma=0). Defaults to 0.5. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#point-density
+        step_tail (float): Delta between sigma values in the tails (all value >= and <= to keyword "tail"). Defaults to
+          0.2. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#point-density
+        tail (float): Sigma value that represents the start of the tail of the distribution. Defaults to 3. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#custom-tail

@@ -122,6 +122,7 @@
 <li class="toctree-l2"><a class="reference internal" href="lines.html">lines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="markers.html">markers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nq.html">nq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html">options</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pie.html">pie</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">plot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tick_labels.html">tick_labels</a></li>
@@ -253,138 +254,100 @@
 </dd>
 <dt class="field-even">Keyword Arguments</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>x</strong> (<em>str</em><em> | </em><em>list</em>) – x-axis column name(s) [REQUIRED]</p></li>
-<li><p><strong>y</strong> (<em>str</em><em> | </em><em>list</em>) – y-axis column name(s) [REQUIRED]</p></li>
-<li><p><strong>LINES</strong> – </p></li>
-<li><p><strong>cmap</strong> (<em>str</em>) – Color map name (overrides all other color parameters). Defaults to None. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Colormap">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Colormap</a></p></li>
-<li><p><strong>line_alpha</strong> (<em>str</em><em> | </em><em>list</em>) – Transparency value for the line(s) between 0-1. Defaults to 1. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling</a></p></li>
-<li><p><strong>line_color</strong> (<em>str</em><em> | </em><em>list</em>) – Hex color string or list of hex color strings for the plot lines. Defaults to
-fcp.DEFAULT_COLORS. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line</a>-
-styling</p></li>
-<li><p><strong>line_style</strong> (<em>str</em><em> | </em><em>list</em>) – Matplotlib string character for line style {‘-‘; ‘–’; ‘-.’ ‘:’}. Defaults to
-‘-‘. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling</a></p></li>
-<li><p><strong>line_width</strong> (<em>int</em><em> | </em><em>list</em>) – Line width in pixels. Defaults to 1. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling</a></p></li>
-<li><p><strong>lines</strong> (<em>boolean</em>) – Enable/disable plotting of lines. Defaults to True. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Scatter">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Scatter</a></p></li>
-<li><p><strong>MARKERS</strong> – </p></li>
-<li><p><strong>marker_edge_color</strong> (<em>str</em><em> | </em><em>list</em>) – Hex color string for the marker edges. Defaults to fcp.DEFAULT_COLORS.
-Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors</a></p></li>
-<li><p><strong>marker_edge_width</strong> (<em>float</em>) – Marker edge line width in pixels. Defaults to 1. Example: None</p></li>
-<li><p><strong>marker_fill</strong> (<em>boolean</em>) – Enable/disable color fill in markers. Defaults to False. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors</a></p></li>
-<li><p><strong>marker_fill_color</strong> (<em>str</em><em> | </em><em>list</em>) – Hex color string for the fill color of markers. Defaults to
-fcp.DEFAULT_COLORS. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors">https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors</a></p></li>
-<li><p><strong>jitter</strong> (<em>marker_jitter</em><em> |</em>) – For boxplots add random noise on x-axis to show separation between
-markers. Defaults to True. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/boxplot.html#Jitter">https://endangeredoxen.github.io/fivecentplots/0.5.0/boxplot.html#Jitter</a></p></li>
-<li><p><strong>marker_size</strong> (<em>float</em>) – Size in pixels of the data point markers. Defaults to 6. Example: None</p></li>
-<li><p><strong>markers</strong> (<em>boolean</em>) – Enable/disable data point markers. Defaults to True. Example: None</p></li>
-<li><p><strong>AX_</strong><strong>[</strong><strong>H</strong><strong>|</strong><strong>V</strong><strong>]</strong><strong>LINES</strong> – </p></li>
-<li><p><strong>ax_hlines</strong><strong>|</strong><strong>ax2_hlines</strong> (<em>float</em><em>|</em><em>list of tuples and floats</em>) – Add horizontal lines to the plot; if only
-float value is provided add a solid black line with width=1 pixel at that value; if tuple add any
-one or more of the following in order: [1] float value or DataFrame column name [required]; [2] hex
-string for line color; [3] line style str; [4] line width in pixels; [5] line alpha transparency
-value from 0-1; [6] legend text  [added automatically if using a column name for value]. Defaults to
-None. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Horizontal-&amp;-vertical">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Horizontal-&amp;-vertical</a>-
-lines</p></li>
-<li><p><strong>ax_vlines</strong><strong>|</strong><strong>ax2_vlines</strong> (<em>float</em><em>|</em><em>list of tuples and floats</em>) – Add vertical lines to the plot [same
-parameters as ax_hlines]. Defaults to None. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Horizontal-&amp;-vertical-lines">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Horizontal-&amp;-vertical-lines</a></p></li>
-<li><p><strong>CONTROL_LIMITS</strong> – </p></li>
-<li><p><strong>control_limit_side</strong> (<em>str</em>) – Determines if shaded region is &lt;= lcl and &gt;= ucl {“outside”} or between the
-lcl and ucl {“inside”}. Defaults to outside. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits</a></p></li>
-<li><p><strong>lcl</strong> (<em>float</em>) – Float value to start the lower control limit shading region. Defaults to None. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits</a></p></li>
-<li><p><strong>ucl_edge_alpha</strong> (<em>lcl</em><em> |</em>) – Transparency value for the line starting the control limit shaded region
-between 0-1. Defaults to 0.25. Example: None</p></li>
-<li><p><strong>ucl_edge_color</strong> (<em>lcl</em><em> |</em>) – Hex color string for the the line starting the control limit shaded
-region. Defaults to fcp.DEFAULT_COLORS. Example: None</p></li>
-<li><p><strong>ucl_edge_style</strong> (<em>lcl</em><em> |</em>) – Line style for the line starting the control limit shaded region {‘-’,
-‘–’, ‘-.’, ‘:’}. Defaults to ‘-‘. Example: None</p></li>
-<li><p><strong>ucl_edge_width</strong> (<em>lcl</em><em> |</em>) – Width of the line starting the control limit shaded region in pixels.
-Defaults to 1. Example: None</p></li>
-<li><p><strong>ucl_fill_alpha</strong> (<em>lcl</em><em> |</em>) – Transparency value for the control limit shaded region fill between 0-1.
-Defaults to 0.20. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control</a>-
-limits</p></li>
-<li><p><strong>ucl_fill_color</strong> (<em>lcl</em><em> |</em>) – Hex color string for the control limit shaded region fill. Defaults to
-fcp.DEFAULT_COLORS. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control</a>-
-limits</p></li>
-<li><p><strong>ucl</strong> (<em>float</em>) – Float value to start the upper control limit shading region. Defaults to None. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits</a></p></li>
-<li><p><strong>CONFIDENCE_INTERVALS</strong> – </p></li>
+<li><p><strong>x</strong> (<em>str</em><em> | </em><em>list</em>) – x-axis column name(s) <span style="color:#ff0000; display:inline; font-weight:bold">[REQUIRED]</span></p></li>
+<li><p><strong>y</strong> (<em>str</em><em> | </em><em>list</em>) – y-axis column name(s) <span style="color:#ff0000; display:inline; font-weight:bold">[REQUIRED]</span></p></li>
+<hr style="margin-top:10px; margin-bottom:10px">
+<li><p><strong>cmap</strong> (<em>str</em>) – Color map name (overrides all other color parameters). Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Colormap">More details</a></p></li>
+<li><p><strong>line_alpha</strong> (<em>str</em><em>|</em><em>list</em>) – Transparency value for the line(s) between 0-1. Defaults to 1. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling">More details</a></p></li>
+<li><p><strong>line_color</strong> (<em>str</em><em>|</em><em>list</em>) – Hex color string or list of hex color strings for the plot lines. Defaults to
+fcp.DEFAULT_COLORS. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling">More details</a></p></li>
+<li><p><strong>line_style</strong> (<em>str</em><em>|</em><em>list</em>) – Matplotlib string character for line style {‘-‘; ‘–’; ‘-.’ ‘:’}. Defaults to ‘-‘.
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling">More details</a></p></li>
+<li><p><strong>line_width</strong> (<em>int</em><em>|</em><em>list</em>) – Line width in pixels. Defaults to 1. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling">More details</a></p></li>
+<li><p><strong>lines</strong> (<em>boolean</em>) – Enable/disable plotting of lines. Defaults to True. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Scatter">More details</a></p></li>
+<hr style="margin-top:10px; margin-bottom:10px">
+<li><p><strong>marker_edge_color</strong> (<em>str</em><em>|</em><em>list</em>) – Hex color string for the marker edges. <br>Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#b3b2b2;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8cd3c6;display:inline-block"></span>. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors">More details</a></p></li>
+<li><p><strong>marker_edge_width</strong> (<em>float</em>) – Marker edge line width in pixels. Defaults to 1.</p></li>
+<li><p><strong>marker_fill</strong> (<em>boolean</em>) – Enable/disable color fill in markers. Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors">More details</a></p></li>
+<li><p><strong>marker_fill_color</strong> (<em>str</em><em>|</em><em>list</em>) – Hex color string for the fill color of markers. <br>Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#b3b2b2;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8cd3c6;display:inline-block"></span>.
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors">More details</a></p></li>
+<li><p><strong>marker_jitter</strong><strong>|</strong><strong>jitter</strong> (<em>boolean</em>) – For boxplots add random noise on x-axis to show separation between markers.
+Defaults to True. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/boxplot.html#Jitter">More details</a></p></li>
+<li><p><strong>marker_size</strong> (<em>float</em>) – Size in pixels of the data point markers. Defaults to 6.</p></li>
+<li><p><strong>markers</strong> (<em>boolean</em>) – Enable/disable data point markers. Defaults to True.</p></li>
+<hr style="margin-top:10px; margin-bottom:10px">
+<li><p><strong>ax_hlines</strong><strong>|</strong><strong>ax2_hlines</strong> (<em>float</em><em>|</em><em>list of tuples and floats</em>) – Add horizontal lines to the plot; if only float value is
+provided add a solid black line with width=1 pixel at that value; if tuple add any one or more of the
+following in order: [1] float value or DataFrame column name [required]; [2] hex string for line color; [3]
+line style str; [4] line width in pixels; [5] line alpha transparency value from 0-1; [6] legend text  [added
+automatically if using a column name for value]. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Horizontal-&amp;-vertical-lines">More details</a></p></li>
+<li><p><strong>ax_vlines</strong><strong>|</strong><strong>ax2_vlines</strong> (<em>float</em><em>|</em><em>list of tuples and floats</em>) – Add vertical lines to the plot [same parameters as
+ax_hlines]. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Horizontal-&amp;-vertical-lines">More details</a></p></li>
+<hr style="margin-top:10px; margin-bottom:10px">
+<li><p><strong>control_limit_side</strong> (<em>str</em>) – Determines if shaded region is &lt;= lcl and &gt;= ucl {“outside”} or between the lcl and
+ucl {“inside”}. Defaults to outside. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits">More details</a></p></li>
+<li><p><strong>lcl</strong> (<em>float</em>) – Float value to start the lower control limit shading region. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits">More details</a></p></li>
+<li><p><strong>lcl</strong><strong>|</strong><strong>ucl_edge_alpha</strong> (<em>float</em>) – Transparency value for the line starting the control limit shaded region between
+0-1. Defaults to 0.25.</p></li>
+<li><p><strong>lcl</strong><strong>|</strong><strong>ucl_edge_color</strong> (<em>str</em>) – Hex color string for the the line starting the control limit shaded region. Defaults
+to fcp.DEFAULT_COLORS.</p></li>
+<li><p><strong>lcl</strong><strong>|</strong><strong>ucl_edge_style</strong> (<em>str</em>) – Line style for the line starting the control limit shaded region {‘-’, ‘–’, ‘-.’,
+‘:’}. Defaults to ‘-‘.</p></li>
+<li><p><strong>lcl</strong><strong>|</strong><strong>ucl_edge_width</strong> (<em>float</em>) – Width of the line starting the control limit shaded region in pixels. Defaults to 1.</p></li>
+<li><p><strong>lcl</strong><strong>|</strong><strong>ucl_fill_alpha</strong> (<em>float</em>) – Transparency value for the control limit shaded region fill between 0-1. Defaults to
+0.20. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits">More details</a></p></li>
+<li><p><strong>lcl</strong><strong>|</strong><strong>ucl_fill_color</strong> (<em>str</em>) – Hex color string for the control limit shaded region fill. Defaults to
+fcp.DEFAULT_COLORS. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits">More details</a></p></li>
+<li><p><strong>ucl</strong> (<em>float</em>) – Float value to start the upper control limit shading region. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits">More details</a></p></li>
+<hr style="margin-top:10px; margin-bottom:10px">
 <li><p><strong>conf_int</strong> (<em>float</em>) – Interval with upper and lower bounds based on a single confidence value between 0-1
-(typical=0.95). Defaults to None. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval</a></p></li>
-<li><p><strong>nq_int_edge_alpha</strong> (<em>conf_int</em><em> | </em><em>perc_int</em><em> |</em>) – Transparency value for the lines bounding the
-interval shaded region between 0-1. Defaults to 0.25. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval</a></p></li>
-<li><p><strong>nq_int_edge_color</strong> (<em>conf_int</em><em> | </em><em>perc_int</em><em> |</em>) – Hex color string for the the lines bounding the
-interval shaded region. Defaults to fcp.DEFAULT_COLORS. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval</a></p></li>
-<li><p><strong>nq_int_edge_style</strong> (<em>conf_int</em><em> | </em><em>perc_int</em><em> |</em>) – Line style for the lines bounding the interval shaded
-region {‘-’, ‘–’, ‘-.’, ‘:’}. Defaults to ‘-‘. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval</a></p></li>
-<li><p><strong>nq_int_edge_width</strong> (<em>conf_int</em><em> | </em><em>perc_int</em><em> |</em>) – Width of the lines bounding the interval shaded
-region in pixels. Defaults to 1. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval</a></p></li>
-<li><p><strong>nq_int_fill_alpha</strong> (<em>conf_int</em><em> | </em><em>perc_int</em><em> |</em>) – Transparency value for the interval shaded region
-fill between 0-1. Defaults to 0.20. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval</a></p></li>
-<li><p><strong>nq_int_fill_color</strong> (<em>conf_int</em><em> | </em><em>perc_int</em><em> |</em>) – Hex color string for the interval shaded region fill.
-Defaults to fcp.DEFAULT_COLORS. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval</a></p></li>
-<li><p><strong>nq_int</strong> (<em>list of float</em>) – Interval with upper and lower bounds based on values of sigma (where the mean
-of a distribution is sigma=0). Defaults to None. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval</a></p></li>
-<li><p><strong>perc_int</strong> (<em>list of float</em>) – Interval with upper and lower bounds based on percentiles between 0-1.
-Defaults to None. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval</a></p></li>
-<li><p><strong>FIT</strong> – </p></li>
-<li><p><strong>fit</strong> (<em>int</em>) – Polynomial degree for the fit. Defaults to None. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Line-fit">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Line-fit</a></p></li>
-<li><p><strong>fit_color</strong> (<em>str</em>) – Hex color string for the fit line. Defaults to #000000. Example: None</p></li>
-<li><p><strong>fit_eqn</strong> (<em>boolean</em>) – Display the fit equation on the plot. Defaults to False. Example: None</p></li>
-<li><p><strong>fit_font_size</strong> (<em>float</em>) – Font size of the fit eqn and rsq value. Defaults to 12. Example: None</p></li>
-<li><p><strong>fit_padding</strong> (<em>int</em>) – Padding in pixels from the top of the plot to the location of the fit eqn. Defaults
-to 10. Example: None</p></li>
-<li><p><strong>fit_range_x</strong> (<em>list</em>) – Compute the fit only over a given range of x-values. Defaults to None. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Curve-fitting">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Curve-fitting</a></p></li>
-<li><p><strong>fit_range_y</strong> (<em>list</em>) – Compute the fit only over a given range of y-values. Defaults to None. Example:
-None</p></li>
-<li><p><strong>fit_rsq</strong> (<em>boolean</em>) – Display the rsq of the fit on the plot. Defaults to False. Example: None</p></li>
-<li><p><strong>REFERENCE_LINES</strong> – </p></li>
-<li><p><strong>ref_line</strong> (<em>list</em><em> | </em><em>pd.Series</em>) – The name of one or more columns in the DataFrame or a pandas Series with
-the same number of rows as the x column. Defaults to None. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line</a></p></li>
-<li><p><strong>ref_line_alpha</strong> (<em>str</em><em> | </em><em>list</em>) – Transparency value for the reference line(s) between 0-1 (use list if
-more than one ref_line plotted). Defaults to 1. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line</a></p></li>
-<li><p><strong>ref_line_color</strong> (<em>str</em><em> | </em><em>list</em>) – Hex color string or list of hex color strings for the reference line (use
-list if more than one ref_line plotted). Defaults to #000000. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line</a></p></li>
-<li><p><strong>ref_line_legend_text</strong> (<em>str</em><em> | </em><em>list</em>) – Custom string label(s) to add to a legend for the reference line
-data (use list if more than one ref_line plotted). Defaults to None. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line</a></p></li>
-<li><p><strong>ref_line_style</strong> (<em>str</em><em> | </em><em>list</em>) – Matplotlib string character for reference line style {‘-‘; ‘–’; ‘-.’
-‘:’} (use list if more than one ref_line plotted). Defaults to ‘-‘. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line</a></p></li>
-<li><p><strong>ref_line_width</strong> (<em>int</em><em> | </em><em>list</em>) – Reference line width in pixels (use list if more than one ref_line
-plotted). Defaults to 1. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line</a></p></li>
-<li><p><strong>STAT_LINES</strong> – </p></li>
-<li><p><strong>stat</strong> (<em>str</em>) – Calculate a statistic on a data set (any stat value supported by pandas.groupby is valid
-{‘mean’, ‘std’, etc}. Defaults to None. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Stat-lines">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Stat-lines</a></p></li>
-<li><p><strong>stat_line_xxx</strong> (<em>various</em>) – Stat-line styling is controlled by the regular line_xxx values. Defaults to
-None. Example: None</p></li>
-<li><p><strong>stat_val</strong> (<em>str</em>) – Alternate column name used as a pseudo x-axis for the stat calculation for cases in
-which the plotted x-column values are not perfectly aligned. Defaults to None. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Stat-lines">https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Stat-lines</a></p></li>
+(typical=0.95). Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval">More details</a></p></li>
+<li><p><strong>conf_int_</strong><strong>|</strong><strong>perc_int_</strong><strong>|</strong><strong>nq_int_edge_alpha</strong> (<em>float</em>) – Transparency value for the lines bounding the interval shaded
+region between 0-1. Defaults to 0.25. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval">More details</a></p></li>
+<li><p><strong>conf_int_</strong><strong>|</strong><strong>perc_int_</strong><strong>|</strong><strong>nq_int_edge_color</strong> (<em>str</em>) – Hex color string for the the lines bounding the interval shaded
+region. <br>Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#b3b2b2;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8cd3c6;display:inline-block"></span>. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval">More details</a></p></li>
+<li><p><strong>conf_int_</strong><strong>|</strong><strong>perc_int_</strong><strong>|</strong><strong>nq_int_edge_style</strong> (<em>str</em>) – Line style for the lines bounding the interval shaded region {‘-’,
+‘–’, ‘-.’, ‘:’}. Defaults to ‘-‘. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval">More details</a></p></li>
+<li><p><strong>conf_int_</strong><strong>|</strong><strong>perc_int_</strong><strong>|</strong><strong>nq_int_edge_width</strong> (<em>float</em>) – Width of the lines bounding the interval shaded region in pixels.
+Defaults to 1. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval">More details</a></p></li>
+<li><p><strong>conf_int_</strong><strong>|</strong><strong>perc_int_</strong><strong>|</strong><strong>nq_int_fill_alpha</strong> (<em>float</em>) – Transparency value for the interval shaded region fill between 0-1.
+Defaults to 0.20. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval">More details</a></p></li>
+<li><p><strong>conf_int_</strong><strong>|</strong><strong>perc_int_</strong><strong>|</strong><strong>nq_int_fill_color</strong> (<em>str</em>) – Hex color string for the interval shaded region fill. Defaults to
+fcp.DEFAULT_COLORS. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence">More details</a>-
+interval</p></li>
+<li><p><strong>nq_int</strong> (<em>list of float</em>) – Interval with upper and lower bounds based on values of sigma (where the mean of a
+distribution is sigma=0). Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval">More details</a></p></li>
+<li><p><strong>perc_int</strong> (<em>list of float</em>) – Interval with upper and lower bounds based on percentiles between 0-1. Defaults to
+None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval">More details</a></p></li>
+<hr style="margin-top:10px; margin-bottom:10px">
+<li><p><strong>fit</strong> (<em>int</em>) – Polynomial degree for the fit. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Line-fit">More details</a></p></li>
+<li><p><strong>fit_color</strong> (<em>str</em>) – Hex color string for the fit line. Defaults to #000000 <span id="rectangle" style="height: 12px; width: 12px; background-color:#000000;  display:inline-block"></span>.</p></li>
+<li><p><strong>fit_eqn</strong> (<em>boolean</em>) – Display the fit equation on the plot. Defaults to False.</p></li>
+<li><p><strong>fit_font_size</strong> (<em>float</em>) – Font size of the fit eqn and rsq value. Defaults to 12.</p></li>
+<li><p><strong>fit_padding</strong> (<em>int</em>) – Padding in pixels from the top of the plot to the location of the fit eqn. Defaults to 10.</p></li>
+<li><p><strong>fit_range_x</strong> (<em>list</em>) – Compute the fit only over a given range of x-values. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Curve-fitting">More details</a></p></li>
+<li><p><strong>fit_range_y</strong> (<em>list</em>) – Compute the fit only over a given range of y-values. Defaults to None.</p></li>
+<li><p><strong>fit_rsq</strong> (<em>boolean</em>) – Display the rsq of the fit on the plot. Defaults to False.</p></li>
+<hr style="margin-top:10px; margin-bottom:10px">
+<li><p><strong>ref_line</strong> (<em>list</em><em>|</em><em>pd.Series</em>) – The name of one or more columns in the DataFrame or a pandas Series with the same
+number of rows as the x column. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line">More details</a></p></li>
+<li><p><strong>ref_line_alpha</strong> (<em>str</em><em>|</em><em>list</em>) – Transparency value for the reference line(s) between 0-1 (use list if more than one
+ref_line plotted). Defaults to 1. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line">More details</a></p></li>
+<li><p><strong>ref_line_color</strong> (<em>str</em><em>|</em><em>list</em>) – Hex color string or list of hex color strings for the reference line (use list if
+more than one ref_line plotted). Defaults to #000000 <span id="rectangle" style="height: 12px; width: 12px; background-color:#000000;  display:inline-block"></span>. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line">More details</a></p></li>
+<li><p><strong>ref_line_legend_text</strong> (<em>str</em><em>|</em><em>list</em>) – Custom string label(s) to add to a legend for the reference line data (use list
+if more than one ref_line plotted). Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line">More details</a></p></li>
+<li><p><strong>ref_line_style</strong> (<em>str</em><em>|</em><em>list</em>) – Matplotlib string character for reference line style {‘-‘; ‘–’; ‘-.’ ‘:’} (use list
+if more than one ref_line plotted). Defaults to ‘-‘. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line">More details</a></p></li>
+<li><p><strong>ref_line_width</strong> (<em>int</em><em>|</em><em>list</em>) – Reference line width in pixels (use list if more than one ref_line plotted). Defaults
+to 1. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line">More details</a></p></li>
+<hr style="margin-top:10px; margin-bottom:10px">
+<li><p><strong>stat</strong> (<em>str</em>) – Calculate a statistic on a data set (any stat value supported by pandas.groupby is valid {‘mean’,
+‘std’, etc}. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Stat">More details</a>-
+lines</p></li>
+<li><p><strong>stat_line_xxx</strong> (<em>various</em>) – Stat-line styling is controlled by the regular line_xxx values. Defaults to None.</p></li>
+<li><p><strong>stat_val</strong> (<em>str</em>) – Alternate column name used as a pseudo x-axis for the stat calculation for cases in which the
+plotted x-column values are not perfectly aligned. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Stat-lines">More details</a></p></li>
 </ul>
 </dd>
 </dl>

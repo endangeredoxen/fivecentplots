@@ -1,2 +1,2 @@
 Keyword,Data Type,Description,Default,Example
-bar_color_by_bar | color_by_bar,bool,Color each bar differently,False,`color by bar <barplot.html#Color-by-bar>`_
+bar_color_by_bar|color_by_bar,bool,Color each bar differently,False,`color by bar <barplot.html#Color-by-bar>`_

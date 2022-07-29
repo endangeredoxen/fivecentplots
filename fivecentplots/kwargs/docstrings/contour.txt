@@ -5,9 +5,8 @@
           https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Contour-lines
         filled (bool): Color area between contour lines. Defaults to True. Example:
           https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Filled-contour
-        interp (str): Scipy interpolate.griddata method to make Z points {‘linear’, ‘nearest’, ‘cubic’}.
-          Defaults to 'cubic’. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Data-interpolation
+        interp (str): Scipy interpolate.griddata method to make Z points {‘linear’, ‘nearest’, ‘cubic’}. Defaults to
+          'cubic’. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Data-interpolation
         levels (int): Number of contour lines/levels to draw. Defaults to 20. Example:
           https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Contour-lines
         show_points (bool): Show points on top of the contour plot. Defaults to False. Example:
@@ -15,4 +14,4 @@
         COLOR_BAR:
         cbar (bool): Toggle colorbar on/off for contour and heatmap plots. Defaults to False. Example:
           https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Filled-contour
-        size (int): cbar width [height will match the height of the axes]. Defaults to 30. Example: None
+        size (int): cbar width [height will match the height of the axes]. Defaults to 30.

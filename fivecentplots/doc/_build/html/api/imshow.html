@@ -122,6 +122,7 @@
 <li class="toctree-l2"><a class="reference internal" href="lines.html">lines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="markers.html">markers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nq.html">nq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html">options</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pie.html">pie</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot.html">plot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tick_labels.html">tick_labels</a></li>
@@ -255,17 +256,15 @@ to a DataFrame]</p>
 </dd>
 <dt class="field-even">Keyword Arguments</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>cfa</strong> (<em>str</em>) – Color-filter array pattern that is used to split data from a Bayer image into separate
-color planes. Defaults to None. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#split-color-planes">https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#split-color-planes</a></p></li>
-<li><p><strong>cmap</strong> (<em>bool</em>) – Name of a color map to apply to the plot. Defaults to gray. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#color-maps">https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#color-maps</a></p></li>
-<li><p><strong>interp</strong> (<em>imshow_interp</em><em> |</em>) – imshow interpolation scheme [see matplotlib docs for more details].
-Defaults to ‘none’. Example: None</p></li>
-<li><p><strong>stretch</strong> (<em>float</em><em> | </em><em>list</em>) – Calculate “stretch” times the standard deviation above and below the mean to
-set new z-limits. Can be a single value used as +/- limits or a two-value list for the lower/upper
-multiplier values. Defaults to None. Example:
-<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#contrast-stretching">https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#contrast-stretching</a></p></li>
+<li><p><strong>cfa</strong> (<em>str</em>) – Color-filter array pattern that is used to split data from a Bayer image into separate color planes.
+Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#split-color-planes">More details</a></p></li>
+<li><p><strong>cmap</strong> (<em>bool</em>) – Name of a color map to apply to the plot. Defaults to gray. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#color-maps">More details</a></p></li>
+<li><p><strong>imshow_interp</strong><strong>|</strong><strong>interp</strong> (<em>str</em>) – imshow interpolation scheme [see matplotlib docs for more details]. Defaults to
+‘none’.</p></li>
+<li><p><strong>stretch</strong> (<em>float</em><em>|</em><em>list</em>) – Calculate “stretch” times the standard deviation above and below the mean to set new
+z-limits. Can be a single value used as +/- limits or a two-value list for the lower/upper multiplier values.
+Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#contrast">More details</a>-
+stretching</p></li>
 </ul>
 </dd>
 </dl>

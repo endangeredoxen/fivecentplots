@@ -1,5 +1,5 @@
 Keyword,Data Type,Description,Default,Example
-groups,str | list,Grouping columns for the box plot,None,boxplot.html#Groups
+groups,str|list,Grouping columns for the box plot,None,boxplot.html#Groups
 box_on,bool,Toggle box visibility,True,None
 box_divider,bool,Toggle box divider visibility,True,boxplot.html#Dividers
 box_divider_color,str,Hex color string for the vertical line between groups,#bbbbbb,None
