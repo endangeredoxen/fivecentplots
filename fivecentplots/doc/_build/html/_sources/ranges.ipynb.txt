@@ -40,8 +40,6 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "%load_ext autoreload\n",
-    "%autoreload 2\n",
     "import fivecentplots as fcp\n",
     "import pandas as pd\n",
     "from pathlib import Path"
