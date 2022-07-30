@@ -1821,6 +1821,7 @@ def figure():
     """Dummy function to return the figure API with `help()` (not used directly for plotting).
 
     Keyword Args:
+        dpi (int): Dots per square inch resolution for the figure. Defaults to 100.
         fig_edge_alpha (str): Transparency value for figure edge between 0-1. Defaults to 1.
         fig_edge_color (str): Hex color string for the border edge of the figure region. Defaults to #aaaaaa. Example:
           https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Typical-elements
