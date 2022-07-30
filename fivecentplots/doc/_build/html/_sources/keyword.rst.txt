@@ -3,8 +3,8 @@
 Keyword Arguments
 =================
 
-Required args and kwargs
-------------------------
+Required kwargs
+---------------
 
 All plot types require input data in the form  of a pandas ``DataFrame``.
 

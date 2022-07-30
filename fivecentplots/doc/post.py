@@ -31,107 +31,95 @@ for nb in ipynb:
     for mm in match:
         ff = ff.replace(mm, '')
 
-    # fix the docstring
-    docstring0 = ff.index('</h1>') + 5
-    try:
-        docstring1 = ff.index('<div class="section" id="Setup">')
-        nn = open(cur_dir / nb.replace('.html', '.ipynb'))
-        nn = json.load(nn)
-        try:
-            cell = nn['cells'][1]['source'][0]
-            ff = ff[0:docstring0] + cell + '<br>' + ff[docstring1:]
-        except IndexError:
-            pass
-    except ValueError:
-        pass
+    # # fix the docstring
+    # docstring0 = ff.index('</h1>') + 5
+    # try:
+    #     docstring1 = ff.index('<div class="section" id="Setup">')
+    #     nn = open(cur_dir / nb.replace('.html', '.ipynb'))
+    #     nn = json.load(nn)
+    #     try:
+    #         cell = nn['cells'][1]['source'][0]
+    #         ff = ff[0:docstring0] + cell + '<br>' + ff[docstring1:]
+    #     except IndexError:
+    #         pass
+    # except ValueError:
+    #     pass
 
     with open(cur_dir / '_build/html' / nb, 'w') as output:
         output.write(ff)
 
-# test_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'tests', 'notebooks')
-# nbs = [f for f in os.listdir(test_dir) if '.ipynb' in f]
-# nbs = [f for f in nbs if 'checkpoint' not in f]
-# for nb in nbs:
-#     if os.path.exists(os.path.join(cur_dir, nb)):
-#         os.remove(os.path.join(cur_dir, nb))
-#     shutil.copyfile(os.path.join(test_dir, nb), os.path.join(cur_dir, nb))
+# # COPY SPECIAL IMAGES
+# print('Copying special images...')
+# images = {'_build/html/_images':
+#           ['_static/images/index.png']
+# }
 
+# for k, v in images.items():
+#     for f in v:
+#         shutil.copy(f, k)
 
-# COPY SPECIAL IMAGES
-print('Copying special images...')
-images = {'_build/html/_images':
-          ['_static/images/index.png']
-}
+# # FIX API PAGES
+# print('Adjusting api pages...')
+# keys = ['LINES', 'MARKERS', 'CONTROL_LIMITS', 'CONFIDENCE_INTERVALS', 'FIT',
+#         'REFERENCE_LINES', 'STAT_LINES', 'AXES_LABELS', 'RC_LABELS', 'CALCULATION', 'COLOR_BAR',
+#         'GROUPING_TEXT', 'DIAMONDS', 'VIOLINS', 'BASIC',
+#         'AX_</strong><strong>[</strong><strong>H</strong><strong>|</strong><strong>V</strong><strong>]</strong><strong>LINES']
+# color_str = ''
+# for color in DEFAULT_COLORS[0:12]:
+#     color_str += f'<span id="rectangle" style="height: 12px; width: 12px; background-color:{color};' \
+#                     + 'display:inline-block"></span>'
+# api_filepath = Path(__file__).parent / '_build' / 'html' / 'api'
+# files = os.listdir(api_filepath)
+# for ff in files:
+#     # read the html files
+#     with open(api_filepath / ff, 'r') as input:
+#         html = input.read()
 
-for k, v in images.items():
-    for f in v:
-        shutil.copy(f, k)
+#     # check for previously modified files (must be fresh)
+#     if color_str in html or '<hr style' in html or '<span id="rectangle" style="height' in html:
+#         continue
 
+#     # replace kwarg grouping headers
+#     for key in keys:
+#         kk = f'<li><p><strong>{key}</strong> – </p></li>'
+#         idx = html.find(kk)
+#         if idx == -1:
+#             continue
+#         html = html.replace(kk, '<hr style="margin-top:10px; margin-bottom:10px">')
 
-# FIX API PAGES
-print('Adjusting api pages...')
-keys = ['LINES', 'MARKERS', 'CONTROL_LIMITS', 'CONFIDENCE_INTERVALS', 'FIT',
-        'REFERENCE_LINES', 'STAT_LINES', 'AXES_LABELS', 'RC_LABELS', 'CALCULATION', 'COLOR_BAR',
-        'GROUPING_TEXT', 'DIAMONDS', 'VIOLINS', 'BASIC',
-        'AX_</strong><strong>[</strong><strong>H</strong><strong>|</strong><strong>V</strong><strong>]</strong><strong>LINES']
-color_str = ''
-for color in DEFAULT_COLORS[0:12]:
-    color_str += f'<span id="rectangle" style="height: 12px; width: 12px; background-color:{color};' \
-                    + 'display:inline-block"></span>'
-api_filepath = Path(__file__).parent / '_build' / 'html' / 'api'
-files = os.listdir(api_filepath)
-for ff in files:
-    # read the html files
-    with open(api_filepath / ff, 'r') as input:
-        html = input.read()
+#     # format required
+#     required = [m.span() for m in re.finditer('\[REQUIRED\]', html)]
+#     for rr in reversed(required):
+#         html = html[0:rr[0]] \
+#                + '<span style="color:#ff0000; display:inline; font-weight:bold">[REQUIRED]</span>' \
+#                + html[rr[1]:]
 
-    # check for previously modified files (must be fresh)
-    if color_str in html or '<hr style' in html or '<span id="rectangle" style="height' in html:
-        continue
+#     # find color strings
+#     has_hex = [m.span() for m in re.finditer(r' #(?:[0-9a-fA-F]{1,2}){3}', html)]
+#     for hh in reversed(has_hex):
+#         val = html[hh[0]: hh[1]]
+#         if '#ffffff' in val:
+#             border = '; border: 1px solid #cccccc;'
+#         else:
+#             border = '; '
+#         html = html[0:hh[1]] \
+#             + f' <span id="rectangle" style="height: 12px; width: 12px; background-color:{val.strip()}' \
+#             + f'{border} display:inline-block"></span>' \
+#             + html[hh[1]:]
 
-    # replace kwarg grouping headers
-    for key in keys:
-        kk = f'<li><p><strong>{key}</strong> – </p></li>'
-        idx = html.find(kk)
-        if idx == -1:
-            continue
-        html = html.replace(kk, '<hr style="margin-top:10px; margin-bottom:10px">')
+#     # example formatting
+#     examples = [m.span() for m in re.finditer('Example:', html)]
+#     for ex in reversed(examples):
+#         tag_start = html[ex[0]:].find('>https://endangeredoxen.github.io') + ex[0] + 1
+#         tag_stop = tag_start + html[tag_start:].find('</a>')
+#         html = html[0:tag_start] + 'More details' + html[tag_stop:]
+#         html = html[0:ex[0]] + html[ex[1] + 1:]
 
-    # format required
-    required = [m.span() for m in re.finditer('\[REQUIRED\]', html)]
-    for rr in reversed(required):
-        html = html[0:rr[0]] \
-               + '<span style="color:#ff0000; display:inline; font-weight:bold">[REQUIRED]</span>' \
-               + html[rr[1]:]
+#     # change default colors
+#     if 'Defaults to fcp.DEFAULT_COLORS' in html and color_str not in html:
+#         html = html.replace('Defaults to fcp.DEFAULT_COLORS.', f'<br>Defaults to fcp.DEFAULT_COLORS {color_str}.')
 
-    # find color strings
-    has_hex = [m.span() for m in re.finditer(r' #(?:[0-9a-fA-F]{1,2}){3}', html)]
-    for hh in reversed(has_hex):
-        val = html[hh[0]: hh[1]]
-        if '#ffffff' in val:
-            border = '; border: 1px solid #cccccc;'
-        else:
-            border = '; '
-        html = html[0:hh[1]] \
-            + f' <span id="rectangle" style="height: 12px; width: 12px; background-color:{val.strip()}' \
-            + f'{border} display:inline-block"></span>' \
-            + html[hh[1]:]
+#     # write back the file
+#     with open(api_filepath / ff, 'w') as output:
+#         output.write(html)
 
-    # example formatting
-    examples = [m.span() for m in re.finditer('Example:', html)]
-    for ex in reversed(examples):
-        tag_start = html[ex[0]:].find('>https://endangeredoxen.github.io') + ex[0] + 1
-        tag_stop = tag_start + html[tag_start:].find('</a>')
-        html = html[0:tag_start] + 'More details' + html[tag_stop:]
-        html = html[0:ex[0]] + html[ex[1] + 1:]
-
-    # change default colors
-    if 'Defaults to fcp.DEFAULT_COLORS' in html and color_str not in html:
-        html = html.replace('Defaults to fcp.DEFAULT_COLORS.', f'<br>Defaults to fcp.DEFAULT_COLORS {color_str}.')
-
-    # write back the file
-    with open(api_filepath / ff, 'w') as output:
-        output.write(html)
-
-
-#<li><p><strong>LINES</strong> – </p></li>

@@ -16,7 +16,7 @@
       .. figure:: _static/images/logo.png
          :figwidth: 80%
 
-
+|
 |
 |
 
@@ -41,12 +41,9 @@ them to abandon Python in favor of more comfortable, albeit inferior, plotting t
 
 .. raw:: html
 
-   <br>
 
 **fivecentplots** simplifies the API required to generate complex plots, specifically for data
 in **pandas** DataFrames.
-
-|
 
 .. raw:: html
 
@@ -92,13 +89,16 @@ in **pandas** DataFrames.
 
          <div class="contain">
             <p>
-               With <b>pandas</b>, statistical analysis in Python rivals or surpasses that of commercial software packages
-               like JMP. However, JMP has some useful plotting options that are tedious to create
-               in Python.  <b>fivencentplots</b> makes it easy to create:
                <ul>
-                  <li><a href='http://www.jmp.com/support/help/Variability_Gauge_Charts.shtml'>JMP-style variability gauge charts </a></li>
-                  <li><a href='http://www.jmp.com/support/help/Additional_Examples_of_the_Overlay_Plot_Platform.shtml#192569'>Grouped overlay plots</a> </li>
-                  <li><a href='https://www.jmp.com/support/help/en/16.2/index.shtml#page/jmp/example-of-a-normal-quantile-plot.shtml'>Normal quantile plots</a> </li>
+                  <li>With <b>pandas</b>, statistical analysis in Python rivals or surpasses that of commercial software packages
+                      like JMP. However, JMP has some useful plotting options that are tedious to create
+                      in Python.  <b>fivencentplots</b> makes it easy to create:
+                     <ul>
+                        <li><a href='http://www.jmp.com/support/help/Variability_Gauge_Charts.shtml'>JMP-style variability gauge charts </a></li>
+                        <li><a href='http://www.jmp.com/support/help/Additional_Examples_of_the_Overlay_Plot_Platform.shtml#192569'>Grouped overlay plots</a> </li>
+                        <li><a href='https://www.jmp.com/support/help/en/16.2/index.shtml#page/jmp/example-of-a-normal-quantile-plot.shtml'>Normal quantile plots</a> </li>
+                     </ul>
+                  </li>
                </ul>
             </p>
          </div>

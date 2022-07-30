@@ -1,11 +1,11 @@
 /* override table width restrictions */
 
-p{
+/* p{
     margin-top: 0;
     margin-bottom: 12px;
     font-family: 'Lato', sans-serif;
     font-size: 15px;
-}
+} */
 .hh {
     background-color: #d5f4e6
 }
@@ -227,8 +227,10 @@ div.rightside {
     font-size: 12pt;
     font-family: 'Lato', sans-serif;
     float: left;
+    margin-top: -24px;
 }
 .imgidx{
+    margin-top: -24px;
     /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
 }
 div[class^='highlight'] pre {
