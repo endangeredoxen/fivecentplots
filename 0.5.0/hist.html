@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>hist &mdash; fivecentplots beta documentation</title>
   
@@ -20,7 +20,10 @@
   
     <link rel="shortcut icon" href="_static/favicon.ico"/>
   
+
   
+  
+
   
 
   
@@ -30,11 +33,13 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "document", "processHtmlClass": "math|output_area"}}</script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -56,7 +61,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> fivecentplots
+            <a href="index.html" class="icon icon-home"> fivecentplots
           
 
           
@@ -66,7 +71,7 @@
             
             
               <div class="version">
-                0.5.0
+                0.5.0-alpha
               </div>
             
           
@@ -91,7 +96,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Basics</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layout.html">Layout</a></li>
@@ -100,51 +105,65 @@
 <li class="toctree-l1"><a class="reference internal" href="styles.html">Styles and formatting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ranges.html">Data ranges</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ticks.html">Grids and ticks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/fcp.html">API</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Examples</span></p>
+<p class="caption" role="heading"><span class="caption-text">Plot Types</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="plot.html">plot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="barplot.html">barplot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gantt.html">Gantt Charts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gantt.html">gantt charts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="heatmap.html">heatmap</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">hist</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#Setup">Setup</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#Imports">Imports</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Sample-data">Sample data</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Set-theme">Set theme</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Other">Other</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#Setup">Setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Simple-histogram">Simple histogram</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Vertical-bars">Vertical bars</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Horizontal-bars">Horizontal bars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Bin-counts">Bin counts</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#Legend">Legend</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Kernal-density-estimator">Kernal density estimator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Row/column-plot">Row/column plot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Wrap-plot">Wrap plot</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#By-column-values">By column values</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#By-column-names">By column names</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Grouping">Grouping</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Legend">Legend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Row/column-plot">Row/column plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Wrap-plot">Wrap plot</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Kernel-density-estimator">Kernel density estimator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Other-options">Other options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Cumulative">Cumulative</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Normalize">Normalize</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#Images">Images</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Mono">Mono</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#RGB">RGB</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#PDF">PDF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#CDF">CDF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Styles">Styles</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Bar-style">Bar style</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Colors">Colors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Alignment">Alignment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Width">Width</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#fcp.HIST">fcp.HIST</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="imshow.html">imshow</a></li>
-<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nq.html">nq</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pie.html">pie</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Other</span></p>
+<p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="older.html">Older Versions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/endangeredoxen/fivecentplots">GitHub</a></li>
 </ul>
 
             
@@ -185,6 +204,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -196,7 +217,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/hist.ipynb.txt" rel="nofollow"> View page source</a>
           
         
@@ -215,21 +236,35 @@
 /* CSS for nbsphinx extension */
 
 /* remove conflicting styling from Sphinx themes */
-div.nbinput.container,
-div.nbinput.container div.prompt,
-div.nbinput.container div.input_area,
-div.nbinput.container div[class*=highlight],
-div.nbinput.container div[class*=highlight] pre,
-div.nboutput.container,
-div.nboutput.container div.prompt,
-div.nboutput.container div.output_area,
-div.nboutput.container div[class*=highlight],
-div.nboutput.container div[class*=highlight] pre {
-    background: none;
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
     border: none;
-    padding: 0 0;
+    padding: 0;
     margin: 0;
     box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
 }
 
 /* avoid gaps between output lines */
@@ -330,7 +365,7 @@ div.nboutput.container div.output_area {
 div.nbinput.container div.input_area {
     border: 1px solid #e0e0e0;
     border-radius: 2px;
-    background: #f5f5f5;
+    /*background: #f5f5f5;*/
 }
 
 /* override MathJax center alignment in output cells */
@@ -396,6 +431,7 @@ div.nboutput.container div.output_area.rendered_html,
 div.nboutput.container div.output_area > div.output_javascript,
 div.nboutput.container div.output_area:not(.rendered_html) > img{
     padding: 5px;
+    margin: 0;
 }
 
 /* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
@@ -467,47 +503,39 @@ div.rendered_html tbody tr:hover {
 </style>
 <div class="section" id="hist">
 <h1>hist<a class="headerlink" href="#hist" title="Permalink to this headline">¶</a></h1>
-<p>The <code class="docutils literal notranslate"><span class="pre">hist</span></code> function allows histogram visualizing DataFrame data. At a minimum, the <code class="docutils literal notranslate"><span class="pre">hist</span></code> function requires the following keywords:</p>
-<ul><li><p><code class="docutils literal notranslate"><span class="pre">df</span></code>: a pandas DataFrame</p>
-</li><li><p><code class="docutils literal notranslate"><span class="pre">x</span></code>: the name of the DataFrame column containing the x-axis data (except with 2D image data, then optional)</p>
-</li></ul><p>The y-axis will display the histogram counts for the specified data set.</p>
-<p>Other optional keywords for this function are described in Keyword Arguments.</p>
+<style>
+    .warn2 { color: red; }
+</style><p>This section describes various options available for histogram plots in <strong>fivecentplots</strong></p>
+<p>See the full API <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/api/hist.html#hist">https://endangeredoxen.github.io/fivecentplots/0.5.0/api/hist.html#hist</a></p>
 <div class="section" id="Setup">
 <h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="Imports">
-<h3>Imports<a class="headerlink" href="#Imports" title="Permalink to this headline">¶</a></h3>
+<p>Import packages:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="o">%</span><span class="k">load_ext</span> autoreload
-<span class="o">%</span><span class="k">autoreload</span> 2
-<span class="o">%</span><span class="k">matplotlib</span> inline
-<span class="kn">import</span> <span class="nn">fivecentplots</span> <span class="k">as</span> <span class="nn">fcp</span>
+<span></span><span class="kn">import</span> <span class="nn">fivecentplots</span> <span class="k">as</span> <span class="nn">fcp</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">pdb</span>
-<span class="n">osjoin</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span>
-<span class="n">db</span> <span class="o">=</span> <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pylab</span> <span class="k">as</span> <span class="nn">plt</span>
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="Sample-data">
-<h3>Sample data<a class="headerlink" href="#Sample-data" title="Permalink to this headline">¶</a></h3>
+<p>Read some fake data to generate plots:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">osjoin</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;tests&#39;</span><span class="p">,</span> <span class="s1">&#39;fake_data_box.csv&#39;</span><span class="p">))</span>
+<span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;tests/fake_data_box.csv&#39;</span><span class="p">)</span>
 <span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -550,7 +578,7 @@ div.rendered_html tbody tr:hover {
       <td>101</td>
       <td>1</td>
       <td>Alpha123</td>
-      <td>2.1</td>
+      <td>0.0</td>
       <td>ID7700-1222B</td>
     </tr>
     <tr>
@@ -581,12 +609,9 @@ div.rendered_html tbody tr:hover {
 </table>
 </div></div>
 </div>
-</div>
-<div class="section" id="Set-theme">
-<h3>Set theme<a class="headerlink" href="#Set-theme" title="Permalink to this headline">¶</a></h3>
-<p>(Only needs to be run once)</p>
+<p>Optionally set the design theme (skipping here and using default):</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -596,30 +621,18 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 </div>
-<div class="section" id="Other">
-<h3>Other<a class="headerlink" href="#Other" title="Permalink to this headline">¶</a></h3>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">SHOW</span> <span class="o">=</span> <span class="kc">False</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
 <div class="section" id="Simple-histogram">
 <h2>Simple histogram<a class="headerlink" href="#Simple-histogram" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="Vertical-bars">
 <h3>Vertical bars<a class="headerlink" href="#Vertical-bars" title="Permalink to this headline">¶</a></h3>
-<p>A simple histogram with default bin size of 20:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<p>We calculate a simple histogram with default bin size of 20.</p>
+<div class="admonition note"><p class="admonition-title"></p><p><p>Note that “counts” are automatically calculated based on the data in the “x” column</p>
+</p></div><div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -627,7 +640,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_15_0.png" src="_images/hist_15_0.png" />
+<img alt="_images/hist_14_0.png" src="_images/hist_14_0.png" />
 </div>
 </div>
 </div>
@@ -635,11 +648,11 @@ div.rendered_html tbody tr:hover {
 <h3>Horizontal bars<a class="headerlink" href="#Horizontal-bars" title="Permalink to this headline">¶</a></h3>
 <p>Same data as above but with histogram bars oriented horizontally:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">horizontal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">horizontal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -647,20 +660,42 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_18_0.png" src="_images/hist_18_0.png" />
+<img alt="_images/hist_17_0.png" src="_images/hist_17_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Bin-counts">
+<h3>Bin counts<a class="headerlink" href="#Bin-counts" title="Permalink to this headline">¶</a></h3>
+<p>We can change the number of bins used via the keyword <code class="docutils literal notranslate"><span class="pre">hist_bins</span></code> or <code class="docutils literal notranslate"><span class="pre">bins</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hist_20_0.png" src="_images/hist_20_0.png" />
 </div>
 </div>
 </div>
 </div>
+<div class="section" id="Grouping">
+<h2>Grouping<a class="headerlink" href="#Grouping" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="Legend">
-<h2>Legend<a class="headerlink" href="#Legend" title="Permalink to this headline">¶</a></h2>
+<h3>Legend<a class="headerlink" href="#Legend" title="Permalink to this headline">¶</a></h3>
 <p>Add a legend:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Region&#39;</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Region&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -668,38 +703,19 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_21_0.png" src="_images/hist_21_0.png" />
-</div>
-</div>
-</div>
-<div class="section" id="Kernal-density-estimator">
-<h2>Kernal density estimator<a class="headerlink" href="#Kernal-density-estimator" title="Permalink to this headline">¶</a></h2>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Region&#39;</span><span class="p">,</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kde_width</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/hist_23_0.png" src="_images/hist_23_0.png" />
+<img alt="_images/hist_24_0.png" src="_images/hist_24_0.png" />
 </div>
 </div>
 </div>
 <div class="section" id="Row/column-plot">
-<h2>Row/column plot<a class="headerlink" href="#Row/column-plot" title="Permalink to this headline">¶</a></h2>
+<h3>Row/column plot<a class="headerlink" href="#Row/column-plot" title="Permalink to this headline">¶</a></h3>
 <p>Make multiple subplots with different row/column values:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Region&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Sample&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">250</span><span class="p">,</span> <span class="mi">250</span><span class="p">])</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Region&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Sample&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">250</span><span class="p">,</span> <span class="mi">250</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -707,20 +723,19 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_26_0.png" src="_images/hist_26_0.png" />
+<img alt="_images/hist_27_0.png" src="_images/hist_27_0.png" />
 </div>
 </div>
 </div>
 <div class="section" id="Wrap-plot">
-<h2>Wrap plot<a class="headerlink" href="#Wrap-plot" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="By-column-values">
-<h3>By column values<a class="headerlink" href="#By-column-values" title="Permalink to this headline">¶</a></h3>
+<h3>Wrap plot<a class="headerlink" href="#Wrap-plot" title="Permalink to this headline">¶</a></h3>
+<p>First we wrap the data using a column from the <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Region&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">250</span><span class="p">,</span> <span class="mi">250</span><span class="p">],</span> <span class="n">horizontal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Region&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">250</span><span class="p">,</span> <span class="mi">250</span><span class="p">],</span> <span class="n">horizontal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -728,20 +743,18 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_29_0.png" src="_images/hist_29_0.png" />
+<img alt="_images/hist_30_0.png" src="_images/hist_30_0.png" />
 </div>
 </div>
-</div>
-<div class="section" id="By-column-names">
-<h3>By column names<a class="headerlink" href="#By-column-names" title="Permalink to this headline">¶</a></h3>
+<p>Next we wrap by <code class="docutils literal notranslate"><span class="pre">x</span></code> which means we make a subplot for each x-column name provided. To illustrate this, we create a couple of new columns in the <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> that are just multiples of the “Value” column:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Value*2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Value&#39;</span><span class="p">]</span>
 <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Value*3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span><span class="o">*</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Value&#39;</span><span class="p">]</span>
-<span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="s1">&#39;Value*2&#39;</span><span class="p">,</span> <span class="s1">&#39;Value*3&#39;</span><span class="p">],</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">250</span><span class="p">,</span> <span class="mi">250</span><span class="p">])</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="s1">&#39;Value*2&#39;</span><span class="p">,</span> <span class="s1">&#39;Value*3&#39;</span><span class="p">],</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">250</span><span class="p">,</span> <span class="mi">250</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -749,354 +762,155 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_31_0.png" src="_images/hist_31_0.png" />
+<img alt="_images/hist_32_0.png" src="_images/hist_32_0.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Kernel-density-estimator">
+<h2>Kernel density estimator<a class="headerlink" href="#Kernel-density-estimator" title="Permalink to this headline">¶</a></h2>
+<p>We can overlay a kernel density estimation curve on the histogram using keyword <code class="docutils literal notranslate"><span class="pre">kde=True</span></code>. These curves can be styled using standard line <code class="docutils literal notranslate"><span class="pre">Element</span></code> parameters prefixed by <code class="docutils literal notranslate"><span class="pre">kde_</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Region&#39;</span><span class="p">,</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kde_width</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hist_35_0.png" src="_images/hist_35_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Other-options">
+<h2>Other options<a class="headerlink" href="#Other-options" title="Permalink to this headline">¶</a></h2>
+<p>A couple of other options are available to present histogram data. Starting with our basic example from section 2:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hist_38_0.png" src="_images/hist_38_0.png" />
+</div>
+</div>
+<div class="section" id="Cumulative">
+<h3>Cumulative<a class="headerlink" href="#Cumulative" title="Permalink to this headline">¶</a></h3>
+<p>Now we enable “cumulative” mode so that each subsequent bin contains the total number of counts from the previous bins:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">hist_cumulative</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hist_41_0.png" src="_images/hist_41_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Normalize">
+<h3>Normalize<a class="headerlink" href="#Normalize" title="Permalink to this headline">¶</a></h3>
+<p>Next we enable <code class="docutils literal notranslate"><span class="pre">hist_normalize=True</span></code> to normalize the histogram such that each bin’s raw count is divided by the total number of counts and the bin width so that the area under the histogram integrates to 1.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">hist_normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hist_44_0.png" src="_images/hist_44_0.png" />
 </div>
 </div>
 </div>
 </div>
 <div class="section" id="Images">
 <h2>Images<a class="headerlink" href="#Images" title="Permalink to this headline">¶</a></h2>
-<p>fivecentplots <code class="docutils literal notranslate"><span class="pre">hist</span></code> plots can also be used for histograms of pixel values from images, with and without color plane separation</p>
+<p><code class="docutils literal notranslate"><span class="pre">hist</span></code> plots in fivecentplots can also be used generate histograms of pixel values from raw images (helpful for image sensor / camera engineering activities). Options are also provided to split these raw images by color-filter array (CFA) pattern. When plotting histograms of images, it is assumed that each digital number in the image data should be represented by its own bin so the number of bins is auto-calculated based on the min/max pixel values in the image data.</p>
 <div class="section" id="Mono">
 <h3>Mono<a class="headerlink" href="#Mono" title="Permalink to this headline">¶</a></h3>
-<p>Consider a light blue color patch. First we ignore any CFA and just consider the blue color channel from the RGB image:</p>
-<p><img alt="0c9e95bd9a624de5a442bd30a296da85" class="no-scaled-link" src="https://imgs.michaels.com/MAM/assets/1/D730994AF28E498A909A1002BBF38107/img/16F309E5F1CF4742B4AACD8E0CCF08E0/D203087S_1.jpg?fit=inside|1024:1024" style="width: 200px;" /></p>
+<p>First, consider a simple example of a 300x300 gray patch with all pixel values near the mid-level of a 10-bit camera (no color-filter array).</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Read an image and convert to raw using only the blue color channel</span>
-<span class="kn">import</span> <span class="nn">imageio</span>
-<span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://imgs.michaels.com/MAM/assets/1/D730994AF28E498A909A1002BBF38107/img/16F309E5F1CF4742B4AACD8E0CCF08E0/D203087S_1.jpg?fit=inside|1024:1024&#39;</span>
-<span class="n">imgr</span> <span class="o">=</span> <span class="n">imageio</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-<span class="n">img</span> <span class="o">=</span> <span class="n">fcp</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">rgb2bayer</span><span class="p">(</span><span class="n">imgr</span><span class="p">,</span> <span class="s1">&#39;bbbb&#39;</span><span class="p">)</span>
+<span></span><span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">300</span>
+<span class="n">img</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">10</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint16</span><span class="p">)</span>
 <span class="n">img</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
-<div class="output_area rendered_html docutils container">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>0</th>
-      <th>1</th>
-      <th>2</th>
-      <th>3</th>
-      <th>4</th>
-      <th>5</th>
-      <th>6</th>
-      <th>7</th>
-      <th>8</th>
-      <th>9</th>
-      <th>...</th>
-      <th>1014</th>
-      <th>1015</th>
-      <th>1016</th>
-      <th>1017</th>
-      <th>1018</th>
-      <th>1019</th>
-      <th>1020</th>
-      <th>1021</th>
-      <th>1022</th>
-      <th>1023</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>247</td>
-      <td>247</td>
-      <td>248</td>
-      <td>251</td>
-      <td>250</td>
-      <td>248</td>
-      <td>249</td>
-      <td>251</td>
-      <td>250</td>
-      <td>251</td>
-      <td>...</td>
-      <td>243</td>
-      <td>243</td>
-      <td>242</td>
-      <td>240</td>
-      <td>241</td>
-      <td>243</td>
-      <td>244</td>
-      <td>241</td>
-      <td>241</td>
-      <td>243</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>249</td>
-      <td>251</td>
-      <td>252</td>
-      <td>252</td>
-      <td>252</td>
-      <td>251</td>
-      <td>252</td>
-      <td>254</td>
-      <td>251</td>
-      <td>251</td>
-      <td>...</td>
-      <td>237</td>
-      <td>237</td>
-      <td>243</td>
-      <td>242</td>
-      <td>241</td>
-      <td>241</td>
-      <td>240</td>
-      <td>238</td>
-      <td>237</td>
-      <td>237</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>249</td>
-      <td>249</td>
-      <td>250</td>
-      <td>251</td>
-      <td>251</td>
-      <td>252</td>
-      <td>253</td>
-      <td>255</td>
-      <td>254</td>
-      <td>253</td>
-      <td>...</td>
-      <td>245</td>
-      <td>245</td>
-      <td>241</td>
-      <td>242</td>
-      <td>242</td>
-      <td>240</td>
-      <td>239</td>
-      <td>239</td>
-      <td>238</td>
-      <td>236</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>247</td>
-      <td>246</td>
-      <td>249</td>
-      <td>250</td>
-      <td>250</td>
-      <td>249</td>
-      <td>249</td>
-      <td>251</td>
-      <td>253</td>
-      <td>254</td>
-      <td>...</td>
-      <td>243</td>
-      <td>242</td>
-      <td>241</td>
-      <td>244</td>
-      <td>245</td>
-      <td>243</td>
-      <td>244</td>
-      <td>246</td>
-      <td>246</td>
-      <td>244</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>251</td>
-      <td>250</td>
-      <td>250</td>
-      <td>250</td>
-      <td>250</td>
-      <td>249</td>
-      <td>249</td>
-      <td>249</td>
-      <td>250</td>
-      <td>251</td>
-      <td>...</td>
-      <td>236</td>
-      <td>234</td>
-      <td>238</td>
-      <td>241</td>
-      <td>241</td>
-      <td>240</td>
-      <td>240</td>
-      <td>243</td>
-      <td>243</td>
-      <td>241</td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>1019</th>
-      <td>247</td>
-      <td>247</td>
-      <td>248</td>
-      <td>248</td>
-      <td>248</td>
-      <td>247</td>
-      <td>247</td>
-      <td>247</td>
-      <td>247</td>
-      <td>245</td>
-      <td>...</td>
-      <td>239</td>
-      <td>239</td>
-      <td>242</td>
-      <td>242</td>
-      <td>242</td>
-      <td>242</td>
-      <td>241</td>
-      <td>241</td>
-      <td>241</td>
-      <td>241</td>
-    </tr>
-    <tr>
-      <th>1020</th>
-      <td>251</td>
-      <td>251</td>
-      <td>251</td>
-      <td>251</td>
-      <td>251</td>
-      <td>250</td>
-      <td>250</td>
-      <td>249</td>
-      <td>249</td>
-      <td>247</td>
-      <td>...</td>
-      <td>237</td>
-      <td>237</td>
-      <td>238</td>
-      <td>237</td>
-      <td>237</td>
-      <td>237</td>
-      <td>237</td>
-      <td>236</td>
-      <td>236</td>
-      <td>236</td>
-    </tr>
-    <tr>
-      <th>1021</th>
-      <td>251</td>
-      <td>251</td>
-      <td>251</td>
-      <td>251</td>
-      <td>251</td>
-      <td>250</td>
-      <td>250</td>
-      <td>249</td>
-      <td>251</td>
-      <td>248</td>
-      <td>...</td>
-      <td>239</td>
-      <td>239</td>
-      <td>239</td>
-      <td>239</td>
-      <td>239</td>
-      <td>240</td>
-      <td>240</td>
-      <td>240</td>
-      <td>241</td>
-      <td>241</td>
-    </tr>
-    <tr>
-      <th>1022</th>
-      <td>249</td>
-      <td>249</td>
-      <td>249</td>
-      <td>248</td>
-      <td>248</td>
-      <td>248</td>
-      <td>249</td>
-      <td>249</td>
-      <td>250</td>
-      <td>248</td>
-      <td>...</td>
-      <td>241</td>
-      <td>242</td>
-      <td>243</td>
-      <td>243</td>
-      <td>243</td>
-      <td>243</td>
-      <td>244</td>
-      <td>244</td>
-      <td>244</td>
-      <td>244</td>
-    </tr>
-    <tr>
-      <th>1023</th>
-      <td>249</td>
-      <td>249</td>
-      <td>248</td>
-      <td>248</td>
-      <td>249</td>
-      <td>250</td>
-      <td>250</td>
-      <td>251</td>
-      <td>251</td>
-      <td>248</td>
-      <td>...</td>
-      <td>241</td>
-      <td>242</td>
-      <td>238</td>
-      <td>238</td>
-      <td>238</td>
-      <td>238</td>
-      <td>237</td>
-      <td>237</td>
-      <td>237</td>
-      <td>237</td>
-    </tr>
-  </tbody>
-</table>
-<p>1024 rows × 1024 columns</p>
-</div></div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([[511, 511, 511, ..., 511, 511, 511],
+       [511, 511, 511, ..., 511, 511, 511],
+       [511, 511, 511, ..., 511, 511, 511],
+       ...,
+       [511, 511, 511, ..., 511, 511, 511],
+       [511, 511, 511, ..., 511, 511, 511],
+       [511, 511, 511, ..., 511, 511, 511]], dtype=uint16)
+</pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">markers</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ax_scale</span><span class="o">=</span><span class="s1">&#39;logy&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">)</span>
+<span></span><span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">2</span><span class="o">**</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;matplotlib.image.AxesImage at 0x7f5a01980400&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hist_49_1.png" src="_images/hist_49_1.png" />
+</div>
+</div>
+<p>In this case, our histogram is a single point with 300 * 300 counts:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">markers</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1104,342 +918,49 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_37_0.png" src="_images/hist_37_0.png" />
+<img alt="_images/hist_51_0.png" src="_images/hist_51_0.png" />
 </div>
 </div>
-<p>Next we convert the RGB into a Bayer-like image with RGGB CFA and we can see the histogram of the discrete color channels:</p>
+<div class="admonition note"><p class="admonition-title"></p><p><p>Alert! What just happened? If you were paying close attention you noticed we did not pass a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> to the <code class="docutils literal notranslate"><span class="pre">hist</span></code> plot. This is a sneaky, under-the-table trick that exists to make life easier when using <code class="docutils literal notranslate"><span class="pre">hist</span></code> or <code class="docutils literal notranslate"><span class="pre">imshow</span></code> with for 2D <code class="docutils literal notranslate"><span class="pre">numpy.ndarrays</span></code>. These arrays are converted into <code class="docutils literal notranslate"><span class="pre">DataFrames</span></code> behind the scenes so you don’t have to take an extra step. This can be our dirty little secret…</p>
+</p></div><p>Now let’s multiplying our patch by a 2D Gaussian to approximate lens shading:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">img</span> <span class="o">=</span> <span class="n">fcp</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">rgb2bayer</span><span class="p">(</span><span class="n">imgr</span><span class="p">,</span> <span class="s1">&#39;rggb&#39;</span><span class="p">)</span>
-<span class="n">img</span>
+<span></span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">300</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">300</span><span class="p">))</span>
+<span class="n">dst</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="o">*</span><span class="n">y</span><span class="p">)</span>
+<span class="n">sigma</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">muu</span> <span class="o">=</span> <span class="mf">0.001</span>
+
+<span class="n">gauss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span> <span class="p">(</span><span class="n">dst</span><span class="o">-</span><span class="n">muu</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span> <span class="p">)</span> <span class="p">)</span> <span class="p">)</span>
+<span class="n">img2</span> <span class="o">=</span> <span class="p">(</span><span class="n">gauss</span> <span class="o">*</span> <span class="n">img</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img2</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">2</span><span class="o">**</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;matplotlib.image.AxesImage at 0x7f5a01310700&gt;
+</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
-</pre></div>
+<div class="prompt empty docutils container">
 </div>
-<div class="output_area rendered_html docutils container">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>0</th>
-      <th>1</th>
-      <th>2</th>
-      <th>3</th>
-      <th>4</th>
-      <th>5</th>
-      <th>6</th>
-      <th>7</th>
-      <th>8</th>
-      <th>9</th>
-      <th>...</th>
-      <th>1014</th>
-      <th>1015</th>
-      <th>1016</th>
-      <th>1017</th>
-      <th>1018</th>
-      <th>1019</th>
-      <th>1020</th>
-      <th>1021</th>
-      <th>1022</th>
-      <th>1023</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>176</td>
-      <td>217</td>
-      <td>177</td>
-      <td>219</td>
-      <td>177</td>
-      <td>216</td>
-      <td>176</td>
-      <td>219</td>
-      <td>177</td>
-      <td>219</td>
-      <td>...</td>
-      <td>159</td>
-      <td>201</td>
-      <td>158</td>
-      <td>198</td>
-      <td>157</td>
-      <td>201</td>
-      <td>160</td>
-      <td>199</td>
-      <td>157</td>
-      <td>201</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>219</td>
-      <td>251</td>
-      <td>220</td>
-      <td>252</td>
-      <td>220</td>
-      <td>251</td>
-      <td>220</td>
-      <td>254</td>
-      <td>219</td>
-      <td>251</td>
-      <td>...</td>
-      <td>195</td>
-      <td>237</td>
-      <td>201</td>
-      <td>242</td>
-      <td>199</td>
-      <td>241</td>
-      <td>198</td>
-      <td>238</td>
-      <td>195</td>
-      <td>237</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>176</td>
-      <td>217</td>
-      <td>177</td>
-      <td>219</td>
-      <td>178</td>
-      <td>217</td>
-      <td>178</td>
-      <td>220</td>
-      <td>179</td>
-      <td>221</td>
-      <td>...</td>
-      <td>161</td>
-      <td>203</td>
-      <td>157</td>
-      <td>200</td>
-      <td>158</td>
-      <td>198</td>
-      <td>155</td>
-      <td>197</td>
-      <td>154</td>
-      <td>194</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>215</td>
-      <td>246</td>
-      <td>214</td>
-      <td>250</td>
-      <td>215</td>
-      <td>249</td>
-      <td>214</td>
-      <td>251</td>
-      <td>218</td>
-      <td>254</td>
-      <td>...</td>
-      <td>201</td>
-      <td>242</td>
-      <td>199</td>
-      <td>244</td>
-      <td>203</td>
-      <td>243</td>
-      <td>202</td>
-      <td>246</td>
-      <td>204</td>
-      <td>244</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>176</td>
-      <td>215</td>
-      <td>175</td>
-      <td>215</td>
-      <td>175</td>
-      <td>214</td>
-      <td>174</td>
-      <td>214</td>
-      <td>175</td>
-      <td>216</td>
-      <td>...</td>
-      <td>152</td>
-      <td>192</td>
-      <td>154</td>
-      <td>199</td>
-      <td>157</td>
-      <td>198</td>
-      <td>156</td>
-      <td>201</td>
-      <td>159</td>
-      <td>199</td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>1019</th>
-      <td>212</td>
-      <td>247</td>
-      <td>213</td>
-      <td>248</td>
-      <td>213</td>
-      <td>247</td>
-      <td>212</td>
-      <td>247</td>
-      <td>212</td>
-      <td>245</td>
-      <td>...</td>
-      <td>197</td>
-      <td>239</td>
-      <td>200</td>
-      <td>242</td>
-      <td>200</td>
-      <td>242</td>
-      <td>199</td>
-      <td>241</td>
-      <td>199</td>
-      <td>241</td>
-    </tr>
-    <tr>
-      <th>1020</th>
-      <td>176</td>
-      <td>216</td>
-      <td>176</td>
-      <td>216</td>
-      <td>176</td>
-      <td>215</td>
-      <td>175</td>
-      <td>214</td>
-      <td>174</td>
-      <td>212</td>
-      <td>...</td>
-      <td>153</td>
-      <td>195</td>
-      <td>154</td>
-      <td>195</td>
-      <td>153</td>
-      <td>195</td>
-      <td>153</td>
-      <td>194</td>
-      <td>152</td>
-      <td>194</td>
-    </tr>
-    <tr>
-      <th>1021</th>
-      <td>216</td>
-      <td>251</td>
-      <td>216</td>
-      <td>251</td>
-      <td>216</td>
-      <td>250</td>
-      <td>215</td>
-      <td>249</td>
-      <td>216</td>
-      <td>248</td>
-      <td>...</td>
-      <td>197</td>
-      <td>239</td>
-      <td>197</td>
-      <td>239</td>
-      <td>197</td>
-      <td>240</td>
-      <td>198</td>
-      <td>240</td>
-      <td>199</td>
-      <td>241</td>
-    </tr>
-    <tr>
-      <th>1022</th>
-      <td>174</td>
-      <td>214</td>
-      <td>174</td>
-      <td>213</td>
-      <td>173</td>
-      <td>213</td>
-      <td>174</td>
-      <td>214</td>
-      <td>175</td>
-      <td>213</td>
-      <td>...</td>
-      <td>157</td>
-      <td>200</td>
-      <td>159</td>
-      <td>201</td>
-      <td>159</td>
-      <td>201</td>
-      <td>160</td>
-      <td>202</td>
-      <td>160</td>
-      <td>202</td>
-    </tr>
-    <tr>
-      <th>1023</th>
-      <td>214</td>
-      <td>249</td>
-      <td>213</td>
-      <td>248</td>
-      <td>214</td>
-      <td>250</td>
-      <td>215</td>
-      <td>251</td>
-      <td>216</td>
-      <td>248</td>
-      <td>...</td>
-      <td>199</td>
-      <td>242</td>
-      <td>196</td>
-      <td>238</td>
-      <td>196</td>
-      <td>238</td>
-      <td>195</td>
-      <td>237</td>
-      <td>195</td>
-      <td>237</td>
-    </tr>
-  </tbody>
-</table>
-<p>1024 rows × 1024 columns</p>
-</div></div>
+<div class="output_area docutils container">
+<img alt="_images/hist_54_1.png" src="_images/hist_54_1.png" />
+</div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">markers</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ax_scale</span><span class="o">=</span><span class="s1">&#39;logy&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Plane&#39;</span><span class="p">,</span> <span class="n">cfa</span><span class="o">=</span><span class="s1">&#39;rggb&#39;</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">fcp</span><span class="o">.</span><span class="n">BAYER</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">img2</span><span class="p">,</span> <span class="n">markers</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1447,7 +968,375 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_40_0.png" src="_images/hist_40_0.png" />
+<img alt="_images/hist_55_0.png" src="_images/hist_55_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="RGB">
+<h3>RGB<a class="headerlink" href="#RGB" title="Permalink to this headline">¶</a></h3>
+<p>Now lets mock-up a Bayer array for a light blue color patch and show how fivecentplots allows you to easily split the histogram into distinct color planes (based on a CFA pattern). Here we’ll assume “GRBG”:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">img_rgb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint16</span><span class="p">)</span>
+<span class="n">img_rgb</span><span class="p">[::</span><span class="mi">2</span><span class="p">,</span> <span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">180</span>  <span class="c1"># green_red</span>
+<span class="n">img_rgb</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">180</span>  <span class="c1"># green_blue</span>
+<span class="n">img_rgb</span><span class="p">[::</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">img_rgb</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">,</span> <span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">255</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img_rgb</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;matplotlib.image.AxesImage at 0x7f5a01a56430&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hist_58_1.png" src="_images/hist_58_1.png" />
+</div>
+</div>
+<p>Which upon demosaicing would give:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">colour_demosaicing</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">colour_demosaicing</span><span class="o">.</span><span class="n">demosaicing_CFA_Bayer_bilinear</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">img_rgb</span><span class="p">),</span> <span class="s1">&#39;GRBG&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint16</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Clipping input data to the valid range for imshow with RGB data ([0..1] for floats or [0..255] for integers).
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;matplotlib.image.AxesImage at 0x7f5a015a7af0&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hist_60_2.png" src="_images/hist_60_2.png" />
+</div>
+</div>
+<p>By default, the <code class="docutils literal notranslate"><span class="pre">hist</span></code> function pays no mind to any differences in image pixels due to CFA:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">img_rgb</span><span class="p">,</span> <span class="n">markers</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ax_scale</span><span class="o">=</span><span class="s1">&#39;logy&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">xmin</span><span class="o">=-</span><span class="mi">5</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mi">260</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="mi">60000</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hist_62_0.png" src="_images/hist_62_0.png" />
+</div>
+</div>
+<p>However, we can specify a CFA When plotting the histogram using the keyword <code class="docutils literal notranslate"><span class="pre">cfa=&quot;grbg&quot;</span></code> and then legend by color plane (for convenience, we also invoke the special color scheme shortcut <code class="docutils literal notranslate"><span class="pre">fcp.BAYER</span></code> to color the planes according to their filter color). Notice in this example that the “gr” and “gb” pixels overlap.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">img_rgb</span><span class="p">,</span> <span class="n">markers</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ax_scale</span><span class="o">=</span><span class="s1">&#39;logy&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Plane&#39;</span><span class="p">,</span> <span class="n">cfa</span><span class="o">=</span><span class="s1">&#39;grbg&#39;</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">xmin</span><span class="o">=-</span><span class="mi">5</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mi">260</span><span class="p">,</span>
+         <span class="n">colors</span><span class="o">=</span><span class="n">fcp</span><span class="o">.</span><span class="n">BAYER</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hist_64_0.png" src="_images/hist_64_0.png" />
+</div>
+</div>
+<p>Now lets add some shading and noise to make a more meaningful histogram. This results in the color patch below.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Gaussian shading</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">300</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">300</span><span class="p">))</span>
+<span class="n">dst</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="o">*</span><span class="n">y</span><span class="p">)</span>
+<span class="n">sigma</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">muu</span> <span class="o">=</span> <span class="mf">0.001</span>
+<span class="n">gauss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span> <span class="p">(</span><span class="n">dst</span><span class="o">-</span><span class="n">muu</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span> <span class="p">)</span> <span class="p">)</span> <span class="p">)</span>
+<span class="n">img_rgb2</span> <span class="o">=</span> <span class="p">(</span><span class="n">gauss</span> <span class="o">*</span> <span class="n">img_rgb</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+
+<span class="c1"># Random noise</span>
+<span class="n">img_rgb2</span><span class="p">[::</span><span class="mi">2</span><span class="p">,</span> <span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="o">*</span><span class="n">img_rgb2</span><span class="p">[::</span><span class="mi">2</span><span class="p">,</span> <span class="p">::</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">img_rgb2</span><span class="p">[::</span><span class="mi">2</span><span class="p">,</span> <span class="p">::</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">img_rgb2</span><span class="p">[::</span><span class="mi">2</span><span class="p">,</span> <span class="p">::</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">img_rgb2</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">,</span> <span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="o">*</span><span class="n">img_rgb2</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">,</span> <span class="p">::</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">img_rgb2</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">,</span> <span class="p">::</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">img_rgb2</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">,</span> <span class="p">::</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">img_rgb2</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="o">*</span><span class="n">img_rgb2</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">img_rgb2</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">img_rgb2</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">img_rgb2</span><span class="p">[::</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="o">*</span><span class="n">img_rgb2</span><span class="p">[::</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">img_rgb2</span><span class="p">[::</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">img_rgb2</span><span class="p">[::</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">img_rgb2</span> <span class="o">=</span> <span class="n">img_rgb2</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">colour_demosaicing</span><span class="o">.</span><span class="n">demosaicing_CFA_Bayer_bilinear</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">img_rgb2</span><span class="p">),</span> <span class="s1">&#39;GRBG&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint16</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Clipping input data to the valid range for imshow with RGB data ([0..1] for floats or [0..255] for integers).
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;matplotlib.image.AxesImage at 0x7f5a00ea1970&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hist_66_2.png" src="_images/hist_66_2.png" />
+</div>
+</div>
+<p>Again, invoking the <code class="docutils literal notranslate"><span class="pre">cfa</span></code> keyword with legending we get the following:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">img_rgb2</span><span class="p">,</span> <span class="n">markers</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ax_scale</span><span class="o">=</span><span class="s1">&#39;logy&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Plane&#39;</span><span class="p">,</span> <span class="n">cfa</span><span class="o">=</span><span class="s1">&#39;grbg&#39;</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">fcp</span><span class="o">.</span><span class="n">BAYER</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hist_68_0.png" src="_images/hist_68_0.png" />
+</div>
+</div>
+<p>While this example is a bit contrived, it demonstrates the power of fivecentplots for raw image analysis in industries using image sensors or cameras.</p>
+</div>
+</div>
+<div class="section" id="PDF">
+<h2>PDF<a class="headerlink" href="#PDF" title="Permalink to this headline">¶</a></h2>
+<p>fivecentplots histograms can be converted to probability density functions inline using the keyword <code class="docutils literal notranslate"><span class="pre">pdf=True</span></code>. Here we use the shaded color patch with noise from above for our input.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">img_rgb2</span><span class="p">,</span> <span class="n">markers</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ax_scale</span><span class="o">=</span><span class="s1">&#39;logy&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Plane&#39;</span><span class="p">,</span> <span class="n">cfa</span><span class="o">=</span><span class="s1">&#39;grbg&#39;</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">fcp</span><span class="o">.</span><span class="n">BAYER</span><span class="p">,</span> <span class="n">pdf</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hist_72_0.png" src="_images/hist_72_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="CDF">
+<h2>CDF<a class="headerlink" href="#CDF" title="Permalink to this headline">¶</a></h2>
+<p>fivecentplots histograms can also be converted to cumulative distribution functions inline using the keyword <code class="docutils literal notranslate"><span class="pre">pdf=True</span></code>. Again, we use the shaded color patch with noise from above for our input. With no color plane separation:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">img_rgb2</span><span class="p">,</span> <span class="n">markers</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">fcp</span><span class="o">.</span><span class="n">BAYER</span><span class="p">,</span> <span class="n">cdf</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hist_75_0.png" src="_images/hist_75_0.png" />
+</div>
+</div>
+<p>With color plane separation:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">img_rgb2</span><span class="p">,</span> <span class="n">markers</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Plane&#39;</span><span class="p">,</span> <span class="n">cfa</span><span class="o">=</span><span class="s1">&#39;grbg&#39;</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">fcp</span><span class="o">.</span><span class="n">BAYER</span><span class="p">,</span> <span class="n">cdf</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hist_77_0.png" src="_images/hist_77_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Styles">
+<h2>Styles<a class="headerlink" href="#Styles" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="Bar-style">
+<h3>Bar style<a class="headerlink" href="#Bar-style" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="Colors">
+<h4>Colors<a class="headerlink" href="#Colors" title="Permalink to this headline">¶</a></h4>
+<p>The bar edge and fill colors can be controlled by kwargs:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">hist_edge_color</span><span class="o">=</span><span class="s1">&#39;#555555&#39;</span><span class="p">,</span> <span class="n">hist_edge_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">hist_fill_alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">hist_fill_color</span><span class="o">=</span><span class="s1">&#39;#FF0000&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hist_83_0.png" src="_images/hist_83_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Alignment">
+<h4>Alignment<a class="headerlink" href="#Alignment" title="Permalink to this headline">¶</a></h4>
+<p>The alignment of the bars relative to the ticks on the x-axis can be adjusted. Options include: {‘left’, ‘mid’, ‘right’}</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">hist_edge_color</span><span class="o">=</span><span class="s1">&#39;#555555&#39;</span><span class="p">,</span> <span class="n">hist_edge_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">hist_fill_alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">hist_fill_color</span><span class="o">=</span><span class="s1">&#39;#FF0000&#39;</span><span class="p">,</span>
+         <span class="n">hist_align</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hist_86_0.png" src="_images/hist_86_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">hist_edge_color</span><span class="o">=</span><span class="s1">&#39;#555555&#39;</span><span class="p">,</span> <span class="n">hist_edge_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">hist_fill_alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">hist_fill_color</span><span class="o">=</span><span class="s1">&#39;#FF0000&#39;</span><span class="p">,</span>
+         <span class="n">hist_align</span><span class="o">=</span><span class="s1">&#39;mid&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hist_87_0.png" src="_images/hist_87_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Width">
+<h4>Width<a class="headerlink" href="#Width" title="Permalink to this headline">¶</a></h4>
+<p>The relative width of the bars can be controlled by the keyword <code class="docutils literal notranslate"><span class="pre">hist_rwidth</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">hist_edge_color</span><span class="o">=</span><span class="s1">&#39;#555555&#39;</span><span class="p">,</span> <span class="n">hist_edge_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">hist_fill_alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">hist_fill_color</span><span class="o">=</span><span class="s1">&#39;#FF0000&#39;</span><span class="p">,</span>
+         <span class="n">hist_align</span><span class="o">=</span><span class="s1">&#39;mid&#39;</span><span class="p">,</span> <span class="n">hist_rwidth</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hist_90_0.png" src="_images/hist_90_0.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="fcp.HIST">
+<h3>fcp.HIST<a class="headerlink" href="#fcp.HIST" title="Permalink to this headline">¶</a></h3>
+<p>When plotting histograms from images, a helpful shortcut dictionary of useful keywords args can be utilized via <code class="docutils literal notranslate"><span class="pre">fcp.HIST</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">HIST</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;ax_scale&#39;: &#39;logy&#39;, &#39;markers&#39;: False, &#39;line_width&#39;: 2, &#39;preset&#39;: &#39;HIST&#39;}
+</pre></div></div>
+</div>
+<p>Drawing on the example above, this shortcut would be used as follows:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">img_rgb2</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span> <span class="o">**</span><span class="n">fcp</span><span class="o">.</span><span class="n">HIST</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hist_95_0.png" src="_images/hist_95_0.png" />
+</div>
+</div>
+<p>Compared to without the shortcut:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">img_rgb2</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hist_97_0.png" src="_images/hist_97_0.png" />
 </div>
 </div>
 </div>
@@ -1459,37 +1348,29 @@ div.rendered_html tbody tr:hover {
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="imshow.html" class="btn btn-neutral float-right" title="imshow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="heatmap.html" class="btn btn-neutral float-left" title="heatmap" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="imshow.html" class="btn btn-neutral float-right" title="imshow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="heatmap.html" class="btn btn-neutral float-left" title="heatmap" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2016, Steve Nicholes
+        &#169; Copyright 2022, Steve Nicholes.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

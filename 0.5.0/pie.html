@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>pie &mdash; fivecentplots beta documentation</title>
   
@@ -20,7 +20,10 @@
   
     <link rel="shortcut icon" href="_static/favicon.ico"/>
   
+
   
+  
+
   
 
   
@@ -30,11 +33,13 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "document", "processHtmlClass": "math|output_area"}}</script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -42,7 +47,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Changelog" href="changelog.html" />
-    <link rel="prev" title="Miscellaneous" href="misc.html" /> 
+    <link rel="prev" title="nq" href="nq.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -56,7 +61,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> fivecentplots
+            <a href="index.html" class="icon icon-home"> fivecentplots
           
 
           
@@ -66,7 +71,7 @@
             
             
               <div class="version">
-                0.5.0
+                0.5.0-alpha
               </div>
             
           
@@ -91,7 +96,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Basics</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layout.html">Layout</a></li>
@@ -100,27 +105,23 @@
 <li class="toctree-l1"><a class="reference internal" href="styles.html">Styles and formatting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ranges.html">Data ranges</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ticks.html">Grids and ticks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/fcp.html">API</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Examples</span></p>
+<p class="caption" role="heading"><span class="caption-text">Plot Types</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="plot.html">plot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="barplot.html">barplot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gantt.html">Gantt Charts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gantt.html">gantt charts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="heatmap.html">heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hist.html">hist</a></li>
 <li class="toctree-l1"><a class="reference internal" href="imshow.html">imshow</a></li>
-<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nq.html">nq</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">pie</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#Setup">Setup</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#Imports">Imports</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Sample-data">Sample data</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Set-theme">Set theme</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Other">Other</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#Basic-Plot">Basic Plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Setup">Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Basic-plot">Basic plot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Donut">Donut</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Grouping">Grouping</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Legend">Legend</a></li>
@@ -128,21 +129,24 @@
 <li class="toctree-l3"><a class="reference internal" href="#Wrap-plot">Wrap plot</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#Options">Options</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Other-options">Other options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Wedge-labels">Wedge labels</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Labeled-percents">Labeled percents</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Explode">Explode</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Shadow">Shadow</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Start-angle">Start angle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Counter-clockwise">Counter clockwise</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Colors">Colors</a></li>
 </ul>
 </li>
 </ul>
-</li>
-</ul>
-<p class="caption"><span class="caption-text">Other</span></p>
+<p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="older.html">Older Versions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/endangeredoxen/fivecentplots">GitHub</a></li>
 </ul>
 
             
@@ -183,6 +187,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -194,7 +200,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/pie.ipynb.txt" rel="nofollow"> View page source</a>
           
         
@@ -213,21 +219,35 @@
 /* CSS for nbsphinx extension */
 
 /* remove conflicting styling from Sphinx themes */
-div.nbinput.container,
-div.nbinput.container div.prompt,
-div.nbinput.container div.input_area,
-div.nbinput.container div[class*=highlight],
-div.nbinput.container div[class*=highlight] pre,
-div.nboutput.container,
-div.nboutput.container div.prompt,
-div.nboutput.container div.output_area,
-div.nboutput.container div[class*=highlight],
-div.nboutput.container div[class*=highlight] pre {
-    background: none;
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
     border: none;
-    padding: 0 0;
+    padding: 0;
     margin: 0;
     box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
 }
 
 /* avoid gaps between output lines */
@@ -328,7 +348,7 @@ div.nboutput.container div.output_area {
 div.nbinput.container div.input_area {
     border: 1px solid #e0e0e0;
     border-radius: 2px;
-    background: #f5f5f5;
+    /*background: #f5f5f5;*/
 }
 
 /* override MathJax center alignment in output cells */
@@ -394,6 +414,7 @@ div.nboutput.container div.output_area.rendered_html,
 div.nboutput.container div.output_area > div.output_javascript,
 div.nboutput.container div.output_area:not(.rendered_html) > img{
     padding: 5px;
+    margin: 0;
 }
 
 /* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
@@ -465,48 +486,37 @@ div.rendered_html tbody tr:hover {
 </style>
 <div class="section" id="pie">
 <h1>pie<a class="headerlink" href="#pie" title="Permalink to this headline">¶</a></h1>
-<p>fivecentplots can plot pie charts using <code class="docutils literal notranslate"><span class="pre">fcp.pie</span></code>. At a minimum, the <code class="docutils literal notranslate"><span class="pre">bar</span></code> function requires the following keywords:</p>
-<ul><li><p>df: a pandas DataFrame</p>
-</li><li><p>x: the name of the categorical data column (i.e., the labels)</p>
-<li><p>y: the name of the DataFrame column containing the values for the data in column x</p>
-</li></ul><div class="section" id="Setup">
+<p>This section describes various options available for pie charts in <strong>fivecentplots</strong></p>
+<p>See the full API <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/api/pie.html#pie">https://endangeredoxen.github.io/fivecentplots/0.5.0/api/pie.html#pie</a></p>
+<div class="section" id="Setup">
 <h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="Imports">
-<h3>Imports<a class="headerlink" href="#Imports" title="Permalink to this headline">¶</a></h3>
+<p>Import packages</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="o">%</span><span class="k">load_ext</span> autoreload
-<span class="o">%</span><span class="k">autoreload</span> 2
-<span class="o">%</span><span class="k">matplotlib</span> inline
-<span class="kn">import</span> <span class="nn">fivecentplots</span> <span class="k">as</span> <span class="nn">fcp</span>
+<span></span><span class="kn">import</span> <span class="nn">fivecentplots</span> <span class="k">as</span> <span class="nn">fcp</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">pdb</span>
-<span class="n">osjoin</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span>
-<span class="n">db</span> <span class="o">=</span> <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="Sample-data">
-<h3>Sample data<a class="headerlink" href="#Sample-data" title="Permalink to this headline">¶</a></h3>
-<p>Read some fake bar chart data</p>
+<p>Read some fake bar chart data to use in the pie chart:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">osjoin</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;tests&#39;</span><span class="p">,</span> <span class="s1">&#39;fake_data_bar.csv&#39;</span><span class="p">))</span>
+<span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;tests/fake_data_bar.csv&#39;</span><span class="p">)</span>
 <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">pH</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;pH&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">df</span><span class="o">.</span><span class="n">pH</span>
 <span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -574,12 +584,9 @@ div.rendered_html tbody tr:hover {
 </table>
 </div></div>
 </div>
-</div>
-<div class="section" id="Set-theme">
-<h3>Set theme<a class="headerlink" href="#Set-theme" title="Permalink to this headline">¶</a></h3>
-<p>Optionally set the design theme</p>
+<p>Optionally set the design theme (skipping here and using default):</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -589,28 +596,15 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 </div>
-<div class="section" id="Other">
-<h3>Other<a class="headerlink" href="#Other" title="Permalink to this headline">¶</a></h3>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">SHOW</span> <span class="o">=</span> <span class="kc">False</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="section" id="Basic-Plot">
-<h2>Basic Plot<a class="headerlink" href="#Basic-Plot" title="Permalink to this headline">¶</a></h2>
-<p>Consider a DataFrame that contains several sets of measured pH data for various liquids. First we plot only one set of measured data:</p>
+<div class="section" id="Basic-plot">
+<h2>Basic plot<a class="headerlink" href="#Basic-plot" title="Permalink to this headline">¶</a></h2>
+<p>Consider a DataFrame that contains several sets of measured pH data for various liquids. First, we filter to plot only one set of measured data:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Liquid&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;pH&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Measurement==&quot;A&quot; &amp; T [C]==25&#39;</span><span class="p">,</span> <span class="n">startangle</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.85</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Liquid&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;pH&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Measurement==&quot;A&quot; &amp; T [C]==25&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -618,19 +612,36 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/pie_15_0.png" src="_images/pie_15_0.png" />
+<img alt="_images/pie_12_0.png" src="_images/pie_12_0.png" />
+</div>
+</div>
+<p>The size of the pie chart is controlled by the keyword <code class="docutils literal notranslate"><span class="pre">pie_radius</span></code> (or shorthand <code class="docutils literal notranslate"><span class="pre">radius</span></code>):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Liquid&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;pH&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Measurement==&quot;A&quot; &amp; T [C]==25&#39;</span><span class="p">,</span> <span class="n">pie_radius</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/pie_14_0.png" src="_images/pie_14_0.png" />
 </div>
 </div>
 </div>
 <div class="section" id="Donut">
 <h2>Donut<a class="headerlink" href="#Donut" title="Permalink to this headline">¶</a></h2>
-<p>We can turn our pie chart into a donut chart by using the keyword <code class="docutils literal notranslate"><span class="pre">innerradius</span></code> (aka the <code class="docutils literal notranslate"><span class="pre">width</span></code> attribute in MPL’s <code class="docutils literal notranslate"><span class="pre">wedgeprops</span></code>). The inner radius should be lower than the main <code class="docutils literal notranslate"><span class="pre">radius</span></code> parameter (set to 1 by default). In this example, we also shift the position of the percentages slightly to look cleaner.</p>
+<p>We can turn our pie chart into a donut chart by using the keyword <code class="docutils literal notranslate"><span class="pre">pie_inner_radius</span></code> (or shorthand <code class="docutils literal notranslate"><span class="pre">innerradius</span></code>). This command is akin to thee <code class="docutils literal notranslate"><span class="pre">width</span></code> attribute in matplotlibs <code class="docutils literal notranslate"><span class="pre">wedgeprops</span></code>. The inner radius should be lower than the main <code class="docutils literal notranslate"><span class="pre">radius</span></code> parameter, which is set to 1 by default.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Liquid&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;pH&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Measurement==&quot;A&quot; &amp; T [C]==25&#39;</span><span class="p">,</span> <span class="n">startangle</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span> <span class="n">innerradius</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">pctdistance</span><span class="o">=</span><span class="mf">0.75</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Liquid&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;pH&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Measurement==&quot;A&quot; &amp; T [C]==25&#39;</span><span class="p">,</span> <span class="n">inner_radius</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -638,21 +649,22 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/pie_18_0.png" src="_images/pie_18_0.png" />
+<img alt="_images/pie_17_0.png" src="_images/pie_17_0.png" />
 </div>
 </div>
-</div>
+<div class="admonition note"><p class="admonition-title"></p><p><p>Note that if <code class="docutils literal notranslate"><span class="pre">pie_inner_radius</span></code> is not explicitly set by keyword or in a theme file, it will be set to equal <code class="docutils literal notranslate"><span class="pre">radius</span></code>. Be mindful that if you have <code class="docutils literal notranslate"><span class="pre">pie_inner_radius</span></code> set in a custom theme file and then change only <code class="docutils literal notranslate"><span class="pre">pie_radius</span></code> you will get an unintended result!</p>
+</p></div></div>
 <div class="section" id="Grouping">
 <h2>Grouping<a class="headerlink" href="#Grouping" title="Permalink to this headline">¶</a></h2>
-<p>Like the plot function, pie charts can grouped in various ways to provide further insight into the data set. This includes legends, <code class="docutils literal notranslate"><span class="pre">row</span></code> and/or <code class="docutils literal notranslate"><span class="pre">col</span></code> subplot values and <code class="docutils literal notranslate"><span class="pre">wrap</span></code> values.</p>
+<p>Like other plot types, pie charts can grouped in various ways to provide further insight into the data set. This includes legends, row/col, and wrap plots.</p>
 <div class="section" id="Legend">
 <h3>Legend<a class="headerlink" href="#Legend" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Liquid&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;pH&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Measurement==&quot;A&quot; &amp; T [C]==25&#39;</span><span class="p">,</span> <span class="n">startangle</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Liquid&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;pH&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Measurement==&quot;A&quot; &amp; T [C]==25&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -668,11 +680,11 @@ div.rendered_html tbody tr:hover {
 <h3>Row/column plot<a class="headerlink" href="#Row/column-plot" title="Permalink to this headline">¶</a></h3>
 <p>We can separate different conditions using row/col plots as shown below:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Liquid&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;pH&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Measurement&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;T [C]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">250</span><span class="p">,</span> <span class="mi">250</span><span class="p">])</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Liquid&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;pH&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Measurement&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;T [C]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">250</span><span class="p">,</span> <span class="mi">250</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -688,11 +700,11 @@ div.rendered_html tbody tr:hover {
 <h3>Wrap plot<a class="headerlink" href="#Wrap-plot" title="Permalink to this headline">¶</a></h3>
 <p>Alternatively, we can use a <code class="docutils literal notranslate"><span class="pre">wrap</span></code> plot to visualize:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Liquid&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;pH&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;Measurement&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">250</span><span class="p">,</span> <span class="mi">250</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Liquid&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;pH&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;Measurement&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">250</span><span class="p">,</span> <span class="mi">250</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -705,54 +717,39 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 </div>
-<div class="section" id="Options">
-<h2>Options<a class="headerlink" href="#Options" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="Other-options">
+<h2>Other options<a class="headerlink" href="#Other-options" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="Wedge-labels">
+<h3>Wedge labels<a class="headerlink" href="#Wedge-labels" title="Permalink to this headline">¶</a></h3>
+<p>Wedge labels can be positioned relative to the center of the pie using keyword <code class="docutils literal notranslate"><span class="pre">pie_label_distance</span></code>. All other font parameters are controlled using <code class="docutils literal notranslate"><span class="pre">pie_font_xxx</span></code> keywords (or the shorthand versions with drop “pie_”). The position is based on a bisection line through the center of the pie chart and the wedge.</p>
+<p>We can also change the rotation of the labels to follow the bisection line using keyword <code class="docutils literal notranslate"><span class="pre">pie_rotate_labels</span></code> (or <code class="docutils literal notranslate"><span class="pre">rotate_labels</span></code>).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Liquid&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;pH&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Measurement==&quot;A&quot; &amp; T [C]==25&#39;</span><span class="p">,</span> <span class="n">pie_label_distance</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">pie_font_size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+        <span class="n">pie_font_weight</span><span class="o">=</span><span class="s1">&#39;heavy&#39;</span><span class="p">,</span> <span class="n">font_color</span><span class="o">=</span><span class="s1">&#39;#00FF00&#39;</span><span class="p">,</span> <span class="n">rotate_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/pie_32_0.png" src="_images/pie_32_0.png" />
+</div>
+</div>
+</div>
 <div class="section" id="Labeled-percents">
 <h3>Labeled percents<a class="headerlink" href="#Labeled-percents" title="Permalink to this headline">¶</a></h3>
+<p>Using the keyword <code class="docutils literal notranslate"><span class="pre">pie_percents=True</span></code> (or shorthand <code class="docutils literal notranslate"><span class="pre">percents</span></code>), we can label each pie wedge with the percentage for that category:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Liquid&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;pH&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Measurement==&quot;A&quot; &amp; T [C]==25&#39;</span><span class="p">,</span> <span class="n">startangle</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span> <span class="n">percents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/pie_31_0.png" src="_images/pie_31_0.png" />
-</div>
-</div>
-</div>
-<div class="section" id="Explode">
-<h3>Explode<a class="headerlink" href="#Explode" title="Permalink to this headline">¶</a></h3>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Liquid&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;pH&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Measurement==&quot;A&quot; &amp; T [C]==25&#39;</span><span class="p">,</span> <span class="n">explode</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.1</span><span class="p">),</span> <span class="n">startangle</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span> <span class="n">percents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/pie_33_0.png" src="_images/pie_33_0.png" />
-</div>
-</div>
-</div>
-<div class="section" id="Shadow">
-<h3>Shadow<a class="headerlink" href="#Shadow" title="Permalink to this headline">¶</a></h3>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Liquid&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;pH&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Measurement==&quot;A&quot; &amp; T [C]==25&#39;</span><span class="p">,</span> <span class="n">explode</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.1</span><span class="p">),</span> <span class="n">shadow</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">startangle</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">percents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Liquid&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;pH&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Measurement==&quot;A&quot; &amp; T [C]==25&#39;</span><span class="p">,</span> <span class="n">pie_percents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -763,15 +760,20 @@ div.rendered_html tbody tr:hover {
 <img alt="_images/pie_35_0.png" src="_images/pie_35_0.png" />
 </div>
 </div>
-</div>
-<div class="section" id="Start-angle">
-<h3>Start angle<a class="headerlink" href="#Start-angle" title="Permalink to this headline">¶</a></h3>
+<p>We can style the percent labels using any combination of the following keywords (shortcuts in parentheses):</p>
+<ul class="simple">
+<li><p>pie_percents_distance (percents_distance)</p></li>
+<li><p>pie_percents_font_color (percents_font_color)</p></li>
+<li><p>pie_percents_font_size (percents_font_size)</p></li>
+<li><p>pie_percents_font_weight (percents_font_weight)</p></li>
+</ul>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Liquid&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;pH&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Measurement==&quot;A&quot; &amp; T [C]==25&#39;</span><span class="p">,</span> <span class="n">explode</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.1</span><span class="p">),</span> <span class="n">startangle</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">percents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Liquid&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;pH&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Measurement==&quot;A&quot; &amp; T [C]==25&#39;</span><span class="p">,</span> <span class="n">pie_percents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">percents_distance</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">percents_font_color</span><span class="o">=</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">,</span> <span class="n">percents_font_size</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">percents_font_weight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -782,25 +784,133 @@ div.rendered_html tbody tr:hover {
 <img alt="_images/pie_37_0.png" src="_images/pie_37_0.png" />
 </div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</div>
+<div class="section" id="Explode">
+<h3>Explode<a class="headerlink" href="#Explode" title="Permalink to this headline">¶</a></h3>
+<p>To emphasize a particular wedge in the pie chart, use the <code class="docutils literal notranslate"><span class="pre">pie_explode</span></code> (or <code class="docutils literal notranslate"><span class="pre">explode</span></code>) keyword. This keyword takes a list of offset values for the wedge(s) that is(are) exploded. The <code class="docutils literal notranslate"><span class="pre">explode</span></code> list is ordered alphabetically and you only need to define up to the last wedge that will be exploded. For example, if we want to emphasize the first wedge (“Battery acid”) we use:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Liquid&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;pH&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Measurement==&quot;A&quot; &amp; T [C]==25&#39;</span><span class="p">,</span> <span class="n">explode</span><span class="o">=</span><span class="p">[</span><span class="mf">0.1</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/pie_40_0.png" src="_images/pie_40_0.png" />
+</div>
+</div>
+<p>However, if we want to explode the third (“Coke”) and fifth (“Orange juice”) wedges and explode them different amounts, we use:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Liquid&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;pH&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Measurement==&quot;A&quot; &amp; T [C]==25&#39;</span><span class="p">,</span> <span class="n">explode</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
 </div>
+<div class="output_area docutils container">
+<img alt="_images/pie_42_0.png" src="_images/pie_42_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Shadow">
+<h3>Shadow<a class="headerlink" href="#Shadow" title="Permalink to this headline">¶</a></h3>
+<p>We can apply a really ugly shadow to the pie using keyword <code class="docutils literal notranslate"><span class="pre">pie_shadow</span></code> (or <code class="docutils literal notranslate"><span class="pre">shadow</span></code>). Please don’t ever use this feature unless you are intentionally wanting a bad-looking plot.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Liquid&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;pH&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Measurement==&quot;A&quot; &amp; T [C]==25&#39;</span><span class="p">,</span> <span class="n">explode</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.1</span><span class="p">),</span> <span class="n">shadow</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/pie_45_0.png" src="_images/pie_45_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Start-angle">
+<h3>Start angle<a class="headerlink" href="#Start-angle" title="Permalink to this headline">¶</a></h3>
+<p>By default, the pie wedges will start referenced from 12 o’clock and be positioned in a clockwise fashion. You can change the starting position using keyword <code class="docutils literal notranslate"><span class="pre">pie_start_angle</span></code> (or <code class="docutils literal notranslate"><span class="pre">start_angle</span></code>) which defaults to 90.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Liquid&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;pH&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Measurement==&quot;A&quot; &amp; T [C]==25&#39;</span><span class="p">,</span> <span class="n">explode</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.1</span><span class="p">),</span> <span class="n">start_angle</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">percents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/pie_48_0.png" src="_images/pie_48_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Counter-clockwise">
+<h3>Counter clockwise<a class="headerlink" href="#Counter-clockwise" title="Permalink to this headline">¶</a></h3>
+<p>We can force pie wedges to be arranged in a counter-clockwise fashion using keyword <code class="docutils literal notranslate"><span class="pre">pie_counter_clock</span></code> (or <code class="docutils literal notranslate"><span class="pre">counter_clock</span></code>):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Liquid&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;pH&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Measurement==&quot;A&quot; &amp; T [C]==25&#39;</span><span class="p">,</span> <span class="n">explode</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.1</span><span class="p">),</span> <span class="n">start_angle</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">percents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">counter_clock</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/pie_51_0.png" src="_images/pie_51_0.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Colors">
+<h2>Colors<a class="headerlink" href="#Colors" title="Permalink to this headline">¶</a></h2>
+<p>We can control the wedge colors using the following keywords (shorthand in parentheses):</p>
+<ul class="simple">
+<li><p>pie_colors (colors)</p></li>
+<li><p>pie_edge_color (edge_color)</p></li>
+<li><p>pie_edge_style (edge_style)</p></li>
+<li><p>pie_edge_width (edge_width)</p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Liquid&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;pH&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Measurement==&quot;A&quot; &amp; T [C]==25&#39;</span><span class="p">,</span>
+        <span class="n">colors</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;#FF0000&#39;</span><span class="p">,</span> <span class="s1">&#39;#00FF00&#39;</span><span class="p">,</span> <span class="s1">&#39;#0000FF&#39;</span><span class="p">,</span> <span class="s1">&#39;#F0F0F0&#39;</span><span class="p">,</span> <span class="s1">&#39;#0F0F0F&#39;</span><span class="p">],</span>
+        <span class="n">pie_edge_color</span><span class="o">=</span><span class="s1">&#39;#FFFF00&#39;</span><span class="p">,</span> <span class="n">pie_edge_style</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">pie_edge_width</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/pie_54_0.png" src="_images/pie_54_0.png" />
+</div>
+</div>
+<p>Looks like trash…yay!</p>
 </div>
 </div>
 
@@ -809,37 +919,29 @@ div.rendered_html tbody tr:hover {
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="changelog.html" class="btn btn-neutral float-right" title="Changelog" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="misc.html" class="btn btn-neutral float-left" title="Miscellaneous" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="changelog.html" class="btn btn-neutral float-right" title="Changelog" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="nq.html" class="btn btn-neutral float-left" title="nq" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2016, Steve Nicholes
+        &#169; Copyright 2022, Steve Nicholes.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

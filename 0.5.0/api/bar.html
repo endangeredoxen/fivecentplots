@@ -1,0 +1,346 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>bar &mdash; fivecentplots beta documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Archivo Black" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="boxplot" href="boxplot.html" />
+    <link rel="prev" title="axes" href="axes.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> fivecentplots
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.5.0-alpha
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../layout.html">Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../keyword.html">Keyword Arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../grouping.html">Grouping data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../styles.html">Styles and formatting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ranges.html">Data ranges</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ticks.html">Grids and ticks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../misc.html">Miscellaneous</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="fcp.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="axes.html">axes</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">bar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="boxplot.html">boxplot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cbar.html">cbar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contour.html">contour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="figure.html">figure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gantt.html">gantt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gridlines.html">gridlines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grouping.html">grouping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="heatmap.html">heatmap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hist.html">hist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="imshow.html">imshow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="labels.html">labels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="legend.html">legend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lines.html">lines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="markers.html">markers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nq.html">nq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html">options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pie.html">pie</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html">plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tick_labels.html">tick_labels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ticks.html">ticks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="titles.html">title</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ws.html">ws</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Plot Types</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../plot.html">plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../barplot.html">barplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../boxplot.html">boxplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contour.html">contour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gantt.html">gantt charts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heatmap.html">heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hist.html">hist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../imshow.html">imshow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../nq.html">nq</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pie.html">pie</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Other</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../older.html">Older Versions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/endangeredoxen/fivecentplots">GitHub</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">fivecentplots</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="fcp.html">API</a> &raquo;</li>
+        
+      <li>bar</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/api/bar.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="bar">
+<h1>bar<a class="headerlink" href="#bar" title="Permalink to this headline">¶</a></h1>
+<dl class="py method">
+<dt class="sig sig-object py" id="fivecentplots.fcp.bar">
+<span class="sig-prename descclassname"><span class="pre">fcp.</span></span><span class="sig-name descname"><span class="pre">bar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.bar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bar chart.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>df</strong> (<em>pandas.DataFrame</em>) – DataFrame containing data to plot</p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>x</strong> (<em>str</em>) – x-axis column name <span style="color:#ff0000; display:inline; font-weight:bold">[REQUIRED]</span></p></li>
+<li><p><strong>y</strong> (<em>str</em>) – y-axis column name <span style="color:#ff0000; display:inline; font-weight:bold">[REQUIRED]</span></p></li>
+<li><p><strong>bar_align</strong> (<em>str</em>) – If ‘center’ aligns center of bar to x-axis value; if ‘edge’ aligns the left edge of the bar to
+the x-axis value. Defaults to ‘center’ .</p></li>
+<li><p><strong>bar_color_by_bar</strong><strong>|</strong><strong>color_by_bar</strong> (<em>bool</em>) – Color each bar differently. Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Color-by-bar">More details</a></p></li>
+<li><p><strong>bar_edge_color</strong> (<em>str</em>) – Hex color string for the edge of the bar. <br>Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#b3b2b2;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8cd3c6;display:inline-block"></span>.</p></li>
+<li><p><strong>bar_edge_width</strong> (<em>float</em>) – Width of the edge of the bar in pixels. Defaults to 0.</p></li>
+<li><p><strong>bar_error_bars</strong><strong>|</strong><strong>error_bars</strong> (<em>bool</em>) – Display error bars on each bar. Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Error-bars">More details</a></p></li>
+<li><p><strong>bar_error_color</strong><strong>|</strong><strong>error_color</strong> (<em>str</em>) – Hex color string of the error bar lines. Defaults to #555555 <span id="rectangle" style="height: 12px; width: 12px; background-color:#555555;  display:inline-block"></span>.</p></li>
+<li><p><strong>bar_fill_alpha</strong> (<em>float</em>) – Transparency value for the bars between 0-1. Defaults to 0.75.</p></li>
+<li><p><strong>bar_fill_color</strong> (<em>str</em>) – Hex color string of the bar fill . <br>Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#b3b2b2;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8cd3c6;display:inline-block"></span>.</p></li>
+<li><p><strong>bar_horizontal</strong><strong>|</strong><strong>horizontal</strong> (<em>bool</em>) – Display bars horizontally. Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Horizontal-bars">More details</a></p></li>
+<li><p><strong>bar_rolling</strong><strong>|</strong><strong>bar_rolling_mean</strong><strong>|</strong><strong>rolling</strong><strong>|</strong><strong>rolling_mean</strong> (<em>int</em>) – Rolling mean window size [enables this curve]. No
+default. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Rolling-mean">More details</a></p></li>
+<li><p><strong>bar_stacked</strong><strong>|</strong><strong>stacked</strong> (<em>bool</em>) – Stack bars of a given group . Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Stacked">More details</a></p></li>
+<li><p><strong>bar_width</strong> (<em>float</em>) – Set the fractional width of the bars between 0-1. Defaults to 0.8.</p></li>
+<li><p><strong>rolling_mean_line_color</strong> (<em>str</em>) – Hex color string for the rolling mean line. <br>Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#b3b2b2;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8cd3c6;display:inline-block"></span>.
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Custom-line-style">More details</a></p></li>
+<li><p><strong>rolling_mean_line_width</strong> (<em>int</em>) – Width for the rolling mean line in pixels. Defaults to 2. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Custom-line-style">More details</a></p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">fivecentplots</span> <span class="k">as</span> <span class="nn">fcp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;tests/fake_data_bar.csv&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fcp</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Liquid&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;pH&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Measurement==&quot;A&quot; &amp; T [C]==25&#39;</span><span class="p">,</span>
+<span class="go">            tick_labels_major_x_rotation=90)</span>
+</pre></div>
+</div>
+<blockquote>
+<div><div class="figure align-default">
+<img alt="../_images/example_bar.png" src="../_images/example_bar.png" />
+</div>
+</div></blockquote>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="boxplot.html" class="btn btn-neutral float-right" title="boxplot" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="axes.html" class="btn btn-neutral float-left" title="axes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2022, Steve Nicholes.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

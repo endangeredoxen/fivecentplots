@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>imshow &mdash; fivecentplots beta documentation</title>
   
@@ -20,7 +20,10 @@
   
     <link rel="shortcut icon" href="_static/favicon.ico"/>
   
+
   
+  
+
   
 
   
@@ -30,18 +33,20 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "document", "processHtmlClass": "math|output_area"}}</script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Miscellaneous" href="misc.html" />
+    <link rel="next" title="nq" href="nq.html" />
     <link rel="prev" title="hist" href="hist.html" /> 
 </head>
 
@@ -56,7 +61,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> fivecentplots
+            <a href="index.html" class="icon icon-home"> fivecentplots
           
 
           
@@ -66,7 +71,7 @@
             
             
               <div class="version">
-                0.5.0
+                0.5.0-alpha
               </div>
             
           
@@ -91,7 +96,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Basics</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layout.html">Layout</a></li>
@@ -100,40 +105,40 @@
 <li class="toctree-l1"><a class="reference internal" href="styles.html">Styles and formatting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ranges.html">Data ranges</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ticks.html">Grids and ticks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/fcp.html">API</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Examples</span></p>
+<p class="caption" role="heading"><span class="caption-text">Plot Types</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="plot.html">plot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="barplot.html">barplot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gantt.html">Gantt Charts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gantt.html">gantt charts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="heatmap.html">heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hist.html">hist</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">imshow</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#Setup">Setup</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#Imports">Imports</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Read-an-image">Read an image</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Convert-image-to-grayscale">Convert image to grayscale</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Set-theme">Set theme</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Other">Other</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Setup">Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Basic-image-display">Basic image display</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Colors">Colors</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Color-map">Color map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Colorbar">Colorbar</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#Basic-image-display">Basic image display</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Colorbar">Colorbar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Zoom">Zoom</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Contrast-stretching">Contrast stretching</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Split-color-planes">Split color planes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Sneaky-input">Sneaky input</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nq.html">nq</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pie.html">pie</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Other</span></p>
+<p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="older.html">Older Versions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/endangeredoxen/fivecentplots">GitHub</a></li>
 </ul>
 
             
@@ -174,6 +179,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -185,7 +192,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/imshow.ipynb.txt" rel="nofollow"> View page source</a>
           
         
@@ -204,21 +211,35 @@
 /* CSS for nbsphinx extension */
 
 /* remove conflicting styling from Sphinx themes */
-div.nbinput.container,
-div.nbinput.container div.prompt,
-div.nbinput.container div.input_area,
-div.nbinput.container div[class*=highlight],
-div.nbinput.container div[class*=highlight] pre,
-div.nboutput.container,
-div.nboutput.container div.prompt,
-div.nboutput.container div.output_area,
-div.nboutput.container div[class*=highlight],
-div.nboutput.container div[class*=highlight] pre {
-    background: none;
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
     border: none;
-    padding: 0 0;
+    padding: 0;
     margin: 0;
     box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
 }
 
 /* avoid gaps between output lines */
@@ -319,7 +340,7 @@ div.nboutput.container div.output_area {
 div.nbinput.container div.input_area {
     border: 1px solid #e0e0e0;
     border-radius: 2px;
-    background: #f5f5f5;
+    /*background: #f5f5f5;*/
 }
 
 /* override MathJax center alignment in output cells */
@@ -385,6 +406,7 @@ div.nboutput.container div.output_area.rendered_html,
 div.nboutput.container div.output_area > div.output_javascript,
 div.nboutput.container div.output_area:not(.rendered_html) > img{
     padding: 5px;
+    margin: 0;
 }
 
 /* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
@@ -456,49 +478,52 @@ div.rendered_html tbody tr:hover {
 </style>
 <div class="section" id="imshow">
 <h1>imshow<a class="headerlink" href="#imshow" title="Permalink to this headline">¶</a></h1>
-<p>This section provides examples of how to use the imshow function. At a minimum, the <code class="docutils literal notranslate"><span class="pre">imshow</span></code> function requires the following keywords:</p>
-<ul><li><p>df: a pandas DataFrame</p>
-</li></ul><p>imshow in fivecentplots is mainly used to display images with a colormap applied.</p>
-<div class="section" id="Setup">
+<p>This section describes various options available for imshow plots in <strong>fivecentplots</strong></p>
+<p>See the full API <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/api/imshow.html#imshow">https://endangeredoxen.github.io/fivecentplots/0.5.0/api/imshow.html#imshow</a></p>
+<p style="line-height:30px"><p>fivecentplots.imshow(df, **kwargs)Image show plotting functionArgs:</p>
+<div style="padding-left: 30px"><p>df (DataFrame | numpy array):</p>
+<div style="padding-left: 30px"><p>DataFrame or numpy array containing 2D row/column image data to plot [when passing a numpy array it is automatically converted to a DataFrame]</p>
+</div></div><p>Required Keyword Args:</p>
+<div style="padding-left: 30px"><p>None</p>
+</div><p>Optional Keyword Args:</p>
+<div style="padding-left: 30px"><p>cfa (str):</p>
+<div style="padding-left: 30px"><p>Color-filter array pattern that is used to split data from a Bayer image into separate color planes. Defaults to None. See example</p>
+</div></div><div style="padding-left: 30px"><p>cmap (bool):</p>
+<div style="padding-left: 30px"><p>Name of a color map to apply to the plot. Defaults to gray. See example</p>
+</div></div><div style="padding-left: 30px"><p>imshow_interp | interp (str):</p>
+<div style="padding-left: 30px"><p>imshow interpolation scheme [see matplotlib docs for more details]. Defaults to “none’.</p>
+</div></div><div style="padding-left: 30px"><p>stretch (float | list):</p>
+<div style="padding-left: 30px"><p>Calculate “stretch” times the standard deviation above and below the mean to set new z-limits. Can be a single value used as +/- limits or a two-value list for the lower/upper multiplier values. Defaults to None. See example</p>
+</div></div></p><div class="section" id="Setup">
 <h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="Imports">
-<h3>Imports<a class="headerlink" href="#Imports" title="Permalink to this headline">¶</a></h3>
+<p>Import packages:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="o">%</span><span class="k">load_ext</span> autoreload
-<span class="o">%</span><span class="k">autoreload</span> 2
-<span class="o">%</span><span class="k">matplotlib</span> inline
-<span class="kn">import</span> <span class="nn">fivecentplots</span> <span class="k">as</span> <span class="nn">fcp</span>
+<span></span><span class="kn">import</span> <span class="nn">fivecentplots</span> <span class="k">as</span> <span class="nn">fcp</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">pdb</span>
-<span class="n">osjoin</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span>
-<span class="n">db</span> <span class="o">=</span> <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span>
-<span class="n">utl</span> <span class="o">=</span> <span class="n">fcp</span><span class="o">.</span><span class="n">utilities</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">imageio</span>
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="Read-an-image">
-<h3>Read an image<a class="headerlink" href="#Read-an-image" title="Permalink to this headline">¶</a></h3>
-<p><img alt="4f5e69a79cb4483eb1dde470bf9a50b1" class="no-scaled-link" src="https://imagesvc.meredithcorp.io/v3/mm/image?q=85&amp;c=sc&amp;rect=0%2C214%2C2000%2C1214&amp;poi=%5B920%2C546%5D&amp;w=2000&amp;h=1000&amp;url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F47%2F2020%2F10%2F07%2Fcat-in-pirate-costume-380541532-2000.jpg" style="width: 600px;" /></p>
+<p>Read a ridiculous image from the world wide web that illustrates a crime against the felis genus:</p>
+<p><img alt="d85aed2f5a24484ab9bc8ab687968a4f" class="no-scaled-link" src="https://imagesvc.meredithcorp.io/v3/mm/image?q=85&amp;c=sc&amp;rect=0%2C214%2C2000%2C1214&amp;poi=%5B920%2C546%5D&amp;w=2000&amp;h=1000&amp;url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F47%2F2020%2F10%2F07%2Fcat-in-pirate-costume-380541532-2000.jpg" style="width: 600px;" /></p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">imageio</span>
-<span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://imagesvc.meredithcorp.io/v3/mm/image?q=85&amp;c=sc&amp;rect=0%2C214%2C2000%2C1214&amp;poi=%5B920%2C546%5D&amp;w=2000&amp;h=1000&amp;url=https%3A</span><span class="si">%2F%2F</span><span class="s1">static.onecms.io</span><span class="si">%2F</span><span class="s1">wp-content</span><span class="si">%2F</span><span class="s1">uploads</span><span class="si">%2F</span><span class="s1">sites</span><span class="si">%2F</span><span class="s1">47</span><span class="si">%2F</span><span class="s1">2020</span><span class="si">%2F</span><span class="s1">10</span><span class="si">%2F</span><span class="s1">07</span><span class="si">%2F</span><span class="s1">cat-in-pirate-costume-380541532-2000.jpg&#39;</span>
+<span></span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://imagesvc.meredithcorp.io/v3/mm/image?q=85&amp;c=sc&amp;rect=0%2C214%2C2000%2C1214&amp;poi=%5B920%2C546%5D&amp;w=2000&amp;h=1000&amp;url=https%3A</span><span class="si">%2F%2F</span><span class="s1">static.onecms.io</span><span class="si">%2F</span><span class="s1">wp-content</span><span class="si">%2F</span><span class="s1">uploads</span><span class="si">%2F</span><span class="s1">sites</span><span class="si">%2F</span><span class="s1">47</span><span class="si">%2F</span><span class="s1">2020</span><span class="si">%2F</span><span class="s1">10</span><span class="si">%2F</span><span class="s1">07</span><span class="si">%2F</span><span class="s1">cat-in-pirate-costume-380541532-2000.jpg&#39;</span>
 <span class="n">imgr</span> <span class="o">=</span> <span class="n">imageio</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 <span class="n">imgr</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -554,11 +579,9 @@ Array([[[220, 221, 223],
         [210, 212, 211]]], dtype=uint8)
 </pre></div></div>
 </div>
-</div>
-<div class="section" id="Convert-image-to-grayscale">
-<h3>Convert image to grayscale<a class="headerlink" href="#Convert-image-to-grayscale" title="Permalink to this headline">¶</a></h3>
+<p>Convert this image from RGB to a grayscale DataFrame using a utility function provided by fivecentplots:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -568,7 +591,7 @@ Array([[[220, 221, 223],
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -739,11 +762,9 @@ Array([[[220, 221, 223],
 <p>5 rows × 2000 columns</p>
 </div></div>
 </div>
-</div>
-<div class="section" id="Set-theme">
-<h3>Set theme<a class="headerlink" href="#Set-theme" title="Permalink to this headline">¶</a></h3>
+<p>Optionally set the design theme (skipping here and using default):</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -753,29 +774,23 @@ Array([[[220, 221, 223],
 </div>
 </div>
 </div>
-<div class="section" id="Other">
-<h3>Other<a class="headerlink" href="#Other" title="Permalink to this headline">¶</a></h3>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">SHOW</span> <span class="o">=</span> <span class="kc">False</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
 <div class="section" id="Basic-image-display">
 <h2>Basic image display<a class="headerlink" href="#Basic-image-display" title="Permalink to this headline">¶</a></h2>
-<p>Display an image depicting one of many problems with human-feline interactions.</p>
-<p><em>Note: the ratio of the image height and width are preserved regardless of the values of ``ax_size``, which will just apply to the biggest of the two dimensions</em></p>
+<p>Display our grayscale image depicting one of many problems with human-feline interactions.</p>
+<div class="admonition note"><p class="admonition-title"></p><p><p>Notes:</p>
+<ol class="arabic">
+<li><p>the original ratio of the image height and width are preserved regardless of the values of <code class="docutils literal notranslate"><span class="pre">ax_size</span></code>, which will just apply to the largest of the two dimensions</p></li>
+<li><p>tick labels are turned off by default (use <code class="docutils literal notranslate"><span class="pre">tick_labels_major=True</span></code> to enable)</p>
+</p></li>
+<li><p>imshow uses the “gray” colormap by default</p>
+</div></li>
+</ol>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -787,15 +802,17 @@ Array([[[220, 221, 223],
 </div>
 </div>
 </div>
-<div class="section" id="Colorbar">
-<h2>Colorbar<a class="headerlink" href="#Colorbar" title="Permalink to this headline">¶</a></h2>
-<p>We can add a colorbar to the image using the kwarg <code class="docutils literal notranslate"><span class="pre">cbar=True</span></code></p>
+<div class="section" id="Colors">
+<h2>Colors<a class="headerlink" href="#Colors" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="Color-map">
+<h3>Color map<a class="headerlink" href="#Color-map" title="Permalink to this headline">¶</a></h3>
+<p>We can add any standard color map from matplotlib to an imshow using keyword <code class="docutils literal notranslate"><span class="pre">cmap</span></code>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">],</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -803,42 +820,40 @@ Array([[[220, 221, 223],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/imshow_19_0.png" src="_images/imshow_19_0.png" />
+<img alt="_images/imshow_20_0.png" src="_images/imshow_20_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Colorbar">
+<h3>Colorbar<a class="headerlink" href="#Colorbar" title="Permalink to this headline">¶</a></h3>
+<p>We can add a colorbar to the image showing the z-range with the keyword <code class="docutils literal notranslate"><span class="pre">cbar=True</span></code></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">],</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/imshow_23_0.png" src="_images/imshow_23_0.png" />
+</div>
 </div>
 </div>
 </div>
 <div class="section" id="Zoom">
 <h2>Zoom<a class="headerlink" href="#Zoom" title="Permalink to this headline">¶</a></h2>
-<p>We can zoom into this kitten by changing the <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> limits:</p>
+<p>We can zoom in on this stupid kitten by changing the <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> limits:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">],</span> <span class="n">xmin</span><span class="o">=</span><span class="mi">700</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mi">1100</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/imshow_22_0.png" src="_images/imshow_22_0.png" />
-</div>
-</div>
-<p>private eyes are watching you…</p>
-</div>
-<div class="section" id="Contrast-stretching">
-<h2>Contrast stretching<a class="headerlink" href="#Contrast-stretching" title="Permalink to this headline">¶</a></h2>
-<p>In some cases (such as raw image sensor analysis) it is helpful to adjust the colormap limits in order to “stretch” the contrast. This can be done via the <code class="docutils literal notranslate"><span class="pre">z</span></code> axis limits. In this example, we stretch +/-3 standard deviations from the mean pixel value.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">uu</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-<span class="n">ss</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
-<span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">],</span> <span class="n">zmin</span><span class="o">=</span><span class="n">uu</span><span class="o">-</span><span class="mi">3</span><span class="o">*</span><span class="n">ss</span><span class="p">,</span> <span class="n">zmax</span><span class="o">=</span><span class="n">uu</span><span class="o">+</span><span class="mi">3</span><span class="o">*</span><span class="n">ss</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">],</span> <span class="n">xmin</span><span class="o">=</span><span class="mi">700</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mi">1100</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">tick_labels_major</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -849,30 +864,19 @@ Array([[[220, 221, 223],
 <img alt="_images/imshow_26_0.png" src="_images/imshow_26_0.png" />
 </div>
 </div>
-<p>imshow plots in fivecentplots also provides a convenient kwarg called <code class="docutils literal notranslate"><span class="pre">stretch</span></code> which applies e a numerical multiplier of standard deviation above and below the mean and automatically calculates new z-limits (essentially the same thing as done above manually). <code class="docutils literal notranslate"><span class="pre">stretch</span></code> can be a single value of std dev which is interpreted as +/- that value or a list with the lower and higher std deviation respectively. First, we consider a +/- 3 sigma stretch as above:</p>
+<p>private eyes are watching you…</p>
+</div>
+<div class="section" id="Contrast-stretching">
+<h2>Contrast stretching<a class="headerlink" href="#Contrast-stretching" title="Permalink to this headline">¶</a></h2>
+<p>In some cases (such as raw image sensor data analysis) it is helpful to adjust the colormap limits in order to “stretch” the contrast. This can be done via the <code class="docutils literal notranslate"><span class="pre">z</span></code> axis limits. In this example, we stretch +/-3 standard deviations from the mean pixel value.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">],</span> <span class="n">stretch</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/imshow_28_0.png" src="_images/imshow_28_0.png" />
-</div>
-</div>
-<p>Now we show a single-sided stretch that only applies to the upper z-limit:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">],</span> <span class="n">stretch</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">)</span>
+<span></span><span class="n">uu</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">ss</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">],</span> <span class="n">zmin</span><span class="o">=</span><span class="n">uu</span><span class="o">-</span><span class="mi">3</span><span class="o">*</span><span class="n">ss</span><span class="p">,</span> <span class="n">zmax</span><span class="o">=</span><span class="n">uu</span><span class="o">+</span><span class="mi">3</span><span class="o">*</span><span class="n">ss</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -883,100 +887,381 @@ Array([[[220, 221, 223],
 <img alt="_images/imshow_30_0.png" src="_images/imshow_30_0.png" />
 </div>
 </div>
+<p>imshow plots in fivecentplots also provides a convenient kwarg called <code class="docutils literal notranslate"><span class="pre">stretch</span></code> which calculates a numerical multiplier of the standard deviation above and below the mean to set new z-limits (essentially the same thing as done above manually). <code class="docutils literal notranslate"><span class="pre">stretch</span></code> can be a single value of std dev which is interpreted as +/- that value or a 2-value list with the lower and higher std deviation respectively. First, we consider a +/- 4 sigma stretch as above:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">],</span> <span class="n">stretch</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/imshow_32_0.png" src="_images/imshow_32_0.png" />
+</div>
+</div>
+<p>Now we show a single-sided stretch that applies a 3 * std dev increase to the upper z-limit:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">],</span> <span class="n">stretch</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/imshow_34_0.png" src="_images/imshow_34_0.png" />
+</div>
+</div>
 </div>
 <div class="section" id="Split-color-planes">
 <h2>Split color planes<a class="headerlink" href="#Split-color-planes" title="Permalink to this headline">¶</a></h2>
-<p>For some applications, it is useful to split a raw/bayer image based on some CFA pattern. fivecentplots provides a simple utility function to do this and <code class="docutils literal notranslate"><span class="pre">imshow</span></code> can be used to display the result. The utility returns a concatenated DataFrame consisting of the data from each color plane. Consider the following image:</p>
-<p><img alt="271d51a833d7451392c0b52f4efd47aa" src="https://upload.wikimedia.org/wikipedia/commons/2/28/RGB_illumination.jpg" /></p>
-<p>First we convert the RGB image into a Bayer-like image and demonstrate the color plane split:</p>
+<p>When analyzing Bayer-type images, it is often useful to split the image data based on the color-filter array pattern used on the image sensor. fivecentplots provides a simple utility function to do this and <code class="docutils literal notranslate"><span class="pre">imshow</span></code> can be used to display the result. Consider the following image:</p>
+<p><img alt="2e985b0c4e634cc1b20b2aebdc92eb98" src="https://upload.wikimedia.org/wikipedia/commons/2/28/RGB_illumination.jpg" /></p>
+<p>First we read the image from the world-wide web and convert this random RGB image into a Bayer-like image (rough hack for the purposes of this example):</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://upload.wikimedia.org/wikipedia/commons/2/28/RGB_illumination.jpg&#39;</span>
 <span class="n">imgr</span> <span class="o">=</span> <span class="n">imageio</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 <span class="n">raw</span> <span class="o">=</span> <span class="n">fcp</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">rgb2bayer</span><span class="p">(</span><span class="n">imgr</span><span class="p">)</span>
-<span class="n">temp</span> <span class="o">=</span> <span class="n">fcp</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">split_color_planes</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="n">cfa</span><span class="o">=</span><span class="s1">&#39;rggb&#39;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">plane</span> <span class="ow">in</span> <span class="n">temp</span><span class="o">.</span><span class="n">Plane</span><span class="o">.</span><span class="n">unique</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">temp</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">temp</span><span class="o">.</span><span class="n">Plane</span><span class="o">==</span><span class="n">plane</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">raw</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
 </div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-      0     2     4     6     8    10    12    14    16    18  ...   382  \
-0  47.0  47.0  46.0  45.0  48.0  46.0  46.0  46.0  46.0  46.0  ...  49.0
-2  46.0  47.0  47.0  46.0  48.0  46.0  47.0  46.0  47.0  47.0  ...  49.0
-4  47.0  48.0  48.0  46.0  48.0  47.0  48.0  47.0  47.0  47.0  ...  49.0
-6  46.0  46.0  47.0  46.0  47.0  46.0  47.0  46.0  45.0  46.0  ...  44.0
-8  45.0  45.0  47.0  46.0  46.0  47.0  49.0  48.0  46.0  46.0  ...  45.0
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
-    384   386   388   390   392   394   396   398  Plane
-0  44.0  45.0  45.0  47.0  49.0  48.0  47.0  69.0      r
-2  49.0  48.0  50.0  49.0  47.0  47.0  50.0  73.0      r
-4  49.0  44.0  46.0  47.0  45.0  48.0  48.0  72.0      r
-6  46.0  44.0  48.0  47.0  51.0  49.0  46.0  75.0      r
-8  40.0  49.0  43.0  48.0  41.0  49.0  49.0  81.0      r
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
 
-[5 rows x 201 columns]
-      1     3     5     7     9    11    13    15    17    19  ...    383  \
-0  47.0  48.0  47.0  45.0  46.0  48.0  48.0  48.0  47.0  48.0  ...  104.0
-2  46.0  47.0  48.0  48.0  47.0  47.0  47.0  46.0  47.0  47.0  ...  113.0
-4  47.0  46.0  48.0  48.0  48.0  46.0  47.0  46.0  48.0  47.0  ...  122.0
-6  47.0  47.0  47.0  49.0  48.0  47.0  47.0  47.0  47.0  47.0  ...  121.0
-8  48.0  47.0  48.0  47.0  47.0  45.0  47.0  48.0  49.0  48.0  ...  158.0
-
-     385    387    389    391    393    395    397  399  Plane
-0  106.0  104.0  102.0  103.0  103.0  104.0   96.0  0.0     gr
-2  107.0  106.0  104.0  102.0  105.0  102.0   98.0  0.0     gr
-4  112.0  106.0  105.0  103.0  107.0  107.0  101.0  0.0     gr
-6  120.0  113.0  107.0   98.0  108.0  121.0  117.0  1.0     gr
-8  160.0  154.0  152.0  111.0  100.0  111.0  120.0  3.0     gr
-
-[5 rows x 201 columns]
-      0     2     4     6     8    10    12    14    16    18  ...    382  \
-1  47.0  47.0  48.0  47.0  46.0  47.0  48.0  48.0  47.0  47.0  ...  107.0
-3  47.0  46.0  47.0  48.0  47.0  47.0  47.0  46.0  46.0  46.0  ...  123.0
-5  48.0  48.0  47.0  48.0  48.0  48.0  47.0  47.0  48.0  48.0  ...  111.0
-7  47.0  47.0  46.0  47.0  48.0  47.0  46.0  47.0  47.0  47.0  ...  130.0
-9  48.0  47.0  47.0  47.0  48.0  46.0  45.0  48.0  47.0  46.0  ...  139.0
-
-     384    386    388    390    392    394    396    398  Plane
-1  106.0  104.0  102.0  102.0  103.0  100.0  100.0  121.0     gb
-3  112.0  108.0  105.0  103.0  106.0  102.0  100.0  122.0     gb
-5  115.0  108.0  104.0  101.0  103.0  112.0  110.0  128.0     gb
-7  141.0  134.0  126.0  115.0   97.0  114.0  123.0  137.0     gb
-9  154.0  145.0  160.0  143.0  105.0   99.0  104.0  125.0     gb
-
-[5 rows x 201 columns]
-       1      3      5      7      9     11     13     15     17     19  ...  \
-1   95.0   96.0   85.0   90.0   95.0   99.0   99.0   97.0   91.0   96.0  ...
-3  104.0  113.0  102.0   89.0  101.0  115.0  117.0  112.0  103.0  107.0  ...
-5   91.0   99.0   97.0   79.0   86.0  105.0  109.0  101.0   83.0   91.0  ...
-7   99.0  103.0  111.0   97.0   93.0  117.0  119.0  105.0   97.0  109.0  ...
-9   99.0  112.0  125.0  116.0   99.0  129.0  117.0  117.0  114.0  134.0  ...
-
-    383   385   387   389   391   393   395   397  399  Plane
-1  46.0  46.0  47.0  46.0  46.0  51.0  46.0  42.0  0.0      b
-3  44.0  46.0  46.0  48.0  47.0  49.0  44.0  44.0  2.0      b
-5  47.0  44.0  44.0  49.0  49.0  52.0  46.0  44.0  0.0      b
-7  48.0  48.0  49.0  48.0  42.0  49.0  47.0  47.0  0.0      b
-9  48.0  49.0  48.0  49.0  46.0  50.0  44.0  46.0  0.0      b
-
-[5 rows x 201 columns]
-</pre></div></div>
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+      <th>9</th>
+      <th>...</th>
+      <th>390</th>
+      <th>391</th>
+      <th>392</th>
+      <th>393</th>
+      <th>394</th>
+      <th>395</th>
+      <th>396</th>
+      <th>397</th>
+      <th>398</th>
+      <th>399</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>48</td>
+      <td>46</td>
+      <td>47</td>
+      <td>45</td>
+      <td>45</td>
+      <td>48</td>
+      <td>46</td>
+      <td>...</td>
+      <td>47</td>
+      <td>103</td>
+      <td>49</td>
+      <td>103</td>
+      <td>48</td>
+      <td>104</td>
+      <td>47</td>
+      <td>96</td>
+      <td>69</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>47</td>
+      <td>95</td>
+      <td>47</td>
+      <td>96</td>
+      <td>48</td>
+      <td>85</td>
+      <td>47</td>
+      <td>90</td>
+      <td>46</td>
+      <td>95</td>
+      <td>...</td>
+      <td>102</td>
+      <td>46</td>
+      <td>103</td>
+      <td>51</td>
+      <td>100</td>
+      <td>46</td>
+      <td>100</td>
+      <td>42</td>
+      <td>121</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>46</td>
+      <td>46</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>48</td>
+      <td>46</td>
+      <td>48</td>
+      <td>48</td>
+      <td>47</td>
+      <td>...</td>
+      <td>49</td>
+      <td>102</td>
+      <td>47</td>
+      <td>105</td>
+      <td>47</td>
+      <td>102</td>
+      <td>50</td>
+      <td>98</td>
+      <td>73</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>47</td>
+      <td>104</td>
+      <td>46</td>
+      <td>113</td>
+      <td>47</td>
+      <td>102</td>
+      <td>48</td>
+      <td>89</td>
+      <td>47</td>
+      <td>101</td>
+      <td>...</td>
+      <td>103</td>
+      <td>47</td>
+      <td>106</td>
+      <td>49</td>
+      <td>102</td>
+      <td>44</td>
+      <td>100</td>
+      <td>44</td>
+      <td>122</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>47</td>
+      <td>47</td>
+      <td>48</td>
+      <td>46</td>
+      <td>48</td>
+      <td>48</td>
+      <td>46</td>
+      <td>48</td>
+      <td>48</td>
+      <td>48</td>
+      <td>...</td>
+      <td>47</td>
+      <td>103</td>
+      <td>45</td>
+      <td>107</td>
+      <td>48</td>
+      <td>107</td>
+      <td>48</td>
+      <td>101</td>
+      <td>72</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>295</th>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>...</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>46</td>
+      <td>48</td>
+      <td>44</td>
+      <td>75</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>296</th>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>...</td>
+      <td>47</td>
+      <td>47</td>
+      <td>48</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>48</td>
+      <td>43</td>
+      <td>77</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>297</th>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>...</td>
+      <td>47</td>
+      <td>47</td>
+      <td>48</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>48</td>
+      <td>43</td>
+      <td>77</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>298</th>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>...</td>
+      <td>47</td>
+      <td>47</td>
+      <td>48</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>48</td>
+      <td>43</td>
+      <td>77</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>299</th>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>...</td>
+      <td>47</td>
+      <td>47</td>
+      <td>48</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>48</td>
+      <td>43</td>
+      <td>77</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<p>300 rows × 400 columns</p>
+</div></div>
 </div>
-<p>For ease of use, however, you do not need to actually use this utility manually. Adding the kwarg <code class="docutils literal notranslate"><span class="pre">cfa</span></code> with a string value of some CFA pattern to the <code class="docutils literal notranslate"><span class="pre">imshow</span></code> call will run the utility automatically:</p>
+<p>Now we plot with <code class="docutils literal notranslate"><span class="pre">imshow</span></code> using the keyword <code class="docutils literal notranslate"><span class="pre">cfa</span></code> with an “RGGB” pattern using a wrap-style plot. Notice that the primary colors from the original image are split into separate subplots.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">],</span> <span class="n">cfa</span><span class="o">=</span><span class="s1">&#39;rggb&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;Plane&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">],</span> <span class="n">cfa</span><span class="o">=</span><span class="s1">&#39;rggb&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;Plane&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -984,19 +1269,14 @@ Array([[[220, 221, 223],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/imshow_36_0.png" src="_images/imshow_36_0.png" />
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>
-</pre></div>
+<img alt="_images/imshow_40_0.png" src="_images/imshow_40_0.png" />
 </div>
 </div>
 </div>
+<div class="section" id="Sneaky-input">
+<h2>Sneaky input<a class="headerlink" href="#Sneaky-input" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note"><p class="admonition-title"></p><p><p><code class="docutils literal notranslate"><span class="pre">imshow</span></code> is one of two plot types (<code class="docutils literal notranslate"><span class="pre">hist</span></code> and <code class="docutils literal notranslate"><span class="pre">imshow</span></code>) that allows us to pass a 2D numpy array instead of a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>. When plotting a single image, we don’t need column names so we don’t technically need a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>. Why do we allow this? This is a sneaky, under-the-table trick just to make life easier. Numpy arrays are converted into <code class="docutils literal notranslate"><span class="pre">DataFrames</span></code> behind the scenes so you don’t have to take an extra step. This can be our dirty little secret…</p>
+</p></div></div>
 </div>
 
 
@@ -1004,37 +1284,29 @@ Array([[[220, 221, 223],
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="misc.html" class="btn btn-neutral float-right" title="Miscellaneous" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="hist.html" class="btn btn-neutral float-left" title="hist" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="nq.html" class="btn btn-neutral float-right" title="nq" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="hist.html" class="btn btn-neutral float-left" title="hist" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2016, Steve Nicholes
+        &#169; Copyright 2022, Steve Nicholes.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

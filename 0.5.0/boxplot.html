@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>boxplot &mdash; fivecentplots beta documentation</title>
   
@@ -20,7 +20,10 @@
   
     <link rel="shortcut icon" href="_static/favicon.ico"/>
   
+
   
+  
+
   
 
   
@@ -30,11 +33,13 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "document", "processHtmlClass": "math|output_area"}}</script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -56,7 +61,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> fivecentplots
+            <a href="index.html" class="icon icon-home"> fivecentplots
           
 
           
@@ -66,7 +71,7 @@
             
             
               <div class="version">
-                0.5.0
+                0.5.0-alpha
               </div>
             
           
@@ -91,7 +96,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Basics</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layout.html">Layout</a></li>
@@ -100,61 +105,68 @@
 <li class="toctree-l1"><a class="reference internal" href="styles.html">Styles and formatting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ranges.html">Data ranges</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ticks.html">Grids and ticks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/fcp.html">API</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Examples</span></p>
+<p class="caption" role="heading"><span class="caption-text">Plot Types</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="plot.html">plot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="barplot.html">barplot</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">boxplot</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#Setup">Setup</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#Imports">Imports</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Sample-data">Sample data</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Set-theme">Set theme</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Other">Other</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#Setup">Setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Groups">Groups</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Single-group">Single group</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Multiple-groups">Multiple groups</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Groups-+-legend">Groups + legend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#No-groups">No groups</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#Grid-plots">Grid plots</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Box-elements">Box elements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Dividers">Dividers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Whiskers">Whiskers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Range-lines">Range lines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Markers">Markers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Jitter">Jitter</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#More-grouping">More grouping</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Legend">Legend</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Column-plots">Column plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Row-plots">Row plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Wrap-plots">Wrap plots</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#Other-options">Other options</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Stats">Stats</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Grand-Mean/Median">Grand Mean/Median</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Group-Means">Group Means</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Mean-Diamonds">Mean Diamonds</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Violins">Violins</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Stat-line">Stat line</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#Mean">Mean</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Median">Median</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Std-dev">Std dev</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Quantile">Quantile</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#Dividers">Dividers</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Range-lines">Range lines</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#Violins">Violins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Notch">Notch</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gantt.html">Gantt Charts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gantt.html">gantt charts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="heatmap.html">heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hist.html">hist</a></li>
 <li class="toctree-l1"><a class="reference internal" href="imshow.html">imshow</a></li>
-<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nq.html">nq</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pie.html">pie</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Other</span></p>
+<p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="older.html">Older Versions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/endangeredoxen/fivecentplots">GitHub</a></li>
 </ul>
 
             
@@ -195,6 +207,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -206,7 +220,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/boxplot.ipynb.txt" rel="nofollow"> View page source</a>
           
         
@@ -225,21 +239,35 @@
 /* CSS for nbsphinx extension */
 
 /* remove conflicting styling from Sphinx themes */
-div.nbinput.container,
-div.nbinput.container div.prompt,
-div.nbinput.container div.input_area,
-div.nbinput.container div[class*=highlight],
-div.nbinput.container div[class*=highlight] pre,
-div.nboutput.container,
-div.nboutput.container div.prompt,
-div.nboutput.container div.output_area,
-div.nboutput.container div[class*=highlight],
-div.nboutput.container div[class*=highlight] pre {
-    background: none;
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
     border: none;
-    padding: 0 0;
+    padding: 0;
     margin: 0;
     box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
 }
 
 /* avoid gaps between output lines */
@@ -340,7 +368,7 @@ div.nboutput.container div.output_area {
 div.nbinput.container div.input_area {
     border: 1px solid #e0e0e0;
     border-radius: 2px;
-    background: #f5f5f5;
+    /*background: #f5f5f5;*/
 }
 
 /* override MathJax center alignment in output cells */
@@ -406,6 +434,7 @@ div.nboutput.container div.output_area.rendered_html,
 div.nboutput.container div.output_area > div.output_javascript,
 div.nboutput.container div.output_area:not(.rendered_html) > img{
     padding: 5px;
+    margin: 0;
 }
 
 /* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
@@ -477,46 +506,35 @@ div.rendered_html tbody tr:hover {
 </style>
 <div class="section" id="boxplot">
 <h1>boxplot<a class="headerlink" href="#boxplot" title="Permalink to this headline">¶</a></h1>
-<p>Boxplots in fivecentplots are modeled after the “Variability Chart” in JMP which provides convenient, multi-level group labels automatically along the x-axis. Data can be broken into multiple subsets for easy visualization by simply listing the DataFrame column names of interest in the groups keyword. At a minimum, the <code class="docutils literal notranslate"><span class="pre">boxplot</span></code> function requires the following keywords:</p>
-<ul><li><p><code class="docutils literal notranslate"><span class="pre">df</span></code>: a pandas DataFrame</p>
-</li><li><p><code class="docutils literal notranslate"><span class="pre">y</span></code>: the name of the DataFrame column containing the y-axis data</p>
-</li></ul><div class="section" id="Setup">
+<p>This section describes various options available for boxplots in <strong>fivecentplots</strong></p>
+<p>See the full API <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/api/boxplot.html#boxplot">https://endangeredoxen.github.io/fivecentplots/0.5.0/api/boxplot.html#boxplot</a></p>
+<div class="section" id="Setup">
 <h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="Imports">
-<h3>Imports<a class="headerlink" href="#Imports" title="Permalink to this headline">¶</a></h3>
+<p>Import packages:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="o">%</span><span class="k">load_ext</span> autoreload
-<span class="o">%</span><span class="k">autoreload</span> 2
-<span class="o">%</span><span class="k">matplotlib</span> inline
-<span class="kn">import</span> <span class="nn">fivecentplots</span> <span class="k">as</span> <span class="nn">fcp</span>
+<span></span><span class="kn">import</span> <span class="nn">fivecentplots</span> <span class="k">as</span> <span class="nn">fcp</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">pdb</span>
-<span class="n">osjoin</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span>
-<span class="n">db</span> <span class="o">=</span> <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="Sample-data">
-<h3>Sample data<a class="headerlink" href="#Sample-data" title="Permalink to this headline">¶</a></h3>
-<p>Read some fake boxplot data</p>
+<p>Read some fake boxplot data with no real meaning:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">osjoin</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;tests&#39;</span><span class="p">,</span> <span class="s1">&#39;fake_data_box.csv&#39;</span><span class="p">))</span>
+<span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;tests/fake_data_box.csv&#39;</span><span class="p">)</span>
 <span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -559,7 +577,7 @@ div.rendered_html tbody tr:hover {
       <td>101</td>
       <td>1</td>
       <td>Alpha123</td>
-      <td>2.1</td>
+      <td>0.0</td>
       <td>ID7700-1222B</td>
     </tr>
     <tr>
@@ -590,12 +608,9 @@ div.rendered_html tbody tr:hover {
 </table>
 </div></div>
 </div>
-</div>
-<div class="section" id="Set-theme">
-<h3>Set theme<a class="headerlink" href="#Set-theme" title="Permalink to this headline">¶</a></h3>
-<p>Optionally set the design theme</p>
+<p>Optionally set the design theme (skipping here and using default):</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -605,28 +620,36 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 </div>
-<div class="section" id="Other">
-<h3>Other<a class="headerlink" href="#Other" title="Permalink to this headline">¶</a></h3>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">SHOW</span> <span class="o">=</span> <span class="kc">False</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
 <div class="section" id="Groups">
 <h2>Groups<a class="headerlink" href="#Groups" title="Permalink to this headline">¶</a></h2>
-<p>Consider the following boxplot of made-up data:</p>
+<p>One of the most powerful features of JMP is its variability chart, which partitions data into separate boxplots based on one or more grouping criteria. fivecentplots achieves this characteristic via the keyword <code class="docutils literal notranslate"><span class="pre">groups</span></code>. The value of this keyword is one or more column names from the <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> that differentiate the <code class="docutils literal notranslate"><span class="pre">y</span></code> values being plotted.</p>
+<div class="section" id="Single-group">
+<h3>Single group<a class="headerlink" href="#Single-group" title="Permalink to this headline">¶</a></h3>
+<p>Using our fake dataset, we first plot our data grouped by a single column named “Batch”. Because our dataset has 3 unique values in the “Batch” column, we get three boxplots, each with a descriptive label.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">tick_labels_minor</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">grid_minor</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span></span><span class="n">df</span><span class="o">.</span><span class="n">Batch</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([101, 106, 103])
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="s1">&#39;Batch&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -637,15 +660,93 @@ div.rendered_html tbody tr:hover {
 <img alt="_images/boxplot_15_0.png" src="_images/boxplot_15_0.png" />
 </div>
 </div>
-<div class="section" id="Single-group">
-<h3>Single group<a class="headerlink" href="#Single-group" title="Permalink to this headline">¶</a></h3>
-<p>Rather than lumping the data into a single box, we can separate them into categories to get more information. First, set a single group column of “Batch”:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</div>
+<div class="section" id="Multiple-groups">
+<h3>Multiple groups<a class="headerlink" href="#Multiple-groups" title="Permalink to this headline">¶</a></h3>
+<p>We can dive deeper into the dataset by specifying a list of column names for <code class="docutils literal notranslate"><span class="pre">groups</span></code>. In this example we use columns “Batch” and “Sample” for which there are 7 unique groups. Notice that the order of the values passed to <code class="docutils literal notranslate"><span class="pre">groups</span></code> determines the grouping hierarchy, with the first grouping column values on the bottom of the plot.</p>
+<div class="admonition note"><p class="admonition-title"></p><p><p>Note that for purposes of the boxplot API, the values in the white rectangles under the plotting area are styled via keywords prefixed with <code class="docutils literal notranslate"><span class="pre">box_group_label</span></code>, while the column name strings are styled via keywords prefixed with <code class="docutils literal notranslate"><span class="pre">box_group_title</span></code>.</p>
+</p></div><div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span></span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Batch</th>
+      <th>Sample</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>101</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>101</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>106</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>31</th>
+      <td>106</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>41</th>
+      <td>103</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>50</th>
+      <td>103</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>60</th>
+      <td>103</td>
+      <td>3</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -653,19 +754,16 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/boxplot_18_0.png" src="_images/boxplot_18_0.png" />
+<img alt="_images/boxplot_19_0.png" src="_images/boxplot_19_0.png" />
 </div>
 </div>
-</div>
-<div class="section" id="Multiple-groups">
-<h3>Multiple groups<a class="headerlink" href="#Multiple-groups" title="Permalink to this headline">¶</a></h3>
-<p>We can dive deeper by specifying more than one value for groups:</p>
+<p>By default, the group values are sorted alphanumerically. To preserve the order of the input DataFrame, add the keyword <code class="docutils literal notranslate"><span class="pre">sort=False</span></code>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -676,13 +774,16 @@ div.rendered_html tbody tr:hover {
 <img alt="_images/boxplot_21_0.png" src="_images/boxplot_21_0.png" />
 </div>
 </div>
-<p>By default, the groups are sorted alphanumerically. To preserve the order of the input DataFrame, add the keyword <code class="docutils literal notranslate"><span class="pre">sort=False</span></code>:</p>
+</div>
+<div class="section" id="No-groups">
+<h3>No groups<a class="headerlink" href="#No-groups" title="Permalink to this headline">¶</a></h3>
+<p>If not <code class="docutils literal notranslate"><span class="pre">groups</span></code> are specified, no grouping labels are added to the boxplot.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">tick_labels_minor</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">grid_minor</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -690,19 +791,23 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/boxplot_23_0.png" src="_images/boxplot_23_0.png" />
+<img alt="_images/boxplot_24_0.png" src="_images/boxplot_24_0.png" />
 </div>
 </div>
 </div>
-<div class="section" id="Groups-+-legend">
-<h3>Groups + legend<a class="headerlink" href="#Groups-+-legend" title="Permalink to this headline">¶</a></h3>
-<p>Boxplots also support legending for another level of visualization:</p>
+</div>
+<div class="section" id="Box-elements">
+<h2>Box elements<a class="headerlink" href="#Box-elements" title="Permalink to this headline">¶</a></h2>
+<p>Several descriptive elements are available within the boxplot to better visualize the dataset. These features are illustrated below.</p>
+<div class="section" id="Dividers">
+<h3>Dividers<a class="headerlink" href="#Dividers" title="Permalink to this headline">¶</a></h3>
+<p>By default, when multiple <code class="docutils literal notranslate"><span class="pre">groups</span></code> are specified gray divider lines are drawn between the bottom-level groups.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Region&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -710,17 +815,17 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/boxplot_26_0.png" src="_images/boxplot_26_0.png" />
+<img alt="_images/boxplot_29_0.png" src="_images/boxplot_29_0.png" />
 </div>
 </div>
-<p>Note: if there are a lot of legend items, the position of the legend will be automatically adjusted to avoid rendering over the box group titles.</p>
+<p>These divider lines can be disabled or styled using the appropriate keywords.</p>
+<p>Disabled:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Row&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">/</span> <span class="mi">4</span><span class="p">]</span>
-<span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Row&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">box_divider</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -728,22 +833,17 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/boxplot_28_0.png" src="_images/boxplot_28_0.png" />
+<img alt="_images/boxplot_31_0.png" src="_images/boxplot_31_0.png" />
 </div>
 </div>
-</div>
-</div>
-<div class="section" id="Grid-plots">
-<h2>Grid plots<a class="headerlink" href="#Grid-plots" title="Permalink to this headline">¶</a></h2>
-<p>Like the plot function, boxplots can be broken into subplots based on “row” and/or “col” values or “wrap” values.</p>
-<div class="section" id="Column-plots">
-<h3>Column plots<a class="headerlink" href="#Column-plots" title="Permalink to this headline">¶</a></h3>
+<p>Styled:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Region&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">])</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span>
+            <span class="n">box_divider_color</span><span class="o">=</span><span class="s1">&#39;#d42269&#39;</span><span class="p">,</span> <span class="n">box_divider_width</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">box_divider_style</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -751,37 +851,22 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/boxplot_32_0.png" src="_images/boxplot_32_0.png" />
+<img alt="_images/boxplot_33_0.png" src="_images/boxplot_33_0.png" />
 </div>
 </div>
 </div>
-<div class="section" id="Row-plots">
-<h3>Row plots<a class="headerlink" href="#Row-plots" title="Permalink to this headline">¶</a></h3>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="section" id="Whiskers">
+<h3>Whiskers<a class="headerlink" href="#Whiskers" title="Permalink to this headline">¶</a></h3>
+<p>The “whiskers” on a boxplot span from Q1 to the minimum value on the lower end and Q3 to the maximum on the upper end, excluding outliers. Outliers are defined as any points that are below (Q1 - 1.5 * IQR) on the lower end and above Q3 to (Q3 + 1.5 * IQR) on the upper end. In the example below, notice that the first and second boxes each have an outlier point outside of the blue whisker lines. Whisker lines can be styled using the keywords prefixed by <code class="docutils literal notranslate"><span class="pre">box_whisker</span></code>. Note the horizontal “cap”
+at the end of the whisker lines shares the same style as the whiskers themselves. Default behavior is a solid gray line 0.5 pixel in width.</p>
+<div class="admonition note"><p class="admonition-title"></p><p><p>The dashed lines that span to the outlier points are controlled by <code class="docutils literal notranslate"><span class="pre">box_range_lines</span></code> described in the next section.</p>
+</p></div><div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Region&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">])</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/boxplot_34_0.png" src="_images/boxplot_34_0.png" />
-</div>
-</div>
-</div>
-<div class="section" id="Wrap-plots">
-<h3>Wrap plots<a class="headerlink" href="#Wrap-plots" title="Permalink to this headline">¶</a></h3>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Sample&#39;</span><span class="p">,</span> <span class="s1">&#39;Region&#39;</span><span class="p">],</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">])</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span>
+            <span class="n">box_whisker_color</span><span class="o">=</span><span class="s1">&#39;#0000FF&#39;</span><span class="p">,</span> <span class="n">box_whisker_width</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -792,18 +877,13 @@ div.rendered_html tbody tr:hover {
 <img alt="_images/boxplot_36_0.png" src="_images/boxplot_36_0.png" />
 </div>
 </div>
-<p>Alternatively, we can wrap multiple <code class="docutils literal notranslate"><span class="pre">y</span></code> column values and create a unique subplot for each column:</p>
+<p>Whiskers can be disabled (be careful with the lack of plurality in the prefix!) but beware that if the range lines are still enabled you will see similar lines and horizontal caps.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Make a new y column</span>
-<span class="n">df</span><span class="p">[</span><span class="s1">&#39;Value*2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Value&#39;</span><span class="p">]</span>
-
-<span class="c1"># Plot</span>
-<span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="s1">&#39;Value*2&#39;</span><span class="p">],</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">,</span> <span class="s1">&#39;Region&#39;</span><span class="p">],</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span>
-            <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">])</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">box_whisker</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">box_range_lines</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -814,14 +894,17 @@ div.rendered_html tbody tr:hover {
 <img alt="_images/boxplot_38_0.png" src="_images/boxplot_38_0.png" />
 </div>
 </div>
-<p>Or if we disable y-axis range sharing:</p>
+</div>
+<div class="section" id="Range-lines">
+<h3>Range lines<a class="headerlink" href="#Range-lines" title="Permalink to this headline">¶</a></h3>
+<p>Outlier points by definition fall outside of the box whiskers, but with range lines we can span the entire range of the data (from absolute minimum to absolute maximum). This is particularly useful to indicate when there are outlier data points that fall outside of the limits of the visible y-axis. These range lines are enabled by default but can be disabled or styled through keywords with the prefix <code class="docutils literal notranslate"><span class="pre">box_range_lines</span></code>.</p>
+<p>Default behavior is a dashed gray line 0.5 pixel in width:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="s1">&#39;Value*2&#39;</span><span class="p">],</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">,</span> <span class="s1">&#39;Region&#39;</span><span class="p">],</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span>
-            <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">],</span> <span class="n">share_y</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">box_whisker</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -829,22 +912,16 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/boxplot_40_0.png" src="_images/boxplot_40_0.png" />
+<img alt="_images/boxplot_41_0.png" src="_images/boxplot_41_0.png" />
 </div>
 </div>
-</div>
-</div>
-<div class="section" id="Other-options">
-<h2>Other options<a class="headerlink" href="#Other-options" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="Grand-Mean/Median">
-<h3>Grand Mean/Median<a class="headerlink" href="#Grand-Mean/Median" title="Permalink to this headline">¶</a></h3>
-<p>The “grand mean” or “grand median” is the mean/median value for the entire data set in a given plot window. By default, the “grand mean” line is a dashed gray line and the “grand median” is a dashed blue line. Individual line color, styles, and widths can be controlled via the typically-named keywords.</p>
+<p>If we disable range lines and leave whiskers enabled we get this:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">grand_mean</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">grand_median</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">box_range_lines</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -852,17 +929,17 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/boxplot_44_0.png" src="_images/boxplot_44_0.png" />
+<img alt="_images/boxplot_43_0.png" src="_images/boxplot_43_0.png" />
 </div>
 </div>
-<p>Both long form and short form keywords are available: i.e., <code class="docutils literal notranslate"><span class="pre">box_grand_mean_ATTRIBUTENAME</span></code> or <code class="docutils literal notranslate"><span class="pre">grand_mean_ATTRIBUTENAME</span></code></p>
+<p>Styled:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">grand_mean</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">grand_mean_style</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">grand_mean_color</span><span class="o">=</span><span class="s1">&#39;#FF0000&#39;</span><span class="p">,</span> <span class="n">box_grand_mean_width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">box_whisker</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">box_range_lines_color</span><span class="o">=</span><span class="s1">&#39;#d42269&#39;</span><span class="p">,</span> <span class="n">box_range_lines_width</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">box_range_lines_style</span><span class="o">=</span><span class="s1">&#39;-.&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -870,19 +947,22 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/boxplot_46_0.png" src="_images/boxplot_46_0.png" />
+<img alt="_images/boxplot_45_0.png" src="_images/boxplot_45_0.png" />
 </div>
 </div>
 </div>
-<div class="section" id="Group-Means">
-<h3>Group Means<a class="headerlink" href="#Group-Means" title="Permalink to this headline">¶</a></h3>
-<p>Group means that correspond to the first level of grouping (i.e., same as the vertical divider lines). By default, the mean values are depicted with horizontal dashed magenta lines. Style are controlled by <code class="docutils literal notranslate"><span class="pre">box_group_means_ATTRIBUTENAME</span></code> or <code class="docutils literal notranslate"><span class="pre">group_means_ATTRIBUTENAME</span></code>.</p>
+<div class="section" id="Markers">
+<h3>Markers<a class="headerlink" href="#Markers" title="Permalink to this headline">¶</a></h3>
+<p>Comment on box_ prefix</p>
+<div class="section" id="Jitter">
+<h4>Jitter<a class="headerlink" href="#Jitter" title="Permalink to this headline">¶</a></h4>
+<p>To improve visibility of the actual data points in the boxplots, fivecentplots automatically jitters the data points (i.e., adds some random noise along the x-axis). This can be disabled using the keyword <code class="docutils literal notranslate"><span class="pre">jitter</span></code>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">group_means</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">jitter</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -890,28 +970,23 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/boxplot_49_0.png" src="_images/boxplot_49_0.png" />
+<img alt="_images/boxplot_50_0.png" src="_images/boxplot_50_0.png" />
 </div>
 </div>
 </div>
-<div class="section" id="Mean-Diamonds">
-<h3>Mean Diamonds<a class="headerlink" href="#Mean-Diamonds" title="Permalink to this headline">¶</a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">box_mean_diamonds</span></code> or <code class="docutils literal notranslate"><span class="pre">mean_diamonds</span></code> keyword allows you to overlay a diamond on the box which shows vertically the span of the data for a given confidence interval (default = 95%) and a horizontal line for the mean value of each group. The following keywords are available to modify the diamond from its default style:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">box_mean_diamonds_alpha</span></code> | <code class="docutils literal notranslate"><span class="pre">mean_diamonds_alpha</span></code>: transparency of the diamond 0 to 1 (default: 1)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">conf_coeff</span></code>: confidence interval from 0 to 1 (default: 0.95)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">box_mean_diamonds_edge_color</span></code> | <code class="docutils literal notranslate"><span class="pre">mean_diamonds_edge_color</span></code>: edge color of the diamond (default: ‘#FF0000’)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">box_mean_diamonds_edge_style</span></code> | <code class="docutils literal notranslate"><span class="pre">mean_diamonds_edge_style</span></code>: edge style of the diamond (default: ‘-’)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">box_mean_diamonds_edge_width</span></code> | <code class="docutils literal notranslate"><span class="pre">mean_diamonds_edge_width</span></code>: edge width of the diamond (default: 0.6)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">box_mean_diamonds_fill_color</span></code> | <code class="docutils literal notranslate"><span class="pre">mean_diamonds_fill_color</span></code>: fill color of the diamond (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">box_mean_diamonds_width</span></code> | <code class="docutils literal notranslate"><span class="pre">mean_diamonds_width</span></code>: width of the diamond from 0 to 1 (default: 0.8)</p></li>
-</ul>
+</div>
+</div>
+<div class="section" id="More-grouping">
+<h2>More grouping<a class="headerlink" href="#More-grouping" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="Legend">
+<h3>Legend<a class="headerlink" href="#Legend" title="Permalink to this headline">¶</a></h3>
+<p>Boxplots also support legending for another level of data visualization:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">mean_diamonds</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">conf_coeff</span><span class="o">=</span><span class="mf">0.95</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Region&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -919,19 +994,17 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/boxplot_52_0.png" src="_images/boxplot_52_0.png" />
+<img alt="_images/boxplot_54_0.png" src="_images/boxplot_54_0.png" />
 </div>
 </div>
-</div>
-<div class="section" id="Violins">
-<h3>Violins<a class="headerlink" href="#Violins" title="Permalink to this headline">¶</a></h3>
-<p>We can also plot distributions with violin plots that show kernal density estimates of the data. By default, these violin plots also contain a small boxes with whiskers to indicate Q1, Q3, 1.5 * IQR and the median of the distribution. Discrete data points are disabled by default but can be turned on with the keyword <code class="docutils literal notranslate"><span class="pre">violin_markers=True</span></code> (box style shamelessly appropriated from <code class="docutils literal notranslate"><span class="pre">seaborn</span></code>).</p>
+<p>Note: if there are a lot of legend items, the position of the legend will be automatically adjusted to avoid rendering over the box group titles.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">violin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span></span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Row&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">/</span> <span class="mi">4</span><span class="p">]</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Row&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -939,36 +1012,19 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/boxplot_55_0.png" src="_images/boxplot_55_0.png" />
+<img alt="_images/boxplot_56_0.png" src="_images/boxplot_56_0.png" />
 </div>
 </div>
-<p>We can change the style of the violin density profiles and the associated boxplot using keywords starting with <code class="docutils literal notranslate"><span class="pre">violin</span></code>. Note that the standard box styling attributes are ignored when adding the violin plot. The reason for this is to make it possilbe to maintain different default settings for regular box plots and violin plots in the same theme file.</p>
+</div>
+<div class="section" id="Column-plots">
+<h3>Column plots<a class="headerlink" href="#Column-plots" title="Permalink to this headline">¶</a></h3>
+<p>boxplots can also be broken into subplots based on “row” and/or “col” values or “wrap” keywords. In each case, a column name in the <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> is supplied as the keyword value.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">violin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">violin_fill_color</span><span class="o">=</span><span class="s1">&#39;#eaef1a&#39;</span><span class="p">,</span> <span class="n">violin_fill_alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">violin_edge_color</span><span class="o">=</span><span class="s1">&#39;#555555&#39;</span><span class="p">,</span> <span class="n">violin_edge_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-            <span class="n">violin_box_color</span><span class="o">=</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">,</span> <span class="n">violin_whisker_color</span><span class="o">=</span><span class="s1">&#39;#ff0000&#39;</span><span class="p">,</span>
-            <span class="n">violin_median_marker</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">violin_median_color</span><span class="o">=</span><span class="s1">&#39;#00ffff&#39;</span><span class="p">,</span> <span class="n">violin_median_size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/boxplot_57_0.png" src="_images/boxplot_57_0.png" />
-</div>
-</div>
-<p>We can also disable the box overlay on the violin plot as follows:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">violin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">violin_box_on</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">violin_markers</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">jitter</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Region&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -980,17 +1036,33 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 </div>
-<div class="section" id="Stat-line">
-<h3>Stat line<a class="headerlink" href="#Stat-line" title="Permalink to this headline">¶</a></h3>
-<p>In addition to displaying boxes with a median line and interquartile ranges, a connecting line can be drawn between boxes at some statistical value. By default, the line connects the mean value of each distribution but other DataFrame stat values can be selected. The stat line accepts the typical styling keywords of any line object with the prefix <code class="docutils literal notranslate"><span class="pre">box_stat_line_</span></code> (i.e., <code class="docutils literal notranslate"><span class="pre">box_stat_line_color</span></code> or <code class="docutils literal notranslate"><span class="pre">box_stat_line_width</span></code>)</p>
-<div class="section" id="Mean">
-<h4>Mean<a class="headerlink" href="#Mean" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="Row-plots">
+<h3>Row plots<a class="headerlink" href="#Row-plots" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">box_stat_line</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">])</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Region&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/boxplot_61_0.png" src="_images/boxplot_61_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Wrap-plots">
+<h3>Wrap plots<a class="headerlink" href="#Wrap-plots" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Sample&#39;</span><span class="p">,</span> <span class="s1">&#39;Region&#39;</span><span class="p">],</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -1001,15 +1073,18 @@ div.rendered_html tbody tr:hover {
 <img alt="_images/boxplot_63_0.png" src="_images/boxplot_63_0.png" />
 </div>
 </div>
-</div>
-<div class="section" id="Median">
-<h4>Median<a class="headerlink" href="#Median" title="Permalink to this headline">¶</a></h4>
+<p>Alternatively, we can wrap multiple <code class="docutils literal notranslate"><span class="pre">y</span></code> column values and create a unique subplot for each column:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">box_stat_line</span><span class="o">=</span><span class="s1">&#39;median&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">])</span>
+<span></span><span class="c1"># Make a new y column</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;Value*2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Value&#39;</span><span class="p">]</span>
+
+<span class="c1"># Plot</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="s1">&#39;Value*2&#39;</span><span class="p">],</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">,</span> <span class="s1">&#39;Region&#39;</span><span class="p">],</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span>
+            <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -1020,15 +1095,14 @@ div.rendered_html tbody tr:hover {
 <img alt="_images/boxplot_65_0.png" src="_images/boxplot_65_0.png" />
 </div>
 </div>
-</div>
-<div class="section" id="Std-dev">
-<h4>Std dev<a class="headerlink" href="#Std-dev" title="Permalink to this headline">¶</a></h4>
+<p>Or if we disable y-axis range sharing:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">box_stat_line</span><span class="o">=</span><span class="s1">&#39;std&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">])</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="s1">&#39;Value*2&#39;</span><span class="p">],</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">,</span> <span class="s1">&#39;Region&#39;</span><span class="p">],</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span>
+            <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">],</span> <span class="n">share_y</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1041,15 +1115,17 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 </div>
-<div class="section" id="Dividers">
-<h3>Dividers<a class="headerlink" href="#Dividers" title="Permalink to this headline">¶</a></h3>
-<p>Using the keyword <code class="docutils literal notranslate"><span class="pre">box_divider</span></code>, lines can be drawn on the boxplot to visually segrate main groups of boxes. These lines are enabled by default but can be turned off easily:</p>
+<div class="section" id="Stats">
+<h2>Stats<a class="headerlink" href="#Stats" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="Grand-Mean/Median">
+<h3>Grand Mean/Median<a class="headerlink" href="#Grand-Mean/Median" title="Permalink to this headline">¶</a></h3>
+<p>The “grand mean” or “grand median” is the mean/median value for the entire data set in a given plot window. By default, the “grand mean” line is a dashed gray line and the “grand median” is a dashed blue line. Individual line color, styles, and widths can be controlled via the typically-named keywords prefixed by <code class="docutils literal notranslate"><span class="pre">box_grand_mean</span></code> or <code class="docutils literal notranslate"><span class="pre">box_grand_median</span></code>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">box_divider</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">])</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">grand_mean</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">grand_median</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1057,19 +1133,17 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/boxplot_70_0.png" src="_images/boxplot_70_0.png" />
+<img alt="_images/boxplot_71_0.png" src="_images/boxplot_71_0.png" />
 </div>
 </div>
-</div>
-<div class="section" id="Range-lines">
-<h3>Range lines<a class="headerlink" href="#Range-lines" title="Permalink to this headline">¶</a></h3>
-<p>Because outlier points by definition fall outside of the span of the box, we can draw lines that span the entire range of the data. This is particularly useful to indicate when there are data points that fall outside of the limits of the y-axis. These lines are enabled by default but can be disabled or styled through keywords with the prefix <code class="docutils literal notranslate"><span class="pre">box_range_lines_</span></code>:</p>
+<p>Both long form and short form keywords are available: i.e., <code class="docutils literal notranslate"><span class="pre">box_grand_mean_ATTRIBUTE</span></code> or <code class="docutils literal notranslate"><span class="pre">grand_mean_ATTRIBUTE</span></code></p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">box_range_lines</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">])</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">grand_mean</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">grand_mean_style</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">grand_mean_color</span><span class="o">=</span><span class="s1">&#39;#FF0000&#39;</span><span class="p">,</span> <span class="n">box_grand_mean_width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1080,14 +1154,203 @@ div.rendered_html tbody tr:hover {
 <img alt="_images/boxplot_73_0.png" src="_images/boxplot_73_0.png" />
 </div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</div>
+<div class="section" id="Group-Means">
+<h3>Group Means<a class="headerlink" href="#Group-Means" title="Permalink to this headline">¶</a></h3>
+<p>Group means that correspond to the first level of grouping (i.e., same as the vertical divider lines). By default, the mean values are depicted with horizontal dashed magenta lines. Style are controlled by <code class="docutils literal notranslate"><span class="pre">box_group_means_ATTRIBUTE</span></code> or <code class="docutils literal notranslate"><span class="pre">group_means_ATTRIBUTE</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">group_means</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/boxplot_76_0.png" src="_images/boxplot_76_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Mean-Diamonds">
+<h3>Mean Diamonds<a class="headerlink" href="#Mean-Diamonds" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">box_mean_diamonds</span></code> or <code class="docutils literal notranslate"><span class="pre">mean_diamonds</span></code> keyword allows you to overlay a diamond on the box which shows vertically the span of the data for a given confidence interval (default = 95%) and a horizontal line for the mean value of each group. Using default parameters the diamonds are green (like the program that inspired them :) )</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">mean_diamonds</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">conf_coeff</span><span class="o">=</span><span class="mf">0.95</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/boxplot_79_0.png" src="_images/boxplot_79_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Stat-line">
+<h3>Stat line<a class="headerlink" href="#Stat-line" title="Permalink to this headline">¶</a></h3>
+<p>In addition to displaying boxes with a median line and interquartile ranges, a connecting line can be drawn between boxes at some statistical value. By default, the line connects the mean value of the distribution for each box, but other <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> stat values can be selected. The stat line accepts the typical styling keywords of any line object with the prefix <code class="docutils literal notranslate"><span class="pre">box_stat_line</span></code> (i.e., <code class="docutils literal notranslate"><span class="pre">box_stat_line_color</span></code> or <code class="docutils literal notranslate"><span class="pre">box_stat_line_width</span></code>)</p>
+<div class="section" id="Mean">
+<h4>Mean<a class="headerlink" href="#Mean" title="Permalink to this headline">¶</a></h4>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">box_stat_line</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/boxplot_83_0.png" src="_images/boxplot_83_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Median">
+<h4>Median<a class="headerlink" href="#Median" title="Permalink to this headline">¶</a></h4>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">box_stat_line</span><span class="o">=</span><span class="s1">&#39;median&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/boxplot_85_0.png" src="_images/boxplot_85_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Std-dev">
+<h4>Std dev<a class="headerlink" href="#Std-dev" title="Permalink to this headline">¶</a></h4>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">box_stat_line</span><span class="o">=</span><span class="s1">&#39;std&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/boxplot_87_0.png" src="_images/boxplot_87_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Quantile">
+<h4>Quantile<a class="headerlink" href="#Quantile" title="Permalink to this headline">¶</a></h4>
+<p>To define a quantile, use the convention “q{number between 0-100}”:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">box_stat_line</span><span class="o">=</span><span class="s1">&#39;q95&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/boxplot_90_0.png" src="_images/boxplot_90_0.png" />
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Violins">
+<h2>Violins<a class="headerlink" href="#Violins" title="Permalink to this headline">¶</a></h2>
+<p>We can also plot distributions with violin plots that show kernal density estimates of the data. By default, these violin plots also contain a small boxes with whiskers to indicate Q1, Q3, 1.5 * IQR, and the median of the distribution (the white point). Discrete data points are disabled by default but can be turned on with the keyword <code class="docutils literal notranslate"><span class="pre">violin_markers=True</span></code> (default box style shamelessly appropriated from <code class="docutils literal notranslate"><span class="pre">seaborn</span></code>).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">violin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/boxplot_93_0.png" src="_images/boxplot_93_0.png" />
+</div>
+</div>
+<p>We can change the style of the violin density profiles and the associated boxplot using keywords starting with <code class="docutils literal notranslate"><span class="pre">violin</span></code>. Note that the standard box styling attributes are ignored when adding the violin plot. The reason for this is to make it possilbe to maintain different default settings for regular box plots and violin plots in the same theme file.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">violin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">violin_fill_color</span><span class="o">=</span><span class="s1">&#39;#eaef1a&#39;</span><span class="p">,</span> <span class="n">violin_fill_alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">violin_edge_color</span><span class="o">=</span><span class="s1">&#39;#555555&#39;</span><span class="p">,</span> <span class="n">violin_edge_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">violin_box_color</span><span class="o">=</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">,</span> <span class="n">violin_whisker_color</span><span class="o">=</span><span class="s1">&#39;#ff0000&#39;</span><span class="p">,</span>
+            <span class="n">violin_median_marker</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">violin_median_color</span><span class="o">=</span><span class="s1">&#39;#00ffff&#39;</span><span class="p">,</span> <span class="n">violin_median_size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/boxplot_95_0.png" src="_images/boxplot_95_0.png" />
+</div>
+</div>
+<p>We can also disable the box overlay on the violin plot as follows:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">violin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">violin_box_on</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">violin_markers</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">jitter</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/boxplot_97_0.png" src="_images/boxplot_97_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Notch">
+<h2>Notch<a class="headerlink" href="#Notch" title="Permalink to this headline">¶</a></h2>
+<p>Notch-style boxes can also be created using the <code class="docutils literal notranslate"><span class="pre">notch</span></code> keyword:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">notch</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/boxplot_100_0.png" src="_images/boxplot_100_0.png" />
 </div>
 </div>
 </div>
@@ -1098,37 +1361,29 @@ div.rendered_html tbody tr:hover {
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="contour.html" class="btn btn-neutral float-right" title="contour" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="barplot.html" class="btn btn-neutral float-left" title="barplot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="contour.html" class="btn btn-neutral float-right" title="contour" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="barplot.html" class="btn btn-neutral float-left" title="barplot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2016, Steve Nicholes
+        &#169; Copyright 2022, Steve Nicholes.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
