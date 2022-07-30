@@ -16,6 +16,7 @@
       .. figure:: _static/images/logo.png
          :figwidth: 80%
 
+
 |
 |
 |
@@ -323,6 +324,7 @@ Refer to the topics on the sidebar for more details on plot types and options.
 
    changelog
    older
+   GitHub <https://github.com/endangeredoxen/fivecentplots>
 
 Indices and tables
 ^^^^^^^^^^^^^^^^^^

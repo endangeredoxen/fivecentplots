@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                0.5.0
+                0.5.0-alpha
               </div>
             
           
@@ -144,6 +144,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="older.html">Older Versions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/endangeredoxen/fivecentplots">GitHub</a></li>
 </ul>
 
             
@@ -482,7 +483,10 @@ div.rendered_html tbody tr:hover {
 }
 </style>
 <div class="section" id="nq">
-<h1>nq<a class="headerlink" href="#nq" title="Permalink to this headline">¶</a></h1><p style="line-height:30px"><b><font color="#999999" style="font-family:Arial; font-size:24px">fivecentplots.nq(df, **kwargs)</font></b><br><b><i>Plot the normal quantiles of a data set</i></b><br><br><b>Args:</b><br><div style="padding-left: 30px"><b>df</b> (<i><font color="#0c9c6e">DataFrame | numpy array</font></i>):<br><div style="padding-left: 30px">DataFrame containing a column of values data or a DataFrame or numpy array containing a set of 2D values that can be used to calculate quantiles at various "sigma" intervals</div></div><br><b>Required Keyword Args:</b><br><div style="padding-left: 30px">None</div><br><b>Optional Keyword Args:</b><br><div style="padding-left: 30px"><font color="#cc00ff"><i>Basic:</font></i></div><div style="padding-left: 30px"><b>x</b> (<i><font color="#0c9c6e">str</font></i>):<br><div style="padding-left: 30px">x-axis column name</b> (<i><font color="#0c9c6e">if using a 1D dataset). Defaults to None. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#1D-dataset>See example</a> </div><br><font color="#cc00ff"><i>Calculation:</font></i> </div></div><div style="padding-left: 30px"><b>sigma</b> (<i><font color="#0c9c6e">float</font></i>):<br><div style="padding-left: 30px">Maximum sigma value to use for the calculation; range will be +/- this value. Defaults to Auto-calculated based on the dataset using "fcp.utilities.sigma". <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#custom-sigma-range>See example</a> </div></div><div style="padding-left: 30px"><b>step_inner</b> (<i><font color="#0c9c6e">float</font></i>):<br><div style="padding-left: 30px">Delta between sigma values outside of the tail</b> (<i><font color="#0c9c6e">around sigma=0). Defaults to 0.5. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#point-density>See example</a> </div></div><div style="padding-left: 30px"><b>step_tail</b> (<i><font color="#0c9c6e">float</font></i>):<br><div style="padding-left: 30px">Delta between sigma values in the tails</b> (<i><font color="#0c9c6e">all value >= and <= to keyword "tail"). Defaults to 0.2. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#point-density>See example</a> </div></div><div style="padding-left: 30px"><b>tail</b> (<i><font color="#0c9c6e">float</font></i>):<br><div style="padding-left: 30px">Sigma value that represents the start of the tail of the distribution. Defaults to 3. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/nq.html#custom-tail>See example</a></div></div></p><br><div class="section" id="Setup">
+<h1>nq<a class="headerlink" href="#nq" title="Permalink to this headline">¶</a></h1>
+<p>This section describes various options available for normal quantile plots in <strong>fivecentplots</strong></p>
+<p>See the full API <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/api/nq.html#nq">https://endangeredoxen.github.io/fivecentplots/0.5.0/api/nq.html#nq</a></p>
+<div class="section" id="Setup">
 <h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this headline">¶</a></h2>
 <p>Import packages</p>
 <div class="nbinput nblast docutils container">
@@ -534,7 +538,7 @@ shows you how much a dataset deviates from that of a normal distribution with th
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/nq_12_0.png" src="_images/nq_12_0.png" />
+<img alt="_images/nq_13_0.png" src="_images/nq_13_0.png" />
 </div>
 </div>
 <p>The histogram of this distribution is a bell-shape curve with some noise (see here for more details on <code class="docutils literal notranslate"><span class="pre">hist</span></code> plots):</p>
@@ -551,7 +555,7 @@ shows you how much a dataset deviates from that of a normal distribution with th
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/nq_14_0.png" src="_images/nq_14_0.png" />
+<img alt="_images/nq_15_0.png" src="_images/nq_15_0.png" />
 </div>
 </div>
 <p>We can recast these signal values as a normal quantile plot to get more insight into the distribution. Observe that the result is very close to a straight line, except at the extreme values of sigma where the actual number of data points is quite low so the impact of random noise is more apparent. This result is expected because we applied a normal distribution of noise to the array data.</p>
@@ -568,7 +572,7 @@ shows you how much a dataset deviates from that of a normal distribution with th
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/nq_16_0.png" src="_images/nq_16_0.png" />
+<img alt="_images/nq_17_0.png" src="_images/nq_17_0.png" />
 </div>
 </div>
 </div>
@@ -602,7 +606,7 @@ shows you how much a dataset deviates from that of a normal distribution with th
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/nq_19_0.png" src="_images/nq_19_0.png" />
+<img alt="_images/nq_20_0.png" src="_images/nq_20_0.png" />
 </div>
 </div>
 <p>When we plot the histogram we can see the defect pixels, but because they are randomly dispersed the actual count of defect pixels is usually between 0-2 at any given signal value. This makes it difficult to make any conclusions about these outliers based only on a histogram.</p>
@@ -619,7 +623,7 @@ shows you how much a dataset deviates from that of a normal distribution with th
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/nq_21_0.png" src="_images/nq_21_0.png" />
+<img alt="_images/nq_22_0.png" src="_images/nq_22_0.png" />
 </div>
 </div>
 <p>With the normal quantile plot, these outliers become extremely obvious and we clearly see how they deviate sharply from the normal distribution. We can draw quantitative conclusions about the tails of the distribution that we could not make with only the histogram.</p>
@@ -636,7 +640,7 @@ shows you how much a dataset deviates from that of a normal distribution with th
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/nq_23_0.png" src="_images/nq_23_0.png" />
+<img alt="_images/nq_24_0.png" src="_images/nq_24_0.png" />
 </div>
 </div>
 </div>
@@ -671,7 +675,7 @@ shows you how much a dataset deviates from that of a normal distribution with th
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/nq_26_0.png" src="_images/nq_26_0.png" />
+<img alt="_images/nq_27_0.png" src="_images/nq_27_0.png" />
 </div>
 </div>
 <p>Now we pack these two distributions in <code class="docutils literal notranslate"><span class="pre">DataFrames</span></code> with labels to easily use fivecentplots to overlay the datasets. From the histogram overaly, we can see the distributions are different but it is quite difficult to draw comparisons of the defect pixel populations.</p>
@@ -692,7 +696,7 @@ shows you how much a dataset deviates from that of a normal distribution with th
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/nq_28_0.png" src="_images/nq_28_0.png" />
+<img alt="_images/nq_29_0.png" src="_images/nq_29_0.png" />
 </div>
 </div>
 <p>With the normal quantile plot, we can very clearly see the tail of the distributions from these two images is quite different and we can make quantitative conclusions about them. We can also clearly see the difference in mean and the slope of curve around the mean (indicating different normal distribution standard deviation). This is the power of the normal quantile plot.</p>
@@ -709,7 +713,7 @@ shows you how much a dataset deviates from that of a normal distribution with th
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/nq_30_0.png" src="_images/nq_30_0.png" />
+<img alt="_images/nq_31_0.png" src="_images/nq_31_0.png" />
 </div>
 </div>
 </div>
@@ -816,7 +820,7 @@ shows you how much a dataset deviates from that of a normal distribution with th
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/nq_35_0.png" src="_images/nq_35_0.png" />
+<img alt="_images/nq_36_0.png" src="_images/nq_36_0.png" />
 </div>
 </div>
 </div>
@@ -846,7 +850,7 @@ shows you how much a dataset deviates from that of a normal distribution with th
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/nq_38_0.png" src="_images/nq_38_0.png" />
+<img alt="_images/nq_39_0.png" src="_images/nq_39_0.png" />
 </div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">nq</span></code> plot quickly tells us that our distribution is not normal and we have significant tails in the distribution:</p>
@@ -863,7 +867,7 @@ shows you how much a dataset deviates from that of a normal distribution with th
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/nq_40_0.png" src="_images/nq_40_0.png" />
+<img alt="_images/nq_41_0.png" src="_images/nq_41_0.png" />
 </div>
 </div>
 </div>
@@ -886,7 +890,7 @@ shows you how much a dataset deviates from that of a normal distribution with th
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/nq_45_0.png" src="_images/nq_45_0.png" />
+<img alt="_images/nq_46_0.png" src="_images/nq_46_0.png" />
 </div>
 </div>
 <div class="admonition note"><p class="admonition-title"></p><p><p>Note there is currently nothing that prevents you from supplying a meaningless number for <code class="docutils literal notranslate"><span class="pre">sigma</span></code>. For instance, if your dataset is small you may not have enough points to calculate +/-3 sigma accurately. The auto-calculation of sigma will handle this, but there is no check on a custom <code class="docutils literal notranslate"><span class="pre">sigma</span></code> value</p>
@@ -907,7 +911,7 @@ shows you how much a dataset deviates from that of a normal distribution with th
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/nq_49_0.png" src="_images/nq_49_0.png" />
+<img alt="_images/nq_50_0.png" src="_images/nq_50_0.png" />
 </div>
 </div>
 </div>
@@ -927,7 +931,7 @@ shows you how much a dataset deviates from that of a normal distribution with th
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/nq_52_0.png" src="_images/nq_52_0.png" />
+<img alt="_images/nq_53_0.png" src="_images/nq_53_0.png" />
 </div>
 </div>
 </div>
@@ -949,7 +953,7 @@ shows you how much a dataset deviates from that of a normal distribution with th
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/nq_55_0.png" src="_images/nq_55_0.png" />
+<img alt="_images/nq_56_0.png" src="_images/nq_56_0.png" />
 </div>
 </div>
 </div>
@@ -969,7 +973,7 @@ shows you how much a dataset deviates from that of a normal distribution with th
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/nq_58_0.png" src="_images/nq_58_0.png" />
+<img alt="_images/nq_59_0.png" src="_images/nq_59_0.png" />
 </div>
 </div>
 <p>Don’t ever style a plot like this</p>

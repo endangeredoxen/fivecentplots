@@ -11,7 +11,14 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<p style=\"line-height:20px\"><b><font color=\"#999999\" style=\"font-family:Arial; font-size:24px\">fivecentplots.contour(df, **kwargs)</font></b><br><b><i>Contour plot module</i></b><br><br><b>Args:</b><br><div style=\"padding-left: 30px\"><b>df</b> (<i><font color=\"#0c9c6e\">DataFrame</font></i>):<br><div style=\"padding-left: 30px\">DataFrame containing data to plot</div></div><br><b>Required Keyword Args:</b><br><div style=\"padding-left: 30px\"><b>x</b> (<i><font color=\"#0c9c6e\">str</font></i>):<br><div style=\"padding-left: 30px\">x-axis column name </div></div><div style=\"padding-left: 30px\"><b>y</b> (<i><font color=\"#0c9c6e\">str</font></i>):<br><div style=\"padding-left: 30px\">y-axis column name </div></div><div style=\"padding-left: 30px\"><b>z</b> (<i><font color=\"#0c9c6e\">str</font></i>):<br><div style=\"padding-left: 30px\">z-axis column name</div></div><br><b>Optional Keyword Args:</b><br><div style=\"padding-left: 30px\"><font color=\"#cc00ff\"><i>Basic:</font></i></div><div style=\"padding-left: 30px\"><b>contour_width</b> (<i><font color=\"#0c9c6e\">float</font></i>):<br><div style=\"padding-left: 30px\">Width of the contour lines. Defaults to 1. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Contour-lines>See example</a> </div></div><div style=\"padding-left: 30px\"><b>cmap</b> (<i><font color=\"#0c9c6e\">str</font></i>):<br><div style=\"padding-left: 30px\">Name of a color map . Defaults to inferno. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Filled-contour>See example</a> </div></div><div style=\"padding-left: 30px\"><b>filled</b> (<i><font color=\"#0c9c6e\">bool</font></i>):<br><div style=\"padding-left: 30px\">Color area between contour lines. Defaults to True. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Filled-contour>See example</a> </div></div><div style=\"padding-left: 30px\"><b>levels</b> (<i><font color=\"#0c9c6e\">int</font></i>):<br><div style=\"padding-left: 30px\">Number of contour lines/levels to draw. Defaults to 20. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Contour-lines>See example</a> </div></div><div style=\"padding-left: 30px\"><b>interp</b> (<i><font color=\"#0c9c6e\">str</font></i>):<br><div style=\"padding-left: 30px\">Scipy interpolate.griddata method to make Z points {‘linear’, ‘nearest’, ‘cubic’}. Defaults to \"cubic’. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Data-interpolation>See example</a> </div></div><div style=\"padding-left: 30px\"><b>show_points</b> (<i><font color=\"#0c9c6e\">bool</font></i>):<br><div style=\"padding-left: 30px\">Show points on top of the contour plot. Defaults to False. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Contour-points>See example</a> </div><br><font color=\"#cc00ff\"><i>Color bar:</font></i> </div></div><div style=\"padding-left: 30px\"><b>cbar</b> (<i><font color=\"#0c9c6e\">bool</font></i>):<br><div style=\"padding-left: 30px\">Toggle colorbar on/off for contour and heatmap plots. Defaults to False. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Filled-contour>See example</a> </div></div><div style=\"padding-left: 30px\"><b>size</b> (<i><font color=\"#0c9c6e\">int</font></i>):<br><div style=\"padding-left: 30px\">cbar width [height will match the height of the axes]. Defaults to 30</div></div></p>"
+    "This section describes various options available for contour plots in **fivecentplots**"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "See the full API https://endangeredoxen.github.io/fivecentplots/0.5.0/api/contour.html#contour"
    ]
   },
   {
@@ -459,7 +466,7 @@
     "height": "calc(100% - 180px)",
     "left": "10px",
     "top": "150px",
-    "width": "231.188px"
+    "width": "231.179px"
    },
    "toc_section_display": true,
    "toc_window_display": true

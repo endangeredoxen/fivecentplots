@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                0.5.0
+                0.5.0-alpha
               </div>
             
           
@@ -151,6 +151,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="older.html">Older Versions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/endangeredoxen/fivecentplots">GitHub</a></li>
 </ul>
 
             
@@ -489,7 +490,10 @@ div.rendered_html tbody tr:hover {
 }
 </style>
 <div class="section" id="barplot">
-<h1>barplot<a class="headerlink" href="#barplot" title="Permalink to this headline">¶</a></h1><p style="line-height:30px"><b><font color="#999999" style="font-family:Arial; font-size:24px">fivecentplots.bar(df, **kwargs)</font></b><br><b><i>Bar chart</i></b><br><br><b>Args:</b><br><div style="padding-left: 30px"><b>df</b> (<i><font color="#0c9c6e">pandas.DataFrame</font></i>):<br><div style="padding-left: 30px">DataFrame containing data to plot</div></div><br><b>Required Keyword Args:</b><br><div style="padding-left: 30px"><b>x</b> (<i><font color="#0c9c6e">str</font></i>):<br><div style="padding-left: 30px">x-axis column name </div></div><div style="padding-left: 30px"><b>y</b> (<i><font color="#0c9c6e">str</font></i>):<br><div style="padding-left: 30px">y-axis column name</div></div><br><b>Optional Keyword Args:</b><br><div style="padding-left: 30px"><b>bar_align</b> (<i><font color="#0c9c6e">str</font></i>):<br><div style="padding-left: 30px">If ‘center’ aligns center of bar to x-axis value; if ‘edge’ aligns the left edge of the bar to the x-axis value. Defaults to ‘center’ . </div></div><div style="padding-left: 30px"><b>bar_color_by_bar | color_by_bar</b> (<i><font color="#0c9c6e">bool</font></i>):<br><div style="padding-left: 30px">Color each bar differently. Defaults to False. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Color-by-bar>See example</a> </div></div><div style="padding-left: 30px"><b>bar_edge_color</b> (<i><font color="#0c9c6e">str</font></i>):<br><div style="padding-left: 30px">Hex color string for the edge of the bar. Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span>. </div></div><div style="padding-left: 30px"><b>bar_edge_width</b> (<i><font color="#0c9c6e">float</font></i>):<br><div style="padding-left: 30px">Width of the edge of the bar in pixels. Defaults to 0. </div></div><div style="padding-left: 30px"><b>bar_error_bars | error_bars</b> (<i><font color="#0c9c6e">bool</font></i>):<br><div style="padding-left: 30px">Display error bars on each bar. Defaults to False. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Error-bars>See example</a> </div></div><div style="padding-left: 30px"><b>bar_error_color | error_color</b> (<i><font color="#0c9c6e">str</font></i>):<br><div style="padding-left: 30px">Hex color string of the error bar lines. Defaults to #555555 <span id="rectangle" style="height: 12px; width: 12px; background-color:#555555;display:inline-block"></span>. </div></div><div style="padding-left: 30px"><b>bar_fill_alpha</b> (<i><font color="#0c9c6e">int</font></i>):<br><div style="padding-left: 30px">Transparency value for the bars between 0-1. Defaults to 0.75. </div></div><div style="padding-left: 30px"><b>bar_fill_color</b> (<i><font color="#0c9c6e">str</font></i>):<br><div style="padding-left: 30px">Hex color string of the bar fill . Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span>. </div></div><div style="padding-left: 30px"><b>bar_horizontal | horizontal</b> (<i><font color="#0c9c6e">bool</font></i>):<br><div style="padding-left: 30px">Display bars horizontally. Defaults to False. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Horizontal-bars>See example</a> </div></div><div style="padding-left: 30px"><b>bar_rolling | bar_rolling_mean | rolling | rolling_mean</b> (<i><font color="#0c9c6e">int</font></i>):<br><div style="padding-left: 30px">Rolling mean window size [enables this curve]. No default. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Rolling-mean>See example</a> </div></div><div style="padding-left: 30px"><b>bar_stacked | stacked</b> (<i><font color="#0c9c6e">bool</font></i>):<br><div style="padding-left: 30px">Stack bars of a given group . Defaults to False. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Stacked>See example</a> </div></div><div style="padding-left: 30px"><b>bar_width</b> (<i><font color="#0c9c6e">float</font></i>):<br><div style="padding-left: 30px">Set the fractional width of the bars between 0-1. Defaults to 0.8. </div></div><div style="padding-left: 30px"><b>rolling_mean_line_color</b> (<i><font color="#0c9c6e">str</font></i>):<br><div style="padding-left: 30px">Hex color string for the rolling mean line. Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span>. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Custom-line-style>See example</a> </div></div><div style="padding-left: 30px"><b>rolling_mean_line_width</b> (<i><font color="#0c9c6e">int</font></i>):<br><div style="padding-left: 30px">Width for the rolling mean line in pixels. Defaults to 2. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Custom-line->See example</a> style</div></div></p><br><div class="section" id="Setup">
+<h1>barplot<a class="headerlink" href="#barplot" title="Permalink to this headline">¶</a></h1>
+<p>This section describes various options available for bar charts in <strong>fivecentplots</strong></p>
+<p>See the full API <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/api/bar.html#bar">https://endangeredoxen.github.io/fivecentplots/0.5.0/api/bar.html#bar</a></p>
+<div class="section" id="Setup">
 <h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this headline">¶</a></h2>
 <p>Import packages:</p>
 <div class="nbinput nblast docutils container">
@@ -709,7 +713,7 @@ div.rendered_html tbody tr:hover {
 <h2>Bar plot types<a class="headerlink" href="#Bar-plot-types" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="Vertical-bars">
 <h3>Vertical bars<a class="headerlink" href="#Vertical-bars" title="Permalink to this headline">¶</a></h3>
-<p>We can plot a basic vertical bar chart as follows. Note: * <code class="docutils literal notranslate"><span class="pre">filter</span></code> is applied to show only measurement “A” at 25C * tick labels are rotated 90°for readability</p>
+<p>We can plot a basic vertical bar chart as follows. Note: * <code class="docutils literal notranslate"><span class="pre">filter</span></code> is applied to show only measurement “A” at 25C * tick labels are rotated 90° for readability</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -723,7 +727,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/barplot_12_0.png" src="_images/barplot_12_0.png" />
+<img alt="_images/barplot_13_0.png" src="_images/barplot_13_0.png" />
 </div>
 </div>
 </div>
@@ -744,13 +748,13 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/barplot_15_0.png" src="_images/barplot_15_0.png" />
+<img alt="_images/barplot_16_0.png" src="_images/barplot_16_0.png" />
 </div>
 </div>
 </div>
 <div class="section" id="Error-bars">
 <h3>Error bars<a class="headerlink" href="#Error-bars" title="Permalink to this headline">¶</a></h3>
-<p>Next we group all measured data by liquid, regardless of replicate or temperature, into a single bars (this means each bar represents the mean value of a given liquid across all data sets). We add error bars to indidcate the standard deviation across measurements with the <code class="docutils literal notranslate"><span class="pre">error_bars</span></code> keyword:</p>
+<p>Next we group all measured data by liquid, regardless of replicate or temperature, into a single bars (this means each bar represents the mean value of a given liquid across all data sets). We add error bars to indicate the standard deviation across measurements with the <code class="docutils literal notranslate"><span class="pre">error_bars</span></code> keyword:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -764,14 +768,14 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/barplot_18_0.png" src="_images/barplot_18_0.png" />
+<img alt="_images/barplot_19_0.png" src="_images/barplot_19_0.png" />
 </div>
 </div>
 </div>
 </div>
 <div class="section" id="Grouping">
 <h2>Grouping<a class="headerlink" href="#Grouping" title="Permalink to this headline">¶</a></h2>
-<p>Like all other plots in fivecentplots , bar plots can grouped in various ways to provide further insight into the data set. This includes:</p>
+<p>Like all other plots in <strong>fivecentplots</strong>, bar plots can grouped in various ways to provide further insight into the data set. This includes:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">legend</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">stacking</span></code></p></li>
@@ -796,7 +800,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/barplot_23_0.png" src="_images/barplot_23_0.png" />
+<img alt="_images/barplot_24_0.png" src="_images/barplot_24_0.png" />
 </div>
 </div>
 </div>
@@ -816,7 +820,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/barplot_26_0.png" src="_images/barplot_26_0.png" />
+<img alt="_images/barplot_27_0.png" src="_images/barplot_27_0.png" />
 </div>
 </div>
 </div>
@@ -836,7 +840,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/barplot_29_0.png" src="_images/barplot_29_0.png" />
+<img alt="_images/barplot_30_0.png" src="_images/barplot_30_0.png" />
 </div>
 </div>
 </div>
@@ -856,14 +860,14 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/barplot_32_0.png" src="_images/barplot_32_0.png" />
+<img alt="_images/barplot_33_0.png" src="_images/barplot_33_0.png" />
 </div>
 </div>
 </div>
 </div>
 <div class="section" id="Rolling-mean">
 <h2>Rolling mean<a class="headerlink" href="#Rolling-mean" title="Permalink to this headline">¶</a></h2>
-<p>fivecentplots can automatically apply a rolling mean to bar chart data using <code class="docutils literal notranslate"><span class="pre">rolling_mean</span></code>, to which we pass a positive integer for the window size of the mean calculation. For this example, we read in some different data.</p>
+<p><strong>fivecentplots</strong> can automatically apply a rolling mean to bar chart data using <code class="docutils literal notranslate"><span class="pre">rolling_mean</span></code>, to which we pass a positive integer for the window size of the mean calculation. For this example, we read in some different data.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -889,7 +893,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/barplot_38_0.png" src="_images/barplot_38_0.png" />
+<img alt="_images/barplot_39_0.png" src="_images/barplot_39_0.png" />
 </div>
 </div>
 </div>
@@ -910,7 +914,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/barplot_41_0.png" src="_images/barplot_41_0.png" />
+<img alt="_images/barplot_42_0.png" src="_images/barplot_42_0.png" />
 </div>
 </div>
 </div>
@@ -934,7 +938,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/barplot_46_0.png" src="_images/barplot_46_0.png" />
+<img alt="_images/barplot_47_0.png" src="_images/barplot_47_0.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -951,7 +955,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/barplot_47_0.png" src="_images/barplot_47_0.png" />
+<img alt="_images/barplot_48_0.png" src="_images/barplot_48_0.png" />
 </div>
 </div>
 </div>
@@ -971,7 +975,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/barplot_49_0.png" src="_images/barplot_49_0.png" />
+<img alt="_images/barplot_50_0.png" src="_images/barplot_50_0.png" />
 </div>
 </div>
 </div>

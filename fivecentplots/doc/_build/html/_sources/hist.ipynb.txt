@@ -20,7 +20,14 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<p style=\"line-height:30px\"><b><font color=\"#999999\" style=\"font-family:Arial; font-size:24px\">fivecentplots.hist(df, **kwargs)</font></b><br><b><i>Histogram plot</i></b><br><br><b>Args:</b><br><div style=\"padding-left: 30px\"><b>df</b> (<i><font color=\"#0c9c6e\">DataFrame | numpy array</font></i>):<br><div style=\"padding-left: 30px\">DataFrame or numpy array containing data to plot [when passing a numpy array it is automatically converted to a DataFrame]</div></div><br><b>Required Keyword Args:</b><br><div style=\"padding-left: 30px\"><b>x</b> (<i><font color=\"#0c9c6e\">str</font></i>):<br><div style=\"padding-left: 30px\">x-axis column name [the \"value\" column from which \"counts\" are calculated]</div></div><br><b>Optional Keyword Args:</b><br><div style=\"padding-left: 30px\"><b>cdf</b> (<i><font color=\"#0c9c6e\">bool</font></i>):<br><div style=\"padding-left: 30px\">Convert the histogram into a cumulative distribution plot. Defaults to False. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#cdf>See example</a> </div></div><div style=\"padding-left: 30px\"><b>cfa</b> (<i><font color=\"#0c9c6e\">str</font></i>):<br><div style=\"padding-left: 30px\">Color-filter array pattern that is used to split data from a Bayer image into separate color planes. Defaults to None. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#split-color-planes>See example</a> </div></div><div style=\"padding-left: 30px\"><b>hist_align</b> (<i><font color=\"#0c9c6e\">str</font></i>):<br><div style=\"padding-left: 30px\">If \"mid\" aligns center of histogram bar to x-axis value; if \"left\" aligns the left edge of the histogram bar to the x-axis value {\"left\"; \"mid\"; \"right\"}. Defaults to mid. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#alignment>See example</a> </div></div><div style=\"padding-left: 30px\"><b>hist_bins | bins</b> (<i><font color=\"#0c9c6e\">int</font></i>):<br><div style=\"padding-left: 30px\">Number of histogram bins to use; when plotting the histogram of a raw image file the number of bins is automatically adjusted to enable one bin per DN code. Defaults to 20. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#bin-counts>See example</a> </div></div><div style=\"padding-left: 30px\"><b>hist_cumulative | cumulative</b> (<i><font color=\"#0c9c6e\">bool</font></i>):<br><div style=\"padding-left: 30px\">From matplotlib: If True then a histogram is computed where each bin gives the counts in that bin plus all bins for smaller values; if -1 direction of accumulation is reversed. Defaults to False. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#cumulative>See example</a> </div></div><div style=\"padding-left: 30px\"><b>hist_edge_color</b> (<i><font color=\"#0c9c6e\">str</font></i>):<br><div style=\"padding-left: 30px\">Hex color string for the edge of the histogram bar. Defaults to fcp.DEFAULT_COLORS <span id=\"rectangle\" style=\"height: 12px; width: 12px; background-color:#4b72b0;display:inline-block\"></span><span id=\"rectangle\" style=\"height: 12px; width: 12px; background-color:#c34e52;display:inline-block\"></span><span id=\"rectangle\" style=\"height: 12px; width: 12px; background-color:#54a767;display:inline-block\"></span><span id=\"rectangle\" style=\"height: 12px; width: 12px; background-color:#8172b1;display:inline-block\"></span><span id=\"rectangle\" style=\"height: 12px; width: 12px; background-color:#64b4cc;display:inline-block\"></span><span id=\"rectangle\" style=\"height: 12px; width: 12px; background-color:#ccb973;display:inline-block\"></span><span id=\"rectangle\" style=\"height: 12px; width: 12px; background-color:#fa8d62;display:inline-block\"></span><span id=\"rectangle\" style=\"height: 12px; width: 12px; background-color:#8d9fca;display:inline-block\"></span><span id=\"rectangle\" style=\"height: 12px; width: 12px; background-color:#a6d753;display:inline-block\"></span><span id=\"rectangle\" style=\"height: 12px; width: 12px; background-color:#fed82f;display:inline-block\"></span>. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#colors>See example</a> </div></div><div style=\"padding-left: 30px\"><b>hist_edge_width</b> (<i><font color=\"#0c9c6e\">float</font></i>):<br><div style=\"padding-left: 30px\">Width of the edge of the histogram bar in pixels. Defaults to 0. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#colors>See example</a> </div></div><div style=\"padding-left: 30px\"><b>hist_fill_alpha</b> (<i><font color=\"#0c9c6e\">int</font></i>):<br><div style=\"padding-left: 30px\">Transparency value for the histogram bars between 0-1. Defaults to 0.5. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#colors>See example</a> </div></div><div style=\"padding-left: 30px\"><b>hist_fill_color</b> (<i><font color=\"#0c9c6e\">str</font></i>):<br><div style=\"padding-left: 30px\">Hex color string of the histogram bar fill . Defaults to fcp.DEFAULT_COLORS <span id=\"rectangle\" style=\"height: 12px; width: 12px; background-color:#4b72b0;display:inline-block\"></span><span id=\"rectangle\" style=\"height: 12px; width: 12px; background-color:#c34e52;display:inline-block\"></span><span id=\"rectangle\" style=\"height: 12px; width: 12px; background-color:#54a767;display:inline-block\"></span><span id=\"rectangle\" style=\"height: 12px; width: 12px; background-color:#8172b1;display:inline-block\"></span><span id=\"rectangle\" style=\"height: 12px; width: 12px; background-color:#64b4cc;display:inline-block\"></span><span id=\"rectangle\" style=\"height: 12px; width: 12px; background-color:#ccb973;display:inline-block\"></span><span id=\"rectangle\" style=\"height: 12px; width: 12px; background-color:#fa8d62;display:inline-block\"></span><span id=\"rectangle\" style=\"height: 12px; width: 12px; background-color:#8d9fca;display:inline-block\"></span><span id=\"rectangle\" style=\"height: 12px; width: 12px; background-color:#a6d753;display:inline-block\"></span><span id=\"rectangle\" style=\"height: 12px; width: 12px; background-color:#fed82f;display:inline-block\"></span>. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#colors>See example</a> </div></div><div style=\"padding-left: 30px\"><b>hist_horizontal | horizontal</b> (<i><font color=\"#0c9c6e\">bool</font></i>):<br><div style=\"padding-left: 30px\">Enable a horizontal histogram plot [default is vertical]. Defaults to False. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#horizontal-bars>See example</a> </div></div><div style=\"padding-left: 30px\"><b>hist_kde | kde</b> (<i><font color=\"#0c9c6e\">bool</font></i>):<br><div style=\"padding-left: 30px\">Toggle visibility of a kernel-density estimator curve over the histogram bars. Defaults to False. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#kernel-density-estimator>See example</a> </div></div><div style=\"padding-left: 30px\"><b>hist_normalize | normalize</b> (<i><font color=\"#0c9c6e\">bool</font></i>):<br><div style=\"padding-left: 30px\">Sets the \"density\" parameter for matplotlib-based plots; from matplotlib: if True draw and return a probability density: each bin will display each bin\"s raw count divided by the total number of counts and the bin width so that the area under the histogram integrates to 1; automatically enabled if kde=True. Defaults to False. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#cumulative>See example</a> </div></div><div style=\"padding-left: 30px\"><b>hist_rwidth</b> (<i><font color=\"#0c9c6e\">float | None</font></i>):<br><div style=\"padding-left: 30px\">From matplotlib: the relative width of the bars as a fraction of the bin width; None means auto-calculation. Defaults to None. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#width>See example</a> </div></div><div style=\"padding-left: 30px\"><b>pdf</b> (<i><font color=\"#0c9c6e\">bool</font></i>):<br><div style=\"padding-left: 30px\">Convert the histogram into a probability density function plot. Defaults to False. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#pdf>See example</a></div></div></p>"
+    "This section describes various options available for histogram plots in **fivecentplots**"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "See the full API https://endangeredoxen.github.io/fivecentplots/0.5.0/api/hist.html#hist"
    ]
   },
   {
@@ -578,7 +585,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "`hist` plots in <b><i><font color=\"#4d5a91\">fivecentplots </font></i></b> can also be used generate histograms of pixel values from raw images (helpful for image sensor / camera engineering activities).  Options are also provided to split these raw images by color-filter array (CFA) pattern.  When plotting histograms of images, it is assumed that each digital number in the image data should be represented by its own bin so the number of bins is auto-calculated based on the min/max pixel values in the image data.\n",
+    "`hist` plots in <b>fivecentplots</b> can also be used generate histograms of pixel values from raw images (helpful for image sensor / camera engineering activities).  Options are also provided to split these raw images by color-filter array (CFA) pattern.  When plotting histograms of images, it is assumed that each digital number in the image data should be represented by its own bin so the number of bins is auto-calculated based on the min/max pixel values in the image data.\n",
     "\n"
    ]
   },
@@ -766,7 +773,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "Now lets mock-up a Bayer array for a light blue color patch and show how <b><i><font color=\"#4d5a91\">fivecentplots </font></i></b> allows you to easily split the histogram into distinct color planes (based on a CFA pattern).  Here we'll assume \"GRBG\":"
+    "Now lets mock-up a Bayer array for a light blue color patch and show how <b>fivecentplots</b> allows you to easily split the histogram into distinct color planes (based on a CFA pattern).  Here we'll assume \"GRBG\":"
    ]
   },
   {
@@ -999,7 +1006,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "While this example is a bit contrived, it demonstrates the power of <b><i><font color=\"#4d5a91\">fivecentplots </font></i></b> for raw image analysis in industries using image sensors or cameras."
+    "While this example is a bit contrived, it demonstrates the power of <b>fivecentplots</b> for raw image analysis in industries using image sensors or cameras."
    ]
   },
   {
@@ -1013,7 +1020,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<b><i><font color=\"#4d5a91\">fivecentplots </font></i></b> histograms can be converted to probability density functions inline using the keyword `pdf=True`.  Here we use the shaded color patch with noise from above for our input."
+    "<b>fivecentplots</b> histograms can be converted to probability density functions inline using the keyword `pdf=True`.  Here we use the shaded color patch with noise from above for our input."
    ]
   },
   {
@@ -1047,7 +1054,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "<b><i><font color=\"#4d5a91\">fivecentplots </font></i></b> histograms can also be converted to cumulative distribution functions inline using the keyword `pdf=True`.  Again, we use the shaded color patch with noise from above for our input.  With no color plane separation:"
+    "<b>fivecentplots</b> histograms can also be converted to cumulative distribution functions inline using the keyword `pdf=True`.  Again, we use the shaded color patch with noise from above for our input.  With no color plane separation:"
    ]
   },
   {

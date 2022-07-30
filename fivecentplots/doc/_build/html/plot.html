@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                0.5.0
+                0.5.0-alpha
               </div>
             
           
@@ -170,6 +170,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="older.html">Older Versions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/endangeredoxen/fivecentplots">GitHub</a></li>
 </ul>
 
             
@@ -508,7 +509,10 @@ div.rendered_html tbody tr:hover {
 }
 </style>
 <div class="section" id="plot">
-<h1>plot<a class="headerlink" href="#plot" title="Permalink to this headline">¶</a></h1><p style="line-height:30px"><b><font color="#999999" style="font-family:Arial; font-size:24px">fivecentplots.plot(df, **kwargs)</font></b><br><b><i>XY plot.</i></b><br><br><b>Args:</b><br><div style="padding-left: 30px"><b>df</b> (<i><font color="#0c9c6e">DataFrame</font></i>):<br><div style="padding-left: 30px">DataFrame containing data to plot</div></div><br><b>Required Keyword Args:</b><br><div style="padding-left: 30px"><b>x</b> (<i><font color="#0c9c6e">str | list</font></i>):<br><div style="padding-left: 30px">x-axis column name(<i><font color="#0c9c6e">s) </div></div><div style="padding-left: 30px"><b>y</b> (<i><font color="#0c9c6e">str | list</font></i>):<br><div style="padding-left: 30px">y-axis column name(<i><font color="#0c9c6e">s)</div></div><br><b>Optional Keyword Args:</b><br><div style="padding-left: 30px"><font color="#cc00ff"><i>Lines:</font></i></div><div style="padding-left: 30px"><b>lines</b> (<i><font color="#0c9c6e">boolean</font></i>):<br><div style="padding-left: 30px">Enable/disable plotting of lines. Defaults to True. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Scatter>See example</a> </div></div><div style="padding-left: 30px"><b>line_alpha</b> (<i><font color="#0c9c6e">str|list</font></i>):<br><div style="padding-left: 30px">Transparency value for the line(<i><font color="#0c9c6e">s) between 0-1. Defaults to 1. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling>See example</a> </div></div><div style="padding-left: 30px"><b>line_color</b> (<i><font color="#0c9c6e">str|list</font></i>):<br><div style="padding-left: 30px">Hex color string or list of hex color strings for the plot lines. Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span>. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling>See example</a> </div></div><div style="padding-left: 30px"><b>line_style</b> (<i><font color="#0c9c6e">str|list</font></i>):<br><div style="padding-left: 30px">Matplotlib string character for line style {"-"; "--"; "-." ":"}. Defaults to "-". <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling>See example</a> </div></div><div style="padding-left: 30px"><b>line_width</b> (<i><font color="#0c9c6e">int|list</font></i>):<br><div style="padding-left: 30px">Line width in pixels. Defaults to 1. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Line-styling>See example</a> </div><br><font color="#cc00ff"><i>Markers:</font></i> </div></div><div style="padding-left: 30px"><b>markers</b> (<i><font color="#0c9c6e">boolean</font></i>):<br><div style="padding-left: 30px">Enable/disable data point markers. Defaults to True. </div></div><div style="padding-left: 30px"><b>marker_fill</b> (<i><font color="#0c9c6e">boolean</font></i>):<br><div style="padding-left: 30px">Enable/disable color fill in markers. Defaults to False. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors>See example</a> </div></div><div style="padding-left: 30px"><b>marker_edge_color</b> (<i><font color="#0c9c6e">str|list</font></i>):<br><div style="padding-left: 30px">Hex color string for the marker edges. Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span>. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors>See example</a> </div></div><div style="padding-left: 30px"><b>marker_edge_width</b> (<i><font color="#0c9c6e">float</font></i>):<br><div style="padding-left: 30px">Marker edge line width in pixels. Defaults to 1. </div></div><div style="padding-left: 30px"><b>marker_fill_color</b> (<i><font color="#0c9c6e">str|list</font></i>):<br><div style="padding-left: 30px">Hex color string for the fill color of markers. Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span>. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors>See example</a> </div></div><div style="padding-left: 30px"><b>marker_jitter | jitter</b> (<i><font color="#0c9c6e">boolean</font></i>):<br><div style="padding-left: 30px">For boxplots add random noise on x-axis to show separation between markers. Defaults to True. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/boxplot.html#Jitter>See example</a> </div></div><div style="padding-left: 30px"><b>marker_size</b> (<i><font color="#0c9c6e">float</font></i>):<br><div style="padding-left: 30px">Size in pixels of the data point markers. Defaults to 6. </div><br><font color="#cc00ff"><i>ax_[h|v]lines:</font></i> </div></div><div style="padding-left: 30px"><b>ax_hlines|ax2_hlines</b> (<i><font color="#0c9c6e">float|list of tuples and floats</font></i>):<br><div style="padding-left: 30px">Add horizontal lines to the plot; if only float value is provided add a solid black line with width=1 pixel at that value; if tuple add any one or more of the following in order: [1] float value or DataFrame column name [required]; [2] hex string for line color; [3] line style str; [4] line width in pixels; [5] line alpha transparency value from 0-1; [6] legend text [added automatically if using a column name for value]. Defaults to None. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Horizontal-&-vertical-lines>See example</a> </div></div><div style="padding-left: 30px"><b>ax_vlines|ax2_vlines</b> (<i><font color="#0c9c6e">float|list of tuples and floats</font></i>):<br><div style="padding-left: 30px">Add vertical lines to the plot [same parameters as ax_hlines]. Defaults to None. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Horizontal-&-vertical-lines>See example</a> </div><br><font color="#cc00ff"><i>Control limits:</font></i> </div></div><div style="padding-left: 30px"><b>lcl</b> (<i><font color="#0c9c6e">float</font></i>):<br><div style="padding-left: 30px">Float value to start the lower control limit shading region. Defaults to None. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits>See example</a> </div></div><div style="padding-left: 30px"><b>ucl</b> (<i><font color="#0c9c6e">float</font></i>):<br><div style="padding-left: 30px">Float value to start the upper control limit shading region. Defaults to None. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits>See example</a> </div></div><div style="padding-left: 30px"><b>control_limit_side</b> (<i><font color="#0c9c6e">str</font></i>):<br><div style="padding-left: 30px">Determines if shaded region is <= lcl and >= ucl {"outside"} or between the lcl and ucl {"inside"}. Defaults to outside. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits>See example</a> </div></div><div style="padding-left: 30px"><b>lcl|ucl_edge_alpha</b> (<i><font color="#0c9c6e">float</font></i>):<br><div style="padding-left: 30px">Transparency value for the line starting the control limit shaded region between 0-1. Defaults to 0.25. </div></div><div style="padding-left: 30px"><b>lcl|ucl_edge_color</b> (<i><font color="#0c9c6e">str</font></i>):<br><div style="padding-left: 30px">Hex color string for the the line starting the control limit shaded region. Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span>. </div></div><div style="padding-left: 30px"><b>lcl|ucl_edge_style</b> (<i><font color="#0c9c6e">str</font></i>):<br><div style="padding-left: 30px">Line style for the line starting the control limit shaded region {‘-’, ‘--’, ‘-.’, ‘:’}. Defaults to "-". </div></div><div style="padding-left: 30px"><b>lcl|ucl_edge_width</b> (<i><font color="#0c9c6e">float</font></i>):<br><div style="padding-left: 30px">Width of the line starting the control limit shaded region in pixels. Defaults to 1. </div></div><div style="padding-left: 30px"><b>lcl|ucl_fill_alpha</b> (<i><font color="#0c9c6e">float</font></i>):<br><div style="padding-left: 30px">Transparency value for the control limit shaded region fill between 0-1. Defaults to 0.20. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits>See example</a> </div></div><div style="padding-left: 30px"><b>lcl|ucl_fill_color</b> (<i><font color="#0c9c6e">str</font></i>):<br><div style="padding-left: 30px">Hex color string for the control limit shaded region fill. Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span>. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Control-limits>See example</a> </div><br><font color="#cc00ff"><i>Confidence intervals:</font></i> </div></div><div style="padding-left: 30px"><b>conf_int</b> (<i><font color="#0c9c6e">float</font></i>):<br><div style="padding-left: 30px">Interval with upper and lower bounds based on a single confidence value between 0-1</b> (<i><font color="#0c9c6e">typical=0.95). Defaults to None. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval>See example</a> </div></div><div style="padding-left: 30px"><b>perc_int</b> (<i><font color="#0c9c6e">list of float</font></i>):<br><div style="padding-left: 30px">Interval with upper and lower bounds based on percentiles between 0-1. Defaults to None. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval>See example</a> </div></div><div style="padding-left: 30px"><b>nq_int</b> (<i><font color="#0c9c6e">list of float</font></i>):<br><div style="padding-left: 30px">Interval with upper and lower bounds based on values of sigma</b> (<i><font color="#0c9c6e">where the mean of a distribution is sigma=0). Defaults to None. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval>See example</a> </div></div><div style="padding-left: 30px"><b>conf_int|perc_int|nq_int_edge_alpha</b> (<i><font color="#0c9c6e">float</font></i>):<br><div style="padding-left: 30px">Transparency value for the lines bounding the interval shaded region between 0-1. Defaults to 0.25. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval>See example</a> </div></div><div style="padding-left: 30px"><b>conf_int|perc_int|nq_int_edge_color</b> (<i><font color="#0c9c6e">str</font></i>):<br><div style="padding-left: 30px">Hex color string for the the lines bounding the interval shaded region. Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span>. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval>See example</a> </div></div><div style="padding-left: 30px"><b>conf_int|perc_int|nq_int_edge_style</b> (<i><font color="#0c9c6e">str</font></i>):<br><div style="padding-left: 30px">Line style for the lines bounding the interval shaded region {‘-’, ‘--’, ‘-.’, ‘:’}. Defaults to "-". <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval>See example</a> </div></div><div style="padding-left: 30px"><b>conf_int|perc_int|nq_int_edge_width</b> (<i><font color="#0c9c6e">float</font></i>):<br><div style="padding-left: 30px">Width of the lines bounding the interval shaded region in pixels. Defaults to 1. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval>See example</a> </div></div><div style="padding-left: 30px"><b>conf_int|perc_int|nq_int_fill_alpha</b> (<i><font color="#0c9c6e">float</font></i>):<br><div style="padding-left: 30px">Transparency value for the interval shaded region fill between 0-1. Defaults to 0.20. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval>See example</a> </div></div><div style="padding-left: 30px"><b>conf_int|perc_int|nq_int_fill_color</b> (<i><font color="#0c9c6e">str</font></i>):<br><div style="padding-left: 30px">Hex color string for the interval shaded region fill. Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span>. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval>See example</a> </div><br><font color="#cc00ff"><i>Fit:</font></i> </div></div><div style="padding-left: 30px"><b>fit</b> (<i><font color="#0c9c6e">int</font></i>):<br><div style="padding-left: 30px">Polynomial degree for the fit. Defaults to None. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Line-fit>See example</a> </div></div><div style="padding-left: 30px"><b>fit_color</b> (<i><font color="#0c9c6e">str</font></i>):<br><div style="padding-left: 30px">Hex color string for the fit line. Defaults to #000000 <span id="rectangle" style="height: 12px; width: 12px; background-color:#000000;display:inline-block"></span>. </div></div><div style="padding-left: 30px"><b>fit_eqn</b> (<i><font color="#0c9c6e">boolean</font></i>):<br><div style="padding-left: 30px">Display the fit equation on the plot. Defaults to False. </div></div><div style="padding-left: 30px"><b>fit_font_size</b> (<i><font color="#0c9c6e">float</font></i>):<br><div style="padding-left: 30px">Font size of the fit eqn and rsq value. Defaults to 12. </div></div><div style="padding-left: 30px"><b>fit_padding</b> (<i><font color="#0c9c6e">int</font></i>):<br><div style="padding-left: 30px">Padding in pixels from the top of the plot to the location of the fit eqn. Defaults to 10. </div></div><div style="padding-left: 30px"><b>fit_range_x</b> (<i><font color="#0c9c6e">list</font></i>):<br><div style="padding-left: 30px">Compute the fit only over a given range of x-values. Defaults to None. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Curve-fitting>See example</a> </div></div><div style="padding-left: 30px"><b>fit_range_y</b> (<i><font color="#0c9c6e">list</font></i>):<br><div style="padding-left: 30px">Compute the fit only over a given range of y-values. Defaults to None. </div></div><div style="padding-left: 30px"><b>fit_rsq</b> (<i><font color="#0c9c6e">boolean</font></i>):<br><div style="padding-left: 30px">Display the rsq of the fit on the plot. Defaults to False. </div><br><font color="#cc00ff"><i>Reference line:</font></i> </div></div><div style="padding-left: 30px"><b>ref_line</b> (<i><font color="#0c9c6e">list|pd.Series</font></i>):<br><div style="padding-left: 30px">The name of one or more columns in the DataFrame or a pandas Series with the same number of rows as the x column. Defaults to None. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line>See example</a> </div></div><div style="padding-left: 30px"><b>ref_line_alpha</b> (<i><font color="#0c9c6e">str|list</font></i>):<br><div style="padding-left: 30px">Transparency value for the reference line(<i><font color="#0c9c6e">s) between 0-1</b> (<i><font color="#0c9c6e">use list if more than one ref_line plotted). Defaults to 1. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line>See example</a> </div></div><div style="padding-left: 30px"><b>ref_line_color</b> (<i><font color="#0c9c6e">str|list</font></i>):<br><div style="padding-left: 30px">Hex color string or list of hex color strings for the reference line</b> (<i><font color="#0c9c6e">use list if more than one ref_line plotted). Defaults to #000000 <span id="rectangle" style="height: 12px; width: 12px; background-color:#000000;display:inline-block"></span>. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line>See example</a> </div></div><div style="padding-left: 30px"><b>ref_line_legend_text</b> (<i><font color="#0c9c6e">str|list</font></i>):<br><div style="padding-left: 30px">Custom string label(<i><font color="#0c9c6e">s) to add to a legend for the reference line data</b> (<i><font color="#0c9c6e">use list if more than one ref_line plotted). Defaults to None. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line>See example</a> </div></div><div style="padding-left: 30px"><b>ref_line_style</b> (<i><font color="#0c9c6e">str|list</font></i>):<br><div style="padding-left: 30px">Matplotlib string character for reference line style {"-"; "--"; "-." ":"}</b> (<i><font color="#0c9c6e">use list if more than one ref_line plotted). Defaults to "-". <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line>See example</a> </div></div><div style="padding-left: 30px"><b>ref_line_width</b> (<i><font color="#0c9c6e">int|list</font></i>):<br><div style="padding-left: 30px">Reference line width in pixels</b> (<i><font color="#0c9c6e">use list if more than one ref_line plotted). Defaults to 1. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Reference-line>See example</a> </div><br><font color="#cc00ff"><i>Stat lines:</font></i> </div></div><div style="padding-left: 30px"><b>stat</b> (<i><font color="#0c9c6e">str</font></i>):<br><div style="padding-left: 30px">Calculate a statistic on a data set</b> (<i><font color="#0c9c6e">any stat value supported by pandas.groupby is valid {"mean", "std", etc}. Defaults to None. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Stat-lines>See example</a> </div></div><div style="padding-left: 30px"><b>stat_val</b> (<i><font color="#0c9c6e">str</font></i>):<br><div style="padding-left: 30px">Alternate column name used as a pseudo x-axis for the stat calculation for cases in which the plotted x-column values are not perfectly aligned. Defaults to None. <br><a href=https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Stat-lines>See example</a> </div></div><div style="padding-left: 30px"><b>stat_line_xxx</b> (<i><font color="#0c9c6e">various</font></i>):<br><div style="padding-left: 30px">Stat-line styling is controlled by the regular line_xxx values. Defaults to None.</div></div></p><br><div class="section" id="Setup">
+<h1>plot<a class="headerlink" href="#plot" title="Permalink to this headline">¶</a></h1>
+<p>This section describes various options available for xy plots in <strong>fivecentplots</strong></p>
+<p>See the full API <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/api/plot.html#plot">https://endangeredoxen.github.io/fivecentplots/0.5.0/api/plot.html#plot</a></p>
+<div class="section" id="Setup">
 <h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this headline">¶</a></h2>
 <p>Import packages</p>
 <div class="nbinput nblast docutils container">
@@ -516,124 +520,19 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="o">%</span><span class="k">load_ext</span> autoreload
-<span class="o">%</span><span class="k">autoreload</span> 2
-<span class="kn">import</span> <span class="nn">fivecentplots</span> <span class="k">as</span> <span class="nn">fcp</span>
+<span></span><span class="kn">import</span> <span class="nn">fivecentplots</span> <span class="k">as</span> <span class="nn">fcp</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 </pre></div>
 </div>
 </div>
-<p style="line-height:30px"><p>fivecentplots.axes()Dummy function to return the axes API with <code class="docutils literal notranslate"><span class="pre">help()</span></code> (not used directly for plotting).Optional Keyword Args:</p>
-<div style="padding-left: 30px"><p>ax_size (list of int):</p>
-<div style="padding-left: 30px"><p>Axes size [width, height]; note this is not the size of the figure. Defaults to [400, 400]. See example</p>
-</div></div><div style="padding-left: 30px"><p>ax_edge_alpha (str):</p>
-<div style="padding-left: 30px"><p>Transparency value for axes edge between 0-1. Defaults to 1</p>
-</div></div><div style="padding-left: 30px"><p>ax_edge_color (str):</p>
-<div style="padding-left: 30px"><p>Hex color string for the border edge of the axes region. Defaults to #aaaaaa . See example</p>
-</div></div><div style="padding-left: 30px"><p>ax_edge_bottom (boolean):</p>
-<div style="padding-left: 30px"><p>Enable/disable the bottom axes edge (or spine). Defaults to True. See example</p>
-</div></div><div style="padding-left: 30px"><p>ax_edge_left (boolean):</p>
-<div style="padding-left: 30px"><p>Enable/disable the left axes edge (or spine). Defaults to True. See example</p>
-</div></div><div style="padding-left: 30px"><p>ax_edge_right (boolean):</p>
-<div style="padding-left: 30px"><p>Enable/disable the right axes edge (or spine). Defaults to True. See example</p>
-</div></div><div style="padding-left: 30px"><p>ax_edge_top (boolean):</p>
-<div style="padding-left: 30px"><p>Enable/disable the top axes edge (or spine). Defaults to True. See example</p>
-</div></div><div style="padding-left: 30px"><p>ax_fill_alpha (str):</p>
-<div style="padding-left: 30px"><p>Transparency value for axes fill between 0-1. Defaults to 1. See example</p>
-</div></div><div style="padding-left: 30px"><p>ax_fill_color (str):</p>
-<div style="padding-left: 30px"><p>Hex color string for the fill color of the axes region. Defaults to #eaeaea . See example</p>
-</div></div><div style="padding-left: 30px"><p>ax_scale|ax2_scale (str):</p>
-<div style="padding-left: 30px"><p>Set the scale type of the axes {“linear”; “logx”; “semilogx”; “logy”; “semilogy”; “loglog”; “log”; “symlog”; “logit”}. Defaults to “linear”. See example</p>
-</div></div><div style="padding-left: 30px"><p>share_x (boolean):</p>
-<div style="padding-left: 30px"><p>Share the x-axis range across grouped plots with multiple axes. Defaults to True. See example sharing</p>
-</div></div><div style="padding-left: 30px"><p>share_x2 (boolean):</p>
-<div style="padding-left: 30px"><p>Share the secondary x-axis range across grouped plots with multiple axes. Defaults to True. See example</p>
-</div></div><div style="padding-left: 30px"><p>share_y (boolean):</p>
-<div style="padding-left: 30px"><p>Share the y-axis range across grouped plots with multiple axes. Defaults to True. See example sharing</p>
-</div></div><div style="padding-left: 30px"><p>share_y2 (boolean):</p>
-<div style="padding-left: 30px"><p>Share the secondary y-axis range across grouped plots with multiple axes. Defaults to True. See example</p>
-</div></div><div style="padding-left: 30px"><p>share_col (boolean):</p>
-<div style="padding-left: 30px"><p>Share the x and y axis ranges of subplots in the same column when grouping. Defaults to True. See example</p>
-</div></div><div style="padding-left: 30px"><p>share_row (boolean):</p>
-<div style="padding-left: 30px"><p>Share the x and y axis ranges of subplots in the same row when grouping. Defaults to True. See example</p>
-</div></div><div style="padding-left: 30px"><p>twin_x (boolean):</p>
-<div style="padding-left: 30px"><p>Add a secondary y-axis by “twinning” the x-axis. Defaults to False. See example axis-(twin_x)</p>
-</div></div><div style="padding-left: 30px"><p>twin_y (boolean):</p>
-<div style="padding-left: 30px"><p>Add a secondary x-axis by “twinning” the y-axis. Defaults to False. See example axis-(twin_y)</p>
-</div></div></p><div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">help</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="n">axes</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Help on function axes in module fivecentplots.fcp:
-
-axes()
-    Dummy function to return the axes API with `help()` (not used directly for plotting).
-
-    Optional Keyword Args:
-        ax_size (list of int): Axes size [width, height]; note this is not the size of the figure.
-          Defaults to [400, 400]. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Time-series
-        ax_edge_alpha (str): Transparency value for axes edge between 0-1. Defaults to 1. Example:
-          None
-        ax_edge_color (str): Hex color string for the border edge of the axes region. Defaults to
-          #aaaaaa. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Typical-elements
-        ax_edge_bottom (boolean): Enable/disable the bottom axes edge (or spine). Defaults to True.
-          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges
-        ax_edge_left (boolean): Enable/disable the left axes edge (or spine). Defaults to True.
-          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges
-        ax_edge_right (boolean): Enable/disable the right axes edge (or spine). Defaults to True.
-          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges
-        ax_edge_top (boolean): Enable/disable the top axes edge (or spine). Defaults to True.
-          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges
-        ax_fill_alpha (str): Transparency value for axes fill between 0-1. Defaults to 1. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Alpha
-        ax_fill_color (str): Hex color string for the fill color of the axes region. Defaults to
-          #eaeaea. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Alpha
-        ax_scale|ax2_scale (str): Set the scale type of the axes {&#39;linear&#39;; &#39;logx&#39;; &#39;semilogx&#39;;
-          &#39;logy&#39;; &#39;semilogy&#39;; &#39;loglog&#39;; &#39;log&#39;; &#39;symlog&#39;; &#39;logit&#39;}. Defaults to &#39;linear&#39;. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Log-scale
-        share_x (boolean): Share the x-axis range across grouped plots with multiple axes. Defaults
-          to True. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes-
-          sharing
-        share_x2 (boolean): Share the secondary x-axis range across grouped plots with multiple
-          axes. Defaults to True. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes-sharing
-        share_y (boolean): Share the y-axis range across grouped plots with multiple axes. Defaults
-          to True. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes-
-          sharing
-        share_y2 (boolean): Share the secondary y-axis range across grouped plots with multiple
-          axes. Defaults to True. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes-sharing
-        share_col (boolean): Share the x and y axis ranges of subplots in the same column when
-          grouping. Defaults to True. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Share-columns
-        share_row (boolean): Share the x and y axis ranges of subplots in the same row when
-          grouping. Defaults to True. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Share-row
-        twin_x (boolean): Add a secondary y-axis by &#34;twinning&#34; the x-axis. Defaults to False.
-          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Shared-x-
-          axis-(twin_x)
-        twin_y (boolean): Add a secondary x-axis by &#34;twinning&#34; the y-axis. Defaults to False.
-          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Shared-y-
-          axis-(twin_y)
-
-</pre></div></div>
-</div>
 <div class="section" id="Sample-data">
 <h3>Sample data<a class="headerlink" href="#Sample-data" title="Permalink to this headline">¶</a></h3>
-<p>We will use two fake datasets in this tutorial: 1) make-believe current vs voltage data for a set of diodes [<code class="docutils literal notranslate"><span class="pre">df</span></code>]; and 2) a time-series dataset with happiness data pulled from an undislosed bodily orifice [<code class="docutils literal notranslate"><span class="pre">ts</span></code>].</p>
+<p>We will use two fake datasets in this tutorial:</p>
+<ol class="arabic simple">
+<li><p>make-believe current vs voltage data for a set of diodes [<code class="docutils literal notranslate"><span class="pre">df</span></code>]</p></li>
+<li><p>a time-series dataset for “happiness” data, derived from an undisclosed bodily orifice [<code class="docutils literal notranslate"><span class="pre">ts</span></code>].</p></li>
+</ol>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -797,143 +696,6 @@ axes()
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">help</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="n">figure</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Help on function figure in module fivecentplots.fcp:
-
-figure()
-    fig_edge_alpha (str): Transparency value for figure edge between 0-1. Defaults to 1. Example:
-      None
-    fig_edge_color (str): Hex color string for the border edge of the figure region. Defaults to
-      #aaaaaa. Example:
-      https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Typical-elements
-    fig_fill_alpha (str): Transparency value for figure fill between 0-1. Defaults to 1.
-      Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Alpha
-    fig_fill_color (str): Hex color string for the fill color of the figure region. Defaults to
-      #eaeaea. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Alpha
-
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span>
-         <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">320</span><span class="p">,</span> <span class="mi">300</span><span class="p">],</span> <span class="n">share_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Temperature [C]==25&#39;</span><span class="p">,</span>
-         <span class="n">ref_line</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">],</span> <span class="n">ref_line_legend_text</span><span class="o">=</span><span class="s1">&#39;y==x&#39;</span><span class="p">,</span> <span class="n">ref_line_style</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span>
-         <span class="n">xmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mf">1.7</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">ymax</span><span class="o">=</span><span class="p">[</span><span class="mf">1.3</span><span class="p">,</span> <span class="mf">1.7</span><span class="p">,</span> <span class="mf">5.2</span><span class="p">],</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;bokeh&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
-<div class="output_area rendered_html docutils container">
-<!DOCTYPE html>
-<html lang="en">
-
-  <head>
-
-      <meta charset="utf-8">
-      <title>Bokeh Plot</title>
-
-
-
-
-
-
-
-        <script type="text/javascript" src="https://cdn.bokeh.org/bokeh/release/bokeh-2.3.3.min.js" integrity="sha384-dM3QQsP+wXdHg42wTqW85BjZQdLNNIXqlPw/BgKoExPmTG7ZLML4EGqLMfqHT6ON" crossorigin="anonymous"></script>
-        <script type="text/javascript">
-            Bokeh.set_log_level("info");
-        </script>
-
-
-
-
-  </head>
-
-
-  <body>
-
-
-
-
-
-
-              <div class="bk-root" id="8dea4b75-eea4-4e96-a104-6f6b243bc259" data-root-id="3620"></div>
-
-
-
-
-
-        <script type="application/json" id="4431">
-          {"c0fa9279-d90b-41e8-aeda-ff1e4c275a18":{"defs":[],"roots":{"references":[{"attributes":{},"id":"3686","type":"UnionRenderers"},{"attributes":{"line_alpha":0.1,"line_color":"#4b72b0","x":{"field":"x"},"y":{"field":"y"}},"id":"3489","type":"Line"},{"attributes":{"data_source":{"id":"3487"},"glyph":{"id":"3488"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"3489"},"view":{"id":"3491"}},"id":"3490","type":"GlyphRenderer"},{"attributes":{"source":{"id":"3487"}},"id":"3491","type":"CDSView"},{"attributes":{},"id":"3685","type":"Selection"},{"attributes":{"source":{"id":"3502"}},"id":"3506","type":"CDSView"},{"attributes":{"data_source":{"id":"3482"},"glyph":{"id":"3483"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"3484"},"view":{"id":"3486"}},"id":"3485","type":"GlyphRenderer"},{"attributes":{},"id":"3458","type":"LinearScale"},{"attributes":{"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8qfHSTWJQP3npJjEIrHw/exSuR+F6lD9aZDvfT423Py2yne+nxtM/MQisHFpk5z8UrkfhehT0Pw==","dtype":"float64","order":"little","shape":[17]}},"selected":{"id":"3653"},"selection_policy":{"id":"3654"}},"id":"3502","type":"ColumnDataSource"},{"attributes":{"source":{"id":"3482"}},"id":"3486","type":"CDSView"},{"attributes":{"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8qfHSTWJQP3npJjEIrHw/Gy/dJAaBlT+yne+nxku3P39qvHSTGNQ/N4lBYOXQ5j8/NV66SQz0Pw==","dtype":"float64","order":"little","shape":[17]}},"selected":{"id":"3647"},"selection_policy":{"id":"3648"}},"id":"3487","type":"ColumnDataSource"},{"attributes":{"line_color":"#c34e52","x":{"field":"x"},"y":{"field":"y"}},"id":"3503","type":"Line"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":null},"line_alpha":{"value":0.1},"line_color":{"value":"#4b72b0"},"size":{"value":6},"x":{"field":"x"},"y":{"field":"y"}},"id":"3484","type":"Circle"},{"attributes":{"line_alpha":0.1,"line_color":"#c34e52","x":{"field":"x"},"y":{"field":"y"}},"id":"3504","type":"Line"},{"attributes":{},"id":"3461","type":"BasicTicker"},{"attributes":{"data_source":{"id":"3502"},"glyph":{"id":"3503"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"3504"},"view":{"id":"3506"}},"id":"3505","type":"GlyphRenderer"},{"attributes":{"data_source":{"id":"3522"},"glyph":{"id":"3523"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"3524"},"view":{"id":"3526"}},"id":"3525","type":"GlyphRenderer"},{"attributes":{"line_color":"#4b72b0","x":{"field":"x"},"y":{"field":"y"}},"id":"3488","type":"Line"},{"attributes":{"source":{"id":"3492"}},"id":"3496","type":"CDSView"},{"attributes":{"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]}},"selected":{"id":"3661"},"selection_policy":{"id":"3662"}},"id":"3522","type":"ColumnDataSource"},{"attributes":{"line_alpha":0.1,"line_color":"#000000","line_dash":[6],"x":{"field":"x"},"y":{"field":"y"}},"id":"3524","type":"Line"},{"attributes":{"line_color":"#000000","line_dash":[6],"x":{"field":"x"},"y":{"field":"y"}},"id":"3523","type":"Line"},{"attributes":{},"id":"3441","type":"ResetTool"},{"attributes":{"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8qfHSTWJgP3npJjEIrIw/exSuR+F6pD8K16NwPQrHPylcj8L1KOQ/MzMzMzMz8z/HSzeJQWDzPw==","dtype":"float64","order":"little","shape":[17]}},"selected":{"id":"3657"},"selection_policy":{"id":"3658"}},"id":"3512","type":"ColumnDataSource"},{"attributes":{"fill_color":{"value":null},"line_color":{"value":"#4b72b0"},"size":{"value":6},"x":{"field":"x"},"y":{"field":"y"}},"id":"3483","type":"Circle"},{"attributes":{"data_source":{"id":"3497"},"glyph":{"id":"3498"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"3499"},"view":{"id":"3501"}},"id":"3500","type":"GlyphRenderer"},{"attributes":{"line_color":"#54a767","x":{"field":"x"},"y":{"field":"y"}},"id":"3518","type":"Line"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":null},"line_alpha":{"value":0.1},"line_color":{"value":"#54a767"},"marker":{"value":"square"},"size":{"value":6},"x":{"field":"x"},"y":{"field":"y"}},"id":"3606","type":"Scatter"},{"attributes":{"line_color":"#54a767","x":{"field":"x"},"y":{"field":"y"}},"id":"3610","type":"Line"},{"attributes":{"line_alpha":0.1,"line_color":"#000000","line_dash":[6],"x":{"field":"x"},"y":{"field":"y"}},"id":"3494","type":"Line"},{"attributes":{"align":"center","background_fill_color":"#8c8c8c","text":" Boost Level=1.0 ","text_color":"#ffffff","text_font_size":"14pt"},"id":"3619","type":"Title"},{"attributes":{"align":"center","background_fill_color":"#8c8c8c","text":" Boost Level=0.2 ","text_color":"#ffffff","text_font_size":"14pt"},"id":"3527","type":"Title"},{"attributes":{"bottom_units":"screen","fill_alpha":0.5,"fill_color":"lightgrey","left_units":"screen","level":"overlay","line_alpha":1.0,"line_color":"black","line_dash":[4,4],"line_width":2,"right_units":"screen","syncable":false,"top_units":"screen"},"id":"3474","type":"BoxAnnotation"},{"attributes":{"source":{"id":"3507"}},"id":"3511","type":"CDSView"},{"attributes":{"source":{"id":"3609"}},"id":"3613","type":"CDSView"},{"attributes":{},"id":"3697","type":"Selection"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":null},"line_alpha":{"value":0.1},"line_color":{"value":"#c34e52"},"marker":{"value":"cross"},"size":{"value":6},"x":{"field":"x"},"y":{"field":"y"}},"id":"3499","type":"Scatter"},{"attributes":{"line_color":"#000000","line_dash":[6],"x":{"field":"x"},"y":{"field":"y"}},"id":"3493","type":"Line"},{"attributes":{"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8qfHSTWJgP3npJjEIrIw/exSuR+F6pD8K16NwPQrHPylcj8L1KOQ/MzMzMzMz8z/HSzeJQWDzPw==","dtype":"float64","order":"little","shape":[17]}},"selected":{"id":"3659"},"selection_policy":{"id":"3660"}},"id":"3517","type":"ColumnDataSource"},{"attributes":{"data_source":{"id":"3507"},"glyph":{"id":"3508"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"3509"},"view":{"id":"3511"}},"id":"3510","type":"GlyphRenderer"},{"attributes":{"overlay":{"id":"3443"}},"id":"3439","type":"BoxZoomTool"},{"attributes":{"data_source":{"id":"3512"},"glyph":{"id":"3513"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"3514"},"view":{"id":"3516"}},"id":"3515","type":"GlyphRenderer"},{"attributes":{"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8qfHSTWJQP3npJjEIrHw/Gy/dJAaBlT+yne+nxku3P39qvHSTGNQ/N4lBYOXQ5j8/NV66SQz0Pw==","dtype":"float64","order":"little","shape":[17]}},"selected":{"id":"3645"},"selection_policy":{"id":"3646"}},"id":"3482","type":"ColumnDataSource"},{"attributes":{},"id":"3698","type":"UnionRenderers"},{"attributes":{"axis_label":"Voltage","axis_label_text_color":"#000000","axis_label_text_font":"sans-serif","axis_label_text_font_size":"14pt","formatter":{"id":"3641"},"major_label_policy":{"id":"3640"},"major_label_text_font_size":"13pt","ticker":{"id":"3461"}},"id":"3460","type":"LinearAxis"},{"attributes":{"line_alpha":0.1,"line_color":"#000000","line_dash":[6],"x":{"field":"x"},"y":{"field":"y"}},"id":"3509","type":"Line"},{"attributes":{"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]}},"selected":{"id":"3649"},"selection_policy":{"id":"3650"}},"id":"3492","type":"ColumnDataSource"},{"attributes":{},"id":"3454","type":"DataRange1d"},{"attributes":{"active_multi":null,"tools":[{"id":"3437"},{"id":"3438"},{"id":"3439"},{"id":"3440"},{"id":"3441"},{"id":"3442"}]},"id":"3444","type":"Toolbar"},{"attributes":{"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]}},"selected":{"id":"3655"},"selection_policy":{"id":"3656"}},"id":"3507","type":"ColumnDataSource"},{"attributes":{},"id":"3456","type":"LinearScale"},{"attributes":{"line_color":"#000000","line_dash":[6],"x":{"field":"x"},"y":{"field":"y"}},"id":"3508","type":"Line"},{"attributes":{},"id":"3440","type":"SaveTool"},{"attributes":{"source":{"id":"3497"}},"id":"3501","type":"CDSView"},{"attributes":{"source":{"id":"3517"}},"id":"3521","type":"CDSView"},{"attributes":{"data_source":{"id":"3517"},"glyph":{"id":"3518"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"3519"},"view":{"id":"3521"}},"id":"3520","type":"GlyphRenderer"},{"attributes":{},"id":"3699","type":"Selection"},{"attributes":{},"id":"3437","type":"PanTool"},{"attributes":{"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAL26jAbwFUj9GJXUCmghrP9IA3gIJin8/ukkMAiuHhj9MN4lBYOWgP4PAyqFFtrM/8tJNYhBYuT+amZmZmZnhPylcj8L1KOw/pHA9Ctej+D+amZmZmZkBQA==","dtype":"float64","order":"little","shape":[17]}},"selected":{"id":"3697"},"selection_policy":{"id":"3698"}},"id":"3609","type":"ColumnDataSource"},{"attributes":{"source":{"id":"3604"}},"id":"3608","type":"CDSView"},{"attributes":{},"id":"3438","type":"WheelZoomTool"},{"attributes":{"fill_color":{"value":null},"line_color":{"value":"#c34e52"},"marker":{"value":"cross"},"size":{"value":6},"x":{"field":"x"},"y":{"field":"y"}},"id":"3498","type":"Scatter"},{"attributes":{},"id":"3442","type":"HelpTool"},{"attributes":{"line_alpha":0.1,"line_color":"#54a767","x":{"field":"x"},"y":{"field":"y"}},"id":"3611","type":"Line"},{"attributes":{"source":{"id":"3512"}},"id":"3516","type":"CDSView"},{"attributes":{"data_source":{"id":"3492"},"glyph":{"id":"3493"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"3494"},"view":{"id":"3496"}},"id":"3495","type":"GlyphRenderer"},{"attributes":{},"id":"3645","type":"Selection"},{"attributes":{"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8qfHSTWJQP3npJjEIrHw/exSuR+F6lD9aZDvfT423Py2yne+nxtM/MQisHFpk5z8UrkfhehT0Pw==","dtype":"float64","order":"little","shape":[17]}},"selected":{"id":"3651"},"selection_policy":{"id":"3652"}},"id":"3497","type":"ColumnDataSource"},{"attributes":{"data_source":{"id":"3609"},"glyph":{"id":"3610"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"3611"},"view":{"id":"3613"}},"id":"3612","type":"GlyphRenderer"},{"attributes":{"align":"center","background_fill_color":"#8c8c8c","text":" Boost Level=0.5 ","text_color":"#ffffff","text_font_size":"14pt"},"id":"3573","type":"Title"},{"attributes":{"data_source":{"id":"3604"},"glyph":{"id":"3605"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"3606"},"view":{"id":"3608"}},"id":"3607","type":"GlyphRenderer"},{"attributes":{"line_alpha":0.1,"line_color":"#54a767","x":{"field":"x"},"y":{"field":"y"}},"id":"3519","type":"Line"},{"attributes":{},"id":"3700","type":"UnionRenderers"},{"attributes":{},"id":"3638","type":"BasicTickFormatter"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":null},"line_alpha":{"value":0.1},"line_color":{"value":"#54a767"},"marker":{"value":"square"},"size":{"value":6},"x":{"field":"x"},"y":{"field":"y"}},"id":"3514","type":"Scatter"},{"attributes":{"children":[{"id":"3389"},{"id":"3420"},{"id":"3451"}]},"id":"3620","type":"Row"},{"attributes":{},"id":"3434","type":"BasicTicker"},{"attributes":{},"id":"3637","type":"AllLabels"},{"attributes":{},"id":"3430","type":"BasicTicker"},{"attributes":{"bottom_units":"screen","fill_alpha":0.5,"fill_color":"lightgrey","left_units":"screen","level":"overlay","line_alpha":1.0,"line_color":"black","line_dash":[4,4],"line_width":2,"right_units":"screen","syncable":false,"top_units":"screen"},"id":"3412","type":"BoxAnnotation"},{"attributes":{},"id":"3687","type":"Selection"},{"attributes":{},"id":"3425","type":"LinearScale"},{"attributes":{"axis_label":"Voltage","axis_label_text_color":"#000000","axis_label_text_font":"sans-serif","axis_label_text_font_size":"14pt","formatter":{"id":"3635"},"major_label_policy":{"id":"3634"},"major_label_text_font_size":"13pt","ticker":{"id":"3430"}},"id":"3429","type":"LinearAxis"},{"attributes":{"fill_color":{"value":null},"line_color":{"value":"#54a767"},"marker":{"value":"square"},"size":{"value":6},"x":{"field":"x"},"y":{"field":"y"}},"id":"3513","type":"Scatter"},{"attributes":{},"id":"3423","type":"DataRange1d"},{"attributes":{},"id":"3632","type":"BasicTickFormatter"},{"attributes":{},"id":"3690","type":"UnionRenderers"},{"attributes":{},"id":"3635","type":"BasicTickFormatter"},{"attributes":{},"id":"3679","type":"UnionRenderers"},{"attributes":{},"id":"3640","type":"AllLabels"},{"attributes":{},"id":"3693","type":"Selection"},{"attributes":{},"id":"3675","type":"UnionRenderers"},{"attributes":{},"id":"3689","type":"Selection"},{"attributes":{},"id":"3641","type":"BasicTickFormatter"},{"attributes":{},"id":"3634","type":"AllLabels"},{"attributes":{},"id":"3694","type":"UnionRenderers"},{"attributes":{},"id":"3684","type":"UnionRenderers"},{"attributes":{"axis":{"id":"3429"},"grid_line_color":"#ffffff","grid_line_width":1.3,"minor_grid_line_width":0.5,"ticker":null},"id":"3432","type":"Grid"},{"attributes":{},"id":"3691","type":"Selection"},{"attributes":{},"id":"3631","type":"AllLabels"},{"attributes":{"axis":{"id":"3433"},"dimension":1,"grid_line_color":"#ffffff","grid_line_width":1.3,"minor_grid_line_width":0.5,"ticker":null},"id":"3436","type":"Grid"},{"attributes":{},"id":"3681","type":"UnionRenderers"},{"attributes":{"formatter":{"id":"3644"},"major_label_policy":{"id":"3643"},"major_label_text_font_size":"13pt","ticker":{"id":"3465"}},"id":"3464","type":"LinearAxis"},{"attributes":{},"id":"3465","type":"BasicTicker"},{"attributes":{"formatter":{"id":"3638"},"major_label_policy":{"id":"3637"},"major_label_text_font_size":"13pt","ticker":{"id":"3434"}},"id":"3433","type":"LinearAxis"},{"attributes":{},"id":"3692","type":"UnionRenderers"},{"attributes":{},"id":"3452","type":"DataRange1d"},{"attributes":{},"id":"3680","type":"Selection"},{"attributes":{},"id":"3696","type":"UnionRenderers"},{"attributes":{"axis":{"id":"3460"},"grid_line_color":"#ffffff","grid_line_width":1.3,"minor_grid_line_width":0.5,"ticker":null},"id":"3463","type":"Grid"},{"attributes":{"bottom_units":"screen","fill_alpha":0.5,"fill_color":"lightgrey","left_units":"screen","level":"overlay","line_alpha":1.0,"line_color":"black","line_dash":[4,4],"line_width":2,"right_units":"screen","syncable":false,"top_units":"screen"},"id":"3443","type":"BoxAnnotation"},{"attributes":{},"id":"3677","type":"UnionRenderers"},{"attributes":{},"id":"3427","type":"LinearScale"},{"attributes":{},"id":"3676","type":"Selection"},{"attributes":{},"id":"3683","type":"Selection"},{"attributes":{},"id":"3678","type":"Selection"},{"attributes":{},"id":"3688","type":"UnionRenderers"},{"attributes":{},"id":"3695","type":"Selection"},{"attributes":{"data_source":{"id":"3579"},"glyph":{"id":"3580"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"3581"},"view":{"id":"3583"}},"id":"3582","type":"GlyphRenderer"},{"attributes":{"source":{"id":"3579"}},"id":"3583","type":"CDSView"},{"attributes":{"line_alpha":0.1,"line_color":"#4b72b0","x":{"field":"x"},"y":{"field":"y"}},"id":"3581","type":"Line"},{"attributes":{"source":{"id":"3574"}},"id":"3578","type":"CDSView"},{"attributes":{"data_source":{"id":"3574"},"glyph":{"id":"3575"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"3576"},"view":{"id":"3578"}},"id":"3577","type":"GlyphRenderer"},{"attributes":{},"id":"3652","type":"UnionRenderers"},{"attributes":{"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAznADPj+MUD81KQXdXtJoP2gFhqxu9Xw/AU2EDU+vhD+Cc0aU9gafP2HD0ytlGbI/odY07zhFtz8pXI/C9SjgP0Jg5dAi2+k/ObTIdr6f9j8pXI/C9SgAQA==","dtype":"float64","order":"little","shape":[17]}},"selected":{"id":"3685"},"selection_policy":{"id":"3686"}},"id":"3579","type":"ColumnDataSource"},{"attributes":{},"id":"3649","type":"Selection"},{"attributes":{"line_color":"#4b72b0","x":{"field":"x"},"y":{"field":"y"}},"id":"3580","type":"Line"},{"attributes":{"fill_color":{"value":null},"line_color":{"value":"#4b72b0"},"size":{"value":6},"x":{"field":"x"},"y":{"field":"y"}},"id":"3575","type":"Circle"},{"attributes":{},"id":"3654","type":"UnionRenderers"},{"attributes":{"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAznADPj+MUD81KQXdXtJoP2gFhqxu9Xw/AU2EDU+vhD+Cc0aU9gafP2HD0ytlGbI/odY07zhFtz8pXI/C9SjgP0Jg5dAi2+k/ObTIdr6f9j8pXI/C9SgAQA==","dtype":"float64","order":"little","shape":[17]}},"selected":{"id":"3683"},"selection_policy":{"id":"3684"}},"id":"3574","type":"ColumnDataSource"},{"attributes":{},"id":"3629","type":"BasicTickFormatter"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":null},"line_alpha":{"value":0.1},"line_color":{"value":"#4b72b0"},"size":{"value":6},"x":{"field":"x"},"y":{"field":"y"}},"id":"3576","type":"Circle"},{"attributes":{},"id":"3650","type":"UnionRenderers"},{"attributes":{"line_alpha":0.1,"line_color":"#000000","line_dash":[6],"x":{"field":"x"},"y":{"field":"y"}},"id":"3570","type":"Line"},{"attributes":{"source":{"id":"3568"}},"id":"3572","type":"CDSView"},{"attributes":{"data_source":{"id":"3568"},"glyph":{"id":"3569"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"3570"},"view":{"id":"3572"}},"id":"3571","type":"GlyphRenderer"},{"attributes":{},"id":"3628","type":"AllLabels"},{"attributes":{"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]}},"selected":{"id":"3680"},"selection_policy":{"id":"3681"}},"id":"3568","type":"ColumnDataSource"},{"attributes":{},"id":"3665","type":"UnionRenderers"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":null},"line_alpha":{"value":0.1},"line_color":{"value":"#54a767"},"marker":{"value":"square"},"size":{"value":6},"x":{"field":"x"},"y":{"field":"y"}},"id":"3560","type":"Scatter"},{"attributes":{"source":{"id":"3614"}},"id":"3618","type":"CDSView"},{"attributes":{"line_color":"#000000","line_dash":[6],"x":{"field":"x"},"y":{"field":"y"}},"id":"3569","type":"Line"},{"attributes":{"source":{"id":"3558"}},"id":"3562","type":"CDSView"},{"attributes":{},"id":"3658","type":"UnionRenderers"},{"attributes":{"data_source":{"id":"3614"},"glyph":{"id":"3615"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"3616"},"view":{"id":"3618"}},"id":"3617","type":"GlyphRenderer"},{"attributes":{"source":{"id":"3563"}},"id":"3567","type":"CDSView"},{"attributes":{"data_source":{"id":"3563"},"glyph":{"id":"3564"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"3565"},"view":{"id":"3567"}},"id":"3566","type":"GlyphRenderer"},{"attributes":{"line_alpha":0.1,"line_color":"#54a767","x":{"field":"x"},"y":{"field":"y"}},"id":"3565","type":"Line"},{"attributes":{"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Knx0k1iQD+3+qAdJtBWP2Db7Fkh9oM/ZTkJpS+EnD9JMNXMWgrAP86luKrsu9o/xhaCHJQw7z/Opbiq7Lv6Pw==","dtype":"float64","order":"little","shape":[17]}},"selected":{"id":"3678"},"selection_policy":{"id":"3679"}},"id":"3563","type":"ColumnDataSource"},{"attributes":{},"id":"3653","type":"Selection"},{"attributes":{"line_color":"#000000","line_dash":[6],"x":{"field":"x"},"y":{"field":"y"}},"id":"3615","type":"Line"},{"attributes":{"data_source":{"id":"3558"},"glyph":{"id":"3559"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"3560"},"view":{"id":"3562"}},"id":"3561","type":"GlyphRenderer"},{"attributes":{"line_color":"#54a767","x":{"field":"x"},"y":{"field":"y"}},"id":"3564","type":"Line"},{"attributes":{},"id":"3655","type":"Selection"},{"attributes":{"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Knx0k1iQD+3+qAdJtBWP2Db7Fkh9oM/ZTkJpS+EnD9JMNXMWgrAP86luKrsu9o/xhaCHJQw7z/Opbiq7Lv6Pw==","dtype":"float64","order":"little","shape":[17]}},"selected":{"id":"3676"},"selection_policy":{"id":"3677"}},"id":"3558","type":"ColumnDataSource"},{"attributes":{},"id":"3656","type":"UnionRenderers"},{"attributes":{"fill_color":{"value":null},"line_color":{"value":"#54a767"},"marker":{"value":"square"},"size":{"value":6},"x":{"field":"x"},"y":{"field":"y"}},"id":"3559","type":"Scatter"},{"attributes":{"data_source":{"id":"3553"},"glyph":{"id":"3554"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"3555"},"view":{"id":"3557"}},"id":"3556","type":"GlyphRenderer"},{"attributes":{"source":{"id":"3553"}},"id":"3557","type":"CDSView"},{"attributes":{"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]}},"selected":{"id":"3674"},"selection_policy":{"id":"3675"}},"id":"3553","type":"ColumnDataSource"},{"attributes":{"line_alpha":0.1,"line_color":"#000000","line_dash":[6],"x":{"field":"x"},"y":{"field":"y"}},"id":"3555","type":"Line"},{"attributes":{"fill_color":{"value":null},"line_color":{"value":"#54a767"},"marker":{"value":"square"},"size":{"value":6},"x":{"field":"x"},"y":{"field":"y"}},"id":"3605","type":"Scatter"},{"attributes":{},"id":"3651","type":"Selection"},{"attributes":{"line_color":"#000000","line_dash":[6],"x":{"field":"x"},"y":{"field":"y"}},"id":"3554","type":"Line"},{"attributes":{"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]}},"selected":{"id":"3699"},"selection_policy":{"id":"3700"}},"id":"3614","type":"ColumnDataSource"},{"attributes":{"line_alpha":0.1,"line_color":"#000000","line_dash":[6],"x":{"field":"x"},"y":{"field":"y"}},"id":"3616","type":"Line"},{"attributes":{},"id":"3657","type":"Selection"},{"attributes":{"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAL26jAbwFUj9GJXUCmghrP9IA3gIJin8/ukkMAiuHhj9MN4lBYOWgP4PAyqFFtrM/8tJNYhBYuT+amZmZmZnhPylcj8L1KOw/pHA9Ctej+D+amZmZmZkBQA==","dtype":"float64","order":"little","shape":[17]}},"selected":{"id":"3695"},"selection_policy":{"id":"3696"}},"id":"3604","type":"ColumnDataSource"},{"attributes":{},"id":"3646","type":"UnionRenderers"},{"attributes":{"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhMlUwKqlTPxWMSuoENIE/+n5qvHSTmD/ZzvdT46W7PwrXo3A9Ctc/4XoUrkfh6j8K16NwPQr3Pw==","dtype":"float64","order":"little","shape":[17]}},"selected":{"id":"3664"},"selection_policy":{"id":"3665"}},"id":"3528","type":"ColumnDataSource"},{"attributes":{"source":{"id":"3528"}},"id":"3532","type":"CDSView"},{"attributes":{},"id":"3671","type":"UnionRenderers"},{"attributes":{"line_alpha":0.1,"line_color":"#4b72b0","x":{"field":"x"},"y":{"field":"y"}},"id":"3535","type":"Line"},{"attributes":{"data_source":{"id":"3533"},"glyph":{"id":"3534"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"3535"},"view":{"id":"3537"}},"id":"3536","type":"GlyphRenderer"},{"attributes":{"background_fill_color":"#eaeaea","below":[{"id":"3398"}],"center":[{"id":"3401"},{"id":"3405"}],"height":360,"left":[{"id":"3402"}],"renderers":[{"id":"3485"},{"id":"3490"},{"id":"3495"},{"id":"3500"},{"id":"3505"},{"id":"3510"},{"id":"3515"},{"id":"3520"},{"id":"3525"}],"title":{"id":"3527"},"toolbar":{"id":"3413"},"width":388,"x_range":{"id":"3390"},"x_scale":{"id":"3394"},"y_range":{"id":"3392"},"y_scale":{"id":"3396"}},"id":"3389","subtype":"Figure","type":"Plot"},{"attributes":{"line_color":"#4b72b0","x":{"field":"x"},"y":{"field":"y"}},"id":"3534","type":"Line"},{"attributes":{"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhMlUwKqlTPxWMSuoENIE/+n5qvHSTmD/ZzvdT46W7PwrXo3A9Ctc/4XoUrkfh6j8K16NwPQr3Pw==","dtype":"float64","order":"little","shape":[17]}},"selected":{"id":"3666"},"selection_policy":{"id":"3667"}},"id":"3533","type":"ColumnDataSource"},{"attributes":{"data_source":{"id":"3528"},"glyph":{"id":"3529"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"3530"},"view":{"id":"3532"}},"id":"3531","type":"GlyphRenderer"},{"attributes":{"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAexSuR+F6ZD+4HoXrUbh+P+xRuB6F65E/mpmZmZmZmT8zMzMzMzOzP2ZmZmZmZsY/zczMzMzMzD8AAAAAAAD0PwAAAAAAAABAAAAAAAAADEAAAAAAAAAUQA==","dtype":"float64","order":"little","shape":[17]}},"selected":{"id":"3691"},"selection_policy":{"id":"3692"}},"id":"3594","type":"ColumnDataSource"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":null},"line_alpha":{"value":0.1},"line_color":{"value":"#4b72b0"},"size":{"value":6},"x":{"field":"x"},"y":{"field":"y"}},"id":"3530","type":"Circle"},{"attributes":{"data_source":{"id":"3594"},"glyph":{"id":"3595"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"3596"},"view":{"id":"3598"}},"id":"3597","type":"GlyphRenderer"},{"attributes":{"fill_color":{"value":null},"line_color":{"value":"#4b72b0"},"size":{"value":6},"x":{"field":"x"},"y":{"field":"y"}},"id":"3529","type":"Circle"},{"attributes":{},"id":"3670","type":"Selection"},{"attributes":{"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Knx0k1iUD+Qa0PFOH9TPx7+mqxRD4E/dEaU9gZfmD9Cz2bV52q7PwwCK4cW2dY/Di2yne+n6j8MAiuHFtn2Pw==","dtype":"float64","order":"little","shape":[17]}},"selected":{"id":"3670"},"selection_policy":{"id":"3671"}},"id":"3543","type":"ColumnDataSource"},{"attributes":{},"id":"3664","type":"Selection"},{"attributes":{"source":{"id":"3548"}},"id":"3552","type":"CDSView"},{"attributes":{"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Knx0k1iUD+Qa0PFOH9TPx7+mqxRD4E/dEaU9gZfmD9Cz2bV52q7PwwCK4cW2dY/Di2yne+n6j8MAiuHFtn2Pw==","dtype":"float64","order":"little","shape":[17]}},"selected":{"id":"3672"},"selection_policy":{"id":"3673"}},"id":"3548","type":"ColumnDataSource"},{"attributes":{"fill_color":{"value":null},"line_color":{"value":"#c34e52"},"marker":{"value":"cross"},"size":{"value":6},"x":{"field":"x"},"y":{"field":"y"}},"id":"3590","type":"Scatter"},{"attributes":{"line_color":"#000000","line_dash":[6],"x":{"field":"x"},"y":{"field":"y"}},"id":"3600","type":"Line"},{"attributes":{"data_source":{"id":"3538"},"glyph":{"id":"3539"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"3540"},"view":{"id":"3542"}},"id":"3541","type":"GlyphRenderer"},{"attributes":{"fill_color":{"value":null},"line_color":{"value":"#c34e52"},"marker":{"value":"cross"},"size":{"value":6},"x":{"field":"x"},"y":{"field":"y"}},"id":"3544","type":"Scatter"},{"attributes":{"line_color":"#c34e52","x":{"field":"x"},"y":{"field":"y"}},"id":"3595","type":"Line"},{"attributes":{},"id":"3669","type":"UnionRenderers"},{"attributes":{"source":{"id":"3538"}},"id":"3542","type":"CDSView"},{"attributes":{"source":{"id":"3594"}},"id":"3598","type":"CDSView"},{"attributes":{"data_source":{"id":"3584"},"glyph":{"id":"3585"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"3586"},"view":{"id":"3588"}},"id":"3587","type":"GlyphRenderer"},{"attributes":{"line_alpha":0.1,"line_color":"#000000","line_dash":[6],"x":{"field":"x"},"y":{"field":"y"}},"id":"3540","type":"Line"},{"attributes":{"line_alpha":0.1,"line_color":"#c34e52","x":{"field":"x"},"y":{"field":"y"}},"id":"3596","type":"Line"},{"attributes":{"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]}},"selected":{"id":"3668"},"selection_policy":{"id":"3669"}},"id":"3538","type":"ColumnDataSource"},{"attributes":{"line_color":"#000000","line_dash":[6],"x":{"field":"x"},"y":{"field":"y"}},"id":"3539","type":"Line"},{"attributes":{"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]}},"selected":{"id":"3687"},"selection_policy":{"id":"3688"}},"id":"3584","type":"ColumnDataSource"},{"attributes":{"line_alpha":0.1,"line_color":"#000000","line_dash":[6],"x":{"field":"x"},"y":{"field":"y"}},"id":"3586","type":"Line"},{"attributes":{},"id":"3668","type":"Selection"},{"attributes":{},"id":"3410","type":"ResetTool"},{"attributes":{"axis":{"id":"3398"},"grid_line_color":"#ffffff","grid_line_width":1.3,"minor_grid_line_width":0.5,"ticker":null},"id":"3401","type":"Grid"},{"attributes":{},"id":"3403","type":"BasicTicker"},{"attributes":{"line_color":"#c34e52","x":{"field":"x"},"y":{"field":"y"}},"id":"3549","type":"Line"},{"attributes":{"source":{"id":"3589"}},"id":"3593","type":"CDSView"},{"attributes":{"active_multi":null,"tools":[{"id":"3406"},{"id":"3407"},{"id":"3408"},{"id":"3409"},{"id":"3410"},{"id":"3411"}]},"id":"3413","type":"Toolbar"},{"attributes":{"line_alpha":0.1,"line_color":"#c34e52","x":{"field":"x"},"y":{"field":"y"}},"id":"3550","type":"Line"},{"attributes":{"data_source":{"id":"3548"},"glyph":{"id":"3549"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"3550"},"view":{"id":"3552"}},"id":"3551","type":"GlyphRenderer"},{"attributes":{},"id":"3407","type":"WheelZoomTool"},{"attributes":{"axis_label":"I [A]","axis_label_text_color":"#000000","axis_label_text_font":"sans-serif","axis_label_text_font_size":"14pt","formatter":{"id":"3632"},"major_label_policy":{"id":"3631"},"major_label_text_font_size":"13pt","ticker":{"id":"3403"}},"id":"3402","type":"LinearAxis"},{"attributes":{},"id":"3406","type":"PanTool"},{"attributes":{},"id":"3396","type":"LinearScale"},{"attributes":{},"id":"3473","type":"HelpTool"},{"attributes":{"source":{"id":"3584"}},"id":"3588","type":"CDSView"},{"attributes":{},"id":"3411","type":"HelpTool"},{"attributes":{"source":{"id":"3599"}},"id":"3603","type":"CDSView"},{"attributes":{},"id":"3659","type":"Selection"},{"attributes":{},"id":"3390","type":"DataRange1d"},{"attributes":{},"id":"3666","type":"Selection"},{"attributes":{"axis_label":"Voltage","axis_label_text_color":"#000000","axis_label_text_font":"sans-serif","axis_label_text_font_size":"14pt","formatter":{"id":"3629"},"major_label_policy":{"id":"3628"},"major_label_text_font_size":"13pt","ticker":{"id":"3399"}},"id":"3398","type":"LinearAxis"},{"attributes":{"data_source":{"id":"3599"},"glyph":{"id":"3600"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"3601"},"view":{"id":"3603"}},"id":"3602","type":"GlyphRenderer"},{"attributes":{"data_source":{"id":"3543"},"glyph":{"id":"3544"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"3545"},"view":{"id":"3547"}},"id":"3546","type":"GlyphRenderer"},{"attributes":{"overlay":{"id":"3412"}},"id":"3408","type":"BoxZoomTool"},{"attributes":{},"id":"3660","type":"UnionRenderers"},{"attributes":{"background_fill_color":"#eaeaea","below":[{"id":"3460"}],"center":[{"id":"3463"},{"id":"3467"}],"height":360,"left":[{"id":"3464"}],"renderers":[{"id":"3577"},{"id":"3582"},{"id":"3587"},{"id":"3592"},{"id":"3597"},{"id":"3602"},{"id":"3607"},{"id":"3612"},{"id":"3617"}],"title":{"id":"3619"},"toolbar":{"id":"3475"},"width":355,"x_range":{"id":"3452"},"x_scale":{"id":"3456"},"y_range":{"id":"3454"},"y_scale":{"id":"3458"}},"id":"3451","subtype":"Figure","type":"Plot"},{"attributes":{"source":{"id":"3543"}},"id":"3547","type":"CDSView"},{"attributes":{"line_alpha":0.1,"line_color":"#000000","line_dash":[6],"x":{"field":"x"},"y":{"field":"y"}},"id":"3601","type":"Line"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":null},"line_alpha":{"value":0.1},"line_color":{"value":"#c34e52"},"marker":{"value":"cross"},"size":{"value":6},"x":{"field":"x"},"y":{"field":"y"}},"id":"3545","type":"Scatter"},{"attributes":{},"id":"3674","type":"Selection"},{"attributes":{},"id":"3399","type":"BasicTicker"},{"attributes":{},"id":"3394","type":"LinearScale"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":null},"line_alpha":{"value":0.1},"line_color":{"value":"#c34e52"},"marker":{"value":"cross"},"size":{"value":6},"x":{"field":"x"},"y":{"field":"y"}},"id":"3591","type":"Scatter"},{"attributes":{"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAexSuR+F6ZD+4HoXrUbh+P+xRuB6F65E/mpmZmZmZmT8zMzMzMzOzP2ZmZmZmZsY/zczMzMzMzD8AAAAAAAD0PwAAAAAAAABAAAAAAAAADEAAAAAAAAAUQA==","dtype":"float64","order":"little","shape":[17]}},"selected":{"id":"3689"},"selection_policy":{"id":"3690"}},"id":"3589","type":"ColumnDataSource"},{"attributes":{"source":{"id":"3533"}},"id":"3537","type":"CDSView"},{"attributes":{"line_color":"#000000","line_dash":[6],"x":{"field":"x"},"y":{"field":"y"}},"id":"3585","type":"Line"},{"attributes":{},"id":"3661","type":"Selection"},{"attributes":{},"id":"3667","type":"UnionRenderers"},{"attributes":{},"id":"3392","type":"DataRange1d"},{"attributes":{"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","order":"little","shape":[17]}},"selected":{"id":"3693"},"selection_policy":{"id":"3694"}},"id":"3599","type":"ColumnDataSource"},{"attributes":{},"id":"3647","type":"Selection"},{"attributes":{},"id":"3643","type":"AllLabels"},{"attributes":{"background_fill_color":"#eaeaea","below":[{"id":"3429"}],"center":[{"id":"3432"},{"id":"3436"}],"height":360,"left":[{"id":"3433"}],"renderers":[{"id":"3531"},{"id":"3536"},{"id":"3541"},{"id":"3546"},{"id":"3551"},{"id":"3556"},{"id":"3561"},{"id":"3566"},{"id":"3571"}],"title":{"id":"3573"},"toolbar":{"id":"3444"},"width":355,"x_range":{"id":"3421"},"x_scale":{"id":"3425"},"y_range":{"id":"3423"},"y_scale":{"id":"3427"}},"id":"3420","subtype":"Figure","type":"Plot"},{"attributes":{},"id":"3648","type":"UnionRenderers"},{"attributes":{},"id":"3673","type":"UnionRenderers"},{"attributes":{},"id":"3421","type":"DataRange1d"},{"attributes":{"axis":{"id":"3402"},"dimension":1,"grid_line_color":"#ffffff","grid_line_width":1.3,"minor_grid_line_width":0.5,"ticker":null},"id":"3405","type":"Grid"},{"attributes":{},"id":"3662","type":"UnionRenderers"},{"attributes":{},"id":"3409","type":"SaveTool"},{"attributes":{},"id":"3672","type":"Selection"},{"attributes":{"data_source":{"id":"3589"},"glyph":{"id":"3590"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"3591"},"view":{"id":"3593"}},"id":"3592","type":"GlyphRenderer"},{"attributes":{},"id":"3468","type":"PanTool"},{"attributes":{},"id":"3644","type":"BasicTickFormatter"},{"attributes":{"active_multi":null,"tools":[{"id":"3468"},{"id":"3469"},{"id":"3470"},{"id":"3471"},{"id":"3472"},{"id":"3473"}]},"id":"3475","type":"Toolbar"},{"attributes":{"source":{"id":"3522"}},"id":"3526","type":"CDSView"},{"attributes":{},"id":"3472","type":"ResetTool"},{"attributes":{},"id":"3471","type":"SaveTool"},{"attributes":{"axis":{"id":"3464"},"dimension":1,"grid_line_color":"#ffffff","grid_line_width":1.3,"minor_grid_line_width":0.5,"ticker":null},"id":"3467","type":"Grid"},{"attributes":{"overlay":{"id":"3474"}},"id":"3470","type":"BoxZoomTool"},{"attributes":{},"id":"3469","type":"WheelZoomTool"}],"root_ids":["3620"]},"title":"Bokeh Application","version":"2.3.3"}}
-        </script>
-        <script type="text/javascript">
-          (function() {
-            var fn = function() {
-              Bokeh.safely(function() {
-                (function(root) {
-                  function embed_document(root) {
-
-                  var docs_json = document.getElementById('4431').textContent;
-                  var render_items = [{"docid":"c0fa9279-d90b-41e8-aeda-ff1e4c275a18","root_ids":["3620"],"roots":{"3620":"8dea4b75-eea4-4e96-a104-6f6b243bc259"}}];
-                  root.Bokeh.embed.embed_items(docs_json, render_items);
-
-                  }
-                  if (root.Bokeh !== undefined) {
-                    embed_document(root);
-                  } else {
-                    var attempts = 0;
-                    var timer = setInterval(function(root) {
-                      if (root.Bokeh !== undefined) {
-                        clearInterval(timer);
-                        embed_document(root);
-                      } else {
-                        attempts++;
-                        if (attempts > 100) {
-                          clearInterval(timer);
-                          console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing");
-                        }
-                      }
-                    }, 10, root)
-                  }
-                })(window);
-              });
-            };
-            if (document.readyState != "loading") fn();
-            else document.addEventListener("DOMContentLoaded", fn);
-          })();
-        </script>
-
-  </body>
-
-</html></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Opening in existing browser session.
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;tests/fake_ts.csv&#39;</span><span class="p">)</span>
 <span class="n">ts</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
@@ -1027,10 +789,10 @@ Opening in existing browser session.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_18_0.png" src="_images/plot_18_0.png" />
+<img alt="_images/plot_15_0.png" src="_images/plot_15_0.png" />
 </div>
 </div>
-<p>For better visibility, we can subset the data to show only diodes that meet certain criteria. This is accomplished using the <code class="docutils literal notranslate"><span class="pre">filter</span></code> kwarg from fivecentplots :</p>
+<p>For better visibility, we can subset the data to show only diodes that meet certain criteria. This is accomplished using the <code class="docutils literal notranslate"><span class="pre">filter</span></code> kwarg from fivecentplots:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -1045,10 +807,10 @@ Opening in existing browser session.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_20_0.png" src="_images/plot_20_0.png" />
+<img alt="_images/plot_17_0.png" src="_images/plot_17_0.png" />
 </div>
 </div>
-<div class="admonition note"><p class="admonition-title"></p><p><p>In the example above, we are selecting specific data based on values in four different <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> columns (“Substrate”, “Target Wavelength”, “Boost Level”, and “Temperature”). This is conveniently achieved using fivecentplots ’s built-in <code class="docutils literal notranslate"><span class="pre">filter</span></code> tool, which uses an easy, human-readable string to sub-sample a dataset. Alternatively, could also have applied filtering directly to the input DataFrame as shown below, but this feels a bit cumbersome:</p>
+<div class="admonition note"><p class="admonition-title"></p><p><p>In the example above, we are selecting specific data based on values in four different DataFrame columns (“Substrate”, “Target Wavelength”, “Boost Level”, and “Temperature”). This is conveniently achieved using fivecentplots’s built-in <code class="docutils literal notranslate"><span class="pre">filter</span></code> tool, which uses an easy, human-readable string to sub-sample a dataset. Alternatively, could also have applied filtering directly to the input DataFrame as shown below, but this feels a bit cumbersome:</p>
 <p><code class="docutils literal notranslate"><span class="pre">df_sub</span> <span class="pre">=</span> <span class="pre">df[(df['Substrate']==&quot;Si&quot;)&amp;(df['Target</span> <span class="pre">Wavelength']==450)&amp;(df['Boost</span> <span class="pre">Level']==0.2)&amp;(df['Temperature</span> <span class="pre">[C]']==25)]</span></code></p>
 <p>Read more about fivecentplots filtering here.</p>
 </p></div></div>
@@ -1069,7 +831,7 @@ Opening in existing browser session.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_24_0.png" src="_images/plot_24_0.png" />
+<img alt="_images/plot_21_0.png" src="_images/plot_21_0.png" />
 </div>
 </div>
 <p>By default, the values in the legend are sorted using so-called “natural” sorting via the <code class="docutils literal notranslate"><span class="pre">natsort</span></code> library. To disable this and order the legend based on the order in which the group was actually found in the dataframe, add the keyword <code class="docutils literal notranslate"><span class="pre">sort=False</span></code>:</p>
@@ -1087,7 +849,7 @@ Opening in existing browser session.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_26_0.png" src="_images/plot_26_0.png" />
+<img alt="_images/plot_23_0.png" src="_images/plot_23_0.png" />
 </div>
 </div>
 </div>
@@ -1114,7 +876,7 @@ Opening in existing browser session.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_30_0.png" src="_images/plot_30_0.png" />
+<img alt="_images/plot_27_0.png" src="_images/plot_27_0.png" />
 </div>
 </div>
 </div>
@@ -1134,7 +896,7 @@ Opening in existing browser session.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_33_0.png" src="_images/plot_33_0.png" />
+<img alt="_images/plot_30_0.png" src="_images/plot_30_0.png" />
 </div>
 </div>
 </div>
@@ -1154,7 +916,7 @@ Opening in existing browser session.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_36_0.png" src="_images/plot_36_0.png" />
+<img alt="_images/plot_33_0.png" src="_images/plot_33_0.png" />
 </div>
 </div>
 </div>
@@ -1179,7 +941,7 @@ Opening in existing browser session.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_41_0.png" src="_images/plot_41_0.png" />
+<img alt="_images/plot_38_0.png" src="_images/plot_38_0.png" />
 </div>
 </div>
 <p>Next, the same plot but with a legend enabled. Note that the legend will describe the value from the <code class="docutils literal notranslate"><span class="pre">legend</span></code> column and the value associated with the curve (either the primary or the secondary axis):</p>
@@ -1197,7 +959,7 @@ Opening in existing browser session.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_43_0.png" src="_images/plot_43_0.png" />
+<img alt="_images/plot_40_0.png" src="_images/plot_40_0.png" />
 </div>
 </div>
 <p>Next, the same plot but with secondary gridlines enabled:</p>
@@ -1216,7 +978,7 @@ Opening in existing browser session.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_45_0.png" src="_images/plot_45_0.png" />
+<img alt="_images/plot_42_0.png" src="_images/plot_42_0.png" />
 </div>
 </div>
 </div>
@@ -1237,7 +999,7 @@ Opening in existing browser session.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_48_0.png" src="_images/plot_48_0.png" />
+<img alt="_images/plot_45_0.png" src="_images/plot_45_0.png" />
 </div>
 </div>
 </div>
@@ -1262,7 +1024,7 @@ Opening in existing browser session.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_53_0.png" src="_images/plot_53_0.png" />
+<img alt="_images/plot_50_0.png" src="_images/plot_50_0.png" />
 </div>
 </div>
 <p>And with a custom <code class="docutils literal notranslate"><span class="pre">label_y</span></code>:</p>
@@ -1280,7 +1042,7 @@ Opening in existing browser session.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_55_0.png" src="_images/plot_55_0.png" />
+<img alt="_images/plot_52_0.png" src="_images/plot_52_0.png" />
 </div>
 </div>
 </div>
@@ -1301,7 +1063,7 @@ Opening in existing browser session.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_58_0.png" src="_images/plot_58_0.png" />
+<img alt="_images/plot_55_0.png" src="_images/plot_55_0.png" />
 </div>
 </div>
 </div>
@@ -1322,7 +1084,7 @@ Opening in existing browser session.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_61_0.png" src="_images/plot_61_0.png" />
+<img alt="_images/plot_58_0.png" src="_images/plot_58_0.png" />
 </div>
 </div>
 </div>
@@ -1354,7 +1116,7 @@ Opening in existing browser session.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_66_0.png" src="_images/plot_66_0.png" />
+<img alt="_images/plot_63_0.png" src="_images/plot_63_0.png" />
 </div>
 </div>
 </div>
@@ -1375,7 +1137,7 @@ Opening in existing browser session.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_69_0.png" src="_images/plot_69_0.png" />
+<img alt="_images/plot_66_0.png" src="_images/plot_66_0.png" />
 </div>
 </div>
 </div>
@@ -1396,7 +1158,7 @@ Opening in existing browser session.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_72_0.png" src="_images/plot_72_0.png" />
+<img alt="_images/plot_69_0.png" src="_images/plot_69_0.png" />
 </div>
 </div>
 </div>
@@ -1419,7 +1181,7 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_75_0.png" src="_images/plot_75_0.png" />
+<img alt="_images/plot_72_0.png" src="_images/plot_72_0.png" />
 </div>
 </div>
 <p>Custom number of columns:</p>
@@ -1437,7 +1199,7 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_77_0.png" src="_images/plot_77_0.png" />
+<img alt="_images/plot_74_0.png" src="_images/plot_74_0.png" />
 </div>
 </div>
 </div>
@@ -1478,7 +1240,7 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_83_0.png" src="_images/plot_83_0.png" />
+<img alt="_images/plot_80_0.png" src="_images/plot_80_0.png" />
 </div>
 </div>
 <p>Next we plot multiple horizontal and vertical lines at the same time and use the tuple formulation to style them independently (note one line contains the tuple value for legend name and thus is shown in the legend):</p>
@@ -1498,7 +1260,7 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_85_0.png" src="_images/plot_85_0.png" />
+<img alt="_images/plot_82_0.png" src="_images/plot_82_0.png" />
 </div>
 </div>
 <p>We can also plot ax_lines using data from a DataFrame column. Below we define a new column and plot the value from the first row as a horizontal line:</p>
@@ -1518,7 +1280,7 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_87_0.png" src="_images/plot_87_0.png" />
+<img alt="_images/plot_84_0.png" src="_images/plot_84_0.png" />
 </div>
 </div>
 </div>
@@ -1540,7 +1302,7 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_90_0.png" src="_images/plot_90_0.png" />
+<img alt="_images/plot_87_0.png" src="_images/plot_87_0.png" />
 </div>
 </div>
 <p>Since this fit is garbage, let’s make it a polynomial of degree 5. We’ll also disable the legend just because:</p>
@@ -1559,7 +1321,7 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_92_0.png" src="_images/plot_92_0.png" />
+<img alt="_images/plot_89_0.png" src="_images/plot_89_0.png" />
 </div>
 </div>
 <p>Let’s return to our linear fit example. After about Voltage = 1.3V, the response looks somewhat linear. We can constrain the region of interest for the fit by supplying a start and stop value to the keywords <code class="docutils literal notranslate"><span class="pre">fit_range_x</span></code> (which selects data points that fall within this range on the x-axis) or <code class="docutils literal notranslate"><span class="pre">fit_range_y</span></code> (which selects data points that fall within this range on the y-axis). The R^2 of this fit looks much better than before.</p>
@@ -1578,7 +1340,7 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_94_0.png" src="_images/plot_94_0.png" />
+<img alt="_images/plot_91_0.png" src="_images/plot_91_0.png" />
 </div>
 </div>
 <p>In the case of multiple datasets, we can also add a line of fit for each item in a legend by specifying a DataFrame column in the <code class="docutils literal notranslate"><span class="pre">legend</span></code> keyword:</p>
@@ -1597,7 +1359,7 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_96_0.png" src="_images/plot_96_0.png" />
+<img alt="_images/plot_93_0.png" src="_images/plot_93_0.png" />
 </div>
 </div>
 <p>Fits also work with subplot grouping:</p>
@@ -1616,7 +1378,7 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_98_0.png" src="_images/plot_98_0.png" />
+<img alt="_images/plot_95_0.png" src="_images/plot_95_0.png" />
 </div>
 </div>
 </div>
@@ -1637,7 +1399,7 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_101_0.png" src="_images/plot_101_0.png" />
+<img alt="_images/plot_98_0.png" src="_images/plot_98_0.png" />
 </div>
 </div>
 <p>One option to deal with this is to sort the DataFrame by x-value. Unfortunately, this can result in a very jagged mess as lines are drawn between points with similar x-value but different y-value.</p>
@@ -1657,7 +1419,7 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_103_0.png" src="_images/plot_103_0.png" />
+<img alt="_images/plot_100_0.png" src="_images/plot_100_0.png" />
 </div>
 </div>
 <p>Rather than drawing connecting lines between all points, fivecentplots allows you to select a representative statistic of the data at each value (such as the median) and plot a line based on this value instead. This is accomplished using the <code class="docutils literal notranslate"><span class="pre">stat</span></code> keyword (any stats that can be applied to a pandas <code class="docutils literal notranslate"><span class="pre">groupby</span></code> object are valid).</p>
@@ -1676,7 +1438,7 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_105_0.png" src="_images/plot_105_0.png" />
+<img alt="_images/plot_102_0.png" src="_images/plot_102_0.png" />
 </div>
 </div>
 <p>Alternatively, if we plot Current vs Voltage, our mean stat line becomes jagged and nasty. This is due to the fact that the current values for each voltage point vary between datasets. This is not any better than just plotting a simple connecting line between points.</p>
@@ -1694,7 +1456,7 @@ total number of subplot windows. However, the number of columns in a wrap plot c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_107_0.png" src="_images/plot_107_0.png" />
+<img alt="_images/plot_104_0.png" src="_images/plot_104_0.png" />
 </div>
 </div>
 <p>For cases where the x-values are not identical and have some jitter from one dataset to the next, you can use the keyword <code class="docutils literal notranslate"><span class="pre">stat_val</span></code> and specify an alternative DataFrame column to use for the statistical calculation (the actual plotted x-axis will still be whatever is specified for the <code class="docutils literal notranslate"><span class="pre">x</span></code> keyword). Here we use a column called “I Set” which represents the setpoint current while “I [A]” represents the actual measured current. We still have some jaggedness in the stat line but it is now
@@ -1713,7 +1475,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_109_0.png" src="_images/plot_109_0.png" />
+<img alt="_images/plot_106_0.png" src="_images/plot_106_0.png" />
 </div>
 </div>
 <p>Stat lines also work with multiple DataFrame columns are plotted on a given axis. For example, consider the following with two values on the y-axis:</p>
@@ -1731,7 +1493,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_111_0.png" src="_images/plot_111_0.png" />
+<img alt="_images/plot_108_0.png" src="_images/plot_108_0.png" />
 </div>
 </div>
 </div>
@@ -1826,7 +1588,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_117_0.png" src="_images/plot_117_0.png" />
+<img alt="_images/plot_114_0.png" src="_images/plot_114_0.png" />
 </div>
 </div>
 <p>Next we show the IQR around each point based on the 25th and 75th percentiles:</p>
@@ -1843,7 +1605,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_119_0.png" src="_images/plot_119_0.png" />
+<img alt="_images/plot_116_0.png" src="_images/plot_116_0.png" />
 </div>
 </div>
 <p>Lastly we show the +/-2 sigma range of each data point:</p>
@@ -1860,7 +1622,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_121_0.png" src="_images/plot_121_0.png" />
+<img alt="_images/plot_118_0.png" src="_images/plot_118_0.png" />
 </div>
 </div>
 <p>We can style the shaded interval region using kwargs that relate to the type of interval. Here is an example for the <code class="docutils literal notranslate"><span class="pre">nq_int</span></code> option:</p>
@@ -1878,7 +1640,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_123_0.png" src="_images/plot_123_0.png" />
+<img alt="_images/plot_120_0.png" src="_images/plot_120_0.png" />
 </div>
 </div>
 </div>
@@ -1899,7 +1661,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_126_0.png" src="_images/plot_126_0.png" />
+<img alt="_images/plot_123_0.png" src="_images/plot_123_0.png" />
 </div>
 </div>
 <p>Now consider the case where we have both an upper and a lower control limit. Again, notice that the ranges outside of the limits are shaded. We will also enable a legend to make the meaning of the shaded region obvious.</p>
@@ -1916,7 +1678,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_128_0.png" src="_images/plot_128_0.png" />
+<img alt="_images/plot_125_0.png" src="_images/plot_125_0.png" />
 </div>
 </div>
 <p>We can invert the shading behavior to show points that fall within our target range using the keyword <code class="docutils literal notranslate"><span class="pre">control_limit_side=&quot;inside&quot;</span></code> (“outside” is used by default). If both ucl and lcl are defined, use kwargs for lcl to style the shaded region):</p>
@@ -1934,7 +1696,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_130_0.png" src="_images/plot_130_0.png" />
+<img alt="_images/plot_127_0.png" src="_images/plot_127_0.png" />
 </div>
 </div>
 </div>
@@ -1958,7 +1720,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_134_0.png" src="_images/plot_134_0.png" />
+<img alt="_images/plot_131_0.png" src="_images/plot_131_0.png" />
 </div>
 </div>
 <p>We can also add multiple reference lines to a single plot:</p>
@@ -1980,7 +1742,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_136_0.png" src="_images/plot_136_0.png" />
+<img alt="_images/plot_133_0.png" src="_images/plot_133_0.png" />
 </div>
 </div>
 </div>
@@ -2002,7 +1764,7 @@ representative of the actual dataset and not overwhelmed by minor jitter in the 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/plot_139_0.png" src="_images/plot_139_0.png" />
+<img alt="_images/plot_136_0.png" src="_images/plot_136_0.png" />
 </div>
 </div>
 </div>
