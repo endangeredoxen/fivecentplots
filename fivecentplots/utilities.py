@@ -8,6 +8,7 @@ import scipy.stats as ss
 import datetime
 import subprocess
 import pathlib
+import shlex
 from matplotlib.font_manager import FontProperties, findfont
 try:
     from PIL import ImageFont
@@ -256,7 +257,8 @@ def df_filter(df: pd.DataFrame, filt_orig: str, drop_cols: bool = False,
             key, val = aa.split('in ')
             key = key.rstrip(' ')
             key = 'fCp%s' % special_chars(key)
-            vals = val.replace('[', '').replace(']', '').split(',')
+            vals = val.replace('[', '').replace(']', '')
+            vals = shlex.split(vals, ',', posix=False)
             for iv, vv in enumerate(vals):
                 vals[iv] = vv.lstrip().rstrip()
             key2 = '|' + key + '=='
