@@ -104,13 +104,7 @@
 <li class="toctree-l1"><a class="reference internal" href="grouping.html">Grouping data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="styles.html">Styles and formatting</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Data ranges</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#Setup">Setup</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#Imports">Imports</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Read-sample-data">Read sample data</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Set-theme">Set theme</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Other">Other</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#Setup">Setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Default-limits">Default limits</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Explicit-limits">Explicit limits</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Primary-axes-only">Primary axes only</a></li>
@@ -491,11 +485,15 @@ div.rendered_html tbody tr:hover {
 }
 </style>
 <div class="section" id="Data-ranges">
-<h1>Data ranges<a class="headerlink" href="#Data-ranges" title="Permalink to this headline">¶</a></h1>This section provides examples of how to set data ranges for a plot via keyword arguments.  Options include:
-<br><div class="section" id="Setup">
+<h1>Data ranges<a class="headerlink" href="#Data-ranges" title="Permalink to this headline">¶</a></h1>
+<p>This section provides examples of how to set data ranges for a plot via keyword arguments. Options include:</p>
+<ul><li><p>automatically calculating limits based on a percentage of the total data range</p>
+</li><li><p>explicitly setting limits for a given axis</p>
+</li><li><p>setting limits based on a quantile statistic</p>
+</li><li><p>sharing or not sharing limits across subplots</p>
+</li></ul><div class="section" id="Setup">
 <h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="Imports">
-<h3>Imports<a class="headerlink" href="#Imports" title="Permalink to this headline">¶</a></h3>
+<p>Import packages:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -503,32 +501,24 @@ div.rendered_html tbody tr:hover {
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="o">%</span><span class="k">load_ext</span> autoreload
 <span class="o">%</span><span class="k">autoreload</span> 2
-<span class="o">%</span><span class="k">matplotlib</span> inline
 <span class="kn">import</span> <span class="nn">fivecentplots</span> <span class="k">as</span> <span class="nn">fcp</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">pdb</span>
-<span class="n">osjoin</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span>
-<span class="n">db</span> <span class="o">=</span> <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="Read-sample-data">
-<h3>Read sample data<a class="headerlink" href="#Read-sample-data" title="Permalink to this headline">¶</a></h3>
+<p>Read some dummy data for examples:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">osjoin</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;tests&#39;</span><span class="p">,</span> <span class="s1">&#39;fake_data.csv&#39;</span><span class="p">))</span>
-<span class="n">df_box</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">osjoin</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;tests&#39;</span><span class="p">,</span> <span class="s1">&#39;fake_data_box.csv&#39;</span><span class="p">))</span>
+<span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;tests/fake_data.csv&#39;</span><span class="p">)</span>
+<span class="n">df_box</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;tests/fake_data_box.csv&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="Set-theme">
-<h3>Set theme<a class="headerlink" href="#Set-theme" title="Permalink to this headline">¶</a></h3>
+<p>Optionally set the design theme (skipping here and using default):</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -540,22 +530,9 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 </div>
-<div class="section" id="Other">
-<h3>Other<a class="headerlink" href="#Other" title="Permalink to this headline">¶</a></h3>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">SHOW</span> <span class="o">=</span> <span class="kc">False</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
 <div class="section" id="Default-limits">
 <h2>Default limits<a class="headerlink" href="#Default-limits" title="Permalink to this headline">¶</a></h2>
-<p>When no limits are specified, fivecentplots will attempt to choose reasonable axis limits automatically. This is done by subtracting or adding a percentage of the total data range to the minimum or maximum limit, respectively. Consider the following example:</p>
+<p>When no limits are specified, <strong>fivecentplots</strong> will attempt to choose reasonable axis limits automatically. This is done by subtracting or adding a percentage of the total data range to the minimum or maximum limit, respectively. Consider the following example:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -564,7 +541,7 @@ div.rendered_html tbody tr:hover {
 <span></span><span class="n">sub</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">Substrate</span><span class="o">==</span><span class="s1">&#39;Si&#39;</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Target Wavelength&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">450</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">]</span><span class="o">==</span><span class="mf">0.2</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">25</span><span class="p">)]</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;xmin=</span><span class="si">%s</span><span class="s1">, xmax=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">sub</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">sub</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()))</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ymin=</span><span class="si">%s</span><span class="s1">, ymax=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">sub</span><span class="p">[</span><span class="s1">&#39;I [A]&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">sub</span><span class="p">[</span><span class="s1">&#39;I [A]&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()))</span>
-<span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">sub</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">)</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sub</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -581,19 +558,39 @@ ymin=0.0, ymax=1.255
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ranges_13_1.png" src="_images/ranges_13_1.png" />
+<img alt="_images/ranges_11_1.png" src="_images/ranges_11_1.png" />
 </div>
 </div>
-<p>Notice the actual <code class="docutils literal notranslate"><span class="pre">x</span></code> data range goes from 0 to 1.6 but the x-limits on the plot go from -0.08 to 1.68 or 5% beyond the x-range. By default, fivecentplots uses a 5% buffer on non-specified axis limits. For a log-scaled axis, the data range is calculated as <code class="docutils literal notranslate"><span class="pre">np.log10(max_val)</span> <span class="pre">-</span> <span class="pre">np.log10(min_val)</span></code> to ensure an effective 5% buffer on the linear-scale of the plot window. This percentage can be customized by keyword argument or in the theme file by setting <code class="docutils literal notranslate"><span class="pre">ax_limit_padding</span></code> to a percentage
-value divided by 100. Additionally, the padding limit can be set differently for each axis by including the axis name and min/max target in the keyword (such as <code class="docutils literal notranslate"><span class="pre">ax_limit_padding_x_min</span></code>.</p>
+<p>Notice the actual <code class="docutils literal notranslate"><span class="pre">x</span></code> data range goes from 0 to 1.6 but the x-limits on the plot go from -0.08 to 1.68 or 5% beyond the x-range. <strong>fivecentplots</strong> uses a 5% buffer on non-specified axis limits. For a log-scaled axis, the data range is calculated as <code class="docutils literal notranslate"><span class="pre">np.log10(max_val)</span> <span class="pre">-</span> <span class="pre">np.log10(min_val)</span></code> to ensure an effective 5% buffer on the linear-scale of the plot window. This percentage can be customized by keyword argument or in the theme file by setting <code class="docutils literal notranslate"><span class="pre">ax_limit_padding</span></code> to a percentage value.
+Additionally, the padding limit can be set differently for each axis by including the axis name and min/max target in the keyword (such as <code class="docutils literal notranslate"><span class="pre">ax_limit_padding_x_min</span></code>).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sub</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">ax_limit_padding</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/ranges_13_0.png" src="_images/ranges_13_0.png" />
+</div>
+</div>
 </div>
 <div class="section" id="Explicit-limits">
 <h2>Explicit limits<a class="headerlink" href="#Explicit-limits" title="Permalink to this headline">¶</a></h2>
-<p>In many cases we want to plot data over a specific data range. This is accomplished by passing set limit values as keywords in the plot command. The following axis can be specified:</p>
-<ul><li><p><code class="docutils literal notranslate"><span class="pre">x</span></code> (primary x-axis)</p>
-</li><li><p><code class="docutils literal notranslate"><span class="pre">x2</span></code> (secondary x-axis when <code class="docutils literal notranslate"><span class="pre">twin_y=True</span></code>)</p>
-</li><li><p><code class="docutils literal notranslate"><span class="pre">y</span></code> (primary y-axis)</p>
-</li><li><p><code class="docutils literal notranslate"><span class="pre">y2</span></code> (secondary y-axis when <code class="docutils literal notranslate"><span class="pre">twin_x=True)&lt;/li&gt;</span> <span class="pre">&lt;li&gt;</span></code>x<code class="docutils literal notranslate"><span class="pre">(primary</span> <span class="pre">z-axis</span> <span class="pre">[for</span> <span class="pre">heatmaps</span> <span class="pre">and</span> <span class="pre">contours</span> <span class="pre">this</span> <span class="pre">is</span> <span class="pre">the</span> <span class="pre">colorbar</span> <span class="pre">axis])&lt;/li&gt;</span> <span class="pre">&lt;/ul&gt;</span>&#160;&#160;&#160; <span class="pre">Each</span> <span class="pre">axis</span> <span class="pre">has</span> <span class="pre">a</span></code>min<code class="docutils literal notranslate"><span class="pre">or</span> <span class="pre">a</span></code>max` value that can be specified.</p>
+<p>In many cases we want to plot data over a specific data range. This is accomplished by passing limit values as keywords in the plot command. The following axis can be specified:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">x</span></code> (primary x-axis)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">x2</span></code> (secondary x-axis when <code class="docutils literal notranslate"><span class="pre">twin_y=True</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y</span></code> (primary y-axis)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y2</span></code> (secondary y-axis when `twin_x=True)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">z</span></code> (primary z-axis [for heatmaps and contours this is the colorbar axis])</p></li>
+</ul>
+<p>Each axis has a <code class="docutils literal notranslate"><span class="pre">min</span></code> or a <code class="docutils literal notranslate"><span class="pre">max</span></code> value that can be specified.</p>
 <div class="section" id="Primary-axes-only">
 <h3>Primary axes only<a class="headerlink" href="#Primary-axes-only" title="Permalink to this headline">¶</a></h3>
 <p>Let’s take the plot from above and zoom in to exclude most of the region where the current begins to grow exponentially. We can do this by only specifying an <code class="docutils literal notranslate"><span class="pre">xmax</span></code> limit:</p>
@@ -602,7 +599,7 @@ value divided by 100. Additionally, the padding limit can be set differently for
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">,</span>
          <span class="n">xmax</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
 </pre></div>
@@ -612,7 +609,7 @@ value divided by 100. Additionally, the padding limit can be set differently for
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ranges_19_0.png" src="_images/ranges_19_0.png" />
+<img alt="_images/ranges_18_0.png" src="_images/ranges_18_0.png" />
 </div>
 </div>
 <p>Notice that although we only specified a single limit, the y-axis range has been auto-scaled to more clearly show the data that is included in the x-axis range on interest. This scaling is controlled by the keyword <code class="docutils literal notranslate"><span class="pre">auto_scale</span></code> which is enabled by default. Without auto-scaling the plot would look as follows:</p>
@@ -621,7 +618,7 @@ value divided by 100. Additionally, the padding limit can be set differently for
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">,</span>
          <span class="n">xmax</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span> <span class="n">auto_scale</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
@@ -631,18 +628,18 @@ value divided by 100. Additionally, the padding limit can be set differently for
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ranges_21_0.png" src="_images/ranges_21_0.png" />
+<img alt="_images/ranges_20_0.png" src="_images/ranges_20_0.png" />
 </div>
 </div>
-<p>We can accomplish the same thing with <code class="docutils literal notranslate"><span class="pre">auto_scale=True</span></code> if we specify the y-axis range explictly (note that we are including the <code class="docutils literal notranslate"><span class="pre">ax_limit_padding</span></code> of 0.05 to match exactly):</p>
+<p>Below we show the data with custom ranges for all current axes:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">,</span>
-         <span class="n">xmax</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=-</span><span class="mf">0.06275</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="mf">1.31775</span><span class="p">)</span>
+         <span class="n">xmin</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mf">1.4</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -650,7 +647,7 @@ value divided by 100. Additionally, the padding limit can be set differently for
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ranges_23_0.png" src="_images/ranges_23_0.png" />
+<img alt="_images/ranges_22_0.png" src="_images/ranges_22_0.png" />
 </div>
 </div>
 </div>
@@ -662,7 +659,7 @@ value divided by 100. Additionally, the padding limit can be set differently for
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -671,16 +668,16 @@ value divided by 100. Additionally, the padding limit can be set differently for
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ranges_26_0.png" src="_images/ranges_26_0.png" />
+<img alt="_images/ranges_25_0.png" src="_images/ranges_25_0.png" />
 </div>
 </div>
-<p>Now add limits to the shared x-axis:</p>
+<p>We add limits to the shared x-axis as follows (remember “shared” means there is only 1 possible range for the x-axis):</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">,</span>
          <span class="n">xmin</span><span class="o">=</span><span class="mf">1.3</span><span class="p">)</span>
 </pre></div>
@@ -690,16 +687,16 @@ value divided by 100. Additionally, the padding limit can be set differently for
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ranges_28_0.png" src="_images/ranges_28_0.png" />
+<img alt="_images/ranges_27_0.png" src="_images/ranges_27_0.png" />
 </div>
 </div>
-<p>Because we have a shared x-axis in this case we see that both the primary and the seconday y-axis scale together when auto-scaling is enabled. As before we can disable auto-scaling if desired to treat the primary and secondary axes separately:</p>
+<p>Because we have a shared x-axis, both the primary and the secondary y-axis scale together when auto-scaling is enabled. As before we can disable auto-scaling if desired to treat the primary and secondary axes separately:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">,</span>
          <span class="n">xmax</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span> <span class="n">auto_scale</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
@@ -709,7 +706,7 @@ value divided by 100. Additionally, the padding limit can be set differently for
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ranges_30_0.png" src="_images/ranges_30_0.png" />
+<img alt="_images/ranges_29_0.png" src="_images/ranges_29_0.png" />
 </div>
 </div>
 <p>A similar auto-scaling effect will happen if we specify a y-limit (or a y2-limit). Again this is because the x-axis is shared and the auto-scaling algorithm filters the rows in the DataFrame based on our limits. Since both the primary <code class="docutils literal notranslate"><span class="pre">y</span></code> and the secondary <code class="docutils literal notranslate"><span class="pre">y</span></code> are columns in the same DataFrame, auto-scaling impacts both.</p>
@@ -718,7 +715,7 @@ value divided by 100. Additionally, the padding limit can be set differently for
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">,</span>
          <span class="n">ymin</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
@@ -728,7 +725,7 @@ value divided by 100. Additionally, the padding limit can be set differently for
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ranges_32_0.png" src="_images/ranges_32_0.png" />
+<img alt="_images/ranges_31_0.png" src="_images/ranges_31_0.png" />
 </div>
 </div>
 </div>
@@ -740,7 +737,7 @@ value divided by 100. Additionally, the padding limit can be set differently for
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -749,16 +746,16 @@ value divided by 100. Additionally, the padding limit can be set differently for
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ranges_35_0.png" src="_images/ranges_35_0.png" />
+<img alt="_images/ranges_34_0.png" src="_images/ranges_34_0.png" />
 </div>
 </div>
-<p>Here a y-limit is applied to both all the data on the y-axis so auto-scaling affects both curves:</p>
+<p>Here a y-limit is applied to both <em>all</em> the data on the y-axis so auto-scaling affects both curves:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">,</span>
          <span class="n">ymin</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
 </pre></div>
@@ -768,24 +765,28 @@ value divided by 100. Additionally, the padding limit can be set differently for
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ranges_37_0.png" src="_images/ranges_37_0.png" />
+<img alt="_images/ranges_36_0.png" src="_images/ranges_36_0.png" />
 </div>
 </div>
-<p>Note: auto-scaling is not active for boxplots, contours, and heatmaps.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Auto-scaling is not active for boxplots, contours, and heatmaps</p>
+</div>
 </div>
 </div>
 <div class="section" id="Statistical-limits">
 <h2>Statistical limits<a class="headerlink" href="#Statistical-limits" title="Permalink to this headline">¶</a></h2>
-<p>fivecentplots allows you to set axis limits based on some quantile percentage of the actual data or the inter-quartile range of the data. This is most useful when working with boxplots that contain outliers which we do not want to skew y-axis range.</p>
+<p><strong>fivecentplots</strong> allows you to set axis limits based on some quantile percentage of the actual data or the inter-quartile range of the data. This is most useful when working with boxplots that contain outliers which we do not want to skew y-axis range.</p>
 <div class="section" id="Quantiles">
 <h3>Quantiles<a class="headerlink" href="#Quantiles" title="Permalink to this headline">¶</a></h3>
-<p>Quantile ranges are added to the standard min/max keywords as strings with the form: “&lt;quantile&gt;q”. Consider the plot below in which the boxplot for sample 2 has an outlier. The default limit will cover the entire span of the data so the <code class="docutils literal notranslate"><span class="pre">ymax</span></code> value is above this outlier.</p>
+<p>Quantile ranges are added to the standard min/max keywords as strings with the form: <code class="docutils literal notranslate"><span class="pre">&lt;quantile&gt;q</span></code>.</p>
+<p>Consider the plot below in which the boxplot for sample 2 has an outlier. The default limit will cover the entire span of the data so the <code class="docutils literal notranslate"><span class="pre">ymax</span></code> value is above this outlier.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df_box</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Batch==101&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df_box</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Batch==101&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -793,16 +794,16 @@ value divided by 100. Additionally, the padding limit can be set differently for
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ranges_43_0.png" src="_images/ranges_43_0.png" />
+<img alt="_images/ranges_42_0.png" src="_images/ranges_42_0.png" />
 </div>
 </div>
-<p>Obviously we could manually set a <code class="docutils literal notranslate"><span class="pre">ymax</span></code> value to exclude this outlier, but in the case of automated plot generation we likely do not know the outlier exists in advance. Instead we can specify a 95% quantile limit to exclude tail points in the distribution. For boxplots, if the <code class="docutils literal notranslate"><span class="pre">range_lines</span></code> option is enabled, we can still visualize that there is an outlier in the data set that exceeds the y-axis range (see <code class="docutils literal notranslate"><span class="pre">here</span> <span class="pre">&lt;boxplot.html#Range-lines&gt;</span></code>_)</p>
+<p>Obviously we could manually set a <code class="docutils literal notranslate"><span class="pre">ymax</span></code> value to exclude this outlier, but in the case of automated plot generation we likely do not know the outlier exists in advance. Instead, we can specify a 95% quantile limit to exclude tail points in the distribution. For boxplots, if the <code class="docutils literal notranslate"><span class="pre">range_lines</span></code> option is enabled, we can still visualize that there is an outlier in the data set that exceeds the y-axis range</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df_box</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Batch==101&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="s1">&#39;95q&#39;</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df_box</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Batch==101&#39;</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="s1">&#39;95q&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -810,19 +811,19 @@ value divided by 100. Additionally, the padding limit can be set differently for
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ranges_45_0.png" src="_images/ranges_45_0.png" />
+<img alt="_images/ranges_44_0.png" src="_images/ranges_44_0.png" />
 </div>
 </div>
 </div>
 <div class="section" id="Inter-quartile-range">
 <h3>Inter-quartile range<a class="headerlink" href="#Inter-quartile-range" title="Permalink to this headline">¶</a></h3>
-<p>In some cases we may want to set a limit based on the inter-quartile range of the data set (i.e., the delta between the 25% and 75% quantiles). This can also help to deal with outlier data. The value supplied to the range keyword(s) is a string of the form: “&lt;factor&gt;*iqr”, where “factor” is a float value to be multiplied to the inter-quartile range.</p>
+<p>In some cases we may want to set a limit based on the inter-quartile range of the data set (i.e., the delta between the 25% and 75% quantiles). This can also help to deal with outlier data. The value supplied to the range keyword(s) is a string of the form: <code class="docutils literal notranslate"><span class="pre">&lt;factor&gt;*iqr</span></code>, where “factor” is a float value to be multiplied to the inter-quartile range.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df_box</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Batch==101&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">df_box</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Batch==101&#39;</span><span class="p">,</span>
             <span class="n">ymin</span><span class="o">=</span><span class="s1">&#39;1.5*iqr&#39;</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="s1">&#39;1.5*iqr&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -831,30 +832,25 @@ value divided by 100. Additionally, the padding limit can be set differently for
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ranges_48_0.png" src="_images/ranges_48_0.png" />
+<img alt="_images/ranges_47_0.png" src="_images/ranges_47_0.png" />
 </div>
 </div>
 </div>
 </div>
 <div class="section" id="Axes-sharing">
 <h2>Axes sharing<a class="headerlink" href="#Axes-sharing" title="Permalink to this headline">¶</a></h2>
-<p>Axes sharing applies when using <code class="docutils literal notranslate"><span class="pre">row</span></code>, <code class="docutils literal notranslate"><span class="pre">col</span></code>, or <code class="docutils literal notranslate"><span class="pre">wrap</span></code> grouping to split the plot into multiple subplots. The boolean keywords of interest are:</p>
-<ul><li><p><code class="docutils literal notranslate"><span class="pre">share_x</span></code></p>
-</li><li><p><code class="docutils literal notranslate"><span class="pre">share_x2</span></code></p>
-</li><li><p><code class="docutils literal notranslate"><span class="pre">share_y</span></code></p>
-</li><li><p><code class="docutils literal notranslate"><span class="pre">share_y2</span></code></p>
-</li><li><p><code class="docutils literal notranslate"><span class="pre">share_z</span></code></p>
-</li></ul><div class="section" id="Shared-axes">
+<p>Axes sharing applies when using <code class="docutils literal notranslate"><span class="pre">row</span></code>, <code class="docutils literal notranslate"><span class="pre">col</span></code>, or <code class="docutils literal notranslate"><span class="pre">wrap</span></code> grouping to split the plot into multiple subplots. The boolean keywords of interest are: * <code class="docutils literal notranslate"><span class="pre">share_x</span></code> * <code class="docutils literal notranslate"><span class="pre">share_x2</span></code> * <code class="docutils literal notranslate"><span class="pre">share_y</span></code> * <code class="docutils literal notranslate"><span class="pre">share_y2</span></code> * <code class="docutils literal notranslate"><span class="pre">share_z</span></code></p>
+<div class="section" id="Shared-axes">
 <h3>Shared axes<a class="headerlink" href="#Shared-axes" title="Permalink to this headline">¶</a></h3>
-<p>By default, gridded plots share axes ranges (and tick labels) for all axes. Because axes are shared, the tick labels and axis labels only appear on the outermost subplots.</p>
+<p>By default, grid plots share axes ranges (and tick labels) for all axes. Because axes are shared, the tick labels and axis labels only appear on the outermost subplots:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">sub</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">Substrate</span><span class="o">==</span><span class="s1">&#39;Si&#39;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Target Wavelength&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">450</span><span class="p">)]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">sub</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> \
-         <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">])</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450&#39;</span><span class="p">,</span>
+         <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -862,7 +858,7 @@ value divided by 100. Additionally, the padding limit can be set differently for
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ranges_53_0.png" src="_images/ranges_53_0.png" />
+<img alt="_images/ranges_52_0.png" src="_images/ranges_52_0.png" />
 </div>
 </div>
 <p>Sharing can be disabled by setting the <code class="docutils literal notranslate"><span class="pre">share_</span></code> keyword for one or more of the axes to <code class="docutils literal notranslate"><span class="pre">False</span></code>. Notice that tick labels are added automatically and the spacing between plots is adjusted.</p>
@@ -871,9 +867,9 @@ value divided by 100. Additionally, the padding limit can be set differently for
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">sub</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">Substrate</span><span class="o">==</span><span class="s1">&#39;Si&#39;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Target Wavelength&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">450</span><span class="p">)]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">sub</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> \
-         <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="n">share_x</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">share_y</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450&#39;</span><span class="p">,</span>
+         <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="n">share_x</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">share_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tick_labels_font_size</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -881,7 +877,7 @@ value divided by 100. Additionally, the padding limit can be set differently for
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ranges_55_0.png" src="_images/ranges_55_0.png" />
+<img alt="_images/ranges_54_0.png" src="_images/ranges_54_0.png" />
 </div>
 </div>
 <p>We can also force shared axes to display their own tick labels and/or axis labels using the keywords <code class="docutils literal notranslate"><span class="pre">separate_ticks</span></code> and <code class="docutils literal notranslate"><span class="pre">separate_labels</span></code>.</p>
@@ -890,9 +886,9 @@ value divided by 100. Additionally, the padding limit can be set differently for
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">sub</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">Substrate</span><span class="o">==</span><span class="s1">&#39;Si&#39;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Target Wavelength&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">450</span><span class="p">)]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">sub</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> \
-         <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="n">separate_ticks</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">separate_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">sub</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450&#39;</span><span class="p">,</span>
+         <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="n">separate_ticks</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">separate_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">tick_labels_font_size</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -900,10 +896,9 @@ value divided by 100. Additionally, the padding limit can be set differently for
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ranges_57_0.png" src="_images/ranges_57_0.png" />
+<img alt="_images/ranges_56_0.png" src="_images/ranges_56_0.png" />
 </div>
 </div>
-<p>Note: for <code class="docutils literal notranslate"><span class="pre">wrap</span></code> plots based on column values, axis sharing is forced to <code class="docutils literal notranslate"><span class="pre">True</span></code> and cannot be overriden.</p>
 </div>
 <div class="section" id="Share-rows">
 <h3>Share rows<a class="headerlink" href="#Share-rows" title="Permalink to this headline">¶</a></h3>
@@ -913,9 +908,9 @@ value divided by 100. Additionally, the padding limit can be set differently for
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">sub</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">Substrate</span><span class="o">==</span><span class="s1">&#39;Si&#39;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Target Wavelength&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">450</span><span class="p">)]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">sub</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> \
-         <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="n">share_row</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450&#39;</span><span class="p">,</span>
+         <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="n">share_row</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">tick_labels_font_size</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -923,7 +918,7 @@ value divided by 100. Additionally, the padding limit can be set differently for
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ranges_61_0.png" src="_images/ranges_61_0.png" />
+<img alt="_images/ranges_60_0.png" src="_images/ranges_60_0.png" />
 </div>
 </div>
 </div>
@@ -935,9 +930,9 @@ value divided by 100. Additionally, the padding limit can be set differently for
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">sub</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">Substrate</span><span class="o">==</span><span class="s1">&#39;Si&#39;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Target Wavelength&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">450</span><span class="p">)]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">sub</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> \
-         <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="n">share_col</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450&#39;</span><span class="p">,</span>
+         <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="n">share_col</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">tick_labels_font_size</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -945,23 +940,24 @@ value divided by 100. Additionally, the padding limit can be set differently for
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ranges_64_0.png" src="_images/ranges_64_0.png" />
+<img alt="_images/ranges_63_0.png" src="_images/ranges_63_0.png" />
 </div>
 </div>
 </div>
 <div class="section" id="No-sharing">
 <h3>No sharing<a class="headerlink" href="#No-sharing" title="Permalink to this headline">¶</a></h3>
-<p>Lastly, we can specify unique axes ranges for each plot. Each axes range variable (<code class="docutils literal notranslate"><span class="pre">xmin</span></code>, <code class="docutils literal notranslate"><span class="pre">xmax</span></code>, <code class="docutils literal notranslate"><span class="pre">ymin</span></code>, <code class="docutils literal notranslate"><span class="pre">ymax</span></code>, etc.), is a special <code class="docutils literal notranslate"><span class="pre">fcp</span></code> data type called <code class="docutils literal notranslate"><span class="pre">RepeatedList</span></code> (note this is the same data type used for specifying line color, markers, alpha, etc.). The <code class="docutils literal notranslate"><span class="pre">RepeatedList</span></code> class simply loops over a list of any arbitrary size over and over with increasing index. When applied to axis ranges, this means we can specify: * a single value loop that gives the same value for each
-subplot index * a list of ranges for each plot in the grid (no looping occurs in this case) * or a partial list of ranges that is repeated (for example, a two-value list would be applied in repeating fashion to odd- and even-indexed subplots) Subplot index starts at 0 and increases column by column along a given row until the last column and then moves to the next row and continues incrementing.</p>
+<p>Lastly, we can specify unique axes ranges for each plot. Each axes range variable (<code class="docutils literal notranslate"><span class="pre">xmin</span></code>, <code class="docutils literal notranslate"><span class="pre">xmax</span></code>, <code class="docutils literal notranslate"><span class="pre">ymin</span></code>, <code class="docutils literal notranslate"><span class="pre">ymax</span></code>, etc.), is a special <code class="docutils literal notranslate"><span class="pre">fcp</span></code> data type called <code class="docutils literal notranslate"><span class="pre">RepeatedList</span></code> (note this is the same data type used for specifying line color, markers, alpha, etc.). The <code class="docutils literal notranslate"><span class="pre">RepeatedList</span></code> class simply loops over a list of any arbitrary size with increasing index. When applied to axis ranges, this means we can specify: * a single value that loops to give the same value for each subplot index
+* a list of ranges for each plot in the grid (no looping occurs in this case) * or a partial list of ranges that is repeated (for example, a two-value list would be applied in repeating fashion to odd- and even-indexed subplots)</p>
+<p>Subplot index starts at 0 and increases column by column along a given row until the last column and then moves to the next row and continues incrementing.</p>
 <p>Consider the following example. We have size subplots with index 0, 1, 2 on the first row and 3, 4, 5 on the second. We supply 5 <code class="docutils literal notranslate"><span class="pre">xmin</span></code> values and 6 <code class="docutils literal notranslate"><span class="pre">ymax</span></code> values. The <code class="docutils literal notranslate"><span class="pre">ymax</span></code> value has been uniquely specified for each plot. However, the <code class="docutils literal notranslate"><span class="pre">xmin</span></code> value for the final plot is not uniquely specified, so the <code class="docutils literal notranslate"><span class="pre">RepeatedList</span></code> will loop back to the first value supplied.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> \
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span>
          <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450&#39;</span><span class="p">,</span> <span class="n">label_rc_font_size</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span>
-         <span class="n">xmin</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">],</span> <span class="n">ymax</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+         <span class="n">xmin</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">],</span> <span class="n">ymax</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="n">tick_labels_font_size</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -969,7 +965,7 @@ subplot index * a list of ranges for each plot in the grid (no looping occurs in
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ranges_67_0.png" src="_images/ranges_67_0.png" />
+<img alt="_images/ranges_66_0.png" src="_images/ranges_66_0.png" />
 </div>
 </div>
 </div>
