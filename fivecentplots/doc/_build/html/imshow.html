@@ -1,0 +1,1330 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>imshow &mdash; fivecentplots beta documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Archivo Black" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "document", "processHtmlClass": "math|output_area"}}</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="nq" href="nq.html" />
+    <link rel="prev" title="hist" href="hist.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> fivecentplots
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.5.0-alpha
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layout.html">Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="grouping.html">Grouping data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="styles.html">Styles and formatting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ranges.html">Data ranges</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ticks.html">Grids and ticks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/fcp.html">API</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Plot Types</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="plot.html">plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="barplot.html">barplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gantt.html">gantt charts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heatmap.html">heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hist.html">hist</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">imshow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Setup">Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Basic-image-display">Basic image display</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Colors">Colors</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Color-map">Color map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Colorbar">Colorbar</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Zoom">Zoom</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Contrast-stretching">Contrast stretching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Split-color-planes">Split color planes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Sneaky-input">Sneaky input</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="nq.html">nq</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pie.html">pie</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Other</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="older.html">Older Versions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/endangeredoxen/fivecentplots">GitHub</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">fivecentplots</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>imshow</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/imshow.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="imshow">
+<h1>imshow<a class="headerlink" href="#imshow" title="Permalink to this headline">¶</a></h1>
+<p>This section describes various options available for imshow plots in <strong>fivecentplots</strong></p>
+<p>See the full API <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/api/imshow.html#imshow">https://endangeredoxen.github.io/fivecentplots/0.5.0/api/imshow.html#imshow</a></p>
+<p style="line-height:30px"><p>fivecentplots.imshow(df, **kwargs)Image show plotting functionArgs:</p>
+<div style="padding-left: 30px"><p>df (DataFrame | numpy array):</p>
+<div style="padding-left: 30px"><p>DataFrame or numpy array containing 2D row/column image data to plot [when passing a numpy array it is automatically converted to a DataFrame]</p>
+</div></div><p>Required Keyword Args:</p>
+<div style="padding-left: 30px"><p>None</p>
+</div><p>Optional Keyword Args:</p>
+<div style="padding-left: 30px"><p>cfa (str):</p>
+<div style="padding-left: 30px"><p>Color-filter array pattern that is used to split data from a Bayer image into separate color planes. Defaults to None. See example</p>
+</div></div><div style="padding-left: 30px"><p>cmap (bool):</p>
+<div style="padding-left: 30px"><p>Name of a color map to apply to the plot. Defaults to gray. See example</p>
+</div></div><div style="padding-left: 30px"><p>imshow_interp | interp (str):</p>
+<div style="padding-left: 30px"><p>imshow interpolation scheme [see matplotlib docs for more details]. Defaults to “none’.</p>
+</div></div><div style="padding-left: 30px"><p>stretch (float | list):</p>
+<div style="padding-left: 30px"><p>Calculate “stretch” times the standard deviation above and below the mean to set new z-limits. Can be a single value used as +/- limits or a two-value list for the lower/upper multiplier values. Defaults to None. See example</p>
+</div></div></p><div class="section" id="Setup">
+<h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this headline">¶</a></h2>
+<p>Import packages:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">fivecentplots</span> <span class="k">as</span> <span class="nn">fcp</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">imageio</span>
+</pre></div>
+</div>
+</div>
+<p>Read a ridiculous image from the world wide web that illustrates a crime against the felis genus:</p>
+<p><img alt="f5dcc4543667436badfef7bfa4b3d03e" class="no-scaled-link" src="https://imagesvc.meredithcorp.io/v3/mm/image?q=85&amp;c=sc&amp;rect=0%2C214%2C2000%2C1214&amp;poi=%5B920%2C546%5D&amp;w=2000&amp;h=1000&amp;url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F47%2F2020%2F10%2F07%2Fcat-in-pirate-costume-380541532-2000.jpg" style="width: 600px;" /></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://imagesvc.meredithcorp.io/v3/mm/image?q=85&amp;c=sc&amp;rect=0%2C214%2C2000%2C1214&amp;poi=%5B920%2C546%5D&amp;w=2000&amp;h=1000&amp;url=https%3A</span><span class="si">%2F%2F</span><span class="s1">static.onecms.io</span><span class="si">%2F</span><span class="s1">wp-content</span><span class="si">%2F</span><span class="s1">uploads</span><span class="si">%2F</span><span class="s1">sites</span><span class="si">%2F</span><span class="s1">47</span><span class="si">%2F</span><span class="s1">2020</span><span class="si">%2F</span><span class="s1">10</span><span class="si">%2F</span><span class="s1">07</span><span class="si">%2F</span><span class="s1">cat-in-pirate-costume-380541532-2000.jpg&#39;</span>
+<span class="n">imgr</span> <span class="o">=</span> <span class="n">imageio</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="n">imgr</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Array([[[220, 221, 223],
+        [220, 221, 223],
+        [220, 221, 223],
+        ...,
+        [219, 220, 222],
+        [219, 220, 222],
+        [219, 220, 222]],
+
+       [[220, 221, 223],
+        [220, 221, 223],
+        [220, 221, 223],
+        ...,
+        [219, 220, 222],
+        [219, 220, 222],
+        [219, 220, 222]],
+
+       [[220, 221, 223],
+        [220, 221, 223],
+        [220, 221, 223],
+        ...,
+        [219, 220, 222],
+        [219, 220, 222],
+        [219, 220, 222]],
+
+       ...,
+
+       [[108,  95,  86],
+        [106,  93,  84],
+        [103,  90,  81],
+        ...,
+        [209, 211, 210],
+        [209, 211, 210],
+        [209, 211, 210]],
+
+       [[107,  94,  85],
+        [105,  92,  83],
+        [103,  90,  81],
+        ...,
+        [210, 212, 211],
+        [210, 212, 211],
+        [210, 212, 211]],
+
+       [[106,  93,  84],
+        [105,  92,  83],
+        [103,  90,  81],
+        ...,
+        [210, 212, 211],
+        [210, 212, 211],
+        [210, 212, 211]]], dtype=uint8)
+</pre></div></div>
+</div>
+<p>Convert this image from RGB to a grayscale DataFrame using a utility function provided by fivecentplots:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">img</span> <span class="o">=</span> <span class="n">fcp</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">img_grayscale</span><span class="p">(</span><span class="n">imgr</span><span class="p">)</span>
+<span class="n">img</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+      <th>9</th>
+      <th>...</th>
+      <th>1990</th>
+      <th>1991</th>
+      <th>1992</th>
+      <th>1993</th>
+      <th>1994</th>
+      <th>1995</th>
+      <th>1996</th>
+      <th>1997</th>
+      <th>1998</th>
+      <th>1999</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.9070</td>
+      <td>220.9070</td>
+      <td>...</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>...</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>...</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>...</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.907</td>
+      <td>220.9070</td>
+      <td>220.9070</td>
+      <td>...</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+      <td>219.9071</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 2000 columns</p>
+</div></div>
+</div>
+<p>Optionally set the design theme (skipping here and using default):</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1">#fcp.set_theme(&#39;gray&#39;)</span>
+<span class="c1">#fcp.set_theme(&#39;white&#39;)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Basic-image-display">
+<h2>Basic image display<a class="headerlink" href="#Basic-image-display" title="Permalink to this headline">¶</a></h2>
+<p>Display our grayscale image depicting one of many problems with human-feline interactions.</p>
+<div class="admonition note"><p class="admonition-title"></p><p><p>Notes:</p>
+<ol class="arabic">
+<li><p>the original ratio of the image height and width are preserved regardless of the values of <code class="docutils literal notranslate"><span class="pre">ax_size</span></code>, which will just apply to the largest of the two dimensions</p></li>
+<li><p>tick labels are turned off by default (use <code class="docutils literal notranslate"><span class="pre">tick_labels_major=True</span></code> to enable)</p>
+</p></li>
+<li><p>imshow uses the “gray” colormap by default</p>
+</div></li>
+</ol>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/imshow_16_0.png" src="_images/imshow_16_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Colors">
+<h2>Colors<a class="headerlink" href="#Colors" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="Color-map">
+<h3>Color map<a class="headerlink" href="#Color-map" title="Permalink to this headline">¶</a></h3>
+<p>We can add any standard color map from matplotlib to an imshow using keyword <code class="docutils literal notranslate"><span class="pre">cmap</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/imshow_20_0.png" src="_images/imshow_20_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Colorbar">
+<h3>Colorbar<a class="headerlink" href="#Colorbar" title="Permalink to this headline">¶</a></h3>
+<p>We can add a colorbar to the image showing the z-range with the keyword <code class="docutils literal notranslate"><span class="pre">cbar=True</span></code></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">],</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/imshow_23_0.png" src="_images/imshow_23_0.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Zoom">
+<h2>Zoom<a class="headerlink" href="#Zoom" title="Permalink to this headline">¶</a></h2>
+<p>We can zoom in on this stupid kitten by changing the <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> limits:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">],</span> <span class="n">xmin</span><span class="o">=</span><span class="mi">700</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mi">1100</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">tick_labels_major</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/imshow_26_0.png" src="_images/imshow_26_0.png" />
+</div>
+</div>
+<p>private eyes are watching you…</p>
+</div>
+<div class="section" id="Contrast-stretching">
+<h2>Contrast stretching<a class="headerlink" href="#Contrast-stretching" title="Permalink to this headline">¶</a></h2>
+<p>In some cases (such as raw image sensor data analysis) it is helpful to adjust the colormap limits in order to “stretch” the contrast. This can be done via the <code class="docutils literal notranslate"><span class="pre">z</span></code> axis limits. In this example, we stretch +/-3 standard deviations from the mean pixel value.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">uu</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">ss</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">],</span> <span class="n">zmin</span><span class="o">=</span><span class="n">uu</span><span class="o">-</span><span class="mi">3</span><span class="o">*</span><span class="n">ss</span><span class="p">,</span> <span class="n">zmax</span><span class="o">=</span><span class="n">uu</span><span class="o">+</span><span class="mi">3</span><span class="o">*</span><span class="n">ss</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/imshow_30_0.png" src="_images/imshow_30_0.png" />
+</div>
+</div>
+<p>imshow plots in fivecentplots also provides a convenient kwarg called <code class="docutils literal notranslate"><span class="pre">stretch</span></code> which calculates a numerical multiplier of the standard deviation above and below the mean to set new z-limits (essentially the same thing as done above manually). <code class="docutils literal notranslate"><span class="pre">stretch</span></code> can be a single value of std dev which is interpreted as +/- that value or a 2-value list with the lower and higher std deviation respectively. First, we consider a +/- 4 sigma stretch as above:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">],</span> <span class="n">stretch</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/imshow_32_0.png" src="_images/imshow_32_0.png" />
+</div>
+</div>
+<p>Now we show a single-sided stretch that applies a 3 * std dev increase to the upper z-limit:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">],</span> <span class="n">stretch</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/imshow_34_0.png" src="_images/imshow_34_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Split-color-planes">
+<h2>Split color planes<a class="headerlink" href="#Split-color-planes" title="Permalink to this headline">¶</a></h2>
+<p>When analyzing Bayer-type images, it is often useful to split the image data based on the color-filter array pattern used on the image sensor. fivecentplots provides a simple utility function to do this and <code class="docutils literal notranslate"><span class="pre">imshow</span></code> can be used to display the result. Consider the following image:</p>
+<p><img alt="448e4b3f22dc4e5b85bcb835c1c4e99e" src="https://upload.wikimedia.org/wikipedia/commons/2/28/RGB_illumination.jpg" /></p>
+<p>First we read the image from the world-wide web and convert this random RGB image into a Bayer-like image (rough hack for the purposes of this example):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://upload.wikimedia.org/wikipedia/commons/2/28/RGB_illumination.jpg&#39;</span>
+<span class="n">imgr</span> <span class="o">=</span> <span class="n">imageio</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="n">raw</span> <span class="o">=</span> <span class="n">fcp</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">rgb2bayer</span><span class="p">(</span><span class="n">imgr</span><span class="p">)</span>
+<span class="n">raw</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+      <th>9</th>
+      <th>...</th>
+      <th>390</th>
+      <th>391</th>
+      <th>392</th>
+      <th>393</th>
+      <th>394</th>
+      <th>395</th>
+      <th>396</th>
+      <th>397</th>
+      <th>398</th>
+      <th>399</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>48</td>
+      <td>46</td>
+      <td>47</td>
+      <td>45</td>
+      <td>45</td>
+      <td>48</td>
+      <td>46</td>
+      <td>...</td>
+      <td>47</td>
+      <td>103</td>
+      <td>49</td>
+      <td>103</td>
+      <td>48</td>
+      <td>104</td>
+      <td>47</td>
+      <td>96</td>
+      <td>69</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>47</td>
+      <td>95</td>
+      <td>47</td>
+      <td>96</td>
+      <td>48</td>
+      <td>85</td>
+      <td>47</td>
+      <td>90</td>
+      <td>46</td>
+      <td>95</td>
+      <td>...</td>
+      <td>102</td>
+      <td>46</td>
+      <td>103</td>
+      <td>51</td>
+      <td>100</td>
+      <td>46</td>
+      <td>100</td>
+      <td>42</td>
+      <td>121</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>46</td>
+      <td>46</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>48</td>
+      <td>46</td>
+      <td>48</td>
+      <td>48</td>
+      <td>47</td>
+      <td>...</td>
+      <td>49</td>
+      <td>102</td>
+      <td>47</td>
+      <td>105</td>
+      <td>47</td>
+      <td>102</td>
+      <td>50</td>
+      <td>98</td>
+      <td>73</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>47</td>
+      <td>104</td>
+      <td>46</td>
+      <td>113</td>
+      <td>47</td>
+      <td>102</td>
+      <td>48</td>
+      <td>89</td>
+      <td>47</td>
+      <td>101</td>
+      <td>...</td>
+      <td>103</td>
+      <td>47</td>
+      <td>106</td>
+      <td>49</td>
+      <td>102</td>
+      <td>44</td>
+      <td>100</td>
+      <td>44</td>
+      <td>122</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>47</td>
+      <td>47</td>
+      <td>48</td>
+      <td>46</td>
+      <td>48</td>
+      <td>48</td>
+      <td>46</td>
+      <td>48</td>
+      <td>48</td>
+      <td>48</td>
+      <td>...</td>
+      <td>47</td>
+      <td>103</td>
+      <td>45</td>
+      <td>107</td>
+      <td>48</td>
+      <td>107</td>
+      <td>48</td>
+      <td>101</td>
+      <td>72</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>295</th>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>...</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>46</td>
+      <td>48</td>
+      <td>44</td>
+      <td>75</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>296</th>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>...</td>
+      <td>47</td>
+      <td>47</td>
+      <td>48</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>48</td>
+      <td>43</td>
+      <td>77</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>297</th>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>...</td>
+      <td>47</td>
+      <td>47</td>
+      <td>48</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>48</td>
+      <td>43</td>
+      <td>77</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>298</th>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>...</td>
+      <td>47</td>
+      <td>47</td>
+      <td>48</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>48</td>
+      <td>43</td>
+      <td>77</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>299</th>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>...</td>
+      <td>47</td>
+      <td>47</td>
+      <td>48</td>
+      <td>47</td>
+      <td>47</td>
+      <td>47</td>
+      <td>48</td>
+      <td>43</td>
+      <td>77</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<p>300 rows × 400 columns</p>
+</div></div>
+</div>
+<p>Now we plot with <code class="docutils literal notranslate"><span class="pre">imshow</span></code> using the keyword <code class="docutils literal notranslate"><span class="pre">cfa</span></code> with an “RGGB” pattern using a wrap-style plot. Notice that the primary colors from the original image are split into separate subplots.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">],</span> <span class="n">cfa</span><span class="o">=</span><span class="s1">&#39;rggb&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;Plane&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/imshow_40_0.png" src="_images/imshow_40_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Sneaky-input">
+<h2>Sneaky input<a class="headerlink" href="#Sneaky-input" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note"><p class="admonition-title"></p><p><p><code class="docutils literal notranslate"><span class="pre">imshow</span></code> is one of two plot types (<code class="docutils literal notranslate"><span class="pre">hist</span></code> and <code class="docutils literal notranslate"><span class="pre">imshow</span></code>) that allows us to pass a 2D numpy array instead of a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>. When plotting a single image, we don’t need column names so we don’t technically need a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>. Why do we allow this? This is a sneaky, under-the-table trick just to make life easier. Numpy arrays are converted into <code class="docutils literal notranslate"><span class="pre">DataFrames</span></code> behind the scenes so you don’t have to take an extra step. This can be our dirty little secret…</p>
+</p></div></div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="nq.html" class="btn btn-neutral float-right" title="nq" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="hist.html" class="btn btn-neutral float-left" title="hist" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2022, Steve Nicholes.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

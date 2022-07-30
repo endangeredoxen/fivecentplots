@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Grids and ticks &mdash; fivecentplots beta documentation</title>
   
@@ -20,7 +20,10 @@
   
     <link rel="shortcut icon" href="_static/favicon.ico"/>
   
+
   
+  
+
   
 
   
@@ -30,18 +33,20 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "document", "processHtmlClass": "math|output_area"}}</script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="plot" href="plot.html" />
+    <link rel="next" title="Miscellaneous" href="misc.html" />
     <link rel="prev" title="Data ranges" href="ranges.html" /> 
 </head>
 
@@ -56,7 +61,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> fivecentplots
+            <a href="index.html" class="icon icon-home"> fivecentplots
           
 
           
@@ -66,7 +71,7 @@
             
             
               <div class="version">
-                0.4.3
+                0.5.0-alpha
               </div>
             
           
@@ -91,7 +96,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Basics</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layout.html">Layout</a></li>
@@ -100,13 +105,7 @@
 <li class="toctree-l1"><a class="reference internal" href="styles.html">Styles and formatting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ranges.html">Data ranges</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Grids and ticks</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#Setup">Setup</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#Imports">Imports</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Sample-data">Sample data</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Set-theme">Set theme</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Other">Other</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#Setup">Setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Grids">Grids</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Major-grid">Major grid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Minor-grid">Minor grid</a></li>
@@ -114,8 +113,8 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#Tick-marks">Tick marks</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Visibility">Visibility</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Style">Style</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Increment">Increment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Tick-Style">Tick Style</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Tick-increment">Tick increment</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#Tick-labels">Tick labels</a><ul>
@@ -124,28 +123,34 @@
 <li class="toctree-l3"><a class="reference internal" href="#Scientific-notation">Scientific notation</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#Linear-scale-axis">Linear scale axis</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Log-scale-axis">Log scale axis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Colorbar">Colorbar</a></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/fcp.html">API</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Examples</span></p>
+<p class="caption" role="heading"><span class="caption-text">Plot Types</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="plot.html">plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="barplot.html">barplot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gantt.html">gantt charts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="heatmap.html">heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hist.html">hist</a></li>
-<li class="toctree-l1"><a class="reference internal" href="barplot.html">barplot</a></li>
-<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
+<li class="toctree-l1"><a class="reference internal" href="imshow.html">imshow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nq.html">nq</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pie.html">pie</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Other</span></p>
+<p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="older.html">Older Versions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/endangeredoxen/fivecentplots">GitHub</a></li>
 </ul>
 
             
@@ -186,6 +191,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -197,7 +204,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/ticks.ipynb.txt" rel="nofollow"> View page source</a>
           
         
@@ -471,41 +478,32 @@ div.rendered_html tbody tr:hover {
 <p>This section demonstrates options available for axes grids and ticks.</p>
 <div class="section" id="Setup">
 <h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="Imports">
-<h3>Imports<a class="headerlink" href="#Imports" title="Permalink to this headline">¶</a></h3>
+<p>Import packages:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="o">%</span><span class="k">load_ext</span> autoreload
-<span class="o">%</span><span class="k">autoreload</span> 2
-<span class="o">%</span><span class="k">matplotlib</span> inline
-<span class="kn">import</span> <span class="nn">fivecentplots</span> <span class="k">as</span> <span class="nn">fcp</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span></span><span class="kn">import</span> <span class="nn">fivecentplots</span> <span class="k">as</span> <span class="nn">fcp</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
-<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">pdb</span>
-<span class="n">osjoin</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span>
-<span class="n">db</span> <span class="o">=</span> <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="Sample-data">
-<h3>Sample data<a class="headerlink" href="#Sample-data" title="Permalink to this headline">¶</a></h3>
+<p>Read some dummy data for examples:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">osjoin</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;tests&#39;</span><span class="p">,</span> <span class="s1">&#39;fake_data.csv&#39;</span><span class="p">))</span>
+<span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;tests/fake_data.csv&#39;</span><span class="p">)</span>
 <span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -597,12 +595,9 @@ div.rendered_html tbody tr:hover {
 </table>
 </div></div>
 </div>
-</div>
-<div class="section" id="Set-theme">
-<h3>Set theme<a class="headerlink" href="#Set-theme" title="Permalink to this headline">¶</a></h3>
-<p>Optionally set design theme</p>
+<p>Optionally set the design theme (skipping here and using default):</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -612,34 +607,23 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 </div>
-<div class="section" id="Other">
-<h3>Other<a class="headerlink" href="#Other" title="Permalink to this headline">¶</a></h3>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">SHOW</span> <span class="o">=</span> <span class="kc">False</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
 <div class="section" id="Grids">
 <h2>Grids<a class="headerlink" href="#Grids" title="Permalink to this headline">¶</a></h2>
 <p>Grid properties apply to a specific axis:</p>
-<ul><li><p>major vs. minor</p>
-</li><li><p><code class="docutils literal notranslate"><span class="pre">x</span></code> vs. <code class="docutils literal notranslate"><span class="pre">x2</span></code> vs. <code class="docutils literal notranslate"><span class="pre">y</span></code> vs. <code class="docutils literal notranslate"><span class="pre">y2</span></code></p>
-</ul><p>fivecentplots allows you to adjust all major and all minor grids together (using <code class="docutils literal notranslate"><span class="pre">grid_major_</span></code> as a keyword prefix) or to adjust only a specific axis (using <code class="docutils literal notranslate"><span class="pre">grid_major_&lt;x|y|x2|y2&gt;_</span></code> as a keyword prefix.</p>
+<ul class="simple">
+<li><p>major vs. minor</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">x</span></code> vs. <code class="docutils literal notranslate"><span class="pre">x2</span></code> vs. <code class="docutils literal notranslate"><span class="pre">y</span></code> vs. <code class="docutils literal notranslate"><span class="pre">y2</span></code></p></li>
+</ul>
+<p><strong>fivecentplots</strong> allows you to adjust all major and all minor grids together (using <code class="docutils literal notranslate"><span class="pre">grid_major_</span></code> as a keyword prefix) or to adjust only a specific axis (using <code class="docutils literal notranslate"><span class="pre">grid_major_&lt;x|y|x2|y2&gt;_</span></code> as a keyword prefix).</p>
 <div class="section" id="Major-grid">
 <h3>Major grid<a class="headerlink" href="#Major-grid" title="Permalink to this headline">¶</a></h3>
 <p>By default, only major gridlines for the primary axes are visible in a plot. Notice below that the secondary y-axis has tick marks only.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -648,16 +632,16 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_16_0.png" src="_images/ticks_16_0.png" />
+<img alt="_images/ticks_13_0.png" src="_images/ticks_13_0.png" />
 </div>
 </div>
 <p>We can disable both primary gridlines using the <code class="docutils literal notranslate"><span class="pre">grid_major</span></code> keyword:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">,</span>
          <span class="n">grid_major</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
@@ -667,16 +651,16 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_18_0.png" src="_images/ticks_18_0.png" />
+<img alt="_images/ticks_15_0.png" src="_images/ticks_15_0.png" />
 </div>
 </div>
-<p>Or just disable one gridline by specifying the axis of interest in our keyword:</p>
+<p>Or we can just disable one gridline by specifying the axis of interest in our keyword:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">,</span>
          <span class="n">grid_major_y</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
@@ -686,16 +670,16 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_20_0.png" src="_images/ticks_20_0.png" />
+<img alt="_images/ticks_17_0.png" src="_images/ticks_17_0.png" />
 </div>
 </div>
 <p>We can also turn on the secondary y-axis grid and give it a distinct look:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">,</span>
          <span class="n">grid_major_y2</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">grid_major_y2_style</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
 </pre></div>
@@ -705,20 +689,39 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_22_0.png" src="_images/ticks_22_0.png" />
+<img alt="_images/ticks_19_0.png" src="_images/ticks_19_0.png" />
 </div>
 </div>
-<p>Unfortunately when using the matplotlib engine, the secondary grid lies above the plot on the primary grid which is not ideal. This is why the secondary grid lines are disabled by default.</p>
-</div>
-<div class="section" id="Minor-grid">
-<h3>Minor grid<a class="headerlink" href="#Minor-grid" title="Permalink to this headline">¶</a></h3>
-<p>Minor grids are off by default by can be enabled and styled using either the <code class="docutils literal notranslate"><span class="pre">grid_minor</span></code> family of keywords to batch address all primary axes or the <code class="docutils literal notranslate"><span class="pre">grid_minor_&lt;x|y|x2|y2&gt;</span></code> family of keywords to change a single axis.</p>
+<p>We can also customize the gridline color and style (albeit in a truly awful way here):</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">,</span>
+         <span class="n">grid_major_y2</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">grid_major_y2_style</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">grid_major_y2_width</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+         <span class="n">grid_major_x_color</span><span class="o">=</span><span class="s1">&#39;#00FF00&#39;</span><span class="p">,</span> <span class="n">grid_major_x_alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">grid_major_y_color</span><span class="o">=</span><span class="s1">&#39;#FF00FF&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/ticks_21_0.png" src="_images/ticks_21_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Minor-grid">
+<h3>Minor grid<a class="headerlink" href="#Minor-grid" title="Permalink to this headline">¶</a></h3>
+<p>Minor grids are disabled by default but can be turned on and styled using either the <code class="docutils literal notranslate"><span class="pre">grid_minor_</span></code> family of keywords to adjust all primary axes, or the <code class="docutils literal notranslate"><span class="pre">grid_minor_&lt;x|y|x2|y2_&gt;</span></code> family of keywords to change a single axis.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">,</span>
          <span class="n">grid_minor</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
@@ -728,7 +731,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_26_0.png" src="_images/ticks_26_0.png" />
+<img alt="_images/ticks_24_0.png" src="_images/ticks_24_0.png" />
 </div>
 </div>
 </div>
@@ -737,13 +740,13 @@ div.rendered_html tbody tr:hover {
 <h2>Tick marks<a class="headerlink" href="#Tick-marks" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="Visibility">
 <h3>Visibility<a class="headerlink" href="#Visibility" title="Permalink to this headline">¶</a></h3>
-<p>Tick marks are controlled by keywords with the prefix <code class="docutils literal notranslate"><span class="pre">ticks_major</span></code> or <code class="docutils literal notranslate"><span class="pre">ticks_minor</span></code> and, like gridlines, can be controlled as one for major and minor ticks or by specific axis. They enabled by default on the inside of the plot whenever a grid line is enabled. However, you can enable tick marks without enabling grid lines:</p>
+<p>Tick marks are controlled by keywords with the prefix <code class="docutils literal notranslate"><span class="pre">ticks_major_</span></code> or <code class="docutils literal notranslate"><span class="pre">ticks_minor_</span></code> and, like grid lines, can be controlled as one for major and minor ticks or by specific axis. They are enabled by default on the inside of the plot whenever a grid line is enabled. However, you can enable tick marks without enabling the accompanying grid lines:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">,</span>
          <span class="n">ticks_minor</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
@@ -753,19 +756,19 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_30_0.png" src="_images/ticks_30_0.png" />
+<img alt="_images/ticks_28_0.png" src="_images/ticks_28_0.png" />
 </div>
 </div>
 </div>
-<div class="section" id="Style">
-<h3>Style<a class="headerlink" href="#Style" title="Permalink to this headline">¶</a></h3>
-<p>All tick mark parameters can be changed via keywords at the time of plot execution or in the theme file. Consider the option below:</p>
+<div class="section" id="Tick-Style">
+<h3>Tick Style<a class="headerlink" href="#Tick-Style" title="Permalink to this headline">¶</a></h3>
+<p>All tick mark parameters can be changed via keywords at the time of plot execution or on a more permanent basis via the theme file. Consider the option below:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">,</span>
          <span class="n">ticks_major_direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="n">ticks_major_color</span><span class="o">=</span><span class="s1">&#39;#aaaaaa&#39;</span><span class="p">,</span> <span class="n">ticks_major_length</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">ticks_major_width</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
 </pre></div>
@@ -775,21 +778,44 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_33_0.png" src="_images/ticks_33_0.png" />
+<img alt="_images/ticks_31_0.png" src="_images/ticks_31_0.png" />
 </div>
 </div>
 </div>
-<div class="section" id="Increment">
-<h3>Increment<a class="headerlink" href="#Increment" title="Permalink to this headline">¶</a></h3>
-<p>Instead of specifying a number of tick marks to display, for major tick marks in fivecentplots we specify the tick increment.</p>
+<div class="section" id="Tick-increment">
+<h3>Tick increment<a class="headerlink" href="#Tick-increment" title="Permalink to this headline">¶</a></h3>
+<p>For major tick marks, instead of specifying a number of tick marks to display we specify the tick <em>increment</em>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">,</span>
          <span class="n">ticks_major_y_increment</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/ticks_34_0.png" src="_images/ticks_34_0.png" />
+</div>
+</div>
+<p>For minor ticks however, it is easier to specify the <em>number</em> of minor ticks to use via the <code class="docutils literal notranslate"><span class="pre">ticks_minor_&lt;x|y|x2|y2&gt;_number</span></code> keyword. The interval between minor ticks will then be calculated automatically. Setting the number of ticks automatically turns on the tick marks without explicitly setting <code class="docutils literal notranslate"><span class="pre">ticks_minor_&lt;x|y|x2|y2&gt;=True</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note that this option only works for linearly scaled axis. Minor log axis will always have 8 minor ticks with log spacing (notice the <code class="docutils literal notranslate"><span class="pre">number</span></code> is ignored for the “y2” axis below).</p>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">ax2_scale</span><span class="o">=</span><span class="s1">&#39;logy&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">,</span>
+         <span class="n">ticks_minor_x_number</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">ticks_minor_y_number</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">ticks_minor_y2_number</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -800,44 +826,6 @@ div.rendered_html tbody tr:hover {
 <img alt="_images/ticks_36_0.png" src="_images/ticks_36_0.png" />
 </div>
 </div>
-<p>For minor ticks however, it is easier to specify the number of minor ticks to use via the <code class="docutils literal notranslate"><span class="pre">ticks_minor_&lt;x|y|x2|y2&gt;_number</span></code> keyword. The interval between minor ticks will then be calculated automatically. Setting the number of ticks automatically turns on the tick marks without setting <code class="docutils literal notranslate"><span class="pre">ticks_minor_&lt;x|y|x2|y2&gt;=True</span></code>. Note that this option only works for linearly scaled axis. Minor log axis will always have 8 minor ticks with log spacing.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
-         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">,</span>
-         <span class="n">ticks_minor_x_number</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">ticks_minor_y_number</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">ticks_minor_y2_number</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/ticks_38_0.png" src="_images/ticks_38_0.png" />
-</div>
-</div>
-<p>Or with a log scale on the y-axis (notice the number keywords for the y-axis are ignored):</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
-         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">,</span>
-         <span class="n">ticks_minor_x_number</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">ticks_minor_y_number</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">ticks_minor_y2_number</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">ax_scale</span><span class="o">=</span><span class="s1">&#39;logy&#39;</span><span class="p">,</span> <span class="n">ax2_scale</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/ticks_40_0.png" src="_images/ticks_40_0.png" />
-</div>
-</div>
 </div>
 </div>
 <div class="section" id="Tick-labels">
@@ -845,17 +833,19 @@ div.rendered_html tbody tr:hover {
 <div class="section" id="General-comments">
 <h3>General comments<a class="headerlink" href="#General-comments" title="Permalink to this headline">¶</a></h3>
 <p>In addition to tick markers, we can control the labels associated with those markers for both major and minor axes. Note the following:</p>
-<ul><li><p>Tick marks are automatically enabled if tick labels are enabled</p>
-</li><li><p>Tick labels are not automatically enbaled when tick marks are enabled, but they are automatically disabled if tick marks are disabled</p>
-</li><li><p>Major tick labels are always on by default unless shut off intentionally</p>
-</li><li><p>Minor tick labels are always off by default and must be turned on intentionally</p>
-</li></ul><p>Turn off all ticks (Notice the labels are also turned off)</p>
+<ul class="simple">
+<li><p>Tick marks are automatically enabled if tick labels are enabled</p></li>
+<li><p>Tick labels are not automatically enabled when tick marks are enabled, but they are automatically disabled if tick marks are disabled</p></li>
+<li><p>Major tick labels are always on by default unless shut off intentionally</p></li>
+<li><p>Minor tick labels are always off by default and must be turned on intentionally</p></li>
+</ul>
+<p>Turn off all ticks (Notice the labels are not affected since they are independent <code class="docutils literal notranslate"><span class="pre">Element</span></code> objects)</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">,</span>
          <span class="n">ticks_major</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
@@ -865,16 +855,16 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_45_0.png" src="_images/ticks_45_0.png" />
+<img alt="_images/ticks_41_0.png" src="_images/ticks_41_0.png" />
 </div>
 </div>
 <p>Turn on minor ticks This is done using the <code class="docutils literal notranslate"><span class="pre">tick_labels_minor</span></code> family of keywords:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">,</span>
          <span class="n">tick_labels_minor</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
@@ -884,21 +874,60 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_47_0.png" src="_images/ticks_47_0.png" />
+<img alt="_images/ticks_43_0.png" src="_images/ticks_43_0.png" />
 </div>
 </div>
 </div>
 <div class="section" id="Tick-cleanup">
 <h3>Tick cleanup<a class="headerlink" href="#Tick-cleanup" title="Permalink to this headline">¶</a></h3>
-<p>One issue with tick labels is the potential for overlap depeding on the number of ticks displayed and the size of the plot. fivecentplots employs an algorithm that looks for tick label collision problems within a plot and between subplots and throws out certain labels while leaving the actual tick mark intact. Consider the following example:</p>
+<p>One challenge with tick labels is the potential for label to label overlap depending on the number of ticks displayed and the size of the plot. <strong>fivecentplots</strong> employs algorithms that looks for tick label collision problems within a plot and between subplots and throws out certain labels while leaving the actual tick mark intact. Consider the following example:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">,</span>
          <span class="n">tick_labels_minor</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax_scale</span><span class="o">=</span><span class="s1">&#39;logy&#39;</span><span class="p">,</span> <span class="n">ax2_scale</span><span class="o">=</span><span class="s1">&#39;lin&#39;</span><span class="p">,</span> <span class="n">ticks_minor_x_number</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/ticks_46_0.png" src="_images/ticks_46_0.png" />
+</div>
+</div>
+<p>Notice that all tick marks are present, but not all tick marks have labels. For instance, the x-axis has 5 ticks as specified by <code class="docutils literal notranslate"><span class="pre">ticks_minor_x_number=5</span></code>, but only the 2nd and 4th tick labels are displayed. This is the result of tick cleanup. We can disable the cleanup algorithm by setting the keyword <code class="docutils literal notranslate"><span class="pre">tick_cleanup=False</span></code>. However, this may produce an undesirable result:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">,</span>
+         <span class="n">tick_labels_minor</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax_scale</span><span class="o">=</span><span class="s1">&#39;logy&#39;</span><span class="p">,</span> <span class="n">ax2_scale</span><span class="o">=</span><span class="s1">&#39;lin&#39;</span><span class="p">,</span> <span class="n">ticks_minor_x_number</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">tick_cleanup</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/ticks_48_0.png" src="_images/ticks_48_0.png" />
+</div>
+</div>
+<p>To fit more tick labels in, try increasing the axes size, rotating the tick labels (if applicable), and/or changing font sizes:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">,</span>
+         <span class="n">tick_labels_minor</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax_scale</span><span class="o">=</span><span class="s1">&#39;logy&#39;</span><span class="p">,</span> <span class="n">ax2_scale</span><span class="o">=</span><span class="s1">&#39;lin&#39;</span><span class="p">,</span> <span class="n">ticks_minor_x_number</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+         <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span><span class="mi">400</span><span class="p">],</span> <span class="n">tick_labels_minor_x_rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">tick_labels_major_y2_font_size</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -909,53 +938,14 @@ div.rendered_html tbody tr:hover {
 <img alt="_images/ticks_50_0.png" src="_images/ticks_50_0.png" />
 </div>
 </div>
-<p>Notice that not all ticks have labels, but not all ticks have labels. For instance, the x-axis has 5 ticks as specified by <code class="docutils literal notranslate"><span class="pre">ticks_major_x_number=5</span></code>, but only the 2nd and 4th tick labels are displayed. This is the result of tick cleanup. We can disable the cleanup algorithm by setting the keyword <code class="docutils literal notranslate"><span class="pre">tick_cleanup=False</span></code>. This may produce an undesirable result:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
-         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">,</span>
-         <span class="n">tick_labels_minor</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax_scale</span><span class="o">=</span><span class="s1">&#39;logy&#39;</span><span class="p">,</span> <span class="n">ax2_scale</span><span class="o">=</span><span class="s1">&#39;lin&#39;</span><span class="p">,</span> <span class="n">ticks_minor_x_number</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">tick_cleanup</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/ticks_52_0.png" src="_images/ticks_52_0.png" />
-</div>
-</div>
-<p>To fit more tick labels in, try increasing the axes size and rotating the tick labels (if applicable):</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
-         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">,</span>
-         <span class="n">tick_labels_minor</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax_scale</span><span class="o">=</span><span class="s1">&#39;logy&#39;</span><span class="p">,</span> <span class="n">ax2_scale</span><span class="o">=</span><span class="s1">&#39;lin&#39;</span><span class="p">,</span> <span class="n">ticks_minor_x_number</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-         <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span><span class="mi">400</span><span class="p">],</span> <span class="n">tick_labels_minor_x_rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>  <span class="c1">#### Y2 TICKS!</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/ticks_54_0.png" src="_images/ticks_54_0.png" />
-</div>
-</div>
 </div>
 <div class="section" id="Scientific-notation">
 <h3>Scientific notation<a class="headerlink" href="#Scientific-notation" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="Linear-scale-axis">
 <h4>Linear scale axis<a class="headerlink" href="#Linear-scale-axis" title="Permalink to this headline">¶</a></h4>
-<p>By default, fivecentplots will attempt to make an intelligent decision about how to display tick labels when the range of data and/or the discrete tick values are very small/large. Consider the following example with very small <code class="docutils literal notranslate"><span class="pre">y</span></code> values. Notice that the values on the y axis default to exponential notation rather than explictly writing out 18 zeros after the decimal place.</p>
+<p><strong>fivecentplots</strong> will attempt to make an intelligent decision about how to display tick labels when the range of data and/or the discrete tick values are very small/large. Consider the following example with very small <code class="docutils literal notranslate"><span class="pre">y</span></code> values. Notice that the values on the y-axis default to exponential notation rather than explicitly writing out 18 zeros after the decimal place.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -969,11 +959,12 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_58_0.png" src="_images/ticks_58_0.png" />
+<img alt="_images/ticks_54_0.png" src="_images/ticks_54_0.png" />
 </div>
 </div>
+<p>Similarly, for very large values:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -987,12 +978,12 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_59_0.png" src="_images/ticks_59_0.png" />
+<img alt="_images/ticks_56_0.png" src="_images/ticks_56_0.png" />
 </div>
 </div>
-<p>You can disable the auto-formatting of ticks by setting the keywords <code class="docutils literal notranslate"><span class="pre">sci_x</span></code> and/or <code class="docutils literal notranslate"><span class="pre">sci_y</span></code> to <code class="docutils literal notranslate"><span class="pre">False</span></code>. In this particular example, this would be a really poor choice.</p>
+<p>You can disable the auto-formatting of ticks by setting the keywords <code class="docutils literal notranslate"><span class="pre">sci_x</span></code> and/or <code class="docutils literal notranslate"><span class="pre">sci_y</span></code> to <code class="docutils literal notranslate"><span class="pre">False</span></code>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1006,7 +997,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_61_0.png" src="_images/ticks_61_0.png" />
+<img alt="_images/ticks_58_0.png" src="_images/ticks_58_0.png" />
 </div>
 </div>
 </div>
@@ -1014,11 +1005,11 @@ div.rendered_html tbody tr:hover {
 <h4>Log scale axis<a class="headerlink" href="#Log-scale-axis" title="Permalink to this headline">¶</a></h4>
 <p>Now consider the following log-scaled plot. By default, the major tick labels for a log axis are powers of 10 if the values are large.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">,</span>
          <span class="n">ax_scale</span><span class="o">=</span><span class="s1">&#39;logy&#39;</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="mf">0.00001</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="mi">100000000</span><span class="p">)</span>
 </pre></div>
@@ -1028,19 +1019,18 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_64_0.png" src="_images/ticks_64_0.png" />
+<img alt="_images/ticks_61_0.png" src="_images/ticks_61_0.png" />
 </div>
 </div>
 <p>We can force the tick values to regular numerals as we did above by setting the keywords <code class="docutils literal notranslate"><span class="pre">sci_x</span></code> and/or <code class="docutils literal notranslate"><span class="pre">sci_y</span></code> to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">,</span>
-         <span class="n">ax_scale</span><span class="o">=</span><span class="s1">&#39;logy&#39;</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="mf">0.00001</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="mi">100000000</span><span class="p">,</span> <span class="n">sci_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">filename</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;C:\GitHub\fivecentplots\fivecentplots\tests\test_images\ticks.py\log_sci_imaster.png&#39;</span><span class="p">)</span>
+         <span class="n">ax_scale</span><span class="o">=</span><span class="s1">&#39;logy&#39;</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="mf">0.00001</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="mi">100000000</span><span class="p">,</span> <span class="n">sci_y</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1048,18 +1038,41 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/ticks_66_0.png" src="_images/ticks_66_0.png" />
+<img alt="_images/ticks_63_0.png" src="_images/ticks_63_0.png" />
 </div>
 </div>
-<p>Lastly we can force tick marks of a log-scaled axis to exponential notation by setting the keywords <code class="docutils literal notranslate"><span class="pre">sci_x</span></code> and/or <code class="docutils literal notranslate"><span class="pre">sci_y</span></code> to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<p>We can force tick marks of a log-scaled axis to exponential notation by setting the keywords <code class="docutils literal notranslate"><span class="pre">sci_x</span></code> and/or <code class="docutils literal notranslate"><span class="pre">sci_y</span></code> to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">,</span>
          <span class="n">ax_scale</span><span class="o">=</span><span class="s1">&#39;logy&#39;</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="mf">0.00001</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="mi">100000000</span><span class="p">,</span> <span class="n">sci_y</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/ticks_65_0.png" src="_images/ticks_65_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Colorbar">
+<h4>Colorbar<a class="headerlink" href="#Colorbar" title="Permalink to this headline">¶</a></h4>
+<p>We can also force scientific notation on the color bar axis by setting the kwargs <code class="docutils literal notranslate"><span class="pre">sci_z=True</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">df2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;tests/fake_data_contour.csv&#39;</span><span class="p">)</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">df2</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Batch&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Experiment&#39;</span><span class="p">,</span> <span class="n">filled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">xmin</span><span class="o">=-</span><span class="mi">3</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=-</span><span class="mi">3</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">250</span><span class="p">,</span><span class="mi">250</span><span class="p">],</span>
+            <span class="n">label_rc_font_size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">sci_z</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1080,37 +1093,29 @@ div.rendered_html tbody tr:hover {
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="plot.html" class="btn btn-neutral float-right" title="plot" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="ranges.html" class="btn btn-neutral float-left" title="Data ranges" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="misc.html" class="btn btn-neutral float-right" title="Miscellaneous" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="ranges.html" class="btn btn-neutral float-left" title="Data ranges" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2016, Steve Nicholes
+        &#169; Copyright 2022, Steve Nicholes.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

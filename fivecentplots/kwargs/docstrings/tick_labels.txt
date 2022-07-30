@@ -1,0 +1,95 @@
+        tick_labels (boolean): Enable/disable all tick labels. Defaults to True.
+        tick_labels_edge_alpha (float): Transparency value for all tick labels background edges between 0-1. Defaults to
+          0.
+        tick_labels_edge_color (str): Hex color string for all tick label background edges. Defaults to #ffffff.
+        tick_labels_edge_width (float): Width of the border edge of all tick labels in pixels. Defaults to 0.
+        tick_labels_fill_alpha (float): Transparency value for the background fill of all tick labels between 0-1.
+          Defaults to 1.
+        tick_labels_fill_color (str): Hex color string for all tick label background edges. Defaults to #ffffff.
+        tick_labels_font (str): Font for all tick labels. Defaults to sans-serif.
+        tick_labels_font_color (str): Hex color string for font color of all tick labels. Defaults to #000000.
+        tick_labels_font_size (str): Font size for all tick labels. Defaults to 13.
+        tick_labels_font_style (str): Font style {'normal'|'italic'|'oblique'} for all tick labels. Defaults to normal.
+        tick_labels_font_weight (str): Font weight {'normal'|'bold'|'heavy'|'light'|'ultrabold'|'ultralight'} of all
+          tick labels. Defaults to normal.
+        tick_labels_major (boolean): Enable/disable all major tick labels. Defaults to True.
+        tick_labels_major_edge_alpha (float): Transparency value for all major tick labels background edges between 0-1.
+          Defaults to 0.
+        tick_labels_major_edge_color (str): Hex color string for all major tick label background edges. Defaults to
+          #ffffff.
+        tick_labels_major_edge_width (float): Width of the border edge of all major tick labels in pixels. Defaults to
+          0.
+        tick_labels_major_fill_alpha (float): Transparency value for the background fill of all major tick labels
+          between 0-1. Defaults to 1.
+        tick_labels_major_fill_color (str): Hex color string for all major tick label background edges. Defaults to
+          #ffffff.
+        tick_labels_major_font (str): Font for all major tick labels. Defaults to sans-serif.
+        tick_labels_major_font_color (str): Hex color string for font color of all major tick labels. Defaults to
+          #000000.
+        tick_labels_major_font_size (str): Font size for all major tick labels. Defaults to 13.
+        tick_labels_major_font_style (str): Font style {'normal'|'italic'|'oblique'} for all major tick labels. Defaults
+          to normal.
+        tick_labels_major_font_weight (str): Font weight {'normal'|'bold'|'heavy'|'light'|'ultrabold'|'ultralight'} of
+          all major tick labels. Defaults to normal.
+        tick_labels_major_q (boolean): Enable/disable major tick labels of a specific axes [where q = x, y, x2, y2].
+          Defaults to True.
+        tick_labels_major_q_edge_alpha (float): Transparency value for major tick labels background edges of a specific
+          axes between 0-1 [where q = x, y, x2, y2]. Defaults to 0.
+        tick_labels_major_q_edge_color (str): Hex color string for major tick label background edges of a specific axis
+          [where q = x, y, x2, y2]. Defaults to #ffffff.
+        tick_labels_major_q_edge_width (float): Width of the border edge of all major tick labels of a specific axis in
+          pixels [where q = x, y, x2, y2]. Defaults to 0.
+        tick_labels_major_q_fill_alpha (float): Transparency value for the background fill of all major tick labels of a
+          specific axis between 0-1 [where q = x, y, x2, y2]. Defaults to 1.
+        tick_labels_major_q_fill_color (str): Hex color string for major tick label background edges of a specific axis
+          [where q = x, y, x2, y2]. Defaults to #ffffff.
+        tick_labels_major_q_font (str): Font for major tick labels of a specific axes [where q = x, y, x2, y2]. Defaults
+          to sans-serif.
+        tick_labels_major_q_font_color (str): Hex color string for font color of major tick labels of a specific axes
+          [where q = x, y, x2, y2]. Defaults to #000000.
+        tick_labels_major_q_font_size (str): Font size for major tick labels of a specific axes label [where q = x, y,
+          x2, y2]. Defaults to 13.
+        tick_labels_major_q_font_style (str): Font style {'normal'|'italic'|'oblique'} for major tick labels of a
+          specific axes [where q = x, y, x2, y2]. Defaults to normal.
+        tick_labels_major_q_font_weight (str): Font weight {'normal'|'bold'|'heavy'|'light'|'ultrabold'|'ultralight'} of
+          major tick labels of a specific axes [where q = x, y, x2, y2]. Defaults to normal.
+        tick_labels_minor (boolean): Enable/disable all minor tick labels. Defaults to False.
+        tick_labels_minor_edge_alpha (float): Transparency value for all minor tick labels background edges between 0-1.
+          Defaults to 0.
+        tick_labels_minor_edge_color (str): Hex color string for all minor tick label background edges. Defaults to
+          #ffffff.
+        tick_labels_minor_edge_width (float): Width of the border edge of all minor tick labels in pixels. Defaults to
+          0.
+        tick_labels_minor_fill_alpha (float): Transparency value for the background fill of all minor tick labels
+          between 0-1. Defaults to 1.
+        tick_labels_minor_fill_color (str): Hex color string for all minor tick label background edges. Defaults to
+          #ffffff.
+        tick_labels_minor_font (str): Font for all minor tick labels. Defaults to sans-serif.
+        tick_labels_minor_font_color (str): Hex color string for font color of all minor tick labels. Defaults to
+          #000000.
+        tick_labels_minor_font_size (str): Font size of a specific axes label [where q = x, y, x2, y2]. Defaults to 10.
+        tick_labels_minor_font_style (str): Font style {'normal'|'italic'|'oblique'} for all minor tick labels. Defaults
+          to normal.
+        tick_labels_minor_font_weight (str): Font weight {'normal'|'bold'|'heavy'|'light'|'ultrabold'|'ultralight'} of
+          all minor tick labels. Defaults to normal.
+        tick_labels_minor_q (boolean): Enable/disable minor tick labels of a specific axes [where q = x, y, x2, y2].
+          Defaults to False.
+        tick_labels_minor_q_edge_alpha (float): Transparency value for the label edge of a specific axes between 0-1
+          [where q = x, y, x2, y2]. Defaults to 0.
+        tick_labels_minor_q_edge_color (str): Hex color string for minor tick label background edges of a specific axis
+          [where q = x, y, x2, y2]. Defaults to #ffffff.
+        tick_labels_minor_q_edge_width (float): Width of the border edge of all minor tick labels of a specific axis in
+          pixels [where q = x, y, x2, y2]. Defaults to 0.
+        tick_labels_minor_q_fill_alpha (float): Transparency value for the background fill of all minor tick labels of a
+          specific axis between 0-1 [where q = x, y, x2, y2]. Defaults to 1.
+        tick_labels_minor_q_fill_color (str): Hex color string for minor tick label background edges of a specific axes
+          [where q = x, y, x2, y2]. Defaults to #ffffff.
+        tick_labels_minor_q_font (str): Font for minor tick labels of a specific axes [where q = x, y, x2, y2]. Defaults
+          to sans-serif.
+        tick_labels_minor_q_font_color (str): Hex color string for font color of minor tick labels of a specific axes
+          [where q = x, y, x2, y2]. Defaults to #000000.
+        tick_labels_minor_q_font_size (str): Font size for all minor tick labels. Defaults to 10.
+        tick_labels_minor_q_font_style (str): Font style {'normal'|'italic'|'oblique'} for minor tick labels of a
+          specific axes [where q = x, y, x2, y2]. Defaults to normal.
+        tick_labels_minor_q_font_weight (str): Font weight {'normal'|'bold'|'heavy'|'light'|'ultrabold'|'ultralight'} of
+          minor tick labels of a specific axes [where q = x, y, x2, y2]. Defaults to normal.

@@ -1,0 +1,17 @@
+Keyword,Data Type,Description,Default,Example
+box_grand_mean,bool,Toggle visibility of a line showing the mean of all data on the plot,False,boxplot.html#Grand-Mean/Median
+box_grand_mean_color|grand_mean_color,str,Hex color string for the grand mean line,#555555,None
+box_grand_mean_style|grand_mean_style,str,"Line style for the box grand mean lines {‘-’, ‘--’, ‘-.’, ‘:’}",'-’,None
+box_grand_mean_width|grand_mean_width,float,Width of the grand mean line in pixels,1,None
+box_grand_median,bool,Toggle visibility of a line showing the median of all data on the plot,False,boxplot.html#Grand-Mean/Median
+box_grand_median_color|grand_median_color,str,Hex color string for the grand median line,#0000ff,None
+box_grand_median_style|grand_median_style,str,"Line style for the box grand median lines {‘-’, ‘--’, ‘-.’, ‘:’}",'-’,None
+box_grand_median_width|grand_median_width,float,Width of the grand median line in pixels,1,None
+box_group_mean,bool,Toggle visibility of a line showing the mean of each data group on the plot,False,boxplot.html#Group-Means
+box_group_mean_color|group_mean_color,str,Hex color string for the group mean line,#555555,None
+box_group_mean_style|group_mean_style,str,"Line style for the box group mean lines {‘-’, ‘--’, ‘-.’, ‘:’}",'-’,None
+box_group_mean_width|group_mean_width,float,Width of the group mean line in pixels,1,None
+box_stat_line,str,"Set the statistic for the connecting line {‘mean’, ‘median’, ‘std’, ‘qXX’ [qunatile where XX is a number between 0-100]}",mean,boxplot.html#Stat-line
+box_stat_line_on,bool,Toggle visibility of the stat line between boxes,True,None
+box_stat_line_color,str,Hex color string for the stat line,#666666,None
+box_stat_line_width,float,Width of the stat line in pixels,1,None

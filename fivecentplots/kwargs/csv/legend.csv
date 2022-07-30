@@ -1,0 +1,10 @@
+Keyword,Data Type,Description,Default,Example
+legend_on,boolean,Enable/disable visibility of legend that has been created using the `legend` kwarg,True [if legend enabled],None
+legend_edge_color,str,Hex color string for the legend border,#ffffff,styles.html#Typical-elements
+legend_edge_width,float,Width of the legend border in pixels,1,None
+legend_font_size,float,Font size of the legend text,12,None
+legend_location,int,Position of the legend {0 = `outside`; 1 = `upper right`; 2 = upper left`; 3 = `lower left`; 4 = `lower right`; 5 = `right`; 6 = `center left`; 7 = `center right`; 8 = `lower center`; 9 = `upper center`; 10 = `center`; 11 = `below`}, 0,grouping.html#Location
+legend_marker_alpha,float,Transparency value for legend markers between 0-1,1,styles.html#Alpha
+legend_marker_size,float,Marker size in the legend in pixels,7,styles.html#Marker-size
+legend_points,int,Number of points in the legend region for each entry [to enable multiple markers as in matplotlib],1,None
+legend_title,str,Custom title for the legend region [default is the column name used for the legend grouping],None,None

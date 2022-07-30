@@ -1,43 +1,30 @@
-from .. import fcp
-import importlib
-import os, sys
 import pandas as pd
 import pdb
-import datetime
-import time
 import numpy as np
-import copy
-import decimal
-import math
 from .. colors import *
-from .. utilities import RepeatedList
 from .. import utilities as utl
-from distutils.version import LooseVersion
-from random import randint
-from collections import defaultdict
 from . layout import *
 import warnings
 import bokeh.plotting as bp
 import bokeh.layouts as bl
 import bokeh.models as bm
+
+
 def custom_formatwarning(msg, *args, **kwargs):
     # ignore everything except the message
     return 'Warning: ' + str(msg) + '\n'
 
-warnings.formatwarning = custom_formatwarning
-warnings.filterwarnings("ignore", "invalid value encountered in double_scalars")  # weird error in boxplot with no groups
 
-try:
-    from natsort import natsorted
-except:
-    natsorted = sorted
+warnings.formatwarning = custom_formatwarning
+warnings.filterwarnings("ignore", "invalid value encountered in double_scalars")  # weird error in boxplot w/ no groups
+
 
 db = pdb.set_trace
 
 
 DASHES = {'-': 'solid',
           'solid': 'solid',
-          '--': 'dashed ',
+          '--': 'dashed',
           'dashed': 'dashed',
           '.': 'dotted',
           'dotted': 'dotted',
@@ -48,10 +35,7 @@ DASHES = {'-': 'solid',
 
 
 def fill_alpha(hexstr):
-    """
-    Break an 8-digit hex string into a hex color and a fractional alpha value
-    """
-
+    """Break an 8-digit hex string into a hex color and a fractional alpha value."""
     if len(hexstr) == 6:
         return hexstr, 1
 
@@ -59,104 +43,173 @@ def fill_alpha(hexstr):
 
 
 def format_marker(fig, marker):
-            """
-            Format the marker string to mathtext
-            """
+    """Format the marker string to mathtext."""
+    markers = {'o': fig.circle,
+               'circle': fig.circle,
+               '+': fig.cross,
+               'cross': fig.cross,
+               's': fig.square,
+               'square': fig.square,
+               'x': fig.x,
+               'd': fig.diamond,
+               'diamond': fig.diamond,
+               't': fig.triangle,
+               'triangle': fig.triangle}
 
-            markers = {'o': fig.circle,
-                       'circle': fig.circle,
-                       '+': fig.cross,
-                       'cross': fig.cross,
-                       's': fig.square,
-                       'square': fig.square,
-                       'x': fig.x,
-                       'd': fig.diamond,
-                       'diamond': fig.diamond,
-                       't': fig.triangle,
-                       'triangle': fig.triangle}
-
-            return markers[marker]
+    return markers[marker]
 
 
 class Layout(BaseLayout):
-    def __init__(self, plot_func, data, **kwargs):
+    def __init__(self, data: 'Data', **kwargs):
+        """Layout attributes and methods for matplotlib Figure.
 
+        Args:
+            data: fcp Data object
+            **kwargs: input args from user
+        """
+        # Set the layout engine
         global ENGINE
         ENGINE = 'bokeh'
 
-        BaseLayout.__init__(self, plot_func, data, **kwargs)
+        # Inherit the base layout properties
+        super().__init__(data, **kwargs)
 
         # Update kwargs
         if not kwargs.get('save_ext'):
             kwargs['save_ext'] = '.html'
         self.kwargs = kwargs
 
-    def add_box_labels(self, ir, ic, dd):
+    def add_box_labels(self, ir: int, ic: int, data):
+        """Add box group labels and titles (JMP style).
+
+        Args:
+            ir: current axes row index
+            ic: current axes column index
+            data: fcp Data object
+        """
         pass
 
-    def add_hvlines(self, ir, ic, df=None):
+    def add_hvlines(self, ir: int, ic: int, df: [pd.DataFrame, None] = None):
+        """Add horizontal/vertical lines.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            df: current data. Defaults to None.
+        """
+        pass
+
+    def add_label(self, ir: int, ic: int, text: str = '', position: [tuple, None] = None,
+                  rotation: int = 0, size: [list, None] = None,
+                  fill_color: str = '#ffffff', edge_color: str = '#aaaaaa',
+                  edge_width: int = 1, font: str = 'sans-serif', font_weight: str = 'normal',
+                  font_style: str = 'normal', font_color: str = '#666666', font_size: int = 14,
+                  offset: bool = False, **kwargs) -> ['Text_Object', 'Rectangle_Object']:
+        """Add a label to the plot.
+
+        This function can be used for title labels or for group labels applied
+        to rows and columns when plotting facet grid style plots.
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            text:  label text. Defaults to ''.
+            position: label position tuple of form (left, right, top, bottom) or None.
+                Defaults to None.
+            rotation:  degrees of rotation. Defaults to 0.
+            size: list of [height, weight] or None. Defaults to None.
+            fill_color: hex color code for label fill. Defaults to '#ffffff'.
+            edge_color: hex color code for label edge. Defaults to '#aaaaaa'.
+            edge_width: width of the label bounding box edge. Defaults to 1.
+            font: name of the font for the label. Defaults to 'sans-serif'.
+            font_weight: mpl font weight str ('normal', 'bold', etc.). Defaults to 'normal'.
+            font_style: mpl font style str ('normal', 'italic', etc.). Defaults to 'normal'.
+            font_color:  hex color code for label text. Defaults to '#666666'.
+            font_size: label font size (default=14)
+            offset: use an offset for positioning the text of the label. Defaults to False.
+            kwargs: any other keyword args (they won't be used but a sloppy way to ignore
+                any extra keywords that get passed to this function)
+
+        Returns:
+            reference to the text box object
+            reference to the background rectangle patch object
+
+        """
         pass
 
     def add_legend(self):
-        """
-        Add a figure legend
-        """
-
+        """Add a legend to a figure."""
         if not self.legend.on or len(self.legend.values) == 0:
             return
 
         x = 0
         y = self.ncol - 1
         tt = list(self.legend.values.items())
-        tt = [f for f in tt if f[0] is not 'NaN']
-        title = self.axes.obj[x, y].circle(0, 0, size=0.00000001,
-                                             color=None)
+        tt = [f for f in tt if f[0] != 'NaN']
+        title = self.axes.obj[x, y].circle(0, 0, size=0.00000001, color=None)
         tt = [(self.legend.text, [title])] + tt
         legend = bm.Legend(items=tt, location='top_right')
         self.axes.obj[x, y].add_layout(legend, 'right')
 
-    def add_text(self, ir, ic, text=None, element=None, offsetx=0, offsety=0,
-                 **kwargs):
-        """
-        Add a text box
-        """
+    def add_text(self, ir: int, ic: int, text: [str, None] = None,
+                 element: [str, None] = None, offsetx: int = 0,
+                 offsety: int = 0, coord: ['mpl_coordinate', None] = None,
+                 units: [str, None] = None, **kwargs):
+        """Add a text box.
 
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            text (optional): text str to add. Defaults to None.
+            element (optional): name of the Element object. Defaults to None.
+            offsetx (optional): x-axis shift. Defaults to 0.
+            offsety (optional): y-axis shift. Defaults to 0.
+            coord (optional): MPL coordinate type. Defaults to None.
+            units (optional): pixel or inches. Defaults to None which is 'pixel'.
+        """
         pass
 
-    def get_element_sizes(self, data):
+    def _get_element_sizes(self, data: 'Data'):
+        """Calculate the actual rendered size of select elements by pre-plotting
+        them.  This is needed to correctly adjust the figure dimensions.
 
+        Args:
+            data: fcp Data object
+
+        Returns:
+            updated version of `data`
+        """
         # Add label size
-        self.label_x.size = utl.get_text_dimensions(self.label_x.text,
-                                **self.make_kwargs(self.label_x))
-        self.label_y.size += utl.get_text_dimensions(self.label_y.text,
-                                **self.make_kwargs(self.label_y))
+        self.label_x.size = \
+            utl.get_text_dimensions(self.label_x.text, **self.make_kw_dict(self.label_x))
+        self.label_y.size += \
+            utl.get_text_dimensions(self.label_y.text, **self.make_kw_dict(self.label_y))
 
         # Ticks (rough)
         xlab = '%s.0' % int(data.ranges[0, 0]['xmax'])
         ylab = '%s.0' % int(data.ranges[0, 0]['ymax'])
-        self.tick_labels_major_x.size = utl.get_text_dimensions(xlab,
-            **self.make_kwargs(self.tick_labels_major_x))
-        self.tick_labels_major_y.size += utl.get_text_dimensions(ylab,
-            **self.make_kwargs(self.tick_labels_major_y))
+        self.tick_labels_major_x.size = \
+            utl.get_text_dimensions(xlab, **self.make_kw_dict(self.tick_labels_major_x))
+        self.tick_labels_major_y.size += \
+            utl.get_text_dimensions(ylab, **self.make_kw_dict(self.tick_labels_major_y))
 
         # title
         if self.title.text is not None:
-            self.title.size = utl.get_text_dimensions(self.title.text,
-                                **self.make_kwargs(self.title))
+            self.title.size = \
+                utl.get_text_dimensions(self.title.text, **self.make_kw_dict(self.title))
 
         # rc labels
         for ir in range(0, self.nrow):
             for ic in range(0, self.ncol):
                 if self.label_row.text is not None:
                     text = '%s=%s' % (self.label_row.text, self.label_row.values[ir])
-                    self.label_row.size[1] = max(self.label_row.size[1],  \
-                        utl.get_text_dimensions(text,
-                                    **self.make_kwargs(self.label_row))[1])
+                    self.label_row.size[1] = \
+                        max(self.label_row.size[1],
+                            utl.get_text_dimensions(text, **self.make_kw_dict(self.label_row))[1])
                 if self.label_col.text is not None:
                     text = '%s=%s' % (self.label_col.text, self.label_col.values[ir])
-                    self.label_col.size[1] = max(self.label_col.size[1],  \
-                        utl.get_text_dimensions(text,
-                                    **self.make_kwargs(self.label_col))[1])
+                    self.label_col.size[1] = \
+                        max(self.label_col.size[1],
+                            utl.get_text_dimensions(text, **self.make_kw_dict(self.label_col))[1])
 
         # Legend
         if data.legend_vals is None:
@@ -165,34 +218,38 @@ class Layout(BaseLayout):
         # Get approx legend size
         name_size = 0
         for name in data.legend_vals['names']:
-            name_size = max(name_size,
-                            utl.get_text_dimensions(str(name),
-                                **self.make_kwargs(self.legend))[0])
+            name_size = max(name_size, utl.get_text_dimensions(str(name), **self.make_kw_dict(self.legend))[0])
 
         if self.legend.on:
             self.legend.size = [10 + 20 + 5 + name_size + 10, 0]
 
         return data
 
-    def get_figure_size(self, data, **kwargs):
+    def _get_figure_size(self, data: 'Data', **kwargs):
+        """Determine the size of the mpl figure canvas in pixels and inches.
 
+        Args:
+            data: Data object
+            kwargs: user-defined keyword args
+        """
         self.axes.size[0] += self.legend.size[0]
 
-    def make_figure(self, data, **kwargs):
-        """
-        Make the figure and axes objects
-        """
+    def make_figure(self, data: 'Data', **kwargs):
+        """Make the figure and axes objects.
 
-        self.update_from_data(data)
-        self.update_wrap(data, kwargs)
-        self.set_label_text(data, **kwargs)
-        data = self.get_element_sizes(data)
-        #self.get_figure_size(data, **kwargs)
+        Args:
+            data: fcp Data object
+            **kwargs: input args from user
+        """
+        self._update_from_data(data)
+        self._update_wrap(data, kwargs)
+        self._set_label_text(data)#, **kwargs)
+        data = self._get_element_sizes(data)
 
-        self.axes.obj = np.array([[None]*self.ncol]*self.nrow)
+        self.axes.obj = np.array([[None] * self.ncol] * self.nrow)
         for ir in range(0, self.nrow):
             for ic in range(0, self.ncol):
-                x_scale, y_scale = self.set_axes_scale2(ir, ic)
+                x_scale, y_scale = self._set_axes_scale2(ir, ic)
                 x_size, y_size = self.axes.size
                 # legend
                 if ir == 0 and ic == self.ncol - 1:
@@ -215,88 +272,207 @@ class Layout(BaseLayout):
                                                   x_axis_type=x_scale,
                                                   y_axis_type=y_scale)
 
-        self.axes.visible = np.array([[True]*self.ncol]*self.nrow)
+        self.axes.visible = np.array([[True] * self.ncol] * self.nrow)
 
         return data
 
-    def plot_box(self, ir, ic, data,**kwargs):
-        """ Plot boxplot data
+    def plot_bar(self, ir: int, ic: int, iline: int, df: pd.DataFrame,
+                 leg_name: str, data: 'Data', ngroups: int, stacked: bool,
+                 std: [None, float], xvals: np.ndarray, inst: pd.Series,
+                 total: pd.Series) -> 'Data':
+        """Plot bar graph.
 
         Args:
-            ir (int): subplot row index
-            ic (int): subplot column index
-            data (pd.DataFrame): data to plot
-
-        Keyword Args:
-            any kwargs allowed by the plotter function selected
+            ir: subplot row index
+            ic: subplot column index
+            iline: data subset index (from Data.get_plot_data)
+            df: summed column "y" values grouped by x-column -->
+                df.groupby(x).sum()[y]
+            leg_name: legend value name if legend enabled
+            data: Data object
+            ngroups: total number of groups in the full data set based on
+                data.get_plot_data
+            stacked: enables stacked histograms if True
+            std: std dev to create error bars if not None
+            xvals: sorted array of x-column unique values
+            inst: instance value to get the correct alignment of a group
+                in the plot when legending
+            total: number of instances of x-column when grouped by the legend
 
         Returns:
-            return the box plot object
+            updated Data Object with new axes ranges
         """
-
         pass
 
-    def plot_contour(self, ax, df, x, y, z, ranges):
-        """
-        Plot a contour plot
-        """
-
-        pass
-
-    def plot_heatmap(self, ax, df, x, y, z, ranges):
-        """
-        Plot a heatmap
+    def plot_box(self, ir: int, ic: int, data: 'Data', **kwargs) -> 'MPL_Boxplot_Object':
+        """Plot boxplot.
 
         Args:
-            ax (mpl.axes): current axes obj
-            df (pd.DataFrame):  data to plot
-            x (str): x-column name
-            y (str): y-column name
-            z (str): z-column name
-            range (dict):  ax limits
+            ir: subplot row index
+            ic: subplot column index
+            data: Data object
+            kwargs: keyword args
 
+        Returns:
+            box plot MPL object
         """
-
         pass
 
-    def plot_hist(self, ir, ic, iline, df, x, y, leg_name, data, zorder=1,
-                  line_type=None, marker_disable=False):
-
-        pass
-
-    def plot_line(self, ir, ic, x0, y0, x1=None, y1=None,**kwargs):
-        """
-        Plot a simple line
+    def plot_contour(self, ir: int, ic: int, df: pd.DataFrame, x: str, y: str, z: str,
+                     data: 'Data') -> ['MPL_contour_object', 'MPL_colorbar_object']:
+        """Plot a contour plot.
 
         Args:
-            ir (int): subplot row index
-            ic (int): subplot column index
-            x0 (float): min x coordinate of line
-            x1 (float): max x coordinate of line
-            y0 (float): min y coordinate of line
-            y1 (float): max y coordinate of line
+            ir: subplot row index
+            ic: subplot column index
+            df: data to plot
+            x: x-axis column name
+            y: y-axis column name
+            z: z-column name
+            data: Data object
+
+        Returns:
+            reference to the contour plot object
+            reference to the colorbar object
+        """
+        pass
+
+    def plot_gantt(self, ir: int, ic: int, iline: int, df: pd.DataFrame, x: str, y: str,
+                   leg_name: str, yvals: list, ngroups: int):
+        """Plot gantt graph.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            iline: data subset index (from Data.get_plot_data)
+            df: input data
+            x: x-axis column name
+            y: y-axis column name
+            leg_name: legend value name if legend enabled
+            yvals: list of tuples of groupling column values
+            ngroups: total number of groups in the full data set based on
+                data.get_plot_data
+
+        """
+        pass
+
+    def plot_heatmap(self, ir: int, ic: int, df: pd.DataFrame, x: str, y: str,
+                     z: str, data: 'Data') -> 'MPL_imshow_object':
+        """Plot a heatmap.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            df: data to plot
+            x: x-axis column name
+            y: y-axis column name
+            z: z-column name
+            data: Data object
+
+        Returns:
+            imshow plot obj
+        """
+        pass
+
+    def plot_hist(self, ir: int, ic: int, iline: int, df: pd.DataFrame, x: str,
+                  y: str, leg_name: str, data: 'Data') -> ['MPL_histogram_object', 'Data']:
+        """Plot a histogram.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            iline: data subset index (from Data.get_plot_data)
+            df: summed column "y" values grouped by x-column -->
+                df.groupby(x).sum()[y]
+            x: x-axis column name
+            y: y-axis column name
+            leg_name: legend value name if legend enabled
+            data: Data object
+
+        Returns:
+            histogram plot object
+            updated Data object
+        """
+        pass
+
+    def plot_imshow(self, ir: int, ic: int, df: pd.DataFrame, data: 'Data'):
+        """Plot an image.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            df: data to plot
+            data: Data object
+
+        Returns:
+            imshow plot obj
+        """
+        pass
+
+    def plot_line(self, ir: int, ic: int, x0: float, y0: float, x1: float = None,
+                  y1: float = None, **kwargs):
+        """Plot a simple line.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            x0: min x coordinate of line
+            x1: max x coordinate of line
+            y0: min y coordinate of line
+            y1: max y coordinate of line
+            kwargs: keyword args
+
+        Returns:
+            plot object
+        """
+        pass
+
+    def plot_pie(self, ir: int, ic: int, df: pd.DataFrame, x: str, y: str, data: 'Data',
+                 kwargs) -> 'MPL_pie_chart_object':
+        """Plot a pie chart.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            df: input data
+            x: x-axis column name
+            y: y-axis column name
+            data: Data object
             kwargs: keyword args
         """
+        pass
 
-    def plot_xy(self, ir, ic, iline, df, x, y, leg_name, twin, zorder=1,
-                line_type=None, marker_disable=False):
+    def plot_polygon(self, ir: int, ic: int, points: list, **kwargs):
+        """Plot a polygon.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            points: list of floats that defint the points on the polygon
+            kwargs: keyword args
+        """
+        pass
+
+    def plot_xy(self, ir: int, ic: int, iline: int, df: pd.DataFrame, x: str, y: str,
+                leg_name: str, twin: bool, zorder: int = 1, line_type: [str, None] = None,
+                marker_disable: bool = False):
         """ Plot xy data
 
         Args:
-            x (np.array):  x data to plot
-            y (np.array):  y data to plot
-            color (str):  hex color code for line color (default='#000000')
-            marker (str):  marker char string (default='o')
-            points (bool):  toggle points on|off (default=False)
-            line (bool):  toggle plot lines on|off (default=True)
-
-        Keyword Args:
-            any kwargs allowed by the plotter function selected
-
-        Returns:
-            return the line plot object
+            ir: subplot row index
+            ic: subplot column index
+            iline: data subset index (from Data.get_plot_data)
+            df: summed column "y" values grouped by x-column -->
+                df.groupby(x).sum()[y]
+            x: x-axis column name
+            y: y-axis column name
+            leg_name: legend value name if legend enabled
+            twin: denotes if twin axis is enabled or not
+            zorder (optional): z-height of the plot lines. Defaults to 1.
+            line_type (optional): set the line type to reference the correct Element.
+                Defaults to None.
+            marker_disable (optional): flag to disable markers. Defaults to False.
         """
-
         df = df.copy()
 
         if not line_type:
@@ -313,31 +489,30 @@ class Layout(BaseLayout):
             if self.markers.jitter:
                 df[x] = np.random.normal(df[x], 0.03, size=len(df[y]))
             marker = format_marker(self.axes.obj[ir, ic],
-                                   self.markers.type.get(iline))
-            ecolor, ealpha = fill_alpha(self.markers.edge_color.get(iline))
-            fcolor, falpha = fill_alpha(self.markers.fill_color.get(iline))
+                                   self.markers.type[iline])
+            ecolor, ealpha = fill_alpha(self.markers.edge_color[iline])
+            fcolor, falpha = fill_alpha(self.markers.fill_color[iline])
             if marker != 'None':
                 points = marker(df[x], df[y],
                                 fill_color=fcolor if self.markers.filled else None,
                                 fill_alpha=falpha,
                                 line_color=ecolor,
                                 line_alpha=ealpha,
-                                size=self.markers.size.get(iline),
+                                size=self.markers.size[iline],
                                 )
             else:
-                #??
                 points = marker(df[x], df[y],
-                                color=line_type.color.get(iline),
-                                linestyle=line_type.style.get(iline),
-                                linewidth=line_type.width.get(iline))
+                                color=line_type.color[iline],
+                                linestyle=line_type.style[iline],
+                                linewidth=line_type.width[iline])
 
         # Make the line
         lines = None
         if line_type.on:
             lines = self.axes.obj[ir, ic].line(df[x], df[y],
-                                               color=line_type.color.get(iline)[0:7],
-                                               line_dash=DASHES[line_type.style.get(iline)],
-                                               line_width=line_type.width.get(iline),
+                                               color=line_type.color[iline][0:7],
+                                               line_dash=DASHES[line_type.style[iline]],
+                                               line_width=line_type.width[iline],
                                                )
 
         # Add a reference to the line to self.lines
@@ -347,10 +522,21 @@ class Layout(BaseLayout):
                 leg_vals += [points]
             if line_type.on:
                 leg_vals += [lines]
-            self.legend.values[leg_name] = leg_vals
+            #db()
+            #self.legend.values[leg_name] = leg_vals
 
-    def save(self, filename, idx=0):
+    def restore(self):
+        """Undo changes to default plotting library parameters."""
+        pass
 
+    def save(self, filename: str, idx: int = 0):
+        """Save a plot window.
+
+        Args:
+            filename: name of the file
+            idx (optional): figure index in order to set the edge and face color of the
+                figure correctly when saving. Defaults to 0.
+        """
         bp.output_file(filename)
         # by row
         if self.ncol == 1 and self.nrow > 1:
@@ -361,81 +547,63 @@ class Layout(BaseLayout):
         # grid
         else:
             self.saved = bl.gridplot(self.axes.obj.tolist(),
-                                      ncols=self.ncol if self.ncol > 1 else None)
+                                     ncols=self.ncol if self.ncol > 1 else None)
         bp.save(self.saved)
 
-    def see(self):
-        """
-        Prints a readable list of class attributes
-        """
-
-        df = pd.DataFrame({'Attribute':list(self.__dict__.copy().keys()),
-             'Name':[str(f) for f in self.__dict__.copy().values()]})
-        df = df.sort_values(by='Attribute').reset_index(drop=True)
-
-        return df
-
-    def set_axes_colors(self, ir, ic):
-        """
-        Set axes colors (fill, alpha, edge)
+    def set_axes_colors(self, ir: int, ic: int):
+        """Set axes colors (fill, alpha, edge).
 
         Args:
-            ir (int): subplot row index
-            ic (int): subplot col index
+            ir: subplot row index
+            ic: subplot column index
 
         """
+        axes = self._get_axes()
 
-        axes = self.get_axes()
-
-        fill, alpha = fill_alpha(axes[0].fill_color.get(utl.plot_num(ir, ic, self.ncol)))
+        fill, alpha = fill_alpha(axes[0].fill_color[utl.plot_num(ir, ic, self.ncol)])
         self.axes.obj[ir, ic].background_fill_color = fill
         self.axes.obj[ir, ic].background_fill_alpha = alpha
 
-    def set_axes_grid_lines(self, ir, ic):
-        """
-        Style the grid lines and toggle visibility
+    def set_axes_grid_lines(self, ir: int, ic: int):
+        """Style the grid lines and toggle visibility.
 
         Args:
             ir (int): subplot row index
-            ic (int): subplot col index
+            ic (int): subplot column index
 
         """
-
         axis = ['x', 'y']
 
         for ax in axis:
             grid = getattr(self.axes.obj[ir, ic], '%sgrid' % ax)
-            grid.grid_line_color = self.grid_major.color.get(0)[0:7] if self.grid_major.on \
-                                   else None
-            grid.grid_line_width = self.grid_major.width.get(0)
-            grid.grid_line_dash = DASHES[self.grid_major.style.get(0)]
+            grid.grid_line_color = \
+                self.grid_major.color[0][0:7] if self.grid_major.on else None
+            grid.grid_line_width = self.grid_major.width[0]
+            grid.grid_line_dash = DASHES[self.grid_major.style[0]]
 
-            grid.minor_grid_line_color = self.grid_minor.color.get(0)[0:7] if self.grid_minor.on \
-                                   else None
-            grid.minor_grid_line_width = self.grid_minor.width.get(0)
-            grid.minor_grid_line_dash = DASHES[self.grid_minor.style.get(0)]
+            grid.minor_grid_line_color = \
+                self.grid_minor.color[0][0:7] if self.grid_minor.on else None
+            grid.minor_grid_line_width = self.grid_minor.width[0]
+            grid.minor_grid_line_dash = DASHES[self.grid_minor.style[0]]
 
-    def set_axes_labels(self, ir, ic):
-        """
-        Set the axes labels
+    def set_axes_labels(self, ir: int, ic: int):
+        """Set the axes labels.
 
         Args:
-            ir (int): current row index
-            ic (int): current column index
-            kw (dict): kwargs dict
+            ir: subplot row index
+            ic: subplot column index
 
         """
-
-        axis = ['x', 'y'] #x2', 'y', 'y2', 'z']
+        axis = ['x', 'y']  # x2', 'y', 'y2', 'z']
         for ax in axis:
             label = getattr(self, 'label_%s' % ax)
             if not label.on:
                 continue
             if type(label.text) not in [str, list]:
                 continue
-            if type(label.text) is str:
+            if isinstance(label.text, str):
                 labeltext = label.text
-            if type(label.text) is list:
+            if isinstance(label.text, list):
                 labeltext = label.text[ic + ir * self.ncol]
 
             # Twinning?
@@ -443,7 +611,7 @@ class Layout(BaseLayout):
             # Toggle label visibility
             if not self.separate_labels:
                 if ax == 'x' and ir != self.nrow - 1 and \
-                        self.nwrap == 0 and self.axes.visible[ir+1, ic]:
+                        self.nwrap == 0 and self.axes.visible[ir + 1, ic]:
                     continue
                 if ax == 'x2' and ir != 0:
                     continue
@@ -453,7 +621,7 @@ class Layout(BaseLayout):
                         utl.plot_num(ir, ic, self.ncol) != self.nwrap:
                     continue
 
-            lkwargs = self.make_kwargs(label)
+            lkwargs = self.make_kw_dict(label)
             laxis = getattr(self.axes.obj[ir, ic], '%saxis' % ax)
             laxis.axis_label = labeltext
             laxis.axis_label_text_font = lkwargs['font']
@@ -461,118 +629,49 @@ class Layout(BaseLayout):
             laxis.axis_label_text_color = lkwargs['font_color']
             laxis.axis_label_text_font_style = lkwargs['font_style']
 
-    def set_axes_ranges(self, ir, ic, ranges):
-        """
-        Set the axes ranges
+    def set_axes_ranges(self, ir: int, ic: int, ranges: dict):
+        """Set the axes ranges.
 
         Args:
-            ir (int): subplot row index
-            ic (int): subplot col index
-            limits (dict): min/max axes limits for each axis
+            ir: subplot row index
+            ic: subplot column index
+            ranges: min/max axes limits for each axis
 
         """
+        pass
 
-        if self.plot_func == 'plot_heatmap':
-            return
+    def set_axes_rc_labels(self, ir: int, ic: int):
+        """Add the row/column label boxes and wrap titles.
 
-        # X-axis
-        if self.axes.share_x:
-            xvals = ['xmin', 'xmax', 'x2min', 'x2max']
-            for xval in xvals:
-                xx = None
-                for irow in range(0, self.nrow):
-                    for icol in range(0, self.ncol):
-                        if ranges[irow, icol][xval] is not None:
-                            if irow == 0 and icol == 0:
-                                xx = ranges[irow, icol][xval]
-                            elif 'min' in xval:
-                                xx = min(xx, ranges[irow, icol][xval])
-                            else:
-                                xx = max(xx, ranges[irow, icol][xval])
+        Args:
+            ir: subplot row index
+            ic: subplot column index
 
-                if xx is not None and xval == 'xmin':
-                    self.axes.obj[ir, ic].x_range=bm.Range1d(start=xx)
-                elif xx is not None and xval == 'x2min':
-                    self.axes2.obj[ir, ic].x_range=bm.Range1d(start=xx)
-                elif xx is not None and xval == 'xmax':
-                    self.axes.obj[ir, ic].x_range=bm.Range1d(end=xx)
-                elif xx is not None and xval == 'x2max':
-                    self.axes2.obj[ir, ic].x_range=bm.Range1d(end=xx)
-        else:
-            if ranges[ir, ic]['xmin'] is not None:
-                self.axes.obj[ir, ic].x_range=bm.Range1d(start=ranges[ir, ic]['xmin'])
-            if ranges[ir, ic]['x2min'] is not None:
-                self.axes2.obj[ir, ic].x_range=bm.Range1d(start=ranges[ir, ic]['x2min'])
-            if ranges[ir, ic]['xmax'] is not None:
-                self.axes.obj[ir, ic].x_range=bm.Range1d(end=ranges[ir, ic]['xmax'])
-            if ranges[ir, ic]['x2max'] is not None:
-                self.axes2.obj[ir, ic].x_range=bm.Range1d(end=ranges[ir, ic]['x2max'])
-
-        # Y-axis
-        if self.axes.share_y:
-            yvals = ['ymin', 'ymax', 'y2min', 'y2max']
-            for yval in yvals:
-                yy = None
-                for irow in range(0, self.nrow):
-                    for icol in range(0, self.ncol):
-                        if ranges[irow, icol][yval] is not None:
-                            if irow == 0 and icol == 0:
-                                yy = ranges[irow, icol][yval]
-                            elif 'min' in yval:
-                                yy = min(yy, ranges[irow, icol][yval])
-                            else:
-                                yy = max(yy, ranges[irow, icol][yval])
-
-                if yy is not None and yval == 'ymin':
-                    self.axes.obj[ir, ic].y_range=bm.Range1d(start=yy)
-                elif yy is not None and yval == 'y2min':
-                    self.axes2.obj[ir, ic].y_range=bm.Range1d(start=yy)
-                elif yy is not None and yval == 'ymax':
-                    self.axes.obj[ir, ic].y_range=bm.Range1d(end=yy)
-                elif yy is not None and yval == 'y2max':
-                    self.axes2.obj[ir, ic].y_range=bm.Range1d(end=yy)
-        else:
-            if ranges[ir, ic]['ymin'] is not None:
-                self.axes.obj[ir, ic].y_range=bm.Range1d(start=ranges[ir, ic]['ymin'])
-            if ranges[ir, ic]['y2min'] is not None:
-                self.axes2.obj[ir, ic].y_range=bm.Range1d(start=ranges[ir, ic]['y2min'])
-            if ranges[ir, ic]['ymax'] is not None:
-                self.axes.obj[ir, ic].y_range=bm.Range1d(end=ranges[ir, ic]['ymax'])
-            if ranges[ir, ic]['y2max'] is not None:
-                self.axes2.obj[ir, ic].y_range=bm.Range1d(end=ranges[ir, ic]['y2max'])
-
-    def set_axes_rc_labels(self, ir, ic):
-
+        """
         title = self.axes.obj[ir, ic].title
 
         # Row labels
-        if ic == self.ncol-1 and self.label_row.on and not self.label_wrap.on:
+        if ic == self.ncol - 1 and self.label_row.on and not self.label_wrap.on:
             title.text = ' %s=%s ' % (self.label_row.text, self.label_row.values[ir])
             title.align = self.label_row.align
             title.text_color = self.label_row.font_color
             title.text_font_size = '%spt' % self.label_row.font_size
             title.background_fill_alpha = self.label_row.fill_alpha
-            title.background_fill_color = self.label_row.fill_color.get(0)[0:7]
+            title.background_fill_color = self.label_row.fill_color[0][0:7]
 
         # Col/wrap labels
         if (ir == 0 and self.label_col.on) or self.label_wrap.on:
-            # if self.label_wrap.on:
-            #     text = ' | '.join([str(f) for f in utl.validate_list(
-            #         self.label_wrap.values[ir*self.ncol + ic])])
-            #     scol = self.add_label(ir, ic, text,
-            #                          **self.make_kwargs(self.label_wrap))
-            # else:
             title.text = ' %s=%s ' % (self.label_col.text, self.label_col.values[ic])
             title.align = self.label_col.align
             title.text_color = self.label_col.font_color
             title.text_font_size = '%spt' % self.label_col.font_size
             title.background_fill_alpha = self.label_col.fill_alpha
-            title.background_fill_color = self.label_col.fill_color.get(0)[0:7]
+            title.background_fill_color = self.label_col.fill_color[0][0:7]
 
     def set_axes_scale(self, ir, ic):
         pass
 
-    def set_axes_scale2(self, ir, ic):
+    def _set_axes_scale2(self, ir, ic):
         """
         This appears to need to happen at instantiation of the figure
         """
@@ -596,44 +695,52 @@ class Layout(BaseLayout):
 
         return x_scale, y_scale
 
-    def set_axes_ticks(self, ir, ic):
+    def set_axes_ticks(self, ir: int, ic: int):
+        """Configure the axes tick marks.
 
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+
+        """
         self.axes.obj[ir, ic].xaxis.major_label_text_font_size = \
             '%spt' % self.tick_labels_major.font_size
         self.axes.obj[ir, ic].yaxis.major_label_text_font_size = \
             '%spt' % self.tick_labels_major.font_size
 
-    def set_figure_title(self):
-        """
-        Add a figure title
-        """
+    def set_figure_final_layout(self, data, **kwargs):
+        pass
 
+    def set_figure_title(self):
+        """Set a figure title."""
         if self.title.on:
-            title = self.axes.obj[0,0].title
+            title = self.axes.obj[0, 0].title
             title.text = self.title.text
             title.align = self.title.align
             title.text_color = self.title.font_color
             title.text_font_size = '%spt' % self.title.font_size
             title.background_fill_alpha = self.title.fill_alpha
-            title.background_fill_color = self.title.fill_color.get(0)[0:7]
+            title.background_fill_color = self.title.fill_color[0][0:7]
 
     def show(self, filename=None):
-        """
-        Handle display of the plot window
-        """
+        """Display the plot window.
 
+        Args:
+            filename (optional): name of the file to show. Defaults to None.
+
+        """
         try:
             app = str(get_ipython())
-        except:
+        except:  # noqa
             app = ''
 
         # jupyter notebook special
         if 'zmqshell.ZMQInteractiveShell' in app:
-            #bp.output_notebook()
-            #bp.show(bl.gridplot(self.axes.obj.flatten(), ncols=self.ncol))
+            # bp.output_notebook()
+            # bp.show(bl.gridplot(self.axes.obj.flatten(), ncols=self.ncol))
             from IPython.core.display import HTML
             return HTML(filename)
 
         # other
         else:
-            os.startfile(filename)
+            utl.show_file(filename)

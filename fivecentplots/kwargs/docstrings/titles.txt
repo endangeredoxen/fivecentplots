@@ -1,0 +1,16 @@
+        title (str): Figure title text. Defaults to None. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fonts
+        title_edge_alpha (float): Transparency value for the title area edge between 0-1. Defaults to 1.
+        title_edge_color (str): Hex color string for the title area edge. Defaults to #ffffff.
+        title_edge_width (float): Width of the border edge of a title area in pixels. Defaults to 1.
+        title_fill_alpha (float): Transparency value for the title area background fill between 0-1. Defaults to 1.
+        title_fill_color (str): Hex color string for the title area edge. Defaults to #ffffff.
+        title_font (str): Font for the figure title. Defaults to sans-serif. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fonts
+        title_font_color (str): Hex color string for font color of the figure title. Defaults to #000000.
+        title_font_size (str): Font size for the figure title. Defaults to 18.
+        title_font_style (str): Font style {'normal'|'italic'|'oblique'} for the figure title. Defaults to italic.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Fonts
+        title_font_weight (str): Font weight {a numeric value in range 0-1000|'ultralight'|'light'|'normal'|'regular'|'b
+          ook'|'medium'|'roman'|'semibold'|'demibold'|'demi'|'bold'|'heavy'|'extra bold'|'black'} for the figure title.
+          Defaults to bold.

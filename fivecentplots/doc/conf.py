@@ -18,12 +18,24 @@ import os
 import shlex
 import pdb
 import fivecentplots as fcp
+import shutil
 sys.path.insert(0, os.path.abspath('..'))
+db = pdb.set_trace
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('.'))
+
+# # copy over latest ipynb files from tests folder
+# cur_dir = os.path.dirname(os.path.realpath(__file__))
+# test_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'tests', 'notebooks')
+# nbs = [f for f in os.listdir(test_dir) if '.ipynb' in f]
+# nbs = [f for f in nbs if 'checkpoint' not in f]
+# for nb in nbs:
+#     if os.path.exists(os.path.join(cur_dir, nb)):
+#         os.remove(os.path.join(cur_dir, nb))
+#     shutil.copyfile(os.path.join(test_dir, nb), os.path.join(cur_dir, nb))
 
 # -- General configuration ------------------------------------------------
 
@@ -39,6 +51,8 @@ extensions = [
     'sphinx.ext.doctest',
     'nbsphinx',
 ]
+
+#napoleon_custom_sections = [('Required', 'params_style')]#[('Required Keyword Args', 'params_style'), ('Optional Keyword Args', 'params_style')]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -56,7 +70,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'fivecentplots'
-copyright = '2016, Steve Nicholes'
+copyright = '2022, Steve Nicholes'
 author = 'Steve Nicholes'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -153,7 +167,7 @@ html_context = {
         'https://fonts.googleapis.com/css?family=Archivo Black',
         ],
     }
-
+nbsphinx_allow_errors = True
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
 # directly to the root of the documentation.

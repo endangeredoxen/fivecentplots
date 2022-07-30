@@ -1,0 +1,11 @@
+        marker_edge_color (str|list): Hex color string for the marker edges. Defaults to fcp.DEFAULT_COLORS. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors
+        marker_edge_width (float): Marker edge line width in pixels. Defaults to 1.
+        marker_fill (boolean): Enable/disable color fill in markers. Defaults to False. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors
+        marker_fill_color (str|list): Hex color string for the fill color of markers. Defaults to fcp.DEFAULT_COLORS.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors
+        marker_jitter|jitter (boolean): For boxplots add random noise on x-axis to show separation between markers.
+          Defaults to True. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/boxplot.html#Jitter
+        marker_size (float): Size in pixels of the data point markers. Defaults to 6.
+        markers (boolean): Enable/disable data point markers. Defaults to True.

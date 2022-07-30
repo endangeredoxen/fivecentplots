@@ -1,0 +1,7 @@
+Keyword,Data Type,Description,Default,Example
+contour_width,float,Width of the contour lines,1,contour.html#Contour-lines
+cmap,str,Name of a color map ,inferno,contour.html#Filled-contour
+filled,bool,Color area between contour lines,True,contour.html#Filled-contour
+levels,int,Number of contour lines/levels to draw,20,contour.html#Contour-lines
+interp,str,"Scipy interpolate.griddata method to make Z points {‘linear’, ‘nearest’, ‘cubic’}",'cubic’,contour.html#Data-interpolation
+show_points,bool,Show points on top of the contour plot,False,contour.html#Contour-points

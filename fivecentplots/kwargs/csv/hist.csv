@@ -1,0 +1,15 @@
+Keyword,Data Type,Description,Default,Example
+cdf,bool,Convert the histogram into a cumulative distribution plot,False,hist.html#cdf
+cfa,str,Color-filter array pattern that is used to split data from a Bayer image into separate color planes,None,imshow.html#split-color-planes
+hist_align,str,If "mid" aligns center of histogram bar to x-axis value; if "left" aligns the left edge of the histogram bar to the x-axis value {"left"; "mid"; "right"},"mid",hist.html#alignment
+hist_bins|bins,int,Number of histogram bins to use; when plotting the histogram of a raw image file the number of bins is automatically adjusted to enable one bin per DN code,20,hist.html#bin-counts
+hist_cumulative|cumulative,bool,From matplotlib: If True then a histogram is computed where each bin gives the counts in that bin plus all bins for smaller values; if -1 direction of accumulation is reversed,False,hist.html#cumulative
+hist_edge_color,str,Hex color string for the edge of the histogram bar,fcp.DEFAULT_COLORS,hist.html#colors
+hist_edge_width,float,Width of the edge of the histogram bar in pixels,0,hist.html#colors
+hist_fill_alpha,int,Transparency value for the histogram bars between 0-1,0.5,hist.html#colors
+hist_fill_color,str,Hex color string of the histogram bar fill ,fcp.DEFAULT_COLORS,hist.html#colors
+hist_horizontal|horizontal,bool,Enable a horizontal histogram plot [default is vertical],False,hist.html#horizontal-bars
+hist_kde|kde,bool,Toggle visibility of a kernel-density estimator curve over the histogram bars,False,hist.html#kernel-density-estimator
+hist_normalize|normalize,bool,Sets the "density" parameter for matplotlib-based plots; from matplotlib: if True draw and return a probability density: each bin will display each bin"s raw count divided by the total number of counts and the bin width so that the area under the histogram integrates to 1; automatically enabled if kde=True,False,hist.html#cumulative
+hist_rwidth,float|None,From matplotlib: the relative width of the bars as a fraction of the bin width; None means auto-calculation,None,hist.html#width
+pdf,bool,Convert the histogram into a probability density function plot,False,hist.html#pdf

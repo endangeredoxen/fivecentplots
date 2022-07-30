@@ -1,0 +1,5 @@
+Keyword,Data Type,Description,Default,Example
+sigma,float,Maximum sigma value to use for the calculation; range will be +/- this value,Auto-calculated based on the dataset using "fcp.utilities.sigma",nq.html#custom-sigma-range
+step_inner,float,Delta between sigma values outside of the tail (around sigma=0),0.5,nq.html#point-density
+step_tail,float,Delta between sigma values in the tails (all value >= and <= to keyword "tail"),0.2,nq.html#point-density
+tail,float,Sigma value that represents the start of the tail of the distribution,3,nq.html#custom-tail

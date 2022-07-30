@@ -1,0 +1,11 @@
+Keyword,Data Type,Description,Default,Example
+box_violin|violin,bool,Toggle visibility of violin plot showing the distribution of box plot data,False,boxplot.html#Violins
+violin_box_color,str,Hex color string for the fill of an optional box overlay on the violin,#555555,None
+violin_box_on,bool,Toggle visibility of a box over the violin plot,True,None
+violin_edge_color,str,Hex color string for the edge of the violins,#aaaaaa,None
+violin_fill_alpha,float,Transparency value for the violin plots between 0-1,0.5,None
+violin_fill_color,str,Hex color string for the fill of the violins,fcp.DEFAULT_COLORS,None
+violin_markers,bool,Toggle visibility of data point markers on the violin plots,False,None
+violin_median_color,str,Hex color string for the median point in each violin,#ffffff,None
+violin_median_marker,str,Marker type for the median point in each violin,'o’,None
+violin_median_size,int,Size of the median point marker in each violin,2,None

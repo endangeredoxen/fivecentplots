@@ -13,8 +13,8 @@ with open(path.join('README.rst')) as f:
     long_description = f.read()
 
 # get the version
-with open(path.join('fivecentplots', 'version.txt'), 'r') as input:
-    __version__ = input.readlines()[0]
+with open(path.join('fivecentplots', 'version.txt'), 'r') as fid:
+    __version__ = fid.readlines()[0]
 
 setup(
     name='fivecentplots',
@@ -30,7 +30,7 @@ setup(
 
     # The project's main homepage.
     url='https://github.com/endangeredoxen/fivecentplots',
-    download_url='https://github.com/endangeredoxen/fivecentplots/archive/v0.4.3.tar.gz',
+    download_url='https://github.com/endangeredoxen/fivecentplots/archive/v0.5.0.tar.gz',
 
     # Author details
     author='Steve Nicholes',
@@ -78,6 +78,7 @@ setup(
                       'scipy',
                       'xlrd',
                       'openpyxl',
+                      'natsort',
                       ],
 
     # List additional groups of dependencies here (e.g. development
@@ -85,7 +86,7 @@ setup(
     # for example:
     # $ pip install -e .[dev,test]
     extras_require={
-                    'test': ['pytest', 'opencv-python', 'imageio']
+                    'test': ['pytest', 'opencv-python', 'imageio', 'pytest-benchmark']
     },
 
     # If there are data files included in your packages that need to be

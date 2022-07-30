@@ -1,0 +1,7 @@
+Keyword,Data Type,Description,Default,Example
+cmap,str,Color map name (overrides all other color parameters),None,styles.html#Colormap
+lines,boolean,Enable/disable plotting of lines,True,plot.html#Scatter
+line_alpha,str|list,Transparency value for the line(s) between 0-1,1,styles.html#Line-styling
+line_color,str|list,Hex color string or list of hex color strings for the plot lines,fcp.DEFAULT_COLORS,styles.html#Line-styling
+line_style,str|list,Matplotlib string character for line style {'-'; '--'; '-.' ':'},'-',styles.html#Line-styling
+line_width,int|list,Line width in pixels,1,styles.html#Line-styling

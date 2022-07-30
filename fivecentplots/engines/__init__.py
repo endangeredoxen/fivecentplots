@@ -1,6 +1,6 @@
 # only matplotlib is required; all other plotting libs are optional
-from . import mpl
-try:
-    from . import bokeh
-except:
-    pass
+from . import mpl  # noqa
+try:  # noqa
+    from . import bokeh  # noqa
+except:  # noqa
+    pass  # noqa

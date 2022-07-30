@@ -1,0 +1,4 @@
+﻿Keyword,Data Type,Description,Default,Example
+stat,str,"Calculate a statistic on a data set (any stat value supported by `pandas.groupby` is valid {'mean', 'std', etc}",None,plot.html#Stat-lines
+stat_val,str,Alternate column name used as a pseudo x-axis for the stat calculation for cases in which the plotted x-column values are not perfectly aligned,None,plot.html#Stat-lines
+stat_line_xxx,various,Stat-line styling is controlled by the regular `line_xxx` values,None,None

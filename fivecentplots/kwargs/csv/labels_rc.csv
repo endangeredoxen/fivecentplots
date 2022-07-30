@@ -1,0 +1,23 @@
+Keyword,Data Type,Description,Default,Example
+label_q_font,str,"Font for a specific axes label [where q = rc, col, row, wrap; rc changes all]",sans-serif,styles.html#Fonts
+label_q_font_color,str,"Hex color string for font color of a specific axes label [where q = rc, col, row, wrap; rc changes all]",#ffffff,styles.html#Fonts
+label_q_font_size,str,"Font size for a specific axes label [where q = rc, col, row, wrap; rc changes all]",16,styles.html#Fonts
+label_q_font_style,str,"Font style {'normal'|'italic'|'oblique'} for a specific axes label [where q = rc, col, row, wrap; rc changes all]",normal,styles.html#Fonts
+label_q_font_weight,str,"Font weight {'normal'|'bold'|'heavy'|'light'|'ultrabold'|'ultralight'} for a specific axes label [where q = rc, col, row, wrap; rc changes all]",bold,styles.html#Fonts
+label_q_edge_alpha,float,"Transparency value for the label edge between 0-1 [where q = rc, col, row, wrap; rc changes all]",1,styles.html#Edge-colors
+label_q_edge_color,str,"Hex color string for the label edge [where q = rc, col, row, wrap; rc changes all]",#8c8c8c,styles.html#Edge-colors
+label_q_edge_width,float,"Width of the border edge of a label in pixels [where q = rc, col, row, wrap; rc changes all]",0,styles.html#Edge-colors
+label_q_fill_alpha,float,"Transparency value for the label background fill between 0-1 [where q = rc, col, row, wrap; rc changes all]",1,styles.html#Fill-colors
+label_q_fill_color,str,"Hex color string for the label edge [where q = rc, col, row, wrap; rc changes all]",#8c8c8c,styles.html#Fill-colors
+label_q_size,str,"Label background rectangle height for an col/wrap label OR width for row label,30,None
+title_wrap_font,str,"Font for the wrap title bar text",label_wrap_font,None
+title_wrap_font_color,str,"Hex color string for the wrap title bar text",label_wrap_font_color,None
+title_wrap_font_size,str,"Font size for the wrap title bar text",label_wrap_font_size,None
+title_wrap_font_style,str,"Font style {'normal'|'italic'|'oblique'} for the wrap title bar text",label_wrap_font_style,None
+title_wrap_font_weight,str,"Font weight {'normal'|'bold'|'heavy'|'light'|'ultrabold'|'ultralight'} for the wrap title bar text",label_wrap_font_weight,None
+title_wrap_edge_alpha,float,"Transparency value for the wrap title bar edge between 0-1",label_rc_,styles.html#Edge-colors
+title_wrap_edge_color,str,"Hex color string for the wrap title bar edge",#5f5f5f,None
+title_wrap_edge_width,float,"Width of the wrap title bar edge in pixels",label_wrap_edge_width,None
+title_wrap_fill_alpha,float,"Transparency value for the wrap title bar background fill between 0-1",label_wrap_fill_alpha,styles.html#Fill-colors
+title_wrap_fill_color,str,"Hex color string for the wrap title bar",#5f5f5f,None
+title_wrap_size,str,"Label background rectangle height for the wrap title bar",label_wrap_size,None

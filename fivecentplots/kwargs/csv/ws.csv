@@ -1,0 +1,20 @@
+Keyword,Data Type,Description,Default,Example
+ws_ax_box_title,int,White space between axes edge and box plot titles,10,None
+ws_ax_cbar,int,White space from right axes edge to left side of cbar,10,None
+ws_ax_leg,int,White space from right edge of axes to left edge of legend [if present],5,None
+ws_ax_fig,int,White space right edge of axes to right edge of figure [if no legend present],10,None
+ws_ax_label_xs,int,Extra white space between axes and label when using separate labels,5,None
+ws_col,int,White space between column subplots [ignored if tick labels or axes labels are present and wider than this],30,None
+ws_fig_label,int,White space between top of figure and x2 label [if present],10,None
+ws_label_col,int,White space from axes and col labels,ws_label_rc,None
+ws_label_rc,int,White space between axes and row & col labels,10,None
+ws_label_row,int,White space from axes to row labels,ws_label_rc,None
+ws_leg_fig,int,White space from right of legend in position 0 and figure right edge,10,None
+ws_fig_ax,int,White space from left figure edge to axes left edge,10,None
+ws_fig_title,int,White space from top of figure to top of title [if present],10,None
+ws_label_fig,int,White space from bottom of x label to bottom of figure,ws_fig_label,None
+ws_label_tick,int,White space from edge of axes label to edge of tick labels,10,None
+ws_row,int,White space between row subplots [ignored if tick labels or axes labels are present and wider than this],30,None
+ws_tick_minimum,int,Minimum width for tick labels,10,None
+ws_ticks_ax,int,White space from tick labels to edge of axes,5,None
+ws_title_ax,int,White space bottom of title to top of axes,10,None

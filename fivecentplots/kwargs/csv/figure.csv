@@ -1,0 +1,6 @@
+Keyword,Data Type,Description,Default,Example
+fig_edge_alpha,str,Transparency value for figure edge between 0-1,1,None
+fig_edge_color,str,Hex color string for the border edge of the figure region,#aaaaaa,styles.html#Typical-elements
+fig_edge_width,float,Width of the figure border in pixels,3,None
+fig_fill_alpha,str,Transparency value for figure fill between 0-1,1,styles.html#Alpha
+fig_fill_color,str,Hex color string for the fill color of the figure region,#eaeaea,styles.html#Alpha

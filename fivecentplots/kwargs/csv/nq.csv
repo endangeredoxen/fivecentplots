@@ -1,0 +1,2 @@
+Keyword,Data Type,Description,Default,Example
+x,str,x-axis column name (if using a 1D dataset),None,nq.html#1D-dataset
