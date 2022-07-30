@@ -331,6 +331,3 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
-.. automodule:: fivecentplots
- :members:
- :undoc-members:

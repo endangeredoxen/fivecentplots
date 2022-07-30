@@ -103,13 +103,7 @@
 <li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="grouping.html">Grouping data</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Styles and formatting</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#Setup">Setup</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#Imports">Imports</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Sample-data">Sample data</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Set-theme">Set theme</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Other">Other</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#Setup">Setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Colors">Colors</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Fill-colors">Fill colors</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Edge-colors">Edge colors</a><ul>
@@ -505,10 +499,11 @@ div.rendered_html tbody tr:hover {
 }
 </style>
 <div class="section" id="Styles-and-formatting">
-<h1>Styles and formatting<a class="headerlink" href="#Styles-and-formatting" title="Permalink to this headline">¶</a></h1>Any `Element` object in <b><font color="blue" style="font-family:'Courier New'">fivecentplots </font></b> (legend, axis, label, etc.) has certain properties like edge color, fill color, font size that can be styled.  Each of the properties can be set by passing the appropriate keyword to the function call to make the plot <b>or</b> by setting a new default value in a custom theme file.  Examples of style changes are described below.<br><div class="section" id="Setup">
+<h1>Styles and formatting<a class="headerlink" href="#Styles-and-formatting" title="Permalink to this headline">¶</a></h1>
+<p>Any <code class="docutils literal notranslate"><span class="pre">Element</span></code> object in <strong>fivecentplots</strong> (legend, axis, label, etc.) has certain properties like edge color, fill color, font size that can be styled. Each of the properties can be set by passing the appropriate keyword to the function call to make the plot or by setting a new default value in a custom theme file. Examples of style changes are described below.</p>
+<div class="section" id="Setup">
 <h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="Imports">
-<h3>Imports<a class="headerlink" href="#Imports" title="Permalink to this headline">¶</a></h3>
+<p>Import packages:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -516,25 +511,19 @@ div.rendered_html tbody tr:hover {
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="o">%</span><span class="k">load_ext</span> autoreload
 <span class="o">%</span><span class="k">autoreload</span> 2
-<span class="o">%</span><span class="k">matplotlib</span> inline
 <span class="kn">import</span> <span class="nn">fivecentplots</span> <span class="k">as</span> <span class="nn">fcp</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">pdb</span>
-<span class="n">osjoin</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span>
-<span class="n">db</span> <span class="o">=</span> <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="Sample-data">
-<h3>Sample data<a class="headerlink" href="#Sample-data" title="Permalink to this headline">¶</a></h3>
+<p>Read some dummy data for examples:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">osjoin</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;tests&#39;</span><span class="p">,</span> <span class="s1">&#39;fake_data.csv&#39;</span><span class="p">))</span>
+<span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;tests/fake_data.csv&#39;</span><span class="p">)</span>
 <span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -632,10 +621,7 @@ div.rendered_html tbody tr:hover {
 </table>
 </div></div>
 </div>
-</div>
-<div class="section" id="Set-theme">
-<h3>Set theme<a class="headerlink" href="#Set-theme" title="Permalink to this headline">¶</a></h3>
-<p>Optionally set the design theme</p>
+<p>Optionally set the design theme (skipping here and using default):</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -647,30 +633,17 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 </div>
-<div class="section" id="Other">
-<h3>Other<a class="headerlink" href="#Other" title="Permalink to this headline">¶</a></h3>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">SHOW</span> <span class="o">=</span> <span class="kc">False</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
 <div class="section" id="Colors">
 <h2>Colors<a class="headerlink" href="#Colors" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="Fill-colors">
 <h3>Fill colors<a class="headerlink" href="#Fill-colors" title="Permalink to this headline">¶</a></h3>
-<p>Many elements in a plot are capable of having a fill color (axes, figure background, markers, etc.). These fill colors are accessible using the standard keyword nomenclature of the element name followed by an underscore and the keyword <code class="docutils literal notranslate"><span class="pre">fill_color</span></code>. All colors are specified using 6-character hex codes.</p>
+<p>Many elements in a plot have a fill color (such as axes, figure background, markers, etc.). These fill colors are accessible using the standard keyword nomenclature for elements → name followed by an underscore and the keyword <code class="docutils literal notranslate"><span class="pre">fill_color</span></code>. All colors are specified using 6-character hex codes.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="s1">&#39;Substrate&#39;</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="n">SHOW</span><span class="p">,</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="s1">&#39;Substrate&#39;</span><span class="p">],</span>
          <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">,</span>
          <span class="n">fig_fill_color</span><span class="o">=</span><span class="s1">&#39;#00FF00&#39;</span><span class="p">,</span> <span class="n">legend_fill_color</span><span class="o">=</span><span class="s1">&#39;#FF0000&#39;</span><span class="p">,</span> <span class="n">ax_fill_color</span><span class="o">=</span><span class="s1">&#39;#FFFFFF&#39;</span><span class="p">,</span>
          <span class="n">label_x_fill_color</span><span class="o">=</span><span class="s1">&#39;#0000FF&#39;</span><span class="p">,</span> <span class="n">label_y_fill_color</span><span class="o">=</span><span class="s1">&#39;#FF00FF&#39;</span><span class="p">,</span>
@@ -682,7 +655,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_15_0.png" src="_images/styles_15_0.png" />
+<img alt="_images/styles_12_0.png" src="_images/styles_12_0.png" />
 </div>
 </div>
 </div>
@@ -708,7 +681,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_19_0.png" src="_images/styles_19_0.png" />
+<img alt="_images/styles_16_0.png" src="_images/styles_16_0.png" />
 </div>
 </div>
 </div>
@@ -728,7 +701,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_22_0.png" src="_images/styles_22_0.png" />
+<img alt="_images/styles_19_0.png" src="_images/styles_19_0.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -761,7 +734,7 @@ ipdb&gt; c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_23_1.png" src="_images/styles_23_1.png" />
+<img alt="_images/styles_20_1.png" src="_images/styles_20_1.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -779,7 +752,7 @@ ipdb&gt; c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_24_0.png" src="_images/styles_24_0.png" />
+<img alt="_images/styles_21_0.png" src="_images/styles_21_0.png" />
 </div>
 </div>
 </div>
@@ -809,7 +782,7 @@ ipdb&gt; c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_27_0.png" src="_images/styles_27_0.png" />
+<img alt="_images/styles_24_0.png" src="_images/styles_24_0.png" />
 </div>
 </div>
 <p>When adding alpha to plot markers, the legend markers will retain full opacity by default:</p>
@@ -828,7 +801,7 @@ ipdb&gt; c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_29_0.png" src="_images/styles_29_0.png" />
+<img alt="_images/styles_26_0.png" src="_images/styles_26_0.png" />
 </div>
 </div>
 <p>However, there are instances when we want alpha on the plot markers and on the legend markers. To achieve this, use the keyword <code class="docutils literal notranslate"><span class="pre">legend_marker_alpha</span></code> to set both the edge and fill alpha of the legend markers to a different value:</p>
@@ -847,7 +820,7 @@ ipdb&gt; c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_31_0.png" src="_images/styles_31_0.png" />
+<img alt="_images/styles_28_0.png" src="_images/styles_28_0.png" />
 </div>
 </div>
 </div>
@@ -871,7 +844,7 @@ ipdb&gt; c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_35_0.png" src="_images/styles_35_0.png" />
+<img alt="_images/styles_32_0.png" src="_images/styles_32_0.png" />
 </div>
 </div>
 </div>
@@ -893,7 +866,7 @@ ipdb&gt; c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_38_0.png" src="_images/styles_38_0.png" />
+<img alt="_images/styles_35_0.png" src="_images/styles_35_0.png" />
 </div>
 </div>
 <p>We can also select certain colors from the default color list by index rather than specifying the full hex color code:</p>
@@ -912,7 +885,7 @@ ipdb&gt; c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_40_0.png" src="_images/styles_40_0.png" />
+<img alt="_images/styles_37_0.png" src="_images/styles_37_0.png" />
 </div>
 </div>
 </div>
@@ -934,7 +907,7 @@ ipdb&gt; c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_43_0.png" src="_images/styles_43_0.png" />
+<img alt="_images/styles_40_0.png" src="_images/styles_40_0.png" />
 </div>
 </div>
 </div>
@@ -956,7 +929,7 @@ ipdb&gt; c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_46_0.png" src="_images/styles_46_0.png" />
+<img alt="_images/styles_43_0.png" src="_images/styles_43_0.png" />
 </div>
 </div>
 <p>The nomenclature above of <code class="docutils literal notranslate"><span class="pre">lines_&lt;some</span> <span class="pre">property&gt;</span></code> stems from the fact that plot line properties are contained in the <code class="docutils literal notranslate"><span class="pre">lines</span></code> Element class. However, because this naming scheme may be cumbersome to some users, the non-plural version of these keywords is also supported: * <code class="docutils literal notranslate"><span class="pre">lines_color</span></code> –&gt; <code class="docutils literal notranslate"><span class="pre">line_color</span></code> * <code class="docutils literal notranslate"><span class="pre">lines_width</span></code> –&gt; <code class="docutils literal notranslate"><span class="pre">line_width</span></code> * <code class="docutils literal notranslate"><span class="pre">lines_style</span></code> –&gt; <code class="docutils literal notranslate"><span class="pre">line_style</span></code> * <code class="docutils literal notranslate"><span class="pre">lines_alpha</span></code> –&gt; <code class="docutils literal notranslate"><span class="pre">line_alpha</span></code></p>
@@ -975,7 +948,7 @@ ipdb&gt; c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_48_0.png" src="_images/styles_48_0.png" />
+<img alt="_images/styles_45_0.png" src="_images/styles_45_0.png" />
 </div>
 </div>
 <p>We can also set line styles for each line, instead of applying them globally:</p>
@@ -995,7 +968,7 @@ ipdb&gt; c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_50_0.png" src="_images/styles_50_0.png" />
+<img alt="_images/styles_47_0.png" src="_images/styles_47_0.png" />
 </div>
 </div>
 </div>
@@ -1019,7 +992,7 @@ ipdb&gt; c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_54_0.png" src="_images/styles_54_0.png" />
+<img alt="_images/styles_51_0.png" src="_images/styles_51_0.png" />
 </div>
 </div>
 <p>All a custom fill color:</p>
@@ -1038,7 +1011,7 @@ ipdb&gt; c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_56_0.png" src="_images/styles_56_0.png" />
+<img alt="_images/styles_53_0.png" src="_images/styles_53_0.png" />
 </div>
 </div>
 <p>Use the default color scheme with marker fill:</p>
@@ -1057,7 +1030,7 @@ ipdb&gt; c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_58_0.png" src="_images/styles_58_0.png" />
+<img alt="_images/styles_55_0.png" src="_images/styles_55_0.png" />
 </div>
 </div>
 <p>Add fill alpha:</p>
@@ -1076,7 +1049,7 @@ ipdb&gt; c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_60_0.png" src="_images/styles_60_0.png" />
+<img alt="_images/styles_57_0.png" src="_images/styles_57_0.png" />
 </div>
 </div>
 </div>
@@ -1100,7 +1073,7 @@ ipdb&gt; c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_63_0.png" src="_images/styles_63_0.png" />
+<img alt="_images/styles_60_0.png" src="_images/styles_60_0.png" />
 </div>
 </div>
 </div>
@@ -1121,7 +1094,7 @@ ipdb&gt; c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_66_0.png" src="_images/styles_66_0.png" />
+<img alt="_images/styles_63_0.png" src="_images/styles_63_0.png" />
 </div>
 </div>
 <p>with this one, that employs the <code class="docutils literal notranslate"><span class="pre">hist_fill_alpha</span></code> keyword:</p>
@@ -1138,7 +1111,7 @@ ipdb&gt; c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_68_0.png" src="_images/styles_68_0.png" />
+<img alt="_images/styles_65_0.png" src="_images/styles_65_0.png" />
 </div>
 </div>
 <p>The benefit of transparency is clear in order to visualize both distributions simultaneously.</p>
@@ -1166,7 +1139,7 @@ ipdb&gt; c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_74_0.png" src="_images/styles_74_0.png" />
+<img alt="_images/styles_71_0.png" src="_images/styles_71_0.png" />
 </div>
 </div>
 <p>We can also remove markers for specific curves in the legend using the keyword <code class="docutils literal notranslate"><span class="pre">None</span></code>:</p>
@@ -1185,7 +1158,7 @@ ipdb&gt; c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_76_0.png" src="_images/styles_76_0.png" />
+<img alt="_images/styles_73_0.png" src="_images/styles_73_0.png" />
 </div>
 </div>
 </div>
@@ -1207,7 +1180,7 @@ ipdb&gt; c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_79_0.png" src="_images/styles_79_0.png" />
+<img alt="_images/styles_76_0.png" src="_images/styles_76_0.png" />
 </div>
 </div>
 <p>The legend marker size can be controlled independently if needed using the keyword <code class="docutils literal notranslate"><span class="pre">legend_marker_size</span></code>:</p>
@@ -1226,7 +1199,7 @@ ipdb&gt; c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_81_0.png" src="_images/styles_81_0.png" />
+<img alt="_images/styles_78_0.png" src="_images/styles_78_0.png" />
 </div>
 </div>
 </div>
@@ -1252,7 +1225,7 @@ ipdb&gt; c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_84_0.png" src="_images/styles_84_0.png" />
+<img alt="_images/styles_81_0.png" src="_images/styles_81_0.png" />
 </div>
 </div>
 </div>
@@ -1326,7 +1299,7 @@ Previous theme file found! Renaming to &#34;defaults_old.py&#34; and copying new
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_92_0.png" src="_images/styles_92_0.png" />
+<img alt="_images/styles_89_0.png" src="_images/styles_89_0.png" />
 </div>
 </div>
 </div>
@@ -1363,7 +1336,7 @@ Previous theme file found! Renaming to &#34;defaults_old.py&#34; and copying new
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_95_0.png" src="_images/styles_95_0.png" />
+<img alt="_images/styles_92_0.png" src="_images/styles_92_0.png" />
 </div>
 </div>
 </div>
@@ -1434,7 +1407,7 @@ Previous theme file found! Renaming to &#34;defaults_old.py&#34; and copying new
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/styles_101_1.png" src="_images/styles_101_1.png" />
+<img alt="_images/styles_98_1.png" src="_images/styles_98_1.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
