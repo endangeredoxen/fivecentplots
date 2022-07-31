@@ -13,7 +13,14 @@ if platform.system() != 'Windows':
     print('Warning!  Image test files generated in windows.  Compatibility with linux/mac may vary')
 
 MPL = utl.get_mpl_version_dir()
-MASTER = Path(f'../tests/test_images/{MPL}') / 'barplot.py'
+if Path(f'../tests/test_images/{MPL}').exists():
+    MASTER = Path(f'../tests/test_images/{MPL}') / 'barplot.py'
+else:
+    MASTER = Path(f'test/test_images/{MPL}') / 'barplot.py'
+
+print('one', (Path(f'../tests/test_images/{MPL}') / 'barplot.py').exists())
+print('two', (Path(f'tests/test_images/{MPL}') / 'barplot.py').exists())
+print('3', (Path(f'test_images/{MPL}') / 'barplot.py').exists())
 
 # Sample data
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_bar.csv')
