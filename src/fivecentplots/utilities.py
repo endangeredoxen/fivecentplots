@@ -830,6 +830,8 @@ def reload_defaults(theme: [str, None] = None):
             importlib.reload(defaults)
     elif (user_dir / '.fivecentplots' / 'defaults.py').exists():
         # use default theme
+        print(user_dir / '.fivecentplots' / 'defaults.py')
+        print(os.listdir(user_dir / '.fivecentplots' / 'defaults.py'))
         import defaults
         importlib.reload(defaults)
     else:
