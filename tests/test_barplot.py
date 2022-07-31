@@ -12,7 +12,6 @@ db = pdb.set_trace
 if platform.system() != 'Windows':
     print('Warning!  Image test files generated in windows.  Compatibility with linux/mac may vary')
 
-
 MPL = utl.get_mpl_version_dir()
 MASTER = Path(fcp.__file__).parents[2] / f'tests/test_images/{MPL}' / 'barplot.py'
 
@@ -23,7 +22,6 @@ df2 = pd.read_csv(Path(fcp.__file__).parent / 'test_data/real_data_bar.csv')
 # Set theme
 fcp.set_theme('gray')
 # fcp.set_theme('white')
-
 
 # Other
 SHOW = False

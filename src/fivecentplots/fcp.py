@@ -43,6 +43,8 @@ if not (user_dir / '.fivecentplots').exists():
     os.makedirs(user_dir / '.fivecentplots')
 if not (user_dir / '.fivecentplots' / 'defaults.py'):
     shutil.copy(cur_dir / 'themes' / 'gray.py', user_dir / '.fivecentplots' / 'defaults.py')
+print(sys.path)
+print((user_dir / '.fivecentplots').exists())
 sys.path = [str(user_dir / '.fivecentplots')] + sys.path
 
 from defaults import *  # noqa, use local file
