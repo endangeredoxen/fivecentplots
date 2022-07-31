@@ -13,8 +13,7 @@ if platform.system() != 'Windows':
     print('Warning!  Image test files generated in windows.  Compatibility with linux/mac may vary')
 
 MPL = utl.get_mpl_version_dir()
-MASTER = osjoin(os.path.dirname(fcp.__file__),
-                'tests', 'test_images', MPL, 'plot.py')
+MASTER = Path(fcp.__file__).parents[2] / f'tests/test_images/{MPL}' / 'plot.py'
 
 # Sample data
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data.csv')
@@ -423,7 +422,8 @@ def plt_row_x_column(bm=False, master=False, remove=True, show=False):
 
 def plt_row_x_column_sep_labels(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'grid-plots-row-x-column_sep_labels_master') if master else 'grid-plots-row-x-column_sep_labels'
+    name = osjoin(MASTER, 'grid-plots-row-x-column_sep_labels_master') \
+        if master else 'grid-plots-row-x-column_sep_labels'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]', show=SHOW,

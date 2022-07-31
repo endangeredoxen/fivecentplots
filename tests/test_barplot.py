@@ -14,8 +14,7 @@ if platform.system() != 'Windows':
 
 
 MPL = utl.get_mpl_version_dir()
-MASTER = osjoin(os.path.dirname(fcp.__file__), 'tests',
-                'test_images', MPL, 'barplot.py')
+MASTER = Path(fcp.__file__).parents[2] / f'tests/test_images/{MPL}' / 'barplot.py'
 
 # Sample data
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_bar.csv')
