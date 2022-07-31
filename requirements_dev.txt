@@ -1,0 +1,8 @@
+pytest
+pytest-cov
+pytest-benchmark
+opencv-python
+imageio
+flake8
+tox
+mypy
