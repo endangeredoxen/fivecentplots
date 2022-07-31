@@ -4,7 +4,8 @@ import os
 import sys
 import pdb
 import platform
-from pathlib import Pathimport fivecentplots.utilities as utl
+from pathlib import Path
+import fivecentplots.utilities as utl
 import inspect
 osjoin = os.path.join
 db = pdb.set_trace
@@ -73,11 +74,9 @@ def plt_simple(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -101,11 +100,9 @@ def plt_one_group(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -129,11 +126,9 @@ def plt_group_single(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -142,8 +137,7 @@ def plt_group_single(bm=False, master=False, remove=True, show=False):
 
 def plt_group_multiple(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'group_multiple_master') if master else 'group_multiple'
+    name = osjoin(MASTER, 'group_multiple_master') if master else 'group_multiple'
 
     # Make the plot
     fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW,
@@ -158,11 +152,9 @@ def plt_group_multiple(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -186,11 +178,9 @@ def plt_group_legend(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -214,11 +204,9 @@ def plt_grid_column(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -242,11 +230,9 @@ def plt_grid_row(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -270,11 +256,9 @@ def plt_grid_wrap(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -300,11 +284,9 @@ def plt_grid_wrap_y(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -313,8 +295,7 @@ def plt_grid_wrap_y(bm=False, master=False, remove=True, show=False):
 
 def plt_grid_wrap_y_no_share(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'grid_y-no-share_master') if master else 'grid_y-no-share'
+    name = osjoin(MASTER, 'grid_y-no-share_master') if master else 'grid_y-no-share'
 
     # Make the plot
     df['Value*2'] = 2 * df['Value']
@@ -331,11 +312,9 @@ def plt_grid_wrap_y_no_share(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -359,11 +338,9 @@ def plt_grand_means(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -387,11 +364,9 @@ def plt_group_means(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -400,8 +375,7 @@ def plt_group_means(bm=False, master=False, remove=True, show=False):
 
 def plt_mean_diamonds(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'mean_diamonds_master') if master else 'mean_diamonds'
+    name = osjoin(MASTER, 'mean_diamonds_master') if master else 'mean_diamonds'
 
     # Make the plot
     fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW, mean_diamonds=True, conf_coeff=0.95,
@@ -416,11 +390,9 @@ def plt_mean_diamonds(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -444,11 +416,9 @@ def plt_violin(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -457,8 +427,7 @@ def plt_violin(bm=False, master=False, remove=True, show=False):
 
 def plt_violin_styled(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'violin_styled_master') if master else 'violin_styled'
+    name = osjoin(MASTER, 'violin_styled_master') if master else 'violin_styled'
 
     # Make the plot
     fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW, violin=True,
@@ -476,11 +445,9 @@ def plt_violin_styled(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -489,8 +456,7 @@ def plt_violin_styled(bm=False, master=False, remove=True, show=False):
 
 def plt_violin_box_off(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'violin_box_off_master') if master else 'violin_box_off'
+    name = osjoin(MASTER, 'violin_box_off_master') if master else 'violin_box_off'
 
     # Make the plot
     fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW,
@@ -506,11 +472,9 @@ def plt_violin_box_off(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -534,11 +498,9 @@ def plt_stat_mean(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -562,11 +524,9 @@ def plt_stat_median(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -590,11 +550,9 @@ def plt_stat_std_dev(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -618,11 +576,9 @@ def plt_dividers(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -646,11 +602,9 @@ def plt_range_lines(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 

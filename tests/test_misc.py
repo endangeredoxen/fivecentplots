@@ -4,7 +4,8 @@ import os
 import sys
 import pdb
 import platform
-from pathlib import Pathimport fivecentplots.utilities as utl
+from pathlib import Path
+import fivecentplots.utilities as utl
 import inspect
 osjoin = os.path.join
 db = pdb.set_trace
@@ -57,8 +58,7 @@ def show_all():
 
 def test_text_box_single(master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'text_box_single_master') if master else 'text_box_single'
+    name = osjoin(MASTER, 'text_box_single_master') if master else 'text_box_single'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9,
@@ -72,11 +72,9 @@ def test_text_box_single(master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -85,8 +83,7 @@ def test_text_box_single(master=False, remove=True, show=False):
 
 def test_text_box_single_style(master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'text_box_single_style_master') if master else 'text_box_single_style'
+    name = osjoin(MASTER, 'text_box_single_style_master') if master else 'text_box_single_style'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9,
@@ -101,11 +98,9 @@ def test_text_box_single_style(master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -114,8 +109,7 @@ def test_text_box_single_style(master=False, remove=True, show=False):
 
 def test_text_box_multiple(master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'text_box_multiple_master') if master else 'text_box_multiple'
+    name = osjoin(MASTER, 'text_box_multiple_master') if master else 'text_box_multiple'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9,
@@ -131,11 +125,9 @@ def test_text_box_multiple(master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -144,8 +136,7 @@ def test_text_box_multiple(master=False, remove=True, show=False):
 
 def test_text_box_position_figure(master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'text_box_position_figure_master') if master else 'text_box_position_figure'
+    name = osjoin(MASTER, 'text_box_position_figure_master') if master else 'text_box_position_figure'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9,
@@ -159,11 +150,9 @@ def test_text_box_position_figure(master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -172,8 +161,7 @@ def test_text_box_position_figure(master=False, remove=True, show=False):
 
 def test_text_box_position_data(master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'text_box_position_data_master') if master else 'text_box_position_data'
+    name = osjoin(MASTER, 'text_box_position_data_master') if master else 'text_box_position_data'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9,
@@ -187,11 +175,9 @@ def test_text_box_position_data(master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -200,8 +186,7 @@ def test_text_box_position_data(master=False, remove=True, show=False):
 
 def test_text_box_position_units(master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'text_box_position_units_master') if master else 'text_box_position_units'
+    name = osjoin(MASTER, 'text_box_position_units_master') if master else 'text_box_position_units'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9,
@@ -215,11 +200,9 @@ def test_text_box_position_units(master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 

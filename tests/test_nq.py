@@ -4,7 +4,8 @@ import os
 import sys
 import pdb
 import platform
-from pathlib import Pathimport fivecentplots.utilities as utl
+from pathlib import Path
+import fivecentplots.utilities as utl
 import inspect
 import imageio
 

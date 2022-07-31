@@ -20,8 +20,7 @@ def custom_formatwarning(msg, *args, **kwargs):
 
 warnings.formatwarning = custom_formatwarning
 # weird error in boxplot with no groups
-warnings.filterwarnings(
-    "ignore", "invalid value encountered in double_scalars")
+warnings.filterwarnings("ignore", "invalid value encountered in double_scalars")
 
 db = pdb.set_trace
 
@@ -227,8 +226,7 @@ class BaseLayout:
                                         'separate_ticks', self.separate_labels)
         if self.separate_labels:
             self.separate_ticks = True
-        self.tick_cleanup = utl.kwget(
-            kwargs, self.fcpp, 'tick_cleanup', 'shrink')
+        self.tick_cleanup = utl.kwget(kwargs, self.fcpp, 'tick_cleanup', 'shrink')
         if isinstance(self.tick_cleanup, str):
             self.tick_cleanup = self.tick_cleanup.lower()
 
@@ -399,10 +397,8 @@ class BaseLayout:
                         k.replace('label_%s_' % lab, ''), v)
 
             # Update alphas
-            getattr(self, 'label_%s' % lab).color_alpha(
-                'fill_color', 'fill_alpha')
-            getattr(self, 'label_%s' % lab).color_alpha(
-                'edge_color', 'edge_alpha')
+            getattr(self, 'label_%s' % lab).color_alpha('fill_color', 'fill_alpha')
+            getattr(self, 'label_%s' % lab).color_alpha('edge_color', 'edge_alpha')
 
         # Turn off secondary labels
         if not self.axes.twin_y:
@@ -485,10 +481,8 @@ class BaseLayout:
                             on=True if axline in kwargs.keys() else False,
                             values=values, color=colors, style=styles,
                             width=widths, alpha=alphas, text=labels,
-                            by_plot=utl.kwget(
-                                kwargs, self.fcpp, '%s_by_plot' % axline, False),
-                            zorder=utl.kwget(
-                                kwargs, self.fcpp, '%s_zorder' % axline, 1),
+                            by_plot=utl.kwget(kwargs, self.fcpp, '%s_by_plot' % axline, False),
+                            zorder=utl.kwget(kwargs, self.fcpp, '%s_zorder' % axline, 1),
                             ))
 
         return kwargs
@@ -516,10 +510,8 @@ class BaseLayout:
                                            kwargs.get('align', 'center')),
                            edge_color=utl.kwget(kwargs, self.fcpp, 'bar_edge_color',
                                                 copy.copy(self.color_list)),
-                           edge_width=utl.kwget(
-                               kwargs, self.fcpp, 'bar_edge_width', 0),
-                           fill_alpha=utl.kwget(
-                               kwargs, self.fcpp, 'bar_fill_alpha', 0.75),
+                           edge_width=utl.kwget(kwargs, self.fcpp, 'bar_edge_width', 0),
+                           fill_alpha=utl.kwget(kwargs, self.fcpp, 'bar_fill_alpha', 0.75),
                            fill_color=utl.kwget(kwargs, self.fcpp, 'bar_fill_color',
                                                 copy.copy(self.color_list)),
                            horizontal=utl.kwget(kwargs, self.fcpp, ['bar_horizontal', 'horizontal'],
@@ -584,32 +576,21 @@ class BaseLayout:
         # If this plot type is disabled, create minimal set of element parameters
         if self.name != 'box':
             self.box = Element('box', self.fcpp, kwargs, on=False)
-            self.box_grand_mean = Element(
-                'box_grand_mean', self.fcpp, kwargs, on=False)
-            self.box_grand_median = Element(
-                'box_grand_median', self.fcpp, kwargs, on=False)
-            self.box_group_means = Element(
-                'box_group_means', self.fcpp, kwargs, on=False)
-            self.box_mean_diamonds = Element(
-                'box_mean_diamonds', self.fcpp, kwargs, on=False)
-            self.box_whisker = Element(
-                'box_whisker', self.fcpp, kwargs, on=False)
-            self.box_divider = Element(
-                'box_divider', self.fcpp, kwargs, on=False)
-            self.box_range_lines = Element(
-                'box_range_lines', self.fcpp, kwargs, on=False)
-            self.box_stat_line = Element(
-                'box_stat_line', self.fcpp, kwargs, on=False)
-            self.box_group_title = Element('box_group_title', self.fcpp, kwargs,
-                                           on=False)
-            self.box_group_label = Element('box_group_label', self.fcpp, kwargs,
-                                           on=False)
+            self.box_grand_mean = Element('box_grand_mean', self.fcpp, kwargs, on=False)
+            self.box_grand_median = Element('box_grand_median', self.fcpp, kwargs, on=False)
+            self.box_group_means = Element('box_group_means', self.fcpp, kwargs, on=False)
+            self.box_mean_diamonds = Element('box_mean_diamonds', self.fcpp, kwargs, on=False)
+            self.box_whisker = Element('box_whisker', self.fcpp, kwargs, on=False)
+            self.box_divider = Element('box_divider', self.fcpp, kwargs, on=False)
+            self.box_range_lines = Element('box_range_lines', self.fcpp, kwargs, on=False)
+            self.box_stat_line = Element('box_stat_line', self.fcpp, kwargs, on=False)
+            self.box_group_title = Element('box_group_title', self.fcpp, kwargs, on=False)
+            self.box_group_label = Element('box_group_label', self.fcpp, kwargs, on=False)
             self.violin = Element('violin', self.fcpp, kwargs, on=False)
             return kwargs
 
         self.box_group_title = Element('box_group_title', self.fcpp, kwargs,
-                                       on=True if kwargs.get(
-                                           'box_labels_on', True) else False,
+                                       on=True if kwargs.get('box_labels_on', True) else False,
                                        obj=self.obj_array,
                                        font_color='#666666',
                                        font_size=12,
@@ -617,8 +598,7 @@ class BaseLayout:
                                        )
         self.box_group_label = Element('box_group_label', self.fcpp, kwargs,
                                        align={},
-                                       on=True if 'box' in self.name and kwargs.get(
-                                           'box_labels_on', True) else False,
+                                       on=True if 'box' in self.name and kwargs.get('box_labels_on', True) else False,
                                        obj=self.obj_array,
                                        edge_color='#aaaaaa',
                                        font_color='#666666',
@@ -660,13 +640,10 @@ class BaseLayout:
                               whisker_width=utl.kwget(kwargs, self.fcpp,
                                                       'violin_whisker_width', 1.5),
                               )
-        box_edge_color = utl.kwget(
-            kwargs, self.fcpp, 'box_edge_color', '#aaaaaa')  # ['#4b72b0'])
-        box_fill_color = utl.kwget(
-            kwargs, self.fcpp, 'box_fill_color', '#ffffff')
+        box_edge_color = utl.kwget(kwargs, self.fcpp, 'box_edge_color', '#aaaaaa')  # ['#4b72b0'])
+        box_fill_color = utl.kwget(kwargs, self.fcpp, 'box_fill_color', '#ffffff')
         self.box = Element('box', self.fcpp, kwargs,
-                           on=True if 'box' in self.name and kwargs.get(
-                               'box_on', True) else False,
+                           on=True if 'box' in self.name and kwargs.get('box_on', True) else False,
                            edge_color=box_edge_color,
                            edge_width=0.5,
                            fill_color=box_fill_color,
@@ -746,8 +723,7 @@ class BaseLayout:
                                                          ['box_mean_diamonds_alpha',
                                                              'mean_diamonds_alpha'],
                                                          kwargs.get('mean_diamonds_alpha', 1)),
-                                         conf_coeff=utl.kwget(
-                                             kwargs, self.fcpp, 'conf_coeff', 0.95),
+                                         conf_coeff=utl.kwget(kwargs, self.fcpp, 'conf_coeff', 0.95),
                                          edge_color=utl.kwget(kwargs, self.fcpp,
                                                               ['box_mean_diamonds_edge_color',
                                                                   'mean_diamonds_edge_color'],
@@ -792,8 +768,7 @@ class BaseLayout:
                     )
 
         self.box_divider = Element('box_divider', self.fcpp, kwargs,
-                                   on=kwargs.get(
-                                       'box_divider', kwargs.get('box', True)),
+                                   on=kwargs.get('box_divider', kwargs.get('box', True)),
                                    color=utl.kwget(kwargs, self.fcpp,
                                                    ['box_divider_color', 'box_divider_line_color'],
                                                    '#bbbbbb'),
@@ -845,10 +820,8 @@ class BaseLayout:
             if 'box_marker_fill_color' in self.fcpp.keys():
                 self.markers.fill_color = self.fcpp['box_marker_fill_color']
                 self.markers.color_alpha('fill_color', 'fill_alpha')
-            self.markers.filled = self.fcpp.get(
-                'box_marker_fill', self.markers.filled)
-            self.markers.edge_width = self.fcpp.get(
-                'box_marker_edge_width', self.markers.edge_width)
+            self.markers.filled = self.fcpp.get('box_marker_fill', self.markers.filled)
+            self.markers.edge_width = self.fcpp.get('box_marker_edge_width', self.markers.edge_width)
             self.markers.jitter = utl.kwget(kwargs, self.fcpp, 'jitter', True)
             if 'box_marker_jitter' in self.fcpp.keys():
                 self.markers.jitter = self.fcpp['box_marker_jitter']
@@ -857,18 +830,15 @@ class BaseLayout:
             else:
                 self.markers.size = kwargs.get('marker_size', 4)
             if 'marker_type' in kwargs.keys():
-                self.markers.type = RepeatedList(
-                    kwargs['marker_type'], 'marker_type')
+                self.markers.type = RepeatedList(kwargs['marker_type'], 'marker_type')
             elif 'box_marker_type' in self.fcpp.keys():
-                self.markers.type = RepeatedList(
-                    self.fcpp['box_marker_type'], 'marker_type')
+                self.markers.type = RepeatedList(self.fcpp['box_marker_type'], 'marker_type')
             elif not self.legend._on:
                 self.markers.type = RepeatedList('o', 'marker_type')
             if 'box_marker_zorder' in self.fcpp.keys():
                 self.markers.zorder = self.fcpp['box_marker_zorder']
             if not isinstance(self.markers.size, RepeatedList):
-                self.markers.size = RepeatedList(
-                    self.markers.size, 'marker_size')
+                self.markers.size = RepeatedList(self.markers.size, 'marker_size')
             if not isinstance(self.markers.edge_width, RepeatedList):
                 self.markers.edge_width = RepeatedList(self.markers.edge_width,
                                                        'marker_edge_width')
@@ -1044,16 +1014,13 @@ class BaseLayout:
                            edge_color='none',
                            eqn=utl.kwget(kwargs, self.fcpp, 'fit_eqn', False),
                            fill_color='none',
-                           font_size=utl.kwget(
-                               kwargs, self.fcpp, 'fit_font_size', 12),
-                           padding=utl.kwget(
-                               kwargs, self.fcpp, 'fit_padding', 10),
+                           font_size=utl.kwget(kwargs, self.fcpp, 'fit_font_size', 12),
+                           padding=utl.kwget(kwargs, self.fcpp, 'fit_padding', 10),
                            rsq=utl.kwget(kwargs, self.fcpp, 'fit_rsq', False),
                            size=[0, 0],
                            )
 
-        self.fit.legend_text = utl.kwget(
-            kwargs, self.fcpp, 'fit_legend_text', None)
+        self.fit.legend_text = utl.kwget(kwargs, self.fcpp, 'fit_legend_text', None)
         self.fit.position[0] = self.fit.padding
         self.fit.position[1] = self.axes.size[1] - \
             (self.fit.padding + self.fit.font_size)
@@ -1082,10 +1049,8 @@ class BaseLayout:
                                             'sort', 'descending'),
                              edge_color=utl.kwget(kwargs, self.fcpp, 'gantt_edge_color',
                                                   copy.copy(self.color_list)),
-                             edge_width=utl.kwget(
-                                 kwargs, self.fcpp, 'gantt_edge_width', 0),
-                             fill_alpha=utl.kwget(
-                                 kwargs, self.fcpp, 'gantt_fill_alpha', 0.75),
+                             edge_width=utl.kwget(kwargs, self.fcpp, 'gantt_edge_width', 0),
+                             fill_alpha=utl.kwget(kwargs, self.fcpp, 'gantt_fill_alpha', 0.75),
                              fill_color=utl.kwget(kwargs, self.fcpp, 'gantt_fill_color',
                                                   copy.copy(self.color_list)),
                              color_by_bar=utl.kwget(kwargs, self.fcpp, ['gantt_color_by_bar', 'color_by_bar'],
@@ -1272,8 +1237,7 @@ class BaseLayout:
             return kwargs
 
         self.hist = Element('hist', self.fcpp, kwargs,
-                            on=True if 'hist' in self.name and kwargs.get(
-                                'hist_on', True) else False,
+                            on=True if 'hist' in self.name and kwargs.get('hist_on', True) else False,
                             align=utl.kwget(kwargs, self.fcpp,
                                             'hist_align', 'mid'),
                             bins=utl.kwget(kwargs, self.fcpp, ['hist_bins', 'bins'],
@@ -1288,8 +1252,7 @@ class BaseLayout:
                                           kwargs.get('kde', False)),
                             normalize=utl.kwget(kwargs, self.fcpp, ['hist_normalize', 'normalize'],
                                                 kwargs.get('normalize', False)),
-                            rwidth=utl.kwget(
-                                kwargs, self.fcpp, 'hist_rwidth', None),
+                            rwidth=utl.kwget(kwargs, self.fcpp, 'hist_rwidth', None),
                             horizontal=utl.kwget(kwargs, self.fcpp, ['hist_horizontal', 'horizontal'],
                                                  kwargs.get('horizontal', False)),
                             )
@@ -1485,8 +1448,7 @@ class BaseLayout:
                                      marker_size=utl.kwget(kwargs, self.fcpp,
                                                            'legend_marker_size',
                                                            7),
-                                     nleg=utl.kwget(
-                                         kwargs, self.fcpp, 'nleg', -1),
+                                     nleg=utl.kwget(kwargs, self.fcpp, 'nleg', -1),
                                      points=utl.kwget(kwargs, self.fcpp,
                                                       'legend_points', 1),
                                      ordered_curves=[],
@@ -1570,10 +1532,8 @@ class BaseLayout:
         else:
             marker_list = utl.validate_list(DEFAULT_MARKERS)
         markers = RepeatedList(marker_list, 'markers')
-        marker_edge_color = utl.kwget(
-            kwargs, self.fcpp, 'marker_edge_color', self.color_list)
-        marker_fill_color = utl.kwget(
-            kwargs, self.fcpp, 'marker_fill_color', self.color_list)
+        marker_edge_color = utl.kwget(kwargs, self.fcpp, 'marker_edge_color', self.color_list)
+        marker_fill_color = utl.kwget(kwargs, self.fcpp, 'marker_fill_color', self.color_list)
         if kwargs.get('marker_fill_color'):
             kwargs['marker_fill'] = True
         self.markers = Element('marker', self.fcpp, kwargs,
@@ -1629,8 +1589,7 @@ class BaseLayout:
                            on=True,
                            alpha=utl.kwget(kwargs, self.fcpp, ['pie_fill_alpha', 'fill_alpha'],
                                            kwargs.get('fill_alpha', 0.85)),
-                           colors=utl.kwget(
-                               kwargs, self.fcpp, 'pie_colors', copy.copy(self.color_list)),
+                           colors=utl.kwget(kwargs, self.fcpp, 'pie_colors', copy.copy(self.color_list)),
                            counter_clock=utl.kwget(kwargs, self.fcpp, ['pie_counter_clock', 'counter_clock'],
                                                    kwargs.get('counter_clock', False)),
                            edge_color=utl.kwget(kwargs, self.fcpp, 'pie_edge_color',
@@ -1718,8 +1677,7 @@ class BaseLayout:
 
         self.ref_line = Element('ref_line', self.fcpp, kwargs,
                                 on=False if not ref_col else True,
-                                column=RepeatedList(
-                                    ref_col, 'ref_col') if ref_col else None,
+                                column=RepeatedList(ref_col, 'ref_col') if ref_col else None,
                                 color='#000000',
                                 legend_text=RepeatedList(utl.kwget(kwargs, self.fcpp,
                                                                    'ref_line_legend_text', 'Ref Line'),
@@ -1904,8 +1862,7 @@ class BaseLayout:
                                                                'text_font_weight', 'normal'),
                                                      'text_font_weight'),
                             position=RepeatedList(position, 'text_position'),
-                            coordinate=utl.kwget(
-                                kwargs, self.fcpp, 'text_coordinate', 'axis'),
+                            coordinate=utl.kwget(kwargs, self.fcpp, 'text_coordinate', 'axis'),
                             rotation=RepeatedList(utl.kwget(kwargs, self.fcpp,
                                                   'text_rotation', 0), 'text_rotation'),
                             units=utl.kwget(kwargs, self.fcpp,
@@ -2273,8 +2230,7 @@ class BaseLayout:
                                          'ws_tick_minimum', 10)
 
         # box
-        self.ws_ax_box_title = utl.kwget(
-            kwargs, self.fcpp, 'ws_ax_box_title', 10)
+        self.ws_ax_box_title = utl.kwget(kwargs, self.fcpp, 'ws_ax_box_title', 10)
 
     def _from_list(self, base, attrs, name, kwargs) -> dict:
         """Supports definition of object attributes for multiple axes using
@@ -2408,8 +2364,7 @@ class BaseLayout:
 
         if 'hist' in self.name:
             if self.hist.normalize:
-                self.label_y.text = kwargs.get(
-                    'label_y_text', 'Normalized Counts')
+                self.label_y.text = kwargs.get('label_y_text', 'Normalized Counts')
             elif self.hist.horizontal:
                 tmp = self.label_y.text
                 self.label_y.text = self.label_x.text
@@ -3127,8 +3082,7 @@ class Element:
             self._size_all = temp.copy()
 
         else:
-            self._size_all = pd.concat(
-                [self._size_all, temp]).reset_index(drop=True)
+            self._size_all = pd.concat([self._size_all, temp]).reset_index(drop=True)
 
     @property
     def size_all_bg(self):
@@ -3156,8 +3110,7 @@ class Element:
             self._size_all_bg = temp.copy()
 
         else:
-            self._size_all_bg = pd.concat(
-                [self._size_all_bg, temp]).reset_index(drop=True)
+            self._size_all_bg = pd.concat([self._size_all_bg, temp]).reset_index(drop=True)
 
     @property
     def size_inches(self):

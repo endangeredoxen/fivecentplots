@@ -29,8 +29,7 @@ def custom_formatwarning(msg, *args, **kwargs):
 
 warnings.formatwarning = custom_formatwarning
 # weird error in boxplot with no groups
-warnings.filterwarnings(
-    "ignore", "invalid value encountered in double_scalars")
+warnings.filterwarnings("ignore", "invalid value encountered in double_scalars")
 
 db = pdb.set_trace
 
@@ -185,8 +184,7 @@ def mpl_get_ticks(ax: mplp.Axes, xon: bool = True, yon: bool = True,
         tp[vv]['min'] = min(lim)
         tp[vv]['max'] = max(lim)
         tp[vv]['ticks'] = getattr(ax, 'get_%sticks' % vv)()
-        tp[vv]['labels'] = [f for f in iterticks(
-            getattr(ax, '%saxis' % vv), minor)]
+        tp[vv]['labels'] = [f for f in iterticks(getattr(ax, '%saxis' % vv), minor)]
         tp[vv]['label_vals'] = [f[1] for f in tp[vv]['labels']]
         tp[vv]['label_text'] = [f[2] for f in tp[vv]['labels']]
         try:
@@ -426,10 +424,8 @@ class Layout(BaseLayout):
 
         # Set up the label/title arrays to reflect the groups
         max_labels = data.changes.sum().max()
-        self.box_group_label.obj[ir, ic] = np.array(
-            [[None] * max_labels] * num_cols)
-        self.box_group_label.obj_bg[ir, ic] = np.array(
-            [[None] * max_labels] * num_cols)
+        self.box_group_label.obj[ir, ic] = np.array([[None] * max_labels] * num_cols)
+        self.box_group_label.obj_bg[ir, ic] = np.array([[None] * max_labels] * num_cols)
         self.box_group_title.obj[ir, ic] = np.array([[None]] * num_cols)
         self.box_group_title.obj_bg[ir, ic] = np.array([[None]] * num_cols)
 
@@ -502,20 +498,16 @@ class Layout(BaseLayout):
         # Style tick labels
         ticks_font = \
             font_manager.FontProperties(family=getattr(self, 'tick_labels_major_z').font,
-                                        size=getattr(
-                                            self, 'tick_labels_major_z').font_size,
-                                        style=getattr(
-                                            self, 'tick_labels_major_z').font_style,
+                                        size=getattr(self, 'tick_labels_major_z').font_size,
+                                        style=getattr(self, 'tick_labels_major_z').font_style,
                                         weight=getattr(self, 'tick_labels_major_z').font_weight)
 
         for text in cax.get_yticklabels():
             if getattr(self, 'tick_labels_major_z').rotation != 0:
-                text.set_rotation(
-                    getattr(self, 'tick_labels_major_z').rotation)
+                text.set_rotation(getattr(self, 'tick_labels_major_z').rotation)
             text.set_fontproperties(ticks_font)
             text.set_bbox(dict(edgecolor=getattr(self, 'tick_labels_major_z').edge_color[0],
-                               facecolor=getattr(
-                                   self, 'tick_labels_major_z').fill_color[0],
+                               facecolor=getattr(self, 'tick_labels_major_z').fill_color[0],
                                linewidth=getattr(self, 'tick_labels_major_z').edge_width))
 
         return cbar
@@ -542,8 +534,7 @@ class Layout(BaseLayout):
                                     linewidth=ll.width[ival],
                                     zorder=ll.zorder)
                         if isinstance(ll.text, list) and ll.text[ival] is not None:
-                            self.legend.add_value(
-                                ll.text[ival], [line], 'ref_line')
+                            self.legend.add_value(ll.text[ival], [line], 'ref_line')
 
                 else:
                     for ival, val in enumerate(ll.values):
@@ -554,8 +545,7 @@ class Layout(BaseLayout):
                                     linewidth=ll.width[ival],
                                     zorder=ll.zorder)
                         if isinstance(ll.text, list) and ll.text[ival] is not None:
-                            self.legend.add_value(
-                                ll.text[ival], [line], 'ref_line')
+                            self.legend.add_value(ll.text[ival], [line], 'ref_line')
 
     def add_label(self, ir: int, ic: int, text: str = '', position: [tuple, None] = None,
                   rotation: int = 0, size: [list, None] = None,
@@ -1062,15 +1052,13 @@ class Layout(BaseLayout):
                     self.pie.xs_left = max(-left if left < 0 else 0, self.pie.xs_left)
 
                     right = self.pie.size_all['x1'].max() - ax_bbox.x1
-                    self.pie.xs_right = max(
-                        right if right > 0 else 0, self.pie.xs_right)
+                    self.pie.xs_right = max(right if right > 0 else 0, self.pie.xs_right)
 
                     bottom = self.pie.size_all['y0'].min() - ax_bbox.y0
                     self.pie.xs_bottom = max(-bottom if bottom < 0 else 0, self.pie.xs_bottom)
 
                     top = self.pie.size_all['y1'].max() - ax_bbox.y1
-                    self.pie.xs_top = max(
-                        top if top > 0 else 0, self.pie.xs_top)
+                    self.pie.xs_top = max(top if top > 0 else 0, self.pie.xs_top)
 
                 if self.pie.explode:
                     for iwedge, wedge in enumerate(self.pie.explode):
@@ -1840,8 +1828,7 @@ class Layout(BaseLayout):
             else:
                 data.ranges[ir, ic]['%smin' % axx] += tick_off
             if data.ranges[ir, ic]['%smax' % axx] is None:
-                data.ranges[ir, ic]['%smax' % axx] = len(
-                    xvals) - 1 + xoff + tick_off
+                data.ranges[ir, ic]['%smax' % axx] = len(xvals) - 1 + xoff + tick_off
             else:
                 data.ranges[ir, ic]['%smax' % axx] += tick_off
 
@@ -1990,8 +1977,7 @@ class Layout(BaseLayout):
         # Add a colorbar
         if self.cbar.on:
             self.cbar.obj[ir, ic] = self.add_cbar(ax, cc)
-            new_ticks = cbar_ticks(
-                self.cbar.obj[ir, ic], ranges['zmin'], ranges['zmax'])
+            new_ticks = cbar_ticks(self.cbar.obj[ir, ic], ranges['zmin'], ranges['zmax'])
             self.cbar.obj[ir, ic].set_ticks(new_ticks)
 
         # Show points
@@ -2175,8 +2161,7 @@ class Layout(BaseLayout):
 
         # Add a reference to the line to self.lines
         if leg_name is not None:
-            handle = [patches.Rectangle(
-                (0, 0), 1, 1, color=self.hist.fill_color[iline])]
+            handle = [patches.Rectangle((0, 0), 1, 1, color=self.hist.fill_color[iline])]
             self.legend.add_value(leg_name, handle, 'lines')
 
         # Add a kde
@@ -2289,8 +2274,7 @@ class Layout(BaseLayout):
                 self.pie.explode = tuple([self.pie.explode[1] for f in y])
             elif len(self.pie.explode) < len(y):
                 self.pie.explode = list(self.pie.explode)
-                self.pie.explode += [0 for f in range(
-                    0, len(y) - len(self.pie.explode))]
+                self.pie.explode += [0 for f in range(0, len(y) - len(self.pie.explode))]
 
         if data.legend is not None:
             xx = [f for f in x]
@@ -2322,8 +2306,7 @@ class Layout(BaseLayout):
             for i, val in enumerate(x):
                 if xx[i] in self.legend.values['Key'].values:
                     continue
-                handle = [patches.Rectangle(
-                    (0, 0), 1, 1, color=self.pie.colors[i])]
+                handle = [patches.Rectangle((0, 0), 1, 1, color=self.pie.colors[i])]
                 self.legend.add_value(xx[i], handle, 'lines')
 
         return self.pie.obj
@@ -2453,8 +2436,7 @@ class Layout(BaseLayout):
         if leg_name is not None:
             if leg_name is not None \
                     and leg_name not in list(self.legend.values['Key']):
-                self.legend.add_value(
-                    leg_name, points if points is not None else lines, line_type_name)
+                self.legend.add_value(leg_name, points if points is not None else lines, line_type_name)
 
     def restore(self):
         """Undo changes to MPL rcParams."""
@@ -2487,18 +2469,15 @@ class Layout(BaseLayout):
 
         # for ax in axes:
         try:
-            axes[0].obj[ir, ic].set_facecolor(
-                axes[0].fill_color[utl.plot_num(ir, ic, self.ncol)])
+            axes[0].obj[ir, ic].set_facecolor(axes[0].fill_color[utl.plot_num(ir, ic, self.ncol)])
         except:  # noqa
-            axes[0].obj[ir, ic].set_axis_bgcolor(
-                axes[0].fill_color[utl.plot_num(ir, ic, self.ncol)])
+            axes[0].obj[ir, ic].set_axis_bgcolor(axes[0].fill_color[utl.plot_num(ir, ic, self.ncol)])
 
         for f in ['bottom', 'top', 'right', 'left']:
             if len(axes) > 1:
                 axes[0].obj[ir, ic].spines[f].set_visible(False)
             if getattr(self.axes, 'spine_%s' % f):
-                axes[-1].obj[ir, ic].spines[f].set_color(
-                    axes[0].edge_color[utl.plot_num(ir, ic, self.ncol)])
+                axes[-1].obj[ir, ic].spines[f].set_color(axes[0].edge_color[utl.plot_num(ir, ic, self.ncol)])
             else:
                 axes[-1].obj[ir,
                              ic].spines[f].set_color(self.fig.fill_color[0])
@@ -3011,28 +2990,22 @@ class Layout(BaseLayout):
                     mplp.setp(axes[ia].get_xticklabels(), visible=True)
                 else:
                     if self.axes.twin_x and ia == 1:
-                        axes[ia].xaxis.set_tick_params(
-                            which='both', labelbottom=True)
+                        axes[ia].xaxis.set_tick_params(which='both', labelbottom=True)
                     elif self.axes.twin_y and ia == 1:
-                        axes[ia].xaxis.set_tick_params(
-                            which='both', labeltop=True)
+                        axes[ia].xaxis.set_tick_params(which='both', labeltop=True)
                     else:
-                        axes[ia].xaxis.set_tick_params(
-                            which='both', labelbottom=True)
+                        axes[ia].xaxis.set_tick_params(which='both', labelbottom=True)
 
             if self.separate_ticks or getattr(self, 'axes%s' % lab).share_y is False:
                 if LooseVersion(mpl.__version__) < LooseVersion('2.2'):
                     mplp.setp(axes[ia].get_yticklabels(), visible=True)
                 else:
                     if self.axes.twin_x and ia == 1:
-                        axes[ia].yaxis.set_tick_params(
-                            which='both', labelright=True)
+                        axes[ia].yaxis.set_tick_params(which='both', labelright=True)
                     elif self.axes.twin_y and ia == 1:
-                        axes[ia].yaxis.set_tick_params(
-                            which='both', labelleft=True)
+                        axes[ia].yaxis.set_tick_params(which='both', labelleft=True)
                     else:
-                        axes[ia].yaxis.set_tick_params(
-                            which='both', labelleft=True)
+                        axes[ia].yaxis.set_tick_params(which='both', labelleft=True)
 
             if self.nwrap > 0 and (ic + (ir + 1) * self.ncol + 1) > self.nwrap or \
                     (ir < self.nrow - 1 and not self.axes.visible[ir + 1, ic]):
@@ -3041,17 +3014,14 @@ class Layout(BaseLayout):
                 elif self.axes.twin_y and ia == 1:
                     axes[ia].yaxis.set_tick_params(which='both', labeltop=True)
                 else:
-                    axes[ia].xaxis.set_tick_params(
-                        which='both', labelbottom=True)
+                    axes[ia].xaxis.set_tick_params(which='both', labelbottom=True)
             if not self.separate_ticks and not self.axes.visible[ir, ic - 1]:
                 if LooseVersion(mpl.__version__) < LooseVersion('2.2'):
                     mplp.setp(axes[ia].get_yticklabels(), visible=True)
                 elif self.axes.twin_x and ia == 1:
-                    axes[ia].yaxis.set_tick_params(
-                        which='both', labelright=True)
+                    axes[ia].yaxis.set_tick_params(which='both', labelright=True)
                 else:
-                    axes[ia].yaxis.set_tick_params(
-                        which='both', labelleft=True)
+                    axes[ia].yaxis.set_tick_params(which='both', labelleft=True)
             elif not self.separate_ticks \
                     and (ic != self.ncol - 1
                          and utl.plot_num(ir, ic, self.ncol) != self.nwrap) \
@@ -3350,8 +3320,7 @@ class Layout(BaseLayout):
                     self.axes.size[1]
                 self.label_wrap.obj[ir, ic].set_position((0.5, y_text))
                 self.label_wrap.obj_bg[ir, ic].set_y(y_rect)
-                self.label_wrap.obj_bg[ir, ic].set_width(
-                    1 + hack / self.axes.size[0])
+                self.label_wrap.obj_bg[ir, ic].set_width(1 + hack / self.axes.size[0])
         # wrap title
         if self.title_wrap.on:
             offset = 0
@@ -3361,8 +3330,7 @@ class Layout(BaseLayout):
                 self.axes.size[1]
             self.title_wrap.obj.set_position((self.ncol / 2, y_text))
             self.title_wrap.obj_bg.set_y(y_rect)
-            self.title_wrap.obj_bg.set_width(
-                self.ncol + hack / self.axes.size[0])
+            self.title_wrap.obj_bg.set_width(self.ncol + hack / self.axes.size[0])
 
         # Update title position
         if self.title.on:
@@ -3405,12 +3373,10 @@ class Layout(BaseLayout):
                     lab.obj_bg[ir, ic][ii, jj].set_y(-heights[0:ii + 1].sum())
 
                     # group label text strings
-                    changes = data.changes[data.changes[len(
-                        data.changes.columns) - ii - 1] == 1].index.values
+                    changes = data.changes[data.changes[len(data.changes.columns) - ii - 1] == 1].index.values
                     changes = np.diff(np.append(changes, len(data.changes)))
                     divider = self.axes.size[0] / len(data.changes)
-                    xtext = (
-                        divider * (changes[jj] / 2 + changes[0:jj].sum())) / self.axes.size[0]
+                    xtext = (divider * (changes[jj] / 2 + changes[0:jj].sum())) / self.axes.size[0]
                     ytext = -heights[ii] / 2 - \
                         heights[0:ii].sum() - offset / self.axes.size[1]
 

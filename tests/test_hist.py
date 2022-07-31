@@ -5,7 +5,8 @@ import os
 import sys
 import pdb
 import platform
-from pathlib import Pathimport numpy as np
+from pathlib import Path
+import numpy as np
 import fivecentplots.utilities as utl
 import inspect
 osjoin = os.path.join
@@ -76,11 +77,9 @@ def plt_simple(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -104,11 +103,9 @@ def plt_horizontal(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -132,11 +129,9 @@ def plt_legend(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -160,11 +155,9 @@ def plt_kde(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -188,11 +181,9 @@ def plt_grid(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -216,11 +207,9 @@ def plt_wrap_values(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -246,11 +235,9 @@ def plt_wrap_names(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -278,11 +265,9 @@ def plt_image(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -314,11 +299,9 @@ def plt_image_legend(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -349,11 +332,9 @@ def plt_patch_solid(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 

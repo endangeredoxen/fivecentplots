@@ -875,8 +875,7 @@ def plot_bar(data, layout, ir, ic, df_rc, kwargs):
         for n, g in df_rc.groupby(data.x[0]):
             for ii, (nn, gg) in enumerate(g.groupby(data.legend)):
                 df_rc.loc[df_rc.index.isin(gg.index), 'Instance'] = ii
-                df_rc.loc[df_rc.index.isin(gg.index), 'Total'] = len(
-                    g.groupby(data.legend))
+                df_rc.loc[df_rc.index.isin(gg.index), 'Total'] = len(g.groupby(data.legend))
     else:
         df_rc['Instance'] = 0
         df_rc['Total'] = 1
@@ -1558,8 +1557,7 @@ def plotter(dobj, **kwargs):
             kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | add_hvlines' % (ifig, ir, ic))
 
             # Plot the data
-            dd = globals()['plot_{}'.format(dd.name)](
-                dd, layout, ir, ic, df_rc, kwargs)
+            dd = globals()['plot_{}'.format(dd.name)](dd, layout, ir, ic, df_rc, kwargs)
             kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | plot' % (ifig, ir, ic))
 
             # Set linear or log axes scaling

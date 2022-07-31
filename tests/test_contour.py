@@ -4,7 +4,8 @@ import os
 import sys
 import pdb
 import platform
-from pathlib import Pathimport fivecentplots.utilities as utl
+from pathlib import Path
+import fivecentplots.utilities as utl
 import inspect
 osjoin = os.path.join
 db = pdb.set_trace
@@ -78,11 +79,9 @@ def plt_basic(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -109,11 +108,9 @@ def plt_basic_rc(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -139,16 +136,13 @@ def plt_filled(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -157,8 +151,7 @@ def plt_filled(bm=False, master=False, remove=True, show=False):
 
 def plt_filled_no_share(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'filled_no_share_master') if master else 'filled_no_share'
+    name = osjoin(MASTER, 'filled_no_share_master') if master else 'filled_no_share'
 
     # Make the plot
     fcp.contour(df, x='X', y='Y', z='Value', row='Batch', col='Experiment', filled=True,
@@ -175,16 +168,13 @@ def plt_filled_no_share(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -193,8 +183,7 @@ def plt_filled_no_share(bm=False, master=False, remove=True, show=False):
 
 def plt_filled_separate(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'filled_separate_master') if master else 'filled_separate'
+    name = osjoin(MASTER, 'filled_separate_master') if master else 'filled_separate'
 
     # Make the plot
     fcp.contour(df, x='X', y='Y', z='Value', row='Batch', col='Experiment', filled=True,
@@ -211,16 +200,13 @@ def plt_filled_separate(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -246,11 +232,9 @@ def plt_filled_range(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 

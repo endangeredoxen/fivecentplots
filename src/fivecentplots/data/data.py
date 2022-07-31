@@ -45,8 +45,7 @@ class Data:
         self.name = name
 
         # Reload default file
-        self.fcpp, dummy, dummy2 = utl.reload_defaults(
-            kwargs.get('theme', None))
+        self.fcpp, dummy, dummy2 = utl.reload_defaults(kwargs.get('theme', None))
 
         # Default axis attributes
         self.auto_cols = False
@@ -152,8 +151,7 @@ class Data:
         self.stat = kwargs.get('stat', None)
         self.stat_val = kwargs.get('stat_val', None)
         if self.stat_val is not None and self.stat_val not in self.df_all.columns:
-            raise DataError(
-                'stat_val column "%s" not in DataFrame' % self.stat_val)
+            raise DataError('stat_val column "%s" not in DataFrame' % self.stat_val)
         self.stat_idx = []
         self.lcl = kwargs.get('lcl', [])
         self.ucl = kwargs.get('ucl', [])
@@ -204,8 +202,7 @@ class Data:
                 self.wrap_vals = [f for f in self.x]
             else:
                 self.wrap = self._check_group_columns('wrap', self.wrap)
-        self.groups = self._check_group_columns(
-            'groups', kwargs.get('groups', None))
+        self.groups = self._check_group_columns('groups', kwargs.get('groups', None))
         self._check_group_errors()
         self.ncols = kwargs.get('ncol', 0)
         self.ncol = 1
@@ -317,8 +314,7 @@ class Data:
         Args:
             kwargs: user-defined keyword args
         """
-        self.ax_limit_padding = utl.kwget(
-            kwargs, self.fcpp, 'ax_limit_padding', 0.05)
+        self.ax_limit_padding = utl.kwget(kwargs, self.fcpp, 'ax_limit_padding', 0.05)
         for ax in ['x', 'x2', 'y', 'y2', 'z']:
             if not hasattr(self, 'ax_limit_padding_%smin' % ax):
                 setattr(self, 'ax_limit_padding_%smin' % ax,
@@ -384,8 +380,7 @@ class Data:
     def _check_group_errors(self):
         """Check for common errors related to grouping keywords."""
         if self.row and len(self.row) > 1 or self.col and len(self.col) > 1:
-            error = 'Only one value can be specified for "%s"' % (
-                'row' if self.row else 'col')
+            error = 'Only one value can be specified for "%s"' % ('row' if self.row else 'col')
             raise GroupingError(error)
 
         if self.row is not None and self.row == self.col:
@@ -416,8 +411,7 @@ class Data:
             group1: attr name of first grouping column
             group2: attr name of second grouping column
         """
-        equal = set(str(getattr(self, group1))) == set(
-            str(getattr(self, group2)))
+        equal = set(str(getattr(self, group1))) == set(str(getattr(self, group2)))
 
         if equal:
             raise GroupingError('%s and %s grouping columns cannot be the same!'
@@ -444,8 +438,7 @@ class Data:
 
         for val in vals:
             if val not in self.df_all.columns:
-                raise DataError(
-                    'No column named "%s" found in DataFrame' % val)
+                raise DataError('No column named "%s" found in DataFrame' % val)
 
             # Check case
             try:
@@ -512,11 +505,9 @@ class Data:
                         auto_scale_val = self.ranges[ir][ic][key]
                     elif key in self.ranges[ir][ic].keys():
                         if mm == 'min':
-                            auto_scale_val = min(
-                                auto_scale_val, self.ranges[ir][ic][key])
+                            auto_scale_val = min(auto_scale_val, self.ranges[ir][ic][key])
                         else:
-                            auto_scale_val = max(
-                                auto_scale_val, self.ranges[ir][ic][key])
+                            auto_scale_val = max(auto_scale_val, self.ranges[ir][ic][key])
                     else:
                         auto_scale_val = None
                 if isinstance(auto_scale_val, str) or auto_scale_val is None:
@@ -889,17 +880,14 @@ class Data:
                 if isinstance(fig_val, tuple):
                     for ig, gg in enumerate(fig_val):
                         if ig == 0:
-                            self.df_fig = self.df_all[self.df_all[self.fig_groups[ig]] == gg].copy(
-                            )
+                            self.df_fig = self.df_all[self.df_all[self.fig_groups[ig]] == gg].copy()
                         else:
                             self.df_fig = self.df_fig[self.df_fig[self.fig_groups[ig]] == gg]
                 elif self.fig_groups is not None:
                     if isinstance(self.fig_groups, list):
-                        self.df_fig = self.df_all[self.df_all[self.fig_groups[0]] == fig_val].copy(
-                        )
+                        self.df_fig = self.df_all[self.df_all[self.fig_groups[0]] == fig_val].copy()
                     else:
-                        self.df_fig = self.df_all[self.df_all[self.fig_groups] == fig_val].copy(
-                        )
+                        self.df_fig = self.df_all[self.df_all[self.fig_groups] == fig_val].copy()
                 else:
                     self.df_fig = self.df_all
 
@@ -1131,8 +1119,7 @@ class Data:
             for iline, row in self.legend_vals.iterrows():
                 # Fix unique wrap vals
                 if self.wrap == 'y' or self.wrap == 'x':
-                    wrap_col = list(set(df.columns) & set(
-                        getattr(self, self.wrap)))[0]
+                    wrap_col = list(set(df.columns) & set(getattr(self, self.wrap)))[0]
                     df = df.rename(columns={self.wrap: wrap_col})
                     row[self.wrap] = wrap_col
                 if self.row == 'y':
@@ -1431,11 +1418,9 @@ class Data:
         else:
             if self.sort:
                 self.wrap_vals = \
-                    natsorted(
-                        list(self.df_fig.groupby(self.wrap).groups.keys()))
+                    natsorted(list(self.df_fig.groupby(self.wrap).groups.keys()))
             else:
-                self.wrap_vals = list(self.df_fig.groupby(
-                    self.wrap, sort=False).groups.keys())
+                self.wrap_vals = list(self.df_fig.groupby(self.wrap, sort=False).groups.keys())
             wrap = dict(zip(self.wrap,
                         utl.validate_list(self.wrap_vals[ir * self.ncol + ic])))
             return self.df_fig.loc[(self.df_fig[list(wrap)] == pd.Series(wrap)).all(axis=1)].copy()

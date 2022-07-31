@@ -21,8 +21,7 @@ class Histogram(data.Data):
         opt = ['x']
         kwargs['df'] = utl.df_from_array2d(kwargs['df'])
 
-        self.fcpp, dummy, dummy2 = utl.reload_defaults(
-            kwargs.get('theme', None))
+        self.fcpp, dummy, dummy2 = utl.reload_defaults(kwargs.get('theme', None))
         bars = utl.kwget(kwargs, self.fcpp, 'bars', kwargs.get('bars', True))
         kwargs['2D'] = False
 
@@ -244,11 +243,9 @@ class Histogram(data.Data):
         else:
             if self.sort:
                 self.wrap_vals = \
-                    natsorted(
-                        list(self.df_fig.groupby(self.wrap).groups.keys()))
+                    natsorted(list(self.df_fig.groupby(self.wrap).groups.keys()))
             else:
-                self.wrap_vals = list(self.df_fig.groupby(
-                    self.wrap, sort=False).groups.keys())
+                self.wrap_vals = list(self.df_fig.groupby(self.wrap, sort=False).groups.keys())
             wrap = dict(zip(self.wrap,
                         utl.validate_list(self.wrap_vals[ir * self.ncol + ic])))
             return self.df_fig.loc[(self.df_fig[list(wrap)] == pd.Series(wrap)).all(axis=1)].copy()

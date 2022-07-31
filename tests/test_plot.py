@@ -4,7 +4,8 @@ import os
 import sys
 import pdb
 import platform
-from pathlib import Pathimport fivecentplots.utilities as utl
+from pathlib import Path
+import fivecentplots.utilities as utl
 import inspect
 osjoin = os.path.join
 db = pdb.set_trace
@@ -72,11 +73,9 @@ def plt_xy_scatter(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -100,11 +99,9 @@ def plt_xy_legend(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -128,11 +125,9 @@ def plt_xy_log_scale(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -141,8 +136,7 @@ def plt_xy_log_scale(bm=False, master=False, remove=True, show=False):
 
 def plt_xy_categorical(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'xy_categorical_master') if master else 'xy_categorical'
+    name = osjoin(MASTER, 'xy_categorical_master') if master else 'xy_categorical'
 
     # Make the plot
     fcp.plot(df, x='Die', y='I [A]', show=SHOW,
@@ -157,11 +151,9 @@ def plt_xy_categorical(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -184,11 +176,9 @@ def plt_xy_ts(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -197,8 +187,7 @@ def plt_xy_ts(bm=False, master=False, remove=True, show=False):
 
 def plt_secondary_xy_shared_y(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'secondary-xy_shared-y_master') if master else 'secondary-xy_shared-y'
+    name = osjoin(MASTER, 'secondary-xy_shared-y_master') if master else 'secondary-xy_shared-y'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
@@ -213,11 +202,9 @@ def plt_secondary_xy_shared_y(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -226,8 +213,7 @@ def plt_secondary_xy_shared_y(bm=False, master=False, remove=True, show=False):
 
 def plt_secondary_xy_shared_x(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'secondary-xy_shared-x_master') if master else 'secondary-xy_shared-x'
+    name = osjoin(MASTER, 'secondary-xy_shared-x_master') if master else 'secondary-xy_shared-x'
 
     # Make the plot
     fcp.plot(df, x=['Voltage', 'I [A]'], y='Voltage', legend='Die', twin_y=True, show=SHOW,
@@ -242,11 +228,9 @@ def plt_secondary_xy_shared_x(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -255,8 +239,7 @@ def plt_secondary_xy_shared_x(bm=False, master=False, remove=True, show=False):
 
 def plt_multiple_xy_y(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'multiple-xy_y-only_master') if master else 'multiple-xy_y-only'
+    name = osjoin(MASTER, 'multiple-xy_y-only_master') if master else 'multiple-xy_y-only'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Boost Level', 'I [A]'], legend='Die', show=SHOW,
@@ -271,11 +254,9 @@ def plt_multiple_xy_y(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -284,8 +265,7 @@ def plt_multiple_xy_y(bm=False, master=False, remove=True, show=False):
 
 def plt_multiple_xy_x(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'multiple-xy_x-only_master') if master else 'multiple-xy_x-only'
+    name = osjoin(MASTER, 'multiple-xy_x-only_master') if master else 'multiple-xy_x-only'
 
     # Make the plot
     fcp.plot(df, x=['Boost Level', 'I [A]'], y='Voltage', legend='Die', show=SHOW,
@@ -300,11 +280,9 @@ def plt_multiple_xy_x(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -313,8 +291,7 @@ def plt_multiple_xy_x(bm=False, master=False, remove=True, show=False):
 
 def plt_multiple_xy_both(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'multiple-xy_both_master') if master else 'multiple-xy_both'
+    name = osjoin(MASTER, 'multiple-xy_both_master') if master else 'multiple-xy_both'
 
     # Make the plot
     fcp.plot(df, x=['Boost Level', 'I [A]'], y=['Voltage', 'Temperature [C]'], legend='Die', show=SHOW,
@@ -329,11 +306,9 @@ def plt_multiple_xy_both(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -342,8 +317,7 @@ def plt_multiple_xy_both(bm=False, master=False, remove=True, show=False):
 
 def plt_multiple_xy_both_label(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'multiple-xy_both_label_master') if master else 'multiple-xy_both_label'
+    name = osjoin(MASTER, 'multiple-xy_both_label_master') if master else 'multiple-xy_both_label'
 
     # Make the plot
     fcp.plot(df, x=['Boost Level', 'I [A]'], y=['Voltage', 'Temperature [C]'], legend='Die', show=SHOW,
@@ -359,11 +333,9 @@ def plt_multiple_xy_both_label(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -372,8 +344,7 @@ def plt_multiple_xy_both_label(bm=False, master=False, remove=True, show=False):
 
 def plt_row(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'grid-plots-row_master') if master else 'grid-plots-row'
+    name = osjoin(MASTER, 'grid-plots-row_master') if master else 'grid-plots-row'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend='Die', row='Boost Level',
@@ -389,11 +360,9 @@ def plt_row(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -402,8 +371,7 @@ def plt_row(bm=False, master=False, remove=True, show=False):
 
 def plt_column(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'grid-plots-column_master') if master else 'grid-plots-column'
+    name = osjoin(MASTER, 'grid-plots-column_master') if master else 'grid-plots-column'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', show=SHOW, ax_size=[225, 225],
@@ -418,11 +386,9 @@ def plt_column(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
         assert not compare
@@ -430,8 +396,7 @@ def plt_column(bm=False, master=False, remove=True, show=False):
 
 def plt_row_x_column(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'grid-plots-row-x-column_master') if master else 'grid-plots-row-x-column'
+    name = osjoin(MASTER, 'grid-plots-row-x-column_master') if master else 'grid-plots-row-x-column'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]', show=SHOW,
@@ -447,11 +412,9 @@ def plt_row_x_column(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -460,8 +423,7 @@ def plt_row_x_column(bm=False, master=False, remove=True, show=False):
 
 def plt_row_x_column_sep_labels(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'grid-plots-row-x-column_sep_labels_master') if master else 'grid-plots-row-x-column_sep_labels'
+    name = osjoin(MASTER, 'grid-plots-row-x-column_sep_labels_master') if master else 'grid-plots-row-x-column_sep_labels'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]', show=SHOW,
@@ -478,11 +440,9 @@ def plt_row_x_column_sep_labels(bm=False, master=False, remove=True, show=False)
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -491,8 +451,7 @@ def plt_row_x_column_sep_labels(bm=False, master=False, remove=True, show=False)
 
 def plt_wrap(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'grid-plots-wrap_master') if master else 'grid-plots-wrap'
+    name = osjoin(MASTER, 'grid-plots-wrap_master') if master else 'grid-plots-wrap'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend='Die', wrap=['Temperature [C]', 'Boost Level'], show=SHOW,
@@ -507,11 +466,9 @@ def plt_wrap(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -536,11 +493,9 @@ def plt_other_lines(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -549,8 +504,7 @@ def plt_other_lines(bm=False, master=False, remove=True, show=False):
 
 def plt_other_lines_df(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'other_lines_df_master') if master else 'other_lines_df'
+    name = osjoin(MASTER, 'other_lines_df_master') if master else 'other_lines_df'
 
     # Make the plot
     df['Open'] = 0
@@ -567,11 +521,9 @@ def plt_other_lines_df(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -580,8 +532,7 @@ def plt_other_lines_df(bm=False, master=False, remove=True, show=False):
 
 def plt_other_curve_fitting(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'other_curve-fitting_master') if master else 'other_curve-fitting'
+    name = osjoin(MASTER, 'other_curve-fitting_master') if master else 'other_curve-fitting'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, show=SHOW,
@@ -597,11 +548,9 @@ def plt_other_curve_fitting(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -610,8 +559,7 @@ def plt_other_curve_fitting(bm=False, master=False, remove=True, show=False):
 
 def plt_other_curve_fitting_range(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'other_curve-fitting-range_master') if master else 'other_curve-fitting-range'
+    name = osjoin(MASTER, 'other_curve-fitting-range_master') if master else 'other_curve-fitting-range'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, show=SHOW,
@@ -627,11 +575,9 @@ def plt_other_curve_fitting_range(bm=False, master=False, remove=True, show=Fals
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -640,8 +586,7 @@ def plt_other_curve_fitting_range(bm=False, master=False, remove=True, show=Fals
 
 def plt_other_curve_fitting_legend(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'other_curve-fitting-legend_master') if master else 'other_curve-fitting-legend'
+    name = osjoin(MASTER, 'other_curve-fitting-legend_master') if master else 'other_curve-fitting-legend'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, show=SHOW, legend='Die',
@@ -657,11 +602,9 @@ def plt_other_curve_fitting_legend(bm=False, master=False, remove=True, show=Fal
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -670,8 +613,7 @@ def plt_other_curve_fitting_legend(bm=False, master=False, remove=True, show=Fal
 
 def plt_other_curve_fitting_legend2(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'other_curve-fitting-legend2_master') if master else 'other_curve-fitting-legend2'
+    name = osjoin(MASTER, 'other_curve-fitting-legend2_master') if master else 'other_curve-fitting-legend2'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, show=SHOW, wrap='Die', legend='Die',
@@ -687,11 +629,9 @@ def plt_other_curve_fitting_legend2(bm=False, master=False, remove=True, show=Fa
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -700,8 +640,7 @@ def plt_other_curve_fitting_legend2(bm=False, master=False, remove=True, show=Fa
 
 def plt_other_stat_bad(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'other_stat-lines-bad_master') if master else 'other_stat-lines-bad'
+    name = osjoin(MASTER, 'other_stat-lines-bad_master') if master else 'other_stat-lines-bad'
 
     # Make the plot
     fcp.plot(df, x='I [A]', y='Voltage', title='IV Data', lines=False, show=SHOW,
@@ -717,11 +656,9 @@ def plt_other_stat_bad(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -730,8 +667,7 @@ def plt_other_stat_bad(bm=False, master=False, remove=True, show=False):
 
 def plt_other_stat_good(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'other_stat-lines-good_master') if master else 'other_stat-lines-good'
+    name = osjoin(MASTER, 'other_stat-lines-good_master') if master else 'other_stat-lines-good'
 
     # Make the plot
     fcp.plot(df, x='I [A]', y='Voltage', title='IV Data', lines=False, show=SHOW,
@@ -747,11 +683,9 @@ def plt_other_stat_good(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -760,8 +694,7 @@ def plt_other_stat_good(bm=False, master=False, remove=True, show=False):
 
 def plt_other_stat_good_mult(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'other_stat-lines-good-multiple-y_master') if master else 'other_stat-lines-good-multiple-y'
+    name = osjoin(MASTER, 'other_stat-lines-good-multiple-y_master') if master else 'other_stat-lines-good-multiple-y'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Boost Level', 'I [A]'], show=SHOW, legend=True, stat='median',
@@ -776,11 +709,9 @@ def plt_other_stat_good_mult(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -789,8 +720,7 @@ def plt_other_stat_good_mult(bm=False, master=False, remove=True, show=False):
 
 def plt_other_conf_int(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'other_conf-int_master') if master else 'other_conf-int'
+    name = osjoin(MASTER, 'other_conf-int_master') if master else 'other_conf-int'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, show=SHOW,
@@ -806,11 +736,9 @@ def plt_other_conf_int(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -819,8 +747,7 @@ def plt_other_conf_int(bm=False, master=False, remove=True, show=False):
 
 def plt_other_ref_line(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'other_ref-line-y=x_master') if master else 'other_ref-line-y=x'
+    name = osjoin(MASTER, 'other_ref-line-y=x_master') if master else 'other_ref-line-y=x'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', show=SHOW, legend='Die',
@@ -836,11 +763,9 @@ def plt_other_ref_line(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -849,8 +774,7 @@ def plt_other_ref_line(bm=False, master=False, remove=True, show=False):
 
 def plt_other_ref_line_mult(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'other_ref-line_mult_master') if master else 'other_ref-line_mult'
+    name = osjoin(MASTER, 'other_ref-line_mult_master') if master else 'other_ref-line_mult'
 
     # Make the plot
     df['2*Voltage'] = 2 * df['Voltage']
@@ -868,11 +792,9 @@ def plt_other_ref_line_mult(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -881,8 +803,7 @@ def plt_other_ref_line_mult(bm=False, master=False, remove=True, show=False):
 
 def plt_other_ref_line_complex(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(
-        MASTER, 'other_ref-line-complex_master') if master else 'other_ref-line-complex'
+    name = osjoin(MASTER, 'other_ref-line-complex_master') if master else 'other_ref-line-complex'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', show=SHOW, legend='Die',
@@ -899,11 +820,9 @@ def plt_other_ref_line_complex(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -928,11 +847,9 @@ def plt_other_lcl_only(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -957,11 +874,9 @@ def plt_other_ucl_only(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -987,11 +902,9 @@ def plt_other_ucl_lcl_inside(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
@@ -1017,11 +930,9 @@ def plt_other_ucl_lcl_outside(bm=False, master=False, remove=True, show=False):
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(
-            name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
         if remove:
             os.remove(name + '.png')
 
