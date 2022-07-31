@@ -30,7 +30,7 @@ setup(
 
     # The project's main homepage.
     url='https://github.com/endangeredoxen/fivecentplots',
-    download_url='https://github.com/endangeredoxen/fivecentplots/archive/v0.5.0.tar.gz',
+    download_url='https://github.com/endangeredoxen/fivecentplots/archive/refs/tags/v0.5.0-alpha.tar.gz',
 
     # Author details
     author='Steve Nicholes',
@@ -67,7 +67,7 @@ setup(
     # simple. Or you can use find_packages().
     packages=find_packages(exclude=['contrib', 'docs', 'tests*', ]),
 
-    dependency_links=['https://github.com/endangeredoxen/fileio/zipball/master'],
+    dependency_links=['https://github.com/endangeredoxen/fileio/zipball/main'],
     # List run-time dependencies here.  These will be installed by pip when
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
