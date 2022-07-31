@@ -798,9 +798,10 @@ def reload_defaults(theme: [str, None] = None):
     Args:
         theme (optional): name of the theme file to load. Defaults to None.
     """
-    theme_dir = os.path.join(os.path.dirname(__file__), 'themes')
+    theme_dir = pathlib.Path(__file__).parent / 'themes'
     reset_path = False
     err_msg = 'Requested theme not found; using default'
+    user_dir = pathlib.Path.home()
 
     if theme is not None and os.path.exists(theme):
         # full filename case
@@ -827,9 +828,13 @@ def reload_defaults(theme: [str, None] = None):
             print(err_msg)
             import defaults
             importlib.reload(defaults)
-    else:
+    elif (user_dir / '.fivecentplots' / 'defaults.py').exists():
         # use default theme
         import defaults
+        importlib.reload(defaults)
+    else:
+        sys.path = [str(theme_dir)] + sys.path
+        import gray as defaults
         importlib.reload(defaults)
 
     fcp_params = defaults.fcp_params
