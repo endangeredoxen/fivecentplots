@@ -54,7 +54,7 @@ INSTALL['bokeh'] = ['bokeh']
 
 # Global kwargs to override anything
 global KWARGS
-KWARGS = {}
+KWARGS = {}  # type: ignore
 
 
 def bar(df, **kwargs):
