@@ -39,16 +39,17 @@ db = pdb.set_trace
 osjoin = os.path.join
 cur_dir = Path(__file__).parent
 user_dir = Path.home()
+
+# transfer theme file or use built-in
 if not (user_dir / '.fivecentplots').exists():
     os.makedirs(user_dir / '.fivecentplots')
 if not (user_dir / '.fivecentplots' / 'defaults.py'):
     shutil.copy(cur_dir / 'themes' / 'gray.py', user_dir / '.fivecentplots' / 'defaults.py')
-sys.path = [str(user_dir / '.fivecentplots')] + sys.path
-print(sys.path)
-print((user_dir / '.fivecentplots').exists())
-print(os.listdir(user_dir / '.fivecentplots'))
-
-from defaults import *  # noqa, use local file
+if (user_dir / '.fivecentplots' / 'defaults.py').exists():
+    sys.path = [str(user_dir / '.fivecentplots')] + sys.path
+    from defaults import *  # noqa, use local file
+else:
+    from . themes.gray import *  # noqa
 
 # install requirements for other packages beyond what is in setup.py
 global INSTALL
