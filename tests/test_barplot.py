@@ -13,9 +13,7 @@ if platform.system() != 'Windows':
     print('Warning!  Image test files generated in windows.  Compatibility with linux/mac may vary')
 
 MPL = utl.get_mpl_version_dir()
-MASTER = Path(fcp.__file__).parents[2] / f'tests/test_images/{MPL}' / 'barplot.py'
-print(MASTER)
-print(os.listdir(MASTER))
+MASTER = Path(f'../tests/test_images/{MPL}') / 'barplot.py'
 
 # Sample data
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_bar.csv')
