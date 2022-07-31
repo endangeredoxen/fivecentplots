@@ -47,9 +47,6 @@ sys.path = [str(user_dir / '.fivecentplots')] + sys.path
 
 from defaults import *  # noqa, use local file
 
-# Load the keywords for docstrings from an csv files
-kw = keywords.make_docstrings()
-
 # install requirements for other packages beyond what is in setup.py
 global INSTALL
 INSTALL = {}
@@ -2635,6 +2632,4 @@ def ws():
             .. figure:: ../_static/images/example_ws.png
     """
     pass
-
-
 
