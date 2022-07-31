@@ -1,9 +1,11 @@
+import matplotlib as mpl
+
 #########################################################
 # Figure layout defaults
 #########################################################
 fcp_params = {'ax_edge_color': '#555555',
               'ax_fill_color': '#ffffff',
-              'ax_size': [400,400],  # [width, height]
+              'ax_size': [400, 400],  # [width, height]
               'bar_align': 'center',
               'bar_color_by_bar': False,
               'bar_edge_width': 0,
@@ -143,7 +145,6 @@ fcp_params = {'ax_edge_color': '#555555',
 ####################################################
 # Matplotlib default overrides
 ####################################################
-import matplotlib as mpl
 rcParams = {'font.cursive': ['Apple Chancery',
                              'Textile',
                              'Zapf Chancery',

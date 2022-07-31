@@ -4,11 +4,10 @@ import scipy.stats
 import numpy as np
 import copy
 import math
-from .. colors import *
 from .. utilities import RepeatedList
 from .. import utilities as utl
 from distutils.version import LooseVersion
-from . layout import *
+from . layout import LOGX, LOGY, SYMLOGX, SYMLOGY, LOGITX, LOGITY, LOG_ALLX, LOG_ALLY, BaseLayout, Element  # noqa
 import warnings
 import matplotlib as mpl
 import matplotlib.pyplot as mplp
@@ -74,7 +73,7 @@ def approx_lte(x: float, y: float):
     return x <= y or np.isclose(x, y, atol=atol)
 
 
-def cbar_ticks(cbar: 'Colorbar_Object', zmin: float, zmax: float):
+def cbar_ticks(cbar: 'Colorbar_Object', zmin: float, zmax: float):  # noqa: F821
     """Format cbar ticks and labels.
 
     Args:
@@ -215,7 +214,7 @@ def mpl_get_ticks(ax: mplp.Axes, xon: bool = True, yon: bool = True,
 
 class Layout(BaseLayout):
 
-    def __init__(self, data: 'Data', **kwargs):
+    def __init__(self, data: 'Data', **kwargs):  # noqa: F821
         """Layout attributes and methods for matplotlib Figure.
 
         Args:
@@ -479,7 +478,7 @@ class Layout(BaseLayout):
                                    **self.make_kw_dict(self.box_group_title,
                                                        ['position', 'size']))
 
-    def add_cbar(self, ax: mplp.Axes, contour: 'MPL_Contour_Plot_Object') -> 'MPL_Colorbar_Object':
+    def add_cbar(self, ax: mplp.Axes, contour: 'MPL_Contour_Plot_Object') -> 'MPL_Colorbar_Object':  # noqa: F821
         """Add a color bar.
 
         Args:
@@ -563,7 +562,7 @@ class Layout(BaseLayout):
                   fill_color: str = '#ffffff', edge_color: str = '#aaaaaa',
                   edge_width: int = 1, font: str = 'sans-serif', font_weight: str = 'normal',
                   font_style: str = 'normal', font_color: str = '#666666', font_size: int = 14,
-                  offset: bool = False, **kwargs) -> ['Text_Object', 'Rectangle_Object']:
+                  offset: bool = False, **kwargs) -> ['Text_Object', 'Rectangle_Object']:  # noqa: F821
         """Add a label to the plot.
 
         This function can be used for title labels or for group labels applied
@@ -713,7 +712,7 @@ class Layout(BaseLayout):
 
     def add_text(self, ir: int, ic: int, text: [str, None] = None,
                  element: [str, None] = None, offsetx: int = 0,
-                 offsety: int = 0, coord: ['mpl_coordinate', None] = None,
+                 offsety: int = 0, coord: ['mpl_coordinate', None] = None,  # noqa: F821
                  units: [str, None] = None, **kwargs):
         """Add a text box.
 
@@ -905,7 +904,7 @@ class Layout(BaseLayout):
             / self.axes.size[0]
         self.label_z.position[3] = 0.5
 
-    def _get_element_sizes(self, data: 'Data'):
+    def _get_element_sizes(self, data: 'Data'):  # noqa: F821
         """Calculate the actual rendered size of select elements by pre-plotting
         them.  This is needed to correctly adjust the figure dimensions.
 
@@ -1106,7 +1105,7 @@ class Layout(BaseLayout):
 
         return data
 
-    def _get_figure_size(self, data: 'Data', **kwargs):
+    def _get_figure_size(self, data: 'Data', **kwargs):  # noqa: F821
         """Determine the size of the mpl figure canvas in pixels and inches.
 
         Args:
@@ -1681,7 +1680,7 @@ class Layout(BaseLayout):
         self.title.position[2] = \
             self.title.position[3] + (self.ws_title_ax + self.title.size[1]) / self.axes.size[1]
 
-    def make_figure(self, data: 'Data', **kwargs):
+    def make_figure(self, data: 'Data', **kwargs):  # noqa: F821
         """Make the figure and axes objects.
 
         Args:
@@ -1728,9 +1727,9 @@ class Layout(BaseLayout):
         return data
 
     def plot_bar(self, ir: int, ic: int, iline: int, df: pd.DataFrame,
-                 leg_name: str, data: 'Data', ngroups: int, stacked: bool,
+                 leg_name: str, data: 'Data', ngroups: int, stacked: bool,  # noqa: F821
                  std: [None, float], xvals: np.ndarray, inst: pd.Series,
-                 total: pd.Series) -> 'Data':
+                 total: pd.Series) -> 'Data':  # noqa: F821
         """Plot bar graph.
 
         Args:
@@ -1854,7 +1853,7 @@ class Layout(BaseLayout):
 
         return data
 
-    def plot_box(self, ir: int, ic: int, data: 'Data', **kwargs) -> 'MPL_Boxplot_Object':
+    def plot_box(self, ir: int, ic: int, data: 'Data', **kwargs) -> 'MPL_Boxplot_Object':  # noqa: F821
         """Plot boxplot.
 
         Args:
@@ -1938,7 +1937,7 @@ class Layout(BaseLayout):
         return bp
 
     def plot_contour(self, ir: int, ic: int, df: pd.DataFrame, x: str, y: str, z: str,
-                     data: 'Data') -> ['MPL_contour_object', 'MPL_colorbar_object']:
+                     data: 'Data') -> ['MPL_contour_object', 'MPL_colorbar_object']:  # noqa: F821
         """Plot a contour plot.
 
         Args:
@@ -2065,7 +2064,7 @@ class Layout(BaseLayout):
             self.legend.add_value(leg_name, handle, 'lines')
 
     def plot_heatmap(self, ir: int, ic: int, df: pd.DataFrame, x: str, y: str,
-                     z: str, data: 'Data') -> 'MPL_imshow_object':
+                     z: str, data: 'Data') -> 'MPL_imshow_object':  # noqa: F821
         """Plot a heatmap.
 
         Args:
@@ -2132,7 +2131,7 @@ class Layout(BaseLayout):
         return im
 
     def plot_hist(self, ir: int, ic: int, iline: int, df: pd.DataFrame, x: str,
-                  y: str, leg_name: str, data: 'Data') -> ['MPL_histogram_object', 'Data']:
+                  y: str, leg_name: str, data: 'Data') -> ['MPL_histogram_object', 'Data']:  # noqa: F821
         """Plot a histogram.
 
         Args:
@@ -2197,7 +2196,7 @@ class Layout(BaseLayout):
 
         return hist, data
 
-    def plot_imshow(self, ir: int, ic: int, df: pd.DataFrame, data: 'Data'):
+    def plot_imshow(self, ir: int, ic: int, df: pd.DataFrame, data: 'Data'):  # noqa: F821
         """Plot an image.
 
         Args:
@@ -2259,8 +2258,8 @@ class Layout(BaseLayout):
                                           zorder=kwargs.get('zorder', 1))
         return line
 
-    def plot_pie(self, ir: int, ic: int, df: pd.DataFrame, x: str, y: str, data: 'Data',
-                 kwargs) -> 'MPL_pie_chart_object':
+    def plot_pie(self, ir: int, ic: int, df: pd.DataFrame, x: str, y: str, data: 'Data',  # noqa: F821
+                 kwargs) -> 'MPL_pie_chart_object':  # noqa: F821
         """Plot a pie chart.
 
         Args:
@@ -3204,7 +3203,7 @@ class Layout(BaseLayout):
                     #     for text in getattr(axes[ia], 'get_%sminorticklabels' % axx)():
                     #         text.set_rotation(tlminlab.rotation)
 
-    def set_colormap(self, data: 'Data', **kwargs):
+    def set_colormap(self, data: 'Data', **kwargs):  # noqa: F821
         """Replace the color list with discrete values from a colormap.
 
         Args:
@@ -3252,7 +3251,7 @@ class Layout(BaseLayout):
             print('Could not find a colormap called "%s". '
                   'Using default colors...' % self.cmap)
 
-    def set_figure_final_layout(self, data: 'Data', **kwargs):
+    def set_figure_final_layout(self, data: 'Data', **kwargs):  # noqa: F821
         """Final adjustment of the figure size and plot spacing.
 
         Args:
@@ -3370,7 +3369,7 @@ class Layout(BaseLayout):
             self._get_title_position()
             self.title.obj.set_position(self.title.position_xy)
             self.title.obj_bg.set_width(1)
-            self.title.obj_bg.set_height((self.title.size[1] + 5)/ self.axes.size[1])
+            self.title.obj_bg.set_height((self.title.size[1] + 5) / self.axes.size[1])
             self.title.obj_bg.set_x(0)
 
         # Update the legend position

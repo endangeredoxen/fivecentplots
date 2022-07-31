@@ -1,6 +1,7 @@
 """ Keyword docstrings """
 import pandas as pd
-import os, sys
+import os
+import sys
 import pdb
 import textwrap
 import re
@@ -216,11 +217,11 @@ def markdown(docstring: str) -> str:
     # find the keyword type section indices
     try:
         arg = doclist.index('Args:')
-    except:
+    except:  # noqa
         arg = 0
     try:
         rkw = doclist.index('Required Keyword Args:')
-    except:
+    except:  # noqa
         rkw = 0
     okw = doclist.index('Optional Keyword Args:')
 

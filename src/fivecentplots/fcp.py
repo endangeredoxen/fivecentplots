@@ -7,15 +7,12 @@
 # maybe subclass fig and ax in a new class that contains all the internal
 # functions needed for an mpl plot.  then another for bokeh
 
-import os
-
 __author__ = 'Steve Nicholes'
 __copyright__ = 'Copyright (C) 2016 Steve Nicholes'
 __license__ = 'GPLv3'
-with open(os.path.join(os.path.dirname(__file__), r'version.txt'), 'r') as fid:
-    __version__ = fid.readlines()[0].replace('\n', '')
 __url__ = 'https://github.com/endangeredoxen/fivecentplots'
 
+import os
 import numpy as np
 import pandas as pd
 import pdb
@@ -23,19 +20,22 @@ import copy
 import shutil
 import sys
 from pathlib import Path
+from . import utilities
 from . import data
-from . colors import *
+from . colors import DEFAULT_COLORS, BAYER  # noqa
 from . import engines
-from . import keywords
-from . utilities import *
 try:
     # optional import - only used for paste_kwargs to use windows clipboard
     # to directly copy kwargs from ini file
     import fivecentfileio as fileio
     import win32clipboard  # noqa
-except (ModuleNotFoundError, ImportError, NameError):    pass
+except (ModuleNotFoundError, ImportError, NameError):
+    pass
+with open(Path(__file__).parent / 'version.txt', 'r') as fid:
+    __version__ = fid.readlines()[0].replace('\n', '')
+utl = utilities
+HIST = utl.HIST
 db = pdb.set_trace
-
 osjoin = os.path.join
 cur_dir = Path(__file__).parent
 user_dir = Path.home()
@@ -100,7 +100,7 @@ def bar(df, **kwargs):
 
             .. figure:: ../_static/images/example_bar.png
     """
-    return plotter(data.Bar, **dfkwarg(df, kwargs))
+    return plotter(data.Bar, **utl.dfkwarg(df, kwargs))
 
 
 def boxplot(df, **kwargs):
@@ -234,7 +234,7 @@ def boxplot(df, **kwargs):
 
             .. figure:: ../_static/images/example_boxplot.png
     """
-    return plotter(data.Box, **dfkwarg(df, kwargs))
+    return plotter(data.Box, **utl.dfkwarg(df, kwargs))
 
 
 def contour(df, **kwargs):
@@ -276,7 +276,7 @@ def contour(df, **kwargs):
             .. figure:: ../_static/images/example_contour.png
 
     """
-    return plotter(data.Contour, **dfkwarg(df, kwargs))
+    return plotter(data.Contour, **utl.dfkwarg(df, kwargs))
 
 
 def deprecated(kwargs):
@@ -360,7 +360,7 @@ def gantt(df, **kwargs):
             .. figure:: ../_static/images/example_gantt.png
     """
 
-    return plotter(data.Gantt, **dfkwarg(df, kwargs))
+    return plotter(data.Gantt, **utl.dfkwarg(df, kwargs))
 
 
 def heatmap(df, **kwargs):
@@ -415,7 +415,7 @@ def heatmap(df, **kwargs):
             .. figure:: ../_static/images/example_heatmap2.png
 
     """
-    return plotter(data.Heatmap, **dfkwarg(df, kwargs))
+    return plotter(data.Heatmap, **utl.dfkwarg(df, kwargs))
 
 
 def hist(df, **kwargs):
@@ -495,17 +495,21 @@ def hist(df, **kwargs):
         >>> gauss = np.exp(-( (dst-muu)**2 / ( 2.0 * sigma**2 ) ) )
         >>> img_rgb = (gauss * img_rgb).astype(float)
         >>> # Add random noise
-        >>> img_rgb[::2, ::2] += np.random.normal(-0.1*img_rgb[::2, ::2].mean(), 0.1*img_rgb[::2, ::2].mean(), img_rgb[::2, ::2].shape)
-        >>> img_rgb[1::2, ::2] += np.random.normal(-0.1*img_rgb[1::2, ::2].mean(), 0.1*img_rgb[1::2, ::2].mean(), img_rgb[1::2, ::2].shape)
-        >>> img_rgb[1::2, 1::2] += np.random.normal(-0.1*img_rgb[1::2, 1::2].mean(), 0.1*img_rgb[1::2, 1::2].mean(), img_rgb[1::2, 1::2].shape)
-        >>> img_rgb[::2, 1::2] += np.random.normal(-0.1*img_rgb[::2, 1::2].mean(), 0.1*img_rgb[::2, 1::2].mean(), img_rgb[::2, 1::2].shape)
+        >>> img_rgb[::2, ::2] += np.random.normal(-0.1*img_rgb[::2, ::2].mean(), 0.1*img_rgb[::2, ::2].mean(),
+        >>>                                       img_rgb[::2, ::2].shape)
+        >>> img_rgb[1::2, ::2] += np.random.normal(-0.1*img_rgb[1::2, ::2].mean(), 0.1*img_rgb[1::2, ::2].mean(),
+        >>>                                        img_rgb[1::2, ::2].shape)
+        >>> img_rgb[1::2, 1::2] += np.random.normal(-0.1*img_rgb[1::2, 1::2].mean(), 0.1*img_rgb[1::2, 1::2].mean(),
+        >>>                                         img_rgb[1::2, 1::2].shape)
+        >>> img_rgb[::2, 1::2] += np.random.normal(-0.1*img_rgb[::2, 1::2].mean(), 0.1*img_rgb[::2, 1::2].mean(),
+        >>>                                        img_rgb[::2, 1::2].shape)
         >>> img_rgb = img_rgb.astype(np.uint16)
         >>> fcp.hist(img_rgb, ax_size=[600, 400], legend='Plane', cfa='grbg', colors=fcp.BAYER, **fcp.HIST)
 
             .. figure:: ../_static/images/example_hist2.png
     """
 
-    return plotter(data.Histogram, **dfkwarg(df, kwargs))
+    return plotter(data.Histogram, **utl.dfkwarg(df, kwargs))
 
 
 def imshow(df, **kwargs):
@@ -537,7 +541,9 @@ def imshow(df, **kwargs):
         >>> import pandas as pd
         >>> import imageio
         >>> # Read an image from the world-wide web
-        >>> url = 'https://imagesvc.meredithcorp.io/v3/mm/image?q=85&c=sc&rect=0%2C214%2C2000%2C1214&poi=%5B920%2C546%5D&w=2000&h=1000&url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F47%2F2020%2F10%2F07%2Fcat-in-pirate-costume-380541532-2000.jpg'
+        >>> url = 'https://imagesvc.meredithcorp.io/v3/mm/image?q=85&c=sc&rect=0%2C214%2C2000%2C1214&' \
+        >>>       + 'poi=%5B920%2C546%5D&w=2000&h=1000&url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads' \
+        >>>       + '%2Fsites%2F47%2F2020%2F10%2F07%2Fcat-in-pirate-costume-380541532-2000.jpg'
         >>> imgr = imageio.imread(url)
         >>> # Convert to grayscale
         >>> img = fcp.utilities.img_grayscale(imgr)
@@ -556,7 +562,7 @@ def imshow(df, **kwargs):
 
     kwargs['tick_labels'] = kwargs.get('tick_labels', True)
 
-    return plotter(data.ImShow, **dfkwarg(df, kwargs))
+    return plotter(data.ImShow, **utl.dfkwarg(df, kwargs))
 
 
 def nq(df, **kwargs):
@@ -600,7 +606,7 @@ def nq(df, **kwargs):
 
     kwargs['tick_labels'] = kwargs.get('tick_labels', True)
 
-    return plotter(data.NQ, **dfkwarg(df, kwargs))
+    return plotter(data.NQ, **utl.dfkwarg(df, kwargs))
 
 
 def paste_kwargs(kwargs: dict) -> dict:
@@ -696,7 +702,7 @@ def pie(df, **kwargs):
 
             .. figure:: ../_static/images/example_pie.png
     """
-    return plotter(data.Pie, **dfkwarg(df, kwargs))
+    return plotter(data.Pie, **utl.dfkwarg(df, kwargs))
 
 
 def plot(df, **kwargs):
@@ -777,8 +783,9 @@ def plot(df, **kwargs):
           https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval
         conf_int_|perc_int_|nq_int_edge_width (float): Width of the lines bounding the interval shaded region in pixels.
           Defaults to 1. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval
-        conf_int_|perc_int_|nq_int_fill_alpha (float): Transparency value for the interval shaded region fill between 0-1.
-          Defaults to 0.20. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval
+        conf_int_|perc_int_|nq_int_fill_alpha (float): Transparency value for the interval shaded region fill
+          between 0-1. Defaults to 0.20.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-interval
         conf_int_|perc_int_|nq_int_fill_color (str): Hex color string for the interval shaded region fill. Defaults to
           fcp.DEFAULT_COLORS. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Confidence-
           interval
@@ -837,7 +844,7 @@ def plot(df, **kwargs):
             .. figure:: ../_static/images/example_plot.png
 
     """
-    return plotter(data.XY, **dfkwarg(df, kwargs))
+    return plotter(data.XY, **utl.dfkwarg(df, kwargs))
 
 
 def plot_bar(data, layout, ir, ic, df_rc, kwargs):
@@ -1066,7 +1073,7 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
     if layout.box_mean_diamonds.on:
         mgroups = df_rc.groupby(dd.groups)
         for ii, (nn, mm) in enumerate(mgroups):
-            low, high = ci(mm[dd.y[0]], layout.box_mean_diamonds.conf_coeff)
+            low, high = utl.ci(mm[dd.y[0]], layout.box_mean_diamonds.conf_coeff)
             mm = mm[dd.y[0]].mean()
             x1 = -layout.box_mean_diamonds.width[0] / 2
             x2 = layout.box_mean_diamonds.width[0] / 2
@@ -1102,7 +1109,7 @@ def plot_contour(data, layout, ir, ic, df_rc, kwargs):
     return data
 
 
-def plot_control_limit(ir: int, ic: int, iline: int, layout: 'Layout', data: 'Data'):
+def plot_control_limit(ir: int, ic: int, iline: int, layout: 'engines.Layout', data: 'data.Data'):
     """Add control limit shading to a plot.
 
     Args:
@@ -1229,7 +1236,7 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
 
     cols = data.y
     if data.legend is not None:
-        cols += [f for f in validate_list(data.legend)
+        cols += [f for f in utl.validate_list(data.legend)
                  if f is not None and f not in cols]
 
     yvals = [tuple(f) for f in df_rc[cols].values]
@@ -1279,7 +1286,7 @@ def plot_hist(data, layout, ir, ic, df_rc, kwargs):
         if data.stat is not None:
             layout.lines.on = False
         if kwargs.get('groups', False):
-            for nn, gg in df.groupby(validate_list(kwargs['groups'])):
+            for nn, gg in df.groupby(utl.validate_list(kwargs['groups'])):
                 hist, data = layout.plot_hist(ir, ic, iline, gg, x, y, leg_name, data)
 
         else:
@@ -1432,7 +1439,7 @@ def plot_xy(data, layout, ir, ic, df_rc, kwargs):
         if not layout.lines.on and not layout.markers.on:
             pass
         elif kwargs.get('groups', False):
-            for nn, gg in df.groupby(validate_list(kwargs['groups']), sort=data.sort):
+            for nn, gg in df.groupby(utl.validate_list(kwargs['groups']), sort=data.sort):
                 layout.plot_xy(ir, ic, iline, gg, x, y, leg_name, twin)
                 plot_fit(data, layout, ir, ic, iline, gg,
                          x, y, twin, leg_name, ngroups)
@@ -1487,7 +1494,7 @@ def plotter(dobj, **kwargs):
 
     # Set the plotting engine
     theme = kwargs.get('theme', None)
-    engine = kwget(kwargs, reload_defaults(theme)[0], 'engine', 'mpl')
+    engine = utl.kwget(kwargs, utl.reload_defaults(theme)[0], 'engine', 'mpl')
     if not hasattr(engines, engine):
         if engine in INSTALL.keys():
             installs = '\npip install '.join(INSTALL[engine])
@@ -1499,9 +1506,8 @@ def plotter(dobj, **kwargs):
     else:
         engine = getattr(engines, engine)
 
-    # Timer
-    kwargs['timer'] = Timer(print=kwargs.get('timer', False), start=True,
-                            units='ms')
+    # Build the Timer
+    kwargs['timer'] = utl.Timer(print=kwargs.get('timer', False), start=True, units='ms')
 
     # Build the data object and update kwargs
     dd = dobj(**kwargs)
@@ -1598,8 +1604,7 @@ def plotter(dobj, **kwargs):
         kwargs['timer'].get('ifig=%s | set_figure_final_layout' % (ifig))
 
         # Build the save filename
-        filename = set_save_filename(dd.df_fig, ifig, fig_item, fig_cols,
-                                     layout, kwargs)
+        filename = utl. set_save_filename(dd.df_fig, ifig, fig_item, fig_cols, layout, kwargs)
         if 'filepath' in kwargs.keys():
             filename = os.path.join(kwargs['filepath'], filename)
 
@@ -1612,7 +1617,7 @@ def plotter(dobj, **kwargs):
             layout.save(filename, idx)
 
             if kwargs.get('show', False):
-                show_file(filename)
+                utl.show_file(filename)
         kwargs['timer'].get('ifig=%s | save' % (ifig))
 
         # Return inline
@@ -2632,4 +2637,3 @@ def ws():
             .. figure:: ../_static/images/example_ws.png
     """
     pass
-

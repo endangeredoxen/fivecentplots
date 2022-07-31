@@ -2,13 +2,15 @@ import pandas as pd
 import pdb
 import numpy as np
 import copy
-from .. colors import *
+from .. colors import DEFAULT_COLORS
 from .. utilities import RepeatedList
 from .. import utilities as utl
 from distutils.version import LooseVersion
 from collections import defaultdict
 import warnings
 import abc
+from .. import data
+import matplotlib as mpl
 
 
 def custom_formatwarning(msg, *args, **kwargs):
@@ -1188,7 +1190,7 @@ class BaseLayout:
 
         return kwargs
 
-    def _init_heatmap(self, kwargs: dict, kwargs_orig: dict, data: 'Data') -> dict:
+    def _init_heatmap(self, kwargs: dict, kwargs_orig: dict, data: 'data.Data') -> dict:
         """Set the heatmap element parameters.
 
         Args:
@@ -1440,7 +1442,7 @@ class BaseLayout:
 
         return kwargs
 
-    def _init_layout_rc(self, data: 'Data') -> dict:
+    def _init_layout_rc(self, data: 'data.Data') -> dict:
         """Initialize layout attributes for rows and columns
 
         Args:
@@ -1451,7 +1453,7 @@ class BaseLayout:
         self.nrow = data.nrow
         self.obj_array = np.array([[None] * self.ncol] * self.nrow)
 
-    def _init_legend(self, kwargs, data: 'Data') -> dict:
+    def _init_legend(self, kwargs, data: 'data.Data') -> dict:
         """Set the legend element parameters
 
         Args:
@@ -1551,7 +1553,7 @@ class BaseLayout:
 
         return kwargs
 
-    def _init_markers(self, kwargs: dict, data: 'Data') -> dict:
+    def _init_markers(self, kwargs: dict, data: 'data.Data') -> dict:
         """Set the markers element parameters
 
         Args:
@@ -2309,7 +2311,7 @@ class BaseLayout:
         return [f for f in [self.axes, self.axes2] if f.on]
 
     @abc.abstractmethod
-    def _get_element_sizes(self, data: 'Data'):
+    def _get_element_sizes(self, data: 'data.Data'):
         """Calculate the actual rendered size of select elements by pre-plotting
         them.  This is needed to correctly adjust the figure dimensions.
 
@@ -2321,7 +2323,7 @@ class BaseLayout:
         """
 
     @abc.abstractmethod
-    def _get_figure_size(self, data: 'Data', **kwargs):
+    def _get_figure_size(self, data: 'data.Data', **kwargs):
         """Determine the size of the mpl figure canvas in pixels and inches.
 
         Args:
@@ -2330,7 +2332,7 @@ class BaseLayout:
         """
         pass
 
-    def _set_label_text(self, data: 'Data'):
+    def _set_label_text(self, data: 'data.Data'):
         """Set the default label text for x, y, z axes and col, row, wrap
         grouping labels
 
@@ -2418,7 +2420,7 @@ class BaseLayout:
             self.label_x.text = self.label_y.text
             self.label_y.text = temp
 
-    def _update_from_data(self, data: 'Data'):
+    def _update_from_data(self, data: 'data.Data'):
         """Update certain attributes of the layout based on values calculated
         in the data object
 
@@ -2488,7 +2490,7 @@ class BaseLayout:
                   fill_color: str = '#ffffff', edge_color: str = '#aaaaaa',
                   edge_width: int = 1, font: str = 'sans-serif', font_weight: str = 'normal',
                   font_style: str = 'normal', font_color: str = '#666666', font_size: int = 14,
-                  offset: bool = False, **kwargs) -> ['Text_Object', 'Rectangle_Object']:
+                  offset: bool = False, **kwargs) -> ['Text_Object', 'Rectangle_Object']:  # noqa: F821
         """Add a label to the plot.
 
         This function can be used for title labels or for group labels applied
@@ -2555,7 +2557,7 @@ class BaseLayout:
         pass
 
     @abc.abstractmethod
-    def make_figure(self, data: 'Data', **kwargs):
+    def make_figure(self, data: 'data.Data', **kwargs):
         """Make the figure and axes objects.
 
         Args:
@@ -2603,9 +2605,9 @@ class BaseLayout:
     # simply skip any that are not relevant for a give plot function
     @abc.abstractmethod
     def plot_bar(self, ir: int, ic: int, iline: int, df: pd.DataFrame,
-                 leg_name: str, data: 'Data', ngroups: int, stacked: bool,
+                 leg_name: str, data: 'data.Data', ngroups: int, stacked: bool,
                  std: [None, float], xvals: np.ndarray, inst: pd.Series,
-                 total: pd.Series) -> 'Data':
+                 total: pd.Series) -> 'data.Data':
         """Plot bar graph.
 
         Args:
@@ -2631,7 +2633,7 @@ class BaseLayout:
         pass
 
     @abc.abstractmethod
-    def plot_box(self, ir: int, ic: int, data: 'Data', **kwargs) -> 'MPL_Boxplot_Object':
+    def plot_box(self, ir: int, ic: int, data: 'data.Data', **kwargs) -> 'MPL_Boxplot_Object':  # noqa: F821
         """Plot boxplot.
 
         Args:
@@ -2647,7 +2649,7 @@ class BaseLayout:
 
     @abc.abstractmethod
     def plot_contour(self, ir: int, ic: int, df: pd.DataFrame, x: str, y: str, z: str,
-                     data: 'Data') -> ['MPL_contour_object', 'MPL_colorbar_object']:
+                     data: 'data.Data') -> ['MPL_contour_object', 'MPL_colorbar_object']:  # noqa: F821
         """Plot a contour plot.
 
         Args:
@@ -2687,7 +2689,7 @@ class BaseLayout:
 
     @abc.abstractmethod
     def plot_heatmap(self, ir: int, ic: int, df: pd.DataFrame, x: str, y: str,
-                     z: str, data: 'Data') -> 'MPL_imshow_object':
+                     z: str, data: 'data.Data') -> 'MPL_imshow_object':  # noqa: F821
         """Plot a heatmap.
 
         Args:
@@ -2706,7 +2708,7 @@ class BaseLayout:
 
     @abc.abstractmethod
     def plot_hist(self, ir: int, ic: int, iline: int, df: pd.DataFrame, x: str,
-                  y: str, leg_name: str, data: 'Data') -> ['MPL_histogram_object', 'Data']:
+                  y: str, leg_name: str, data: 'data.Data') -> ['MPL_histogram_object', 'Data']:  # noqa: F821
         """Plot a histogram.
 
         Args:
@@ -2727,7 +2729,7 @@ class BaseLayout:
         pass
 
     @abc.abstractmethod
-    def plot_imshow(self, ir: int, ic: int, df: pd.DataFrame, data: 'Data'):
+    def plot_imshow(self, ir: int, ic: int, df: pd.DataFrame, data: 'data.Data'):
         """Plot an image.
 
         Args:
@@ -2761,8 +2763,8 @@ class BaseLayout:
         pass
 
     @abc.abstractmethod
-    def plot_pie(self, ir: int, ic: int, df: pd.DataFrame, x: str, y: str, data: 'Data',
-                 kwargs) -> 'MPL_pie_chart_object':
+    def plot_pie(self, ir: int, ic: int, df: pd.DataFrame, x: str, y: str, data: 'data.Data',
+                 kwargs) -> 'MPL_pie_chart_object':  # noqa: F821
         """Plot a pie chart.
 
         Args:
@@ -2905,7 +2907,7 @@ class BaseLayout:
         pass
 
     @abc.abstractmethod
-    def set_figure_final_layout(self, data: 'Data', **kwargs):
+    def set_figure_final_layout(self, data: 'data.Data', **kwargs):
         """Final adjustment of the figure size and plot spacing."""
         pass
 
@@ -3340,7 +3342,7 @@ class Legend_Element(DF_Element):
         """
         self._values = value
 
-    def add_value(self, key: str, curve: 'PlotObj', line_type_name: str):
+    def add_value(self, key: str, curve: 'PlotObj', line_type_name: str):  # noqa: F821
         """Add a new curve to the values dataframe.
 
         Args:
@@ -3388,14 +3390,14 @@ class ObjectArray:
         """
         return self.obj[idx]
 
-    def __setitem__(self, idx: int, val):
-        """Set an item of the array by index.
+    # def __setitem__(self, idx: int, val):
+    #     """Set an item of the array by index.
 
-        Args:
-            idx: the array index
-            val (multiple): the value at the given array index
-        """
-        self.obj[r, c] = val
+    #     Args:
+    #         idx: the array index
+    #         val (multiple): the value at the given array index
+    #     """
+    #     self.obj[r, c] = val
 
     @property
     def obj(self):
@@ -3411,7 +3413,7 @@ class ObjectArray:
         """
         self._obj = np.append(self._obj, new_obj)
 
-    def reshape(r: int, c: int):
+    def reshape(self, r: int, c: int):
         """Reshape the object array.
 
         Args:

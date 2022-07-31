@@ -254,4 +254,3 @@ class ImShow(data.Data):
             ss = kwargs['df'].stack().std()
             kwargs['zmin'] = uu - abs(stretch[0]) * ss
             kwargs['zmax'] = uu + stretch[1] * ss
-

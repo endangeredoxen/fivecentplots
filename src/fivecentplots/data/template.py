@@ -15,4 +15,3 @@ class YourPlot(data.Data):
         super().__init__(name, req, opt, **kwargs)
 
         # overrides
-

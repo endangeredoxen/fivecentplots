@@ -8,6 +8,7 @@ import scipy.stats as ss
 import datetime
 import subprocess
 import pathlib
+import re
 import shlex
 from matplotlib.font_manager import FontProperties, findfont
 try:
@@ -25,7 +26,7 @@ user_dir = pathlib.Path.home()
 default_path = user_dir / '.fivecentplots'
 if default_path.exists() and default_path not in sys.path:
     sys.path = [str(default_path)] + sys.path
-    from defaults import *
+    from defaults import *  # noqa
 
 
 # Convenience kwargs
@@ -572,7 +573,7 @@ def get_text_dimensions(text: str, **kwargs) -> tuple:
     return size[0] * 1.125, size[1] * 1.125  # no idea why it is off
 
 
-def kwget(dict1: dict, dict2: dict, vals: [str, list], default: [list, dict]) -> 'many_types':
+def kwget(dict1: dict, dict2: dict, vals: [str, list], default: [list, dict]):
     """Augmented kwargs.get function.
 
     Args:
@@ -850,15 +851,15 @@ def see(obj) -> pd.DataFrame:
     Returns:
         DataFrame of all the attributes of the object
     """
-    df = pd.DataFrame({'Attribute': list(self.__dict__.copy().keys()),
-                       'Name': [str(f) for f in self.__dict__.copy().values()]})
+    df = pd.DataFrame({'Attribute': list(obj.__dict__.copy().keys()),
+                       'Name': [str(f) for f in obj.__dict__.copy().values()]})
     df = df.sort_values(by='Attribute').reset_index(drop=True)
 
     return df
 
 
 def set_save_filename(df: pd.DataFrame, ifig: int, fig_item: [None, str],
-                      fig_cols: [None, str], layout: 'Layout',
+                      fig_cols: [None, str], layout: 'engines.Layout',  # noqa
                       kwargs: dict) -> str:
     """Build a filename based on the plot setup parameters.
 

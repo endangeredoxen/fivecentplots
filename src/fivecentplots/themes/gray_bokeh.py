@@ -3,7 +3,7 @@
 #########################################################
 fcp_params = {'ax_edge_color': '#aaaaaa',
               'ax_fill_color': '#eaeaea',
-              'ax_size': [400,400],  # [width, height]
+              'ax_size': [400, 400],  # [width, height]
               'box_divider_color': '#bbbbbb',
               'box_fill_color': '#ffffff',
               'box_group_title_edge_color': '#ffffff',
@@ -77,52 +77,3 @@ fcp_params = {'ax_edge_color': '#aaaaaa',
 ####################################################
 
 # markers = []
-
-####################################################
-# Matplotlib default overrides
-####################################################
-import matplotlib as mpl
-rcParams = {'font.cursive': ['Apple Chancery',
-                             'Textile',
-                             'Zapf Chancery',
-                             'Sand',
-                             'cursive'],
-            'font.fantasy': ['Comic Sans MS',
-                             'Chicago',
-                             'Charcoal',
-                             'ImpactWestern',
-                             'fantasy'],
-            'font.monospace': ['Bitstream Vera Sans Mono',
-                               'DejaVu Sans Mono',
-                               'Andale Mono',
-                               'Nimbus Mono L',
-                               'Courier New',
-                               'Courier',
-                               'Fixed',
-                               'Terminal',
-                               'monospace'],
-            'font.sans-serif': ['Arial',
-                                'Bitstream Vera Sans',
-                                'Lucida Grande',
-                                'Verdana',
-                                'Geneva',
-                                'Lucid',
-                                'Helvetica',
-                                'Avant Garde',
-                                'sans-serif'],
-            'font.serif': ['Bitstream Vera Serif',
-                           'DejaVu Serif',
-                           'New Century Schoolbook',
-                           'Century Schoolbook L',
-                           'Utopia',
-                           'ITC Bookman',
-                           'Bookman',
-                           'Nimbus Roman No9 L',
-                           'Times New Roman',
-                           'Times',
-                           'Palatino',
-                           'Charter',
-                           'serif'],
-            'agg.path.chunksize': 1000,
-            }
-mpl.rcParams.update(rcParams)
