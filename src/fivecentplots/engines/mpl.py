@@ -638,8 +638,14 @@ class Layout(BaseLayout):
                     leg.legendHandles[itext]._sizes = \
                         np.ones(len(self.legend.values) + 1) * self.legend.marker_size**2
                     if not self.markers.on and self.legend.marker_alpha is not None:
-                        leg.legendHandles[itext]. \
-                            _legmarker.set_alpha(self.legend.marker_alpha)
+                        if hasattr(leg.legendHandles[itext], '_legmarker'):
+                            leg.legendHandles[itext]._legmarker.set_alpha(self.legend.marker_alpha)
+                        else:
+                            # required for mpl 3.5
+                            alpha = str(hex(int(self.legend.marker_alpha * 255)))[-2:].replace('x', '0')
+                            base_color = self.markers.edge_color[itext][0:7] + alpha
+                            leg.legendHandles[itext]._markeredgecolor = base_color
+                            leg.legendHandles[itext]._markerfillcolor = base_color
                     elif self.legend.marker_alpha is not None:
                         leg.legendHandles[itext].set_alpha(self.legend.marker_alpha)
 
@@ -970,8 +976,10 @@ class Layout(BaseLayout):
                     continue
                 for ii, jj in np.ndindex(lab.obj[ir, ic].shape):
                     # get the available length for a label in units of box groups
-                    changes = data.changes[len(data.changes.columns) - ii - 1].append(
-                        pd.Series([1], index=[len(data.changes)]))
+                    # changes = data.changes[len(data.changes.columns) - ii - 1].append(
+                    #     pd.Series([1], index=[len(data.changes)]))
+                    changes = pd.concat([data.changes[len(data.changes.columns) - ii - 1],
+                                         pd.Series([1], index=[len(data.changes)])])
                     lens = np.diff(changes[changes == 1].index)
 
                     # text label size
