@@ -18,6 +18,7 @@ jobs:
         python -m pip install --upgrade pip
         # if [ -f requirements_dev.txt ]; then pip install -r requirements_dev.txt; fi
         pip install .[test]
+        echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
         sudo apt install msttcorefonts -qq
         rm ~/.cache/matplotlib -rf
     - name: Lint with flake8
