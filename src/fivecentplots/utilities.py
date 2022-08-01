@@ -810,7 +810,7 @@ def reload_defaults(theme: [str, None] = None):
         # full filename case
         theme_dir = os.sep.join(theme.split(os.sep)[0:-1])
         theme = theme.split(os.sep)[-1]
-        sys.path = [theme_dir] + sys.path
+        sys.path = [str(theme_dir)] + sys.path
         reset_path = True
         try:
             defaults = importlib.import_module(theme.replace('.py', ''), theme_dir)
@@ -822,7 +822,7 @@ def reload_defaults(theme: [str, None] = None):
 
     elif theme is not None and \
             (theme in os.listdir(theme_dir) or theme + '.py' in os.listdir(theme_dir)):
-        sys.path = [theme_dir] + sys.path
+        sys.path = [str(theme_dir)] + sys.path
         reset_path = True
         try:
             defaults = importlib.import_module(theme.replace('.py', ''), theme_dir)

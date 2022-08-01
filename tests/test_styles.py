@@ -747,6 +747,32 @@ def test_theme_white(master=False, remove=True, show=False):
         assert not compare
 
 
+def test_theme_white_fly(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'theme_white_fly_master') if master else 'theme_white_fly'
+
+    # Make the plot
+    fcp.set_theme('gray')
+    fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], theme='white',
+             filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             filename=name + '.png')
+    fcp.set_theme('gray')  # return to default gray
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def test_theme_gray(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'theme_gray_master') if master else 'theme_gray'
