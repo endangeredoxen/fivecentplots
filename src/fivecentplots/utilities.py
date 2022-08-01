@@ -26,7 +26,10 @@ user_dir = pathlib.Path.home()
 default_path = user_dir / '.fivecentplots'
 if default_path.exists() and default_path not in sys.path:
     sys.path = [str(default_path)] + sys.path
-    from defaults import *  # noqa
+    try:
+        from defaults import *  # noqa
+    except ModuleNotFoundError:
+        from . themes.gray import *  # noqa
 
 
 # Convenience kwargs
