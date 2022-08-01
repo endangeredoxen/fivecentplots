@@ -3,24 +3,17 @@ import pandas as pd
 import os
 import sys
 import pdb
-import platform
 from pathlib import Path
 import fivecentplots.utilities as utl
 import inspect
 osjoin = os.path.join
 db = pdb.set_trace
-if platform.system() != 'Windows':
-    print('Warning!  Image test files generated in windows.  Compatibility with linux/mac may vary')
 
 MPL = utl.get_mpl_version_dir()
 if Path(f'../tests/test_images/{MPL}').exists():
     MASTER = Path(f'../tests/test_images/{MPL}') / 'barplot.py'
 else:
-    MASTER = Path(f'test/test_images/{MPL}') / 'barplot.py'
-
-print('one', (Path(f'../tests/test_images/{MPL}') / 'barplot.py').exists())
-print('two', (Path(f'tests/test_images/{MPL}') / 'barplot.py').exists())
-print('3', (Path(f'test_images/{MPL}') / 'barplot.py').exists())
+    MASTER = Path(f'tests/test_images/{MPL}') / 'barplot.py'
 
 # Sample data
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_bar.csv')

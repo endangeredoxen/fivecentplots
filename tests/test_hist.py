@@ -4,18 +4,18 @@ import pandas as pd
 import os
 import sys
 import pdb
-import platform
 from pathlib import Path
 import numpy as np
 import fivecentplots.utilities as utl
 import inspect
 osjoin = os.path.join
 db = pdb.set_trace
-if platform.system() != 'Windows':
-    print('Warning!  Image test files generated in windows.  Compatibility with linux/mac may vary')
 
 MPL = utl.get_mpl_version_dir()
-MASTER = Path(f'../tests/test_images/{MPL}') / 'hist.py'
+if Path(f'../tests/test_images/{MPL}').exists():
+    MASTER = Path(f'../tests/test_images/{MPL}') / 'hist.py'
+else:
+    MASTER = Path(f'tests/test_images/{MPL}') / 'hist.py'
 
 # Sample data
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
