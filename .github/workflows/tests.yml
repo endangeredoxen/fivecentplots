@@ -18,6 +18,8 @@ jobs:
         python -m pip install --upgrade pip
         # if [ -f requirements_dev.txt ]; then pip install -r requirements_dev.txt; fi
         pip install .[test]
+        sudo apt install msttcorefonts -qq
+        rm ~/.cache/matplotlib -rf
     - name: Lint with flake8
       run: |
         flake8 src
