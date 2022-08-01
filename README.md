@@ -2,6 +2,8 @@
 
 A Python plotting analgesic
 
+![Tests](https://github.com/endangeredoxen/fivecentplots/actions/workflows/tests.yml/badge.svg)
+
 ![intro_plot](https://endangeredoxen.github.io/fivecentplots/0.5.0/_images/index.png)
 
 *Install the latest version:*
