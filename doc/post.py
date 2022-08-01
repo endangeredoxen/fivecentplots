@@ -6,7 +6,7 @@ import json
 import shutil
 cur_dir = Path(__file__).resolve().parent
 db = pdb.set_trace
-sys.path = [str(cur_dir.parent)] + sys.path
+sys.path = [str(cur_dir.parent / 'src' / 'fivecentplots')] + sys.path
 try:
     from colors import DEFAULT_COLORS
 except ModuleNotFoundError:

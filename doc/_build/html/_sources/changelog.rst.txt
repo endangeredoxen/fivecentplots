@@ -3,12 +3,21 @@ Changelog
 
 0.5.0
 =====
-* class-based data objects for plot types
-* new plots:
+* Major speed improvements achieved for **matplotlib** engine.  Actual time reduction depends on the plot type and the number of subplots, data sets, etc. Based on the plots included as unit tests:
+    * ~30% increase for standard xy plots
+    * ~40-50% increase for barplot, boxplots (sans advanced features like violins), contours, and heatmaps
+* New plot types added:
     * gantt
-    * imshow
-* spacing bug fixes for mpl engine
-
+    * imshow (preferred choice for display of image data over heatmap)
+    * pie
+* Significant cleanup of legacy code and refactoring of ``Data`` and ``Layout`` classes
+* Full documentation of kwargs API
+* Support added for:
+    * upper- and lower-control limit area shading
+    * marker size definition via a column in the DataFrame (allows emphasis of specific points)
+    * cdf and pdf conversion with ``fcp.hist``
+    * rolling mean in ``fcp.bar``
+* Numerous bug fixes
 
 0.4.3
 =====
@@ -58,3 +67,7 @@ Changelog
 
     * added option to disable alphabetical sorting of data and plot based on the order in which data appears in the original ``pandas.DataFrame``
 
+0.3.0
+=====
+
+* old and deprecated

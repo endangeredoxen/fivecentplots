@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.5.0-alpha
+                0.5.0-alpha-2
               </div>
             
           
@@ -127,6 +127,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#id3">0.4.2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id4">0.4.1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id5">0.4.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">0.3.0</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="older.html">Older Versions</a></li>
@@ -227,16 +228,36 @@
 <div class="section" id="id1">
 <h2>0.5.0<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>class-based data objects for plot types</p></li>
 <li><dl class="simple">
-<dt>new plots:</dt><dd><ul>
-<li><p>gantt</p></li>
-<li><p>imshow</p></li>
+<dt>Major speed improvements achieved for <strong>matplotlib</strong> engine.  Actual time reduction depends on the plot type and the number of subplots, data sets, etc. Based on the plots included as unit tests:</dt><dd><ul>
+<li><p>~30% increase for standard xy plots</p></li>
+<li><p>~40-50% increase for barplot, boxplots (sans advanced features like violins), contours, and heatmaps</p></li>
 </ul>
 </dd>
 </dl>
 </li>
-<li><p>spacing bug fixes for mpl engine</p></li>
+<li><dl class="simple">
+<dt>New plot types added:</dt><dd><ul>
+<li><p>gantt</p></li>
+<li><p>imshow (preferred choice for display of image data over heatmap)</p></li>
+<li><p>pie</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Significant cleanup of legacy code and refactoring of <code class="docutils literal notranslate"><span class="pre">Data</span></code> and <code class="docutils literal notranslate"><span class="pre">Layout</span></code> classes</p></li>
+<li><p>Full documentation of kwargs API</p></li>
+<li><dl class="simple">
+<dt>Support added for:</dt><dd><ul>
+<li><p>upper- and lower-control limit area shading</p></li>
+<li><p>marker size definition via a column in the DataFrame (allows emphasis of specific points)</p></li>
+<li><p>cdf and pdf conversion with <code class="docutils literal notranslate"><span class="pre">fcp.hist</span></code></p></li>
+<li><p>rolling mean in <code class="docutils literal notranslate"><span class="pre">fcp.bar</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Numerous bug fixes</p></li>
 </ul>
 </div>
 <div class="section" id="id2">
@@ -297,6 +318,12 @@
 </ul>
 </div></blockquote>
 </li>
+</ul>
+</div>
+<div class="section" id="id6">
+<h2>0.3.0<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>old and deprecated</p></li>
 </ul>
 </div>
 </div>
