@@ -134,7 +134,7 @@
     }
    ],
    "source": [
-    "df = pd.read_csv(Path(fcp.__file__).parent / 'tests/fake_data_heatmap.csv')\n",
+    "df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_heatmap.csv')\n",
     "df.head()"
    ]
   },
@@ -304,7 +304,7 @@
    "outputs": [],
    "source": [
     "# Read the contour DataFrame\n",
-    "df2 = pd.read_csv(Path(fcp.__file__).parent / 'tests/fake_data_contour.csv')"
+    "df2 = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_contour.csv')"
    ]
   },
   {

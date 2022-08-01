@@ -141,7 +141,7 @@
     }
    ],
    "source": [
-    "df = pd.read_csv(Path(fcp.__file__).parent / 'tests/fake_data_bar.csv')\n",
+    "df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_bar.csv')\n",
     "df.loc[df.pH < 0, 'pH'] = -df.pH\n",
     "df.head()"
    ]

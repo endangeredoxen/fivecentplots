@@ -247,7 +247,7 @@
     }
    ],
    "source": [
-    "df = pd.read_csv(Path(fcp.__file__).parent / 'tests/fake_data.csv')\n",
+    "df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data.csv')\n",
     "df.head(10)"
    ]
   },
@@ -326,7 +326,7 @@
     }
    ],
    "source": [
-    "ts = pd.read_csv(Path(fcp.__file__).parent / 'tests/fake_ts.csv')\n",
+    "ts = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_ts.csv')\n",
     "ts.head()"
    ]
   },
@@ -1671,7 +1671,7 @@
     }
    ],
    "source": [
-    "df_interval = pd.read_csv(Path(fcp.__file__).parent / 'tests/fake_data_interval.csv')\n",
+    "df_interval = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_interval.csv')\n",
     "df_interval.head()"
    ]
   },
