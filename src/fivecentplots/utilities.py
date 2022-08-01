@@ -632,7 +632,7 @@ def img_compare(img1: str, img2: str, show: bool = False) -> bool:
 
     else:
         if img1.shape != img2.shape:
-            print('image sizes do not match')
+            print(f'image sizes do not match [img1={img1.shape} | img2={img2.shape}')
             nrows = max(img1.shape[0], img2.shape[0])
             ncols = max(img1.shape[1], img2.shape[1])
             img1b = np.zeros((nrows, ncols, 3)).astype('uint8')

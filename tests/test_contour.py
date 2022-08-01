@@ -28,7 +28,6 @@ fcp.KWARGS['save'] = True
 fcp.KWARGS['inline'] = False
 
 
-
 def make_all():
     """
     Remake all test master images
