@@ -2228,7 +2228,9 @@ def markers():
           Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-colors
         marker_jitter|jitter (boolean): For boxplots add random noise on x-axis to show separation between markers.
           Defaults to True. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/boxplot.html#Jitter
-        marker_size (float): Size in pixels of the data point markers. Defaults to 6.
+        marker_size (float|str): Size in pixels of the data point markers or a DataFrame column name with a custom
+          marker size on each row. Defaults to 6.
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Marker-size
         markers (boolean): Enable/disable data point markers. Defaults to True.
 
     Examples

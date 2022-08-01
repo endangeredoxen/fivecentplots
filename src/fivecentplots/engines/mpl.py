@@ -2406,7 +2406,7 @@ class Layout(BaseLayout):
                 else:
                     c = self.markers.fill_color[(iline, leg_name)] if self.markers.filled else 'none'
                 points = ax.scatter(dfx, df[y],
-                                    s=df['marker_size']**2 if isinstance(self.markers.size, str)
+                                    s=df[self.markers.size]**2 if isinstance(self.markers.size, str)
                                     else self.markers.size[iline]**2,
                                     marker=marker,
                                     c=c,
