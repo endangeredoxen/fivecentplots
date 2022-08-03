@@ -535,17 +535,8 @@ def get_decimals(value: [int, float], max_places: int = 4):
 
 
 def get_mpl_version_dir():
-    """Get the matplotlib version directory for test images based
-    on the current version of mpl."""
-    from distutils.version import LooseVersion
-    import matplotlib as mpl
-    version = LooseVersion(mpl.__version__)
-
-    if version > LooseVersion('1') and version < LooseVersion('3'):
-        return 'mpl_v2'
-
-    else:
-        return 'mpl_v3'
+    """Make a test directory path based on the mpl version."""
+    return f'mpl_v{mpl.__version__}'
 
 
 def get_text_dimensions(text: str, **kwargs) -> tuple:
@@ -621,8 +612,8 @@ def img_compare(img1: str, img2: str, show: bool = False) -> bool:
         return False
 
     # read images
-    img1 = cv2.imread(img1)
-    img2 = cv2.imread(img2)
+    img1 = cv2.imread(str(img1))
+    img2 = cv2.imread(str(img2))
 
     # compare
     if img1 is None:
@@ -969,7 +960,7 @@ def show_file(filename: str):
         os.startfile(filename)
     else:
         opener = "open" if sys.platform == "darwin" else "xdg-open"
-        subprocess.call([opener, filename])
+        subprocess.call([opener, str(filename)])
 
 
 def split_color_planes(img: pd.DataFrame, cfa: str = 'rggb',

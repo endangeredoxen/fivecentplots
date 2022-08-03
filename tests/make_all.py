@@ -30,3 +30,6 @@ def make_all():
     test_ranges.make_all()
     test_styles.make_all()
     test_ticks.make_all()
+
+if __name__ == '__main__':
+    make_all()
