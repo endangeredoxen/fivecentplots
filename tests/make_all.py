@@ -22,6 +22,7 @@ def make_all():
     test_grouping.make_all()
     test_heatmap.make_all()
     test_hist.make_all()
+    test_gantt.make_all()
     test_imshow.make_all()
     test_misc.make_all()
     test_nq.make_all()
