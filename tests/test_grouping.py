@@ -34,6 +34,8 @@ def make_all():
     Remake all test master images
     """
 
+    if not MASTER.exists():
+        os.makedirs(MASTER)
     members = inspect.getmembers(sys.modules[__name__])
     members = [f for f in members if 'test_' in f[0]]
     for member in members:
@@ -47,6 +49,8 @@ def show_all():
     Remake all test master images
     """
 
+    if not MASTER.exists():
+        os.makedirs(MASTER)
     members = inspect.getmembers(sys.modules[__name__])
     members = [f for f in members if 'test_' in f[0]]
     for member in members:
