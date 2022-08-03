@@ -6,15 +6,15 @@ import sys
 import pdb
 from pathlib import Path
 import fivecentplots.utilities as utl
+import matplotlib as mpl
 import inspect
 osjoin = os.path.join
 db = pdb.set_trace
 
-MPL = utl.get_mpl_version_dir()
-if Path(f'../tests/test_images/{MPL}').exists():
-    MASTER = Path(f'../tests/test_images/{MPL}') / 'heatmap.py'
+if Path(f'../tests/test_images/mpl_v{mpl.__version__}').exists():
+    MASTER = Path(f'../tests/test_images/mpl_v{mpl.__version__}') / 'heatmap.py'
 else:
-    MASTER = Path(f'tests/test_images/{MPL}') / 'heatmap.py'
+    MASTER = Path(f'tests/test_images/mpl_v{mpl.__version__}') / 'heatmap.py'
 
 # Sample data
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_heatmap.csv')

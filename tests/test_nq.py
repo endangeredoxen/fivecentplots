@@ -5,17 +5,17 @@ import sys
 import pdb
 from pathlib import Path
 import fivecentplots.utilities as utl
+import matplotlib as mpl
 import inspect
 import imageio
 
 osjoin = os.path.join
 db = pdb.set_trace
 
-MPL = utl.get_mpl_version_dir()
-if Path(f'../tests/test_images/{MPL}').exists():
-    MASTER = Path(f'../tests/test_images/{MPL}') / 'imshow.py'
+if Path(f'../tests/test_images/mpl_v{mpl.__version__}').exists():
+    MASTER = Path(f'../tests/test_images/mpl_v{mpl.__version__}') / 'imshow.py'
 else:
-    MASTER = Path(f'tests/test_images/{MPL}') / 'imshow.py'
+    MASTER = Path(f'tests/test_images/mpl_v{mpl.__version__}') / 'imshow.py'
 
 # Sample data
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_heatmap.csv')

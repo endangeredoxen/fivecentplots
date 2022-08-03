@@ -7,15 +7,15 @@ import pdb
 from pathlib import Path
 import numpy as np
 import fivecentplots.utilities as utl
+import matplotlib as mpl
 import inspect
 osjoin = os.path.join
 db = pdb.set_trace
 
-MPL = utl.get_mpl_version_dir()
-if Path(f'../tests/test_images/{MPL}').exists():
-    MASTER = Path(f'../tests/test_images/{MPL}') / 'hist.py'
+if Path(f'../tests/test_images/mpl_v{mpl.__version__}').exists():
+    MASTER = Path(f'../tests/test_images/mpl_v{mpl.__version__}') / 'hist.py'
 else:
-    MASTER = Path(f'tests/test_images/{MPL}') / 'hist.py'
+    MASTER = Path(f'tests/test_images/mpl_v{mpl.__version__}') / 'hist.py'
 
 # Sample data
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')

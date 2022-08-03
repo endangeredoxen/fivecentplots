@@ -534,11 +534,6 @@ def get_decimals(value: [int, float], max_places: int = 4):
     return i - 1
 
 
-def get_mpl_version_dir():
-    """Make a test directory path based on the mpl version."""
-    return f'mpl_v{mpl.__version__}'
-
-
 def get_text_dimensions(text: str, **kwargs) -> tuple:
     """Use pillow to try and figure out actual dimensions of text.
 
