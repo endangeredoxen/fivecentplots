@@ -10,10 +10,13 @@ import inspect
 osjoin = os.path.join
 db = pdb.set_trace
 
-if Path(f'../tests/test_images/mpl_v{mpl.__version__}').exists():
-    MASTER = Path(f'../tests/test_images/mpl_v{mpl.__version__}') / 'grouping.py'
+test = 'grouping'
+if Path(f'../tests/test_image').exists():
+    MASTER = Path(f'../tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
+elif Path(f'tests/test_image').exists():
+    MASTER = Path(f'tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 else:
-    MASTER = Path(f'tests/test_images/mpl_v{mpl.__version__}') / 'grouping.py'
+    MASTER = Path(f'test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 
 # Sample data
 df1 = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data.csv')

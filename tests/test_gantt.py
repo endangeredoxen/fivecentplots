@@ -10,10 +10,15 @@ import inspect
 osjoin = os.path.join
 db = pdb.set_trace
 
-if Path(f'../tests/test_images/mpl_v{mpl.__version__}').exists():
-    MASTER = Path(f'../tests/test_images/mpl_v{mpl.__version__}') / 'gantt.py'
+test = 'gantt'
+if Path(f'../tests/test_image').exists():
+    MASTER = Path(f'../tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
+elif Path(f'tests/test_image').exists():
+    MASTER = Path(f'tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 else:
-    MASTER = Path(f'tests/test_images/mpl_v{mpl.__version__}') / 'gantt.py'
+    MASTER = Path(f'test_images/mpl_v{mpl.__version__}') / f'{test}.py'
+
+
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_gantt.csv')
 
 
