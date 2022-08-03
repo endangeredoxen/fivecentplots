@@ -423,7 +423,7 @@ class Layout(BaseLayout):
         num_cols = len(data.changes.columns)
 
         # Set up the label/title arrays to reflect the groups
-        max_labels = data.changes.sum().max()
+        max_labels = int(data.changes.sum().max())
         self.box_group_label.obj[ir, ic] = np.array([[None] * max_labels] * num_cols)
         self.box_group_label.obj_bg[ir, ic] = np.array([[None] * max_labels] * num_cols)
         self.box_group_title.obj[ir, ic] = np.array([[None]] * num_cols)
@@ -759,6 +759,10 @@ class Layout(BaseLayout):
                     kw[attr] = kwargs[attr]
                 elif hasattr(obj, attr) and \
                         isinstance(getattr(obj, attr), RepeatedList):
+                    kw[attr] = getattr(obj, attr)[itext]
+                elif hasattr(obj, attr) and \
+                        str(type(getattr(obj, attr))) == str(RepeatedList):
+                    # isinstance fails on python3.6, so hack this way
                     kw[attr] = getattr(obj, attr)[itext]
                 elif hasattr(obj, attr):
                     kw[attr] = getattr(obj, attr)
