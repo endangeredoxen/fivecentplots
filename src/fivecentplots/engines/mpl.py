@@ -1963,16 +1963,12 @@ class Layout(BaseLayout):
         # Make the grid
         xi = np.linspace(min(xx), max(xx))
         yi = np.linspace(min(yy), max(yy))
-        if LooseVersion(mpl.__version__) < LooseVersion('2.2'):
-            zi = mlab.griddata(xx, yy, zz, xi, yi, interp=self.contour.interp)
-        else:
-            zi = scipy.interpolate.griddata((xx, yy), zz,
-                                            (xi[None, :], yi[:, None]),
-                                            method=self.contour.interp)
+        zi = scipy.interpolate.griddata((xx, yy), zz,
+                                        (xi[None, :], yi[:, None]),
+                                        method=self.contour.interp)
 
         # Deal with out of range values
-        zi[zi >= ranges['zmax']] = ranges['zmax']
-        zi[zi <= ranges['zmin']] = ranges['zmin']
+        zi = np.clip(zi, ranges['zmin'], ranges['zmax'])
 
         # Set the contours
         levels = np.linspace(ranges['zmin'] * 0.999, ranges['zmax'] * 1.001,
@@ -3585,8 +3581,9 @@ class Layout(BaseLayout):
                 ax.get_yaxis().set_major_formatter(ticker.FormatStrFormatter(dec))
         elif self.tick_labels_major_z.sci is False and self.cbar.on:
             try:
-                self.cbar.obj.ax.get_yaxis().set_major_formatter(ticker.ScalarFormatter())
-                self.cbar.obj.ax.get_yaxis().get_major_formatter().set_scientific(False)
+                for ir, ic in np.ndindex(self.axes.obj.shape):
+                    self.cbar.obj[ir, ic].ax.get_yaxis().set_major_formatter(ticker.ScalarFormatter())
+                    self.cbar.obj[ir, ic].ax.get_yaxis().get_major_formatter().set_scientific(False)
             except:  # noqa
                 pass
 
