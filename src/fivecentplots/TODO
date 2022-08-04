@@ -1,7 +1,0 @@
-* try to cut any steps > 5ms in half
-* need to simplify the add_label function since positioning is all done later
-* filepath and filename cannot both be specified?
-* if filepath specified save should default to True
-* wrap plots unshared labels
-* fix no sorting option
-* CDF / PDF tests + percentile interval tests
