@@ -9,13 +9,16 @@ Released versions of **fivecentplots** are hosted on `Pypi <https://pypi.org/pro
 
 Development versions can be installed via `GitHub <https://github.com/endangeredoxen/fivecentplots>`_
 
-Dependencies UPDATE
+
+Dependencies
 ------------
 
-* Python 3 (CHECK VERSIONS!)
-* pandas (0.17 or higher)
-* matplotlib (2.0.2 or higher recommended; most features will work with 1.5 or higher)
-* numpy (1.3 or higher)
+* Python >=3.6
+* pandas >=1.05 (tested up to 1.4.3)
+* matplotlib >= 3.1.3 (tested up to 3.5.3; some lower versions will work for some plot types but no guarantees)
+* numpy >= 1.13.3 (tested up to 1.23.1)
+* scipy >= 1.4.1 (tested up to 1.9.0)
+* natsort
 
 Optional
 --------
