@@ -3,6 +3,7 @@ db = pdb.set_trace
 import test_barplot
 import test_boxplot
 import test_contour
+import test_gantt
 import test_grouping
 import test_heatmap
 import test_hist
