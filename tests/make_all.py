@@ -1,5 +1,4 @@
 import pdb
-db = pdb.set_trace
 import test_barplot
 import test_boxplot
 import test_contour
@@ -15,6 +14,8 @@ import test_plot
 import test_ranges
 import test_styles
 import test_ticks
+db = pdb.set_trace
+
 
 def make_all():
     test_barplot.make_all()
@@ -32,6 +33,7 @@ def make_all():
     test_ranges.make_all()
     test_styles.make_all()
     test_ticks.make_all()
+
 
 if __name__ == '__main__':
     make_all()

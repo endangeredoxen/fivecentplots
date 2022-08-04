@@ -13,9 +13,9 @@ osjoin = os.path.join
 db = pdb.set_trace
 
 test = 'imshow'
-if Path(f'../tests/test_image').exists():
+if Path('../tests/test_images').exists():
     MASTER = Path(f'../tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
-elif Path(f'tests/test_image').exists():
+elif Path('tests/test_images').exists():
     MASTER = Path(f'tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 else:
     MASTER = Path(f'test_images/mpl_v{mpl.__version__}') / f'{test}.py'

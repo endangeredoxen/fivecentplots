@@ -18,7 +18,6 @@ from matplotlib.ticker import AutoMinorLocator, MaxNLocator
 import matplotlib.transforms as mtransforms
 from matplotlib.patches import FancyBboxPatch
 from matplotlib.collections import PatchCollection
-import matplotlib.mlab as mlab
 warnings.filterwarnings('ignore', category=UserWarning)
 
 

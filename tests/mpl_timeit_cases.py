@@ -1,7 +1,5 @@
 import matplotlib.pylab as plt
 import numpy as np
-import pandas as pd
-import matplotlib as mpl
 
 
 def common(x, y, figsize=(5, 5)):
@@ -79,11 +77,11 @@ def test_plot(data):
 
     x = 'Voltage'
     y = 'I [A]'
-    data = data.loc[(data.Substrate=='Si')& \
-                    (data['Target Wavelength']==450)& \
-                    (data['Boost Level']==0.2)& \
-                    (data['Temperature [C]']==25)
-                   ]
+    data = data.loc[(data.Substrate == 'Si') &
+                    (data['Target Wavelength'] == 450) &
+                    (data['Boost Level'] == 0.2) &
+                    (data['Temperature [C]'] == 25)
+                    ]
     fig, ax = common(x, y, (6.5, 6.5))
 
     # plot the data
@@ -96,11 +94,11 @@ def test_plot(data):
     ax.set_ylim((-0.06275, 1.31775))
 
     # Clean up and display
-    plt.tight_layout() # whatever auto adjust
-    #plt.draw()
-    #fig.set_size_inches((10, 10))
+    plt.tight_layout()  # whatever auto adjust
+    # plt.draw()
+    # fig.set_size_inches((10, 10))
     plt.show(block=False)
-    #plt.savefig('test.png')
+    # plt.savefig('test.png')
 
 
 def test_hist(data):
@@ -133,7 +131,7 @@ def test_hist(data):
     plt.close('all')
 
     # make figure
-    fig, ax = plt.subplots(figsize=(10,5), facecolor='#ffffff')
+    fig, ax = plt.subplots(figsize=(10, 5), facecolor='#ffffff')
 
     # Set the axes colors
     ax.set_facecolor('#eaeaea')
@@ -178,6 +176,6 @@ def test_hist(data):
     ax.set_xlabel('Value', fontsize=16, style='italic')
     ax.set_ylabel('Counts', fontsize=16, style='italic')
 
-    plt.tight_layout() # whatever auto adjust
+    plt.tight_layout()  # whatever auto adjust
     plt.show(block=False)
     plt.savefig('test.png')

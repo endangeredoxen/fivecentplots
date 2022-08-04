@@ -11,7 +11,7 @@ def benchmarks(file=None):
         for child in path.iterdir():
             sub = child
 
-        list_of_paths = sub.glob('*');
+        list_of_paths = sub.glob('*')
         file = max(list_of_paths, key=lambda p: p.stat().st_ctime)
         print(f'using file: {file}')
 
