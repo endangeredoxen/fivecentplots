@@ -1962,7 +1962,10 @@ class Layout(BaseLayout):
         # Make the grid
         xi = np.linspace(min(xx), max(xx))
         yi = np.linspace(min(yy), max(yy))
-        zi = scipy.interpolate.griddata((xx, yy), zz,
+        if LooseVersion(mpl.__version__) < LooseVersion('2.2'):
+            zi = mlab.griddata(xx, yy, zz, xi, yi, interp=self.contour.interp)
+        else:
+            zi = scipy.interpolate.griddata((xx, yy), zz,
                                         (xi[None, :], yi[:, None]),
                                         method=self.contour.interp)
 
