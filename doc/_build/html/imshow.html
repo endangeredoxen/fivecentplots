@@ -99,6 +99,8 @@
               <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html#test-development">Test Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html#doc-development">Doc Development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layout.html">Layout</a></li>
 <li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="grouping.html">Grouping data</a></li>
@@ -479,22 +481,8 @@ div.rendered_html tbody tr:hover {
 <div class="section" id="imshow">
 <h1>imshow<a class="headerlink" href="#imshow" title="Permalink to this headline">¶</a></h1>
 <p>This section describes various options available for imshow plots in <strong>fivecentplots</strong></p>
-<p>See the full API <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/api/imshow.html#imshow">https://endangeredoxen.github.io/fivecentplots/0.5.0/api/imshow.html#imshow</a></p>
-<p style="line-height:30px"><p>fivecentplots.imshow(df, **kwargs)Image show plotting functionArgs:</p>
-<div style="padding-left: 30px"><p>df (DataFrame | numpy array):</p>
-<div style="padding-left: 30px"><p>DataFrame or numpy array containing 2D row/column image data to plot [when passing a numpy array it is automatically converted to a DataFrame]</p>
-</div></div><p>Required Keyword Args:</p>
-<div style="padding-left: 30px"><p>None</p>
-</div><p>Optional Keyword Args:</p>
-<div style="padding-left: 30px"><p>cfa (str):</p>
-<div style="padding-left: 30px"><p>Color-filter array pattern that is used to split data from a Bayer image into separate color planes. Defaults to None. See example</p>
-</div></div><div style="padding-left: 30px"><p>cmap (bool):</p>
-<div style="padding-left: 30px"><p>Name of a color map to apply to the plot. Defaults to gray. See example</p>
-</div></div><div style="padding-left: 30px"><p>imshow_interp | interp (str):</p>
-<div style="padding-left: 30px"><p>imshow interpolation scheme [see matplotlib docs for more details]. Defaults to “none’.</p>
-</div></div><div style="padding-left: 30px"><p>stretch (float | list):</p>
-<div style="padding-left: 30px"><p>Calculate “stretch” times the standard deviation above and below the mean to set new z-limits. Can be a single value used as +/- limits or a two-value list for the lower/upper multiplier values. Defaults to None. See example</p>
-</div></div></p><div class="section" id="Setup">
+<p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/api/imshow.html#imshow">See the full API </a></p>
+<div class="section" id="Setup">
 <h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this headline">¶</a></h2>
 <p>Import packages:</p>
 <div class="nbinput nblast docutils container">
@@ -510,7 +498,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <p>Read a ridiculous image from the world wide web that illustrates a crime against the felis genus:</p>
-<p><img alt="ed6dfbfc6a6e433586c1c9e42f2c500e" class="no-scaled-link" src="https://imagesvc.meredithcorp.io/v3/mm/image?q=85&amp;c=sc&amp;rect=0%2C214%2C2000%2C1214&amp;poi=%5B920%2C546%5D&amp;w=2000&amp;h=1000&amp;url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F47%2F2020%2F10%2F07%2Fcat-in-pirate-costume-380541532-2000.jpg" style="width: 600px;" /></p>
+<p><img alt="07c6262e19e54dbea5e5e4e79eebeee4" class="no-scaled-link" src="https://imagesvc.meredithcorp.io/v3/mm/image?q=85&amp;c=sc&amp;rect=0%2C214%2C2000%2C1214&amp;poi=%5B920%2C546%5D&amp;w=2000&amp;h=1000&amp;url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F47%2F2020%2F10%2F07%2Fcat-in-pirate-costume-380541532-2000.jpg" style="width: 600px;" /></p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -798,7 +786,7 @@ Array([[[220, 221, 223],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/imshow_16_0.png" src="_images/imshow_16_0.png" />
+<img alt="_images/imshow_15_0.png" src="_images/imshow_15_0.png" />
 </div>
 </div>
 </div>
@@ -820,7 +808,7 @@ Array([[[220, 221, 223],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/imshow_20_0.png" src="_images/imshow_20_0.png" />
+<img alt="_images/imshow_19_0.png" src="_images/imshow_19_0.png" />
 </div>
 </div>
 </div>
@@ -840,7 +828,7 @@ Array([[[220, 221, 223],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/imshow_23_0.png" src="_images/imshow_23_0.png" />
+<img alt="_images/imshow_22_0.png" src="_images/imshow_22_0.png" />
 </div>
 </div>
 </div>
@@ -861,7 +849,7 @@ Array([[[220, 221, 223],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/imshow_26_0.png" src="_images/imshow_26_0.png" />
+<img alt="_images/imshow_25_0.png" src="_images/imshow_25_0.png" />
 </div>
 </div>
 <p>private eyes are watching you…</p>
@@ -884,7 +872,7 @@ Array([[[220, 221, 223],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/imshow_30_0.png" src="_images/imshow_30_0.png" />
+<img alt="_images/imshow_29_0.png" src="_images/imshow_29_0.png" />
 </div>
 </div>
 <p>imshow plots in fivecentplots also provides a convenient kwarg called <code class="docutils literal notranslate"><span class="pre">stretch</span></code> which calculates a numerical multiplier of the standard deviation above and below the mean to set new z-limits (essentially the same thing as done above manually). <code class="docutils literal notranslate"><span class="pre">stretch</span></code> can be a single value of std dev which is interpreted as +/- that value or a 2-value list with the lower and higher std deviation respectively. First, we consider a +/- 4 sigma stretch as above:</p>
@@ -901,7 +889,7 @@ Array([[[220, 221, 223],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/imshow_32_0.png" src="_images/imshow_32_0.png" />
+<img alt="_images/imshow_31_0.png" src="_images/imshow_31_0.png" />
 </div>
 </div>
 <p>Now we show a single-sided stretch that applies a 3 * std dev increase to the upper z-limit:</p>
@@ -918,14 +906,14 @@ Array([[[220, 221, 223],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/imshow_34_0.png" src="_images/imshow_34_0.png" />
+<img alt="_images/imshow_33_0.png" src="_images/imshow_33_0.png" />
 </div>
 </div>
 </div>
 <div class="section" id="Split-color-planes">
 <h2>Split color planes<a class="headerlink" href="#Split-color-planes" title="Permalink to this headline">¶</a></h2>
 <p>When analyzing Bayer-type images, it is often useful to split the image data based on the color-filter array pattern used on the image sensor. fivecentplots provides a simple utility function to do this and <code class="docutils literal notranslate"><span class="pre">imshow</span></code> can be used to display the result. Consider the following image:</p>
-<p><img alt="8e124348b86343eca823eeff6542e060" src="https://upload.wikimedia.org/wikipedia/commons/2/28/RGB_illumination.jpg" /></p>
+<p><img alt="58e950067573495e952789cbdc501cbc" src="https://upload.wikimedia.org/wikipedia/commons/2/28/RGB_illumination.jpg" /></p>
 <p>First we read the image from the world-wide web and convert this random RGB image into a Bayer-like image (rough hack for the purposes of this example):</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
@@ -1269,7 +1257,7 @@ Array([[[220, 221, 223],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/imshow_40_0.png" src="_images/imshow_40_0.png" />
+<img alt="_images/imshow_39_0.png" src="_images/imshow_39_0.png" />
 </div>
 </div>
 </div>

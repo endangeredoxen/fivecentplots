@@ -33,8 +33,9 @@ for nb in ipynb:
 
     # fix the API link
     api = ff.find('See the full API')
-    api_check = ff.find('>See the full API <')
-    if api > -1 and api_check == -1:
+    api_p = ff.find('<p>See the full API <')
+    api_href = -1 if api_p > -1 else ff.find('>See the full API <')
+    if api > -1 and api_href == -1:
         stop = ff[api:].find('>') + api + 1
         url = '<a' + ff[api:stop].split('<a')[1] + 'See the full API </a>'
         ff = ff[:api] + url + ff[ff[api:].find('/a>') + api + 3:]
