@@ -23,3 +23,30 @@ Dependencies
 Optional
 --------
 * fileio (0.2.2 or higher):  enables pasting of keywords from clipboard from ``ini`` file
+
+
+Test Development
+================
+
+To run the tests locally, clone the repo, cd to the top `fivecentplots` directory, and run:
+
+.. code-block:: python
+
+   pip install .[test]
+
+or for python 3.6:
+
+.. code-block:: python
+
+   pip install .[test36]
+
+Doc Development
+===============
+
+To build the tests locally, clone the repo, cd to the top `fivecentplots` directory, and run:
+
+.. code-block:: python
+
+   pip install .[doc]
+
+.. note:: Building docs requires ``pandoc``` which must be installed on your machine.  For linux you can run ``sudo apt install pandoc``

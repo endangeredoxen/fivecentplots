@@ -101,6 +101,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#optional">Optional</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="#test-development">Test Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#doc-development">Doc Development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layout.html">Layout</a></li>
 <li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="grouping.html">Grouping data</a></li>
@@ -242,6 +244,28 @@
 <ul class="simple">
 <li><p>fileio (0.2.2 or higher):  enables pasting of keywords from clipboard from <code class="docutils literal notranslate"><span class="pre">ini</span></code> file</p></li>
 </ul>
+</div>
+</div>
+<div class="section" id="test-development">
+<h1>Test Development<a class="headerlink" href="#test-development" title="Permalink to this headline">¶</a></h1>
+<p>To run the tests locally, clone the repo, cd to the top <cite>fivecentplots</cite> directory, and run:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">.</span><span class="p">[</span><span class="n">test</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>or for python 3.6:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">.</span><span class="p">[</span><span class="n">test36</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="doc-development">
+<h1>Doc Development<a class="headerlink" href="#doc-development" title="Permalink to this headline">¶</a></h1>
+<p>To build the tests locally, clone the repo, cd to the top <cite>fivecentplots</cite> directory, and run:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">.</span><span class="p">[</span><span class="n">doc</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Building docs requires <code class="docutils literal notranslate"><span class="pre">pandoc`</span></code> which must be installed on your machine.  For linux you can run <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt</span> <span class="pre">install</span> <span class="pre">pandoc</span></code></p>
 </div>
 </div>
 
