@@ -2450,8 +2450,11 @@ class Layout(BaseLayout):
                 self.legend.add_value(leg_name, points if points is not None else lines, line_type_name)
 
     def restore(self):
-        """Undo changes to MPL rcParams."""
+        """Undo changes to MPL rcParams except for certain keys that will break an inline plot."""
+        bad_keys = ['axes.autolimit_mode']
         for k, v in self.rc_orig.items():
+            if k in bad_keys:
+                continue
             mpl.rcParams[k] = self.rc_orig[k]
 
     def save(self, filename: str, idx: int = 0):
