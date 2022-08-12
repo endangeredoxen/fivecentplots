@@ -11,18 +11,17 @@ import warnings
 import abc
 from .. import data
 import matplotlib as mpl
+db = pdb.set_trace
 
 
 def custom_formatwarning(msg, *args, **kwargs):
     """Ignore everything except the message."""
     return 'Warning: ' + str(msg) + '\n'
-
-
 warnings.formatwarning = custom_formatwarning
 # weird error in boxplot with no groups
 warnings.filterwarnings("ignore", "invalid value encountered in double_scalars")
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
-db = pdb.set_trace
 
 DEFAULT_MARKERS = ['o', '+', 's', 'x', 'd', 'Z', '^', 'Y', 'v', r'\infty',
                    r'\#', r'<', u'\u2B21', u'\u263A', '>', u'\u29C6', r'\$',
