@@ -3167,26 +3167,6 @@ class Layout(BaseLayout):
                     getattr(axes[ia], '%saxis' % axx).set_minor_formatter(
                         ticker.FormatStrFormatter('%%.%sf' % (decimals)))
 
-                    # # Text formatting
-                    # tlminlab = getattr(self, 'tick_labels_minor_%s' % axl)
-                    # ticks_font_minor = \
-                    #     font_manager.FontProperties(family=tlminlab.font,
-                    #                                 size=tlminlab.font_size,
-                    #                                 style=tlminlab.font_style,
-                    #                                 weight=tlminlab.font_weight)
-                    # for text in getattr(axes[ia], 'get_%sminorticklabels' % axx)():
-                    #     if tlminlab.rotation != 0:
-                    #         text.set_rotation(
-                    #             getattr(self, 'tick_labels_major_%s' % axx).rotation)
-                    #     text.set_fontproperties(ticks_font_minor)
-                    #     text.set_bbox(dict(edgecolor=tlminlab.edge_color[0],
-                    #                        facecolor=tlminlab.fill_color[0],
-                    #                        linewidth=tlminlab.edge_width))
-
-                    # if tlminlab.rotation != 0:
-                    #     for text in getattr(axes[ia], 'get_%sminorticklabels' % axx)():
-                    #         text.set_rotation(tlminlab.rotation)
-
     def set_colormap(self, data: 'Data', **kwargs):  # noqa: F821
         """Replace the color list with discrete values from a colormap.
 
