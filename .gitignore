@@ -128,4 +128,6 @@ fivecentplots/tests/test.png
 #specific files
 difference.png
 
+# other
 .vscode/settings.json
+.DS_Store
