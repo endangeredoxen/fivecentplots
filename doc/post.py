@@ -13,7 +13,7 @@ except ModuleNotFoundError:
     from .colors import DEFAULT_COLORS
 
 
-# clean up ipynb doc files post build script
+# CLEAN UP IPYNB FILES
 print('Cleaning ipynb files...')
 
 # get the names of the ipynb files
@@ -39,20 +39,6 @@ for nb in ipynb:
         stop = ff[api:].find('>') + api + 1
         url = '<a' + ff[api:stop].split('<a')[1] + 'See the full API </a>'
         ff = ff[:api] + url + ff[ff[api:].find('/a>') + api + 3:]
-
-    # # fix the docstring
-    # docstring0 = ff.index('</h1>') + 5
-    # try:
-    #     docstring1 = ff.index('<div class="section" id="Setup">')
-    #     nn = open(cur_dir / nb.replace('.html', '.ipynb'))
-    #     nn = json.load(nn)
-    #     try:
-    #         cell = nn['cells'][1]['source'][0]
-    #         ff = ff[0:docstring0] + cell + '<br>' + ff[docstring1:]
-    #     except IndexError:
-    #         pass
-    # except ValueError:
-    #     pass
 
     with open(cur_dir / '_build/html' / nb, 'w') as output:
         output.write(ff)
@@ -132,3 +118,9 @@ for ff in files:
     with open(api_filepath / ff, 'w') as output:
         output.write(html)
 
+# FIX INDEX TITLE
+with open(Path(__file__).parent / '_build' / 'html' / 'index.html', 'r') as input:
+    html = input.read()
+html = html.replace('&lt;no title&gt; &mdash; ', '')
+with open(Path(__file__).parent / '_build' / 'html' / 'index.html', 'w') as output:
+    output.write(html)
