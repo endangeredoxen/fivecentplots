@@ -17,8 +17,9 @@ db = pdb.set_trace
 def custom_formatwarning(msg, *args, **kwargs):
     """Ignore everything except the message."""
     return 'Warning: ' + str(msg) + '\n'
+
+
 warnings.formatwarning = custom_formatwarning
-# weird error in boxplot with no groups
 warnings.filterwarnings("ignore", "invalid value encountered in double_scalars")
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
