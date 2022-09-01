@@ -1,9 +1,11 @@
+import pytest
 import fivecentplots as fcp
 import pandas as pd
 import os
 import sys
 import pdb
 from pathlib import Path
+import fivecentplots.data as data
 import fivecentplots.utilities as utl
 import matplotlib as mpl
 import inspect
@@ -249,6 +251,60 @@ def plt_row_col(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
+def plt_col_shared(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'col_shared_master') if master else 'col_shared'
+
+    # Make the plot
+    fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, col='Measurement', row='T [C]',
+            ax_hlines=0, ax_size=[300, 300], share_col=True,
+            filename=name + '.png', save=not bm, inline=False, jitter=False)
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_row_shared(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'row_shared_master') if master else 'row_shared'
+
+    # Make the plot
+    fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, col='Measurement', row='T [C]',
+            ax_hlines=0, ax_size=[300, 300], share_row=True,
+            filename=name + '.png', save=not bm, inline=False, jitter=False)
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def plt_wrap(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'wrap_master') if master else 'wrap'
@@ -363,6 +419,16 @@ def test_row_col(benchmark):
     benchmark(plt_row_col, True)
 
 
+def test_col_shared(benchmark):
+    plt_col_shared()
+    benchmark(plt_col_shared, True)
+
+
+def test_row_shared(benchmark):
+    plt_row_shared()
+    benchmark(plt_row_shared, True)
+
+
 def test_wrap(benchmark):
     plt_wrap()
     benchmark(plt_wrap, True)
@@ -376,3 +442,14 @@ def test_rolling_mean(benchmark):
 def test_rolling_mean_styled(benchmark):
     plt_rolling_mean_styled()
     benchmark(plt_rolling_mean_styled, True)
+
+
+def test_vertical_zero_group(benchmark):
+    plt_vertical_zero_group()
+    benchmark(plt_vertical_zero_group, True)
+
+
+def test_bad_filter():
+
+    with pytest.raises(data.data.DataError):
+        fcp.bar(df, x='Liquid', y='pH', filter='Measurement=="Q"')
