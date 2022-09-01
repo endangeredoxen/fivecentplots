@@ -367,13 +367,9 @@ class Layout(BaseLayout):
                + self.ws_ticks_ax * self.label_z.on)
 
         # box title excess
-        btitle_xs_right = 0
-        if self.box_group_title.on:
-            btitle_xs_right = (self.ws_ax_box_title + self.box_title) - \
-                right - self._legx + \
-                self.ws_ax_fig  # self.ws_ax_fig if not self.legend._on or self.legend.location != 0 else 0)
-            if btitle_xs_right > 0:
-                right += btitle_xs_right
+        if self.box_group_title.on \
+                and (self.ws_ax_box_title + self.box_title) > self._legx:
+            right = self.ws_ax_box_title + self.box_title + (self.ws_ax_fig if not self.legend.on else 0)
 
         # Main figure title excess size
         title_xs_right = self.title.size[0] / 2 \
@@ -1009,9 +1005,9 @@ class Layout(BaseLayout):
                         # rectangle behind the text but rotating the rectange itself
                         # doesn't work b/c the label may be longer than the
                         # rectangle itself
-                        bbox = lab.obj[ir, ic][ii, 0].get_window_extent()
+                        bbox = lab.obj[ir, ic][ii, jj].get_window_extent()
                     else:
-                        bbox = lab.obj_bg[ir, ic][ii, 0].get_window_extent()
+                        bbox = lab.obj_bg[ir, ic][ii, jj].get_window_extent()
                     lab.size_all_bg = (ir, ic, ii, jj, bbox.width, bbox.height, bbox.x0,
                                        bbox.x1, bbox.y0, bbox.y1)
 
@@ -1045,7 +1041,6 @@ class Layout(BaseLayout):
             height = lab.size_all.height.max()
             width_bg = lab.size_all_bg.width.max()
             height_bg = lab.size_all_bg.height.max()
-
             lab.size = [max(width, width_bg), max(height, height_bg)]
 
         # pie labels
@@ -1118,8 +1113,6 @@ class Layout(BaseLayout):
         self.ws_ax_leg = max(
             0, self.ws_ax_leg - self._labtick_y2) if self.legend.location == 0 else 0
         self.ws_leg_fig = self.ws_leg_fig if self.legend.location == 0 else 0
-        if self.legend.location == 0 and self.legend.on:
-            self.ws_ax_fig = 0
         self.fig_legend_border = self.fig_legend_border if self.legend.location == 0 else 0
         self.box_labels = 0
         if self.box_group_label.on and self.box_group_label.size != [0, 0]:
@@ -1256,6 +1249,10 @@ class Layout(BaseLayout):
                 self.legend.position[1] = 1 + \
                     (self.fig_legend_border
                      - self.ws_leg_fig) / self.fig.size[0]
+            elif self.box_group_title.on:
+                self.legend.position[1] = 1 + \
+                    (self.fig_legend_border - self.ws_leg_fig - self.ws_ax_box_title - self.box_title + self.ws_ax_fig) \
+                    / self.fig.size[0]
             else:
                 self.legend.position[1] = 1 + \
                     (self.fig_legend_border - self.ws_leg_fig) / self.fig.size[0]
@@ -1348,8 +1345,6 @@ class Layout(BaseLayout):
             tt.limits[ir, ic] = [vmin, vmax]
             tlabs = [f for f in tlabs if approx_gte(f.get_position()[idx], min(vmin, vmax))
                      and approx_lte(f.get_position()[idx], max(vmin, vmax))]
-            # tlabs = [f for f in tlabs if min(vmin, vmax)
-            #          <= f.get_position()[idx] <= max(vmin, vmax)]
             tt.obj[ir, ic] = tlabs
 
             # Get the label sizes and store sizes as 2D array
@@ -3346,14 +3341,13 @@ class Layout(BaseLayout):
             labt = self.box_group_title
 
             # Determine the box group row heights
-            heights = \
-                self.box_group_label.size_all_bg.groupby('ii').max()['height']
-            heights *= (1 + 2 * self.box_group_label.padding / 100)
+            heights = lab.size_all_bg.groupby('ii').max()['height']
+            heights *= (1 + 2 * lab.padding / 100)
             heights /= self.axes.size[1]
 
             # Iterate through labels
             offset = 1  # to make labels line up better at default font sizes
-            for ir, ic in np.ndindex(self.box_group_label.obj.shape):
+            for ir, ic in np.ndindex(lab.obj.shape):
                 data.df_rc = data._subset(ir, ic)
                 data.get_box_index_changes()
                 if lab.obj[ir, ic] is None:
