@@ -271,10 +271,12 @@ class Layout(BaseLayout):
     @property
     def _labtick_x2(self) -> float:
         """Height of the secondary x label + x tick labels + related whitespace."""
-        val = (self.label_x2.size[1]
-               + self.ws_label_tick + 2 * self.ws_ticks_ax
-               + max(self.tick_labels_major_x2.size[1],
-                     self.tick_labels_minor_x2.size[1])) * self.axes.twin_y
+        if not self.axes.twin_y:
+            return 0
+
+        val = self.label_x2.size[1] \
+            + self.ws_label_tick * self.label_x2.on \
+            + self._tick_x2
 
         return val
 
@@ -293,11 +295,12 @@ class Layout(BaseLayout):
     @property
     def _labtick_y2(self) -> float:
         """Width of the secondary y label + y tick labels + related whitespace."""
-        val = (self.label_y2.size[0]
-               + self.ws_label_tick
-               + self.ws_ticks_ax
-               + max(self.tick_labels_major_y2.size[0],
-                     self.tick_labels_minor_y2.size[0])) * self.axes.twin_x
+        if not self.axes.twin_x:
+            return 0
+
+        val = self.label_y2.size[0] \
+            + self.ws_label_tick * (self.tick_labels_major_y.on | self.tick_labels_minor_y.on) \
+            + self._tick_y2
 
         return val
 
@@ -313,10 +316,8 @@ class Layout(BaseLayout):
     def _left(self) -> float:
         """Width of the space to the left of the axes object."""
         left = self.ws_fig_label + self._labtick_y
-        title_xs_left = self.title.size[0] / 2 \
-            - (left
-               + (self.axes.size[0] * self.ncol
-                  + self.ws_col * (self.ncol - 1)) / 2)
+        title_xs_left = self.title.size[0] / 2 - (left + (self.axes.size[0] * self.ncol
+                        + self.ws_col * (self.ncol - 1)) / 2)
         if title_xs_left < 0:
             title_xs_left = 0
         left += title_xs_left
@@ -372,10 +373,8 @@ class Layout(BaseLayout):
             right = self.ws_ax_box_title + self.box_title + (self.ws_ax_fig if not self.legend.on else 0)
 
         # Main figure title excess size
-        title_xs_right = self.title.size[0] / 2 \
-            - (right
-               + (self.axes.size[0] * self.ncol
-                  + self.ws_col * (self.ncol - 1)) / 2)
+        title_xs_right = self.title.size[0] / 2 - (right + (self.axes.size[0] * self.ncol
+                         + self.ws_col * (self.ncol - 1)) / 2)
         if title_xs_right < 0:
             title_xs_right = 0
         right += title_xs_right
@@ -390,7 +389,15 @@ class Layout(BaseLayout):
         """Height of the primary x ticks and whitespace."""
         val = max(self.tick_labels_major_x.size[1],
                   self.tick_labels_minor_x.size[1]) \
-            + self.ws_ticks_ax * self.tick_labels_major_x.on
+            + self.ws_ticks_ax * (self.tick_labels_major_x.on | self.tick_labels_minor_x.on)
+        return val
+
+    @property
+    def _tick_x2(self) -> float:
+        """Height of the secondary x ticks and whitespace."""
+        val = max(self.tick_labels_major_x2.size[1],
+                  self.tick_labels_minor_x2.size[1]) \
+            + self.ws_ticks_ax * (self.tick_labels_major_x.on | self.tick_labels_minor_x.on)
         return val
 
     @property
@@ -399,6 +406,14 @@ class Layout(BaseLayout):
         val = max(self.tick_labels_major_y.size[0],
                   self.tick_labels_minor_y.size[0]) \
             + self.ws_ticks_ax * (self.tick_labels_major_y.on | self.tick_labels_minor_y.on)
+        return val
+
+    @property
+    def _tick_y2(self) -> float:
+        """Width of the secondary y ticks and whitespace."""
+        val = max(self.tick_labels_major_y2.size[0],
+                  self.tick_labels_minor_y2.size[0]) \
+            + self.ws_ticks_ax * (self.tick_labels_major_y2.on | self.tick_labels_minor_y2.on)
         return val
 
     @property
@@ -1110,14 +1125,12 @@ class Layout(BaseLayout):
         debug = kwargs.get('debug_size', False)
 
         # Set some values for convenience
-        self.ws_ax_leg = max(
-            0, self.ws_ax_leg - self._labtick_y2) if self.legend.location == 0 else 0
+        self.ws_ax_leg = max(0, self.ws_ax_leg - self._labtick_y2) if self.legend.location == 0 else 0
         self.ws_leg_fig = self.ws_leg_fig if self.legend.location == 0 else 0
         self.fig_legend_border = self.fig_legend_border if self.legend.location == 0 else 0
         self.box_labels = 0
         if self.box_group_label.on and self.box_group_label.size != [0, 0]:
-            heights = \
-                self.box_group_label.size_all_bg.groupby('ii').max()['height']
+            heights = self.box_group_label.size_all_bg.groupby('ii').max()['height']
             heights *= (1 + 2 * self.box_group_label.padding / 100)
             self.box_labels = heights.sum()
         self.box_title = 0
@@ -1147,10 +1160,15 @@ class Layout(BaseLayout):
             self.ws_col = max(self._tick_y + self.ws_label_tick, self.ws_col_def)
         elif (self.separate_ticks or self.axes.share_y is False) and self.cbar.on:
             self.ws_col += self._tick_y
-        if self.separate_ticks or \
-                (self.axes.share_x is False and self.box.on is False):
-            self.ws_row += max(self.tick_labels_major_x.size[1],
-                               self.tick_labels_minor_x.size[1]) + self.ws_ticks_ax
+        if self.axes2.on and (self.separate_ticks or self.axes2.share_y is False) and not self.cbar.on:
+            self.ws_col = max(self._tick_y2 + self.ws_label_tick, self.ws_col_def)
+        elif self.axes2.on and (self.separate_ticks or self.axes.share_y is False) and self.cbar.on:
+            self.ws_col += self._tick_y2
+
+        if self.separate_ticks or (self.axes.share_x is False and self.box.on is False):
+            self.ws_row += max(self.tick_labels_major_x.size[1], self.tick_labels_minor_x.size[1]) + self.ws_ticks_ax
+        elif self.axes2.on and (self.separate_ticks or self.axes2.share_x is False) and self.box.on is False:
+            self.ws_row += self._tick_x2
         if self.separate_labels and not self.separate_ticks:
             self.ws_col += self.label_y.size[0] + \
                 self.ws_label_tick + self.ws_fig_label
@@ -1309,10 +1327,8 @@ class Layout(BaseLayout):
              + self.legend.overflow + self.pie.xs_bottom
              + (self.legend.size[1] if self.legend.location == 11 else 0)) / self.fig.size[1]
 
-    def _get_tick_label_size(self, ax: mplp.Axes, tick: str, tick_num: str,
-                             which: str):
-        """Get the size of the tick labels on a specific axes (plot must be
-        already rendered).
+    def _get_tick_label_size(self, ax: mplp.Axes, tick: str, tick_num: str, which: str):
+        """Get the size of the tick labels on a specific axes (plot must be already rendered).
 
         Args:
             ax: the axes object for the labels of interest
@@ -2481,7 +2497,6 @@ class Layout(BaseLayout):
             axes[0].obj[ir, ic].set_facecolor(axes[0].fill_color[utl.plot_num(ir, ic, self.ncol)])
         except:  # noqa
             axes[0].obj[ir, ic].set_axis_bgcolor(axes[0].fill_color[utl.plot_num(ir, ic, self.ncol)])
-
         for f in ['bottom', 'top', 'right', 'left']:
             if len(axes) > 1:
                 axes[0].obj[ir, ic].spines[f].set_visible(False)
@@ -2656,71 +2671,23 @@ class Layout(BaseLayout):
         if self.name in ['heatmap', 'pie']:  # skip these plot types
             return
 
-        # X-axis
-        if self.axes.share_x:
-            xvals = ['xmin', 'xmax', 'x2min', 'x2max']
-            for xval in xvals:
-                xx = None
-                for irow in range(0, self.nrow):
-                    for icol in range(0, self.ncol):
-                        if ranges[irow, icol][xval] is not None:
-                            if irow == 0 and icol == 0:
-                                xx = ranges[irow, icol][xval]
-                            elif 'min' in xval:
-                                xx = min(xx, ranges[irow, icol][xval])
-                            else:
-                                xx = max(xx, ranges[irow, icol][xval])
-
-                if xx is not None and xval == 'xmin':
-                    self.axes.obj[ir, ic].set_xlim(left=xx)
-                elif xx is not None and xval == 'x2min':
-                    self.axes2.obj[ir, ic].set_xlim(left=xx)
-                elif xx is not None and xval == 'xmax':
-                    self.axes.obj[ir, ic].set_xlim(right=xx)
-                elif xx is not None and xval == 'x2max':
-                    self.axes2.obj[ir, ic].set_xlim(right=xx)
-        else:
-            if ranges[ir, ic]['xmin'] is not None:
-                self.axes.obj[ir, ic].set_xlim(left=ranges[ir, ic]['xmin'])
-            if ranges[ir, ic]['x2min'] is not None:
-                self.axes2.obj[ir, ic].set_xlim(left=ranges[ir, ic]['x2min'])
-            if ranges[ir, ic]['xmax'] is not None:
-                self.axes.obj[ir, ic].set_xlim(right=ranges[ir, ic]['xmax'])
-            if ranges[ir, ic]['x2max'] is not None:
-                self.axes2.obj[ir, ic].set_xlim(right=ranges[ir, ic]['x2max'])
-
-        # Y-axis
-        if self.axes.share_y:
-            yvals = ['ymin', 'ymax', 'y2min', 'y2max']
-            for yval in yvals:
-                yy = None
-                for irow in range(0, self.nrow):
-                    for icol in range(0, self.ncol):
-                        if ranges[irow, icol][yval] is not None:
-                            if irow == 0 and icol == 0:
-                                yy = ranges[irow, icol][yval]
-                            elif 'min' in yval:
-                                yy = min(yy, ranges[irow, icol][yval])
-                            else:
-                                yy = max(yy, ranges[irow, icol][yval])
-
-                if yy is not None and yval == 'ymin':
-                    self.axes.obj[ir, ic].set_ylim(bottom=yy)
-                elif yy is not None and yval == 'y2min':
-                    self.axes2.obj[ir, ic].set_ylim(bottom=yy)
-                elif yy is not None and yval == 'ymax':
-                    self.axes.obj[ir, ic].set_ylim(top=yy)
-                elif yy is not None and yval == 'y2max':
-                    self.axes2.obj[ir, ic].set_ylim(top=yy)
-        else:
-            if ranges[ir, ic]['ymin'] is not None:
-                self.axes.obj[ir, ic].set_ylim(bottom=ranges[ir, ic]['ymin'])
-            if ranges[ir, ic]['y2min'] is not None:
-                self.axes2.obj[ir, ic].set_ylim(bottom=ranges[ir, ic]['y2min'])
-            if ranges[ir, ic]['ymax'] is not None:
-                self.axes.obj[ir, ic].set_ylim(top=ranges[ir, ic]['ymax'])
-            if ranges[ir, ic]['y2max'] is not None:
-                self.axes2.obj[ir, ic].set_ylim(top=ranges[ir, ic]['y2max'])
+        rr = ranges[ir, ic]
+        if ranges[ir, ic]['xmin'] is not None:
+            self.axes.obj[ir, ic].set_xlim(left=ranges[ir, ic]['xmin'])
+        if ranges[ir, ic]['x2min'] is not None:
+            self.axes2.obj[ir, ic].set_xlim(left=ranges[ir, ic]['x2min'])
+        if ranges[ir, ic]['xmax'] is not None:
+            self.axes.obj[ir, ic].set_xlim(right=ranges[ir, ic]['xmax'])
+        if ranges[ir, ic]['x2max'] is not None:
+            self.axes2.obj[ir, ic].set_xlim(right=ranges[ir, ic]['x2max'])
+        if ranges[ir, ic]['ymin'] is not None:
+            self.axes.obj[ir, ic].set_ylim(bottom=ranges[ir, ic]['ymin'])
+        if ranges[ir, ic]['y2min'] is not None:
+            self.axes2.obj[ir, ic].set_ylim(bottom=ranges[ir, ic]['y2min'])
+        if ranges[ir, ic]['ymax'] is not None:
+            self.axes.obj[ir, ic].set_ylim(top=ranges[ir, ic]['ymax'])
+        if ranges[ir, ic]['y2max'] is not None:
+            self.axes2.obj[ir, ic].set_ylim(top=ranges[ir, ic]['y2max'])
 
     def set_axes_rc_labels(self, ir: int, ic: int):
         """Add the row/column label boxes and wrap titles.
@@ -2829,12 +2796,12 @@ class Layout(BaseLayout):
 
             # Skip certain calculations if axes are shared and subplots > 1
             skipx, skipy = False, False
-            if hasattr(getattr(self, 'axes%s' % lab), 'share_x%s' % lab) \
-                    and getattr(getattr(self, 'axes%s' % lab), 'share_x%s' % lab) is True \
+            if hasattr(getattr(self, f'axes{lab}'), 'share_x%s' % lab) \
+                    and getattr(getattr(self, f'axes{lab}'), 'share_x%s' % lab) is True \
                     and (ir != 0 or ic != 0):
                 skipx = False
-            if hasattr(getattr(self, 'axes%s' % lab), 'share_y%s' % lab) \
-                    and getattr(getattr(self, 'axes%s' % lab), 'share_y%s' % lab) \
+            if hasattr(getattr(self, f'axes{lab}'), 'share_y%s' % lab) \
+                    and getattr(getattr(self, f'axes{lab}'), 'share_y%s' % lab) \
                     and (ir != 0 or ic != 0):
                 skipy = False
 
@@ -2994,7 +2961,7 @@ class Layout(BaseLayout):
                 tp = mpl_get_ticks(axes[ia], True, True, minor_on)
 
             # Force ticks
-            if self.separate_ticks or getattr(self, 'axes%s' % lab).share_x is False:
+            if self.separate_ticks or getattr(self, f'axes{lab}').share_x is False:
                 if LooseVersion(mpl.__version__) < LooseVersion('2.2'):
                     mplp.setp(axes[ia].get_xticklabels(), visible=True)
                 else:
@@ -3005,7 +2972,7 @@ class Layout(BaseLayout):
                     else:
                         axes[ia].xaxis.set_tick_params(which='both', labelbottom=True)
 
-            if self.separate_ticks or getattr(self, 'axes%s' % lab).share_y is False:
+            if self.separate_ticks or getattr(self, f'axes{lab}').share_y is False:
                 if LooseVersion(mpl.__version__) < LooseVersion('2.2'):
                     mplp.setp(axes[ia].get_yticklabels(), visible=True)
                 else:
@@ -3024,6 +2991,7 @@ class Layout(BaseLayout):
                     axes[ia].yaxis.set_tick_params(which='both', labeltop=True)
                 else:
                     axes[ia].xaxis.set_tick_params(which='both', labelbottom=True)
+
             if not self.separate_ticks and not self.axes.visible[ir, ic - 1]:
                 if LooseVersion(mpl.__version__) < LooseVersion('2.2'):
                     mplp.setp(axes[ia].get_yticklabels(), visible=True)
@@ -3034,9 +3002,11 @@ class Layout(BaseLayout):
             elif not self.separate_ticks \
                     and (ic != self.ncol - 1
                          and utl.plot_num(ir, ic, self.ncol) != self.nwrap) \
-                    and self.axes.twin_x and ia == 1:
+                    and self.axes.twin_x and ia == 1 \
+                    and getattr(self, f'axes{lab}').share_y:
                 mplp.setp(axes[ia].get_yticklabels(), visible=False)
-            if not self.separate_ticks and ir != 0 and self.axes.twin_y and ia == 1:
+
+            if not self.separate_ticks and ir != 0 and self.axes.twin_y and ia == 1 and self.axes2.share_x:
                 mplp.setp(axes[ia].get_xticklabels(), visible=False)
 
             # Major rotation
@@ -3479,7 +3449,7 @@ class Layout(BaseLayout):
             tick_labels_major_y_sci = self.tick_labels_major_y.sci
 
         # Set labels
-        logx = getattr(self, 'axes%s' % lab).scale in LOGX + SYMLOGX + LOGITX
+        logx = getattr(self, f'axes{lab}').scale in LOGX + SYMLOGX + LOGITX
         if self.name in ['hist'] and self.hist.horizontal is True and \
                 self.hist.kde is False:
             ax.get_xaxis().set_major_locator(MaxNLocator(integer=True))
@@ -3514,7 +3484,7 @@ class Layout(BaseLayout):
             dec = get_sci(tp['x']['ticks'], xlim)
             ax.get_xaxis().set_major_formatter(ticker.FormatStrFormatter(dec))
 
-        logy = getattr(self, 'axes%s' % lab).scale in LOGY + SYMLOGY + LOGITY
+        logy = getattr(self, f'axes{lab}').scale in LOGY + SYMLOGY + LOGITY
         if self.name in ['hist'] and self.hist.horizontal is False and \
                 self.hist.kde is False:
             ax.get_yaxis().set_major_locator(MaxNLocator(integer=True))

@@ -197,7 +197,33 @@ def plt_secondary_xy_shared_y(bm=False, master=False, remove=True, show=False):
 
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25', col='Die',
+             filename=name + '.png', save=not bm, inline=False)
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_secondary_xy_not_shared_y(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'secondary-xy_not_shared-y_master') if master else 'secondary-xy_not_shared-y'
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die', y2min=[0, -1],
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25', col='Die',
              filename=name + '.png', save=not bm, inline=False)
     if bm:
         return
@@ -223,7 +249,33 @@ def plt_secondary_xy_shared_x(bm=False, master=False, remove=True, show=False):
 
     # Make the plot
     fcp.plot(df, x=['Voltage', 'I [A]'], y='Voltage', legend='Die', twin_y=True, show=SHOW,
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25', row='Die',
+             filename=name + '.png', save=not bm, inline=False)
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_secondary_xy_not_shared_x(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'secondary-xy_not_shared-x_master') if master else 'secondary-xy_not_shared-x'
+
+    # Make the plot
+    fcp.plot(df, x=['Voltage', 'I [A]'], y='Voltage', legend='Die', twin_y=True, show=SHOW, x2min=[-10, -20],
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25', row='Die',
              filename=name + '.png', save=not bm, inline=False)
     if bm:
         return
@@ -1077,6 +1129,11 @@ def test_secondary_xy_shared_x(benchmark):
 def test_secondary_xy_shared_y(benchmark):
     plt_secondary_xy_shared_y()
     benchmark(plt_secondary_xy_shared_y, True)
+
+
+def test_secondary_xy_not_shared_y(benchmark):
+    plt_secondary_xy_not_shared_y()
+    benchmark(plt_secondary_xy_not_shared_y, True)
 
 
 def test_wrap(benchmark):
