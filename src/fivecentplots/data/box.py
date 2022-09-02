@@ -30,10 +30,7 @@ class Box(data.Data):
         Returns:
             DataFrame of the groupby keys
         """
-        if self.groups is not None:
-            return pd.DataFrame(df.groupby(self.groups).groups.keys())
-        else:
-            return pd.DataFrame()
+        return pd.DataFrame(df.groupby(self.groups).groups.keys())
 
     def get_box_index_changes(self):
         """Make a DataFrame that shows when groups vals change; used for grouping
@@ -126,7 +123,6 @@ class Box(data.Data):
         Returns:
             modified DataFrame subset
         """
-
         if self.share_x and self.groups is not None and len(df) > 0:
             df1 = self._get_groups(self.df_all)
             df2 = self._get_groups(df)
