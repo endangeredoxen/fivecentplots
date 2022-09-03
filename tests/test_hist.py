@@ -71,8 +71,32 @@ def plt_simple(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'simple_master') if master else 'simple'
 
     # Make the plot
-    fcp.hist(df, x='Value', show=SHOW,
-             inline=False, save=not bm, filename=name + '.png')
+    fcp.hist(df, x='Value', show=SHOW, inline=False, save=not bm, filename=name + '.png')
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_simple_no_bars(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'simple_no_bars_master') if master else 'simple_no_bars'
+
+    # Make the plot
+    fcp.hist(df, x='Value', show=SHOW, inline=False, save=not bm, filename=name + '.png', bars=False)
 
     if bm:
         return
@@ -196,6 +220,84 @@ def plt_grid(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
+def plt_grid_no_share(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'grid_no_share_master') if master else 'grid_no_share'
+
+    # Make the plot
+    fcp.hist(df, x='Value', show=SHOW, legend='Region', col='Batch', row='Sample', ax_size=[250, 250],
+             inline=False, save=not bm, filename=name + '.png', share_y=False)
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_grid_share_col(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'grid_share_col_master') if master else 'grid_share_col'
+
+    # Make the plot
+    fcp.hist(df, x='Value', show=SHOW, legend='Region', col='Batch', row='Sample', ax_size=[250, 250],
+             inline=False, save=not bm, filename=name + '.png', share_col=True)
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_grid_share_row(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'grid_share_row_master') if master else 'grid_share_row'
+
+    # Make the plot
+    fcp.hist(df, x='Value', show=SHOW, legend='Region', col='Batch', row='Sample', ax_size=[250, 250],
+             inline=False, save=not bm, filename=name + '.png', share_row=True)
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def plt_wrap_values(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'wrap_values_master') if master else 'wrap_values'
@@ -260,6 +362,64 @@ def plt_image(bm=False, master=False, remove=True, show=False):
     max_count = (imgr == dn).sum()
     fcp.hist(img, markers=False, ax_scale='logy', ax_size=[600, 400], line_width=2,
              show=SHOW, inline=False, save=not bm, filename=name + '.png', xmax=dn + 5,
+             ax_hlines=max_count, ax_vlines=dn)
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_image_cdf(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'image_cdf_master') if master else 'image_cdf'
+
+    # Make the plot
+    img = fcp.utilities.rgb2bayer(imgr, 'bbbb')
+    dn = 255
+    max_count = (imgr == dn).sum()
+    fcp.hist(img, cdf=True, **fcp.HIST, show=SHOW, inline=False, save=not bm, filename=name + '.png', xmax=dn + 5,
+             ax_hlines=max_count, ax_vlines=dn)
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_image_pdf(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'image_pdf_master') if master else 'image_pdf'
+
+    # Make the plot
+    img = fcp.utilities.rgb2bayer(imgr, 'bbbb')
+    dn = 255
+    max_count = (imgr == dn).sum()
+    fcp.hist(img, pdf=True, **fcp.HIST, show=SHOW, inline=False, save=not bm, filename=name + '.png', xmax=dn + 5,
              ax_hlines=max_count, ax_vlines=dn)
 
     if bm:
@@ -355,6 +515,11 @@ def test_simple(benchmark):
     benchmark(plt_simple, True)
 
 
+def test_simple_no_bars(benchmark):
+    plt_simple_no_bars()
+    benchmark(plt_simple_no_bars, True)
+
+
 def test_horizontal(benchmark):
     plt_horizontal()
     benchmark(plt_horizontal, True)
@@ -375,6 +540,21 @@ def test_grid(benchmark):
     benchmark(plt_grid, True)
 
 
+def test_grid_no_share(benchmark):
+    plt_grid_no_share()
+    benchmark(plt_grid_no_share, True)
+
+
+def test_grid_share_col(benchmark):
+    plt_grid_share_col()
+    benchmark(plt_grid_share_col, True)
+
+
+def test_grid_share_row(benchmark):
+    plt_grid_share_row()
+    benchmark(plt_grid_share_row, True)
+
+
 def test_wrap_values(benchmark):
     plt_wrap_values()
     benchmark(plt_wrap_values, True)
@@ -388,6 +568,16 @@ def test_wrap_names(benchmark):
 def test_image(benchmark):
     plt_image()
     benchmark(plt_image, True)
+
+
+def test_image_cdf(benchmark):
+    plt_image_cdf()
+    benchmark(plt_image_cdf, True)
+
+
+def test_image_pdf(benchmark):
+    plt_image_pdf()
+    benchmark(plt_image_pdf, True)
 
 
 def test_image_legend(benchmark):

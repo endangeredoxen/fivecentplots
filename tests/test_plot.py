@@ -20,6 +20,7 @@ else:
 
 # Sample data
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data.csv')
+df_interval = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_interval.csv')
 ts = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_ts.csv')
 
 # Set theme
@@ -68,6 +69,32 @@ def plt_xy_scatter(bm=False, master=False, remove=True, show=False):
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False,
+             show=False, filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             filename=name + '.png', save=not bm, inline=False)
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_xy_scatter_swap(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'xy_scatter_swap_master') if master else 'xy_scatter_swap'
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, swap=True,
              show=False, filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              filename=name + '.png', save=not bm, inline=False)
     if bm:
@@ -479,6 +506,34 @@ def plt_row_x_column(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
+def plt_row_x_column_empty(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'grid-plots-row-x-column_empty_master') if master else 'grid-plots-row-x-column_empty'
+
+    # Make the plot
+    df_empty = df.copy()
+    df_empty.loc[0, 'Temperature [C]'] = 77
+    fcp.plot(df_empty, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]', show=SHOW,
+             ax_size=[225, 225], filter='Substrate=="Si" & Target Wavelength==450', label_rc_font_size=13,
+             filename=name + '.png', save=not bm, inline=False, share_x=False)
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def plt_row_x_column_sep_labels(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'grid-plots-row-x-column_sep_labels_master') \
@@ -594,7 +649,7 @@ def plt_other_curve_fitting(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'other_curve-fitting_master') if master else 'other_curve-fitting'
 
     # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, show=SHOW,
+    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, show=SHOW, legend=False,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              fit=4, fit_eqn=True, fit_rsq=True, fit_font_size=9,
              filename=name + '.png', save=not bm, inline=False)
@@ -782,10 +837,108 @@ def plt_other_conf_int(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'other_conf-int_master') if master else 'other_conf-int'
 
     # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, show=SHOW,
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             conf_int=0.95,
-             filename=name + '.png', save=not bm, inline=False)
+    fcp.plot(df_interval, x='x', y='y', title='IV Data', lines=False, show=SHOW,
+             conf_int=0.95, filename=name + '.png', save=not bm, inline=False)
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_other_conf_int2(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'other_conf-int_master') if master else 'other_conf-int'
+
+    # Make the plot
+    fcp.plot(df_interval, x='x', y='y', title='IV Data', lines=False, show=SHOW,
+             conf_int=95, filename=name + '.png', save=not bm, inline=False)
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_other_nq_int(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'other_nq-int_master') if master else 'other_nq-int'
+
+    # Make the plot
+    fcp.plot(df_interval, x='x', y='y',  title='IV Data', lines=False, show=SHOW, ymin='q0.05', ymax='q99',
+             nq_int=[-2, 2], filename=name + '.png', save=not bm, inline=False)
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_other_nq_int2(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'other_nq-int2_master') if master else 'other_nq-int2'
+
+    # Make the plot
+    fcp.plot(df_interval, x='x', y='y', title='IV Data', lines=False, show=SHOW,
+             nq_int=[-4, 4], filename=name + '.png', save=not bm, inline=False)
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_other_percentile_int(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'other_percentile-int_master') if master else 'other_percentile-int'
+
+    # Make the plot
+    fcp.plot(df_interval, x='x', y='y', title='IV Data', lines=False, show=SHOW, ymax='1.5*iqr', ymin='0*iqr',
+             perc_int=[0.25, 0.75], filename=name + '.png', save=not bm, inline=False)
     if bm:
         return
 
@@ -1031,6 +1184,26 @@ def test_other_conf_int(benchmark):
     benchmark(plt_other_conf_int, True)
 
 
+def test_other_nq_int(benchmark):
+    plt_other_nq_int()
+    benchmark(plt_other_nq_int, True)
+
+
+def test_other_nq_int2(benchmark):
+    plt_other_nq_int2()
+    benchmark(plt_other_nq_int, True)
+
+
+def test_other_percentile_int(benchmark):
+    plt_other_percentile_int()
+    benchmark(plt_other_percentile_int, True)
+
+
+def test_other_conf_int2(benchmark):
+    plt_other_conf_int2()
+    benchmark(plt_other_conf_int2, True)
+
+
 def test_other_curve_fitting(benchmark):
     plt_other_curve_fitting()
     benchmark(plt_other_curve_fitting, True)
@@ -1121,9 +1294,19 @@ def test_row_x_column(benchmark):
     benchmark(plt_row_x_column, True)
 
 
+def test_row_x_column_empty(benchmark):
+    plt_row_x_column_empty()
+    benchmark(plt_row_x_column_empty, True)
+
+
 def test_secondary_xy_shared_x(benchmark):
     plt_secondary_xy_shared_x()
     benchmark(plt_secondary_xy_shared_x, True)
+
+
+def test_secondary_xy_not_shared_x(benchmark):
+    plt_secondary_xy_not_shared_x()
+    benchmark(plt_secondary_xy_not_shared_x, True)
 
 
 def test_secondary_xy_shared_y(benchmark):
@@ -1159,6 +1342,11 @@ def test_xy_log_scale(benchmark):
 def test_xy_scatter(benchmark):
     plt_xy_scatter()
     benchmark(plt_xy_scatter, True)
+
+
+def test_xy_scatter_swap(benchmark):
+    plt_xy_scatter_swap()
+    benchmark(plt_xy_scatter_swap, True)
 
 
 def test_xy_ts(benchmark):

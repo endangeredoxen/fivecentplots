@@ -400,12 +400,60 @@ def test_groups_row_col_y(master=False, remove=True, show=False):
         assert not compare
 
 
+def test_groups_row_col_y_share(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'groups_row_col_y_share_master') if master else 'groups_row_col_y_share'
+
+    # Make the plot
+    fcp.plot(df1, x='Voltage', y=['Voltage', 'I [A]'], legend='Die', col='Boost Level', row='y', share_row=True,
+             ax_size=[225, 225], filter='Substrate=="Si" & Target Wavelength==450 & Temperature [C]==75',
+             label_rc_font_size=14, save=True, inline=False, filename=name + '.png')
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def test_groups_row_col_x(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'groups_row_col_x_master') if master else 'groups_row_col_x'
 
     # Make the plot
     fcp.plot(df1, x=['Voltage', 'I [A]'], y='Voltage', legend='Die', row='Boost Level', col='x',
+             ax_size=[225, 225], filter='Substrate=="Si" & Target Wavelength==450 & Temperature [C]==75',
+             label_rc_font_size=14, save=True, inline=False, filename=name + '.png')
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_groups_row_col_x_share(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'groups_row_col_x_share_master') if master else 'groups_row_col_x_share'
+
+    # Make the plot
+    fcp.plot(df1, x=['Voltage', 'I [A]'], y='Voltage', legend='Die', row='Boost Level', col='x', share_col=True,
              ax_size=[225, 225], filter='Substrate=="Si" & Target Wavelength==450 & Temperature [C]==75',
              label_rc_font_size=14, save=True, inline=False, filename=name + '.png')
 

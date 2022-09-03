@@ -48,7 +48,7 @@ class Box(data.Data):
             for group in self.groups:
                 if len(self.df_rc[group].dropna()) == 0:
                     self.groups.remove(group)
-                    print('Column "%s" for a subplot is all NaN and will be excluded from plot' % group)
+                    print('Column "%s" for at least one subplot is all NaN and will be excluded from plot' % group)
 
         # Get the changes df
         if self.groups is None or self.groups == []:
@@ -100,8 +100,7 @@ class Box(data.Data):
 
                 # Get boxplot changes DataFrame
                 if 'box' in self.name and len(self.df_rc) > 0:
-                    if (self.groups is not None and self.groups != []) and \
-                            len(self.df_rc.groupby(self.groups)) == 0:
+                    if (self.groups is not None and self.groups != []) and len(self.df_rc.groupby(self.groups)) == 0:
                         continue
                     self.get_box_index_changes()
                     self.ranges[ir, ic]['xmin'] = 0.5

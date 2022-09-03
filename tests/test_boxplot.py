@@ -7,6 +7,7 @@ from pathlib import Path
 import fivecentplots.utilities as utl
 import matplotlib as mpl
 import inspect
+import numpy as np
 osjoin = os.path.join
 db = pdb.set_trace
 
@@ -94,7 +95,7 @@ def plt_one_group(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'one_group_master') if master else 'one_group'
 
     # Make the plot
-    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], filter='Batch==101',
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', ymin='q0', ymax='q100',
                 show=SHOW, filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -147,6 +148,33 @@ def plt_group_multiple(bm=False, master=False, remove=True, show=False):
 
     # Make the plot
     fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW,
+                filename=name + '.png', save=not bm, inline=False, jitter=False)
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_group_multiple_nan(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'group_multiple_nan_master') if master else 'group_multiple_nan'
+
+    # Make the plot
+    df['Test'] = np.nan
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample', 'Test'], show=SHOW,
                 filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -638,6 +666,11 @@ def test_group_single(benchmark):
 def test_group_multiple(benchmark):
     plt_group_multiple()
     benchmark(plt_group_multiple, True)
+
+
+def test_group_multiple_nan(benchmark):
+    plt_group_multiple_nan()
+    benchmark(plt_group_multiple_nan, True)
 
 
 def test_group_legend(benchmark):

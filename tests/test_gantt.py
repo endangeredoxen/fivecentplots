@@ -230,8 +230,36 @@ def plt_col(bm=False, master=False, remove=True, show=False):
         return
 
     # Make the plot
-    fcp.gantt(df, x=['Start', 'Stop'], y='Task', col='Category',
+    fcp.gantt(df, x=['Start', 'Stop'], y='Task', col='Category', share_x=False,
               filename=name + '.png', save=not bm, inline=False, ax_size=[600, 400])
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_rc_missing(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'rc_missing_master') if master else 'rc_missing'
+
+    # Make the plot
+    df['Temp'] = 'Boom'
+    df.loc[5:, 'Temp'] = 'Boom2'
+    fcp.gantt(df, x=['Start', 'Stop'], y='Task', row='Category', col='Temp',
+              filename=name + '.png', save=not bm, inline=False, ax_size=[600, 400])
+
+    if bm:
+        return
 
     # Compare with master
     if master:
@@ -310,6 +338,11 @@ def test_row(benchmark):
 def test_col(benchmark):
     plt_col()
     benchmark(plt_col, True)
+
+
+def test_rc_missing(benchmark):
+    plt_rc_missing()
+    benchmark(plt_rc_missing, True)
 
 
 def test_wrap(benchmark):

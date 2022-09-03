@@ -316,8 +316,8 @@ class Layout(BaseLayout):
     def _left(self) -> float:
         """Width of the space to the left of the axes object."""
         left = self.ws_fig_label + self._labtick_y
-        title_xs_left = self.title.size[0] / 2 - (left + (self.axes.size[0] * self.ncol
-                        + self.ws_col * (self.ncol - 1)) / 2)
+        title_xs_left = self.title.size[0] / 2 \
+            - (left + (self.axes.size[0] * self.ncol + self.ws_col * (self.ncol - 1)) / 2)
         if title_xs_left < 0:
             title_xs_left = 0
         left += title_xs_left
@@ -373,8 +373,8 @@ class Layout(BaseLayout):
             right = self.ws_ax_box_title + self.box_title + (self.ws_ax_fig if not self.legend.on else 0)
 
         # Main figure title excess size
-        title_xs_right = self.title.size[0] / 2 - (right + (self.axes.size[0] * self.ncol
-                         + self.ws_col * (self.ncol - 1)) / 2)
+        title_xs_right = self.title.size[0] / 2 - \
+            (right + (self.axes.size[0] * self.ncol + self.ws_col * (self.ncol - 1)) / 2)
         if title_xs_right < 0:
             title_xs_right = 0
         right += title_xs_right
@@ -1269,7 +1269,8 @@ class Layout(BaseLayout):
                      - self.ws_leg_fig) / self.fig.size[0]
             elif self.box_group_title.on:
                 self.legend.position[1] = 1 + \
-                    (self.fig_legend_border - self.ws_leg_fig - self.ws_ax_box_title - self.box_title + self.ws_ax_fig) \
+                    (self.fig_legend_border - self.ws_leg_fig - self.ws_ax_box_title
+                     - self.box_title + self.ws_ax_fig) \
                     / self.fig.size[0]
             else:
                 self.legend.position[1] = 1 + \
@@ -2671,7 +2672,6 @@ class Layout(BaseLayout):
         if self.name in ['heatmap', 'pie']:  # skip these plot types
             return
 
-        rr = ranges[ir, ic]
         if ranges[ir, ic]['xmin'] is not None:
             self.axes.obj[ir, ic].set_xlim(left=ranges[ir, ic]['xmin'])
         if ranges[ir, ic]['x2min'] is not None:

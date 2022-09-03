@@ -43,9 +43,6 @@ class Heatmap(data.Data):
         Args:
             xyz: name of variable to check
         """
-        if xyz not in self.req and xyz not in self.opt:
-            return
-
         if xyz in self.opt and getattr(self, xyz) is None:
             return None
 
@@ -53,18 +50,6 @@ class Heatmap(data.Data):
 
         if vals is None and xyz not in self.opt:
             raise data.AxisError('Must provide a column name for "%s"' % xyz)
-
-        # Check for axis errors
-        if self.twin_x and len(self.y) != 2:
-            raise data.AxisError('twin_x error! %s y values were specified but'
-                                 ' two are required' % len(self.y))
-        if self.twin_x and len(self.x) > 1:
-            raise data.AxisError('twin_x error! only one x value can be specified')
-        if self.twin_y and len(self.x) != 2:
-            raise data.AxisError('twin_y error! %s x values were specified but'
-                                 ' two are required' % len(self.x))
-        if self.twin_y and len(self.y) > 1:
-            raise data.AxisError('twin_y error! only one y value can be specified')
 
         return vals
 
@@ -98,26 +83,14 @@ class Heatmap(data.Data):
                 self._add_range(ir, ic, 'z', 'max', df_rc.max().max())
 
             else:
-                # x
-                self._add_range(ir, ic, 'x', 'min', -0.5)
-                self._add_range(ir, ic, 'x', 'max', len(df_rc.columns) + 0.5)
-
-                # y (can update all the get plot nums to range?)
-                if self.ymin[plot_num] is not None \
-                        and self.ymax[plot_num] is not None \
-                        and self.ymin[plot_num] < self.ymax[plot_num]:
-                    ymin = self.ymin[plot_num]
-                    self._add_range(ir, ic, 'y', 'min', self.ymax[plot_num])
-                    self._add_range(ir, ic, 'y', 'max', ymin)
-                self._add_range(ir, ic, 'y', 'max', -0.5)
-                self._add_range(ir, ic, 'y', 'min', len(df_rc) + 0.5)
+                # x & y (no support)
+                self._add_range(ir, ic, 'x', 'min', None)
+                self._add_range(ir, ic, 'x', 'max', None)
+                self._add_range(ir, ic, 'y', 'min', None)
+                self._add_range(ir, ic, 'y', 'max', None)
 
                 # z
-                if self.share_col:
-                    pass
-                elif self.share_row:
-                    pass
-                elif self.share_z and ir == 0 and ic == 0:
+                if self.share_z and ir == 0 and ic == 0:
                     self._add_range(ir, ic, 'z', 'min',
                                     self.df_fig[self.z[0]].min())
                     self._add_range(ir, ic, 'z', 'max',
@@ -177,7 +150,7 @@ class Heatmap(data.Data):
                     self.ranges[ir, ic]['ymax'] is not None:
                 df = df.loc[[f for f in df.index if f <= self.ranges[ir, ic]['ymax']]]
 
-        # check dtypes to properly designated tick labels
+        # Check dtypes to properly designate tick labels
         dtypes = [int, np.int32, np.int64]
         if df.index.dtype in dtypes and list(df.index) != \
                 [f + df.index[0] for f in range(0, len(df.index))]:

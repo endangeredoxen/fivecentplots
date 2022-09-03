@@ -175,13 +175,13 @@ class Histogram(data.Data):
                 hist.Counts = hist.Counts.sum()
             vals = self._get_data_range('y', hist, plot_num)
             temp_ranges[ir, ic]['ymin'] = vals[0]
-            temp_ranges[ir, ic]['ymin'] = vals[1]
+            temp_ranges[ir, ic]['ymax'] = vals[1]
             min_y = min(min_y, vals[0])
             min_y_row[ir] = min(min_y_row[ir], vals[0])
             min_y_col[ic] = min(min_y_col[ic], vals[0])
             max_y = max(max_y, vals[1])
-            max_y_row[ir] = min(max_y_col[ir], vals[1])
-            max_y_col[ic] = min(max_y_col[ir], vals[1])
+            max_y_row[ir] = max(max_y_row[ir], vals[1])
+            max_y_col[ic] = max(max_y_col[ic], vals[1])
 
         # compute actual ranges with option y-axis sharing
         for ir, ic, plot_num in self._get_subplot_index():
@@ -202,8 +202,10 @@ class Histogram(data.Data):
 
             # not share y
             else:
-                self._add_range(ir, ic, 'y', 'min', temp_ranges[ir][ic]['ymin'])
-                self._add_range(ir, ic, 'y', 'max', temp_ranges[ir][ic]['ymax'])
+                if 'ymin' in temp_ranges[ir, ic]:
+                    self._add_range(ir, ic, 'y', 'min', temp_ranges[ir][ic]['ymin'])
+                if 'ymax' in temp_ranges[ir, ic]:
+                    self._add_range(ir, ic, 'y', 'max', temp_ranges[ir][ic]['ymax'])
 
         if hasattr(self, 'horizontal') and self.horizontal:
             self.swap_xy_ranges()

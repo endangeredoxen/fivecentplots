@@ -132,13 +132,9 @@ class Data:
         self.x2 = []
         self.y2 = []
         if self.twin_x:
-            if len(self.y) < 2:
-                raise AxisError('twin_x requires two y-axis columns')
             self.y2 = [self.y[1]]
             self.y = [self.y[0]]
         if self.twin_y:
-            if len(self.x) < 2:
-                raise AxisError('twin_y requires two x-axis columns')
             self.x2 = [self.x[1]]
             self.x = [self.x[0]]
 
@@ -207,8 +203,7 @@ class Data:
         self.nwrap = 0
         self.ngroups = 0
 
-        # Define legend grouping column names (legends are common to a figure,
-        #   not an rc subplot)
+        # Define legend grouping column names (legends are common to a figure, not an rc subplot)
         if 'legend' in kwargs.keys():
             if kwargs['legend'] is True:
                 self.legend = True
@@ -332,8 +327,7 @@ class Data:
             with data filtering)
         """
         if df is None:
-            raise DataError('Must provide a DataFrame called "df" '
-                            'for plotting!')
+            raise DataError('Must provide a DataFrame for plotting!')
 
         if len(df) == 0:
             raise DataError('DataFrame is empty.  Nothing to plot!')
@@ -357,18 +351,18 @@ class Data:
 
         for val in values:
             if val not in self.df_all.columns:
-                raise GroupingError('Grouping column "%s" is not '
-                                    'in the DataFrame!' % val)
+                raise GroupingError('Grouping column "%s" is not in the DataFrame!' % val)
 
         # Check for no groups
         if len(list(self.df_all.groupby(values).groups.keys())) == 0:
-            raise GroupingError('The number of unique groups in the data for '
-                                "the %s=['%s'] is 0" %
-                                (group_type, ', '.join(values)))
+            raise GroupingError(f'The number of unique groups in the data for the {group_type}=[{", ".join(values)}]')
 
-        # Check for wrap with twiny
+        # Check for wrap with twinning
         if group_type == 'wrap' and col_names is not None and self.twin_y:
             raise GroupingError('Wrap plots do not support twinning of the y-axis. '
+                                'Please consider a row vs column plot instead.')
+        if group_type == 'wrap' and col_names is not None and self.twin_x:
+            raise GroupingError('Wrap plots do not support twinning of the x-axis. '
                                 'Please consider a row vs column plot instead.')
 
         return values
@@ -383,22 +377,16 @@ class Data:
             raise GroupingError('Row and column values must be different!')
 
         if self.wrap is not None and (self.col or self.row):
-            error = 'Cannot combine "wrap" grouping with "%s"' % \
-                    ('col' if self.col else 'row')
+            error = 'Cannot combine "wrap" grouping with "%s"' % ('col' if self.col else 'row')
             raise GroupingError(error)
 
-        if self.groups is not None and \
-                ((self.row and self.row[0] in self.groups)
-                 or (self.col and self.col[0] in self.groups)):
-            error = '"%s" value cannot also be specified as a "group" value' % \
-                    ('col' if self.col else 'row')
-            raise GroupingError(error)
-
-        if self.groups is not None and self.wrap is not None:
-            if len(list(set(self.wrap) & set(self.groups))) > 0:
-                error = '"%s" value cannot also be specified as a "group" value' % \
-                        ('col' if self.col else 'row')
-                raise GroupingError(error)
+        if self.groups is not None:
+            for val in ['row', 'col', 'wrap']:
+                if not getattr(self, val):
+                    continue
+                if len(set(getattr(self, val)) & set(self.groups)) > 0:
+                    error = f'"{val}" value(s) cannot also be specified as value in "groups"'
+                    raise GroupingError(error)
 
     def _check_group_matching(self, group1: str, group2: str):
         """Check to make sure certain group column values are not the same.
@@ -457,13 +445,11 @@ class Data:
 
         # Check for axis errors
         if self.twin_x and len(self.y) != 2:
-            raise AxisError('twin_x error! %s y values were specified but'
-                            ' two are required' % len(self.y))
+            raise AxisError('twin_x error! %s y values were specified but two are required' % len(self.y))
         if self.twin_x and len(self.x) > 1:
             raise AxisError('twin_x error! only one x value can be specified')
         if self.twin_y and len(self.x) != 2:
-            raise AxisError('twin_y error! %s x values were specified but'
-                            ' two are required' % len(self.x))
+            raise AxisError('twin_y error! %s x values were specified but two are required' % len(self.x))
         if self.twin_y and len(self.y) > 1:
             raise AxisError('twin_y error! only one y value can be specified')
 
@@ -531,45 +517,44 @@ class Data:
         for ir, ic, plot_num in self._get_subplot_index():
             for ax in self.axs:
                 # Share axes (use self.df_fig to get global min/max)
-                if getattr(self, 'share_%s' % ax):
+                if getattr(self, 'share_%s' % ax) and (ir > 0 or ic > 0):
+                    self._add_range(ir, ic, ax, 'min', self.ranges[0, 0]['%smin' % ax])
+                    self._add_range(ir, ic, ax, 'max', self.ranges[0, 0]['%smax' % ax])
+                elif getattr(self, 'share_%s' % ax):
                     vals = self._get_data_range(ax, df_fig, plot_num)
                     self._add_range(ir, ic, ax, 'min', vals[0])
                     self._add_range(ir, ic, ax, 'max', vals[1])
-                elif getattr(self, 'share_%s' % ax) and (ir > 0 or ic > 0):
-                    self._add_range(ir, ic, ax, 'min',
-                                    self.ranges[0, 0]['%smin' % ax])
-                    self._add_range(ir, ic, ax, 'max',
-                                    self.ranges[0, 0]['%smax' % ax])
 
                 # Share row
+                elif self.share_row and self.row is not None and ic > 0 and self.row != 'y':
+                    self._add_range(ir, ic, ax, 'min', self.ranges[ir, 0]['%smin' % ax])
+                    self._add_range(ir, ic, ax, 'max', self.ranges[ir, 0]['%smax' % ax])
+
                 elif self.share_row and self.row is not None:
                     if self.row == 'y':
-                        vals = self._get_data_range(ax, df_fig, plot_num)
+                        df_sub = pd.DataFrame(columns=[self.x[0], self.y[ir]], index=range(len(df_fig)))
+                        df_sub[self.x[0]] = df_fig[self.x[0]].values
+                        df_sub[self.y[ir]] = df_fig[self.y[ir]].values
+                        vals = self._get_data_range(ax, df_sub, plot_num)
                     else:
-                        vals = self._get_data_range(ax,
-                                                    df_fig[self.df_fig[self.row[0]] == self.row_vals[ir]], plot_num)
+                        vals = self._get_data_range(ax, df_fig[self.df_fig[self.row[0]] == self.row_vals[ir]], plot_num)
                     self._add_range(ir, ic, ax, 'min', vals[0])
                     self._add_range(ir, ic, ax, 'max', vals[1])
-                elif self.share_row and self.row is not None and ic > 0:
-                    self._add_range(ir, ic, ax, 'min',
-                                    self.ranges[ir, 0]['%smin' % ax])
-                    self._add_range(ir, ic, ax, 'max',
-                                    self.ranges[ir, 0]['%smax' % ax])
 
                 # Share col
+                elif self.share_col and self.col is not None and ir > 0 and self.col != 'x':
+                    self._add_range(ir, ic, ax, 'min', self.ranges[0, ic]['%smin' % ax])
+                    self._add_range(ir, ic, ax, 'max', self.ranges[0, ic]['%smax' % ax])
                 elif self.share_col and self.col is not None:
                     if self.col == 'x':
-                        vals = self._get_data_range(ax, df_fig, ir, ic)
+                        df_sub = pd.DataFrame(columns=[self.x[ic], self.y[0]], index=range(len(df_fig)))
+                        df_sub[self.x[ic]] = df_fig[self.x[ic]].values
+                        df_sub[self.y[0]] = df_fig[self.y[0]].values
+                        vals = self._get_data_range(ax, df_sub, plot_num)
                     else:
-                        vals = self._get_data_range(ax,
-                                                    df_fig[df_fig[self.col[0]] == self.col_vals[ic]], plot_num)
+                        vals = self._get_data_range(ax, df_fig[df_fig[self.col[0]] == self.col_vals[ic]], plot_num)
                     self._add_range(ir, ic, ax, 'min', vals[0])
                     self._add_range(ir, ic, ax, 'max', vals[1])
-                elif self.share_col and self.col is not None and ir > 0:
-                    self._add_range(ir, ic, ax, 'min',
-                                    self.ranges[0, ic]['%smin' % ax])
-                    self._add_range(ir, ic, ax, 'max',
-                                    self.ranges[0, ic]['%smax' % ax])
 
                 # subplot level when not shared
                 else:
@@ -583,19 +568,15 @@ class Data:
 
                     # Not shared or wrap by x or y
                     elif not getattr(self, 'share_%s' % ax) or \
-                            (self.wrap is not None
-                             and self.wrap == 'y'
-                             or self.wrap == 'x'):
+                            (self.wrap is not None and self.wrap == 'y' or self.wrap == 'x'):
                         vals = self._get_data_range(ax, df_rc, plot_num)
                         self._add_range(ir, ic, ax, 'min', vals[0])
                         self._add_range(ir, ic, ax, 'max', vals[1])
 
-                    # Make them all equal to 0,0
-                    elif ir > 0 or ic > 0:
-                        self._add_range(ir, ic, ax, 'min',
-                                        self.ranges[0, 0]['%smin' % ax])
-                        self._add_range(ir, ic, ax, 'max',
-                                        self.ranges[0, 0]['%smax' % ax])
+                    # # Make them all equal to window [0,0]
+                    # elif ir > 0 or ic > 0:
+                    #     self._add_range(ir, ic, ax, 'min', self.ranges[0, 0]['%smin' % ax])
+                    #     self._add_range(ir, ic, ax, 'max', self.ranges[0, 0]['%smax' % ax])
 
     def _get_data_ranges_user_defined(self):
         """Get user defined range values that were set by kwargs."""
@@ -725,8 +706,12 @@ class Data:
             return None, None
         elif self.col == 'x' and self.share_x and ax == 'x':
             cols = self.x_vals
+        elif self.col == 'x' and self.share_col and ax == 'x':
+            cols = [f for f in self.x_vals if f in df.columns]
         elif self.row == 'y' and self.share_y and ax == 'y':
             cols = self.y_vals
+        elif self.row == 'y' and self.share_row and ax == 'y':
+            cols = [f for f in self.y_vals if f in df.columns]
         else:
             cols = getattr(self, ax)
 
@@ -971,11 +956,10 @@ class Data:
 
             return df, coeffs, rsq
 
-        if str(self.fit).lower() == 'spline':
+        # TODO:: put spline code here
+        # if str(self.fit).lower() == 'spline':
 
-            # PUT SPLINE CODE HERE
-
-            return df, [], np.nan
+        #     return df, [], np.nan
 
     def _get_legend_groupings(self, df: pd.DataFrame):
         """Determine the legend groupings.
@@ -1191,11 +1175,9 @@ class Data:
                 self.nrow = len(self.row_vals)
 
         if self.ncol == 0:
-            raise GroupingError('Cannot make subplot(s): '
-                                'number of columns is 0')
+            raise GroupingError('Cannot make subplot(s): number of columns is 0')
         if self.nrow == 0:
-            raise GroupingError('Cannot make subplot(s): '
-                                'number of rows is 0')
+            raise GroupingError('Cannot make subplot(s): number of rows is 0')
 
         self.ranges = self._range_dict()
 
@@ -1293,17 +1275,15 @@ class Data:
         return ranges
 
     def _subset(self, ir: int, ic: int, apply_ranges: bool = False) -> pd.DataFrame:
-        """Handles creation of a new data subset based on the type of plot
-        selected.
+        """Handles creation of a new data subset based on the type of plot selected.
 
         Args:
             ir: subplot row index
             ic: subplot column index
-            apply_ranges (optional): enable/disable applications of ranges
-                to the new subset. Defaults to False.
+            apply_ranges (optional): enable/disable applications of ranges to the new subset. Defaults to False.
 
         Returns:
-            _type_: _description_
+            pandas DataFrame subset
         """
         # Wrap plot
         if self.wrap is not None:

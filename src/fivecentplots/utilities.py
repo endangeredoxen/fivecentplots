@@ -191,6 +191,8 @@ def dfkwarg(args: tuple, kwargs: dict) -> dict:
     """
     if isinstance(args, pd.DataFrame) or isinstance(args, np.ndarray):
         kwargs['df'] = args
+    else:
+        kwargs['df'] = None
 
     return kwargs
 
