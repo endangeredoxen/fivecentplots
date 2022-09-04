@@ -1,9 +1,11 @@
+import pytest
 import fivecentplots as fcp
 import pandas as pd
 import os
 import sys
 import pdb
 from pathlib import Path
+import fivecentplots.data.data as data
 import fivecentplots.utilities as utl
 import matplotlib as mpl
 import inspect
@@ -126,10 +128,8 @@ def plt_legend(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'legend_master') if master else 'legend'
 
     # Make the plot
-    fcp.pie(df, x='Liquid', y='pH', show=SHOW,
-            filter='Measurement=="A" & T [C]==25',
-            start_angle=90, alpha=0.85, legend=True,
-            filename=name + '.png', save=not bm, inline=False, jitter=False)
+    fcp.pie(df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A" & T [C]==25', start_angle=90, alpha=0.85,
+            legend=True, filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
         return
@@ -361,6 +361,21 @@ def test_shadow(benchmark):
 def test_angle(benchmark):
     plt_angle()
     benchmark(plt_angle, True)
+
+
+def test_invalid():
+    with pytest.raises(data.AxisError):
+        fcp.pie(df, x='Liquid', y=['pH', 'Measurement'], twin_x=True)
+    with pytest.raises(data.AxisError):
+        fcp.pie(df, y='Liquid', x=['pH', 'Measurement'], twin_y=True)
+    with pytest.raises(data.GroupingError):
+        fcp.pie(df, y='Liquid', x='pH', row='y')
+    with pytest.raises(data.GroupingError):
+        fcp.pie(df, y='Liquid', x='pH', wrap='y')
+    with pytest.raises(data.GroupingError):
+        fcp.pie(df, y='Liquid', x='pH', col='x')
+    with pytest.raises(data.GroupingError):
+        fcp.pie(df, y='Liquid', x='pH', legend='Measurement')
 
 
 if __name__ == '__main__':

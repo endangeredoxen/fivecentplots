@@ -1,3 +1,4 @@
+import pytest
 import imageio
 import fivecentplots as fcp
 import pandas as pd
@@ -5,6 +6,7 @@ import os
 import sys
 import pdb
 from pathlib import Path
+import fivecentplots.data.data as data
 import fivecentplots.utilities as utl
 import matplotlib as mpl
 import inspect
@@ -385,6 +387,21 @@ def test_wrap(benchmark):
 def test_wrap_one(benchmark):
     plt_wrap_one()
     benchmark(plt_wrap_one, True)
+
+
+def test_invalid():
+    with pytest.raises(data.AxisError):
+        fcp.imshow(img_rc, twin_x=True)
+    with pytest.raises(data.AxisError):
+        fcp.imshow(img_rc, twin_y=True)
+    with pytest.raises(data.GroupingError):
+        fcp.imshow(img_rc, row='y')
+    with pytest.raises(data.GroupingError):
+        fcp.imshow(img_rc, wrap='y')
+    with pytest.raises(data.GroupingError):
+        fcp.imshow(img_rc, col='x')
+    with pytest.raises(data.GroupingError):
+        fcp.imshow(img_rc, legend=True)
 
 
 if __name__ == '__main__':

@@ -1,3 +1,4 @@
+import pytest
 import imageio
 import fivecentplots as fcp
 import pandas as pd
@@ -5,6 +6,7 @@ import os
 import sys
 import pdb
 from pathlib import Path
+import fivecentplots.data.data as data
 import fivecentplots.utilities as utl
 import matplotlib as mpl
 import inspect
@@ -294,6 +296,21 @@ def test_heatmap_streched(benchmark):
 def test_heatmap_zoomed(benchmark):
     plt_heatmap_zoomed()
     benchmark(plt_heatmap_zoomed, True)
+
+
+def test_invalid():
+    with pytest.raises(data.AxisError):
+        fcp.heatmap(img_cat, twin_x=True)
+    with pytest.raises(data.AxisError):
+        fcp.heatmap(img_cat, twin_y=True)
+    with pytest.raises(data.GroupingError):
+        fcp.heatmap(img_cat, row='y')
+    with pytest.raises(data.GroupingError):
+        fcp.heatmap(img_cat, wrap='y')
+    with pytest.raises(data.GroupingError):
+        fcp.heatmap(img_cat, col='x')
+    with pytest.raises(data.GroupingError):
+        fcp.heatmap(img_cat, legend=True)
 
 
 if __name__ == '__main__':

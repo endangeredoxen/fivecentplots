@@ -21,8 +21,25 @@ class Heatmap(data.Data):
         opt = ['x', 'y', 'z']
         kwargs['auto_scale'] = False
 
+        # check for invalid axis options
+        vals = ['twin_x', 'twin_y']
+        for val in vals:
+            if val in kwargs:
+                raise data.AxisError(f'{val} is not a valid option for heatmap plots')
+
+        # check for invalid grouping options
+        if 'row' in kwargs and kwargs['row'] == 'y':
+            raise data.GroupingError(f'Cannot group row by "y" for heatmap plots')
+        if 'col' in kwargs and kwargs['col'] == 'x':
+            raise data.GroupingError(f'Cannot group col by "x" for heatmap plots')
+        if 'wrap' in kwargs and kwargs['wrap'] == 'y':
+            raise data.GroupingError(f'Cannot wrap by "y" for heatmap plots')
+        if 'legend' in kwargs and kwargs['legend'] is not None:
+            raise data.GroupingError(f'legend not available for heatmap plots')
+
         super().__init__(name, req, opt, **kwargs)
 
+        # Set values
         if 'x' not in kwargs.keys() and \
                 'y' not in kwargs.keys() and \
                 'z' not in kwargs.keys():
