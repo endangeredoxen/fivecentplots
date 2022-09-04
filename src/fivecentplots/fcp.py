@@ -431,6 +431,8 @@ def hist(df, **kwargs):
 
     Keyword Args:
         x (str): x-axis column name (i.e., the "value" column from which "counts" are calculated) [REQUIRED]
+        bars (bool): Toggle between bars or a line plot for the counts (True=bars enabled, False=use line).  Defaults
+          to True unless 2D image then False
         cdf (bool): Convert the histogram into a cumulative distribution plot. Defaults to False. Example:
           https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#cdf
         cfa (str): Color-filter array pattern that is used to split data from a Bayer image into separate color planes.
@@ -533,8 +535,8 @@ def imshow(df, **kwargs):
           'none’.
         stretch (float|list): Calculate "stretch" times the standard deviation above and below the mean to set new
           z-limits. Can be a single value used as +/- limits or a two-value list for the lower/upper multiplier values.
-          Defaults to None. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#contrast-
-          stretching
+          Defaults to None. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#Contrast-stretching
 
     Examples
     --------

@@ -32,8 +32,7 @@ class Histogram(data.Data):
             if cfa is not None:
                 kwargs['df'] = utl.split_color_planes(kwargs['df'], cfa)
             kwargs['2D'] = True
-            bars = utl.kwget(kwargs, self.fcpp, 'bars',
-                             kwargs.get('bars', False))
+            bars = utl.kwget(kwargs, self.fcpp, 'bars', kwargs.get('bars', False))
 
         # overrides
         kwargs['ax_limit_padding_ymax'] = kwargs.get('ax_limit_padding', 0.05)
@@ -48,6 +47,8 @@ class Histogram(data.Data):
         self.pdf = utl.kwget(kwargs, self.fcpp, ['pdf'], kwargs.get('pdf', False))
         if self.cdf and kwargs.get('preset') == 'HIST':
             self.ax_scale = 'lin'
+        if self.cdf or self.pdf:
+            bars = False
 
         # Other options
         self.cumulative = utl.kwget(kwargs, self.fcpp, ['hist_cumulative', 'cumulative'],
@@ -83,13 +84,10 @@ class Histogram(data.Data):
                     dfx = df[self.x[0]]
 
                 if brange:
-                    counts, vals = np.histogram(dfx[~np.isnan(dfx)],
-                                                bins=self.bins,
-                                                normed=self.norm, range=brange)
+                    counts, vals = np.histogram(dfx[~np.isnan(dfx)], bins=self.bins, normed=self.norm, range=brange)
                 else:
-                    counts, vals = np.histogram(dfx[~np.isnan(dfx)],
-                                                bins=self.bins,
-                                                normed=self.norm)
+                    counts, vals = np.histogram(dfx[~np.isnan(dfx)], bins=self.bins, normed=self.norm)
+
                 # cdf + pdf
                 if self.cdf:
                     pdf = counts / sum(counts)
@@ -113,11 +111,10 @@ class Histogram(data.Data):
             else:
                 dfx = df_in[self.x[0]].dropna()
             if brange:
-                counts, vals = np.histogram(dfx[~np.isnan(dfx)], bins=self.bins,
-                                            normed=self.norm, range=brange)
+                counts, vals = np.histogram(dfx[~np.isnan(dfx)], bins=self.bins, normed=self.norm, range=brange)
             else:
-                counts, vals = np.histogram(dfx[~np.isnan(dfx)], bins=self.bins,
-                                            normed=self.norm)
+                counts, vals = np.histogram(dfx[~np.isnan(dfx)], bins=self.bins, normed=self.norm)
+
             # special case of all values being equal
             if len(counts) == 1:
                 vals = np.insert(vals, 0, vals[0])

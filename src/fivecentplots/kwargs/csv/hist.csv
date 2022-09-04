@@ -1,4 +1,5 @@
 Keyword,Data Type,Description,Default,Example
+bars,bool,"Toggle between bars or a line plot for the counts (True=bars enabled, False=use line)",True unless 2D image then False,
 cdf,bool,Convert the histogram into a cumulative distribution plot,False,hist.html#cdf
 cfa,str,Color-filter array pattern that is used to split data from a Bayer image into separate color planes,None,imshow.html#split-color-planes
 hist_align,str,If "mid" aligns center of histogram bar to x-axis value; if "left" aligns the left edge of the histogram bar to the x-axis value {"left"; "mid"; "right"},"mid",hist.html#alignment

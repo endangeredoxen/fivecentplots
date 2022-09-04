@@ -34,52 +34,21 @@ class ImShow(data.Data):
         # overrides
         self.auto_scale = False
 
-        if 'x' not in kwargs.keys() and \
-                'y' not in kwargs.keys() and \
-                'z' not in kwargs.keys():
-
-            self.auto_cols = True
-            self.x = ['Column']
-            self.y = ['Row']
-            self.z = ['Value']
-
-        else:
-            self.pivot = True
+        self.auto_cols = True
+        self.x = ['Column']
+        self.y = ['Row']
+        self.z = ['Value']
 
         self.df_all = utl.df_int_cols_convert(self.df_all)
 
     def _check_xyz(self, xyz: str):
-        """Validate the name and column data provided for x, y, and/or z.
+        """Validate the name and column data provided for x, y, and/or z.  For imshow, there are no req or opt
+        values needed.
 
         Args:
             xyz: name of variable to check
         """
-        if xyz not in self.req and xyz not in self.opt:
-            return
-
-        if xyz in self.opt and getattr(self, xyz) is None:
-            return
-
-        vals = getattr(self, xyz)
-
-        if vals is None and xyz not in self.opt:
-            raise data.AxisError('Must provide a column name for "%s"' % xyz)
-
-        # Skip standard case check
-
-        # Check for axis errors
-        if self.twin_x and len(self.y) != 2:
-            raise data.AxisError('twin_x error! %s y values were specified but'
-                                 ' two are required' % len(self.y))
-        if self.twin_x and len(self.x) > 1:
-            raise data.AxisError('twin_x error! only one x value can be specified')
-        if self.twin_y and len(self.x) != 2:
-            raise data.AxisError('twin_y error! %s x values were specified but'
-                                 ' two are required' % len(self.x))
-        if self.twin_y and len(self.y) > 1:
-            raise data.AxisError('twin_y error! only one y value can be specified')
-
-        return vals
+        return  getattr(self, xyz)
 
     def _get_data_range(self, ax: str, df: pd.DataFrame, plot_num: int) -> tuple:
         """Determine the min/max values for a given axis based on user inputs.
@@ -95,10 +64,6 @@ class ImShow(data.Data):
         """
         if not hasattr(self, ax) or getattr(self, ax) in [None, []]:
             return None, None
-        elif self.col == 'x' and self.share_x and ax == 'x':
-            cols = self.x_vals
-        elif self.row == 'y' and self.share_y and ax == 'y':
-            cols = self.y_vals
         else:
             cols = getattr(self, ax)
 
@@ -136,7 +101,7 @@ class ImShow(data.Data):
         for ir, ic, plot_num in self._get_subplot_index():
             for ax in self.axs:
                 # Share axes (use self.df_fig to get global min/max)
-                if getattr(self, 'share_%s' % ax):
+                if getattr(self, 'share_%s' % ax) and ir == 0 and ic == 0:
                     vals = self._get_data_range(ax, df_fig, plot_num)
                     self._add_range(ir, ic, ax, 'min', vals[0])
                     self._add_range(ir, ic, ax, 'max', vals[1])
@@ -145,32 +110,22 @@ class ImShow(data.Data):
                     self._add_range(ir, ic, ax, 'max', self.ranges[0, 0]['%smax' % ax])
 
                 # Share row
-                elif self.share_row and self.row is not None:
-                    if self.row == 'y':
-                        vals = self._get_data_range(ax, df_fig, plot_num)
-                    else:
-                        vals = self._get_data_range(ax,
-                                                    df_fig[self.df_fig[self.row[0]] == self.row_vals[ir]],
-                                                    plot_num)
-                    self._add_range(ir, ic, ax, 'min', vals[0])
-                    self._add_range(ir, ic, ax, 'max', vals[1])
                 elif self.share_row and self.row is not None and ic > 0:
                     self._add_range(ir, ic, ax, 'min', self.ranges[ir, 0]['%smin' % ax])
                     self._add_range(ir, ic, ax, 'max', self.ranges[ir, 0]['%smax' % ax])
-
-                # Share col
-                elif self.share_col and self.col is not None:
-                    if self.col == 'x':
-                        vals = self._get_data_range(ax, df_fig, ir, ic)
-                    else:
-                        vals = self._get_data_range(ax,
-                                                    df_fig[df_fig[self.col[0]] == self.col_vals[ic]],
-                                                    plot_num)
+                elif self.share_row and self.row is not None:
+                    vals = self._get_data_range(ax, df_fig[self.df_fig[self.row[0]] == self.row_vals[ir]], plot_num)
                     self._add_range(ir, ic, ax, 'min', vals[0])
                     self._add_range(ir, ic, ax, 'max', vals[1])
+
+                # Share col
                 elif self.share_col and self.col is not None and ir > 0:
                     self._add_range(ir, ic, ax, 'min', self.ranges[0, ic]['%smin' % ax])
                     self._add_range(ir, ic, ax, 'max', self.ranges[0, ic]['%smax' % ax])
+                elif self.share_col and self.col is not None:
+                    vals = self._get_data_range(ax, df_fig[df_fig[self.col[0]] == self.col_vals[ic]], plot_num)
+                    self._add_range(ir, ic, ax, 'min', vals[0])
+                    self._add_range(ir, ic, ax, 'max', vals[1])
 
                 # subplot level when not shared
                 else:

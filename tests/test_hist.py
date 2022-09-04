@@ -22,8 +22,8 @@ else:
 
 # Sample data
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
-url = 'https://imgs.michaels.com/MAM/assets/1/D730994AF28E498A909A1002BBF38107/img/16F309E5F1CF4742B4AACD8E0CCF08E0/D203087S_1.jpg?fit=inside|1024:1024'  # noqa
-imgr = imageio.imread(url)
+img_path = Path(fcp.__file__).parent.parent.parent / 'tests' / 'test_images' / 'reference'
+imgr = imageio.imread(img_path / 'hist_patch.png')
 
 # Set theme
 fcp.set_theme('gray')
@@ -97,6 +97,32 @@ def plt_simple_no_bars(bm=False, master=False, remove=True, show=False):
 
     # Make the plot
     fcp.hist(df, x='Value', show=SHOW, inline=False, save=not bm, filename=name + '.png', bars=False)
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_simple_cdf_row(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'simple_cdf_row_master') if master else 'simple_cdf_row'
+
+    # Make the plot
+    fcp.hist(df, x='Value', row='Region', cdf=True, **fcp.HIST, show=SHOW, inline=False, save=not bm,
+             filename=name + '.png')
 
     if bm:
         return
@@ -474,6 +500,40 @@ def plt_image_legend(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
+def plt_image_legend_cdf(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'image_legend_cdf_master') if master else 'image_legend_cdf'
+
+    # Make the plot
+    img = fcp.utilities.rgb2bayer(imgr, 'rggb')
+    dnr = 180
+    dng = 230
+    max_count_r = (img.loc[::2, img.columns[::2]].stack().values == dnr).sum()
+    max_count_gb = (img.loc[1::2, img.columns[::2]
+                            ].stack().values == dng).sum()
+    fcp.hist(img, show=SHOW, inline=False, save=not bm, filename=name + '.png', cdf=True,
+             markers=False, ax_scale='logy', ax_size=[600, 400],
+             legend='Plane', cfa='rggb', line_width=2, colors=fcp.BAYER,
+             ax_hlines=[max_count_r, max_count_gb], ax_vlines=[dnr, dng])
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def plt_patch_solid(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'patch_solid_master') if master else 'patch_solid'
@@ -518,6 +578,11 @@ def test_simple(benchmark):
 def test_simple_no_bars(benchmark):
     plt_simple_no_bars()
     benchmark(plt_simple_no_bars, True)
+
+
+def test_simple_cdf_row(benchmark):
+    plt_simple_cdf_row()
+    benchmark(plt_simple_cdf_row, True)
 
 
 def test_horizontal(benchmark):
@@ -583,6 +648,11 @@ def test_image_pdf(benchmark):
 def test_image_legend(benchmark):
     plt_image_legend()
     benchmark(plt_image_legend, True)
+
+
+def test_image_legend_cdf(benchmark):
+    plt_image_legend_cdf()
+    benchmark(plt_image_legend_cdf, True)
 
 
 def test_patch_solid(benchmark):

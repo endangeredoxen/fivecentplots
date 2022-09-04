@@ -22,26 +22,16 @@ else:
 
 # Sample data
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_heatmap.csv')
+img_path = Path(fcp.__file__).parent.parent.parent / 'tests' / 'test_images' / 'reference'
+img_cat = utl.img_grayscale(imageio.imread(img_path / 'imshow_cat_pirate.png'))
 
 # Set theme
 fcp.set_theme('gray')
-# fcp.set_theme('white')
 
 # Other
 SHOW = False
 fcp.KWARGS['save'] = True
 fcp.KWARGS['inline'] = False
-
-# Read an image
-url = 'https://imagesvc.meredithcorp.io/v3/mm/image?q=85&c=sc&rect=0%2C214%2C2000%2C1214&poi=%5B920%2C546%5D&w=2000&h=1000&url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F47%2F2020%2F10%2F07%2Fcat-in-pirate-costume-380541532-2000.jpg'  # noqa
-imgr = imageio.imread(url)
-
-# Convert to grayscale
-r, g, b = imgr[:, :, 0], imgr[:, :, 1], imgr[:, :, 2]
-gray = 0.2989 * r + 0.5870 * g + 0.1140 * b
-
-# Convert image data to pandas DataFrame
-img = pd.DataFrame(gray)
 
 
 def make_all():
@@ -79,7 +69,36 @@ def test_nq(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'nq_master') if master else 'nq'
 
     # Make the plot
-    fcp.nq(img, filename=name + '.png')
+    fcp.nq(img_cat, filename=name + '.png')
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_nq_legend(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'nq_legend_master') if master else 'nq_legend'
+
+    img1 = img_cat.copy()
+    img2 = img_cat.copy()
+    img1['State'] = 'Original'
+    img2.loc[:, :] /= 2
+    img2['State'] = 'Half'
+    img = pd.concat([img1, img2])
+
+    # Make the plot
+    fcp.nq(img, legend='State', filename=name + '.png')
 
     # Compare with master
     if master:

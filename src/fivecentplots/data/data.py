@@ -74,6 +74,7 @@ class Data:
         if self.share_row or self.share_col:
             self.share_x = False
             self.share_y = False
+            self.share_z = False
         if kwargs.get('wrap', None) is not None:
             self.share_x = True
             self.share_y = True

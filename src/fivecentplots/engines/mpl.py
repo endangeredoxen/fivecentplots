@@ -1353,10 +1353,10 @@ class Layout(BaseLayout):
                 return
 
             # Get the VISIBLE tick labels and add references to the Element object
-            if tick == 'z':
+            if tick == 'z' and hasattr(ax.obj[ir, ic], 'ax'):
                 tlabs = getattr(ax.obj[ir, ic].ax, 'get_yticklabels')(minor=minor)
                 vmin, vmax = getattr(ax.obj[ir, ic].ax, 'get_ylim')()
-            else:
+            elif tick != 'z':
                 tlabs = getattr(ax.obj[ir, ic], f'get_{tick}ticklabels')(minor=minor)
                 vmin, vmax = getattr(ax.obj[ir, ic], f'get_{tick}lim')()
             tt.limits[ir, ic] = [vmin, vmax]
@@ -1481,7 +1481,7 @@ class Layout(BaseLayout):
                 txt = f'{xticks.limits[ir, ic][1]:.{precision}f}'
                 self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', **kw)
 
-            if len(yticks_size_all) <= 1 and not self.axes.share_y and axis != '2':
+            if len(yticks_size_all) <= 1 and not self.axes.share_y and axis != '2' and yticks.limits[ir, ic]:
                 kw = {}
                 kw['rotation'] = yticks.rotation
                 kw['font_color'] = yticks.font_color
@@ -3244,9 +3244,11 @@ class Layout(BaseLayout):
                 else:
                     offset = 0
                 x_rect = self.label_row.position[0]
-                x_text = x_rect + \
-                    (self.label_row.size[0] / 2 + offset) / \
-                    self.axes.size[0]
+                if not self.axes.visible[ir, self.ncol - 1]:
+                    # weird cbar issue if the last column plot is not visible (still see a width offset that is ??)
+                    x_rect -= ((self.ws_label_row + self.ws_ax_cbar if self.cbar.on else 0) + \
+                                self.cbar.size[0]) / self.axes.size[0]
+                x_text = x_rect + (self.label_row.size[0] / 2 + offset) / self.axes.size[0]
                 self.label_row.obj[ir, ic].set_position((x_text, 0.5))
                 self.label_row.obj_bg[ir, ic].set_x(x_rect)
         # col
