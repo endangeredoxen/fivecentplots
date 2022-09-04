@@ -3246,8 +3246,8 @@ class Layout(BaseLayout):
                 x_rect = self.label_row.position[0]
                 if not self.axes.visible[ir, self.ncol - 1]:
                     # weird cbar issue if the last column plot is not visible (still see a width offset that is ??)
-                    x_rect -= ((self.ws_label_row + self.ws_ax_cbar if self.cbar.on else 0) + \
-                                self.cbar.size[0]) / self.axes.size[0]
+                    x_rect -= ((self.ws_label_row + self.ws_ax_cbar if self.cbar.on else 0) +
+                               self.cbar.size[0]) / self.axes.size[0]
                 x_text = x_rect + (self.label_row.size[0] / 2 + offset) / self.axes.size[0]
                 self.label_row.obj[ir, ic].set_position((x_text, 0.5))
                 self.label_row.obj_bg[ir, ic].set_x(x_rect)

@@ -23,9 +23,8 @@ else:
 
 # Sample data
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_heatmap.csv')
-img_path = Path(fcp.__file__).parent.parent.parent / 'tests' / 'test_images' / 'reference'
-img_cat = utl.img_grayscale(imageio.imread(img_path / 'imshow_cat_pirate.png'))
-img_cp = utl.rgb2bayer(imageio.imread(img_path / 'imshow_color_planes.png'))
+img_cat = utl.img_grayscale(imageio.imread(Path(fcp.__file__).parent / 'test_data/imshow_cat_pirate.png'))
+img_cp = utl.rgb2bayer(imageio.imread(Path(fcp.__file__).parent / 'test_data/imshow_color_planes.png'))
 cp = utl.split_color_planes(img_cp, as_dict=True)
 cp['r'] *= 0.5
 cp['b'] -= 50

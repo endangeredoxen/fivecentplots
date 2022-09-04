@@ -29,13 +29,13 @@ class Heatmap(data.Data):
 
         # check for invalid grouping options
         if 'row' in kwargs and kwargs['row'] == 'y':
-            raise data.GroupingError(f'Cannot group row by "y" for heatmap plots')
+            raise data.GroupingError('Cannot group row by "y" for heatmap plots')
         if 'col' in kwargs and kwargs['col'] == 'x':
-            raise data.GroupingError(f'Cannot group col by "x" for heatmap plots')
+            raise data.GroupingError('Cannot group col by "x" for heatmap plots')
         if 'wrap' in kwargs and kwargs['wrap'] == 'y':
-            raise data.GroupingError(f'Cannot wrap by "y" for heatmap plots')
+            raise data.GroupingError('Cannot wrap by "y" for heatmap plots')
         if 'legend' in kwargs and kwargs['legend'] is not None:
-            raise data.GroupingError(f'legend not available for heatmap plots')
+            raise data.GroupingError('legend not available for heatmap plots')
 
         super().__init__(name, req, opt, **kwargs)
 

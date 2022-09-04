@@ -22,8 +22,7 @@ else:
 
 # Sample data
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
-img_path = Path(fcp.__file__).parent.parent.parent / 'tests' / 'test_images' / 'reference'
-imgr = imageio.imread(img_path / 'hist_patch.png')
+imgr = imageio.imread(Path(fcp.__file__).parent / 'test_data/hist_patch.png')
 
 # Set theme
 fcp.set_theme('gray')

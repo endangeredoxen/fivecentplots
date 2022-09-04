@@ -23,8 +23,7 @@ else:
 
 # Sample data
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_heatmap.csv')
-img_path = Path(fcp.__file__).parent.parent.parent / 'tests' / 'test_images' / 'reference'
-img_cat = utl.img_grayscale(imageio.imread(img_path / 'imshow_cat_pirate.png'))
+img_cat = utl.img_grayscale(imageio.imread(Path(fcp.__file__).parent / 'test_data/imshow_cat_pirate.png'))
 
 # Set theme
 fcp.set_theme('gray')

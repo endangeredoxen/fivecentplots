@@ -37,13 +37,13 @@ class ImShow(data.Data):
 
         # check for invalid grouping options
         if 'row' in kwargs and kwargs['row'] == 'y':
-            raise data.GroupingError(f'Cannot group row by "y" for imshow plots')
+            raise data.GroupingError('Cannot group row by "y" for imshow plots')
         if 'col' in kwargs and kwargs['col'] == 'x':
-            raise data.GroupingError(f'Cannot group col by "x" for imshow plots')
+            raise data.GroupingError('Cannot group col by "x" for imshow plots')
         if 'wrap' in kwargs and kwargs['wrap'] == 'y':
-            raise data.GroupingError(f'Cannot wrap by "y" for imshow plots')
+            raise data.GroupingError('Cannot wrap by "y" for imshow plots')
         if 'legend' in kwargs and kwargs['legend'] is not None:
-            raise data.GroupingError(f'legend not available for imshow plots')
+            raise data.GroupingError('legend not available for imshow plots')
 
         super().__init__(name, req, opt, **kwargs)
 
@@ -57,7 +57,6 @@ class ImShow(data.Data):
 
         self.df_all = utl.df_int_cols_convert(self.df_all)
 
-
     def _check_xyz(self, xyz: str):
         """Validate the name and column data provided for x, y, and/or z.  For imshow, there are no req or opt
         values needed.
@@ -65,7 +64,7 @@ class ImShow(data.Data):
         Args:
             xyz: name of variable to check
         """
-        return  getattr(self, xyz)
+        return getattr(self, xyz)
 
     def _get_data_range(self, ax: str, df: pd.DataFrame, plot_num: int) -> tuple:
         """Determine the min/max values for a given axis based on user inputs.

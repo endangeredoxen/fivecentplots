@@ -2,7 +2,6 @@ from . import data
 import pdb
 import pandas as pd
 from .. import utilities
-from natsort import natsorted
 utl = utilities
 db = pdb.set_trace
 
@@ -29,13 +28,13 @@ class Pie(data.Data):
 
         # check for invalid grouping options
         if self.row == 'y':
-            raise data.GroupingError(f'Cannot group row by "y" for pie charts')
+            raise data.GroupingError('Cannot group row by "y" for pie charts')
         if self.col == 'x':
-            raise data.GroupingError(f'Cannot group col by "x" for pie charts')
+            raise data.GroupingError('Cannot group col by "x" for pie charts')
         if self.wrap == 'y':
-            raise data.GroupingError(f'Cannot wrap by "y" for pie charts')
+            raise data.GroupingError('Cannot wrap by "y" for pie charts')
         if self.legend not in [True, None]:
-            raise data.GroupingError(f'legend can only equal True, False, or None for pie charts')
+            raise data.GroupingError('legend can only equal True, False, or None for pie charts')
 
     def _get_data_ranges(self):
         """Pie-specific data range calculator by subplot."""
