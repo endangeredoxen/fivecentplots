@@ -2061,7 +2061,6 @@ class Layout(BaseLayout):
 
         # Adjust the yticklabels
         if iline + 1 == ngroups:
-            tp = mpl_get_ticks(ax)  # noqa
             yvals = [f[0] for f in yvals]
             ax.set_yticks(range(-1, len(yvals)))
             ax.set_yticklabels([''] + list(yvals))
