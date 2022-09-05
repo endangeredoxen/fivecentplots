@@ -1175,7 +1175,6 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin, leg_name, ngroups):
         ngroups (int): number of groups in this data set
 
     """
-
     if not layout.fit.on:
         return
 
@@ -1418,8 +1417,7 @@ def plot_stat(ir, ic, iline, data, layout, df, x, y, leg_name=None, twin=False):
         return
 
     layout.lines.on = True
-    layout.plot_xy(ir, ic, iline, df_stat, x, y,
-                   leg_name, twin, marker_disable=True)
+    layout.plot_xy(ir, ic, iline, df_stat, x, y, leg_name, twin, marker_disable=True)
 
     return data
 

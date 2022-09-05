@@ -182,6 +182,30 @@ def test_legend_secondary_axis(master=False, remove=True, show=False):
         assert not compare
 
 
+def test_legend_secondary_axis2(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'legend_secondary_axis2_master') if master else 'legend_secondary_axis2'
+
+    # Make the plot
+    fcp.plot(df1, y='Voltage', x=['Voltage', 'I [A]'], twin_y=True, legend=True,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             save=True, inline=False, filename=name + '.png')
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def test_legend_secondary_column(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'legend_secondary_column_master') if master else 'legend_secondary_column'
@@ -545,6 +569,31 @@ def test_groups_wrap_xy(master=False, remove=True, show=False):
         assert not compare
 
 
+def test_groups_wrap_xy2(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'groups_wrap_xy2_master') if master else 'groups_wrap_xy2'
+
+    # Make the plot
+    fcp.plot(df1, y='Voltage', x=['I Set', 'I [A]'], legend='Die', wrap='x',
+             groups=['Boost Level', 'Temperature [C]'], ax_size=[325, 325],
+             filter='Substrate=="Si" & Target Wavelength==450',
+             save=True, inline=False, filename=name + '.png')
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def test_groups_wrap_names_no_sharing(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'groups_wrap_names-no-sharing_master') if master else 'groups_wrap_names-no-sharing'
@@ -596,6 +645,35 @@ def test_figure(master=False, remove=True, show=False):
                 os.remove(name + tag + '.png')
 
             assert not compare
+
+
+def test_figure2(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'figure2_master') if master else 'figure2'
+
+    # Make the plot
+    fcp.plot(df1, x='Voltage', y='I [A]', fig_groups=['Die', 'Substrate'], wrap=['Temperature [C]', 'Boost Level'],
+             ax_size=[225, 225], filter='Target Wavelength==450',
+             save=True, inline=False, filename=name + '.png')
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        for die in df1.Die.unique():
+            for sub in df1.Substrate.unique():
+                tag = ' where %s=%s and where %s=%s' % ('Die', die, 'Substrate', sub)
+                utl.show_file(osjoin(MASTER, name + '_master' + tag + '.png'))
+                utl.show_file(name + tag + '.png')
+    else:
+        for die in df1.Die.unique():
+            for sub in df1.Substrate.unique():
+                tag = ' where %s=%s and where %s=%s' % ('Die', die, 'Substrate', sub)
+                compare = utl.img_compare(name + tag + '.png', osjoin(MASTER, name + '_master' + tag + '.png'))
+                if remove:
+                    os.remove(name + tag + '.png')
+
+                assert not compare
 
 
 if __name__ == '__main__':

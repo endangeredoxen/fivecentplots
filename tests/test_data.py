@@ -85,3 +85,4 @@ def test_GroupingError():
         fcp.boxplot(df_box, y='Value', groups=['Sample', 'Batch', 'Region'], wrap='Region')
     with pytest.raises(data.GroupingError):
         fcp.boxplot(df_box, y='Value', groups=['Sample', 'Batch', 'Region'], col='Region')
+

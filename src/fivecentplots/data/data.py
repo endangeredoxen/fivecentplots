@@ -356,7 +356,7 @@ class Data:
 
         # Check for no groups
         if len(list(self.df_all.groupby(values).groups.keys())) == 0:
-            raise GroupingError(f'The number of unique groups in the data for the {group_type}=[{", ".join(values)}]')
+            raise GroupingError(f'There are no unique groups in the data for the {group_type}=[{", ".join(values)}]')
 
         # Check for wrap with twinning
         if group_type == 'wrap' and col_names is not None and self.twin_y:
@@ -613,7 +613,7 @@ class Data:
         stat['lcl'] = np.nan
         for irow, row in stat.iterrows():
             if row['std'] == 0:
-                conf = [0, 0]
+                conf = [row['mean'], row['mean']]
             else:
                 conf = ss.t.interval(self.interval[0], int(row['count']) - 1,
                                      loc=row['mean'], scale=row['sderr'])
@@ -716,8 +716,8 @@ class Data:
         else:
             cols = getattr(self, ax)
 
-        # Groupby for stats
-        df = self._get_stat_groupings(df)
+        # # Groupby for stats
+        # df = self._get_stat_groupings(df)
 
         # Get the dataframe values for this axis
         dfax = df[cols]
@@ -744,10 +744,7 @@ class Data:
         vmin = getattr(self, '%smin' % ax)[plot_num]
         if vmin is not None and 'iqr' in str(vmin).lower():
             factor = str(vmin).split('*')
-            if len(factor) == 1:
-                factor = 1
-            else:
-                factor = float(factor[0])
+            factor = float(factor[0])
             if 'box' not in self.name or self.groups is None:
                 q1 = dfax.quantile(0.25).min()
                 q3 = dfax.quantile(0.75).max()
@@ -788,10 +785,7 @@ class Data:
         vmax = getattr(self, '%smax' % ax)[plot_num]
         if vmax is not None and 'iqr' in str(vmax).lower():
             factor = str(vmax).split('*')
-            if len(factor) == 1:
-                factor = 1
-            else:
-                factor = float(factor[0])
+            factor = float(factor[0])
             if 'box' not in self.name or self.groups is None:
                 q1 = dfax.quantile(0.25).min()
                 q3 = dfax.quantile(0.75).max()
@@ -865,13 +859,10 @@ class Data:
                             self.df_fig = self.df_all[self.df_all[self.fig_groups[ig]] == gg].copy()
                         else:
                             self.df_fig = self.df_fig[self.df_fig[self.fig_groups[ig]] == gg]
-                elif self.fig_groups is not None:
-                    if isinstance(self.fig_groups, list):
-                        self.df_fig = self.df_all[self.df_all[self.fig_groups[0]] == fig_val].copy()
-                    else:
-                        self.df_fig = self.df_all[self.df_all[self.fig_groups] == fig_val].copy()
+                elif isinstance(self.fig_groups, list):
+                    self.df_fig = self.df_all[self.df_all[self.fig_groups[0]] == fig_val].copy()
                 else:
-                    self.df_fig = self.df_all
+                    self.df_fig = self.df_all[self.df_all[self.fig_groups] == fig_val].copy()
 
                 self._get_legend_groupings(self.df_fig)
                 self._get_rc_groupings(self.df_fig)
@@ -905,11 +896,8 @@ class Data:
         df['%s Fit' % x] = np.nan
         df['%s Fit' % y] = np.nan
 
-        if not self.fit:
-            return df, np.nan
-
         if self.fit is True or isinstance(self.fit, int):
-
+            # Set range of the fit
             if isinstance(self.fit_range_x, list):
                 df2 = df2[(df2[x] >= self.fit_range_x[0])
                           & (df2[x] <= self.fit_range_x[1])].copy()
@@ -935,6 +923,7 @@ class Data:
                 if self.ranges[ir, ic]['ymax'] is not None:
                     df2 = df2[(df2[y]) <= self.ranges[ir, ic]['ymax']]
 
+            # Convert to arrays
             xx = np.array(df2[x])
             yy = np.array(df2[y])
             if len(xx) == 0 or len(yy) == 0:
@@ -999,11 +988,9 @@ class Data:
                 self.legend = ' | '.join(self.legend)
                 df[self.legend] = temp
             if self.sort:
-                legend_vals = \
-                    natsorted(list(df.groupby(self.legend).groups.keys()))
+                legend_vals = natsorted(list(df.groupby(self.legend).groups.keys()))
             else:
-                legend_vals = \
-                    list(df.groupby(self.legend, sort=False).groups.keys())
+                legend_vals = list(df.groupby(self.legend, sort=False).groups.keys())
             self.nleg_vals = len(legend_vals)
         else:
             legend_vals = [None]
@@ -1138,16 +1125,13 @@ class Data:
         if self.wrap:
             if self.wrap_vals is None:  # this broke something but removing will cause other failures
                 if self.sort:
-                    self.wrap_vals = \
-                        natsorted(list(df.groupby(self.wrap).groups.keys()))
+                    self.wrap_vals = natsorted(list(df.groupby(self.wrap).groups.keys()))
                 else:
-                    self.wrap_vals = \
-                        list(df.groupby(self.wrap, sort=False).groups.keys())
+                    self.wrap_vals = list(df.groupby(self.wrap, sort=False).groups.keys())
             if self.ncols == 0:
                 rcnum = int(np.ceil(np.sqrt(len(self.wrap_vals))))
             else:
-                rcnum = self.ncols if self.ncols <= len(self.wrap_vals) \
-                    else len(self.wrap_vals)
+                rcnum = self.ncols if self.ncols <= len(self.wrap_vals) else len(self.wrap_vals)
             self.ncol = rcnum
             self.nrow = int(np.ceil(len(self.wrap_vals) / rcnum))
             self.nwrap = len(self.wrap_vals)
@@ -1158,25 +1142,21 @@ class Data:
             if self.col:
                 if self.col_vals is None:
                     if self.sort:
-                        self.col_vals = \
-                            natsorted(list(df.groupby(self.col).groups.keys()))
+                        self.col_vals = natsorted(list(df.groupby(self.col).groups.keys()))
                     else:
-                        self.col_vals = \
-                            list(df.groupby(self.col, sort=False).groups.keys())
+                        self.col_vals = list(df.groupby(self.col, sort=False).groups.keys())
                 self.ncol = len(self.col_vals)
 
             if self.row:
                 if self.row_vals is None:
                     if self.sort:
-                        self.row_vals = \
-                            natsorted(list(df.groupby(self.row).groups.keys()))
+                        self.row_vals = natsorted(list(df.groupby(self.row).groups.keys()))
                     else:
-                        self.row_vals = \
-                            list(df.groupby(self.row, sort=False).groups.keys())
+                        self.row_vals = list(df.groupby(self.row, sort=False).groups.keys())
                 self.nrow = len(self.row_vals)
 
         if self.ncol == 0:
-            raise GroupingError('Cannot make subplot(s): number of columns is 0')
+            raise GroupingError('Cannot make subplot(s): number of columns is 0')  # can this ever happen?
         if self.nrow == 0:
             raise GroupingError('Cannot make subplot(s): number of rows is 0')
 
@@ -1229,6 +1209,8 @@ class Data:
         if not self.stat:
             return pd.DataFrame()
 
+        if 'q' in self.stat:
+            df = df.select_dtypes(exclude=['object'])  # only needed for older versions of pandas
         df_stat = df.groupby(x if not self.stat_val else self.stat_val)
         if 'q' in self.stat:
             q = float(self.stat.replace('q', ''))
@@ -1242,29 +1224,28 @@ class Data:
                 print('stat "%s" is not supported...skipping stat calculation' % self.stat)
                 return None
 
-    def _get_stat_groupings(self, df: pd.DataFrame) -> pd.DataFrame:
-        """Groupby for stat/stat_vals.
+    # def _get_stat_groupings(self, df: pd.DataFrame) -> pd.DataFrame:
+    #     """Groupby for stat/stat_vals.  NOT SURE WHAT THIS IS FOR ANYMORE, MUST BE OLD AND CARRIED OVER
 
-        Args:
-            df: data subset
+    #     Args:
+    #         df: data subset
 
-        Returns:
-            updated DataFrame
-        """
-        if self.stat is not None and 'only' in self.stat:
-            stat_groups = []
-            vals_2_chk = ['stat_val', 'legend', 'col', 'row', 'wrap']
-            for v in vals_2_chk:
-                if getattr(self, v) is not None:
-                    stat_groups += utl.validate_list(getattr(self, v))
+    #     Returns:
+    #         updated DataFrame
+    #     """
+    #     if self.stat is not None and 'only' in self.stat:
+    #         stat_groups = []
+    #         vals_2_chk = ['stat_val', 'legend', 'col', 'row', 'wrap']
+    #         for v in vals_2_chk:
+    #             if getattr(self, v) is not None:
+    #                 stat_groups += utl.validate_list(getattr(self, v))
 
-        if self.stat is not None and 'only' in self.stat \
-                and 'median' in self.stat:
-            df = df.groupby(stat_groups).median().reset_index()
-        elif self.stat is not None and 'only' in self.stat:
-            df = df.groupby(stat_groups).mean().reset_index()
+    #     if self.stat is not None and 'only' in self.stat and 'median' in self.stat:
+    #         df = df.groupby(stat_groups).median().reset_index()
+    #     elif self.stat is not None and 'only' in self.stat:
+    #         df = df.groupby(stat_groups).mean().reset_index()
 
-        return df
+    #     return df
 
     def _range_dict(self):
         """Make a list of empty dicts for axes range limits."""
@@ -1275,13 +1256,12 @@ class Data:
 
         return ranges
 
-    def _subset(self, ir: int, ic: int, apply_ranges: bool = False) -> pd.DataFrame:
+    def _subset(self, ir: int, ic: int) -> pd.DataFrame:
         """Handles creation of a new data subset based on the type of plot selected.
 
         Args:
             ir: subplot row index
             ic: subplot column index
-            apply_ranges (optional): enable/disable applications of ranges to the new subset. Defaults to False.
 
         Returns:
             pandas DataFrame subset
@@ -1296,24 +1276,6 @@ class Data:
 
         # Optional plot specific subset modification
         df = self._subset_modify(ir, ic, df)
-
-        if not apply_ranges:
-            return df
-
-        # apply any known ranges
-        for k, v in self.ranges[ir, ic].items():
-            if v is not None:
-                if k[1] == '2':
-                    ax = k[0:2]
-                else:
-                    ax = k[0]
-                vv = getattr(self, ax)
-                attr = k[-3:]
-                for vvv in vv:
-                    if attr == 'min':
-                        df = df.loc[df[vvv] >= v]
-                    else:
-                        df = df.loc[df[vvv] <= v]
 
         return df
 

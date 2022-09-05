@@ -1,3 +1,4 @@
+import pytest
 import imageio
 import fivecentplots as fcp
 import pandas as pd
@@ -6,6 +7,7 @@ import sys
 import pdb
 from pathlib import Path
 import numpy as np
+import fivecentplots.data.data as data
 import fivecentplots.utilities as utl
 import matplotlib as mpl
 import inspect
@@ -533,6 +535,94 @@ def plt_image_legend_cdf(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
+def plt_image_legend_pdf(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'image_legend_pdf_master') if master else 'image_legend_pdf'
+
+    # Make the plot
+    img = fcp.utilities.rgb2bayer(imgr, 'rggb')
+    dnr = 180
+    dng = 230
+    max_count_r = (img.loc[::2, img.columns[::2]].stack().values == dnr).sum()
+    max_count_gb = (img.loc[1::2, img.columns[::2]
+                            ].stack().values == dng).sum()
+    fcp.hist(img, show=SHOW, inline=False, save=not bm, filename=name + '.png', pdf=True,
+             markers=False, ax_scale='logy', ax_size=[600, 400],
+             legend='Plane', cfa='rggb', line_width=2, colors=fcp.BAYER,
+             ax_hlines=[max_count_r, max_count_gb], ax_vlines=[dnr, dng])
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_patch_single(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'patch_single_master') if master else 'patch_single'
+
+    # Make the patch
+    img_rgb = np.ones([25, 25]).astype(np.uint8)
+    fcp.hist(img_rgb, show=SHOW, inline=False, save=not bm, filename=name + '.png',
+             markers=False, ax_size=[600, 400], line_width=2)
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_patch_single_log(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'patch_single_log_master') if master else 'patch_single_log'
+
+    # Make the patch
+    img_rgb = np.ones([25, 25]).astype(np.uint8)
+    fcp.hist(img_rgb, show=SHOW, inline=False, save=not bm, filename=name + '.png',
+             markers=False, ax_scale='logy', ax_size=[600, 400], line_width=2)
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def plt_patch_solid(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'patch_solid_master') if master else 'patch_solid'
@@ -657,6 +747,12 @@ def test_image_legend_cdf(benchmark):
 def test_patch_solid(benchmark):
     plt_patch_solid()
     benchmark(plt_patch_solid, True)
+
+
+def test_invalid():
+
+    with pytest.raises(data.GroupingError):
+        fcp.hist(df, x=['Value', 'Value*2', 'Value*3'], wrap='y', ncol=3, ax_size=[250, 250])
 
 
 if __name__ == '__main__':

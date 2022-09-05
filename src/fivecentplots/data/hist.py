@@ -38,6 +38,10 @@ class Histogram(data.Data):
         kwargs['ax_limit_padding_ymax'] = kwargs.get('ax_limit_padding', 0.05)
         kwargs['ax_limit_padding'] = kwargs.get('ax_limit_padding', 0)
 
+        # invalid options
+        if 'wrap' in kwargs and kwargs['wrap'] == 'y':
+            raise data.GroupingError('Cannot wrap by "y" for hist plots')
+
         super().__init__(name, req, opt, **kwargs)
 
         self.use_parent_ranges = False
@@ -220,15 +224,6 @@ class Histogram(data.Data):
         """
         if ir * self.ncol + ic > self.nwrap - 1:
             return pd.DataFrame()
-        elif self.wrap == 'y':
-            # can we drop these validate calls for speed
-            self.y = utl.validate_list(self.wrap_vals[ic + ir * self.ncol])
-            cols = (self.x if self.x is not None else []) + \
-                   (self.y if self.y is not None else []) + \
-                   (self.groups if self.groups is not None else []) + \
-                   (utl.validate_list(self.legend)
-                    if self.legend not in [None, True, False] else [])
-            return self.df_fig[cols]
         elif self.wrap == 'x':
             self.x = utl.validate_list(self.wrap_vals[ic + ir * self.ncol])
             cols = (self.x if self.x is not None else []) + \

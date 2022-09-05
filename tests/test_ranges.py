@@ -113,6 +113,30 @@ def test_primary(master=False, remove=True, show=False):
         assert not compare
 
 
+def test_primary_qgroups(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'primary_qgroups_master') if master else 'primary_qgroups'
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', show=SHOW, groups='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             xmin='q1', xmax='q99', filename=name + '.png')
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def test_primary_no_scale(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'primary_no-auto-scale_master') if master else 'primary_no-auto-scale'

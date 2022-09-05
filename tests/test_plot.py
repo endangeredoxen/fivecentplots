@@ -141,6 +141,32 @@ def plt_xy_legend(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
+def plt_xy_legend_no_sort(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'xy_legend_no_sort_master') if master else 'xy_legend_no_sort'
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', show=SHOW, ymax=1.4, sort=False,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             filename=name + '.png', save=not bm, inline=False)
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def plt_xy_log_scale(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'xy_log-scale_master') if master else 'xy_log-scale'
@@ -671,6 +697,60 @@ def plt_other_curve_fitting(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
+def plt_other_curve_fitting2(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'other_curve-fitting2_master') if master else 'other_curve-fitting2'
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, show=SHOW, legend=False,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             fit=2, fit_eqn=True, fit_rsq=True, fit_font_size=9, fit_range_y=[0, 1],
+             filename=name + '.png', save=not bm, inline=False)
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_other_curve_fitting3(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'other_curve-fitting3_master') if master else 'other_curve-fitting3'
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, show=SHOW, legend=False,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             fit=2, fit_eqn=True, fit_rsq=True, fit_font_size=9, fit_range_x=[-1, -1],
+             filename=name + '.png', save=not bm, inline=False)
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def plt_other_curve_fitting_range(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'other_curve-fitting-range_master') if master else 'other_curve-fitting-range'
@@ -759,8 +839,33 @@ def plt_other_stat_bad(bm=False, master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x='I [A]', y='Voltage', title='IV Data', lines=False, show=SHOW,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             stat='median',
-             filename=name + '.png', save=not bm, inline=False)
+             stat='median', filename=name + '.png', save=not bm, inline=False)
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_other_stat_bad2(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'other_stat-lines-bad2_master') if master else 'other_stat-lines-bad2'
+
+    # Make the plot
+    fcp.plot(df, x='I [A]', y='Voltage', title='IV Data', lines=False, show=SHOW,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             stat='medianx', filename=name + '.png', save=not bm, inline=False)
     if bm:
         return
 
@@ -784,9 +889,36 @@ def plt_other_stat_good(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'other_stat-lines-good_master') if master else 'other_stat-lines-good'
 
     # Make the plot
-    fcp.plot(df, x='I [A]', y='Voltage', title='IV Data', lines=False, show=SHOW,
+    fcp.plot(df, x='I [A]', y='Voltage', title='IV Data', lines=False, show=SHOW, grops='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              stat='median', stat_val='I Set',
+             filename=name + '.png', save=not bm, inline=False)
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_other_stat_q(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'other_stat-lines-q_master') if master else 'other_stat-lines-q'
+
+    # Make the plot
+    fcp.plot(df, x='I [A]', y='Voltage', title='IV Data', lines=False, show=SHOW,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             stat='q50', stat_val='I Set',
              filename=name + '.png', save=not bm, inline=False)
     if bm:
         return
@@ -863,6 +995,33 @@ def plt_other_conf_int2(bm=False, master=False, remove=True, show=False):
 
     # Make the plot
     fcp.plot(df_interval, x='x', y='y', title='IV Data', lines=False, show=SHOW,
+             conf_int=95, filename=name + '.png', save=not bm, inline=False)
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_other_conf_int_no_std(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'other_conf-int_no_std_master') if master else 'other_conf-int_no_std'
+
+    # Make the plot
+    df2 = pd.DataFrame({'x':[0, 1, 2], 'y':[2, 4, 6]})
+    df2 = pd.concat([df2, df2, df2, df2, df2])
+    fcp.plot(df2, x='x', y='y', title='IV Data', lines=False, show=SHOW,
              conf_int=95, filename=name + '.png', save=not bm, inline=False)
     if bm:
         return
@@ -1204,9 +1363,24 @@ def test_other_conf_int2(benchmark):
     benchmark(plt_other_conf_int2, True)
 
 
+def test_other_conf_int_no_std(benchmark):
+    plt_other_conf_int_no_std()
+    benchmark(plt_other_conf_int_no_std, True)
+
+
 def test_other_curve_fitting(benchmark):
     plt_other_curve_fitting()
     benchmark(plt_other_curve_fitting, True)
+
+
+def test_other_curve_fitting2(benchmark):
+    plt_other_curve_fitting2()
+    benchmark(plt_other_curve_fitting2, True)
+
+
+def test_other_curve_fitting3(benchmark):
+    plt_other_curve_fitting3()
+    benchmark(plt_other_curve_fitting3, True)
 
 
 def test_other_curve_fitting_legend(benchmark):
@@ -1274,9 +1448,19 @@ def test_other_stat_bad(benchmark):
     benchmark(plt_other_stat_bad, True)
 
 
+def test_other_stat_bad2(benchmark):
+    plt_other_stat_bad2()
+    benchmark(plt_other_stat_bad2, True)
+
+
 def test_other_stat_good(benchmark):
     plt_other_stat_good()
     benchmark(plt_other_stat_good, True)
+
+
+def test_other_stat_q(benchmark):
+    plt_other_stat_q()
+    benchmark(plt_other_stat_q, True)
 
 
 def test_other_stat_good_mult(benchmark):
@@ -1332,6 +1516,11 @@ def test_xy_categorical(benchmark):
 def test_xy_legend(benchmark):
     plt_xy_legend()
     benchmark(plt_xy_legend, True)
+
+
+def test_xy_legend_no_sort(benchmark):
+    plt_xy_legend_no_sort()
+    benchmark(plt_xy_legend_no_sort, True)
 
 
 def test_xy_log_scale(benchmark):
