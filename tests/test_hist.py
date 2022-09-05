@@ -752,6 +752,8 @@ def test_patch_solid(benchmark):
 def test_invalid():
 
     with pytest.raises(data.GroupingError):
+        df['Value*2'] = 2 * df.Value
+        df['Value*3'] = 3 * df.Value
         fcp.hist(df, x=['Value', 'Value*2', 'Value*3'], wrap='y', ncol=3, ax_size=[250, 250])
 
 

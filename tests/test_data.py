@@ -2,13 +2,9 @@ import pytest
 import fivecentplots as fcp
 import pandas as pd
 import os
-import sys
 import pdb
 from pathlib import Path
 import fivecentplots.data.data as data
-import fivecentplots.utilities as utl
-import matplotlib as mpl
-import inspect
 import numpy as np
 osjoin = os.path.join
 db = pdb.set_trace
@@ -74,15 +70,14 @@ def test_GroupingError():
     with pytest.raises(data.GroupingError):
         fcp.plot(df, x='Voltage', y='I [A]', row=['Boost Level', 'Temperature [C]'])
     with pytest.raises(data.GroupingError):
-        fcp.plot(df, x='Voltage', y='I [A]', row='Boost Level', col= 'Boost Level')
+        fcp.plot(df, x='Voltage', y='I [A]', row='Boost Level', col='Boost Level')
     with pytest.raises(data.GroupingError):
         fcp.plot(df, x='Voltage', y='I [A]', wrap='Boost Level', col='Temperature [C]')
     with pytest.raises(data.GroupingError):
-        fcp.plot(df, x='Voltage', y='I [A]', legend='Boost Level', fig= 'Boost Level')
+        fcp.plot(df, x='Voltage', y='I [A]', legend='Boost Level', fig='Boost Level')
     with pytest.raises(data.GroupingError):
         fcp.boxplot(df_box, y='Value', groups='Sample', fig='Sample')
     with pytest.raises(data.GroupingError):
         fcp.boxplot(df_box, y='Value', groups=['Sample', 'Batch', 'Region'], wrap='Region')
     with pytest.raises(data.GroupingError):
         fcp.boxplot(df_box, y='Value', groups=['Sample', 'Batch', 'Region'], col='Region')
-

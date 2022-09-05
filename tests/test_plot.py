@@ -1019,7 +1019,7 @@ def plt_other_conf_int_no_std(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'other_conf-int_no_std_master') if master else 'other_conf-int_no_std'
 
     # Make the plot
-    df2 = pd.DataFrame({'x':[0, 1, 2], 'y':[2, 4, 6]})
+    df2 = pd.DataFrame({'x': [0, 1, 2], 'y': [2, 4, 6]})
     df2 = pd.concat([df2, df2, df2, df2, df2])
     fcp.plot(df2, x='x', y='y', title='IV Data', lines=False, show=SHOW,
              conf_int=95, filename=name + '.png', save=not bm, inline=False)

@@ -12,11 +12,11 @@ import re
 import shlex
 from matplotlib.font_manager import FontProperties, findfont
 try:
-    from PIL import ImageFont
+    from PIL import ImageFont  # used only for bokeh font size calculations
 except ImportError:
     pass
 try:
-    import cv2
+    import cv2  # required for testing
 except (ImportError, ModuleNotFoundError):
     pass
 db = pdb.set_trace
@@ -44,28 +44,26 @@ class RepeatedList:
         Args:
             values: user-defined list of values
             name: label to describe contents of class
-            override: override the RepeatedList value based on the
-                legend value for this item
+            override: override the RepeatedList value based on the legend value for this item
         """
         self.values = validate_list(values)
         self.shift = 0
         self.override = override
 
-        if not isinstance(self.values, list) and len(self.values) < 1:
-            raise(ValueError, 'RepeatedList for "%s" must contain an actual '
-                              'list with more at least one element')
+        if not isinstance(self.values, list) or len(self.values) < 1:
+            raise ValueError('RepeatedList must contain an actual list with more at least one element')
 
     def __len__(self):
         """Custom length."""
         return len(self.values)
 
     def __getitem__(self, idx):
-        """Custom __get__ to cycle back to start of list for index value >
-        length of the array."""
-        if isinstance(idx, tuple):  # don't love this
+        """Custom __get__ to cycle back to start of list for index value > length of the array."""
+        if isinstance(idx, tuple):  # use a tuple when overriding
             idx, key = idx
         else:
             key = None
+
         val = self.values[(idx + self.shift) % len(self.values)]
 
         if len(list(self.override.keys())) == 0 or key not in self.override.keys():
@@ -95,6 +93,8 @@ class Timer:
         self._total = 0
         if start:
             self.start()
+        if units not in ['s', 'ms']:
+            raise ValueError('timer only supports "s" and "ms" time units')
 
     @property
     def now(self):
@@ -126,10 +126,8 @@ class Timer:
         delta = self.now - self.init
         if self.units == 'ms':
             delta = delta.seconds * 1000 + delta.microseconds / 1000
-        elif self.units == 's':
-            delta = delta.seconds + delta.microseconds / 1E6
         else:
-            self.units = 'NA'
+            delta = delta.seconds + delta.microseconds / 1E6
         self.total = delta
 
         if label != '':
@@ -201,9 +199,8 @@ def df_filter(df: pd.DataFrame, filt_orig: str, drop_cols: bool = False,
               keep_filtered: bool = False) -> pd.DataFrame:
     """Filter the DataFrame.
 
-    Due to limitations in pd.query, column names must not have spaces.  This
-    function will temporarily replace spaces in the column names with
-    underscores, but the supplied query string must contain column names
+    Due to limitations in pd.query, column names must not have spaces.  This function will temporarily replace
+    spaces in the column names with underscores, but the supplied query string must contain column names
     without any spaces
 
     Args:
@@ -347,8 +344,10 @@ def df_from_array2d(arr: np.ndarray) -> pd.DataFrame:
     """
     if isinstance(arr, np.ndarray) and len(arr.shape) == 2:
         return pd.DataFrame(arr)
-    else:
+    elif isinstance(arr, pd.DataFrame):
         return arr
+    else:
+        raise ValueError('input data must be a numpy array or a pandas DataFrame')
 
 
 def df_from_array3d(arr: np.ndarray, labels: [list, np.ndarray] = [],
@@ -368,8 +367,7 @@ def df_from_array3d(arr: np.ndarray, labels: [list, np.ndarray] = [],
     """
     shape = arr.shape
     if len(shape) != 3:
-        print('Input numpy array is not 3d')
-        return None
+        raise ValueError('Input numpy array is not 3d')
 
     # Regroup into a stacked DataFrame
     m, n, r = shape
@@ -486,14 +484,13 @@ def df_unique(df: pd.DataFrame) -> dict:
 
 
 def get_current_values(df: pd.DataFrame, text: str, key: str = '@') -> str:
-    """Parse a string looking for text enclosed by 'key' and replace with the
-    current value from the DataFrame.
+    """Parse a string looking for text enclosed by 'key' and replace with the current value from the DataFrame.
+    This function is used by df_filter (but honestly can't remember why!)
 
     Args:
         df: DataFrame containing values we are looking for
         text: string to parse
-        key (optional): matching chars that enclose the value to replace from
-            df. Defaults to '@'
+        key (optional): matching chars that enclose the value to replace from df. Defaults to '@'
 
     Returns:
         updated string
@@ -513,13 +510,11 @@ def get_current_values(df: pd.DataFrame, text: str, key: str = '@') -> str:
 
 
 def get_decimals(value: [int, float], max_places: int = 4):
-    """Get the number of decimal places of a float number excluding
-    rounding errors.
+    """Get the number of decimal places of a float number excluding rounding errors.
 
     Args:
         value: value to check
-        max_places (optional): maximum number of decimal places to check. Defaults
-            to 4
+        max_places (optional): maximum number of decimal places to check. Defaults to 4
 
     Returns:
         number of decimal places
@@ -670,10 +665,10 @@ def nq(data, column: str = 'Value', **kwargs) -> pd.DataFrame:
         DataFrame with normal quantile calculated values
     """
     # Defaults
-    sig = kwargs.get('sigma', None)
-    tail = kwargs.get('tail', 3)
-    step_tail = kwargs.get('step_tail', 0.2)
-    step_inner = kwargs.get('step_inner', 0.5)
+    sig = kwargs.get('sigma', None)  # number of sigma to include for the analysis (assuming enough data exist)
+    tail = abs(kwargs.get('tail', 3))  # start of the tail region
+    step_tail = kwargs.get('step_tail', 0.2)  # step size of the tail region
+    step_inner = kwargs.get('step_inner', 0.5)  # step size of the non-tail region
 
     # Flatten the DataFrame to an array
     data = data.values.flatten()
@@ -683,10 +678,10 @@ def nq(data, column: str = 'Value', **kwargs) -> pd.DataFrame:
         sig = sigma(data)
     else:
         sig = abs(sig)
+    tail = min(tail, sig)  # tail must be <= full sigma range
     index = np.concatenate([np.arange(-sig, -tail, step_tail),
                             np.arange(-tail, tail, step_inner),
                             np.arange(tail, sig + 1e-9, step_tail)])
-
     # Get the sigma value
     values = np.zeros(len(index))
     for ii, idx in enumerate(index):
@@ -796,6 +791,7 @@ def reload_defaults(theme: [str, None] = None):
 
     if theme is not None and os.path.exists(theme):
         # full filename case
+        theme = str(theme)
         theme_dir = os.sep.join(theme.split(os.sep)[0:-1])
         theme = theme.split(os.sep)[-1]
         sys.path = [str(theme_dir)] + sys.path
@@ -878,7 +874,7 @@ def set_save_filename(df: pd.DataFrame, ifig: int, fig_item: [None, str],
         filename = kwargs['filename']
         ext = os.path.splitext(filename)[-1]
         if ext == '':
-            ext = kwargs.get('save_ext')
+            ext = f'.{kwargs.get("save_ext")}'
         filename = filename.replace(ext, '')
         fig = ''
         if fig_item is not None:
@@ -920,6 +916,8 @@ def set_save_filename(df: pd.DataFrame, ifig: int, fig_item: [None, str],
             if icol > 0:
                 fig += ' and'
             fig += ' where %s=%s' % (col, fig_items[icol])
+        if layout.label_col.text is None:
+            col = ''
 
     filename = '%s%s%s%s%s%s%s%s' % (z, y, x, row, col, wrap, groups, fig)
 
