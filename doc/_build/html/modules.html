@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.5.0-beta
+                0.5.0
               </div>
             
           
@@ -95,9 +95,7 @@
               <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="install.html#test-development">Test Development</a></li>
-<li class="toctree-l1"><a class="reference internal" href="install.html#doc-development">Doc Development</a></li>
-<li class="toctree-l1"><a class="reference internal" href="layout.html">Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layout.html">Layout and Elements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="grouping.html">Grouping data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="styles.html">Styles and formatting</a></li>
@@ -916,6 +914,8 @@ with multiple values defined for “y” creates a grid of subplots for each y-v
 <dt class="field-even">Keyword Arguments</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>x</strong> (<em>str</em>) – x-axis column name (i.e., the “value” column from which “counts” are calculated) [REQUIRED]</p></li>
+<li><p><strong>bars</strong> (<em>bool</em>) – Toggle between bars or a line plot for the counts (True=bars enabled, False=use line).  Defaults
+to True unless 2D image then False</p></li>
 <li><p><strong>cdf</strong> (<em>bool</em>) – Convert the histogram into a cumulative distribution plot. Defaults to False. Example:
 <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#cdf">https://endangeredoxen.github.io/fivecentplots/0.5.0/hist.html#cdf</a></p></li>
 <li><p><strong>cfa</strong> (<em>str</em>) – Color-filter array pattern that is used to split data from a Bayer image into separate color planes.
@@ -1030,8 +1030,8 @@ Defaults to None. Example: <a class="reference external" href="https://endangere
 ‘none’.</p></li>
 <li><p><strong>stretch</strong> (<em>float</em><em>|</em><em>list</em>) – Calculate “stretch” times the standard deviation above and below the mean to set new
 z-limits. Can be a single value used as +/- limits or a two-value list for the lower/upper multiplier values.
-Defaults to None. Example: <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#contrast">https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#contrast</a>-
-stretching</p></li>
+Defaults to None. Example:
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#Contrast-stretching">https://endangeredoxen.github.io/fivecentplots/0.5.0/imshow.html#Contrast-stretching</a></p></li>
 </ul>
 </dd>
 </dl>

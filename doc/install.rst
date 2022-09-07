@@ -1,6 +1,9 @@
 Installation
 ============
 
+Basic
+-----
+
 Released versions of **fivecentplots** are hosted on `Pypi <https://pypi.org/project/fivecentplots/>`_ and can be installed via ``pip``:
 
 .. code-block:: python
@@ -11,7 +14,7 @@ Development versions can be installed via `GitHub <https://github.com/endangered
 
 
 Dependencies
-------------
+************
 
 * Python >=3.6
 * pandas >=1.05 (tested up to 1.4.3)
@@ -21,12 +24,12 @@ Dependencies
 * natsort
 
 Optional
---------
+********
 * fileio (0.2.2 or higher):  enables pasting of keywords from clipboard from ``ini`` file
 
 
 Test Development
-================
+----------------
 
 To run the tests locally, clone the repo, cd to the top `fivecentplots` directory, and run:
 
@@ -41,7 +44,7 @@ or for python 3.6:
    pip install .[test36]
 
 Doc Development
-===============
+---------------
 
 To build the tests locally, clone the repo, cd to the top `fivecentplots` directory, and run:
 
