@@ -13,7 +13,7 @@ osjoin = os.path.join
 db = pdb.set_trace
 
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def img_cat():
     return imageio.imread(Path(fcp.__file__).parent / 'test_data/imshow_cat_pirate.png')
 

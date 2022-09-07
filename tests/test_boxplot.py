@@ -121,7 +121,7 @@ def plt_group_single(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'group_single_master') if master else 'group_single'
 
     # Make the plot
-    fcp.boxplot(df, y='Value', groups='Batch', show=SHOW,
+    fcp.boxplot(df, y='Value', groups='Batch', show=SHOW, box_whisker=False,
                 filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -147,7 +147,7 @@ def plt_group_multiple(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'group_multiple_master') if master else 'group_multiple'
 
     # Make the plot
-    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW,
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW, #ax_size=['100*group', 400],
                 filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:

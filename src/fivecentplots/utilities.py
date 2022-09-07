@@ -803,9 +803,7 @@ def reload_defaults(theme: [str, None] = None):
             print(err_msg)
             import defaults
             importlib.reload(defaults)
-
-    elif theme is not None and \
-            (theme in os.listdir(theme_dir) or theme + '.py' in os.listdir(theme_dir)):
+    elif theme is not None and (theme in os.listdir(theme_dir) or theme + '.py' in os.listdir(theme_dir)):
         sys.path = [str(theme_dir)] + sys.path
         reset_path = True
         try:
@@ -818,7 +816,7 @@ def reload_defaults(theme: [str, None] = None):
     elif (user_dir / '.fivecentplots' / 'defaults.py').exists():
         # use default theme
         sys.path = [str(user_dir / '.fivecentplots')] + sys.path
-        import defaults
+        defaults = importlib.import_module('defaults', str(user_dir / '.fivecentplots'))
         importlib.reload(defaults)
     else:
         sys.path = [str(theme_dir)] + sys.path

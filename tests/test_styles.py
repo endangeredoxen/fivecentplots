@@ -526,6 +526,62 @@ def test_marker_boxplot(master=False, remove=True, show=False):
         assert not compare
 
 
+def test_marker_boxplot2(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'boxplot2_master') if master else 'boxplot2'
+
+    # Make the plot
+    df_box = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
+    fcp.boxplot(df_box, y='Value', groups=['Batch', 'Sample'], show=SHOW,
+                box_marker_edge_color=[0, 0, 1, 1, 2, 2], marker_size=10,
+                box_whisker_color=[0, 0, 1, 1, 2, 2], box_whisker_width=1, jitter=False,
+                box_marker_edge_alpha=0.6, box_marker_fill_alpha=1, box_marker_fill_color=['#00FF00', '#FF0000'],
+                box_marker_fill=True, box_marker_type=['o'],
+                filename=name + '.png')
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_marker_boxplot3(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'boxplot3_master') if master else 'boxplot3'
+
+    # Make the plot
+    fcp.set_theme('_test')
+    df_box = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
+    fcp.boxplot(df_box, y='Value', groups=['Batch', 'Sample'], show=SHOW,
+                marker_size=10, box_whisker_color=[0, 0, 1, 1, 2, 2], box_whisker_width=1, jitter=False,
+                box_marker_edge_alpha=0.6, box_marker_fill_alpha=1, box_marker_type=['+'],
+                filename=name + '.png')
+    fcp.set_theme('gray')
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def test_hist(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'hist_master') if master else 'hist'

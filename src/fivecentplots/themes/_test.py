@@ -1,10 +1,12 @@
+## THIS THEME FILE IS USED FOR UNIT TESTING, BUT IF YOU WANT TO USE IT, OK
+
 import matplotlib as mpl
 
 #########################################################
 # Figure layout defaults
 #########################################################
-fcp_params = {'ax_edge_color': '#555555',
-              'ax_fill_color': '#ffffff',
+fcp_params = {'ax_edge_color': '#aaaaaa',
+              'ax_fill_color': '#eaeaea',
               'ax_size': [400, 400],  # [width, height]
               'bar_align': 'center',
               'bar_color_by_bar': False,
@@ -16,10 +18,11 @@ fcp_params = {'ax_edge_color': '#555555',
               'bar_line': False,
               'bar_stacked': False,
               'bar_width': 0.8,
+              'box_divider': True,
               'box_divider_color': '#bbbbbb',
               'box_divider_style': '-',
               'box_divider_width': 1,
-              'box_fill_color': '#eeeeee',
+              'box_fill_color': '#ffffff',
               'box_grand_mean': False,
               'box_grand_mean_color': '#555555',
               'box_grand_mean_style': '--',
@@ -36,11 +39,12 @@ fcp_params = {'ax_edge_color': '#555555',
               'box_group_title_font_color': '#666666',
               'box_group_title_font_style': 'normal',
               'box_group_title_font_weight': 'normal',
-              'box_group_label_edge_color': '#555555',
+              'box_group_label_edge_color': '#aaaaaa',
               'box_group_label_font_size': 12,
               'box_group_label_font_color': '#666666',
               'box_group_label_font_style': 'normal',
               'box_group_label_font_weight': 'normal',
+              'box_marker_type': ['*'],
               'box_mean_diamonds': False,
               'box_mean_diamonds_alpha': 1,
               'box_mean_diamonds_edge_color': '#00ff00',
@@ -57,10 +61,10 @@ fcp_params = {'ax_edge_color': '#555555',
               'dpi': 100,
               'fig_edge_color': '#ffffff',
               'fig_fill_color': '#ffffff',
-              'grid_major_color': '#b9b9b9',
+              'grid_major_color': '#ffffff',
               'grid_major_style': '-',
-              'grid_major_width': 0.9,
-              'grid_minor_color': '#cccccc',
+              'grid_major_width': 1.3,
+              'grid_minor_color': '#ffffff',
               'grid_minor_style': '-',
               'grid_minor_width': 0.5,
               'hist_align': 'mid',
@@ -75,8 +79,8 @@ fcp_params = {'ax_edge_color': '#555555',
               'label_font_size': 14,
               'label_style': 'italic',
               'label_weight': 'bold',
-              'label_rc_edge_color': '#ffffff',
-              'label_rc_fill_color': '#888888',
+              'label_rc_edge_color': '#8c8c8c',
+              'label_rc_fill_color': '#8c8c8c',
               'label_rc_font_size': 14,
               'label_rc_text_color': '#ffffff',
               'label_rc_text_style': 'normal',
@@ -102,10 +106,8 @@ fcp_params = {'ax_edge_color': '#555555',
               'pie_start_angle': 90,
               'tick_labels_font_size': 12,
               'tick_labels_color': '#000000',
-              'ticks_major_color': '#aaaaaa',
-              'ticks_minor_color': '#bbbbbb',
-              'ticks_major_length': 6,
-              'ticks_major_width': 1.8,
+              'ticks_major_color': '#ffffff',
+              'ticks_minor_color': '#ffffff',
               'title_fill_color': '#ffffff',
               'title_edge_color': '#ffffff',
               'title_font_color': '#333333',
@@ -131,16 +133,16 @@ fcp_params = {'ax_edge_color': '#555555',
               }
 
 #########################################################
-# Color schemes
+# New color schemes
 #########################################################
 
-colors = []
+colors = ['#1f77b4', '#000000', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
 
 ####################################################
-# Marker scheme
+# Default marker scheme
 ####################################################
 
-markers = []
+# markers = []
 
 ####################################################
 # Matplotlib default overrides

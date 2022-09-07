@@ -702,9 +702,9 @@ def plt_other_curve_fitting2(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'other_curve-fitting2_master') if master else 'other_curve-fitting2'
 
     # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, show=SHOW, legend=False,
+    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, show=SHOW, legend=True,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             fit=2, fit_eqn=True, fit_rsq=True, fit_font_size=9, fit_range_y=[0, 1],
+             fit=2, fit_eqn=True, fit_rsq=True, fit_font_size=9, fit_range_y=[0, 1], fit_color='#FF0000',
              filename=name + '.png', save=not bm, inline=False)
     if bm:
         return
@@ -731,7 +731,7 @@ def plt_other_curve_fitting3(bm=False, master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, show=SHOW, legend=False,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             fit=2, fit_eqn=True, fit_rsq=True, fit_font_size=9, fit_range_x=[-1, -1],
+             fit=2, fit_eqn=True, fit_rsq=True, fit_font_size=9, fit_range_x=[-1, -1], fit_color='#ff0000',
              filename=name + '.png', save=not bm, inline=False)
     if bm:
         return
@@ -1122,6 +1122,34 @@ def plt_other_ref_line(bm=False, master=False, remove=True, show=False):
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             ref_line=df['Voltage'], ref_line_legend_text='y=x', xmin=0, ymin=0, xmax=1.6, ymax=1.6,
+             filename=name + '.png', save=not bm, inline=False)
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_other_ref_line_leg(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'other_ref-line_leg-y=x_master') if master else 'other_ref-line_leg-y=x'
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', show=SHOW,
+             ref_line_color='#FF0000', ref_line_style='--', ref_line_width=2,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              ref_line=df['Voltage'], ref_line_legend_text='y=x', xmin=0, ymin=0, xmax=1.6, ymax=1.6,
              filename=name + '.png', save=not bm, inline=False)

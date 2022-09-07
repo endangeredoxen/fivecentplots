@@ -73,8 +73,7 @@ class BaseLayout:
         self.name = data.name
 
         # Reload default file
-        self.fcpp, self.color_list, marker_list = \
-            utl.reload_defaults(kwargs.get('theme', None))
+        self.fcpp, self.color_list, marker_list = utl.reload_defaults(kwargs.get('theme', None))
 
         # Class attribute definition (alphabetical)
         self.auto_tick_threshold = None  # Threshold value for placement of auto-generated ticks
@@ -98,7 +97,6 @@ class BaseLayout:
         self.box_stat_line = None  # Element object for arbitrary stat line plot on box plot
         self.box_whisker = None  # Element object for bow wisker line styling
         self.cbar = None  # Element object for colorbar
-        self.color_list = None  # default color list
         self.color_list_unique = None  # color list sans duplicates
         self.contour = None  # Element object for contour plot
         self.cmap = None  # color map to use in plot
@@ -192,7 +190,7 @@ class BaseLayout:
         self._init_layout_rc(data)
         kwargs = self._init_figure(kwargs)
         kwargs = self._init_colors(kwargs)
-        kwargs = self._init_axes(kwargs)
+        kwargs = self._init_axes(data, kwargs)
         kwargs = self._init_axes_labels(kwargs)
         kwargs = self._init_title(kwargs)
         kwargs = self._init_ticks(kwargs)
@@ -283,7 +281,7 @@ class BaseLayout:
         # Update the label text
         self._set_label_text(data)
 
-    def _init_axes(self, kwargs: dict) -> dict:
+    def _init_axes(self, data, kwargs: dict) -> dict:
         """Create the axes object
 
         Args:
@@ -334,11 +332,6 @@ class BaseLayout:
                             twin_x=kwargs.get('twin_x', False),
                             twin_y=kwargs.get('twin_y', False),
                             )
-        for isize, size in enumerate(self.axes.size):
-            if 'group' in str(size) and self.name == 'box':
-                self.axes.size[isize] = \
-                    int(size.split('*')[0].replace(' ', '')
-                        ) * len(data.indices)
 
         # twinned axes
         twinned = kwargs.get('twin_x', False) or kwargs.get('twin_y', False)
@@ -790,12 +783,13 @@ class BaseLayout:
             self.lines.on = False
         if self.violin.on:
             self.markers.on = self.violin.markers
+
         if 'box' in self.name:
             # edge color
             if not kwargs.get('colors') \
                     and not kwargs.get('marker_edge_color') \
                     and not self.legend._on:
-                self.markers.edge_color = DEFAULT_COLORS[1]
+                self.markers.edge_color = self.color_list[1]
                 self.markers.color_alpha('edge_color', 'edge_alpha')
             elif not kwargs.get('colors') and not kwargs.get('marker_edge_color'):
                 self.markers.edge_color = self.color_list[1:] + [
@@ -810,38 +804,54 @@ class BaseLayout:
                 self.markers.fill_color = self.color_list[1:] + [
                     self.color_list[0]]
                 self.markers.color_alpha('fill_color', 'fill_alpha')
-            if 'box_marker_edge_alpha' in self.fcpp.keys():
-                self.markers.edge_alpha = self.fcpp['box_marker_edge_alpha']
-            if 'box_marker_edge_color' in self.fcpp.keys():
-                self.markers.edge_color = self.fcpp['box_marker_edge_color']
-                self.markers.color_alpha('edge_color', 'edge_alpha')
-            if 'box_marker_fill_alpha' in self.fcpp.keys():
-                self.markers.fill_alpha = self.fcpp['box_marker_fill_alpha']
-            if 'box_marker_fill_color' in self.fcpp.keys():
-                self.markers.fill_color = self.fcpp['box_marker_fill_color']
-                self.markers.color_alpha('fill_color', 'fill_alpha')
-            self.markers.filled = self.fcpp.get('box_marker_fill', self.markers.filled)
-            self.markers.edge_width = self.fcpp.get('box_marker_edge_width', self.markers.edge_width)
+
+            # For some marker attributes, prioritize kwargs which can have keywords with/without prefix box, then
+            # check self.fcpp only for those keywords that are prefixed by box
+            self.markers.edge_width = \
+                utl.kwget(kwargs, {}, ['box_marker_edge_width', 'marker_edge_width'],
+                          utl.kwget(self.fcpp, {}, 'box_marker_edge_width', self.markers.edge_width))
+            self.markers.edge_alpha = \
+                utl.kwget(kwargs, {}, ['box_marker_edge_alpha', 'marker_edge_alpha'],
+                          utl.kwget(self.fcpp, {}, 'box_marker_edge_alpha', self.markers.edge_alpha))
+            self.markers.edge_color = \
+                utl.kwget(kwargs, {}, ['box_marker_edge_color', 'marker_edge_color'],
+                          utl.kwget(self.fcpp, {}, 'box_marker_edge_color', self.markers.edge_color))
+            self.markers.color_alpha('edge_color', 'edge_alpha')
+
+            self.markers.fill_alpha = \
+                utl.kwget(kwargs, {}, ['box_marker_fill_alpha', 'marker_fill_alpha'],
+                          utl.kwget(self.fcpp, {}, 'box_marker_fill_alpha', self.markers.fill_alpha))
+            self.markers.fill_color = \
+                utl.kwget(kwargs, {}, ['box_marker_fill_color', 'marker_fill_color'],
+                          utl.kwget(self.fcpp, {}, 'box_marker_fill_color', self.markers.fill_color))
+            self.markers.color_alpha('fill_color', 'fill_alpha')
+
+            self.markers.filled = \
+                utl.kwget(kwargs, {}, ['box_marker_fill', 'marker_fill'],
+                          utl.kwget(self.fcpp, {}, 'box_marker_fill', self.markers.filled))
+            self.markers.size = \
+                utl.kwget(kwargs, {}, ['box_marker_size', 'marker_size'],
+                          utl.kwget(self.fcpp, {}, 'box_marker_size', 4))
+            self.markers.zorder = \
+                utl.kwget(kwargs, {}, ['box_marker_zorder', 'marker_zorder'],
+                          utl.kwget(self.fcpp, {}, 'box_marker_zorder', self.markers.zorder))
             self.markers.jitter = utl.kwget(kwargs, self.fcpp, 'jitter', True)
-            if 'box_marker_jitter' in self.fcpp.keys():
-                self.markers.jitter = self.fcpp['box_marker_jitter']
-            if 'box_marker_size' in self.fcpp.keys():
-                self.markers.size = self.fcpp['box_marker_size']
-            else:
-                self.markers.size = kwargs.get('marker_size', 4)
-            if 'marker_type' in kwargs.keys():
+
+            # treat the marker type
+            if 'box_marker_type' in kwargs.keys():
+                self.markers.type = RepeatedList(kwargs['box_marker_type'], 'box_marker_type')
+            elif 'marker_type' in kwargs.keys():
                 self.markers.type = RepeatedList(kwargs['marker_type'], 'marker_type')
             elif 'box_marker_type' in self.fcpp.keys():
                 self.markers.type = RepeatedList(self.fcpp['box_marker_type'], 'marker_type')
             elif not self.legend._on:
                 self.markers.type = RepeatedList('o', 'marker_type')
-            if 'box_marker_zorder' in self.fcpp.keys():
-                self.markers.zorder = self.fcpp['box_marker_zorder']
-            if not isinstance(self.markers.size, RepeatedList):
-                self.markers.size = RepeatedList(self.markers.size, 'marker_size')
-            if not isinstance(self.markers.edge_width, RepeatedList):
-                self.markers.edge_width = RepeatedList(self.markers.edge_width,
-                                                       'marker_edge_width')
+
+            # convert some attributes to RepeatedList
+            vals = ['size', 'edge_width', 'edge_color', 'fill_color']
+            for val in vals:
+                if not isinstance(getattr(self.markers, val), RepeatedList):
+                    setattr(self.markers, val, RepeatedList(getattr(self.markers, val), val))
 
         return kwargs
 
@@ -883,12 +893,6 @@ class BaseLayout:
                 if isinstance(color, int):
                     colors[icolor] = DEFAULT_COLORS[color]
             self.color_list = colors
-        elif 'colors' in self.fcpp.keys():
-            colors = utl.validate_list(self.fcpp['colors'])
-            for icolor, color in enumerate(colors):
-                if isinstance(color, int):
-                    colors[icolor] = DEFAULT_COLORS[color]
-            self.color_list = colors
         elif not self.color_list:
             self.color_list = copy.copy(DEFAULT_COLORS)
 
@@ -898,15 +902,12 @@ class BaseLayout:
             self.cmap = utl.kwget(kwargs, self.fcpp, 'cmap', 'inferno')
 
         # Program any legend value specific color overrides
-        vals = ['fill_alpha', 'fill_color',
-                'edge_alpha', 'edge_color', 'color']
+        vals = ['fill_alpha', 'fill_color', 'edge_alpha', 'edge_color', 'color']
         for val in vals:
             if '%s_override' % val in kwargs.keys():
-                kwargs['%s_override' % val] = utl.kwget(kwargs, self.fcpp,
-                                                        '%s_override' % val, {})
+                kwargs['%s_override' % val] = utl.kwget(kwargs, self.fcpp, '%s_override' % val, {})
             else:
-                kwargs['%s_override' % val] = utl.kwget(kwargs, self.fcpp,
-                                                        'color_override', {})
+                kwargs['%s_override' % val] = utl.kwget(kwargs, self.fcpp, 'color_override', {})
 
         return kwargs
 
@@ -1463,7 +1464,7 @@ class BaseLayout:
         if self.legend._on and self.name == 'pie':
             self.legend.on = True
 
-        # Special case: reference line
+        # Special case: reference line added to legend without legend grouping column
         if not self.legend._on and self.ref_line.on:
             for ref_line_legend_text in self.ref_line.legend_text.values:
                 self.legend.values[ref_line_legend_text] = []
@@ -1537,32 +1538,23 @@ class BaseLayout:
         if kwargs.get('marker_fill_color'):
             kwargs['marker_fill'] = True
         self.markers = Element('marker', self.fcpp, kwargs,
-                               on=utl.kwget(kwargs, self.fcpp,
-                                            'markers', True),
-                               filled=utl.kwget(kwargs, self.fcpp,
-                                                'marker_fill', False),
+                               on=utl.kwget(kwargs, self.fcpp, 'markers', True),
+                               filled=utl.kwget(kwargs, self.fcpp, 'marker_fill', False),
                                edge_color=copy.copy(marker_edge_color),
-                               edge_width=utl.kwget(kwargs, self.fcpp,
-                                                    'marker_edge_width',
-                                                    1.5),
+                               edge_width=utl.kwget(kwargs, self.fcpp, 'marker_edge_width', 1.5),
                                fill_color=copy.copy(marker_fill_color),
-                               jitter=utl.kwget(kwargs, self.fcpp,
-                                                ['marker_jitter', 'jitter'],
+                               jitter=utl.kwget(kwargs, self.fcpp, ['marker_jitter', 'jitter'],
                                                 kwargs.get('jitter', False)),
-                               size=utl.kwget(kwargs, self.fcpp,
-                                              'marker_size', 6),
+                               size=utl.kwget(kwargs, self.fcpp, 'marker_size', 6),
                                type=markers,
-                               zorder=utl.kwget(kwargs, self.fcpp,
-                                                'zorder', 2),
+                               zorder=utl.kwget(kwargs, self.fcpp, 'zorder', 2),
                                )
-        if isinstance(self.markers.size, str) \
-                and self.markers.size in data.df_all.columns:
+        if isinstance(self.markers.size, str) and self.markers.size in data.df_all.columns:
             pass
         elif not isinstance(self.markers.size, RepeatedList):
             self.markers.size = RepeatedList(self.markers.size, 'marker_size')
         if not isinstance(self.markers.edge_width, RepeatedList):
-            self.markers.edge_width = RepeatedList(self.markers.edge_width,
-                                                   'marker_edge_width')
+            self.markers.edge_width = RepeatedList(self.markers.edge_width, 'marker_edge_width')
 
         return kwargs
 
@@ -2938,49 +2930,34 @@ class Element:
                           'width', 'height', 'x0', 'x1', 'y0', 'y1']
 
         # fill and edge colors
-        self.fill_alpha = utl.kwget(kwargs, fcpp, '%s_fill_alpha' % name,
-                                    kwargs.get('fill_alpha', 1))
-        self.fill_color = utl.kwget(kwargs, fcpp, '%s_fill_color' % name,
-                                    kwargs.get('fill_color', '#ffffff'))
+        self.fill_alpha = utl.kwget(kwargs, fcpp, '%s_fill_alpha' % name, kwargs.get('fill_alpha', 1))
+        self.fill_color = utl.kwget(kwargs, fcpp, '%s_fill_color' % name, kwargs.get('fill_color', '#ffffff'))
         if not isinstance(self.fill_color, RepeatedList) \
                 and self.fill_color is not None \
                 or self.fill_alpha != 1:
             self.color_alpha('fill_color', 'fill_alpha')
-        self.edge_width = utl.kwget(kwargs, fcpp, '%s_edge_width' % name,
-                                    kwargs.get('edge_width', 1))
-        self.edge_alpha = utl.kwget(kwargs, fcpp, '%s_edge_alpha' % name,
-                                    kwargs.get('edge_alpha', 1))
-        self.edge_color = utl.kwget(kwargs, fcpp, '%s_edge_color' % name,
-                                    kwargs.get('edge_color', '#ffffff'))
-        if not isinstance(self.edge_color, RepeatedList) \
-                or self.edge_alpha != 1:
+        self.edge_width = utl.kwget(kwargs, fcpp, '%s_edge_width' % name, kwargs.get('edge_width', 1))
+        self.edge_alpha = utl.kwget(kwargs, fcpp, '%s_edge_alpha' % name, kwargs.get('edge_alpha', 1))
+        self.edge_color = utl.kwget(kwargs, fcpp, '%s_edge_color' % name, kwargs.get('edge_color', '#ffffff'))
+        if not isinstance(self.edge_color, RepeatedList) or self.edge_alpha != 1:
             self.color_alpha('edge_color', 'edge_alpha')
 
         # fonts
-        self.font = utl.kwget(kwargs, fcpp, '%s_font' % name,
-                              kwargs.get('font', 'sans-serif'))
-        self.font_color = utl.kwget(kwargs, fcpp, '%s_font_color' % name,
-                                    kwargs.get('font_color', '#000000'))
-        self.font_size = utl.kwget(kwargs, fcpp, '%s_font_size' % name,
-                                   kwargs.get('font_size', 14))
-        self.font_style = utl.kwget(kwargs, fcpp, '%s_font_style' % name,
-                                    kwargs.get('font_style', 'normal'))
-        self.font_weight = utl.kwget(kwargs, fcpp, '%s_font_weight' % name,
-                                     kwargs.get('font_weight', 'normal'))
+        self.font = utl.kwget(kwargs, fcpp, '%s_font' % name, kwargs.get('font', 'sans-serif'))
+        self.font_color = utl.kwget(kwargs, fcpp, '%s_font_color' % name, kwargs.get('font_color', '#000000'))
+        self.font_size = utl.kwget(kwargs, fcpp, '%s_font_size' % name, kwargs.get('font_size', 14))
+        self.font_style = utl.kwget(kwargs, fcpp, '%s_font_style' % name, kwargs.get('font_style', 'normal'))
+        self.font_weight = utl.kwget(kwargs, fcpp, '%s_font_weight' % name, kwargs.get('font_weight', 'normal'))
 
         # lines
-        self.alpha = utl.kwget(kwargs, fcpp, '%s_alpha' % name,
-                               kwargs.get('alpha', 1))
-        self.color = utl.kwget(kwargs, fcpp, ['%s_color' % name, 'color'],
-                               kwargs.get('color', '#000000'))
+        self.alpha = utl.kwget(kwargs, fcpp, '%s_alpha' % name, kwargs.get('alpha', 1))
+        self.color = utl.kwget(kwargs, fcpp, ['%s_color' % name, 'color'], kwargs.get('color', '#000000'))
         if not isinstance(self.color, RepeatedList) or self.alpha != 1:
             self.color_alpha('color', 'alpha')
-        self.width = utl.kwget(kwargs, fcpp, '%s_width' % name,
-                               kwargs.get('width', 1))
+        self.width = utl.kwget(kwargs, fcpp, '%s_width' % name, kwargs.get('width', 1))
         if not isinstance(self.width, RepeatedList):
             self.width = RepeatedList(self.width, 'width')
-        self.style = utl.kwget(kwargs, fcpp, '%s_style' % name,
-                               kwargs.get('style', '-'))
+        self.style = utl.kwget(kwargs, fcpp, '%s_style' % name, kwargs.get('style', '-'))
         if not isinstance(self.style, RepeatedList):
             self.style = RepeatedList(self.style, 'style')
 

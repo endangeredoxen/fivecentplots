@@ -1495,6 +1495,9 @@ def plotter(dobj, **kwargs):
         if k not in kwargs.keys():
             kwargs[k] = v
 
+    # Build the Timer
+    kwargs['timer'] = utl.Timer(print=kwargs.get('timer', False), start=True, units='ms')
+
     # Set the plotting engine
     theme = kwargs.get('theme', None)
     engine = utl.kwget(kwargs, utl.reload_defaults(theme)[0], 'engine', 'mpl')
@@ -1508,9 +1511,7 @@ def plotter(dobj, **kwargs):
         return
     else:
         engine = getattr(engines, engine)
-
-    # Build the Timer
-    kwargs['timer'] = utl.Timer(print=kwargs.get('timer', False), start=True, units='ms')
+    kwargs['timer'].get('Layout obj')
 
     # Build the data object and update kwargs
     dd = dobj(**kwargs)
@@ -1670,10 +1671,8 @@ def set_theme(theme=None):
     if theme is not None:
         theme = theme.replace('.py', '')
 
-    themes = [f.replace('.py', '')
-              for f in os.listdir(osjoin(cur_dir, 'themes')) if '.py' in f]
-    mythemes = [f.replace('.py', '') for f in os.listdir(my_theme_dir)
-                if '.py' in f and f not in ignores]
+    themes = [f.replace('.py', '') for f in os.listdir(osjoin(cur_dir, 'themes')) if '.py' in f]
+    mythemes = [f.replace('.py', '') for f in os.listdir(my_theme_dir) if '.py' in f and f not in ignores]
 
     if theme in themes:
         entry = themes.index('%s' % theme) + 1
@@ -1686,6 +1685,8 @@ def set_theme(theme=None):
         return
 
     else:
+        if '_test' in themes:
+            themes.remove('_test')
         print('Select default styling theme:')
         print('   Built-in theme list:')
         for i, th in enumerate(themes):
