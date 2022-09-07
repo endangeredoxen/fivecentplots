@@ -262,6 +262,7 @@ def df_filter(df: pd.DataFrame, filt_orig: str, drop_cols: bool = False,
             key = 'fCp%s' % special_chars(key)
             vals = val.replace('[', '').replace(']', '')
             vals = shlex.split(vals, ',', posix=False)
+            vals = [f for f in vals if f != ',']  # remove commas
             for iv, vv in enumerate(vals):
                 vals[iv] = vv.lstrip().rstrip()
             key2 = '|' + key + '=='
@@ -826,6 +827,7 @@ def reload_defaults(theme: [str, None] = None):
     fcp_params = defaults.fcp_params
     colors = defaults.colors if hasattr(defaults, 'colors') else None
     markers = defaults.markers if hasattr(defaults, 'markers') else None
+    print(defaults, colors)
 
     if reset_path:
         sys.path = sys.path[1:]

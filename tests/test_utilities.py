@@ -19,7 +19,7 @@ def img_cat():
 
 
 @pytest.fixture
-def df():
+def df(scope='session'):
     return pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data.csv')
 
 
@@ -75,8 +75,8 @@ def test_df_filter(df):
     assert len(utl.df_filter(df_.copy(), 'Substrate=="Si" & Target Wavelength==460 & Boost Level==0.2')) == 102
     assert len(utl.df_filter(df_.copy(), 'Substrate=="Si" & (Target Wavelength==460 | Boost Level==0.2)')) == 510
     assert len(utl.df_filter(df_.copy(), 'hi (%)==1')) == 21
-    assert len(utl.df_filter(df_.copy(), 'Substrate not in ["Si"]')) == 918
-    assert len(utl.df_filter(df_.copy(), 'Substrate in ["Si"]')) == 918
+    assert len(utl.df_filter(df_.copy(), 'Substrate not in ["Si", "GaAS"]')) == 918
+    assert len(utl.df_filter(df_.copy(), 'Substrate in ["Si", "GaAs"]')) == 918
     assert len(utl.df_filter(df_.copy(), 'hi (%)==1', keep_filtered=True).dropna()) == 21
     assert 'hi (%)' not in utl.df_filter(df_.copy(), 'hi (%)==1', drop_cols=True).columns
 
