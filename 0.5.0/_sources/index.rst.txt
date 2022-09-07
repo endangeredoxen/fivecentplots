@@ -326,10 +326,3 @@ Refer to the topics on the sidebar for more details on plot types and options.
    older
    GitHub <https://github.com/endangeredoxen/fivecentplots>
 
-Indices and tables
-^^^^^^^^^^^^^^^^^^
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
