@@ -212,12 +212,13 @@ def mpl_get_ticks(ax: mplp.Axes, xon: bool = True, yon: bool = True,
 
 class Layout(BaseLayout):
 
-    def __init__(self, data: 'Data', **kwargs):  # noqa: F821
+    def __init__(self, data: 'Data', defaults: list = [], **kwargs):  # noqa: F821
         """Layout attributes and methods for matplotlib Figure.
 
         Args:
             data: fcp Data object
-            **kwargs: input args from user
+            defaults: items from the theme file
+            kwargs: input args from user
         """
         # Set the layout engine
         global ENGINE
@@ -237,7 +238,11 @@ class Layout(BaseLayout):
             mplp.close('all')
 
         # Inherit the base layout properties
-        super().__init__(data, **kwargs)
+        super().__init__(data, defaults, **kwargs)
+
+        # Apply rcParams
+        if len(defaults) == 4:
+            mpl.rcParams.update(defaults[3])
 
         # Initialize other class variables
         self.label_col_height = 0
@@ -466,24 +471,14 @@ class Layout(BaseLayout):
                         self.add_label(ir, ic, label,
                                        (sub.index[j] / len(data.changes), 0, 0, 0),
                                        rotation=0, size=[width, 20], offset=True,
-                                       **self.make_kw_dict(self.box_group_label,
-                                                           ['size', 'rotation', 'position']))
+                                       **self.make_kw_dict(self.box_group_label, ['size', 'rotation', 'position']))
 
             # Group titles
             if self.box_group_title.on and ic == data.ncol - 1:
                 self.box_group_title.obj[ir, ic][i, 0], \
                     self.box_group_title.obj_bg[ir, ic][i, 0] = \
-                    self.add_label(ir, ic, data.groups[k],
-                                   # + self.ws_ax_box_title / self.axes.size[0],
-                                   (1, 0, 0, 0),
-                                   # 0, 0, 0),
-                                   # (bottom - height/2 - 2 -
-                                   #     self.box_group_title.size[k][1]/2) /
-                                   #     self.axes.size[1]),
-                                   # self.box_group_title.size[k],
-                                   size=[0, 20],
-                                   **self.make_kw_dict(self.box_group_title,
-                                                       ['position', 'size']))
+                    self.add_label(ir, ic, data.groups[k], (1, 0, 0, 0), size=[0, 20],
+                                   **self.make_kw_dict(self.box_group_title, ['position', 'size']))
 
     def add_cbar(self, ax: mplp.Axes, contour: 'MPL_Contour_Plot_Object') -> 'MPL_Colorbar_Object':  # noqa: F821
         """Add a color bar.

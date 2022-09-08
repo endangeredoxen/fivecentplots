@@ -7,11 +7,12 @@ db = pdb.set_trace
 
 
 class ImShow(data.Data):
-    def __init__(self, **kwargs):
+    def __init__(self, fcpp: dict = {}, **kwargs):
         """ImShow-specific Data class to deal with operations applied to the
         input data (i.e., non-plotting operations)
 
         Args:
+            fcpp: theme-file kwargs
             kwargs: user-defined keyword args
         """
         name = 'imshow'
@@ -20,8 +21,13 @@ class ImShow(data.Data):
         kwargs['df'] = utl.df_from_array2d(kwargs['df'])
         kwargs['ax_limit_padding'] = kwargs.get('ax_limit_padding', None)
 
+        # Set defaults
+        if fcpp:
+            self.fcpp = fcpp.copy()
+        else:
+            self.fcpp, dummy, dummy2 = utl.reload_defaults(kwargs.get('theme', None))
+
         # Color plane splitting
-        self.fcpp, dummy, dummy2 = utl.reload_defaults(kwargs.get('theme', None))
         cfa = utl.kwget(kwargs, self.fcpp, 'cfa', kwargs.get('cfa', None))
         if cfa is not None:
             kwargs['df'] = utl.split_color_planes(kwargs['df'], cfa)
@@ -45,7 +51,7 @@ class ImShow(data.Data):
         if 'legend' in kwargs and kwargs['legend'] is not None:
             raise data.GroupingError('legend not available for imshow plots')
 
-        super().__init__(name, req, opt, **kwargs)
+        super().__init__(name, req, opt, self.fcpp, **kwargs)
 
         # overrides
         self.auto_scale = False

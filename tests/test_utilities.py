@@ -157,7 +157,7 @@ def test_get_decimals():
 
 def test_get_text_dimensions():
     kwargs = {'font': 'sans-serif', 'font_weight': 'bold', 'font_style': 'normal', 'font_size': 12}
-    assert utl.get_text_dimensions('no alarms and no surprises', **kwargs) == (176.625, 14.625)
+    assert utl.get_text_dimensions('no alarms and no surprises', **kwargs) == (207.0, 16.875)
 
 
 def test_kwget():
@@ -233,11 +233,11 @@ def test_rectangle_overlap():
 
 
 def test_reload_defaults():
-    fcp_params, colors, markers = utl.reload_defaults('white.py')
+    fcp_params, colors, markers, rcParams = utl.reload_defaults('white.py')
     assert fcp_params['ax_fill_color'] == '#ffffff'
-    fcp_params, colors, markers = utl.reload_defaults(Path(fcp.__file__).parent / 'themes/white.py')
+    fcp_params, colors, markers, rcParams = utl.reload_defaults(Path(fcp.__file__).parent / 'themes/white.py')
     assert fcp_params['ax_fill_color'] == '#ffffff'
-    fcp_params, colors, markers = utl.reload_defaults()
+    fcp_params, colors, markers, rcParams = utl.reload_defaults()
     assert fcp_params['ax_fill_color'] == '#eaeaea'
 
 

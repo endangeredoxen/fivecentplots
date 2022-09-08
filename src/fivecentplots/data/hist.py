@@ -9,11 +9,12 @@ db = pdb.set_trace
 
 
 class Histogram(data.Data):
-    def __init__(self, **kwargs):
+    def __init__(self, fcpp: dict = {}, **kwargs):
         """Histogram-specific Data class to deal with operations applied to the
         input data (i.e., non-plotting operations)
 
         Args:
+            fcpp: theme-file kwargs
             kwargs: user-defined keyword args
         """
         name = 'hist'
@@ -21,7 +22,13 @@ class Histogram(data.Data):
         opt = ['x']
         kwargs['df'] = utl.df_from_array2d(kwargs['df'])
 
-        self.fcpp, dummy, dummy2 = utl.reload_defaults(kwargs.get('theme', None))
+        # Set defaults
+        if fcpp:
+            self.fcpp = fcpp.copy()
+        else:
+            self.fcpp, _, _, _ = utl.reload_defaults(kwargs.get('theme', None))
+
+        # Replace certain kwargs
         bars = utl.kwget(kwargs, self.fcpp, 'bars', kwargs.get('bars', True))
         kwargs['2D'] = False
 
@@ -42,7 +49,7 @@ class Histogram(data.Data):
         if 'wrap' in kwargs and kwargs['wrap'] == 'y':
             raise data.GroupingError('Cannot wrap by "y" for hist plots')
 
-        super().__init__(name, req, opt, **kwargs)
+        super().__init__(name, req, opt, self.fcpp, **kwargs)
 
         self.use_parent_ranges = False
 

@@ -60,19 +60,20 @@ def format_marker(fig, marker):
 
 
 class Layout(BaseLayout):
-    def __init__(self, data: 'data.Data', **kwargs):
+    def __init__(self, data: 'data.Data', defaults: list = [], **kwargs):  # noqa F821
         """Layout attributes and methods for matplotlib Figure.
 
         Args:
             data: fcp Data object
-            **kwargs: input args from user
+            defaults: items from the theme file
+            kwargs: input args from user
         """
         # Set the layout engine
         global ENGINE
         ENGINE = 'bokeh'
 
         # Inherit the base layout properties
-        super().__init__(data, **kwargs)
+        super().__init__(data, defaults, **kwargs)
 
         # Update kwargs
         if not kwargs.get('save_ext'):

@@ -57,11 +57,12 @@ ENGINE = ''
 
 
 class BaseLayout:
-    def __init__(self, data, **kwargs):
+    def __init__(self, data: 'Data', defaults: list = [], **kwargs):  # noqa F821
         """Generic layout properties class
 
         Args:
             data: Data class object for the plot
+            defaults: items from the theme file
             kwargs: user-defined keyword args
 
         """
@@ -73,7 +74,12 @@ class BaseLayout:
         self.name = data.name
 
         # Reload default file
-        self.fcpp, self.color_list, marker_list = utl.reload_defaults(kwargs.get('theme', None))
+        if len(defaults) > 0:
+            self.fcpp = defaults[0].copy()
+            self.color_list = defaults[1].copy()
+            marker_list = defaults[2].copy()
+        else:
+            self.fcpp, self.color_list, marker_list, rcParams = utl.reload_defaults(kwargs.get('theme', None))
 
         # Class attribute definition (alphabetical)
         self.auto_tick_threshold = None  # Threshold value for placement of auto-generated ticks

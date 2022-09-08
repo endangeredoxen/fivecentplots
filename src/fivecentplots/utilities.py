@@ -824,15 +824,15 @@ def reload_defaults(theme: [str, None] = None):
         import gray as defaults
         importlib.reload(defaults)
 
-    fcp_params = defaults.fcp_params
-    colors = defaults.colors if hasattr(defaults, 'colors') else None
-    markers = defaults.markers if hasattr(defaults, 'markers') else None
-    print(defaults, colors)
+    fcp_params = defaults.fcp_params if hasattr(defaults, 'fcp_params') else {}
+    colors = defaults.colors if hasattr(defaults, 'colors') else []
+    markers = defaults.markers if hasattr(defaults, 'markers') else []
+    rcParams = defaults.rcParams if hasattr(defaults, 'rcParams') else {}
 
     if reset_path:
         sys.path = sys.path[1:]
 
-    return fcp_params, colors, markers
+    return fcp_params, colors, markers, rcParams  # could convert to dict in future
 
 
 def see(obj) -> pd.DataFrame:

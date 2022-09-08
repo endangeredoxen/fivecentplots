@@ -1,4 +1,4 @@
-import matplotlib as mpl
+# gray background default theme
 
 #########################################################
 # Figure layout defaults
@@ -187,4 +187,3 @@ rcParams = {'font.cursive': ['Apple Chancery',
                            'serif'],
             'agg.path.chunksize': 1000,
             }
-mpl.rcParams.update(rcParams)

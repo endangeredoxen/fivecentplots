@@ -28,7 +28,7 @@ class GroupingError(Exception):
 
 
 class Data:
-    def __init__(self, name: str, req: list = ['x', 'y'], opt: list = [], **kwargs):
+    def __init__(self, name: str, req: list = ['x', 'y'], opt: list = [], fcpp: dict = {}, **kwargs):
         """Base Data class to deal with operations applied to the input data
         (i.e., non-plotting operations)
 
@@ -36,6 +36,7 @@ class Data:
             name: string name of the plot type
             req: list of the xyz axes that are required for the plot type
             opt: list of the xyz axes that are optional for the plot type
+            fcpp: theme-file kwargs
             kwargs: user-defined keyword args
         """
 
@@ -44,8 +45,11 @@ class Data:
         self.opt = opt
         self.name = name
 
-        # Reload default file
-        self.fcpp, dummy, dummy2 = utl.reload_defaults(kwargs.get('theme', None))
+        # Set defaults
+        if fcpp:
+            self.fcpp = fcpp.copy()
+        else:
+            self.fcpp, _, _, _ = utl.reload_defaults(kwargs.get('theme', None))
 
         # Default axis attributes
         self.auto_cols = False

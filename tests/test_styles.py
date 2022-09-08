@@ -61,7 +61,6 @@ def show_all():
         db()
 
 
-# fails label background color
 def test_fill_color(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'fill_color_master') if master else 'fill_color'
@@ -89,7 +88,6 @@ def test_fill_color(master=False, remove=True, show=False):
         assert not compare
 
 
-# fails label edge color
 def test_edge_color(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'edge_color_master') if master else 'edge_color'
@@ -142,7 +140,6 @@ def test_spines(master=False, remove=True, show=False):
         assert not compare
 
 
-# fails label background color
 def test_alpha(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'alpha_master') if master else 'alpha'
@@ -561,7 +558,7 @@ def test_marker_boxplot3(master=False, remove=True, show=False):
     # Make the plot
     fcp.set_theme('_test')
     df_box = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
-    fcp.boxplot(df_box, y='Value', groups=['Batch', 'Sample'], show=SHOW,
+    fcp.boxplot(df_box, y='Value', groups=['Batch', 'Sample'], show=SHOW, #box_group_title_font='arial',
                 marker_size=10, box_whisker_color=[0, 0, 1, 1, 2, 2], box_whisker_width=1, jitter=False,
                 box_marker_edge_alpha=0.6, box_marker_fill_alpha=1, box_marker_type=['+'],
                 filename=name + '.png')

@@ -1,4 +1,4 @@
-import matplotlib as mpl
+# White axes background theme
 
 #########################################################
 # Figure layout defaults
@@ -188,4 +188,3 @@ rcParams = {'font.cursive': ['Apple Chancery',
                            'serif'],
             'agg.path.chunksize': 1000,
             }
-mpl.rcParams.update(rcParams)

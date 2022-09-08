@@ -24,6 +24,7 @@ from . import utilities
 from . import data
 from . colors import DEFAULT_COLORS, BAYER  # noqa
 from . import engines
+import fivecentplots as fcp
 try:
     # optional import - only used for paste_kwargs to use windows clipboard
     # to directly copy kwargs from ini file
@@ -1491,7 +1492,7 @@ def plotter(dobj, **kwargs):
     kwargs = deprecated(kwargs)
 
     # Apply globals if they don't exist
-    for k, v in KWARGS.items():
+    for k, v in fcp.KWARGS.items():
         if k not in kwargs.keys():
             kwargs[k] = v
 
@@ -1499,22 +1500,21 @@ def plotter(dobj, **kwargs):
     kwargs['timer'] = utl.Timer(print=kwargs.get('timer', False), start=True, units='ms')
 
     # Set the plotting engine
-    theme = kwargs.get('theme', None)
-    engine = utl.kwget(kwargs, utl.reload_defaults(theme)[0], 'engine', 'mpl')
+    defaults = utl.reload_defaults(kwargs.get('theme', None))
+    engine = utl.kwget(kwargs, defaults[0], 'engine', 'mpl')
     if not hasattr(engines, engine):
         if engine in INSTALL.keys():
             installs = '\npip install '.join(INSTALL[engine])
-            print('Plotting engine "%s" is not installed! Please run the '
-                  'following:\npip install %s' % (engine, installs))
+            print(f'Plotting engine "{engine}" is not installed! Please run the following:\npip install {installs}')
         else:
-            print('Plotting engine "%s" is not supported' % (engine))
+            print(f'Plotting engine "{engine}" is not supported')
         return
     else:
         engine = getattr(engines, engine)
     kwargs['timer'].get('Layout obj')
 
     # Build the data object and update kwargs
-    dd = dobj(**kwargs)
+    dd = dobj(fcpp=defaults[0], **kwargs)
     for k, v in kwargs.items():
         if k in dd.__dict__.keys():
             kwargs[k] = getattr(dd, k)
@@ -1524,7 +1524,7 @@ def plotter(dobj, **kwargs):
     for ifig, fig_item, fig_cols, dd in dd.get_df_figure():
         kwargs['timer'].get('dd.get_df_figure')
         # Create a layout object
-        layout = engine.Layout(dd, **kwargs)
+        layout = engine.Layout(dd, defaults, **kwargs)
         kwargs = layout.kwargs
         kwargs['timer'].get('layout class')
 
@@ -1708,17 +1708,15 @@ def set_theme(theme=None):
             return
 
         if int(entry) <= len(themes):
-            print('Copying %s >> %s' %
-                  (themes[int(entry) - 1],
-                   osjoin(user_dir, '.fivecentplots', 'defaults.py')))
+            print('Copying %s >> %s' % (themes[int(entry) - 1], osjoin(user_dir, '.fivecentplots', 'defaults.py')))
+            theme = themes[int(entry) - 1]
         else:
-            print('Copying %s >> %s' %
-                  (mythemes[int(entry) - 1 - len(themes)],
-                   osjoin(user_dir, '.fivecentplots', 'defaults.py')))
+            print('Copying %s >> %s' % (mythemes[int(entry) - 1 - len(themes)],
+                                        osjoin(user_dir, '.fivecentplots', 'defaults.py')))
+            theme = mythemes[int(entry) - 1 - len(themes)]
 
     if os.path.exists(osjoin(user_dir, '.fivecentplots', 'defaults.py')):
-        print('Previous theme file found! Renaming to "defaults_old.py" and '
-              'copying new theme...', end='')
+        print(f'Previous theme file found! Renaming to "defaults_old.py" and copying theme "{theme}"...', end='')
         shutil.copy2(osjoin(user_dir, '.fivecentplots', 'defaults.py'),
                      osjoin(user_dir, '.fivecentplots', 'defaults_old.py'))
 

@@ -1,7 +1,5 @@
 # THIS THEME FILE IS USED FOR UNIT TESTING, BUT IF YOU WANT TO USE IT, OK
 
-import matplotlib as mpl
-
 #########################################################
 # Figure layout defaults
 #########################################################
@@ -142,7 +140,7 @@ colors = ['#1f77b4', '#000000', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e3
 # Default marker scheme
 ####################################################
 
-# markers = []
+markers = []
 
 ####################################################
 # Matplotlib default overrides
@@ -190,4 +188,3 @@ rcParams = {'font.cursive': ['Apple Chancery',
                            'serif'],
             'agg.path.chunksize': 1000,
             }
-mpl.rcParams.update(rcParams)
