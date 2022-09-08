@@ -1500,7 +1500,8 @@ def plotter(dobj, **kwargs):
     kwargs['timer'] = utl.Timer(print=kwargs.get('timer', False), start=True, units='ms')
 
     # Set the plotting engine
-    defaults = utl.reload_defaults(kwargs.get('theme', None))
+    verbose = kwargs.get('verbose', False)
+    defaults = utl.reload_defaults(kwargs.get('theme', None), verbose=verbose)
     engine = utl.kwget(kwargs, defaults[0], 'engine', 'mpl')
     if not hasattr(engines, engine):
         if engine in INSTALL.keys():
@@ -1655,7 +1656,7 @@ def plotter(dobj, **kwargs):
     kwargs['timer'].get_total()
 
 
-def set_theme(theme=None):
+def set_theme(theme=None, verbose=False):
     """
     Select a "defaults" file and copy to the user directory
     """
@@ -1673,6 +1674,8 @@ def set_theme(theme=None):
 
     themes = [f.replace('.py', '') for f in os.listdir(osjoin(cur_dir, 'themes')) if '.py' in f]
     mythemes = [f.replace('.py', '') for f in os.listdir(my_theme_dir) if '.py' in f and f not in ignores]
+    if verbose:
+        print(f'theme: {theme}\nthemes: {themes}\nmythemes: {mythemes}\nmy_theme_dir: {my_theme_dir}')
 
     if theme in themes:
         entry = themes.index('%s' % theme) + 1

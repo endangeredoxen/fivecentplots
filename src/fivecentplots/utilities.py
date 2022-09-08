@@ -779,19 +779,22 @@ def rectangle_overlap(r1: [list, tuple], r2: [list, tuple]) -> bool:
         return False
 
 
-def reload_defaults(theme: [str, None] = None):
+def reload_defaults(theme: [str, None] = None, verbose: bool = False):
     """Reload the fcp params.
 
     Args:
         theme (optional): name of the theme file to load. Defaults to None.
+        verbose (bool): optional print more info flag
     """
     theme_dir = pathlib.Path(__file__).parent / 'themes'
     reset_path = False
     err_msg = 'Requested theme not found; using default'
     user_dir = pathlib.Path.home()
+    success = True
 
     if theme is not None and os.path.exists(theme):
         # full filename case
+        case = 1
         theme = str(theme)
         theme_dir = os.sep.join(theme.split(os.sep)[0:-1])
         theme = theme.split(os.sep)[-1]
@@ -804,7 +807,9 @@ def reload_defaults(theme: [str, None] = None):
             print(err_msg)
             import defaults
             importlib.reload(defaults)
+            success = False
     elif theme is not None and (theme in os.listdir(theme_dir) or theme + '.py' in os.listdir(theme_dir)):
+        case = 2
         sys.path = [str(theme_dir)] + sys.path
         reset_path = True
         try:
@@ -814,12 +819,15 @@ def reload_defaults(theme: [str, None] = None):
             print(err_msg)
             import defaults
             importlib.reload(defaults)
+            success = False
     elif (user_dir / '.fivecentplots' / 'defaults.py').exists():
         # use default theme
+        case = 3
         sys.path = [str(user_dir / '.fivecentplots')] + sys.path
         defaults = importlib.import_module('defaults', str(user_dir / '.fivecentplots'))
         importlib.reload(defaults)
     else:
+        case = 4
         sys.path = [str(theme_dir)] + sys.path
         import gray as defaults
         importlib.reload(defaults)
@@ -828,6 +836,12 @@ def reload_defaults(theme: [str, None] = None):
     colors = defaults.colors if hasattr(defaults, 'colors') else []
     markers = defaults.markers if hasattr(defaults, 'markers') else []
     rcParams = defaults.rcParams if hasattr(defaults, 'rcParams') else {}
+
+    if verbose:
+        print(f'sys.path[0]: {sys.path[0]}')
+        print(f'theme: {theme}\ntheme exists: {os.path.exists(str(theme))}')
+        print(f'theme_dir: {theme_dir}\nuser_dir: {user_dir}')
+        print(f'case: {case}\nsuccess: {success}')
 
     if reset_path:
         sys.path = sys.path[1:]
