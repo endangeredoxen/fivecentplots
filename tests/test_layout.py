@@ -27,3 +27,31 @@ def test_element():
         ele.size_all = [1, 1]
     with pytest.raises(ValueError):
         ele.size_all_bg = [1, 1]
+
+    ele = layout.Element(df=pd.DataFrame, size=None)
+    assert 'df' not in ele.kwargs.keys()
+    ele.size=[3, 4]
+    assert ele._size_orig == [3, 4]
+    assert ele.size_inches == [0.03, 0.04]
+    ele.on = False
+    assert ele.size_inches == [0, 0]
+
+
+def test_legend_element():
+    leg = layout.Legend_Element()
+    expected = pd.DataFrame(columns=['Key', 'Curve', 'LineType'])
+    pd.testing.assert_frame_equal(leg._values, expected)
+
+
+def test_object_array():
+    obj = layout.ObjectArray()
+    np.testing.assert_array_equal(obj._obj, np.array([]))
+
+    obj.obj = np.ones(5)
+    np.testing.assert_array_equal(obj.obj, np.ones(5))
+
+    obj.obj = np.array([3, 2, 1])
+    assert obj[6] == 2.0
+
+    obj.reshape(4, 2)
+    assert obj.obj[2, 1] == 3.0

@@ -251,8 +251,9 @@ def test_line_color_custom(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             colors=['#FF0000', '#FF7777', '#FFAAAA'],
-             filename=name + '.png')
+             colors=['#FF0000', '#FF7777', '#FFAAAA'], tick_labels_minor_fill_color='#ff0000', tick_labels_minor=True,
+             filename=name + '.png', tick_labels_minor_edge_color='#0000ff',
+             tick_labels_minor_font_style=['normal', 'italic'], xlabel='volts')
 
     # Compare with master
     if master:

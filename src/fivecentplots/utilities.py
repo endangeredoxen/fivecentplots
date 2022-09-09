@@ -10,6 +10,7 @@ import subprocess
 import pathlib
 import re
 import shlex
+import inspect
 from matplotlib.font_manager import FontProperties, findfont
 try:
     from PIL import ImageFont  # used only for bokeh font size calculations
@@ -1029,6 +1030,23 @@ def split_color_planes(img: pd.DataFrame, cfa: str = 'rggb',
 
     cols = df_int_cols(img2) + ['Plane']
     return img2[cols]
+
+
+def test_checker(module) -> list:
+    """For test files with benchmarking, find any missing "plt_" functions without a matching "test_" func
+
+    Args:
+        module: imported module
+
+    Returns:
+        list of names of plt_ funcs without a test_ func
+    """
+
+    funcs = inspect.getmembers(module, inspect.isfunction)
+    tests = [f[0].replace('test_', '') for f in funcs if 'test_' in f[0]]
+    plts = [f[0].replace('plt_', '') for f in funcs if 'plt_' in f[0]]
+
+    return [f for f in plts if f not in tests]
 
 
 def validate_list(items: [str, int, float, list]) -> list:

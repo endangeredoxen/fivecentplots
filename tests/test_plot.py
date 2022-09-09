@@ -813,6 +813,9 @@ def plt_other_curve_fitting_legend2(bm=False, master=False, remove=True, show=Fa
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, show=SHOW, wrap='Die', legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              fit=1, fit_range_x=[1.3, 2], fit_width=2, fit_color='#555555', ax_size=[250, 250],
+             label_wrap_size=22, label_wrap_font_size=12, label_wrap_fill_color='55FF3A',
+             label_wrap_font_color='#ff0000', title_wrap_size=25, title_wrap_font_size=10,
+             title_wrap_font_color='#0000ff',
              filename=name + '.png', save=not bm, inline=False)
     if bm:
         return
@@ -1180,8 +1183,37 @@ def plt_other_ref_line_mult(bm=False, master=False, remove=True, show=False):
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              xmin=0, ymin=0, xmax=1.6, ymax=1.6,
-             ref_line=['Voltage', '2*Voltage'], ref_line_legend_text=['y=x', 'y=2*x'], ref_line_style=['-', '--'],
+             ref_line=['Voltage', '2*Voltage', '3*Voltage'],
+             ref_line_legend_text=['y=x', 'y=2*x'], ref_line_style=['-', '--'],
              ref_line_color=[5, 6], filename=name + '.png', save=not bm, inline=False)
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_other_ref_line_mult2(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'other_ref-line_mult2_master') if master else 'other_ref-line_mult2'
+
+    # Make the plot
+    df['2*Voltage'] = 2 * df['Voltage']
+    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             xmin=0, ymin=0, xmax=1.6, ymax=1.6, ref_line=['Voltage', '2*Voltage'],
+             ref_line_style=['-', '--'], ref_line_color=[5, 6], filename=name + '.png', save=not bm, inline=False)
     if bm:
         return
 
@@ -1371,21 +1403,6 @@ def test_other_conf_int(benchmark):
     benchmark(plt_other_conf_int, True)
 
 
-def test_other_nq_int(benchmark):
-    plt_other_nq_int()
-    benchmark(plt_other_nq_int, True)
-
-
-def test_other_nq_int2(benchmark):
-    plt_other_nq_int2()
-    benchmark(plt_other_nq_int, True)
-
-
-def test_other_percentile_int(benchmark):
-    plt_other_percentile_int()
-    benchmark(plt_other_percentile_int, True)
-
-
 def test_other_conf_int2(benchmark):
     plt_other_conf_int2()
     benchmark(plt_other_conf_int2, True)
@@ -1426,6 +1443,11 @@ def test_other_curve_fitting_range(benchmark):
     benchmark(plt_other_curve_fitting_range, True)
 
 
+def test_other_lcl_only(benchmark):
+    plt_other_lcl_only()
+    benchmark(plt_other_lcl_only, True)
+
+
 def test_other_lines(benchmark):
     plt_other_lines()
     benchmark(plt_other_lines, True)
@@ -1436,9 +1458,19 @@ def test_other_lines_df(benchmark):
     benchmark(plt_other_lines_df, True)
 
 
-def test_other_lcl_only(benchmark):
-    plt_other_lcl_only()
-    benchmark(plt_other_lcl_only, True)
+def test_other_nq_int(benchmark):
+    plt_other_nq_int()
+    benchmark(plt_other_nq_int, True)
+
+
+def test_other_nq_int2(benchmark):
+    plt_other_nq_int2()
+    benchmark(plt_other_nq_int, True)
+
+
+def test_other_percentile_int(benchmark):
+    plt_other_percentile_int()
+    benchmark(plt_other_percentile_int, True)
 
 
 def test_other_ucl_only(benchmark):
@@ -1456,6 +1488,11 @@ def test_other_ucl_lcl_outside(benchmark):
     benchmark(plt_other_ucl_lcl_outside, True)
 
 
+def test_other_ref_line_leg(benchmark):
+    plt_other_ref_line_leg()
+    benchmark(plt_other_ref_line_leg, True)
+
+
 def test_other_ref_line(benchmark):
     plt_other_ref_line()
     benchmark(plt_other_ref_line, True)
@@ -1469,6 +1506,11 @@ def test_other_ref_line_complex(benchmark):
 def test_other_ref_line_mult(benchmark):
     plt_other_ref_line_mult()
     benchmark(plt_other_ref_line_mult, True)
+
+
+def test_other_ref_line_mult2(benchmark):
+    plt_other_ref_line_mult2()
+    benchmark(plt_other_ref_line_mult2, True)
 
 
 def test_other_stat_bad(benchmark):
@@ -1509,6 +1551,11 @@ def test_row_x_column(benchmark):
 def test_row_x_column_empty(benchmark):
     plt_row_x_column_empty()
     benchmark(plt_row_x_column_empty, True)
+
+
+def test_row_x_column_sep_labels(benchmark):
+    plt_row_x_column_sep_labels()
+    benchmark(plt_row_x_column_sep_labels, True)
 
 
 def test_secondary_xy_shared_x(benchmark):

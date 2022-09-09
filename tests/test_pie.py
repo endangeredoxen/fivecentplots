@@ -266,7 +266,7 @@ def plt_shadow(bm=False, master=False, remove=True, show=False):
     # Make the plot
     fcp.pie(df, x='Liquid', y='pH', show=SHOW,
             filter='Measurement=="A" & T [C]==25',
-            explode=(0, 0.1), shadow=True, start_angle=90, percents=True,
+            explode=(0, 0.1), shadow=True, start_angle=90, percents=False,
             filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:

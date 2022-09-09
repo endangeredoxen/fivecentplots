@@ -287,7 +287,7 @@ def test_heatmap(benchmark):
     benchmark(plt_heatmap, True)
 
 
-def test_heatmap_streched(benchmark):
+def test_heatmap_stretched(benchmark):
     plt_heatmap_stretched()
     benchmark(plt_heatmap_stretched, True)
 

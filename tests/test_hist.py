@@ -744,6 +744,21 @@ def test_image_legend_cdf(benchmark):
     benchmark(plt_image_legend_cdf, True)
 
 
+def test_image_legend_pdf(benchmark):
+    plt_image_legend_pdf()
+    benchmark(plt_image_legend_pdf, True)
+
+
+def test_patch_single(benchmark):
+    plt_patch_single()
+    benchmark(plt_patch_single, True)
+
+
+def test_patch_single_log(benchmark):
+    plt_patch_single_log()
+    benchmark(plt_patch_single_log, True)
+
+
 def test_patch_solid(benchmark):
     plt_patch_solid()
     benchmark(plt_patch_solid, True)

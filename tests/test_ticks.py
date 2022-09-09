@@ -93,7 +93,7 @@ def test_grid_major_off(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             grid_major=False,
+             grid_major=False, ticks=False,
              filename=name + '.png')
 
     # Compare with master
