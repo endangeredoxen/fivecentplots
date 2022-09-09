@@ -42,6 +42,11 @@ def test_legend_element():
     expected = pd.DataFrame(columns=['Key', 'Curve', 'LineType'])
     pd.testing.assert_frame_equal(leg._values, expected)
 
+    leg = layout.Legend_Element(legend=True, sort=True)
+    leg.values = pd.DataFrame({'Key': 'hi', 'Curve': 'bye', 'LineType': 'fire'}, index=[0])
+    expected = pd.DataFrame({'Key': 'hi', 'Curve': 'bye', 'LineType': 'fire'}, index=[0])
+    pd.testing.assert_frame_equal(leg.values, expected)
+
 
 def test_object_array():
     obj = layout.ObjectArray()
@@ -52,6 +57,7 @@ def test_object_array():
 
     obj.obj = np.array([3, 2, 1])
     assert obj[6] == 2.0
+    assert len(obj) == 8
 
     obj.reshape(4, 2)
     assert obj.obj[2, 1] == 3.0
