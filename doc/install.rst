@@ -27,6 +27,12 @@ Optional
 ********
 * fileio (0.2.2 or higher):  enables pasting of keywords from clipboard from ``ini`` file
 
+.. note:: When running on Linux, you might consider installing additional fonts for better looking labels:
+
+          .. code-block::
+
+             sudo apt ttf-mscorefonts-installer
+
 
 Test Development
 ----------------
