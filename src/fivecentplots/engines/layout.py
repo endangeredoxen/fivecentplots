@@ -451,30 +451,29 @@ class BaseLayout:
                 if (isinstance(val, list) or isinstance(val, tuple)) and len(val) > 1:
                     colors += [val[1]]
                 else:
-                    colors += [utl.kwget(kwargs, self.fcpp,
-                                         '%s_color' % axline, '#000000')]
+                    colors += [utl.kwget(kwargs, self.fcpp, '%s_color' % axline, '#000000')]
                 if (isinstance(val, list) or isinstance(val, tuple)) and len(val) > 2:
                     styles += [val[2]]
                 else:
-                    styles += [utl.kwget(kwargs, self.fcpp,
-                                         '%s_style' % axline, '-')]
+                    styles += [utl.kwget(kwargs, self.fcpp, '%s_style' % axline, '-')]
                 if (isinstance(val, list) or isinstance(val, tuple)) and len(val) > 3:
                     widths += [val[3]]
                 else:
-                    widths += [utl.kwget(kwargs, self.fcpp,
-                                         '%s_width' % axline, 1)]
+                    widths += [utl.kwget(kwargs, self.fcpp, '%s_width' % axline, 1)]
                 if (isinstance(val, list) or isinstance(val, tuple)) and len(val) > 4:
                     alphas += [val[4]]
                 else:
-                    alphas += [utl.kwget(kwargs, self.fcpp,
-                                         '%s_alpha' % axline, 1)]
+                    alphas += [utl.kwget(kwargs, self.fcpp, '%s_alpha' % axline, 1)]
                 if (isinstance(val, list) or isinstance(val, tuple)) and len(val) > 5:
                     labels += [val[5]]
                 elif (isinstance(val, list) or isinstance(val, tuple)) and isinstance(val[0], str):
                     labels += [val[0]]
                 else:
-                    labels += [utl.kwget(kwargs, self.fcpp,
-                                         '%s_label' % axline, None)]
+                    labels += [utl.kwget(kwargs, self.fcpp, '%s_label' % axline, None)]
+            by_plot = utl.kwget(kwargs, self.fcpp, '%s_by_plot' % axline, False)
+            if by_plot:
+                labels = labels[0]
+
             setattr(self, axline,
                     Element(axline, self.fcpp, kwargs,
                             on=True if axline in kwargs.keys() else False,
@@ -2362,12 +2361,10 @@ class BaseLayout:
             self.title_wrap.on = False
             self.label_wrap.on = False
             self.separate_labels = kwargs.get('separate_labels', True)
-            self.separate_ticks = kwargs.get('separate_ticks', True) \
-                if not self.separate_labels else True
+            self.separate_ticks = kwargs.get('separate_ticks', True) if not self.separate_labels else True
         elif data.wrap:
             self.separate_labels = kwargs.get('separate_labels', False)
-            self.separate_ticks = kwargs.get('separate_ticks', False) \
-                if not self.separate_labels else True
+            self.separate_ticks = kwargs.get('separate_ticks', False) if not self.separate_labels else True
             self.ws_row = kwargs.get('ws_row', self.label_wrap._size[1])
             self.ws_row_def = int(self.ws_row)
             self.ws_col = kwargs.get('ws_col', 0)

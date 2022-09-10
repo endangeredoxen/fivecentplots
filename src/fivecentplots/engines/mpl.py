@@ -334,10 +334,10 @@ class Layout(BaseLayout):
 
     @property
     def _legx(self) -> float:
-        """Legend whitespace x is location == 0."""
+        """Legend whitespace x if location == 0."""
         if self.legend.location == 0 and self.legend._on:
-            return self.legend.size[0] + self.ws_ax_leg + self.ws_leg_fig + \
-                self.fig_legend_border + self.legend.edge_width
+            return self.legend.size[0] + self.ws_ax_leg + self.ws_leg_fig \
+                + self.fig_legend_border + self.legend.edge_width
         else:
             return 0
 
@@ -368,18 +368,18 @@ class Layout(BaseLayout):
             + self._labtick_z \
             + self.x_tick_xs \
             + self.label_y2.size[0] \
-            + (self.label_z.size[0]
-               * (self.ncol if self.separate_labels else 1)
-               + self.ws_ticks_ax * self.label_z.on)
+            + (self.label_z.size[0] * (self.ncol if self.separate_labels else 1)
+            + self.ws_ticks_ax * self.label_z.on)
 
         # box title excess
-        if self.box_group_title.on \
-                and (self.ws_ax_box_title + self.box_title) > self._legx:
+        if self.box_group_title.on and (self.ws_ax_box_title + self.box_title) > self._legx:
             right = self.ws_ax_box_title + self.box_title + (self.ws_ax_fig if not self.legend.on else 0)
+        if self.box_group_title.on and self.legend.size[1] > self.axes.size[1]:
+            right += self.box_title
 
         # Main figure title excess size
-        title_xs_right = self.title.size[0] / 2 - \
-            (right + (self.axes.size[0] * self.ncol + self.ws_col * (self.ncol - 1)) / 2)
+        title_xs_right = self.title.size[0] / 2 \
+            - (right + (self.axes.size[0] * self.ncol + self.ws_col * (self.ncol - 1)) / 2)
         if title_xs_right < 0:
             title_xs_right = 0
         right += title_xs_right
@@ -696,8 +696,7 @@ class Layout(BaseLayout):
             else:
                 for irow, row in enumerate(self.axes.obj):
                     for icol, col in enumerate(row):
-                        if self.legend.nleg == 1 and \
-                                not(irow == 0 and icol == self.ncol - 1):
+                        if self.legend.nleg == 1 and not(irow == 0 and icol == self.ncol - 1):
                             continue
                         self.legend.obj = \
                             col.legend(lines, keys, loc=self.legend.location,
@@ -728,10 +727,8 @@ class Layout(BaseLayout):
         ax = self.axes.obj[ir, ic]
         if element is None:
             obj = self.text
-            is_array = True
         else:
             obj = getattr(self, element)
-            is_array = False
         text = text if text is not None else obj.text.values
         if isinstance(text, str):
             text = [text]
@@ -759,11 +756,9 @@ class Layout(BaseLayout):
             for attr in attrs:
                 if attr in kwargs.keys():
                     kw[attr] = kwargs[attr]
-                elif hasattr(obj, attr) and \
-                        isinstance(getattr(obj, attr), RepeatedList):
+                elif hasattr(obj, attr) and isinstance(getattr(obj, attr), RepeatedList):
                     kw[attr] = getattr(obj, attr)[itext]
-                elif hasattr(obj, attr) and \
-                        str(type(getattr(obj, attr))) == str(RepeatedList):
+                elif hasattr(obj, attr) and str(type(getattr(obj, attr))) == str(RepeatedList):
                     # isinstance fails on python3.6, so hack this way
                     kw[attr] = getattr(obj, attr)[itext]
                 elif hasattr(obj, attr):
@@ -773,8 +768,7 @@ class Layout(BaseLayout):
                 # Get position
                 if 'position' in kwargs.keys():
                     position = copy.copy(kwargs['position'])
-                elif hasattr(obj, 'position') and \
-                        isinstance(getattr(obj, 'position'), RepeatedList):
+                elif hasattr(obj, 'position') and isinstance(getattr(obj, 'position'), RepeatedList):
                     position = copy.copy(getattr(obj, 'position')[itext])
                 elif hasattr(obj, 'position'):
                     position = copy.copy(getattr(obj, 'position'))
@@ -809,30 +803,17 @@ class Layout(BaseLayout):
                                   edgecolor=kw['edge_color']),
                         zorder=45)
             else:
-                if is_array:
-                    obj.obj[ir, ic][itext] = ax.text(0, 0,
-                                                     txt, transform=transform,
-                                                     rotation=kw['rotation'],
-                                                     color=kw['font_color'],
-                                                     fontname=kw['font'],
-                                                     style=kw['font_style'],
-                                                     weight=kw['font_weight'],
-                                                     size=kw['font_size'],
-                                                     bbox=dict(facecolor=kw['fill_color'],
-                                                               edgecolor=kw['edge_color']),
-                                                     zorder=45)
-                else:
-                    obj.obj[itext] = ax.text(0, 0,
-                                             txt, transform=transform,
-                                             rotation=kw['rotation'],
-                                             color=kw['font_color'],
-                                             fontname=kw['font'],
-                                             style=kw['font_style'],
-                                             weight=kw['font_weight'],
-                                             size=kw['font_size'],
-                                             bbox=dict(facecolor=kw['fill_color'],
-                                                       edgecolor=kw['edge_color']),
-                                             zorder=45)
+                obj.obj[ir, ic][itext] = ax.text(0, 0,
+                                                    txt, transform=transform,
+                                                    rotation=kw['rotation'],
+                                                    color=kw['font_color'],
+                                                    fontname=kw['font'],
+                                                    style=kw['font_style'],
+                                                    weight=kw['font_weight'],
+                                                    size=kw['font_size'],
+                                                    bbox=dict(facecolor=kw['fill_color'],
+                                                            edgecolor=kw['edge_color']),
+                                                    zorder=45)
 
     def close(self):
         """Close an inline plot window."""
@@ -931,13 +912,11 @@ class Layout(BaseLayout):
                 bbox = lab.obj[ir, ic].get_window_extent()
                 width = bbox.width
                 height = bbox.height
-                lab.size_all = (ir, ic, 0, 0, width, height, bbox.x0,
-                                bbox.x1, bbox.y0, bbox.y1)
+                lab.size_all = (ir, ic, 0, 0, width, height, bbox.x0, bbox.x1, bbox.y0, bbox.y1)
 
                 # text label rect background (ax label has to be resized!)
                 bbox = lab.obj_bg[ir, ic].get_window_extent()
-                lab.size_all_bg = (ir, ic, 0, 0, bbox.width, bbox.height, bbox.x0,
-                                   bbox.x1, bbox.y0, bbox.y1)
+                lab.size_all_bg = (ir, ic, 0, 0, bbox.width, bbox.height, bbox.x0, bbox.x1, bbox.y0, bbox.y1)
                 if label not in ['row', 'col', 'wrap']:
                     lab.obj_bg[ir, ic].set_width((width + lab.bg_padding * 2) / self.axes.size[0])
                     lab.obj_bg[ir, ic].set_height((height + lab.bg_padding * 2) / self.axes.size[1])
@@ -955,8 +934,7 @@ class Layout(BaseLayout):
 
         # titles
         if self.title.on and isinstance(self.title.text, str):
-            self.title.size = self.title.obj.get_window_extent().width, \
-                self.title.obj.get_window_extent().height
+            self.title.size = self.title.obj.get_window_extent().width, self.title.obj.get_window_extent().height
 
         # legend
         if self.legend.on and self.legend.location in [0, 11]:
@@ -1000,8 +978,7 @@ class Layout(BaseLayout):
                         # rotate labels that are longer than the box axis size
                         lab.obj[ir, ic][ii, jj].set_rotation(90)
                         bbox = lab.obj[ir, ic][ii, jj].get_window_extent()
-                    lab.size_all = (ir, ic, ii, jj, bbox.width, bbox.height, bbox.x0,
-                                    bbox.x1, bbox.y0, bbox.y1)
+                    lab.size_all = (ir, ic, ii, jj, bbox.width, bbox.height, bbox.x0, bbox.x1, bbox.y0, bbox.y1)
 
                     # text label bg size
                     if lab.obj[ir, ic][ii, jj].get_rotation() != 0:
@@ -1013,8 +990,7 @@ class Layout(BaseLayout):
                         bbox = lab.obj[ir, ic][ii, jj].get_window_extent()
                     else:
                         bbox = lab.obj_bg[ir, ic][ii, jj].get_window_extent()
-                    lab.size_all_bg = (ir, ic, ii, jj, bbox.width, bbox.height, bbox.x0,
-                                       bbox.x1, bbox.y0, bbox.y1)
+                    lab.size_all_bg = (ir, ic, ii, jj, bbox.width, bbox.height, bbox.x0, bbox.x1, bbox.y0, bbox.y1)
 
             # set max size
             width = lab.size_all.width.max()
@@ -1033,13 +1009,11 @@ class Layout(BaseLayout):
                     if lab.obj[ir, ic][ii, 0] is None:
                         continue
                     bbox = lab.obj[ir, ic][ii, 0].get_window_extent()
-                    lab.size_all = (ir, ic, ii, 0, bbox.width, bbox.height, bbox.x0,
-                                    bbox.x1, bbox.y0, bbox.y1)
+                    lab.size_all = (ir, ic, ii, 0, bbox.width, bbox.height, bbox.x0, bbox.x1, bbox.y0, bbox.y1)
 
                     # text label rect background size
                     bbox = lab.obj_bg[ir, ic][ii, 0].get_window_extent()
-                    lab.size_all_bg = (ir, ic, ii, 0, bbox.width, bbox.height, bbox.x0,
-                                       bbox.x1, bbox.y0, bbox.y1)
+                    lab.size_all_bg = (ir, ic, ii, 0, bbox.width, bbox.height, bbox.x0, bbox.x1, bbox.y0, bbox.y1)
 
             # set max size
             width = lab.size_all.width.max()
@@ -1056,8 +1030,7 @@ class Layout(BaseLayout):
                 for ibox, bbox in enumerate(bboxes):
                     if self.pie.obj[1][ibox].get_text() == '':
                         continue
-                    self.pie.size_all = (ir, ic, ibox, 0, bbox.width, bbox.height,
-                                         bbox.x0, bbox.x1, bbox.y0, bbox.y1)
+                    self.pie.size_all = (ir, ic, ibox, 0, bbox.width, bbox.height, bbox.x0, bbox.x1, bbox.y0, bbox.y1)
 
                 if len(self.pie.size_all) > 0:
                     left = self.pie.size_all['x0'].min() - ax_bbox.x0
@@ -1125,7 +1098,7 @@ class Layout(BaseLayout):
             self.box_labels = heights.sum()
         self.box_title = 0
         if self.box_group_title.on and self.legend.size[1] > self.axes.size[1]:
-            self.box_title = self.box_group_title.size[0]
+            self.box_title = self.box_group_title.size[0] + self.ws_ax_box_title
         elif self.box_group_title.on and self.box_group_title.size != [0, 0] and \
                 self.box_group_title.size[0] > self.legend.size[0]:
             self.box_title = self.box_group_title.size[0] - self.legend.size[0]
@@ -1152,19 +1125,14 @@ class Layout(BaseLayout):
             self.ws_col += self._tick_y
         if self.axes2.on and (self.separate_ticks or self.axes2.share_y is False) and not self.cbar.on:
             self.ws_col = max(self._tick_y2 + self.ws_label_tick, self.ws_col_def)
-        elif self.axes2.on and (self.separate_ticks or self.axes.share_y is False) and self.cbar.on:
-            self.ws_col += self._tick_y2
+        # elif self.axes2.on and (self.separate_ticks or self.axes.share_y is False) and self.cbar.on:  # case exists??
+        #     self.ws_col += self._tick_y2
 
         if self.separate_ticks or (self.axes.share_x is False and self.box.on is False):
             self.ws_row += max(self.tick_labels_major_x.size[1], self.tick_labels_minor_x.size[1]) + self.ws_ticks_ax
         elif self.axes2.on and (self.separate_ticks or self.axes2.share_x is False) and self.box.on is False:
             self.ws_row += self._tick_x2
-        if self.separate_labels and not self.separate_ticks:
-            self.ws_col += self.label_y.size[0] + \
-                self.ws_label_tick + self.ws_fig_label
-            self.ws_row += self.label_x.size[1] + \
-                self.ws_label_tick + self.ws_fig_label
-        elif self.separate_labels:
+        if self.separate_labels:
             self.ws_col += self._labtick_y - self._tick_y + self.ws_ax_label_xs
             if self.cbar.on:
                 self.ws_col += self.ws_label_tick
@@ -1189,10 +1157,10 @@ class Layout(BaseLayout):
                 self.label_wrap.size[0] = self.axes.size[0]
 
         # Set figure width
-        self.fig.size[0] = self._left + self.axes.size[0] * self.ncol + \
-            self._right + self._legx + self.ws_col * (self.ncol - 1) - \
-            (self.fig_legend_border if self.legend._on else 0) + \
-            (self.cbar.size[0] + self.ws_ax_cbar) * self.ncol
+        self.fig.size[0] = self._left + self.axes.size[0] * self.ncol \
+            + self._right + self._legx + self.ws_col * (self.ncol - 1) \
+            - (self.fig_legend_border if self.legend._on else 0) \
+            + (self.cbar.size[0] + self.ws_ax_cbar) * self.ncol
 
         # Figure height
         self.fig.size[1] = int(
@@ -2631,18 +2599,15 @@ class Layout(BaseLayout):
 
             # Toggle label visibility
             if not self.separate_labels:
-                if ax == 'x' and ir != self.nrow - 1 and \
-                        self.nwrap == 0 and self.axes.visible[ir + 1, ic]:
+                if ax == 'x' and ir != self.nrow - 1 and self.nwrap == 0 and self.axes.visible[ir + 1, ic]:
                     continue
                 if ax == 'x2' and ir != 0:
                     continue
                 if ax == 'y' and ic != 0 and self.axes.visible[ir, ic - 1]:
                     continue
-                if ax == 'y2' and ic != self.ncol - 1 and \
-                        utl.plot_num(ir, ic, self.ncol) != self.nwrap:
+                if ax == 'y2' and ic != self.ncol - 1 and utl.plot_num(ir, ic, self.ncol) != self.nwrap:
                     continue
-                if ax == 'z' and ic != self.ncol - 1 and \
-                        utl.plot_num(ir, ic, self.ncol) != self.nwrap:
+                if ax == 'z' and ic != self.ncol - 1 and utl.plot_num(ir, ic, self.ncol) != self.nwrap:
                     continue
 
             # Add the label
@@ -2695,8 +2660,7 @@ class Layout(BaseLayout):
                 kwargs['size'][0] -= 1  # don't understand this one
             if self.cbar.on:
                 kwargs['size'][0] -= (self.ws_ax_cbar + self.cbar.size[0])
-            self.title_wrap.obj, self.title_wrap.obj_bg = \
-                self.add_label(ir, ic, self.title_wrap.text, **kwargs)
+            self.title_wrap.obj, self.title_wrap.obj_bg = self.add_label(ir, ic, self.title_wrap.text, **kwargs)
 
         # Row labels
         if ic == self.ncol - 1 and self.label_row.on and not self.label_wrap.on:
@@ -3274,12 +3238,11 @@ class Layout(BaseLayout):
         if self.title_wrap.on:
             offset = 0
             y_rect = self.title_wrap.position[3]
-            y_text = y_rect + \
-                (self.title_wrap.size[1] / 2 + offset) / \
-                self.axes.size[1]
-            self.title_wrap.obj.set_position((self.ncol / 2, y_text))
+            y_text = y_rect + (self.title_wrap.size[1] / 2 + offset) / self.axes.size[1]
+            width = self.ncol + ((self.ncol - 1) * self.ws_col + hack) / self.axes.size[0]
+            self.title_wrap.obj.set_position((width / 2, y_text))
             self.title_wrap.obj_bg.set_y(y_rect)
-            self.title_wrap.obj_bg.set_width(self.ncol + hack / self.axes.size[0])
+            self.title_wrap.obj_bg.set_width(width)
 
         # Update title position
         if self.title.on:
@@ -3583,15 +3546,3 @@ class Layout(BaseLayout):
     def show(self, *args):
         """Display the plot window."""
         mplp.show(block=False)
-
-    def update_subplot_spacing(self):
-        """Update spacing for long labels."""
-        if self.label_y.size[1] > self.axes.size[1]:
-            self.ws_row += self.label_y.size[1] - self.axes.size[1]
-        if self.label_x.size[0] > self.axes.size[0]:
-            self.ws_col += self.label_x.size[0] - self.axes.size[0]
-        if self.axes.twin_x and self.separate_ticks \
-                and self.tick_labels_major_y2.on:
-            self.ws_col += self.tick_labels_major_y2.size[0]
-        if self.axes.twin_x and self.separate_labels:
-            self.ws_col += self.label_y2.size[0]

@@ -159,7 +159,7 @@ def plt_filled_no_share(bm=False, master=False, remove=True, show=False):
     # Make the plot
     fcp.contour(df, x='X', y='Y', z='Value', row='Batch', col='Experiment', filled=True,
                 cbar=True, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250, 250], show=SHOW,
-                label_rc_font_size=12, levels=40, share_z=False,
+                label_rc_font_size=12, levels=40, share_z=False, tick_labels_major_z_rotation=45,
                 filename=name + '.png', save=not bm, inline=False)
 
     if bm:

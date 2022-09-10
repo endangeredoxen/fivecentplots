@@ -761,6 +761,9 @@ def plot(df, **kwargs):
         ax_vlines|ax2_vlines (float|list of tuples and floats): Add vertical lines to the plot [same parameters as
           ax_hlines]. Defaults to None. Example:
           https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Horizontal-&-vertical-lines
+        ax_[h|v]lines (list of values): Add a line with a different value to each subplot when using row/col/wrap
+          grouping. Defaults to None. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Horizontal-&-vertical-lines
         CONTROL_LIMITS:
         control_limit_side (str): Determines if shaded region is <= lcl and >= ucl {"outside"} or between the lcl and
           ucl {"inside"}. Defaults to outside. Example:
@@ -1333,6 +1336,8 @@ def plot_interval(ir, ic, iline, data, layout, df, x, y, twin):
         else:
             leg_name = f'ci = {layout.interval.value[0]}'
 
+    if twin:
+        leg_name = f'{leg_name} '
     layout.fill_between_lines(ir, ic, iline, data.stat_idx, data.lcl, data.ucl,
                               'interval', leg_name=leg_name, twin=twin)
 

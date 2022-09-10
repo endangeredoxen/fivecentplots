@@ -596,7 +596,9 @@ def plt_wrap(bm=False, master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend='Die', wrap=['Temperature [C]', 'Boost Level'], show=SHOW,
              ax_size=[225, 225], filter='Substrate=="Si" & Target Wavelength==450', label_rc_font_size=13,
-             filename=name + '.png', save=not bm, inline=False)
+             filename=name + '.png', save=not bm, inline=False,
+             ax_hlines = [(1, '#FF0000'), (2, '#00FF00'), (3, '#0000FF'), (4, '#FFF000'), (5, '#000FFF'), 6],
+             ax_hlines_by_plot=True, ax_hlines_label=['sipping', 'on', 'gin', '&', 'juice', 'yall'])
     if bm:
         return
 
@@ -1048,7 +1050,9 @@ def plt_other_nq_int(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'other_nq-int_master') if master else 'other_nq-int'
 
     # Make the plot
-    fcp.plot(df_interval, x='x', y='y',  title='IV Data', lines=False, show=SHOW, ymin='q0.05', ymax='q99',
+    df_interval['y2'] = -df_interval['y']
+    fcp.plot(df_interval, x='x', y=['y', 'y2'], twin_x=True,  title='IV Data', lines=False,
+             show=SHOW, ymin='q0.05', ymax='q99',
              nq_int=[-2, 2], filename=name + '.png', save=not bm, inline=False, legend=True)
     if bm:
         return

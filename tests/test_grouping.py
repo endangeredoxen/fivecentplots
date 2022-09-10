@@ -520,6 +520,30 @@ def test_groups_wrap_unique(master=False, remove=True, show=False):
         assert not compare
 
 
+def test_groups_wrap_unique_seperate(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'groups_wrap_unique_seperate_master') if master else 'groups_wrap_unique_seperate'
+
+    # Make the plot
+    fcp.plot(df1, x='Voltage', y='I [A]', legend='Die', wrap=['Temperature [C]', 'Boost Level'],
+             ax_size=[225, 225], filter='Substrate=="Si" & Target Wavelength==450',
+             separate_labels=True, separate_ticks=False, save=True, inline=False, filename=name + '.png')
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def test_groups_wrap_column_ncol(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'groups_wrap_column_ncol_master') if master else 'groups_wrap_column_ncol'

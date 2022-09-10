@@ -21,6 +21,9 @@ else:
 
 # Sample data
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
+df2 = df.copy()
+df2.loc[df2.Region=='Alpha123', 'Region'] = 5 * 'Alpha123'
+df2['Lots of Values'] = df2.index % 2 + df2.index
 
 # Set theme
 fcp.set_theme('gray')
@@ -228,6 +231,32 @@ def plt_group_legend(bm=False, master=False, remove=True, show=False):
     # Make the plot
     fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], legend='Region', show=SHOW,
                 filename=name + '.png', save=not bm, inline=False, jitter=False)
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_group_legend_lots(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'group_legend_lots_master') if master else 'group_legend_lots'
+
+    # Make the plot
+    fcp.boxplot(df2, y='Value', groups=['Batch', 'Sample'], legend='Lots of Values', show=SHOW,
+                filename=name + '.png', save=not bm, inline=False, jitter=False, legend_edge_color='#000000')
 
     if bm:
         return
@@ -707,6 +736,11 @@ def test_group_multiple_nan(benchmark):
 def test_group_legend(benchmark):
     plt_group_legend()
     benchmark(plt_group_legend, True)
+
+
+def test_group_legend_lots(benchmark):
+    plt_group_legend_lots()
+    benchmark(plt_group_legend_lots, True)
 
 
 def test_grid_column(benchmark):
