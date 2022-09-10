@@ -1228,29 +1228,6 @@ class Data:
                 print('stat "%s" is not supported...skipping stat calculation' % self.stat)
                 return None
 
-    # def _get_stat_groupings(self, df: pd.DataFrame) -> pd.DataFrame:
-    #     """Groupby for stat/stat_vals.  NOT SURE WHAT THIS IS FOR ANYMORE, MUST BE OLD AND CARRIED OVER
-
-    #     Args:
-    #         df: data subset
-
-    #     Returns:
-    #         updated DataFrame
-    #     """
-    #     if self.stat is not None and 'only' in self.stat:
-    #         stat_groups = []
-    #         vals_2_chk = ['stat_val', 'legend', 'col', 'row', 'wrap']
-    #         for v in vals_2_chk:
-    #             if getattr(self, v) is not None:
-    #                 stat_groups += utl.validate_list(getattr(self, v))
-
-    #     if self.stat is not None and 'only' in self.stat and 'median' in self.stat:
-    #         df = df.groupby(stat_groups).median().reset_index()
-    #     elif self.stat is not None and 'only' in self.stat:
-    #         df = df.groupby(stat_groups).mean().reset_index()
-
-    #     return df
-
     def _range_dict(self):
         """Make a list of empty dicts for axes range limits."""
         ranges = np.array([[None] * self.ncol] * self.nrow)
@@ -1312,18 +1289,14 @@ class Data:
             self.y = utl.validate_list(self.row_vals[ir])
         if self.col == 'x':
             self.x = utl.validate_list(self.col_vals[ic])
-        if self.row not in [None, 'y'] \
-                and self.col not in [None, 'x']:
+        if self.row not in [None, 'y'] and self.col not in [None, 'x']:
             row = self.row_vals[ir]
             col = self.col_vals[ic]
-            return self.df_fig[(self.df_fig[self.row[0]] == row)
-                               & (self.df_fig[self.col[0]] == col)].copy()
-        elif self.row not in [None, 'y'] and \
-                (not self.col or self.col in [None, 'x']):
+            return self.df_fig[(self.df_fig[self.row[0]] == row) & (self.df_fig[self.col[0]] == col)].copy()
+        elif self.row not in [None, 'y'] and (not self.col or self.col in [None, 'x']):
             row = self.row_vals[ir]
             return self.df_fig[(self.df_fig[self.row[0]] == row)].copy()
-        elif self.col not in [None, 'x'] and \
-                (not self.row or self.row in [None, 'y']):
+        elif self.col not in [None, 'x'] and (not self.row or self.row in [None, 'y']):
             col = self.col_vals[ic]
             return self.df_fig[(self.df_fig[self.col[0]] == col)].copy()
         else:

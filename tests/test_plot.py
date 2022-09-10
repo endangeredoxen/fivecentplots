@@ -67,10 +67,10 @@ def plt_xy_scatter(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'xy_scatter_master') if master else 'xy_scatter'
 
-    # Make the plot
+    # Make the plot (use a different filepath here to test that function)
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False,
              show=False, filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             filename=name + '.png', save=not bm, inline=False)
+             filename=name + '.png', save=not bm, inline=False, filepath='..')
     if bm:
         return
 
@@ -79,12 +79,12 @@ def plt_xy_scatter(bm=False, master=False, remove=True, show=False):
         return
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        utl.show_file(os.path.join('..', name + '.png'))
+        compare = utl.img_compare(os.path.join('..', name + '.png'), osjoin(MASTER, name + '_master.png'), show=True)
     else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(os.path.join('..', name + '.png'), osjoin(MASTER, name + '_master.png'))
         if remove:
-            os.remove(name + '.png')
+            os.remove(os.path.join('..', name + '.png'))
 
         assert not compare
 
@@ -539,9 +539,9 @@ def plt_row_x_column_empty(bm=False, master=False, remove=True, show=False):
     # Make the plot
     df_empty = df.copy()
     df_empty.loc[0, 'Temperature [C]'] = 77
-    fcp.plot(df_empty, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]', show=SHOW,
-             ax_size=[225, 225], filter='Substrate=="Si" & Target Wavelength==450', label_rc_font_size=13,
-             filename=name + '.png', save=not bm, inline=False, share_x=False)
+    fcp.plot(df_empty, y=['Voltage', 'I [A]'], x='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',
+             ax_size=[225, 225], filter='Substrate=="Si" & Target Wavelength==450', label_rc_font_size=13, show=SHOW,
+             filename=name + '.png', save=not bm, inline=False, share_x=False, twin_x=True)
     if bm:
         return
 
@@ -705,7 +705,7 @@ def plt_other_curve_fitting2(bm=False, master=False, remove=True, show=False):
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, show=SHOW, legend=True,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              fit=2, fit_eqn=True, fit_rsq=True, fit_font_size=9, fit_range_y=[0, 1], fit_color='#FF0000',
-             filename=name + '.png', save=not bm, inline=False)
+             filename=name + '.png', save=not bm, inline=False, fit_legend_text='smile fit')
     if bm:
         return
 
@@ -894,8 +894,7 @@ def plt_other_stat_good(bm=False, master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x='I [A]', y='Voltage', title='IV Data', lines=False, show=SHOW, grops='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             stat='median', stat_val='I Set',
-             filename=name + '.png', save=not bm, inline=False)
+             stat='median', stat_val='I Set', filename=name + '.png', save=not bm, inline=False)
     if bm:
         return
 
@@ -921,7 +920,7 @@ def plt_other_stat_q(bm=False, master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x='I [A]', y='Voltage', title='IV Data', lines=False, show=SHOW,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             stat='q50', stat_val='I Set',
+             stat='q50', stat_val='I Set', markers=False,
              filename=name + '.png', save=not bm, inline=False)
     if bm:
         return
@@ -972,7 +971,7 @@ def plt_other_conf_int(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'other_conf-int_master') if master else 'other_conf-int'
 
     # Make the plot
-    fcp.plot(df_interval, x='x', y='y', title='IV Data', lines=False, show=SHOW,
+    fcp.plot(df_interval, x='x', y='y', title='IV Data', lines=False, show=SHOW, legend=True,
              conf_int=0.95, filename=name + '.png', save=not bm, inline=False)
     if bm:
         return
@@ -1050,7 +1049,7 @@ def plt_other_nq_int(bm=False, master=False, remove=True, show=False):
 
     # Make the plot
     fcp.plot(df_interval, x='x', y='y',  title='IV Data', lines=False, show=SHOW, ymin='q0.05', ymax='q99',
-             nq_int=[-2, 2], filename=name + '.png', save=not bm, inline=False)
+             nq_int=[-2, 2], filename=name + '.png', save=not bm, inline=False, legend=True)
     if bm:
         return
 
@@ -1100,7 +1099,7 @@ def plt_other_percentile_int(bm=False, master=False, remove=True, show=False):
 
     # Make the plot
     fcp.plot(df_interval, x='x', y='y', title='IV Data', lines=False, show=SHOW, ymax='1.5*iqr', ymin='0*iqr',
-             perc_int=[0.25, 0.75], filename=name + '.png', save=not bm, inline=False)
+             perc_int=[0.25, 0.75], filename=name + '.png', save=not bm, inline=False, legend=True)
     if bm:
         return
 
@@ -1287,6 +1286,33 @@ def plt_other_lcl_only(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
+def plt_other_lcl_only_inside(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'other_lcl_only_inside_master') if master else 'other_lcl_only_inside'
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False,
+             show=False, filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             filename=name + '.png', save=not bm, inline=False, control_limit_side='inside',
+             lcl=-0.5, ymin=-1, lcl_fill_color='#FF0000')
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def plt_other_ucl_only(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'other_ucl_only_master') if master else 'other_ucl_only'
@@ -1295,6 +1321,33 @@ def plt_other_ucl_only(bm=False, master=False, remove=True, show=False):
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False,
              show=False, filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              filename=name + '.png', save=not bm, inline=False,
+             ucl=1.0, ymax=3, ucl_fill_alpha=0.8)
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_other_ucl_only_inside(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'other_ucl_only_inside_master') if master else 'other_ucl_only_inside'
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False,
+             show=False, filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             filename=name + '.png', save=not bm, inline=False, control_limit_side='inside',
              ucl=1.0, ymax=3, ucl_fill_alpha=0.8)
     if bm:
         return
@@ -1448,6 +1501,11 @@ def test_other_lcl_only(benchmark):
     benchmark(plt_other_lcl_only, True)
 
 
+def test_other_lcl_only_inside(benchmark):
+    plt_other_lcl_only_inside()
+    benchmark(plt_other_lcl_only_inside, True)
+
+
 def test_other_lines(benchmark):
     plt_other_lines()
     benchmark(plt_other_lines, True)
@@ -1476,6 +1534,11 @@ def test_other_percentile_int(benchmark):
 def test_other_ucl_only(benchmark):
     plt_other_ucl_only()
     benchmark(plt_other_ucl_only, True)
+
+
+def test_other_ucl_only_inside(benchmark):
+    plt_other_ucl_only_inside()
+    benchmark(plt_other_ucl_only_inside, True)
 
 
 def test_other_ucl_lcl_inside(benchmark):

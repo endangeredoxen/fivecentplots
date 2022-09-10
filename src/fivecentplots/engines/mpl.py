@@ -392,32 +392,28 @@ class Layout(BaseLayout):
     @property
     def _tick_x(self) -> float:
         """Height of the primary x ticks and whitespace."""
-        val = max(self.tick_labels_major_x.size[1],
-                  self.tick_labels_minor_x.size[1]) \
+        val = max(self.tick_labels_major_x.size[1], self.tick_labels_minor_x.size[1]) \
             + self.ws_ticks_ax * (self.tick_labels_major_x.on | self.tick_labels_minor_x.on)
         return val
 
     @property
     def _tick_x2(self) -> float:
         """Height of the secondary x ticks and whitespace."""
-        val = max(self.tick_labels_major_x2.size[1],
-                  self.tick_labels_minor_x2.size[1]) \
+        val = max(self.tick_labels_major_x2.size[1], self.tick_labels_minor_x2.size[1]) \
             + self.ws_ticks_ax * (self.tick_labels_major_x.on | self.tick_labels_minor_x.on)
         return val
 
     @property
     def _tick_y(self) -> float:
         """Width of the primary y ticks and whitespace."""
-        val = max(self.tick_labels_major_y.size[0],
-                  self.tick_labels_minor_y.size[0]) \
+        val = max(self.tick_labels_major_y.size[0], self.tick_labels_minor_y.size[0]) \
             + self.ws_ticks_ax * (self.tick_labels_major_y.on | self.tick_labels_minor_y.on)
         return val
 
     @property
     def _tick_y2(self) -> float:
         """Width of the secondary y ticks and whitespace."""
-        val = max(self.tick_labels_major_y2.size[0],
-                  self.tick_labels_minor_y2.size[0]) \
+        val = max(self.tick_labels_major_y2.size[0], self.tick_labels_minor_y2.size[0]) \
             + self.ws_ticks_ax * (self.tick_labels_major_y2.on | self.tick_labels_minor_y2.on)
         return val
 
@@ -894,14 +890,13 @@ class Layout(BaseLayout):
 
         self.label_x2.position[0] = 0.5
         self.label_x2.position[3] = \
-            1 + (self._labtick_x2 - self.label_x2.size[1] / 2) \
-            / self.axes.size[1]
+            1 + (self._labtick_x2 - self.label_x2.size[1] / 2) / self.axes.size[1]
 
         self.label_y.position[0] = \
             (self.label_y.size[0] / 2 - self._labtick_y) / self.axes.size[0]
         self.label_y.position[3] = 0.5
 
-        self.label_y2.position[0] = 1 + self._labtick_y2 / self.axes.size[0]
+        self.label_y2.position[0] = 1 + (self._labtick_y2 - self.label_y2.size[0] / 2) / self.axes.size[0]
         self.label_y2.position[3] = 0.5
 
         self.label_z.position[0] = 1 + (self.ws_ax_cbar + self.cbar.size[0]
@@ -3189,8 +3184,7 @@ class Layout(BaseLayout):
 
         # Resize the figure
         self._get_figure_size(data, **kwargs)
-        self.fig.obj.set_size_inches((self.fig.size_inches[0],
-                                      self.fig.size_inches[1]))
+        self.fig.obj.set_size_inches((self.fig.size_inches[0], self.fig.size_inches[1]))
 
         # Adjust subplot spacing
         self._get_subplots_adjust()

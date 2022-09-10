@@ -152,7 +152,7 @@ def plt_error(bm=False, master=False, remove=True, show=False):
 
     # Make the plot
     fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, error_bars=True,
-            filename=name + '.png', save=not bm, inline=False, jitter=False)
+            filename=name + '.png', save=not bm, inline=False, jitter=False, sort=False)
 
     if bm:
         return
@@ -337,7 +337,7 @@ def plt_rolling_mean(bm=False, master=False, remove=True, show=False):
 
     # Make the plot
     fcp.bar(df2, x='date', y='cases', show=SHOW, ax_size=[800, 500],
-            tick_labels_major_x_rotation=90, rolling_mean=14,
+            tick_labels_major_x_rotation=90, rolling_mean=14, legend=True,
             filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:

@@ -4,7 +4,6 @@ import pandas as pd
 import os
 import pdb
 from pathlib import Path
-import fivecentplots.data.data as data
 import fivecentplots.engines.layout as layout
 import numpy as np
 osjoin = os.path.join
@@ -30,7 +29,7 @@ def test_element():
 
     ele = layout.Element(df=pd.DataFrame, size=None)
     assert 'df' not in ele.kwargs.keys()
-    ele.size=[3, 4]
+    ele.size = [3, 4]
     assert ele._size_orig == [3, 4]
     assert ele.size_inches == [0.03, 0.04]
     ele.on = False

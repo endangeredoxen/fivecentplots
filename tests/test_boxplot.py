@@ -90,13 +90,39 @@ def plt_simple(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
+def plt_simple_legend(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'simple_legend_master') if master else 'simple_legend'
+
+    # Make the plot
+    fcp.boxplot(df, y='Value', show=SHOW, tick_labels_minor=True, grid_minor=True, legend='Batch',
+                filename=name + '.png', save=not bm, inline=False, jitter=False)
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def plt_one_group(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'one_group_master') if master else 'one_group'
 
     # Make the plot
     fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', ymin='q0', ymax='q100',
-                show=SHOW, filename=name + '.png', save=not bm, inline=False, jitter=False)
+                show=SHOW, filename=name + '.png', save=not bm, inline=False, jitter=False, box_stat_line='q50')
 
     if bm:
         return
@@ -147,7 +173,7 @@ def plt_group_multiple(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'group_multiple_master') if master else 'group_multiple'
 
     # Make the plot
-    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW, #ax_size=['100*group', 400],
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW,
                 filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -175,7 +201,7 @@ def plt_group_multiple_nan(bm=False, master=False, remove=True, show=False):
     # Make the plot
     df['Test'] = np.nan
     fcp.boxplot(df, y='Value', groups=['Batch', 'Sample', 'Test'], show=SHOW,
-                filename=name + '.png', save=not bm, inline=False, jitter=False)
+                filename=name + '.png', save=not bm, inline=False, jitter=False, box_stat_line='q0.5')
 
     if bm:
         return
@@ -651,6 +677,11 @@ def plt_range_lines(bm=False, master=False, remove=True, show=False):
 def test_simple(benchmark):
     plt_simple()
     benchmark(plt_simple, True)
+
+
+def test_simple_legend(benchmark):
+    plt_simple_legend()
+    benchmark(plt_simple_legend, True)
 
 
 def test_one_group(benchmark):

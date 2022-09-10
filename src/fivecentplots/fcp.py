@@ -62,6 +62,12 @@ global KWARGS
 KWARGS = {}  # type: ignore
 
 
+class EngineError(Exception):
+    def __init__(self, *args, **kwargs):
+        """Invalid engine kwargs error."""
+        Exception.__init__(self, *args, **kwargs)
+
+
 def bar(df, **kwargs):
     """Bar chart.
 
@@ -290,6 +296,7 @@ def deprecated(kwargs):
     # leg_groups
     if kwargs.get('leg_groups'):
         kwargs['legend'] = kwargs['leg_groups']
+        kwargs.pop('leg_groups')
         print('"leg_groups" is deprecated. Please use "legend" instead')
 
     # labels
@@ -298,20 +305,18 @@ def deprecated(kwargs):
         # Deprecated style
         keys = [f for f in kwargs.keys() if '%slabel' % lab in f]
         if len(keys) > 0:
-            print('"%slabel" is deprecated. Please use "label_%s" instead'
-                  % (lab, lab))
+            print('"%slabel" is deprecated. Please use "label_%s" instead' % (lab, lab))
             for k in keys:
-                kwargs[k.replace('%slabel' % lab, 'label_%s' %
-                                 lab)] = kwargs[k]
+                kwargs[k.replace('%slabel' % lab, 'label_%s' % lab)] = kwargs[k]
                 kwargs.pop(k)
 
     # twin + share
     vals = ['sharex', 'sharey', 'twinx', 'twiny']
     for val in vals:
         if val in kwargs:
-            print('"%s" is deprecated.  Please use "%s_%s" instead' %
-                  (val, val[0:-1], val[-1]))
+            print('"%s" is deprecated.  Please use "%s_%s" instead' % (val, val[0:-1], val[-1]))
             kwargs['%s_%s' % (val[0:-1], val[-1])] = kwargs[val]
+            kwargs.pop(val)
 
     return kwargs
 
@@ -951,10 +956,10 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
             gg = gg.set_index(dd.groups)
             if len(gg) > 1:
                 gg = gg.loc[tuple(row)]
-            if isinstance(gg, pd.Series):
-                gg = pd.DataFrame(gg).T
-            else:
-                gg = gg.reset_index()
+            # if isinstance(gg, pd.Series):  # disabling b/c I don't think this case can occur anymore
+            #     gg = pd.DataFrame(gg).T
+            # else:
+            gg = gg.reset_index()
             temp = gg[dd.y].dropna()
             temp['x'] = irow + 1
             data += [temp]
@@ -970,10 +975,10 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
                     stats += [temp.quantile(float(ss.strip('q')) / 100).iloc[0]]
             else:
                 stats += [temp.mean().iloc[0]]
-            if not isinstance(row, tuple):
-                row = [row]
-            else:
-                row = [str(f) for f in row]
+            # if not isinstance(row, tuple):  # don't believe this case is possible
+            #     row = [row]
+            # else:
+            row = [str(f) for f in row]
             labels += ['']
 
             if len(dd.changes.columns) > 1 and \
@@ -987,12 +992,10 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
                     temp = gg.loc[gg[dd.legend] == jrow['names']][dd.y].dropna()
                     temp['x'] = irow + 1
                     if len(temp) > 0:
-                        layout.plot_xy(ir, ic, jj, temp, 'x', dd.y[0],
-                                       jrow['names'], False, zorder=10)
+                        layout.plot_xy(ir, ic, jj, temp, 'x', dd.y[0], jrow['names'], False, zorder=10)
             else:
                 if len(temp) > 0:
-                    layout.plot_xy(ir, ic, irow, temp, 'x', dd.y[0], None, False,
-                                   zorder=10)
+                    layout.plot_xy(ir, ic, irow, temp, 'x', dd.y[0], None, False, zorder=10)
 
     else:
         data = [df_rc[dd.y].dropna()]
@@ -1001,12 +1004,9 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
         if isinstance(dd.legend_vals, pd.DataFrame):
             for jj, jrow in dd.legend_vals.iterrows():
                 temp = data[0].loc[df_rc[dd.legend] == jrow['names']].index
-
-                layout.plot_xy(ir, ic, jj, data[0].loc[temp], 'x', dd.y[0],
-                               jrow['names'], False, zorder=10)
+                layout.plot_xy(ir, ic, jj, data[0].loc[temp], 'x', dd.y[0], jrow['names'], False, zorder=10)
         else:
-            layout.plot_xy(ir, ic, 0, data[0], 'x', dd.y[0], None, False,
-                           zorder=10)
+            layout.plot_xy(ir, ic, 0, data[0], 'x', dd.y[0], None, False, zorder=10)
 
     # Remove lowest divider
     dividers = [f for f in dividers if f > 0.5]
@@ -1288,14 +1288,11 @@ def plot_hist(data, layout, ir, ic, df_rc, kwargs):
 
     """
     for iline, df, x, y, z, leg_name, twin, ngroups in data.get_plot_data(df_rc):
-        if data.stat is not None:
-            layout.lines.on = False
-        if kwargs.get('groups', False):
-            for nn, gg in df.groupby(utl.validate_list(kwargs['groups'])):
-                hist, data = layout.plot_hist(ir, ic, iline, gg, x, y, leg_name, data)
-
-        else:
-            hist, data = layout.plot_hist(ir, ic, iline, df, x, y, leg_name, data)
+        # if kwargs.get('groups', False):  # no use case for this
+        #     for nn, gg in df.groupby(utl.validate_list(kwargs['groups'])):
+        #         hist, data = layout.plot_hist(ir, ic, iline, gg, x, y, leg_name, data)
+        # else:
+        hist, data = layout.plot_hist(ir, ic, iline, df, x, y, leg_name, data)
 
     return data
 
@@ -1328,7 +1325,7 @@ def plot_interval(ir, ic, iline, data, layout, df, x, y, twin):
     getattr(data, f'get_interval_{layout.interval.type}')(df, x, y)
 
     leg_name = None
-    if layout.legend.on:
+    if layout.legend._on:
         if layout.interval.type == 'nq':
             leg_name = f'nq = [{layout.interval.value[0]}, {layout.interval.value[1]}]'
         elif layout.interval.type == 'percentile':
@@ -1374,16 +1371,17 @@ def plot_pie(data, layout, ir, ic, df, kwargs):
         kwargs (dict): keyword args
 
     """
-
     if data.sort:
         x = df.groupby(data.x[0]).sum().index.values
     else:
-        x = df[data.x[0]].drop_duplicates()
+        x = df[data.x[0]].drop_duplicates().values
     y = df.groupby(data.x[0]).sum().loc[x][data.y[0]].values
 
     if any(y < 0):
-        print('Pie plot had negative values.  Skipping...')
-        return data
+        print('Pie plot had negative values.  Dropping bad values...')
+        negs = np.where(y <= 0)[0]
+        y = np.delete(y, negs)
+        x = np.delete(x, negs)
 
     layout.plot_pie(ir, ic, df, x, y, data, layout.pie.__dict__)
 
@@ -1506,9 +1504,10 @@ def plotter(dobj, **kwargs):
     if not hasattr(engines, engine):
         if engine in INSTALL.keys():
             installs = '\npip install '.join(INSTALL[engine])
-            print(f'Plotting engine "{engine}" is not installed! Please run the following:\npip install {installs}')
+            raise EngineError(f'Plotting engine "{engine}" is supported by not installed! '
+                              f'Please run the following:\npip install {installs}')
         else:
-            print(f'Plotting engine "{engine}" is not supported')
+            raise EngineError(f'Plotting engine "{engine}" is not supported')
         return
     else:
         engine = getattr(engines, engine)
@@ -1648,7 +1647,7 @@ def plotter(dobj, **kwargs):
         else:
             filename = filename.split('.')[0] + '.csv'
         dd.df_all[dd.cols_all].to_csv(filename, index=False)
-        kwargs['timer'].get('save_data' % (ifig))
+        kwargs['timer'].get('ifig=%s | save_data' % (ifig))
 
     # Restore plotting engine settings
     layout.restore()
@@ -1798,7 +1797,6 @@ def axes():
                Axes element is shown in olive green with red borders
 
     """
-    pass
 
 
 def cbar():
@@ -1820,7 +1818,6 @@ def cbar():
             .. figure:: ../_static/images/example_cbar.png
 
     """
-    pass
 
 
 def figure():
@@ -1853,7 +1850,6 @@ def figure():
 
                Figure element is shown in olive green with red border
     """
-    pass
 
 
 def gridlines():
@@ -1954,7 +1950,6 @@ def gridlines():
 
             .. figure:: ../_static/images/example_gridlines.png
     """
-    pass
 
 
 def grouping():
@@ -2013,7 +2008,6 @@ def grouping():
                :width: 544px
 
     """
-    pass
 
 
 def labels():
@@ -2106,7 +2100,6 @@ def labels():
 
             .. figure:: ../_static/images/example_labels.png
     """
-    pass
 
 
 def legend():
@@ -2144,7 +2137,6 @@ def legend():
 
             .. figure:: ../_static/images/example_legend.png
     """
-    pass
 
 
 def lines():
@@ -2214,7 +2206,6 @@ def lines():
 
             .. figure:: ../_static/images/example_lines4.png
     """
-    pass
 
 
 def markers():
@@ -2274,7 +2265,6 @@ def markers():
             .. figure:: ../_static/images/example_markers3.png
 
     """
-    pass
 
 
 def options():
@@ -2309,7 +2299,6 @@ def options():
         timer (boolean): Debug feature to get a time log for each step in the plotting process. Defaults to False.
 
     """
-    pass
 
 
 def tick_labels():
@@ -2429,7 +2418,6 @@ def tick_labels():
 
             .. figure:: ../_static/images/example_tick_labels.png
     """
-    pass
 
 
 def ticks():
@@ -2561,7 +2549,6 @@ def ticks():
 
             .. figure:: ../_static/images/example_ticks2.png
     """
-    pass
 
 
 def titles():
@@ -2600,7 +2587,6 @@ def titles():
 
             .. figure:: ../_static/images/example_title.png
     """
-    pass
 
 
 def ws():
@@ -2642,4 +2628,3 @@ def ws():
 
             .. figure:: ../_static/images/example_ws.png
     """
-    pass

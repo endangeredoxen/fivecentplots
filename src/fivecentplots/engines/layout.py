@@ -2246,7 +2246,6 @@ class BaseLayout:
             data: Data object
             kwargs: user-defined keyword args
         """
-        pass
 
     def _set_label_text(self, data: 'data.Data'):
         """Set the default label text for x, y, z axes and col, row, wrap
@@ -2383,7 +2382,6 @@ class BaseLayout:
             ic: current axes column index
             data: fcp Data object
         """
-        pass
 
     @abc.abstractmethod
     def add_hvlines(self, ir: int, ic: int, df: [pd.DataFrame, None] = None):
@@ -2394,7 +2392,6 @@ class BaseLayout:
             ic: subplot column index
             df: current data. Defaults to None.
         """
-        pass
 
     @abc.abstractmethod
     def add_label(self, ir: int, ic: int, text: str = '', position: [tuple, None] = None,
@@ -2432,17 +2429,14 @@ class BaseLayout:
             reference to the background rectangle patch object
 
         """
-        pass
 
     @abc.abstractmethod
     def add_legend(self):
         """Add a legend to a figure."""
-        pass
 
     @abc.abstractmethod
     def close(self):
         """Close an inline plot window."""
-        pass
 
     @abc.abstractmethod
     def fill_between_lines(self, ir: int, ic: int, iline: int,
@@ -2466,7 +2460,6 @@ class BaseLayout:
             twin (optional): denotes if twin axis is enabled or not.
                 Defaults to False.
         """
-        pass
 
     @abc.abstractmethod
     def make_figure(self, data: 'data.Data', **kwargs):
@@ -2476,7 +2469,6 @@ class BaseLayout:
             data: fcp Data object
             **kwargs: input args from user
         """
-        pass
 
     def make_kw_dict(self, element: 'Element', pop: list = []) -> dict:
         """Extract certain parameters from a given element as a dictionary
@@ -2542,7 +2534,6 @@ class BaseLayout:
         Returns:
             updated Data Object with new axes ranges
         """
-        pass
 
     @abc.abstractmethod
     def plot_box(self, ir: int, ic: int, data: 'data.Data', **kwargs) -> 'MPL_Boxplot_Object':  # noqa: F821
@@ -2557,7 +2548,6 @@ class BaseLayout:
         Returns:
             box plot MPL object
         """
-        pass
 
     @abc.abstractmethod
     def plot_contour(self, ir: int, ic: int, df: pd.DataFrame, x: str, y: str, z: str,
@@ -2577,7 +2567,6 @@ class BaseLayout:
             reference to the contour plot object
             reference to the colorbar object
         """
-        pass
 
     @abc.abstractmethod
     def plot_gantt(self, ir: int, ic: int, iline: int, df: pd.DataFrame, x: str, y: str,
@@ -2597,7 +2586,6 @@ class BaseLayout:
                 data.get_plot_data
 
         """
-        pass
 
     @abc.abstractmethod
     def plot_heatmap(self, ir: int, ic: int, df: pd.DataFrame, x: str, y: str,
@@ -2616,7 +2604,6 @@ class BaseLayout:
         Returns:
             imshow plot obj
         """
-        pass
 
     @abc.abstractmethod
     def plot_hist(self, ir: int, ic: int, iline: int, df: pd.DataFrame, x: str,
@@ -2638,7 +2625,6 @@ class BaseLayout:
             histogram plot object
             updated Data object
         """
-        pass
 
     @abc.abstractmethod
     def plot_imshow(self, ir: int, ic: int, df: pd.DataFrame, data: 'data.Data'):
@@ -2653,7 +2639,6 @@ class BaseLayout:
         Returns:
             imshow plot obj
         """
-        pass
 
     @abc.abstractmethod
     def plot_line(self, ir: int, ic: int, x0: float, y0: float, x1: float = None,
@@ -2672,7 +2657,6 @@ class BaseLayout:
         Returns:
             plot object
         """
-        pass
 
     @abc.abstractmethod
     def plot_pie(self, ir: int, ic: int, df: pd.DataFrame, x: str, y: str, data: 'data.Data',
@@ -2688,7 +2672,6 @@ class BaseLayout:
             data: Data object
             kwargs: keyword args
         """
-        pass
 
     @abc.abstractmethod
     def plot_polygon(self, ir: int, ic: int, points: list, **kwargs):
@@ -2700,7 +2683,6 @@ class BaseLayout:
             points: list of floats that defint the points on the polygon
             kwargs: keyword args
         """
-        pass
 
     @abc.abstractmethod
     def plot_xy(self, ir: int, ic: int, iline: int, df: pd.DataFrame, x: str, y: str,
@@ -2723,12 +2705,10 @@ class BaseLayout:
                 Defaults to None.
             marker_disable (optional): flag to disable markers. Defaults to False.
         """
-        pass
 
     @abc.abstractmethod
     def restore(self):
         """Undo changes to default plotting library parameters."""
-        pass
 
     @abc.abstractmethod
     def save(self, filename: str, idx: int = 0):
@@ -2739,7 +2719,6 @@ class BaseLayout:
             idx (optional): figure index in order to set the edge and face color of the
                 figure correctly when saving. Defaults to 0.
         """
-        pass
 
     @abc.abstractmethod
     def set_axes_colors(self, ir: int, ic: int):
@@ -2749,7 +2728,6 @@ class BaseLayout:
             ir: subplot row index
             ic: subplot column index
         """
-        pass
 
     @abc.abstractmethod
     def set_axes_grid_lines(self, ir: int, ic: int):
@@ -2760,7 +2738,6 @@ class BaseLayout:
             ic (int): subplot column index
 
         """
-        pass
 
     @abc.abstractmethod
     def set_axes_labels(self, ir: int, ic: int):
@@ -2771,7 +2748,6 @@ class BaseLayout:
             ic: subplot column index
 
         """
-        pass
 
     @abc.abstractmethod
     def set_axes_ranges(self, ir: int, ic: int, ranges: dict):
@@ -2783,7 +2759,6 @@ class BaseLayout:
             ranges: min/max axes limits for each axis
 
         """
-        pass
 
     @abc.abstractmethod
     def set_axes_rc_labels(self, ir: int, ic: int):
@@ -2794,7 +2769,6 @@ class BaseLayout:
             ic: subplot column index
 
         """
-        pass
 
     @abc.abstractmethod
     def set_axes_scale(self, ir: int, ic: int):
@@ -2805,7 +2779,6 @@ class BaseLayout:
             ic: subplot column index
 
         """
-        pass
 
     @abc.abstractmethod
     def set_axes_ticks(self, ir: int, ic: int):
@@ -2816,17 +2789,14 @@ class BaseLayout:
             ic: subplot column index
 
         """
-        pass
 
     @abc.abstractmethod
     def set_figure_final_layout(self, data: 'data.Data', **kwargs):
         """Final adjustment of the figure size and plot spacing."""
-        pass
 
     @abc.abstractmethod
     def set_figure_title(self):
         """Set a figure title."""
-        pass
 
     @abc.abstractmethod
     def show(self, filename: str = None):
@@ -2836,7 +2806,6 @@ class BaseLayout:
             filename (optional): name of the file to show. Defaults to None.
 
         """
-        pass
 
 
 class Element:

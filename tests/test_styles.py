@@ -559,7 +559,7 @@ def test_marker_boxplot3(master=False, remove=True, show=False):
     # Make the plot
     fcp.set_theme('_test', verbose=True)
     df_box = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
-    fcp.boxplot(df_box, y='Value', groups=['Batch', 'Sample'], show=SHOW, #box_group_title_font='arial',
+    fcp.boxplot(df_box, y='Value', groups=['Batch', 'Sample'], show=SHOW,
                 marker_size=10, box_whisker_color=[0, 0, 1, 1, 2, 2], box_whisker_width=1, jitter=False,
                 box_marker_edge_alpha=0.6, box_marker_fill_alpha=1, box_marker_type=['+'], verbose=True,
                 filename=name + '.png')

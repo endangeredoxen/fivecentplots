@@ -1,3 +1,4 @@
+
         legend_edge_color (str): Hex color string for the legend border. Defaults to #ffffff. Example:
           https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Typical-elements
         legend_edge_width (float): Width of the legend border in pixels. Defaults to 1.

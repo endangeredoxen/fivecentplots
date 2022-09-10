@@ -94,6 +94,35 @@ def plt_basic(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
+def plt_basic_no_sort(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'basic_no_sort_master') if master else 'basic_no_sort'
+
+    # Make the plot
+    df_ = df.copy()
+    df_.loc[df_.Liquid == 'Orange juice', 'pH'] *= -1
+    fcp.pie(df_, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A" & T [C]==25',
+            start_angle=90, alpha=0.85, filename=name + '.png', save=not bm, inline=False,
+            jitter=False, sort=False)
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def plt_donut(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'donut_master') if master else 'donut'
@@ -321,6 +350,11 @@ def plt_angle(bm=False, master=False, remove=True, show=False):
 def test_basic(benchmark):
     plt_basic()
     benchmark(plt_basic, True)
+
+
+def test_basic_no_sort(benchmark):
+    plt_basic_no_sort()
+    benchmark(plt_basic_no_sort, True)
 
 
 def test_donut(benchmark):
