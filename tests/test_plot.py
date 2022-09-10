@@ -993,7 +993,7 @@ def plt_other_conf_int(bm=False, master=False, remove=True, show=False):
 
 def plt_other_conf_int2(bm=False, master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'other_conf-int_master') if master else 'other_conf-int'
+    name = osjoin(MASTER, 'other_conf-int2_master') if master else 'other_conf-int2'
 
     # Make the plot
     fcp.plot(df_interval, x='x', y='y', title='IV Data', lines=False, show=SHOW,
