@@ -369,7 +369,7 @@ class Layout(BaseLayout):
             + self.x_tick_xs \
             + self.label_y2.size[0] \
             + (self.label_z.size[0] * (self.ncol if self.separate_labels else 1)
-            + self.ws_ticks_ax * self.label_z.on)
+               + self.ws_ticks_ax * self.label_z.on)
 
         # box title excess
         if self.box_group_title.on and (self.ws_ax_box_title + self.box_title) > self._legx:
@@ -799,21 +799,19 @@ class Layout(BaseLayout):
                         style=kw['font_style'],
                         weight=kw['font_weight'],
                         size=kw['font_size'],
-                        bbox=dict(facecolor=kw['fill_color'],
-                                  edgecolor=kw['edge_color']),
+                        bbox=dict(facecolor=kw['fill_color'], edgecolor=kw['edge_color']),
                         zorder=45)
             else:
                 obj.obj[ir, ic][itext] = ax.text(0, 0,
-                                                    txt, transform=transform,
-                                                    rotation=kw['rotation'],
-                                                    color=kw['font_color'],
-                                                    fontname=kw['font'],
-                                                    style=kw['font_style'],
-                                                    weight=kw['font_weight'],
-                                                    size=kw['font_size'],
-                                                    bbox=dict(facecolor=kw['fill_color'],
-                                                            edgecolor=kw['edge_color']),
-                                                    zorder=45)
+                                                 txt, transform=transform,
+                                                 rotation=kw['rotation'],
+                                                 color=kw['font_color'],
+                                                 fontname=kw['font'],
+                                                 style=kw['font_style'],
+                                                 weight=kw['font_weight'],
+                                                 size=kw['font_size'],
+                                                 bbox=dict(facecolor=kw['fill_color'], edgecolor=kw['edge_color']),
+                                                 zorder=45)
 
     def close(self):
         """Close an inline plot window."""

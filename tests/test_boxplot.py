@@ -22,7 +22,7 @@ else:
 # Sample data
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
 df2 = df.copy()
-df2.loc[df2.Region=='Alpha123', 'Region'] = 5 * 'Alpha123'
+df2.loc[df2.Region == 'Alpha123', 'Region'] = 5 * 'Alpha123'
 df2['Lots of Values'] = df2.index % 2 + df2.index
 
 # Set theme
