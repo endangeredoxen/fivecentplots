@@ -31,7 +31,8 @@ Optional
 
           .. code-block::
 
-             sudo apt ttf-mscorefonts-installer
+             sudo apt install -y ttf-mscorefonts-installer
+             rm ~/.cache/matplotlib -rf
 
 
 Test Development
