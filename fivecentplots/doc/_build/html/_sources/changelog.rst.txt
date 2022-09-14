@@ -1,6 +1,10 @@
 Changelog
 *********
 
+0.4.4
+=====
+* bug fix for matplotlib 3.5
+
 0.4.3
 =====
 * fix heatmap but when DataFrame column names are of type ``object`` but are actually ``int``
