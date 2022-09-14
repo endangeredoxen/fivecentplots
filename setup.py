@@ -30,7 +30,7 @@ setup(
 
     # The project's main homepage.
     url='https://github.com/endangeredoxen/fivecentplots',
-    download_url='https://github.com/endangeredoxen/fivecentplots/archive/v0.4.1.tar.gz',
+    download_url='https://github.com/endangeredoxen/fivecentplots/archive/v0.4.4.tar.gz',
 
     # Author details
     author='Steve Nicholes',
