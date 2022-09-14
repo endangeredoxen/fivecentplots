@@ -74,7 +74,7 @@ setup(
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=['pandas',
                       'numpy',
-                      'matplotlib',
+                      'matplotlib<=3.5.3',
                       'scipy',
                       'xlrd',
                       'openpyxl',
