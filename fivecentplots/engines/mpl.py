@@ -379,11 +379,20 @@ class Layout(BaseLayout):
             for itext, text in enumerate(leg.get_texts()):
                 text.set_color(self.legend.font_color)
                 if self.plot_func not in ['plot_hist', 'plot_bar']:
-                    leg.legendHandles[itext]. \
-                        _legmarker.set_markersize(self.legend.marker_size)
+                    if hasattr(leg.legendHandles[itext], '_legmarker'):
+                        leg.legendHandles[itext]._legmarker.set_markersize(self.legend.marker_size)
+                    else:
+                        # required for mpl 3.5
+                        leg.legendHandles[itext]._markersize = self.legend.marker_size
                     if self.legend.marker_alpha is not None:
-                        leg.legendHandles[itext]. \
-                            _legmarker.set_alpha(self.legend.marker_alpha)
+                        if hasattr(leg.legendHandles[itext], '_legmarker'):
+                            leg.legendHandles[itext]._legmarker.set_alpha(self.legend.marker_alpha)
+                        else:
+                            # required for mpl 3.5
+                            alpha = str(hex(int(self.legend.marker_alpha * 255)))[-2:].replace('x', '0')
+                            base_color = self.markers.edge_color.get(itext)[0:7] + alpha
+                            leg.legendHandles[itext]._markeredgecolor = base_color
+                            leg.legendHandles[itext]._markerfillcolor = base_color
 
             leg.get_title().set_fontsize(self.legend.font_size)
             leg.get_frame().set_facecolor(self.legend.fill_color.get(0))
@@ -1039,12 +1048,18 @@ class Layout(BaseLayout):
             if self.legend.marker_size:
                 if type(data.legend_vals) == pd.DataFrame:
                     for irow, row in data.legend_vals.iterrows():
-                        leg.legendHandles[irow]._legmarker\
-                            .set_markersize(self.legend.marker_size)
+                        if hasattr(leg.legendHandles[irow], '_legmarker'):
+                            leg.legendHandles[irow]._legmarker .set_markersize(self.legend.marker_size)
+                        else:
+                            # required for mpl 3.5
+                            leg.legendHandles[irow]._markersize = self.legend.marker_size
                 elif data.legend_vals:
                     for irow, row in enumerate(data.legend_vals):
-                        leg.legendHandles[irow]._legmarker\
-                           .set_markersize(self.legend.marker_size)
+                        if hasattr(leg.legendHandles[irow], '_legmarker'):
+                            leg.legendHandles[irow]._legmarker.set_markersize(self.legend.marker_size)
+                        else:
+                            # required for mpl 3.5
+                            leg.legendHandles[irow]._markersize = self.legend.marker_size
         else:
             leg = None
 
