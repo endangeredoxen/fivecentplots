@@ -1922,6 +1922,7 @@ class BaseLayout:
                                      'tick_labels_major_offset', False),
                     padding=utl.kwget(kwargs, self.fcpp,
                                       'tick_labels_major_padding', 4),
+                    scale_factor=1.5,
                     )
         kwargs = self._from_list(self.tick_labels_major,
                                  ['font', 'font_color', 'font_size',
@@ -2007,6 +2008,7 @@ class BaseLayout:
                                                [f'tick_labels_major_{ax}_rotation', 'tick_labels_major_rotation'],
                                                self.tick_labels_major.rotation),
                             size=[0, 0],
+                            scale_factor=self.tick_labels_major.scale_factor,
                             sci=utl.kwget(kwargs, self.fcpp, 'sci_%s' % ax, 'best'),
                             ))
         self.auto_tick_threshold = utl.kwget(kwargs, self.fcpp, 'auto_tick_threshold', [1e-6, 1e6])

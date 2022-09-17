@@ -243,8 +243,7 @@ def test_ticks_inc(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             ticks_major_y_increment=0.2,
-             filename=name + '.png')
+             ticks_major_y_increment=0.2, filename=name + '.png')
 
     # Compare with master
     if master:
@@ -311,15 +310,62 @@ def test_ticks_minor_number_log(master=False, remove=True, show=False):
         assert not compare
 
 
-def test_tick_labels(master=False, remove=True, show=False):
+def test_tick_tight(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'tick_labels_master') if master else 'tick_labels'
+    name = osjoin(MASTER, 'tick_labels_tight_master') if master else 'tick_labels_tight'
 
     # Make the plot
-    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+    fcp.plot(df, x='Voltage', y='I [A]', show=SHOW, legend='Die', tick_labels_minor=True,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             ticks_major=False,
-             filename=name + '.png')
+             ax_size=[150, 150], filename=name + '.png', ticks_major_y_increment=0.05, ticks_major_x_increment=0.1)
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_tick_labels_log(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'tick_labels_log_master') if master else 'tick_labels_log'
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', show=SHOW, legend='Die', ax_scale='logy', ymin=0.8e-2, ymax=2e-2,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             ticks_major=False, filename=name + '.png')
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_tick_labels_log2(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'tick_labels_log2_master') if master else 'tick_labels_log2'
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', show=SHOW, legend='Die', ax_scale='logy', ymin=1.1e-2, ymax=2e-2,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             ticks_major=False, filename=name + '.png')
 
     # Compare with master
     if master:
@@ -596,6 +642,32 @@ def test_sciz(master=False, remove=True, show=False):
     fcp.contour(df2, x='X', y='Y', z='Value', row='Batch', col='Experiment', filled=True,
                 cbar=True, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250, 250], show=SHOW,
                 label_rc_font_size=12, levels=40, sci_z=True,
+                filename=name + '.png')
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_sciz_remove(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'sciz_remove_master') if master else 'sciz_remove'
+
+    # Make the plot
+    df2 = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_contour.csv')
+    fcp.contour(df2, x='X', y='Y', z='Value', row='Batch', col='Experiment', filled=True,
+                cbar=True, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250, 250], show=SHOW,
+                label_rc_font_size=12, levels=40, sci_z=True, tick_cleanup='remove',
                 filename=name + '.png')
 
     # Compare with master

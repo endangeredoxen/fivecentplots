@@ -1939,8 +1939,12 @@ def gridlines():
           https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
         grid_minor_y_color (str): Hex-axis color string for y-axis minor gridlines. Defaults to #ffffff. Example:
           https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
-        grid_minor_y_width (float): minor y-axis gridline width in pixels (float ok). Defaults to 0.5. Example:
+        grid_minor_y_width (float): Minor y-axis gridline width in pixels (float ok). Defaults to 0.5. Example:
           https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Grids
+        tick_cleanup (str|boolean): Set the tick cleanup style when dealing with overlaping tick labels
+          {False -> ignore | "shrink" -> change the font | "remove" -> delete one of the overlapping labels}.
+          Defaults to "shirnk".  Example:
+          https://endangeredoxen.github.io/fivecentplots/0.5.0/ticks.html#Tick-cleanup
 
     Examples
     --------

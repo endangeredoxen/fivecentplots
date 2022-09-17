@@ -503,7 +503,7 @@ def test_groups_wrap_unique(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df1, x='Voltage', y='I [A]', legend='Die', wrap=['Temperature [C]', 'Boost Level'],
              ax_size=[225, 225], filter='Substrate=="Si" & Target Wavelength==450',
-             save=True, inline=False, filename=name + '.png')
+             save=True, inline=False, filename=name + '.png', tick_cleanup='remove')
 
     # Compare with master
     if master:

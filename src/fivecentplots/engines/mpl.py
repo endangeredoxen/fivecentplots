@@ -32,6 +32,7 @@ warnings.formatwarning = custom_formatwarning
 warnings.filterwarnings("ignore", "invalid value encountered in double_scalars")
 
 db = pdb.set_trace
+TICK_OVL_MAX = 0.75  # maximum allowed overlap for tick labels in float pixels
 
 
 def approx_gte(x: float, y: float):
@@ -90,6 +91,154 @@ def cbar_ticks(cbar: 'Colorbar_Object', zmin: float, zmax: float):  # noqa: F821
     for it, nt in enumerate(new_ticks[0:-1]):
         new_ticks[it] = '{num:.{width}f}'.format(num=nt, width=decimals[it])
     return new_ticks
+
+
+def df_tick(ticks: 'Element', ticks_size: 'np.array', ax: str) -> pd.DataFrame:
+    """Create a dataframe of tick extents.  Used to look for overlapping ticks.
+
+    Args:
+        ticks: Element class for tick lables
+        ticks_size: Bounding box arrays of all tick labels
+        ax: axes name (x or y)
+
+    Returns:
+        pd.DataFrame of tick labels with start and stop pixel locations
+    """
+
+    idx0 = ticks.size_cols.index(f'{ax}0')
+    idx1 = ticks.size_cols.index(f'{ax}1')
+
+    # Convert the tick size array to DataFrame denoting the start and stop pixel locations
+    tt = pd.DataFrame(ticks_size[:, [idx0, idx1]], columns=['start', 'stop'])
+
+    # Check ascending vs descending
+    if len(tt) > 1 and tt['start'].diff()[1] < 0:
+        tt = tt.iloc[::-1]
+
+    return tt
+
+
+def df_tick_update(tt: pd.DataFrame) -> pd.DataFrame:
+    """Calculate the next round of overlaps in the ticks dataframe
+
+    Args:
+        tt: ticks dataframe
+
+    Returns:
+        updated ticks dataframe
+    """
+    tt = tt.copy()
+
+    # Shift the start column to line up the stop coordinate of one tick with the start of the next
+    tt['next start'] = tt['start'].shift(-1)
+
+    # Check the difference between stop coordinate of one tick and start of next; positive means overlap
+    tt['delta'] = tt['stop'] - tt['next start']
+    tt['ol'] = tt['delta'] > TICK_OVL_MAX  # allow a litle bit of overlap (otherwise would choose > 0)
+    if 'visible' not in tt.columns:
+        tt['visible'] = True
+
+    return tt
+
+
+def hide_overlaps(ticks: 'Element', tt: pd.DataFrame, ir: int, ic: int) -> pd.DataFrame:
+    """Find and hide any overlapping tick marks on the same axis.
+
+    Args:
+        ticks: Element class for tick lables
+        tt: tick dataframe created by df_ticks
+        ir: current axes row index
+        ic: current axes column index
+
+    Returns:
+        pd.DataFrame of tick label visibility status
+    """
+    tt = df_tick_update(tt)
+    tt_orig = tt.copy()
+    tt = tt[tt['visible']]
+    tt = df_tick_update(tt)
+
+    # While overlaps exist, cycle through and disable the next tick in line
+    while True in tt['ol'].values:
+        tt.loc[tt.index[-1], 'ol'] = True  # modify the last line of the table
+        for i in range(0, len(tt[:-1])):
+            if tt.iloc[i]['ol']:
+                jj = tt.iloc[i + 1].name
+                ticks.obj[ir, ic][jj].set_visible(False)  # turn off the tick visibility
+                tt.loc[jj, 'ol'] = False
+                tt_orig.loc[jj, 'visible'] = False
+
+        # Rebuild the overlap table to reflect ticks that have already been disabled
+        tt = tt[tt['ol']].copy()
+        tt = df_tick_update(tt)
+
+    return tt_orig
+
+
+def hide_overlaps_major_minor(ticks, ticksm, bbox, bboxm, ir, ic) -> pd.DataFrame:
+    """Find and hide any overlapping tick marks on the same axis.  Three cases to address:
+    1) the starting position of the minor tick falls within the span of the major tick label
+    2) the ending position of the minor tick falls within the span of the major tick label
+    3) the minor tick completely covers the major tick
+
+    Args:
+        ticks: Element class for major tick lables
+        ticksm: Element class for major tick lables
+        bbox: major tick label visibility status
+        bboxm: minor tick label visibility status
+        ir: current axes row index
+        ic: current axes column index
+
+    Returns:
+        updated bboxm table
+    """
+    bbox = bbox[bbox['visible']]
+    if len(bbox) == 0 or len(bboxm) == 0:
+        return bboxm
+    bboxm_orig = bboxm.copy()
+
+    # Disable minor ticks where starting point falls between the major tick coords
+    ol = [is_in_range(tt, bbox[['start', 'stop']].values) for tt in np.nditer(bboxm['start'].values + TICK_OVL_MAX)]
+    while True in ol:
+        for iol, ool in enumerate(ol):
+            if ool:
+                idx = bboxm.index[iol]
+                ticksm.obj[ir, ic][idx].set_visible(False)
+                bboxm.loc[idx, 'ol'] = False
+                bboxm.loc[idx, 'visible'] = False
+                bboxm_orig.loc[idx, 'visible'] = False
+                bboxm_orig.loc[idx, 'label'] = ticksm.obj[ir, ic][idx]._text
+        bboxm = bboxm[bboxm['visible']]
+        if len(bboxm) == 0:
+            break
+        ol = [is_in_range(tt, bbox[['start', 'stop']].values) for tt in np.nditer(bboxm['start'].values + TICK_OVL_MAX)]
+    if len(bboxm) == 0:
+        return bboxm_orig
+
+    # Disable minor ticks where stopping point falls between the major tick coords
+    bboxm = bboxm.copy()
+    ol = [is_in_range(tt, bbox[['start', 'stop']].values) for tt in np.nditer(bboxm['stop'].values - TICK_OVL_MAX)]
+    while True in ol:
+        for iol, ool in enumerate(ol):
+            if ool:
+                idx = bboxm.index[iol]
+                ticksm.obj[ir, ic][idx].set_visible(False)
+                bboxm.loc[idx, 'ol'] = False
+                bboxm.loc[idx, 'visible'] = False
+                bboxm_orig.loc[idx, 'visible'] = False
+        bboxm = bboxm[bboxm['visible']]
+        if len(bboxm) == 0:
+            break
+        ol = [is_in_range(tt, bbox[['start', 'stop']].values) for tt in np.nditer(bboxm['stop'].values - TICK_OVL_MAX)]
+
+    # Disable minor ticks that completely cover the major tick coords
+    for irow, row in bboxm.iterrows():
+        covered = bbox[(row['start'] - bbox.start < 0) & (bbox.stop - row['stop'] < 0)]
+        if len(covered) > 0:
+            ticksm.obj[ir, ic][row.name].set_visible(False)
+            bboxm_orig.loc[row.name, 'visible'] = False
+
+    return bboxm_orig
 
 
 def is_in_range(n: float, tbl: np.ndarray):
@@ -406,8 +555,29 @@ class Layout(BaseLayout):
     @property
     def _tick_y(self) -> float:
         """Width of the primary y ticks and whitespace."""
-        val = max(self.tick_labels_major_y.size[0], self.tick_labels_minor_y.size[0]) \
+
+        # Case of no or solo tick labels due to tight range where we add custom limit text strings
+        bonus = 0
+        if len(self.tick_labels_major_y.size_all) == 0 and self.tick_labels_major_y.limits[0][0] is not None:
+            # not perfect, only use [0, 0] axes obj
+            precision = utl.get_decimals(self.tick_labels_major_y.limits[0, 0][0], 8)
+            txt0 = f'{self.tick_labels_major_y.limits[0, 0][0]:.{precision}f}'
+            precision = utl.get_decimals(self.tick_labels_major_y.limits[0, 0][-1], 8)
+            txt1 = f'{self.tick_labels_major_y.limits[0, 0][-1]:.{precision}f}'
+            txt = max(txt0, txt1)
+            txt = txt.replace('.', '')  # skip "." for sizing
+            bonus = self.tick_labels_major_y.font_size / self.tick_labels_major_y.scale_factor * len(txt) * 0.9
+            bonus -= self.label_y.size[0]  # - self.ws_label_tick
+        elif len(self.tick_labels_major_y.size_all) <= 1 and self.tick_labels_major_y.limits[0][0] is not None:
+            # not perfect, only use [0, 0] axes obj
+            precision = utl.get_decimals(self.tick_labels_major_y.limits[0, 0][0], 8)
+            txt = f'{self.tick_labels_major_y.limits[0, 0][-1]:.{precision}f}'
+            bonus = self.tick_labels_major_y.font_size / self.tick_labels_major_y.scale_factor * len(txt) * 0.9
+            bonus -= self.label_y.size[0]  # - self.ws_label_tick
+
+        val = max(self.tick_labels_major_y.size[0], self.tick_labels_minor_y.size[0]) + bonus \
             + self.ws_ticks_ax * (self.tick_labels_major_y.on | self.tick_labels_minor_y.on)
+
         return val
 
     @property
@@ -1375,50 +1545,43 @@ class Layout(BaseLayout):
         if not getattr(self, f'axes{axis}').on:
             return
 
+        # define some shortcuts
         xticks = getattr(self, f'tick_labels_major_x{axis}')
         yticks = getattr(self, f'tick_labels_major_y{axis}')
         xticksm = getattr(self, f'tick_labels_minor_x{axis}')
         yticksm = getattr(self, f'tick_labels_minor_y{axis}')
-        sf = 1.5  # scale factor for tick font size
+        sf = yticks.scale_factor  # scale factor for tick font size
 
         for ir, ic in np.ndindex(self.axes.obj.shape):
             # size_all by idx: ir, ic, width, height, x0, x1, y0, y1
             # major
             if len(xticks.size_all) > 0:
-                xticks_size_all = \
-                    xticks.size_all[(xticks.size_all.ir == ir)
-                                    & (xticks.size_all.ic == ic)]
+                xticks_size_all = xticks.size_all[(xticks.size_all.ir == ir) & (xticks.size_all.ic == ic)]
                 xticks_size_all = np.array(xticks_size_all)
             else:
                 xticks_size_all = []
             if len(yticks.size_all) > 0:
-                yticks_size_all = \
-                    yticks.size_all[(yticks.size_all.ir == ir)
-                                    & (yticks.size_all.ic == ic)]
+                yticks_size_all = yticks.size_all[(yticks.size_all.ir == ir) & (yticks.size_all.ic == ic)]
                 yticks_size_all = np.array(yticks_size_all)
             else:
                 yticks_size_all = []
 
             # minor
             if len(xticksm.size_all) > 0:
-                xticksm_size_all = \
-                    xticksm.size_all[(xticksm.size_all.ir == ir)
-                                     & (xticksm.size_all.ic == ic)]
+                xticksm_size_all = xticksm.size_all[(xticksm.size_all.ir == ir) & (xticksm.size_all.ic == ic)]
                 xticksm_size_all = np.array(xticksm_size_all)
             else:
                 xticksm_size_all = []
             if len(yticksm.size_all) > 0:
-                yticksm_size_all = \
-                    yticksm.size_all[(yticksm.size_all.ir == ir)
-                                     & (yticksm.size_all.ic == ic)]
+                yticksm_size_all = yticksm.size_all[(yticksm.size_all.ir == ir) & (yticksm.size_all.ic == ic)]
                 yticksm_size_all = np.array(yticksm_size_all)
             else:
                 yticksm_size_all = []
 
-            # Prevent single tick label axis
+            # Prevent single tick label axis by adding a text label at one or more range limits
             if len(xticks_size_all) <= 1 \
                     and self.name not in ['box', 'bar', 'pie'] \
-                    and (not self.axes.share_x or len(self.axes.obj) == 1) \
+                    and (not self.axes.share_x or len(self.axes.obj.flatten()) == 1) \
                     and axis != '2' \
                     and self.tick_labels_major_x.on:
                 kw = {}
@@ -1437,7 +1600,11 @@ class Layout(BaseLayout):
                 txt = f'{xticks.limits[ir, ic][1]:.{precision}f}'
                 self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', **kw)
 
-            if len(yticks_size_all) <= 1 and not self.axes.share_y and axis != '2' and yticks.limits[ir, ic]:
+            if len(yticks_size_all) <= 1 \
+                    and self.name not in ['box', 'bar', 'pie'] \
+                    and (not self.axes.share_y or len(self.axes.obj.flatten()) == 1) \
+                    and axis != '2' \
+                    and yticks.limits[ir, ic]:
                 kw = {}
                 kw['rotation'] = yticks.rotation
                 kw['font_color'] = yticks.font_color
@@ -1448,23 +1615,25 @@ class Layout(BaseLayout):
                 kw['font_weight'] = yticks.font_weight
                 kw['font_size'] = yticks.font_size / sf
                 if len(yticks_size_all) == 0:
-                    precision = utl.get_decimals(yticks.limits[ir, ic][0], 3)
+                    # this case can only happen if the ylimits are so tight that there are no gridlines present
+                    precision = utl.get_decimals(yticks.limits[ir, ic][0], 8)
                     txt = f'{yticks.limits[ir, ic][0]:.{precision}f}'
-                    kw['position'] = [0 - len(txt) * kw['font_size'] * 0.9, -kw['font_size'] / 2]
+                    x = -kw['font_size'] * len(txt.replace('.', ''))
+                    y = -kw['font_size'] / 2
+                    kw['position'] = [x, y]
                     self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', **kw)
-                    precision = utl.get_decimals(yticks.limits[ir, ic][1], 3)
-                    txt = f'{yticks.limits[ir, ic][1]:.{precision}f}'
-                    kw['position'] = [0 - len(txt) * kw['font_size'] * 0.9, self.axes.size[1] - kw['font_size'] / 2]
-                    self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', **kw)
+                    y += self.axes.size[1]
                 else:
-                    kw['position'] = \
-                        [self.axes.size[1] - yticks.size_all.loc[0, 'width'] / 2 / sf,
-                         -yticks.size_all.loc[0, 'height']]
-                    precision = utl.get_decimals(yticks.limits[ir, ic][1], 8)
-                    txt = f'{yticks.limits[ir, ic][1]:.{precision}f}'
-                    self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', **kw)
+                    # this case happens if only one gridline is present on the plot
+                    x = -yticks.size_all.loc[0, 'width']
+                    y = self.axes.size[1] - yticks.size_all.loc[0, 'height'] / 2 / sf
+                precision = utl.get_decimals(yticks.limits[ir, ic][1], 8)
+                txt = f'{yticks.limits[ir, ic][1]:.{precision}f}'
+                x = -kw['font_size'] * len(txt.replace('.', ''))
+                kw['position'] = [x, y]
+                self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', **kw)
 
-            # Overlapping x-y origin
+            # Shrink/remove overlapping ticks x-y origin
             if len(xticks_size_all) > 0 and len(yticks_size_all) > 0:
                 idx = xticks.size_cols.index('width')
                 xw, xh, xx0, xx1, xy0, xy1 = xticks_size_all[0][idx:]
@@ -1478,114 +1647,36 @@ class Layout(BaseLayout):
                         xticks.obj[ir, ic][0].set_size(xticks.font_size / sf)
                         yticks.obj[ir, ic][0].set_size(yticks.font_size / sf)
 
-            # Overlapping grid plot at x-origin
+            # Shrink/remove overlapping ticks in grid plots at x-origin
             if ic > 0 and len(xticks_size_all) > 0:
                 idx = xticks.size_cols.index('x0')
                 ax_x0 = self.axes.obj[ir, ic].get_window_extent().x0
                 tick_x0 = xticks_size_all[0][idx]
                 if ax_x0 - tick_x0 > self.ws_col:
                     slop = xticks.obj[ir, ic][0].get_window_extent().width / 2
-                    if self.tick_cleanup == 'remove' or \
-                            slop / sf > self.ws_col:
+                    if self.tick_cleanup == 'remove' or slop / sf > self.ws_col:
                         xticks.obj[ir, ic][0].set_visible(False)
                     else:
                         xticks.obj[ir, ic][0].set_size(xticks.font_size / sf)
 
-            # TODO: Overlapping grid plot at y-origin
+            # TODO: Shrink/remove overlapping ticks in grid plots at y-origin
 
-            # Overlapping ticks on same axis
+            # Remove overlapping ticks on same axis
             if len(xticks_size_all) > 0:
-                idx = xticks.size_cols.index('x0')
-                xbbox = xticks_size_all[:, idx:idx + 2]
-                ol = (xbbox[1:, 0] - xbbox[0:-1, 1]) < 0
-                # pad to account for last tick
-                ol = np.concatenate([ol, [True]])
-                if any(ol):
-                    for iol, ool in enumerate(ol[:-1]):
-                        if ool and ol[iol + 1] and \
-                                xticks.obj[ir, ic][iol + 1].get_visible():
-                            xticks.obj[ir, ic][iol + 1].set_visible(False)
-                            ol[iol + 1] = False
-                # -minor x
-                if len(xticksm_size_all) > 0:
-                    # overlap with major
-                    xbboxm = np.ones((len(xticksm_size_all), 3))
-                    xbboxm[:, 0:2] = xticksm_size_all[:, idx:idx + 2]
-                    ol = [is_in_range(x, xbbox) for x in np.nditer(xbboxm[:, 0])]
-                    for iol, ool in enumerate(ol):
-                        if ool:
-                            xticksm.obj[ir, ic][iol].set_visible(False)
-                            xbboxm[iol, 2] = 0
-                    ol = [is_in_range(x, xbbox) for x in np.nditer(xbboxm[:, 1])]
-                    for iol, ool in enumerate(ol):
-                        if ool:
-                            xticksm.obj[ir, ic][iol].set_visible(False)
-                            xbboxm[iol, 2] = 0
-
-                    # minor to minor overlap
-                    ol = (xbboxm[1:, 0] - xbboxm[0:-1, 1]) < 0
-                    ol = np.concatenate([ol, [True]])  # pad to account for last tick
-                    ol = (ol * xbboxm[:, 2]).astype(bool)
-                    if any(ol):
-                        for iol, ool in enumerate(ol[:-1]):
-                            if ool and ol[iol + 1] and \
-                                    xticksm.obj[ir, ic][iol + 1].get_visible():
-                                xticksm.obj[ir, ic][iol + 1].set_visible(False)
-                                ol[iol + 1] = False
+                xbbox = df_tick(xticks, xticks_size_all, 'x')
+                xbbox = hide_overlaps(xticks, xbbox, ir, ic)
+            if len(xticksm_size_all) > 0:
+                xbboxm = df_tick_update(df_tick(xticksm, xticksm_size_all, 'x'))
+                xbboxm = hide_overlaps_major_minor(xticks, xticksm, xbbox, xbboxm, ir, ic)
+                xbboxm = hide_overlaps(xticksm, xbboxm, ir, ic)
 
             if len(yticks_size_all) > 0:
-                ybbox = yticks_size_all[:, -2:]
-                if ybbox[0:2, 0].argmax() == 1:
-                    # ascending ticks
-                    ol = (ybbox[1:, 0] - ybbox[0:-1, 1]) < 0
-                else:
-                    # descending ticks
-                    ol = (ybbox[0:-1, 0] - ybbox[1:, 1]) < 0
-
-                # pad to account for last tick
-                ol = np.concatenate([ol, [True]])
-                if any(ol):
-                    for iol, ool in enumerate(ol[:-1]):
-                        if ool and ol[iol + 1] and \
-                                yticks.obj[ir, ic][iol + 1].get_visible():
-                            yticks.obj[ir, ic][iol + 1].set_visible(False)
-                            ol[iol + 1] = False
-
-                # -minor y
-                if len(yticksm_size_all) > 0:
-                    # overlap with major
-                    ybboxm = np.ones((len(yticksm_size_all), 3))
-                    ybboxm[:, 0:2] = yticksm_size_all[:, -2:]
-                    ybboxm[:, 0] -= 1  # padding
-                    ybboxm[:, 1] += 1  # padding
-                    ol = [is_in_range(y, ybbox) for y in np.nditer(ybboxm[:, 0])]
-                    for iol, ool in enumerate(ol):
-                        if ool:
-                            yticksm.obj[ir, ic][iol].set_visible(False)
-                            ybboxm[iol, 2] = 0
-                    ol = [is_in_range(y, ybbox) for y in np.nditer(ybboxm[:, 1])]
-                    for iol, ool in enumerate(ol):
-                        if ool:
-                            yticksm.obj[ir, ic][iol].set_visible(False)
-                            ybboxm[iol, 2] = 0
-
-                    # minor to minor overlap
-                    if ybbox[0:2, 0].argmax() == 1:
-                        # ascending ticks
-                        ol = (ybboxm[1:, 0] - ybboxm[0:-1, 1]) < 0
-                    else:
-                        # descending ticks
-                        ol = (ybboxm[0:-1, 0] - ybboxm[1:, 1]) < 0
-
-                    # pad to account for last tick
-                    ol = np.concatenate([ol, [True]])
-                    ol = (ol * ybboxm[:, 2]).astype(bool)
-                    if any(ol):
-                        for iol, ool in enumerate(ol[:-1]):
-                            if ool and ol[iol + 1] and \
-                                    yticksm.obj[ir, ic][iol + 1].get_visible():
-                                yticksm.obj[ir, ic][iol + 1].set_visible(False)
-                                ol[iol + 1] = False
+                ybbox = df_tick(yticks, yticks_size_all, 'y')
+                ybbox = hide_overlaps(yticks, ybbox, ir, ic)
+            if len(yticksm_size_all) > 0:
+                ybboxm = df_tick_update(df_tick(yticksm, yticksm_size_all, 'y'))
+                ybboxm = hide_overlaps_major_minor(yticks, yticksm, ybbox, ybboxm, ir, ic)
+                ybboxm = hide_overlaps(yticksm, ybboxm, ir, ic)
 
     def _get_tick_xs(self):
         """Calculate extra whitespace at the edge of the plot for the last tick."""
