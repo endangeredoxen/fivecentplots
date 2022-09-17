@@ -27,6 +27,12 @@ class GroupingError(Exception):
         Exception.__init__(self, *args, **kwargs)
 
 
+class RangeError(Exception):
+    def __init__(self, *args, **kwargs):
+        """Invalid range limit error."""
+        Exception.__init__(self, *args, **kwargs)
+
+
 class Data:
     def __init__(self, name: str, req: list = ['x', 'y'], opt: list = [], fcpp: dict = {}, **kwargs):
         """Base Data class to deal with operations applied to the input data

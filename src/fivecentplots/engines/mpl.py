@@ -1054,6 +1054,26 @@ class Layout(BaseLayout):
             / self.axes.size[0]
         self.label_z.position[3] = 0.5
 
+    @property
+    def _box_label_heights(self):
+        """Calculate the box label height."""
+        lab = self.box_group_label
+        labt = self.box_group_title
+
+        if len(lab.size_all) == 0:
+            return np.array(0)
+
+        # Determine the box group label row heights
+        heights = lab.size_all.groupby('ii').max()['height']
+        heights *= (1 + 2 * lab.padding / 100)
+
+        # Determine the box group title heights
+        heightst = labt.size_all.groupby('ii').max()['height']
+        heightst *= (1 + 2 * labt.padding / 100)
+
+        # Get the largest of labels and titles
+        return np.maximum(heights, heightst)
+
     def _get_element_sizes(self, data: 'Data'):  # noqa: F821
         """Calculate the actual rendered size of select elements by pre-plotting
         them.  This is needed to correctly adjust the figure dimensions.
@@ -1149,15 +1169,17 @@ class Layout(BaseLayout):
                     lab.size_all = (ir, ic, ii, jj, bbox.width, bbox.height, bbox.x0, bbox.x1, bbox.y0, bbox.y1)
 
                     # text label bg size
-                    if lab.obj[ir, ic][ii, jj].get_rotation() != 0:
-                        # if we rotate the label, use the label size
-                        # this will cause an issue if someone tries to color the
-                        # rectangle behind the text but rotating the rectange itself
-                        # doesn't work b/c the label may be longer than the
-                        # rectangle itself
-                        bbox = lab.obj[ir, ic][ii, jj].get_window_extent()
-                    else:
-                        bbox = lab.obj_bg[ir, ic][ii, jj].get_window_extent()
+                    # if lab.obj[ir, ic][ii, jj].get_rotation() != 0:
+                    #     # if we rotate the label, use the label size
+                    #     # this will cause an issue if someone tries to color the
+                    #     # rectangle behind the text but rotating the rectange itself
+                    #     # doesn't work b/c the label may be longer than the
+                    #     # rectangle itself
+                    #     bbox = lab.obj[ir, ic][ii, jj].get_window_extent()
+                    # else:
+                    #     bbox = lab.obj_bg[ir, ic][ii, jj].get_window_extent()
+                    #bbox = lab.obj[ir, ic][ii, jj].get_window_extent()
+                    bbox = lab.obj[ir, ic][ii, jj].get_window_extent()
                     lab.size_all_bg = (ir, ic, ii, jj, bbox.width, bbox.height, bbox.x0, bbox.x1, bbox.y0, bbox.y1)
 
             # set max size
@@ -1259,11 +1281,7 @@ class Layout(BaseLayout):
         self.ws_ax_leg = max(0, self.ws_ax_leg - self._labtick_y2) if self.legend.location == 0 else 0
         self.ws_leg_fig = self.ws_leg_fig if self.legend.location == 0 else 0
         self.fig_legend_border = self.fig_legend_border if self.legend.location == 0 else 0
-        self.box_labels = 0
-        if self.box_group_label.on and self.box_group_label.size != [0, 0]:
-            heights = self.box_group_label.size_all_bg.groupby('ii').max()['height']
-            heights *= (1 + 2 * self.box_group_label.padding / 100)
-            self.box_labels = heights.sum()
+        self.box_labels = self._box_label_heights.sum()
         self.box_title = 0
         if self.box_group_title.on and self.legend.size[1] > self.axes.size[1]:
             self.box_title = self.box_group_title.size[0] + self.ws_ax_box_title
@@ -1825,7 +1843,7 @@ class Layout(BaseLayout):
                 if iline > 0:
                     if isinstance(stacked, pd.Series):
                         stacked = stacked.loc[xvals[idx]].values
-                    kwargs['bottom'] = stacked
+                    kwargs['left'] = stacked
             else:
                 kwargs['height'] = self.bar.width / ngroups
                 idx = [f + inst[i] * kwargs['height']
@@ -1841,18 +1859,16 @@ class Layout(BaseLayout):
                     if isinstance(stacked, pd.Series):
                         stacked = stacked.loc[xvals[idx]].values
                     kwargs['bottom'] = stacked
+                    print(kwargs['bottom'])
             else:
                 kwargs['width'] = self.bar.width / ngroups
-                idx = [f + inst[i] * kwargs['width']
-                       for i, f in enumerate(idx)]
+                idx = [f + inst[i] * kwargs['width'] for i, f in enumerate(idx)]
                 init_off = (total - 1) / 2 * kwargs['width']
                 idx = list((idx - init_off).values)
 
         if self.bar.color_by_bar:
-            edgecolor = [self.bar.edge_color[i]
-                         for i, f in enumerate(df.index)]
-            fillcolor = [self.bar.fill_color[i]
-                         for i, f in enumerate(df.index)]
+            edgecolor = [self.bar.edge_color[i] for i, f in enumerate(df.index)]
+            fillcolor = [self.bar.fill_color[i] for i, f in enumerate(df.index)]
         else:
             edgecolor = self.bar.edge_color[(iline, leg_name)]
             fillcolor = self.bar.fill_color[(iline, leg_name)]
@@ -1864,10 +1880,8 @@ class Layout(BaseLayout):
             kwargs['yerr'] = std
 
         # Plot
-        bb = bar(idx, df.values, align=self.bar.align,  # noqa
-                 linewidth=self.bar.edge_width,
-                 edgecolor=edgecolor, color=fillcolor,
-                 ecolor=self.bar.error_color, **kwargs)
+        bb = bar(idx, df.values, align=self.bar.align,  linewidth=self.bar.edge_width,
+                 edgecolor=edgecolor, color=fillcolor, ecolor=self.bar.error_color, **kwargs)
 
         # Set ticks
         try:
@@ -1968,8 +1982,7 @@ class Layout(BaseLayout):
             bp = self.axes.obj[ir, ic].boxplot(data,
                                                labels=[''] * len(data),
                                                showfliers=False,
-                                               medianprops={
-                                                   'color': self.box.median_color},
+                                               medianprops={'color': self.box.median_color},
                                                notch=self.box.notch,
                                                patch_artist=True,
                                                zorder=3)
@@ -2175,8 +2188,7 @@ class Layout(BaseLayout):
         if self.heatmap.text:
             for iy, yy in enumerate(df.index):
                 for ix, xx in enumerate(df.columns):
-                    if type(df.loc[yy, xx]) in [float, np.float32, np.float64] and \
-                            np.isnan(df.loc[yy, xx]):
+                    if type(df.loc[yy, xx]) in [float, np.float32, np.float64] and np.isnan(df.loc[yy, xx]):
                         continue
                     text = ax.text(ix, iy, df.loc[yy, xx],  # noqa
                                    ha="center", va="center",
@@ -2237,12 +2249,10 @@ class Layout(BaseLayout):
         if self.kde.on:
             kde = scipy.stats.gaussian_kde(df[x])
             if not self.hist.horizontal:
-                x0 = np.linspace(data.ranges[ir, ic]['xmin'],
-                                 data.ranges[ir, ic]['xmax'], 1000)
+                x0 = np.linspace(data.ranges[ir, ic]['xmin'], data.ranges[ir, ic]['xmax'], 1000)
                 y0 = kde(x0)
             else:
-                y0 = np.linspace(data.ranges[ir, ic]['ymin'],
-                                 data.ranges[ir, ic]['ymax'], 1000)
+                y0 = np.linspace(data.ranges[ir, ic]['ymin'], data.ranges[ir, ic]['ymax'], 1000)
                 x0 = kde(y0)
             kwargs = self.make_kw_dict(self.kde)
             kwargs['color'] = RepeatedList(kwargs['color'][iline], 'color')
@@ -2400,8 +2410,7 @@ class Layout(BaseLayout):
                                    linestyle=kwargs['edge_style'],
                                    alpha=kwargs['alpha'],
                                    )]
-        p = PatchCollection(polygon, match_original=True,
-                            zorder=kwargs['zorder'])
+        p = PatchCollection(polygon, match_original=True, zorder=kwargs['zorder'])
 
         self.axes.obj[ir, ic].add_collection(p)
 
@@ -3351,11 +3360,7 @@ class Layout(BaseLayout):
         if self.box_group_label.on:
             lab = self.box_group_label
             labt = self.box_group_title
-
-            # Determine the box group row heights
-            heights = lab.size_all_bg.groupby('ii').max()['height']
-            heights *= (1 + 2 * lab.padding / 100)
-            heights /= self.axes.size[1]
+            hh = self._box_label_heights / self.axes.size[1]
 
             # Iterate through labels
             offset = 1  # to make labels line up better at default font sizes
@@ -3369,16 +3374,15 @@ class Layout(BaseLayout):
                         continue
 
                     # group label background rectangle
-                    lab.obj_bg[ir, ic][ii, jj].set_height(heights[ii])
-                    lab.obj_bg[ir, ic][ii, jj].set_y(-heights[0:ii + 1].sum())
+                    lab.obj_bg[ir, ic][ii, jj].set_height(hh[ii])
+                    lab.obj_bg[ir, ic][ii, jj].set_y(-hh[0:ii + 1].sum())
 
                     # group label text strings
                     changes = data.changes[data.changes[len(data.changes.columns) - ii - 1] == 1].index.values
                     changes = np.diff(np.append(changes, len(data.changes)))
                     divider = self.axes.size[0] / len(data.changes)
                     xtext = (divider * (changes[jj] / 2 + changes[0:jj].sum())) / self.axes.size[0]
-                    ytext = -heights[ii] / 2 - \
-                        heights[0:ii].sum() - offset / self.axes.size[1]
+                    ytext = -hh[ii] / 2 - hh[0:ii].sum() - offset / self.axes.size[1]
 
                     # apply an offset to better align the text
                     if lab.obj[ir, ic][ii, jj].get_rotation() == 90:
@@ -3398,7 +3402,7 @@ class Layout(BaseLayout):
                         labt.size_all.ic == ic) & (labt.size_all.ii == ii), 'width']
                     xtitle = 1 + (self.ws_ax_box_title
                                   + wtitle / 2) / self.axes.size[0]
-                    ytitle = -heights[ii] / 2 - heights[0:ii].sum() - (ii + 2) * offset / self.axes.size[1]
+                    ytitle = -hh[ii] / 2 - hh[0:ii].sum() - (ii + 2) * offset / self.axes.size[1]
                     labt.obj[ir, ic][ii, 0].set_position((xtitle, ytitle))
 
         # Text label adjustments

@@ -125,7 +125,8 @@ def plt_one_group(bm=False, master=False, remove=True, show=False):
 
     # Make the plot
     fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', ymin='q0', ymax='q100',
-                show=SHOW, filename=name + '.png', save=not bm, inline=False, jitter=False, box_stat_line='q50')
+                show=SHOW, filename=name + '.png', save=not bm, inline=False, jitter=False, box_stat_line='q50',
+                box_group_label_font_size=24)  # font size is wrong!
 
     if bm:
         return
@@ -150,7 +151,7 @@ def plt_group_single(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'group_single_master') if master else 'group_single'
 
     # Make the plot
-    fcp.boxplot(df, y='Value', groups='Batch', show=SHOW, box_whisker=False,
+    fcp.boxplot(df, y='Value', groups='Batch', show=SHOW, box_whisker=False, box_group_title_font_size=24,
                 filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -257,6 +258,33 @@ def plt_group_legend_lots(bm=False, master=False, remove=True, show=False):
     # Make the plot
     fcp.boxplot(df2, y='Value', groups=['Batch', 'Sample'], legend='Lots of Values', show=SHOW,
                 filename=name + '.png', save=not bm, inline=False, jitter=False, legend_edge_color='#000000')
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_group_long(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'group_long_master') if master else 'group_long'
+
+    # Make the plot
+    df['This is a really long way to say show me your ID sucka'] = df['ID'] * 2
+    fcp.boxplot(df, y='Value', groups=['Batch', 'This is a really long way to say show me your ID sucka', 'Sample'],
+                show=SHOW, filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
         return
@@ -469,6 +497,33 @@ def plt_mean_diamonds(bm=False, master=False, remove=True, show=False):
     # Make the plot
     fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW, mean_diamonds=True, conf_coeff=0.95,
                 filename=name + '.png', save=not bm, inline=False, jitter=False)
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_mean_diamonds_filled(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'mean_diamonds_filled_master') if master else 'mean_diamonds_filled'
+
+    # Make the plot
+    fcp.boxplot(df, y='Value', groups=['Batch'], show=SHOW, mean_diamonds=True, conf_coeff=0.95,
+                filename=name + '.png', save=not bm, inline=False, jitter=False,
+                mean_diamonds_fill_color='#ff0000', mean_diamonds_edge_color='#0000ff')
 
     if bm:
         return
@@ -781,6 +836,11 @@ def test_group_means(benchmark):
 def test_mean_diamonds(benchmark):
     plt_mean_diamonds()
     benchmark(plt_mean_diamonds, True)
+
+
+def test_mean_diamonds_filled(benchmark):
+    plt_mean_diamonds_filled()
+    benchmark(plt_mean_diamonds_filled, True)
 
 
 def test_violin(benchmark):

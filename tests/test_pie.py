@@ -265,10 +265,34 @@ def plt_explode(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'explode_master') if master else 'explode'
 
     # Make the plot
-    fcp.pie(df, x='Liquid', y='pH', show=SHOW,
-            filter='Measurement=="A" & T [C]==25',
-            explode=(0, 0.1), start_angle=90, alpha=0.85, percents=True,
-            filename=name + '.png', save=not bm, inline=False, jitter=False)
+    fcp.pie(df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A" & T [C]==25', explode=(0, 0.1), start_angle=90,
+            alpha=0.85, percents=True, filename=name + '.png', save=not bm, inline=False, jitter=False)
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_explode_all(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'explode_all_master') if master else 'explode_all'
+
+    # Make the plot
+    fcp.pie(df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A" & T [C]==25', explode=('all', 0.1),
+            start_angle=90, alpha=0.85, percents=True, filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
         return
@@ -385,6 +409,11 @@ def test_percents(benchmark):
 def test_explode(benchmark):
     plt_explode()
     benchmark(plt_explode, True)
+
+
+def test_explode_all(benchmark):
+    plt_explode_all()
+    benchmark(plt_explode_all, True)
 
 
 def test_shadow(benchmark):

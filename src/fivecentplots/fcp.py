@@ -94,7 +94,8 @@ def bar(df, **kwargs):
           default. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Rolling-mean
         bar_stacked|stacked (bool): Stack bars of a given group . Defaults to False. Example:
           https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Stacked
-        bar_width (float): Set the fractional width of the bars between 0-1. Defaults to 0.8.
+        bar_width (float): Set the fractional width of the bars between 0-1; for stacked barplots the width corresponds
+          to the height of the bars. Defaults to 0.8.
         rolling_mean_line_color (str): Hex color string for the rolling mean line. Defaults to fcp.DEFAULT_COLORS.
           Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/barplot.html#Custom-line-style
         rolling_mean_line_width (int): Width for the rolling mean line in pixels. Defaults to 2. Example:
@@ -160,7 +161,7 @@ def boxplot(df, **kwargs):
         box_group_label_fill_color (str): Hex color string for the group label background color. Defaults to #ffffff.
         box_group_label_font (str): Font name for box group label. Defaults to Sans-serif.
         box_group_label_font_color (str): Hex color string for group label font. Defaults to #000000.
-        box_group_label_font_size (float): Font size for group label text in pixels. Defaults to 14.
+        box_group_label_font_size (float): Font size for group label text in pixels. Defaults to 12.
         box_group_label_font_style (str): Font style for the group label text {'normal', 'italic', 'oblique'}. Defaults
           to 'normal’.
         box_group_label_font_weight (str): Font weight for the group label text {'light', 'normal', 'medium',
@@ -173,7 +174,7 @@ def boxplot(df, **kwargs):
         box_group_title_fill_color (str): Hex color string for the group title background color. Defaults to #ffffff.
         box_group_title_font (str): Font name for box group title. Defaults to Sans-serif.
         box_group_title_font_color (str): Hex color string for group title font. Defaults to #000000.
-        box_group_title_font_size (float): Font size for group title text in pixels. Defaults to 14.
+        box_group_title_font_size (float): Font size for group title text in pixels. Defaults to 13.
         box_group_title_font_style (str): Font style for the group title text {'normal', 'italic', 'oblique'}. Defaults
           to 'normal’.
         box_group_title_font_weight (str): Font weight for the group title text {'light', 'normal', 'medium',
@@ -1022,13 +1023,10 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
     if layout.box_range_lines.on:
         for id, dat in enumerate(data):
             kwargs = layout.box_range_lines.kwargs.copy()
-            layout.plot_line(ir, ic, id + 1 - 0.2, dat.max().iloc[0],
-                             x1=id + 1 + 0.2, y1=dat.max().iloc[0], **kwargs)
-            layout.plot_line(ir, ic, id + 1 - 0.2, dat.min().iloc[0],
-                             x1=id + 1 + 0.2, y1=dat.min().iloc[0], **kwargs)
+            layout.plot_line(ir, ic, id + 1 - 0.2, dat.max().iloc[0], x1=id + 1 + 0.2, y1=dat.max().iloc[0], **kwargs)
+            layout.plot_line(ir, ic, id + 1 - 0.2, dat.min().iloc[0], x1=id + 1 + 0.2, y1=dat.min().iloc[0], **kwargs)
             kwargs['style'] = kwargs['style2']
-            layout.plot_line(ir, ic, id + 1, dat.min().iloc[0],
-                             x1=id + 1, y1=dat.max().iloc[0], **kwargs)
+            layout.plot_line(ir, ic, id + 1, dat.min().iloc[0], x1=id + 1, y1=dat.max().iloc[0], **kwargs)
 
     # Add boxes
     for ival, val in enumerate(data):
@@ -1048,7 +1046,7 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
     # Add mean/median connecting lines
     if layout.box_stat_line.on and len(stats) > 0:
         x = np.linspace(1, dd.ngroups, dd.ngroups)
-        layout.plot_line(ir, ic, x, stats, **layout.box_stat_line.kwargs,)
+        layout.plot_line(ir, ic, x, stats, **layout.box_stat_line.kwargs)
 
     # add group means
     if layout.box_group_means.on is True:
@@ -1061,7 +1059,7 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
                 x2 = len(mm[dd.groups].drop_duplicates()) + x + 1
             else:
                 x2 = len(mm[dd.groups].drop_duplicates()) + x
-            layout.plot_line(ir, ic, [x, x2], y, **layout.box_group_means.kwargs,)
+            layout.plot_line(ir, ic, [x, x2], y, **layout.box_group_means.kwargs)
             x = x2
 
     # add grand mean
@@ -1069,14 +1067,14 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
         x = np.linspace(0.5, dd.ngroups + 0.5, dd.ngroups)
         mm = df_rc[dd.y[0]].mean()
         y = [mm for f in x]
-        layout.plot_line(ir, ic, x, y, **layout.box_grand_mean.kwargs,)
+        layout.plot_line(ir, ic, x, y, **layout.box_grand_mean.kwargs)
 
     # add grand mean
     if layout.box_grand_median.on:
         x = np.linspace(0.5, dd.ngroups + 0.5, dd.ngroups)
         mm = df_rc[dd.y[0]].median()
         y = [mm for f in x]
-        layout.plot_line(ir, ic, x, y, **layout.box_grand_median.kwargs,)
+        layout.plot_line(ir, ic, x, y, **layout.box_grand_median.kwargs)
 
     # add mean confidence diamonds
     if layout.box_mean_diamonds.on:
@@ -1092,8 +1090,7 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
                       [ii + 1, low],
                       [ii + 1 + x1, mm],
                       [ii + 1 + x2, mm]]
-            layout.plot_polygon(ir, ic, points,
-                                **layout.box_mean_diamonds.kwargs)
+            layout.plot_polygon(ir, ic, points, **layout.box_mean_diamonds.kwargs)
 
     return dd
 
@@ -2087,7 +2084,7 @@ def labels():
           colors
         title_wrap_fill_color (str): Hex color string for the wrap title bar. Defaults to #5f5f5f.
         title_wrap_font_color (str): Hex color string for the wrap title bar text. Defaults to label_wrap_font_color.
-        title_wrap_font_size (str): Font size for the wrap title bar text. Defaults to label_wrap_font_size.
+        title_wrap_font_size (str): Font size for the wrap title bar text. Defaults to 16.
         title_wrap_font_style (str): Font style {'normal'|'italic'|'oblique'} for the wrap title bar text. Defaults to
           label_wrap_font_style.
         title_wrap_font_weight (str): Font weight {'normal'|'bold'|'heavy'|'light'|'ultrabold'|'ultralight'} for the

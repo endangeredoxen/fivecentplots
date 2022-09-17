@@ -6,7 +6,7 @@ box_group_label_edge_width,float,Width of the edge of the line around the group 
 box_group_label_edge_color,str,Hex color string for the group label rectangle edge,#ffffff,None
 box_group_label_font,str,Font name for box group label,Sans-serif,None
 box_group_label_font_color,str,Hex color string for group label font,#000000,None
-box_group_label_font_size,float,Font size for group label text in pixels,14,None
+box_group_label_font_size,float,Font size for group label text in pixels,12,None
 box_group_label_font_style,str,"Font style for the group label text {'normal', 'italic', 'oblique'}",'normal’,None
 box_group_label_font_weight,str,"Font weight for the group label text {'light', 'normal', 'medium', 'semibold', 'bold', 'heavy', 'black'}",'normal’,None
 box_group_title_fill_alpha,float,Transparency value for group title fill between 0-1,1,None
@@ -16,6 +16,6 @@ box_group_title_edge_width,float,Width of the edge of the line around the group 
 box_group_title_edge_color,str,Hex color string for the group title rectangle edge,#ffffff,None
 box_group_title_font,str,Font name for box group title,Sans-serif,None
 box_group_title_font_color,str,Hex color string for group title font,#000000,None
-box_group_title_font_size,float,Font size for group title text in pixels,14,None
+box_group_title_font_size,float,Font size for group title text in pixels,13,None
 box_group_title_font_style,str,"Font style for the group title text {'normal', 'italic', 'oblique'}",'normal’,None
 box_group_title_font_weight,str,"Font weight for the group title text {'light', 'normal', 'medium', 'semibold', 'bold', 'heavy', 'black'}",'normal’,None

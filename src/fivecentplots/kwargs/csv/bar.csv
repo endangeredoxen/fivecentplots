@@ -10,6 +10,6 @@ bar_fill_color,str,Hex color string of the bar fill ,fcp.DEFAULT_COLORS,None
 bar_horizontal|horizontal,bool,Display bars horizontally,False,`horizontal box plot <barplot.html#Horizontal-bars>`_
 bar_rolling|bar_rolling_mean|rolling|rolling_mean,int,Rolling mean window size [enables this curve],No default,`rolling mean <barplot.html#Rolling-mean>`_
 bar_stacked|stacked,bool,Stack bars of a given group ,False,`stacked box plot <barplot.html#Stacked>`_
-bar_width,float,Set the fractional width of the bars between 0-1,0.8,None
+bar_width,float,Set the fractional width of the bars between 0-1; for stacked barplots the width corresponds to the height of the bars,0.8,None
 rolling_mean_line_color,str,Hex color string for the rolling mean line,fcp.DEFAULT_COLORS,`rolling mean line color <barplot.html#Custom-line-style>`_
 rolling_mean_line_width,int,Width for the rolling mean line in pixels,2,`rolling mean line color <barplot.html#Custom-line-style>`_

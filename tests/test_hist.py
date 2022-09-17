@@ -221,6 +221,32 @@ def plt_kde(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
+def plt_kde_horizontal(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'kde_horizontal_master') if master else 'kde_horizontal'
+
+    # Make the plot
+    fcp.hist(df, x='Value', show=SHOW, legend='Region', kde=True, kde_width=2,
+             inline=False, save=not bm, filename=name + '.png', horizontal=True,)
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def plt_grid(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'grid_master') if master else 'grid'
@@ -687,6 +713,11 @@ def test_legend(benchmark):
 def test_kde(benchmark):
     plt_kde()
     benchmark(plt_kde, True)
+
+
+def test_kde_horizontal(benchmark):
+    plt_kde_horizontal()
+    benchmark(plt_kde_horizontal, True)
 
 
 def test_grid(benchmark):

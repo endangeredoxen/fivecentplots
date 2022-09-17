@@ -16,13 +16,28 @@ class Bar(data.Data):
         """
         name = 'bar'
 
+        # Check for bad ranges
+        horizontal = utl.kwget(kwargs, kwargs.get('fcpp', {}),
+                               ['bar_horizontal', 'horizontal'], kwargs.get('horizontal', False))
+        if horizontal:
+            if 'ymin' in kwargs or 'ymax' in kwargs:
+                raise data.RangeError('y-limits not allowed for horizontal bar plot!')
+            if 'xmin' in kwargs:
+                kwargs['ymin'] = kwargs['xmin']
+                kwargs.pop('xmin')
+            if 'xmax' in kwargs:
+                kwargs['ymax'] = kwargs['xmax']
+                kwargs.pop('xmax')
+        else:
+            if 'xmin' in kwargs or 'xmin' in kwargs:
+                raise data.RangeError('x-limits not allowed for bar plot!')
+
         super().__init__(name, **kwargs)
 
         # overrides
-        self.stacked = utl.kwget(kwargs, self.fcpp, ['bar_stacked', 'stacked'],
-                                 kwargs.get('stacked', False))
-        if utl.kwget(kwargs, self.fcpp, ['bar_error_bars', 'error_bars'],
-                     kwargs.get('error_bars', False)):
+        self.horizontal = horizontal
+        self.stacked = utl.kwget(kwargs, self.fcpp, ['bar_stacked', 'stacked'], kwargs.get('stacked', False))
+        if utl.kwget(kwargs, self.fcpp, ['bar_error_bars', 'error_bars'], kwargs.get('error_bars', False)):
             self.error_bars = True
 
     def _filter_data(self, kwargs):

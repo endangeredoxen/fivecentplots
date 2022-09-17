@@ -125,7 +125,7 @@ def plt_horizontal(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'horizontal_master') if master else 'horizontal'
 
     # Make the plot
-    fcp.bar(df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A"', horizontal=True,
+    fcp.bar(df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A"', horizontal=True, error_bars=True,
             filename=name + '.png', save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -151,8 +151,8 @@ def plt_error(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'error_master') if master else 'error'
 
     # Make the plot
-    fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, error_bars=True,
-            filename=name + '.png', save=not bm, inline=False, jitter=False, sort=False)
+    fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, error_bars=True, ymin=0, ymax=35,
+            filename=name + '.png', save=not bm, inline=False, jitter=False, sort=False, color_by_bar=True)
 
     if bm:
         return
@@ -205,6 +205,32 @@ def plt_stacked(bm=False, master=False, remove=True, show=False):
     # Make the plot
     fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, stacked=True, legend='Measurement',
             filename=name + '.png', save=not bm, inline=False, jitter=False)
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_stacked_horizontal(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'stacked_horizontal_master') if master else 'stacked_horizontal'
+
+    # Make the plot
+    fcp.bar(df, x='Liquid', y='pH', show=SHOW, stacked=True, legend='Measurement', xmin=0, xmax=41,
+            filename=name + '.png', save=not bm, inline=False, jitter=False, horizontal=True, width=0.3)
 
     if bm:
         return
@@ -412,6 +438,11 @@ def test_legend(benchmark):
 def test_stacked(benchmark):
     plt_stacked()
     benchmark(plt_stacked, True)
+
+
+def test_stacked_horizontal(benchmark):
+    plt_stacked_horizontal()
+    benchmark(plt_stacked_horizontal, True)
 
 
 def test_row_col(benchmark):

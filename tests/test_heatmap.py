@@ -99,8 +99,7 @@ def plt_cat_label(bm=False, master=False, remove=True, show=False):
     # Make the plot
     fcp.heatmap(df, x='Category', y='Player', z='Average', cbar=True, data_labels=True,
                 heatmap_font_color='#aaaaaa', show=SHOW, tick_labels_major_y_edge_width=0,
-                ws_ticks_ax=5,
-                filename=name + '.png', save=not bm, inline=False)
+                ws_ticks_ax=5, filename=name + '.png', save=not bm, inline=False)
 
     if bm:
         return

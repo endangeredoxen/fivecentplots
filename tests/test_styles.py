@@ -586,8 +586,7 @@ def test_hist(master=False, remove=True, show=False):
 
     # Make the plot
     df_hist = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
-    fcp.hist(df_hist, x='Value', show=SHOW, legend='Region',
-             filename=name + '.png')
+    fcp.hist(df_hist, x='Value', show=SHOW, legend='Region', hist_fill_alpha=1, filename=name + '.png')
 
     # Compare with master
     if master:
