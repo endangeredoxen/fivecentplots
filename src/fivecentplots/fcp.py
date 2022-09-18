@@ -960,10 +960,10 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
             gg = gg.set_index(dd.groups)
             if len(gg) > 1:
                 gg = gg.loc[tuple(row)]
-            # if isinstance(gg, pd.Series):  # disabling b/c I don't think this case can occur anymore
-            #     gg = pd.DataFrame(gg).T
-            # else:
-            gg = gg.reset_index()
+            if isinstance(gg, pd.Series):
+                gg = pd.DataFrame(gg).T
+            else:
+                gg = gg.reset_index()
             temp = gg[dd.y].dropna()
             temp['x'] = irow + 1
             data += [temp]
@@ -1761,8 +1761,9 @@ def axes():
         ax_scale|ax2_scale (str): Set the scale type of the axes {'linear'; 'logx'; 'semilogx'; 'logy'; 'semilogy';
           'loglog'; 'log'; 'symlog'; 'logit'}. Defaults to 'linear'. Example:
           https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Log-scale
-        ax_size (list of int): Axes size [width, height]; note this is not the size of the figure. Defaults to [400,
-          400]. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Time-series
+        ax_size (list of int | str): Axes size [width, height]; note this is not the size of the entire figure but
+          just the axes area; for boxplots can enter 'auto' to auto-scale the width. Defaults to [400, 400].
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Time-series
         share_col (boolean): Share the x and y axis ranges of subplots in the same column when grouping. Defaults to
           True. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Share-columns
         share_row (boolean): Share the x and y axis ranges of subplots in the same row when grouping. Defaults to True.

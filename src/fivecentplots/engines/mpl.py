@@ -1100,11 +1100,11 @@ class Layout(BaseLayout):
                 bbox = lab.obj[ir, ic].get_window_extent()
                 width = bbox.width
                 height = bbox.height
-                lab.size_all = (ir, ic, 0, 0, width, height, bbox.x0, bbox.x1, bbox.y0, bbox.y1)
+                lab.size_all = (ir, ic, 0, 0, width, height, bbox.x0, bbox.x1, bbox.y0, bbox.y1, np.nan)
 
                 # text label rect background (ax label has to be resized!)
                 bbox = lab.obj_bg[ir, ic].get_window_extent()
-                lab.size_all_bg = (ir, ic, 0, 0, bbox.width, bbox.height, bbox.x0, bbox.x1, bbox.y0, bbox.y1)
+                lab.size_all_bg = (ir, ic, 0, 0, bbox.width, bbox.height, bbox.x0, bbox.x1, bbox.y0, bbox.y1, np.nan)
                 if label not in ['row', 'col', 'wrap']:
                     lab.obj_bg[ir, ic].set_width((width + lab.bg_padding * 2) / self.axes.size[0])
                     lab.obj_bg[ir, ic].set_height((height + lab.bg_padding * 2) / self.axes.size[1])
@@ -1139,37 +1139,76 @@ class Layout(BaseLayout):
         # box labels and titles
         if self.box_group_label.on:
             lab = self.box_group_label
+            lens_all = pd.DataFrame(columns=['ir', 'ic', 'ii', 'vals'])
             for ir, ic in np.ndindex(lab.obj.shape):
                 data.df_rc = data._subset(ir, ic)
                 data.get_box_index_changes()
                 divider = self.axes.size[0] / len(data.changes)
                 if lab.obj[ir, ic] is None:
                     continue
+                ii_last = -1
                 for ii, jj in np.ndindex(lab.obj[ir, ic].shape):
                     # get the available length for a label in units of box groups
                     # changes = data.changes[len(data.changes.columns) - ii - 1].append(
                     #     pd.Series([1], index=[len(data.changes)]))
-                    changes = pd.concat([data.changes[len(data.changes.columns) - ii - 1],
-                                         pd.Series([1], index=[len(data.changes)])])
-                    lens = np.diff(changes[changes == 1].index)
+                    if ii != ii_last:
+                        changes = pd.concat([data.changes[len(data.changes.columns) - ii - 1],
+                                            pd.Series([1], index=[len(data.changes)])])
+                        lens = np.diff(changes[changes == 1].index)
+                        ii_last = ii
+                        if len(lens_all.loc[(lens_all.ir == ir) & (lens_all.ic == ic) & (lens_all.ii == ii)]) == 0:
+                            lens_all = pd.concat([lens_all,
+                                                  pd.DataFrame({'ir': ir, 'ic': ic, 'ii': ii, 'vals': [lens]},
+                                                               index=[0])])
 
-                    # text label size
+                    # skip any nones
                     if lab.obj[ir, ic][ii, jj] is None:
                         continue
+
+                    # get the label dimensions and the max size available for this label
                     bbox = lab.obj[ir, ic][ii, jj].get_window_extent()
                     if ii < len(lens):
-                        label_max_width = lens[ii] * divider
+                        label_max_width = lens[jj] * divider
                     else:
                         label_max_width = bbox.width + 1
 
-                    if bbox.width > label_max_width:
-                        # rotate labels that are longer than the box axis size
+                    # rotate labels that are longer than the box axis size
+                    if bbox.width > label_max_width and not(self.box_scale == 'auto' and ii == 0):
                         lab.obj[ir, ic][ii, jj].set_rotation(90)
                         bbox = lab.obj[ir, ic][ii, jj].get_window_extent()
-                    lab.size_all = (ir, ic, ii, jj, bbox.width, bbox.height, bbox.x0, bbox.x1, bbox.y0, bbox.y1)
 
-                    bbox = lab.obj[ir, ic][ii, jj].get_window_extent()
-                    lab.size_all_bg = (ir, ic, ii, jj, bbox.width, bbox.height, bbox.x0, bbox.x1, bbox.y0, bbox.y1)
+                    # update the size_all dataframe
+                    lab.size_all = (ir, ic, ii, jj, bbox.width, bbox.height, bbox.x0, bbox.x1, bbox.y0, bbox.y1,
+                                    lab.obj[ir, ic][ii, jj].get_rotation())
+                    lab.size_all_bg = (ir, ic, ii, jj, bbox.width, bbox.height, bbox.x0, bbox.x1, bbox.y0, bbox.y1,
+                                       np.nan)
+
+            if self.box_scale == 'auto':
+                # Resize the axes width
+                maxes = lab.size_all.groupby(['ir', 'ic', 'ii']).max()
+                size0 = (maxes['jj'] + 1) * maxes['width'] + divider
+                self.axes.size[0] = size0.max()
+
+                # Recheck the rotation (inefficient to loop 2x, maybe find a better way)
+                lens_all = lens_all.set_index(['ir', 'ic', 'ii'])
+                for iii, (nn, gg) in enumerate(lab.size_all.groupby(['ir', 'ic', 'ii'])):
+                    gg = gg.copy()
+                    if iii == 0:
+                        continue
+                    gg['num'] = lens_all.loc[nn]['vals']
+                    gg['label_max_width'] = self.axes.size[0] / gg['num'].sum() * gg['num']
+                    revert = gg.loc[(gg.rotation == 90) & (gg['height'] < gg['label_max_width'])]
+                    for irow, row in revert.iterrows():
+                        lab.obj[nn[0], nn[1]][nn[2], gg.loc[irow, 'jj']].set_rotation(0)
+
+                # Reset the horizontallabel widths
+                for ir, ic in np.ndindex(lab.obj.shape):
+                    if self.label_y.obj_bg[ir, ic] is not None:
+                        self.label_y.obj_bg[ir, ic].set_width(
+                            self.label_y.obj_bg[ir, ic].get_window_extent().width / self.axes.size[0])
+                    if self.label_row.obj_bg[ir, ic]:
+                        self.label_row.obj_bg[ir, ic].set_width(
+                            self.label_row.obj_bg[ir, ic].get_window_extent().width / self.axes.size[0])
 
             # set max size
             width = lab.size_all.width.max()
@@ -1188,11 +1227,12 @@ class Layout(BaseLayout):
                     if lab.obj[ir, ic][ii, 0] is None:
                         continue
                     bbox = lab.obj[ir, ic][ii, 0].get_window_extent()
-                    lab.size_all = (ir, ic, ii, 0, bbox.width, bbox.height, bbox.x0, bbox.x1, bbox.y0, bbox.y1)
+                    lab.size_all = (ir, ic, ii, 0, bbox.width, bbox.height, bbox.x0, bbox.x1, bbox.y0, bbox.y1, np.nan)
 
                     # text label rect background size
                     bbox = lab.obj_bg[ir, ic][ii, 0].get_window_extent()
-                    lab.size_all_bg = (ir, ic, ii, 0, bbox.width, bbox.height, bbox.x0, bbox.x1, bbox.y0, bbox.y1)
+                    lab.size_all_bg = (ir, ic, ii, 0, bbox.width, bbox.height, bbox.x0, bbox.x1, bbox.y0, bbox.y1,
+                                       np.nan)
 
             # set max size
             width = lab.size_all.width.max()
@@ -1209,7 +1249,8 @@ class Layout(BaseLayout):
                 for ibox, bbox in enumerate(bboxes):
                     if self.pie.obj[1][ibox].get_text() == '':
                         continue
-                    self.pie.size_all = (ir, ic, ibox, 0, bbox.width, bbox.height, bbox.x0, bbox.x1, bbox.y0, bbox.y1)
+                    self.pie.size_all = (ir, ic, ibox, 0, bbox.width, bbox.height, bbox.x0, bbox.x1, bbox.y0, bbox.y1,
+                                         np.nan)
 
                 if len(self.pie.size_all) > 0:
                     left = self.pie.size_all['x0'].min() - ax_bbox.x0
@@ -1300,8 +1341,6 @@ class Layout(BaseLayout):
             self.ws_col += self._tick_y
         if self.axes2.on and (self.separate_ticks or self.axes2.share_y is False) and not self.cbar.on:
             self.ws_col = max(self._tick_y2 + self.ws_label_tick, self.ws_col_def)
-        # elif self.axes2.on and (self.separate_ticks or self.axes.share_y is False) and self.cbar.on:  # case exists??
-        #     self.ws_col += self._tick_y2
 
         if self.separate_ticks or (self.axes.share_x is False and self.box.on is False):
             self.ws_row += max(self.tick_labels_major_x.size[1], self.tick_labels_minor_x.size[1]) + self.ws_ticks_ax
@@ -1312,11 +1351,8 @@ class Layout(BaseLayout):
             if self.cbar.on:
                 self.ws_col += self.ws_label_tick
 
-        if self.name == 'heatmap' and \
-                self.heatmap.cell_size is not None and \
-                data.num_x is not None:
-            self.axes.size = [self.heatmap.cell_size * data.num_x,
-                              self.heatmap.cell_size * data.num_y]
+        if self.name == 'heatmap' and self.heatmap.cell_size is not None and data.num_x is not None:
+            self.axes.size = [self.heatmap.cell_size * data.num_x, self.heatmap.cell_size * data.num_y]
             self.label_col.size[0] = self.axes.size[0]
             self.label_row.size[1] = self.axes.size[1]
             self.label_wrap.size[1] = self.axes.size[0]
@@ -1509,6 +1545,7 @@ class Layout(BaseLayout):
                            [f.x1 for f in bboxes],
                            [f.y0 for f in bboxes],
                            [f.y1 for f in bboxes],
+                           [np.nan for f in bboxes],
                            )
             if tick == 'y' and ir == 0 and ic == 0 and not self.title.on and not self.label_col.on:
                 # Padding for top y-tick label that extends beyond top of axes
@@ -1643,9 +1680,9 @@ class Layout(BaseLayout):
             # Shrink/remove overlapping ticks x-y origin
             if len(xticks_size_all) > 0 and len(yticks_size_all) > 0:
                 idx = xticks.size_cols.index('width')
-                xw, xh, xx0, xx1, xy0, xy1 = xticks_size_all[0][idx:]
+                xw, xh, xx0, xx1, xy0, xy1 = xticks_size_all[0][idx:-1]
                 xc = (xx0 + (xx1 - xx0) / 2, xy0 + (xy0 - xy1) / 2)
-                yw, yh, yx0, yx1, yy0, yy1 = yticks_size_all[0][idx:]
+                yw, yh, yx0, yx1, yy0, yy1 = yticks_size_all[0][idx:-1]
                 yc = (yx0 + (yx1 - yx0) / 2, yy0 + (yy0 - yy1) / 2)
                 if utl.rectangle_overlap((xw, xh, xc), (yw, yh, yc)):
                     if self.tick_cleanup == 'remove':

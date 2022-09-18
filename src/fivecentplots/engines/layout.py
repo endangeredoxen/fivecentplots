@@ -100,6 +100,7 @@ class BaseLayout:
         self.box_group_title = None  # Element object for box plot group title text
         self.box_mean_diamonds = None  # Element object for mean diamond overlays on box plot
         self.box_range_lines = None  # Element object for box plot range line styling
+        self.box_scale = False  # auto-scale axes width for boxplot
         self.box_stat_line = None  # Element object for arbitrary stat line plot on box plot
         self.box_whisker = None  # Element object for bow wisker line styling
         self.cbar = None  # Element object for colorbar
@@ -319,6 +320,10 @@ class BaseLayout:
                             twin_x=kwargs.get('twin_x', False),
                             twin_y=kwargs.get('twin_y', False),
                             )
+        # auto-boxplot size option
+        if self.axes.size == 'auto':
+            self.box_scale = 'auto'
+            self.axes.size = [400, 400]
 
         # twinned axes
         twinned = kwargs.get('twin_x', False) or kwargs.get('twin_y', False)
@@ -2738,7 +2743,7 @@ class Element:
         # For some elements that are unique by axes, track sizes as DataFrame
         self._size_all = pd.DataFrame()
         self._size_all_bg = pd.DataFrame()
-        self.size_cols = ['ir', 'ic', 'ii', 'jj', 'width', 'height', 'x0', 'x1', 'y0', 'y1']
+        self.size_cols = ['ir', 'ic', 'ii', 'jj', 'width', 'height', 'x0', 'x1', 'y0', 'y1', 'rotation']
 
         # fill and edge colors
         if 'fill_alpha' not in kwargs:
@@ -2897,7 +2902,7 @@ class Element:
         """Add a row to the table tracking element size by subplot index.
 
         Args:
-            vals: 'ir', 'ic', 'ii', 'width', 'height', 'x0', 'x1', 'y0', 'y1'
+            vals: 'ir', 'ic', 'ii', 'width', 'height', 'x0', 'x1', 'y0', 'y1', 'rotation'
                    each value can be a single item or a list
         """
         data = {}
@@ -2907,13 +2912,13 @@ class Element:
         for icol, col in enumerate(self.size_cols):
             data[col] = utl.validate_list(vals[icol])
 
-        temp = pd.DataFrame(data)
+        # temp = pd.DataFrame(data)
 
         if len(self._size_all) == 0:
-            self._size_all = temp.copy()
+            self._size_all = pd.DataFrame(data)
 
         else:
-            self._size_all = pd.concat([self._size_all, temp]).reset_index(drop=True)
+            self._size_all = pd.concat([self._size_all, pd.DataFrame(data)], axis=0).reset_index(drop=True)
 
     @property
     def size_all_bg(self):

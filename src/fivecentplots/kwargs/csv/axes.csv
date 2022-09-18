@@ -1,5 +1,5 @@
 Keyword,Data Type,Description,Default,Example
-ax_size,list of int,"Axes size [width, height]; note this is not the size of the figure","[400, 400]",plot.html#Time-series
+ax_size,list of int | str,"Axes size [width, height]; note this is not the size of the entire figure but just the axes area; for boxplots can enter 'auto' to auto-scale the width","[400, 400]",plot.html#Time-series
 ax_edge_alpha,str,Transparency value for axes edge between 0-1,1,None
 ax_edge_color,str,Hex color string for the border edge of the axes region,#aaaaaa,styles.html#Typical-elements
 ax_edge_bottom,boolean,Enable/disable the bottom axes edge (or spine),True,styles.html#Axes-edges
