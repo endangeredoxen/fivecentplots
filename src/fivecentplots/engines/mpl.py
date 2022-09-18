@@ -1168,17 +1168,6 @@ class Layout(BaseLayout):
                         bbox = lab.obj[ir, ic][ii, jj].get_window_extent()
                     lab.size_all = (ir, ic, ii, jj, bbox.width, bbox.height, bbox.x0, bbox.x1, bbox.y0, bbox.y1)
 
-                    # text label bg size
-                    # if lab.obj[ir, ic][ii, jj].get_rotation() != 0:
-                    #     # if we rotate the label, use the label size
-                    #     # this will cause an issue if someone tries to color the
-                    #     # rectangle behind the text but rotating the rectange itself
-                    #     # doesn't work b/c the label may be longer than the
-                    #     # rectangle itself
-                    #     bbox = lab.obj[ir, ic][ii, jj].get_window_extent()
-                    # else:
-                    #     bbox = lab.obj_bg[ir, ic][ii, jj].get_window_extent()
-                    #bbox = lab.obj[ir, ic][ii, jj].get_window_extent()
                     bbox = lab.obj[ir, ic][ii, jj].get_window_extent()
                     lab.size_all_bg = (ir, ic, ii, jj, bbox.width, bbox.height, bbox.x0, bbox.x1, bbox.y0, bbox.y1)
 
@@ -1880,8 +1869,8 @@ class Layout(BaseLayout):
             kwargs['yerr'] = std
 
         # Plot
-        bb = bar(idx, df.values, align=self.bar.align,  linewidth=self.bar.edge_width,
-                 edgecolor=edgecolor, color=fillcolor, ecolor=self.bar.error_color, **kwargs)
+        bar(idx, df.values, align=self.bar.align,  linewidth=self.bar.edge_width,
+            edgecolor=edgecolor, color=fillcolor, ecolor=self.bar.error_color, **kwargs)
 
         # Set ticks
         try:

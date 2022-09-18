@@ -1556,7 +1556,7 @@ class BaseLayout:
                                 color=utl.kwget(kwargs, self.fcpp, 'ref_line_color', '#000000'),
                                 legend_text=RepeatedList(utl.kwget(kwargs, self.fcpp,
                                                                    'ref_line_legend_text', 'Ref Line'),
-                                                                   'ref_line_legend_text'),
+                                                         'ref_line_legend_text'),
                                 )
 
         return kwargs
@@ -1638,7 +1638,7 @@ class BaseLayout:
         # Wrap label
         self.label_wrap = DF_Element('label_wrap', self.fcpp, kwargs,
                                      on=utl.kwget(kwargs, self.fcpp, 'label_wrap_on', True)
-                                        if kwargs.get('wrap') else False,
+                                     if kwargs.get('wrap') else False,
                                      obj=self.obj_array,
                                      column=kwargs.get('wrap'),
                                      size=[self.axes.size[0], utl.kwget(kwargs, self.fcpp, 'label_wrap_size', 30)],
@@ -1652,16 +1652,15 @@ class BaseLayout:
                                                           label_rc.fill_color),
                                      fill_alpha=utl.kwget(kwargs, self.fcpp, 'label_wrap_fill_alpha',
                                                           label_rc.fill_alpha),
-                                     font=utl.kwget(kwargs, self.fcpp, 'label_wrap_font',
-                                                          label_rc.font),
+                                     font=utl.kwget(kwargs, self.fcpp, 'label_wrap_font', label_rc.font),
                                      font_color=utl.kwget(kwargs, self.fcpp, 'label_wrap_font_color',
                                                           label_rc.font_color),
                                      font_size=utl.kwget(kwargs, self.fcpp, 'label_wrap_font_size',
-                                                          label_rc.font_size),
+                                                         label_rc.font_size),
                                      font_style=utl.kwget(kwargs, self.fcpp, 'label_wrap_font_style',
                                                           label_rc.font_style),
                                      font_weight=utl.kwget(kwargs, self.fcpp, 'label_wrap_font_weight',
-                                                          label_rc.font_weight),
+                                                           label_rc.font_weight),
                                      text_size=None,
                                      )
 
