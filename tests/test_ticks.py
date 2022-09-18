@@ -143,8 +143,7 @@ def test_grid_major_secondary(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             grid_major_y2=True, grid_major_y2_style='--',
-             filename=name + '.png')
+             grid_major_y2=True, grid_major_y2_style='--', filename=name + '.png')
 
     # Compare with master
     if master:
@@ -169,6 +168,54 @@ def test_grid_minor(master=False, remove=True, show=False):
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              grid_minor=True,
+             filename=name + '.png')
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_grid_logit(master=False, remove=True, show=False):
+    """This scale doesn't seem to work.  Punting for now"""
+    name = osjoin(MASTER, 'grid_logit_master') if master else 'grid_logit'
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', show=SHOW, legend='Die', ax_scale='logit',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             filename=name + '.png')
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_grid_symlog(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'grid_symlog_master') if master else 'grid_symlog'
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', show=SHOW, legend='Die', ax_scale='symlog',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              filename=name + '.png')
 
     # Compare with master

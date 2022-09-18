@@ -369,6 +369,11 @@ def test_imshow(benchmark):
     benchmark(plt_imshow, True)
 
 
+def test_imshow_rotate(benchmark):
+    plt_imshow_rotate()
+    benchmark(plt_imshow_rotate, True)
+
+
 def test_imshow_no_cbar(benchmark):
     plt_imshow_no_cbar()
     benchmark(plt_imshow_no_cbar, True)

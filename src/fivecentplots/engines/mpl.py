@@ -2576,15 +2576,6 @@ class Layout(BaseLayout):
         axes = self._get_axes()
 
         for ax in axes:
-            # Turn off secondary gridlines
-            if not ax.primary and \
-                    not (hasattr(self, 'grid_major_x2')
-                         or hasattr(self, 'grid_major_y2')):
-                ax.obj[ir, ic].set_axisbelow(True)
-                ax.obj[ir, ic].grid(False, which='major')
-                ax.obj[ir, ic].grid(False, which='minor')
-                continue
-
             # Set major grid
             ax.obj[ir, ic].set_axisbelow(True)
             if self.grid_major_x.on:
@@ -3211,6 +3202,7 @@ class Layout(BaseLayout):
 
             # Reset colors
             if self.legend.column is None:
+                # NO IDEA HOW THIS CASE COULD BE, CONSIDER REMOVING
                 if self.axes.twin_x and 'label_y_font_color' not in kwargs.keys():
                     self.label_y.font_color = color_list[0]
                 if self.axes.twin_x and 'label_y2_font_color' not in kwargs.keys():
@@ -3340,7 +3332,8 @@ class Layout(BaseLayout):
             width = self.ncol + ((self.ncol - 1) * self.ws_col + hack) / self.axes.size[0]
             self.title_wrap.obj.set_position((width / 2, y_text))
             self.title_wrap.obj_bg.set_y(y_rect)
-            self.title_wrap.obj_bg.set_width(width)
+            cbar = (self._labtick_z - self.ws_label_tick + 3) / self.axes.size[0]  # hacky!
+            self.title_wrap.obj_bg.set_width(width + cbar * self.cbar.on)
 
         # Update title position
         if self.title.on:

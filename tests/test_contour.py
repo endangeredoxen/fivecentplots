@@ -120,6 +120,34 @@ def plt_basic_rc(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
+def plt_basic_wrap(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'basic_wrap_master') if master else 'basic_wrap'
+
+    # Make the plot
+    fcp.contour(df, x='X', y='Y', z='Value', wrap=['Batch', 'Experiment'], filled=False,
+                cbar=True, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250, 250], show=SHOW, contour_width=2,
+                label_rc_font_size=12, levels=40, show_points=True, filename=name + '.png', save=not bm, inline=False,
+                marker_edge_color='#000000', marker_fill_color='#000000')
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def plt_filled(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'filled_master') if master else 'filled'
@@ -255,6 +283,11 @@ def test_basic(benchmark):
 def test_basic_rc(benchmark):
     plt_basic_rc()
     benchmark(plt_basic_rc, True)
+
+
+def test_basic_wrap(benchmark):
+    plt_basic_wrap()
+    benchmark(plt_basic_wrap, True)
 
 
 def test_filled(benchmark):

@@ -798,6 +798,11 @@ def test_group_legend_lots(benchmark):
     benchmark(plt_group_legend_lots, True)
 
 
+def test_group_long(benchmark):
+    plt_group_long()
+    benchmark(plt_group_long, True)
+
+
 def test_grid_column(benchmark):
     plt_grid_column()
     benchmark(plt_grid_column, True)

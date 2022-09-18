@@ -163,7 +163,7 @@ def test_legend_secondary_axis(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'legend_secondary_axis_master') if master else 'legend_secondary_axis'
 
     # Make the plot
-    fcp.plot(df1, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, legend=True,
+    fcp.plot(df1, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, legend=True, cmap='inferno',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              save=True, inline=False, filename=name + '.png')
 
@@ -187,7 +187,7 @@ def test_legend_secondary_axis2(master=False, remove=True, show=False):
     name = osjoin(MASTER, 'legend_secondary_axis2_master') if master else 'legend_secondary_axis2'
 
     # Make the plot
-    fcp.plot(df1, y='Voltage', x=['Voltage', 'I [A]'], twin_y=True, legend=True,
+    fcp.plot(df1, y='Voltage', x=['Voltage', 'I [A]'], twin_y=True, legend=True, grid_major_x2=True, grid_minor_x2=True,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              save=True, inline=False, filename=name + '.png')
 
