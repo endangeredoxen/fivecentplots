@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.5.0
+                0.5.0-beta-3
               </div>
             
           
@@ -102,6 +102,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#required-args">Required args</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#required-kwargs">Required kwargs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#optional-kwargs">Optional kwargs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#keyword-hierarchy">Keyword Hierarchy</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#nomenclature">Nomenclature</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getting-help">Getting Help</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#base-attributes">Base attributes</a></li>
@@ -229,7 +230,7 @@
 <h1>Keyword Arguments<a class="headerlink" href="#keyword-arguments" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="required-args">
 <h2>Required args<a class="headerlink" href="#required-args" title="Permalink to this headline">¶</a></h2>
-<p>In general, all plot types in <strong>fivecentplots</strong> require input data in the form  of a <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+<p>In general, all plot types in <strong>fivecentplots</strong> require input data in the form of a <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 9%" />
@@ -322,6 +323,17 @@ simple <a class="reference external" href="themes.html">theme file</a>. If the k
 is used.</p>
 <p>Because the number of kwargs is vast, we will not outline all of them here.  However, we will give some general
 guidelines and refer the user to the <a class="reference external" href="api.html">full API</a> for specifics.</p>
+<div class="section" id="keyword-hierarchy">
+<h3>Keyword Hierarchy<a class="headerlink" href="#keyword-hierarchy" title="Permalink to this headline">¶</a></h3>
+<p>Kwargs have the following order of priority:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>kwargs present in the function call (these override everything else)</p></li>
+<li><p>kwargs defined in the current theme file</p></li>
+<li><p>default kwargs hard-coded in the code</p></li>
+</ol>
+</div></blockquote>
+</div>
 <div class="section" id="nomenclature">
 <h3>Nomenclature<a class="headerlink" href="#nomenclature" title="Permalink to this headline">¶</a></h3>
 <p>Keywords that access the attributes of an <code class="docutils literal notranslate"><span class="pre">Element</span></code> <em>typically</em> follow a specific formula:</p>
