@@ -6,7 +6,7 @@ Keyword Arguments
 Required args
 -------------
 
-In general, all plot types in **fivecentplots** require input data in the form  of a ``pandas.DataFrame``
+In general, all plot types in **fivecentplots** require input data in the form of a ``pandas.DataFrame``
 
 +---------+----------------------+------------------------------------------------------------------------+
 | Arg     | Data Type            | Description                                                            |
@@ -55,6 +55,16 @@ is used.
 
 Because the number of kwargs is vast, we will not outline all of them here.  However, we will give some general
 guidelines and refer the user to the `full API <api.html>`_ for specifics.
+
+Keyword Hierarchy
+^^^^^^^^^^^^^^^^^
+Kwargs have the following order of priority:
+
+    1) kwargs present in the function call (these override everything else)
+
+    2) kwargs defined in the current theme file
+
+    3) default kwargs hard-coded in the code
 
 Nomenclature
 ^^^^^^^^^^^^
