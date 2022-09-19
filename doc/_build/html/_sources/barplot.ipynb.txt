@@ -317,7 +317,7 @@
    "source": [
     "We can plot a basic vertical bar chart as follows.  Note:\n",
     "* `filter` is applied to show only measurement \"A\" at 25C\n",
-    "* tick labels are rotated 90° for readability"
+    "* tick labels are rotated 90° for readability (`fcp.bar` does **not** currently have auto-rotation for long tick labels)"
    ]
   },
   {
