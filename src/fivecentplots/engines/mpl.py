@@ -1187,7 +1187,8 @@ class Layout(BaseLayout):
                 # Resize the axes width
                 maxes = lab.size_all.groupby(['ir', 'ic', 'ii']).max()
                 size0 = (maxes['jj'] + 1) * maxes['width'] + divider
-                self.axes.size[0] = size0.max()
+                margin = 4 * maxes['jj'].max()
+                self.axes.size[0] = size0.max() + margin
 
                 # Recheck the rotation (inefficient to loop 2x, maybe find a better way)
                 lens_all = lens_all.set_index(['ir', 'ic', 'ii'])
@@ -1317,8 +1318,7 @@ class Layout(BaseLayout):
             self.box_title = self.box_group_title.size[0] + self.ws_ax_box_title
         elif self.box_group_title.on and self.box_group_title.size != [0, 0] and \
                 self.box_group_title.size[0] > self.legend.size[0]:
-            self.box_title = self.box_group_title.size[0] - self.legend.size[0]
-
+            self.box_title = self.box_group_title.size[0] - self.legend.size[0]  # + self.ws_ax_box_title
         # Adjust the column and row whitespace
         if self.box_group_label.on and self.label_wrap.on and 'ws_row' not in kwargs.keys():
             self.ws_row = self.box_labels + self.title_wrap.size[1]
@@ -3417,10 +3417,9 @@ class Layout(BaseLayout):
                     # find and set the label position
                     if labt.obj[ir, ic][ii, 0] is None:
                         continue
-                    wtitle = labt.size_all.loc[(labt.size_all.ir == ir) & (
-                        labt.size_all.ic == ic) & (labt.size_all.ii == ii), 'width']
-                    xtitle = 1 + (self.ws_ax_box_title
-                                  + wtitle / 2) / self.axes.size[0]
+                    wtitle = labt.size_all.loc[(labt.size_all.ir == ir)
+                             & (labt.size_all.ic == ic) & (labt.size_all.ii == ii), 'width']
+                    xtitle = 1 + (self.ws_ax_box_title + wtitle / 2) / self.axes.size[0]
                     ytitle = -hh[ii] / 2 - hh[0:ii].sum() - (ii + 2) * offset / self.axes.size[1]
                     labt.obj[ir, ic][ii, 0].set_position((xtitle, ytitle))
 
