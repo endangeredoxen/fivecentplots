@@ -3418,7 +3418,7 @@ class Layout(BaseLayout):
                     if labt.obj[ir, ic][ii, 0] is None:
                         continue
                     wtitle = labt.size_all.loc[(labt.size_all.ir == ir)
-                             & (labt.size_all.ic == ic) & (labt.size_all.ii == ii), 'width']
+                                               & (labt.size_all.ic == ic) & (labt.size_all.ii == ii), 'width']
                     xtitle = 1 + (self.ws_ax_box_title + wtitle / 2) / self.axes.size[0]
                     ytitle = -hh[ii] / 2 - hh[0:ii].sum() - (ii + 2) * offset / self.axes.size[1]
                     labt.obj[ir, ic][ii, 0].set_position((xtitle, ytitle))
