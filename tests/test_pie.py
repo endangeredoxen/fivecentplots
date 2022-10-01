@@ -178,6 +178,32 @@ def plt_legend(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
+def plt_legend_unsort(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'legend_unsort_master') if master else 'legend_unsort'
+
+    # Make the plot
+    fcp.pie(df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A" & T [C]==25', start_angle=90, alpha=0.85,
+            legend=True, filename=name + '.png', save=not bm, inline=False, jitter=False, sort=False)
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def plt_legend_rc(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'legend_rc_master') if master else 'legend_rc'

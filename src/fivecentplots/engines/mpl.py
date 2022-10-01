@@ -4,6 +4,7 @@ import scipy.stats
 import numpy as np
 import copy
 import math
+import natsort
 from .. utilities import RepeatedList
 from .. import utilities as utl
 from distutils.version import LooseVersion
@@ -791,8 +792,13 @@ class Layout(BaseLayout):
 
         return text, rect
 
-    def add_legend(self):
-        """Add a legend to a figure."""
+    def add_legend(self, leg_vals):
+        """Add a legend to a figure.
+
+        Args:
+            Data object, used for sorting
+
+        """
         # TODO: add separate_label support to have a unique legend per subplot
 
         def format_legend(self, leg: mpl.legend.Legend):
@@ -829,9 +835,21 @@ class Layout(BaseLayout):
 
         if self.legend.on and len(self.legend.values) > 0:
 
-            # Sort the legend keys
+            # Remove nan values
             if 'NaN' in self.legend.values['Key'].values:
                 self.legend.del_value('NaN')
+
+            # Ensure sort order matches order from data class (may be different depending on the order they are
+            # added to the plot, like in the case of multiple subplots where the first plot is missing the first
+            # sorted value in data.legend_vals)
+            if leg_vals is not None \
+                    and len(self.legend.values) == len(leg_vals) \
+                    and isinstance(self.legend.values, pd.DataFrame) \
+                    and isinstance(leg_vals, pd.DataFrame) \
+                    and not np.array_equal(self.legend.values['Key'].values, leg_vals['names'].values):
+                leg_vals = self.legend.values.set_index('Key').loc[leg_vals['names']].reset_index()
+            else:
+                leg_vals = self.legend.values
 
             # Set the font properties
             fontp = {}
@@ -840,8 +858,8 @@ class Layout(BaseLayout):
             fontp['style'] = self.legend.font_style
             fontp['weight'] = self.legend.font_weight
 
-            keys = list(self.legend.values['Key'])
-            lines = list(self.legend.values['Curve'])
+            keys = list(leg_vals['Key'])
+            lines = list(leg_vals['Curve'])
 
             if self.legend.location == 0:
                 self.legend.obj = \
