@@ -2,6 +2,7 @@ from . import data
 import pdb
 import pandas as pd
 from .. import utilities
+from natsort import natsorted
 utl = utilities
 db = pdb.set_trace
 
@@ -64,7 +65,10 @@ class Pie(data.Data):
 
         # custom for pie plot
         self.legend = self.x[0]
-        legend_vals = list(df.groupby(self.legend, sort=False).groups.keys())
+        if self.sort:
+            legend_vals = natsorted(list(df.groupby(self.legend).groups.keys()))
+        else:
+            legend_vals = list(df.groupby(self.legend, sort=False).groups.keys())
         self.nleg_vals = len(legend_vals)
 
         for leg in legend_vals:

@@ -967,8 +967,7 @@ class Data:
         Args:
             df: data subset
         """
-        if self.legend is True and self.twin_x \
-                or self.legend is True and len(self.y) > 1:
+        if self.legend is True and self.twin_x or self.legend is True and len(self.y) > 1:
             self.legend_vals = self.y + self.y2
             self.nleg_vals = len(self.y + self.y2)
             return

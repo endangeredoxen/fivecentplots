@@ -1597,7 +1597,7 @@ def plotter(dobj, **kwargs):
             kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | add_text' % (ifig, ir, ic))
 
         # Make the legend
-        layout.add_legend()
+        layout.add_legend(dd.legend_vals)
         kwargs['timer'].get('ifig=%s | add_legend' % (ifig))
 
         # Add a figure title
