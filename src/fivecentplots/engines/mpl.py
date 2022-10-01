@@ -4,7 +4,6 @@ import scipy.stats
 import numpy as np
 import copy
 import math
-import natsort
 from .. utilities import RepeatedList
 from .. import utilities as utl
 from distutils.version import LooseVersion
