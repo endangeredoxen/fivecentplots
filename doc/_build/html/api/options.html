@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.5.0-beta-3
+                0.5.1
               </div>
             
           
@@ -263,13 +263,14 @@ based on conditions with extention ‘.png’. <a class="reference external" hre
 in a different directory. Defaults to current directory.</p></li>
 <li><p><strong>inline</strong> (<em>boolean</em>) – Flag to display the rendered plot in the native plotting viewer or jupyter notebook
 (convenient to disable if doing automated batch plotting). Defaults to True.</p></li>
-<li><p><strong>print_filename</strong> (<em>boolean</em>) – Print the output filename. Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/grouping.html#figure-plots">More details</a></p></li>
-<li><p><strong>return_filename</strong> (<em>boolean</em>) – Return the output filename. Defaults to False.</p></li>
-<li><p><strong>save</strong> (<em>boolean</em>) – Save the plot to disc. Defaults to False.</p></li>
+<li><p><strong>print_filename</strong> (<em>boolean</em>) – Print the output filename, if the plot is saved. Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/grouping.html#figure-plots">More details</a></p></li>
+<li><p><strong>return_filename</strong> (<em>boolean</em>) – Return the output filename, if the plot is saved. Defaults to False.</p></li>
+<li><p><strong>save</strong> (<em>boolean</em>) – Save the plot to disk. Defaults to False.</p></li>
 <li><p><strong>save_data</strong> (<em>boolean</em>) – Save the DataFrame subset that is created and used by a given plot. Defaults to False.</p></li>
 <li><p><strong>save_ext</strong> (<em>str</em>) – Set the file extension of saved plots to determine the format. Defaults to depends on plotting
 engine {‘mpl’: ‘.png’, ‘bokeh’: ‘.html’}.</p></li>
-<li><p><strong>show</strong> (<em>str</em>) – Show the saved plot image using the default image viewer of the host PC. Defaults to False.</p></li>
+<li><p><strong>show</strong> (<em>str</em>) – Show the “saved” plot image file using the default image viewer of the host PC.  Setting to “True”
+forces the image to be saved to disk. Defaults to False.</p></li>
 <li><p><strong>theme</strong> (<em>str</em>) – Select a theme file for the current plot only. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#On-the-fly">More details</a></p></li>
 <li><p><strong>timer</strong> (<em>boolean</em>) – Debug feature to get a time log for each step in the plotting process. Defaults to False.</p></li>
 </ul>

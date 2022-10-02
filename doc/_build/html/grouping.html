@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                0.5.0-beta-3
+                0.5.1
               </div>
             
           
@@ -1104,13 +1104,14 @@ default square grid.</p>
 </div>
 <div class="section" id="figure-plots">
 <h2>figure plots<a class="headerlink" href="#figure-plots" title="Permalink to this headline">¶</a></h2>
-<p>To add another dimension of grouping, <strong>fivecentplots</strong> supports grouping by “figure”. This means a separate figure (i.e., a separate png) is created for each unique value in the DataFrame column(s) listed in kwarg <code class="docutils literal notranslate"><span class="pre">fig_groups</span></code>. Below, we will plot a unique figure for each value of the “Die” column. We also enable the debug kwarg <code class="docutils literal notranslate"><span class="pre">print_filename</span></code> to show that we actually are getting a new image file for each plot:</p>
+<p>To add another dimension of grouping, <strong>fivecentplots</strong> supports grouping by “figure”. This means a separate figure (i.e., a separate png) is created for each unique value in the DataFrame column(s) listed in kwarg <code class="docutils literal notranslate"><span class="pre">fig_groups</span></code>. Below, we will plot a unique figure for each value of the “Die” column. We also enable the <code class="docutils literal notranslate"><span class="pre">save</span></code> command and the debug kwarg <code class="docutils literal notranslate"><span class="pre">print_filename</span></code> to show that we actually are getting a separate image for each plot (note we also explicitly call the <code class="docutils literal notranslate"><span class="pre">inline</span></code> keyword
+as well just so we can render the plots in this tutorial notebook):</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">fig_groups</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> <span class="s1">&#39;Boost Level&#39;</span><span class="p">],</span>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">fig_groups</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> <span class="s1">&#39;Boost Level&#39;</span><span class="p">],</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
          <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450&#39;</span><span class="p">,</span> <span class="n">print_filename</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>

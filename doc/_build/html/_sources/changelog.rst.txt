@@ -1,6 +1,11 @@
 Changelog
 *********
 
+0.5.1
+=====
+* Bug to fix bokeh plots
+* Adjust save/show/inline behavior slightly.  ``return_filename`` and ``print_filename`` now only work when image is actually saved to disk
+
 0.5.0
 =====
 * Major speed improvements achieved for **matplotlib** engine.  Actual time reduction depends on the plot type and the number of subplots, data sets, etc. Based on the plots included as unit tests:
