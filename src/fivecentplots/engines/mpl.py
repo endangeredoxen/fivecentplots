@@ -791,12 +791,11 @@ class Layout(BaseLayout):
 
         return text, rect
 
-    def add_legend(self, leg_vals):
+    def add_legend(self, leg_vals: pd.DataFrame):
         """Add a legend to a figure.
 
         Args:
-            Data object, used for sorting
-
+            data.legend_vals, used to ensure proper sorting
         """
         # TODO: add separate_label support to have a unique legend per subplot
 

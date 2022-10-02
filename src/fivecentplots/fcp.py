@@ -1620,26 +1620,27 @@ def plotter(dobj, **kwargs):
             else:
                 idx = 0
             layout.save(filename, idx)
-
-            if kwargs.get('show', False):
-                utl.show_file(filename)
-        kwargs['timer'].get('ifig=%s | save' % (ifig))
-
-        # Return inline
-        if kwargs.get('return_filename'):
-            layout.close()
-            if 'filepath' in kwargs.keys():
-                return osjoin(kwargs['filepath'], filename)
-            else:
-                return osjoin(os.getcwd(), filename)
-        elif not kwargs.get('inline', True):
-            layout.close()
-        else:
+            if kwargs.get('return_filename'):
+                layout.close()
+                if 'filepath' in kwargs.keys():
+                    return osjoin(kwargs['filepath'], filename)
+                else:
+                    return osjoin(os.getcwd(), filename)
             if kwargs.get('print_filename', False):
                 print(filename)
-            out = layout.show(filename)
-            if out is not None:
-                return out
+            if kwargs.get('show', False):
+                utl.show_file(filename)
+
+            # Disable inline unless explicitly called in kwargs
+            if not kwargs.get('inline'):
+                kwargs['inline'] = False
+        kwargs['timer'].get('ifig=%s | save' % (ifig))
+
+        # Return inline plot
+        if not kwargs.get('inline', True):
+            layout.close()
+        else:
+            layout.show()
         kwargs['timer'].get('ifig=%s | return inline' % (ifig))
 
     # Save data used in the figures
@@ -2293,14 +2294,15 @@ def options():
           in a different directory. Defaults to current directory.
         inline (boolean): Flag to display the rendered plot in the native plotting viewer or jupyter notebook
           (convenient to disable if doing automated batch plotting). Defaults to True.
-        print_filename (boolean): Print the output filename. Defaults to False. Example:
+        print_filename (boolean): Print the output filename, if the plot is saved. Defaults to False. Example:
           https://endangeredoxen.github.io/fivecentplots/0.5.0/grouping.html#figure-plots
-        return_filename (boolean): Return the output filename. Defaults to False.
-        save (boolean): Save the plot to disc. Defaults to False.
+        return_filename (boolean): Return the output filename, if the plot is saved. Defaults to False.
+        save (boolean): Save the plot to disk. Defaults to False.
         save_data (boolean): Save the DataFrame subset that is created and used by a given plot. Defaults to False.
         save_ext (str): Set the file extension of saved plots to determine the format. Defaults to depends on plotting
           engine {'mpl': '.png', 'bokeh': '.html'}.
-        show (str): Show the saved plot image using the default image viewer of the host PC. Defaults to False.
+        show (str): Show the "saved" plot image file using the default image viewer of the host PC.  Setting to "True"
+          forces the image to be saved to disk. Defaults to False.
         theme (str): Select a theme file for the current plot only. Defaults to None. Example:
           https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#On-the-fly
         timer (boolean): Debug feature to get a time log for each step in the plotting process. Defaults to False.

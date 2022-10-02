@@ -25,16 +25,14 @@ def test_paste_kwargs():
 def test_bad_engine():
     with pytest.raises(fcp.EngineError):
         fcp.plot(pd.DataFrame(), engine='v8', inline=False, save=False, show=False)
-    with pytest.raises(fcp.EngineError):
-        # this will need to change if we start testing with bokeh
-        fcp.plot(pd.DataFrame(), engine='bokeh', inline=False, save=False, show=False)
 
 
 def test_filepaths():
-    filepath = fcp.plot(df, x='x', y='y', return_filename=True, inline=False, save=False, show=False)
+    filepath = fcp.plot(df, x='x', y='y', return_filename=True, inline=False, save=True, show=False)
     vals = filepath.split(os.sep)
     assert vals[-2] == Path.cwd().name
     assert vals[-1] == 'y vs x.png'
+    os.remove('y vs x.png')
 
 
 def test_save_data():

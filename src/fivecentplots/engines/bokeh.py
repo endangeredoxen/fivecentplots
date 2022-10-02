@@ -8,6 +8,7 @@ import warnings
 import bokeh.plotting as bp
 import bokeh.layouts as bl
 import bokeh.models as bm
+import bokeh.io.state as bs
 
 
 def custom_formatwarning(msg, *args, **kwargs):
@@ -137,7 +138,7 @@ class Layout(BaseLayout):
         """
         pass
 
-    def add_legend(self):
+    def add_legend(self, leg_vals):
         """Add a legend to a figure."""
         if not self.legend.on or len(self.legend.values) == 0:
             return
@@ -728,17 +729,17 @@ class Layout(BaseLayout):
             filename (optional): name of the file to show. Defaults to None.
 
         """
-        try:
-            app = str(get_ipython())  # noqa
-        except:  # noqa
-            app = ''
+        # not saved, open in browser or notebook
+        if filename is None:
+            # jupyter notebook special
+            try:
+                app = str(get_ipython())  # noqa
+            except:  # noqa
+                app = ''
+            if 'zmqshell.ZMQInteractiveShell' in app and not bs.curstate().notebook:
+                bp.output_notebook()
 
-        # jupyter notebook special
-        if 'zmqshell.ZMQInteractiveShell' in app:
-            # bp.output_notebook()
-            # bp.show(bl.gridplot(self.axes.obj.flatten(), ncols=self.ncol))
-            from IPython.core.display import HTML
-            return HTML(filename)
+            bp.show(bl.gridplot(self.axes.obj.flatten(), ncols=self.ncol))
 
         # other
         else:

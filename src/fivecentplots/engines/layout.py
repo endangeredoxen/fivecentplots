@@ -2314,8 +2314,12 @@ class BaseLayout:
         """
 
     @abc.abstractmethod
-    def add_legend(self):
-        """Add a legend to a figure."""
+    def add_legend(self, leg_vals: pd.DataFrame):
+        """Add a legend to a figure.
+
+        Args:
+            data.legend_vals, used to ensure proper sorting
+        """
 
     @abc.abstractmethod
     def close(self):
