@@ -194,13 +194,14 @@ class Layout(BaseLayout):
         self.axes.obj = np.array([[None] * self.ncol] * self.nrow)
         for ir in range(0, self.nrow):
             for ic in range(0, self.ncol):
-                x_scale, y_scale = self._set_axes_scale2(ir, ic)
-                self.axes.obj[ir, ic] = bp.figure(x_axis_type=x_scale,
-                                                  y_axis_type=y_scale,
+                x_type, y_type = self._set_axes_type(ir, ic, data)
+                x_range, y_range = self._set_axes_custom_range(ir, ic, data)
+                self.axes.obj[ir, ic] = bp.figure(x_axis_type=x_type,
+                                                  y_axis_type=y_type,
                                                   frame_width=self.axes.size[0],  # sizing is so easy! thank you bokeh
                                                   frame_height=self.axes.size[1],
-                                                  #tools="pan,wheel_zoom,box_zoom,reset", # need an element
-                                                  #toolbar_location="below", toolbar_sticky=False,  # these don't work??
+                                                  # tools="pan,wheel_zoom,box_zoom,reset", # need an element
+                                                  # toolbar_location="below", toolbar_sticky=False,  # doesn't work??
                                                   )
 
         self.axes.visible = np.array([[True] * self.ncol] * self.nrow)
@@ -414,7 +415,6 @@ class Layout(BaseLayout):
             line_type = getattr(self, line_type)
 
         # TWINNING
-        # Insert here
 
         # Make the points
         points = None
@@ -449,12 +449,6 @@ class Layout(BaseLayout):
                                                )
 
         # Add a reference to the line to self.lines
-        # if leg_name is not None:
-        #     leg_vals = []
-        #     if self.markers.on and not marker_disable:
-        #         leg_vals += [points]
-        #     if line_type.on:
-        #         leg_vals += [lines]
         if leg_name is not None and leg_name not in list(self.legend.values['Key']):
             self.legend.add_value(leg_name, points if points is not None else lines, line_type_name)
 
@@ -491,15 +485,13 @@ class Layout(BaseLayout):
             ic: subplot column index
 
         """
-        axes = self._get_axes()
-
         # Set the axes fill colors
         fill, alpha = fill_alpha(self.axes.fill_color[utl.plot_num(ir, ic, self.ncol)])
         self.axes.obj[ir, ic].background_fill_color = fill
         self.axes.obj[ir, ic].background_fill_alpha = alpha
 
         # Set the axes edge colors (not sure how to handle the top and right spines)
-        self.axes.obj[ir, ic].outline_line_color=self.axes.edge_color[0]
+        self.axes.obj[ir, ic].outline_line_color = self.axes.edge_color[0]
         if self.axes.spine_bottom:
             self.axes.obj[ir, ic].xaxis.axis_line_color = self.axes.edge_color[0]
         if self.axes.spine_left:
@@ -535,7 +527,7 @@ class Layout(BaseLayout):
             ic: subplot column index
 
         """
-        axis = ['x', 'y']  # x2', 'y', 'y2', 'z']
+        axis = ['x', 'y']  # , 'x2', 'y', 'y2', 'z']
         for ax in axis:
             label = getattr(self, 'label_%s' % ax)
             if not label.on:
@@ -579,6 +571,7 @@ class Layout(BaseLayout):
             ranges: min/max axes limits for each axis
 
         """
+        return
         if self.name in ['heatmap', 'pie']:  # skip these plot types
             return
 
@@ -627,32 +620,67 @@ class Layout(BaseLayout):
             title.background_fill_alpha = self.label_col.fill_alpha
             title.background_fill_color = self.label_col.fill_color[0][0:7]
 
-    def set_axes_scale(self, ir, ic):
-        pass
-
-    def _set_axes_scale2(self, ir, ic):
+    def set_axes_scale(self, ir: int, ic: int):
         """
-        This appears to need to happen at instantiation of the figure
+        This needs to happen at instantiation of the figure element, see _set_axes_type
         """
 
+    def _set_axes_custom_range(self, ir: int, ic: int, data):
+        """
+        Customize the range of the plot.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            data: Data object
+
+        Returns:
+            x-axis range
+            y-axis range
+        """
+        # how do we know the subset ranges???
+        x_range, y_range = None, None
+
+        return x_range, y_range
+
+    def _set_axes_type(self, ir: int, ic: int, data):
+        """
+        Determine the axes type ('linear', 'log', 'datetime').
+
+        This needs to happen at instantiation of the figure
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            data: Data object
+
+        Returns:
+            x-axis type
+            y-axis type
+        """
         if str(self.axes.scale).lower() in LOGX:
-            x_scale = 'log'
+            x_type = 'log'
+        elif data.df_all[data.x[0]].dtype == 'datetime64[ns]':
+            x_type = 'datetime'
         # elif str(ax.scale).lower() in SYMLOGX:
         #     ax.obj[ir, ic].set_xscale('symlog')
         # elif str(ax.scale).lower() in LOGITX:
         #     ax.obj[ir, ic].set_xscale('logit')
         else:
-            x_scale = 'linear'
+            x_type = 'linear'
+
         if str(self.axes.scale).lower() in LOGY:
-            y_scale = 'log'
+            y_type = 'log'
+        elif data.df_all[data.y[0]].dtype == 'datetime64[ns]':
+            y_type = 'datetime'
         # elif str(ax.scale).lower() in SYMLOGY:
         #     ax.obj[ir, ic].set_yscale('symlog')
         # elif str(ax.scale).lower() in LOGITY:
         #     ax.obj[ir, ic].set_yscale('logit')
         else:
-            y_scale = 'linear'
+            y_type = 'linear'
 
-        return x_scale, y_scale
+        return x_type, y_type
 
     def set_axes_ticks(self, ir: int, ic: int):
         """Configure the axes tick marks.
@@ -667,7 +695,8 @@ class Layout(BaseLayout):
                 ax = getattr(self.axes.obj[ir, ic], f'{xy}axis')
                 if mm == 'major':
                     # tick label font
-                    setattr(ax, f'{mm}_label_text_font_size', f'%spt' % getattr(self, f'tick_labels_{mm}_{xy}').font_size)
+                    setattr(ax, f'{mm}_label_text_font_size',
+                            '%spt' % getattr(self, f'tick_labels_{mm}_{xy}').font_size)
                 # tick line color
                 setattr(ax, f'{mm}_tick_line_color', getattr(self, f'ticks_{mm}_{xy}').color[0])
                 # tick line width
