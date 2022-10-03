@@ -175,63 +175,6 @@ class Layout(BaseLayout):
         """
         pass
 
-    def _get_element_sizes(self, data: 'data.Data'):
-        """Calculate the actual rendered size of select elements by pre-plotting
-        them.  This is needed to correctly adjust the figure dimensions.
-
-        Args:
-            data: fcp Data object
-
-        Returns:
-            updated version of `data`
-        """
-        # Add label size
-        self.label_x.size = \
-            utl.get_text_dimensions(self.label_x.text, **self.make_kw_dict(self.label_x))
-        self.label_y.size += \
-            utl.get_text_dimensions(self.label_y.text, **self.make_kw_dict(self.label_y))
-
-        # Ticks (rough)
-        xlab = '%s.0' % int(data.ranges[0, 0]['xmax'])
-        ylab = '%s.0' % int(data.ranges[0, 0]['ymax'])
-        self.tick_labels_major_x.size = \
-            utl.get_text_dimensions(xlab, **self.make_kw_dict(self.tick_labels_major_x))
-        self.tick_labels_major_y.size += \
-            utl.get_text_dimensions(ylab, **self.make_kw_dict(self.tick_labels_major_y))
-
-        # title
-        if self.title.text is not None:
-            self.title.size = \
-                utl.get_text_dimensions(self.title.text, **self.make_kw_dict(self.title))
-
-        # rc labels
-        for ir in range(0, self.nrow):
-            for ic in range(0, self.ncol):
-                if self.label_row.text is not None:
-                    text = '%s=%s' % (self.label_row.text, self.label_row.values[ir])
-                    self.label_row.size[1] = \
-                        max(self.label_row.size[1],
-                            utl.get_text_dimensions(text, **self.make_kw_dict(self.label_row))[1])
-                if self.label_col.text is not None:
-                    text = '%s=%s' % (self.label_col.text, self.label_col.values[ir])
-                    self.label_col.size[1] = \
-                        max(self.label_col.size[1],
-                            utl.get_text_dimensions(text, **self.make_kw_dict(self.label_col))[1])
-
-        # Legend
-        if data.legend_vals is None:
-            return data
-
-        # Get approx legend size
-        name_size = 0
-        for name in data.legend_vals['names']:
-            name_size = max(name_size, utl.get_text_dimensions(str(name), **self.make_kw_dict(self.legend))[0])
-
-        if self.legend.on:
-            self.legend.size = [10 + 20 + 5 + name_size + 10, 0]
-
-        return data
-
     def _get_figure_size(self, data: 'data.Data', **kwargs):
         """Determine the size of the mpl figure canvas in pixels and inches.
 
@@ -248,36 +191,14 @@ class Layout(BaseLayout):
             data: fcp Data object
             **kwargs: input args from user
         """
-        self._update_from_data(data)
-        self._update_wrap(data, kwargs)
-        self._set_label_text(data)
-        data = self._get_element_sizes(data)
-
         self.axes.obj = np.array([[None] * self.ncol] * self.nrow)
         for ir in range(0, self.nrow):
             for ic in range(0, self.ncol):
                 x_scale, y_scale = self._set_axes_scale2(ir, ic)
-                x_size, y_size = self.axes.size
-                # legend
-                if ir == 0 and ic == self.ncol - 1:
-                    x_size += self.legend.size[0]
-                # rc labels
-                y_size += self.label_col.size[1]
-                # axes labels
-                if ir == 0 and ic == 0:
-                    x_size += self.label_x.size[1] + 15
-                if ir == self.nrow - 1:
-                    y_size += self.label_y.size[1] + 15
-                # ticks (separate out to label and ticks later)
-                x_size += self.tick_labels_major_x.size[0] + 15
-                y_size += self.tick_labels_major_y.size[0] + 15
-                # title
-                y_size += self.title.size[0]
-
-                self.axes.obj[ir, ic] = bp.figure(plot_width=int(x_size),  # sizing is wrong!
-                                                  plot_height=int(y_size),
-                                                  x_axis_type=x_scale,
+                self.axes.obj[ir, ic] = bp.figure(x_axis_type=x_scale,
                                                   y_axis_type=y_scale,
+                                                  frame_width=self.axes.size[0],  # sizing is so easy! thank you bokeh
+                                                  frame_height=self.axes.size[1],
                                                   #tools="pan,wheel_zoom,box_zoom,reset", # need an element
                                                   #toolbar_location="below", toolbar_sticky=False,  # these don't work??
                                                   )
