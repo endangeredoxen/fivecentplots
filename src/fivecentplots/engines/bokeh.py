@@ -143,14 +143,19 @@ class Layout(BaseLayout):
         if not self.legend.on or len(self.legend.values) == 0:
             return
 
-        x = 0
-        y = self.ncol - 1
-        tt = list(self.legend.values.items())
-        tt = [f for f in tt if f[0] != 'NaN']
-        title = self.axes.obj[x, y].circle(0, 0, size=0.00000001, color=None)
-        tt = [(self.legend.text, [title])] + tt
+        title = self.axes.obj[0, -1].circle(0, 0, size=0.00000001, color=None)
+        tt = [(self.legend.text, [title])]
+        for irow, row in self.legend.values.iterrows():
+            tt += [(row['Key'], [row['Curve']])]
         legend = bm.Legend(items=tt, location='top_right')
-        self.axes.obj[x, y].add_layout(legend, 'right')
+
+        # Style the legend
+        legend.border_line_width = self.legend.edge_width
+        legend.border_line_color = self.legend.edge_color[0]
+        legend.border_line_alpha = self.legend.edge_alpha
+
+        # Add the legend
+        self.axes.obj[0, -1].add_layout(legend, 'right')
 
     def add_text(self, ir: int, ic: int, text: [str, None] = None,
                  element: [str, None] = None, offsetx: int = 0,
@@ -269,10 +274,13 @@ class Layout(BaseLayout):
                 # title
                 y_size += self.title.size[0]
 
-                self.axes.obj[ir, ic] = bp.figure(plot_width=int(x_size),
+                self.axes.obj[ir, ic] = bp.figure(plot_width=int(x_size),  # sizing is wrong!
                                                   plot_height=int(y_size),
                                                   x_axis_type=x_scale,
-                                                  y_axis_type=y_scale)
+                                                  y_axis_type=y_scale,
+                                                  #tools="pan,wheel_zoom,box_zoom,reset", # need an element
+                                                  #toolbar_location="below", toolbar_sticky=False,  # these don't work??
+                                                  )
 
         self.axes.visible = np.array([[True] * self.ncol] * self.nrow)
 
@@ -479,7 +487,9 @@ class Layout(BaseLayout):
 
         if not line_type:
             line_type = self.lines
+            line_type_name = 'lines'
         else:
+            line_type_name = line_type
             line_type = getattr(self, line_type)
 
         # TWINNING
@@ -518,12 +528,14 @@ class Layout(BaseLayout):
                                                )
 
         # Add a reference to the line to self.lines
-        if leg_name is not None:
-            leg_vals = []
-            if self.markers.on and not marker_disable:
-                leg_vals += [points]
-            if line_type.on:
-                leg_vals += [lines]
+        # if leg_name is not None:
+        #     leg_vals = []
+        #     if self.markers.on and not marker_disable:
+        #         leg_vals += [points]
+        #     if line_type.on:
+        #         leg_vals += [lines]
+        if leg_name is not None and leg_name not in list(self.legend.values['Key']):
+            self.legend.add_value(leg_name, points if points is not None else lines, line_type_name)
 
     def restore(self):
         """Undo changes to default plotting library parameters."""
@@ -560,9 +572,17 @@ class Layout(BaseLayout):
         """
         axes = self._get_axes()
 
-        fill, alpha = fill_alpha(axes[0].fill_color[utl.plot_num(ir, ic, self.ncol)])
+        # Set the axes fill colors
+        fill, alpha = fill_alpha(self.axes.fill_color[utl.plot_num(ir, ic, self.ncol)])
         self.axes.obj[ir, ic].background_fill_color = fill
         self.axes.obj[ir, ic].background_fill_alpha = alpha
+
+        # Set the axes edge colors (not sure how to handle the top and right spines)
+        self.axes.obj[ir, ic].outline_line_color=self.axes.edge_color[0]
+        if self.axes.spine_bottom:
+            self.axes.obj[ir, ic].xaxis.axis_line_color = self.axes.edge_color[0]
+        if self.axes.spine_left:
+            self.axes.obj[ir, ic].yaxis.axis_line_color = self.axes.edge_color[0]
 
     def set_axes_grid_lines(self, ir: int, ic: int):
         """Style the grid lines and toggle visibility.
@@ -627,7 +647,7 @@ class Layout(BaseLayout):
             laxis.axis_label_text_font = lkwargs['font']
             laxis.axis_label_text_font_size = '%spt' % lkwargs['font_size']
             laxis.axis_label_text_color = lkwargs['font_color']
-            laxis.axis_label_text_font_style = lkwargs['font_style']
+            laxis.axis_label_text_font_style = lkwargs['font_style']  # no way to do bold and italic?
 
     def set_axes_ranges(self, ir: int, ic: int, ranges: dict):
         """Set the axes ranges.
@@ -638,7 +658,25 @@ class Layout(BaseLayout):
             ranges: min/max axes limits for each axis
 
         """
-        pass
+        if self.name in ['heatmap', 'pie']:  # skip these plot types
+            return
+
+        if ranges[ir, ic]['xmin'] is not None:
+            self.axes.obj[ir, ic].x_range.start = ranges[ir, ic]['xmin']
+        # if ranges[ir, ic]['x2min'] is not None:
+        #     self.axes2.obj[ir, ic].set_xlim(left=ranges[ir, ic]['x2min'])
+        if ranges[ir, ic]['xmax'] is not None:
+            self.axes.obj[ir, ic].x_range.end = ranges[ir, ic]['xmax']
+        # if ranges[ir, ic]['x2max'] is not None:
+        #     self.axes2.obj[ir, ic].set_xlim(right=ranges[ir, ic]['x2max'])
+        if ranges[ir, ic]['ymin'] is not None:
+            self.axes.obj[ir, ic].y_range.start = ranges[ir, ic]['ymin']
+        # if ranges[ir, ic]['y2min'] is not None:
+        #     self.axes2.obj[ir, ic].set_ylim(bottom=ranges[ir, ic]['y2min'])
+        if ranges[ir, ic]['ymax'] is not None:
+            self.axes.obj[ir, ic].y_range.end = ranges[ir, ic]['ymax']
+        # if ranges[ir, ic]['y2max'] is not None:
+        #     self.axes2.obj[ir, ic].set_ylim(top=ranges[ir, ic]['y2max'])
 
     def set_axes_rc_labels(self, ir: int, ic: int):
         """Add the row/column label boxes and wrap titles.
@@ -703,10 +741,24 @@ class Layout(BaseLayout):
             ic: subplot column index
 
         """
-        self.axes.obj[ir, ic].xaxis.major_label_text_font_size = \
-            '%spt' % self.tick_labels_major.font_size
-        self.axes.obj[ir, ic].yaxis.major_label_text_font_size = \
-            '%spt' % self.tick_labels_major.font_size
+        for mm in ['major', 'minor']:
+            for xy in ['x', 'y']:
+                ax = getattr(self.axes.obj[ir, ic], f'{xy}axis')
+                if mm == 'major':
+                    # tick label font
+                    setattr(ax, f'{mm}_label_text_font_size', f'%spt' % getattr(self, f'tick_labels_{mm}_{xy}').font_size)
+                # tick line color
+                setattr(ax, f'{mm}_tick_line_color', getattr(self, f'ticks_{mm}_{xy}').color[0])
+                # tick line width
+                setattr(ax, f'{mm}_tick_line_width', int(getattr(self, f'ticks_{mm}_{xy}').size[1]))
+                # tick line style
+                # tick direction
+                if getattr(self, f'ticks_{mm}').direction == 'in':
+                    setattr(ax, f'{mm}_tick_in', int(getattr(self, f'ticks_{mm}_{xy}').size[0]))
+                    setattr(ax, f'{mm}_tick_out', 0)
+                else:
+                    setattr(ax, f'{mm}_tick_out', int(getattr(self, f'ticks_{mm}_{xy}').size[0]))
+                    setattr(ax, f'{mm}_tick_in', 0)
 
     def set_figure_final_layout(self, data, **kwargs):
         pass

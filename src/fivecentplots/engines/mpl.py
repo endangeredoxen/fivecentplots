@@ -2554,8 +2554,7 @@ class Layout(BaseLayout):
 
         # Add a reference to the line to self.lines
         if leg_name is not None:
-            if leg_name is not None \
-                    and leg_name not in list(self.legend.values['Key']):
+            if leg_name is not None and leg_name not in list(self.legend.values['Key']):
                 self.legend.add_value(leg_name, points if points is not None else lines, line_type_name)
 
     def restore(self):
@@ -2601,11 +2600,9 @@ class Layout(BaseLayout):
             if getattr(self.axes, 'spine_%s' % f):
                 axes[-1].obj[ir, ic].spines[f].set_color(axes[0].edge_color[utl.plot_num(ir, ic, self.ncol)])
             else:
-                axes[-1].obj[ir,
-                             ic].spines[f].set_color(self.fig.fill_color[0])
+                axes[-1].obj[ir, ic].spines[f].set_color(self.fig.fill_color[0])
             if self.axes.edge_width != 1:
-                axes[-1].obj[ir,
-                             ic].spines[f].set_linewidth(self.axes.edge_width)
+                axes[-1].obj[ir, ic].spines[f].set_linewidth(self.axes.edge_width)
 
     def set_axes_grid_lines(self, ir: int, ic: int):
         """Style the grid lines and toggle visibility.
