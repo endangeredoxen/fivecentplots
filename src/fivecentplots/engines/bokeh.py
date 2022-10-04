@@ -2,7 +2,7 @@ import pandas as pd
 import pdb
 import numpy as np
 from .. import utilities as utl
-from . layout import LOGX, LOGY, BaseLayout
+from . layout import LOGX, LOGY, BaseLayout, RepeatedList
 from .. import data
 import warnings
 import bokeh.plotting as bp
@@ -35,6 +35,13 @@ DASHES = {'-': 'solid',
           'dashdot': 'dashdot'}
 
 
+DEFAULT_MARKERS = ['circle', 'cross', 'square', 'x', 'diamond', 'asterisk', '^', 'inverted_triangle', 'y',
+                   'star', 'plus', 'dash', 'dot', 'square_pin', 'triangle_pin', 'circle_cross', 'square_cross',
+                   'diamond_cross', 'circle_x', 'square_x', 'circle_y', 'circle_dot', 'square_dot', 'diamond_dot',
+                   'triangle_dot', 'hex_dot', 'star_dot',
+                   ]
+
+
 def fill_alpha(hexstr):
     """Break an 8-digit hex string into a hex color and a fractional alpha value."""
     if len(hexstr) == 6:
@@ -44,20 +51,8 @@ def fill_alpha(hexstr):
 
 
 def format_marker(fig, marker):
-    """Format the marker string to mathtext."""
-    markers = {'o': fig.circle,
-               'circle': fig.circle,
-               '+': fig.cross,
-               'cross': fig.cross,
-               's': fig.square,
-               'square': fig.square,
-               'x': fig.x,
-               'd': fig.diamond,
-               'diamond': fig.diamond,
-               't': fig.triangle,
-               'triangle': fig.triangle}
-
-    return markers[marker]
+    """Get the marker function."""
+    return getattr(fig, marker)
 
 
 class Layout(BaseLayout):
@@ -80,6 +75,10 @@ class Layout(BaseLayout):
         if not kwargs.get('save_ext'):
             kwargs['save_ext'] = '.html'
         self.kwargs = kwargs
+        self.update_markers()
+
+        # Check for unsupported kwargs
+        # unsupported = []
 
     def add_box_labels(self, ir: int, ic: int, data):
         """Add box group labels and titles (JMP style).
@@ -146,6 +145,8 @@ class Layout(BaseLayout):
         title = self.axes.obj[0, -1].circle(0, 0, size=0.00000001, color=None)
         tt = [(self.legend.text, [title])]
         for irow, row in self.legend.values.iterrows():
+            if row['Key'] == 'NaN':
+                continue
             tt += [(row['Key'], [row['Curve']])]
         legend = bm.Legend(items=tt, location='top_right')
 
@@ -175,15 +176,6 @@ class Layout(BaseLayout):
         """
         pass
 
-    def _get_figure_size(self, data: 'data.Data', **kwargs):
-        """Determine the size of the mpl figure canvas in pixels and inches.
-
-        Args:
-            data: Data object
-            kwargs: user-defined keyword args
-        """
-        self.axes.size[0] += self.legend.size[0]
-
     def make_figure(self, data: 'data.Data', **kwargs):
         """Make the figure and axes objects.
 
@@ -203,6 +195,13 @@ class Layout(BaseLayout):
                                                   # tools="pan,wheel_zoom,box_zoom,reset", # need an element
                                                   # toolbar_location="below", toolbar_sticky=False,  # doesn't work??
                                                   )
+                # Twinning
+                if self.axes.twin_x:
+                    self.axes.obj[ir, ic].extra_y_ranges = {'y2': bm.Range1d(start=0, end=1)}
+                    self.axes.obj[ir, ic].add_layout(bm.LinearAxis(y_range_name='y2'), 'right')
+                elif self.axes.twin_y:
+                    self.axes.obj[ir, ic].extra_x_ranges = {'x2': bm.Range1d(start=0, end=1)}
+                    self.axes.obj[ir, ic].add_layout(bm.LinearAxis(x_range_name='x2'), 'above')
 
         self.axes.visible = np.array([[True] * self.ncol] * self.nrow)
 
@@ -415,6 +414,14 @@ class Layout(BaseLayout):
             line_type = getattr(self, line_type)
 
         # TWINNING
+        if self.axes.twin_x and twin:
+            y_range_name = 'y2'
+        else:
+            y_range_name = 'default'
+        if self.axes.twin_y and twin:
+            x_range_name = 'x2'
+        else:
+            x_range_name = 'default'
 
         # Make the points
         points = None
@@ -432,12 +439,17 @@ class Layout(BaseLayout):
                                 line_color=ecolor,
                                 line_alpha=ealpha,
                                 size=self.markers.size[iline],
+                                x_range_name=x_range_name,
+                                y_range_name=y_range_name,
                                 )
             else:
                 points = marker(df[x], df[y],
                                 color=line_type.color[iline],
                                 linestyle=line_type.style[iline],
-                                linewidth=line_type.width[iline])
+                                linewidth=line_type.width[iline],
+                                x_range_name=x_range_name,
+                                y_range_name=y_range_name,
+                                )
 
         # Make the line
         lines = None
@@ -446,6 +458,8 @@ class Layout(BaseLayout):
                                                color=line_type.color[iline][0:7],
                                                line_dash=DASHES[line_type.style[iline]],
                                                line_width=line_type.width[iline],
+                                               x_range_name=x_range_name,
+                                               y_range_name=y_range_name,
                                                )
 
         # Add a reference to the line to self.lines
@@ -519,6 +533,8 @@ class Layout(BaseLayout):
             grid.minor_grid_line_width = self.grid_minor.width[0]
             grid.minor_grid_line_dash = DASHES[self.grid_minor.style[0]]
 
+        # Twinning -- may not be possible
+
     def set_axes_labels(self, ir: int, ic: int):
         """Set the axes labels.
 
@@ -527,8 +543,15 @@ class Layout(BaseLayout):
             ic: subplot column index
 
         """
-        axis = ['x', 'y']  # , 'x2', 'y', 'y2', 'z']
+        axis = ['x', 'y', 'x2', 'y2']  # , 'z']
         for ax in axis:
+            # Twinning
+            if ax == 'x2' and not self.axes.twin_y:
+                continue
+            if ax == 'y2' and not self.axes.twin_x:
+                continue
+
+            # Get the label
             label = getattr(self, 'label_%s' % ax)
             if not label.on:
                 continue
@@ -538,8 +561,6 @@ class Layout(BaseLayout):
                 labeltext = label.text
             if isinstance(label.text, list):
                 labeltext = label.text[ic + ir * self.ncol]
-
-            # Twinning?
 
             # Toggle label visibility
             if not self.separate_labels:
@@ -555,7 +576,10 @@ class Layout(BaseLayout):
                     continue
 
             lkwargs = self.make_kw_dict(label)
-            laxis = getattr(self.axes.obj[ir, ic], '%saxis' % ax)
+            if ax == 'y2' or ax == 'x2':
+                laxis = self.axes.obj[ir, ic].axis[-1]
+            else:
+                laxis = getattr(self.axes.obj[ir, ic], '%saxis' % ax)
             laxis.axis_label = labeltext
             laxis.axis_label_text_font = lkwargs['font']
             laxis.axis_label_text_font_size = '%spt' % lkwargs['font_size']
@@ -571,26 +595,25 @@ class Layout(BaseLayout):
             ranges: min/max axes limits for each axis
 
         """
-        return
         if self.name in ['heatmap', 'pie']:  # skip these plot types
             return
 
         if ranges[ir, ic]['xmin'] is not None:
             self.axes.obj[ir, ic].x_range.start = ranges[ir, ic]['xmin']
-        # if ranges[ir, ic]['x2min'] is not None:
-        #     self.axes2.obj[ir, ic].set_xlim(left=ranges[ir, ic]['x2min'])
+        if ranges[ir, ic]['x2min'] is not None:
+            self.axes.obj[ir, ic].extra_x_ranges['x2'].start = ranges[ir, ic]['x2min']
         if ranges[ir, ic]['xmax'] is not None:
             self.axes.obj[ir, ic].x_range.end = ranges[ir, ic]['xmax']
-        # if ranges[ir, ic]['x2max'] is not None:
-        #     self.axes2.obj[ir, ic].set_xlim(right=ranges[ir, ic]['x2max'])
+        if ranges[ir, ic]['x2max'] is not None:
+            self.axes.obj[ir, ic].extra_x_ranges['x2'].end = ranges[ir, ic]['x2max']
         if ranges[ir, ic]['ymin'] is not None:
             self.axes.obj[ir, ic].y_range.start = ranges[ir, ic]['ymin']
-        # if ranges[ir, ic]['y2min'] is not None:
-        #     self.axes2.obj[ir, ic].set_ylim(bottom=ranges[ir, ic]['y2min'])
+        if ranges[ir, ic]['y2min'] is not None:
+            self.axes.obj[ir, ic].extra_y_ranges['y2'].start = ranges[ir, ic]['y2min']
         if ranges[ir, ic]['ymax'] is not None:
             self.axes.obj[ir, ic].y_range.end = ranges[ir, ic]['ymax']
-        # if ranges[ir, ic]['y2max'] is not None:
-        #     self.axes2.obj[ir, ic].set_ylim(top=ranges[ir, ic]['y2max'])
+        if ranges[ir, ic]['y2max'] is not None:
+            self.axes.obj[ir, ic].extra_y_ranges['y2'].end = ranges[ir, ic]['y2max']
 
     def set_axes_rc_labels(self, ir: int, ic: int):
         """Add the row/column label boxes and wrap titles.
@@ -746,3 +769,14 @@ class Layout(BaseLayout):
         # other
         else:
             utl.show_file(filename)
+
+    def update_markers(self):
+        """Update the marker list."""
+
+        if 'marker_type' in self.kwargs.keys():
+            marker_list = self.kwargs['marker_type']
+        elif self.kwargs.get('markers') not in [None, True]:
+            marker_list = utl.validate_list(self.kwargs.get('markers'))
+        else:
+            marker_list = utl.validate_list(DEFAULT_MARKERS)
+        self.markers.type = RepeatedList(marker_list, 'markers')
