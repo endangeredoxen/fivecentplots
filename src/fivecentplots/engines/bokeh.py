@@ -35,7 +35,7 @@ DASHES = {'-': 'solid',
           'dashdot': 'dashdot'}
 
 
-DEFAULT_MARKERS = ['circle', 'cross', 'square', 'x', 'diamond', 'asterisk', '^', 'inverted_triangle', 'y',
+DEFAULT_MARKERS = ['circle', 'cross', 'square', 'x', 'diamond', 'asterisk', 'inverted_triangle', 'y',
                    'star', 'plus', 'dash', 'dot', 'square_pin', 'triangle_pin', 'circle_cross', 'square_cross',
                    'diamond_cross', 'circle_x', 'square_x', 'circle_y', 'circle_dot', 'square_dot', 'diamond_dot',
                    'triangle_dot', 'hex_dot', 'star_dot',
@@ -466,10 +466,6 @@ class Layout(BaseLayout):
         if leg_name is not None and leg_name not in list(self.legend.values['Key']):
             self.legend.add_value(leg_name, points if points is not None else lines, line_type_name)
 
-    def restore(self):
-        """Undo changes to default plotting library parameters."""
-        pass
-
     def save(self, filename: str, idx: int = 0):
         """Save a plot window.
 
@@ -764,14 +760,20 @@ class Layout(BaseLayout):
             if 'zmqshell.ZMQInteractiveShell' in app and not bs.curstate().notebook:
                 bp.output_notebook()
 
-            bp.show(bl.gridplot(self.axes.obj.flatten(), ncols=self.ncol))
+            label = bm.Label(x=100, y=5, x_units='screen', text='Some Stuff',
+                             border_line_color='black', border_line_alpha=1.0,
+                             background_fill_color='white', background_fill_alpha=1.0)
+            self.axes.obj[0, 0].add_layout(label)
+            self.axes.obj[0, 0].rect(x=[2], y=[2], width=0.2, height=40, color="#CAB2D6",
+                                     angle=90, height_units="screen")
+            bp.show(bl.gridplot(list(self.axes.obj.flatten()), ncols=self.ncol))
 
         # other
         else:
             utl.show_file(filename)
 
     def update_markers(self):
-        """Update the marker list."""
+        """Update the marker list to valid option for bokeh."""
 
         if 'marker_type' in self.kwargs.keys():
             marker_list = self.kwargs['marker_type']
