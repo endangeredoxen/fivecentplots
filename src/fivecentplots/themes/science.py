@@ -71,10 +71,10 @@ fcp_params = {'ax_edge_color': '#555555',
               'hist_normalize': False,
               'hist_rwidth': None,
               'hist_type': 'bar',
-              'label_font_color': '#000000',
+              'label_color': 'k',
               'label_font_size': 14,
-              'label_font_style': 'italic',
-              'label_font_weight': 'bold',
+              'label_style': 'italic',
+              'label_weight': 'bold',
               'label_rc_edge_color': '#ffffff',
               'label_rc_fill_color': '#888888',
               'label_rc_font_size': 14,
@@ -134,7 +134,7 @@ fcp_params = {'ax_edge_color': '#555555',
 # Color schemes
 #########################################################
 
-colors = []
+colors = ['0C5DA5', '00B945', 'FF9500', 'FF2C00', '845B97', '474747', '9e9e9e']
 
 ####################################################
 # Marker scheme

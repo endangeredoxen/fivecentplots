@@ -373,9 +373,6 @@ class Layout(BaseLayout):
         global ENGINE
         ENGINE = 'mpl'
 
-        # Backup the rcParams for future reference
-        self.rc_orig = mpl.rcParams.copy()
-
         # Set tick style to classic if using fcp tick_cleanup (default)
         if kwargs.get('tick_cleanup', True):
             mplp.style.use('classic')
@@ -406,7 +403,7 @@ class Layout(BaseLayout):
         self.x_tick_xs = 0
 
         # Other
-        self.set_colormap(data)
+        self._set_colormap(data)
 
         # Update kwargs
         if not kwargs.get('save_ext'):
@@ -825,6 +822,8 @@ class Layout(BaseLayout):
                     elif self.legend.marker_alpha is not None:
                         leg.legendHandles[itext].set_alpha(self.legend.marker_alpha)
 
+            font = self.legend.font if self.legend.font != 'sans-serif' else 'sans'
+            leg.get_title().set_font(font)
             leg.get_title().set_fontsize(self.legend.font_size)
             leg.get_frame().set_facecolor(self.legend.fill_color[0])
             leg.get_frame().set_alpha(self.legend.fill_alpha)
@@ -1555,8 +1554,8 @@ class Layout(BaseLayout):
                            [ic for f in bboxes],
                            [0 for f in bboxes],
                            [0 for f in bboxes],
-                           [f.width for f in bboxes],
-                           [f.height for f in bboxes],
+                           [f.width + 2 * self.tick_labels_major.padding for f in bboxes],  # fancy box padding
+                           [f.height + 2 * self.tick_labels_major.padding for f in bboxes],
                            [f.x0 for f in bboxes],
                            [f.x1 for f in bboxes],
                            [f.y0 for f in bboxes],
@@ -2557,14 +2556,6 @@ class Layout(BaseLayout):
             if leg_name is not None and leg_name not in list(self.legend.values['Key']):
                 self.legend.add_value(leg_name, points if points is not None else lines, line_type_name)
 
-    def restore(self):
-        """Undo changes to MPL rcParams except for certain keys that will break an inline plot."""
-        bad_keys = ['axes.autolimit_mode']
-        for k, v in self.rc_orig.items():
-            if k in bad_keys:
-                continue
-            mpl.rcParams[k] = self.rc_orig[k]
-
     def save(self, filename: str, idx: int = 0):
         """Save a plot window.
 
@@ -2739,8 +2730,7 @@ class Layout(BaseLayout):
                     continue
 
             # Add the label
-            label.obj[ir, ic], label.obj_bg[ir, ic] = \
-                self.add_label(ir, ic, labeltext, **self.make_kw_dict(label))
+            label.obj[ir, ic], label.obj_bg[ir, ic] = self.add_label(ir, ic, labeltext, **self.make_kw_dict(label))
 
     def set_axes_ranges(self, ir: int, ic: int, ranges: dict):
         """Set the axes ranges.
@@ -2889,10 +2879,10 @@ class Layout(BaseLayout):
             # Turn off scientific
             if ia == 0:
                 if not skipx:
-                    self.set_scientific(axes[ia], tp)
+                    self._set_scientific(axes[ia], tp)
             elif self.axes.twin_y or self.axes.twin_x:
                 if not skipy:
-                    self.set_scientific(axes[ia], tp, 2)
+                    self._set_scientific(axes[ia], tp, 2)
 
             # Turn off offsets
             if not self.tick_labels_major.offset:
@@ -2926,8 +2916,8 @@ class Layout(BaseLayout):
                                     left=False,
                                     length=self.ticks_major_x._size[0],
                                     width=self.ticks_major_x._size[1],
-                                    direction=self.ticks_major.direction,
-                                    zorder=100,
+                                    direction=self.ticks_major_x.direction,
+                                    zorder=1000,
                                     )
                 axes[0].tick_params(axis='y',
                                     which='major',
@@ -2937,8 +2927,7 @@ class Layout(BaseLayout):
                                     labelsize=self.tick_labels_major_y.font_size,
                                     top=False,
                                     bottom=False,
-                                    right=False if self.axes.twin_x
-                                    else self.ticks_major_y.on,
+                                    right=False,  # if self.axes.twin_x else self.ticks_major_y.on,
                                     left=self.ticks_major_y.on,
                                     length=self.ticks_major_y._size[0],
                                     width=self.ticks_major_y._size[1],
@@ -3105,7 +3094,9 @@ class Layout(BaseLayout):
                                      facecolor=getattr(self, f'tick_labels_{mm}_{ax}{lab}').fill_color[0],
                                      linewidth=getattr(self, f'tick_labels_{mm}_{ax}{lab}').edge_width,
                                      alpha=max(getattr(self, f'tick_labels_{mm}_{ax}{lab}').edge_alpha,
-                                               getattr(self, f'tick_labels_{mm}_{ax}{lab}').fill_alpha))
+                                               getattr(self, f'tick_labels_{mm}_{ax}{lab}').fill_alpha),
+                                     pad=self.tick_labels_major.padding,
+                                     )
                         rotation = getattr(self, f'tick_labels_{mm}_{ax}{lab}').rotation
                         for text in getattr(axes[ia], f'get_{ax}ticklabels')(which=mm):
                             if rotation != 0:
@@ -3213,7 +3204,7 @@ class Layout(BaseLayout):
                     getattr(axes[ia], '%saxis' % axx).set_minor_formatter(
                         ticker.FormatStrFormatter('%%.%sf' % (decimals)))
 
-    def set_colormap(self, data: 'Data', **kwargs):  # noqa: F821
+    def _set_colormap(self, data: 'Data', **kwargs):  # noqa: F821
         """Replace the color list with discrete values from a colormap.
 
         Args:
@@ -3289,10 +3280,11 @@ class Layout(BaseLayout):
                                      wspace=1.0 * self.ws_col / self.axes.size[0],
                                      )
 
-        # Tick overlap cleanup
+        # Tick overlap cleanup and set location
         self._get_tick_label_sizes()  # update after axes reshape
         self._get_tick_overlaps()
         self._get_tick_overlaps('2')
+        self._set_tick_position()
 
         # Update the axes label positions
         self._get_axes_label_position()
@@ -3438,7 +3430,7 @@ class Layout(BaseLayout):
 
         # Text label adjustments
         if self.text.on:
-            self.set_text_position()
+            self._set_text_position()
 
     def set_figure_title(self):
         """Set a figure title."""
@@ -3448,7 +3440,7 @@ class Layout(BaseLayout):
                 self.add_label(0, 0, self.title.text, offset=True,
                                **self.make_kw_dict(self.title))
 
-    def set_scientific(self, ax: mplp.Axes, tp: dict, idx: int = 0) -> mplp.Axes:
+    def _set_scientific(self, ax: mplp.Axes, tp: dict, idx: int = 0) -> mplp.Axes:
         """Turn off scientific notation.
 
         Args:
@@ -3616,7 +3608,7 @@ class Layout(BaseLayout):
 
         return ax
 
-    def set_text_position(self):
+    def _set_text_position(self):
         """Move text labels to the correct location."""
         obj = self.text
 
@@ -3666,6 +3658,47 @@ class Layout(BaseLayout):
                 # position
                 obj.obj[ir, ic][itext].set_x(position[0])
                 obj.obj[ir, ic][itext].set_y(position[1])
+
+    def _set_tick_position(self):
+        """Update the tick positions except when tick lines have direction=='in'."""
+
+        if self.ticks_major_x.direction == 'in' and self.ticks_major_y.direction == 'in':
+            return
+
+        xticks = self.tick_labels_major_x.size_all.groupby(['ir', 'ic']).mean()
+        yticks = self.tick_labels_major_y.size_all.groupby(['ir', 'ic']).mean()
+        for ir, ic in np.ndindex(self.axes.obj.shape):
+            ax_loc = self.axes.obj[ir, ic].get_window_extent()
+
+            # primary x-axis
+            if self.ticks_major_x.direction != 'in':
+                ax_y0 = ax_loc.y0
+                tt_y1 = xticks.loc[ir, ic]['y1']
+                pad = ax_y0 - tt_y1 - xticks.loc[ir, ic]['height'] / 2
+                self.axes.obj[ir, ic].tick_params(axis='x', which='both', pad=pad / 2)
+
+            # primary y-axis
+            if self.ticks_major_y.direction != 'in':
+                ax_x0 = ax_loc.x0
+                tt_x1 = yticks.loc[ir, ic]['x1'] - 2
+                pad = ax_x0 - tt_x1 - yticks.loc[ir, ic]['width'] / 2
+                self.axes.obj[ir, ic].tick_params(axis='y', which='both', pad=pad / 2)
+
+            # secondary x-axis
+            if self.axes.twin_y and self.ticks_minor_x.direction != 'in':
+                xticks2 = self.tick_labels_major_x2.size_all.groupby(['ir', 'ic']).mean()
+                ax_y1 = ax_loc.y1
+                tt_y0 = xticks2.loc[ir, ic]['y0']
+                pad = tt_y0 - ax_y1 + xticks2.loc[ir, ic]['height'] / 2
+                self.axes2.obj[ir, ic].tick_params(axis='x', which='both', pad=pad / 2)
+
+            # secondary y-axis
+            if self.axes.twin_x and self.ticks_minor_y.direction != 'in':
+                yticks2 = self.tick_labels_major_y2.size_all.groupby(['ir', 'ic']).mean()
+                ax_x1 = ax_loc.x1
+                tt_x0 = yticks2.loc[ir, ic]['x0'] + 2
+                pad = tt_x0 - ax_x1 + yticks2.loc[ir, ic]['width'] / 2
+                self.axes2.obj[ir, ic].tick_params(axis='y', which='both', pad=pad / 2)
 
     def show(self, *args):
         """Display the plot window."""

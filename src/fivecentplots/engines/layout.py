@@ -360,10 +360,10 @@ class BaseLayout:
         # Axes labels
         label = Element('label', self.fcpp, kwargs,
                         obj=self.obj_array,
-                        font_style='italic',
-                        font_weight='bold',
-                        bg_padding=utl.kwget(kwargs, self.fcpp,
-                                             'label_bg_padding', 2),
+                        font_color=utl.kwget(kwargs, self.fcpp, 'label_font_color', '#000000'),
+                        font_style=utl.kwget(kwargs, self.fcpp, 'label_font_style', 'italic'),
+                        font_weight=utl.kwget(kwargs, self.fcpp, 'label_font_weight', 'bold'),
+                        bg_padding=utl.kwget(kwargs, self.fcpp, 'label_bg_padding', 2),
                         )
         labels = ['x', 'x2', 'y', 'y2', 'z']
         rotations = [0, 0, 90, 270, 270]
@@ -378,8 +378,7 @@ class BaseLayout:
                 v = kwargs[k]
                 if k == 'label_%s' % lab or '_text' in k:
                     continue  # k = 'label_%s_text' % lab
-                setattr(getattr(self, 'label_%s' % lab),
-                        k.replace('label_%s_' % lab, ''), v)
+                setattr(getattr(self, 'label_%s' % lab), k.replace('label_%s_' % lab, ''), v)
 
             # Update alphas
             getattr(self, 'label_%s' % lab).color_alpha('fill_color', 'fill_alpha')
@@ -1029,7 +1028,7 @@ class BaseLayout:
         """
         # Major gridlines
         self.grid_major = Element('grid_major', self.fcpp, kwargs,
-                                  on=kwargs.get('grid_major', True),
+                                  on=utl.kwget(kwargs, self.fcpp, 'grid_major', True),
                                   color=utl.kwget(kwargs, self.fcpp, 'grid_major_color', '#ffffff'),
                                   style=utl.kwget(kwargs, self.fcpp, 'grid_major_style', '-'),
                                   width=utl.kwget(kwargs, self.fcpp, 'grid_major_width', 1.3),
@@ -1055,7 +1054,7 @@ class BaseLayout:
 
         # Minor gridlines
         self.grid_minor = Element('grid_minor', self.fcpp, kwargs,
-                                  on=kwargs.get('grid_minor', False),
+                                  on=utl.kwget(kwargs, self.fcpp, 'grid_minor', False),
                                   color=utl.kwget(kwargs, self.fcpp, 'grid_minor_color', '#ffffff'),
                                   width=utl.kwget(kwargs, self.fcpp, 'grid_minor_width', 0.5),
                                   )
@@ -1332,7 +1331,8 @@ class BaseLayout:
                                      column=kwargs['legend'],
                                      edge_color=utl.kwget(kwargs, self.fcpp, 'legend_edge_color', '#ffffff'),
                                      edge_width=utl.kwget(kwargs, self.fcpp, 'legend_edge_width', 1),
-                                     font_size=12,
+                                     font=utl.kwget(kwargs, self.fcpp, 'legend_font', 'sans-serif'),
+                                     font_size=utl.kwget(kwargs, self.fcpp, 'legend_font_size', 12),
                                      location=LEGEND_LOCATION[utl.kwget(kwargs, self.fcpp, 'legend_location', 0)],
                                      marker_alpha=utl.kwget(kwargs, self.fcpp, 'legend_marker_alpha', 1),
                                      marker_size=utl.kwget(kwargs, self.fcpp, 'legend_marker_size', 7),
@@ -1779,9 +1779,7 @@ class BaseLayout:
                     kwargs['tick_labels_minor%s' % k.split('tick_labels')[1]] = v
         self.tick_labels_major = \
             Element('tick_labels_major', self.fcpp, kwargs,
-                    on=utl.kwget(kwargs, self.fcpp,
-                                 'tick_labels_major',
-                                 kwargs.get('tick_labels', True)),
+                    on=utl.kwget(kwargs, self.fcpp, 'tick_labels_major', kwargs.get('tick_labels', True)),
                     edge_alpha=0 if not kwargs.get('tick_labels_edge_alpha', None)
                     and not kwargs.get('tick_labels_major_edge_alpha', None)
                     and not kwargs.get('tick_labels_major_edge_color', None)
@@ -1790,11 +1788,10 @@ class BaseLayout:
                     and not kwargs.get('tick_labels_major_fill_alpha', None)
                     and not kwargs.get('tick_labels_major_fill_color', None)
                     else 1,
-                    font_size=13,
-                    offset=utl.kwget(kwargs, self.fcpp,
-                                     'tick_labels_major_offset', False),
-                    padding=utl.kwget(kwargs, self.fcpp,
-                                      'tick_labels_major_padding', 4),
+                    font=utl.kwget(kwargs, self.fcpp, 'tick_labels_font', 'sans-serif'),
+                    font_size=utl.kwget(kwargs, self.fcpp, 'tick_labels_font_size', 13),
+                    offset=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_offset', False),
+                    padding=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_padding', 1),
                     scale_factor=1.5,
                     )
         kwargs = self._from_list(self.tick_labels_major,
@@ -2014,10 +2011,10 @@ class BaseLayout:
         self.title = Element('title', self.fcpp, kwargs,
                              on=True if title is not None else False,
                              text=title if title is not None else None,
-                             font_color='#333333',
-                             font_size=18,
-                             font_weight='bold',
-                             align='center',
+                             font_color=utl.kwget(kwargs, self.fcpp, 'title_font_color', '#333333'),
+                             font_size=utl.kwget(kwargs, self.fcpp, 'title_font_size', 18),
+                             font_weight=utl.kwget(kwargs, self.fcpp, 'title_font_weight', 'bold'),
+                             align=utl.kwget(kwargs, self.fcpp, 'title_align', 'center'),
                              )
         return kwargs
 
@@ -2036,10 +2033,8 @@ class BaseLayout:
 
         # rc labels
         ws_label_rc = utl.kwget(kwargs, self.fcpp, 'ws_label_rc', 10)
-        self.ws_label_col = utl.kwget(kwargs, self.fcpp,
-                                      'ws_label_col', ws_label_rc)
-        self.ws_label_row = utl.kwget(kwargs, self.fcpp,
-                                      'ws_label_row', ws_label_rc)
+        self.ws_label_col = utl.kwget(kwargs, self.fcpp, 'ws_label_col', ws_label_rc)
+        self.ws_label_row = utl.kwget(kwargs, self.fcpp, 'ws_label_row', ws_label_rc)
         self.ws_col = utl.kwget(kwargs, self.fcpp, 'ws_col', 30)
         self.ws_col_def = int(self.ws_col)
         self.ws_row = utl.kwget(kwargs, self.fcpp, 'ws_row', 30)
@@ -2050,8 +2045,7 @@ class BaseLayout:
         self.ws_leg_fig = utl.kwget(kwargs, self.fcpp, 'ws_leg_fig', 10)
         self.ws_fig_ax = utl.kwget(kwargs, self.fcpp, 'ws_fig_ax', 10)
         self.ws_fig_title = utl.kwget(kwargs, self.fcpp, 'ws_fig_title', 10)
-        self.ws_label_fig = utl.kwget(kwargs, self.fcpp, 'ws_label_fig',
-                                      self.ws_fig_label)
+        self.ws_label_fig = utl.kwget(kwargs, self.fcpp, 'ws_label_fig', self.ws_fig_label)
 
         # axes
         self.ws_label_tick = utl.kwget(kwargs, self.fcpp, 'ws_label_tick', 10)
@@ -2062,8 +2056,7 @@ class BaseLayout:
         self.ws_ax_label_xs = utl.kwget(kwargs, self.fcpp, 'ws_ax_label_xs', 5)
 
         # ticks
-        self.ws_tick_minimum = utl.kwget(kwargs, self.fcpp,
-                                         'ws_tick_minimum', 10)
+        self.ws_tick_minimum = utl.kwget(kwargs, self.fcpp, 'ws_tick_minimum', 10)
 
         # box
         self.ws_ax_box_title = utl.kwget(kwargs, self.fcpp, 'ws_ax_box_title', 10)
@@ -2581,10 +2574,6 @@ class BaseLayout:
                 Defaults to None.
             marker_disable (optional): flag to disable markers. Defaults to False.
         """
-
-    @abc.abstractmethod
-    def restore(self):
-        """Undo changes to default plotting library parameters."""
 
     @abc.abstractmethod
     def save(self, filename: str, idx: int = 0):
