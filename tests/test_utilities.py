@@ -156,8 +156,8 @@ def test_get_decimals():
 
 
 def test_get_text_dimensions():
-    kwargs = {'font': 'sans-serif', 'font_weight': 'bold', 'font_style': 'normal', 'font_size': 12}
-    assert utl.get_text_dimensions('no alarms and no surprises', **kwargs) == (207.0, 16.875)
+    dim = (207.0, 16.875)
+    assert utl.get_text_dimensions('no alarms and no surprises', 'Deja Vu Sans', 12, 'normal', 'bold') == dim
 
 
 def test_kwget():

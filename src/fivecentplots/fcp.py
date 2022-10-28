@@ -1652,9 +1652,6 @@ def plotter(dobj, **kwargs):
         dd.df_all[dd.cols_all].to_csv(filename, index=False)
         kwargs['timer'].get('ifig=%s | save_data' % (ifig))
 
-    # Restore plotting engine settings
-    layout.restore()
-
     kwargs['timer'].get_total()
 
 

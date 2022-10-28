@@ -2594,10 +2594,6 @@ class BaseLayout:
         """
 
     @abc.abstractmethod
-    def restore(self):
-        """Undo changes to default plotting library parameters."""
-
-    @abc.abstractmethod
     def save(self, filename: str, idx: int = 0):
         """Save a plot window.
 

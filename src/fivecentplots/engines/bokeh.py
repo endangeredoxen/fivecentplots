@@ -525,10 +525,6 @@ class Layout(BaseLayout):
             if line_type.on:
                 leg_vals += [lines]
 
-    def restore(self):
-        """Undo changes to default plotting library parameters."""
-        pass
-
     def save(self, filename: str, idx: int = 0):
         """Save a plot window.
 

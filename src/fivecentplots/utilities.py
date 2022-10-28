@@ -533,12 +533,16 @@ def get_decimals(value: [int, float], max_places: int = 4):
     return i - 1
 
 
-def get_text_dimensions(text: str, **kwargs) -> tuple:
+def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, font_weight: str, **kwargs) -> tuple:
     """Use pillow to try and figure out actual dimensions of text.
 
     Args:
         text: the text from which to calculate size
-        kwargs: user-defined keyword args
+        font: name of the font family or the font itself
+        font_size: font size
+        font_style: normal vs italic
+        font_weight: normal vs bold
+        kwargs: in place to
 
     Returns:
         size tuple
@@ -550,13 +554,12 @@ def get_text_dimensions(text: str, **kwargs) -> tuple:
               'run pip install pillow and try again.')
         return False
 
-    font = FontProperties()
-    font.set_family(kwargs['font'])
-    font.set_style(kwargs['font_style'])
-    font.set_weight(kwargs['font_weight'])
-    fontfile = findfont(font, fallback_to_default=True)
-
-    size = ImageFont.truetype(fontfile, kwargs['font_size']).getsize(text)
+    fp = FontProperties()
+    fp.set_family(font)
+    fp.set_style(font_style)
+    fp.set_weight(font_weight)
+    fontfile = findfont(fp, fallback_to_default=True)
+    size = ImageFont.truetype(fontfile, font_size).getsize(text)
 
     return size[0] * 1.125, size[1] * 1.125  # no idea why it is off
 
