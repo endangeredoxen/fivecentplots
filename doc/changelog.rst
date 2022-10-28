@@ -1,6 +1,10 @@
 Changelog
 *********
 
+0.5.2
+=====
+* Remove feature that restores mpl `rcParams` at end of plot as it can break interactive plotting results
+
 0.5.1
 =====
 * Bug to fix bokeh plots
