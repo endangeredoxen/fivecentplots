@@ -1,8 +1,8 @@
         fig_edge_alpha (str): Transparency value for figure edge between 0-1. Defaults to 1.
         fig_edge_color (str): Hex color string for the border edge of the figure region. Defaults to #aaaaaa. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Typical-elements
+          https://endangeredoxen.github.io/fivecentplots/0.5.3/styles.html#Typical-elements
         fig_edge_width (float): Width of the figure border in pixels. Defaults to 3.
         fig_fill_alpha (str): Transparency value for figure fill between 0-1. Defaults to 1. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Alpha
+          https://endangeredoxen.github.io/fivecentplots/0.5.3/styles.html#Alpha
         fig_fill_color (str): Hex color string for the fill color of the figure region. Defaults to #eaeaea. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Alpha
+          https://endangeredoxen.github.io/fivecentplots/0.5.3/styles.html#Alpha

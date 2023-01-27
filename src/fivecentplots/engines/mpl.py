@@ -2788,11 +2788,13 @@ class Layout(BaseLayout):
                 text_size = self.label_row.text_size[ir, ic]
             else:
                 text_size = None
+
+            if self.label_row.names:
+                lab = f'{self.label_row.text}={self.label_row.values[ir]}'
+            else:
+                lab = self.label_row.values[ir]
             self.label_row.obj[ir, ic], self.label_row.obj_bg[ir, ic] = \
-                self.add_label(ir, ic, '%s=%s' %
-                               (self.label_row.text,
-                                self.label_row.values[ir]),
-                               offset=True, **self.make_kw_dict(self.label_row))
+                self.add_label(ir, ic, lab, offset=True, **self.make_kw_dict(self.label_row))
 
         # Col/wrap labels
         if (ir == 0 and self.label_col.on) or self.label_wrap.on:
@@ -2811,10 +2813,12 @@ class Layout(BaseLayout):
                 self.label_wrap.obj[ir, ic], self.label_wrap.obj_bg[ir, ic] = \
                     self.add_label(ir, ic, text, **kwargs)
             else:
-                text = '%s=%s' % (self.label_col.text,
-                                  self.label_col.values[ic])
+                if self.label_col.names:
+                    lab = f'{self.label_col.text}={self.label_col.values[ic]}'
+                else:
+                    lab = self.label_col.values[ic]
                 self.label_col.obj[ir, ic], self.label_col.obj_bg[ir, ic] = \
-                    self.add_label(ir, ic, text, **self.make_kw_dict(self.label_col))
+                    self.add_label(ir, ic, lab, **self.make_kw_dict(self.label_col))
 
     def set_axes_scale(self, ir: int, ic: int):
         """Set the scale type of the axes.

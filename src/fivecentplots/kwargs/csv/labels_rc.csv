@@ -9,6 +9,7 @@ label_q_edge_color,str,"Hex color string for the label edge [where q = rc, col, 
 label_q_edge_width,float,"Width of the border edge of a label in pixels [where q = rc, col, row, wrap; rc changes all]",0,styles.html#Edge-colors
 label_q_fill_alpha,float,"Transparency value for the label background fill between 0-1 [where q = rc, col, row, wrap; rc changes all]",1,styles.html#Fill-colors
 label_q_fill_color,str,"Hex color string for the label edge [where q = rc, col, row, wrap; rc changes all]",#8c8c8c,styles.html#Fill-colors
+label_q_names,boolean,"Toggle including the DataFrame column names in the row or column labels [where q = rc, col, row; rc changes all]",False,plot.html#Column-plot
 label_q_size,str,"Label background rectangle height for an col/wrap label OR width for row label,30,None
 title_wrap_font,str,"Font for the wrap title bar text",label_wrap_font,None
 title_wrap_font_color,str,"Hex color string for the wrap title bar text",label_wrap_font_color,None

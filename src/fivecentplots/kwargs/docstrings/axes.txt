@@ -1,37 +1,37 @@
         ax_edge_alpha (str): Transparency value for axes edge between 0-1. Defaults to 1.
         ax_edge_bottom (boolean): Enable/disable the bottom axes edge (or spine). Defaults to True. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges
+          https://endangeredoxen.github.io/fivecentplots/0.5.3/styles.html#Axes-edges
         ax_edge_color (str): Hex color string for the border edge of the axes region. Defaults to #aaaaaa. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Typical-elements
+          https://endangeredoxen.github.io/fivecentplots/0.5.3/styles.html#Typical-elements
         ax_edge_left (boolean): Enable/disable the left axes edge (or spine). Defaults to True. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges
+          https://endangeredoxen.github.io/fivecentplots/0.5.3/styles.html#Axes-edges
         ax_edge_right (boolean): Enable/disable the right axes edge (or spine). Defaults to True. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges
+          https://endangeredoxen.github.io/fivecentplots/0.5.3/styles.html#Axes-edges
         ax_edge_top (boolean): Enable/disable the top axes edge (or spine). Defaults to True. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Axes-edges
+          https://endangeredoxen.github.io/fivecentplots/0.5.3/styles.html#Axes-edges
         ax_edge_width (float): Width of the axes border in pixels. Defaults to 1.
         ax_fill_alpha (str): Transparency value for axes fill between 0-1. Defaults to 1. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Alpha
+          https://endangeredoxen.github.io/fivecentplots/0.5.3/styles.html#Alpha
         ax_fill_color (str): Hex color string for the fill color of the axes region. Defaults to #eaeaea. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.0/styles.html#Alpha
+          https://endangeredoxen.github.io/fivecentplots/0.5.3/styles.html#Alpha
         ax_scale|ax2_scale (str): Set the scale type of the axes {'linear'; 'logx'; 'semilogx'; 'logy'; 'semilogy';
           'loglog'; 'log'; 'symlog'; 'logit'}. Defaults to 'linear'. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Log-scale
+          https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Log-scale
         ax_size (list of int): Axes size [width, height]; note this is not the size of the figure. Defaults to [400,
-          400]. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Time-series
+          400]. Example: https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Time-series
         share_col (boolean): Share the x and y axis ranges of subplots in the same column when grouping. Defaults to
-          True. Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Share-columns
+          True. Example: https://endangeredoxen.github.io/fivecentplots/0.5.3/ranges.html#Share-columns
         share_row (boolean): Share the x and y axis ranges of subplots in the same row when grouping. Defaults to True.
-          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Share-row
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.3/ranges.html#Share-row
         share_x (boolean): Share the x-axis range across grouped plots with multiple axes. Defaults to True. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes-sharing
+          https://endangeredoxen.github.io/fivecentplots/0.5.3/ranges.html#Axes-sharing
         share_x2 (boolean): Share the secondary x-axis range across grouped plots with multiple axes. Defaults to True.
-          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes-sharing
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.3/ranges.html#Axes-sharing
         share_y (boolean): Share the y-axis range across grouped plots with multiple axes. Defaults to True. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes-sharing
+          https://endangeredoxen.github.io/fivecentplots/0.5.3/ranges.html#Axes-sharing
         share_y2 (boolean): Share the secondary y-axis range across grouped plots with multiple axes. Defaults to True.
-          Example: https://endangeredoxen.github.io/fivecentplots/0.5.0/ranges.html#Axes-sharing
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.3/ranges.html#Axes-sharing
         twin_x (boolean): Add a secondary y-axis by "twinning" the x-axis. Defaults to False. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Shared-x-axis-(twin_x)
+          https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Shared-x-axis-(twin_x)
         twin_y (boolean): Add a secondary x-axis by "twinning" the y-axis. Defaults to False. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.0/plot.html#Shared-y-axis-(twin_y)
+          https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Shared-y-axis-(twin_y)

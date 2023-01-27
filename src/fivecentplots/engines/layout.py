@@ -1587,57 +1587,34 @@ class BaseLayout:
                               font_size=utl.kwget(kwargs, self.fcpp, 'label_rc_font_size', 16),
                               font_style=utl.kwget(kwargs, self.fcpp, 'label_rc_font_style', 'normal'),
                               font_weight=utl.kwget(kwargs, self.fcpp, 'label_rc_font_weight', 'bold'),
+                              names=utl.kwget(kwargs, self.fcpp, 'label_rc_names', True),
                               align=utl.kwget(kwargs, self.fcpp, 'label_rc_align', 'center'),
                               )
         self.label_row = copy.deepcopy(label_rc)
-        self.label_row.on = \
-            utl.kwget(kwargs, self.fcpp, 'label_row_on', True) \
-            if kwargs.get('row') not in [None, 'y'] else False
+        self.label_row.on = utl.kwget(kwargs, self.fcpp, 'label_row_on', True) \
+                            if kwargs.get('row') not in [None, 'y'] else False
         self.label_row.column = kwargs.get('row')
-        self.label_row.edge_color = utl.kwget(kwargs, self.fcpp,
-                                              'label_row_edge_color',
-                                              label_rc.edge_color)
-        self.label_row.edge_alpha = utl.kwget(kwargs, self.fcpp,
-                                              'label_row_edge_alpha',
-                                              label_rc.edge_alpha)
-        self.label_row.edge_width = utl.kwget(kwargs, self.fcpp,
-                                              'label_row_edge_width',
-                                              label_rc.edge_width)
-        self.label_row.fill_color = utl.kwget(kwargs, self.fcpp,
-                                              'label_row_fill_color',
-                                              label_rc.fill_color)
-        self.label_row.font_color = utl.kwget(kwargs, self.fcpp,
-                                              'label_row_font_color',
-                                              label_rc.font_color)
-        self.label_row.size = [utl.kwget(kwargs, self.fcpp,
-                                         'label_row_size', label_rc._size),
-                               self.axes.size[1]]
+        self.label_row.edge_color = utl.kwget(kwargs, self.fcpp, 'label_row_edge_color', label_rc.edge_color)
+        self.label_row.edge_alpha = utl.kwget(kwargs, self.fcpp, 'label_row_edge_alpha', label_rc.edge_alpha)
+        self.label_row.edge_width = utl.kwget(kwargs, self.fcpp, 'label_row_edge_width', label_rc.edge_width)
+        self.label_row.fill_color = utl.kwget(kwargs, self.fcpp, 'label_row_fill_color', label_rc.fill_color)
+        self.label_row.font_color = utl.kwget(kwargs, self.fcpp, 'label_row_font_color', label_rc.font_color)
+        self.label_row.names = utl.kwget(kwargs, self.fcpp, 'label_row_names', label_rc.names)
+        self.label_row.size = [utl.kwget(kwargs, self.fcpp, 'label_row_size', label_rc._size), self.axes.size[1]]
         self.label_row.text_size = None
         self.label_row.rotation = 270
 
         self.label_col = copy.deepcopy(label_rc)
-        self.label_col.on = \
-            utl.kwget(kwargs, self.fcpp, 'label_col_on', True) \
-            if kwargs.get('col') not in [None, 'x'] else False
+        self.label_col.on = utl.kwget(kwargs, self.fcpp, 'label_col_on', True) \
+                            if kwargs.get('col') not in [None, 'x'] else False
         self.label_row.column = kwargs.get('col')
-        self.label_col.edge_color = utl.kwget(kwargs, self.fcpp,
-                                              'label_col_edge_color',
-                                              label_rc.edge_color)
-        self.label_col.edge_width = utl.kwget(kwargs, self.fcpp,
-                                              'label_col_edge_width',
-                                              label_rc.edge_width)
-        self.label_col.edge_alpha = utl.kwget(kwargs, self.fcpp,
-                                              'label_col_edge_alpha',
-                                              label_rc.edge_alpha)
-        self.label_col.fill_color = utl.kwget(kwargs, self.fcpp,
-                                              'label_col_fill_color',
-                                              label_rc.fill_color)
-        self.label_col.font_color = utl.kwget(kwargs, self.fcpp,
-                                              'label_col_font_color',
-                                              label_rc.font_color)
-        self.label_col.size = [self.axes.size[0],
-                               utl.kwget(kwargs, self.fcpp,
-                                         'label_col_size', label_rc._size)]
+        self.label_col.edge_color = utl.kwget(kwargs, self.fcpp, 'label_col_edge_color', label_rc.edge_color)
+        self.label_col.edge_width = utl.kwget(kwargs, self.fcpp, 'label_col_edge_width', label_rc.edge_width)
+        self.label_col.edge_alpha = utl.kwget(kwargs, self.fcpp, 'label_col_edge_alpha', label_rc.edge_alpha)
+        self.label_col.fill_color = utl.kwget(kwargs, self.fcpp, 'label_col_fill_color', label_rc.fill_color)
+        self.label_col.font_color = utl.kwget(kwargs, self.fcpp, 'label_col_font_color', label_rc.font_color)
+        self.label_col.names = utl.kwget(kwargs, self.fcpp, 'label_col_names', label_rc.names)
+        self.label_col.size = [self.axes.size[0], utl.kwget(kwargs, self.fcpp, 'label_col_size', label_rc._size)]
         self.label_col.text_size = None
 
         # Wrap label
