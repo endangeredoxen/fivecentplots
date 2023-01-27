@@ -1592,7 +1592,7 @@ class BaseLayout:
                               )
         self.label_row = copy.deepcopy(label_rc)
         self.label_row.on = utl.kwget(kwargs, self.fcpp, 'label_row_on', True) \
-                            if kwargs.get('row') not in [None, 'y'] else False
+            if kwargs.get('row') not in [None, 'y'] else False
         self.label_row.column = kwargs.get('row')
         self.label_row.edge_color = utl.kwget(kwargs, self.fcpp, 'label_row_edge_color', label_rc.edge_color)
         self.label_row.edge_alpha = utl.kwget(kwargs, self.fcpp, 'label_row_edge_alpha', label_rc.edge_alpha)
@@ -1606,7 +1606,7 @@ class BaseLayout:
 
         self.label_col = copy.deepcopy(label_rc)
         self.label_col.on = utl.kwget(kwargs, self.fcpp, 'label_col_on', True) \
-                            if kwargs.get('col') not in [None, 'x'] else False
+            if kwargs.get('col') not in [None, 'x'] else False
         self.label_row.column = kwargs.get('col')
         self.label_col.edge_color = utl.kwget(kwargs, self.fcpp, 'label_col_edge_color', label_rc.edge_color)
         self.label_col.edge_width = utl.kwget(kwargs, self.fcpp, 'label_col_edge_width', label_rc.edge_width)
