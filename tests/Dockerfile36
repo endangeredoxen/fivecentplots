@@ -2,6 +2,7 @@ FROM ubuntu:18.04
 ENV DEBIAN_FRONTEND noninteractive
 
 # Install python 3.6
+RUN sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list
 RUN apt update
 RUN apt-get install -y python3.6
 RUN apt-get install -y python3-pip
@@ -10,16 +11,20 @@ RUN apt-get install -y python3-pip
 RUN apt install -y git
 
 # Other libs
-RUN apt-get install ffmpeg libsm6 libxext6 -y
+RUN apt-get install ffmpeg libsm6 libxext6 libfreetype6-dev python3-dev libatlas-base-dev gfortran nano -y
+RUN python3 -m pip install --upgrade pip setuptools
+RUN apt-get build-dep python-matplotlib -y
 
 # Clone fcp
-RUN git clone https://github.com/endangeredoxen/fivecentplots.git && cd fivecentplots && git checkout v0.5.0-beta
+RUN git clone https://github.com/endangeredoxen/fivecentplots.git && cd fivecentplots && git checkout v0.5.3
 
 # Install fcp test build
-RUN python3 -m pip install --upgrade pip
-# RUN cd fivecentplots && pip3 install .[test36]
+RUN python3 -m pip install --upgrade pip && cd /fivecentplots && pip install .[test36]
 
 # Clean up fonts
 RUN echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections
 RUN apt install -y msttcorefonts -qq
 RUN rm ~/.cache/matplotlib -rf
+
+# build: docker build -t fcp_test36 -f Dockerfile36 .
+# exec: 
