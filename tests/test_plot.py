@@ -7,6 +7,7 @@ from pathlib import Path
 import fivecentplots.utilities as utl
 import matplotlib as mpl
 import inspect
+import pytest
 osjoin = os.path.join
 db = pdb.set_trace
 
@@ -1514,6 +1515,7 @@ def test_column(benchmark):
     benchmark(plt_column, True)
 
 
+@pytest.mark.skipif(sys.version_info < (3, 7), reason='python3.6 is being deprecated')
 def test_column_no_names(benchmark):
     plt_column_no_names()
     benchmark(plt_column_no_names, True)
@@ -1694,6 +1696,7 @@ def test_row(benchmark):
     benchmark(plt_row, True)
 
 
+@pytest.mark.skipif(sys.version_info < (3, 7), reason='python3.6 is being deprecated')
 def test_row_no_names(benchmark):
     plt_row_no_names()
     benchmark(plt_row_no_names, True)
@@ -1704,6 +1707,7 @@ def test_row_x_column(benchmark):
     benchmark(plt_row_x_column, True)
 
 
+@pytest.mark.skipif(sys.version_info < (3, 7), reason='python3.6 is being deprecated')
 def test_row_x_column_no_names(benchmark):
     plt_row_x_column_no_names()
     benchmark(plt_row_x_column_no_names, True)
