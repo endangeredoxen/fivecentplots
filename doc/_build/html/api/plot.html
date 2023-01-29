@@ -1,0 +1,424 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>plot &mdash; fivecentplots beta documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Archivo Black" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="tick_labels" href="tick_labels.html" />
+    <link rel="prev" title="pie" href="pie.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> fivecentplots
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.5.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../layout.html">Layout and Elements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../keyword.html">Keyword Arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../grouping.html">Grouping data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../styles.html">Styles and formatting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ranges.html">Data ranges</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ticks.html">Grids and ticks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../misc.html">Miscellaneous</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="fcp.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="axes.html">axes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bar.html">bar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="boxplot.html">boxplot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cbar.html">cbar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contour.html">contour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="figure.html">figure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gantt.html">gantt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gridlines.html">gridlines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grouping.html">grouping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="heatmap.html">heatmap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hist.html">hist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="imshow.html">imshow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="labels.html">labels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="legend.html">legend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lines.html">lines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="markers.html">markers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nq.html">nq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html">options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pie.html">pie</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tick_labels.html">tick_labels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ticks.html">ticks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="titles.html">title</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ws.html">ws</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Plot Types</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../plot.html">plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../barplot.html">barplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../boxplot.html">boxplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contour.html">contour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gantt.html">gantt charts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heatmap.html">heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hist.html">hist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../imshow.html">imshow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../nq.html">nq</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pie.html">pie</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Other</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../older.html">Older Versions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/endangeredoxen/fivecentplots">GitHub</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">fivecentplots</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="fcp.html">API</a> &raquo;</li>
+        
+      <li>plot</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/api/plot.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="plot">
+<h1>plot<a class="headerlink" href="#plot" title="Permalink to this headline">¶</a></h1>
+<dl class="py method">
+<dt class="sig sig-object py" id="fivecentplots.fcp.plot">
+<span class="sig-prename descclassname"><span class="pre">fcp.</span></span><span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>XY plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>df</strong> (<em>DataFrame</em>) – DataFrame containing data to plot</p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>x</strong> (<em>str</em><em> | </em><em>list</em>) – x-axis column name(s) <span style="color:#ff0000; display:inline; font-weight:bold">[REQUIRED]</span></p></li>
+<li><p><strong>y</strong> (<em>str</em><em> | </em><em>list</em>) – y-axis column name(s) <span style="color:#ff0000; display:inline; font-weight:bold">[REQUIRED]</span></p></li>
+<hr style="margin-top:10px; margin-bottom:10px"><p style="color:#4b72b0"><strong>LINES</strong>: </p>
+<li><p><strong>cmap</strong> (<em>str</em>) – Color map name (overrides all other color parameters). Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/styles.html#Colormap">More details</a></p></li>
+<li><p><strong>line_alpha</strong> (<em>str</em><em>|</em><em>list</em>) – Transparency value for the line(s) between 0-1. Defaults to 1. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/styles.html#Line-styling">More details</a></p></li>
+<li><p><strong>line_color</strong> (<em>str</em><em>|</em><em>list</em>) – Hex color string or list of hex color strings for the plot lines. Defaults to
+fcp.DEFAULT_COLORS. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/styles.html#Line-styling">More details</a></p></li>
+<li><p><strong>line_style</strong> (<em>str</em><em>|</em><em>list</em>) – Matplotlib string character for line style {‘-‘; ‘–’; ‘-.’ ‘:’}. Defaults to ‘-‘.
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/styles.html#Line-styling">More details</a></p></li>
+<li><p><strong>line_width</strong> (<em>int</em><em>|</em><em>list</em>) – Line width in pixels. Defaults to 1. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/styles.html#Line-styling">More details</a></p></li>
+<li><p><strong>lines</strong> (<em>boolean</em>) – Enable/disable plotting of lines. Defaults to True. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Scatter">More details</a></p></li>
+<hr style="margin-top:10px; margin-bottom:10px"><p style="color:#4b72b0"><strong>MARKERS</strong>: </p>
+<li><p><strong>marker_edge_color</strong> (<em>str</em><em>|</em><em>list</em>) – Hex color string for the marker edges. <br>Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#b3b2b2;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8cd3c6;display:inline-block"></span>. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/styles.html#Marker-colors">More details</a></p></li>
+<li><p><strong>marker_edge_width</strong> (<em>float</em>) – Marker edge line width in pixels. Defaults to 1.</p></li>
+<li><p><strong>marker_fill</strong> (<em>boolean</em>) – Enable/disable color fill in markers. Defaults to False. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/styles.html#Marker-colors">More details</a></p></li>
+<li><p><strong>marker_fill_color</strong> (<em>str</em><em>|</em><em>list</em>) – Hex color string for the fill color of markers. <br>Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#b3b2b2;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8cd3c6;display:inline-block"></span>.
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/styles.html#Marker-colors">More details</a></p></li>
+<li><p><strong>marker_jitter</strong><strong>|</strong><strong>jitter</strong> (<em>boolean</em>) – For boxplots add random noise on x-axis to show separation between markers.
+Defaults to True. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/boxplot.html#Jitter">More details</a></p></li>
+<li><p><strong>marker_size</strong> (<em>float</em>) – Size in pixels of the data point markers. Defaults to 6.</p></li>
+<li><p><strong>markers</strong> (<em>boolean</em>) – Enable/disable data point markers. Defaults to True.</p></li>
+<hr style="margin-top:10px; margin-bottom:10px"><p style="color:#4b72b0"><strong>AX_</strong><strong>[</strong><strong>H</strong><strong>|</strong><strong>V</strong><strong>]</strong><strong>LINES</strong>: </p>
+<li><p><strong>ax_hlines</strong><strong>|</strong><strong>ax2_hlines</strong> (<em>float</em><em>|</em><em>list of tuples and floats</em>) – Add horizontal lines to the plot; if only float value is
+provided add a solid black line with width=1 pixel at that value; if tuple add any one or more of the
+following in order: [1] float value or DataFrame column name [required]; [2] hex string for line color; [3]
+line style str; [4] line width in pixels; [5] line alpha transparency value from 0-1; [6] legend text  [added
+automatically if using a column name for value]. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Horizontal-&amp;-vertical-lines">More details</a></p></li>
+<li><p><strong>ax_vlines</strong><strong>|</strong><strong>ax2_vlines</strong> (<em>float</em><em>|</em><em>list of tuples and floats</em>) – Add vertical lines to the plot [same parameters as
+ax_hlines]. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Horizontal-&amp;-vertical-lines">More details</a></p></li>
+<li><p><strong>ax_</strong><strong>[</strong><strong>h</strong><strong>|</strong><strong>v</strong><strong>]</strong><strong>lines</strong> (<em>list of values</em>) – Add a line with a different value to each subplot when using row/col/wrap
+grouping. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Horizontal-&amp;-vertical-lines">More details</a></p></li>
+<hr style="margin-top:10px; margin-bottom:10px"><p style="color:#4b72b0"><strong>CONTROL_LIMITS</strong>: </p>
+<li><p><strong>control_limit_side</strong> (<em>str</em>) – Determines if shaded region is &lt;= lcl and &gt;= ucl {“outside”} or between the lcl and
+ucl {“inside”}. Defaults to outside. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Control-limits">More details</a></p></li>
+<li><p><strong>lcl</strong> (<em>float</em>) – Float value to start the lower control limit shading region. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Control-limits">More details</a></p></li>
+<li><p><strong>lcl</strong><strong>|</strong><strong>ucl_edge_alpha</strong> (<em>float</em>) – Transparency value for the line starting the control limit shaded region between
+0-1. Defaults to 0.25.</p></li>
+<li><p><strong>lcl</strong><strong>|</strong><strong>ucl_edge_color</strong> (<em>str</em>) – Hex color string for the the line starting the control limit shaded region. Defaults
+to fcp.DEFAULT_COLORS.</p></li>
+<li><p><strong>lcl</strong><strong>|</strong><strong>ucl_edge_style</strong> (<em>str</em>) – Line style for the line starting the control limit shaded region {‘-’, ‘–’, ‘-.’,
+‘:’}. Defaults to ‘-‘.</p></li>
+<li><p><strong>lcl</strong><strong>|</strong><strong>ucl_edge_width</strong> (<em>float</em>) – Width of the line starting the control limit shaded region in pixels. Defaults to 1.</p></li>
+<li><p><strong>lcl</strong><strong>|</strong><strong>ucl_fill_alpha</strong> (<em>float</em>) – Transparency value for the control limit shaded region fill between 0-1. Defaults to
+0.20. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Control-limits">More details</a></p></li>
+<li><p><strong>lcl</strong><strong>|</strong><strong>ucl_fill_color</strong> (<em>str</em>) – Hex color string for the control limit shaded region fill. Defaults to
+fcp.DEFAULT_COLORS. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Control-limits">More details</a></p></li>
+<li><p><strong>ucl</strong> (<em>float</em>) – Float value to start the upper control limit shading region. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Control-limits">More details</a></p></li>
+<hr style="margin-top:10px; margin-bottom:10px"><p style="color:#4b72b0"><strong>CONFIDENCE_INTERVALS</strong>: </p>
+<li><p><strong>conf_int</strong> (<em>float</em>) – Interval with upper and lower bounds based on a single confidence value between 0-1
+(typical=0.95). Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Confidence-interval">More details</a></p></li>
+<li><p><strong>conf_int_</strong><strong>|</strong><strong>perc_int_</strong><strong>|</strong><strong>nq_int_edge_alpha</strong> (<em>float</em>) – Transparency value for the lines bounding the interval shaded
+region between 0-1. Defaults to 0.25. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Confidence-interval">More details</a></p></li>
+<li><p><strong>conf_int_</strong><strong>|</strong><strong>perc_int_</strong><strong>|</strong><strong>nq_int_edge_color</strong> (<em>str</em>) – Hex color string for the the lines bounding the interval shaded
+region. <br>Defaults to fcp.DEFAULT_COLORS <span id="rectangle" style="height: 12px; width: 12px; background-color:#4b72b0;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#c34e52;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#54a767;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8172b1;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#64b4cc;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#ccb973;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fa8d62;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8d9fca;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#a6d753;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#fed82f;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#b3b2b2;display:inline-block"></span><span id="rectangle" style="height: 12px; width: 12px; background-color:#8cd3c6;display:inline-block"></span>. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Confidence-interval">More details</a></p></li>
+<li><p><strong>conf_int_</strong><strong>|</strong><strong>perc_int_</strong><strong>|</strong><strong>nq_int_edge_style</strong> (<em>str</em>) – Line style for the lines bounding the interval shaded region {‘-’,
+‘–’, ‘-.’, ‘:’}. Defaults to ‘-‘. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Confidence-interval">More details</a></p></li>
+<li><p><strong>conf_int_</strong><strong>|</strong><strong>perc_int_</strong><strong>|</strong><strong>nq_int_edge_width</strong> (<em>float</em>) – Width of the lines bounding the interval shaded region in pixels.
+Defaults to 1. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Confidence-interval">More details</a></p></li>
+<li><p><strong>conf_int_</strong><strong>|</strong><strong>perc_int_</strong><strong>|</strong><strong>nq_int_fill_alpha</strong> (<em>float</em>) – Transparency value for the interval shaded region fill
+between 0-1. Defaults to 0.20.
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Confidence-interval">More details</a></p></li>
+<li><p><strong>conf_int_</strong><strong>|</strong><strong>perc_int_</strong><strong>|</strong><strong>nq_int_fill_color</strong> (<em>str</em>) – Hex color string for the interval shaded region fill. Defaults to
+fcp.DEFAULT_COLORS. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Confidence">More details</a>-
+interval</p></li>
+<li><p><strong>nq_int</strong> (<em>list of float</em>) – Interval with upper and lower bounds based on values of sigma (where the mean of a
+distribution is sigma=0). Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Confidence-interval">More details</a></p></li>
+<li><p><strong>perc_int</strong> (<em>list of float</em>) – Interval with upper and lower bounds based on percentiles between 0-1. Defaults to
+None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Confidence-interval">More details</a></p></li>
+<hr style="margin-top:10px; margin-bottom:10px"><p style="color:#4b72b0"><strong>FIT</strong>: </p>
+<li><p><strong>fit</strong> (<em>int</em>) – Polynomial degree for the fit. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Line-fit">More details</a></p></li>
+<li><p><strong>fit_color</strong> (<em>str</em>) – Hex color string for the fit line. Defaults to #000000 <span id="rectangle" style="height: 12px; width: 12px; background-color:#000000;  display:inline-block"></span>.</p></li>
+<li><p><strong>fit_eqn</strong> (<em>boolean</em>) – Display the fit equation on the plot. Defaults to False.</p></li>
+<li><p><strong>fit_font_size</strong> (<em>float</em>) – Font size of the fit eqn and rsq value. Defaults to 12.</p></li>
+<li><p><strong>fit_padding</strong> (<em>int</em>) – Padding in pixels from the top of the plot to the location of the fit eqn. Defaults to 10.</p></li>
+<li><p><strong>fit_range_x</strong> (<em>list</em>) – Compute the fit only over a given range of x-values. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Curve-fitting">More details</a></p></li>
+<li><p><strong>fit_range_y</strong> (<em>list</em>) – Compute the fit only over a given range of y-values. Defaults to None.</p></li>
+<li><p><strong>fit_rsq</strong> (<em>boolean</em>) – Display the rsq of the fit on the plot. Defaults to False.</p></li>
+<hr style="margin-top:10px; margin-bottom:10px"><p style="color:#4b72b0"><strong>REFERENCE_LINES</strong>: </p>
+<li><p><strong>ref_line</strong> (<em>list</em><em>|</em><em>pd.Series</em>) – The name of one or more columns in the DataFrame or a pandas Series with the same
+number of rows as the x column. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Reference-line">More details</a></p></li>
+<li><p><strong>ref_line_alpha</strong> (<em>str</em><em>|</em><em>list</em>) – Transparency value for the reference line(s) between 0-1 (use list if more than one
+ref_line plotted). Defaults to 1. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Reference-line">More details</a></p></li>
+<li><p><strong>ref_line_color</strong> (<em>str</em><em>|</em><em>list</em>) – Hex color string or list of hex color strings for the reference line (use list if
+more than one ref_line plotted). Defaults to #000000 <span id="rectangle" style="height: 12px; width: 12px; background-color:#000000;  display:inline-block"></span>. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Reference-line">More details</a></p></li>
+<li><p><strong>ref_line_legend_text</strong> (<em>str</em><em>|</em><em>list</em>) – Custom string label(s) to add to a legend for the reference line data (use list
+if more than one ref_line plotted). Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Reference-line">More details</a></p></li>
+<li><p><strong>ref_line_style</strong> (<em>str</em><em>|</em><em>list</em>) – Matplotlib string character for reference line style {‘-‘; ‘–’; ‘-.’ ‘:’} (use list
+if more than one ref_line plotted). Defaults to ‘-‘. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Reference-line">More details</a></p></li>
+<li><p><strong>ref_line_width</strong> (<em>int</em><em>|</em><em>list</em>) – Reference line width in pixels (use list if more than one ref_line plotted). Defaults
+to 1. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Reference-line">More details</a></p></li>
+<hr style="margin-top:10px; margin-bottom:10px"><p style="color:#4b72b0"><strong>STAT_LINES</strong>: </p>
+<li><p><strong>stat</strong> (<em>str</em>) – Calculate a statistic on a data set (any stat value supported by pandas.groupby is valid {‘mean’,
+‘std’, etc}. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Stat">More details</a>-
+lines</p></li>
+<li><p><strong>stat_line_xxx</strong> (<em>various</em>) – Stat-line styling is controlled by the regular line_xxx values. Defaults to None.</p></li>
+<li><p><strong>stat_val</strong> (<em>str</em>) – Alternate column name used as a pseudo x-axis for the stat calculation for cases in which the
+plotted x-column values are not perfectly aligned. Defaults to None. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Stat-lines">More details</a></p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">fivecentplots</span> <span class="k">as</span> <span class="nn">fcp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;test_data&#39;</span> <span class="o">/</span> <span class="s1">&#39;fake_data.csv&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="s1">&#39;Substrate&#39;</span><span class="p">],</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">400</span><span class="p">,</span> <span class="mi">300</span><span class="p">],</span>
+<span class="go">             filter=&#39;Target Wavelength==450 &amp; Temperature [C]==25 &amp; Boost Level==0.2&#39;)</span>
+</pre></div>
+</div>
+<blockquote>
+<div><div class="figure align-default">
+<img alt="../_images/example_plot.png" src="../_images/example_plot.png" />
+</div>
+</div></blockquote>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="tick_labels.html" class="btn btn-neutral float-right" title="tick_labels" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pie.html" class="btn btn-neutral float-left" title="pie" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2022, Steve Nicholes.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

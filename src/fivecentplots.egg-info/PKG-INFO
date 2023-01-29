@@ -1,0 +1,25 @@
+Metadata-Version: 2.1
+Name: fivecentplots
+Version: 0.5.3
+Summary: Wrapper for popular python plotting packages to make visually appealing plots easier
+Home-page: https://github.com/endangeredoxen/fivecentplots
+Download-URL: https://github.com/endangeredoxen/fivecentplots/archive/refs/tags/v0.5.2.tar.gz
+Author: Steve Nicholes
+License: GPLv3
+Platform: linux
+Platform: osx
+Platform: win32
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.6
+Description-Content-Type: text/x-rst
+Provides-Extra: test
+Provides-Extra: test36
+Provides-Extra: doc
+
+Install latest release using:
+
+pip install fivecentplots
+
+Read the docs at:
+
+https://endangeredoxen.github.io/fivecentplots
