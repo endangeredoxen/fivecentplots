@@ -1,10 +1,10 @@
         BASIC:
         cell_size (int): Width of a heatmap cell in pixels. Defaults to 60. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.0/heatmap.html#Cell-size
+          https://endangeredoxen.github.io/fivecentplots/0.5.3/heatmap.html#Cell-size
         cmap (bool): Name of a color map to apply to the plot. Defaults to inferno. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.0/heatmap.html#No-data-labels
+          https://endangeredoxen.github.io/fivecentplots/0.5.3/heatmap.html#No-data-labels
         data_labels (bool): Toggle visibility of value text labels on the heatmap cells. Defaults to False. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.0/heatmap.html#With-data-labels
+          https://endangeredoxen.github.io/fivecentplots/0.5.3/heatmap.html#With-data-labels
         heatmap_edge_width (float): Width of the edges of the heat map cells. Defaults to 0.
         heatmap_font_color (str): Hex color string for the value label text. Defaults to #ffffff.
         heatmap_font_size (int): Font size of the value label text. Defaults to 12.
@@ -12,5 +12,5 @@
           'none’.
         COLOR_BAR:
         cbar (bool): Toggle colorbar on/off for contour and heatmap plots. Defaults to False. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.0/contour.html#Filled-contour
+          https://endangeredoxen.github.io/fivecentplots/0.5.3/contour.html#Filled-contour
         size (int): cbar width [height will match the height of the axes]. Defaults to 30.

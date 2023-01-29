@@ -7,6 +7,7 @@ from pathlib import Path
 import fivecentplots.utilities as utl
 import matplotlib as mpl
 import inspect
+import pytest
 osjoin = os.path.join
 db = pdb.set_trace
 
@@ -480,6 +481,33 @@ def plt_row(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
+def plt_row_no_names(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'grid-plots-row-no-names_master') if master else 'grid-plots-row-no-names'
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', row='Boost Level',
+             show=SHOW, ax_size=[225, 225], label_row_names=False,
+             filter='Substrate=="Si" & Target Wavelength==450 & Temperature [C]==25',
+             filename=name + '.png', save=not bm, inline=False)
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def plt_column(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'grid-plots-column_master') if master else 'grid-plots-column'
@@ -505,6 +533,31 @@ def plt_column(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
+def plt_column_no_names(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'grid-plots-column-no-names_master') if master else 'grid-plots-column-no-names'
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', show=SHOW, ax_size=[225, 225],
+             filter='Substrate=="Si" & Target Wavelength==450 & Temperature [C]==25', label_col_names=False,
+             filename=name + '.png', save=not bm, inline=False)
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+        assert not compare
+
+
 def plt_row_x_column(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'grid-plots-row-x-column_master') if master else 'grid-plots-row-x-column'
@@ -512,6 +565,33 @@ def plt_row_x_column(bm=False, master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]', show=SHOW,
              ax_size=[225, 225],
+             filter='Substrate=="Si" & Target Wavelength==450', label_rc_font_size=13,
+             filename=name + '.png', save=not bm, inline=False)
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_row_x_column_no_names(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'grid-plots-row-x-column-no-names_master') if master else 'grid-plots-row-x-column-no-names'
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]', show=SHOW,
+             ax_size=[225, 225], label_rc_names=False,
              filter='Substrate=="Si" & Target Wavelength==450', label_rc_font_size=13,
              filename=name + '.png', save=not bm, inline=False)
     if bm:
@@ -1435,6 +1515,12 @@ def test_column(benchmark):
     benchmark(plt_column, True)
 
 
+@pytest.mark.skipif(sys.version_info < (3, 7), reason='python3.6 is being deprecated')
+def test_column_no_names(benchmark):
+    plt_column_no_names()
+    benchmark(plt_column_no_names, True)
+
+
 def test_multiple_xy_both(benchmark):
     plt_multiple_xy_both()
     benchmark(plt_multiple_xy_both, True)
@@ -1610,9 +1696,21 @@ def test_row(benchmark):
     benchmark(plt_row, True)
 
 
+@pytest.mark.skipif(sys.version_info < (3, 7), reason='python3.6 is being deprecated')
+def test_row_no_names(benchmark):
+    plt_row_no_names()
+    benchmark(plt_row_no_names, True)
+
+
 def test_row_x_column(benchmark):
     plt_row_x_column()
     benchmark(plt_row_x_column, True)
+
+
+@pytest.mark.skipif(sys.version_info < (3, 7), reason='python3.6 is being deprecated')
+def test_row_x_column_no_names(benchmark):
+    plt_row_x_column_no_names()
+    benchmark(plt_row_x_column_no_names, True)
 
 
 def test_row_x_column_empty(benchmark):

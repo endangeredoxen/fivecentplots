@@ -80,7 +80,8 @@ for ff in files:
         idx = html.find(kk)
         if idx == -1:
             continue
-        html = html.replace(kk, '<hr style="margin-top:10px; margin-bottom:10px">')
+        kk_new = f'<p style="color:{DEFAULT_COLORS[0]}"><strong>{key}</strong>: </p>'
+        html = html.replace(kk, f'<hr style="margin-top:10px; margin-bottom:10px">{kk_new}')
 
     # format required
     required = [m.span() for m in re.finditer('\[REQUIRED\]', html)]

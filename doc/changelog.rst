@@ -1,6 +1,15 @@
 Changelog
 *********
 
+0.5.3
+=====
+* For rc labels, add option to drop the row/column name in the label text with keyword `label_rc_names`, `label_row_names`, or `label_col_names` = `False`
+* Remove deprecated kwarg in `np.histogram` call
+
+0.5.2
+=====
+* Remove feature that restores mpl `rcParams` at end of plot as it can break interactive plotting results
+
 0.5.1
 =====
 * Bug to fix bokeh plots

@@ -95,9 +95,9 @@ class Histogram(data.Data):
                     dfx = df[self.x[0]]
 
                 if brange:
-                    counts, vals = np.histogram(dfx[~np.isnan(dfx)], bins=self.bins, normed=self.norm, range=brange)
+                    counts, vals = np.histogram(dfx[~np.isnan(dfx)], bins=self.bins, density=self.norm, range=brange)
                 else:
-                    counts, vals = np.histogram(dfx[~np.isnan(dfx)], bins=self.bins, normed=self.norm)
+                    counts, vals = np.histogram(dfx[~np.isnan(dfx)], bins=self.bins, density=self.norm)
 
                 # cdf + pdf
                 if self.cdf:
@@ -122,9 +122,9 @@ class Histogram(data.Data):
             else:
                 dfx = df_in[self.x[0]].dropna()
             if brange:
-                counts, vals = np.histogram(dfx[~np.isnan(dfx)], bins=self.bins, normed=self.norm, range=brange)
+                counts, vals = np.histogram(dfx[~np.isnan(dfx)], bins=self.bins, density=self.norm, range=brange)
             else:
-                counts, vals = np.histogram(dfx[~np.isnan(dfx)], bins=self.bins, normed=self.norm)
+                counts, vals = np.histogram(dfx[~np.isnan(dfx)], bins=self.bins, density=self.norm)
 
             # special case of all values being equal
             if len(counts) == 1:

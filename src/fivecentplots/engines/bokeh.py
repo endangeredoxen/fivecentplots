@@ -466,6 +466,10 @@ class Layout(BaseLayout):
         if leg_name is not None and leg_name not in list(self.legend.values['Key']):
             self.legend.add_value(leg_name, points if points is not None else lines, line_type_name)
 
+    def restore(self):
+        """Undo changes to default plotting library parameters."""
+        pass
+
     def save(self, filename: str, idx: int = 0):
         """Save a plot window.
 
