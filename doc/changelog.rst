@@ -1,6 +1,10 @@
 Changelog
 *********
 
+0.6.0
+=====
+* Improved support for bokeh
+
 0.5.3
 =====
 * For rc labels, add option to drop the row/column name in the label text with keyword `label_rc_names`, `label_row_names`, or `label_col_names` = `False`
