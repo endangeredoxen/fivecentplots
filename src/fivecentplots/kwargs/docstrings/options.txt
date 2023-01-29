@@ -1,20 +1,20 @@
         BAYER (list): Color scheme for RGGB channel data so lines and markers match CFA type. Defaults to None. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.3/hist.html#RGB
+          https://endangeredoxen.github.io/fivecentplots/0.6.0/hist.html#RGB
         DEFAULT_COLORS (list): Default color scheme used for lines and markers (from colors.py). Defaults to None.
         HIST (dict): Shortcut of useful kwargs to format hist plots {'ax_scale': 'logy', 'markers': False, 'line_width':
           2, 'preset': 'HIST'}. Defaults to None. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.3/hist.html#fcp.HIST
+          https://endangeredoxen.github.io/fivecentplots/0.6.0/hist.html#fcp.HIST
         engine (str): Specify the plotting engine {'mpl', 'bokeh'}. Defaults to 'mpl'. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.3/layout.html#engine
+          https://endangeredoxen.github.io/fivecentplots/0.6.0/layout.html#engine
         filename (str): Name of the saved image (with or without path and/or extension). Defaults to Automatic name
           based on conditions with extention '.png'. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.3/grouping.html#figure-plots
+          https://endangeredoxen.github.io/fivecentplots/0.6.0/grouping.html#figure-plots
         filepath (str): Name of the directory to save images (convenient if you want to use the default naming but save
           in a different directory. Defaults to current directory.
         inline (boolean): Flag to display the rendered plot in the native plotting viewer or jupyter notebook
           (convenient to disable if doing automated batch plotting). Defaults to True.
         print_filename (boolean): Print the output filename. Defaults to False. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.3/grouping.html#figure-plots
+          https://endangeredoxen.github.io/fivecentplots/0.6.0/grouping.html#figure-plots
         return_filename (boolean): Return the output filename. Defaults to False.
         save (boolean): Save the plot to disc. Defaults to False.
         save_data (boolean): Save the DataFrame subset that is created and used by a given plot. Defaults to False.
@@ -22,5 +22,5 @@
           engine {'mpl': '.png', 'bokeh': '.html'}.
         show (str): Show the saved plot image using the default image viewer of the host PC. Defaults to False.
         theme (str): Select a theme file for the current plot only. Defaults to None. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.3/styles.html#On-the-fly
+          https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#On-the-fly
         timer (boolean): Debug feature to get a time log for each step in the plotting process. Defaults to False.

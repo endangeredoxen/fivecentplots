@@ -1,12 +1,12 @@
         cmap (str): Color map name (overrides all other color parameters). Defaults to None. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.3/styles.html#Colormap
+          https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Colormap
         line_alpha (str|list): Transparency value for the line(s) between 0-1. Defaults to 1. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.3/styles.html#Line-styling
+          https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Line-styling
         line_color (str|list): Hex color string or list of hex color strings for the plot lines. Defaults to
-          fcp.DEFAULT_COLORS. Example: https://endangeredoxen.github.io/fivecentplots/0.5.3/styles.html#Line-styling
+          fcp.DEFAULT_COLORS. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Line-styling
         line_style (str|list): Matplotlib string character for line style {'-'; '--'; '-.' ':'}. Defaults to '-'.
-          Example: https://endangeredoxen.github.io/fivecentplots/0.5.3/styles.html#Line-styling
+          Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Line-styling
         line_width (int|list): Line width in pixels. Defaults to 1. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.3/styles.html#Line-styling
+          https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Line-styling
         lines (boolean): Enable/disable plotting of lines. Defaults to True. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.3/plot.html#Scatter
+          https://endangeredoxen.github.io/fivecentplots/0.6.0/plot.html#Scatter

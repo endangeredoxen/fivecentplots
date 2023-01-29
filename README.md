@@ -2,7 +2,7 @@
 
 ![Tests](https://github.com/endangeredoxen/fivecentplots/actions/workflows/tests.yml/badge.svg)
 
-![intro_plot](https://endangeredoxen.github.io/fivecentplots/0.5.3/_images/index.png)
+![intro_plot](https://endangeredoxen.github.io/fivecentplots/0.6.0/_images/index.png)
 
 *Install the latest version:*
 `pip install fivecentplots`
@@ -55,7 +55,7 @@ There is no shortage of quality plotting libraries in Python. While basic plots 
 
 Consider the following plot of some fake current vs voltage data contained in a dummy DataFrame, ``df``:
 
-![plot](https://endangeredoxen.github.io/fivecentplots/0.5.3/_images/syntax.png)
+![plot](https://endangeredoxen.github.io/fivecentplots/0.6.0/_images/syntax.png)
 
 Using fivecentplots, we need a single function call with the appropriate keyword arguments:
 
@@ -148,4 +148,4 @@ fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', ax_size=[2
          xmin=0, xmax=1.7, ymin=[0, 0, 0], ymax=[1.3, 1.7, 5.2], engine='bokeh')
 ```
 
-![bokeh](https://endangeredoxen.github.io/fivecentplots/0.5.3/_images/syntax_bokeh.png)
+![bokeh](https://endangeredoxen.github.io/fivecentplots/0.6.0/_images/syntax_bokeh.png)
