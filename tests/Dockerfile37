@@ -1,0 +1,29 @@
+FROM ubuntu:20.04
+ENV DEBIAN_FRONTEND noninteractive
+
+# Install python 3.7
+RUN apt update
+RUN apt-get install -y python3.7
+RUN apt-get install -y python3-pip
+
+# Install git
+RUN apt install -y git
+
+# Other libs
+RUN apt-get install ffmpeg libsm6 libxext6 -y
+
+# Clone fcp
+RUN git clone https://github.com/endangeredoxen/fivecentplots.git && cd fivecentplots && git checkout v0.6.0
+
+# Install fcp test build
+RUN python3 -m pip install --upgrade pip setuptools
+RUN cd fivecentplots && pip3 install .[test37]
+RUN pip install ipython
+
+# Clean up fonts
+RUN echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections
+RUN apt install -y msttcorefonts -qq
+RUN rm ~/.cache/matplotlib -rf
+
+# build: docker build -t fcp_test37 -f Dockerfile37 .
+# run: 
