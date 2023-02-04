@@ -823,7 +823,11 @@ class Layout(BaseLayout):
                         leg.legendHandles[itext].set_alpha(self.legend.marker_alpha)
 
             font = self.legend.font if self.legend.font != 'sans-serif' else 'sans'
-            leg.get_title().set_font(font)
+            try:
+                leg.get_title().set_font(font)
+            except AttributeError:
+                # Needed for earlier versions of mpl
+                leg.get_title().set_fontfamily(font)
             leg.get_title().set_fontsize(self.legend.font_size)
             leg.get_frame().set_facecolor(self.legend.fill_color[0])
             leg.get_frame().set_alpha(self.legend.fill_alpha)
@@ -2913,7 +2917,6 @@ class Layout(BaseLayout):
                                     pad=self.ws_ticks_ax,
                                     colors=self.ticks_major_x.color[0],
                                     labelcolor=self.tick_labels_major_x.font_color,
-                                    labelsize=self.tick_labels_major_x.font_size,
                                     top=False,
                                     bottom=self.ticks_major_x.on,
                                     right=False,
@@ -2928,7 +2931,6 @@ class Layout(BaseLayout):
                                     pad=self.ws_ticks_ax,
                                     colors=self.ticks_major_y.color[0],
                                     labelcolor=self.tick_labels_major_y.font_color,
-                                    labelsize=self.tick_labels_major_y.font_size,
                                     top=False,
                                     bottom=False,
                                     right=False,  # if self.axes.twin_x else self.ticks_major_y.on,
@@ -2974,7 +2976,6 @@ class Layout(BaseLayout):
                                         pad=self.ws_ticks_ax,
                                         colors=self.ticks_major_y2.color[0],
                                         labelcolor=self.tick_labels_major_y2.font_color,
-                                        labelsize=self.tick_labels_major_y2.font_size,
                                         right=self.ticks_major_y2.on,
                                         length=self.ticks_major_y2.size[0],
                                         width=self.ticks_major_y2.size[1],
@@ -2985,7 +2986,6 @@ class Layout(BaseLayout):
                                         pad=self.ws_ticks_ax,
                                         colors=self.ticks_minor_y2.color[0],
                                         labelcolor=self.tick_labels_minor_y2.font_color,
-                                        labelsize=self.tick_labels_minor_y2.font_size,
                                         right=self.ticks_minor_y2.on,
                                         length=self.ticks_minor_y2._size[0],
                                         width=self.ticks_minor_y2._size[1],
@@ -2999,7 +2999,6 @@ class Layout(BaseLayout):
                                         pad=self.ws_ticks_ax,
                                         colors=self.ticks_major_x2.color[0],
                                         labelcolor=self.tick_labels_major_x2.font_color,
-                                        labelsize=self.tick_labels_major_x2.font_size,
                                         top=self.ticks_major_x2.on,
                                         length=self.ticks_major_x2.size[0],
                                         width=self.ticks_major_x2.size[1],
@@ -3009,7 +3008,6 @@ class Layout(BaseLayout):
                                         pad=self.ws_ticks_ax * 2,
                                         colors=self.ticks_minor.color[0],
                                         labelcolor=self.tick_labels_minor.font_color,
-                                        labelsize=self.tick_labels_minor.font_size,
                                         top=self.ticks_minor_x2.on,
                                         length=self.ticks_minor._size[0],
                                         width=self.ticks_minor._size[1],
