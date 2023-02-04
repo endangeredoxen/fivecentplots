@@ -1904,7 +1904,6 @@ class Layout(BaseLayout):
                     if isinstance(stacked, pd.Series):
                         stacked = stacked.loc[xvals[idx]].values
                     kwargs['bottom'] = stacked
-                    print(kwargs['bottom'])
             else:
                 kwargs['width'] = self.bar.width / ngroups
                 idx = [f + inst[i] * kwargs['width'] for i, f in enumerate(idx)]
