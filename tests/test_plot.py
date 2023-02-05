@@ -69,9 +69,12 @@ def plt_xy_scatter(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'xy_scatter_master') if master else 'xy_scatter'
 
     # Make the plot (use a different filepath here to test that function)
+    test_path = Path('../dummy')
+    if not os.path.exists(test_path):
+        os.mkdir(test_path)
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False,
              show=False, filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             filename=name + '.png', save=not bm, inline=False)
+             filename=name + '.png', save=not bm, inline=False, filepath=test_path)
     if bm:
         return
 
@@ -79,12 +82,15 @@ def plt_xy_scatter(bm=False, master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        compare = utl.img_compare(os.path.join('..', name + '.png'), osjoin(MASTER, name + '_master.png'), show=True)
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(os.path.join(test_path, name + '.png'))
+        compare = utl.img_compare(os.path.join(test_path, name + '.png'), osjoin(MASTER, name + '_master.png'),
+                                  show=True)
     else:
-        compare = utl.img_compare(os.path.join('..', name + '.png'), osjoin(MASTER, name + '_master.png'))
+        compare = utl.img_compare(os.path.join(test_path, name + '.png'), osjoin(MASTER, name + '_master.png'))
         if remove:
-            os.remove(os.path.join('..', name + '.png'))
-
+            os.remove(os.path.join(test_path, name + '.png'))
+            os.rmdir(test_path)
         assert not compare
 
 

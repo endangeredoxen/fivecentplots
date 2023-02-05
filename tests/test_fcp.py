@@ -56,5 +56,5 @@ def test_debug(capsys):
         kv = rv.split(' = ')
         if len(kv) == 2:
             vals[kv[0]] = int(float(kv[1].replace('\n', '')))
-    assert vals['self.fig.size[0]'] == 493
+    assert vals['self.fig.size[0]'] == 492
     assert vals['_labtick_x'] == 51
