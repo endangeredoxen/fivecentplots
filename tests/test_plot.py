@@ -71,7 +71,7 @@ def plt_xy_scatter(bm=False, master=False, remove=True, show=False):
     # Make the plot (use a different filepath here to test that function)
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False,
              show=False, filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             filename=name + '.png', save=not bm, inline=False, filepath='..')
+             filename=name + '.png', save=not bm, inline=False)
     if bm:
         return
 
@@ -79,8 +79,6 @@ def plt_xy_scatter(bm=False, master=False, remove=True, show=False):
     if master:
         return
     elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(os.path.join('..', name + '.png'))
         compare = utl.img_compare(os.path.join('..', name + '.png'), osjoin(MASTER, name + '_master.png'), show=True)
     else:
         compare = utl.img_compare(os.path.join('..', name + '.png'), osjoin(MASTER, name + '_master.png'))
