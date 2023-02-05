@@ -24,7 +24,7 @@ jobs:
         pip install .[test]
         # echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
         # sudo apt install msttcorefonts -qq
-        rm ~/.cache/matplotlib -rf
+        # rm ~/.cache/matplotlib -rf
     - name: Lint with flake8
       run: |
         flake8 src
