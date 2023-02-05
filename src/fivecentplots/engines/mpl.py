@@ -885,7 +885,7 @@ class Layout(BaseLayout):
             else:
                 for irow, row in enumerate(self.axes.obj):
                     for icol, col in enumerate(row):
-                        if self.legend.nleg == 1 and not(irow == 0 and icol == self.ncol - 1):
+                        if self.legend.nleg == 1 and not (irow == 0 and icol == self.ncol - 1):
                             continue
                         self.legend.obj = \
                             col.legend(lines, keys, loc=self.legend.location,
@@ -1192,7 +1192,7 @@ class Layout(BaseLayout):
                         label_max_width = bbox.width + 1
 
                     # rotate labels that are longer than the box axis size
-                    if bbox.width > label_max_width and not(self.box_scale == 'auto' and ii == 0):
+                    if bbox.width > label_max_width and not (self.box_scale == 'auto' and ii == 0):
                         lab.obj[ir, ic][ii, jj].set_rotation(90)
                         bbox = lab.obj[ir, ic][ii, jj].get_window_extent()
 
