@@ -1,3 +1,4 @@
+# As of v0.6, python 3.6 testing is deprecated
 name: Tests
 
 on:
@@ -9,7 +10,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ['3.8', '3.10']
+        python-version: ['3.9', '3.10']
 
     steps:
     - uses: actions/checkout@v2
@@ -31,21 +32,21 @@ jobs:
       run: |
         python -m pytest tests -s
 
-  test36:
-    runs-on: ubuntu-18.04
+  test38:
+    runs-on: ubuntu-20.04
 
     steps:
     - uses: actions/checkout@v2
-    - name: Set up python 3.6
+    - name: Set up python 3.8
       uses: actions/setup-python@v2
       with:
-        python-version: 3.6
+        python-version: 3.8
     - name: Install dependencies
       run: |
-        sudo apt-get install -y ffmpeg libsm6 libxext6
+        # sudo apt-get install -y ffmpeg libsm6 libxext6
         sudo apt-get install -y python3-pip
         python3 -m pip install --upgrade pip
-        pip3 install .[test36]
+        pip3 install .[test_old]
         echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
         sudo apt install msttcorefonts -qq
         rm ~/.cache/matplotlib -rf
