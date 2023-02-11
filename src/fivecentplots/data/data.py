@@ -429,9 +429,9 @@ class Data:
         vals = getattr(self, xyz)
 
         # Allow plotting by the dataframe index
-        if 'index' in vals and self.name == 'xy':
+        if vals is not None and 'index' in vals and self.name == 'xy':
             self.df_all.index.name = 'index'
-        if self.df_all.index.name in vals and self.name == 'xy':
+        if vals is not None and self.df_all.index.name in vals and self.name == 'xy':
             self.df_all = self.df_all.reset_index()
 
         if vals is None and xyz not in self.opt:
