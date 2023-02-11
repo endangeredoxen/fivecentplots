@@ -120,6 +120,54 @@ def plt_xy_scatter_swap(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
+def plt_xy_index(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'xy_index_master') if master else 'xy_index'
+
+    # Make the plot using an unamed index column
+    fcp.plot(df, x='index', y='I [A]', legend='Die', show=SHOW, ymax=1.4,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             filename=name + '.png', save=not bm, inline=False)
+    if bm:
+        return
+
+    # Compare with master
+    if not master and show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    elif not master:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+    ########################################################################################################
+    # Make the plot using an named index column
+    name = osjoin(MASTER, 'xy_index2_master') if master else 'xy_index2'
+
+    df_idx = df.copy()
+    df_idx.index.name = 'weezer'
+    fcp.plot(df_idx, x='weezer', y='I [A]', legend='Die', show=SHOW, ymax=1.4,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             filename=name + '.png', save=not bm, inline=False)
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def plt_xy_legend(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'xy_legend_master') if master else 'xy_legend'
@@ -1755,6 +1803,11 @@ def test_wrap(benchmark):
 def test_xy_categorical(benchmark):
     plt_xy_categorical()
     benchmark(plt_xy_categorical, True)
+
+
+def test_xy_index(benchmark):
+    plt_xy_index()
+    benchmark(plt_xy_index, True)
 
 
 def test_xy_legend(benchmark):
