@@ -3317,7 +3317,7 @@ class Layout(BaseLayout):
                         if lab.obj[ir, ic].get_rotation() == 90:
                             offsetx += 2  # this may not hold for all cases
                             offsety += 1
-                        if lab.obj_bg:
+                        if isinstance(lab.obj_bg, np.ndarray) or lab.obj_bg is not None:
                             lab.obj_bg[ir, ic].set_x(x - offsetx / self.axes.size[0])
                             lab.obj_bg[ir, ic].set_y(y - offsety / self.axes.size[1])
 
