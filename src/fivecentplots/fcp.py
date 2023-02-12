@@ -1444,11 +1444,11 @@ def plot_xy(data, layout, ir, ic, df_rc, kwargs):
             pass
         elif kwargs.get('groups', False):
             for nn, gg in df.groupby(utl.validate_list(kwargs['groups']), sort=data.sort):
-                layout.plot_xy(ir, ic, iline, gg, x, y, leg_name, twin)
+                layout.plot_xy(ir, ic, iline, gg, x, y, leg_name, twin, z=z)
                 plot_fit(data, layout, ir, ic, iline, gg,
                          x, y, twin, leg_name, ngroups)
         else:
-            layout.plot_xy(ir, ic, iline, df, x, y, leg_name, twin)
+            layout.plot_xy(ir, ic, iline, df, x, y, leg_name, twin, z=z)
             plot_fit(data, layout, ir, ic, iline, df,
                      x, y, twin, leg_name, ngroups)
 

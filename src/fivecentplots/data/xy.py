@@ -15,4 +15,10 @@ class XY(data.Data):
         """
         name = 'xy'
 
-        super().__init__(name, **kwargs)
+        # 3d option
+        if 'z' in kwargs.keys():
+            opt = ['z']
+        else:
+            opt = []
+
+        super().__init__(name, opt=opt, **kwargs)

@@ -904,7 +904,7 @@ def set_save_filename(df: pd.DataFrame, ifig: int, fig_item: [None, str],
         return filename + fig + ext
 
     # Build a filename
-    if 'z' in kwargs.keys():
+    if 'z' in kwargs.keys() and kwargs['z'] is not None:
         z = layout.label_z.text + ' vs '
     else:
         z = ''

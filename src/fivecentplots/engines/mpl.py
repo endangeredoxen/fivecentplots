@@ -761,30 +761,31 @@ class Layout(BaseLayout):
         else:
             offsety = 0
 
-        # Define the label background
-        rect = patches.Rectangle((position[0], position[3]),
-                                 size[0] / self.axes.size[0],
-                                 size[1] / self.axes.size[1],
-                                 fill=True,
-                                 transform=self.axes.obj[ir, ic].transAxes,
-                                 facecolor=fill_color if isinstance(fill_color, str)
-                                 else fill_color[utl.plot_num(ir, ic, self.ncol)],
-                                 edgecolor=edge_color if isinstance(edge_color, str)
-                                 else edge_color[utl.plot_num(ir, ic, self.ncol)],
-                                 lw=edge_width if isinstance(edge_width, int) else 1,
-                                 clip_on=False, zorder=1)
-        self.axes.obj[ir, ic].add_patch(rect)
+        text_kwargs = {'transform': self.axes.obj[ir, ic].transAxes, 'horizontalalignment': 'center',
+                       'verticalalignment': 'center', 'rotation': rotation, 'color': font_color, 'fontname': font,
+                       'style': font_style, 'weight': font_weight, 'size': font_size}
 
-        # Add the label text
-        text = self.axes.obj[ir, ic].text(
-            position[0] + offsetx,
-            position[3] + offsety,
-            text,
-            transform=self.axes.obj[ir, ic].transAxes,
-            horizontalalignment='center',  # backgroundcolor='#ff0000',
-            verticalalignment='center', rotation=rotation,
-            color=font_color, fontname=font, style=font_style,
-            weight=font_weight, size=font_size)
+        if not self._3d:
+            # Define the label background
+            rect = patches.Rectangle((position[0], position[3]),
+                                     size[0] / self.axes.size[0],
+                                     size[1] / self.axes.size[1],
+                                     fill=True,
+                                     transform=self.axes.obj[ir, ic].transAxes,
+                                     facecolor=fill_color if isinstance(fill_color, str)
+                                     else fill_color[utl.plot_num(ir, ic, self.ncol)],
+                                     edgecolor=edge_color if isinstance(edge_color, str)
+                                     else edge_color[utl.plot_num(ir, ic, self.ncol)],
+                                     lw=edge_width if isinstance(edge_width, int) else 1,
+                                     clip_on=False, zorder=1)
+            self.axes.obj[ir, ic].add_patch(rect)
+
+            # Add the label text
+            text = self.axes.obj[ir, ic].text(position[0] + offsetx, position[3] + offsety, text, **text_kwargs)
+
+        else:
+            rect = None
+            text = self.axes.obj[ir, ic].text(position[0] + offsetx, position[3] + offsety, 0, text, **text_kwargs)
 
         return text, rect
 
@@ -953,6 +954,10 @@ class Layout(BaseLayout):
                 elif hasattr(obj, attr):
                     kw[attr] = getattr(obj, attr)
 
+            text_kwargs = {'transform': transform, 'rotation': kw['rotation'], 'color': kw['font_color'],
+                           'fontname': kw['font'], 'style': kw['font_style'], 'weight': kw['font_weight'],
+                           'size': kw['font_size'], 'zorder': 45,
+                           'bbox': dict(facecolor=kw['fill_color'], edgecolor=kw['edge_color'])}
             if element:
                 # Get position
                 if 'position' in kwargs.keys():
@@ -979,28 +984,15 @@ class Layout(BaseLayout):
                     position[0] = 0.01
 
                 # Add the text
-                ax.text(position[0] + offsetx,
-                        position[1] + offsety,
-                        txt, transform=transform,
-                        rotation=kw['rotation'],
-                        color=kw['font_color'],
-                        fontname=kw['font'],
-                        style=kw['font_style'],
-                        weight=kw['font_weight'],
-                        size=kw['font_size'],
-                        bbox=dict(facecolor=kw['fill_color'], edgecolor=kw['edge_color']),
-                        zorder=45)
+                if self._3d:
+                    ax.text(position[0] + offsetx, position[1] + offsety, 0, txt, **text_kwargs)
+                else:
+                    ax.text(position[0] + offsetx, position[1] + offsety, txt, **text_kwargs)
             else:
-                obj.obj[ir, ic][itext] = ax.text(0, 0,
-                                                 txt, transform=transform,
-                                                 rotation=kw['rotation'],
-                                                 color=kw['font_color'],
-                                                 fontname=kw['font'],
-                                                 style=kw['font_style'],
-                                                 weight=kw['font_weight'],
-                                                 size=kw['font_size'],
-                                                 bbox=dict(facecolor=kw['fill_color'], edgecolor=kw['edge_color']),
-                                                 zorder=45)
+                if self._3d:
+                    obj.obj[ir, ic][itext] = ax.text(0, 0, 0, txt, **text_kwargs)
+                else:
+                    obj.obj[ir, ic][itext] = ax.text(0, 0, txt, **text_kwargs)
 
     def close(self):
         """Close an inline plot window."""
@@ -1122,11 +1114,14 @@ class Layout(BaseLayout):
                 lab.size_all = (ir, ic, 0, 0, width, height, bbox.x0, bbox.x1, bbox.y0, bbox.y1, np.nan)
 
                 # text label rect background (ax label has to be resized!)
-                bbox = lab.obj_bg[ir, ic].get_window_extent()
-                lab.size_all_bg = (ir, ic, 0, 0, bbox.width, bbox.height, bbox.x0, bbox.x1, bbox.y0, bbox.y1, np.nan)
-                if label not in ['row', 'col', 'wrap']:
-                    lab.obj_bg[ir, ic].set_width((width + lab.bg_padding * 2) / self.axes.size[0])
-                    lab.obj_bg[ir, ic].set_height((height + lab.bg_padding * 2) / self.axes.size[1])
+                if lab.obj_bg[ir, ic] is not None:
+                    bbox = lab.obj_bg[ir, ic].get_window_extent()
+                    lab.size_all_bg = (ir, ic, 0, 0, bbox.width, bbox.height, bbox.x0, bbox.x1, bbox.y0, bbox.y1, np.nan)
+                    if label not in ['row', 'col', 'wrap']:
+                        lab.obj_bg[ir, ic].set_width((width + lab.bg_padding * 2) / self.axes.size[0])
+                        lab.obj_bg[ir, ic].set_height((height + lab.bg_padding * 2) / self.axes.size[1])
+                else:
+                    lab.size_all_bg = (ir, ic, 0, 0, 0, 0, 0, 0, 0, 0, np.nan)
 
             # set max size
             width = lab.size_all.width.max()
@@ -1749,6 +1744,10 @@ class Layout(BaseLayout):
         # TODO:: minor overlaps
         # TODO:: self.axes2
 
+        # temp hack
+        if self._3d:
+            return
+
         for ir, ic in np.ndindex(self.axes.obj.shape):
             # size_all by idx:
             #   ir, ic, width, height, x0, x1, y0, y1
@@ -1823,6 +1822,7 @@ class Layout(BaseLayout):
                           facecolor=self.fig.fill_color[0],
                           edgecolor=self.fig.edge_color[0],
                           linewidth=self.fig.edge_width,
+                          subplot_kw={'projection': '3d'} if self._3d else {},
                           )
 
         # Set default axes visibility
@@ -2460,7 +2460,7 @@ class Layout(BaseLayout):
 
     def plot_xy(self, ir: int, ic: int, iline: int, df: pd.DataFrame, x: str, y: str,
                 leg_name: str, twin: bool, zorder: int = 1, line_type: [str, None] = None,
-                marker_disable: bool = False):
+                marker_disable: bool = False, z: [str, None] = None):
         """ Plot xy data
 
         Args:
@@ -2508,6 +2508,12 @@ class Layout(BaseLayout):
         else:
             dfx = df[x]
 
+        # 3d setup
+        if self._3d:
+            args = dfx, df[y], df[z]
+        else:
+            args = dfx, df[y]
+
         points = None
         if self.markers.on and not marker_disable:
             if self.markers.jitter:
@@ -2519,7 +2525,7 @@ class Layout(BaseLayout):
                     c = self.markers.edge_color[(iline, leg_name)]
                 else:
                     c = self.markers.fill_color[(iline, leg_name)] if self.markers.filled else 'none'
-                points = ax.scatter(dfx, df[y],
+                points = ax.scatter(*args,
                                     s=df[self.markers.size]**2 if isinstance(self.markers.size, str)
                                     else self.markers.size[iline]**2,
                                     marker=marker,
@@ -2531,7 +2537,7 @@ class Layout(BaseLayout):
                                     )
             else:
                 # what is the use case here?
-                points = ax.plot(dfx, df[y],
+                points = ax.plot(*args,
                                  marker=marker,
                                  color=line_type.color[(iline, leg_name)],
                                  linestyle=line_type.style[iline],
@@ -2547,8 +2553,14 @@ class Layout(BaseLayout):
             except TypeError:
                 mask = dfx == dfx
 
+            # 3d setup
+            if self._3d:
+                args = dfx[mask], df[y][mask], df[z][mask]
+            else:
+                args = dfx[mask], df[y][mask]
+
             # Plot the line
-            lines = ax.plot(dfx[mask], df[y][mask],
+            lines = ax.plot(*args,
                             color=line_type.color[(iline, leg_name)],
                             linestyle=line_type.style[iline],
                             linewidth=line_type.width[iline],
@@ -3305,8 +3317,9 @@ class Layout(BaseLayout):
                         if lab.obj[ir, ic].get_rotation() == 90:
                             offsetx += 2  # this may not hold for all cases
                             offsety += 1
-                        lab.obj_bg[ir, ic].set_x(x - offsetx / self.axes.size[0])
-                        lab.obj_bg[ir, ic].set_y(y - offsety / self.axes.size[1])
+                        if lab.obj_bg:
+                            lab.obj_bg[ir, ic].set_x(x - offsetx / self.axes.size[0])
+                            lab.obj_bg[ir, ic].set_y(y - offsety / self.axes.size[1])
 
         # Update the rc label positions
         self._get_rc_label_position()

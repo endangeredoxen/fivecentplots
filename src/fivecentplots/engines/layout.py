@@ -288,6 +288,11 @@ class BaseLayout:
         # Update the label text
         self._set_label_text(data)
 
+        # Set 3d state
+        self._3d = False
+        if self.name in ['xy'] and getattr(data, 'z') is not None:
+            self._3d = True
+
     def _init_axes(self, data, kwargs: dict) -> dict:
         """Create the axes object
 
