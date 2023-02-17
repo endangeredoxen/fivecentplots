@@ -2001,7 +2001,7 @@ class BaseLayout:
         title = utl.kwget(kwargs, self.fcpp, 'title', None)
         self.title = Element('title', self.fcpp, kwargs,
                              on=True if title is not None else False,
-                             text=title if title is not None else None,
+                             text=str(title) if title is not None else None,
                              font_color='#333333',
                              font_size=18,
                              font_weight='bold',
