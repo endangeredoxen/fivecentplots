@@ -1,3 +1,4 @@
+# As of v0.5.4, python 3.6 testing is deprecated
 name: Tests
 
 on:
@@ -5,7 +6,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-20.04
+    runs-on: macos-12
 
     strategy:
       matrix:
@@ -21,34 +22,12 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install .[test]
-        echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
-        sudo apt install msttcorefonts -qq
-        rm ~/.cache/matplotlib -rf
+        # echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
+        # sudo apt install msttcorefonts -qq
+        # rm ~/.cache/matplotlib -rf
     - name: Lint with flake8
       run: |
         flake8 src
-    - name: Plot tests
-      run: |
-        python -m pytest tests -s
-
-  test36:
-    runs-on: ubuntu-18.04
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up python 3.6
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.6
-    - name: Install dependencies
-      run: |
-        sudo apt-get install -y ffmpeg libsm6 libxext6
-        sudo apt-get install -y python3-pip
-        python3 -m pip install --upgrade pip
-        pip3 install .[test36]
-        echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
-        sudo apt install msttcorefonts -qq
-        rm ~/.cache/matplotlib -rf
     - name: Plot tests
       run: |
         python -m pytest tests -s
