@@ -49,7 +49,7 @@ def make_all():
         print('done!')
 
 
-def show_all(only_fails=False):
+def show_all(only_fails=True):
     """
     Remake all test master images
     """

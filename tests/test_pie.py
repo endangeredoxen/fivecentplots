@@ -50,7 +50,7 @@ def make_all():
         print('done!')
 
 
-def show_all(only_fails=False):
+def show_all(only_fails=True):
     """
     Run the show=True option on all plt functions
     """
