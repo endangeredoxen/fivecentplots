@@ -467,7 +467,7 @@ class Layout(BaseLayout):
     def _left(self) -> float:
         """Width of the space to the left of the axes object."""
         left = self.ws_fig_label + self._labtick_y
-        title_xs_left = self.title.size[0] / 2 + self.ws_fig_ax \
+        title_xs_left = self.title.size[0] / 2 + (self.ws_fig_ax if self.title.on else 0) \
             - (left + (self.axes.size[0] * self.ncol + self.ws_col * (self.ncol - 1)) / 2)
         if title_xs_left < 0:
             title_xs_left = 0
@@ -527,6 +527,7 @@ class Layout(BaseLayout):
             - (right + (self.axes.size[0] * self.ncol + self.ws_col * (self.ncol - 1)) / 2) - self.legend.size[0]
         if title_xs_right < 0:
             title_xs_right = 0
+
         right += title_xs_right
 
         # pie labels
@@ -1338,8 +1339,7 @@ class Layout(BaseLayout):
             self.ws_row += self.box_labels
 
         if self.title.on:
-            self.ws_title = self.ws_fig_title + \
-                self.title.size[1] + self.ws_title_ax
+            self.ws_title = self.ws_fig_title + self.title.size[1] + self.ws_title_ax
         else:
             self.ws_title = self.ws_fig_ax
 
@@ -1770,6 +1770,8 @@ class Layout(BaseLayout):
             else:
                 yticks_size_all = []
 
+            self.x_tick_xs = 0
+            self.y_tick_xs = 0
             if len(xticks_size_all) > 0:
                 idx = xticks.size_cols.index('x1')
                 xxs = self.axes.obj[ir, ic].get_window_extent().x1 \
@@ -2652,7 +2654,7 @@ class Layout(BaseLayout):
             else:
                 kwargs = {'which': 'major'}
                 kwargs.update(self._get_grid_visibility_kwarg(False))
-                ax.obj[ir, ic].yaxis.grid(*kwargs)
+                ax.obj[ir, ic].yaxis.grid(**kwargs)
 
             if self.grid_major_y2 and not ax.primary:
                 if self.grid_major_y2.on:
@@ -3295,7 +3297,16 @@ class Layout(BaseLayout):
         # Render dummy figure to get the element sizes
         self._get_element_sizes(data)
 
-        # Determine if extra whitespace is needed at the plot edge for the last tick
+        # Determine if extra whitespace is needed at the plot edge for the last tick; since the final figure size has
+        # not yet be set, need to reposition the subplots first before determining tick excess
+        self._get_subplots_adjust()
+        self.fig.obj.subplots_adjust(left=self.axes.position[0],
+                                     right=self.axes.position[1],
+                                     top=self.axes.position[2],
+                                     bottom=self.axes.position[3],
+                                     hspace=1.0 * self.ws_row / self.axes.size[1],
+                                     wspace=1.0 * self.ws_col / self.axes.size[0],
+                                     )
         self._get_tick_xs()
 
         # Resize the figure
