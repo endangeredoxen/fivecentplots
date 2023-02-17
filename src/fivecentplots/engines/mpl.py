@@ -3299,6 +3299,7 @@ class Layout(BaseLayout):
 
         # Determine if extra whitespace is needed at the plot edge for the last tick; since the final figure size has
         # not yet be set, need to reposition the subplots first before determining tick excess
+        self._get_figure_size(data, **kwargs)
         self._get_subplots_adjust()
         self.fig.obj.subplots_adjust(left=self.axes.position[0],
                                      right=self.axes.position[1],
