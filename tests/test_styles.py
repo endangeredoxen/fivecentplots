@@ -760,11 +760,9 @@ def test_fonts(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             title='My Plot', title_font_style='italic',
-             label_y_font_size=25, label_y_style='normal',
-             label_x_font_weight='normal',
-             tick_labels_major_font='fantasy',
-             filename=name + '.png')
+             title='My Oh My This Is Way Too Long of a Title for This Plot What Were You Thinking!',
+             title_font_style='italic', label_y_font_size=25, label_y_style='normal',
+             label_x_font_weight='normal', tick_labels_major_font='fantasy', filename=name + '.png')
 
     # Compare with master
     if master:
