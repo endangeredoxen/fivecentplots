@@ -1,0 +1,1426 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>keyword docs &mdash; fivecentplots beta documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Archivo Black" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "document", "processHtmlClass": "math|output_area"}}</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> fivecentplots
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.5.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layout.html">Layout and Elements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="grouping.html">Grouping data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="styles.html">Styles and formatting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ranges.html">Data ranges</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ticks.html">Grids and ticks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/fcp.html">API</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Plot Types</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="plot.html">plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="barplot.html">barplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gantt.html">gantt charts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heatmap.html">heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hist.html">hist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="imshow.html">imshow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nq.html">nq</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pie.html">pie</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Other</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="older.html">Older Versions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/endangeredoxen/fivecentplots">GitHub</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">fivecentplots</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>keyword docs</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/sandbox.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[163]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="o">%</span><span class="k">load_ext</span> autoreload
+<span class="o">%</span><span class="k">autoreload</span> 2
+<span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">pdb</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="sa">r</span><span class="s1">&#39;C:\Github\fileio&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span>
+<span class="kn">import</span> <span class="nn">fileio</span>
+<span class="kn">import</span> <span class="nn">fivecentplots</span> <span class="k">as</span> <span class="nn">fcp</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The autoreload extension is already loaded. To reload it, use:
+  %reload_ext autoreload
+</pre></div></div>
+</div>
+<div class="section" id="keyword-docs">
+<h1>keyword docs<a class="headerlink" href="#keyword-docs" title="Permalink to this headline">¶</a></h1>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[166]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">file</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;C:\GitHub\fivecentplots\fivecentplots\keywords.xlsx&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[226]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="s1">&#39;Data&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[227]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">df</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[227]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Keyword</th>
+      <th>Data Type</th>
+      <th>Description</th>
+      <th>Default</th>
+      <th>Example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>auto_scale</td>
+      <td>True</td>
+      <td>enable/disable auto-scaling feature for one-si...</td>
+      <td>True</td>
+      <td>`auto-scale &lt;ranges.html#Primary-axes-only&gt;`_</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>specification; not allowed for heatmap or hist...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>col</td>
+      <td>str</td>
+      <td>name of DataFrame column to use for column-bas...</td>
+      <td>None</td>
+      <td>`column plot &lt;plot.html#Column-plot&gt;`_</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>fig_groups</td>
+      <td>str|list of str</td>
+      <td>DataFrame column(s) to use for figure-level gr...</td>
+      <td>None</td>
+      <td>`figure plots &lt;grouping.html#figure-plots&gt;`_</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>filter</td>
+      <td>str</td>
+      <td>string-based DataFrame filter (similar to quer...</td>
+      <td>None</td>
+      <td>see most plot examples</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>ncol</td>
+      <td>int</td>
+      <td>specify the number of columns in a wrap plot</td>
+      <td>try to make square grid</td>
+      <td>`compare two cases &lt;grouping.html?highlight=nc...</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>row</td>
+      <td>str</td>
+      <td>name of DataFrame column to use for row-based ...</td>
+      <td>None</td>
+      <td>`row plot &lt;plot.html#Row-plot&gt;`_</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>share_x</td>
+      <td>boolean</td>
+      <td>enable primary x-axis range sharing across all...</td>
+      <td>True</td>
+      <td>`axis sharing &lt;ranges.html#Axes-sharing&gt;`_</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>share_y</td>
+      <td>boolean</td>
+      <td>enable primary y-axis range sharing across all...</td>
+      <td>True</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>share_z</td>
+      <td>boolean</td>
+      <td>enable primary z-axis range sharing across all...</td>
+      <td>True</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>share_x2</td>
+      <td>boolean</td>
+      <td>enable secondary x-axis range sharing across a...</td>
+      <td>True</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>share_y2</td>
+      <td>boolean</td>
+      <td>enable secondary y-axis range sharing across a...</td>
+      <td>True</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>share_col</td>
+      <td>boolean</td>
+      <td>enable axis range sharing for all subplots in ...</td>
+      <td>False</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>share_row</td>
+      <td>boolean</td>
+      <td>enable axis range sharing for all subplots in ...</td>
+      <td>False</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>trans_x</td>
+      <td>str|None</td>
+      <td>apply an axis transformation to a given axis</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>options: 'abs', 'negative' or 'neg', 'nq' (nor...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>inverse' or 'inv', ('pow', int), 'flip'</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>trans_x2</td>
+      <td>str|None</td>
+      <td>same as ``trans_x``</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>trans_y</td>
+      <td>str|None</td>
+      <td>same as ``trans_x``</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>trans_y2</td>
+      <td>str|None</td>
+      <td>same as ``trans_x``</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>trans_z</td>
+      <td>str|None</td>
+      <td>same as ``trans_x``</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>wrap</td>
+      <td>str|list</td>
+      <td>name or list of names of DataFrame columns for...</td>
+      <td>NaN</td>
+      <td>`wrap plot &lt;plot.html#Wrap-plot&gt;`_</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[228]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">width</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+    <span class="n">width</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="nb">len</span><span class="p">(</span><span class="n">col</span><span class="p">))</span> <span class="o">+</span> <span class="mi">2</span>
+<span class="n">width</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[228]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Keyword</th>
+      <th>Data Type</th>
+      <th>Description</th>
+      <th>Default</th>
+      <th>Example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>12</td>
+      <td>17</td>
+      <td>68</td>
+      <td>25</td>
+      <td>70</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[229]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">line</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">width</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+    <span class="n">line</span> <span class="o">+=</span> <span class="s1">&#39;+&#39;</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span><span class="o">*</span><span class="n">width</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">line</span> <span class="o">+=</span> <span class="s1">&#39;+</span><span class="se">\n</span><span class="s1">&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[230]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">tab</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="k">for</span> <span class="n">irow</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">row</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">tab</span> <span class="o">+=</span> <span class="p">((</span><span class="s1">&#39;| </span><span class="si">%s</span><span class="s1"> &#39;</span> <span class="o">%</span> <span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="n">width</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">,</span> <span class="s1">&#39;   &#39;</span><span class="p">)</span>
+    <span class="n">tab</span> <span class="o">+=</span> <span class="s1">&#39;|</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="c1"># check for vertical merged</span>
+    <span class="n">line0</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">line</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;+&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">irow</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">nrow</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">irow</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">icol</span><span class="p">,</span> <span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">nrow</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">float</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                <span class="n">line0</span><span class="p">[</span><span class="n">icol</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">line0</span><span class="p">[</span><span class="n">icol</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="n">line0</span> <span class="o">=</span> <span class="s1">&#39;+&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">line0</span><span class="p">)</span>
+    <span class="n">tab</span> <span class="o">+=</span> <span class="n">line0</span>
+<span class="c1">#print(tab)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[231]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">header</span> <span class="o">=</span> <span class="n">line</span>
+<span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="p">(</span><span class="s1">&#39;| </span><span class="si">%s</span><span class="s1"> &#39;</span> <span class="o">%</span> <span class="n">col</span><span class="p">)</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="n">width</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">header</span> <span class="o">+=</span> <span class="s1">&#39;|</span><span class="se">\n</span><span class="s1">&#39;</span>
+<span class="n">header</span> <span class="o">+=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">)</span>
+<span class="c1">#print(header)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[232]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">header</span> <span class="o">+</span> <span class="n">tab</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
++------------+-----------------+--------------------------------------------------------------------+-------------------------+----------------------------------------------------------------------+
+| Keyword    | Data Type       | Description                                                        | Default                 | Example                                                              |
++============+=================+====================================================================+=========================+======================================================================+
+| auto_scale | True            | enable/disable auto-scaling feature for one-side range             | True                    | `auto-scale &lt;ranges.html#Primary-axes-only&gt;`_                        |
++            +                 +--------------------------------------------------------------------+                         +                                                                      +
+|            |                 | specification; not allowed for heatmap or histogram                |                         |                                                                      |
++------------+-----------------+--------------------------------------------------------------------+-------------------------+----------------------------------------------------------------------+
+| col        | str             | name of DataFrame column to use for column-based subplots          | None                    | `column plot &lt;plot.html#Column-plot&gt;`_                               |
++------------+-----------------+--------------------------------------------------------------------+-------------------------+----------------------------------------------------------------------+
+| fig_groups | str|list of str | DataFrame column(s) to use for figure-level grouping               | None                    | `figure plots &lt;grouping.html#figure-plots&gt;`_                         |
++------------+-----------------+--------------------------------------------------------------------+-------------------------+----------------------------------------------------------------------+
+| filter     | str             | string-based DataFrame filter (similar to query in pandas)         | None                    | see most plot examples                                               |
++------------+-----------------+--------------------------------------------------------------------+-------------------------+----------------------------------------------------------------------+
+| ncol       | int             | specify the number of columns in a wrap plot                       | try to make square grid | `compare two cases &lt;grouping.html?highlight=ncol#By-unique-values&gt;`_ |
++------------+-----------------+--------------------------------------------------------------------+-------------------------+----------------------------------------------------------------------+
+| row        | str             | name of DataFrame column to use for row-based subplots             | None                    | `row plot &lt;plot.html#Row-plot&gt;`_                                     |
++------------+-----------------+--------------------------------------------------------------------+-------------------------+----------------------------------------------------------------------+
+| share_x    | boolean         | enable primary x-axis range sharing across all subplots            | True                    | `axis sharing &lt;ranges.html#Axes-sharing&gt;`_                           |
++------------+-----------------+--------------------------------------------------------------------+-------------------------+                                                                      +
+| share_y    | boolean         | enable primary y-axis range sharing across all subplots            | True                    |                                                                      |
++------------+-----------------+--------------------------------------------------------------------+-------------------------+                                                                      +
+| share_z    | boolean         | enable primary z-axis range sharing across all subplots            | True                    |                                                                      |
++------------+-----------------+--------------------------------------------------------------------+-------------------------+                                                                      +
+| share_x2   | boolean         | enable secondary x-axis range sharing across all subplots          | True                    |                                                                      |
++------------+-----------------+--------------------------------------------------------------------+-------------------------+                                                                      +
+| share_y2   | boolean         | enable secondary y-axis range sharing across all subplots          | True                    |                                                                      |
++------------+-----------------+--------------------------------------------------------------------+-------------------------+                                                                      +
+| share_col  | boolean         | enable axis range sharing for all subplots in a column of subplots | False                   |                                                                      |
++------------+-----------------+--------------------------------------------------------------------+-------------------------+                                                                      +
+| share_row  | boolean         | enable axis range sharing for all subplots in a row of subplots    | False                   |                                                                      |
++------------+-----------------+--------------------------------------------------------------------+-------------------------+----------------------------------------------------------------------+
+| trans_x    | str|None        | apply an axis transformation to a given axis                       | None                    | None                                                                 |
++            +                 +--------------------------------------------------------------------+                         +                                                                      +
+|            |                 | options: &#39;abs&#39;, &#39;negative&#39; or &#39;neg&#39;, &#39;nq&#39; (normal quantile)        |                         |                                                                      |
++            +                 +--------------------------------------------------------------------+                         +                                                                      +
+|            |                 | inverse&#39; or &#39;inv&#39;, (&#39;pow&#39;, int), &#39;flip&#39;                            |                         |                                                                      |
++------------+-----------------+--------------------------------------------------------------------+-------------------------+----------------------------------------------------------------------+
+| trans_x2   | str|None        | same as ``trans_x``                                                | None                    | None                                                                 |
++------------+-----------------+--------------------------------------------------------------------+-------------------------+----------------------------------------------------------------------+
+| trans_y    | str|None        | same as ``trans_x``                                                | None                    | None                                                                 |
++------------+-----------------+--------------------------------------------------------------------+-------------------------+----------------------------------------------------------------------+
+| trans_y2   | str|None        | same as ``trans_x``                                                | None                    | None                                                                 |
++------------+-----------------+--------------------------------------------------------------------+-------------------------+----------------------------------------------------------------------+
+| trans_z    | str|None        | same as ``trans_x``                                                | None                    | None                                                                 |
++------------+-----------------+--------------------------------------------------------------------+                         +----------------------------------------------------------------------+
+| wrap       | str|list        | name or list of names of DataFrame columns for wrap-type subplots  |                         | `wrap plot &lt;plot.html#Wrap-plot&gt;`_                                   |
++------------+-----------------+--------------------------------------------------------------------+-------------------------+----------------------------------------------------------------------+
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">fileio</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">xls_2_rst</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;Contour&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
++--------------+-----------+----------------------------------------+---------+--------------------------------------------------+
+| Keyword      | Data Type | Description                            | Default | Example                                          |
++==============+===========+========================================+=========+==================================================+
+| :hh:`cmap`   | str       | Name of a color map                    | inferno | `contour example &lt;contour.html#Filled-contour&gt;`_ |
++--------------+-----------+----------------------------------------+---------+                                                  +
+| :hh:`filled` | boolean   | Fill area between contour lines        | True    |                                                  |
++--------------+-----------+----------------------------------------+---------+                                                  +
+| :hh:`levels` | int       | Number of contour lines/levels to draw | 20      |                                                  |
++--------------+-----------+----------------------------------------+---------+--------------------------------------------------+
+
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="o">%</span><span class="k">time</span> fcp.plot(df=df, x=&#39;Voltage&#39;, y=&#39;I [A]&#39;, legend=&#39;Die&#39;, inline=True, show=True, \
+              <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">,</span>\
+              <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;Substrate&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">],</span>  \
+              <span class="n">rc_label_fill_color</span><span class="o">=</span><span class="s1">&#39;#fffd75&#39;</span><span class="p">,</span> <span class="n">rc_label_fill_alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>\
+              <span class="n">rc_label_font_color</span><span class="o">=</span><span class="s1">&#39;#000000&#39;</span><span class="p">,</span> <span class="n">wrap_title_fill_color</span><span class="o">=</span><span class="s1">&#39;#00FFFF&#39;</span><span class="p">,</span> \
+              <span class="n">wrap_title_font_color</span><span class="o">=</span><span class="s1">&#39;#000000&#39;</span><span class="p">,</span> <span class="n">label_fill_color</span><span class="o">=</span><span class="s1">&#39;#FF0000&#39;</span><span class="p">,</span> <span class="n">label_fill_alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="bug-fixes">
+<h1>bug fixes<a class="headerlink" href="#bug-fixes" title="Permalink to this headline">¶</a></h1>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;C:\data\Denver_Test_Case.xlsx&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>bins</th>
+      <th>values</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>NaN</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>-0.005976</td>
+      <td>325</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>NaN</td>
+      <td>14334</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>-0.001976</td>
+      <td>307513</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>NaN</td>
+      <td>1453260</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;bins&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;values&#39;</span><span class="p">,</span> <span class="n">ax_scale</span><span class="o">=</span><span class="s1">&#39;logy&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/sandbox_15_0.png" src="_images/sandbox_15_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;bins&#39;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">semilogy</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">mask</span><span class="p">][</span><span class="s1">&#39;bins&#39;</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="n">mask</span><span class="p">][</span><span class="s1">&#39;values&#39;</span><span class="p">],</span> <span class="s1">&#39;o-&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/sandbox_16_0.png" src="_images/sandbox_16_0.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[129]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">def</span> <span class="nf">mpl_get_ticks</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">xon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">yon</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Divine a bunch of tick and label parameters for mpl layouts</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ax (mpl.axes)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict of x and y ax tick parameters</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">tp</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">xy</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">xon</span><span class="p">:</span>
+        <span class="n">xy</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">yon</span><span class="p">:</span>
+        <span class="n">xy</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">vv</span> <span class="ow">in</span> <span class="n">xy</span><span class="p">:</span>
+        <span class="n">tp</span><span class="p">[</span><span class="n">vv</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">tp</span><span class="p">[</span><span class="n">vv</span><span class="p">][</span><span class="s1">&#39;min&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="s1">&#39;get_</span><span class="si">%s</span><span class="s1">lim&#39;</span> <span class="o">%</span> <span class="n">vv</span><span class="p">)())</span>
+        <span class="n">tp</span><span class="p">[</span><span class="n">vv</span><span class="p">][</span><span class="s1">&#39;max&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="s1">&#39;get_</span><span class="si">%s</span><span class="s1">lim&#39;</span> <span class="o">%</span> <span class="n">vv</span><span class="p">)())</span>
+        <span class="n">tp</span><span class="p">[</span><span class="n">vv</span><span class="p">][</span><span class="s1">&#39;ticks&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="s1">&#39;get_</span><span class="si">%s</span><span class="s1">ticks&#39;</span> <span class="o">%</span> <span class="n">vv</span><span class="p">)()</span>
+        <span class="n">tp</span><span class="p">[</span><span class="n">vv</span><span class="p">][</span><span class="s1">&#39;labels&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">axis&#39;</span> <span class="o">%</span> <span class="n">vv</span><span class="p">)</span><span class="o">.</span><span class="n">iter_ticks</span><span class="p">()]</span>
+        <span class="n">tp</span><span class="p">[</span><span class="n">vv</span><span class="p">][</span><span class="s1">&#39;label_vals&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">tp</span><span class="p">[</span><span class="n">vv</span><span class="p">][</span><span class="s1">&#39;labels&#39;</span><span class="p">]]</span>
+        <span class="n">tp</span><span class="p">[</span><span class="n">vv</span><span class="p">][</span><span class="s1">&#39;label_text&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">tp</span><span class="p">[</span><span class="n">vv</span><span class="p">][</span><span class="s1">&#39;labels&#39;</span><span class="p">]]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">tp</span><span class="p">[</span><span class="n">vv</span><span class="p">][</span><span class="s1">&#39;first&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tp</span><span class="p">[</span><span class="n">vv</span><span class="p">][</span><span class="s1">&#39;labels&#39;</span><span class="p">])</span>
+                               <span class="k">if</span> <span class="n">f</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">tp</span><span class="p">[</span><span class="n">vv</span><span class="p">][</span><span class="s1">&#39;min&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">f</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">tp</span><span class="p">[</span><span class="n">vv</span><span class="p">][</span><span class="s1">&#39;first&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">999</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">tp</span><span class="p">[</span><span class="n">vv</span><span class="p">][</span><span class="s1">&#39;last&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tp</span><span class="p">[</span><span class="n">vv</span><span class="p">][</span><span class="s1">&#39;labels&#39;</span><span class="p">])</span>
+                              <span class="k">if</span> <span class="n">f</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">tp</span><span class="p">[</span><span class="n">vv</span><span class="p">][</span><span class="s1">&#39;max&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">f</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">tp</span><span class="p">[</span><span class="n">vv</span><span class="p">][</span><span class="s1">&#39;last&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">999</span>
+
+    <span class="n">missing</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">f</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tp</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+    <span class="k">for</span> <span class="n">mm</span> <span class="ow">in</span> <span class="n">missing</span><span class="p">:</span>
+        <span class="n">tp</span><span class="p">[</span><span class="n">mm</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">tp</span><span class="p">[</span><span class="n">mm</span><span class="p">][</span><span class="s1">&#39;ticks&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">tp</span><span class="p">[</span><span class="n">mm</span><span class="p">][</span><span class="s1">&#39;labels&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">tp</span><span class="p">[</span><span class="n">mm</span><span class="p">][</span><span class="s1">&#39;label_text&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">tp</span><span class="p">[</span><span class="n">mm</span><span class="p">][</span><span class="s1">&#39;first&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">999</span>
+        <span class="n">tp</span><span class="p">[</span><span class="n">mm</span><span class="p">][</span><span class="s1">&#39;last&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">999</span>
+
+    <span class="k">return</span> <span class="n">tp</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[104]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">osjoin</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;test_data/fake_data.csv&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[162]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="n">share_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Temperature [C]==25&#39;</span><span class="p">,</span> <span class="n">xmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mf">1.6</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">ymax</span><span class="o">=</span><span class="p">[</span><span class="mf">1.3</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">,</span> <span class="mf">5.2</span><span class="p">],</span>
+         <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;bokeh&#39;</span><span class="p">,</span> <span class="n">ref_line</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">],</span> <span class="n">ref_line_legend_text</span><span class="o">=</span><span class="s1">&#39;y==x&#39;</span><span class="p">,</span> <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[162]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+      <meta charset="utf-8">
+      <title>Bokeh Plot</title>
+
+
+
+
+        <link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-1.1.0.min.css" type="text/css" />
+
+
+
+        <script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-1.1.0.min.js"></script>
+        <script type="text/javascript">
+            Bokeh.set_log_level("info");
+        </script>
+
+
+
+
+  </head>
+
+
+  <body>
+
+
+
+
+
+
+              <div class="bk-root" id="c3d2151d-54a8-47db-838d-b20fe9455dad" data-root-id="6320"></div>
+
+
+
+
+
+        <script type="application/json" id="7014">
+          {"adc84afc-10f9-43ad-b402-173832455de3":{"roots":{"references":[{"attributes":{"data_source":{"id":"6239","type":"ColumnDataSource"},"glyph":{"id":"6240","type":"Square"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"6241","type":"Square"},"selection_glyph":null,"view":{"id":"6243","type":"CDSView"}},"id":"6242","type":"GlyphRenderer"},{"attributes":{},"id":"6381","type":"UnionRenderers"},{"attributes":{"data_source":{"id":"6179","type":"ColumnDataSource"},"glyph":{"id":"6180","type":"Line"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"6181","type":"Line"},"selection_glyph":null,"view":{"id":"6183","type":"CDSView"}},"id":"6182","type":"GlyphRenderer"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Knx0k1iQD+4+qAdJtBWP1/b7Fkh9oM/ZTkJpS+EnD9JMNXMWgrAP86luKrsu9o/xRaCHJQw7z/Opbiq7Lv6Pw==","dtype":"float64","shape":[17]}},"selected":{"id":"6371","type":"Selection"},"selection_policy":{"id":"6372","type":"UnionRenderers"}},"id":"6239","type":"ColumnDataSource"},{"attributes":{"line_alpha":0.1,"line_color":"#1f77b4","x":{"field":"x"},"y":{"field":"y"}},"id":"6166","type":"Line"},{"attributes":{"data_source":{"id":"6164","type":"ColumnDataSource"},"glyph":{"id":"6165","type":"Line"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"6166","type":"Line"},"selection_glyph":null,"view":{"id":"6168","type":"CDSView"}},"id":"6167","type":"GlyphRenderer"},{"attributes":{"source":{"id":"6179","type":"ColumnDataSource"}},"id":"6183","type":"CDSView"},{"attributes":{"line_alpha":0.1,"line_color":"#1f77b4","x":{"field":"x"},"y":{"field":"y"}},"id":"6246","type":"Line"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":"#1f77b4"},"line_alpha":{"value":0.1},"line_color":{"value":"#1f77b4"},"size":{"units":"screen","value":7},"x":{"field":"x"},"y":{"field":"y"}},"id":"6176","type":"Cross"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":"#1f77b4"},"line_alpha":{"value":0.1},"line_color":{"value":"#1f77b4"},"size":{"units":"screen","value":7},"x":{"field":"x"},"y":{"field":"y"}},"id":"6161","type":"Circle"},{"attributes":{"source":{"id":"6169","type":"ColumnDataSource"}},"id":"6173","type":"CDSView"},{"attributes":{"source":{"id":"6174","type":"ColumnDataSource"}},"id":"6178","type":"CDSView"},{"attributes":{"line_alpha":0.1,"line_color":"#1f77b4","x":{"field":"x"},"y":{"field":"y"}},"id":"6171","type":"Line"},{"attributes":{"data_source":{"id":"6234","type":"ColumnDataSource"},"glyph":{"id":"6235","type":"Line"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"6236","type":"Line"},"selection_glyph":null,"view":{"id":"6238","type":"CDSView"}},"id":"6237","type":"GlyphRenderer"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]}},"selected":{"id":"6344","type":"Selection"},"selection_policy":{"id":"6345","type":"UnionRenderers"}},"id":"6169","type":"ColumnDataSource"},{"attributes":{"line_color":"#54a767","x":{"field":"x"},"y":{"field":"y"}},"id":"6245","type":"Line"},{"attributes":{},"id":"6387","type":"UnionRenderers"},{"attributes":{"line_color":"#4b72b0","x":{"field":"x"},"y":{"field":"y"}},"id":"6165","type":"Line"},{"attributes":{},"id":"6388","type":"Selection"},{"attributes":{"line_alpha":0.1,"line_color":"#1f77b4","x":{"field":"x"},"y":{"field":"y"}},"id":"6236","type":"Line"},{"attributes":{"callback":null,"end":1.8},"id":"6257","type":"Range1d"},{"attributes":{"source":{"id":"6164","type":"ColumnDataSource"}},"id":"6168","type":"CDSView"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]}},"selected":{"id":"6369","type":"Selection"},"selection_policy":{"id":"6370","type":"UnionRenderers"}},"id":"6234","type":"ColumnDataSource"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8qfHSTWJQP3jpJjEIrHw/Gy/dJAaBlT+yne+nxku3P39qvHSTGNQ/N4lBYOXQ5j8/NV66SQz0Pw==","dtype":"float64","shape":[17]}},"selected":{"id":"6340","type":"Selection"},"selection_policy":{"id":"6341","type":"UnionRenderers"}},"id":"6159","type":"ColumnDataSource"},{"attributes":{},"id":"6341","type":"UnionRenderers"},{"attributes":{"source":{"id":"6244","type":"ColumnDataSource"}},"id":"6248","type":"CDSView"},{"attributes":{"source":{"id":"6159","type":"ColumnDataSource"}},"id":"6163","type":"CDSView"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8qfHSTWJQP3jpJjEIrHw/exSuR+F6lD9aZDvfT423Py2yne+nxtM/MQisHFpk5z8UrkfhehT0Pw==","dtype":"float64","shape":[17]}},"selected":{"id":"6348","type":"Selection"},"selection_policy":{"id":"6349","type":"UnionRenderers"}},"id":"6179","type":"ColumnDataSource"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":"#1f77b4"},"line_alpha":{"value":0.1},"line_color":{"value":"#1f77b4"},"size":{"units":"screen","value":7},"x":{"field":"x"},"y":{"field":"y"}},"id":"6226","type":"Cross"},{"attributes":{"fill_color":{"value":null},"line_color":{"value":"#54a767"},"size":{"units":"screen","value":7},"x":{"field":"x"},"y":{"field":"y"}},"id":"6240","type":"Square"},{"attributes":{},"id":"6385","type":"UnionRenderers"},{"attributes":{"line_color":"#000000","x":{"field":"x"},"y":{"field":"y"}},"id":"6170","type":"Line"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8qfHSTWJQP3jpJjEIrHw/exSuR+F6lD9aZDvfT423Py2yne+nxtM/MQisHFpk5z8UrkfhehT0Pw==","dtype":"float64","shape":[17]}},"selected":{"id":"6346","type":"Selection"},"selection_policy":{"id":"6347","type":"UnionRenderers"}},"id":"6174","type":"ColumnDataSource"},{"attributes":{"source":{"id":"6239","type":"ColumnDataSource"}},"id":"6243","type":"CDSView"},{"attributes":{"align":"center","background_fill_color":{"value":"#8c8c8c"},"text":" Boost Level=1.0 ","text_color":{"value":"#ffffff"},"text_font_size":{"value":"16pt"}},"id":"6308","type":"Title"},{"attributes":{},"id":"6389","type":"UnionRenderers"},{"attributes":{"data_source":{"id":"6174","type":"ColumnDataSource"},"glyph":{"id":"6175","type":"Cross"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"6176","type":"Cross"},"selection_glyph":null,"view":{"id":"6178","type":"CDSView"}},"id":"6177","type":"GlyphRenderer"},{"attributes":{"data_source":{"id":"6159","type":"ColumnDataSource"},"glyph":{"id":"6160","type":"Circle"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"6161","type":"Circle"},"selection_glyph":null,"view":{"id":"6163","type":"CDSView"}},"id":"6162","type":"GlyphRenderer"},{"attributes":{"align":"center","background_fill_color":{"value":"#8c8c8c"},"text":" Boost Level=0.2 ","text_color":{"value":"#ffffff"},"text_font_size":{"value":"16pt"}},"id":"6208","type":"Title"},{"attributes":{},"id":"6391","type":"UnionRenderers"},{"attributes":{"fill_color":{"value":null},"line_color":{"value":"#c34e52"},"size":{"units":"screen","value":7},"x":{"field":"x"},"y":{"field":"y"}},"id":"6225","type":"Cross"},{"attributes":{"data_source":{"id":"6169","type":"ColumnDataSource"},"glyph":{"id":"6170","type":"Line"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"6171","type":"Line"},"selection_glyph":null,"view":{"id":"6173","type":"CDSView"}},"id":"6172","type":"GlyphRenderer"},{"attributes":{"line_color":"#000000","x":{"field":"x"},"y":{"field":"y"}},"id":"6235","type":"Line"},{"attributes":{},"id":"6382","type":"Selection"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Knx0k1iQD+4+qAdJtBWP1/b7Fkh9oM/ZTkJpS+EnD9JMNXMWgrAP86luKrsu9o/xRaCHJQw7z/Opbiq7Lv6Pw==","dtype":"float64","shape":[17]}},"selected":{"id":"6373","type":"Selection"},"selection_policy":{"id":"6374","type":"UnionRenderers"}},"id":"6244","type":"ColumnDataSource"},{"attributes":{},"id":"6393","type":"UnionRenderers"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8qfHSTWJQP3jpJjEIrHw/Gy/dJAaBlT+yne+nxku3P39qvHSTGNQ/N4lBYOXQ5j8/NV66SQz0Pw==","dtype":"float64","shape":[17]}},"selected":{"id":"6342","type":"Selection"},"selection_policy":{"id":"6343","type":"UnionRenderers"}},"id":"6164","type":"ColumnDataSource"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":"#1f77b4"},"line_alpha":{"value":0.1},"line_color":{"value":"#1f77b4"},"size":{"units":"screen","value":7},"x":{"field":"x"},"y":{"field":"y"}},"id":"6241","type":"Square"},{"attributes":{"data_source":{"id":"6244","type":"ColumnDataSource"},"glyph":{"id":"6245","type":"Line"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"6246","type":"Line"},"selection_glyph":null,"view":{"id":"6248","type":"CDSView"}},"id":"6247","type":"GlyphRenderer"},{"attributes":{},"id":"6390","type":"Selection"},{"attributes":{"fill_color":{"value":null},"line_color":{"value":"#c34e52"},"size":{"units":"screen","value":7},"x":{"field":"x"},"y":{"field":"y"}},"id":"6175","type":"Cross"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]}},"selected":{"id":"6375","type":"Selection"},"selection_policy":{"id":"6376","type":"UnionRenderers"}},"id":"6249","type":"ColumnDataSource"},{"attributes":{"line_alpha":0.1,"line_color":"#1f77b4","x":{"field":"x"},"y":{"field":"y"}},"id":"6181","type":"Line"},{"attributes":{"source":{"id":"6224","type":"ColumnDataSource"}},"id":"6228","type":"CDSView"},{"attributes":{"line_color":"#c34e52","x":{"field":"x"},"y":{"field":"y"}},"id":"6180","type":"Line"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]}},"selected":{"id":"6350","type":"Selection"},"selection_policy":{"id":"6351","type":"UnionRenderers"}},"id":"6184","type":"ColumnDataSource"},{"attributes":{},"id":"6392","type":"Selection"},{"attributes":{},"id":"6386","type":"Selection"},{"attributes":{},"id":"6383","type":"UnionRenderers"},{"attributes":{"data_source":{"id":"6224","type":"ColumnDataSource"},"glyph":{"id":"6225","type":"Cross"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"6226","type":"Cross"},"selection_glyph":null,"view":{"id":"6228","type":"CDSView"}},"id":"6227","type":"GlyphRenderer"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Knx0k1iUD+Qa0PFOH9TPx3+mqxRD4E/dEaU9gZfmD9Cz2bV52q7Pw0CK4cW2dY/Di2yne+n6j8NAiuHFtn2Pw==","dtype":"float64","shape":[17]}},"selected":{"id":"6365","type":"Selection"},"selection_policy":{"id":"6366","type":"UnionRenderers"}},"id":"6224","type":"ColumnDataSource"},{"attributes":{},"id":"6384","type":"Selection"},{"attributes":{"source":{"id":"6234","type":"ColumnDataSource"}},"id":"6238","type":"CDSView"},{"attributes":{},"id":"6378","type":"Selection"},{"attributes":{},"id":"6369","type":"Selection"},{"attributes":{},"id":"6379","type":"UnionRenderers"},{"attributes":{},"id":"6363","type":"Selection"},{"attributes":{},"id":"6366","type":"UnionRenderers"},{"attributes":{},"id":"6380","type":"Selection"},{"attributes":{},"id":"6350","type":"Selection"},{"attributes":{},"id":"6349","type":"UnionRenderers"},{"attributes":{},"id":"6352","type":"Selection"},{"attributes":{"bottom_units":"screen","fill_alpha":{"value":0.5},"fill_color":{"value":"lightgrey"},"left_units":"screen","level":"overlay","line_alpha":{"value":1.0},"line_color":{"value":"black"},"line_dash":[4,4],"line_width":{"value":2},"render_mode":"css","right_units":"screen","top_units":"screen"},"id":"6358","type":"BoxAnnotation"},{"attributes":{},"id":"6354","type":"Selection"},{"attributes":{"background_fill_color":{"value":"#eaeaea"},"below":[{"id":"6072","type":"LinearAxis"}],"center":[{"id":"6076","type":"Grid"},{"id":"6081","type":"Grid"}],"left":[{"id":"6077","type":"LinearAxis"}],"plot_height":285,"plot_width":293,"renderers":[{"id":"6162","type":"GlyphRenderer"},{"id":"6167","type":"GlyphRenderer"},{"id":"6172","type":"GlyphRenderer"},{"id":"6177","type":"GlyphRenderer"},{"id":"6182","type":"GlyphRenderer"},{"id":"6187","type":"GlyphRenderer"},{"id":"6192","type":"GlyphRenderer"},{"id":"6197","type":"GlyphRenderer"},{"id":"6202","type":"GlyphRenderer"}],"title":{"id":"6208","type":"Title"},"toolbar":{"id":"6088","type":"Toolbar"},"x_range":{"id":"6205","type":"Range1d"},"x_scale":{"id":"6068","type":"LinearScale"},"y_range":{"id":"6207","type":"Range1d"},"y_scale":{"id":"6070","type":"LinearScale"}},"id":"6063","subtype":"Figure","type":"Plot"},{"attributes":{},"id":"6365","type":"Selection"},{"attributes":{},"id":"6362","type":"UnionRenderers"},{"attributes":{"bottom_units":"screen","fill_alpha":{"value":0.5},"fill_color":{"value":"lightgrey"},"left_units":"screen","level":"overlay","line_alpha":{"value":1.0},"line_color":{"value":"black"},"line_dash":[4,4],"line_width":{"value":2},"render_mode":"css","right_units":"screen","top_units":"screen"},"id":"6377","type":"BoxAnnotation"},{"attributes":{},"id":"6396","type":"Selection"},{"attributes":{},"id":"6397","type":"UnionRenderers"},{"attributes":{},"id":"6359","type":"Selection"},{"attributes":{},"id":"6374","type":"UnionRenderers"},{"attributes":{},"id":"6373","type":"Selection"},{"attributes":{},"id":"6345","type":"UnionRenderers"},{"attributes":{"callback":null,"end":1.3},"id":"6207","type":"Range1d"},{"attributes":{},"id":"6361","type":"Selection"},{"attributes":{},"id":"6351","type":"UnionRenderers"},{"attributes":{"line_color":"#000000","x":{"field":"x"},"y":{"field":"y"}},"id":"6185","type":"Line"},{"attributes":{},"id":"6375","type":"Selection"},{"attributes":{},"id":"6355","type":"UnionRenderers"},{"attributes":{},"id":"6394","type":"Selection"},{"attributes":{"line_alpha":0.1,"line_color":"#1f77b4","x":{"field":"x"},"y":{"field":"y"}},"id":"6186","type":"Line"},{"attributes":{},"id":"6376","type":"UnionRenderers"},{"attributes":{},"id":"6347","type":"UnionRenderers"},{"attributes":{},"id":"6372","type":"UnionRenderers"},{"attributes":{},"id":"6370","type":"UnionRenderers"},{"attributes":{},"id":"6360","type":"UnionRenderers"},{"attributes":{},"id":"6395","type":"UnionRenderers"},{"attributes":{},"id":"6364","type":"UnionRenderers"},{"attributes":{},"id":"6353","type":"UnionRenderers"},{"attributes":{},"id":"6367","type":"Selection"},{"attributes":{"grid_line_color":{"value":"#ffffff"},"grid_line_width":{"value":1.3},"minor_grid_line_width":{"value":0.5},"ticker":{"id":"6105","type":"BasicTicker"}},"id":"6108","type":"Grid"},{"attributes":{},"id":"6356","type":"Selection"},{"attributes":{},"id":"6348","type":"Selection"},{"attributes":{},"id":"6371","type":"Selection"},{"attributes":{},"id":"6368","type":"UnionRenderers"},{"attributes":{},"id":"6346","type":"Selection"},{"attributes":{},"id":"6357","type":"UnionRenderers"},{"attributes":{},"id":"6070","type":"LinearScale"},{"attributes":{"source":{"id":"6189","type":"ColumnDataSource"}},"id":"6193","type":"CDSView"},{"attributes":{"data_source":{"id":"6184","type":"ColumnDataSource"},"glyph":{"id":"6185","type":"Line"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"6186","type":"Line"},"selection_glyph":null,"view":{"id":"6188","type":"CDSView"}},"id":"6187","type":"GlyphRenderer"},{"attributes":{"grid_line_color":{"value":"#ffffff"},"grid_line_width":{"value":1.3},"minor_grid_line_width":{"value":0.5},"ticker":{"id":"6073","type":"BasicTicker"}},"id":"6076","type":"Grid"},{"attributes":{"active_drag":"auto","active_inspect":"auto","active_multi":null,"active_scroll":"auto","active_tap":"auto","tools":[{"id":"6146","type":"PanTool"},{"id":"6147","type":"WheelZoomTool"},{"id":"6148","type":"BoxZoomTool"},{"id":"6149","type":"SaveTool"},{"id":"6150","type":"ResetTool"},{"id":"6151","type":"HelpTool"}]},"id":"6152","type":"Toolbar"},{"attributes":{},"id":"6114","type":"PanTool"},{"attributes":{"line_alpha":0.1,"line_color":"#1f77b4","x":{"field":"x"},"y":{"field":"y"}},"id":"6296","type":"Line"},{"attributes":{"axis_label":"Voltage","axis_label_text_color":{"value":"#000000"},"axis_label_text_font":"sans-serif","axis_label_text_font_size":{"value":"14pt"},"formatter":{"id":"6329","type":"BasicTickFormatter"},"major_label_text_font_size":{"value":"13pt"},"ticker":{"id":"6073","type":"BasicTicker"}},"id":"6072","type":"LinearAxis"},{"attributes":{},"id":"6137","type":"BasicTicker"},{"attributes":{},"id":"6150","type":"ResetTool"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]}},"selected":{"id":"6388","type":"Selection"},"selection_policy":{"id":"6389","type":"UnionRenderers"}},"id":"6284","type":"ColumnDataSource"},{"attributes":{"source":{"id":"6309","type":"ColumnDataSource"}},"id":"6313","type":"CDSView"},{"attributes":{"data_source":{"id":"6209","type":"ColumnDataSource"},"glyph":{"id":"6210","type":"Circle"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"6211","type":"Circle"},"selection_glyph":null,"view":{"id":"6213","type":"CDSView"}},"id":"6212","type":"GlyphRenderer"},{"attributes":{"source":{"id":"6229","type":"ColumnDataSource"}},"id":"6233","type":"CDSView"},{"attributes":{"label":{"value":"(1,1)"},"renderers":[{"id":"6262","type":"GlyphRenderer"},{"id":"6267","type":"GlyphRenderer"}]},"id":"6316","type":"LegendItem"},{"attributes":{"callback":null,"end":1.6},"id":"6255","type":"Range1d"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":"#1f77b4"},"line_alpha":{"value":0.1},"line_color":{"value":"#1f77b4"},"size":{"units":"screen","value":7},"x":{"field":"x"},"y":{"field":"y"}},"id":"6291","type":"Square"},{"attributes":{},"id":"6337","type":"BasicTickFormatter"},{"attributes":{"background_fill_color":{"value":"#eaeaea"},"below":[{"id":"6104","type":"LinearAxis"}],"center":[{"id":"6108","type":"Grid"},{"id":"6113","type":"Grid"}],"left":[{"id":"6109","type":"LinearAxis"}],"plot_height":285,"plot_width":260,"renderers":[{"id":"6212","type":"GlyphRenderer"},{"id":"6217","type":"GlyphRenderer"},{"id":"6222","type":"GlyphRenderer"},{"id":"6227","type":"GlyphRenderer"},{"id":"6232","type":"GlyphRenderer"},{"id":"6237","type":"GlyphRenderer"},{"id":"6242","type":"GlyphRenderer"},{"id":"6247","type":"GlyphRenderer"},{"id":"6252","type":"GlyphRenderer"}],"title":{"id":"6258","type":"Title"},"toolbar":{"id":"6120","type":"Toolbar"},"x_range":{"id":"6255","type":"Range1d"},"x_scale":{"id":"6100","type":"LinearScale"},"y_range":{"id":"6257","type":"Range1d"},"y_scale":{"id":"6102","type":"LinearScale"}},"id":"6095","subtype":"Figure","type":"Plot"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAexSuR+F6ZD+4HoXrUbh+P+xRuB6F65E/mpmZmZmZmT8zMzMzMzOzP2ZmZmZmZsY/zczMzMzMzD8AAAAAAAD0PwAAAAAAAABAAAAAAAAADEAAAAAAAAAUQA==","dtype":"float64","shape":[17]}},"selected":{"id":"6384","type":"Selection"},"selection_policy":{"id":"6385","type":"UnionRenderers"}},"id":"6274","type":"ColumnDataSource"},{"attributes":{"source":{"id":"6289","type":"ColumnDataSource"}},"id":"6293","type":"CDSView"},{"attributes":{"callback":null,"end":5.2},"id":"6307","type":"Range1d"},{"attributes":{"data_source":{"id":"6279","type":"ColumnDataSource"},"glyph":{"id":"6280","type":"Line"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"6281","type":"Line"},"selection_glyph":null,"view":{"id":"6283","type":"CDSView"}},"id":"6282","type":"GlyphRenderer"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]}},"selected":{"id":"6356","type":"Selection"},"selection_policy":{"id":"6357","type":"UnionRenderers"}},"id":"6199","type":"ColumnDataSource"},{"attributes":{},"id":"6117","type":"SaveTool"},{"attributes":{"dimension":1,"grid_line_color":{"value":"#ffffff"},"grid_line_width":{"value":1.3},"minor_grid_line_width":{"value":0.5},"ticker":{"id":"6142","type":"BasicTicker"}},"id":"6145","type":"Grid"},{"attributes":{"source":{"id":"6184","type":"ColumnDataSource"}},"id":"6188","type":"CDSView"},{"attributes":{"label":{"value":"y==x"},"renderers":[{"id":"6302","type":"GlyphRenderer"}]},"id":"6317","type":"LegendItem"},{"attributes":{"overlay":{"id":"6339","type":"BoxAnnotation"}},"id":"6084","type":"BoxZoomTool"},{"attributes":{},"id":"6087","type":"HelpTool"},{"attributes":{"label":{"value":"(-1,2)"},"renderers":[{"id":"6292","type":"GlyphRenderer"},{"id":"6297","type":"GlyphRenderer"}]},"id":"6319","type":"LegendItem"},{"attributes":{"callback":null,"end":1.6},"id":"6305","type":"Range1d"},{"attributes":{},"id":"6333","type":"BasicTickFormatter"},{"attributes":{"formatter":{"id":"6331","type":"BasicTickFormatter"},"major_label_text_font_size":{"value":"13pt"},"ticker":{"id":"6110","type":"BasicTicker"}},"id":"6109","type":"LinearAxis"},{"attributes":{},"id":"6100","type":"LinearScale"},{"attributes":{"line_color":"#54a767","x":{"field":"x"},"y":{"field":"y"}},"id":"6195","type":"Line"},{"attributes":{"line_alpha":0.1,"line_color":"#1f77b4","x":{"field":"x"},"y":{"field":"y"}},"id":"6286","type":"Line"},{"attributes":{"fill_color":{"value":null},"line_color":{"value":"#54a767"},"size":{"units":"screen","value":7},"x":{"field":"x"},"y":{"field":"y"}},"id":"6290","type":"Square"},{"attributes":{"callback":null,"data":{},"selected":{"id":"6396","type":"Selection"},"selection_policy":{"id":"6397","type":"UnionRenderers"}},"id":"6309","type":"ColumnDataSource"},{"attributes":{"data_source":{"id":"6299","type":"ColumnDataSource"},"glyph":{"id":"6300","type":"Line"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"6301","type":"Line"},"selection_glyph":null,"view":{"id":"6303","type":"CDSView"}},"id":"6302","type":"GlyphRenderer"},{"attributes":{"dimension":1,"grid_line_color":{"value":"#ffffff"},"grid_line_width":{"value":1.3},"minor_grid_line_width":{"value":0.5},"ticker":{"id":"6078","type":"BasicTicker"}},"id":"6081","type":"Grid"},{"attributes":{"data_source":{"id":"6309","type":"ColumnDataSource"},"glyph":{"id":"6310","type":"Circle"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"6311","type":"Circle"},"selection_glyph":null,"view":{"id":"6313","type":"CDSView"}},"id":"6312","type":"GlyphRenderer"},{"attributes":{"items":[{"id":"6315","type":"LegendItem"},{"id":"6316","type":"LegendItem"},{"id":"6317","type":"LegendItem"},{"id":"6318","type":"LegendItem"},{"id":"6319","type":"LegendItem"}]},"id":"6314","type":"Legend"},{"attributes":{"overlay":{"id":"6377","type":"BoxAnnotation"}},"id":"6148","type":"BoxZoomTool"},{"attributes":{},"id":"6115","type":"WheelZoomTool"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAL26jAbwFUj9GJXUCmghrP9IA3gIJin8/u0kMAiuHhj9MN4lBYOWgP4PAyqFFtrM/8tJNYhBYuT+amZmZmZnhPylcj8L1KOw/pHA9Ctej+D+amZmZmZkBQA==","dtype":"float64","shape":[17]}},"selected":{"id":"6392","type":"Selection"},"selection_policy":{"id":"6393","type":"UnionRenderers"}},"id":"6294","type":"ColumnDataSource"},{"attributes":{},"id":"6086","type":"ResetTool"},{"attributes":{"fill_color":{"value":null},"line_color":{"value":"#54a767"},"size":{"units":"screen","value":7},"x":{"field":"x"},"y":{"field":"y"}},"id":"6190","type":"Square"},{"attributes":{},"id":"6331","type":"BasicTickFormatter"},{"attributes":{},"id":"6149","type":"SaveTool"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAexSuR+F6ZD+4HoXrUbh+P+xRuB6F65E/mpmZmZmZmT8zMzMzMzOzP2ZmZmZmZsY/zczMzMzMzD8AAAAAAAD0PwAAAAAAAABAAAAAAAAADEAAAAAAAAAUQA==","dtype":"float64","shape":[17]}},"selected":{"id":"6386","type":"Selection"},"selection_policy":{"id":"6387","type":"UnionRenderers"}},"id":"6279","type":"ColumnDataSource"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAL26jAbwFUj9GJXUCmghrP9IA3gIJin8/u0kMAiuHhj9MN4lBYOWgP4PAyqFFtrM/8tJNYhBYuT+amZmZmZnhPylcj8L1KOw/pHA9Ctej+D+amZmZmZkBQA==","dtype":"float64","shape":[17]}},"selected":{"id":"6390","type":"Selection"},"selection_policy":{"id":"6391","type":"UnionRenderers"}},"id":"6289","type":"ColumnDataSource"},{"attributes":{"data_source":{"id":"6294","type":"ColumnDataSource"},"glyph":{"id":"6295","type":"Line"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"6296","type":"Line"},"selection_glyph":null,"view":{"id":"6298","type":"CDSView"}},"id":"6297","type":"GlyphRenderer"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhMlUwKqlTPxWMSuoENIE/+n5qvHSTmD/azvdT46W7PwrXo3A9Ctc/4XoUrkfh6j8K16NwPQr3Pw==","dtype":"float64","shape":[17]}},"selected":{"id":"6359","type":"Selection"},"selection_policy":{"id":"6360","type":"UnionRenderers"}},"id":"6209","type":"ColumnDataSource"},{"attributes":{"fill_color":{"value":null},"line_color":{"value":"#c34e52"},"size":{"units":"screen","value":7},"x":{"field":"x"},"y":{"field":"y"}},"id":"6275","type":"Cross"},{"attributes":{"source":{"id":"6209","type":"ColumnDataSource"}},"id":"6213","type":"CDSView"},{"attributes":{"data_source":{"id":"6189","type":"ColumnDataSource"},"glyph":{"id":"6190","type":"Square"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"6191","type":"Square"},"selection_glyph":null,"view":{"id":"6193","type":"CDSView"}},"id":"6192","type":"GlyphRenderer"},{"attributes":{},"id":"6102","type":"LinearScale"},{"attributes":{},"id":"6118","type":"ResetTool"},{"attributes":{},"id":"6146","type":"PanTool"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":"#1f77b4"},"line_alpha":{"value":0.1},"line_color":{"value":"#1f77b4"},"size":{"units":"screen","value":1e-08},"x":{"value":0},"y":{"value":0}},"id":"6311","type":"Circle"},{"attributes":{"line_color":"#c34e52","x":{"field":"x"},"y":{"field":"y"}},"id":"6280","type":"Line"},{"attributes":{"line_color":"#000000","x":{"field":"x"},"y":{"field":"y"}},"id":"6200","type":"Line"},{"attributes":{},"id":"6142","type":"BasicTicker"},{"attributes":{"axis_label":"Voltage","axis_label_text_color":{"value":"#000000"},"axis_label_text_font":"sans-serif","axis_label_text_font_size":{"value":"14pt"},"formatter":{"id":"6337","type":"BasicTickFormatter"},"major_label_text_font_size":{"value":"13pt"},"ticker":{"id":"6137","type":"BasicTicker"}},"id":"6136","type":"LinearAxis"},{"attributes":{"data_source":{"id":"6274","type":"ColumnDataSource"},"glyph":{"id":"6275","type":"Cross"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"6276","type":"Cross"},"selection_glyph":null,"view":{"id":"6278","type":"CDSView"}},"id":"6277","type":"GlyphRenderer"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":"#1f77b4"},"line_alpha":{"value":0.1},"line_color":{"value":"#1f77b4"},"size":{"units":"screen","value":7},"x":{"field":"x"},"y":{"field":"y"}},"id":"6191","type":"Square"},{"attributes":{"source":{"id":"6274","type":"ColumnDataSource"}},"id":"6278","type":"CDSView"},{"attributes":{"source":{"id":"6294","type":"ColumnDataSource"}},"id":"6298","type":"CDSView"},{"attributes":{},"id":"6083","type":"WheelZoomTool"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":"#1f77b4"},"line_alpha":{"value":0.1},"line_color":{"value":"#1f77b4"},"size":{"units":"screen","value":7},"x":{"field":"x"},"y":{"field":"y"}},"id":"6211","type":"Circle"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":"#1f77b4"},"line_alpha":{"value":0.1},"line_color":{"value":"#1f77b4"},"size":{"units":"screen","value":7},"x":{"field":"x"},"y":{"field":"y"}},"id":"6276","type":"Cross"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]}},"selected":{"id":"6394","type":"Selection"},"selection_policy":{"id":"6395","type":"UnionRenderers"}},"id":"6299","type":"ColumnDataSource"},{"attributes":{"active_drag":"auto","active_inspect":"auto","active_multi":null,"active_scroll":"auto","active_tap":"auto","tools":[{"id":"6082","type":"PanTool"},{"id":"6083","type":"WheelZoomTool"},{"id":"6084","type":"BoxZoomTool"},{"id":"6085","type":"SaveTool"},{"id":"6086","type":"ResetTool"},{"id":"6087","type":"HelpTool"}]},"id":"6088","type":"Toolbar"},{"attributes":{"data_source":{"id":"6199","type":"ColumnDataSource"},"glyph":{"id":"6200","type":"Line"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"6201","type":"Line"},"selection_glyph":null,"view":{"id":"6203","type":"CDSView"}},"id":"6202","type":"GlyphRenderer"},{"attributes":{"formatter":{"id":"6335","type":"BasicTickFormatter"},"major_label_text_font_size":{"value":"13pt"},"ticker":{"id":"6142","type":"BasicTicker"}},"id":"6141","type":"LinearAxis"},{"attributes":{"label":{"value":"(2,-1)"},"renderers":[{"id":"6277","type":"GlyphRenderer"},{"id":"6282","type":"GlyphRenderer"}]},"id":"6318","type":"LegendItem"},{"attributes":{"align":"center","background_fill_color":{"value":"#8c8c8c"},"text":" Boost Level=0.5 ","text_color":{"value":"#ffffff"},"text_font_size":{"value":"16pt"}},"id":"6258","type":"Title"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Knx0k1iUD+Qa0PFOH9TPx3+mqxRD4E/dEaU9gZfmD9Cz2bV52q7Pw0CK4cW2dY/Di2yne+n6j8NAiuHFtn2Pw==","dtype":"float64","shape":[17]}},"selected":{"id":"6367","type":"Selection"},"selection_policy":{"id":"6368","type":"UnionRenderers"}},"id":"6229","type":"ColumnDataSource"},{"attributes":{"data_source":{"id":"6214","type":"ColumnDataSource"},"glyph":{"id":"6215","type":"Line"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"6216","type":"Line"},"selection_glyph":null,"view":{"id":"6218","type":"CDSView"}},"id":"6217","type":"GlyphRenderer"},{"attributes":{"fill_color":{"value":null},"line_color":{"value":"#4b72b0"},"size":{"units":"screen","value":7},"x":{"field":"x"},"y":{"field":"y"}},"id":"6210","type":"Circle"},{"attributes":{"source":{"id":"6194","type":"ColumnDataSource"}},"id":"6198","type":"CDSView"},{"attributes":{},"id":"6073","type":"BasicTicker"},{"attributes":{"fill_color":{"value":null},"line_color":{"value":null},"size":{"units":"screen","value":1e-08},"x":{"value":0},"y":{"value":0}},"id":"6310","type":"Circle"},{"attributes":{},"id":"6151","type":"HelpTool"},{"attributes":{"overlay":{"id":"6358","type":"BoxAnnotation"}},"id":"6116","type":"BoxZoomTool"},{"attributes":{"line_alpha":0.1,"line_color":"#1f77b4","x":{"field":"x"},"y":{"field":"y"}},"id":"6196","type":"Line"},{"attributes":{"dimension":1,"grid_line_color":{"value":"#ffffff"},"grid_line_width":{"value":1.3},"minor_grid_line_width":{"value":0.5},"ticker":{"id":"6110","type":"BasicTicker"}},"id":"6113","type":"Grid"},{"attributes":{"source":{"id":"6214","type":"ColumnDataSource"}},"id":"6218","type":"CDSView"},{"attributes":{"source":{"id":"6299","type":"ColumnDataSource"}},"id":"6303","type":"CDSView"},{"attributes":{"axis_label":"I [A]","axis_label_text_color":{"value":"#000000"},"axis_label_text_font":"sans-serif","axis_label_text_font_size":{"value":"14pt"},"formatter":{"id":"6327","type":"BasicTickFormatter"},"major_label_text_font_size":{"value":"13pt"},"ticker":{"id":"6078","type":"BasicTicker"}},"id":"6077","type":"LinearAxis"},{"attributes":{"data_source":{"id":"6194","type":"ColumnDataSource"},"glyph":{"id":"6195","type":"Line"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"6196","type":"Line"},"selection_glyph":null,"view":{"id":"6198","type":"CDSView"}},"id":"6197","type":"GlyphRenderer"},{"attributes":{},"id":"6134","type":"LinearScale"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8qfHSTWJgP3jpJjEIrIw/exSuR+F6pD8K16NwPQrHPylcj8L1KOQ/MzMzMzMz8z/GSzeJQWDzPw==","dtype":"float64","shape":[17]}},"selected":{"id":"6352","type":"Selection"},"selection_policy":{"id":"6353","type":"UnionRenderers"}},"id":"6189","type":"ColumnDataSource"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8qfHSTWJgP3jpJjEIrIw/exSuR+F6pD8K16NwPQrHPylcj8L1KOQ/MzMzMzMz8z/GSzeJQWDzPw==","dtype":"float64","shape":[17]}},"selected":{"id":"6354","type":"Selection"},"selection_policy":{"id":"6355","type":"UnionRenderers"}},"id":"6194","type":"ColumnDataSource"},{"attributes":{"label":{"value":"Die"},"renderers":[{"id":"6312","type":"GlyphRenderer"}]},"id":"6315","type":"LegendItem"},{"attributes":{},"id":"6085","type":"SaveTool"},{"attributes":{},"id":"6082","type":"PanTool"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhMlUwKqlTPxWMSuoENIE/+n5qvHSTmD/azvdT46W7PwrXo3A9Ctc/4XoUrkfh6j8K16NwPQr3Pw==","dtype":"float64","shape":[17]}},"selected":{"id":"6361","type":"Selection"},"selection_policy":{"id":"6362","type":"UnionRenderers"}},"id":"6214","type":"ColumnDataSource"},{"attributes":{"line_color":"#000000","x":{"field":"x"},"y":{"field":"y"}},"id":"6300","type":"Line"},{"attributes":{"line_color":"#54a767","x":{"field":"x"},"y":{"field":"y"}},"id":"6295","type":"Line"},{"attributes":{"grid_line_color":{"value":"#ffffff"},"grid_line_width":{"value":1.3},"minor_grid_line_width":{"value":0.5},"ticker":{"id":"6137","type":"BasicTicker"}},"id":"6140","type":"Grid"},{"attributes":{},"id":"6327","type":"BasicTickFormatter"},{"attributes":{"line_alpha":0.1,"line_color":"#1f77b4","x":{"field":"x"},"y":{"field":"y"}},"id":"6216","type":"Line"},{"attributes":{},"id":"6105","type":"BasicTicker"},{"attributes":{"line_alpha":0.1,"line_color":"#1f77b4","x":{"field":"x"},"y":{"field":"y"}},"id":"6301","type":"Line"},{"attributes":{"axis_label":"Voltage","axis_label_text_color":{"value":"#000000"},"axis_label_text_font":"sans-serif","axis_label_text_font_size":{"value":"14pt"},"formatter":{"id":"6333","type":"BasicTickFormatter"},"major_label_text_font_size":{"value":"13pt"},"ticker":{"id":"6105","type":"BasicTicker"}},"id":"6104","type":"LinearAxis"},{"attributes":{"line_color":"#c34e52","x":{"field":"x"},"y":{"field":"y"}},"id":"6230","type":"Line"},{"attributes":{},"id":"6147","type":"WheelZoomTool"},{"attributes":{"background_fill_color":{"value":"#eaeaea"},"below":[{"id":"6136","type":"LinearAxis"}],"center":[{"id":"6140","type":"Grid"},{"id":"6145","type":"Grid"}],"left":[{"id":"6141","type":"LinearAxis"}],"plot_height":285,"plot_width":337,"renderers":[{"id":"6262","type":"GlyphRenderer"},{"id":"6267","type":"GlyphRenderer"},{"id":"6272","type":"GlyphRenderer"},{"id":"6277","type":"GlyphRenderer"},{"id":"6282","type":"GlyphRenderer"},{"id":"6287","type":"GlyphRenderer"},{"id":"6292","type":"GlyphRenderer"},{"id":"6297","type":"GlyphRenderer"},{"id":"6302","type":"GlyphRenderer"},{"id":"6312","type":"GlyphRenderer"}],"right":[{"id":"6314","type":"Legend"}],"title":{"id":"6308","type":"Title"},"toolbar":{"id":"6152","type":"Toolbar"},"x_range":{"id":"6305","type":"Range1d"},"x_scale":{"id":"6132","type":"LinearScale"},"y_range":{"id":"6307","type":"Range1d"},"y_scale":{"id":"6134","type":"LinearScale"}},"id":"6127","subtype":"Figure","type":"Plot"},{"attributes":{"line_color":"#4b72b0","x":{"field":"x"},"y":{"field":"y"}},"id":"6215","type":"Line"},{"attributes":{},"id":"6132","type":"LinearScale"},{"attributes":{"line_alpha":0.1,"line_color":"#1f77b4","x":{"field":"x"},"y":{"field":"y"}},"id":"6231","type":"Line"},{"attributes":{},"id":"6329","type":"BasicTickFormatter"},{"attributes":{},"id":"6068","type":"LinearScale"},{"attributes":{"source":{"id":"6279","type":"ColumnDataSource"}},"id":"6283","type":"CDSView"},{"attributes":{"source":{"id":"6199","type":"ColumnDataSource"}},"id":"6203","type":"CDSView"},{"attributes":{},"id":"6335","type":"BasicTickFormatter"},{"attributes":{"line_alpha":0.1,"line_color":"#1f77b4","x":{"field":"x"},"y":{"field":"y"}},"id":"6281","type":"Line"},{"attributes":{},"id":"6078","type":"BasicTicker"},{"attributes":{},"id":"6342","type":"Selection"},{"attributes":{},"id":"6343","type":"UnionRenderers"},{"attributes":{},"id":"6110","type":"BasicTicker"},{"attributes":{"line_color":"#000000","x":{"field":"x"},"y":{"field":"y"}},"id":"6285","type":"Line"},{"attributes":{},"id":"6344","type":"Selection"},{"attributes":{},"id":"6119","type":"HelpTool"},{"attributes":{"data_source":{"id":"6229","type":"ColumnDataSource"},"glyph":{"id":"6230","type":"Line"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"6231","type":"Line"},"selection_glyph":null,"view":{"id":"6233","type":"CDSView"}},"id":"6232","type":"GlyphRenderer"},{"attributes":{"data_source":{"id":"6289","type":"ColumnDataSource"},"glyph":{"id":"6290","type":"Square"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"6291","type":"Square"},"selection_glyph":null,"view":{"id":"6293","type":"CDSView"}},"id":"6292","type":"GlyphRenderer"},{"attributes":{"fill_color":{"value":null},"line_color":{"value":"#4b72b0"},"size":{"units":"screen","value":7},"x":{"field":"x"},"y":{"field":"y"}},"id":"6160","type":"Circle"},{"attributes":{"active_drag":"auto","active_inspect":"auto","active_multi":null,"active_scroll":"auto","active_tap":"auto","tools":[{"id":"6114","type":"PanTool"},{"id":"6115","type":"WheelZoomTool"},{"id":"6116","type":"BoxZoomTool"},{"id":"6117","type":"SaveTool"},{"id":"6118","type":"ResetTool"},{"id":"6119","type":"HelpTool"}]},"id":"6120","type":"Toolbar"},{"attributes":{"line_alpha":0.1,"line_color":"#1f77b4","x":{"field":"x"},"y":{"field":"y"}},"id":"6201","type":"Line"},{"attributes":{"callback":null,"end":1.6},"id":"6205","type":"Range1d"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAznADPj+MUD81KQXdXtJoP2gFhqxu9Xw/AU2EDU+vhD+Cc0aU9gafP2HD0ytlGbI/odY07zhFtz8pXI/C9SjgP0Fg5dAi2+k/OrTIdr6f9j8pXI/C9SgAQA==","dtype":"float64","shape":[17]}},"selected":{"id":"6378","type":"Selection"},"selection_policy":{"id":"6379","type":"UnionRenderers"}},"id":"6259","type":"ColumnDataSource"},{"attributes":{"line_color":"#000000","x":{"field":"x"},"y":{"field":"y"}},"id":"6250","type":"Line"},{"attributes":{"line_alpha":0.1,"line_color":"#1f77b4","x":{"field":"x"},"y":{"field":"y"}},"id":"6271","type":"Line"},{"attributes":{"data_source":{"id":"6264","type":"ColumnDataSource"},"glyph":{"id":"6265","type":"Line"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"6266","type":"Line"},"selection_glyph":null,"view":{"id":"6268","type":"CDSView"}},"id":"6267","type":"GlyphRenderer"},{"attributes":{},"id":"6340","type":"Selection"},{"attributes":{"line_alpha":0.1,"line_color":"#1f77b4","x":{"field":"x"},"y":{"field":"y"}},"id":"6251","type":"Line"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":"#1f77b4"},"line_alpha":{"value":0.1},"line_color":{"value":"#1f77b4"},"size":{"units":"screen","value":7},"x":{"field":"x"},"y":{"field":"y"}},"id":"6261","type":"Circle"},{"attributes":{"source":{"id":"6259","type":"ColumnDataSource"}},"id":"6263","type":"CDSView"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]}},"selected":{"id":"6363","type":"Selection"},"selection_policy":{"id":"6364","type":"UnionRenderers"}},"id":"6219","type":"ColumnDataSource"},{"attributes":{"line_color":"#4b72b0","x":{"field":"x"},"y":{"field":"y"}},"id":"6265","type":"Line"},{"attributes":{"data_source":{"id":"6269","type":"ColumnDataSource"},"glyph":{"id":"6270","type":"Line"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"6271","type":"Line"},"selection_glyph":null,"view":{"id":"6273","type":"CDSView"}},"id":"6272","type":"GlyphRenderer"},{"attributes":{"bottom_units":"screen","fill_alpha":{"value":0.5},"fill_color":{"value":"lightgrey"},"left_units":"screen","level":"overlay","line_alpha":{"value":1.0},"line_color":{"value":"black"},"line_dash":[4,4],"line_width":{"value":2},"render_mode":"css","right_units":"screen","top_units":"screen"},"id":"6339","type":"BoxAnnotation"},{"attributes":{"source":{"id":"6249","type":"ColumnDataSource"}},"id":"6253","type":"CDSView"},{"attributes":{"source":{"id":"6284","type":"ColumnDataSource"}},"id":"6288","type":"CDSView"},{"attributes":{"line_alpha":0.1,"line_color":"#1f77b4","x":{"field":"x"},"y":{"field":"y"}},"id":"6221","type":"Line"},{"attributes":{"data_source":{"id":"6284","type":"ColumnDataSource"},"glyph":{"id":"6285","type":"Line"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"6286","type":"Line"},"selection_glyph":null,"view":{"id":"6288","type":"CDSView"}},"id":"6287","type":"GlyphRenderer"},{"attributes":{"data_source":{"id":"6219","type":"ColumnDataSource"},"glyph":{"id":"6220","type":"Line"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"6221","type":"Line"},"selection_glyph":null,"view":{"id":"6223","type":"CDSView"}},"id":"6222","type":"GlyphRenderer"},{"attributes":{"line_alpha":0.1,"line_color":"#1f77b4","x":{"field":"x"},"y":{"field":"y"}},"id":"6266","type":"Line"},{"attributes":{"children":[{"id":"6063","subtype":"Figure","type":"Plot"},{"id":"6095","subtype":"Figure","type":"Plot"},{"id":"6127","subtype":"Figure","type":"Plot"}]},"id":"6320","type":"Row"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAznADPj+MUD81KQXdXtJoP2gFhqxu9Xw/AU2EDU+vhD+Cc0aU9gafP2HD0ytlGbI/odY07zhFtz8pXI/C9SjgP0Fg5dAi2+k/OrTIdr6f9j8pXI/C9SgAQA==","dtype":"float64","shape":[17]}},"selected":{"id":"6380","type":"Selection"},"selection_policy":{"id":"6381","type":"UnionRenderers"}},"id":"6264","type":"ColumnDataSource"},{"attributes":{"data_source":{"id":"6259","type":"ColumnDataSource"},"glyph":{"id":"6260","type":"Circle"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"6261","type":"Circle"},"selection_glyph":null,"view":{"id":"6263","type":"CDSView"}},"id":"6262","type":"GlyphRenderer"},{"attributes":{"line_color":"#000000","x":{"field":"x"},"y":{"field":"y"}},"id":"6270","type":"Line"},{"attributes":{"line_color":"#000000","x":{"field":"x"},"y":{"field":"y"}},"id":"6220","type":"Line"},{"attributes":{"source":{"id":"6269","type":"ColumnDataSource"}},"id":"6273","type":"CDSView"},{"attributes":{"data_source":{"id":"6249","type":"ColumnDataSource"},"glyph":{"id":"6250","type":"Line"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"6251","type":"Line"},"selection_glyph":null,"view":{"id":"6253","type":"CDSView"}},"id":"6252","type":"GlyphRenderer"},{"attributes":{"fill_color":{"value":null},"line_color":{"value":"#4b72b0"},"size":{"units":"screen","value":7},"x":{"field":"x"},"y":{"field":"y"}},"id":"6260","type":"Circle"},{"attributes":{"source":{"id":"6219","type":"ColumnDataSource"}},"id":"6223","type":"CDSView"},{"attributes":{"source":{"id":"6264","type":"ColumnDataSource"}},"id":"6268","type":"CDSView"},{"attributes":{"callback":null,"data":{"x":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]},"y":{"__ndarray__":"AAAAAAAAAACamZmZmZm5P5qZmZmZmck/MzMzMzMz0z+amZmZmZnZPwAAAAAAAOA/MzMzMzMz4z9mZmZmZmbmP5qZmZmZmek/zczMzMzM7D8AAAAAAADwP5qZmZmZmfE/MzMzMzMz8z/NzMzMzMz0P2ZmZmZmZvY/AAAAAAAA+D+amZmZmZn5Pw==","dtype":"float64","shape":[17]}},"selected":{"id":"6382","type":"Selection"},"selection_policy":{"id":"6383","type":"UnionRenderers"}},"id":"6269","type":"ColumnDataSource"}],"root_ids":["6320"]},"title":"Bokeh Application","version":"1.1.0"}}
+        </script>
+        <script type="text/javascript">
+          (function() {
+            var fn = function() {
+              Bokeh.safely(function() {
+                (function(root) {
+                  function embed_document(root) {
+
+                  var docs_json = document.getElementById('7014').textContent;
+                  var render_items = [{"docid":"adc84afc-10f9-43ad-b402-173832455de3","roots":{"6320":"c3d2151d-54a8-47db-838d-b20fe9455dad"}}];
+                  root.Bokeh.embed.embed_items(docs_json, render_items);
+
+                  }
+                  if (root.Bokeh !== undefined) {
+                    embed_document(root);
+                  } else {
+                    var attempts = 0;
+                    var timer = setInterval(function(root) {
+                      if (root.Bokeh !== undefined) {
+                        embed_document(root);
+                        clearInterval(timer);
+                      }
+                      attempts++;
+                      if (attempts > 100) {
+                        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing");
+                        clearInterval(timer);
+                      }
+                    }, 10, root)
+                  }
+                })(window);
+              });
+            };
+            if (document.readyState != "loading") fn();
+            else document.addEventListener("DOMContentLoaded", fn);
+          })();
+        </script>
+
+  </body>
+
+</html></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[144]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;test_data/fake_data.csv&#39;</span><span class="p">)</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="n">share_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Temperature [C]==25&#39;</span><span class="p">,</span> <span class="n">ref_line</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">],</span>
+         <span class="n">ref_line_legend_text</span><span class="o">=</span><span class="s1">&#39;y==x&#39;</span><span class="p">,</span> <span class="n">xmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mf">1.6</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">ymax</span><span class="o">=</span><span class="p">[</span><span class="mf">1.3</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">,</span> <span class="mf">5.2</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/sandbox_20_0.png" src="_images/sandbox_20_0.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[112]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">matplotlib.pylab</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.patches</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[146]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">natsort</span>
+<span class="n">natsort</span><span class="o">.</span><span class="n">natsorted</span><span class="p">(</span><span class="n">df_boost</span><span class="o">.</span><span class="n">Die</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[146]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;(1,1)&#39;, &#39;(2,-1)&#39;, &#39;(-1,2)&#39;]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[150]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;test_data/fake_data.csv&#39;</span><span class="p">)</span>
+
+<span class="c1"># Filter the dataframe</span>
+<span class="n">df_sub</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">Substrate</span><span class="o">==</span><span class="s2">&quot;Si&quot;</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Target Wavelength&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">450</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">25</span><span class="p">)]</span>
+
+<span class="c1"># Set some defaults</span>
+<span class="n">markers</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">]</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;#4b72b0&#39;</span><span class="p">,</span> <span class="s1">&#39;#c34e52&#39;</span><span class="p">,</span> <span class="s1">&#39;#54a767&#39;</span><span class="p">]</span>
+<span class="n">ymax</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.3</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">,</span> <span class="mf">5.2</span><span class="p">]</span>
+<span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1"># Create the figure and axes</span>
+<span class="n">f</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mf">9.82</span><span class="p">,</span> <span class="mf">3.46</span><span class="p">])</span>
+
+<span class="c1"># Plot the data and style the axes</span>
+<span class="k">for</span> <span class="n">iboost</span><span class="p">,</span> <span class="n">boost</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">df_sub</span><span class="p">[</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()):</span>
+    <span class="n">df_boost</span> <span class="o">=</span> <span class="n">df_sub</span><span class="p">[</span><span class="n">df_sub</span><span class="p">[</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">boost</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">idie</span><span class="p">,</span> <span class="n">die</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">natsort</span><span class="o">.</span><span class="n">natsorted</span><span class="p">(</span><span class="n">df_boost</span><span class="o">.</span><span class="n">Die</span><span class="o">.</span><span class="n">unique</span><span class="p">())):</span>
+        <span class="n">df_die</span> <span class="o">=</span> <span class="n">df_boost</span><span class="p">[</span><span class="n">df_boost</span><span class="o">.</span><span class="n">Die</span><span class="o">==</span><span class="n">die</span><span class="p">]</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s1">&#39;#eaeaea&#39;</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.3</span><span class="p">)</span>
+        <span class="n">lines</span> <span class="o">+=</span> <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df_die</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">],</span> <span class="n">df_die</span><span class="p">[</span><span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">idie</span><span class="p">],</span>
+                                   <span class="n">marker</span><span class="o">=</span><span class="n">markers</span><span class="p">[</span><span class="n">idie</span><span class="p">],</span> <span class="n">markeredgecolor</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">idie</span><span class="p">],</span> <span class="n">markerfacecolor</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">markeredgewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">set_axisbelow</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;bottom&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s1">&#39;#aaaaaa&#39;</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;top&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s1">&#39;#aaaaaa&#39;</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s1">&#39;#aaaaaa&#39;</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;left&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s1">&#39;#aaaaaa&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">iboost</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">fontstyle</span><span class="o">=</span><span class="s1">&#39;italic&#39;</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">fontstyle</span><span class="o">=</span><span class="s1">&#39;italic&#39;</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mf">1.6</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">bottom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="n">ymax</span><span class="p">[</span><span class="n">iboost</span><span class="p">])</span>
+
+    <span class="c1"># Add the column labels</span>
+    <span class="n">rect</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">patches</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.044</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">30</span><span class="o">/</span><span class="mi">225</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+                                        <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;#8c8c8c&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;#8c8c8c&#39;</span><span class="p">,</span> <span class="n">clip_on</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">rect</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;Boost Level = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">boost</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.111</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+                      <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span>
+                      <span class="n">rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+
+    <span class="c1"># Customize ticks</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">,</span>
+                             <span class="n">labelsize</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">labelcolor</span><span class="o">=</span><span class="s1">&#39;#000000&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">2.2</span><span class="p">)</span>
+
+    <span class="c1"># Add reference line</span>
+    <span class="n">ref_line</span> <span class="o">=</span> <span class="n">df_die</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">]</span>
+    <span class="n">ref</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="n">iboost</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df_die</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">],</span> <span class="n">ref_line</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#000000&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">iboost</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">:</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">ref</span> <span class="o">+</span> <span class="n">lines</span>
+
+<span class="c1"># Style the figure</span>
+<span class="n">f</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">)</span>
+<span class="n">f</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="mf">0.077</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mf">0.882</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="mf">0.827</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="mf">0.176</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mf">0.133</span><span class="p">,</span> <span class="n">wspace</span><span class="o">=</span><span class="mf">0.313</span><span class="p">)</span>
+
+<span class="c1"># Add legend</span>
+<span class="n">leg</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;y==x&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">df_boost</span><span class="o">.</span><span class="n">Die</span><span class="o">.</span><span class="n">unique</span><span class="p">()),</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">numpoints</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+               <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">),</span> <span class="n">prop</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">})</span>
+<span class="n">leg</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">)</span>
+
+<span class="c1"># Show the plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/sandbox_23_0.png" src="_images/sandbox_23_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">lines</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&lt;matplotlib.lines.Line2D at 0x1ebeec7fc50&gt;,
+ &lt;matplotlib.lines.Line2D at 0x1ebedd4cc50&gt;,
+ &lt;matplotlib.lines.Line2D at 0x1ebedd4cd30&gt;,
+ &lt;matplotlib.lines.Line2D at 0x1ebee943668&gt;,
+ &lt;matplotlib.lines.Line2D at 0x1ebee943c18&gt;,
+ &lt;matplotlib.lines.Line2D at 0x1ebedd4cbe0&gt;,
+ &lt;matplotlib.lines.Line2D at 0x1ebee3509e8&gt;,
+ &lt;matplotlib.lines.Line2D at 0x1ebee3503c8&gt;,
+ &lt;matplotlib.lines.Line2D at 0x1ebee350550&gt;,
+ &lt;matplotlib.lines.Line2D at 0x1ebefffacf8&gt;]
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2022, Steve Nicholes.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

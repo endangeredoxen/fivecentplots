@@ -1,0 +1,1031 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>nq &mdash; fivecentplots beta documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Archivo Black" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "document", "processHtmlClass": "math|output_area"}}</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pie" href="pie.html" />
+    <link rel="prev" title="imshow" href="imshow.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> fivecentplots
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.5.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layout.html">Layout and Elements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="grouping.html">Grouping data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="styles.html">Styles and formatting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ranges.html">Data ranges</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ticks.html">Grids and ticks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/fcp.html">API</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Plot Types</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="plot.html">plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="barplot.html">barplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gantt.html">gantt charts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heatmap.html">heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hist.html">hist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="imshow.html">imshow</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">nq</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Setup">Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Background">Background</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Normal-distribution">Normal distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Outliers">Outliers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Comparing-distributions">Comparing distributions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#1D-dataset">1D dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Real-image">Real image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#nq-calculation-parameters">nq calculation parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Custom-sigma-range">Custom sigma range</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Custom-tail">Custom tail</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Point-density">Point density</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Line-fit">Line fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Styles">Styles</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pie.html">pie</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Other</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="older.html">Older Versions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/endangeredoxen/fivecentplots">GitHub</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">fivecentplots</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>nq</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/nq.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="nq">
+<h1>nq<a class="headerlink" href="#nq" title="Permalink to this headline">¶</a></h1>
+<p>This section describes various options available for normal quantile plots in <strong>fivecentplots</strong></p>
+<p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.4/api/nq.html#nq">See the full API </a></p>
+<div class="section" id="Setup">
+<h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this headline">¶</a></h2>
+<p>Import packages</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">fivecentplots</span> <span class="k">as</span> <span class="nn">fcp</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">imageio</span>
+</pre></div>
+</div>
+</div>
+<p>In this tutorial, we will read-in or create a few different data sets. For ease of reading, we defer the specifics until later sections.</p>
+<p>We can optionally set the design theme (but we will skip here and use the default):</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1">#fcp.set_theme(&#39;gray&#39;)</span>
+<span class="c1">#fcp.set_theme(&#39;white&#39;)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Background">
+<h2>Background<a class="headerlink" href="#Background" title="Permalink to this headline">¶</a></h2>
+<p>A normal quantile plot (a.k.a. a normal probability plot) displays +/- sigma values relative to the mean (where sigma = 0) of a given dataset. A range of sigma values (say -4 sigma to +4 sigma) is converted into a range of quantiles (i.e., percentiles) which are then each calculated for the full dataset. The result is a XY plot of sigma on the y-axis vs some value on the x-axis. If the dataset consists of a normal distribution, this plot will yield a straight line. In essence the <code class="docutils literal notranslate"><span class="pre">nq</span></code> plot
+shows you how much a dataset deviates from that of a normal distribution with the same mean.</p>
+<p>The dataset for this plot type must be numerical and the number of data points will determine the max/min sigma value that can be reached (more == larger sigma). These plots are useful in a variety of situations such production-line manufacturing data, semiconductor array performance (i.e., voltage thresholds of 2D memory arrays or defect pixel analysis of image sensors), or other cases when you want to compare the distributions of two or more datasets.</p>
+<div class="section" id="Normal-distribution">
+<h3>Normal distribution<a class="headerlink" href="#Normal-distribution" title="Permalink to this headline">¶</a></h3>
+<p>To demonstrate the value of the normal quantile plot, we use an example from image sensor development and consider a 2D array of signal values for CMOS pixels exposed to a narrow-band light source. Let’s assume our array is 1000 x 1000 pixels, has a mean signal value at the mid-level of a 12-bit scale, and has noise that is normally distributed about the mean:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">])</span> <span class="o">*</span> <span class="mi">2</span><span class="o">**</span><span class="mi">12</span> <span class="o">/</span> <span class="mi">2</span>
+<span class="n">img</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="o">-</span><span class="mf">0.025</span><span class="o">*</span><span class="n">img</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="mf">0.025</span><span class="o">*</span><span class="n">img</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/nq_13_0.png" src="_images/nq_13_0.png" />
+</div>
+</div>
+<p>The histogram of this distribution is a bell-shape curve with some noise (see here for more details on <code class="docutils literal notranslate"><span class="pre">hist</span></code> plots):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="o">**</span><span class="n">fcp</span><span class="o">.</span><span class="n">HIST</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/nq_15_0.png" src="_images/nq_15_0.png" />
+</div>
+</div>
+<p>We can recast these signal values as a normal quantile plot to get more insight into the distribution. Observe that the result is very close to a straight line, except at the extreme values of sigma where the actual number of data points is quite low so the impact of random noise is more apparent. This result is expected because we applied a normal distribution of noise to the array data.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">nq</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">marker_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/nq_17_0.png" src="_images/nq_17_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Outliers">
+<h3>Outliers<a class="headerlink" href="#Outliers" title="Permalink to this headline">¶</a></h3>
+<p>Now consider the real-life situation where our dataset contains outliers that are not normally distributed. Continuing with our image sensor example, these outliers are referred to as defect pixels. We’ll include both dark pixels (i.e., defect pixels that have low signal) and hot pixels (i.e., defect pixels with high signal) that are randomly placed outside of the normal distribution created above. Think “salt and pepper” noise…</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">img2</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="n">dark_pixel_qty</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">dark_pixel_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">img</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">dark_pixel_qty</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">pixel</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dark_pixel_qty</span><span class="p">):</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+    <span class="n">img2</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">dark_pixel_values</span><span class="p">[</span><span class="n">pixel</span><span class="p">]</span>
+
+<span class="n">hot_pixel_qty</span> <span class="o">=</span> <span class="mi">120</span>
+<span class="n">hot_pixel_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="mi">2</span><span class="o">**</span><span class="mi">12</span><span class="p">,</span> <span class="n">hot_pixel_qty</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">pixel</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">hot_pixel_qty</span><span class="p">):</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+    <span class="n">img2</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">hot_pixel_values</span><span class="p">[</span><span class="n">pixel</span><span class="p">]</span>
+
+<span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img2</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/nq_20_0.png" src="_images/nq_20_0.png" />
+</div>
+</div>
+<p>When we plot the histogram we can see the defect pixels, but because they are randomly dispersed the actual count of defect pixels is usually between 0-2 at any given signal value. This makes it difficult to make any conclusions about these outliers based only on a histogram.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">img2</span><span class="p">,</span> <span class="o">**</span><span class="n">fcp</span><span class="o">.</span><span class="n">HIST</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/nq_22_0.png" src="_images/nq_22_0.png" />
+</div>
+</div>
+<p>With the normal quantile plot, these outliers become extremely obvious and we clearly see how they deviate sharply from the normal distribution. We can draw quantitative conclusions about the tails of the distribution that we could not make with only the histogram.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">nq</span><span class="p">(</span><span class="n">img2</span><span class="p">,</span> <span class="n">marker_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/nq_24_0.png" src="_images/nq_24_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Comparing-distributions">
+<h3>Comparing distributions<a class="headerlink" href="#Comparing-distributions" title="Permalink to this headline">¶</a></h3>
+<p>Now we will demonstrate how the normal quantile plot allows us to better compare two distributions than simple histograms. Let’s create another image with a slightly different mean and noise profile and a different quantity (more than the last example) and range (lower than the last example) of defect pixels:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">img3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">])</span> <span class="o">*</span> <span class="mi">2</span><span class="o">**</span><span class="mi">12</span> <span class="o">/</span> <span class="mi">2</span>
+<span class="n">img3</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="o">-</span><span class="mf">0.035</span><span class="o">*</span><span class="n">img3</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="mf">0.035</span><span class="o">*</span><span class="n">img3</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+<span class="n">dark_pixel_qty2</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">dark_pixel_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="n">img</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">dark_pixel_qty2</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">pixel</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dark_pixel_qty</span><span class="p">):</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+    <span class="n">img3</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">dark_pixel_values</span><span class="p">[</span><span class="n">pixel</span><span class="p">]</span>
+
+<span class="n">hot_pixel_qty2</span> <span class="o">=</span> <span class="mi">240</span>
+<span class="n">hot_pixel_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="mi">3500</span><span class="p">,</span> <span class="n">hot_pixel_qty2</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">pixel</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">hot_pixel_qty</span><span class="p">):</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+    <span class="n">img3</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">hot_pixel_values</span><span class="p">[</span><span class="n">pixel</span><span class="p">]</span>
+
+<span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img3</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/nq_27_0.png" src="_images/nq_27_0.png" />
+</div>
+</div>
+<p>Now we pack these two distributions in <code class="docutils literal notranslate"><span class="pre">DataFrames</span></code> with labels to easily use fivecentplots to overlay the datasets. From the histogram overaly, we can see the distributions are different but it is quite difficult to draw comparisons of the defect pixel populations.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">img2d</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">img2</span><span class="p">)</span>
+<span class="n">img2d</span><span class="p">[</span><span class="s1">&#39;Distribution&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;A&#39;</span>
+<span class="n">img3d</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">img3</span><span class="p">)</span>
+<span class="n">img3d</span><span class="p">[</span><span class="s1">&#39;Distribution&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;B&#39;</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">img2d</span><span class="p">,</span> <span class="n">img3d</span><span class="p">]),</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Distribution&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">fcp</span><span class="o">.</span><span class="n">HIST</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/nq_29_0.png" src="_images/nq_29_0.png" />
+</div>
+</div>
+<p>With the normal quantile plot, we can very clearly see the tail of the distributions from these two images is quite different and we can make quantitative conclusions about them. We can also clearly see the difference in mean and the slope of curve around the mean (indicating different normal distribution standard deviation). This is the power of the normal quantile plot.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">nq</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">img2d</span><span class="p">,</span> <span class="n">img3d</span><span class="p">]),</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Distribution&#39;</span><span class="p">,</span> <span class="n">marker_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/nq_31_0.png" src="_images/nq_31_0.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="1D-dataset">
+<h2>1D dataset<a class="headerlink" href="#1D-dataset" title="Permalink to this headline">¶</a></h2>
+<p>Now consider a basic 1D dummy dataset:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;test_data/fake_data_box.csv&#39;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Batch</th>
+      <th>Sample</th>
+      <th>Region</th>
+      <th>Value</th>
+      <th>ID</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>101</td>
+      <td>1</td>
+      <td>Alpha123</td>
+      <td>3.5</td>
+      <td>ID701223A</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>101</td>
+      <td>1</td>
+      <td>Alpha123</td>
+      <td>0.0</td>
+      <td>ID7700-1222B</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>101</td>
+      <td>1</td>
+      <td>Alpha123</td>
+      <td>3.3</td>
+      <td>ID701223A</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>101</td>
+      <td>1</td>
+      <td>Alpha123</td>
+      <td>3.2</td>
+      <td>ID7700-1222B</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>101</td>
+      <td>1</td>
+      <td>Alpha123</td>
+      <td>4.0</td>
+      <td>ID701223A</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>In this case, we need to supply the name of the <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> column containing the data to plot. Because our dataset is relatively small, the <code class="docutils literal notranslate"><span class="pre">nq</span></code> plot is unable to calculate very large sigma values.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">nq</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">marker_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/nq_36_0.png" src="_images/nq_36_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Real-image">
+<h2>Real image<a class="headerlink" href="#Real-image" title="Permalink to this headline">¶</a></h2>
+<p>Next we revisit the real image data of our favorite costumed kitten:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Read an image</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://imagesvc.meredithcorp.io/v3/mm/image?q=85&amp;c=sc&amp;rect=0%2C214%2C2000%2C1214&amp;poi=%5B920%2C546%5D&amp;w=2000&amp;h=1000&amp;url=https%3A</span><span class="si">%2F%2F</span><span class="s1">static.onecms.io</span><span class="si">%2F</span><span class="s1">wp-content</span><span class="si">%2F</span><span class="s1">uploads</span><span class="si">%2F</span><span class="s1">sites</span><span class="si">%2F</span><span class="s1">47</span><span class="si">%2F</span><span class="s1">2020</span><span class="si">%2F</span><span class="s1">10</span><span class="si">%2F</span><span class="s1">07</span><span class="si">%2F</span><span class="s1">cat-in-pirate-costume-380541532-2000.jpg&#39;</span>  <span class="c1"># noqa</span>
+<span class="n">imgr</span> <span class="o">=</span> <span class="n">imageio</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+<span class="c1"># Convert to grayscale</span>
+<span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">imgr</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">imgr</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">imgr</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="n">gray</span> <span class="o">=</span> <span class="mf">0.2989</span> <span class="o">*</span> <span class="n">r</span> <span class="o">+</span> <span class="mf">0.5870</span> <span class="o">*</span> <span class="n">g</span> <span class="o">+</span> <span class="mf">0.1140</span> <span class="o">*</span> <span class="n">b</span>
+
+<span class="c1"># Convert image data to pandas DataFrame and scale to 12-bits</span>
+<span class="n">img_cat</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">gray</span> <span class="o">*</span> <span class="mi">2</span><span class="o">**</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img_cat</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/nq_39_0.png" src="_images/nq_39_0.png" />
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">nq</span></code> plot quickly tells us that our distribution is not normal and we have significant tails in the distribution:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">nq</span><span class="p">(</span><span class="n">img_cat</span><span class="p">,</span> <span class="n">marker_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/nq_41_0.png" src="_images/nq_41_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="nq-calculation-parameters">
+<h2>nq calculation parameters<a class="headerlink" href="#nq-calculation-parameters" title="Permalink to this headline">¶</a></h2>
+<p>Because the <code class="docutils literal notranslate"><span class="pre">nq</span></code> plot requires multiple (potentially) costly computations of percentiles, this plot allows you to tailor the density of points near sigma=0 and the tails separately (see the top of this page for a description of all calculation parameters).</p>
+<div class="section" id="Custom-sigma-range">
+<h3>Custom sigma range<a class="headerlink" href="#Custom-sigma-range" title="Permalink to this headline">¶</a></h3>
+<p>Assume we want to ignore the tail of the distribution and just consider the +/- 2 sigma range. This is done by passing the keyword <code class="docutils literal notranslate"><span class="pre">sigma</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">nq</span><span class="p">(</span><span class="n">img_cat</span><span class="p">,</span> <span class="n">marker_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/nq_46_0.png" src="_images/nq_46_0.png" />
+</div>
+</div>
+<div class="admonition note"><p class="admonition-title"></p><p><p>Note there is currently nothing that prevents you from supplying a meaningless number for <code class="docutils literal notranslate"><span class="pre">sigma</span></code>. For instance, if your dataset is small you may not have enough points to calculate +/-3 sigma accurately. The auto-calculation of sigma will handle this, but there is no check on a custom <code class="docutils literal notranslate"><span class="pre">sigma</span></code> value</p>
+</p></div></div>
+<div class="section" id="Custom-tail">
+<h3>Custom tail<a class="headerlink" href="#Custom-tail" title="Permalink to this headline">¶</a></h3>
+<p>Now suppose you only consider +/-4 sigma to be the tail of your distribution. You can change that using the keyword <code class="docutils literal notranslate"><span class="pre">tail</span></code>. Notice the increased density of tail points now starts only at +/-4 sigma.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">nq</span><span class="p">(</span><span class="n">img_cat</span><span class="p">,</span> <span class="n">marker_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">tail</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/nq_50_0.png" src="_images/nq_50_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Point-density">
+<h3>Point density<a class="headerlink" href="#Point-density" title="Permalink to this headline">¶</a></h3>
+<p>The sigma spacing between tail and non-tail points can be controlled separately using <code class="docutils literal notranslate"><span class="pre">step_tail</span></code> and <code class="docutils literal notranslate"><span class="pre">step_inner</span></code> keywords, respectively. Note that more points will slow the calculation time.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">nq</span><span class="p">(</span><span class="n">img_cat</span><span class="p">,</span> <span class="n">marker_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">step_inner</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">step_tail</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/nq_53_0.png" src="_images/nq_53_0.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Line-fit">
+<h2>Line fit<a class="headerlink" href="#Line-fit" title="Permalink to this headline">¶</a></h2>
+<p>One convenient way to quantify a tail distribution is to consider how much it deviates from normality. fivecentplots facilitates this analysis easily using the keyword <code class="docutils literal notranslate"><span class="pre">fit</span></code> and setting an appropriate fit range. If we consider or image from above with a normal distribution and outlier pixels, we could fit a line from 0 to 1 sigma and see the delta between the expected normal distribution in the tail region vs the actual. For this example a normal distribution would have a +4 sigma value of
+~2200 vs the actual value of ~3700.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">nq</span><span class="p">(</span><span class="n">img2d</span><span class="p">,</span> <span class="n">marker_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fit_range_y</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">grid_minor</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/nq_56_0.png" src="_images/nq_56_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Styles">
+<h2>Styles<a class="headerlink" href="#Styles" title="Permalink to this headline">¶</a></h2>
+<p>Style for <code class="docutils literal notranslate"><span class="pre">nq</span></code> plots follow the same rules as those of <code class="docutils literal notranslate"><span class="pre">xy</span></code> plots. Please see the style tutorial and the plot tutorial for more details. But a quick example could look like this:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">nq</span><span class="p">(</span><span class="n">img2d</span><span class="p">,</span> <span class="n">markers</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\$&#39;</span><span class="p">,</span> <span class="n">marker_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">line_style</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;#FF0FF0&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/nq_59_0.png" src="_images/nq_59_0.png" />
+</div>
+</div>
+<p>Don’t ever style a plot like this</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="pie.html" class="btn btn-neutral float-right" title="pie" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="imshow.html" class="btn btn-neutral float-left" title="imshow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2022, Steve Nicholes.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

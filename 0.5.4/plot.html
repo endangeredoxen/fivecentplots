@@ -1,0 +1,1865 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>plot &mdash; fivecentplots beta documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Archivo Black" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "document", "processHtmlClass": "math|output_area"}}</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="barplot" href="barplot.html" />
+    <link rel="prev" title="ws" href="api/ws.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> fivecentplots
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.5.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layout.html">Layout and Elements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="keyword.html">Keyword Arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="grouping.html">Grouping data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="styles.html">Styles and formatting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ranges.html">Data ranges</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ticks.html">Grids and ticks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/fcp.html">API</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Plot Types</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">plot</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Setup">Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Sample-data">Sample data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Basic-XY-Plots">Basic XY Plots</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Scatter">Scatter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Legend">Legend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Axes-scales">Axes scales</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Categorical-labels">Categorical labels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Time-series">Time series</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Secondary-axes">Secondary axes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Shared-x-axis-(twin_x)">Shared x-axis (twin_x)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Shared-y-axis-(twin_y)">Shared y-axis (twin_y)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Multiple-x-&amp;-y-values">Multiple x &amp; y values</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Multiple-y-only">Multiple y only</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Multiple-x-only">Multiple x only</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Multiple-x-and-y">Multiple x and y</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Grouping">Grouping</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Row-plot">Row plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Column-plot">Column plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Row-x-column-grid">Row x column grid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Wrap-plot">Wrap plot</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Other-options">Other options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Horizontal-&amp;-vertical-lines">Horizontal &amp; vertical lines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Curve-fitting">Curve fitting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Stat-lines">Stat lines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Confidence-intervals">Confidence intervals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Control-limits">Control limits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Reference-line">Reference line</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#y=x-reference">y=x reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#More-complex-calculation">More complex calculation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="barplot.html">barplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="boxplot.html">boxplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contour.html">contour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gantt.html">gantt charts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heatmap.html">heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hist.html">hist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="imshow.html">imshow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nq.html">nq</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pie.html">pie</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Other</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="older.html">Older Versions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/endangeredoxen/fivecentplots">GitHub</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">fivecentplots</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>plot</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/plot.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="plot">
+<h1>plot<a class="headerlink" href="#plot" title="Permalink to this headline">¶</a></h1>
+<p>This section describes various options available for xy plots in <strong>fivecentplots</strong></p>
+<p><a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.4/api/plot.html#plot">See the full API </a></p>
+<div class="section" id="Setup">
+<h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this headline">¶</a></h2>
+<p>Import packages</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">fivecentplots</span> <span class="k">as</span> <span class="nn">fcp</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="Sample-data">
+<h3>Sample data<a class="headerlink" href="#Sample-data" title="Permalink to this headline">¶</a></h3>
+<p>We will use two fake datasets in this tutorial:</p>
+<ol class="arabic simple">
+<li><p>make-believe current vs voltage data for a set of diodes [<code class="docutils literal notranslate"><span class="pre">df</span></code>]</p></li>
+<li><p>a time-series dataset for “happiness” data, derived from an undisclosed bodily orifice [<code class="docutils literal notranslate"><span class="pre">ts</span></code>].</p></li>
+</ol>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;test_data/fake_data.csv&#39;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Substrate</th>
+      <th>Target Wavelength</th>
+      <th>Boost Level</th>
+      <th>Temperature [C]</th>
+      <th>Die</th>
+      <th>Voltage</th>
+      <th>I Set</th>
+      <th>I [A]</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Si</td>
+      <td>450</td>
+      <td>0.2</td>
+      <td>25</td>
+      <td>(1,1)</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Si</td>
+      <td>450</td>
+      <td>0.2</td>
+      <td>25</td>
+      <td>(1,1)</td>
+      <td>0.1</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Si</td>
+      <td>450</td>
+      <td>0.2</td>
+      <td>25</td>
+      <td>(1,1)</td>
+      <td>0.2</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Si</td>
+      <td>450</td>
+      <td>0.2</td>
+      <td>25</td>
+      <td>(1,1)</td>
+      <td>0.3</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Si</td>
+      <td>450</td>
+      <td>0.2</td>
+      <td>25</td>
+      <td>(1,1)</td>
+      <td>0.4</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Si</td>
+      <td>450</td>
+      <td>0.2</td>
+      <td>25</td>
+      <td>(1,1)</td>
+      <td>0.5</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Si</td>
+      <td>450</td>
+      <td>0.2</td>
+      <td>25</td>
+      <td>(1,1)</td>
+      <td>0.6</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Si</td>
+      <td>450</td>
+      <td>0.2</td>
+      <td>25</td>
+      <td>(1,1)</td>
+      <td>0.7</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Si</td>
+      <td>450</td>
+      <td>0.2</td>
+      <td>25</td>
+      <td>(1,1)</td>
+      <td>0.8</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Si</td>
+      <td>450</td>
+      <td>0.2</td>
+      <td>25</td>
+      <td>(1,1)</td>
+      <td>0.9</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;test_data/fake_ts.csv&#39;</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Date</th>
+      <th>Happiness Quotient</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1/1/2015</td>
+      <td>16.088954</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1/2/2015</td>
+      <td>18.186724</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1/3/2015</td>
+      <td>35.744313</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1/4/2015</td>
+      <td>38.134045</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1/5/2015</td>
+      <td>46.147279</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Optionally set the design theme (skipping here and using default):</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1">#fcp.set_theme(&#39;gray&#39;)</span>
+<span class="c1">#fcp.set_theme(&#39;white&#39;)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Basic-XY-Plots">
+<h2>Basic XY Plots<a class="headerlink" href="#Basic-XY-Plots" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="Scatter">
+<h3>Scatter<a class="headerlink" href="#Scatter" title="Permalink to this headline">¶</a></h3>
+<p>A simple XY plot of current vs voltage is shown below for a sample set of fake diodes.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;IV Data&#39;</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_15_0.png" src="_images/plot_15_0.png" />
+</div>
+</div>
+<p>For better visibility, we can subset the data to show only diodes that meet certain criteria. This is accomplished using the <code class="docutils literal notranslate"><span class="pre">filter</span></code> kwarg from fivecentplots:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;IV Data&#39;</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_17_0.png" src="_images/plot_17_0.png" />
+</div>
+</div>
+<div class="admonition note"><p class="admonition-title"></p><p><p>In the example above, we are selecting specific data based on values in four different DataFrame columns (“Substrate”, “Target Wavelength”, “Boost Level”, and “Temperature”). This is conveniently achieved using fivecentplots’s built-in <code class="docutils literal notranslate"><span class="pre">filter</span></code> tool, which uses an easy, human-readable string to sub-sample a dataset. Alternatively, could also have applied filtering directly to the input DataFrame as shown below, but this feels a bit cumbersome:</p>
+<p><code class="docutils literal notranslate"><span class="pre">df_sub</span> <span class="pre">=</span> <span class="pre">df[(df['Substrate']==&quot;Si&quot;)&amp;(df['Target</span> <span class="pre">Wavelength']==450)&amp;(df['Boost</span> <span class="pre">Level']==0.2)&amp;(df['Temperature</span> <span class="pre">[C]']==25)]</span></code></p>
+<p>Read more about fivecentplots filtering here.</p>
+</p></div></div>
+<div class="section" id="Legend">
+<h3>Legend<a class="headerlink" href="#Legend" title="Permalink to this headline">¶</a></h3>
+<p>Our sampled data set actually contains IV data for three different diodes, which are named based on their coordinates on a Si wafer. To easily separate them, we add a legend using the column “Die”. Because we are now grouping each die individually, we enable the connecting lines between points.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_21_0.png" src="_images/plot_21_0.png" />
+</div>
+</div>
+<p>By default, the values in the legend are sorted using so-called “natural” sorting via the <code class="docutils literal notranslate"><span class="pre">natsort</span></code> library. To disable this and order the legend based on the order in which the group was actually found in the dataframe, add the keyword <code class="docutils literal notranslate"><span class="pre">sort=False</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_23_0.png" src="_images/plot_23_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Axes-scales">
+<h3>Axes scales<a class="headerlink" href="#Axes-scales" title="Permalink to this headline">¶</a></h3>
+<p>Log- and other-scaled axes can be enabled through the kwarg <code class="docutils literal notranslate"><span class="pre">ax_scale</span></code>. Valid options:</p>
+<ul><li><p>x-only: logx | semilogx</p>
+</li><li><p>y-only: logy | semilogy</p>
+</li><li><p>both: loglog | log</p>
+</li><li><p>symlog: symlog</p>
+</li><li><p>logit: logit</p>
+</li></ul><p>Consider the legend plot from above, now with log-log axes:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">ax_scale</span><span class="o">=</span><span class="s1">&#39;loglog&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">xmin</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mf">2.1</span><span class="p">,</span> <span class="n">grid_minor</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_27_0.png" src="_images/plot_27_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Categorical-labels">
+<h3>Categorical labels<a class="headerlink" href="#Categorical-labels" title="Permalink to this headline">¶</a></h3>
+<p>Categorical DataFrame columns can also be plotted on x and/or y axes. In this example, we take the current values for each of the 3 diodes above at a voltage of 1.5V (using <code class="docutils literal notranslate"><span class="pre">filter</span></code>) and plot the die location coordinates on the x-axis:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Voltage==1.5&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_30_0.png" src="_images/plot_30_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Time-series">
+<h3>Time series<a class="headerlink" href="#Time-series" title="Permalink to this headline">¶</a></h3>
+<p>We can also use <code class="docutils literal notranslate"><span class="pre">plot</span></code> to visualize time series data. In this example, we use the <code class="docutils literal notranslate"><span class="pre">ts</span></code> dataset loaded previously and place the “Date” column on the x-axis. For clarity, we disable markers and widen the horizontal size of the plot area.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Date&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Happiness Quotient&#39;</span><span class="p">,</span> <span class="n">markers</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">250</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_33_0.png" src="_images/plot_33_0.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Secondary-axes">
+<h2>Secondary axes<a class="headerlink" href="#Secondary-axes" title="Permalink to this headline">¶</a></h2>
+<p>Secondary x- and y-axes can be added to an xy plot using the <code class="docutils literal notranslate"><span class="pre">twin_[x|y]</span></code> keyword. We must also provide an additional DataFrame column name for the alternate axes to the kwarg for the axis that is not twinned (i.e., <code class="docutils literal notranslate"><span class="pre">twin_x</span></code> means two column names are required for <code class="docutils literal notranslate"><span class="pre">y</span></code> and <code class="docutils literal notranslate"><span class="pre">twin_y</span></code> means two column names are required for <code class="docutils literal notranslate"><span class="pre">x</span></code>). Lines and markers will be colored to match the axis label. Grid lines default to the primary axis but secondary gridlines can also be enabled as shown below.</p>
+<div class="admonition note"><p class="admonition-title"></p><p><p>Note: kwargs related to the primary axes are suffixed with <code class="docutils literal notranslate"><span class="pre">_x</span></code> or <code class="docutils literal notranslate"><span class="pre">_y</span></code>. Keywords related to the secondary axis are suffixed with <code class="docutils literal notranslate"><span class="pre">_x2</span></code> and <code class="docutils literal notranslate"><span class="pre">_y2</span></code>.</p>
+</p></div><div class="section" id="Shared-x-axis-(twin_x)">
+<h3>Shared x-axis (twin_x)<a class="headerlink" href="#Shared-x-axis-(twin_x)" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_38_0.png" src="_images/plot_38_0.png" />
+</div>
+</div>
+<p>Next, the same plot but with a legend enabled. Note that the legend will describe the value from the <code class="docutils literal notranslate"><span class="pre">legend</span></code> column and the value associated with the curve (either the primary or the secondary axis):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_40_0.png" src="_images/plot_40_0.png" />
+</div>
+</div>
+<p>Next, the same plot but with secondary gridlines enabled:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">twin_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+         <span class="n">grid_major_y2</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">grid_major_y2_style</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_42_0.png" src="_images/plot_42_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Shared-y-axis-(twin_y)">
+<h3>Shared y-axis (twin_y)<a class="headerlink" href="#Shared-y-axis-(twin_y)" title="Permalink to this headline">¶</a></h3>
+<p>We can also twin the y-axis and plot two different <code class="docutils literal notranslate"><span class="pre">x</span></code> columns:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">twin_y</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25 &amp; Die==&quot;(-1,2)&quot;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_45_0.png" src="_images/plot_45_0.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Multiple-x-&amp;-y-values">
+<h2>Multiple x &amp; y values<a class="headerlink" href="#Multiple-x-&-y-values" title="Permalink to this headline">¶</a></h2>
+<p>Instead of sharing (or twinning) one independent axis across a primary and secondary dependent axis, we can plot multiple columns of data on the same dependent axis. In this case, all dependent values share the same limits on the plot.</p>
+<div class="section" id="Multiple-y-only">
+<h3>Multiple y only<a class="headerlink" href="#Multiple-y-only" title="Permalink to this headline">¶</a></h3>
+<p>If we supply a list of column names for keyword <code class="docutils literal notranslate"><span class="pre">y</span></code>, we can plot both response values on the same axis. The y-axis label is automatically updated to list all column names in use (this can be overridden using keyword <code class="docutils literal notranslate"><span class="pre">label_y</span></code>). Legend values are automatically updated to designate which response column applies to each curve.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_50_0.png" src="_images/plot_50_0.png" />
+</div>
+</div>
+<p>And with a custom <code class="docutils literal notranslate"><span class="pre">label_y</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">label_y</span><span class="o">=</span><span class="s1">&#39;Data&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_52_0.png" src="_images/plot_52_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Multiple-x-only">
+<h3>Multiple x only<a class="headerlink" href="#Multiple-x-only" title="Permalink to this headline">¶</a></h3>
+<p>We can do the same thing with the x-axis:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_55_0.png" src="_images/plot_55_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Multiple-x-and-y">
+<h3>Multiple x and y<a class="headerlink" href="#Multiple-x-and-y" title="Permalink to this headline">¶</a></h3>
+<p>We can also add multiple columns to both <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> kwargs:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;Temperature [C]&#39;</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_58_0.png" src="_images/plot_58_0.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Grouping">
+<h2>Grouping<a class="headerlink" href="#Grouping" title="Permalink to this headline">¶</a></h2>
+<p>As explained in Grouping data, we can group xy plots based on other DataFrame columns to better visualize a dataset. Grouping options include:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">row</span></code>: a single column of subplots</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">column</span></code>: a single row of subplots</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">row</span></code> x <code class="docutils literal notranslate"><span class="pre">column</span></code>: a 2D grid of subplots based on two different DataFrame columns</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">wrap</span></code>: a 2D grid of subplots wrapped in sequence (based on one or more DataFrame columns)</p></li>
+</ul>
+<p>These grouped plots share a legend (if enabled) and will share common ranges unless sharing is explicity disabled</p>
+<div class="section" id="Row-plot">
+<h3>Row plot<a class="headerlink" href="#Row-plot" title="Permalink to this headline">¶</a></h3>
+<p>Row plots create multiple subplots in a single column. Each unique value in the DataFrame column provided for keyword <code class="docutils literal notranslate"><span class="pre">row</span></code> creates a new row in the subplot grid. Plot order is defined alphabetically from top to bottom. Each row contains a row label indicating the unique value of the <code class="docutils literal notranslate"><span class="pre">row</span></code> column.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Temperature [C]==25&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_63_0.png" src="_images/plot_63_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Column-plot">
+<h3>Column plot<a class="headerlink" href="#Column-plot" title="Permalink to this headline">¶</a></h3>
+<p>Column plots create multiple subplots in a single row. Each unique value in the DataFrame column provided for keyword <code class="docutils literal notranslate"><span class="pre">col</span></code> creates a new column in the subplot grid. Plot order is defined alphabetically from left to right. Each column contains a column label indicating the unique value of the <code class="docutils literal notranslate"><span class="pre">col</span></code> column.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Temperature [C]==25&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_66_0.png" src="_images/plot_66_0.png" />
+</div>
+</div>
+<p>If desired, the <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> column names which are automatically added to the row/column labels can be dropped using one of the following kwargs:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">label_rc_names=False</span></code>: disable both row and column label names</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">label_col_names=False</span></code>: disable column label names</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">label_row_names=False</span></code>: disable row label names</p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="n">label_col_names</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Temperature [C]==25&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_68_0.png" src="_images/plot_68_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Row-x-column-grid">
+<h3>Row x column grid<a class="headerlink" href="#Row-x-column-grid" title="Permalink to this headline">¶</a></h3>
+<p>If we provide DataFrame column names for both <code class="docutils literal notranslate"><span class="pre">row</span></code> and <code class="docutils literal notranslate"><span class="pre">col</span></code> keywords, we create a grid of subplots where each combination of unique values is used to make a subplot.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span>
+         <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450&#39;</span><span class="p">,</span> <span class="n">label_rc_font_size</span><span class="o">=</span><span class="mi">13</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_71_0.png" src="_images/plot_71_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Wrap-plot">
+<h3>Wrap plot<a class="headerlink" href="#Wrap-plot" title="Permalink to this headline">¶</a></h3>
+<p>A wrap plot is an alternate view of the row by column grid. For wrap plots, each subplot contains the unique values or combination of values from one or more DataFrame columns. The actual values plotted are condensed into a single label above each plot window. By default, spacing between plots is removed, unlike the row x column grouping option (this default can be overriden by keyword <code class="docutils literal notranslate"><span class="pre">ws_col</span></code>). Additionally, the default number of columns in this grid are determined by the square root of the
+total number of subplot windows. However, the number of columns in a wrap plot can be controlled via keyword <code class="docutils literal notranslate"><span class="pre">ncol</span></code>. In wrap plots, x and y axes ranges must be shared.</p>
+<p>Default number of columns:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> <span class="s1">&#39;Boost Level&#39;</span><span class="p">],</span>
+         <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450&#39;</span><span class="p">,</span> <span class="n">label_rc_font_size</span><span class="o">=</span><span class="mi">13</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_74_0.png" src="_images/plot_74_0.png" />
+</div>
+</div>
+<p>Custom number of columns:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Temperature [C]&#39;</span><span class="p">,</span> <span class="s1">&#39;Boost Level&#39;</span><span class="p">],</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
+         <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">225</span><span class="p">,</span> <span class="mi">225</span><span class="p">],</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450&#39;</span><span class="p">,</span> <span class="n">label_rc_font_size</span><span class="o">=</span><span class="mi">13</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_76_0.png" src="_images/plot_76_0.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Other-options">
+<h2>Other options<a class="headerlink" href="#Other-options" title="Permalink to this headline">¶</a></h2>
+<p>Several additional options available to enhance data analysis in xy plots are describe below.</p>
+<div class="section" id="Horizontal-&amp;-vertical-lines">
+<h3>Horizontal &amp; vertical lines<a class="headerlink" href="#Horizontal-&-vertical-lines" title="Permalink to this headline">¶</a></h3>
+<p>We can add horizontal and vertical reference lines to a plot using one or more of the following keywords: <code class="docutils literal notranslate"><span class="pre">ax_hlines</span></code>, <code class="docutils literal notranslate"><span class="pre">ax_vlines</span></code>, <code class="docutils literal notranslate"><span class="pre">ax2_hlines</span></code>, <code class="docutils literal notranslate"><span class="pre">ax2_vlines</span></code> where “h” stands for “horizontal”, “v” stands for “vertical”, “ax” stands for primary axes, and “ax2” stands for secondary axes (if they exists). The keywords except several different types of inputs:</p>
+<ul class="simple">
+<li><p>a single float number</p></li>
+<li><p>a list of float numbers</p></li>
+<li><p>or a variable-length list of tuples (only first value is required):</p>
+<ul>
+<li><p>item 1 (required) = x or y axis value of the line or the name of a DataFrame column from which the first entry in the column will be used</p></li>
+<li><p>item 2: line color</p></li>
+<li><p>item 3: line style</p></li>
+<li><p>item 4: line width</p></li>
+<li><p>item 5: line alpha</p></li>
+<li><p>item 6: legend text (added automatically is using a DataFrame column name for the value)</p></li>
+</ul>
+</li>
+</ul>
+<p>First we add a single horizontal and vertical line using default styles (determined by the current theme):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;IV Data&#39;</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">,</span>
+         <span class="n">ax_hlines</span><span class="o">=</span><span class="mf">0.63</span><span class="p">,</span> <span class="n">ax_vlines</span><span class="o">=</span><span class="mf">1.4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_82_0.png" src="_images/plot_82_0.png" />
+</div>
+</div>
+<p>Next we plot multiple horizontal and vertical lines at the same time and use the tuple formulation to style them independently (note one line contains the tuple value for legend name and thus is shown in the legend):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;IV Data&#39;</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">,</span>
+         <span class="n">ax_hlines</span><span class="o">=</span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;#FF0000&#39;</span><span class="p">,</span> <span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Open&#39;</span><span class="p">,</span> <span class="s1">&#39;#555555&#39;</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">),</span> <span class="mf">1.2</span><span class="p">],</span>
+         <span class="n">ax_vlines</span><span class="o">=</span><span class="p">[(</span><span class="mf">0.6</span><span class="p">,</span> <span class="s1">&#39;#0000ff&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;#00FF00&#39;</span><span class="p">)])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_84_0.png" src="_images/plot_84_0.png" />
+</div>
+</div>
+<p>We can also plot ax_lines using data from a DataFrame column. Below we define a new column and plot the value from the first row as a horizontal line:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Diode Blow Up Point&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.25</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;IV Data&#39;</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">,</span>
+         <span class="n">ax_hlines</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;Diode Blow Up Point&#39;</span><span class="p">,</span> <span class="s1">&#39;#FF0000&#39;</span><span class="p">,</span> <span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_86_0.png" src="_images/plot_86_0.png" />
+</div>
+</div>
+<p>For row/col/wrap plots, we can also apply the keyword <code class="docutils literal notranslate"><span class="pre">ax_[h|v]lines_by_plot=True</span></code> to pass a different value to each subplot:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">250</span><span class="p">,</span> <span class="mi">250</span><span class="p">],</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">,</span>
+         <span class="n">ax_hlines</span><span class="o">=</span><span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="n">ax_hlines_by_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_88_0.png" src="_images/plot_88_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Curve-fitting">
+<h3>Curve fitting<a class="headerlink" href="#Curve-fitting" title="Permalink to this headline">¶</a></h3>
+<p>fivecentplots provide automatic curve fitting using kwargs starting with <code class="docutils literal notranslate"><span class="pre">fit</span></code>. The value of fit specifies the degree and style parameters follow the normal pattern but are prefixed by <code class="docutils literal notranslate"><span class="pre">fit_</span></code>. We can display the fit equation and R^2 values via keywords <code class="docutils literal notranslate"><span class="pre">fit_eqn=True</span></code> and <code class="docutils literal notranslate"><span class="pre">fit_rsq==True</span></code>, respectively. By default, a legend is displayed to designate the style of the fit line (this can be disabled by supplying keyword <code class="docutils literal notranslate"><span class="pre">legend=False</span></code>).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;IV Data&#39;</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">,</span>
+         <span class="n">fit</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fit_eqn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fit_rsq</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fit_font_size</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">fit_color</span><span class="o">=</span><span class="s1">&#39;#AABB55&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_91_0.png" src="_images/plot_91_0.png" />
+</div>
+</div>
+<p>Since this fit is garbage, let’s make it a polynomial of degree 5. We’ll also disable the legend just because:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;IV Data&#39;</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">,</span>
+         <span class="n">fit</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">fit_eqn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fit_rsq</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fit_font_size</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_93_0.png" src="_images/plot_93_0.png" />
+</div>
+</div>
+<p>Let’s return to our linear fit example. After about Voltage = 1.3V, the response looks somewhat linear. We can constrain the region of interest for the fit by supplying a start and stop value to the keywords <code class="docutils literal notranslate"><span class="pre">fit_range_x</span></code> (which selects data points that fall within this range on the x-axis) or <code class="docutils literal notranslate"><span class="pre">fit_range_y</span></code> (which selects data points that fall within this range on the y-axis). The R^2 of this fit looks much better than before.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;IV Data&#39;</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">,</span>
+         <span class="n">fit</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fit_eqn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fit_rsq</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fit_font_size</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">fit_range_x</span><span class="o">=</span><span class="p">[</span><span class="mf">1.3</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_95_0.png" src="_images/plot_95_0.png" />
+</div>
+</div>
+<p>In the case of multiple datasets, we can also add a line of fit for each item in a legend by specifying a DataFrame column in the <code class="docutils literal notranslate"><span class="pre">legend</span></code> keyword:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;IV Data&#39;</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">,</span>
+         <span class="n">fit</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fit_range_x</span><span class="o">=</span><span class="p">[</span><span class="mf">1.3</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">fit_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">fit_style</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_97_0.png" src="_images/plot_97_0.png" />
+</div>
+</div>
+<p>Fits also work with subplot grouping:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;IV Data&#39;</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">,</span>
+         <span class="n">fit</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fit_range_x</span><span class="o">=</span><span class="p">[</span><span class="mf">1.3</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">fit_eqn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fit_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">fit_color</span><span class="o">=</span><span class="s1">&#39;#555555&#39;</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">250</span><span class="p">,</span> <span class="mi">250</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_99_0.png" src="_images/plot_99_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Stat-lines">
+<h3>Stat lines<a class="headerlink" href="#Stat-lines" title="Permalink to this headline">¶</a></h3>
+<p>If lines are enabled in an xy plot, they are drawn from point to point based on the order in which they appear in a DataFrame column. If multiple groups are included in the dataset and not separated by grouping or legending, the lines will circle back on each other (from the end of one group to the start of the next) as shown below:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;IV Data&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Temperature [C]==25&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_102_0.png" src="_images/plot_102_0.png" />
+</div>
+</div>
+<p>One option to deal with this is to sort the DataFrame by x-value. Unfortunately, this can result in a very jagged mess as lines are drawn between points with similar x-value but different y-value.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">df2</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">df2</span> <span class="o">=</span> <span class="n">df2</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;I [A]&#39;</span><span class="p">)</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df2</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;IV Data&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Temperature [C]==25&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_104_0.png" src="_images/plot_104_0.png" />
+</div>
+</div>
+<p>Rather than drawing connecting lines between all points, fivecentplots allows you to select a representative statistic of the data at each value (such as the median) and plot a line based on this value instead. This is accomplished using the <code class="docutils literal notranslate"><span class="pre">stat</span></code> keyword (any stats that can be applied to a pandas <code class="docutils literal notranslate"><span class="pre">groupby</span></code> object are valid).</p>
+<p>First consider a plot of Voltage vs Current with a “mean” stat line. The result is clean because the voltage values in our dataset are at fixed and common values between datasets.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;IV Data&#39;</span><span class="p">,</span> <span class="n">stat</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Temperature [C]==25&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_106_0.png" src="_images/plot_106_0.png" />
+</div>
+</div>
+<p>Alternatively, if we plot Current vs Voltage, our mean stat line becomes jagged and nasty. This is due to the fact that the current values for each voltage point vary between datasets. This is not any better than just plotting a simple connecting line between points.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;IV Data&#39;</span><span class="p">,</span> <span class="n">stat</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Temperature [C]==25&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_108_0.png" src="_images/plot_108_0.png" />
+</div>
+</div>
+<p>For cases where the x-values are not identical and have some jitter from one dataset to the next, you can use the keyword <code class="docutils literal notranslate"><span class="pre">stat_val</span></code> and specify an alternative DataFrame column to use for the statistical calculation (the actual plotted x-axis will still be whatever is specified for the <code class="docutils literal notranslate"><span class="pre">x</span></code> keyword). Here we use a column called “I Set” which represents the setpoint current while “I [A]” represents the actual measured current. We still have some jaggedness in the stat line but it is now
+representative of the actual dataset and not overwhelmed by minor jitter in the x-values.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;IV Data&#39;</span><span class="p">,</span> <span class="n">stat</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">stat_val</span><span class="o">=</span><span class="s1">&#39;I Set&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Temperature [C]==25&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_110_0.png" src="_images/plot_110_0.png" />
+</div>
+</div>
+<p>Stat lines also work with multiple DataFrame columns are plotted on a given axis. For example, consider the following with two values on the y-axis:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Boost Level&#39;</span><span class="p">,</span> <span class="s1">&#39;I [A]&#39;</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stat</span><span class="o">=</span><span class="s1">&#39;median&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_112_0.png" src="_images/plot_112_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Confidence-intervals">
+<h3>Confidence intervals<a class="headerlink" href="#Confidence-intervals" title="Permalink to this headline">¶</a></h3>
+<p>fivecentplots can display confidence intervals around a data set. Three different methods are available to calculate these intervals:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">conf_int</span></code>: upper and lower bounds based on a single confidence value between 0-1 (typical = 0.95)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">perc_int</span></code>: upper and lower bounds based on percentiles between 0-1</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nq_int</span></code>: upper and lower bounds based on values of sigma (where the mean of a distribution is sigma=0)</p></li>
+</ul>
+<p>By default these intervals are shown as partially transparent filled regions around a curve. These intervals are calculated point-by-point so they are different than confidence bands that are computed from a regression. These intervals are useful mainly for datasets where multiple points exist at each x-value.</p>
+<p>To demonstrate this feature we will use a special dataset:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">df_interval</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;test_data/fake_data_interval.csv&#39;</span><span class="p">)</span>
+<span class="n">df_interval</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>x</th>
+      <th>y</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>-1.0</td>
+      <td>-10.715459</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>-1.0</td>
+      <td>-9.972410</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>-1.0</td>
+      <td>-30.740532</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>-1.0</td>
+      <td>-31.368963</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>-1.0</td>
+      <td>-29.058633</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>First we show the 95% confidence interval:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df_interval</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">conf_int</span><span class="o">=</span><span class="mf">0.95</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_118_0.png" src="_images/plot_118_0.png" />
+</div>
+</div>
+<p>Next we show the IQR around each point based on the 25th and 75th percentiles:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df_interval</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">perc_int</span><span class="o">=</span><span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_120_0.png" src="_images/plot_120_0.png" />
+</div>
+</div>
+<p>Lastly we show the +/-2 sigma range of each data point:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df_interval</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">nq_int</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_122_0.png" src="_images/plot_122_0.png" />
+</div>
+</div>
+<p>We can style the shaded interval region using kwargs that relate to the type of interval. Here is an example for the <code class="docutils literal notranslate"><span class="pre">nq_int</span></code> option:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df_interval</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">nq_int</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+         <span class="n">nq_int_fill_color</span><span class="o">=</span><span class="s1">&#39;#FF0000&#39;</span><span class="p">,</span> <span class="n">nq_int_fill_alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">nq_int_edge_color</span><span class="o">=</span><span class="s1">&#39;#000000&#39;</span><span class="p">,</span> <span class="n">nq_int_edge_width</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">nq_int_edge_alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_124_0.png" src="_images/plot_124_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Control-limits">
+<h3>Control limits<a class="headerlink" href="#Control-limits" title="Permalink to this headline">¶</a></h3>
+<p>fivecentplots can display upper and lower control limts for a plot via keywords <code class="docutils literal notranslate"><span class="pre">ucl</span></code> and <code class="docutils literal notranslate"><span class="pre">lcl</span></code> respectively. This is a convenient way to show what a target values or target ranges for a dataset.</p>
+<p>First we show an example with an upper control limit only. Notice the region outside of the upper limit is shaded to show data points that fail to meet this target.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df_interval</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ucl</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_127_0.png" src="_images/plot_127_0.png" />
+</div>
+</div>
+<p>Now consider the case where we have both an upper and a lower control limit. Again, notice that the ranges outside of the limits are shaded. We will also enable a legend to make the meaning of the shaded region obvious.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df_interval</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ucl</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">lcl</span><span class="o">=-</span><span class="mi">50</span><span class="p">,</span> <span class="n">ucl_fill_color</span><span class="o">=</span><span class="s1">&#39;#FF0000&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_129_0.png" src="_images/plot_129_0.png" />
+</div>
+</div>
+<p>We can invert the shading behavior to show points that fall within our target range using the keyword <code class="docutils literal notranslate"><span class="pre">control_limit_side=&quot;inside&quot;</span></code> (“outside” is used by default). If both ucl and lcl are defined, use kwargs for lcl to style the shaded region):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df_interval</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ucl</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">lcl</span><span class="o">=-</span><span class="mi">50</span><span class="p">,</span>
+         <span class="n">control_limit_side</span><span class="o">=</span><span class="s1">&#39;inside&#39;</span><span class="p">,</span> <span class="n">lcl_fill_color</span><span class="o">=</span><span class="s1">&#39;#00FF00&#39;</span><span class="p">,</span> <span class="n">lcl_edge_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">lcl_edge_style</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_131_0.png" src="_images/plot_131_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Reference-line">
+<h3>Reference line<a class="headerlink" href="#Reference-line" title="Permalink to this headline">¶</a></h3>
+<p>We can add an arbitrary reference line to the plot using the keyword <code class="docutils literal notranslate"><span class="pre">ref_line</span></code>. The value of this keyword is: (1) the name of one or more columns in the <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>; or (2) a pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code> with the same number of rows as the <code class="docutils literal notranslate"><span class="pre">x</span></code> column. These data will be plotted against the values for <code class="docutils literal notranslate"><span class="pre">x</span></code> so there must be a matching number of rows.</p>
+<div class="section" id="y=x-reference">
+<h4>y=x reference<a class="headerlink" href="#y=x-reference" title="Permalink to this headline">¶</a></h4>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;IV Data&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">,</span>
+         <span class="n">ref_line</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">],</span> <span class="n">ref_line_legend_text</span><span class="o">=</span><span class="s1">&#39;y=x&#39;</span><span class="p">,</span> <span class="n">xmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mf">1.6</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="mf">1.6</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_135_0.png" src="_images/plot_135_0.png" />
+</div>
+</div>
+<p>We can also add multiple reference lines to a single plot:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;2*Voltage&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">]</span>
+<span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;IV Data&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">,</span>
+         <span class="n">xmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mf">1.6</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="mf">1.6</span><span class="p">,</span>
+         <span class="n">ref_line</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="s1">&#39;2*Voltage&#39;</span><span class="p">],</span> <span class="n">ref_line_legend_text</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;y=x&#39;</span><span class="p">,</span> <span class="s1">&#39;y=2*x&#39;</span><span class="p">],</span>
+         <span class="n">ref_line_style</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;--&#39;</span><span class="p">],</span> <span class="n">ref_line_color</span><span class="o">=</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_137_0.png" src="_images/plot_137_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="More-complex-calculation">
+<h4>More complex calculation<a class="headerlink" href="#More-complex-calculation" title="Permalink to this headline">¶</a></h4>
+<p>Now let’s use a 4-factor polynomial fit equation and add it as a reference line (notice that because we are not specifying an exisiting column in the DataFrame as the <code class="docutils literal notranslate"><span class="pre">ref_line</span></code> and we are not specifying <code class="docutils literal notranslate"><span class="pre">ref_line_legend_text</span></code>, the legend defaults to a generic label “Ref Line”):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;IV Data&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+         <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Substrate==&quot;Si&quot; &amp; Target Wavelength==450 &amp; Boost Level==0.2 &amp; Temperature [C]==25&#39;</span><span class="p">,</span>
+         <span class="n">ref_line</span><span class="o">=</span><span class="mf">1.555</span><span class="o">*</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">]</span><span class="o">**</span><span class="mi">4</span><span class="o">-</span><span class="mf">3.451</span><span class="o">*</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">]</span><span class="o">**</span><span class="mi">3</span><span class="o">+</span><span class="mf">2.347</span><span class="o">*</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="mf">0.496</span><span class="o">*</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Voltage&#39;</span><span class="p">]</span><span class="o">+</span><span class="mf">0.014</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/plot_140_0.png" src="_images/plot_140_0.png" />
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="barplot.html" class="btn btn-neutral float-right" title="barplot" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="api/ws.html" class="btn btn-neutral float-left" title="ws" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2022, Steve Nicholes.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

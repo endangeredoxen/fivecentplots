@@ -1,0 +1,393 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>labels &mdash; fivecentplots beta documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Archivo Black" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="legend" href="legend.html" />
+    <link rel="prev" title="imshow" href="imshow.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> fivecentplots
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.5.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../layout.html">Layout and Elements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../keyword.html">Keyword Arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../grouping.html">Grouping data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../styles.html">Styles and formatting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ranges.html">Data ranges</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ticks.html">Grids and ticks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../misc.html">Miscellaneous</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="fcp.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="axes.html">axes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bar.html">bar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="boxplot.html">boxplot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cbar.html">cbar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contour.html">contour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="figure.html">figure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gantt.html">gantt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gridlines.html">gridlines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grouping.html">grouping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="heatmap.html">heatmap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hist.html">hist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="imshow.html">imshow</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">labels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="legend.html">legend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lines.html">lines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="markers.html">markers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nq.html">nq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="options.html">options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pie.html">pie</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html">plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tick_labels.html">tick_labels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ticks.html">ticks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="titles.html">title</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ws.html">ws</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Plot Types</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../plot.html">plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../barplot.html">barplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../boxplot.html">boxplot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contour.html">contour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gantt.html">gantt charts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heatmap.html">heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hist.html">hist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../imshow.html">imshow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../nq.html">nq</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pie.html">pie</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Other</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../older.html">Older Versions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/endangeredoxen/fivecentplots">GitHub</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">fivecentplots</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="fcp.html">API</a> &raquo;</li>
+        
+      <li>labels</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/api/labels.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="labels">
+<h1>labels<a class="headerlink" href="#labels" title="Permalink to this headline">¶</a></h1>
+<dl class="py method">
+<dt class="sig sig-object py" id="fivecentplots.fcp.labels">
+<span class="sig-prename descclassname"><span class="pre">fcp.</span></span><span class="sig-name descname"><span class="pre">labels</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fivecentplots.fcp.labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dummy function to return the labels API with <cite>help()</cite> (not used directly for plotting).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><ul class="simple">
+<hr style="margin-top:10px; margin-bottom:10px"><p style="color:#4b72b0"><strong>AXES_LABELS</strong>: </p>
+<li><p><strong>label_bg_padding</strong> (<em>float</em>) – Padding around the label text for the background object behind the text. Defaults to
+2.</p></li>
+<li><p><strong>label_q</strong> (<em>str</em>) – Custom text for a specific axes label [where q = x, y, x2, y2]. Defaults to DataFrame column
+name. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.4/plot.html#Multiple-y-only">More details</a></p></li>
+<li><p><strong>label_q_edge_alpha</strong> (<em>float</em>) – Transparency value for the label edge between 0-1 [where q = x, y, x2, y2]. Defaults
+to 1. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Edge-colors">More details</a></p></li>
+<li><p><strong>label_q_edge_color</strong> (<em>str</em>) – Hex color string for the label edge [where q = x, y, x2, y2]. Defaults to #ffffff <span id="rectangle" style="height: 12px; width: 12px; background-color:#ffffff; border: 1px solid #cccccc; display:inline-block"></span>.
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Edge-colors">More details</a></p></li>
+<li><p><strong>label_q_edge_width</strong> (<em>float</em>) – Width of the border edge of a label in pixels [where q = x, y, x2, y2]. Defaults to
+1. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Edge-colors">More details</a></p></li>
+<li><p><strong>label_q_fill_alpha</strong> (<em>float</em>) – Transparency value for the label background fill between 0-1 [where q = x, y, x2,
+y2]. Defaults to 1. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Fill-colors">More details</a></p></li>
+<li><p><strong>label_q_fill_color</strong> (<em>str</em>) – Hex color string for the label edge [where q = x, y, x2, y2]. Defaults to #ffffff <span id="rectangle" style="height: 12px; width: 12px; background-color:#ffffff; border: 1px solid #cccccc; display:inline-block"></span>.
+<a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Fill-colors">More details</a></p></li>
+<li><p><strong>label_q_font</strong> (<em>str</em>) – Font for a specific axes label [where q = x, y, x2, y2]. Defaults to sans-serif. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Fonts">More details</a></p></li>
+<li><p><strong>label_q_font_color</strong> (<em>str</em>) – Hex color string for font color of a specific axes label [where q = x, y, x2, y2].
+Defaults to #000000 <span id="rectangle" style="height: 12px; width: 12px; background-color:#000000;  display:inline-block"></span>. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Fonts">More details</a></p></li>
+<li><p><strong>label_q_font_size</strong> (<em>str</em>) – Font size for a specific axes label [where q = x, y, x2, y2]. Defaults to 14. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Fonts">More details</a></p></li>
+<li><p><strong>label_q_font_style</strong> (<em>str</em>) – Font style {‘normal’|’italic’|’oblique’} for a specific axes label [where q = x, y,
+x2, y2]. Defaults to italic. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Fonts">More details</a></p></li>
+<li><p><strong>label_q_font_weight</strong> (<em>str</em>) – Font weight {‘normal’|’bold’|’heavy’|’light’|’ultrabold’|’ultralight’} for a specific
+axes label [where q = x, y, x2, y2]. Defaults to bold. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Fonts">More details</a></p></li>
+<hr style="margin-top:10px; margin-bottom:10px"><p style="color:#4b72b0"><strong>RC_LABELS</strong>: </p>
+<li><p><strong>label_q_edge_alpha</strong> – Transparency value for the label edge between 0-1 [where q = rc, col, row, wrap; rc
+changes all]. Defaults to 1. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Edge">More details</a>-
+colors</p></li>
+<li><p><strong>label_q_edge_color</strong> – Hex color string for the label edge [where q = rc, col, row, wrap; rc changes all].
+Defaults to #8c8c8c <span id="rectangle" style="height: 12px; width: 12px; background-color:#8c8c8c;  display:inline-block"></span>. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Edge-colors">More details</a></p></li>
+<li><p><strong>label_q_edge_width</strong> – Width of the border edge of a label in pixels [where q = rc, col, row, wrap; rc
+changes all]. Defaults to 0. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Edge">More details</a>-
+colors</p></li>
+<li><p><strong>label_q_fill_alpha</strong> – Transparency value for the label background fill between 0-1 [where q = rc, col,
+row, wrap; rc changes all]. Defaults to 1. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Fill-colors">More details</a></p></li>
+<li><p><strong>label_q_fill_color</strong> – Hex color string for the label edge [where q = rc, col, row, wrap; rc changes all].
+Defaults to #8c8c8c <span id="rectangle" style="height: 12px; width: 12px; background-color:#8c8c8c;  display:inline-block"></span>. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Fill-colors">More details</a></p></li>
+<li><p><strong>label_q_font</strong> – Font for a specific axes label [where q = rc, col, row, wrap; rc changes all]. Defaults to
+sans-serif. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Fonts">More details</a></p></li>
+<li><p><strong>label_q_font_color</strong> – Hex color string for font color of a specific axes label [where q = rc, col, row,
+wrap; rc changes all]. Defaults to #ffffff <span id="rectangle" style="height: 12px; width: 12px; background-color:#ffffff; border: 1px solid #cccccc; display:inline-block"></span>. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Fonts">More details</a></p></li>
+<li><p><strong>label_q_font_size</strong> – Font size for a specific axes label [where q = rc, col, row, wrap; rc changes all].
+Defaults to 16. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Fonts">More details</a></p></li>
+<li><p><strong>label_q_font_style</strong> – Font style {‘normal’|’italic’|’oblique’} for a specific axes label [where q = rc, col,
+row, wrap; rc changes all]. Defaults to normal. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Fonts">More details</a></p></li>
+<li><p><strong>label_q_font_weight</strong> – Font weight {‘normal’|’bold’|’heavy’|’light’|’ultrabold’|’ultralight’} for a specific
+axes label [where q = rc, col, row, wrap; rc changes all]. Defaults to bold. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Fonts">More details</a></p></li>
+<li><p><strong>label_q_names</strong> (<em>boolean</em>) – Toggle including the DataFrame column names in the row or column labels [where q = rc,
+col, row; rc changes all]. Defaults to False.  <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.4/plot.html#Column-plot">More details</a></p></li>
+<li><p><strong>label_q_size</strong> (<em>str</em>) – Label background rectangle height for an col/wrap label OR width for row label,30,None
+title_wrap_font,str,Font for the wrap title bar text”. Defaults to label_wrap_font.</p></li>
+<li><p><strong>title_wrap_edge_alpha</strong> (<em>float</em>) – Transparency value for the wrap title bar edge between 0-1. Defaults to
+<a href="#id1"><span class="problematic" id="id2">label_rc_</span></a>. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Edge-colors">More details</a></p></li>
+<li><p><strong>title_wrap_edge_color</strong> (<em>str</em>) – Hex color string for the wrap title bar edge. Defaults to #5f5f5f <span id="rectangle" style="height: 12px; width: 12px; background-color:#5f5f5f;  display:inline-block"></span>.</p></li>
+<li><p><strong>title_wrap_edge_width</strong> (<em>float</em>) – Width of the wrap title bar edge in pixels. Defaults to label_wrap_edge_width.</p></li>
+<li><p><strong>title_wrap_fill_alpha</strong> (<em>float</em>) – Transparency value for the wrap title bar background fill between 0-1. Defaults
+to label_wrap_fill_alpha. <a class="reference external" href="https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Fill">More details</a>-
+colors</p></li>
+<li><p><strong>title_wrap_fill_color</strong> (<em>str</em>) – Hex color string for the wrap title bar. Defaults to #5f5f5f <span id="rectangle" style="height: 12px; width: 12px; background-color:#5f5f5f;  display:inline-block"></span>.</p></li>
+<li><p><strong>title_wrap_font_color</strong> (<em>str</em>) – Hex color string for the wrap title bar text. Defaults to label_wrap_font_color.</p></li>
+<li><p><strong>title_wrap_font_size</strong> (<em>str</em>) – Font size for the wrap title bar text. Defaults to 16.</p></li>
+<li><p><strong>title_wrap_font_style</strong> (<em>str</em>) – Font style {‘normal’|’italic’|’oblique’} for the wrap title bar text. Defaults to
+label_wrap_font_style.</p></li>
+<li><p><strong>title_wrap_font_weight</strong> (<em>str</em>) – Font weight {‘normal’|’bold’|’heavy’|’light’|’ultrabold’|’ultralight’} for the
+wrap title bar text. Defaults to label_wrap_font_weight.</p></li>
+<li><p><strong>title_wrap_size</strong> (<em>str</em>) – Label background rectangle height for the wrap title bar. Defaults to label_wrap_size.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">fivecentplots</span> <span class="k">as</span> <span class="nn">fcp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">fcp</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;test_data&#39;</span> <span class="o">/</span> <span class="s1">&#39;fake_data.csv&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fcp</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;I [A]&#39;</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;Substrate&#39;</span><span class="p">,</span>
+<span class="go">             filter=&#39;Target Wavelength==450 &amp; Temperature [C]==25 &amp; Boost Level==0.2&#39;, ax_size=[300, 250],</span>
+<span class="go">             label_rc_edge_color=&#39;#000000&#39;, label_rc_edge_width=2,</span>
+<span class="go">             label_row_font_color=&#39;#AA0000&#39;, label_row_fill_alpha=0.5, label_row_fill_color=&#39;#00AA00&#39;,</span>
+<span class="go">             label_col_fill_color=&#39;#0000AA&#39;,</span>
+<span class="go">             label_x_font_style=&#39;normal&#39;, label_y_font_color=&#39;#AABBCC&#39;, label_x_fill_color=&#39;#DDDDDD&#39;)</span>
+</pre></div>
+</div>
+<blockquote>
+<div><div class="figure align-default">
+<img alt="../_images/example_labels.png" src="../_images/example_labels.png" />
+</div>
+</div></blockquote>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="legend.html" class="btn btn-neutral float-right" title="legend" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="imshow.html" class="btn btn-neutral float-left" title="imshow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2022, Steve Nicholes.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
