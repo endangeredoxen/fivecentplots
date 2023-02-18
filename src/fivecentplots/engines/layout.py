@@ -1987,7 +1987,7 @@ class BaseLayout:
         title = utl.kwget(kwargs, self.fcpp, 'title', None)
         self.title = Element('title', self.fcpp, kwargs,
                              on=True if title is not None else False,
-                             text=title if title is not None else None,
+                             text=str(title) if title is not None else None,
                              font_color=utl.kwget(kwargs, self.fcpp, 'title_font_color', '#333333'),
                              font_size=utl.kwget(kwargs, self.fcpp, 'title_font_size', 18),
                              font_weight=utl.kwget(kwargs, self.fcpp, 'title_font_weight', 'bold'),
@@ -2683,7 +2683,7 @@ class Element:
         self.dpi = utl.kwget(kwargs, fcpp, 'dpi', 100)
         if obj is None:
             self.obj = None
-            self.obj_bk = None
+            self.obj_bg = None
             self.limits = []
         else:
             self.obj = obj.copy()  # plot object reference

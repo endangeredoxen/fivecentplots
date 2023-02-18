@@ -47,7 +47,7 @@ def make_all():
         print('done!')
 
 
-def show_all():
+def show_all(only_fails=True):
     """
     Remake all test master images
     """
@@ -58,8 +58,15 @@ def show_all():
     members = [f for f in members if 'test_' in f[0]]
     for member in members:
         print('Running %s...' % member[0], end='')
-        member[1](show=True)
-        db()
+        if only_fails:
+            try:
+                member[1]()
+            except AssertionError:
+                member[1](show=True)
+                db()
+        else:
+            member[1](show=True)
+            db()
 
 
 def test_legend_single(master=False, remove=True, show=False):

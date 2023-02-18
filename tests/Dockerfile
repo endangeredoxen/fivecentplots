@@ -10,7 +10,7 @@ RUN apt-get install -y pip
 RUN apt install -y git
 
 # Clone fcp
-RUN git clone https://github.com/endangeredoxen/fivecentplots.git && cd fivecentplots && git checkout v0.5.3
+RUN git clone https://github.com/endangeredoxen/fivecentplots.git && cd fivecentplots && git checkout v0.5.4
 
 # Install fcp
 RUN cd fivecentplots && pip3 install .[test]

@@ -46,7 +46,7 @@ def make_all():
         print('done!')
 
 
-def show_all():
+def show_all(only_fails=True):
     """
     Remake all test master images
     """
@@ -57,8 +57,15 @@ def show_all():
     members = [f for f in members if 'test_' in f[0]]
     for member in members:
         print('Running %s...' % member[0], end='')
-        member[1](show=True)
-        db()
+        if only_fails:
+            try:
+                member[1]()
+            except AssertionError:
+                member[1](show=True)
+                db()
+        else:
+            member[1](show=True)
+            db()
 
 
 def test_fill_color(master=False, remove=True, show=False):
@@ -760,11 +767,9 @@ def test_fonts(master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             title='My Plot', title_font_style='italic',
-             label_y_font_size=25, label_y_style='normal',
-             label_x_font_weight='normal',
-             tick_labels_major_font='fantasy',
-             filename=name + '.png')
+             title='My Oh My This Is Way Too Long of a Title for This Plot What Were You Thinking!',
+             title_font_style='italic', label_y_font_size=25, label_y_style='normal',
+             label_x_font_weight='normal', tick_labels_major_font='fantasy', filename=name + '.png')
 
     # Compare with master
     if master:

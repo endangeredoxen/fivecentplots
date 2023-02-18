@@ -48,7 +48,7 @@ def make_all():
         print('done!')
 
 
-def show_all():
+def show_all(only_fails=True):
     """
     Run the show=True option on all plt functions
     """
@@ -59,8 +59,15 @@ def show_all():
     members = [f for f in members if 'plt_' in f[0]]
     for member in members:
         print('Running %s...' % member[0], end='')
-        member[1](show=True)
-        db()
+        if only_fails:
+            try:
+                member[1]()
+            except AssertionError:
+                member[1](show=True)
+                db()
+        else:
+            member[1](show=True)
+            db()
 
 
 # plt_ functions can be used directly outside of pytest for debug
@@ -1054,7 +1061,7 @@ def plt_other_stat_q(bm=False, master=False, remove=True, show=False):
     # Make the plot
     fcp.plot(df, x='I [A]', y='Voltage', title='IV Data', lines=False, show=SHOW,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             stat='q50', stat_val='I Set', markers=False,
+             stat='q50', stat_val='I Set', markers=False, title_fill_color='#ff0000',
              filename=name + '.png', save=not bm, inline=False)
     if bm:
         return

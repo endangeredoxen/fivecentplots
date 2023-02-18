@@ -4,6 +4,7 @@ import scipy.stats
 import numpy as np
 import copy
 import math
+from typing import Dict
 from .. utilities import RepeatedList
 from .. import utilities as utl
 from distutils.version import LooseVersion
@@ -458,8 +459,7 @@ class Layout(BaseLayout):
     @property
     def _labtick_z(self) -> float:
         """Width of the z label + z tick labels + related whitespace."""
-        val = self.ws_label_tick * self.label_z.on \
-            + self.tick_labels_major_z.size[0]
+        val = self.ws_label_tick * self.label_z.on + self.tick_labels_major_z.size[0]
 
         return val
 
@@ -467,7 +467,7 @@ class Layout(BaseLayout):
     def _left(self) -> float:
         """Width of the space to the left of the axes object."""
         left = self.ws_fig_label + self._labtick_y
-        title_xs_left = self.title.size[0] / 2 \
+        title_xs_left = self.title.size[0] / 2 + (self.ws_fig_ax if self.title.on else 0) \
             - (left + (self.axes.size[0] * self.ncol + self.ws_col * (self.ncol - 1)) / 2)
         if title_xs_left < 0:
             title_xs_left = 0
@@ -514,8 +514,7 @@ class Layout(BaseLayout):
             + self._labtick_z \
             + self.x_tick_xs \
             + self.label_y2.size[0] \
-            + (self.label_z.size[0] * (self.ncol if self.separate_labels else 1)
-               + self.ws_ticks_ax * self.label_z.on)
+            + (self.label_z.size[0] * (self.ncol if self.separate_labels else 1) + self.ws_ticks_ax * self.label_z.on)
 
         # box title excess
         if self.box_group_title.on and (self.ws_ax_box_title + self.box_title) > self._legx:
@@ -525,9 +524,10 @@ class Layout(BaseLayout):
 
         # Main figure title excess size
         title_xs_right = self.title.size[0] / 2 \
-            - (right + (self.axes.size[0] * self.ncol + self.ws_col * (self.ncol - 1)) / 2)
+            - (right + (self.axes.size[0] * self.ncol + self.ws_col * (self.ncol - 1)) / 2) - self.legend.size[0]
         if title_xs_right < 0:
             title_xs_right = 0
+
         right += title_xs_right
 
         # pie labels
@@ -1140,7 +1140,7 @@ class Layout(BaseLayout):
             lab.size = [max(width, width_bg), max(height, height_bg)]
 
         # titles
-        if self.title.on and isinstance(self.title.text, str):
+        if self.title.on:
             self.title.size = self.title.obj.get_window_extent().width, self.title.obj.get_window_extent().height
 
         # legend
@@ -1345,8 +1345,7 @@ class Layout(BaseLayout):
             self.ws_row += self.box_labels
 
         if self.title.on:
-            self.ws_title = self.ws_fig_title + \
-                self.title.size[1] + self.ws_title_ax
+            self.ws_title = self.ws_fig_title + self.title.size[1] + self.ws_title_ax
         else:
             self.ws_title = self.ws_fig_ax
 
@@ -1411,29 +1410,24 @@ class Layout(BaseLayout):
         # Debug output
         if debug:
             print('self.fig.size[0] = %s' % self.fig.size[0])
-            vals = ['ws_fig_label', 'label_y', 'ws_label_tick', 'tick_labels_major_y',
-                    'tick_labels_minor_y', 'ws_ticks_ax', 'axes', 'cbar', 'ws_ax_cbar',
-                    'ws_col', 'ws_ax_leg', 'legend', 'ws_leg_fig', 'label_y2',
-                    'ws_label_tick', 'ws_ticks_ax', 'tick_labels_major_y2', 'label_row',
+            vals = ['ws_fig_label', 'label_y', 'ws_label_tick', 'tick_labels_major_y', 'tick_labels_minor_y',
+                    'ws_ticks_ax', 'axes', 'cbar', 'ws_ax_cbar', 'ws_col', 'ws_ax_leg', 'legend', 'ws_leg_fig',
+                    'label_y2', 'ws_label_tick', 'ws_ticks_ax', 'tick_labels_major_y2', 'label_row',
                     'ws_label_row', 'label_z', 'tick_labels_major_z', 'box_title',
                     'ncol', '_labtick_y', '_labtick_y2', '_labtick_z']
             for val in vals:
                 if isinstance(getattr(self, val), Element):
-                    print('   %s.size[0] = %s' %
-                          (val, getattr(self, val).size[0]))
+                    print('   %s.size[0] = %s' % (val, getattr(self, val).size[0]))
                 else:
                     print('   %s = %s' % (val, getattr(self, val)))
             print('self.fig.size[1] = %s' % self.fig.size[1])
-            vals = ['ws_fig_title', 'title', 'ws_title_ax', 'ws_fig_ax',
-                    'label_col', 'ws_label_col', 'title_wrap',
-                    'label_wrap', 'label_x2', 'ws_ticks_ax', 'tick_labels_major_x2',
-                    'axes', 'label_x', 'ws_label_tick', 'tick_labels_major_x', 'ws_ticks_ax',
-                    'ws_fig_label', 'ws_row', 'box_labels',
+            vals = ['ws_fig_title', 'title', 'ws_title_ax', 'ws_fig_ax', 'label_col', 'ws_label_col', 'title_wrap',
+                    'label_wrap', 'label_x2', 'ws_ticks_ax', 'tick_labels_major_x2', 'axes', 'label_x', 'ws_label_tick',
+                    'tick_labels_major_x', 'ws_ticks_ax', 'ws_fig_label', 'ws_row', 'box_labels',
                     'nrow', '_labtick_x', '_labtick_x2', 'ws_title']
             for val in vals:
                 if isinstance(getattr(self, val), Element):
-                    print('   %s.size[1] = %s' %
-                          (val, getattr(self, val).size[1]))
+                    print('   %s.size[1] = %s' % (val, getattr(self, val).size[1]))
                 else:
                     print('   %s = %s' % (val, getattr(self, val)))
 
@@ -1448,23 +1442,33 @@ class Layout(BaseLayout):
                 header - self.fig.size[1]
         self.fig.size[1] += self.legend.overflow
 
+    @staticmethod
+    def _get_grid_visibility_kwarg(visible: bool) -> Dict:
+        """Handle visibility kwarg for different mpl versions (changed at v3.5)
+
+        Args:
+            visible: flag to show or hide grid
+
+        Returns:
+            single-key dict with the correctly-named bool for showing/hiding grids
+        """
+        if LooseVersion(mpl.__version__) < LooseVersion('3.5'):
+            return {'b': visible}
+        else:
+            return {'visible': visible}
+
     def _get_legend_position(self):
         """Get legend position."""
         if self.legend.location == 0:
+            title_xs = max(0, (self.title.size[0] - self.axes.size[0]) / 2 - self.legend.size[0])
             if self.box_group_title.on and self.legend.size[1] > self.axes.size[1]:
-                self.legend.position[1] = 1 + \
-                    (self.fig_legend_border
-                     - self.ws_leg_fig) / self.fig.size[0]
+                self.legend.position[1] = 1 + (self.fig_legend_border - self.ws_leg_fig - title_xs) / self.fig.size[0]
             elif self.box_group_title.on:
-                self.legend.position[1] = 1 + \
-                    (self.fig_legend_border - self.ws_leg_fig - self.ws_ax_box_title
-                     - self.box_title + self.ws_ax_fig) \
-                    / self.fig.size[0]
+                self.legend.position[1] = 1 + (self.fig_legend_border - self.ws_leg_fig - self.ws_ax_box_title
+                                               - self.box_title + self.ws_ax_fig - title_xs) / self.fig.size[0]
             else:
-                self.legend.position[1] = 1 + \
-                    (self.fig_legend_border - self.ws_leg_fig) / self.fig.size[0]
-            self.legend.position[2] = \
-                self.axes.position[2] + self.legend_top_offset / self.fig.size[1]
+                self.legend.position[1] = 1 + (self.fig_legend_border - self.ws_leg_fig - title_xs) / self.fig.size[0]
+            self.legend.position[2] = self.axes.position[2] + self.legend_top_offset / self.fig.size[1]
         if self.legend.location == 11:
             self.legend.position[1] = 0.5
             self.legend.position[2] = 0
@@ -1753,32 +1757,35 @@ class Layout(BaseLayout):
             # size_all by idx:
             #   ir, ic, width, height, x0, x1, y0, y1
             if len(xticks.size_all) > 0:
-                xticks_size_all = \
-                    xticks.size_all[(xticks.size_all.ir == ir)
-                                    & (xticks.size_all.ic == ic)]
+                xticks_size_all = xticks.size_all[(xticks.size_all.ir == ir) & (xticks.size_all.ic == ic)]
                 xticks_size_all = np.array(xticks_size_all)
             else:
                 xticks_size_all = []
             if len(yticks.size_all) > 0:
-                yticks_size_all = \
-                    yticks.size_all[(yticks.size_all.ir == ir)
-                                    & (yticks.size_all.ic == ic)]
+                yticks_size_all = yticks.size_all[(yticks.size_all.ir == ir) & (yticks.size_all.ic == ic)]
                 yticks_size_all = np.array(yticks_size_all)
             else:
                 yticks_size_all = []
 
             if len(xticks_size_all) > 0:
-                idx = xticks.size_cols.index('x1')
-                xxs = self.axes.obj[ir, ic].get_window_extent().x1 \
-                    + self._right \
+                if xticks.rotation == 90:
+                    idx = xticks.size_cols.index('y1')
+                elif xticks.rotation == 270:
+                    idx = xticks.size_cols.index('y0')
+                else:
+                    idx = xticks.size_cols.index('x1')
+                xxs = self.axes.obj[ir, ic].get_window_extent().x1 + self._right + self.legend.size[0] \
                     - xticks_size_all[-1][idx]
                 if xxs < 0:
                     self.x_tick_xs = -int(np.floor(xxs)) + 1
             if len(yticks_size_all) > 0:
-                idx = xticks.size_cols.index('y0')
-                yxs = self.axes.obj[ir, ic].get_window_extent().y1 \
-                    + self._top \
-                    - yticks_size_all[-1][idx]
+                if yticks.rotation == 90:
+                    idx = xticks.size_cols.index('x1')
+                elif yticks.rotation == 270:
+                    idx = xticks.size_cols.index('x0')
+                else:
+                    idx = xticks.size_cols.index('y0')
+                yxs = self.axes.obj[ir, ic].get_window_extent().y1 + self._top - yticks_size_all[-1][idx]
                 if yxs < 0:
                     self.y_tick_xs = -int(np.floor(yxs)) + 1  # not currently used
 
@@ -1815,8 +1822,7 @@ class Layout(BaseLayout):
         self._get_figure_size(data, **kwargs)
         self.fig.obj, self.axes.obj = \
             mplp.subplots(data.nrow, data.ncol,
-                          figsize=[self.fig.size_inches[0],
-                                   self.fig.size_inches[1]],
+                          figsize=[self.fig.size_inches[0], self.fig.size_inches[1]],
                           sharex=self.axes.share_x,
                           sharey=self.axes.share_y,
                           dpi=self.fig.dpi,
@@ -2612,82 +2618,100 @@ class Layout(BaseLayout):
             # Set major grid
             ax.obj[ir, ic].set_axisbelow(True)
             if self.grid_major_x.on:
-                ax.obj[ir, ic].xaxis.grid(b=True, which='major',
-                                          color=self.grid_major_x.color[0],
-                                          linestyle=self.grid_major_x.style[0],
-                                          linewidth=self.grid_major_x.width[0],
-                                          alpha=self.grid_major_x.alpha)
+                kwargs = {'which': 'major', 'color': self.grid_major_x.color[0],
+                          'linestyle': self.grid_major_x.style[0], 'linewidth': self.grid_major_x.width[0],
+                          'alpha': self.grid_major_x.alpha}
+                kwargs.update(self._get_grid_visibility_kwarg(True))
+                ax.obj[ir, ic].xaxis.grid(**kwargs)
             else:
-                ax.obj[ir, ic].xaxis.grid(b=False, which='major')
+                kwargs = {'which': 'major'}
+                kwargs.update(self._get_grid_visibility_kwarg(False))
+                ax.obj[ir, ic].xaxis.grid(**kwargs)
 
             if self.grid_major_x2 and not ax.primary:
                 if self.grid_major_x2.on:
-                    ax.obj[ir, ic].xaxis.grid(b=True, which='major',
-                                              color=self.grid_major_x2.color[0],
-                                              linestyle=self.grid_major_x2.style[0],
-                                              linewidth=self.grid_major_x2.width[0],
-                                              alpha=self.grid_major_x2.alpha)
+                    kwargs = {'which': 'major', 'color': self.grid_major_x2.color[0],
+                              'linestyle': self.grid_major_x2.style[0], 'linewidth': self.grid_major_x2.width[0],
+                              'alpha': self.grid_major_x2.alpha}
+                    kwargs.update(self._get_grid_visibility_kwarg(True))
+                    ax.obj[ir, ic].xaxis.grid(**kwargs)
                 else:
                     ax.obj[ir, ic].xaxis.grid(b=False, which='major')
             elif not self.grid_major_x2 and not ax.primary:
-                ax.obj[ir, ic].xaxis.grid(b=False, which='major')
+                kwargs = {'which': 'major'}
+                kwargs.update(self._get_grid_visibility_kwarg(False))
+                ax.obj[ir, ic].xaxis.grid(**kwargs)
 
             if self.grid_major_y.on:
-                ax.obj[ir, ic].yaxis.grid(b=True, which='major',
-                                          color=self.grid_major_y.color[0],
-                                          linestyle=self.grid_major_y.style[0],
-                                          linewidth=self.grid_major_y.width[0],
-                                          alpha=self.grid_major_y.alpha)
+                kwargs = {'which': 'major', 'color': self.grid_major_y.color[0],
+                          'linestyle': self.grid_major_y.style[0], 'linewidth': self.grid_major_y.width[0],
+                          'alpha': self.grid_major_y.alpha}
+                kwargs.update(self._get_grid_visibility_kwarg(True))
+                ax.obj[ir, ic].yaxis.grid(**kwargs)
             else:
-                ax.obj[ir, ic].yaxis.grid(b=False, which='major')
+                kwargs = {'which': 'major'}
+                kwargs.update(self._get_grid_visibility_kwarg(False))
+                ax.obj[ir, ic].yaxis.grid(**kwargs)
 
             if self.grid_major_y2 and not ax.primary:
                 if self.grid_major_y2.on:
-                    ax.obj[ir, ic].yaxis.grid(b=True, which='major',
-                                              color=self.grid_major_y2.color[0],
-                                              linestyle=self.grid_major_y2.style[0],
-                                              linewidth=self.grid_major_y2.width[0],
-                                              alpha=self.grid_major_y2.alpha)
+                    kwargs = {'which': 'major', 'color': self.grid_major_y2.color[0],
+                              'linestyle': self.grid_major_y2.style[0], 'linewidth': self.grid_major_y2.width[0],
+                              'alpha': self.grid_major_y2.alpha}
+                    kwargs.update(self._get_grid_visibility_kwarg(True))
+                    ax.obj[ir, ic].yaxis.grid(**kwargs)
                 else:
-                    ax.obj[ir, ic].yaxis.grid(b=False, which='major')
+                    kwargs = {'which': 'major'}
+                    kwargs.update(self._get_grid_visibility_kwarg(False))
+                    ax.obj[ir, ic].yaxis.grid(**kwargs)
             elif not self.grid_major_y2 and not ax.primary:
-                ax.obj[ir, ic].yaxis.grid(b=False, which='major')
+                kwargs = {'which': 'major'}
+                kwargs.update(self._get_grid_visibility_kwarg(False))
+                ax.obj[ir, ic].yaxis.grid(**kwargs)
 
             # Set minor grid
             if self.grid_minor_x.on:
-                ax.obj[ir, ic].xaxis.grid(b=True, which='minor',
-                                          color=self.grid_minor_x.color[0],
-                                          linestyle=self.grid_minor_x.style[0],
-                                          linewidth=self.grid_minor_x.width[0],
-                                          alpha=self.grid_minor_x.alpha)
+                kwargs = {'which': 'minor', 'color': self.grid_minor_x.color[0],
+                          'linestyle': self.grid_minor_x.style[0], 'linewidth': self.grid_minor_x.width[0],
+                          'alpha': self.grid_minor_x.alpha}
+                kwargs.update(self._get_grid_visibility_kwarg(True))
+                ax.obj[ir, ic].xaxis.grid(**kwargs)
             if self.grid_minor_y.on:
-                ax.obj[ir, ic].yaxis.grid(b=True, which='minor',
-                                          color=self.grid_minor_y.color[0],
-                                          linestyle=self.grid_minor_y.style[0],
-                                          linewidth=self.grid_minor_y.width[0],
-                                          alpha=self.grid_minor_y.alpha)
+                kwargs = {'which': 'minor', 'color': self.grid_minor_y.color[0],
+                          'linestyle': self.grid_minor_y.style[0], 'linewidth': self.grid_minor_y.width[0],
+                          'alpha': self.grid_minor_y.alpha}
+                kwargs.update(self._get_grid_visibility_kwarg(True))
+                ax.obj[ir, ic].yaxis.grid(**kwargs)
             if self.grid_minor_x2 and not ax.primary:
                 if self.grid_minor_x2.on:
-                    ax.obj[ir, ic].xaxis.grid(b=True, which='minor',
-                                              color=self.grid_minor_x2.color[0],
-                                              linestyle=self.grid_minor_x2.style[0],
-                                              linewidth=self.grid_minor_x2.width[0],
-                                              alpha=self.grid_minor_x2.alpha)
+                    kwargs = {'which': 'minor', 'color': self.grid_minor_x2.color[0],
+                              'linestyle': self.grid_minor_x2.style[0], 'linewidth': self.grid_minor_x2.width[0],
+                              'alpha': self.grid_minor_x2.alpha}
+                    kwargs.update(self._get_grid_visibility_kwarg(True))
+                    ax.obj[ir, ic].xaxis.grid(**kwargs)
                 else:
-                    ax.obj[ir, ic].xaxis.grid(b=False, which='minor')
+                    kwargs = {'which': 'minor'}
+                    kwargs.update(self._get_grid_visibility_kwarg(False))
+                    ax.obj[ir, ic].xaxis.grid(**kwargs)
             elif not self.grid_minor_x2 and not ax.primary:
-                ax.obj[ir, ic].xaxis.grid(b=False, which='minor')
+                kwargs = {'which': 'minor'}
+                kwargs.update(self._get_grid_visibility_kwarg(False))
+                ax.obj[ir, ic].xaxis.grid(**kwargs)
             if self.grid_minor_y2 and not ax.primary:
                 if self.grid_minor_y2.on:
-                    ax.obj[ir, ic].yaxis.grid(b=True, which='minor',
-                                              color=self.grid_minor_y2.color[0],
-                                              linestyle=self.grid_minor_y2.style[0],
-                                              linewidth=self.grid_minor_y2.width[0],
-                                              alpha=self.grid_minor_y2.alpha)
+                    kwargs = {'which': 'minor', 'color': self.grid_minor_y2.color[0],
+                              'linestyle': self.grid_minor_y2.style[0], 'linewidth': self.grid_minor_y2.width[0],
+                              'alpha': self.grid_minor_y2.alpha}
+                    kwargs.update(self._get_grid_visibility_kwarg(False))
+                    ax.obj[ir, ic].yaxis.grid(**kwargs)
                 else:
-                    ax.obj[ir, ic].xaxis.grid(b=False, which='minor')
+                    kwargs = {'which': 'minor'}
+                    kwargs.update(self._get_grid_visibility_kwarg(False))
+                    ax.obj[ir, ic].xaxis.grid(**kwargs)
             elif not self.grid_minor_y2 and not ax.primary:
-                ax.obj[ir, ic].yaxis.grid(b=False, which='minor')
+                kwargs = {'which': 'minor'}
+                kwargs.update(self._get_grid_visibility_kwarg(False))
+                ax.obj[ir, ic].yaxis.grid(**kwargs)
 
     def set_axes_labels(self, ir: int, ic: int):
         """Set the axes labels.
@@ -3251,8 +3275,7 @@ class Layout(BaseLayout):
             self.markers.color_alpha('fill_color', 'fill_alpha')
 
         except:  # noqa
-            print('Could not find a colormap called "%s". '
-                  'Using default colors...' % self.cmap)
+            print('Could not find a colormap called "%s". Using default colors...' % self.cmap)
 
     def set_figure_final_layout(self, data: 'Data', **kwargs):  # noqa: F821
         """Final adjustment of the figure size and plot spacing.
@@ -3261,6 +3284,10 @@ class Layout(BaseLayout):
             data: Data object
             kwargs: keyword args
         """
+        # Subplots within self.fig.obj are not currently in the right place and do not have the right size.  Before
+        #   checking for overlaps with other elements we temporarily move the subplots to (0, 0) and size properly
+        self._subplots_adjust_x0y0()
+
         # Render dummy figure to get the element sizes
         self._get_element_sizes(data)
 
@@ -3437,9 +3464,8 @@ class Layout(BaseLayout):
         """Set a figure title."""
         if self.title.on:
             self._get_title_position()
-            self.title.obj, self.title.obj_bg = \
-                self.add_label(0, 0, self.title.text, offset=True,
-                               **self.make_kw_dict(self.title))
+            self.title.obj, self.title.obj_bg = self.add_label(0, 0, self.title.text, offset=True,
+                                                               **self.make_kw_dict(self.title))
 
     def _set_scientific(self, ax: mplp.Axes, tp: dict, idx: int = 0) -> mplp.Axes:
         """Turn off scientific notation.
@@ -3704,3 +3730,17 @@ class Layout(BaseLayout):
     def show(self, *args):
         """Display the plot window."""
         mplp.show(block=False)
+
+    def _subplots_adjust_x0y0(self):
+        """Temporary realigning of subplots to the (0, 0) coordinate of the figure."""
+        self.axes.position[0] = 0
+        self.axes.position[3] = 0
+        self.axes.position[1] = self.axes.size[0] / self.fig.size[0] * self.ncol
+        self.axes.position[2] = self.axes.size[1] / self.fig.size[1] * self.nrow
+        self.fig.obj.subplots_adjust(left=self.axes.position[0],
+                                     right=self.axes.position[1],
+                                     top=self.axes.position[2],
+                                     bottom=self.axes.position[3],
+                                     hspace=1.0 * self.ws_row / self.axes.size[1],
+                                     wspace=1.0 * self.ws_col / self.axes.size[0],
+                                     )
