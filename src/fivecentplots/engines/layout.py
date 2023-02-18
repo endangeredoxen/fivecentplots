@@ -362,8 +362,7 @@ class BaseLayout:
                         obj=self.obj_array,
                         font_style='italic',
                         font_weight='bold',
-                        bg_padding=utl.kwget(kwargs, self.fcpp,
-                                             'label_bg_padding', 2),
+                        bg_padding=utl.kwget(kwargs, self.fcpp, 'label_bg_padding', 2),
                         )
         labels = ['x', 'x2', 'y', 'y2', 'z']
         rotations = [0, 0, 90, 270, 270]
@@ -378,8 +377,7 @@ class BaseLayout:
                 v = kwargs[k]
                 if k == 'label_%s' % lab or '_text' in k:
                     continue  # k = 'label_%s_text' % lab
-                setattr(getattr(self, 'label_%s' % lab),
-                        k.replace('label_%s_' % lab, ''), v)
+                setattr(getattr(self, 'label_%s' % lab), k.replace('label_%s_' % lab, ''), v)
 
             # Update alphas
             getattr(self, 'label_%s' % lab).color_alpha('fill_color', 'fill_alpha')
@@ -2001,6 +1999,7 @@ class BaseLayout:
         title = utl.kwget(kwargs, self.fcpp, 'title', None)
         self.title = Element('title', self.fcpp, kwargs,
                              on=True if title is not None else False,
+                             obj=self.obj_array,
                              text=str(title) if title is not None else None,
                              font_color='#333333',
                              font_size=18,
@@ -2701,7 +2700,7 @@ class Element:
         self.dpi = utl.kwget(kwargs, fcpp, 'dpi', 100)
         if obj is None:
             self.obj = None
-            self.obj_bk = None
+            self.obj_bg = None
             self.limits = []
         else:
             self.obj = obj.copy()  # plot object reference

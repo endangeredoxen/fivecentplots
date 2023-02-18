@@ -1134,7 +1134,7 @@ class Layout(BaseLayout):
             lab.size = [max(width, width_bg), max(height, height_bg)]
 
         # titles
-        if self.title.on and isinstance(self.title.text, str):
+        if self.title.on:
             self.title.size = self.title.obj.get_window_extent().width, self.title.obj.get_window_extent().height
 
         # legend
@@ -1404,29 +1404,24 @@ class Layout(BaseLayout):
         # Debug output
         if debug:
             print('self.fig.size[0] = %s' % self.fig.size[0])
-            vals = ['ws_fig_label', 'label_y', 'ws_label_tick', 'tick_labels_major_y',
-                    'tick_labels_minor_y', 'ws_ticks_ax', 'axes', 'cbar', 'ws_ax_cbar',
-                    'ws_col', 'ws_ax_leg', 'legend', 'ws_leg_fig', 'label_y2',
-                    'ws_label_tick', 'ws_ticks_ax', 'tick_labels_major_y2', 'label_row',
+            vals = ['ws_fig_label', 'label_y', 'ws_label_tick', 'tick_labels_major_y', 'tick_labels_minor_y',
+                    'ws_ticks_ax', 'axes', 'cbar', 'ws_ax_cbar', 'ws_col', 'ws_ax_leg', 'legend', 'ws_leg_fig',
+                    'label_y2', 'ws_label_tick', 'ws_ticks_ax', 'tick_labels_major_y2', 'label_row',
                     'ws_label_row', 'label_z', 'tick_labels_major_z', 'box_title',
                     'ncol', '_labtick_y', '_labtick_y2', '_labtick_z']
             for val in vals:
                 if isinstance(getattr(self, val), Element):
-                    print('   %s.size[0] = %s' %
-                          (val, getattr(self, val).size[0]))
+                    print('   %s.size[0] = %s' % (val, getattr(self, val).size[0]))
                 else:
                     print('   %s = %s' % (val, getattr(self, val)))
             print('self.fig.size[1] = %s' % self.fig.size[1])
-            vals = ['ws_fig_title', 'title', 'ws_title_ax', 'ws_fig_ax',
-                    'label_col', 'ws_label_col', 'title_wrap',
-                    'label_wrap', 'label_x2', 'ws_ticks_ax', 'tick_labels_major_x2',
-                    'axes', 'label_x', 'ws_label_tick', 'tick_labels_major_x', 'ws_ticks_ax',
-                    'ws_fig_label', 'ws_row', 'box_labels',
+            vals = ['ws_fig_title', 'title', 'ws_title_ax', 'ws_fig_ax', 'label_col', 'ws_label_col', 'title_wrap',
+                    'label_wrap', 'label_x2', 'ws_ticks_ax', 'tick_labels_major_x2', 'axes', 'label_x', 'ws_label_tick',
+                    'tick_labels_major_x', 'ws_ticks_ax', 'ws_fig_label', 'ws_row', 'box_labels',
                     'nrow', '_labtick_x', '_labtick_x2', 'ws_title']
             for val in vals:
                 if isinstance(getattr(self, val), Element):
-                    print('   %s.size[1] = %s' %
-                          (val, getattr(self, val).size[1]))
+                    print('   %s.size[1] = %s' % (val, getattr(self, val).size[1]))
                 else:
                     print('   %s = %s' % (val, getattr(self, val)))
 
@@ -1756,34 +1751,35 @@ class Layout(BaseLayout):
             # size_all by idx:
             #   ir, ic, width, height, x0, x1, y0, y1
             if len(xticks.size_all) > 0:
-                xticks_size_all = \
-                    xticks.size_all[(xticks.size_all.ir == ir)
-                                    & (xticks.size_all.ic == ic)]
+                xticks_size_all = xticks.size_all[(xticks.size_all.ir == ir) & (xticks.size_all.ic == ic)]
                 xticks_size_all = np.array(xticks_size_all)
             else:
                 xticks_size_all = []
             if len(yticks.size_all) > 0:
-                yticks_size_all = \
-                    yticks.size_all[(yticks.size_all.ir == ir)
-                                    & (yticks.size_all.ic == ic)]
+                yticks_size_all = yticks.size_all[(yticks.size_all.ir == ir) & (yticks.size_all.ic == ic)]
                 yticks_size_all = np.array(yticks_size_all)
             else:
                 yticks_size_all = []
 
-            self.x_tick_xs = 0
-            self.y_tick_xs = 0
             if len(xticks_size_all) > 0:
-                idx = xticks.size_cols.index('x1')
-                xxs = self.axes.obj[ir, ic].get_window_extent().x1 \
-                    + self._right \
+                if xticks.rotation == 90:
+                    idx = xticks.size_cols.index('y1')
+                elif xticks.rotation == 270:
+                    idx = xticks.size_cols.index('y0')
+                else:
+                    idx = xticks.size_cols.index('x1')
+                xxs = self.axes.obj[ir, ic].get_window_extent().x1 + self._right + self.legend.size[0] \
                     - xticks_size_all[-1][idx]
                 if xxs < 0:
                     self.x_tick_xs = -int(np.floor(xxs)) + 1
             if len(yticks_size_all) > 0:
-                idx = xticks.size_cols.index('y0')
-                yxs = self.axes.obj[ir, ic].get_window_extent().y1 \
-                    + self._top \
-                    - yticks_size_all[-1][idx]
+                if yticks.rotation == 90:
+                    idx = xticks.size_cols.index('x1')
+                elif yticks.rotation == 270:
+                    idx = xticks.size_cols.index('x0')
+                else:
+                    idx = xticks.size_cols.index('y0')
+                yxs = self.axes.obj[ir, ic].get_window_extent().y1 + self._top - yticks_size_all[-1][idx]
                 if yxs < 0:
                     self.y_tick_xs = -int(np.floor(yxs)) + 1  # not currently used
 
@@ -1806,7 +1802,6 @@ class Layout(BaseLayout):
                                       + self.label_wrap.size[1]) / self.axes.size[1]
         self.title.position[2] = \
             self.title.position[3] + (self.ws_title_ax + self.title.size[1]) / self.axes.size[1]
-        print(self.title.position)
 
     def make_figure(self, data: 'Data', **kwargs):  # noqa: F821
         """Make the figure and axes objects.
@@ -1821,8 +1816,7 @@ class Layout(BaseLayout):
         self._get_figure_size(data, **kwargs)
         self.fig.obj, self.axes.obj = \
             mplp.subplots(data.nrow, data.ncol,
-                          figsize=[self.fig.size_inches[0],
-                                   self.fig.size_inches[1]],
+                          figsize=[self.fig.size_inches[0], self.fig.size_inches[1]],
                           sharex=self.axes.share_x,
                           sharey=self.axes.share_y,
                           dpi=self.fig.dpi,
@@ -3284,8 +3278,7 @@ class Layout(BaseLayout):
             self.markers.color_alpha('fill_color', 'fill_alpha')
 
         except:  # noqa
-            print('Could not find a colormap called "%s". '
-                  'Using default colors...' % self.cmap)
+            print('Could not find a colormap called "%s". Using default colors...' % self.cmap)
 
     def set_figure_final_layout(self, data: 'Data', **kwargs):  # noqa: F821
         """Final adjustment of the figure size and plot spacing.
@@ -3294,20 +3287,14 @@ class Layout(BaseLayout):
             data: Data object
             kwargs: keyword args
         """
+        # Subplots within self.fig.obj are not currently in the right place and do not have the right size.  Before
+        #   checking for overlaps with other elements we temporarily move the subplots to (0, 0) and size properly
+        self._subplots_adjust_x0y0()
+
         # Render dummy figure to get the element sizes
         self._get_element_sizes(data)
 
-        # Determine if extra whitespace is needed at the plot edge for the last tick; since the final figure size has
-        # not yet be set, need to reposition the subplots first before determining tick excess
-        self._get_figure_size(data, **kwargs)
-        self._get_subplots_adjust()
-        self.fig.obj.subplots_adjust(left=self.axes.position[0],
-                                     right=self.axes.position[1],
-                                     top=self.axes.position[2],
-                                     bottom=self.axes.position[3],
-                                     hspace=1.0 * self.ws_row / self.axes.size[1],
-                                     wspace=1.0 * self.ws_col / self.axes.size[0],
-                                     )
+        # Determine if extra whitespace is needed at the plot edge for the last tick
         self._get_tick_xs()
 
         # Resize the figure
@@ -3479,9 +3466,8 @@ class Layout(BaseLayout):
         """Set a figure title."""
         if self.title.on:
             self._get_title_position()
-            self.title.obj, self.title.obj_bg = \
-                self.add_label(0, 0, self.title.text, offset=True,
-                               **self.make_kw_dict(self.title))
+            self.title.obj, self.title.obj_bg = self.add_label(0, 0, self.title.text, offset=True,
+                                                               **self.make_kw_dict(self.title))
 
     def set_scientific(self, ax: mplp.Axes, tp: dict, idx: int = 0) -> mplp.Axes:
         """Turn off scientific notation.
@@ -3705,3 +3691,17 @@ class Layout(BaseLayout):
     def show(self, *args):
         """Display the plot window."""
         mplp.show(block=False)
+
+    def _subplots_adjust_x0y0(self):
+        """Temporary realigning of subplots to the (0, 0) coordinate of the figure."""
+        self.axes.position[0] = 0
+        self.axes.position[3] = 0
+        self.axes.position[1] = self.axes.size[0] / self.fig.size[0] * self.ncol
+        self.axes.position[2] = self.axes.size[1] / self.fig.size[1] * self.nrow
+        self.fig.obj.subplots_adjust(left=self.axes.position[0],
+                                     right=self.axes.position[1],
+                                     top=self.axes.position[2],
+                                     bottom=self.axes.position[3],
+                                     hspace=1.0 * self.ws_row / self.axes.size[1],
+                                     wspace=1.0 * self.ws_col / self.axes.size[0],
+                                     )
