@@ -1,4 +1,4 @@
-# As of v0.5.4, python 3.6 testing is deprecated
+# As of v0.6.0, python 3.6 testing is deprecated
 name: Tests
 
 on:

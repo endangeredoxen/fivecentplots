@@ -5,12 +5,12 @@ Changelog
 =====
 * Improved support for bokeh
 
-0.5.4
+0.6.0
 =====
 * Add compatibility for `matplotlib==3.7`
 * Fix long figure title bug
 
-0.5.4
+0.6.0
 =====
 * For rc labels, add option to drop the row/column name in the label text with keyword `label_rc_names`, `label_row_names`, or `label_col_names` = `False`
 * Remove deprecated kwarg in `np.histogram` call

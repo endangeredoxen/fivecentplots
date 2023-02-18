@@ -2,66 +2,66 @@
         label_bg_padding (float): Padding around the label text for the background object behind the text. Defaults to
           2.
         label_q (str): Custom text for a specific axes label [where q = x, y, x2, y2]. Defaults to DataFrame column
-          name. Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/plot.html#Multiple-y-only
+          name. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/plot.html#Multiple-y-only
         label_q_edge_alpha (float): Transparency value for the label edge between 0-1 [where q = x, y, x2, y2]. Defaults
-          to 1. Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Edge-colors
+          to 1. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Edge-colors
         label_q_edge_color (str): Hex color string for the label edge [where q = x, y, x2, y2]. Defaults to #ffffff.
-          Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Edge-colors
+          Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Edge-colors
         label_q_edge_width (float): Width of the border edge of a label in pixels [where q = x, y, x2, y2]. Defaults to
-          1. Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Edge-colors
+          1. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Edge-colors
         label_q_fill_alpha (float): Transparency value for the label background fill between 0-1 [where q = x, y, x2,
-          y2]. Defaults to 1. Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Fill-colors
+          y2]. Defaults to 1. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Fill-colors
         label_q_fill_color (str): Hex color string for the label edge [where q = x, y, x2, y2]. Defaults to #ffffff.
-          Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Fill-colors
+          Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Fill-colors
         label_q_font (str): Font for a specific axes label [where q = x, y, x2, y2]. Defaults to sans-serif. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Fonts
+          https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Fonts
         label_q_font_color (str): Hex color string for font color of a specific axes label [where q = x, y, x2, y2].
-          Defaults to #000000. Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Fonts
+          Defaults to #000000. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Fonts
         label_q_font_size (str): Font size for a specific axes label [where q = x, y, x2, y2]. Defaults to 14. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Fonts
+          https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Fonts
         label_q_font_style (str): Font style {'normal'|'italic'|'oblique'} for a specific axes label [where q = x, y,
-          x2, y2]. Defaults to italic. Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Fonts
+          x2, y2]. Defaults to italic. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Fonts
         label_q_font_weight (str): Font weight {'normal'|'bold'|'heavy'|'light'|'ultrabold'|'ultralight'} for a specific
           axes label [where q = x, y, x2, y2]. Defaults to bold. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Fonts
+          https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Fonts
         RC_LABELS:
         label_q_edge_alpha (float): Transparency value for the label edge between 0-1 [where q = rc, col, row, wrap; rc
-          changes all]. Defaults to 1. Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Edge-
+          changes all]. Defaults to 1. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Edge-
           colors
         label_q_edge_color (str): Hex color string for the label edge [where q = rc, col, row, wrap; rc changes all].
-          Defaults to #8c8c8c. Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Edge-colors
+          Defaults to #8c8c8c. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Edge-colors
         label_q_edge_width (float): Width of the border edge of a label in pixels [where q = rc, col, row, wrap; rc
-          changes all]. Defaults to 0. Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Edge-
+          changes all]. Defaults to 0. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Edge-
           colors
         label_q_fill_alpha (float): Transparency value for the label background fill between 0-1 [where q = rc, col,
           row, wrap; rc changes all]. Defaults to 1. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Fill-colors
+          https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Fill-colors
         label_q_fill_color (str): Hex color string for the label edge [where q = rc, col, row, wrap; rc changes all].
-          Defaults to #8c8c8c. Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Fill-colors
+          Defaults to #8c8c8c. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Fill-colors
         label_q_font (str): Font for a specific axes label [where q = rc, col, row, wrap; rc changes all]. Defaults to
-          sans-serif. Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Fonts
+          sans-serif. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Fonts
         label_q_font_color (str): Hex color string for font color of a specific axes label [where q = rc, col, row,
           wrap; rc changes all]. Defaults to #ffffff. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Fonts
+          https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Fonts
         label_q_font_size (str): Font size for a specific axes label [where q = rc, col, row, wrap; rc changes all].
-          Defaults to 16. Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Fonts
+          Defaults to 16. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Fonts
         label_q_font_style (str): Font style {'normal'|'italic'|'oblique'} for a specific axes label [where q = rc, col,
           row, wrap; rc changes all]. Defaults to normal. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Fonts
+          https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Fonts
         label_q_font_weight (str): Font weight {'normal'|'bold'|'heavy'|'light'|'ultrabold'|'ultralight'} for a specific
           axes label [where q = rc, col, row, wrap; rc changes all]. Defaults to bold. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Fonts
+          https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Fonts
         label_q_names (boolean): Toggle including the DataFrame column names in the row or column labels [where q = rc,
           col, row; rc changes all]. Defaults to False.  Example:
-          https://endangeredoxen.github.io/fivecentplots/0.5.4/plot.html#Column-plot
+          https://endangeredoxen.github.io/fivecentplots/0.6.0/plot.html#Column-plot
         label_q_size (str): Label background rectangle height for an col/wrap label OR width for row label,30,None
           title_wrap_font,str,Font for the wrap title bar text". Defaults to label_wrap_font.
         title_wrap_edge_alpha (float): Transparency value for the wrap title bar edge between 0-1. Defaults to
-          label_rc_. Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Edge-colors
+          label_rc_. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Edge-colors
         title_wrap_edge_color (str): Hex color string for the wrap title bar edge. Defaults to #5f5f5f.
         title_wrap_edge_width (float): Width of the wrap title bar edge in pixels. Defaults to label_wrap_edge_width.
         title_wrap_fill_alpha (float): Transparency value for the wrap title bar background fill between 0-1. Defaults
-          to label_wrap_fill_alpha. Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Fill-
+          to label_wrap_fill_alpha. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Fill-
           colors
         title_wrap_fill_color (str): Hex color string for the wrap title bar. Defaults to #5f5f5f.
         title_wrap_font_color (str): Hex color string for the wrap title bar text. Defaults to label_wrap_font_color.
