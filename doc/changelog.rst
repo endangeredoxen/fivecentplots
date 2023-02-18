@@ -6,7 +6,7 @@ Changelog
 * Add compatibility for `matplotlib==3.7`
 * Fix long figure title bug
 
-0.5.3
+0.5.4
 =====
 * For rc labels, add option to drop the row/column name in the label text with keyword `label_rc_names`, `label_row_names`, or `label_col_names` = `False`
 * Remove deprecated kwarg in `np.histogram` call

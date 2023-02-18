@@ -1,10 +1,11 @@
 Keyword,Data Type,Description,Default,Example
-engine,str,"Specify the plotting engine {'mpl', 'bokeh'}",'mpl',layout.html#engine
 BAYER,list,Color scheme for RGGB channel data so lines and markers match CFA type,None,hist.html#RGB
 DEFAULT_COLORS,list,Default color scheme used for lines and markers (from ``colors.py``),None,None
-HIST,dict,"Shortcut of useful kwargs to format ``hist`` plots {'ax_scale': 'logy', 'markers': False, 'line_width': 2, 'preset': 'HIST'}",None,hist.html#fcp.HIST
+engine,str,"Specify the plotting engine {'mpl', 'bokeh'}",'mpl',layout.html#engine
 filename,str,"Name of the saved image (with or without path and/or extension)",Automatic name based on conditions with extention '.png',grouping.html#figure-plots
 filepath,str,"Name of the directory to save images (convenient if you want to use the default naming but save in a different directory",current directory,None
+HIST,dict,"Shortcut of useful kwargs to format ``hist`` plots {'ax_scale': 'logy', 'markers': False, 'line_width': 2, 'preset': 'HIST'}",None,hist.html#fcp.HIST
+hold,bool,"For interactive plotting with ``matplotlib``, keeps the previous plots enabled when creating a new plot with ``fcp``; otherwise, previous plots are closed with each new ``fcp`` plot",False,None
 inline,boolean,Flag to display the rendered plot in the native plotting viewer or jupyter notebook (convenient to disable if doing automated batch plotting),True,None
 print_filename,boolean,"Print the output filename, if the plot is saved",False,grouping.html#figure-plots
 return_filename,boolean,"Return the output filename, if the plot is saved",False,None
