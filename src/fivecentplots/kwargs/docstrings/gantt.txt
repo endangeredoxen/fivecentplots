@@ -1,20 +1,20 @@
         gantt_color_by_bar|color_by_bar (bool): Color each Gantt bar differently. Defaults to False. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Styling
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/gantt.html#Styling
         gantt_edge_color (str): Hex color string for the edge of the Gantt bars. Defaults to fcp.DEFAULT_COLORS.
-          Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Styling
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/gantt.html#Styling
         gantt_edge_width (float): Width of the edge of the Gantt bars in pixels. Defaults to 0. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Styling
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/gantt.html#Styling
         gantt_fill_alpha (int): Transparency value for the Gantt bars between 0-1. Defaults to 0.75. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Styling
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/gantt.html#Styling
         gantt_fill_color (str): Hex color string of the Gantt bar fill . Defaults to fcp.DEFAULT_COLORS.
         gantt_height|height (float): Set the fractional height of the Gantt bars between 0-1. Defaults to 0.9. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Styling
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/gantt.html#Styling
         gantt_label_x (str): By default, x-axis labels are disabled for this plot type. Defaults to '’.
         gantt_order_by_legend|order by legend (bool): Order the y-axis values based on the sort order of the legend
           values [requires legend]. Defaults to False. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Legends
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/gantt.html#Legends
         gantt_tick_labels_x_rotation|tick_labels_x_rotation (int): Gantt-specific version of the this kwarg to ensure
           rotations are not applied globably to all plots from a theme file. Defaults to 90. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Legends
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/gantt.html#Legends
         sort (str): Sort order for the Gantt bars {‘ascending’, ‘descending’}. Defaults to 'descending’. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Sorting
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/gantt.html#Sorting

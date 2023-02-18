@@ -1,96 +1,96 @@
         ticks_major (boolean): Enable/disable major x-axis and y-axis tick marks. Defaults to True. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_major_alpha (str): Transparency-axis value for major tick marks between 0-1. Defaults to 1. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_major_color (str): Hex-axis color string for x-axis and y-axis major tick marks. Defaults to #ffffff.
-          Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_major_direction (str): Point tick marks 'in' or 'out' from the axes area. Defaults to 'in'. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-style
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-style
         ticks_major_increment (float): Specify the spacing of major tick marks. Defaults to None. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-increment
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-increment
         ticks_major_length (float): Specify the length of the major tick marks in pixels. Defaults to 6.2. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-style
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-style
         ticks_major_width (float): Major tickline width in pixels (float ok). Defaults to 1.3. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_major_width (float): Specify the width of the major tick marks in pixels. Defaults to 2.2. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-style
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-style
         ticks_major_x (boolean): Enable/disable major x-axis tick marks. Defaults to True. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_major_x2 (boolean): Enable/disable secondary-axis major x-axis tick marks. Defaults to True. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_major_x2_alpha (str): Transparency-axis value for secondary-axis major x-axis tick marks between 0-1.
-          Defaults to 1. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          Defaults to 1. Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_major_x2_color (str): Hex-axis color string for secondary-axis x-axis major tick marks. Defaults to
-          #ffffff. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          #ffffff. Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_major_x2_width (float): Major secondary x-axis tickline width in pixels (float ok). Defaults to 1.3.
-          Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_major_x_alpha (str): Transparency-axis value for major x-axis tickslines between 0-1. Defaults to 1.
-          Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_major_x_color (str): Hex-axis color string for x-axis major tick marks. Defaults to #ffffff. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_major_x_width (float): Major x-axis tickline width in pixels (float ok). Defaults to 1.3. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_major_y (boolean): Enable/disable major y-axis tick marks. Defaults to True. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_major_y2 (boolean): Enable/disable secondary-axis major y-axis tick marks. Defaults to True. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_major_y2_alpha (str): Transparency-axis value for secondary-axis major y-axis tick marks between 0-1.
-          Defaults to 1. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          Defaults to 1. Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_major_y2_color (str): Hex-axis color string for secondary-axis y-axis major tick marks. Defaults to
-          #ffffff. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          #ffffff. Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_major_y2_width (float): Major secondary y-axis tickline width in pixels (float ok). Defaults to 1.3.
-          Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_major_y_alpha (str): Transparency-axis value for major y-axis tick marks between 0-1. Defaults to 1.
-          Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_major_y_color (str): Hex-axis color string for y-axis major tick marks. Defaults to #ffffff. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_major_y_width (float): Major y-axis tickline width in pixels (float ok). Defaults to 1.3. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_minor (boolean): Enable/disable minor x-axis and y-axis tick marks. Defaults to True. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_minor_alpha (str): Transparency-axis value for minor tick marks between 0-1. Defaults to 1. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_minor_color (str): Hex-axis color string for x-axis and y-axis minor tick marks. Defaults to #ffffff.
-          Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_minor_direction (str): Point tick marks 'in' or 'out' from the axes area. Defaults to 'in'. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-style
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-style
         ticks_minor_length (float): Specify the length of the minor tick marks in pixels. Defaults to 0.67 *
-          ticks_major_length. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-style
+          ticks_major_length. Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-style
         ticks_minor_number (float): Specify the number of minor tick marks. Defaults to None. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-increment
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-increment
         ticks_minor_width (float): Specify the width of the minor tick marks in pixels. Defaults to 0.6 *
-          ticks_major_width. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-style
+          ticks_major_width. Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-style
         ticks_minor_width (float): minor tickline width in pixels (float ok). Defaults to 0.5. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_minor_x (boolean): Enable/disable minor x-axis tick marks. Defaults to True. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_minor_x2 (boolean): Enable/disable secondary-axis minor x-axis tick marks. Defaults to True. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_minor_x2_alpha (str): Transparency-axis value for secondary-axis minor x-axis tick marks between 0-1.
-          Defaults to 1. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          Defaults to 1. Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_minor_x2_color (str): Hex-axis color string for secondary-axis x-axis minor tick marks. Defaults to
-          #ffffff. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          #ffffff. Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_minor_x2_width (float): minor secondary x-axis tickline width in pixels (float ok). Defaults to 0.5.
-          Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_minor_x_alpha (str): Transparency-axis value for minor x-axis tick marks between 0-1. Defaults to 1.
-          Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_minor_x_color (str): Hex-axis color string for x-axis minor tick marks. Defaults to #ffffff. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_minor_x_width (float): minor x-axis tickline width in pixels (float ok). Defaults to 0.5. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_minor_y (boolean): Enable/disable minor y-axis tick marks. Defaults to True. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_minor_y2 (boolean): Enable/disable secondary-axis minor y-axis tick marks. Defaults to True. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_minor_y2_alpha (str): Transparency-axis value for secondary-axis minor y-axis tick marks between 0-1.
-          Defaults to 1. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          Defaults to 1. Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_minor_y2_color (str): Hex-axis color string for secondary-axis y-axis minor tick marks. Defaults to
-          #ffffff. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          #ffffff. Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_minor_y2_width (float): minor secondary y-axis tickline width in pixels (float ok). Defaults to 0.5.
-          Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_minor_y_alpha (str): Transparency-axis value for minor y-axis tick marks between 0-1. Defaults to 1.
-          Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_minor_y_color (str): Hex-axis color string for y-axis minor tick marks. Defaults to #ffffff. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks
         ticks_minor_y_width (float): minor y-axis tickline width in pixels (float ok). Defaults to 0.5. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/ticks.html#Tick-marks
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/ticks.html#Tick-marks

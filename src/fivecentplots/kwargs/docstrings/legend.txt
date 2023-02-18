@@ -1,15 +1,15 @@
 
         legend_edge_color (str): Hex color string for the legend border. Defaults to #ffffff. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Typical-elements
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Typical-elements
         legend_edge_width (float): Width of the legend border in pixels. Defaults to 1.
         legend_font_size (float): Font size of the legend text. Defaults to 12.
         legend_location (int): Position of the legend {0 = outside; 1 = upper right; 2 = upper left; 3 = lower left; 4 =
           lower right; 5 = right; 6 = center left; 7 = center right; 8 = lower center; 9 = upper center; 10 = center; 11
-          = below}. Defaults to  0. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/grouping.html#Location
+          = below}. Defaults to  0. Example: https://endangeredoxen.github.io/fivecentplots/0.5.4/grouping.html#Location
         legend_marker_alpha (float): Transparency value for legend markers between 0-1. Defaults to 1. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Alpha
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Alpha
         legend_marker_size (float): Marker size in the legend in pixels. Defaults to 7. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Marker-size
+          https://endangeredoxen.github.io/fivecentplots/0.5.4/styles.html#Marker-size
         legend_on (boolean): Enable/disable visibility of legend that has been created using the legend kwarg. Defaults
           to True [if legend enabled].
         legend_points (int): Number of points in the legend region for each entry [to enable multiple markers as in
