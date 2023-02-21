@@ -1435,6 +1435,7 @@ class BaseLayout:
         if isinstance(self.markers.size, str) and self.markers.size in data.df_all.columns:
             pass
         elif not isinstance(self.markers.size, RepeatedList):
+            self.markers.sizes = self.markers.size
             self.markers.size = RepeatedList(self.markers.size, 'marker_size')
         if not isinstance(self.markers.edge_width, RepeatedList):
             self.markers.edge_width = RepeatedList(self.markers.edge_width, 'marker_edge_width')
@@ -1633,6 +1634,7 @@ class BaseLayout:
                                      font_weight=utl.kwget(kwargs, self.fcpp, 'label_wrap_font_weight',
                                                            label_rc.font_weight),
                                      text_size=None,
+                                     align=utl.kwget(kwargs, self.fcpp, 'label_wrap_align', 'center'),
                                      )
 
         self.title_wrap = Element('title_wrap', self.fcpp, kwargs,
@@ -1651,6 +1653,7 @@ class BaseLayout:
                                   font_weight=utl.kwget(kwargs, self.fcpp, 'title_wrap_font_weight',
                                                         label_rc.font_weight),
                                   text=kwargs.get('title_wrap', None),
+                                  align=utl.kwget(kwargs, self.fcpp, 'title_wrap_align', 'center'),
                                   )
 
         if not isinstance(self.title_wrap.size, list):

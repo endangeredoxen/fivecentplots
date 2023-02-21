@@ -2,7 +2,7 @@ import pandas as pd
 import pdb
 import numpy as np
 from .. import utilities as utl
-from . layout import LOGX, LOGY, BaseLayout, RepeatedList
+from . layout import LOGX, LOGY, BaseLayout, RepeatedList, Element
 from .. import data
 import warnings
 import bokeh.plotting as bp
@@ -77,6 +77,17 @@ class Layout(BaseLayout):
         self.kwargs = kwargs
         self.update_markers()
 
+        # Engine-specific kwargs
+        location = utl.kwget(kwargs, self.fcpp, 'toolbar_location', 'below')
+        self.toolbar = Element('toolbar', self.fcpp, kwargs,
+                               on=True if location else None,
+                               location=location,
+                               sticky=utl.kwget(kwargs, self.fcpp, ['toolbar_sticky', 'sticky'], True),
+                               tools=utl.kwget(kwargs, self.fcpp, ['toolbar_tools', 'tools'],
+                                               'pan,wheel_zoom,box_zoom,reset'),
+                               # active_zoom=utl.kwget(kwargs, self.fcpp, 'toolbar_active_zoom', 'wheel_zoom,box_zoom')
+                               )
+
         # Check for unsupported kwargs
         # unsupported = []
 
@@ -142,7 +153,7 @@ class Layout(BaseLayout):
         if not self.legend.on or len(self.legend.values) == 0:
             return
 
-        title = self.axes.obj[0, -1].circle(0, 0, size=0.00000001, color=None)
+        title = self.axes.obj[0, -1].circle(0, 0, size=1.00000001, color=None)
         tt = [(self.legend.text, [title])]
         for irow, row in self.legend.values.iterrows():
             if row['Key'] == 'NaN':
@@ -154,6 +165,8 @@ class Layout(BaseLayout):
         legend.border_line_width = self.legend.edge_width
         legend.border_line_color = self.legend.edge_color[0]
         legend.border_line_alpha = self.legend.edge_alpha
+        legend.label_text_font_size = f'{self.legend.font_size}px'
+        legend.title_text_font_size = f'{self.legend.font_size}px'  # could separate this parameter in future
 
         # Add the legend
         self.axes.obj[0, -1].add_layout(legend, 'right')
@@ -184,6 +197,9 @@ class Layout(BaseLayout):
             **kwargs: input args from user
         """
         self.axes.obj = np.array([[None] * self.ncol] * self.nrow)
+        self.label_col.obj = np.array([None] * self.ncol)
+        self.label_wrap.obj = np.array([[None] * self.ncol] * self.nrow)
+        self.label_row.obj = np.array([None] * self.nrow)
         for ir in range(0, self.nrow):
             for ic in range(0, self.ncol):
                 x_type, y_type = self._set_axes_type(ir, ic, data)
@@ -192,9 +208,16 @@ class Layout(BaseLayout):
                                                   y_axis_type=y_type,
                                                   frame_width=self.axes.size[0],  # sizing is so easy! thank you bokeh
                                                   frame_height=self.axes.size[1],
-                                                  # tools="pan,wheel_zoom,box_zoom,reset", # need an element
-                                                  # toolbar_location="below", toolbar_sticky=False,  # doesn't work??
+                                                  tools=self.toolbar.tools,
+                                                  toolbar_sticky=self.toolbar.sticky,
                                                   )
+                if self.label_row.on:
+                    self.label_row.obj[ir] = bm.Title()
+                if self.label_col.on:
+                    self.label_col.obj[ic] = bm.Title()
+                if self.label_wrap.on:
+                    self.label_wrap.obj[ir, ic] = bm.Title()
+
                 # Twinning
                 if self.axes.twin_x:
                     self.axes.obj[ir, ic].extra_y_ranges = {'y2': bm.Range1d(start=0, end=1)}
@@ -463,7 +486,10 @@ class Layout(BaseLayout):
                                                )
 
         # Add a reference to the line to self.lines
-        if leg_name is not None and leg_name not in list(self.legend.values['Key']):
+        if self.legend.location == 0:
+            if ir == 0 and ic == self.ncol - 1:
+                self.legend.add_value(leg_name, points if points is not None else lines, line_type_name)
+        elif leg_name is not None and leg_name not in list(self.legend.values['Key']):
             self.legend.add_value(leg_name, points if points is not None else lines, line_type_name)
 
     def restore(self):
@@ -623,25 +649,38 @@ class Layout(BaseLayout):
             ic: subplot column index
 
         """
-        title = self.axes.obj[ir, ic].title
-
         # Row labels
         if ic == self.ncol - 1 and self.label_row.on and not self.label_wrap.on:
-            title.text = ' %s=%s ' % (self.label_row.text, self.label_row.values[ir])
+            title = self.label_row.obj[ir]
+            title.text = f'{self.label_row.text}={self.label_row.values[ir]}'
             title.align = self.label_row.align
             title.text_color = self.label_row.font_color
             title.text_font_size = '%spt' % self.label_row.font_size
             title.background_fill_alpha = self.label_row.fill_alpha
             title.background_fill_color = self.label_row.fill_color[0][0:7]
+            self.axes.obj[ir, ic].add_layout(title, 'right')
 
         # Col/wrap labels
-        if (ir == 0 and self.label_col.on) or self.label_wrap.on:
-            title.text = ' %s=%s ' % (self.label_col.text, self.label_col.values[ic])
+        if (ir == 0 and self.label_col.on):
+            title = self.label_col.obj[ic]
+            title.text = f'{self.label_col.text}={self.label_col.values[ic]}'
             title.align = self.label_col.align
             title.text_color = self.label_col.font_color
             title.text_font_size = '%spt' % self.label_col.font_size
             title.background_fill_alpha = self.label_col.fill_alpha
             title.background_fill_color = self.label_col.fill_color[0][0:7]
+            self.axes.obj[ir, ic].add_layout(title, 'above')
+
+        # Wrap labels
+        if self.label_wrap.on:
+            title = self.label_wrap.obj[ir, ic]
+            title.text = ' | '.join([str(f) for f in utl.validate_list(self.label_wrap.values[ir * self.ncol + ic])])
+            title.align = self.label_wrap.align
+            title.text_color = self.label_wrap.font_color
+            title.text_font_size = '%spt' % self.label_wrap.font_size
+            title.background_fill_alpha = self.label_wrap.fill_alpha
+            title.background_fill_color = self.label_wrap.fill_color[0][0:7]
+            self.axes.obj[ir, ic].add_layout(title, 'above')
 
     def set_axes_scale(self, ir: int, ic: int):
         """
@@ -734,18 +773,25 @@ class Layout(BaseLayout):
                     setattr(ax, f'{mm}_tick_in', 0)
 
     def set_figure_final_layout(self, data, **kwargs):
-        pass
+        self.legend.size[0] = 30 + max(utl.validate_list(self.markers.sizes)) + 10 \
+            + max(self.legend.values['Key'].apply(lambda x: len(x)))
 
     def set_figure_title(self):
         """Set a figure title."""
+        title = self.axes.obj[0, 0].title
+
         if self.title.on:
-            title = self.axes.obj[0, 0].title
-            title.text = self.title.text
-            title.align = self.title.align
-            title.text_color = self.title.font_color
-            title.text_font_size = '%spt' % self.title.font_size
-            title.background_fill_alpha = self.title.fill_alpha
-            title.background_fill_color = self.title.fill_color[0][0:7]
+            tt = self.title
+            title.text = tt.text
+        elif self.title_wrap.on:
+            tt = self.title_wrap
+            self.title.text = tt.text
+
+        title.align = tt.align
+        title.text_color = tt.font_color
+        title.text_font_size = '%spt' % tt.font_size
+        title.background_fill_alpha = tt.fill_alpha
+        title.background_fill_color = tt.fill_color[0][0:7]
 
     def show(self, filename=None):
         """Display the plot window.
@@ -764,13 +810,23 @@ class Layout(BaseLayout):
             if 'zmqshell.ZMQInteractiveShell' in app and not bs.curstate().notebook:
                 bp.output_notebook()
 
-            label = bm.Label(x=100, y=5, x_units='screen', text='Some Stuff',
-                             border_line_color='black', border_line_alpha=1.0,
-                             background_fill_color='white', background_fill_alpha=1.0)
-            self.axes.obj[0, 0].add_layout(label)
-            self.axes.obj[0, 0].rect(x=[2], y=[2], width=0.2, height=40, color="#CAB2D6",
-                                     angle=90, height_units="screen")
-            bp.show(bl.gridplot(list(self.axes.obj.flatten()), ncols=self.ncol))
+            plots = bl.gridplot(list(self.axes.obj.flatten()), ncols=self.ncol, toolbar_location=self.toolbar.location)
+            # plots.toolbar.active_multi = self.toolbar.active_zoom
+
+            if self.title_wrap.on:
+                # Bokeh doesn't support suptitles so need to add a custom Div above the plot for the wrap title
+                css = 'text-align: left;\n'
+                css += f'color: {self.title_wrap.font_color};\n'
+                css += f'font-size: {self.title_wrap.font_size}px;\n'
+                css += f'font-weight: {self.title_wrap.font_weight};\n'
+                css += f'font-style: {self.title_wrap.font_style};\n'
+                # add other css props here
+                text = '<style type="text/css"> .title_wrap {' + css + '}</style><div class="title_wrap">'
+                text += f'{self.title_wrap.text}</div>'
+                title = bm.Div(text=text)
+                bp.show(bl.column(title, plots))
+            else:
+                bp.show(plots)
 
         # other
         else:
