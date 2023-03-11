@@ -56,6 +56,7 @@ else:
 global INSTALL
 INSTALL = {}
 INSTALL['bokeh'] = ['bokeh']
+INSTALL['plotly'] = ['plotly']
 
 # Global kwargs to override anything
 global KWARGS
@@ -1506,7 +1507,7 @@ def plotter(dobj, **kwargs):
     if not hasattr(engines, engine):
         if engine in INSTALL.keys():
             installs = '\npip install '.join(INSTALL[engine])
-            raise EngineError(f'Plotting engine "{engine}" is supported by not installed! '
+            raise EngineError(f'Plotting engine "{engine}" is supported but not installed! '
                               f'Please run the following:\npip install {installs}')
         else:
             raise EngineError(f'Plotting engine "{engine}" is not supported')
@@ -1609,9 +1610,9 @@ def plotter(dobj, **kwargs):
         kwargs['timer'].get('ifig=%s | set_figure_final_layout' % (ifig))
 
         # Build the save filename
-        filename = utl.set_save_filename(dd.df_fig, ifig, fig_item, fig_cols, layout, kwargs)
-        if 'filepath' in kwargs.keys():
-            filename = os.path.join(kwargs['filepath'], filename)
+        # filename = utl.set_save_filename(dd.df_fig, ifig, fig_item, fig_cols, layout, kwargs)
+        # if 'filepath' in kwargs.keys():
+        #     filename = os.path.join(kwargs['filepath'], filename)
 
         # Optionally save and open
         if kwargs.get('save', False) or kwargs.get('show', False):

@@ -57,7 +57,7 @@ def format_marker(fig, marker):
 
 class Layout(BaseLayout):
     def __init__(self, data: 'data.Data', defaults: list = [], **kwargs):  # noqa F821
-        """Layout attributes and methods for matplotlib Figure.
+        """Layout attributes and methods for bokeh Figure.
 
         Args:
             data: fcp Data object
@@ -225,8 +225,6 @@ class Layout(BaseLayout):
                 elif self.axes.twin_y:
                     self.axes.obj[ir, ic].extra_x_ranges = {'x2': bm.Range1d(start=0, end=1)}
                     self.axes.obj[ir, ic].add_layout(bm.LinearAxis(x_range_name='x2'), 'above')
-
-        self.axes.visible = np.array([[True] * self.ncol] * self.nrow)
 
         return data
 

@@ -320,6 +320,9 @@ class BaseLayout:
                             twin_x=kwargs.get('twin_x', False),
                             twin_y=kwargs.get('twin_y', False),
                             )
+        # Set default axes visibility
+        self.axes.visible = np.array([[True] * self.ncol] * self.nrow)
+
         # auto-boxplot size option
         if self.axes.size == 'auto':
             self.box_scale = 'auto'

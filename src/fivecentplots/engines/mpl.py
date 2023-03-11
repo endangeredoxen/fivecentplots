@@ -1831,9 +1831,6 @@ class Layout(BaseLayout):
                           linewidth=self.fig.edge_width,
                           )
 
-        # Set default axes visibility
-        self.axes.visible = np.array([[True] * self.ncol] * self.nrow)
-
         # Reformat the axes variable if it is only one plot
         if not isinstance(self.axes.obj, np.ndarray):
             self.axes.obj = np.array([self.axes.obj])
