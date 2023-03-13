@@ -4,6 +4,7 @@ Changelog
 0.6.0
 =====
 * Improved support for bokeh
+* Support added for plotly
 
 0.6.0
 =====

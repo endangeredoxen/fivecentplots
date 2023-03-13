@@ -40,20 +40,80 @@ class Layout(BaseLayout):
             kwargs: input args from user
         """
         # Set the layout engine
-        global ENGINE
-        ENGINE = 'plotly'
+        self.engine = 'plotly'
 
         # Inherit the base layout properties
         super().__init__(data, defaults, **kwargs)
+        self.engine = 'plotly'
 
         # Update kwargs
         self.kwargs = kwargs
         self.update_markers()
 
-        # Engine-specific kwargs
+        # Engine-specific kwargs; store update parameters in kwargs to avoid calling "update_layout" multiple times
+        self.kwargs['ul_plot_bgcolor'] = None
+        self.kwargs['ul_title'] = {}
+        self.kwargs['ul_xaxis_range'] = np.array([[None] * self.ncol] * self.nrow)
+        self.kwargs['ul_xaxis_style'] = {}
+        self.kwargs['ul_xgrids'] = {}
+        self.kwargs['ul_xscale'] = {}
+        self.kwargs['ul_xticks'] = {}
+        self.kwargs['ul_xaxis_title'] = {}
+        self.kwargs['ul_yaxis_range'] = np.array([[None] * self.ncol] * self.nrow)
+        self.kwargs['ul_yaxis_style'] = {}
+        self.kwargs['ul_ygrids'] = {}
+        self.kwargs['ul_yscale'] = {}
+        self.kwargs['ul_yticks'] = {}
+        self.kwargs['ul_yaxis_title'] = {}
+
+        # Other engine specific attributes
+        self.ws_toolbar = 20
 
         # Check for unsupported kwargs
         # unsupported = []
+
+    @property
+    def _bottom(self) -> float:
+        """Bottom margin.
+
+        Returns:
+            margin in pixels
+        """
+        return 0
+
+    @property
+    def _left(self) -> float:
+        """Left margin.
+
+        Returns:
+            margin in pixels
+        """
+        return 0
+
+    @property
+    def _right(self) -> float:
+        """Right margin.
+
+        Returns:
+            margin in pixels
+        """
+        if self.legend.on:
+            self.legend.size[0] = utl.get_text_dimensions(self.legend.values.Key.max(), self.legend.font,
+                                                          self.legend.font_size, self.legend.font_style,
+                                                          self.legend.font_weight)[0]
+            # add width for the marker part of the legend and padding with axes
+            self.legend.size[0] += 3 * self.markers.size.max() + 10
+
+        return self.legend.size[0] * self.legend.on
+
+    @property
+    def _top(self) -> float:
+        """Top margin.
+
+        Returns:
+            margin in pixels
+        """
+        return self.ws_fig_title + self.title.size[1] + self.ws_title_ax * self.title.on + self.ws_toolbar
 
     def add_box_labels(self, ir: int, ic: int, data):
         """Add box group labels and titles (JMP style).
@@ -148,10 +208,10 @@ class Layout(BaseLayout):
         self.fig.obj = make_subplots(rows=self.nrow, cols=self.ncol, shared_xaxes=self.axes.share_x,
                                      shared_yaxes=self.axes.share_y)
 
-        # self.fig.obj.update_layout(
-        #     autosize=False,
-        #     width=800,
-        #     height=800,)
+        # Need more spacing to account for labels and stuff, same problem as mpl
+        self.fig.size = self.axes.size[0] * self.ncol, self.axes.size[1] * self.nrow
+        # self.fig.obj.update_layout(autosize=True, width=self.fig.size[0], height=self.fig.size[1],
+        #                            paper_bgcolor="LightSteelBlue", margin=dict(l=0, r=0, t=0, b=0),)
 
         return data
 
@@ -378,18 +438,27 @@ class Layout(BaseLayout):
         else:
             mode = 'markers'
 
-
         # Make the plot
-        self.axes.obj[ir, ic] = go.Scatter(x=df[x],
-                                           y=df[y],
-                                           mode=mode,
-                                           line=None,
-                                           marker_symbol=self.markers.type[iline],
-                                           marker_size=self.markers.size[iline],
-                                           marker_color=self.markers.fill_color[iline][:-2],
-                                           marker=dict(line=dict(color=self.markers.edge_color[iline][:-2],
-                                                                 width=self.markers.edge_width[iline])),
-                                           )
+        if not self.axes.obj[ir, ic]:
+            self.axes.obj[ir, ic] = []
+
+        self.axes.obj[ir, ic] += [
+            go.Scatter(x=dfx[mask],
+                       y=df[y][mask],
+                       name=leg_name,
+                       mode=mode,
+                       line=None,
+                       marker_symbol=self.markers.type[iline] + ('-open' if not self.markers.filled else ''),
+                       marker_size=self.markers.size[iline],
+                       marker_color=self.markers.fill_color[iline],
+                       marker=dict(line=dict(color=self.markers.edge_color[iline],
+                                             width=self.markers.edge_width[iline])),
+                       )]
+
+        # Add a reference to the line to self.lines
+        if leg_name is not None:
+            if leg_name is not None and leg_name not in list(self.legend.values['Key']):
+                self.legend.add_value(leg_name, iline, line_type_name)
 
     def restore(self):
         """Undo changes to default plotting library parameters."""
@@ -411,7 +480,18 @@ class Layout(BaseLayout):
             ic: subplot column index
 
         """
-        self.fig.obj.update_layout(plot_bgcolor=self.axes.fill_color[utl.plot_num(ir, ic, self.ncol)][:-2])
+        # Background color
+        self.kwargs['ul_plot_bgcolor'] = self.axes.fill_color[utl.plot_num(ir, ic, self.ncol)]
+
+        # Set the axes borders/spines
+        for ax in ['x', 'y']:
+            show = False
+            if ax == 'x' and (self.axes.spine_bottom or self.axes.spine_top):
+                show = True
+            if ax == 'y' and (self.axes.spine_left or self.axes.spine_right):
+                show = True
+            self.kwargs[f'ul_{ax}axis_style'] = dict(showline=show, linecolor=self.axes.edge_color[0],
+                                                     linewidth=self.axes.edge_width, mirror=True)
 
     def set_axes_grid_lines(self, ir: int, ic: int):
         """Style the grid lines and toggle visibility.
@@ -421,6 +501,14 @@ class Layout(BaseLayout):
             ic (int): subplot column index
 
         """
+        for ax in ['x', 'y']:
+            grid = getattr(self, f'grid_major_{ax}')
+            self.kwargs[f'ul_{ax}grid'] = dict(gridcolor=grid.color[0])
+            # TODO:  other params below
+
+            # kwargs = {'which': 'major', 'color': self.grid_major_x.color[0],
+            #               'linestyle': self.grid_major_x.style[0], 'linewidth': self.grid_major_x.width[0],
+            #               'alpha': self.grid_major_x.alpha}
 
     def set_axes_labels(self, ir: int, ic: int):
         """Set the axes labels.
@@ -430,6 +518,22 @@ class Layout(BaseLayout):
             ic: subplot column index
 
         """
+        # Set the font weight and style
+        self._set_weight_and_style('label_x')
+        self._set_weight_and_style('label_x2')  # not implemented
+        self._set_weight_and_style('label_y')
+        self._set_weight_and_style('label_y2')  # not implemented
+        self._set_weight_and_style('label_z')  # not implemented
+
+        # Set axes label properties
+        for ax in ['x', 'y']:
+            self.kwargs[f'ul_{ax}axis_title'] = \
+                dict(text=getattr(self, f'label_{ax}').text,
+                     font=dict(family=getattr(self, f'label_{ax}').font,
+                               size=getattr(self, f'label_{ax}').font_size,
+                               color=getattr(self, f'label_{ax}').font_color,
+                               )
+                     )
 
     def set_axes_ranges(self, ir: int, ic: int, ranges: dict):
         """Set the axes ranges.
@@ -440,6 +544,15 @@ class Layout(BaseLayout):
             ranges: min/max axes limits for each axis
 
         """
+        # TODO address secondary axes and what happens if None
+        if str(self.axes.scale).lower() in LOGX:
+            self.kwargs['ul_xaxis_range'][ir, ic] = [np.log10(ranges[ir, ic]['xmin']), np.log10(ranges[ir, ic]['xmax'])]
+        else:
+            self.kwargs['ul_xaxis_range'][ir, ic] = [ranges[ir, ic]['xmin'], ranges[ir, ic]['xmax']]
+        if str(self.axes.scale).lower() in LOGY:
+            self.kwargs['ul_yaxis_range'][ir, ic] = [np.log10(ranges[ir, ic]['ymin']), np.log10(ranges[ir, ic]['ymax'])]
+        else:
+            self.kwargs['ul_yaxis_range'][ir, ic] = [ranges[ir, ic]['ymin'], ranges[ir, ic]['ymax']]
 
     def set_axes_rc_labels(self, ir: int, ic: int):
         """Add the row/column label boxes and wrap titles.
@@ -452,43 +565,12 @@ class Layout(BaseLayout):
 
     def set_axes_scale(self, ir: int, ic: int):
         """
-        This needs to happen at instantiation of the figure element, see _set_axes_type
+        Set the axis scale.
         """
-
-    def _set_axes_custom_range(self, ir: int, ic: int, data):
-        """
-        Customize the range of the plot.
-
-        Args:
-            ir: subplot row index
-            ic: subplot column index
-            data: Data object
-
-        Returns:
-            x-axis range
-            y-axis range
-        """
-        # how do we know the subset ranges???
-        x_range, y_range = None, None
-
-        return x_range, y_range
-
-    def _set_axes_type(self, ir: int, ic: int, data):
-        """
-        Determine the axes type ('linear', 'log', 'datetime').
-
-        This needs to happen at instantiation of the figure
-
-        Args:
-            ir: subplot row index
-            ic: subplot column index
-            data: Data object
-
-        Returns:
-            x-axis type
-            y-axis type
-        """
-        return None, None
+        if str(self.axes.scale).lower() in LOGX:
+            self.kwargs['ul_xscale'] = dict(type='log')
+        if str(self.axes.scale).lower() in LOGY:
+            self.kwargs['ul_yscale'] = dict(type='log')
 
     def set_axes_ticks(self, ir: int, ic: int):
         """Configure the axes tick marks.
@@ -498,6 +580,16 @@ class Layout(BaseLayout):
             ic: subplot column index
 
         """
+        # TODO: minor ticks, rotation, categorical, log/exponential
+        for ax in ['x', 'y']:
+            direction = 'outside' if getattr(self, f'ticks_major_{ax}').direction == 'out' else 'inside'
+            self.kwargs[f'ul_{ax}ticks'] = dict(
+                tickfont_size=getattr(self, f'tick_labels_major_{ax}').font_size,
+                ticks=direction,
+                tickcolor=getattr(self, f'ticks_major_{ax}').color[0],
+                ticklen=getattr(self, f'ticks_major_{ax}')._size[0],
+                tickwidth=getattr(self, f'ticks_major_{ax}')._size[1],
+                )
 
     def set_figure_final_layout(self, data, **kwargs):
         """Final adjustment of the figure size and plot spacing.
@@ -506,12 +598,72 @@ class Layout(BaseLayout):
             data: Data object
             kwargs: keyword args
         """
+        # Update the x/y axes
+        for ax in ['x', 'y']:
+            kw = {}
+            kw.update(self.kwargs[f'ul_{ax}ticks'])
+            kw.update(self.kwargs[f'ul_{ax}axis_style'])
+            kw.update(self.kwargs[f'ul_{ax}grid'])
+            kw.update(self.kwargs[f'ul_{ax}scale'])
+            getattr(self.fig.obj, f'update_{ax}axes')(kw)
+
+        # Iterate through subplots
         for ir in range(0, self.nrow):
             for ic in range(0, self.ncol):
-                self.fig.obj.add_trace(self.axes.obj[ir, ic], row=ir + 1, col=ic + 1)
+                # Add the traces
+                for trace in range(0, len(self.axes.obj[ir, ic])):
+                    self.fig.obj.add_trace(self.axes.obj[ir, ic][trace], row=ir + 1, col=ic + 1)
+
+                # Set the ranges
+                self.fig.obj.update_layout(xaxis_range=self.kwargs['ul_xaxis_range'][ir, ic])
+                self.fig.obj.update_layout(yaxis_range=self.kwargs['ul_yaxis_range'][ir, ic])
+
+        # Update the layout
+        self.fig.obj.update_layout(autosize=True,  # do we need this?
+                                   height=self.fig.size[1] + self._top + self._bottom,
+                                   legend_title_text=self.legend.text,
+                                   margin=dict(l=self._left,
+                                               r=self._right,
+                                               t=self._top,
+                                               b=self._bottom),
+                                   paper_bgcolor=self.fig.fill_color[0],
+                                   plot_bgcolor=self.kwargs['ul_plot_bgcolor'],
+                                   showlegend=self.legend.on,
+                                   title=self.kwargs['ul_title'],
+                                   width=self.fig.size[0] + self._left + self._right,
+                                   xaxis_title=self.kwargs['ul_xaxis_title'],
+                                   yaxis_title=self.kwargs['ul_yaxis_title'],
+                                   )
 
     def set_figure_title(self):
         """Set a figure title."""
+        if self.title.text is None:
+            return
+
+        # TODO: deal with other alignments
+        self._set_weight_and_style('title')
+        self.title.size[1] = self.title.font_size
+        self.kwargs['ul_title'] = \
+            dict(text=self.title.text,
+                 xanchor='center',
+                 x=0.5 + (self.label_y.font_size + self.tick_labels_major_y.font_size) / self.fig.size[0],
+                 y=1 - (self.ws_toolbar + self.title.font_size / 2) / self.fig.size[1],
+                 font=dict(family=self.title.font,
+                           size=self.title.font_size,
+                           color=self.title.font_color,
+                           )
+                 )
+
+    def _set_weight_and_style(self, element: str):
+        """Add html tags to the text string of an element to address font weight and style.
+
+        Args:
+            element: name of the Element class to modify; results are stored in place
+        """
+        if getattr(self, element).font_weight == 'bold':
+            getattr(self, element).text = f'<b>{getattr(self, element).text}</b>'
+        if getattr(self, element).font_style == 'italic':
+            getattr(self, element).text = f'<i>{getattr(self, element).text}</i>'
 
     def show(self, filename=None):
         """Display the plot window.
