@@ -72,6 +72,10 @@ class RepeatedList:
         else:
             return self.override[key]
 
+    def max(self):
+        """Return the maximum value of the RepeatedList."""
+        return max(self.values)
+
 
 class CFAError(Exception):
     def __init__(self, *args, **kwargs):
