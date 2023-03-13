@@ -53,7 +53,6 @@ LOGITX = ['logitx', 'logit']
 LOGITY = ['logity', 'logit']
 LOG_ALLX = LOGX + SYMLOGX + LOGITX
 LOG_ALLY = LOGY + SYMLOGY + LOGITY
-ENGINE = ''
 
 
 class BaseLayout:
@@ -1676,7 +1675,7 @@ class BaseLayout:
         position = utl.kwget(kwargs, self.fcpp, 'text_position', [0, 0])
         if not isinstance(position[0], list):
             position = [position]
-        self.text = Element('text', self.fcpp, {},
+        self.text = Element('text', self.fcpp, {'engine': kwargs['engine']},
                             on=True if utl.kwget(kwargs, self.fcpp, 'text', None)
                             is not None else False,
                             obj=self.obj_array,
@@ -2686,6 +2685,7 @@ class Element:
         # Defaults
         self._on = kwargs.get('on', True)  # visbile or not
         self.name = name
+        self.engine = kwargs['engine']
         self.dpi = utl.kwget(kwargs, fcpp, 'dpi', 100)
         if obj is None:
             self.obj = None
@@ -2949,7 +2949,7 @@ class Element:
         """
         # MPL < v2 does not support alpha in hex color code
         skip_alpha = False
-        if ENGINE == 'mpl' and LooseVersion(mpl.__version__) < LooseVersion('2'):
+        if (self.engine == 'mpl' and LooseVersion(mpl.__version__) < LooseVersion('2')) or self.engine in ['plotly']:
             skip_alpha = True
 
         alpha = RepeatedList(getattr(self, alpha), 'temp')

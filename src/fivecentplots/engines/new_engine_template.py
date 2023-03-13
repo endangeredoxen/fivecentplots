@@ -36,8 +36,7 @@ class Layout(BaseLayout):
             kwargs: input args from user
         """
         # Set the layout engine
-        global ENGINE
-        ENGINE = 'new engine name here'
+        self.engine = 'new engine name here'
 
         # Inherit the base layout properties
         super().__init__(data, defaults, **kwargs)
@@ -385,41 +384,6 @@ class Layout(BaseLayout):
         """
         This needs to happen at instantiation of the figure element, see _set_axes_type
         """
-
-    def _set_axes_custom_range(self, ir: int, ic: int, data):
-        """
-        Customize the range of the plot.
-
-        Args:
-            ir: subplot row index
-            ic: subplot column index
-            data: Data object
-
-        Returns:
-            x-axis range
-            y-axis range
-        """
-        # how do we know the subset ranges???
-        x_range, y_range = None, None
-
-        return x_range, y_range
-
-    def _set_axes_type(self, ir: int, ic: int, data):
-        """
-        Determine the axes type ('linear', 'log', 'datetime').
-
-        This needs to happen at instantiation of the figure
-
-        Args:
-            ir: subplot row index
-            ic: subplot column index
-            data: Data object
-
-        Returns:
-            x-axis type
-            y-axis type
-        """
-        return None, None
 
     def set_axes_ticks(self, ir: int, ic: int):
         """Configure the axes tick marks.

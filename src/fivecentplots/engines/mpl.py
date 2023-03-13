@@ -371,8 +371,7 @@ class Layout(BaseLayout):
             kwargs: input args from user
         """
         # Set the layout engine
-        global ENGINE
-        ENGINE = 'mpl'
+        self.engine = 'mpl'
 
         # Set tick style to classic if using fcp tick_cleanup (default)
         if kwargs.get('tick_cleanup', True):

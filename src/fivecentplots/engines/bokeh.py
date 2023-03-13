@@ -65,8 +65,7 @@ class Layout(BaseLayout):
             kwargs: input args from user
         """
         # Set the layout engine
-        global ENGINE
-        ENGINE = 'bokeh'
+        self.engine = 'bokeh'
 
         # Inherit the base layout properties
         super().__init__(data, defaults, **kwargs)
@@ -771,8 +770,8 @@ class Layout(BaseLayout):
                     setattr(ax, f'{mm}_tick_in', 0)
 
     def set_figure_final_layout(self, data, **kwargs):
-        self.legend.size[0] = 30 + max(utl.validate_list(self.markers.sizes)) + 10 \
-            + max(self.legend.values['Key'].apply(lambda x: len(x)))
+        key_len = max(self.legend.values['Key'].apply(lambda x: len(x) if x else 0))
+        self.legend.size[0] = 30 + max(utl.validate_list(self.markers.sizes)) + 10 + key_len
 
     def set_figure_title(self):
         """Set a figure title."""
