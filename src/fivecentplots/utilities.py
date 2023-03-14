@@ -74,6 +74,7 @@ class RepeatedList:
 
     def max(self):
         """Return the maximum value of the RepeatedList."""
+        # TODO:  address NaN?
         return max(self.values)
 
 

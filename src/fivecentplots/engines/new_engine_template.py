@@ -2,7 +2,7 @@ import pandas as pd
 import pdb
 import numpy as np
 from .. import utilities as utl
-from . layout import LOGX, LOGY, BaseLayout, RepeatedList, Element
+from . layout import LOGX, LOGY, BaseLayout, RepeatedList, Element  # noqa
 from .. import data
 import warnings
 # import plot lib specific stuff here

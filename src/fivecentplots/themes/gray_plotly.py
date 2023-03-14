@@ -66,6 +66,7 @@ fcp_params = {'ax_edge_color': '#aaaaaa',
               'title_wrap_size': 30,
               'toolbar_location': 'below',
               'tools': 'pan,wheel_zoom,box_zoom,save,reset',
+              'ws_label_tick': 15,
               }
 
 #########################################################

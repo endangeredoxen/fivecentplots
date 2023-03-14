@@ -2,10 +2,9 @@ import pandas as pd
 import pdb
 import numpy as np
 from .. import utilities as utl
-from . layout import LOGX, LOGY, BaseLayout, RepeatedList, Element
+from . layout import LOGX, LOGY, BaseLayout, RepeatedList
 from .. import data
 import warnings
-import plotly as plt
 import plotly.offline as pyo
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
@@ -23,11 +22,10 @@ warnings.filterwarnings("ignore", "invalid value encountered in double_scalars")
 db = pdb.set_trace
 
 
-DASHES = {}
-
-
-DEFAULT_MARKERS = ['circle', 'square', 'diamond', 'cross', 'x', 'triangle', 'pentagon', 'hexagram', 'star',
-                   'diamond', 'hourglass', 'bowtie', 'asterisk', 'hash', 'y', 'line']
+# More works is needed on markers as this set is rather limiting
+DEFAULT_MARKERS = ['circle', 'square', 'diamond', 'cross', 'x', 'triangle-up', 'pentagon', 'hexagram', 'star',
+                   'hourglass', 'bowtie', 'asterisk', 'hash', 'y', 'line']
+HOLLOW_MARKERS = ['circle', 'square', 'triangle-up', 'diamond', 'pentagon', 'hexagram', 'star', 'hourglass', 'bowtie']
 
 
 class Layout(BaseLayout):
@@ -55,16 +53,20 @@ class Layout(BaseLayout):
         self.kwargs['ul_title'] = {}
         self.kwargs['ul_xaxis_range'] = np.array([[None] * self.ncol] * self.nrow)
         self.kwargs['ul_xaxis_style'] = {}
-        self.kwargs['ul_xgrids'] = {}
+        self.kwargs['ul_xgrid'] = {}
+        self.kwargs['ul_x2grid'] = {}
         self.kwargs['ul_xscale'] = {}
         self.kwargs['ul_xticks'] = {}
         self.kwargs['ul_xaxis_title'] = {}
+        self.kwargs['ul_x2axis_title'] = {}
         self.kwargs['ul_yaxis_range'] = np.array([[None] * self.ncol] * self.nrow)
         self.kwargs['ul_yaxis_style'] = {}
-        self.kwargs['ul_ygrids'] = {}
+        self.kwargs['ul_ygrid'] = {}
+        self.kwargs['ul_y2grid'] = {}
         self.kwargs['ul_yscale'] = {}
         self.kwargs['ul_yticks'] = {}
         self.kwargs['ul_yaxis_title'] = {}
+        self.kwargs['ul_y2axis_title'] = {}
 
         # Other engine specific attributes
         self.ws_toolbar = 20
@@ -79,7 +81,7 @@ class Layout(BaseLayout):
         Returns:
             margin in pixels
         """
-        return 0
+        return 0  # self.ws_label_tick + self.label_y.size[1]
 
     @property
     def _left(self) -> float:
@@ -88,7 +90,8 @@ class Layout(BaseLayout):
         Returns:
             margin in pixels
         """
-        return 0
+
+        return 0  # self.ws_label_tick + self.label_y.size[1]
 
     @property
     def _right(self) -> float:
@@ -97,14 +100,7 @@ class Layout(BaseLayout):
         Returns:
             margin in pixels
         """
-        if self.legend.on:
-            self.legend.size[0] = utl.get_text_dimensions(self.legend.values.Key.max(), self.legend.font,
-                                                          self.legend.font_size, self.legend.font_style,
-                                                          self.legend.font_weight)[0]
-            # add width for the marker part of the legend and padding with axes
-            self.legend.size[0] += 3 * self.markers.size.max() + 10
-
-        return self.legend.size[0] * self.legend.on
+        return self.legend.size[0] * self.legend.on + (self.label_y2.size[1] + self.ws_label_tick) * self.axes.twin_x
 
     @property
     def _top(self) -> float:
@@ -171,6 +167,15 @@ class Layout(BaseLayout):
 
     def add_legend(self, leg_vals):
         """Add a legend to a figure."""
+        # In plotly, no need to add the layout to the plot so we toggle visibility in set_figure_final_layout
+        #   Here we just compute the approximate width of the legend for later sizing
+        if self.legend.on:
+            longest = self.legend.values.Key.loc[self.legend.values.Key.str.len().idxmax()]
+            self.legend.size[0] = utl.get_text_dimensions(longest, self.legend.font,
+                                                          self.legend.font_size, self.legend.font_style,
+                                                          self.legend.font_weight)[0]
+            # add width for the marker part of the legend and padding with axes
+            self.legend.size[0] += 3 * self.markers.size.max() + 10
 
     def add_text(self, ir: int, ic: int, text: [str, None] = None,
                  element: [str, None] = None, offsetx: int = 0,
@@ -197,6 +202,8 @@ class Layout(BaseLayout):
             **kwargs: input args from user
         """
         self.axes.obj = np.array([[None] * self.ncol] * self.nrow)
+        specs = [[{"secondary_y": self.axes.twin_x}] * self.ncol] * self.nrow
+
         # self.label_col.obj = np.array([None] * self.ncol)
         # self.label_wrap.obj = np.array([[None] * self.ncol] * self.nrow)
         # self.label_row.obj = np.array([None] * self.nrow)
@@ -205,13 +212,20 @@ class Layout(BaseLayout):
         #         self.axes.obj[ir, ic] = go.Figure(
         #             layout={'width': self.axes.size[0], 'height': self.axes.size[1]},
         #         )
-        self.fig.obj = make_subplots(rows=self.nrow, cols=self.ncol, shared_xaxes=self.axes.share_x,
-                                     shared_yaxes=self.axes.share_y)
+        self.fig.obj = make_subplots(rows=self.nrow,
+                                     cols=self.ncol,
+                                     shared_xaxes=self.axes.share_x,
+                                     shared_yaxes=self.axes.share_y,
+                                     specs=specs,
+                                     )
+
+        if self.axes.twin_y:
+            self.fig.obj.update_layout(xaxis2={'anchor': 'y', 'overlaying': 'x', 'side': 'top'},
+                                       yaxis_domain=[0, 0.94])
 
         # Need more spacing to account for labels and stuff, same problem as mpl
+        #   Note: this is not the full final size; margins are added in set_figure_final_layout
         self.fig.size = self.axes.size[0] * self.ncol, self.axes.size[1] * self.nrow
-        # self.fig.obj.update_layout(autosize=True, width=self.fig.size[0], height=self.fig.size[1],
-        #                            paper_bgcolor="LightSteelBlue", margin=dict(l=0, r=0, t=0, b=0),)
 
         return data
 
@@ -442,17 +456,36 @@ class Layout(BaseLayout):
         if not self.axes.obj[ir, ic]:
             self.axes.obj[ir, ic] = []
 
+        # Set marker type
+        if self.markers.on and self.markers.type[iline] in HOLLOW_MARKERS:
+            marker_symbol = self.markers.type[iline] + ('-open' if not self.markers.filled else '')
+        else:
+            marker_symbol = self.markers.type[iline]
+
+        # Twinning
+        if twin and self.axes.twin_x:
+            yaxis = 'y2'
+        else:
+            yaxis = 'y1'
+        if twin and self.axes.twin_y:
+            xaxis = 'x2'
+        else:
+            xaxis = 'x1'
+
+        # Make the scatter trace
         self.axes.obj[ir, ic] += [
             go.Scatter(x=dfx[mask],
                        y=df[y][mask],
                        name=leg_name,
                        mode=mode,
                        line=None,
-                       marker_symbol=self.markers.type[iline] + ('-open' if not self.markers.filled else ''),
+                       marker_symbol=marker_symbol,
                        marker_size=self.markers.size[iline],
                        marker_color=self.markers.fill_color[iline],
                        marker=dict(line=dict(color=self.markers.edge_color[iline],
                                              width=self.markers.edge_width[iline])),
+                       xaxis=xaxis,
+                       yaxis=yaxis,
                        )]
 
         # Add a reference to the line to self.lines
@@ -501,14 +534,16 @@ class Layout(BaseLayout):
             ic (int): subplot column index
 
         """
-        for ax in ['x', 'y']:
-            grid = getattr(self, f'grid_major_{ax}')
-            self.kwargs[f'ul_{ax}grid'] = dict(gridcolor=grid.color[0])
-            # TODO:  other params below
-
-            # kwargs = {'which': 'major', 'color': self.grid_major_x.color[0],
-            #               'linestyle': self.grid_major_x.style[0], 'linewidth': self.grid_major_x.width[0],
-            #               'alpha': self.grid_major_x.alpha}
+        dash_lookup = {'-': 'solid', '--': 'dash', '.': 'dot'}
+        for ss in ['', '2']:
+            for ax in ['x', 'y']:
+                grid = getattr(self, f'grid_major_{ax}{ss}')
+                if grid is not None:
+                    dash = dash_lookup.get(grid.style[0], grid.style[0])
+                    self.kwargs[f'ul_{ax}{ss}grid'] = dict(gridcolor=grid.color[0],
+                                                           gridwidth=grid.width[0],
+                                                           griddash=dash,
+                                                           )
 
     def set_axes_labels(self, ir: int, ic: int):
         """Set the axes labels.
@@ -526,14 +561,18 @@ class Layout(BaseLayout):
         self._set_weight_and_style('label_z')  # not implemented
 
         # Set axes label properties
-        for ax in ['x', 'y']:
-            self.kwargs[f'ul_{ax}axis_title'] = \
-                dict(text=getattr(self, f'label_{ax}').text,
-                     font=dict(family=getattr(self, f'label_{ax}').font,
-                               size=getattr(self, f'label_{ax}').font_size,
-                               color=getattr(self, f'label_{ax}').font_color,
-                               )
-                     )
+        for ss in ['', '2']:
+            for ax in ['x', 'y']:
+                self.kwargs[f'ul_{ax}{ss}axis_title'] = \
+                    dict(text=getattr(self, f'label_{ax}{ss}').text,
+                         font=dict(family=getattr(self, f'label_{ax}{ss}').font,
+                                   size=getattr(self, f'label_{ax}{ss}').font_size,
+                                   color=getattr(self, f'label_{ax}{ss}').font_color,
+                                   ),
+                         standoff=self.ws_label_tick,
+                         )
+                lab = getattr(self, f'label_{ax}{ss}')
+                lab.size = utl.get_text_dimensions(lab.text, lab.font, lab.font_size, lab.font_style, lab.font_weight)
 
     def set_axes_ranges(self, ir: int, ic: int, ranges: dict):
         """Set the axes ranges.
@@ -612,7 +651,10 @@ class Layout(BaseLayout):
             for ic in range(0, self.ncol):
                 # Add the traces
                 for trace in range(0, len(self.axes.obj[ir, ic])):
-                    self.fig.obj.add_trace(self.axes.obj[ir, ic][trace], row=ir + 1, col=ic + 1)
+                    if self.axes.obj[ir, ic][trace]['yaxis'] == 'y2':
+                        self.fig.obj.add_trace(self.axes.obj[ir, ic][trace], row=ir + 1, col=ic + 1, secondary_y=True)
+                    else:
+                        self.fig.obj.add_trace(self.axes.obj[ir, ic][trace], row=ir + 1, col=ic + 1)
 
                 # Set the ranges
                 self.fig.obj.update_layout(xaxis_range=self.kwargs['ul_xaxis_range'][ir, ic])
@@ -634,6 +676,15 @@ class Layout(BaseLayout):
                                    xaxis_title=self.kwargs['ul_xaxis_title'],
                                    yaxis_title=self.kwargs['ul_yaxis_title'],
                                    )
+
+        if self.axes.twin_x:
+            leg = dict(yanchor='top', y=0.99, xanchor='right', x=1.55)  # this needs an algo
+            self.fig.obj['layout']['yaxis2'].update(self.kwargs['ul_y2grid'])
+            self.fig.obj.update_layout(yaxis2_title=self.kwargs['ul_y2axis_title'], legend=leg)
+
+        if self.axes.twin_y:
+            self.fig.obj.data[1].update(xaxis='x2')
+            self.fig.obj.update_xaxes2(self.kwargs['ul_x2grid'])
 
     def set_figure_title(self):
         """Set a figure title."""
