@@ -1002,6 +1002,20 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
                 if len(temp) > 0:
                     layout.plot_xy(ir, ic, irow, temp, 'x', dd.y[0], None, False, zorder=10)
 
+            # plot mean diamonds
+            if layout.box_mean_diamonds.on:
+                low, high = utl.ci(temp[dd.y[0]], layout.box_mean_diamonds.conf_coeff)
+                mm = temp[dd.y[0]].mean()
+                x1 = -layout.box_mean_diamonds.width[0] / 2
+                x2 = layout.box_mean_diamonds.width[0] / 2
+                points = [[irow + 1 + x1, mm],
+                          [irow + 1, high],
+                          [irow + 1 + x2, mm],
+                          [irow + 1, low],
+                          [irow + 1 + x1, mm],
+                          [irow + 1 + x2, mm]]
+                layout.plot_polygon(ir, ic, points, **layout.box_mean_diamonds.kwargs)
+
     else:
         data = [df_rc[dd.y].dropna()]
         labels = ['']
@@ -1076,22 +1090,6 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
         mm = df_rc[dd.y[0]].median()
         y = [mm for f in x]
         layout.plot_line(ir, ic, x, y, **layout.box_grand_median.kwargs)
-
-    # add mean confidence diamonds
-    if layout.box_mean_diamonds.on:
-        mgroups = df_rc.groupby(dd.groups)
-        for ii, (nn, mm) in enumerate(mgroups):
-            low, high = utl.ci(mm[dd.y[0]], layout.box_mean_diamonds.conf_coeff)
-            mm = mm[dd.y[0]].mean()
-            x1 = -layout.box_mean_diamonds.width[0] / 2
-            x2 = layout.box_mean_diamonds.width[0] / 2
-            points = [[ii + 1 + x1, mm],
-                      [ii + 1, high],
-                      [ii + 1 + x2, mm],
-                      [ii + 1, low],
-                      [ii + 1 + x1, mm],
-                      [ii + 1 + x2, mm]]
-            layout.plot_polygon(ir, ic, points, **layout.box_mean_diamonds.kwargs)
 
     return dd
 
@@ -1503,17 +1501,17 @@ def plotter(dobj, **kwargs):
     # Set the plotting engine
     verbose = kwargs.get('verbose', False)
     defaults = utl.reload_defaults(kwargs.get('theme', None), verbose=verbose)
-    engine = utl.kwget(kwargs, defaults[0], 'engine', 'mpl')
-    if not hasattr(engines, engine):
-        if engine in INSTALL.keys():
-            installs = '\npip install '.join(INSTALL[engine])
-            raise EngineError(f'Plotting engine "{engine}" is supported but not installed! '
+    kwargs['engine'] = utl.kwget(kwargs, defaults[0], 'engine', 'mpl')
+    if not hasattr(engines, kwargs['engine']):
+        if kwargs['engine'] in INSTALL.keys():
+            installs = '\npip install '.join(INSTALL[kwargs['engine']])
+            raise EngineError('Plotting engine "%s" is supported but not installed! ' % kwargs['engine'] +
                               f'Please run the following:\npip install {installs}')
         else:
-            raise EngineError(f'Plotting engine "{engine}" is not supported')
+            raise EngineError('Plotting engine "%s" is not supported' % kwargs['engine'])
         return
     else:
-        engine = getattr(engines, engine)
+        engine = getattr(engines, kwargs['engine'])
     kwargs['timer'].get('Layout obj')
 
     # Build the data object and update kwargs
