@@ -1757,7 +1757,7 @@ def axes():
         ax_fill_color (str): Hex color string for the fill color of the axes region. Defaults to #eaeaea. Example:
           https://endangeredoxen.github.io/fivecentplots/0.6.0/styles.html#Alpha
         ax_scale|ax2_scale (str): Set the scale type of the axes {'linear'; 'logx'; 'semilogx'; 'logy'; 'semilogy';
-          'loglog'; 'log'; 'symlog'; 'logit'}. Defaults to 'linear'. Example:
+          'loglog'; 'log'; 'symlog'; 'logit'; 'symlogy'; 'symlogx'}. Defaults to 'linear'. Example:
           https://endangeredoxen.github.io/fivecentplots/0.6.0/plot.html#Log-scale
         ax_size (list of int | str): Axes size [width, height]; note this is not the size of the entire figure but
           just the axes area; for boxplots can enter 'auto' to auto-scale the width. Defaults to [400, 400].
