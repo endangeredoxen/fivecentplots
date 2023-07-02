@@ -2,7 +2,7 @@ import pandas as pd
 import pdb
 import numpy as np
 from .. import utilities as utl
-from . layout import LOGX, LOGY, BaseLayout, RepeatedList
+from . layout import LOGX, LOGY, BaseLayout, RepeatedList, Element
 from .. import data
 import warnings
 import plotly.offline as pyo
@@ -558,10 +558,10 @@ class Layout(BaseLayout):
                 continue
             if type(label.text) not in [str, list]:
                 continue
-            #if isinstance(label.text, str):
-            #    labeltext = label.text
-            #if isinstance(label.text, list):
-            #    labeltext = label.text[ic + ir * self.ncol]
+            # if isinstance(label.text, str):
+            #     labeltext = label.text
+            # if isinstance(label.text, list):
+            #     labeltext = label.text[ic + ir * self.ncol]
 
             # Set the font weight and style
             self._set_weight_and_style(f'label_{ax}')
@@ -815,7 +815,7 @@ class Layout(BaseLayout):
         if getattr(self, element).font_style == 'italic':
             getattr(self, element).text = f'<i>{getattr(self, element).text}</i>'
 
-    def _set_weight_and_style_str(self, text: str, element: 'Element'):
+    def _set_weight_and_style_str(self, text: str, element: Element):
         """Add html tags to any text string.
 
         Args:
