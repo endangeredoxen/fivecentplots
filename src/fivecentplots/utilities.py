@@ -950,6 +950,8 @@ def set_save_filename(df: pd.DataFrame, ifig: int, fig_item: [None, str],
         filename = filename.replace(bad, '_')
 
     # Make sure extension has a '.'
+    if not kwargs.get('save_ext'):
+        kwargs['save_ext'] = '.png'  # set a default
     if kwargs.get('save_ext')[0] != '.':
         kwargs['save_ext'] = '.' + kwargs['save_ext']
 

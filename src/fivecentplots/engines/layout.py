@@ -2158,7 +2158,7 @@ class BaseLayout:
                             else ' & '.join([str(f) for f in dd])
                 else:
                     getattr(self, val).text = dd
-                if lab != 'z' and hasattr(self, 'label_%s2' % lab):
+                if lab != 'z' and hasattr(self, 'label_%s2') and getattr(self, 'label_%s2' % lab).text is not None:
                     getattr(self, 'label_%s2' % lab).text = \
                         lab_text2 if lab_text2 is not None \
                         else ' & '.join([str(f) for f in dd])

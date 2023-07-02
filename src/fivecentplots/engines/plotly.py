@@ -204,19 +204,13 @@ class Layout(BaseLayout):
         self.axes.obj = np.array([[None] * self.ncol] * self.nrow)
         specs = [[{"secondary_y": self.axes.twin_x}] * self.ncol] * self.nrow
 
-        # self.label_col.obj = np.array([None] * self.ncol)
-        # self.label_wrap.obj = np.array([[None] * self.ncol] * self.nrow)
-        # self.label_row.obj = np.array([None] * self.nrow)
-        # for ir in range(0, self.nrow):
-        #     for ic in range(0, self.ncol):
-        #         self.axes.obj[ir, ic] = go.Figure(
-        #             layout={'width': self.axes.size[0], 'height': self.axes.size[1]},
-        #         )
         self.fig.obj = make_subplots(rows=self.nrow,
                                      cols=self.ncol,
                                      shared_xaxes=self.axes.share_x,
                                      shared_yaxes=self.axes.share_y,
                                      specs=specs,
+                                     horizontal_spacing=self.ws_col / (self.axes.size[0] * self.ncol),
+                                     vertical_spacing=self.ws_row / (self.axes.size[1] * self.nrow),
                                      )
 
         if self.axes.twin_y:
@@ -473,6 +467,9 @@ class Layout(BaseLayout):
             xaxis = 'x1'
 
         # Make the scatter trace
+        show_legend = False
+        if leg_name not in self.legend.values['Key'].values:
+            show_legend = True
         self.axes.obj[ir, ic] += [
             go.Scatter(x=dfx[mask],
                        y=df[y][mask],
@@ -486,6 +483,7 @@ class Layout(BaseLayout):
                                              width=self.markers.edge_width[iline])),
                        xaxis=xaxis,
                        yaxis=yaxis,
+                       showlegend=show_legend,
                        )]
 
         # Add a reference to the line to self.lines
@@ -553,26 +551,44 @@ class Layout(BaseLayout):
             ic: subplot column index
 
         """
-        # Set the font weight and style
-        self._set_weight_and_style('label_x')
-        self._set_weight_and_style('label_x2')  # not implemented
-        self._set_weight_and_style('label_y')
-        self._set_weight_and_style('label_y2')  # not implemented
-        self._set_weight_and_style('label_z')  # not implemented
+        axis = ['x', 'x2', 'y', 'y2']
+        for ax in axis:
+            label = getattr(self, f'label_{ax}')
+            if not label.on:
+                continue
+            if type(label.text) not in [str, list]:
+                continue
+            #if isinstance(label.text, str):
+            #    labeltext = label.text
+            #if isinstance(label.text, list):
+            #    labeltext = label.text[ic + ir * self.ncol]
 
-        # Set axes label properties
-        for ss in ['', '2']:
-            for ax in ['x', 'y']:
-                self.kwargs[f'ul_{ax}{ss}axis_title'] = \
-                    dict(text=getattr(self, f'label_{ax}{ss}').text,
-                         font=dict(family=getattr(self, f'label_{ax}{ss}').font,
-                                   size=getattr(self, f'label_{ax}{ss}').font_size,
-                                   color=getattr(self, f'label_{ax}{ss}').font_color,
-                                   ),
-                         standoff=self.ws_label_tick,
-                         )
-                lab = getattr(self, f'label_{ax}{ss}')
-                lab.size = utl.get_text_dimensions(lab.text, lab.font, lab.font_size, lab.font_style, lab.font_weight)
+            # Set the font weight and style
+            self._set_weight_and_style(f'label_{ax}')
+
+            # Toggle label visibility
+            if not self.separate_labels:
+                if ax == 'x' and ir != self.nrow - 1 and self.nwrap == 0 and self.axes.visible[ir + 1, ic]:
+                    continue
+                if ax == 'x2' and ir != 0:
+                    continue
+                if ax == 'y' and ic != 0 and self.axes.visible[ir, ic - 1]:
+                    continue
+                if ax == 'y2' and ic != self.ncol - 1 and utl.plot_num(ir, ic, self.ncol) != self.nwrap:
+                    continue
+                if ax == 'z' and ic != self.ncol - 1 and utl.plot_num(ir, ic, self.ncol) != self.nwrap:
+                    continue
+
+            # Create a dict of the label props to apply later
+            plot_num = utl.plot_num(ir, ic, self.ncol)
+            plot_num = '' if plot_num == 1 else str(plot_num)
+            key = f'{ax[0]}axis{plot_num}_title'
+            self.kwargs[f'ul_{ax}axis_title'][key] = \
+                dict(text=label.text,
+                     font=dict(family=label.font, size=label.font_size, color=label.font_color),
+                     standoff=self.ws_label_tick)
+            lab = getattr(self, f'label_{ax}')
+            lab.size = utl.get_text_dimensions(lab.text, lab.font, lab.font_size, lab.font_style, lab.font_weight)
 
     def set_axes_ranges(self, ir: int, ic: int, ranges: dict):
         """Set the axes ranges.
@@ -601,6 +617,76 @@ class Layout(BaseLayout):
             ic: subplot column index
 
         """
+        # Wrap title
+
+        # Row labels
+        if ic == self.ncol - 1 and self.label_row.on and not self.label_wrap.on:
+            if self.label_row.names:
+                lab = f'{self.label_row.text}={self.label_row.values[ir]}'
+            else:
+                lab = self.label_row.values[ir]
+            lab = self._set_weight_and_style_str(lab, self.label_row)
+
+            # add margin to the figure for the labels (one time only) and set style
+            if ir == 0 and ic == 0:
+                self.fig.obj.update_layout(margin=dict(r=self.ws_label_row + self.label_row.size[1]))
+
+            # add the rectangle
+            self.fig.obj.add_shape(type='rect', x0=1.05, y0=1, x1=1.2, y1=0,
+                                   fillcolor=self.label_row.fill_color[ir, ic],
+                                   line=dict(
+                                       color=self.label_row.edge_color[ir, ic],
+                                       width=self.label_row.edge_width,
+                                   ),
+                                   xref="x domain", yref="y domain", row=ir + 1, col=ic + 1,
+                                   )
+
+            # add the label
+            font = dict(family=self.label_row.font, size=self.label_row.font_size, color=self.label_row.font_color)
+            self.fig.obj.add_annotation(font=font, x=1.18, y=0.5,
+                                        showarrow=False, text=lab, textangle=90,
+                                        xanchor='right', yanchor='middle',
+                                        xref='x domain', yref='y domain', row=ir + 1, col=ic + 1)
+
+        # Col/wrap labels
+        if (ir == 0 and self.label_col.on) or self.label_wrap.on:
+            if self.label_wrap.on:
+                kwargs = self.make_kw_dict(self.label_wrap)
+                if self.axes.edge_width == 0:
+                    kwargs['size'][0] -= 1
+                if self.name == 'imshow' and not self.cbar.on and self.nrow == 1:
+                    kwargs['size'][0] -= 1
+                text = ' | '.join([str(f) for f in utl.validate_list(
+                    self.label_wrap.values[ir * self.ncol + ic])])
+                self.label_wrap.obj[ir, ic], self.label_wrap.obj_bg[ir, ic] = \
+                    self.add_label(ir, ic, text, **kwargs)
+            else:
+                if self.label_col.names:
+                    lab = f'{self.label_col.text}={self.label_col.values[ic]}'
+                else:
+                    lab = self.label_col.values[ic]
+                lab = self._set_weight_and_style_str(lab, self.label_col)
+
+                # add margin to the figure for the labels (one time only) and set style
+                if ir == 0 and ic == 0:
+                    self.fig.obj.update_layout(margin=dict(t=self.ws_label_col + self.label_col.size[1]))
+
+                # add the rectangle
+                self.fig.obj.add_shape(type='rect', x0=0, y0=1.05, x1=1, y1=1.2,
+                                       fillcolor=self.label_col.fill_color[ir, ic],
+                                       line=dict(
+                                           color=self.label_col.edge_color[ir, ic],
+                                           width=self.label_col.edge_width,
+                                       ),
+                                       xref="x domain", yref="y domain", row=ir + 1, col=ic + 1,
+                                       )
+
+                # add the label
+                font = dict(family=self.label_col.font, size=self.label_col.font_size, color=self.label_col.font_color)
+                self.fig.obj.add_annotation(font=font, y=1.16, x=0.5,
+                                            showarrow=False, text=lab, textangle=0,
+                                            xanchor='center', yanchor='top',
+                                            xref='x domain', yref='y domain', row=ir + 1, col=ic + 1)
 
     def set_axes_scale(self, ir: int, ic: int):
         """
@@ -646,7 +732,7 @@ class Layout(BaseLayout):
             kw.update(self.kwargs[f'ul_{ax}scale'])
             getattr(self.fig.obj, f'update_{ax}axes')(kw)
 
-        # Iterate through subplots
+        # Iterate through subplots to add the traces
         for ir in range(0, self.nrow):
             for ic in range(0, self.ncol):
                 # Add the traces
@@ -661,8 +747,11 @@ class Layout(BaseLayout):
                 self.fig.obj.update_layout(yaxis_range=self.kwargs['ul_yaxis_range'][ir, ic])
 
         # Update the layout
+        axis_labels = self.kwargs['ul_xaxis_title']
+        axis_labels.update(self.kwargs['ul_yaxis_title'])
+
         self.fig.obj.update_layout(autosize=True,  # do we need this?
-                                   height=self.fig.size[1] + self._top + self._bottom,
+                                   height=self.fig.size[1] + self._top + self._bottom - self.ws_row * (self.nrow - 1),
                                    legend_title_text=self.legend.text,
                                    margin=dict(l=self._left,
                                                r=self._right,
@@ -672,10 +761,11 @@ class Layout(BaseLayout):
                                    plot_bgcolor=self.kwargs['ul_plot_bgcolor'],
                                    showlegend=self.legend.on,
                                    title=self.kwargs['ul_title'],
-                                   width=self.fig.size[0] + self._left + self._right,
-                                   xaxis_title=self.kwargs['ul_xaxis_title'],
-                                   yaxis_title=self.kwargs['ul_yaxis_title'],
-                                   )
+                                   width=self.fig.size[0] + self._left + self._right - self.ws_col * (self.ncol - 1),
+                                   **axis_labels)
+
+        # Update the plot labels
+        self.fig.obj.update_layout()
 
         if self.axes.twin_x:
             leg = dict(yanchor='top', y=0.99, xanchor='right', x=1.55)  # this needs an algo
@@ -684,7 +774,16 @@ class Layout(BaseLayout):
 
         if self.axes.twin_y:
             self.fig.obj.data[1].update(xaxis='x2')
-            self.fig.obj.update_xaxes2(self.kwargs['ul_x2grid'])
+            # Have to do this manually since there is no update_xaxes2 function
+            for k, v in self.kwargs['ul_x2grid'].items():
+                if hasattr(self.fig.obj.layout.xaxis2, k):
+                    setattr(self.fig.obj.layout.xaxes2, k, v)
+            for k, v in self.kwargs['ul_x2axis_title'].items():
+                setattr(self.fig.obj.layout.xaxis2.title, k, v)
+
+        # # algo needed, account for rc_labels with legend position and update fig size
+        # leg = dict(yanchor='top', y=0.99, xanchor='right', x=1.65)
+        # self.fig.obj.update_layout(legend=leg)
 
     def set_figure_title(self):
         """Set a figure title."""
@@ -709,12 +808,28 @@ class Layout(BaseLayout):
         """Add html tags to the text string of an element to address font weight and style.
 
         Args:
-            element: name of the Element class to modify; results are stored in place
+            element: name of the Element object to modify; results are stored in place
         """
         if getattr(self, element).font_weight == 'bold':
             getattr(self, element).text = f'<b>{getattr(self, element).text}</b>'
         if getattr(self, element).font_style == 'italic':
             getattr(self, element).text = f'<i>{getattr(self, element).text}</i>'
+
+    def _set_weight_and_style_str(self, text: str, element: 'Element'):
+        """Add html tags to any text string.
+
+        Args:
+            text: string to format
+            element: Element object to get the style parameters
+
+        Returns:
+            formated text string
+        """
+        if element.font_weight == 'bold':
+            text = f'<b>{text}</b>'
+        if element.font_style == 'italic':
+            text = f'<i>{text}</i>'
+        return text
 
     def show(self, filename=None):
         """Display the plot window.
