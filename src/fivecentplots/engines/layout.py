@@ -1675,7 +1675,7 @@ class BaseLayout:
         position = utl.kwget(kwargs, self.fcpp, 'text_position', [0, 0])
         if not isinstance(position[0], list):
             position = [position]
-        self.text = Element('text', self.fcpp, {'engine': kwargs['engine']},
+        self.text = Element('text', self.fcpp, {'engine': kwargs.get('engine', 'undefined')},
                             on=True if utl.kwget(kwargs, self.fcpp, 'text', None)
                             is not None else False,
                             obj=self.obj_array,
@@ -2685,7 +2685,7 @@ class Element:
         # Defaults
         self._on = kwargs.get('on', True)  # visbile or not
         self.name = name
-        self.engine = kwargs['engine']
+        self.engine = kwargs.get('engine', 'undefined')
         self.dpi = utl.kwget(kwargs, fcpp, 'dpi', 100)
         if obj is None:
             self.obj = None
