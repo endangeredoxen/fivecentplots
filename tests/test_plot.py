@@ -10,6 +10,7 @@ import inspect
 import pytest
 osjoin = os.path.join
 db = pdb.set_trace
+mpl.use('agg')
 
 test = 'plot'
 if Path('../tests/test_images').exists():

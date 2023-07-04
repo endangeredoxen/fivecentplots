@@ -11,6 +11,7 @@ import matplotlib as mpl
 import inspect
 osjoin = os.path.join
 db = pdb.set_trace
+mpl.use('agg')
 
 test = 'barplot'
 if Path('../tests/test_images').exists():
