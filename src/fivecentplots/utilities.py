@@ -564,7 +564,8 @@ def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, f
     fp.set_style(font_style)
     fp.set_weight(font_weight)
     fontfile = findfont(fp, fallback_to_default=True)
-    size = ImageFont.truetype(fontfile, font_size).getsize(text)
+    font = ImageFont.truetype(fontfile, font_size)
+    size = font.getbbox(text)[2:]
 
     return size[0] * 1.125, size[1] * 1.125  # no idea why it is off
 
