@@ -11,6 +11,7 @@ import imageio
 
 osjoin = os.path.join
 db = pdb.set_trace
+mpl.use('agg')
 
 test = 'imshow'
 if Path('../tests/test_images').exists():

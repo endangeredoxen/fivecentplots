@@ -10,6 +10,7 @@ import inspect
 import numpy as np
 osjoin = os.path.join
 db = pdb.set_trace
+mpl.use('agg')
 
 test = 'boxplot'
 if Path('../tests/test_images').exists():

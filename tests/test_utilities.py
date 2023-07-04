@@ -8,9 +8,11 @@ from pathlib import Path
 import fivecentplots.utilities as utl
 import fivecentplots.data as data
 import fivecentplots.engines.layout as layout
+import matplotlib as mpl
 import pytest
 osjoin = os.path.join
 db = pdb.set_trace
+mpl.use('agg')
 
 
 @pytest.fixture(scope='session')
