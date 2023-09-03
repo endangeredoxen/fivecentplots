@@ -1234,7 +1234,7 @@ class Data:
             return df_stat.quantile(q)
         else:
             try:
-                return getattr(df_stat, self.stat)().reset_index()
+                return getattr(df_stat, self.stat)(numeric_only=True).reset_index()
             except AttributeError:
                 print('stat "%s" is not supported...skipping stat calculation' % self.stat)
                 return None

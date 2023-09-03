@@ -1933,7 +1933,7 @@ class Layout(BaseLayout):
         try:
             # Special case of datetime where you don't want to show all tick labels
             df.index.astype('datetime64[ns]')
-        except TypeError:
+        except (TypeError, pd._libs.tslibs.parsing.DateParseError):
             # Show all labels
             getattr(ax, 'set_%sticks' % axx)(np.arange(0, len(xvals), 1))
         allowed_ticks = getattr(ax, 'get_%sticks' % axx)()  # mpl selected ticks
