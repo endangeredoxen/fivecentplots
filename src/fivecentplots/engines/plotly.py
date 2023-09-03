@@ -697,8 +697,7 @@ class Layout(BaseLayout):
                 self.fig.obj.add_shape(type='rect', x0=0, y0=1.05, x1=1, y1=1.2,
                                        fillcolor=self.label_col.fill_color[ir, ic],
                                        line=dict(color=self.label_col.edge_color[ir, ic],
-                                                 width=self.label_col.edge_width,
-                                                ),
+                                                 width=self.label_col.edge_width),
                                        xref="x domain", yref="y domain", row=ir + 1, col=ic + 1,
                                        )
 
