@@ -75,4 +75,8 @@ class NQ(data.Data):
         super().__init__(name, req, opt, **kwargs)
 
         # overrides
-        self.y = ['Sigma']
+        if kwargs.get('percentiles'):
+            self.y = ['Percent']
+            # self.ax_scale = 'prob' --> TODO: figure out the scale for prob plot
+        else:
+            self.y = ['Sigma']

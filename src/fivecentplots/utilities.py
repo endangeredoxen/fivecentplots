@@ -680,6 +680,7 @@ def nq(data, column: str = 'Value', **kwargs) -> pd.DataFrame:
     tail = abs(kwargs.get('tail', 3))  # start of the tail region
     step_tail = kwargs.get('step_tail', 0.2)  # step size of the tail region
     step_inner = kwargs.get('step_inner', 0.5)  # step size of the non-tail region
+    percentiles_on = kwargs.get('percentiles', False)  # display y-axis as percentiles instead of sigma
 
     # Flatten the DataFrame to an array
     data = data.values.flatten()
@@ -695,10 +696,15 @@ def nq(data, column: str = 'Value', **kwargs) -> pd.DataFrame:
                             np.arange(tail, sig + 1e-9, step_tail)])
     # Get the sigma value
     values = np.zeros(len(index))
+    percentiles = np.zeros(len(index))
     for ii, idx in enumerate(index):
-        values[ii] = np.percentile(data, ss.norm.cdf(idx) * 100)
+        percentiles[ii] = ss.norm.cdf(idx) * 100
+        values[ii] = np.percentile(data, percentiles[ii])
 
-    return pd.DataFrame({'Sigma': index, column: values})
+    if percentiles_on:
+        return pd.DataFrame({'Percent': percentiles, column: values})
+    else:
+        return pd.DataFrame({'Sigma': index, column: values})
 
 
 def pie_wedge_labels(x: np.ndarray, y: np.ndarray, start_angle: float) -> [float, float]:
