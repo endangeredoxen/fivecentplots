@@ -219,7 +219,29 @@ class Layout(BaseLayout):
 
         # Need more spacing to account for labels and stuff, same problem as mpl
         #   Note: this is not the full final size; margins are added in set_figure_final_layout
-        self.fig.size = self.axes.size[0] * self.ncol, self.axes.size[1] * self.nrow
+        self.fig.size = [self.axes.size[0] * self.ncol, self.axes.size[1] * self.nrow]
+
+        if self.title.on:
+            self.ws_title = self.ws_fig_title + self.title.size[1] + self.ws_title_ax
+        else:
+            self.ws_title = self.ws_fig_ax
+        self.box_labels = 0
+        self._legy = 0
+
+        self.fig.size[1] = int(
+            self.ws_title
+            + (self.label_col.size[1] + self.ws_label_col) * self.label_col.on
+            + self.title_wrap.size[1] + self.label_wrap.size[1]
+            # + self._labtick_x2
+            + self.axes.size[1] * self.nrow
+            # + self._labtick_x
+            + self.ws_fig_label
+            + self.ws_row * (self.nrow - 1)
+            + self.box_labels) \
+            + self._legy \
+            + self.pie.xs_top \
+            + self.pie.xs_bottom \
+            + self.tick_y_top_xs
 
         return data
 
@@ -674,10 +696,9 @@ class Layout(BaseLayout):
                 # add the rectangle
                 self.fig.obj.add_shape(type='rect', x0=0, y0=1.05, x1=1, y1=1.2,
                                        fillcolor=self.label_col.fill_color[ir, ic],
-                                       line=dict(
-                                           color=self.label_col.edge_color[ir, ic],
-                                           width=self.label_col.edge_width,
-                                       ),
+                                       line=dict(color=self.label_col.edge_color[ir, ic],
+                                                 width=self.label_col.edge_width,
+                                                ),
                                        xref="x domain", yref="y domain", row=ir + 1, col=ic + 1,
                                        )
 
