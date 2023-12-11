@@ -961,8 +961,7 @@ class BaseLayout:
 
         self.fit.legend_text = utl.kwget(kwargs, self.fcpp, 'fit_legend_text', None)
         self.fit.position[0] = self.fit.padding
-        self.fit.position[1] = self.axes.size[1] - \
-            (self.fit.padding + self.fit.font_size)
+        self.fit.position[1] = self.axes.size[1] - (self.fit.padding + self.fit.font_size)
 
         return kwargs
 

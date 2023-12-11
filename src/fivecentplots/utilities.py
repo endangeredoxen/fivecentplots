@@ -962,6 +962,10 @@ def set_save_filename(df: pd.DataFrame, ifig: int, fig_item: [None, str],
     if kwargs.get('save_ext')[0] != '.':
         kwargs['save_ext'] = '.' + kwargs['save_ext']
 
+    if len(filename + kwargs.get('save_ext')) > 255:
+        filename = 'filename_too_long'
+        print('Warning!  Default filename is too long...saving with non-unique name')
+
     return filename + kwargs.get('save_ext')
 
 

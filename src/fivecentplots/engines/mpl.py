@@ -2764,7 +2764,7 @@ class Layout(BaseLayout):
             ranges: min/max axes limits for each axis
 
         """
-        if self.name in ['heatmap', 'pie']:  # skip these plot types
+        if self.name in ['heatmap', 'imshow', 'pie']:  # skip these plot types
             return
 
         if ranges[ir, ic]['xmin'] is not None:
