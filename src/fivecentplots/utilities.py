@@ -357,40 +357,6 @@ def df_from_array2d(arr: np.ndarray) -> pd.DataFrame:
         raise ValueError('input data must be a numpy array or a pandas DataFrame')
 
 
-def df_from_array3d(arr: np.ndarray, labels: [list, np.ndarray] = [],
-                    name: str = 'Item', verbose: bool = True) -> pd.DataFrame:
-    """Convert a 3d numpy array to a DataFrame.
-
-    Args:
-        arr: input data to stack into a DataFrame
-        label (optional): list of labels to designate each
-            sub array in the 3d input array; added to DataFrame in column
-            named ``label``. Defaults to [].
-        name (optional): name of label column. Defaults to 'Item'.
-        verbose (optional): toggle error print statements. Defaults to True.
-
-    Returns:
-        pd.DataFrame
-    """
-    shape = arr.shape
-    if len(shape) != 3:
-        raise ValueError('Input numpy array is not 3d')
-
-    # Regroup into a stacked DataFrame
-    m, n, r = shape
-    arr = np.column_stack((np.repeat(np.arange(m), n),
-                           arr.reshape(m * n, -1)))
-    df = pd.DataFrame(arr)
-
-    # Add a label column
-    if len(labels) > 0:
-        df[name] = np.repeat(labels, n)
-    else:
-        df[name] = np.floor(df.index / r).astype(int)
-
-    return df
-
-
 def df_int_cols(df: pd.DataFrame, non_int: bool = False) -> list:
     """Return column names that are integers (or not).
 
@@ -594,6 +560,33 @@ def kwget(dict1: dict, dict2: dict, vals: [str, list], default: [list, dict]):
     return default
 
 
+def img_array_from_df(df, shape):
+    cols = [f for f in df.columns if f in ['Value', 'R', 'G', 'B', 'A']]
+    return df[cols].to_numpy().reshape(shape)
+
+
+def img_checker(rows, cols, num_x, num_y, high, low):
+    """Make a checker pattern array
+
+    Args:
+        rows: number rows in single checker square
+        cols: number cols in single checker square
+        num_x: number of horizontal squares
+        num_y: number of vertical squares
+        high: value of the higher checker squares
+        low: value of the lower checker squares
+
+    Returns:
+        2D numpy array
+    """
+    grid = [[high, low] * num_x, [low, high] * num_x] * num_y
+    square = np.ones([rows, cols])
+    total_rows = int(rows * num_y)
+    total_cols = int(cols * num_x)
+
+    return np.kron(grid, square)[:total_rows, :total_cols]
+
+
 def img_compare(img1: str, img2: str, show: bool = False) -> bool:
     """Read two images and compare for difference by pixel. This is an optional
     utility used only for developer tests, so the function will only work if
@@ -652,8 +645,75 @@ def img_compare(img1: str, img2: str, show: bool = False) -> bool:
     return is_diff
 
 
+def img_df_from_array_or_df(data: np.ndarray) -> pd.DataFrame:
+    """Convert a numpy array or a 2D DataFrame into the image DataFrame format used in fcp.
+
+    Args:
+        data: input data to convert into a DataFrame
+        label (optional): list of labels to designate each
+            sub array in the 3d input array; added to DataFrame in column
+            named ``label``. Defaults to [].
+        name (optional): name of label column. Defaults to 'Item'.
+        verbose (optional): toggle error print statements. Defaults to True.
+
+    Returns:
+        pd.DataFrame
+    """
+    if not (isinstance(data, pd.DataFrame) or isinstance(data, np.ndarray)):
+        raise ValueError('input data must be a numpy array or a pandas DataFrame')
+
+    # Ignore if input is already in the correct format
+    if isinstance(data, pd.DataFrame) and 'Row' in data.columns and 'Column' in data.columns:
+        groups = [f for f in data.columns if f not in ['Row', 'Column', 'Value']]
+        if len(groups) > 0:
+            rows = data.groupby(groups)['Row'].unique().str.len().max()
+            cols = data.groupby(groups)['Column'].unique().str.len().max()
+        else:
+            rows = len(data.Row.unique())
+            cols = len(data.Column.unique())
+        return data, [rows, cols]
+
+    # Handle input dataframes
+    if isinstance(data, pd.DataFrame):
+        df = pd.DataFrame()
+        group_cols = df_int_cols(data, True)
+        if len(group_cols) == 0:
+            return img_df_from_array_or_df(data.to_numpy())
+        int_cols = df_int_cols(data)
+        for nn, gg in data.groupby(group_cols):
+            temp, ss = img_df_from_array_or_df(gg[int_cols].to_numpy())
+            nn = validate_list(nn)
+            for igc, gc in enumerate(group_cols):
+                temp[gc] = nn[igc]
+            df = pd.concat([df, temp])
+        return df, ss
+
+    # Get the original input data shape
+    ss = list(data.shape)
+
+    # Regroup into a stacked DataFrame
+    data = np.column_stack((np.repeat(np.arange(ss[0]), ss[1]),
+                            np.tile(np.arange(ss[1]), ss[0]),
+                            data.reshape(ss[0] * ss[1], -1)))
+    df = pd.DataFrame(data)
+
+    # Add coordinate columns and optional label columns
+    cols = list(df.columns)
+    if len(ss) == 2:
+        renames = ['Row', 'Column', 'Value']
+    else:
+        renames = ['Row', 'Column', 'R', 'G', 'B', 'A']
+    for ir, rr in enumerate(renames):
+        if ir > len(cols) - 1:
+            break
+        cols[ir] = rr
+    df.columns = cols
+
+    return df, ss
+
+
 def img_grayscale(img: np.ndarray) -> pd.DataFrame:
-    """Convert an RGB image to grayscale.
+    """Convert an RGB image to grayscale and convert to a 2D DataFrame
 
     Args:
         img: 3D array of image data
@@ -746,9 +806,8 @@ def plot_num(ir: int, ic: int, ncol: int) -> int:
     return (ic + ir * ncol + 1)
 
 
-def rgb2bayer(img: np.ndarray, cfa: str = 'rggb',
-              bit_depth: int = np.uint8) -> pd.DataFrame:
-    """Approximate a Bayer raw image using an RGB image.
+def rgb2bayer(img: np.ndarray, cfa: str = 'rggb', bit_depth: int = np.uint8) -> pd.DataFrame:
+    """Crudely approximate a Bayer raw image using an RGB image.
 
     Args:
         img: 3D numpy array of RGB pixel values
@@ -994,8 +1053,7 @@ def show_file(filename: str):
         subprocess.call([opener, str(filename)])
 
 
-def split_color_planes(img: pd.DataFrame, cfa: str = 'rggb',
-                       as_dict: bool = False) -> pd.DataFrame:
+def split_color_planes(img: pd.DataFrame, cfa: str = 'rggb', as_dict: bool = False) -> pd.DataFrame:
     """Split image data into respective color planes.
 
     Args:
@@ -1032,25 +1090,24 @@ def split_color_planes(img: pd.DataFrame, cfa: str = 'rggb',
         for ii in idx:
             cp[ii] = f'{cp[ii]}{ii}'
 
+    # Make sure input is in correct format with Row, Column, Values columns
+    if 'Row' not in img.columns:
+        img = img_df_from_array_or_df(img)[0]
+
     # Separate planes
+    img['Plane'] = ''
+    for ic, cc in enumerate(cp):
+        img.loc[(img.Row % 2 == ic // 2) & (img.Column % 2 == (ic % 2)), 'Plane'] = cc
+
     if as_dict:
         img2 = {}
-    else:
-        img2 = pd.DataFrame()
-
-    for ic, cc in enumerate(cp):
-        temp = img.loc[ic // 2::2, (ic % 2)::2]
-        if as_dict:
+        for ic, cc in enumerate(cp):
+            temp = img[img.Plane == cc].reset_index(drop=True)
+            del temp['Plane']
             img2[cc] = temp
-        else:
-            temp['Plane'] = cc
-            img2 = pd.concat([img2, temp])
-
-    if as_dict:
         return img2
-
-    cols = df_int_cols(img2) + ['Plane']
-    return img2[cols]
+    else:
+        return img
 
 
 def test_checker(module) -> list:

@@ -2684,7 +2684,7 @@ class Element:
         # Defaults
         self._on = kwargs.get('on', True)  # visbile or not
         self.name = name
-        self.engine = kwargs.get('engine', 'undefined')
+        self.engine = kwargs.get('engine', 'undefined').lower()
         self.dpi = utl.kwget(kwargs, fcpp, 'dpi', 100)
         if obj is None:
             self.obj = None

@@ -18,7 +18,7 @@ class ImShow(data.Data):
         name = 'imshow'
         req = []
         opt = []
-        kwargs['df'] = utl.df_from_array2d(kwargs['df'])
+        kwargs['df'], self.shape = utl.img_df_from_array_or_df(kwargs['df'])
         kwargs['ax_limit_padding'] = kwargs.get('ax_limit_padding', None)
 
         # Set defaults
@@ -29,11 +29,10 @@ class ImShow(data.Data):
 
         # Color plane splitting
         cfa = utl.kwget(kwargs, self.fcpp, 'cfa', kwargs.get('cfa', None))
-        if cfa is not None:
+        if cfa is not None and len(self.shape) == 2:
             kwargs['df'] = utl.split_color_planes(kwargs['df'], cfa)
-
-        # auto stretching
-        self._stretch(kwargs)
+            self.shape[0] = int(self.shape[0] / 2)
+            self.shape[1] = int(self.shape[1] / 2)
 
         # check for invalid axis options
         vals = ['twin_x', 'twin_y']
@@ -55,13 +54,19 @@ class ImShow(data.Data):
 
         # overrides
         self.auto_scale = False
-
         self.auto_cols = True
         self.x = ['Column']
         self.y = ['Row']
-        self.z = ['Value']
+        self.z = ['Value'] if len(self.shape) == 2 else ['R', 'G', 'B']
+        if len(self.shape) > 2 and hasattr(self, 'cbar') and self.cbar:
+            print('Colorbar option not available for 3D image data')
+            self.cbar = False
 
-        self.df_all = utl.df_int_cols_convert(self.df_all)
+        self.df_all['Column'] = self.df_all['Column'].astype(int)
+        self.df_all['Row'] = self.df_all['Row'].astype(int)
+
+        # auto stretching
+        self._stretch(kwargs)
 
     def _check_xyz(self, xyz: str):
         """Validate the name and column data provided for x, y, and/or z.  For imshow, there are no req or opt
@@ -86,29 +91,18 @@ class ImShow(data.Data):
         """
         if not hasattr(self, ax) or getattr(self, ax) in [None, []]:
             return None, None
-        else:
-            cols = getattr(self, ax)
 
         # imshow special case
         df = df.dropna(axis=1, how='all')
-        groups = self._groupers
-        if getattr(self, ax) == ['Column']:
+        if getattr(self, ax) in [['Column'], ['Row']]:
             vmin = 0
-            if len(groups) > 0:
-                cols = df.iloc[0].dropna().index
-                cols = [f for f in cols if f not in groups]
-                vmax = len(cols)
+            if len(self._groupers) > 0:
+                vmax = df.groupby(self._groupers)[getattr(self, ax)[0]].unique().str.len().max()
             else:
-                vmax = len(df.columns)
-        elif getattr(self, ax) == ['Row']:
-            vmin = 0
-            if len(groups) > 0:
-                vmax = df.groupby(self._groupers).size().max()
-            else:
-                vmax = len(df.index)
-        elif getattr(self, ax) == ['Value']:  # and self.auto_cols:
-            vmin = df[utl.df_int_cols(df)].min().min()
-            vmax = df[utl.df_int_cols(df)].max().max()
+                vmax = len(df[getattr(self, ax)[0]].unique())
+        else:
+            vmin = df[getattr(self, ax)].min().min()
+            vmax = df[getattr(self, ax)].max().max()
 
         return vmin, vmax
 
@@ -161,9 +155,7 @@ class ImShow(data.Data):
 
                     # Not shared or wrap by x or y
                     elif not getattr(self, 'share_%s' % ax) or \
-                            (self.wrap is not None
-                             and self.wrap == 'y'
-                             or self.wrap == 'x'):
+                            (self.wrap is not None and self.wrap == 'y' or self.wrap == 'x'):
                         vals = self._get_data_range(ax, df_rc, plot_num)
                         self._add_range(ir, ic, ax, 'min', vals[0])
                         self._add_range(ir, ic, ax, 'max', vals[1])
@@ -172,6 +164,13 @@ class ImShow(data.Data):
                     elif ir > 0 or ic > 0:
                         self._add_range(ir, ic, ax, 'min', self.ranges[0, 0]['%smin' % ax])
                         self._add_range(ir, ic, ax, 'max', self.ranges[0, 0]['%smax' % ax])
+
+        # Matplotlib imshow extent offset fix
+        if self.engine == 'mpl':
+            for ir, ic, plot_num in self._get_subplot_index():
+                for val in self.ranges[ir, ic]:
+                    if ('x' in val or 'y' in val) and self.ranges[ir, ic][val] is not None:
+                        self.ranges[ir, ic][val] -= 0.5
 
         # some extras
         width = len(self.df_fig.dropna(axis=1, how='all').columns)
@@ -201,12 +200,6 @@ class ImShow(data.Data):
             for ic in range(0, self.ncol):
                 self.df_rc = self._subset(ir, ic)
 
-                # imshow addition
-                self.df_rc.index.astype = int
-                cols = utl.df_int_cols(self.df_rc)
-                self.df_rc = self.df_rc[cols]
-                self.df_rc.columns.astype = int
-
                 # Deal with empty dfs
                 if len(self.df_rc) == 0:
                     self.df_rc = pd.DataFrame()
@@ -227,7 +220,7 @@ class ImShow(data.Data):
             stretch = utl.validate_list(stretch)
             if len(stretch) == 1:
                 stretch = [stretch[0], stretch[0]]
-            uu = kwargs['df'].stack().mean()
-            ss = kwargs['df'].stack().std()
-            kwargs['zmin'] = uu - abs(stretch[0]) * ss
-            kwargs['zmax'] = uu + stretch[1] * ss
+            uu = self.df_all[self.z].stack().mean()
+            ss = self.df_all[self.z].stack().std()
+            self.zmin.values[0] = uu - abs(stretch[0]) * ss
+            self.zmax.values[0] = uu + stretch[1] * ss

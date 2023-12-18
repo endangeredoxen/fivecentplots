@@ -1433,8 +1433,7 @@ class Layout(BaseLayout):
         # Account for legends longer than the figure
         header = self.ws_title + \
             (self.label_col.size[1] + self.ws_label_col) * self.label_col.on + \
-            self.title_wrap.size[1] + self.label_wrap.size[1] + \
-            self._labtick_x2
+            self.title_wrap.size[1] + self.label_wrap.size[1] + self._labtick_x2
 
         if self.legend.size[1] + header > self.fig.size[1]:
             self.legend.overflow = self.legend.size[1] + \
@@ -2322,9 +2321,9 @@ class Layout(BaseLayout):
         ranges = data.ranges[ir, ic]
 
         # Make the heatmap (maybe pull these kwargs out to an imshow obj?)
-        im = ax.imshow(df.dropna(axis=1, how='all'), self.cmap,
-                       vmin=ranges['zmin'], vmax=ranges['zmax'],
-                       interpolation=self.imshow.interp)
+        cols = ['Row', 'Column'] + data.z
+        img = utl.img_array_from_df(df[cols], data.shape)
+        im = ax.imshow(img, self.cmap, vmin=ranges['zmin'], vmax=ranges['zmax'], interpolation=self.imshow.interp)
         im.set_clim(ranges['zmin'], ranges['zmax'])
 
         # Add a cmap
@@ -2764,7 +2763,7 @@ class Layout(BaseLayout):
             ranges: min/max axes limits for each axis
 
         """
-        if self.name in ['heatmap', 'imshow', 'pie']:  # skip these plot types
+        if self.name in ['heatmap', 'pie']:  # skip these plot types
             return
 
         if ranges[ir, ic]['xmin'] is not None:
@@ -3356,29 +3355,24 @@ class Layout(BaseLayout):
                 else:
                     offset = 0
                 y_rect = self.label_col.position[3]
-                y_text = y_rect + \
-                    (self.label_col.size[1] / 2 + offset) / \
-                    self.axes.size[1]
+                y_text = y_rect + (self.label_col.size[1] / 2 + offset) / self.axes.size[1]
                 self.label_col.obj[ir, ic].set_position((0.5, y_text))
                 self.label_col.obj_bg[ir, ic].set_y(y_rect)
                 self.label_col.obj_bg[ir, ic].set_width(1)
         # wrap label
-        if self.name in ['imshow'] and self.ncol > 1:
+        if self.name in ['imshow']:
             hack = 0  # some weirdness on cbar or imshow plots; here is a stupid hack
-        elif self.name in ['imshow']:
-            hack = -1
         else:
             hack = 1
         for ir, ic in np.ndindex(self.label_wrap.obj.shape):
             if self.label_wrap.obj[ir, ic]:
                 offset = 0
                 y_rect = self.label_wrap.position[3]
-                y_text = y_rect + \
-                    (self.label_wrap.size[1] / 2 + offset) / \
-                    self.axes.size[1]
+                y_text = y_rect + (self.label_wrap.size[1] / 2 + offset) / self.axes.size[1]
                 self.label_wrap.obj[ir, ic].set_position((0.5, y_text))
                 self.label_wrap.obj_bg[ir, ic].set_y(y_rect)
-                self.label_wrap.obj_bg[ir, ic].set_width(1 + hack / self.axes.size[0])
+                width = 1 + (hack - self.label_wrap.edge_width) / self.axes.size[0]
+                self.label_wrap.obj_bg[ir, ic].set_width(width)
         # wrap title
         if self.title_wrap.on:
             offset = 0

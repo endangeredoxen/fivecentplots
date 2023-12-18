@@ -1501,7 +1501,7 @@ def plotter(dobj, **kwargs):
     # Set the plotting engine
     verbose = kwargs.get('verbose', False)
     defaults = utl.reload_defaults(kwargs.get('theme', None), verbose=verbose)
-    kwargs['engine'] = utl.kwget(kwargs, defaults[0], 'engine', 'mpl')
+    kwargs['engine'] = utl.kwget(kwargs, defaults[0], 'engine', 'mpl').lower()
     if not hasattr(engines, kwargs['engine']):
         if kwargs['engine'] in INSTALL.keys():
             installs = '\npip install '.join(INSTALL[kwargs['engine']])

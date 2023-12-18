@@ -32,10 +32,10 @@ cp['b'] -= 50
 cp['gr'][cp['gr'] < 25] = 25
 for ii in cp:
     cp[ii] = cp[ii].reset_index(drop=True)
-    cp[ii].columns = range(0, 200)
     cp[ii]['Plane'] = ii
     cp[ii]['Green?'] = True if 'g' in ii else False
 img_rc = pd.concat(cp)
+img_rc.loc[img_rc.Value < 0, 'Value'] = 0
 
 
 # Set theme

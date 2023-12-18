@@ -20,7 +20,10 @@ class Histogram(data.Data):
         name = 'hist'
         req = []
         opt = ['x']
-        kwargs['df'] = utl.df_from_array2d(kwargs['df'])
+        try:
+            kwargs['df'], self.shape = utl.img_df_from_array_or_df(kwargs['df'])
+        except ValueError:
+            pass
 
         # Set defaults
         if fcpp:
@@ -65,6 +68,16 @@ class Histogram(data.Data):
         self.cumulative = utl.kwget(kwargs, self.fcpp, ['hist_cumulative', 'cumulative'],
                                     kwargs.get('cumulative', False))
 
+        # Set x
+        if self.kwargs['2D'] and len(self.shape) == 2:
+            self.x = ['Value']
+        elif self.kwargs['2D']:
+            # Need to finish this!
+            self.df_all = pd.melt(self.df_all, id_vars=['Row', 'Column'], value_vars=['R', 'G', 'B'],
+                                  var_name='Plane', value_name='Value')
+            self.x = ['Value']
+            self.groups = ['Plane']
+
         # Toggle bars vs lines
         if not bars:
             self.switch_type(kwargs)
@@ -88,11 +101,7 @@ class Histogram(data.Data):
         groups = self._groupers
         if len(groups) > 0:
             for nn, df in df_in.groupby(self._groupers):
-                if self.kwargs['2D']:
-                    dfx = df[utl.df_int_cols(df)].values
-                    self.x = ['Value']
-                else:
-                    dfx = df[self.x[0]]
+                dfx = df[self.x[0]]
 
                 if brange:
                     counts, vals = np.histogram(dfx[~np.isnan(dfx)], bins=self.bins, density=self.norm, range=brange)
@@ -116,11 +125,7 @@ class Histogram(data.Data):
                         temp[group] = nn
                 hist = pd.concat([hist, temp])
         else:
-            if self.kwargs['2D']:
-                dfx = df_in[utl.df_int_cols(df_in)].values
-                self.x = ['Value']
-            else:
-                dfx = df_in[self.x[0]].dropna()
+            dfx = df_in[self.x[0]].dropna()
             if brange:
                 counts, vals = np.histogram(dfx[~np.isnan(dfx)], bins=self.bins, density=self.norm, range=brange)
             else:
@@ -265,10 +270,8 @@ class Histogram(data.Data):
         # Update the bins to integer values if not specified and 2D image data
         bins = utl.kwget(kwargs, self.fcpp, 'bins', kwargs.get('bars', None))
         if kwargs['2D']:
-            cols = utl.df_int_cols(self.df_all)
-            vals = self.df_all[cols].values
-            vmin = int(np.nanmin(vals))
-            vmax = int(np.nanmax(vals))
+            vmin = int(np.nanmin(self.df_all.Value))
+            vmax = int(np.nanmax(self.df_all.Value))
             if not bins:
                 self.bins = vmax - vmin + 1  # add 1 to get the last bin
         elif not kwargs.get('vmin') and not kwargs.get('vmax'):

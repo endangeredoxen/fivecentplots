@@ -295,8 +295,7 @@ class Data:
             value: value of the range
         """
         key = '{}{}'.format(ax, label)
-        if key not in self.ranges[ir, ic].keys() or \
-                self.ranges[ir, ic][key] is None:
+        if key not in self.ranges[ir, ic].keys() or self.ranges[ir, ic][key] is None:
             self.ranges[ir, ic][key] = value
 
     def _add_ranges_none(self, ir: int, ic: int):
