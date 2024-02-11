@@ -398,6 +398,7 @@ def heatmap(df, **kwargs):
         heatmap_font_size (int): Font size of the value label text. Defaults to 12.
         heatmap_interp|interp (str): imshow interpolation scheme [see matplotlib docs for more details]. Defaults to
           'none’.
+        heatmap_rounding (int): Number of digits to round heatmap data labels.  Defaults to None.
         COLOR_BAR:
         cbar (bool): Toggle colorbar on/off for contour and heatmap plots. Defaults to False. Example:
           https://endangeredoxen.github.io/fivecentplots/0.6.0/contour.html#Filled-contour
