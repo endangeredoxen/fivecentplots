@@ -2236,7 +2236,11 @@ class Layout(BaseLayout):
                 for ix, xx in enumerate(df.columns):
                     if type(df.loc[yy, xx]) in [float, np.float32, np.float64] and np.isnan(df.loc[yy, xx]):
                         continue
-                    text = ax.text(ix, iy, df.loc[yy, xx],  # noqa
+                    if self.heatmap.rounding is None:
+                        val = df.loc[yy, xx]
+                    else:
+                        val = df.loc[yy, xx].round(self.heatmap.rounding)
+                    text = ax.text(ix, iy, val,  # noqa
                                    ha="center", va="center",
                                    color=self.heatmap.font_color,
                                    fontsize=self.heatmap.font_size)

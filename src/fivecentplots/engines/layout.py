@@ -1103,13 +1103,14 @@ class BaseLayout:
                                                    60 if 'ax_size' not in kwargs else None),
                                edge_width=0,
                                font_color=utl.kwget(kwargs, self.fcpp, 'heatmap_font_color', '#ffffff'),
-                               font_size=12,
+                               font_size=utl.kwget(kwargs, self.fcpp, 'heatmap_font_size', 12),
                                interp=utl.kwget(kwargs, self.fcpp, ['heatmap_interp', 'interp'],
                                                 kwargs.get('interp', 'none')),
+                               rounding=utl.kwget(kwargs, self.fcpp, 'data_labels_rounding', None),
                                text=utl.kwget(kwargs, self.fcpp, 'data_labels', False),
                                )
         if self.heatmap.on and data.x != ['Column']:
-            self.tick_labels_major_x.rotation = utl.kwget(kwargs, self.fcpp, 'tick_labels_major_x', 90)
+            self.tick_labels_major_x.rotation = utl.kwget(kwargs, self.fcpp, 'tick_labels_major_x_rotation', 90)
 
         # Enable cbars by default
         if self.heatmap.on and kwargs.get('cbar', True):
