@@ -2095,12 +2095,13 @@ class Layout(BaseLayout):
                              self.contour.levels)
 
         # Plot
+        plot_num = utl.plot_num(ir, ic, self.ncol) - 1
         if self.contour.filled:
-            cc = ax.contourf(xi, yi, zi, levels, cmap=self.cmap, zorder=2)
+            cc = ax.contourf(xi, yi, zi, levels, cmap=self.cmap[plot_num], zorder=2)
         else:
             cc = ax.contour(xi, yi, zi, levels,
                             linewidths=self.contour.width.values,
-                            cmap=self.cmap, zorder=2)
+                            cmap=self.cmap[plot_num], zorder=2)
 
         # Add a colorbar
         if self.cbar.on:
@@ -2196,8 +2197,8 @@ class Layout(BaseLayout):
         ranges = data.ranges[ir, ic]
 
         # Make the heatmap
-        im = ax.imshow(df, self.cmap, vmin=ranges['zmin'],
-                       vmax=ranges['zmax'],
+        plot_num = utl.plot_num(ir, ic, self.ncol) - 1
+        im = ax.imshow(df, self.cmap[plot_num], vmin=ranges['zmin'], vmax=ranges['zmax'],
                        interpolation=self.heatmap.interp)
         im.set_clim(ranges['zmin'], ranges['zmax'])
 
@@ -2323,7 +2324,9 @@ class Layout(BaseLayout):
         # Make the heatmap (maybe pull these kwargs out to an imshow obj?)
         cols = ['Row', 'Column'] + data.z
         img = utl.img_array_from_df(df[cols], data.shape)
-        im = ax.imshow(img, self.cmap, vmin=ranges['zmin'], vmax=ranges['zmax'], interpolation=self.imshow.interp)
+        plot_num = utl.plot_num(ir, ic, self.ncol) - 1
+        im = ax.imshow(img, self.cmap[plot_num], vmin=ranges['zmin'], vmax=ranges['zmax'],
+                       interpolation=self.imshow.interp)
         im.set_clim(ranges['zmin'], ranges['zmax'])
 
         # Add a cmap
@@ -3231,13 +3234,12 @@ class Layout(BaseLayout):
             data: Data object
             kwargs: keyword args
         """
-        if not self.cmap or self.name in \
-                ['contour', 'heatmap', 'imshow']:
+        if not self.cmap[0] or self.name in ['contour', 'heatmap', 'imshow']:
             return
 
         try:
             # Conver the color map into discrete colors
-            cmap = mplp.get_cmap(self.cmap)
+            cmap = mplp.get_cmap(self.cmap[0])
             color_list = []
             if data.legend_vals is None or len(data.legend_vals) == 0:
                 if self.axes.twin_x or self.axes.twin_y:
@@ -3270,7 +3272,7 @@ class Layout(BaseLayout):
             self.markers.color_alpha('fill_color', 'fill_alpha')
 
         except:  # noqa
-            print('Could not find a colormap called "%s". Using default colors...' % self.cmap)
+            print('Could not find a colormap called "%s". Using default colors...' % self.cmap[0])
 
     def set_figure_final_layout(self, data: 'Data', **kwargs):  # noqa: F821
         """Final adjustment of the figure size and plot spacing.

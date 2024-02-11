@@ -748,7 +748,7 @@ class BaseLayout:
             # edge color
             if not kwargs.get('colors') \
                     and not kwargs.get('marker_edge_color') \
-                    and not self.legend._on:
+                    and (not self.legend._on or self.legend.column == True):
                 self.markers.edge_color = self.color_list[1]
                 self.markers.color_alpha('edge_color', 'edge_alpha')
             elif not kwargs.get('colors') and not kwargs.get('marker_edge_color'):
@@ -854,9 +854,9 @@ class BaseLayout:
             self.color_list = copy.copy(DEFAULT_COLORS)
 
         # Set the cmap
-        self.cmap = kwargs.get('cmap', None)
-        if self.name in ['contour', 'heatmap', 'imshow']:
-            self.cmap = utl.kwget(kwargs, self.fcpp, 'cmap', 'inferno')
+        self.cmap = RepeatedList(utl.validate_list(kwargs.get('cmap', [None])), 'cmap')
+        if self.name in ['contour', 'heatmap']:
+            self.cmap = RepeatedList(utl.validate_list(utl.kwget(kwargs, self.fcpp, 'cmap', ['inferno'])), 'cmap')
 
         # Program any legend value specific color overrides
         vals = ['fill_alpha', 'fill_color', 'edge_alpha', 'edge_color', 'color']
@@ -1209,7 +1209,7 @@ class BaseLayout:
         # unless the color map is explicity defined in kwargs or self.fcpp,
         # override the inferno default for imshow
         if self.imshow.on and not utl.kwget(kwargs, self.fcpp, 'cmap', None):
-            self.cmap = 'gray'
+            self.cmap = RepeatedList(['gray'], 'cmap')
 
         # Special gridline/tick/axes defaults for heatmap
         grids = [f for f in kwargs.keys() if f in
