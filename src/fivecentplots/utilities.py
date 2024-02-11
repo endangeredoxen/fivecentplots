@@ -340,23 +340,6 @@ def df_filter(df: pd.DataFrame, filt_orig: str, drop_cols: bool = False,
         return df
 
 
-def df_from_array2d(arr: np.ndarray) -> pd.DataFrame:
-    """Convert 2D numpy array to DataFrame.
-
-    Args:
-        arr: input numpy array
-
-    Returns:
-        DataFrame of arr or original DataFrame if arr already of this dtype
-    """
-    if isinstance(arr, np.ndarray) and len(arr.shape) == 2:
-        return pd.DataFrame(arr)
-    elif isinstance(arr, pd.DataFrame):
-        return arr
-    else:
-        raise ValueError('input data must be a numpy array or a pandas DataFrame')
-
-
 def df_int_cols(df: pd.DataFrame, non_int: bool = False) -> list:
     """Return column names that are integers (or not).
 
@@ -976,26 +959,26 @@ def set_save_filename(df: pd.DataFrame, ifig: int, fig_item: [None, str],
 
     # Build a filename
     if 'z' in kwargs.keys():
-        z = layout.label_z.text + ' vs '
+        z = strip_html(layout.label_z.text) + ' vs '
     else:
         z = ''
-    y = ' and '.join(validate_list(layout.label_y.text))
+    y = ' and '.join(validate_list(strip_html(layout.label_y.text)))
     if layout.axes.twin_x:
-        y += ' + ' + layout.label_y2.text
+        y += ' + ' + strip_html(layout.label_y2.text)
     if 'x' in kwargs.keys():
         y += ' vs '
-        x = ' and '.join(validate_list(layout.label_x.text))
+        x = ' and '.join(validate_list(strip_html(layout.label_x.text)))
     else:
         x = ''
     if layout.axes.twin_y:
-        x += ' + ' + layout.label_x2.text
+        x += ' + ' + strip_html(layout.label_x2.text)
     row, col, wrap, groups, fig = '', '', '', '', ''
     if layout.label_row.text is not None:
-        row = ' by ' + layout.label_row.text
+        row = ' by ' + strip_html(layout.label_row.text)
     if layout.label_col.text is not None:
-        col = ' by ' + layout.label_col.text
+        col = ' by ' + strip_html(layout.label_col.text)
     if layout.title_wrap.text is not None:
-        wrap = ' by ' + layout.title_wrap.text
+        wrap = ' by ' + strip_html(layout.title_wrap.text)
     # this one may need to change with box plot
     if kwargs.get('groups', False):
         groups = ' by ' + ' + '.join(validate_list(kwargs['groups']))
@@ -1005,7 +988,7 @@ def set_save_filename(df: pd.DataFrame, ifig: int, fig_item: [None, str],
             if icol > 0:
                 fig += ' and'
             fig += ' where %s=%s' % (col, fig_items[icol])
-        if layout.label_col.text is None:
+        if strip_html(layout.label_col.text) is None:
             col = ''
 
     filename = '%s%s%s%s%s%s%s%s' % (z, y, x, row, col, wrap, groups, fig)
@@ -1108,6 +1091,20 @@ def split_color_planes(img: pd.DataFrame, cfa: str = 'rggb', as_dict: bool = Fal
         return img2
     else:
         return img
+
+
+def strip_html(text: str):
+    """Remove text in between HTML tags, if present.
+
+    Args:
+        text: input string
+
+    Returns:
+        cleaned up text
+    """
+
+    if '<' in text and '>' in text:
+        return re.sub('<[^>]*>', '', text)
 
 
 def test_checker(module) -> list:
