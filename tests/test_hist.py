@@ -514,7 +514,7 @@ def plt_image_legend(bm=False, master=False, remove=True, show=False):
                             ].stack().values == dng).sum()
     fcp.hist(img, show=SHOW, inline=False, save=not bm, filename=name + '.png',
              markers=False, ax_scale='logy', ax_size=[600, 400],
-             legend='Plane', cfa='rggb', line_width=2, colors=fcp.BAYER,
+             legend='Plane', cfa='rggb', line_width=2, colors=fcp.RGGB,
              ax_hlines=[max_count_r, max_count_gb], ax_vlines=[dnr, dng])
 
     if bm:
@@ -548,7 +548,7 @@ def plt_image_legend_cdf(bm=False, master=False, remove=True, show=False):
                             ].stack().values == dng).sum()
     fcp.hist(img, show=SHOW, inline=False, save=not bm, filename=name + '.png', cdf=True,
              markers=False, ax_scale='logy', ax_size=[600, 400],
-             legend='Plane', cfa='rggb', line_width=2, colors=fcp.BAYER,
+             legend='Plane', cfa='rggb', line_width=2, colors=fcp.RGGB,
              ax_hlines=[max_count_r, max_count_gb], ax_vlines=[dnr, dng])
 
     if bm:
@@ -582,7 +582,7 @@ def plt_image_legend_pdf(bm=False, master=False, remove=True, show=False):
                             ].stack().values == dng).sum()
     fcp.hist(img, show=SHOW, inline=False, save=not bm, filename=name + '.png', pdf=True,
              markers=False, ax_scale='logy', ax_size=[600, 400],
-             legend='Plane', cfa='rggb', line_width=2, colors=fcp.BAYER,
+             legend='Plane', cfa='rggb', line_width=2, colors=fcp.RGGB,
              ax_hlines=[max_count_r, max_count_gb], ax_vlines=[dnr, dng])
 
     if bm:
@@ -670,7 +670,7 @@ def plt_patch_solid(bm=False, master=False, remove=True, show=False):
 
     fcp.hist(img_rgb, show=SHOW, inline=False, save=not bm, filename=name + '.png',
              markers=False, ax_scale='logy', ax_size=[600, 400], legend='Plane',
-             cfa='grbg', line_width=2, xmin=-5, xmax=260, colors=fcp.BAYER)
+             cfa='grbg', line_width=2, xmin=-5, xmax=260, colors=fcp.RGGB)
 
     if bm:
         return

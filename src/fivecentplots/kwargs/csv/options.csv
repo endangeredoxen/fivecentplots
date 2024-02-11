@@ -1,6 +1,5 @@
 Keyword,Data Type,Description,Default,Example
-BAYER,list,Color scheme for RGGB channel data so lines and markers match CFA type,None,hist.html#RGB
-DEFAULT_COLORS,list,Default color scheme used for lines and markers (from ``colors.py``),None,None
+DEFAULT_COLORS,list,Default color scheme used for lines and markers (from ``colors.py``); alias COLORS also can be used for brevity,None,None
 engine,str,"Specify the plotting engine {'mpl', 'bokeh'}",'mpl',layout.html#engine
 filename,str,"Name of the saved image (with or without path and/or extension)",Automatic name based on conditions with extention '.png',grouping.html#figure-plots
 filepath,str,"Name of the directory to save images (convenient if you want to use the default naming but save in a different directory",current directory,None
@@ -9,6 +8,8 @@ hold,bool,"For interactive plotting with ``matplotlib``, keeps the previous plot
 inline,boolean,Flag to display the rendered plot in the native plotting viewer or jupyter notebook (convenient to disable if doing automated batch plotting),True,None
 print_filename,boolean,"Print the output filename, if the plot is saved",False,grouping.html#figure-plots
 return_filename,boolean,"Return the output filename, if the plot is saved",False,None
+RCCG,list,Color scheme for Bayer RCCG channel data so lines and markers match CFA type,None,hist.html#RGB
+RGGB,list,Color scheme for Bayer RGGB channel data so lines and markers match CFA type,None,hist.html#RGB
 save,boolean,Save the plot to disk,False,None
 save_data,boolean,Save the `DataFrame` subset that is created and used by a given plot,False,None
 save_ext,str,Set the file extension of saved plots to determine the format,"depends on plotting engine {'mpl': '.png', 'bokeh': '.html'}",None

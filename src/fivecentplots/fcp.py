@@ -22,7 +22,7 @@ import sys
 from pathlib import Path
 from . import utilities
 from . import data
-from . colors import DEFAULT_COLORS, BAYER  # noqa
+from . colors import DEFAULT_COLORS, RGGB, RCCG  # noqa
 from . import engines
 import fivecentplots as fcp
 try:
@@ -35,6 +35,7 @@ except (ModuleNotFoundError, ImportError, NameError):
 with open(Path(__file__).parent / 'version.txt', 'r') as fid:
     __version__ = fid.readlines()[0].replace('\n', '')
 utl = utilities
+COLORS = DEFAULT_COLORS
 HIST = utl.HIST
 db = pdb.set_trace
 osjoin = os.path.join
@@ -518,7 +519,7 @@ def hist(df, **kwargs):
         >>> img_rgb[::2, 1::2] += np.random.normal(-0.1*img_rgb[::2, 1::2].mean(), 0.1*img_rgb[::2, 1::2].mean(),
         >>>                                        img_rgb[::2, 1::2].shape)
         >>> img_rgb = img_rgb.astype(np.uint16)
-        >>> fcp.hist(img_rgb, ax_size=[600, 400], legend='Plane', cfa='grbg', colors=fcp.BAYER, **fcp.HIST)
+        >>> fcp.hist(img_rgb, ax_size=[600, 400], legend='Plane', cfa='grbg', colors=fcp.RGGB, **fcp.HIST)
 
             .. figure:: ../_static/images/example_hist2.png
     """
@@ -2278,7 +2279,7 @@ def options():
     """Dummy function to return the API for other control options with `help()` (not used directly for plotting).
 
     Keyword Args:
-        BAYER (list): Color scheme for RGGB channel data so lines and markers match CFA type. Defaults to None. Example:
+        RGGB (list): Color scheme for RGGB channel data so lines and markers match CFA type. Defaults to None. Example:
           https://endangeredoxen.github.io/fivecentplots/0.6.0/hist.html#RGB
         DEFAULT_COLORS (list): Default color scheme used for lines and markers (from colors.py). Defaults to None.
         engine (str): Specify the plotting engine {'mpl', 'bokeh'}. Defaults to 'mpl'. Example:
