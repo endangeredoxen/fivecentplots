@@ -6,6 +6,7 @@ from . layout import LOGX, LOGY, BaseLayout, RepeatedList, Element
 from .. import data
 import warnings
 import plotly.offline as pyo
+import plotly.io as pio
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
@@ -81,7 +82,7 @@ class Layout(BaseLayout):
         Returns:
             margin in pixels
         """
-        return 0  # self.ws_label_tick + self.label_y.size[1]
+        return self.label_x.size[1] + self.tick_labels_major_x.size[1]
 
     @property
     def _left(self) -> float:
@@ -90,8 +91,7 @@ class Layout(BaseLayout):
         Returns:
             margin in pixels
         """
-
-        return 0  # self.ws_label_tick + self.label_y.size[1]
+        return self.label_y.size[1] #+ self.tick_labels_major_x.font_size
 
     @property
     def _right(self) -> float:
@@ -109,7 +109,9 @@ class Layout(BaseLayout):
         Returns:
             margin in pixels
         """
-        return self.ws_fig_title + self.title.size[1] + self.ws_title_ax * self.title.on + self.ws_toolbar
+        toolbar = utl.kwget(self.kwargs, self.fcpp, 'save', False) * self.ws_toolbar
+        padding = self.ws_fig_title if self.title.on else self.ws_fig_ax
+        return padding + self.title.size[1] + self.ws_title_ax * self.title.on + toolbar
 
     def add_box_labels(self, ir: int, ic: int, data):
         """Add box group labels and titles (JMP style).
@@ -193,6 +195,25 @@ class Layout(BaseLayout):
             coord (optional): MPL coordinate type. Defaults to None.
             units (optional): pixel or inches. Defaults to None which is 'pixel'.
         """
+
+    def _get_tick_label_sizes(self, data):
+        """Guesstimate the tick label sizes for each axis since plotly doesn't have a way of getting the
+        actual ticks."""
+
+        for ir, ic in np.ndindex(self.axes.obj.shape):
+            # x-axis --> just need the approximate height of text, don't care about tick values
+            if data.ranges[ir, ic]['xmin'] is not None:
+                val = str(data.ranges[0, 0]['xmin'])
+                xticks = self.tick_labels_major_x
+                size = utl.get_text_dimensions(val, xticks.font, xticks.font_size, xticks.font_style, xticks.font_weight)
+                self.tick_labels_major_x.size[1] = size[1]
+
+            # y-axis --> try to guess where plotly will place the ticks and then guess the tick labels
+            if data.ranges[ir, ic]['ymin'] is not None and data.ranges[ir, ic]['ymax'] is not None:
+                ymin = data.ranges[ir, ic]['ymin']
+                ymax = data.ranges[ir, ic]['ymax']
+                inc = self.ticks_major_y.increment
+
 
     def make_figure(self, data: 'data.Data', **kwargs):
         """Make the figure and axes objects.
@@ -524,6 +545,7 @@ class Layout(BaseLayout):
             idx (optional): figure index in order to set the edge and face color of the
                 figure correctly when saving. Defaults to 0.
         """
+        self.fig.obj.write_image(filename)
 
     def set_axes_colors(self, ir: int, ic: int):
         """Set axes colors (fill, alpha, edge).
@@ -729,11 +751,13 @@ class Layout(BaseLayout):
         for ax in ['x', 'y']:
             direction = 'outside' if getattr(self, f'ticks_major_{ax}').direction == 'out' else 'inside'
             self.kwargs[f'ul_{ax}ticks'] = dict(
+                tickfont_family=getattr(self, f'tick_labels_major_{ax}').font,
                 tickfont_size=getattr(self, f'tick_labels_major_{ax}').font_size,
                 ticks=direction,
                 tickcolor=getattr(self, f'ticks_major_{ax}').color[0],
                 ticklen=getattr(self, f'ticks_major_{ax}')._size[0],
                 tickwidth=getattr(self, f'ticks_major_{ax}')._size[1],
+                dtick=getattr(self, f'ticks_major_{ax}').increment,
                 )
 
     def set_figure_final_layout(self, data, **kwargs):
@@ -769,10 +793,13 @@ class Layout(BaseLayout):
         # Update the layout
         axis_labels = self.kwargs['ul_xaxis_title']
         axis_labels.update(self.kwargs['ul_yaxis_title'])
-
-        self.fig.obj.update_layout(autosize=True,  # do we need this?
+        self._get_tick_label_sizes(data)
+        db()
+        self.fig.obj.update_layout(autosize=False,  # do we need this?
                                    height=self.fig.size[1] + self._top + self._bottom - self.ws_row * (self.nrow - 1),
                                    legend_title_text=self.legend.text,
+                                   #minreducedwidth=self.axes.size[0],
+                                   #minreducedheight=self.axes.size[1],
                                    margin=dict(l=self._left,
                                                r=self._right,
                                                t=self._top,
@@ -865,8 +892,9 @@ class Layout(BaseLayout):
                 app = str(get_ipython())  # noqa
             except:  # noqa
                 app = ''
-            if 'zmqshell.ZMQInteractiveShell' in app:
-                pyo.init_notebook_mode()
+            if 'zmqshell.ZMQInteractiveShell' in app \
+                    and not pio.renderers.default == 'plotly_mimetype+notebook_connected':
+                pyo.init_notebook_mode(connected=True)
             self.fig.obj.show()
 
     def update_markers(self):
