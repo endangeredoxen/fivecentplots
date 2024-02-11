@@ -589,11 +589,6 @@ class Data:
                         self._add_range(ir, ic, ax, 'min', vals[0])
                         self._add_range(ir, ic, ax, 'max', vals[1])
 
-                    # # Make them all equal to window [0,0]
-                    # elif ir > 0 or ic > 0:
-                    #     self._add_range(ir, ic, ax, 'min', self.ranges[0, 0]['%smin' % ax])
-                    #     self._add_range(ir, ic, ax, 'max', self.ranges[0, 0]['%smax' % ax])
-
     def _get_data_ranges_user_defined(self):
         """Get user defined range values that were set by kwargs."""
         for ir, ic, plot_num in self._get_subplot_index():
