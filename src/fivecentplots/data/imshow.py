@@ -128,19 +128,23 @@ class ImShow(data.Data):
                     self._add_range(ir, ic, ax, 'max', self.ranges[0, 0]['%smax' % ax])
 
                 # Share row
-                elif self.share_row and self.row is not None and ic > 0:
+                elif (self.share_row and self.row is not None and ic > 0) \
+                        or (self.share_row and ax == 'z' and ic > 0):
                     self._add_range(ir, ic, ax, 'min', self.ranges[ir, 0]['%smin' % ax])
                     self._add_range(ir, ic, ax, 'max', self.ranges[ir, 0]['%smax' % ax])
-                elif self.share_row and self.row is not None:
+                elif (self.share_row and self.row is not None) \
+                        or (self.share_row and ax == 'z' and ic > 0):
                     vals = self._get_data_range(ax, df_fig[self.df_fig[self.row[0]] == self.row_vals[ir]], plot_num)
                     self._add_range(ir, ic, ax, 'min', vals[0])
                     self._add_range(ir, ic, ax, 'max', vals[1])
 
                 # Share col
-                elif self.share_col and self.col is not None and ir > 0:
+                elif (self.share_col and self.col is not None and ir > 0) \
+                        or (self.share_col and ax == 'z' and ir > 0):
                     self._add_range(ir, ic, ax, 'min', self.ranges[0, ic]['%smin' % ax])
                     self._add_range(ir, ic, ax, 'max', self.ranges[0, ic]['%smax' % ax])
-                elif self.share_col and self.col is not None:
+                elif (self.share_col and self.col is not None) \
+                        or (self.share_col and ax == 'z' and ir > 0):
                     vals = self._get_data_range(ax, df_fig[df_fig[self.col[0]] == self.col_vals[ic]], plot_num)
                     self._add_range(ir, ic, ax, 'min', vals[0])
                     self._add_range(ir, ic, ax, 'max', vals[1])

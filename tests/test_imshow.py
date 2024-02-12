@@ -24,7 +24,8 @@ else:
 
 # Sample data
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_heatmap.csv')
-img_cat = utl.img_grayscale(imageio.imread(Path(fcp.__file__).parent / 'test_data/imshow_cat_pirate.png'))
+img_cat_orig = imageio.imread(Path(fcp.__file__).parent / 'test_data/imshow_cat_pirate.png')
+img_cat = utl.img_grayscale(img_cat_orig)
 img_cp = utl.rgb2bayer(imageio.imread(Path(fcp.__file__).parent / 'test_data/imshow_color_planes.png'))
 cp = utl.split_color_planes(img_cp, as_dict=True)
 cp['r'] *= 0.5
@@ -368,6 +369,151 @@ def plt_wrap_one(bm=False, master=False, remove=True, show=False):
 
         assert not compare
 
+
+def plt_wrap_combos(bm=False, master=False, remove=True, show=False):
+
+    def compare_with_master(master, show, name):
+        if master:
+            return
+        elif show:
+            utl.show_file(osjoin(MASTER, name + '_master.png'))
+            utl.show_file(name + '.png')
+            compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        else:
+            compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+            if remove:
+                os.remove(name + '.png')
+
+            assert not compare
+
+    img_all = pd.DataFrame()
+    img_test = pd.DataFrame(utl.img_grayscale(img_cat_orig).to_numpy()[300:600, 800:1100])
+    for i in range(0, 6):
+        temp = img_test.copy() * (1 + 2 * i / 10)
+        temp['Number'] = f'Image {i}'
+        img_all = pd.concat([img_all, temp])
+
+    # 1 x 1
+    name = osjoin(MASTER, 'wrap_combos_1x1_master') if master else 'wrap_combos_1x1'
+    fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
+               ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
+               filename=name + '.png', save=not bm, inline=False, filter='Number in ["Image 0"]')
+    compare_with_master(master, show, name)
+
+    # 1 x 2
+    name = osjoin(MASTER, 'wrap_combos_1x2_master') if master else 'wrap_combos_1x2'
+    fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
+               ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
+               filename=name + '.png', save=not bm, inline=False, filter='Number in ["Image 0", "Image 5"]')
+    compare_with_master(master, show, name)
+
+    # 1 x 3
+    name = osjoin(MASTER, 'wrap_combos_1x3_master') if master else 'wrap_combos_1x3'
+    fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
+               ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
+               filename=name + '.png', save=not bm, inline=False, filter='Number in ["Image 0", "Image 2", "Image 4"]')
+    compare_with_master(master, show, name)
+
+    # 2 x 3
+    name = osjoin(MASTER, 'wrap_combos_2x3_master') if master else 'wrap_combos_2x3'
+    fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
+               ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
+               filename=name + '.png', save=not bm, inline=False)
+    compare_with_master(master, show, name)
+
+    # 3 x 1
+    name = osjoin(MASTER, 'wrap_combos_3x1_master') if master else 'wrap_combos_3x1'
+    fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=1, title_wrap_edge_color='aa00ff',
+               ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
+               filename=name + '.png', save=not bm, inline=False, filter='Number in ["Image 0", "Image 2", "Image 4"]')
+    compare_with_master(master, show, name)
+
+    # 3 x 2
+    name = osjoin(MASTER, 'wrap_combos_3x2_master') if master else 'wrap_combos_3x2'
+    fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=2, title_wrap_edge_color='aa00ff',
+               ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
+               filename=name + '.png', save=not bm, inline=False, cmap=['inferno', 'gray'], share_col=True)
+    compare_with_master(master, show, name)
+
+    # 4 x 2
+    name = osjoin(MASTER, 'wrap_combos_4x2_master') if master else 'wrap_combos_4x2'
+    fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=4, title_wrap_edge_color='aa00ff',
+               ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
+               filename=name + '.png', save=not bm, inline=False, cmap=['gray', 'inferno'], share_row=True)
+    compare_with_master(master, show, name)
+
+
+def plt_wrap_combos_cbar(bm=False, master=False, remove=True, show=False):
+
+    def compare_with_master(master, show, name):
+        if master:
+            return
+        elif show:
+            utl.show_file(osjoin(MASTER, name + '_master.png'))
+            utl.show_file(name + '.png')
+            compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        else:
+            compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+            if remove:
+                os.remove(name + '.png')
+
+            assert not compare
+
+    img_all = pd.DataFrame()
+    img_test = pd.DataFrame(utl.img_grayscale(img_cat_orig).to_numpy()[300:600, 800:1100])
+    for i in range(0, 6):
+        temp = img_test.copy() * (1 + 2 * i / 10)
+        temp['Number'] = f'Image {i}'
+        img_all = pd.concat([img_all, temp])
+
+    # # 1 x 1
+    # name = osjoin(MASTER, 'wrap_combos_1x1_cbar_master') if master else 'wrap_combos_1x1_cbar'
+    # fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
+    #            ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
+    #            filename=name + '.png', save=not bm, inline=False, filter='Number in ["Image 0"]')
+    # compare_with_master(master, show, name)
+
+    # # 1 x 2
+    # name = osjoin(MASTER, 'wrap_combos_1x2_cbar_master') if master else 'wrap_combos_1x2_cbar'
+    # fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
+    #            ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
+    #            filename=name + '.png', save=not bm, inline=False, filter='Number in ["Image 0", "Image 5"]')
+    # compare_with_master(master, show, name)
+
+    # # 1 x 3
+    # name = osjoin(MASTER, 'wrap_combos_1x3_cbar_master') if master else 'wrap_combos_1x3_cbar'
+    # fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
+    #            ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
+    #            filename=name + '.png', save=not bm, inline=False, filter='Number in ["Image 0", "Image 2", "Image 4"]')
+    # compare_with_master(master, show, name)
+
+    # # 2 x 3
+    # name = osjoin(MASTER, 'wrap_combos_2x3_cbar_master') if master else 'wrap_combos_2x3_cbar'
+    # fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
+    #            ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
+    #            filename=name + '.png', save=not bm, inline=False)
+    # compare_with_master(master, show, name)
+
+    # # 3 x 1
+    # name = osjoin(MASTER, 'wrap_combos_3x1_cbar_master') if master else 'wrap_combos_3x1_cbar'
+    # fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=1, title_wrap_edge_color='aa00ff',
+    #            ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
+    #            filename=name + '.png', save=not bm, inline=False, filter='Number in ["Image 0", "Image 2", "Image 4"]')
+    # compare_with_master(master, show, name)
+
+    # 3 x 2
+    name = osjoin(MASTER, 'wrap_combos_3x2_cbar_master') if master else 'wrap_combos_3x2_cbar'
+    fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=2, title_wrap_edge_color='aa00ff',
+               ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
+               filename=name + '.png', save=not bm, inline=False, cmap=['inferno', 'gray'], share_col=True)
+    compare_with_master(master, show, name)
+
+    # 4 x 2
+    name = osjoin(MASTER, 'wrap_combos_4x2_cbar_master') if master else 'wrap_combos_4x2_cbar'
+    fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=4, title_wrap_edge_color='aa00ff',
+               ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
+               filename=name + '.png', save=not bm, inline=False, cmap=['gray', 'inferno'], share_row=True)
+    compare_with_master(master, show, name)
 
 # test_ functions call plt_ funcs 2x:
 # 1) do the comparison with saved image
