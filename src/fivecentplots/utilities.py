@@ -543,9 +543,9 @@ def kwget(dict1: dict, dict2: dict, vals: [str, list], default: [list, dict]):
     return default
 
 
-def img_array_from_df(df, shape):
+def img_array_from_df(df, shape, dtype=int):
     cols = [f for f in df.columns if f in ['Value', 'R', 'G', 'B', 'A']]
-    return df[cols].to_numpy().reshape(shape).astype(float)
+    return df[cols].to_numpy().reshape(shape).astype(int)
 
 
 def img_checker(rows, cols, num_x, num_y, high, low):
@@ -698,7 +698,7 @@ def img_df_from_array_or_df(data: np.ndarray) -> pd.DataFrame:
 
         return df, list(ss)
 
-    # FIX THIS SECTION Get the original input data shape
+    # Input numpy array
     ss = list(data.shape)
 
     # Regroup into a stacked DataFrame

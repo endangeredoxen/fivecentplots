@@ -1665,7 +1665,7 @@ class Layout(BaseLayout):
 
         # z-axis (major only)
         if self.tick_labels_major_z.on:
-            getattr(self, f'tick_labels_major_z').size_all_reset()
+            getattr(self, 'tick_labels_major_z').size_all_reset()
             self._get_tick_label_size(self.cbar, 'z', '', 'major')
 
     def _get_tick_overlaps(self, axis: str = ''):
@@ -3434,39 +3434,54 @@ class Layout(BaseLayout):
                 self.label_wrap.obj_bg[ir, ic].set_width(self.axes.size[0] / self.fig.size[0])
                 self.label_wrap.obj_bg[ir, ic].set_height(self.label_wrap.size[1] / self.fig.size[1])
 
-                self.label_wrap.obj[ir, ic].set_x((self.axes.obj[ir, ic].get_position().x1 - self.axes.obj[ir, ic].get_position().x0) / 2 + self.axes.obj[ir, ic].get_position().x0)
-                self.label_wrap.obj[ir, ic].set_y(self.axes.obj[ir, ic].get_position().y1 + self.label_wrap.size[1] / 2 / self.fig.size[1])
+                self.label_wrap.obj[ir, ic].set_x(
+                    (self.axes.obj[ir, ic].get_position().x1 - self.axes.obj[ir, ic].get_position().x0) / 2
+                    + self.axes.obj[ir, ic].get_position().x0)
+                self.label_wrap.obj[ir, ic].set_y(
+                    self.axes.obj[ir, ic].get_position().y1 + self.label_wrap.size[1] / 2 / self.fig.size[1])
 
         # wrap title
         if self.title_wrap.on:
             self.title_wrap.obj_bg.set_x(self.axes.obj[0, 0].get_position().x0)
-            self.title_wrap.obj_bg.set_y(self.axes.obj[0, self.ncol - 1].get_position().y1 + self.label_wrap.size[1] / self.fig.size[1])
-            self.title_wrap.obj_bg.set_width(self.axes.obj[0, self.ncol - 1].get_position().x1 - self.axes.obj[0, 0].get_position().x0)
+            self.title_wrap.obj_bg.set_y(
+                self.axes.obj[0, self.ncol - 1].get_position().y1 + self.label_wrap.size[1] / self.fig.size[1])
+            self.title_wrap.obj_bg.set_width(
+                self.axes.obj[0, self.ncol - 1].get_position().x1 - self.axes.obj[0, 0].get_position().x0)
             self.title_wrap.obj_bg.set_height(self.title_wrap.size[1] / self.fig.size[1])
 
-            self.title_wrap.obj.set_x((self.axes.obj[0, self.ncol - 1].get_position().x1 - self.axes.obj[0, 0].get_position().x0) / 2 + self.axes.obj[0, 0].get_position().x0)
-            self.title_wrap.obj.set_y(self.axes.obj[0, 0].get_position().y1 + self.label_wrap.size[1] / 2 / self.fig.size[1] + self.title_wrap.size[1] / self.fig.size[1])
+            self.title_wrap.obj.set_x(
+                (self.axes.obj[0, self.ncol - 1].get_position().x1 - self.axes.obj[0, 0].get_position().x0) / 2
+                + self.axes.obj[0, 0].get_position().x0)
+            self.title_wrap.obj.set_y(
+                self.axes.obj[0, 0].get_position().y1 + self.label_wrap.size[1] / 2 / self.fig.size[1]
+                + self.title_wrap.size[1] / self.fig.size[1])
 
-        # Update axes for cbar
+        # Update axes positioning for cbar
         if self.cbar.on:
             for ir, ic in np.ndindex(self.axes.obj.shape):
                 if self.label_wrap.obj_bg[ir, ic] is None:
-                    continue
-                act_x0 = self.label_wrap.obj_bg[ir, ic]._x0
-                act_y0 = self.axes.obj[ir, ic].get_position().y0
-                act_width = self.label_wrap.obj_bg[ir, ic]._width + (self.ws_ax_cbar + self.cbar.size[0]) / self.fig.size[0]
-                act_height = self.axes.obj[ir, ic].get_position().height
-                lab_pos = self.label_wrap.obj[ir, ic].get_position()
-                if ir == 0 and ic == 0:
-                    text_offset = self.axes.obj[ir, ic].get_position().width - act_width
+                    ax = self.axes.obj[ir, ic].get_position()
+                    offset = self._labtick_z / self.fig.size[0]
+                    self.axes.obj[ir, ic].set_position([ax.x0, ax.y0, ax.x1 - ax.x0 - offset, ax.y1 - ax.y0])
+                else:
+                    act_x0 = self.label_wrap.obj_bg[ir, ic]._x0
+                    act_y0 = self.axes.obj[ir, ic].get_position().y0
+                    act_width = \
+                        self.label_wrap.obj_bg[ir, ic]._width + (self.ws_ax_cbar + self.cbar.size[0]) / self.fig.size[0]
+                    act_height = self.axes.obj[ir, ic].get_position().height
+                    lab_pos = self.label_wrap.obj[ir, ic].get_position()
+                    if ir == 0 and ic == 0:
+                        text_offset = self.axes.obj[ir, ic].get_position().width - act_width
 
-                self.axes.obj[ir, ic].set_position([act_x0, act_y0, act_width, act_height])
-                self.label_wrap.obj[ir, ic].set_x(lab_pos[0] - text_offset)
+                    self.axes.obj[ir, ic].set_position([act_x0, act_y0, act_width, act_height])
+                    self.label_wrap.obj[ir, ic].set_x(lab_pos[0] - text_offset)
 
-            x0 = self.label_wrap.obj_bg[0, 0]._x0
-            x1 = self.label_wrap.obj_bg[0, self.ncol - 1]._x0 + self.label_wrap.obj_bg[0, self.ncol - 1]._width
-            self.title_wrap.obj_bg.set_width(x1 - x0)
-            self.title_wrap.obj.set_x(x0 + (x1 - x0) / 2)
+            if self.label_wrap.obj_bg[ir, ic] is not None:
+                x0 = self.label_wrap.obj_bg[0, 0]._x0
+                x1 = self.label_wrap.obj_bg[0, self.ncol - 1]._x0 + self.label_wrap.obj_bg[0, self.ncol - 1]._width
+            if self.title_wrap.obj_bg is not None:
+                self.title_wrap.obj_bg.set_width(x1 - x0)
+                self.title_wrap.obj.set_x(x0 + (x1 - x0) / 2)
 
         # Update title position
         if self.title.on:

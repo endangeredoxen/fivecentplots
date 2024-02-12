@@ -113,6 +113,31 @@ def plt_imshow(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
+def plt_imshow_rgb(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'imshow_rgb_master') if master else 'imshow_rgb'
+
+    # Make the plot
+    fcp.imshow(img_cat_orig, filename=name + '.png', save=not bm, inline=False)
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def plt_imshow_rotate(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'imshow_rotate_master') if master else 'imshow_rotate'
@@ -466,40 +491,40 @@ def plt_wrap_combos_cbar(bm=False, master=False, remove=True, show=False):
         temp['Number'] = f'Image {i}'
         img_all = pd.concat([img_all, temp])
 
-    # # 1 x 1
-    # name = osjoin(MASTER, 'wrap_combos_1x1_cbar_master') if master else 'wrap_combos_1x1_cbar'
-    # fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
-    #            ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
-    #            filename=name + '.png', save=not bm, inline=False, filter='Number in ["Image 0"]')
-    # compare_with_master(master, show, name)
+    # 1 x 1
+    name = osjoin(MASTER, 'wrap_combos_1x1_cbar_master') if master else 'wrap_combos_1x1_cbar'
+    fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
+               ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
+               filename=name + '.png', save=not bm, inline=False, filter='Number in ["Image 0"]')
+    compare_with_master(master, show, name)
 
-    # # 1 x 2
-    # name = osjoin(MASTER, 'wrap_combos_1x2_cbar_master') if master else 'wrap_combos_1x2_cbar'
-    # fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
-    #            ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
-    #            filename=name + '.png', save=not bm, inline=False, filter='Number in ["Image 0", "Image 5"]')
-    # compare_with_master(master, show, name)
+    # 1 x 2
+    name = osjoin(MASTER, 'wrap_combos_1x2_cbar_master') if master else 'wrap_combos_1x2_cbar'
+    fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
+               ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
+               filename=name + '.png', save=not bm, inline=False, filter='Number in ["Image 0", "Image 5"]')
+    compare_with_master(master, show, name)
 
-    # # 1 x 3
-    # name = osjoin(MASTER, 'wrap_combos_1x3_cbar_master') if master else 'wrap_combos_1x3_cbar'
-    # fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
-    #            ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
-    #            filename=name + '.png', save=not bm, inline=False, filter='Number in ["Image 0", "Image 2", "Image 4"]')
-    # compare_with_master(master, show, name)
+    # 1 x 3
+    name = osjoin(MASTER, 'wrap_combos_1x3_cbar_master') if master else 'wrap_combos_1x3_cbar'
+    fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
+               ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
+               filename=name + '.png', save=not bm, inline=False, filter='Number in ["Image 0", "Image 2", "Image 4"]')
+    compare_with_master(master, show, name)
 
-    # # 2 x 3
-    # name = osjoin(MASTER, 'wrap_combos_2x3_cbar_master') if master else 'wrap_combos_2x3_cbar'
-    # fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
-    #            ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
-    #            filename=name + '.png', save=not bm, inline=False)
-    # compare_with_master(master, show, name)
+    # 2 x 3
+    name = osjoin(MASTER, 'wrap_combos_2x3_cbar_master') if master else 'wrap_combos_2x3_cbar'
+    fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
+               ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
+               filename=name + '.png', save=not bm, inline=False)
+    compare_with_master(master, show, name)
 
-    # # 3 x 1
-    # name = osjoin(MASTER, 'wrap_combos_3x1_cbar_master') if master else 'wrap_combos_3x1_cbar'
-    # fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=1, title_wrap_edge_color='aa00ff',
-    #            ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
-    #            filename=name + '.png', save=not bm, inline=False, filter='Number in ["Image 0", "Image 2", "Image 4"]')
-    # compare_with_master(master, show, name)
+    # 3 x 1
+    name = osjoin(MASTER, 'wrap_combos_3x1_cbar_master') if master else 'wrap_combos_3x1_cbar'
+    fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=1, title_wrap_edge_color='aa00ff',
+               ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
+               filename=name + '.png', save=not bm, inline=False, filter='Number in ["Image 0", "Image 2", "Image 4"]')
+    compare_with_master(master, show, name)
 
     # 3 x 2
     name = osjoin(MASTER, 'wrap_combos_3x2_cbar_master') if master else 'wrap_combos_3x2_cbar'
@@ -521,6 +546,11 @@ def plt_wrap_combos_cbar(bm=False, master=False, remove=True, show=False):
 def test_imshow(benchmark):
     plt_imshow()
     benchmark(plt_imshow, True)
+
+
+def test_imshow_rgb(benchmark):
+    plt_imshow_rgb()
+    benchmark(plt_imshow_rgb, True)
 
 
 def test_imshow_rotate(benchmark):
@@ -586,6 +616,16 @@ def test_invalid():
         fcp.imshow(img_rc, col='x')
     with pytest.raises(data.GroupingError):
         fcp.imshow(img_rc, legend=True)
+
+
+def test_wrap_combos(benchmark):
+    plt_wrap_combos()
+    benchmark(plt_wrap_combos, True)
+
+
+def test_wrap_combos_cbar(benchmark):
+    plt_wrap_combos_cbar()
+    benchmark(plt_wrap_combos_cbar, True)
 
 
 if __name__ == '__main__':
