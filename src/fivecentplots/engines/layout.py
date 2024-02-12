@@ -748,7 +748,7 @@ class BaseLayout:
             # edge color
             if not kwargs.get('colors') \
                     and not kwargs.get('marker_edge_color') \
-                    and (not self.legend._on or self.legend.column == True):
+                    and (not self.legend._on or str(self.legend.column) == 'True'):
                 self.markers.edge_color = self.color_list[1]
                 self.markers.color_alpha('edge_color', 'edge_alpha')
             elif not kwargs.get('colors') and not kwargs.get('marker_edge_color'):
@@ -1393,9 +1393,10 @@ class BaseLayout:
             if 'line_' in k and '%ss_%s' % (k.split('_')[0], k.split('_')[1]) \
                     not in kwargs.keys():
                 kwargs['%ss_%s' % (k.split('_')[0], k.split('_')[1])] = kwargs[k]
+        colors = RepeatedList(copy.copy(self.color_list), 'colors')
         self.lines = Element('lines', self.fcpp, kwargs,
                              on=kwargs.get('lines', True),
-                             color=RepeatedList(copy.copy(self.color_list), 'colors'),
+                             color=utl.kwget(kwargs, self.fcpp, ['lines_color', 'line_color'], colors),
                              values=[],
                              )
 
@@ -1638,6 +1639,11 @@ class BaseLayout:
                                      text_size=None,
                                      align=utl.kwget(kwargs, self.fcpp, 'label_wrap_align', 'center'),
                                      )
+        if self.label_wrap.edge_width == 0 \
+                and not any(f in ['label_rc_edge_width', 'label_wrap_edge_width'] for f in kwargs.keys()):
+            self.label_wrap.edge_width = self.axes.edge_width
+        if not any(f in ['label_rc_edge_color', 'label_wrap_edge_color'] for f in kwargs.keys()):
+            self.label_wrap.edge_color = self.label_wrap.fill_color
 
         self.title_wrap = Element('title_wrap', self.fcpp, kwargs,
                                   on=utl.kwget(kwargs, self.fcpp, 'title_wrap_on', True)
@@ -1660,6 +1666,11 @@ class BaseLayout:
 
         if not isinstance(self.title_wrap.size, list):
             self.title_wrap.size = [self.axes.size[0], self.title_wrap.size]
+        if self.title_wrap.edge_width == 0 \
+                and not any(f in ['label_rc_edge_width', 'title_wrap_edge_width'] for f in kwargs.keys()):
+            self.title_wrap.edge_width = self.axes.edge_width
+        if not any(f in ['title_rc_edge_color', 'title_wrap_edge_color'] for f in kwargs.keys()):
+            self.title_wrap.edge_color = self.title_wrap.fill_color
 
         return kwargs
 

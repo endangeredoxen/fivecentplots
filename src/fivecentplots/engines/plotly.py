@@ -91,7 +91,7 @@ class Layout(BaseLayout):
         Returns:
             margin in pixels
         """
-        return self.label_y.size[1] #+ self.tick_labels_major_x.font_size
+        return self.label_y.size[1]  # + self.tick_labels_major_x.font_size
 
     @property
     def _right(self) -> float:
@@ -205,15 +205,15 @@ class Layout(BaseLayout):
             if data.ranges[ir, ic]['xmin'] is not None:
                 val = str(data.ranges[0, 0]['xmin'])
                 xticks = self.tick_labels_major_x
-                size = utl.get_text_dimensions(val, xticks.font, xticks.font_size, xticks.font_style, xticks.font_weight)
+                size = utl.get_text_dimensions(val, xticks.font, xticks.font_size,
+                                               xticks.font_style, xticks.font_weight)
                 self.tick_labels_major_x.size[1] = size[1]
 
-            # y-axis --> try to guess where plotly will place the ticks and then guess the tick labels
-            if data.ranges[ir, ic]['ymin'] is not None and data.ranges[ir, ic]['ymax'] is not None:
-                ymin = data.ranges[ir, ic]['ymin']
-                ymax = data.ranges[ir, ic]['ymax']
-                inc = self.ticks_major_y.increment
-
+            # # y-axis --> try to guess where plotly will place the ticks and then guess the tick labels
+            # if data.ranges[ir, ic]['ymin'] is not None and data.ranges[ir, ic]['ymax'] is not None:
+            #     ymin = data.ranges[ir, ic]['ymin']
+            #     ymax = data.ranges[ir, ic]['ymax']
+            #     inc = self.ticks_major_y.increment
 
     def make_figure(self, data: 'data.Data', **kwargs):
         """Make the figure and axes objects.
@@ -798,8 +798,8 @@ class Layout(BaseLayout):
         self.fig.obj.update_layout(autosize=False,  # do we need this?
                                    height=self.fig.size[1] + self._top + self._bottom - self.ws_row * (self.nrow - 1),
                                    legend_title_text=self.legend.text,
-                                   #minreducedwidth=self.axes.size[0],
-                                   #minreducedheight=self.axes.size[1],
+                                   # minreducedwidth=self.axes.size[0],
+                                   # minreducedheight=self.axes.size[1],
                                    margin=dict(l=self._left,
                                                r=self._right,
                                                t=self._top,

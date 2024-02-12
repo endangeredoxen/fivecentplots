@@ -11,7 +11,6 @@ import pathlib
 import re
 import shlex
 import inspect
-from typing import Any
 from matplotlib.font_manager import FontProperties, findfont
 try:
     from PIL import ImageFont  # used only for bokeh font size calculations

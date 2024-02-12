@@ -495,17 +495,15 @@ class Data:
             for mm in ['min', 'max']:
                 for ir, ic, _ in self._get_subplot_index():
                     key = '{}{}'.format(ax, mm)
-                    try:
-                        if ir == 0 and ic == 0 and self.ranges[ir][ic][key] is not None:
-                            auto_scale_val = self.ranges[ir][ic][key]
-                        elif self.ranges[ir][ic][key] is not None:
-                            if mm == 'min':
-                                auto_scale_val = min(auto_scale_val, self.ranges[ir][ic][key])
-                            else:
-                                auto_scale_val = max(auto_scale_val, self.ranges[ir][ic][key])
+                    if ir == 0 and ic == 0 and self.ranges[ir][ic][key] is not None:
+                        auto_scale_val = self.ranges[ir][ic][key]
+                    elif self.ranges[ir][ic][key] is not None:
+                        if mm == 'min':
+                            auto_scale_val = min(auto_scale_val, self.ranges[ir][ic][key])
                         else:
-                            auto_scale_val = None
-                    except: db()
+                            auto_scale_val = max(auto_scale_val, self.ranges[ir][ic][key])
+                    else:
+                        auto_scale_val = None
                 if isinstance(auto_scale_val, str) or auto_scale_val is None:
                     continue
 
