@@ -794,7 +794,6 @@ class Layout(BaseLayout):
         axis_labels = self.kwargs['ul_xaxis_title']
         axis_labels.update(self.kwargs['ul_yaxis_title'])
         self._get_tick_label_sizes(data)
-        db()
         self.fig.obj.update_layout(autosize=False,  # do we need this?
                                    height=self.fig.size[1] + self._top + self._bottom - self.ws_row * (self.nrow - 1),
                                    legend_title_text=self.legend.text,
