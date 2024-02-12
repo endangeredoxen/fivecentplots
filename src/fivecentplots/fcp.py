@@ -1518,14 +1518,16 @@ def plotter(dobj, **kwargs):
 
     # Build the data object and update kwargs
     dd = dobj(fcpp=defaults[0], **kwargs)
+    kwargs['timer'].get('Data obj')
     for k, v in kwargs.items():
         if k in dd.__dict__.keys():
             kwargs[k] = getattr(dd, k)
-    kwargs['timer'].get('Data obj')
+    kwargs['timer'].get('update kwargs')
 
     # Iterate over discrete figures
     for ifig, fig_item, fig_cols, dd in dd.get_df_figure():
-        kwargs['timer'].get('dd.get_df_figure')
+        kwargs['timer'].get('dd.get_df_figure')  # data._get_data_ranges is slowest step
+
         # Create a layout object
         layout = engine.Layout(dd, defaults, **kwargs)
         kwargs = layout.kwargs
@@ -1536,8 +1538,8 @@ def plotter(dobj, **kwargs):
         kwargs['timer'].get('ifig=%s | make_figure' % ifig)
 
         # Turn off empty subplots and populate layout.axes.visible)
-        for ir, ic, df_rc in dd.get_rc_subset():
-            if len(df_rc) == 0:  # could set this value in Data after first time to avoid recalc
+        for ir, ic, df_rc in dd.get_rc_subset():   # this gets duplicated, might be a better way
+            if len(df_rc) == 0:
                 if dd.wrap is None:
                     layout.set_axes_rc_labels(ir, ic)
                 layout.axes.obj[ir, ic].axis('off')

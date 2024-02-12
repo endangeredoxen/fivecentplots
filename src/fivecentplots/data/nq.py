@@ -34,3 +34,6 @@ class NQ(data.Data):
             # self.ax_scale = 'prob' --> TODO: figure out the scale for prob plot
         else:
             self.y = ['Sigma']
+
+        # Update valid axes
+        self.axs = [f for f in ['x', 'x2', 'y', 'y2', 'z'] if getattr(self, f) not in [None, []]]

@@ -60,7 +60,6 @@ class Data:
         # Default axis attributes
         self.auto_cols = False
         self.auto_scale = utl.kwget(kwargs, self.fcpp, 'auto_scale', True)
-        self.axs = ['x', 'x2', 'y', 'y2', 'z']
         self.ax_scale = kwargs.get('ax_scale', None)
         self.ax2_scale = kwargs.get('ax2_scale', self.ax_scale)
         # validate list? repeated list and all to lower
@@ -148,6 +147,7 @@ class Data:
         if self.twin_y:
             self.x2 = [self.x[1]]
             self.x = [self.x[0]]
+        self.axs = [f for f in ['x', 'x2', 'y', 'y2', 'z'] if getattr(self, f) not in [None, []]]
 
         # Ref line
         self.ref_line = kwargs.get('ref_line', None)
@@ -158,7 +158,7 @@ class Data:
         self.stat = kwargs.get('stat', None)
         self.stat_val = kwargs.get('stat_val', None)
         if self.stat_val is not None and self.stat_val not in self.df_all.columns:
-            raise DataError('stat_val column "%s" not in DataFrame' % self.stat_val)
+            raise DataError(f'stat_val column "{self.stat_val}" not in DataFrame')
         self.stat_idx = []
         self.lcl = kwargs.get('lcl', [])
         self.ucl = kwargs.get('ucl', [])
@@ -186,16 +186,14 @@ class Data:
             if self.col == 'x':
                 self.col_vals = [f for f in self.x]
             else:
-                self.col = self._check_group_columns('col',
-                                                     kwargs.get('col', None))
+                self.col = self._check_group_columns('col', kwargs.get('col', None))
         self.row = kwargs.get('row', None)
         self.row_vals = None
         if self.row is not None:
             if self.row == 'y':
                 self.row_vals = [f for f in self.y]
             else:
-                self.row = self._check_group_columns('row',
-                                                     kwargs.get('row', None))
+                self.row = self._check_group_columns('row', kwargs.get('row', None))
         self.wrap = kwargs.get('wrap', None)
         self.wrap_vals = None
         if self.wrap is not None:
@@ -221,15 +219,13 @@ class Data:
             elif kwargs['legend'] is False:
                 self.legend = False
             else:
-                self.legend = self._check_group_columns('legend',
-                                                        kwargs.get('legend', None))
+                self.legend = self._check_group_columns('legend', kwargs.get('legend', None))
         elif not self.twin_x and self.y is not None and len(self.y) > 1:
             self.legend = True
 
         # Define figure grouping column names
         if 'fig_groups' in kwargs.keys():
-            self.fig = self._check_group_columns('fig',
-                                                 kwargs.get('fig_groups', None))
+            self.fig = self._check_group_columns('fig', kwargs.get('fig_groups', None))
         else:
             self.fig = self._check_group_columns('fig', kwargs.get('fig', None))
         self.fig_vals = None
@@ -499,15 +495,17 @@ class Data:
             for mm in ['min', 'max']:
                 for ir, ic, _ in self._get_subplot_index():
                     key = '{}{}'.format(ax, mm)
-                    if ir == 0 and ic == 0 and key in self.ranges[ir][ic].keys():
-                        auto_scale_val = self.ranges[ir][ic][key]
-                    elif key in self.ranges[ir][ic].keys():
-                        if mm == 'min':
-                            auto_scale_val = min(auto_scale_val, self.ranges[ir][ic][key])
+                    try:
+                        if ir == 0 and ic == 0 and self.ranges[ir][ic][key] is not None:
+                            auto_scale_val = self.ranges[ir][ic][key]
+                        elif self.ranges[ir][ic][key] is not None:
+                            if mm == 'min':
+                                auto_scale_val = min(auto_scale_val, self.ranges[ir][ic][key])
+                            else:
+                                auto_scale_val = max(auto_scale_val, self.ranges[ir][ic][key])
                         else:
-                            auto_scale_val = max(auto_scale_val, self.ranges[ir][ic][key])
-                    else:
-                        auto_scale_val = None
+                            auto_scale_val = None
+                    except: db()
                 if isinstance(auto_scale_val, str) or auto_scale_val is None:
                     continue
 
@@ -1151,7 +1149,7 @@ class Data:
             if self.col:
                 if self.col_vals is None:
                     if self.sort:
-                        self.col_vals = natsorted(list(df.groupby(self.col).groups.keys()))
+                        self.col_vals = natsorted(df.groupby(self.col, sort=False).groups.keys())
                     else:
                         self.col_vals = list(df.groupby(self.col, sort=False).groups.keys())
                 self.ncol = len(self.col_vals)
@@ -1239,6 +1237,9 @@ class Data:
         for ir in range(0, self.nrow):
             for ic in range(0, self.ncol):
                 ranges[ir, ic] = {}
+                for ax in ['x', 'y', 'z', 'x2', 'y2']:
+                    ranges[ir, ic][f'{ax}min'] = None
+                    ranges[ir, ic][f'{ax}max'] = None
 
         return ranges
 
@@ -1337,14 +1338,9 @@ class Data:
                     if self.legend is not None else [])
             return self.df_fig[cols]
         else:
-            if self.sort:
-                self.wrap_vals = \
-                    natsorted(list(self.df_fig.groupby(self.wrap).groups.keys()))
-            else:
-                self.wrap_vals = list(self.df_fig.groupby(self.wrap, sort=False).groups.keys())
-            wrap = dict(zip(self.wrap,
-                        utl.validate_list(self.wrap_vals[ir * self.ncol + ic])))
-            return self.df_fig.loc[(self.df_fig[list(wrap)] == pd.Series(wrap)).all(axis=1)].copy()
+            wrap = dict(zip(self.wrap, utl.validate_list(self.wrap_vals[ir * self.ncol + ic])))
+            mask = pd.concat([self.df_fig[x[0]].eq(x[1]) for x in wrap.items()], axis=1).all(axis=1)
+            return self.df_fig[mask]
 
     def swap_xy(self):
         """Swap the x and y axis attributes."""

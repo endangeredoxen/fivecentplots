@@ -54,6 +54,9 @@ class Heatmap(data.Data):
 
         self.ax_limit_padding = kwargs.get('ax_limit_padding', None)
 
+        # Update valid axes
+        self.axs = [f for f in ['x', 'x2', 'y', 'y2', 'z'] if getattr(self, f) not in [None, []]]
+
     def _check_xyz(self, xyz: str):
         """Validate the name and column data provided for x, y, and/or z.
 

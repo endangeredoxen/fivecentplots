@@ -11,6 +11,7 @@ import pathlib
 import re
 import shlex
 import inspect
+from typing import Any
 from matplotlib.font_manager import FontProperties, findfont
 try:
     from PIL import ImageFont  # used only for bokeh font size calculations
@@ -545,7 +546,7 @@ def kwget(dict1: dict, dict2: dict, vals: [str, list], default: [list, dict]):
 
 def img_array_from_df(df, shape):
     cols = [f for f in df.columns if f in ['Value', 'R', 'G', 'B', 'A']]
-    return df[cols].to_numpy().reshape(shape)
+    return df[cols].to_numpy().reshape(shape).astype(float)
 
 
 def img_checker(rows, cols, num_x, num_y, high, low):
@@ -656,22 +657,49 @@ def img_df_from_array_or_df(data: np.ndarray) -> pd.DataFrame:
             cols = len(data.Column.unique())
         return data, [rows, cols]
 
-    # Handle input dataframes
+    # Reformat input dataframes
     if isinstance(data, pd.DataFrame):
-        df = pd.DataFrame()
         group_cols = df_int_cols(data, True)
-        if len(group_cols) == 0:
-            return img_df_from_array_or_df(data.to_numpy())
         int_cols = df_int_cols(data)
-        for nn, gg in data.groupby(group_cols):
-            temp, ss = img_df_from_array_or_df(gg[int_cols].to_numpy())
-            nn = validate_list(nn)
-            for igc, gc in enumerate(group_cols):
-                temp[gc] = nn[igc]
-            df = pd.concat([df, temp])
-        return df, ss
 
-    # Get the original input data shape
+        if len(group_cols) == 0:
+            # Convert subset to numpy array and reshape
+            data = data[int_cols].to_numpy()
+            ss = data.shape
+            data = np.column_stack((np.repeat(np.arange(ss[0]), ss[1]),
+                                    np.tile(np.arange(ss[1]), ss[0]),
+                                    data.reshape(ss[0] * ss[1], -1)))
+            if len(ss) == 2:
+                cols = ['Row', 'Column', 'Value']
+            else:
+                cols = ['Row', 'Column', 'R', 'G', 'B', 'A']
+            df = pd.DataFrame(data, columns=cols)
+            return df, list(ss)
+        else:
+            subset = []
+            for nn, gg in data.groupby(group_cols):
+                # Convert subset to numpy array and reshape
+                data = gg[int_cols].to_numpy()
+                ss = data.shape
+                data = np.column_stack((np.repeat(np.arange(ss[0]), ss[1]),
+                                        np.tile(np.arange(ss[1]), ss[0]),
+                                        data.reshape(ss[0] * ss[1], -1)))
+
+                # Add grouping labels
+                group_vals = validate_list(nn)
+                labels = np.ones((data.shape[0], len(group_vals))).astype('object')
+                for igroup, group in enumerate(group_vals):
+                    labels[:, igroup] = group
+                subset += [np.concatenate([data, labels], axis=1)]
+            if len(ss) == 2:
+                cols = ['Row', 'Column', 'Value'] + group_cols
+            else:
+                cols = ['Row', 'Column', 'R', 'G', 'B', 'A'] + group_cols
+            df = pd.DataFrame(np.concatenate(subset), columns=cols)
+
+        return df, list(ss)
+
+    # FIX THIS SECTION Get the original input data shape
     ss = list(data.shape)
 
     # Regroup into a stacked DataFrame
@@ -692,7 +720,7 @@ def img_df_from_array_or_df(data: np.ndarray) -> pd.DataFrame:
         cols[ir] = rr
     df.columns = cols
 
-    return df, ss
+    return df, list(ss)
 
 
 def img_grayscale(img: np.ndarray) -> pd.DataFrame:
@@ -726,7 +754,8 @@ def nq(data, column: str = 'Value', **kwargs) -> pd.DataFrame:
     percentiles_on = kwargs.get('percentiles', False)  # display y-axis as percentiles instead of sigma
 
     # Flatten the DataFrame to an array
-    data = data.values.flatten()
+    if isinstance(data, pd.DataFrame):
+        data = data.values.flatten()
 
     # Get sigma
     if not sig:
@@ -1073,24 +1102,34 @@ def split_color_planes(img: pd.DataFrame, cfa: str = 'rggb', as_dict: bool = Fal
         for ii in idx:
             cp[ii] = f'{cp[ii]}{ii}'
 
-    # Make sure input is in correct format with Row, Column, Values columns
-    if 'Row' not in img.columns:
-        img = img_df_from_array_or_df(img)[0]
+    # DataFrame input
+    if isinstance(img, pd.DataFrame):
+        # Make sure input is in correct format with Row, Column, Values columns
+        if 'Row' not in img.columns:
+            img = img_df_from_array_or_df(img)[0]
 
-    # Separate planes
-    img['Plane'] = ''
-    for ic, cc in enumerate(cp):
-        img.loc[(img.Row % 2 == ic // 2) & (img.Column % 2 == (ic % 2)), 'Plane'] = cc
+        # Separate planes
+        img['Plane'] = ''
+        for ic, cc in enumerate(cp):
+            img.loc[(img.Row % 2 == ic // 2) & (img.Column % 2 == (ic % 2)), 'Plane'] = cc
 
-    if as_dict:
+        if as_dict:
+            img2 = {}
+            for ic, cc in enumerate(cp):
+                temp = img[img.Plane == cc].reset_index(drop=True)
+                del temp['Plane']
+                img2[cc] = temp
+
+    # Numpy array input
+    else:
         img2 = {}
         for ic, cc in enumerate(cp):
-            temp = img[img.Plane == cc].reset_index(drop=True)
-            del temp['Plane']
-            img2[cc] = temp
-        return img2
-    else:
+            img2[cc] = img[ic // 2::2, (ic % 2)::2]
+
+    if not as_dict:
         return img
+    else:
+        return img2
 
 
 def strip_html(text: str):
@@ -1102,9 +1141,12 @@ def strip_html(text: str):
     Returns:
         cleaned up text
     """
-
+    if not isinstance(text, str):
+        return text
     if '<' in text and '>' in text:
         return re.sub('<[^>]*>', '', text)
+    else:
+        return text
 
 
 def test_checker(module) -> list:

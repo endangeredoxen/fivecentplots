@@ -1,6 +1,7 @@
 from . import data
 import pdb
 import pandas as pd
+import numpy as np
 from .. import utilities
 utl = utilities
 db = pdb.set_trace
@@ -25,7 +26,7 @@ class ImShow(data.Data):
         if fcpp:
             self.fcpp = fcpp.copy()
         else:
-            self.fcpp, dummy, dummy2 = utl.reload_defaults(kwargs.get('theme', None))
+            self.fcpp, _, _, _ = utl.reload_defaults(kwargs.get('theme', None))
 
         # Color plane splitting
         cfa = utl.kwget(kwargs, self.fcpp, 'cfa', kwargs.get('cfa', None))
@@ -62,8 +63,8 @@ class ImShow(data.Data):
             print('Colorbar option not available for 3D image data')
             self.cbar = False
 
-        self.df_all['Column'] = self.df_all['Column'].astype(int)
-        self.df_all['Row'] = self.df_all['Row'].astype(int)
+        # Update valid axes
+        self.axs = [f for f in ['x', 'x2', 'y', 'y2', 'z'] if getattr(self, f) not in [None, []]]
 
         # auto stretching
         self._stretch(kwargs)
@@ -96,13 +97,14 @@ class ImShow(data.Data):
         df = df.dropna(axis=1, how='all')
         if getattr(self, ax) in [['Column'], ['Row']]:
             vmin = 0
-            if len(self._groupers) > 0:
+            if 'Plane' in df.columns:
                 vmax = df.groupby(self._groupers)[getattr(self, ax)[0]].unique().str.len().max()
             else:
-                vmax = len(df[getattr(self, ax)[0]].unique())
+                vmax = np.nanmax(df[getattr(self, ax)[0]].values) + 1
         else:
-            vmin = df[getattr(self, ax)].min().min()
-            vmax = df[getattr(self, ax)].max().max()
+            # Can these even happen any more?
+            vmin = np.nanmin(df[getattr(self, ax)].values)
+            vmax = np.nanmax(df[getattr(self, ax)].values)
 
         return vmin, vmax
 
@@ -173,8 +175,8 @@ class ImShow(data.Data):
                         self.ranges[ir, ic][val] -= 0.5
 
         # some extras
-        width = len(self.df_fig.dropna(axis=1, how='all').columns)
-        height = len(self.df_fig.dropna(axis=0, how='all').index)
+        width = self.df_fig.Column.max() + 1
+        height = self.df_fig.Row.max() + 1
         self.wh_ratio = width / height
 
         for ir, ic, plot_num in self._get_subplot_index():
@@ -187,27 +189,6 @@ class ImShow(data.Data):
             width = self.ranges[ir, ic]['xmax'] - self.ranges[ir, ic]['xmin']
             height = self.ranges[ir, ic]['ymin'] - self.ranges[ir, ic]['ymax']
             self.wh_ratio = max(self.wh_ratio, width / height)
-
-    def get_rc_subset(self):
-        """Subset the ImShow data by the row/col/wrap values.
-
-        Yields:
-            ir: subplot row index
-            ic: subplot column index
-            row/col data subset
-        """
-        for ir in range(0, self.nrow):
-            for ic in range(0, self.ncol):
-                self.df_rc = self._subset(ir, ic)
-
-                # Deal with empty dfs
-                if len(self.df_rc) == 0:
-                    self.df_rc = pd.DataFrame()
-
-                # Yield the subset
-                yield ir, ic, self.df_rc
-
-        self.df_sub = None
 
     def _stretch(self, kwargs):
         """Perform contrast strectching on an image

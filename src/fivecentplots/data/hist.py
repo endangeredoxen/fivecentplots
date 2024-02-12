@@ -68,7 +68,7 @@ class Histogram(data.Data):
         self.cumulative = utl.kwget(kwargs, self.fcpp, ['hist_cumulative', 'cumulative'],
                                     kwargs.get('cumulative', False))
 
-        # Set x
+        # Set columns
         if self.kwargs['2D'] and len(self.shape) == 2:
             self.x = ['Value']
         elif self.kwargs['2D']:
@@ -86,6 +86,9 @@ class Histogram(data.Data):
         self.auto_scale = False
         self.ax_limit_padding_ymax = kwargs['ax_limit_padding_ymax']
 
+        # Update valid axes
+        self.axs = [f for f in ['x', 'x2', 'y', 'y2', 'z'] if getattr(self, f) not in [None, []]]
+
     def df_hist(self, df_in: pd.DataFrame, brange: [float, None] = None) -> pd.DataFrame:
         """Iterate over groups and build a dataframe of counts.
 
@@ -97,12 +100,10 @@ class Histogram(data.Data):
             new DataFrame with histogram counts and values
         """
         hist = pd.DataFrame()
-
         groups = self._groupers
         if len(groups) > 0:
             for nn, df in df_in.groupby(self._groupers):
                 dfx = df[self.x[0]]
-
                 if brange:
                     counts, vals = np.histogram(dfx[~np.isnan(dfx)], bins=self.bins, density=self.norm, range=brange)
                 else:
