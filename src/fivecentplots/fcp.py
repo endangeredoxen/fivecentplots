@@ -22,7 +22,7 @@ import sys
 from pathlib import Path
 from . import utilities
 from . import data
-from . colors import DEFAULT_COLORS, RGGB, RCCG  # noqa
+from . colors import DEFAULT_COLORS, RGB, RGGB, RCCG  # noqa
 from . import engines
 import fivecentplots as fcp
 try:
