@@ -9,6 +9,7 @@ inline,boolean,Flag to display the rendered plot in the native plotting viewer o
 print_filename,boolean,"Print the output filename, if the plot is saved",False,grouping.html#figure-plots
 return_filename,boolean,"Return the output filename, if the plot is saved",False,None
 RCCG,list,Color scheme for Bayer RCCG channel data so lines and markers match CFA type,None,hist.html#RGB
+RGB,list,Color scheme for Bayer RGB channel data so lines and markers match color channnels,None,hist.html#RGB
 RGGB,list,Color scheme for Bayer RGGB channel data so lines and markers match CFA type,None,hist.html#RGB
 save,boolean,Save the plot to disk,False,None
 save_data,boolean,Save the `DataFrame` subset that is created and used by a given plot,False,None

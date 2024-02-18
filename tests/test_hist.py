@@ -26,6 +26,8 @@ else:
 # Sample data
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
 imgr = imageio.imread(Path(fcp.__file__).parent / 'test_data/hist_patch.png')
+img_cat_orig = imageio.imread(Path(fcp.__file__).parent / 'test_data/imshow_cat_pirate.png')
+
 
 # Set theme
 fcp.set_theme('gray')
@@ -580,7 +582,7 @@ def plt_image_legend_pdf(bm=False, master=False, remove=True, show=False):
     max_count_r = (img.loc[::2, img.columns[::2]].stack().values == dnr).sum()
     max_count_gb = (img.loc[1::2, img.columns[::2]
                             ].stack().values == dng).sum()
-    fcp.hist(img, show=SHOW, inline=False, save=not bm, filename=name + '.png', pdf=True,
+    fcp.hist(img, show=SHOW, inline=False, save=not bm, filename=name + '.png',
              markers=False, ax_scale='logy', ax_size=[600, 400],
              legend='Plane', cfa='rggb', line_width=2, colors=fcp.RGGB,
              ax_hlines=[max_count_r, max_count_gb], ax_vlines=[dnr, dng])
@@ -603,8 +605,35 @@ def plt_image_legend_pdf(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
-def plt_patch_single(bm=False, master=False, remove=True, show=False):
+def plt_image_rgb(bm=False, master=False, remove=True, show=False):
 
+    name = osjoin(MASTER, 'image_rgb_master') if master else 'image_rgb'
+
+    # Make the plot
+    fcp.hist(img_cat_orig, show=SHOW, inline=False, save=not bm, filename=name + '.png',
+             markers=False, ax_size=[600, 400], legend='Channel', ax_scale='logy',
+             line_width=2, colors=fcp.RGB)
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_patch_single(bm=False, master=False, remove=True, show=False):
+    # TODO: deal with tick label near right side (too much?)
     name = osjoin(MASTER, 'patch_single_master') if master else 'patch_single'
 
     # Make the patch

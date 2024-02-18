@@ -2,6 +2,7 @@ from . import data
 import pdb
 import pandas as pd
 import numpy as np
+import numpy.typing as npt
 from .. import utilities
 from natsort import natsorted
 utl = utilities
@@ -20,10 +21,18 @@ class Histogram(data.Data):
         name = 'hist'
         req = []
         opt = ['x']
+
+        # Check if input is image data
         try:
-            kwargs['df'], self.shape = utl.img_df_from_array_or_df(kwargs['df'])
-        except ValueError:
-            pass
+            # For image data, grouping information is stored in kwargs['df'] but the actual image arrays are in
+            # the self.imgs dict
+            kwargs['df'], self.imgs = utl.img_df_transform(kwargs['df'])
+            self.channels = kwargs['df'].loc[0, 'channels']
+
+        except TypeError:
+            # This might be a problem if the intent is passing image data but it is malformatted
+            self.imgs = None
+            self.channels = -1
 
         # Set defaults
         if fcpp:
@@ -35,14 +44,12 @@ class Histogram(data.Data):
         bars = utl.kwget(kwargs, self.fcpp, 'bars', kwargs.get('bars', True))
         kwargs['2D'] = False
 
-        # 2D image input
-        if not kwargs.get('x', None):
-            # Color plane splitting
-            cfa = utl.kwget(kwargs, self.fcpp, 'cfa', kwargs.get('cfa', None))
-            if cfa is not None:
-                kwargs['df'] = utl.split_color_planes(kwargs['df'], cfa)
-            kwargs['2D'] = True
+        # Color plane splitting for 2D image input
+        if self.imgs is not None:
             bars = utl.kwget(kwargs, self.fcpp, 'bars', kwargs.get('bars', False))
+            cfa = utl.kwget(kwargs, self.fcpp, 'cfa', kwargs.get('cfa', None))
+            if cfa is not None and self.channels == 1:
+                kwargs['df'], self.imgs = utl.split_color_planes_wrapper(kwargs['df'], self.imgs, cfa)
 
         # overrides
         kwargs['ax_limit_padding_ymax'] = kwargs.get('ax_limit_padding', 0.05)
@@ -52,9 +59,28 @@ class Histogram(data.Data):
         if 'wrap' in kwargs and kwargs['wrap'] == 'y':
             raise data.GroupingError('Cannot wrap by "y" for hist plots')
 
+        # Reformat RGBA
+        if self.imgs is not None and self.channels > 1:
+            # Need to reformat the group and image DataFrames
+            imgs = {}
+            for ii, (k, v) in enumerate(self.imgs.items()):
+                # Separate the RGB columns into separate images
+                for icol, col in enumerate(['R', 'G', 'B']):
+                    imgs[3 * ii + icol] = v[['Row', 'Column', col]]
+                    imgs[3 * ii + icol].columns = ['Row', 'Column', 'Value']
+
+            # Update the grouping table and image dataframe dict
+            kwargs['df'] = pd.merge(kwargs['df'], pd.DataFrame({'Channel': ['R', 'G', 'B']}), how='cross')
+            self.imgs = imgs
+
+        # Super
         super().__init__(name, req, opt, self.fcpp, **kwargs)
 
         self.use_parent_ranges = False
+
+        # Single-channel image data
+        if self.imgs is not None:
+            self.x = ['Value']
 
         # cdf/pdf option (if conflict, prefer cdf)
         self.cdf = utl.kwget(kwargs, self.fcpp, ['cdf'], kwargs.get('cdf', False))
@@ -68,15 +94,12 @@ class Histogram(data.Data):
         self.cumulative = utl.kwget(kwargs, self.fcpp, ['hist_cumulative', 'cumulative'],
                                     kwargs.get('cumulative', False))
 
-        # Set columns
-        if self.kwargs['2D'] and len(self.shape) == 2:
-            self.x = ['Value']
-        elif self.kwargs['2D']:
-            # Need to finish this!
-            self.df_all = pd.melt(self.df_all, id_vars=['Row', 'Column'], value_vars=['R', 'G', 'B'],
-                                  var_name='Plane', value_name='Value')
-            self.x = ['Value']
-            self.groups = ['Plane']
+        # elif self.kwargs['2D']:
+        #     # Need to finish this!
+        #     self.df_all = pd.melt(self.df_all, id_vars=['Row', 'Column'], value_vars=['R', 'G', 'B'],
+        #                           var_name='Plane', value_name='Value')
+        #     self.x = ['Value']
+        #     self.groups = ['Plane']
 
         # Toggle bars vs lines
         if not bars:
@@ -88,6 +111,26 @@ class Histogram(data.Data):
 
         # Update valid axes
         self.axs = [f for f in ['x', 'x2', 'y', 'y2', 'z'] if getattr(self, f) not in [None, []]]
+
+    def dist(self, counts: npt.NDArray[int]) -> npt.NDArray[int]:
+        """
+        Compute cdf or pdf calculations
+
+        Args:
+            array of bin counts
+
+        Return:
+            cumsum of counts
+        """
+        if self.cdf:
+            pdf = counts / sum(counts)
+            counts = np.cumsum(pdf)
+            self.y = ['Cumulative Probability']
+        elif self.pdf:
+            counts = counts / sum(counts)
+            self.y = ['Probability Density']
+
+        return counts
 
     def df_hist(self, df_in: pd.DataFrame, brange: [float, None] = None) -> pd.DataFrame:
         """Iterate over groups and build a dataframe of counts.
@@ -103,20 +146,26 @@ class Histogram(data.Data):
         groups = self._groupers
         if len(groups) > 0:
             for nn, df in df_in.groupby(self._groupers):
-                dfx = df[self.x[0]]
+                if self.imgs is None:
+                    dfx = df[self.x[0]].dropna()
+                else:
+                    dfx = self.imgs[df.index[0]][self.x[0]].dropna()
                 if brange:
                     counts, vals = np.histogram(dfx[~np.isnan(dfx)], bins=self.bins, density=self.norm, range=brange)
                 else:
                     counts, vals = np.histogram(dfx[~np.isnan(dfx)], bins=self.bins, density=self.norm)
 
                 # cdf + pdf
-                if self.cdf:
-                    pdf = counts / sum(counts)
-                    counts = np.cumsum(pdf)
-                    self.y = ['Cumulative Probability']
-                elif self.pdf:
-                    counts = counts / sum(counts)
-                    self.y = ['Probability Density']
+                # if self.cdf:
+                #     pdf = counts / sum(counts)
+                #     counts = np.cumsum(pdf)
+                #     self.y = ['Cumulative Probability']
+                # elif self.pdf:
+                #     counts = counts / sum(counts)
+                #     self.y = ['Probability Density']
+
+                # cdf + pdf
+                counts = self.dist(counts)
 
                 temp = pd.DataFrame({self.x[0]: vals[:-1], self.y[0]: counts})
                 for ig, group in enumerate(self._groupers):
@@ -126,7 +175,10 @@ class Histogram(data.Data):
                         temp[group] = nn
                 hist = pd.concat([hist, temp])
         else:
-            dfx = df_in[self.x[0]].dropna()
+            if self.imgs is None:
+                dfx = df_in[self.x[0]].dropna()
+            else:
+                dfx = self.imgs[df_in.index[0]][self.x[0]].dropna()
             if brange:
                 counts, vals = np.histogram(dfx[~np.isnan(dfx)], bins=self.bins, density=self.norm, range=brange)
             else:
@@ -140,14 +192,17 @@ class Histogram(data.Data):
                 else:
                     counts = np.insert(counts, 0, 0)
 
+            # # cdf + pdf
+            # if self.cdf:
+            #     pdf = counts / sum(counts)
+            #     counts = np.cumsum(pdf)
+            #     self.y = ['Cumulative Probability']
+            # elif self.pdf:
+            #     counts = counts / sum(counts)
+            #     self.y = ['Probability Density']
+
             # cdf + pdf
-            if self.cdf:
-                pdf = counts / sum(counts)
-                counts = np.cumsum(pdf)
-                self.y = ['Cumulative Probability']
-            elif self.pdf:
-                counts = counts / sum(counts)
-                self.y = ['Probability Density']
+            counts = self.dist(counts)
 
             hist = pd.DataFrame({self.x[0]: vals[:-1], self.y[0]: counts})
 
@@ -266,13 +321,16 @@ class Histogram(data.Data):
         self.name = 'xy'
         self.y = ['Counts']
         self.use_parent_ranges = True
-        self.subset_wrap = self._subset_wrap
+        # self.subset_wrap = self._subset_wrap
 
         # Update the bins to integer values if not specified and 2D image data
         bins = utl.kwget(kwargs, self.fcpp, 'bins', kwargs.get('bars', None))
-        if kwargs['2D']:
-            vmin = int(np.nanmin(self.df_all.Value))
-            vmax = int(np.nanmax(self.df_all.Value))
+        if self.imgs is not None:
+            vmin = 1E20
+            vmax = 0
+            for k, v in self.imgs.items():
+                vmin = min(vmin, int(v[self.x].min().min()))
+                vmax = max(vmax, int(v[self.x].max().max()))
             if not bins:
                 self.bins = vmax - vmin + 1  # add 1 to get the last bin
         elif not kwargs.get('vmin') and not kwargs.get('vmax'):

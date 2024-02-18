@@ -491,8 +491,8 @@ class Layout(BaseLayout):
     def _legx(self) -> float:
         """Legend whitespace x if location == 0."""
         if self.legend.location == 0 and self.legend._on:
-            return self.legend.size[0] + self.ws_ax_leg + self.ws_leg_fig \
-                + self.fig_legend_border + self.legend.edge_width
+            return self.legend.size[0] + self.ws_ax_leg + self.ws_leg_fig + self.fig_legend_border \
+                   + self.legend.edge_width - (self.fig_legend_border if self.legend._on else 0)
         else:
             return 0
 
@@ -525,7 +525,8 @@ class Layout(BaseLayout):
             + (self.label_z.size[0] * (self.ncol if self.separate_labels else 1) + self.ws_ticks_ax * self.label_z.on)
 
         # box title excess
-        if self.box_group_title.on and (self.ws_ax_box_title + self.box_title) > self._legx:
+        if self.box_group_title.on and (self.ws_ax_box_title + self.box_title) > \
+                self._legx + (self.fig_legend_border if self.legend._on else 0):
             right = self.ws_ax_box_title + self.box_title + (self.ws_ax_fig if not self.legend.on else 0)
         if self.box_group_title.on and self.legend.size[1] > self.axes.size[1]:
             right += self.box_title
@@ -1233,6 +1234,7 @@ class Layout(BaseLayout):
                 height_bg = lab.size_all_bg.height.max()
 
             lab.size = [max(width, width_bg), max(height, height_bg)]
+            lab.size_text = [width, height]
 
         # titles
         if self.title.on:
@@ -1478,8 +1480,7 @@ class Layout(BaseLayout):
 
         # Set figure width
         self.fig.size[0] = self._left + self.axes.size[0] * self.ncol \
-            + self._right + self._legx + self.ws_col * (self.ncol - 1) \
-            - (self.fig_legend_border if self.legend._on else 0) + self._cbar
+            + self._right + self._legx + self.ws_col * (self.ncol - 1) + self._cbar
 
         # Figure height
         self.fig.size[1] = int(
@@ -1545,7 +1546,7 @@ class Layout(BaseLayout):
         self.axes.position --> [left, right, top, bottom]
         """
         self.axes.position[0] = int(self._left) / self.fig.size[0]
-        self.axes.position[1] = 1 - self._right / self.fig.size[0]
+        self.axes.position[1] = 1 - (self._right + self._legx) / self.fig.size[0]
         self.axes.position[2] = 1 - self._top / self.fig.size[1]
         self.axes.position[3] = \
             (self._labtick_x + self.ws_fig_label + self.box_labels
@@ -3371,13 +3372,17 @@ class Layout(BaseLayout):
         # row
         for ir, ic in np.ndindex(self.label_row.obj.shape):
             if self.label_row.obj[ir, ic]:
-                self.label_row.obj_bg[ir, ic].set_x(1 - self._row_label_width / self.fig.size[0])
+                if not self.legend.on:
+                    lab_x = 1 - self._row_label_width / self.fig.size[0]
+                else:
+                    lab_x = 1 - (self._legx + self._row_label_width - self.ws_label_row) / self.fig.size[0]
+                self.label_row.obj_bg[ir, ic].set_x(lab_x)
                 self.label_row.obj_bg[ir, ic].set_y(self.axes.obj[ir, ic].get_position().y0)
                 self.label_row.obj_bg[ir, ic].set_width(30 / self.fig.size[0])
                 self.label_row.obj_bg[ir, ic].set_height(self.axes.size[1] / self.fig.size[1])
 
                 self.label_row.obj[ir, ic].set_x(
-                    1 - (self._row_label_width - self.label_row.size[0] / 2) / self.fig.size[0])
+                    lab_x + (self.label_row.size[0] - self.label_row.size_text[0]) / self.fig.size[0])
                 self.label_row.obj[ir, ic].set_y(
                     (self.axes.obj[ir, ic].get_position().y1 - self.axes.obj[ir, ic].get_position().y0) / 2
                     + self.axes.obj[ir, ic].get_position().y0)

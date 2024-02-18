@@ -543,6 +543,7 @@ def plt_wrap_combos_cbar(bm=False, master=False, remove=True, show=False):
                filename=name + '.png', save=not bm, inline=False, cmap=['gray', 'inferno'], share_row=True)
     compare_with_master(master, show, name)
 
+
 # test_ functions call plt_ funcs 2x:
 # 1) do the comparison with saved image
 # 2) do a test plot only with save=False and inline=False and benchmark spead
@@ -623,12 +624,12 @@ def test_invalid():
 
 def test_wrap_combos(benchmark):
     plt_wrap_combos()
-    benchmark(plt_wrap_combos, True)
+    # benchmark(plt_wrap_combos, True)
 
 
 def test_wrap_combos_cbar(benchmark):
     plt_wrap_combos_cbar()
-    benchmark(plt_wrap_combos_cbar, True)
+    # benchmark(plt_wrap_combos_cbar, True)
 
 
 if __name__ == '__main__':

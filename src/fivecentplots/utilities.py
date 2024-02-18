@@ -12,7 +12,7 @@ import re
 import shlex
 import inspect
 from matplotlib.font_manager import FontProperties, findfont
-from typing import Union, Tuple
+from typing import Union, Tuple, Dict
 try:
     from PIL import ImageFont  # used only for bokeh font size calculations
 except ImportError:
@@ -944,7 +944,7 @@ def plot_num(ir: int, ic: int, ncol: int) -> int:
     return (ic + ir * ncol + 1)
 
 
-def qt(last: Union[None, datetime.datetime]=None, label='timer') -> datetime.datetime:
+def qt(last: Union[None, datetime.datetime] = None, label='timer') -> datetime.datetime:
     """
     Quick timer for speed debugging; time print out is in ms
 
@@ -1276,6 +1276,35 @@ def split_color_planes(img: pd.DataFrame, cfa: str = 'rggb', as_dict: bool = Fal
         return img
     else:
         return img2
+
+
+def split_color_planes_wrapper(df_groups: pd.DataFrame,
+                               imgs: Dict[int, pd.DataFrame],
+                               cfa: str) -> Tuple[pd.DataFrame, Dict[int, pd.DataFrame]]:
+    """
+    Wrapper function for Data classes using img data that need to split planes
+
+    Args:
+        df_groups: grouping DataFrame from img_df_transform
+        imgs: dict of img DataFrames
+        cfa: cfa-type name
+
+    Returns:
+        updated df_groups
+        updated imgs dict
+    """
+    imgs_ = {}
+    for i, (k, v) in enumerate(imgs.items()):
+        planes = split_color_planes(v, cfa, as_dict=True)
+        if i == 0:
+            df_groups_ = pd.merge(df_groups.reset_index(),
+                                  pd.DataFrame({'Plane': list(planes.keys())}), how='cross')
+            df_groups_.rows //= 2
+            df_groups_.cols //= 2
+        for j, (pk, pv) in enumerate(planes.items()):
+            imgs_[len(planes.keys()) * k + j] = pv
+
+    return df_groups_, imgs_
 
 
 def strip_html(text: str):

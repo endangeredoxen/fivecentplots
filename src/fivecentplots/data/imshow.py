@@ -41,19 +41,7 @@ class ImShow(data.Data):
         # Color plane splitting
         cfa = utl.kwget(kwargs, self.fcpp, 'cfa', kwargs.get('cfa', None))
         if cfa is not None and self.channels == 1:
-            imgs = {}
-            for i, (k, v) in enumerate(self.imgs.items()):
-                planes = utl.split_color_planes(v, cfa, as_dict=True)
-                if i == 0:
-                    df_groups = pd.merge(kwargs['df'].reset_index(),
-                                         pd.DataFrame({'Plane': list(planes.keys())}), how='cross')
-                    df_groups.rows //= 2
-                    df_groups.cols //= 2
-                for j, (pk, pv) in enumerate(planes.items()):
-                    imgs[len(planes.keys()) * k + j] = pv
-
-            kwargs['df'] = df_groups
-            self.imgs = imgs
+            kwargs['df'], self.imgs = utl.split_color_planes_wrapper(kwargs['df'], self.imgs, cfa)
 
         # check for invalid axis options
         vals = ['twin_x', 'twin_y']
