@@ -7,7 +7,7 @@ from pathlib import Path
 import fivecentplots.utilities as utl
 import matplotlib as mpl
 import inspect
-import imageio
+import imageio.v3 as imageio
 
 osjoin = os.path.join
 db = pdb.set_trace

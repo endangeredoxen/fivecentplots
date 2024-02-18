@@ -1988,6 +1988,7 @@ class BaseLayout:
                 getattr(self, 'ticks_minor_%s' % ax).on = True
 
         self.tick_y_top_xs = 0
+        self.tick_z_top_xs = 0
 
         return kwargs
 
@@ -2008,6 +2009,7 @@ class BaseLayout:
                              font_size=utl.kwget(kwargs, self.fcpp, 'title_font_size', 18),
                              font_weight=utl.kwget(kwargs, self.fcpp, 'title_font_weight', 'bold'),
                              align=utl.kwget(kwargs, self.fcpp, 'title_align', 'center'),
+                             padding=utl.kwget(kwargs, self.fcpp, 'title_padding', 0),
                              )
         return kwargs
 

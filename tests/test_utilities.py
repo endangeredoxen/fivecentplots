@@ -1,4 +1,4 @@
-import imageio
+import imageio.v3 as imageio
 import fivecentplots as fcp
 import numpy as np
 import pandas as pd

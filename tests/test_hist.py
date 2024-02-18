@@ -1,5 +1,5 @@
 import pytest
-import imageio
+import imageio.v3 as imageio
 import fivecentplots as fcp
 import pandas as pd
 import os

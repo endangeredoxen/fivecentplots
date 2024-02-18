@@ -1,5 +1,5 @@
 import pytest
-import imageio
+import imageio.v3 as imageio
 import fivecentplots as fcp
 import pandas as pd
 import os
@@ -299,7 +299,7 @@ def plt_share_col(bm=False, master=False, remove=True, show=False):
 
     fcp.imshow(img_rc, cmap='inferno', ax_size=[300, 300], row='Plane', filename=name + '.png', save=not bm,
                inline=False, col='Green?', cbar=True, label_rc_fill_color='#00FF00',
-               label_rc_font_color='#FF0000', share_col=True)
+               label_rc_font_color='#FF0000', share_col=True, title='power up', title_fill_color='#eeddcc')
 
     if bm:
         return
@@ -413,9 +413,12 @@ def plt_wrap_combos(bm=False, master=False, remove=True, show=False):
 
     img_all = pd.DataFrame()
     img_test = pd.DataFrame(utl.img_grayscale(img_cat_orig).to_numpy()[300:600, 800:1100])
+    groups = ['hi', 'there', 'you', 'are', 'something', 'special', 'buddy', 'boy']
     for i in range(0, 6):
         temp = img_test.copy() * (1 + 2 * i / 10)
         temp['Number'] = f'Image {i}'
+        for gg in groups:
+            temp[gg] = 'dr crusher'
         img_all = pd.concat([img_all, temp])
 
     # 1 x 1
@@ -516,7 +519,7 @@ def plt_wrap_combos_cbar(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'wrap_combos_2x3_cbar_master') if master else 'wrap_combos_2x3_cbar'
     fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
                ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
-               filename=name + '.png', save=not bm, inline=False)
+               filename=name + '.png', save=not bm, inline=False, zmin=[50, 100], zmax=[200, 300])
     compare_with_master(master, show, name)
 
     # 3 x 1

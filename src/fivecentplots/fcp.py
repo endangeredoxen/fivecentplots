@@ -555,7 +555,7 @@ def imshow(df, **kwargs):
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> import imageio
+        >>> import imageio.v3 as imageio
         >>> # Read an image from the world-wide web
         >>> url = 'https://imagesvc.meredithcorp.io/v3/mm/image?q=85&c=sc&rect=0%2C214%2C2000%2C1214&' \
         >>>       + 'poi=%5B920%2C546%5D&w=2000&h=1000&url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads' \

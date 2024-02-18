@@ -12,6 +12,7 @@ import re
 import shlex
 import inspect
 from matplotlib.font_manager import FontProperties, findfont
+from typing import Union, Tuple
 try:
     from PIL import ImageFont  # used only for bokeh font size calculations
 except ImportError:
@@ -722,6 +723,132 @@ def img_df_from_array_or_df(data: np.ndarray) -> pd.DataFrame:
     return df, list(ss)
 
 
+def img_df_transform(data: Union[pd.DataFrame, np.ndarray]) -> Tuple[pd.DataFrame, dict]:
+    """
+    Transform a numpy array or a DataFrame into the image DataFrame format used in fcp.  Image arrays can be very
+    large and memory-intensive (especially with string grouping labels) so this format is used to improve speed.
+    Support is provided for both 2D (Bayer-like) and 3/4D (RGB[A]) arrays.
+
+    Format:
+        1) df_groups = smaller DataFrame containing all the non-integer grouping columns without repeats and an index
+           value that corresponds to the key of item 2 below
+        2) dict of DataFrames with the actual image data
+
+    Args:
+        data: input data to convert into a DataFrame
+        label (optional): list of labels to designate each
+            sub array in the 3d input array; added to DataFrame in column
+            named ``label``. Defaults to [].
+        name (optional): name of label column. Defaults to 'Item'.
+        verbose (optional): toggle error print statements. Defaults to True.
+
+    Returns:
+        pd.DataFrame, dict
+    """
+    if not (isinstance(data, pd.DataFrame) or isinstance(data, np.ndarray)):
+        raise TypeError('Cannot create fcp image DataFrame.  Input data must be a numpy array or a pandas DataFrame')
+
+    # Output containers
+    imgs = {}
+
+    # Case 1: input DataFrame already in semi-correct format
+    if isinstance(data, pd.DataFrame) and 'Row' in data.columns and 'Column' in data.columns:
+        group_cols = [f for f in data.columns if f not in ['Row', 'Column', 'Value']]
+
+        if len(group_cols) == 0:
+            imgs[0] = data
+
+            # Make the grouping DataFrame
+            df_groups = pd.DataFrame({'rows': len(data.Row.unique()),
+                                      'cols': len(data.Column.unique()),
+                                      'channels': 1}, index=[0])
+
+        else:
+            temp_groups = []
+            for idx, (nn, gg) in enumerate(data.groupby(group_cols)):
+                imgs[idx] = gg[[f for f in gg.columns if f not in group_cols]]
+                ss = (len(gg.Row.unique()), len(gg.Column.unique()))
+
+                # Make the grouping DataFrame
+                temp = pd.DataFrame({'rows': ss[0], 'cols': ss[1], 'channels': 1}, index=[idx])
+                for igroup, group in enumerate(group_cols):
+                    temp[group] = nn[igroup]
+                temp_groups += [temp]
+
+            df_groups = pd.concat(temp_groups)
+
+    # Case 2: input DataFrame in 2D format
+    elif isinstance(data, pd.DataFrame) and len(data.shape) == 2:
+        # Separate the input columns by integer or string (i.e., group labels) type
+        group_cols = df_int_cols(data, True)
+        int_cols = df_int_cols(data)
+
+        if len(int_cols) == 0:
+            raise TypeError('image DataFrame has incorrect format; expecting integer-labeled columns')
+
+        # Case 2a: no groups
+        if len(group_cols) == 0:
+            # Convert subset to numpy array and reshape
+            data = data[int_cols].to_numpy()
+            ss = data.shape
+
+            # Make the img DataFrame
+            imgs[0] = pd.DataFrame(data.reshape(ss[0] * ss[1], -1), columns=['Value'])
+            imgs[0]['Row'] = imgs[0].index // ss[1]
+            imgs[0]['Column'] = np.tile(np.arange(ss[1]), ss[0])
+
+            # Make the grouping DataFrame
+            df_groups = pd.DataFrame({'rows': ss[0], 'cols': ss[1], 'channels': 1}, index=[0])
+
+        # Case 2b: DataFrame has grouping columns
+        else:
+            temp_groups = []
+            for idx, (nn, gg) in enumerate(data.groupby(group_cols)):
+                gg = gg[int_cols].to_numpy()
+                nn = validate_list(nn)
+                ss = gg.shape
+
+                # Make the img DataFrame
+                imgs[idx] = pd.DataFrame(gg.reshape(ss[0] * ss[1], -1), columns=['Value'])
+                imgs[idx]['Row'] = imgs[idx].index // ss[1]
+                imgs[idx]['Column'] = np.tile(np.arange(ss[1]), ss[0])
+
+                # Make the grouping DataFrame
+                temp = pd.DataFrame({'rows': ss[0], 'cols': ss[1], 'channels': 1}, index=[idx])
+                for igroup, group in enumerate(group_cols):
+                    temp[group] = nn[igroup]
+                temp_groups += [temp]
+
+            df_groups = pd.concat(temp_groups)
+
+    # Case 3: input numpy array (2D, 3D, or 4D)
+    else:
+        # Check valid dtype
+        try:
+            data.astype(float)
+        except ValueError:
+            raise ValueError('Image array can only contain numeric data')
+
+        # Input numpy array
+        ss = data.shape
+
+        # Get the correct column names
+        if len(ss) == 2:
+            cols = ['Value']
+        else:
+            cols = ['R', 'G', 'B', 'A'][0:ss[-1]]
+
+        # Make the img DataFrame
+        imgs[0] = pd.DataFrame(data.reshape(ss[0] * ss[1], -1), columns=cols)
+        imgs[0]['Row'] = imgs[0].index // ss[1]
+        imgs[0]['Column'] = np.tile(np.arange(ss[1]), ss[0])
+
+        # Make the grouping DataFrame
+        df_groups = pd.DataFrame({'rows': ss[0], 'cols': ss[1], 'channels': len(cols)}, index=[0])
+
+    return df_groups, imgs
+
+
 def img_grayscale(img: np.ndarray) -> pd.DataFrame:
     """Convert an RGB image to grayscale and convert to a 2D DataFrame
 
@@ -815,6 +942,26 @@ def plot_num(ir: int, ic: int, ncol: int) -> int:
         index number of the subplot
     """
     return (ic + ir * ncol + 1)
+
+
+def qt(last: Union[None, datetime.datetime]=None, label='timer') -> datetime.datetime:
+    """
+    Quick timer for speed debugging; time print out is in ms
+
+    Args:
+        last: previous timer
+        label: optional string label
+
+    Return:
+        new timer start
+    """
+
+    if last is None:
+        return datetime.datetime.now()
+
+    else:
+        print(f'{label}: {(datetime.datetime.now() - last).total_seconds() * 1000} [ms]')
+        return datetime.datetime.now()
 
 
 def rgb2bayer(img: np.ndarray, cfa: str = 'rggb', bit_depth: int = np.uint8) -> pd.DataFrame:
