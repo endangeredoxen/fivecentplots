@@ -591,7 +591,7 @@ class BaseLayout:
                                        )
 
         # Must have groups to have group labels
-        if 'groups' not in kwargs.keys():
+        if 'groups' not in kwargs.keys() or kwargs['groups'] is None:
             self.box_group_title.on = False
             self.box_group_label.on = False
 

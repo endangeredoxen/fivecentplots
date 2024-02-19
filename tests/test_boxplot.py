@@ -103,6 +103,32 @@ def plt_simple(bm=False, master=False, remove=True, show=False):
         assert not compare
 
 
+def plt_simple_groups_none(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'simple_master') if master else 'simple'  # should be the same as above
+
+    # Make the plot
+    fcp.boxplot(df, y='Value', show=SHOW, tick_labels_minor=True, grid_minor=True, groups=None,
+                filename=name + '.png', save=not bm, inline=False, jitter=False)
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def plt_simple_legend(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'simple_legend_master') if master else 'simple_legend'
@@ -910,6 +936,11 @@ def plt_range_lines(bm=False, master=False, remove=True, show=False):
 def test_simple(benchmark):
     plt_simple()
     benchmark(plt_simple, True)
+
+
+def test_simple_groups_none(benchmark):
+    plt_simple_groups_none()
+    benchmark(plt_simple_groups_none, True)
 
 
 def test_simple_legend(benchmark):

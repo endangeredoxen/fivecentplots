@@ -1320,7 +1320,7 @@ class Layout(BaseLayout):
                     for irow, row in revert.iterrows():
                         lab.obj[nn[0], nn[1]][nn[2], gg.loc[irow, 'jj']].set_rotation(0)
 
-                # Reset the horizontallabel widths
+                # Reset the horizontal label widths
                 for ir, ic in np.ndindex(lab.obj.shape):
                     if self.label_y.obj_bg[ir, ic] is not None:
                         self.label_y.obj_bg[ir, ic].set_width(
@@ -3378,10 +3378,12 @@ class Layout(BaseLayout):
         # row
         for ir, ic in np.ndindex(self.label_row.obj.shape):
             if self.label_row.obj[ir, ic]:
-                if not self.legend.on:
-                    lab_x = 1 - self._row_label_width / self.fig.size[0]
+                if self.box_group_title.on:
+                    lab_x = 1 - (self.box_group_title.size[0] + self.ws_label_row) / self.fig.size[0]
                 else:
-                    lab_x = 1 - (self._legx + self._row_label_width - self.ws_label_row) / self.fig.size[0]
+                    lab_x = 1 - self._row_label_width / self.fig.size[0]
+                if self.legend.on:
+                    lab_x -= (self._legx - self.ws_label_row) / self.fig.size[0]
                 self.label_row.obj_bg[ir, ic].set_x(lab_x)
                 self.label_row.obj_bg[ir, ic].set_y(self.axes.obj[ir, ic].get_position().y0)
                 self.label_row.obj_bg[ir, ic].set_width(30 / self.fig.size[0])
@@ -3505,7 +3507,7 @@ class Layout(BaseLayout):
             hh = self._box_label_heights / self.axes.size[1]
 
             # Iterate through labels
-            offset = 0  # to make labels line up better at default font sizes
+            offset = 1  # to make labels line up better at default font sizes
             for ir, ic in np.ndindex(lab.obj.shape):
                 data.df_rc = data._subset(ir, ic)
                 data.get_box_index_changes()
