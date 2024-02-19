@@ -23,7 +23,8 @@ else:
 
 # Sample data
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_heatmap.csv')
-img_cat = utl.img_grayscale(imageio.imread(Path(fcp.__file__).parent / 'test_data/imshow_cat_pirate.png'))
+img_cat_orig = imageio.imread(Path(fcp.__file__).parent / 'test_data/imshow_cat_pirate.png')
+img_cat = utl.img_grayscale(img_cat_orig)
 
 # Set theme
 fcp.set_theme('gray')
@@ -93,6 +94,28 @@ def test_nq(master=False, remove=True, show=False):
         assert not compare
 
 
+def test_nq_percentiles(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'nq_percentiles_master') if master else 'nq_percentiles'
+
+    # Make the plot
+    fcp.nq(img_cat, percentiles=True, filename=name + '.png')
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
 def test_nq_legend(master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'nq_legend_master') if master else 'nq_legend'
@@ -106,6 +129,57 @@ def test_nq_legend(master=False, remove=True, show=False):
 
     # Make the plot
     fcp.nq(img, legend='State', filename=name + '.png')
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_nq_multiple_no_group(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'nq_multiple_no_group_master') if master else 'nq_multiple_no_group'
+
+    img1 = img_cat.copy()
+    img2 = img_cat.copy()
+    img1['State'] = 'Original'
+    img2.loc[:, :] /= 2
+    img2['State'] = 'Half'
+    img = pd.concat([img1, img2])
+
+    # Make the plot
+    fcp.nq(img, filename=name + '.png')
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def test_nq_rgb(master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'nq_rgb_master') if master else 'nq_rgb'
+
+    # Make the plot
+    fcp.nq(img_cat_orig, legend='Channel', colors=fcp.RGB, filename=name + '.png')
 
     # Compare with master
     if master:

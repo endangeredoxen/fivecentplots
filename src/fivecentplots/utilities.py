@@ -629,100 +629,6 @@ def img_compare(img1: str, img2: str, show: bool = False) -> bool:
     return is_diff
 
 
-def img_df_from_array_or_df(data: np.ndarray) -> pd.DataFrame:
-    """Convert a numpy array or a 2D DataFrame into the image DataFrame format used in fcp.
-
-    Args:
-        data: input data to convert into a DataFrame
-        label (optional): list of labels to designate each
-            sub array in the 3d input array; added to DataFrame in column
-            named ``label``. Defaults to [].
-        name (optional): name of label column. Defaults to 'Item'.
-        verbose (optional): toggle error print statements. Defaults to True.
-
-    Returns:
-        pd.DataFrame
-    """
-    if not (isinstance(data, pd.DataFrame) or isinstance(data, np.ndarray)):
-        raise ValueError('input data must be a numpy array or a pandas DataFrame')
-
-    # Ignore if input is already in the correct format
-    if isinstance(data, pd.DataFrame) and 'Row' in data.columns and 'Column' in data.columns:
-        groups = [f for f in data.columns if f not in ['Row', 'Column', 'Value']]
-        if len(groups) > 0:
-            rows = data.groupby(groups)['Row'].unique().str.len().max()
-            cols = data.groupby(groups)['Column'].unique().str.len().max()
-        else:
-            rows = len(data.Row.unique())
-            cols = len(data.Column.unique())
-        return data, [rows, cols]
-
-    # Reformat input dataframes
-    if isinstance(data, pd.DataFrame):
-        group_cols = df_int_cols(data, True)
-        int_cols = df_int_cols(data)
-
-        if len(group_cols) == 0:
-            # Convert subset to numpy array and reshape
-            data = data[int_cols].to_numpy()
-            ss = data.shape
-            data = np.column_stack((np.repeat(np.arange(ss[0]), ss[1]),
-                                    np.tile(np.arange(ss[1]), ss[0]),
-                                    data.reshape(ss[0] * ss[1], -1)))
-            if len(ss) == 2:
-                cols = ['Row', 'Column', 'Value']
-            else:
-                cols = ['Row', 'Column', 'R', 'G', 'B', 'A']
-            df = pd.DataFrame(data, columns=cols)
-            return df, list(ss)
-        else:
-            subset = []
-            for nn, gg in data.groupby(group_cols):
-                # Convert subset to numpy array and reshape
-                data = gg[int_cols].to_numpy()
-                ss = data.shape
-                data = np.column_stack((np.repeat(np.arange(ss[0]), ss[1]),
-                                        np.tile(np.arange(ss[1]), ss[0]),
-                                        data.reshape(ss[0] * ss[1], -1)))
-
-                # Add grouping labels
-                group_vals = validate_list(nn)
-                labels = np.ones((data.shape[0], len(group_vals))).astype('object')
-                for igroup, group in enumerate(group_vals):
-                    labels[:, igroup] = group
-                subset += [np.concatenate([data, labels], axis=1)]
-            if len(ss) == 2:
-                cols = ['Row', 'Column', 'Value'] + group_cols
-            else:
-                cols = ['Row', 'Column', 'R', 'G', 'B', 'A'] + group_cols
-            df = pd.DataFrame(np.concatenate(subset), columns=cols)
-
-        return df, list(ss)
-
-    # Input numpy array
-    ss = list(data.shape)
-
-    # Regroup into a stacked DataFrame
-    data = np.column_stack((np.repeat(np.arange(ss[0]), ss[1]),
-                            np.tile(np.arange(ss[1]), ss[0]),
-                            data.reshape(ss[0] * ss[1], -1)))
-    df = pd.DataFrame(data)
-
-    # Add coordinate columns and optional label columns
-    cols = list(df.columns)
-    if len(ss) == 2:
-        renames = ['Row', 'Column', 'Value']
-    else:
-        renames = ['Row', 'Column', 'R', 'G', 'B', 'A']
-    for ir, rr in enumerate(renames):
-        if ir > len(cols) - 1:
-            break
-        cols[ir] = rr
-    df.columns = cols
-
-    return df, list(ss)
-
-
 def img_df_transform(data: Union[pd.DataFrame, np.ndarray]) -> Tuple[pd.DataFrame, dict]:
     """
     Transform a numpy array or a DataFrame into the image DataFrame format used in fcp.  Image arrays can be very
@@ -892,12 +798,10 @@ def nq(data, column: str = 'Value', **kwargs) -> pd.DataFrame:
     index = np.concatenate([np.arange(-sig, -tail, step_tail),
                             np.arange(-tail, tail, step_inner),
                             np.arange(tail, sig + 1e-9, step_tail)])
+
     # Get the sigma value
-    values = np.zeros(len(index))
-    percentiles = np.zeros(len(index))
-    for ii, idx in enumerate(index):
-        percentiles[ii] = ss.norm.cdf(idx) * 100
-        values[ii] = np.percentile(data, percentiles[ii])
+    percentiles = ss.norm.cdf(index) * 100
+    values = np.percentile(data, percentiles)
 
     if percentiles_on:
         return pd.DataFrame({'Percent': percentiles, column: values})
@@ -1252,7 +1156,7 @@ def split_color_planes(img: pd.DataFrame, cfa: str = 'rggb', as_dict: bool = Fal
     if isinstance(img, pd.DataFrame):
         # Make sure input is in correct format with Row, Column, Values columns
         if 'Row' not in img.columns:
-            img = img_df_from_array_or_df(img)[0]
+            img = img_df_transform(img)[1][0]
 
         # Separate planes
         img['Plane'] = ''

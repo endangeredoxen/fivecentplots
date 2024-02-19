@@ -68,6 +68,7 @@ class Data:
         self.fit = kwargs.get('fit', False)
         self.fit_range_x = utl.kwget(kwargs, self.fcpp, 'fit_range_x', None)
         self.fit_range_y = utl.kwget(kwargs, self.fcpp, 'fit_range_y', None)
+        self.imgs = utl.kwget(kwargs, self.fcpp, 'imgs', None)  # used only for image based plotting
         self.interval = utl.validate_list(kwargs.get('perc_int', kwargs.get('nq_int', kwargs.get('conf_int', False))))
         self.legend = None
         self.legend_vals = None
@@ -412,8 +413,6 @@ class Data:
 
         Args:
             xyz: name of variable to check
-
-        TODO: add option to recast non-float/datetime column as categorical str
         """
         if xyz not in self.req and xyz not in self.opt:
             return
@@ -430,26 +429,30 @@ class Data:
             self.df_all = self.df_all.reset_index()
 
         if vals is None and xyz not in self.opt:
-            raise AxisError('Must provide a column name for "%s"' % xyz)
+            raise AxisError(f'Must provide a column name for "{xyz}"')
 
         for val in vals:
-            if val not in self.df_all.columns:
-                raise DataError('No column named "%s" found in DataFrame' % val)
+            if self.imgs is None and val not in self.df_all.columns:
+                raise DataError(f'No column named "{val}" found in DataFrame')
+            elif self.imgs is not None and val not in self.imgs[0].columns:
+                raise DataError(f'No column named "{val}" found in DataFrame')
 
-            # Check case
+            # Check case (non-image)
             try:
-                self.df_all[val] = self.df_all[val].astype(float)
+                if self.imgs is None:
+                    self.df_all[val] = self.df_all[val].astype(float)
                 continue
             except ValueError:
                 pass
             try:
-                self.df_all[val] = self.df_all[val].astype('datetime64[ns]')
-                # if all are 00:00:00 time, leave only date
-                if len(self.df_all.loc[self.df_all[val].dt.hour != 0, val]) == 0 and \
-                        len(self.df_all.loc[self.df_all[val].dt.minute != 0, val]) == 0 and \
-                        len(self.df_all.loc[self.df_all[val].dt.second != 0, val]) == 0:
-                    self.df_all[val] = pd.DatetimeIndex(self.df_all[val]).date
-                continue
+                if self.imgs is None:
+                    self.df_all[val] = self.df_all[val].astype('datetime64[ns]')
+                    # if all are 00:00:00 time, leave only date
+                    if len(self.df_all.loc[self.df_all[val].dt.hour != 0, val]) == 0 and \
+                            len(self.df_all.loc[self.df_all[val].dt.minute != 0, val]) == 0 and \
+                            len(self.df_all.loc[self.f_all[val].dt.second != 0, val]) == 0:
+                        self.df_all[val] = pd.DatetimeIndex(self.df_all[val]).date
+                    continue
             except:  # noqa
                 continue
             #     raise AxisError('Could not convert x-column "%s" to float or '
@@ -457,11 +460,11 @@ class Data:
 
         # Check for axis errors
         if self.twin_x and len(self.y) != 2:
-            raise AxisError('twin_x error! %s y values were specified but two are required' % len(self.y))
+            raise AxisError(f'twin_x error! {len(self.y)} y values were specified but two are required')
         if self.twin_x and len(self.x) > 1:
             raise AxisError('twin_x error! only one x value can be specified')
         if self.twin_y and len(self.x) != 2:
-            raise AxisError('twin_y error! %s x values were specified but two are required' % len(self.x))
+            raise AxisError(f'twin_y error! {len(self.x)} x values were specified but two are required')
         if self.twin_y and len(self.y) > 1:
             raise AxisError('twin_y error! only one y value can be specified')
 
@@ -1377,8 +1380,7 @@ class Data:
     def transform(self):
         """Transform x, y, or z data by unique group."""
         # Possible tranformations
-        transform = any([self.trans_x, self.trans_x2, self.trans_y,
-                         self.trans_y2, self.trans_z])
+        transform = any([self.trans_x, self.trans_x2, self.trans_y, self.trans_y2, self.trans_z])
         if not transform:
             return
 
@@ -1406,20 +1408,19 @@ class Data:
                 for ival, val in enumerate(vals):
                     if getattr(self, 'trans_%s' % ax) == 'abs':
                         gg.loc[:, val] = abs(gg[val])
-                    elif getattr(self, 'trans_%s' % ax) == 'negative' \
-                            or getattr(self, 'trans_%s' % ax) == 'neg':
+                    elif getattr(self, 'trans_%s' % ax) == 'negative' or getattr(self, 'trans_%s' % ax) == 'neg':
                         gg.loc[:, val] = -gg[val]
                     elif getattr(self, 'trans_%s' % ax) == 'nq':
-                        if ival == 0:
+                        if self.imgs is None:
                             gg = utl.nq(gg[val], val, **self.kwargs)
-                    elif getattr(self, 'trans_%s' % ax) == 'inverse' \
-                            or getattr(self, 'trans_%s' % ax) == 'inv':
+                        else:
+                            gg = utl.nq(self.imgs[gg.index[0]][val], val, **self.kwargs)
+                    elif getattr(self, 'trans_%s' % ax) == 'inverse' or getattr(self, 'trans_%s' % ax) == 'inv':
                         gg.loc[:, val] = 1 / gg[val]
                     elif (isinstance(getattr(self, 'trans_%s' % ax), tuple)
                             or isinstance(getattr(self, 'trans_%s' % ax), list)) \
                             and getattr(self, 'trans_%s' % ax)[0] == 'pow':
-                        gg.loc[:,
-                               val] = gg[val]**getattr(self, 'trans_%s' % ax)[1]
+                        gg.loc[:, val] = gg[val]**getattr(self, 'trans_%s' % ax)[1]
                     elif getattr(self, 'trans_%s' % ax) == 'flip':
                         maxx = gg.loc[:, val].max()
                         gg.loc[:, val] -= maxx

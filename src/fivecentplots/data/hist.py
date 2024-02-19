@@ -26,12 +26,12 @@ class Histogram(data.Data):
         try:
             # For image data, grouping information is stored in kwargs['df'] but the actual image arrays are in
             # the self.imgs dict
-            kwargs['df'], self.imgs = utl.img_df_transform(kwargs['df'])
+            kwargs['df'], kwargs['imgs'] = utl.img_df_transform(kwargs['df'])
             self.channels = kwargs['df'].loc[0, 'channels']
 
         except TypeError:
             # This might be a problem if the intent is passing image data but it is malformatted
-            self.imgs = None
+            kwargs['imgs'] = None
             self.channels = -1
 
         # Set defaults
@@ -42,14 +42,13 @@ class Histogram(data.Data):
 
         # Replace certain kwargs
         bars = utl.kwget(kwargs, self.fcpp, 'bars', kwargs.get('bars', True))
-        kwargs['2D'] = False
 
         # Color plane splitting for 2D image input
-        if self.imgs is not None:
+        if kwargs['imgs'] is not None:
             bars = utl.kwget(kwargs, self.fcpp, 'bars', kwargs.get('bars', False))
             cfa = utl.kwget(kwargs, self.fcpp, 'cfa', kwargs.get('cfa', None))
             if cfa is not None and self.channels == 1:
-                kwargs['df'], self.imgs = utl.split_color_planes_wrapper(kwargs['df'], self.imgs, cfa)
+                kwargs['df'], kwargs['imgs'] = utl.split_color_planes_wrapper(kwargs['df'], kwargs['imgs'], cfa)
 
         # overrides
         kwargs['ax_limit_padding_ymax'] = kwargs.get('ax_limit_padding', 0.05)
@@ -60,7 +59,7 @@ class Histogram(data.Data):
             raise data.GroupingError('Cannot wrap by "y" for hist plots')
 
         # Reformat RGBA
-        if self.imgs is not None and self.channels > 1:
+        if kwargs['imgs'] is not None and self.channels > 1:
             # Need to reformat the group and image DataFrames
             imgs = {}
             for ii, (k, v) in enumerate(self.imgs.items()):
@@ -71,16 +70,16 @@ class Histogram(data.Data):
 
             # Update the grouping table and image dataframe dict
             kwargs['df'] = pd.merge(kwargs['df'], pd.DataFrame({'Channel': ['R', 'G', 'B']}), how='cross')
-            self.imgs = imgs
+            kwargs['imgs'] = imgs
+
+        # Image data x-column will always be reformatted to "Value"
+        if kwargs['imgs'] is not None:
+            self.x = ['Value']
 
         # Super
         super().__init__(name, req, opt, self.fcpp, **kwargs)
 
         self.use_parent_ranges = False
-
-        # Single-channel image data
-        if self.imgs is not None:
-            self.x = ['Value']
 
         # cdf/pdf option (if conflict, prefer cdf)
         self.cdf = utl.kwget(kwargs, self.fcpp, ['cdf'], kwargs.get('cdf', False))
@@ -93,13 +92,6 @@ class Histogram(data.Data):
         # Other options
         self.cumulative = utl.kwget(kwargs, self.fcpp, ['hist_cumulative', 'cumulative'],
                                     kwargs.get('cumulative', False))
-
-        # elif self.kwargs['2D']:
-        #     # Need to finish this!
-        #     self.df_all = pd.melt(self.df_all, id_vars=['Row', 'Column'], value_vars=['R', 'G', 'B'],
-        #                           var_name='Plane', value_name='Value')
-        #     self.x = ['Value']
-        #     self.groups = ['Plane']
 
         # Toggle bars vs lines
         if not bars:
@@ -156,15 +148,6 @@ class Histogram(data.Data):
                     counts, vals = np.histogram(dfx[~np.isnan(dfx)], bins=self.bins, density=self.norm)
 
                 # cdf + pdf
-                # if self.cdf:
-                #     pdf = counts / sum(counts)
-                #     counts = np.cumsum(pdf)
-                #     self.y = ['Cumulative Probability']
-                # elif self.pdf:
-                #     counts = counts / sum(counts)
-                #     self.y = ['Probability Density']
-
-                # cdf + pdf
                 counts = self.dist(counts)
 
                 temp = pd.DataFrame({self.x[0]: vals[:-1], self.y[0]: counts})
@@ -191,15 +174,6 @@ class Histogram(data.Data):
                     counts = np.insert(counts, 0, 1)
                 else:
                     counts = np.insert(counts, 0, 0)
-
-            # # cdf + pdf
-            # if self.cdf:
-            #     pdf = counts / sum(counts)
-            #     counts = np.cumsum(pdf)
-            #     self.y = ['Cumulative Probability']
-            # elif self.pdf:
-            #     counts = counts / sum(counts)
-            #     self.y = ['Probability Density']
 
             # cdf + pdf
             counts = self.dist(counts)
