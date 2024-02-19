@@ -880,6 +880,8 @@ def plot_bar(data, layout, ir, ic, df_rc, kwargs):
 
     """
 
+    df_rc = df_rc.copy()
+
     # would need to update to support multiple x
     if not kwargs.get('sort', True):
         xvals = df_rc[data.x[0]].unique()

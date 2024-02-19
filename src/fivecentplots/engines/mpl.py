@@ -410,6 +410,9 @@ class Layout(BaseLayout):
             kwargs['save_ext'] = '.png'
         self.kwargs = kwargs
 
+        # Update axes edge width (weird aliasing effect leads to incorrect values so need to scale)
+        self.axes.edge_width_adj = (self.axes.edge_width + 0.3323) / 1.4059
+
     @property
     def _cbar(self) -> float:
         """Width of all the cbars and cbar ticks/labels (not including z-labels)."""
@@ -601,8 +604,10 @@ class Layout(BaseLayout):
             + self.label_wrap.size[1] \
             + self.label_col.size[1] \
             + (self.ws_label_col * self.label_col.on) \
-            + self.tick_y_top_xs \
-            + self.tick_z_top_xs
+
+        val += self.tick_y_top_xs  # if self.tick_y_top_xs > val else 0 --> make this an option?
+        val += self.tick_z_top_xs  # if self.tick_z_top_xs > val else 0
+
         return val
 
     @property
@@ -1479,25 +1484,25 @@ class Layout(BaseLayout):
                 self.label_wrap.size[0] = self.axes.size[0]
 
         # Set figure width
-        self.fig.size[0] = self._left + self.axes.size[0] * self.ncol \
+        self.fig.size[0] = self._left + (self.axes.size[0] + 2 * self.axes.edge_width) * self.ncol \
             + self._right + self._legx + self.ws_col * (self.ncol - 1) + self._cbar
 
         # Figure height
         self.fig.size[1] = int(
-            self._ws_title
-            + (self.label_col.size[1] + self.ws_label_col) * self.label_col.on
-            + self.title_wrap.size[1] + self.label_wrap.size[1]  # only on label wrap b/c rest in ws_ro
+            self._top
             + self._labtick_x2
-            + self.axes.size[1] * self.nrow
+            + (self.axes.size[1] + 2 * self.axes.edge_width) * self.nrow
             + self._labtick_x
             + self.ws_fig_label
             + self.ws_row * (self.nrow - 1)
             + self.box_labels) \
             + self._legy \
             + self.pie.xs_top \
-            + self.pie.xs_bottom \
-            + self.tick_y_top_xs \
-            + self.tick_z_top_xs
+            + self.pie.xs_bottom  # \
+            # + (self.label_col.size[1] + self.ws_label_col) * self.label_col.on
+            # + self.title_wrap.size[1] + self.label_wrap.size[1]  # only on label wrap b/c rest in ws_ro
+            # + self.tick_y_top_xs \
+            # + self.tick_z_top_xs
 
         # Account for legends longer than the figure
         header = self._ws_title + \
@@ -1545,11 +1550,12 @@ class Layout(BaseLayout):
 
         self.axes.position --> [left, right, top, bottom]
         """
-        self.axes.position[0] = int(self._left) / self.fig.size[0]
-        self.axes.position[1] = 1 - (self._right + self._legx) / self.fig.size[0]
-        self.axes.position[2] = 1 - self._top / self.fig.size[1]
+        edge = max(1, self.axes.edge_width / 2)
+        self.axes.position[0] = (self._left + edge) / self.fig.size[0]
+        self.axes.position[1] = 1 - (self._right + self._legx + edge) / self.fig.size[0]
+        self.axes.position[2] = 1 - (self._top + edge) / self.fig.size[1]
         self.axes.position[3] = \
-            (self._labtick_x + self.ws_fig_label + self.box_labels
+            (self._labtick_x + self.ws_fig_label + self.box_labels + edge
              + self.legend.overflow + self.pie.xs_bottom
              + (self.legend.size[1] if self.legend.location == 11 else 0)) / self.fig.size[1]
 
@@ -2646,7 +2652,7 @@ class Layout(BaseLayout):
             else:
                 axes[-1].obj[ir, ic].spines[f].set_color(self.fig.fill_color[0])
             if self.axes.edge_width != 1:
-                axes[-1].obj[ir, ic].spines[f].set_linewidth(self.axes.edge_width)
+                axes[-1].obj[ir, ic].spines[f].set_linewidth(self.axes.edge_width_adj)
 
     def set_axes_grid_lines(self, ir: int, ic: int):
         """Style the grid lines and toggle visibility.
@@ -3408,7 +3414,7 @@ class Layout(BaseLayout):
             if self.label_wrap.obj[ir, ic]:
                 self.label_wrap.obj_bg[ir, ic].set_x(self.axes.obj[ir, ic].get_position().x0)
                 self.label_wrap.obj_bg[ir, ic].set_y(self.axes.obj[ir, ic].get_position().y1)
-                self.label_wrap.obj_bg[ir, ic].set_width(self.axes.size[0] / self.fig.size[0])
+                self.label_wrap.obj_bg[ir, ic].set_width((self.axes.size[0] + self.axes.edge_width) / self.fig.size[0])
                 self.label_wrap.obj_bg[ir, ic].set_height(self.label_wrap.size[1] / self.fig.size[1])
 
                 self.label_wrap.obj[ir, ic].set_x(
