@@ -3403,7 +3403,7 @@ class Layout(BaseLayout):
             if self.label_wrap.obj[ir, ic]:
                 self.label_wrap.obj_bg[ir, ic].set_x(self.axes.obj[ir, ic].get_position().x0)
                 self.label_wrap.obj_bg[ir, ic].set_y(self.axes.obj[ir, ic].get_position().y1)
-                self.label_wrap.obj_bg[ir, ic].set_width((self.axes.size[0] + self.axes.edge_width) / self.fig.size[0])
+                self.label_wrap.obj_bg[ir, ic].set_width(self.axes.position[1] - self.axes.position[0])
                 self.label_wrap.obj_bg[ir, ic].set_height(self.label_wrap.size[1] / self.fig.size[1])
 
                 self.label_wrap.obj[ir, ic].set_x(
