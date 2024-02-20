@@ -22,7 +22,7 @@ class ImShow(data.Data):
 
         # For image data, grouping information is stored in kwargs['df'] but the actual image arrays are in
         # the self.imgs dict
-        kwargs['df'], self.imgs = utl.img_df_transform(kwargs['df'])
+        kwargs['df'], kwargs['imgs'] = utl.img_df_transform(kwargs['df'])
 
         self.channels = kwargs['df'].loc[0, 'channels']
         if self.channels == 1:
@@ -41,7 +41,7 @@ class ImShow(data.Data):
         # Color plane splitting
         cfa = utl.kwget(kwargs, self.fcpp, 'cfa', kwargs.get('cfa', None))
         if cfa is not None and self.channels == 1:
-            kwargs['df'], self.imgs = utl.split_color_planes_wrapper(kwargs['df'], self.imgs, cfa)
+            kwargs['df'], kwargs['imgs'] = utl.split_color_planes_wrapper(kwargs['df'], kwargs['imgs'], cfa)
 
         # check for invalid axis options
         vals = ['twin_x', 'twin_y']

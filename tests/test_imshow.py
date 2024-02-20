@@ -374,7 +374,7 @@ def plt_wrap_one(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'wrap_one_master') if master else 'wrap_one'
 
-    fcp.imshow(img_cp, cmap='inferno', ax_size=[300, 300], cfa='rggb', filter='Plane=="gb"',
+    fcp.imshow(img_cp, cmap='inferno', ax_size=[300, 300], cfa='rggb', filter='Plane=="gb"', label_wrap_edge_color='#0000ff',
                filename=name + '.png', save=not bm, inline=False, wrap='Plane')
 
     if bm:
@@ -427,6 +427,7 @@ def plt_wrap_combos(bm=False, master=False, remove=True, show=False):
                ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
                filename=name + '.png', save=not bm, inline=False, filter='Number in ["Image 0"]')
     compare_with_master(master, show, name)
+    return
 
     # 1 x 2
     name = osjoin(MASTER, 'wrap_combos_1x2_master') if master else 'wrap_combos_1x2'

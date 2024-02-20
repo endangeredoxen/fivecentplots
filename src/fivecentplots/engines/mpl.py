@@ -1550,7 +1550,7 @@ class Layout(BaseLayout):
 
         self.axes.position --> [left, right, top, bottom]
         """
-        edge = max(1, self.axes.edge_width / 2)
+        edge = max(1, self.axes.edge_width / 2) if self.axes.edge_width > 0 else 0
         self.axes.position[0] = (self._left + edge) / self.fig.size[0]
         self.axes.position[1] = 1 - (self._right + self._legx + edge) / self.fig.size[0]
         self.axes.position[2] = 1 - (self._top + edge) / self.fig.size[1]
@@ -2315,29 +2315,16 @@ class Layout(BaseLayout):
             MPL histogram plot object
             updated Data object
         """
-        if LooseVersion(mpl.__version__) < LooseVersion('2.2'):
-            hist = self.axes.obj[ir, ic].hist(df[x], bins=self.hist.bins,
-                                              color=self.hist.fill_color[iline],
-                                              ec=self.hist.edge_color[iline],
-                                              lw=self.hist.edge_width,
-                                              zorder=3, align=self.hist.align,
-                                              cumulative=self.hist.cumulative,
-                                              normed=self.hist.normalize,
-                                              rwidth=self.hist.rwidth,
-                                              stacked=self.hist.stacked,
-                                              orientation='vertical' if not self.hist.horizontal else 'horizontal',
-                                              )
-        else:
-            hist = self.axes.obj[ir, ic].hist(df[x], bins=self.hist.bins,
-                                              color=self.hist.fill_color[iline],
-                                              ec=self.hist.edge_color[iline],
-                                              lw=self.hist.edge_width,
-                                              zorder=3, align=self.hist.align,
-                                              cumulative=self.hist.cumulative,
-                                              density=self.hist.normalize,
-                                              rwidth=self.hist.rwidth,
-                                              orientation='vertical' if not self.hist.horizontal else 'horizontal',
-                                              )
+        hist = self.axes.obj[ir, ic].hist(df[x], bins=self.hist.bins,
+                                          color=self.hist.fill_color[iline],
+                                          ec=self.hist.edge_color[iline],
+                                          lw=self.hist.edge_width,
+                                          zorder=3, align=self.hist.align,
+                                          cumulative=self.hist.cumulative,
+                                          density=self.hist.normalize,
+                                          rwidth=self.hist.rwidth,
+                                          orientation='vertical' if not self.hist.horizontal else 'horizontal',
+                                          )
 
         # Add a reference to the line to self.lines
         if leg_name is not None:

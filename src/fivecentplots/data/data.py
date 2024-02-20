@@ -1406,22 +1406,22 @@ class Data:
                 if not vals:
                     continue
                 for ival, val in enumerate(vals):
-                    if getattr(self, 'trans_%s' % ax) == 'abs':
+                    if getattr(self, f'trans_{ax}') == 'abs':
                         gg.loc[:, val] = abs(gg[val])
-                    elif getattr(self, 'trans_%s' % ax) == 'negative' or getattr(self, 'trans_%s' % ax) == 'neg':
+                    elif getattr(self, f'trans_{ax}') == 'negative' or getattr(self, f'trans_{ax}') == 'neg':
                         gg.loc[:, val] = -gg[val]
-                    elif getattr(self, 'trans_%s' % ax) == 'nq':
+                    elif getattr(self, f'trans_{ax}') == 'nq':
                         if self.imgs is None:
                             gg = utl.nq(gg[val], val, **self.kwargs)
                         else:
                             gg = utl.nq(self.imgs[gg.index[0]][val], val, **self.kwargs)
-                    elif getattr(self, 'trans_%s' % ax) == 'inverse' or getattr(self, 'trans_%s' % ax) == 'inv':
+                    elif getattr(self, f'trans_{ax}') == 'inverse' or getattr(self, f'trans_{ax}') == 'inv':
                         gg.loc[:, val] = 1 / gg[val]
-                    elif (isinstance(getattr(self, 'trans_%s' % ax), tuple)
-                            or isinstance(getattr(self, 'trans_%s' % ax), list)) \
-                            and getattr(self, 'trans_%s' % ax)[0] == 'pow':
-                        gg.loc[:, val] = gg[val]**getattr(self, 'trans_%s' % ax)[1]
-                    elif getattr(self, 'trans_%s' % ax) == 'flip':
+                    elif (isinstance(getattr(self, f'trans_{ax}'), tuple)
+                            or isinstance(getattr(self, f'trans_{ax}'), list)) \
+                            and getattr(self, f'trans_{ax}')[0] == 'pow':
+                        gg.loc[:, val] = gg[val]**getattr(self, f'trans_{ax}')[1]
+                    elif getattr(self, f'trans_{ax}') == 'flip':
                         maxx = gg.loc[:, val].max()
                         gg.loc[:, val] -= maxx
                         gg.loc[:, val] = abs(gg[val])

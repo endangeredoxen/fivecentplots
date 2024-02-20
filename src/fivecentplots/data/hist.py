@@ -62,7 +62,7 @@ class Histogram(data.Data):
         if kwargs['imgs'] is not None and self.channels > 1:
             # Need to reformat the group and image DataFrames
             imgs = {}
-            for ii, (k, v) in enumerate(self.imgs.items()):
+            for ii, (k, v) in enumerate(kwargs['imgs'].items()):
                 # Separate the RGB columns into separate images
                 for icol, col in enumerate(['R', 'G', 'B']):
                     imgs[3 * ii + icol] = v[['Row', 'Column', col]]
@@ -293,6 +293,7 @@ class Histogram(data.Data):
             kwargs: user-defined keyword args
         """
         self.name = 'xy'
+        self.x = ['Value']
         self.y = ['Counts']
         self.use_parent_ranges = True
         # self.subset_wrap = self._subset_wrap
