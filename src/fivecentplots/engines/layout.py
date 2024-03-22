@@ -7,6 +7,7 @@ from .. utilities import RepeatedList
 from .. import utilities as utl
 from distutils.version import LooseVersion
 from collections import defaultdict
+from typing import Callable, Dict
 import warnings
 import abc
 from .. import data
@@ -79,6 +80,13 @@ class BaseLayout:
             marker_list = defaults[2].copy()
         else:
             self.fcpp, self.color_list, marker_list, rcParams = utl.reload_defaults(kwargs.get('theme', None))
+
+        # Rendering corrections (use when the nominal Element value doesn't match the rendered size)
+        #   These corrections are added as properties to the Element class
+        if kwargs.get('render_corrections', True):
+            self.corrections: Dict[str, Callable] = kwargs.get('corrections', {})
+            for k, v in kwargs.get('corrections', {}).items():
+                setattr(Element, f'{k}_adj', property(v))
 
         # Class attribute definition (alphabetical)
         self.auto_tick_threshold = None  # Threshold value for placement of auto-generated ticks
@@ -362,6 +370,7 @@ class BaseLayout:
         # Axes labels
         label = Element('label', self.fcpp, kwargs,
                         obj=self.obj_array,
+                        edge_width=utl.kwget(kwargs, self.fcpp, 'label_edge_width', 0),
                         font_color=utl.kwget(kwargs, self.fcpp, 'label_font_color', '#000000'),
                         font_style=utl.kwget(kwargs, self.fcpp, 'label_font_style', 'italic'),
                         font_weight=utl.kwget(kwargs, self.fcpp, 'label_font_weight', 'bold'),
@@ -1346,6 +1355,7 @@ class BaseLayout:
                                      overflow=0,
                                      text=kwargs.get('legend_title',
                                                      kwargs.get('legend') if kwargs.get('legend') is not True else ''),
+                                     title_font_size=utl.kwget(kwargs, self.fcpp, 'legend_title_font_size', 12),
                                      )
 
         # For pie plot user must force legend enabled
@@ -1592,6 +1602,7 @@ class BaseLayout:
         self.label_row.edge_width = utl.kwget(kwargs, self.fcpp, 'label_row_edge_width', label_rc.edge_width)
         self.label_row.fill_color = utl.kwget(kwargs, self.fcpp, 'label_row_fill_color', label_rc.fill_color)
         self.label_row.font_color = utl.kwget(kwargs, self.fcpp, 'label_row_font_color', label_rc.font_color)
+        self.label_row.font_size = utl.kwget(kwargs, self.fcpp, 'label_row_font_size', label_rc.font_size)
         self.label_row.names = utl.kwget(kwargs, self.fcpp, 'label_row_names', label_rc.names)
         self.label_row.size = [utl.kwget(kwargs, self.fcpp, 'label_row_size', label_rc._size), self.axes.size[1]]
         self.label_row.text_size = None
@@ -1606,6 +1617,7 @@ class BaseLayout:
         self.label_col.edge_alpha = utl.kwget(kwargs, self.fcpp, 'label_col_edge_alpha', label_rc.edge_alpha)
         self.label_col.fill_color = utl.kwget(kwargs, self.fcpp, 'label_col_fill_color', label_rc.fill_color)
         self.label_col.font_color = utl.kwget(kwargs, self.fcpp, 'label_col_font_color', label_rc.font_color)
+        self.label_col.font_size = utl.kwget(kwargs, self.fcpp, 'label_col_font_size', label_rc.font_size)
         self.label_col.names = utl.kwget(kwargs, self.fcpp, 'label_col_names', label_rc.names)
         self.label_col.size = [self.axes.size[0], utl.kwget(kwargs, self.fcpp, 'label_col_size', label_rc._size)]
         self.label_col.text_size = None
@@ -1737,11 +1749,13 @@ class BaseLayout:
         # Major ticks
         if 'ticks' in kwargs.keys() and 'ticks_major' not in kwargs.keys():
             kwargs['ticks_major'] = kwargs['ticks']
-        ticks_length = utl.kwget(kwargs, self.fcpp, 'ticks_length', 6.2)
-        ticks_width = utl.kwget(kwargs, self.fcpp, 'ticks_width', 2.2)
+        ticks_length = utl.kwget(kwargs, self.fcpp, ['tick_length', 'ticks_length'], 6.2)
+        if ticks_length < self.axes.edge_width / 2:
+            ticks_length = self.axes.edge_width / 2
+        ticks_width = utl.kwget(kwargs, self.fcpp, ['tick_width', 'ticks_width'], 2.2)
         self.ticks_major = Element('ticks_major', self.fcpp, kwargs,
                                    on=utl.kwget(kwargs, self.fcpp, 'ticks_major', True),
-                                   color=utl.kwget(kwargs, self.fcpp, 'ticks_major_color', '#ffffff'),
+                                   color=utl.kwget(kwargs, self.fcpp, ['tick_color', 'ticks_color', 'ticks_major_color'], '#ffffff'),
                                    direction=utl.kwget(kwargs, self.fcpp, 'ticks_major_direction', 'in'),
                                    increment=utl.kwget(kwargs, self.fcpp, 'ticks_major_increment', None),
                                    size=[utl.kwget(kwargs, self.fcpp, 'ticks_major_length', ticks_length),
@@ -2353,6 +2367,7 @@ class BaseLayout:
         kwargs['fill_color'] = copy.copy(element.fill_color)
         kwargs['edge_color'] = copy.copy(element.edge_color)
         kwargs['edge_width'] = copy.copy(element.edge_width)
+        kwargs['edge_width_adj'] = copy.copy(element.edge_width_adj)
         kwargs['font'] = copy.copy(element.font)
         kwargs['font_weight'] = copy.copy(element.font_weight)
         kwargs['font_style'] = copy.copy(element.font_style)

@@ -186,7 +186,8 @@ def plt_legend(bm=False, master=False, remove=True, show=False):
 
     # Make the plot
     fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, legend='Measurement',
-            filename=name + '.png', save=not bm, inline=False, jitter=False)
+            filename=name + '.png', save=not bm, inline=False, jitter=False, label_edge_width=10,
+            label_edge_color='#000000', legend_font_size=6, legend_title_font_size=18)
 
     if bm:
         return

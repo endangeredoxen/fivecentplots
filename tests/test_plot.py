@@ -82,7 +82,10 @@ def plt_xy_scatter(bm=False, master=False, remove=True, show=False):
         os.mkdir(test_path)
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False,
              show=False, filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             filename=name + '.png', save=not bm, inline=False, filepath=test_path)
+             filename=name + '.png', save=not bm, inline=False, filepath=test_path, ax_edge_width=15,
+             label_fill_color='#ff0000', label_font_style='italic', label_bg_padding=10, ticks_color='#ff0000',
+             tick_labels_major_edge_color='#0000ff', label_edge_color='#000000', label_y_edge_width=4,
+             label_x_edge_width=6, ws_fig_label=15, xmin=0.5)
     if bm:
         return
 

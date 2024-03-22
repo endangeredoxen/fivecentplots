@@ -4,7 +4,7 @@ import scipy.stats
 import numpy as np
 import copy
 import math
-from typing import Dict
+from typing import Callable, Dict, Union
 from .. utilities import RepeatedList
 from .. import utilities as utl
 from distutils.version import LooseVersion
@@ -34,6 +34,7 @@ warnings.filterwarnings("ignore", "invalid value encountered in double_scalars")
 
 db = pdb.set_trace
 TICK_OVL_MAX = 0.75  # maximum allowed overlap for tick labels in float pixels
+ROTATE_90_OFFSET_X = 0  # spacing offset for 90 deg rotated axes labels
 
 
 def approx_gte(x: float, y: float):
@@ -360,6 +361,20 @@ def mpl_get_ticks(ax: mplp.Axes, xon: bool = True, yon: bool = True,
     return tp
 
 
+def rendered_edge_width(value: Union[int, float]) -> Callable:
+    """
+    Scale the nominal edge width to account for rendering differences; empirically determined by trial and error.
+
+    Args:
+        param: name of the Element attribute to scale
+
+    Return:
+        scaled value
+    """
+
+    return (value + 0.3323) / 1.4059
+
+
 class Layout(BaseLayout):
 
     def __init__(self, data: 'Data', defaults: list = [], **kwargs):  # noqa: F821
@@ -383,6 +398,13 @@ class Layout(BaseLayout):
         if not kwargs.get('hold', False):
             mplp.close('all')
 
+        # Rendering correction equations
+        # edge_width - this doesn't render correctly, maybe due to some aliasing issue?
+        kwargs['corrections'] = {
+            'edge_width': lambda self: 0 if getattr(self, 'edge_width') == 0
+                                       else (getattr(self, 'edge_width') + 0.3323) / 1.4059
+        }
+
         # Inherit the base layout properties
         super().__init__(data, defaults, **kwargs)
 
@@ -401,6 +423,7 @@ class Layout(BaseLayout):
         self.legend_border = 3
         self.fig_legend_border = 5
         self.x_tick_xs = 0
+        self.ws_ticks_ax_adj = self.ws_ticks_ax + 0.373 * self.axes.edge_width
 
         # Other
         self._set_colormap(data)
@@ -410,8 +433,23 @@ class Layout(BaseLayout):
             kwargs['save_ext'] = '.png'
         self.kwargs = kwargs
 
-        # Update axes edge width (weird aliasing effect leads to incorrect values so need to scale)
-        self.axes.edge_width_adj = (self.axes.edge_width + 0.3323) / 1.4059
+    @property
+    def _ax_edge(self) -> float:
+        """Compute the effective axes edge width in terms of its impact on element spacing (1/2 of the width if > 1)."""
+        return max(1, self.axes.edge_width / 2) if self.axes.edge_width > 0 else 0
+
+    @property
+    def _bottom(self) -> float:
+        """Space below the bottom of the axes."""
+        val = self.ws_fig_label \
+            + self.ws_row * (self.nrow - 1) \
+            + self.box_labels \
+            + self._legy \
+            + self.pie.xs_top \
+            + self.pie.xs_bottom \
+            + self._labtick_x
+
+        return val
 
     @property
     def _cbar(self) -> float:
@@ -451,6 +489,7 @@ class Layout(BaseLayout):
             return 0
 
         val = self.label_y.size[0] \
+            + self.label_y.edge_width * 2 \
             + self.ws_label_tick * (self.tick_labels_major_y.on | self.tick_labels_minor_y.on) \
             + self._tick_y
 
@@ -479,6 +518,11 @@ class Layout(BaseLayout):
     def _left(self) -> float:
         """Width of the space to the left of the axes object."""
         left = self.ws_fig_label + self._labtick_y
+
+        # ax_edge = max(1, self.axes.edge_width / 2) if self.axes.edge_width > 0 else 0
+        # left += ax_edge
+        # print(ax_edge)
+
         title_xs_left = self.title.size[0] / 2 + (self.ws_fig_ax if self.title.on else 0) \
             - (left + (self.axes.size[0] * self.ncol + self.ws_col * (self.ncol - 1)) / 2)
         if title_xs_left < 0:
@@ -721,18 +765,26 @@ class Layout(BaseLayout):
         # Set default line attributes
         for axline in ['ax_hlines', 'ax_vlines', 'ax2_hlines', 'ax2_vlines']:
             ll = getattr(self, axline)
+            ax = self.axes if axline[0:3] == 'ax_' else self.axes2
+            if ax.obj[ir, ic] is None:
+                continue
             func = self.axes.obj[ir, ic].axhline if 'hline' in axline \
                 else self.axes.obj[ir, ic].axvline
             if ll.on:
                 if hasattr(ll, 'by_plot') and ll.by_plot:
-                    ival = utl.plot_num(ir, ic, self.ncol) - 1
-                    if ival < len(ll.values):
-                        line = func(ll.values[ival], color=ll.color[ival],
-                                    linestyle=ll.style[ival],
-                                    linewidth=ll.width[ival],
-                                    zorder=ll.zorder)
-                        if isinstance(ll.text, list) and ll.text[ival] is not None:
-                            self.legend.add_value(ll.text[ival], [line], 'ref_line')
+                    num_plots = self.axes.obj.size
+                    num_lines = len(ll.values)
+                    lines_per_plot = int(num_lines / num_plots)  # crude assumption that you have the same number for each plot; fix later
+                    plot_num = utl.plot_num(ir, ic, self.ncol) - 1
+                    vals = range(plot_num * lines_per_plot, plot_num * lines_per_plot + lines_per_plot)
+                    for ival in vals:
+                        if ival < len(ll.values):
+                            line = func(ll.values[ival], color=ll.color[ival],
+                                        linestyle=ll.style[ival],
+                                        linewidth=ll.width[ival],
+                                        zorder=ll.zorder)
+                            if isinstance(ll.text, list) and ll.text[ival] is not None:
+                                self.legend.add_value(ll.text[ival], [line], 'ref_line')
 
                 else:
                     for ival, val in enumerate(ll.values):
@@ -748,7 +800,8 @@ class Layout(BaseLayout):
     def add_label(self, ir: int, ic: int, text: str = '', position: [tuple, None] = None,
                   rotation: int = 0, size: [list, None] = None,
                   fill_color: str = '#ffffff', edge_color: str = '#aaaaaa',
-                  edge_width: int = 1, font: str = 'sans-serif', font_weight: str = 'normal',
+                  edge_width: int = 1, edge_width_adj: Union[float, None] = None,
+                  font: str = 'sans-serif', font_weight: str = 'normal',
                   font_style: str = 'normal', font_color: str = '#666666', font_size: int = 14,
                   offset: bool = False, **kwargs) -> ['Text_Object', 'Rectangle_Object']:  # noqa: F821
         """Add a label to the plot.
@@ -759,13 +812,13 @@ class Layout(BaseLayout):
             ir: subplot row index
             ic: subplot column index
             text:  label text. Defaults to ''.
-            position: label position tuple of form (left, right, top, bottom) or None.
-                Defaults to None.
+            position: label position tuple of form (left, right, top, bottom) or None.  Defaults to None.
             rotation:  degrees of rotation. Defaults to 0.
             size: list of [height, weight] or None. Defaults to None.
             fill_color: hex color code for label fill. Defaults to '#ffffff'.
             edge_color: hex color code for label edge. Defaults to '#aaaaaa'.
-            edge_width: width of the label bounding box edge. Defaults to 1.
+            edge_width: width of the label bounding box edge. Defaults to None.
+            edge_width_adj: adjusted width of the label bounding box edge. Defaults to None.
             font: name of the font for the label. Defaults to 'sans-serif'.
             font_weight: mpl font weight str ('normal', 'bold', etc.). Defaults to 'normal'.
             font_style: mpl font style str ('normal', 'italic', etc.). Defaults to 'normal'.
@@ -780,16 +833,6 @@ class Layout(BaseLayout):
             reference to the background rectangle patch object
 
         """
-        # Set slight text offset
-        if rotation == 270 and offset:
-            offsetx = -2 / self.axes.size[0]
-        else:
-            offsetx = 0
-        if rotation == 0 and offset:
-            offsety = -2 / self.axes.size[1]
-        else:
-            offsety = 0
-
         # Define the label background
         rect = patches.Rectangle((position[0], position[3]),
                                  size[0] / self.axes.size[0],
@@ -800,20 +843,17 @@ class Layout(BaseLayout):
                                  else fill_color[utl.plot_num(ir, ic, self.ncol)],
                                  edgecolor=edge_color if isinstance(edge_color, str)
                                  else edge_color[utl.plot_num(ir, ic, self.ncol)],
-                                 lw=edge_width if isinstance(edge_width, int) else 1,
+                                 lw=edge_width_adj, # if isinstance(edge_width_adj, float) else edge_width,
                                  clip_on=False, zorder=1)
         self.axes.obj[ir, ic].add_patch(rect)
 
         # Add the label text
-        text = self.axes.obj[ir, ic].text(
-            position[0] + offsetx,
-            position[3] + offsety,
-            text,
-            transform=self.axes.obj[ir, ic].transAxes,
-            horizontalalignment='center',
-            verticalalignment='center', rotation=rotation,
-            color=font_color, fontname=font, style=font_style,
-            weight=font_weight, size=font_size)
+        text = self.axes.obj[ir, ic].text(position[0], position[3], text,
+                                          transform=self.axes.obj[ir, ic].transAxes,
+                                          horizontalalignment='center',
+                                          verticalalignment='center', rotation=rotation,
+                                          color=font_color, fontname=font, style=font_style,
+                                          weight=font_weight, size=font_size)
 
         return text, rect
 
@@ -852,16 +892,6 @@ class Layout(BaseLayout):
             reference to the background rectangle patch object
 
         """
-        # Set slight text offset
-        if rotation == 270 and offset:
-            offsetx = -2 / self.axes.size[0]
-        else:
-            offsetx = 0
-        if rotation == 0 and offset:
-            offsety = -2 / self.axes.size[1]
-        else:
-            offsety = 0
-
         # Define the label background
         rect = patches.Rectangle((position[0], position[3]),
                                  size[0] / self.axes.size[0],
@@ -878,8 +908,8 @@ class Layout(BaseLayout):
 
         # Add the label text
         text = self.axes.obj[ir, ic].text(
-            position[0] + offsetx,
-            position[3] + offsety,
+            position[0],
+            position[3],
             text,
             transform=self.fig.obj.transFigure,
             horizontalalignment='center',
@@ -905,6 +935,7 @@ class Layout(BaseLayout):
             """
             for itext, text in enumerate(leg.get_texts()):
                 text.set_color(self.legend.font_color)
+                text.set_fontsize(self.legend.font_size)
                 if self.name not in ['hist', 'bar', 'pie', 'gantt']:
                     if isinstance(leg.legendHandles[itext], mpl.patches.Rectangle):
                         continue
@@ -929,7 +960,7 @@ class Layout(BaseLayout):
             except AttributeError:
                 # Needed for earlier versions of mpl
                 leg.get_title().set_fontfamily(font)
-            leg.get_title().set_fontsize(self.legend.font_size)
+            leg.get_title().set_fontsize(self.legend.title_font_size)
             leg.get_frame().set_facecolor(self.legend.fill_color[0])
             leg.get_frame().set_alpha(self.legend.fill_alpha)
             leg.get_frame().set_edgecolor(self.legend.edge_color[0])
@@ -1154,15 +1185,14 @@ class Layout(BaseLayout):
         self.label_@.position --> [left, right, top, bottom]
         """
         self.label_x.position[0] = 0.5
-        self.label_x.position[3] = \
-            (self.label_x.size[1] / 2 - self._labtick_x) / self.axes.size[1]
+        self.label_x.position[3] = (-self._bottom + self.label_x.size[1]/2 + self.axes.edge_width_adj / 2 +
+                                    self.label_x.edge_width / 2 + self.ws_fig_label) / self.axes.size[1]
 
         self.label_x2.position[0] = 0.5
-        self.label_x2.position[3] = \
-            1 + (self._labtick_x2 - self.label_x2.size[1] / 2) / self.axes.size[1]
+        self.label_x2.position[3] = 1 + (self._labtick_x2 - self.label_x2.size[1] / 2) / self.axes.size[1]
 
-        self.label_y.position[0] = \
-            (self.label_y.size[0] / 2 - self._labtick_y) / self.axes.size[0]
+        self.label_y.position[0] = (-self._left - self.axes.edge_width_adj / 2 + self.label_y.size[0] / 2 +
+                                    self.label_y.edge_width / 2 + self.ws_fig_label) / self.axes.size[0]
         self.label_y.position[3] = 0.5
 
         self.label_y2.position[0] = 1 + (self._labtick_y2 - self.label_y2.size[0] / 2) / self.axes.size[0]
@@ -1223,11 +1253,11 @@ class Layout(BaseLayout):
                 lab.size_all = (ir, ic, 0, 0, width, height, bbox.x0, bbox.x1, bbox.y0, bbox.y1, np.nan)
 
                 # text label rect background (ax label has to be resized!)
-                bbox = lab.obj_bg[ir, ic].get_window_extent()
-                lab.size_all_bg = (ir, ic, 0, 0, bbox.width, bbox.height, bbox.x0, bbox.x1, bbox.y0, bbox.y1, np.nan)
                 if label not in ['row', 'col', 'wrap']:
-                    lab.obj_bg[ir, ic].set_width((width + lab.bg_padding * 2) / self.axes.size[0])
-                    lab.obj_bg[ir, ic].set_height((height + lab.bg_padding * 2) / self.axes.size[1])
+                    lab.obj_bg[ir, ic].set_width((width + lab.bg_padding * 2 + lab.edge_width) / (self.axes.size[0] + self.axes.edge_width))
+                    lab.obj_bg[ir, ic].set_height((height + lab.bg_padding * 2 + lab.edge_width) / (self.axes.size[1] + self.axes.edge_width))
+                    bbox = lab.obj_bg[ir, ic].get_window_extent()
+                    lab.size_all_bg = (ir, ic, 0, 0, bbox.width, bbox.height, bbox.x0, bbox.x1, bbox.y0, bbox.y1, np.nan)
 
             # set max size
             width = lab.size_all.width.max()
@@ -1488,7 +1518,7 @@ class Layout(BaseLayout):
             + self._right + self._legx + self.ws_col * (self.ncol - 1) + self._cbar
 
         # Figure height
-        self.fig.size[1] = int(
+        self.fig.size[1] = (
             self._top
             + self._labtick_x2
             + (self.axes.size[1] + 2 * self.axes.edge_width) * self.nrow
@@ -1499,10 +1529,6 @@ class Layout(BaseLayout):
             + self._legy \
             + self.pie.xs_top \
             + self.pie.xs_bottom  # \
-            # + (self.label_col.size[1] + self.ws_label_col) * self.label_col.on
-            # + self.title_wrap.size[1] + self.label_wrap.size[1]  # only on label wrap b/c rest in ws_ro
-            # + self.tick_y_top_xs \
-            # + self.tick_z_top_xs
 
         # Account for legends longer than the figure
         header = self._ws_title + \
@@ -1550,7 +1576,7 @@ class Layout(BaseLayout):
 
         self.axes.position --> [left, right, top, bottom]
         """
-        edge = max(1, self.axes.edge_width / 2) if self.axes.edge_width > 0 else 0
+        edge = self._ax_edge
         self.axes.position[0] = (self._left + edge) / self.fig.size[0]
         self.axes.position[1] = 1 - (self._right + self._legx + edge) / self.fig.size[0]
         self.axes.position[2] = 1 - (self._top + edge) / self.fig.size[1]
@@ -1615,7 +1641,7 @@ class Layout(BaseLayout):
                 ax_y1 = ax.obj[0, 0].get_window_extent().y1
                 self.tick_y_top_xs = max(0, self.tick_y_top_xs, tt.size_all['y1'].max() - ax_y1)
 
-            if tick == 'z':
+            if tick == 'z' and not self.label_col.on:
                 # Padding for top z-tick in cbar
                 ax_y1 = self.axes.obj[0, 0].get_window_extent().y1
                 self.tick_z_top_xs = max(0, self.tick_z_top_xs, tt.size_all['y1'].max() - ax_y1)
@@ -2640,6 +2666,8 @@ class Layout(BaseLayout):
                 axes[-1].obj[ir, ic].spines[f].set_color(self.fig.fill_color[0])
             if self.axes.edge_width != 1:
                 axes[-1].obj[ir, ic].spines[f].set_linewidth(self.axes.edge_width_adj)
+            axes[-1].obj[ir, ic].spines[f].set_zorder(41)
+            # axes[-1].obj[ir, ic].spines[f].set_position(('outward', self.axes.edge_width_adj/2))
 
     def set_axes_grid_lines(self, ir: int, ic: int):
         """Style the grid lines and toggle visibility.
@@ -2808,20 +2836,24 @@ class Layout(BaseLayout):
         if self.name in ['heatmap', 'pie']:  # skip these plot types
             return
 
+        # Add some padding to account for the width of the axes edge and make sure data points are hidden
+        offsetx = (ranges[ir, ic]['xmax'] - ranges[ir, ic]['xmin']) / self.axes.size[0] * self.axes.edge_width / 2
+        offsety = (ranges[ir, ic]['ymax'] - ranges[ir, ic]['ymin']) / self.axes.size[0] * self.axes.edge_width / 2
+
         if ranges[ir, ic]['xmin'] is not None:
-            self.axes.obj[ir, ic].set_xlim(left=ranges[ir, ic]['xmin'])
+            self.axes.obj[ir, ic].set_xlim(left=ranges[ir, ic]['xmin'] - offsetx)
         if ranges[ir, ic]['x2min'] is not None:
             self.axes2.obj[ir, ic].set_xlim(left=ranges[ir, ic]['x2min'])
         if ranges[ir, ic]['xmax'] is not None:
-            self.axes.obj[ir, ic].set_xlim(right=ranges[ir, ic]['xmax'])
+            self.axes.obj[ir, ic].set_xlim(right=ranges[ir, ic]['xmax'] + offsetx)
         if ranges[ir, ic]['x2max'] is not None:
             self.axes2.obj[ir, ic].set_xlim(right=ranges[ir, ic]['x2max'])
         if ranges[ir, ic]['ymin'] is not None:
-            self.axes.obj[ir, ic].set_ylim(bottom=ranges[ir, ic]['ymin'])
+            self.axes.obj[ir, ic].set_ylim(bottom=ranges[ir, ic]['ymin'] - offsety)
         if ranges[ir, ic]['y2min'] is not None:
             self.axes2.obj[ir, ic].set_ylim(bottom=ranges[ir, ic]['y2min'])
         if ranges[ir, ic]['ymax'] is not None:
-            self.axes.obj[ir, ic].set_ylim(top=ranges[ir, ic]['ymax'])
+            self.axes.obj[ir, ic].set_ylim(top=ranges[ir, ic]['ymax'] + offsety)
         if ranges[ir, ic]['y2max'] is not None:
             self.axes2.obj[ir, ic].set_ylim(top=ranges[ir, ic]['y2max'])
 
@@ -2964,7 +2996,7 @@ class Layout(BaseLayout):
                     axes[0].minorticks_off()
                 axes[0].tick_params(axis='x',
                                     which='major',
-                                    pad=self.ws_ticks_ax,
+                                    pad=self.ws_ticks_ax_adj - 1,  # doesn't need as much offset as y-axis I guess?
                                     colors=self.ticks_major_x.color[0],
                                     labelcolor=self.tick_labels_major_x.font_color,
                                     top=False,
@@ -2978,7 +3010,7 @@ class Layout(BaseLayout):
                                     )
                 axes[0].tick_params(axis='y',
                                     which='major',
-                                    pad=self.ws_ticks_ax,
+                                    pad=self.ws_ticks_ax_adj,
                                     colors=self.ticks_major_y.color[0],
                                     labelcolor=self.tick_labels_major_y.font_color,
                                     top=False,
@@ -2992,7 +3024,7 @@ class Layout(BaseLayout):
                                     )
                 axes[0].tick_params(axis='x',
                                     which='minor',
-                                    pad=self.ws_ticks_ax,
+                                    pad=self.ws_ticks_ax_adj - 1,
                                     colors=self.ticks_minor_x.color[0],
                                     labelcolor=self.tick_labels_minor_x.font_color,
                                     labelsize=self.tick_labels_minor_x.font_size,
@@ -3006,7 +3038,7 @@ class Layout(BaseLayout):
                                     )
                 axes[0].tick_params(axis='y',
                                     which='minor',
-                                    pad=self.ws_ticks_ax,
+                                    pad=self.ws_ticks_ax_adj,
                                     colors=self.ticks_minor_y.color[0],
                                     labelcolor=self.tick_labels_minor_y.font_color,
                                     labelsize=self.tick_labels_minor_y.font_size,
@@ -3023,7 +3055,7 @@ class Layout(BaseLayout):
                     if self.ticks_minor_y2.on:
                         axes[1].minorticks_on()
                     axes[1].tick_params(which='major',
-                                        pad=self.ws_ticks_ax,
+                                        pad=self.ws_ticks_ax_adj,
                                         colors=self.ticks_major_y2.color[0],
                                         labelcolor=self.tick_labels_major_y2.font_color,
                                         right=self.ticks_major_y2.on,
@@ -3033,7 +3065,7 @@ class Layout(BaseLayout):
                                         zorder=0,
                                         )
                     axes[1].tick_params(which='minor',
-                                        pad=self.ws_ticks_ax,
+                                        pad=self.ws_ticks_ax_adj,
                                         colors=self.ticks_minor_y2.color[0],
                                         labelcolor=self.tick_labels_minor_y2.font_color,
                                         right=self.ticks_minor_y2.on,
@@ -3046,7 +3078,7 @@ class Layout(BaseLayout):
                     if self.ticks_minor_x2.on:
                         axes[1].minorticks_on()
                     axes[1].tick_params(which='major',
-                                        pad=self.ws_ticks_ax,
+                                        pad=self.ws_ticks_ax_adj,
                                         colors=self.ticks_major_x2.color[0],
                                         labelcolor=self.tick_labels_major_x2.font_color,
                                         top=self.ticks_major_x2.on,
@@ -3055,7 +3087,7 @@ class Layout(BaseLayout):
                                         direction=self.ticks_major_x2.direction,
                                         )
                     axes[1].tick_params(which='minor',
-                                        pad=self.ws_ticks_ax * 2,
+                                        pad=self.ws_ticks_adj * 2,  # not sure on this one
                                         colors=self.ticks_minor.color[0],
                                         labelcolor=self.tick_labels_minor.font_color,
                                         top=self.ticks_minor_x2.on,
@@ -3348,18 +3380,19 @@ class Layout(BaseLayout):
             lab = getattr(self, f'label_{label}')
             if not lab.on:
                 continue
-            x, y = getattr(self, f'label_{label}').position_xy
+            x, y = getattr(self, f'label_{label}').position_xy  # this is the center of the text label
             for ir, ic in np.ndindex(lab.obj.shape):
                 if lab.obj[ir, ic]:
                     lab.obj[ir, ic].set_position((x, y))
+                    # Position the label background
                     if label in ['x', 'x2', 'y', 'y2', 'z']:
-                        offsetx = lab.size[0] / 2 + lab.bg_padding
-                        offsety = lab.size[1] / 2 + lab.bg_padding
+                        offset_x = lab.size[0] / 2
+                        offset_y = lab.size[1] / 2
                         if lab.obj[ir, ic].get_rotation() == 90:
-                            offsetx += 2  # this may not hold for all cases
-                            offsety += 1
-                        lab.obj_bg[ir, ic].set_x(x - offsetx / self.axes.size[0])
-                        lab.obj_bg[ir, ic].set_y(y - offsety / self.axes.size[1])
+                            offset_x += ROTATE_90_OFFSET_X  # not sure if this will always hold
+
+                        lab.obj_bg[ir, ic].set_x(x - offset_x / self.axes.size[0])
+                        lab.obj_bg[ir, ic].set_y(y - offset_y / self.axes.size[1])
 
         # Update the rc label positions
         # row
@@ -3373,11 +3406,18 @@ class Layout(BaseLayout):
                     lab_x -= (self._legx - self.ws_label_row) / self.fig.size[0]
                 self.label_row.obj_bg[ir, ic].set_x(lab_x)
                 self.label_row.obj_bg[ir, ic].set_y(self.axes.obj[ir, ic].get_position().y0)
-                self.label_row.obj_bg[ir, ic].set_width(30 / self.fig.size[0])
+                self.label_row.obj_bg[ir, ic].set_width(self.label_row.size[0] / self.fig.size[0])
                 self.label_row.obj_bg[ir, ic].set_height(self.axes.size[1] / self.fig.size[1])
 
+                # Special offset if certain characters are missing (crude; only tested on mac with default font)
+                if not any(e in ['y', 'j', 'g', 'q', 'p'] for e in self.label_row.text):
+                    offsetx = 0.25 * self.label_row.font_size + 1
+                elif any(e in ['[', ']'] for e in self.label_row.text):
+                    offsetx = 0.125 * self.label_row.font_size
+                else:
+                    offsetx = 0.125 * self.label_row.font_size + 1
                 self.label_row.obj[ir, ic].set_x(
-                    lab_x + (self.label_row.size[0] - self.label_row.size_text[0]) / self.fig.size[0])
+                    lab_x + (self.label_row.size[0] / 2 - offsetx) / self.fig.size[0])
                 self.label_row.obj[ir, ic].set_y(
                     (self.axes.obj[ir, ic].get_position().y1 - self.axes.obj[ir, ic].get_position().y0) / 2
                     + self.axes.obj[ir, ic].get_position().y0)
@@ -3403,7 +3443,7 @@ class Layout(BaseLayout):
             if self.label_wrap.obj[ir, ic]:
                 self.label_wrap.obj_bg[ir, ic].set_x(self.axes.obj[ir, ic].get_position().x0)
                 self.label_wrap.obj_bg[ir, ic].set_y(self.axes.obj[ir, ic].get_position().y1)
-                self.label_wrap.obj_bg[ir, ic].set_width(self.axes.position[1] - self.axes.position[0])
+                self.label_wrap.obj_bg[ir, ic].set_width((self.axes.size[0] + self._ax_edge) / self.fig.size[0])
                 self.label_wrap.obj_bg[ir, ic].set_height(self.label_wrap.size[1] / self.fig.size[1])
 
                 self.label_wrap.obj[ir, ic].set_x(
@@ -3415,8 +3455,8 @@ class Layout(BaseLayout):
         # wrap title
         if self.title_wrap.on:
             self.title_wrap.obj_bg.set_x(self.axes.obj[0, 0].get_position().x0)
-            self.title_wrap.obj_bg.set_y(
-                self.axes.obj[0, self.ncol - 1].get_position().y1 + self.label_wrap.size[1] / self.fig.size[1])
+            self.title_wrap.obj_bg.set_y(self.axes.obj[0, self.ncol - 1].get_position().y1 +
+                                         (self.label_wrap.size[1] + self._ax_edge) / self.fig.size[1])
             self.title_wrap.obj_bg.set_width(
                 self.axes.obj[0, self.ncol - 1].get_position().x1 - self.axes.obj[0, 0].get_position().x0)
             self.title_wrap.obj_bg.set_height(self.title_wrap.size[1] / self.fig.size[1])
@@ -3441,7 +3481,7 @@ class Layout(BaseLayout):
                 + self.axes.obj[0, 0].get_position().x0)
             self.title.obj.set_y(1 - (self.title.size[1] / 2 + self.ws_fig_title) / self.fig.size[1])
 
-        # Update axes positioning for cbar
+        # Update axes positioning for cbar (probably a better way to do this, but alas...)
         if self.cbar.on:
             for ir, ic in np.ndindex(self.axes.obj.shape):
                 # Adjust axes size
@@ -3457,25 +3497,32 @@ class Layout(BaseLayout):
 
                 # Adjust wrap labels and axes size
                 elif self.label_wrap.obj_bg[ir, ic] is not None:
-                    act_x0 = self.label_wrap.obj_bg[ir, ic]._x0
+                    # Axes size
+                    act_x0 = self.axes.obj[ir, ic].get_position().x0
                     act_y0 = self.axes.obj[ir, ic].get_position().y0
-                    act_width = \
-                        self.label_wrap.obj_bg[ir, ic]._width + (self.ws_ax_cbar + self.cbar.size[0]) / self.fig.size[0]
+                    act_width = (self.axes.size[0] + self.ws_ax_cbar + self.cbar.size[0]) / self.fig.size[0]
                     act_height = self.axes.obj[ir, ic].get_position().height
-                    lab_pos = self.label_wrap.obj[ir, ic].get_position()
-                    if ir == 0 and ic == 0:
-                        text_offset = self.axes.obj[ir, ic].get_position().width - act_width
-
                     self.axes.obj[ir, ic].set_position([act_x0, act_y0, act_width, act_height])
+
+                    # Label background
+                    self.label_wrap.obj_bg[ir, ic].set_width(self.axes.size[0] / self.fig.size[0])
+
+                    # Label text
+                    lab_pos = self.label_wrap.obj[ir, ic].get_position()
+                    text_offset = self.axes.obj[ir, ic].get_position().width - self.axes.size[0] / self.fig.size[0]
                     self.label_wrap.obj[ir, ic].set_x(lab_pos[0] - text_offset)
 
             # Adjust title_wrap
-            if self.label_wrap.obj_bg[0, 0] is not None:
+            if self.label_wrap.obj_bg[0, 0] is not None and self.title_wrap.obj_bg is not None:
+                # Background
                 x0 = self.label_wrap.obj_bg[0, 0]._x0
                 x1 = self.label_wrap.obj_bg[0, self.ncol - 1]._x0 + self.label_wrap.obj_bg[0, self.ncol - 1]._width
-                if self.title_wrap.obj_bg is not None:
-                    self.title_wrap.obj_bg.set_width(x1 - x0)
-                    self.title_wrap.obj.set_x(x0 + (x1 - x0) / 2)
+                self.title_wrap.obj_bg.set_width(x1 - x0)
+
+                # Title text
+                lab_pos = self.title_wrap.obj.get_position()
+                text_offset = self.axes.obj[0, 0].get_position().width - self.axes.size[0] / self.fig.size[0]
+                self.title_wrap.obj.set_x(lab_pos[0] - text_offset)
 
             # Adjust main figure title
             if self.title.on:

@@ -188,39 +188,39 @@ def test_img_compare():
     assert utl.img_compare(img1, None)
 
 
-def test_img_df_from_array_or_df():
+def test_img_df_transform():
     # Case 1: already in the format
     df = pd.DataFrame({'Row': [0, 0, 0, 1, 1, 1, 2, 2, 2], 'Column': [0, 1, 2, 0, 1, 2, 0, 1, 2],
                       'Value': [1, 2, 3, 4, 5, 6, 7, 8, 9]})
-    df2, shape = utl.img_df_from_array_or_df(df)
-    assert np.all(df2.columns == ['Row', 'Column', 'Value'])
-    assert shape == [3, 3]
+    df_groups, imgs = utl.img_df_transform(df)
+    assert np.all(imgs[0].columns == ['Row', 'Column', 'Value'])
+    np.testing.assert_array_equal(df_groups.values[0], np.array([3, 3, 1]))
 
     # Case 2: input is 2D dataframe
     df = pd.DataFrame(columns=range(0, 5), index=range(0, 5), dtype=np.float64)
     df.loc[:, :] = 0.0
-    df2, shape = utl.img_df_from_array_or_df(df)
-    assert np.all(df2.columns == ['Row', 'Column', 'Value'])
-    assert shape == [5, 5]
+    df_groups, imgs = utl.img_df_transform(df)
+    assert np.all(imgs[0].columns == ['Value', 'Row', 'Column'])
+    np.testing.assert_array_equal(df_groups.values[0], np.array([5, 5, 1]))
 
     # Case 3: input is numpy array 2D
-    df, shape = utl.img_df_from_array_or_df(np.zeros((5, 5)))
-    assert np.all(df.columns == ['Row', 'Column', 'Value'])
-    assert shape == [5, 5]
+    df_groups, imgs = utl.img_df_transform(np.zeros((5, 5)))
+    assert np.all(imgs[0].columns == ['Value', 'Row', 'Column'])
+    np.testing.assert_array_equal(df_groups.values[0], np.array([5, 5, 1]))
 
     # Case 4: input is numpy array 3D RGB
-    df, shape = utl.img_df_from_array_or_df(np.ones((5, 5, 3)))
-    assert np.all(df.columns == ['Row', 'Column', 'R', 'G', 'B'])
-    assert shape == [5, 5, 3]
+    df_groups, imgs = utl.img_df_transform(np.ones((5, 5, 3)))
+    assert np.all(imgs[0].columns == ['R', 'G', 'B', 'Row', 'Column'])
+    np.testing.assert_array_equal(df_groups.values[0], np.array([5, 5, 3]))
 
     # Case 5: input is numpy array 3D RGBA
-    df, shape = utl.img_df_from_array_or_df(np.ones((5, 5, 4)))
-    assert np.all(df.columns == ['Row', 'Column', 'R', 'G', 'B', 'A'])
-    assert shape == [5, 5, 4]
+    df_groups, imgs = utl.img_df_transform(np.ones((5, 5, 4)))
+    assert np.all(imgs[0].columns == ['R', 'G', 'B', 'A', 'Row', 'Column'])
+    np.testing.assert_array_equal(df_groups.values[0], np.array([5, 5, 4]))
 
     # Case 6: wrong dtype
-    with pytest.raises(ValueError):
-        utl.img_df_from_array_or_df('karma police')
+    with pytest.raises(TypeError):
+        utl.img_df_transform('karma police')
 
 
 def test_img_grayscale(img_cat):
@@ -384,10 +384,16 @@ def test_split_color_planes(img_cat):
     np.testing.assert_almost_equal(img_cp.loc[img_cp.Plane == 'b', 'Value'].mean(), 164.79765575099998)
 
     # Case 2: input is in imshow format
-    img2, shape = utl.img_df_from_array_or_df(img)
-    img_cp = utl.split_color_planes(img2, cfa='grbg')
+    df_groups, imgs = utl.img_df_transform(img)
+    img_cp = utl.split_color_planes(imgs[0], cfa='grbg')
     np.testing.assert_almost_equal(img_cp.loc[img_cp.Plane == 'r', 'Value'].mean(), 164.84421923940002)
     np.testing.assert_almost_equal(img_cp.loc[img_cp.Plane == 'b', 'Value'].mean(), 164.79765575099998)
+
+    # Case 3: as_dict
+    df_groups, imgs = utl.img_df_transform(img)
+    img_cp = utl.split_color_planes(imgs[0], cfa='grbg', as_dict=True)
+    np.testing.assert_almost_equal(img_cp['r']['Value'].mean(), 164.84421923940002)
+    np.testing.assert_almost_equal(img_cp['b']['Value'].mean(), 164.79765575099998)
 
 
 def test_validate_list():

@@ -374,8 +374,8 @@ def plt_wrap_one(bm=False, master=False, remove=True, show=False):
 
     name = osjoin(MASTER, 'wrap_one_master') if master else 'wrap_one'
 
-    fcp.imshow(img_cp, cmap='inferno', ax_size=[300, 300], cfa='rggb', filter='Plane=="gb"', label_wrap_edge_color='#0000ff',
-               filename=name + '.png', save=not bm, inline=False, wrap='Plane')
+    fcp.imshow(img_cp, cmap='inferno', ax_size=[300, 300], cfa='rggb', filter='Plane=="gb"',
+               label_wrap_edge_color='#0000ff', filename=name + '.png', save=not bm, inline=False, wrap='Plane')
 
     if bm:
         return

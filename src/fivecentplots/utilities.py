@@ -53,7 +53,7 @@ class RepeatedList:
         self.override = override
 
         if not isinstance(self.values, list) or len(self.values) < 1:
-            raise ValueError('RepeatedList must contain an actual list with more at least one element')
+            raise ValueError('RepeatedList must contain an actual list with at least one element')
 
     def __len__(self):
         """Custom length."""
@@ -659,7 +659,8 @@ def img_df_transform(data: Union[pd.DataFrame, np.ndarray]) -> Tuple[pd.DataFram
 
     # Case 1: input DataFrame already in semi-correct format
     if isinstance(data, pd.DataFrame) and 'Row' in data.columns and 'Column' in data.columns:
-        group_cols = [f for f in data.columns if f not in ['Row', 'Column', 'Value']]
+        group_cols = [f for f in data.columns if f not in ['Row', 'Column', 'Value', 'R', 'G', 'B', 'A']]
+        channels = max(1, len([f for f in data.columns if f in ['R', 'G', 'B', 'A']]))
 
         if len(group_cols) == 0:
             imgs[0] = data
@@ -667,7 +668,8 @@ def img_df_transform(data: Union[pd.DataFrame, np.ndarray]) -> Tuple[pd.DataFram
             # Make the grouping DataFrame
             df_groups = pd.DataFrame({'rows': len(data.Row.unique()),
                                       'cols': len(data.Column.unique()),
-                                      'channels': 1}, index=[0])
+                                      'channels': channels},
+                                      index=[0])
 
         else:
             temp_groups = []
@@ -676,7 +678,7 @@ def img_df_transform(data: Union[pd.DataFrame, np.ndarray]) -> Tuple[pd.DataFram
                 ss = (len(gg.Row.unique()), len(gg.Column.unique()))
 
                 # Make the grouping DataFrame
-                temp = pd.DataFrame({'rows': ss[0], 'cols': ss[1], 'channels': 1}, index=[idx])
+                temp = pd.DataFrame({'rows': ss[0], 'cols': ss[1], 'channels': channels}, index=[idx])
                 for igroup, group in enumerate(group_cols):
                     temp[group] = nn[igroup]
                 temp_groups += [temp]
@@ -785,9 +787,11 @@ def nq(data, column: str = 'Value', **kwargs) -> pd.DataFrame:
     step_inner = kwargs.get('step_inner', 0.5)  # step size of the non-tail region
     percentiles_on = kwargs.get('percentiles', False)  # display y-axis as percentiles instead of sigma
 
-    # Flatten the DataFrame to an array
+    # Flatten the DataFrame/2D array to a 1D array
     if isinstance(data, pd.DataFrame):
         data = data.values.flatten()
+    elif isinstance(data, np.ndarray) and len(data.shape) > 1:
+        data = data.flatten()
 
     # Get sigma
     if not sig:
@@ -1159,16 +1163,16 @@ def split_color_planes(img: pd.DataFrame, cfa: str = 'rggb', as_dict: bool = Fal
             img = img_df_transform(img)[1][0]
 
         # Separate planes
-        img['Plane'] = ''
-        for ic, cc in enumerate(cp):
-            img.loc[(img.Row % 2 == ic // 2) & (img.Column % 2 == (ic % 2)), 'Plane'] = cc
+        if not as_dict:
+            img['Plane'] = ''
+            for ic, cc in enumerate(cp):
+                img.loc[(img.Row % 2 == ic // 2) & (img.Column % 2 == (ic % 2)), 'Plane'] = cc
 
         if as_dict:
             img2 = {}
+            rows, cols = img.Row.max() + 1, img.Column.max() + 1
             for ic, cc in enumerate(cp):
-                temp = img[img.Plane == cc].reset_index(drop=True)
-                del temp['Plane']
-                img2[cc] = temp
+                img2[cc] = img.loc[(img.Row % 2 == ic // 2) & (img.Column % 2 == (ic % 2))]
 
     # Numpy array input
     else:

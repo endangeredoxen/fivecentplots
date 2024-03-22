@@ -240,7 +240,7 @@ class ImShow(data.Data):
             self.shape = (self.df_fig.loc[idx]['rows'].sum(), self.df_fig.loc[idx, 'cols'].iloc[0])
         width = self.ranges[ir, ic]['xmax'] - self.ranges[ir, ic]['xmin']
         height = self.ranges[ir, ic]['ymin'] - self.ranges[ir, ic]['ymax']
-        self.wh_ratio = max(self.shape[1] / self.shape[0], width / height)
+        self.wh_ratio = width / height
 
     def _stretch(self, kwargs):
         """Perform contrast strectching on an image
