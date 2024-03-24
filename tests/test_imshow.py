@@ -2,6 +2,7 @@ import pytest
 import imageio.v3 as imageio
 import fivecentplots as fcp
 import pandas as pd
+import numpy as np
 import os
 import sys
 import pdb
@@ -119,6 +120,36 @@ def plt_imshow_rgb(bm=False, master=False, remove=True, show=False):
 
     # Make the plot
     fcp.imshow(img_cat_orig, filename=name + '.png', save=not bm, inline=False)
+
+    if bm:
+        return
+
+    # Compare with master
+    if master:
+        return
+    elif show:
+        utl.show_file(osjoin(MASTER, name + '_master.png'))
+        utl.show_file(name + '.png')
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+    else:
+        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+        if remove:
+            os.remove(name + '.png')
+
+        assert not compare
+
+
+def plt_imshow_rgb_wrap(bm=False, master=False, remove=True, show=False):
+
+    name = osjoin(MASTER, 'imshow_rgb_wrap_master') if master else 'imshow_rgb_wrap'
+
+    # Make the plot
+    img0 = utl.img_df_transform(img_cat_orig)[1][0]
+    img0['case'] = 'original'
+
+    img1 = utl.img_df_transform(((1 - img_cat_orig / 255) * 255).astype(np.uint8))[1][0]
+    img1['case'] = 'inverse'
+    fcp.imshow(pd.concat([img0, img1]), wrap='case', filename=name + '.png', save=not bm, inline=False)
 
     if bm:
         return

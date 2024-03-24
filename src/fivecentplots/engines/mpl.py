@@ -2892,10 +2892,8 @@ class Layout(BaseLayout):
                 text_size = None  # noqa
             if self.label_wrap.on:
                 kwargs = self.make_kw_dict(self.label_wrap)
-                text = ' | '.join([str(f) for f in utl.validate_list(
-                    self.label_wrap.values[ir * self.ncol + ic])])
-                self.label_wrap.obj[ir, ic], self.label_wrap.obj_bg[ir, ic] = \
-                    self.add_label_fig(ir, ic, text, **kwargs)
+                text = ' | '.join([str(f) for f in utl.validate_list(self.label_wrap.values[ir * self.ncol + ic])])
+                self.label_wrap.obj[ir, ic], self.label_wrap.obj_bg[ir, ic] = self.add_label_fig(ir, ic, text, **kwargs)
             else:
                 if self.label_col.names:
                     lab = f'{self.label_col.text}={self.label_col.values[ic]}'
@@ -3443,7 +3441,8 @@ class Layout(BaseLayout):
             if self.label_wrap.obj[ir, ic]:
                 self.label_wrap.obj_bg[ir, ic].set_x(self.axes.obj[ir, ic].get_position().x0)
                 self.label_wrap.obj_bg[ir, ic].set_y(self.axes.obj[ir, ic].get_position().y1)
-                self.label_wrap.obj_bg[ir, ic].set_width((self.axes.size[0] + self._ax_edge) / self.fig.size[0])
+                self.label_wrap.obj_bg[ir, ic].set_width(
+                    (self.axes.size[0] + (self.ncol - 1) * self._ax_edge) / self.fig.size[0])
                 self.label_wrap.obj_bg[ir, ic].set_height(self.label_wrap.size[1] / self.fig.size[1])
 
                 self.label_wrap.obj[ir, ic].set_x(

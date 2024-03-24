@@ -1211,8 +1211,7 @@ class BaseLayout:
 
         self.imshow = Element('imshow', self.fcpp, kwargs,
                               on=True,
-                              interp=utl.kwget(kwargs, self.fcpp,
-                                               ['imshow_interp', 'interp'],
+                              interp=utl.kwget(kwargs, self.fcpp, ['imshow_interp', 'interp'],
                                                kwargs.get('interp', 'none')),
                               )
 
@@ -2124,8 +2123,7 @@ class BaseLayout:
         """
 
     def _set_label_text(self, data: 'data.Data'):
-        """Set the default label text for x, y, z axes and col, row, wrap
-        grouping labels
+        """Set the default label text for x, y, z axes and col, row, wrap grouping labels.
 
         Args:
             data: Data class object for the plot
@@ -2151,17 +2149,11 @@ class BaseLayout:
                 lab_text2 = None
 
             if lab == 'x' and self.axes.twin_y:
-                getattr(self, 'label_x').text = \
-                    lab_text if lab_text is not None else dd[0]
-                getattr(self, 'label_x2').text = \
-                    lab_text2 if lab_text2 is not None else getattr(data, '%s2' % lab)[
-                    0]
+                getattr(self, 'label_x').text = lab_text if lab_text is not None else dd[0]
+                getattr(self, 'label_x2').text = lab_text2 if lab_text2 is not None else getattr(data, '%s2' % lab)[0]
             elif lab == 'y' and self.axes.twin_x:
-                getattr(self, 'label_y').text = \
-                    lab_text if lab_text is not None else dd[0]
-                getattr(self, 'label_y2').text = \
-                    lab_text2 if lab_text2 is not None else getattr(data, '%s2' % lab)[
-                    0]
+                getattr(self, 'label_y').text = lab_text if lab_text is not None else dd[0]
+                getattr(self, 'label_y2').text = lab_text2 if lab_text2 is not None else getattr(data, '%s2' % lab)[0]
             else:
                 if lab == 'wrap':
                     # special case
@@ -2169,8 +2161,7 @@ class BaseLayout:
                 else:
                     val = 'label_%s' % lab
                 if isinstance(dd, list):
-                    if data.wrap == 'y' and lab == 'y' \
-                            or data.wrap == 'x' and lab == 'x':
+                    if data.wrap == 'y' and lab == 'y' or data.wrap == 'x' and lab == 'x':
                         getattr(self, val).text = data.wrap_vals
                     elif lab == 'x' and data.col == 'x':
                         getattr(self, val).text = data.x_vals * self.nrow
@@ -2180,19 +2171,15 @@ class BaseLayout:
                             yvals += [yval] * self.ncol
                         getattr(self, val).text = yvals
                     else:
-                        getattr(self, val).text = \
-                            lab_text if lab_text is not None \
-                            else ' & '.join([str(f) for f in dd])
+                        getattr(self, val).text = lab_text if lab_text is not None else ' & '.join([str(f) for f in dd])
                 else:
                     getattr(self, val).text = dd
                 if lab != 'z' and hasattr(self, 'label_%s2') and getattr(self, 'label_%s2' % lab).text is not None:
                     getattr(self, 'label_%s2' % lab).text = \
-                        lab_text2 if lab_text2 is not None \
-                        else ' & '.join([str(f) for f in dd])
+                        lab_text2 if lab_text2 is not None else ' & '.join([str(f) for f in dd])
 
             if hasattr(data, '%s_vals' % lab):
-                getattr(self, 'label_%s' % lab).values = \
-                    getattr(data, '%s_vals' % lab)
+                getattr(self, 'label_%s' % lab).values = getattr(data, '%s_vals' % lab)
 
         if 'hist' in self.name:
             if self.hist.normalize:
@@ -3025,16 +3012,14 @@ class Element:
 
 class DF_Element(Element):
     def __init__(self, name: str = 'None', fcpp: dict = {}, others: dict = {}, **kwargs):
-        """Wrapper for Element that is only visible if the `values` attribute
-        exists and contains items.  Used for rc labels and legends
+        """Wrapper for Element that is only visible if the `values` attribute exists and contains items.  Used for rc
+        labels and legends.
 
         Args:
             name (optional): Name of the element. Defaults to 'None'.
-            fcpp (optional): Default kwargs loaded from a theme file.
-                Defaults to {}.
-            others (optional): Other kwargs which override those in fcpp.
-                Typically, these are the user-defined kwargs set in the
-                plotting function call.  Defaults to {}.
+            fcpp (optional): Default kwargs loaded from a theme file.  Defaults to {}.
+            others (optional): Other kwargs which override those in fcpp. Typically, these are the user-defined kwargs
+                set in the plotting function call.  Defaults to {}.
             kwargs
         """
         super().__init__(name=name, fcpp=fcpp, others=others, **kwargs)
@@ -3047,8 +3032,7 @@ class DF_Element(Element):
     @property
     def on(self):
         """Return visibility state; True only if self.values is not None."""
-        return True if self._on and self.values is not None \
-            and len(self.values) > 0 else False
+        return True if self._on and self.values is not None and len(self.values) > 0 else False
 
     @on.setter
     def on(self, state):
