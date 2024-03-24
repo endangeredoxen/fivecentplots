@@ -38,6 +38,8 @@ class ImShow(data.Data):
         else:
             self.fcpp, _, _, _ = utl.reload_defaults(kwargs.get('theme', None))
 
+        self.wh_ratio = utl.kwget(kwargs, self.fcpp, ['wh_ratio'], kwargs.get('wh_ratio', None))
+
         # Color plane splitting
         cfa = utl.kwget(kwargs, self.fcpp, 'cfa', kwargs.get('cfa', None))
         if cfa is not None and self.channels == 1:
@@ -240,7 +242,8 @@ class ImShow(data.Data):
             self.shape = (self.df_fig.loc[idx]['rows'].sum(), self.df_fig.loc[idx, 'cols'].iloc[0])
         width = self.ranges[ir, ic]['xmax'] - self.ranges[ir, ic]['xmin']
         height = self.ranges[ir, ic]['ymin'] - self.ranges[ir, ic]['ymax']
-        self.wh_ratio = width / height
+        if self.wh_ratio is None:
+            self.wh_ratio = width / height
 
     def _stretch(self, kwargs):
         """Perform contrast strectching on an image

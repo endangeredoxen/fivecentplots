@@ -194,12 +194,17 @@ def dfkwarg(args: tuple, kwargs: dict) -> dict:
     Returns:
         updated kwargs
     """
-    if isinstance(args, pd.DataFrame) or isinstance(args, np.ndarray):
+    if 'df' in kwargs.keys():
+        return kwargs
+    elif isinstance(args, pd.DataFrame) or isinstance(args, np.ndarray):
         kwargs['df'] = args
+        return kwargs
+    elif isinstance(args, tuple) or isinstance(args, list) \
+            and len(args) == 2 and isinstance(args[0], pd.DataFrame) and isinstance(args[1], dict):
+        kwargs['df'] = args
+        return kwargs
     else:
-        kwargs['df'] = None
-
-    return kwargs
+        raise TypeError('must define a valid data source!')
 
 
 def df_filter(df: pd.DataFrame, filt_orig: str, drop_cols: bool = False,
@@ -629,7 +634,7 @@ def img_compare(img1: str, img2: str, show: bool = False) -> bool:
     return is_diff
 
 
-def img_df_transform(data: Union[pd.DataFrame, np.ndarray]) -> Tuple[pd.DataFrame, dict]:
+def img_df_transform(data: Union[pd.DataFrame, np.ndarray, Tuple[pd.DataFrame, dict]]) -> Tuple[pd.DataFrame, dict]:
     """
     Transform a numpy array or a DataFrame into the image DataFrame format used in fcp.  Image arrays can be very
     large and memory-intensive (especially with string grouping labels) so this format is used to improve speed.
@@ -651,8 +656,19 @@ def img_df_transform(data: Union[pd.DataFrame, np.ndarray]) -> Tuple[pd.DataFram
     Returns:
         pd.DataFrame, dict
     """
-    if not (isinstance(data, pd.DataFrame) or isinstance(data, np.ndarray)):
-        raise TypeError('Cannot create fcp image DataFrame.  Input data must be a numpy array or a pandas DataFrame')
+    # Verify input type
+    if isinstance(data, tuple) or isinstance(data, list) \
+            and len(data) == 2 and isinstance(data[0], pd.DataFrame) and isinstance(data[1], dict):
+        # Check grouping DataFrame indexes match image data dict keys
+        if not list(data[0].index) == list(data[1].keys()):
+            raise ValueError('Cannot associate image grouping table with image data dict because indexes and dict keys '
+                             'do not match!')
+        return data
+    elif isinstance(data, pd.DataFrame) or isinstance(data, np.ndarray):
+        pass
+    else:
+        raise TypeError('Cannot create fcp image DataFrame.  Input data must be a numpy array, pandas DataFrame, '
+                        'or tuple of a grouping DataFrame and a dict of fcp-formatted image DataFrames')
 
     # Output containers
     imgs = {}
@@ -676,6 +692,7 @@ def img_df_transform(data: Union[pd.DataFrame, np.ndarray]) -> Tuple[pd.DataFram
             for idx, (nn, gg) in enumerate(data.groupby(group_cols)):
                 imgs[idx] = gg[[f for f in gg.columns if f not in group_cols]]
                 ss = (len(gg.Row.unique()), len(gg.Column.unique()))
+                nn = validate_list(nn)
 
                 # Make the grouping DataFrame
                 temp = pd.DataFrame({'rows': ss[0], 'cols': ss[1], 'channels': channels}, index=[idx])
