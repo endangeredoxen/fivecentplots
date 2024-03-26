@@ -1797,40 +1797,27 @@ class BaseLayout:
                     font=utl.kwget(kwargs, self.fcpp, 'tick_labels_font', 'sans-serif'),
                     font_size=utl.kwget(kwargs, self.fcpp, 'tick_labels_font_size', 13),
                     offset=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_offset', False),
-                    padding=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_padding', 1),
+                    padding=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_padding', 2),
                     scale_factor=1.5,
                     )
         kwargs = self._from_list(self.tick_labels_major,
-                                 ['font', 'font_color', 'font_size',
-                                  'font_style', 'font_weight', 'padding',
+                                 ['font', 'font_color', 'font_size', 'font_style', 'font_weight', 'padding',
                                   'rotation'], 'tick_labels_major', kwargs)
         for ax in self.ax + ['z']:
-            fill_alpha = utl.kwget(kwargs, self.fcpp,
-                                   'tick_labels_major_%s_fill_alpha' % ax,
-                                   utl.kwget(kwargs, self.fcpp,
-                                             'tick_labels_major_fill_alpha',
-                                             None))
-            fill_color = utl.kwget(kwargs, self.fcpp,
-                                   'tick_labels_major_%s_fill_color' % ax,
-                                   utl.kwget(kwargs, self.fcpp,
-                                             'tick_labels_major_fill_color',
-                                             None))
+            fill_alpha = utl.kwget(kwargs, self.fcpp, 'tick_labels_major_%s_fill_alpha' % ax,
+                                   utl.kwget(kwargs, self.fcpp, 'tick_labels_major_fill_alpha', None))
+            fill_color = utl.kwget(kwargs, self.fcpp, 'tick_labels_major_%s_fill_color' % ax,
+                                   utl.kwget(kwargs, self.fcpp, 'tick_labels_major_fill_color', None))
             if not fill_alpha and fill_color:
                 fill_alpha = 1
             elif not fill_alpha and not fill_color:
                 fill_alpha = 0
             if not fill_color:
                 fill_color = copy.copy(self.tick_labels_major.fill_color)
-            edge_alpha = utl.kwget(kwargs, self.fcpp,
-                                   'tick_labels_major_%s_edge_alpha' % ax,
-                                   utl.kwget(kwargs, self.fcpp,
-                                             'tick_labels_major_edge_alpha',
-                                             None))
-            edge_color = utl.kwget(kwargs, self.fcpp,
-                                   'tick_labels_major_%s_edge_color' % ax,
-                                   utl.kwget(kwargs, self.fcpp,
-                                             'tick_labels_major_edge_color',
-                                             None))
+            edge_alpha = utl.kwget(kwargs, self.fcpp, 'tick_labels_major_%s_edge_alpha' % ax,
+                                   utl.kwget(kwargs, self.fcpp, 'tick_labels_major_edge_alpha', None))
+            edge_color = utl.kwget(kwargs, self.fcpp, 'tick_labels_major_%s_edge_color' % ax,
+                                   utl.kwget(kwargs, self.fcpp, 'tick_labels_major_edge_color', None))
             if not edge_alpha and edge_color:
                 edge_alpha = 1
             elif not edge_alpha and not edge_color:
@@ -1856,8 +1843,7 @@ class BaseLayout:
                             edge_color=edge_color,
                             edge_alpha=edge_alpha,
                             edge_width=utl.kwget(kwargs, self.fcpp,
-                                                 [f'tick_labels_major_{ax}_edge_width',
-                                                  'tick_labels_major_edge_width'],
+                                                 [f'tick_labels_major_{ax}_edge_width', 'tick_labels_major_edge_width'],
                                                  self.tick_labels_major.edge_width),
                             fill_color=fill_color,
                             fill_alpha=fill_alpha,
@@ -1880,6 +1866,9 @@ class BaseLayout:
                             offset=utl.kwget(kwargs, self.fcpp,
                                              [f'tick_labels_major_{ax}_offset', 'tick_labels_major_offset'],
                                              self.tick_labels_major.offset),
+                            padding=utl.kwget(kwargs, self.fcpp,
+                                              [f'tick_labels_major_{ax}_padding', 'tick_labels_major_padding'],
+                                              self.tick_labels_major.padding),
                             rotation=utl.kwget(kwargs, self.fcpp,
                                                [f'tick_labels_major_{ax}_rotation', 'tick_labels_major_rotation'],
                                                self.tick_labels_major.rotation),
@@ -1923,16 +1912,15 @@ class BaseLayout:
                                  'tick_labels_minor',
                                  False),
                     edge_alpha=0 if not kwargs.get('tick_labels_edge_alpha', None)
-                    and not kwargs.get('tick_labels_minor_edge_alpha', None)
-                    and not kwargs.get('tick_labels_minor_edge_color', None)
-                    else 1,
+                        and not kwargs.get('tick_labels_minor_edge_alpha', None)
+                        and not kwargs.get('tick_labels_minor_edge_color', None)
+                        else 1,
                     fill_alpha=0 if not kwargs.get('tick_labels_fill_alpha', None)
-                    and not kwargs.get('tick_labels_minor_fill_alpha', None)
-                    and not kwargs.get('tick_labels_minor_fill_color', None)
-                    else 1,
-                    font_size=10,
-                    padding=utl.kwget(kwargs, self.fcpp,
-                                      'tick_labels_minor_padding', 3),
+                        and not kwargs.get('tick_labels_minor_fill_alpha', None)
+                        and not kwargs.get('tick_labels_minor_fill_color', None)
+                        else 1,
+                        font_size=10,
+                    padding=utl.kwget(kwargs, self.fcpp, 'tick_labels_minor_padding', 2),
                     )
         kwargs = self._from_list(self.tick_labels_minor,
                                  ['font', 'font_color', 'font_size',
@@ -1990,6 +1978,9 @@ class BaseLayout:
                                                   [f'tick_labels_minor_{ax}_font_weight',
                                                    'tick_labels_minor_font_weight'],
                                                   self.tick_labels_minor.font_weight),
+                            padding=utl.kwget(kwargs, self.fcpp,
+                                              [f'tick_labels_minor_{ax}_padding', 'tick_labels_minor_padding'],
+                                              self.tick_labels_minor.padding),
                             rotation=utl.kwget(kwargs, self.fcpp,
                                                [f'tick_labels_minor_{ax}_rotation', 'tick_labels_minor_rotation'],
                                                self.tick_labels_minor.rotation),
@@ -2932,7 +2923,7 @@ class Element:
     def size_inches(self):
         """Return the element size in inches, not pixels."""
         if self.on:
-            return [self._size[0] / self.dpi, self._size[1] / self.dpi]
+            return [np.ceil(self._size[0]) / self.dpi, np.ceil(self._size[1]) / self.dpi]
         else:
             return [0, 0]
 
