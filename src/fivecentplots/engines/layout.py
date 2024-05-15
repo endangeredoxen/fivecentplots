@@ -308,7 +308,7 @@ class BaseLayout:
         spines = utl.kwget(kwargs, self.fcpp, 'spines', True)
         self.axes = Element('ax', self.fcpp, kwargs,
                             obj=self.obj_array,
-                            size=utl.kwget(kwargs, self.fcpp, 'ax_size', [400, 400]),
+                            size=utl.validate_list(utl.kwget(kwargs, self.fcpp, 'ax_size', [400, 400])),
                             edge_color=utl.kwget(kwargs, self.fcpp, 'ax_edge_color', '#aaaaaa'),
                             fill_color=utl.kwget(kwargs, self.fcpp, 'ax_fill_color', '#eaeaea'),
                             primary=True,
@@ -371,11 +371,16 @@ class BaseLayout:
         label = Element('label', self.fcpp, kwargs,
                         obj=self.obj_array,
                         edge_width=utl.kwget(kwargs, self.fcpp, 'label_edge_width', 0),
+                        fill_alpha=utl.kwget(kwargs, self.fcpp, 'label_fill_alpha', 0),
+                        fill_color=utl.kwget(kwargs, self.fcpp, 'label_fill_color', '#ffffff'),
                         font_color=utl.kwget(kwargs, self.fcpp, 'label_font_color', '#000000'),
                         font_style=utl.kwget(kwargs, self.fcpp, 'label_font_style', 'italic'),
                         font_weight=utl.kwget(kwargs, self.fcpp, 'label_font_weight', 'bold'),
-                        bg_padding=utl.kwget(kwargs, self.fcpp, 'label_bg_padding', 2),
+                        padding_bg=utl.kwget(kwargs, self.fcpp, ['label_padding', 'label_padding_bg'], 2),
+                        position_bg=[0, 0, 0, 0],
                         )
+        if ('label_fill_color' in kwargs or 'label_fill_color' in self.fcpp) and 'label_fill_alpha' not in kwargs:
+            label.fill_alpha = 1
         labels = ['x', 'x2', 'y', 'y2', 'z']
         rotations = [0, 0, 90, 270, 270]
         for ilab, lab in enumerate(labels):
@@ -384,12 +389,10 @@ class BaseLayout:
             getattr(self, 'label_%s' % lab).rotation = rotations[ilab]
 
             # Override params
-            keys = [f for f in kwargs.keys() if 'label_%s' % lab in f]
-            for k in keys:
-                v = kwargs[k]
-                if k == 'label_%s' % lab or '_text' in k:
-                    continue  # k = 'label_%s_text' % lab
-                setattr(getattr(self, 'label_%s' % lab), k.replace('label_%s_' % lab, ''), v)
+            for k in [f for f in self.fcpp.keys() if f'label_{lab}_' in f and '_text' not in f]:
+                setattr(getattr(self, 'label_%s' % lab), k.replace('label_%s_' % lab, ''), self.fcpp[k])
+            for k in [f for f in kwargs.keys() if f'label_{lab}_' in f and '_text' not in f]:
+                setattr(getattr(self, 'label_%s' % lab), k.replace('label_%s_' % lab, ''), kwargs[k])
 
             # Update alphas
             getattr(self, 'label_%s' % lab).color_alpha('fill_color', 'fill_alpha')
@@ -1234,8 +1237,10 @@ class BaseLayout:
             kwargs['tick_cleanup'] = False
         self.ticks_major_x.on = utl.kwget(kwargs_orig, self.fcpp, ['ticks_major_x', 'ticks_major'], False)
         self.ticks_major_y.on = utl.kwget(kwargs_orig, self.fcpp, ['ticks_major_y', 'ticks_major'], False)
-        self.label_x.on = utl.kwget(kwargs_orig, self.fcpp, ['label_x'], False)
-        self.label_y.on = utl.kwget(kwargs_orig, self.fcpp, ['label_y'], False)
+        self.label_x.on = \
+            utl.kwget(kwargs_orig, self.fcpp, ['label_x'], False) or kwargs_orig.get('label_x_text') is not None
+        self.label_y.on = \
+            utl.kwget(kwargs_orig, self.fcpp, ['label_y'], False) or kwargs_orig.get('label_y_text') is not None
         self.tick_labels_major_x.rotation = utl.kwget(kwargs_orig, self.fcpp, 'tick_labels_major_x', 0)
         self.tick_labels_major_x.on = \
             utl.kwget(kwargs_orig, self.fcpp, ['tick_labels_major', 'tick_labels_major_x'], False)
@@ -1428,21 +1433,23 @@ class BaseLayout:
         else:
             marker_list = utl.validate_list(DEFAULT_MARKERS)
         markers = RepeatedList(marker_list, 'markers')
-        marker_edge_color = utl.kwget(kwargs, self.fcpp, 'marker_edge_color', self.color_list)
-        marker_fill_color = utl.kwget(kwargs, self.fcpp, 'marker_fill_color', self.color_list)
-        if kwargs.get('marker_fill_color'):
+        marker_edge_color = utl.kwget(kwargs, self.fcpp, ['marker_edge_color', 'markers_edge_color'], self.color_list)
+        marker_fill_color = utl.kwget(kwargs, self.fcpp, ['marker_fill_color', 'markers_fill_color'], self.color_list)
+        if kwargs.get('marker_fill_color') or kwargs.get('markers_fill_color'):
             kwargs['marker_fill'] = True
-        self.markers = Element('marker', self.fcpp, kwargs,
+        self.markers = Element('markers', self.fcpp, kwargs,
                                on=utl.kwget(kwargs, self.fcpp, 'markers', True),
-                               filled=utl.kwget(kwargs, self.fcpp, 'marker_fill', False),
+                               filled=utl.kwget(kwargs, self.fcpp, ['marker_fill', 'markers_fill'], False),
+                               edge_alpha=utl.kwget(kwargs, self.fcpp, ['marker_edge_alpha', 'markers_edge_alpha'], 1),
                                edge_color=copy.copy(marker_edge_color),
-                               edge_width=utl.kwget(kwargs, self.fcpp, 'marker_edge_width', 1.5),
+                               edge_width=utl.kwget(kwargs, self.fcpp,
+                                                    ['marker_edge_width', 'markers_edge_width'], 1.5),
                                fill_color=copy.copy(marker_fill_color),
                                jitter=utl.kwget(kwargs, self.fcpp, ['marker_jitter', 'jitter'],
                                                 kwargs.get('jitter', False)),
-                               size=utl.kwget(kwargs, self.fcpp, 'marker_size', 6),
+                               size=utl.kwget(kwargs, self.fcpp, ['marker_size', 'markers_size'], 6),
                                type=markers,
-                               zorder=utl.kwget(kwargs, self.fcpp, 'zorder', 2),
+                               zorder=utl.kwget(kwargs, self.fcpp, ['marker_zorder', 'markers_zorder'], 2),
                                )
         if isinstance(self.markers.size, str) and self.markers.size in data.df_all.columns:
             pass
@@ -1749,12 +1756,11 @@ class BaseLayout:
         if 'ticks' in kwargs.keys() and 'ticks_major' not in kwargs.keys():
             kwargs['ticks_major'] = kwargs['ticks']
         ticks_length = utl.kwget(kwargs, self.fcpp, ['tick_length', 'ticks_length'], 6.2)
-        if ticks_length < self.axes.edge_width / 2:
-            ticks_length = self.axes.edge_width / 2
         ticks_width = utl.kwget(kwargs, self.fcpp, ['tick_width', 'ticks_width'], 2.2)
         self.ticks_major = Element('ticks_major', self.fcpp, kwargs,
                                    on=utl.kwget(kwargs, self.fcpp, 'ticks_major', True),
-                                   color=utl.kwget(kwargs, self.fcpp, ['tick_color', 'ticks_color', 'ticks_major_color'], '#ffffff'),
+                                   color=utl.kwget(kwargs, self.fcpp,
+                                                   ['tick_color', 'ticks_color', 'ticks_major_color'], '#ffffff'),
                                    direction=utl.kwget(kwargs, self.fcpp, 'ticks_major_direction', 'in'),
                                    increment=utl.kwget(kwargs, self.fcpp, 'ticks_major_increment', None),
                                    size=[utl.kwget(kwargs, self.fcpp, 'ticks_major_length', ticks_length),
@@ -1764,8 +1770,7 @@ class BaseLayout:
         for ia, ax in enumerate(self.ax):
             setattr(self, 'ticks_major_%s' % ax,
                     Element('ticks_major_%s' % ax, self.fcpp, kwargs,
-                            on=utl.kwget(kwargs, self.fcpp,
-                                         'ticks_major_%s' % ax, self.ticks_major.on),
+                            on=utl.kwget(kwargs, self.fcpp, 'ticks_major_%s' % ax, self.ticks_major.on),
                             color=copy.copy(self.ticks_major.color),
                             direction=utl.kwget(kwargs, self.fcpp,
                                                 'ticks_major_%s_direction' % ax,
@@ -1775,8 +1780,7 @@ class BaseLayout:
                                                 self.ticks_major.increment),
                             size=self.ticks_major.size,
                             ))
-        if 'tick_labels' in kwargs.keys() \
-                and 'tick_labels_major' not in kwargs.keys():
+        if 'tick_labels' in kwargs.keys() and 'tick_labels_major' not in kwargs.keys():
             kwargs['tick_labels_major'] = kwargs['tick_labels']
         for k, v in kwargs.copy().items():
             if 'tick_labels' in k and 'major' not in k and 'minor' not in k:
@@ -1836,9 +1840,7 @@ class BaseLayout:
 
             setattr(self, 'tick_labels_major_%s' % ax,
                     Element('tick_labels_major_%s' % ax, self.fcpp, kwargs,
-                            on=utl.kwget(kwargs, self.fcpp,
-                                         'tick_labels_major_%s' % ax,
-                                         self.tick_labels_major.on),
+                            on=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_%s' % ax, self.tick_labels_major.on),
                             obj=self.obj_array,
                             edge_color=edge_color,
                             edge_alpha=edge_alpha,
@@ -1880,8 +1882,7 @@ class BaseLayout:
 
         # Minor ticks
         self.ticks_minor = Element('ticks_minor', self.fcpp, kwargs,
-                                   on=utl.kwget(kwargs, self.fcpp,
-                                                'ticks_minor', False),
+                                   on=utl.kwget(kwargs, self.fcpp, 'ticks_minor', False),
                                    color='#ffffff',
                                    direction=utl.kwget(kwargs, self.fcpp, 'ticks_minor_direction', 'in'),
                                    number=utl.kwget(kwargs, self.fcpp, 'ticks_minor_number', 3),
@@ -1892,15 +1893,12 @@ class BaseLayout:
         for ax in self.ax:
             setattr(self, 'ticks_minor_%s' % ax,
                     Element('ticks_minor_%s' % ax, self.fcpp, kwargs,
-                            on=utl.kwget(kwargs, self.fcpp,
-                                         'ticks_minor_%s' % ax, self.ticks_minor.on),
+                            on=utl.kwget(kwargs, self.fcpp, 'ticks_minor_%s' % ax, self.ticks_minor.on),
                             color=copy.copy(self.ticks_minor.color),
                             direction=utl.kwget(kwargs, self.fcpp,
                                                 'ticks_minor_%s_direction' % ax,
                                                 self.ticks_minor.direction),
-                            number=utl.kwget(kwargs, self.fcpp,
-                                             'ticks_minor_%s_number' % ax,
-                                             self.ticks_minor.number),
+                            number=utl.kwget(kwargs, self.fcpp, 'ticks_minor_%s_number' % ax, self.ticks_minor.number),
                             size=self.ticks_minor._size,
                             ))
             if 'ticks_minor_%s_number' % ax in kwargs.keys():
@@ -1908,18 +1906,16 @@ class BaseLayout:
 
         self.tick_labels_minor = \
             Element('tick_labels_minor', self.fcpp, kwargs,
-                    on=utl.kwget(kwargs, self.fcpp,
-                                 'tick_labels_minor',
-                                 False),
+                    on=utl.kwget(kwargs, self.fcpp, 'tick_labels_minor', False),
                     edge_alpha=0 if not kwargs.get('tick_labels_edge_alpha', None)
-                        and not kwargs.get('tick_labels_minor_edge_alpha', None)
-                        and not kwargs.get('tick_labels_minor_edge_color', None)
-                        else 1,
+                    and not kwargs.get('tick_labels_minor_edge_alpha', None)
+                    and not kwargs.get('tick_labels_minor_edge_color', None)
+                    else 1,
                     fill_alpha=0 if not kwargs.get('tick_labels_fill_alpha', None)
-                        and not kwargs.get('tick_labels_minor_fill_alpha', None)
-                        and not kwargs.get('tick_labels_minor_fill_color', None)
-                        else 1,
-                        font_size=10,
+                    and not kwargs.get('tick_labels_minor_fill_alpha', None)
+                    and not kwargs.get('tick_labels_minor_fill_color', None)
+                    else 1,
+                    font_size=10,
                     padding=utl.kwget(kwargs, self.fcpp, 'tick_labels_minor_padding', 2),
                     )
         kwargs = self._from_list(self.tick_labels_minor,
@@ -1951,9 +1947,7 @@ class BaseLayout:
 
             setattr(self, 'tick_labels_minor_%s' % ax,
                     Element('tick_labels_minor_%s' % ax, self.fcpp, kwargs,
-                            on=utl.kwget(kwargs, self.fcpp,
-                                         'tick_labels_minor_%s' % ax,
-                                         self.tick_labels_minor.on),
+                            on=utl.kwget(kwargs, self.fcpp, 'tick_labels_minor_%s' % ax, self.tick_labels_minor.on),
                             obj=self.obj_array,
                             edge_color=edge_color,
                             edge_alpha=edge_alpha,

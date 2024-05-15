@@ -24,8 +24,11 @@ class NQ(data.Data):
         try:
             # For image data, grouping information is stored in kwargs['df'] but the actual image arrays are in
             # the self.imgs dict
-            kwargs['df'], kwargs['imgs'] = utl.img_df_transform(kwargs['df'])
-            self.channels = kwargs['df'].loc[0, 'channels']
+            if isinstance(kwargs.get['imgs'], dict):
+                kwargs['df'], kwargs['imgs'] = utl.img_df_transform_from_dict(kwargs['df'], kwargs['imgs'])
+            else:
+                kwargs['df'], kwargs['imgs'] = utl.img_df_transform(kwargs['df'])
+            self.channels = kwargs['df'].iloc[0]['channels']
 
         except TypeError:
             # This might be a problem if the intent is passing image data but it is malformatted

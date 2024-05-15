@@ -137,8 +137,7 @@ def plt_basic_wrap(bm=False, master=False, remove=True, show=False):
                 cbar=True, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250, 250], show=SHOW, contour_width=2,
                 label_rc_font_size=12, levels=40, show_points=True, filename=name + '.png', save=not bm, inline=False,
                 marker_edge_color='#000000', marker_fill_color='#000000',
-                ax_edge_width=5,
-    )#label_wrap_edge_width=2, label_wrap_edge_color='#ff0000')
+                ax_edge_width=5)
 
     if bm:
         return

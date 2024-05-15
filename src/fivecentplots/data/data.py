@@ -434,7 +434,7 @@ class Data:
         for val in vals:
             if self.imgs is None and val not in self.df_all.columns:
                 raise DataError(f'No column named "{val}" found in DataFrame')
-            elif self.imgs is not None and val not in self.imgs[0].columns:
+            elif self.imgs is not None and val not in self.imgs[list(self.imgs.keys())[0]].columns:
                 raise DataError(f'No column named "{val}" found in DataFrame')
 
             # Check case (non-image)
@@ -966,6 +966,9 @@ class Data:
         Args:
             df: data subset
         """
+        if self.legend_vals is not None:
+            # Only do this function once
+            return
         if self.legend is True and self.twin_x or self.legend is True and len(self.y) > 1:
             self.legend_vals = self.y + self.y2
             self.nleg_vals = len(self.y + self.y2)

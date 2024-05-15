@@ -82,10 +82,10 @@ def plt_xy_scatter(bm=False, master=False, remove=True, show=False):
         os.mkdir(test_path)
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False,
              show=False, filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             filename=name + '.png', save=not bm, inline=False, filepath=test_path, ax_edge_width=15,
-             label_fill_color='#ff0000', label_font_style='italic', label_bg_padding=10, ticks_color='#ff0000',
+             filename=name + '.png', save=not bm, inline=False, filepath=test_path, ax_edge_width=14,
+             label_fill_color='#ff0000', label_font_style='italic', label_padding_bg=10, ticks_color='#ff0000',
              tick_labels_major_edge_color='#0000ff', label_edge_color='#000000', label_y_edge_width=2,
-             label_x_edge_width=6, ws_fig_label=15, xmin=0.5, label_y_text='How', label_y_font_size=18)
+             label_x_edge_width=3, ws_fig_label=15, xmin=0.5, label_y_text='How', label_y_font_size=18)
     if bm:
         return
 
@@ -627,7 +627,7 @@ def plt_row_x_column(bm=False, master=False, remove=True, show=False):
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]', show=SHOW,
-             ax_size=[225, 225],
+             ax_size=[225, 225], label_x_fill_color='#00ffff', label_y_fill_color='#00ff0f',
              filter='Substrate=="Si" & Target Wavelength==450', label_rc_font_size=13,
              filename=name + '.png', save=not bm, inline=False)
     if bm:

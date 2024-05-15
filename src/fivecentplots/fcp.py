@@ -1557,7 +1557,7 @@ def plotter(dobj, **kwargs):
                 continue
 
             # Set the axes colors
-            layout.set_axes_colors(ir, ic)
+            layout.set_axes_colors(ir, ic, dd.ranges)
             kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_colors' % (ifig, ir, ic))
 
             # Add and format gridlines
@@ -2025,7 +2025,7 @@ def labels():
 
     Keyword Args:
         AXES_LABELS:
-        label_bg_padding (float): Padding around the label text for the background object behind the text. Defaults to
+        label_padding_bg (float): Padding around the label text for the background object behind the text. Defaults to
           2.
         label_q (str): Custom text for a specific axes label [where q = x, y, x2, y2]. Defaults to DataFrame column
           name. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/plot.html#Multiple-y-only

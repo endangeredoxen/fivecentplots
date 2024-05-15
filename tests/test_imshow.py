@@ -39,6 +39,21 @@ for ii in cp:
 img_rc = pd.concat(cp)
 img_rc.loc[img_rc.Value < 0, 'Value'] = 0
 
+img_all = pd.DataFrame()
+img_test = pd.DataFrame(utl.img_grayscale(img_cat_orig).to_numpy()[300:600, 800:1100])
+img_test.loc[[0, 299]] = 100
+img_test[[0, 299]] = 100
+img_test.loc[3, range(3, 297)] = 0
+img_test.loc[range(3, 297), 3] = 0
+img_test.loc[296, range(3, 297)] = 0
+img_test.loc[range(3, 297), 296] = 0
+groups = ['hi', 'there', 'you', 'are', 'something', 'special', 'buddy', 'boy']
+for i in range(0, 6):
+    temp = img_test.copy() * (1 + 2 * i / 10)
+    temp['Number'] = f'Image {i}'
+    for gg in groups:
+        temp[gg] = 'dr crusher'
+    img_all = pd.concat([img_all, temp])
 
 # Set theme
 fcp.set_theme('gray')
@@ -93,8 +108,9 @@ def plt_imshow(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'imshow_master') if master else 'imshow'
 
     # Make the plot
-    fcp.imshow(img_cat, cmap='inferno', cbar=True, ax_size=[600, 600],
-               filename=name + '.png', save=not bm, inline=False)
+    fcp.imshow(img_cat, cmap='inferno', ax_size=[600, 600], label_font_size=18, label_y_text='Rowgs', label_y_edge_width=7, label_y_edge_color='#ff00ff', label_x_text='Cols', label_x_edge_width=5, label_x_edge_color='#ff00ff',
+               cbar=True, label_z_edge_width=4, label_z_edge_color='#ff0000', label_z_text='Valgue', label_z_rotation=125,
+               filename=name + '.png', save=not bm, inline=False, timer=True, label_z_fill_color='#00ff00')
 
     if bm:
         return
@@ -102,6 +118,8 @@ def plt_imshow(bm=False, master=False, remove=True, show=False):
     # Compare with master
     if master:
         return
+    elif show == -1:
+        utl.show_file(name + '.png')
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
@@ -127,6 +145,10 @@ def plt_imshow_rgb(bm=False, master=False, remove=True, show=False):
     # Compare with master
     if master:
         return
+    elif show == -1:
+        utl.show_file(name + '.png')
+    elif show == -1:
+        utl.show_file(name + '.png')
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
@@ -144,12 +166,16 @@ def plt_imshow_rgb_wrap(bm=False, master=False, remove=True, show=False):
     name = osjoin(MASTER, 'imshow_rgb_wrap_master') if master else 'imshow_rgb_wrap'
 
     # Make the plot
-    img0 = utl.img_df_transform(img_cat_orig)[1][0]
-    img0['case'] = 'original'
+    # img0 = utl.img_df_transform(img_cat_orig)[1][0]
+    # img0['case'] = 'original'
 
-    img1 = utl.img_df_transform(((1 - img_cat_orig / 255) * 255).astype(np.uint8))[1][0]
-    img1['case'] = 'inverse'
-    fcp.imshow(pd.concat([img0, img1]), wrap='case', filename=name + '.png', save=not bm, inline=False)
+    # img1 = utl.img_df_transform(((1 - img_cat_orig / 255) * 255).astype(np.uint8))[1][0]
+    # img1['case'] = 'inverse'
+    imgs = {}
+    imgs[0] = img_cat_orig
+    imgs[1] = ((1 - img_cat_orig / 255) * 255).astype(np.uint8)
+    df = pd.DataFrame({'case': ['original', 'inverse']}, index=[0, 1])
+    fcp.imshow(df, imgs=imgs, wrap='case', filename=name + '.png', save=not bm, inline=False)
 
     if bm:
         return
@@ -157,6 +183,8 @@ def plt_imshow_rgb_wrap(bm=False, master=False, remove=True, show=False):
     # Compare with master
     if master:
         return
+    elif show == -1:
+        utl.show_file(name + '.png')
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
@@ -183,6 +211,8 @@ def plt_imshow_rotate(bm=False, master=False, remove=True, show=False):
     # Compare with master
     if master:
         return
+    elif show == -1:
+        utl.show_file(name + '.png')
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
@@ -209,6 +239,8 @@ def plt_imshow_no_cbar(bm=False, master=False, remove=True, show=False):
     # Compare with master
     if master:
         return
+    elif show == -1:
+        utl.show_file(name + '.png')
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
@@ -235,6 +267,8 @@ def plt_imshow_tick_labels(bm=False, master=False, remove=True, show=False):
     # Compare with master
     if master:
         return
+    elif show == -1:
+        utl.show_file(name + '.png')
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
@@ -261,6 +295,8 @@ def plt_imshow_stretched(bm=False, master=False, remove=True, show=False):
     # Compare with master
     if master:
         return
+    elif show == -1:
+        utl.show_file(name + '.png')
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
@@ -287,6 +323,8 @@ def plt_imshow_zoomed(bm=False, master=False, remove=True, show=False):
     # Compare with master
     if master:
         return
+    elif show == -1:
+        utl.show_file(name + '.png')
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
@@ -312,6 +350,8 @@ def plt_col(bm=False, master=False, remove=True, show=False):
     # Compare with master
     if master:
         return
+    elif show == -1:
+        utl.show_file(name + '.png')
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
@@ -322,6 +362,104 @@ def plt_col(bm=False, master=False, remove=True, show=False):
             os.remove(name + '.png')
 
         assert not compare
+
+
+def plt_col_combos(bm=False, master=False, remove=True, show=False):
+
+    def compare_with_master(master, show, name):
+        if master:
+            return
+        elif show == -1:
+            utl.show_file(name + '.png')
+        elif show:
+            utl.show_file(osjoin(MASTER, name + '_master.png'))
+            utl.show_file(name + '.png')
+            compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        else:
+            compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+            if remove:
+                os.remove(name + '.png')
+
+            assert not compare
+
+    # # 1 x 1
+    # name = osjoin(MASTER, 'col_combos_1x1_master') if master else 'col_combos_1x1'
+    # fcp.imshow(img_all, ax_size=[300, 300], col='Number', label_rc_edge_width=2,
+    #            ax_edge_width=5, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+    #            filename=name + '.png', save=not bm, inline=False, filter='Number in ["Image 0"]')
+    # compare_with_master(master, show, name)
+
+    # 1 x 2
+    name = osjoin(MASTER, 'col_combos_1x2_master') if master else 'col_combos_1x2'
+    fcp.imshow(img_all, ax_size=[300, 300], col='Number', label_rc_edge_width=1,
+               ax_edge_width=5, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+               filename=name + '.png', save=not bm, inline=False, filter='Number in ["Image 0", "Image 1"]')
+    compare_with_master(master, show, name)
+
+    # 1 x 3
+    # name = osjoin(MASTER, 'col_combos_1x3_master') if master else 'col_combos_1x3'
+    # fcp.imshow(img_all, ax_size=[250, 250], col='Number', label_rc_edge_width=1,
+    #            ax_edge_width=1, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+    #            filename=name + '.png', save=not bm, inline=False,
+    #            filter='Number in ["Image 0", "Image 1", "Image 5"]')
+    # compare_with_master(master, show, name)
+
+    # # 1 x 3b
+    # name = osjoin(MASTER, 'col_combos_1x3b_master') if master else 'col_combos_1x3b'
+    # fcp.imshow(img_all, ax_size=[250, 250], col='Number', label_rc_edge_width=1,
+    #            ax_edge_width=0, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+    #            filename=name + '.png', save=not bm, inline=False,
+    #            filter='Number in ["Image 0", "Image 1", "Image 5"]')
+    # compare_with_master(master, show, name)
+
+
+def plt_row_combos(bm=False, master=False, remove=True, show=False):
+
+    def compare_with_master(master, show, name):
+        if master:
+            return
+        elif show == -1:
+            utl.show_file(name + '.png')
+        elif show:
+            utl.show_file(osjoin(MASTER, name + '_master.png'))
+            utl.show_file(name + '.png')
+            compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
+        else:
+            compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
+            if remove:
+                os.remove(name + '.png')
+
+            assert not compare
+
+    # 1 x 1
+    name = osjoin(MASTER, 'row_combos_1x1_master') if master else 'row_combos_1x1'
+    fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=1,
+               ax_edge_width=1, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+               filename=name + '.png', save=not bm, inline=False, filter='Number in ["Image 0"]')
+    compare_with_master(master, show, name)
+
+    # 2 x 1
+    name = osjoin(MASTER, 'row_combos_2x1_master') if master else 'row_combos_2x1'
+    fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=1,
+               ax_edge_width=1, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+               filename=name + '.png', save=not bm, inline=False, filter='Number in ["Image 0", "Image 1"]')
+    compare_with_master(master, show, name)
+
+    # # 3 x 1
+    # name = osjoin(MASTER, 'row_combos_3x1_master') if master else 'row_combos_3x1'
+    # fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=1,
+    #            ax_edge_width=1, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+    #            filename=name + '.png', save=not bm, inline=False,
+    #            filter='Number in ["Image 0", "Image 1", "Image 5"]')
+    # compare_with_master(master, show, name)
+
+    # # 3 x 1b
+    # name = osjoin(MASTER, 'row_combos_3x1b_master') if master else 'row_combos_3x1b'
+    # fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=1,
+    #            ax_edge_width=0, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+    #            filename=name + '.png', save=not bm, inline=False,
+    #            filter='Number in ["Image 0", "Image 1", "Image 5"]')
+    # compare_with_master(master, show, name)
 
 
 def plt_share_col(bm=False, master=False, remove=True, show=False):
@@ -338,6 +476,8 @@ def plt_share_col(bm=False, master=False, remove=True, show=False):
     # Compare with master
     if master:
         return
+    elif show == -1:
+        utl.show_file(name + '.png')
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
@@ -364,6 +504,8 @@ def plt_share_row(bm=False, master=False, remove=True, show=False):
     # Compare with master
     if master:
         return
+    elif show == -1:
+        utl.show_file(name + '.png')
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
@@ -389,6 +531,8 @@ def plt_wrap(bm=False, master=False, remove=True, show=False):
     # Compare with master
     if master:
         return
+    elif show == -1:
+        utl.show_file(name + '.png')
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
@@ -414,6 +558,8 @@ def plt_wrap_one(bm=False, master=False, remove=True, show=False):
     # Compare with master
     if master:
         return
+    elif show == -1:
+        utl.show_file(name + '.png')
     elif show:
         utl.show_file(osjoin(MASTER, name + '_master.png'))
         utl.show_file(name + '.png')
@@ -431,6 +577,8 @@ def plt_wrap_combos(bm=False, master=False, remove=True, show=False):
     def compare_with_master(master, show, name):
         if master:
             return
+        elif show == -1:
+            utl.show_file(name + '.png')
         elif show:
             utl.show_file(osjoin(MASTER, name + '_master.png'))
             utl.show_file(name + '.png')
@@ -507,6 +655,8 @@ def plt_wrap_combos_cbar(bm=False, master=False, remove=True, show=False):
     def compare_with_master(master, show, name):
         if master:
             return
+        elif show == -1:
+            utl.show_file(name + '.png')
         elif show:
             utl.show_file(osjoin(MASTER, name + '_master.png'))
             utl.show_file(name + '.png')
@@ -518,12 +668,12 @@ def plt_wrap_combos_cbar(bm=False, master=False, remove=True, show=False):
 
             assert not compare
 
-    img_all = pd.DataFrame()
-    img_test = pd.DataFrame(utl.img_grayscale(img_cat_orig).to_numpy()[300:600, 800:1100])
-    for i in range(0, 6):
-        temp = img_test.copy() * (1 + 2 * i / 10)
-        temp['Number'] = f'Image {i}'
-        img_all = pd.concat([img_all, temp])
+    # img_all = pd.DataFrame()
+    # img_test = pd.DataFrame(utl.img_grayscale(img_cat_orig).to_numpy()[300:600, 800:1100])
+    # for i in range(0, 6):
+    #     temp = img_test.copy() * (1 + 2 * i / 10)
+    #     temp['Number'] = f'Image {i}'
+    #     img_all = pd.concat([img_all, temp])
 
     # 1 x 1
     name = osjoin(MASTER, 'wrap_combos_1x1_cbar_master') if master else 'wrap_combos_1x1_cbar'

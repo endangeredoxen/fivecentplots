@@ -20,15 +20,24 @@ class ImShow(data.Data):
         req = []
         opt = []
 
+        ## NEW APPROACH, change input to grouping dataframe and dict of numpy arrays not the other way around!
+
         # For image data, grouping information is stored in kwargs['df'] but the actual image arrays are in
         # the self.imgs dict
-        kwargs['df'], kwargs['imgs'] = utl.img_df_transform(kwargs['df'])
+        kwargs['df'], kwargs['imgs'] = utl.img_data_format(kwargs)
+        # kwargs['imgs'] = {}
+        # kwargs['imgs'][0] = kwargs['df'].to_numpy()
+        # kwargs['df'] = pd.DataFrame({'rows': 1000, 'cols': 2000, 'channels': 1}, index=[0])
+        # if isinstance(kwargs.get('imgs'), dict):
+        #     kwargs['df'], kwargs['imgs'] = utl.img_df_transform_from_dict(kwargs['df'], kwargs['imgs'])
+        # else:
+        #     kwargs['df'], kwargs['imgs'] = utl.img_df_transform(kwargs['df'])
 
-        self.channels = kwargs['df'].loc[0, 'channels']
+        self.channels = kwargs['df'].iloc[0]['channels']
         if self.channels == 1:
-            self.shape = (kwargs['df'].loc[0, 'rows'], kwargs['df'].loc[0, 'cols'])
+            self.shape = (kwargs['df'].iloc[0]['rows'], kwargs['df'].loc[0, 'cols'])
         else:
-            self.shape = (kwargs['df'].loc[0, 'rows'], kwargs['df'].loc[0, 'cols'], self.channels)
+            self.shape = (kwargs['df'].iloc[0]['rows'], kwargs['df'].loc[0, 'cols'], self.channels)
 
         kwargs['ax_limit_padding'] = kwargs.get('ax_limit_padding', None)
 
@@ -68,7 +77,8 @@ class ImShow(data.Data):
         self.auto_cols = True
         self.x = ['Column']
         self.y = ['Row']
-        self.z = [f for f in self.imgs[0].columns if f not in ['Row', 'Column']]
+        self.z = ['Value']
+        #self.z = [f for f in self.imgs[list(self.imgs.keys())[0]].columns if f not in ['Row', 'Column']]
         if self.channels > 1 and hasattr(self, 'cbar') and self.cbar:
             raise ValueError('Colorbar option not available for 3D image data')
             self.cbar = False
@@ -146,15 +156,24 @@ class ImShow(data.Data):
 
         # z-axis limits
         # Share z
-        if getattr(self, 'share_z'):
+        if getattr(self, 'share_z') and len(self.zmin) == 1:
             zmin = 1E20
-            zmax = 0
             for ii in idx:
-                zmin = min(zmin, self.imgs[ii][self.z].min().min())
-                zmax = max(zmax, self.imgs[ii][self.z].max().max())
+                zmin = min(zmin, self.imgs[ii].min())
             for ir, ic, plot_num in self._get_subplot_index():
                 self._add_range(ir, ic, 'z', 'min', zmin)
+        elif len(self.zmin) > 1:
+            for ir, ic, plot_num in self._get_subplot_index():
+                self._add_range(ir, ic, 'z', 'min', self.zmin[plot_num - 1])
+        elif getattr(self, 'share_z') and len(self.zmax) == 1:
+            zmax = 0
+            for ii in idx:
+                zmax = max(zmax, self.imgs[ii].max())
+            for ir, ic, plot_num in self._get_subplot_index():
                 self._add_range(ir, ic, 'z', 'max', zmax)
+        elif len(self.zmax) > 1:
+            for ir, ic, plot_num in self._get_subplot_index():
+                self._add_range(ir, ic, 'z', 'max', self.zmax[plot_num - 1])
 
         # Share row
         elif self.share_row and not self.wrap:
@@ -163,8 +182,8 @@ class ImShow(data.Data):
                 zmax = 0
                 idx_row = self.df_fig.loc[self.df_fig[self.row[0]] == rv].index
                 for ii in idx_row:
-                    zmin = min(zmin, self.imgs[ii][self.z].min().min())
-                    zmax = max(zmax, self.imgs[ii][self.z].max().max())
+                    zmin = min(zmin, self.imgs[ii].min())
+                    zmax = max(zmax, self.imgs[ii].max())
                 for ir, ic, plot_num in self._get_subplot_index():
                     if ir == irv:
                         self._add_range(ir, ic, 'z', 'min', zmin)
@@ -176,8 +195,8 @@ class ImShow(data.Data):
                 zmax = 0
                 idx_row = range(0 + ir * self.ncol, min(self.ncol + ir * self.ncol, len(self.imgs.keys())))
                 for ii in idx_row:
-                    zmin = min(zmin, self.imgs[ii][self.z].min().min())
-                    zmax = max(zmax, self.imgs[ii][self.z].max().max())
+                    zmin = min(zmin, self.imgs[ii].min())
+                    zmax = max(zmax, self.imgs[ii].max())
                 for ir, ic, plot_num in self._get_subplot_index():
                     if plot_num in idx_row:
                         self._add_range(ir, ic, 'z', 'min', zmin)
@@ -190,8 +209,8 @@ class ImShow(data.Data):
                 zmax = 0
                 idx_col = self.df_fig.loc[self.df_fig[self.col[0]] == cv].index
                 for ii in idx_col:
-                    zmin = min(zmin, self.imgs[ii][self.z].min().min())
-                    zmax = max(zmax, self.imgs[ii][self.z].max().max())
+                    zmin = min(zmin, self.imgs[ii].min())
+                    zmax = max(zmax, self.imgs[ii].max())
                 for ir, ic, plot_num in self._get_subplot_index():
                     if ic == icv:
                         self._add_range(ir, ic, 'z', 'min', zmin)
@@ -203,8 +222,8 @@ class ImShow(data.Data):
                 zmax = 0
                 idx_col = list(self.imgs.keys())[ic * (self.ncol - 1)::self.ncol]
                 for ii in idx_col:
-                    zmin = min(zmin, self.imgs[ii][self.z].min().min())
-                    zmax = max(zmax, self.imgs[ii][self.z].max().max())
+                    zmin = min(zmin, self.imgs[ii].min())
+                    zmax = max(zmax, self.imgs[ii].max())
                 for ir, ic, plot_num in self._get_subplot_index():
                     if plot_num in idx_col:
                         self._add_range(ir, ic, 'z', 'min', zmin)
@@ -222,9 +241,15 @@ class ImShow(data.Data):
                     continue
 
                 # Existing rc
-                else:
-                    self._add_range(ir, ic, 'z', 'min', df_rc[self.z].min().min())
-                    self._add_range(ir, ic, 'z', 'max', df_rc[self.z].max().max())
+                else:  # doesn't support the case of list of 'q's or q in % (check if data supports that)
+                    if isinstance(self.zmin[0], str) and 'q' in self.zmin[0]:
+                        self._add_range(ir, ic, 'z', 'zmin', np.quantile(df_rc[self.z], float(self.zmin[0][1:])))
+                    else:
+                        self._add_range(ir, ic, 'z', 'min', df_rc[self.z].min().min())
+                    if isinstance(self.zmin[0], str) and 'q' in self.zmax[0]:
+                        self._add_range(ir, ic, 'z', 'max', np.quantile(df_rc[self.z], float(self.zmax[0][1:])))
+                    else:
+                        self._add_range(ir, ic, 'z', 'max', df_rc[self.z].max().max())
 
         # Matplotlib imshow extent offset fix
         if self.engine == 'mpl':
@@ -278,6 +303,9 @@ class ImShow(data.Data):
             updated DataFrame with image data
         """
         if len(df.index) == 0:
-            return df
+            #return df
+            db()
 
-        return pd.concat([self.imgs[x] for x in list(df.index)])
+        subset_dict = {key: value for key, value in self.imgs.items() if key in list(df.index)}
+        return np.concatenate(list(subset_dict.values()), 1)
+        # return pd.concat([self.imgs[x] for x in list(df.index)])

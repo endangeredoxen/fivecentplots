@@ -26,8 +26,11 @@ class Histogram(data.Data):
         try:
             # For image data, grouping information is stored in kwargs['df'] but the actual image arrays are in
             # the self.imgs dict
-            kwargs['df'], kwargs['imgs'] = utl.img_df_transform(kwargs['df'])
-            self.channels = kwargs['df'].loc[0, 'channels']
+            if isinstance(kwargs.get('imgs'), dict):
+                kwargs['df'], kwargs['imgs'] = utl.img_df_transform_from_dict(kwargs['df'], kwargs['imgs'])
+            else:
+                kwargs['df'], kwargs['imgs'] = utl.img_df_transform(kwargs['df'])
+            self.channels = kwargs['df'].iloc[0]['channels']
 
         except TypeError:
             # This might be a problem if the intent is passing image data but it is malformatted
@@ -61,12 +64,21 @@ class Histogram(data.Data):
         # Reformat RGBA
         if kwargs['imgs'] is not None and self.channels > 1:
             # Need to reformat the group and image DataFrames
-            imgs = {}
-            for ii, (k, v) in enumerate(kwargs['imgs'].items()):
-                # Separate the RGB columns into separate images
-                for icol, col in enumerate(['R', 'G', 'B']):
-                    imgs[3 * ii + icol] = v[['Row', 'Column', col]]
-                    imgs[3 * ii + icol].columns = ['Row', 'Column', 'Value']
+            groups = self._kwargs_groupers(kwargs)
+            if 'Channel' in groups:
+                # Separate by color channel
+                imgs = {}
+                for ii, (k, v) in enumerate(kwargs['imgs'].items()):
+                    # Separate the RGB columns into separate images
+                    for icol, col in enumerate(['R', 'G', 'B']):
+                        imgs[3 * ii + icol] = v[['Row', 'Column', col]]
+                        imgs[3 * ii + icol].columns = ['Row', 'Column', 'Value']
+
+                # Update the grouping table and image dataframe dict
+                kwargs['df'] = pd.merge(kwargs['df'], pd.DataFrame({'Channel': ['R', 'G', 'B']}), how='cross')
+            else:
+                # Stack? need some kind of luma
+                db()
 
             # Update the grouping table and image dataframe dict
             kwargs['df'] = pd.merge(kwargs['df'], pd.DataFrame({'Channel': ['R', 'G', 'B']}), how='cross')
@@ -253,6 +265,17 @@ class Histogram(data.Data):
         if hasattr(self, 'horizontal') and self.horizontal:
             self.swap_xy_ranges()
 
+    def _kwargs_groupers(self, kwargs) -> list:
+        """Get all grouping values from kwargs"""
+        props = ['row', 'cols', 'wrap', 'groups', 'legend', 'fig']
+        grouper = []
+
+        for prop in props:
+            if kwargs.get(prop, None) not in ['x', 'y', None]:
+                grouper += utl.validate_list(kwargs.get(prop))
+
+        return list(set(grouper))
+
     def _subset_wrap(self, ir: int, ic: int) -> pd.DataFrame:
         """Histogram-specific version of subset_wrap.  Select the revelant subset
         from self.df_fig with one additional line of code compared with parent func
@@ -313,7 +336,7 @@ class Histogram(data.Data):
             vmax = int(np.nanmax(self.df_all.Value))
 
         # Convert the image data to a histogram
-        temp = self.legend
+        # temp = self.legend
         self._get_legend_groupings(self.df_all)
         self.df_all = self.df_hist(self.df_all, [vmin, vmax + 1])
-        self.legend = temp  # reset the original legend param
+        # self.legend = temp  # reset the original legend param

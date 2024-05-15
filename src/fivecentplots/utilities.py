@@ -13,6 +13,7 @@ import shlex
 import inspect
 from matplotlib.font_manager import FontProperties, findfont
 from typing import Union, Tuple, Dict
+import numpy.typing as npt
 try:
     from PIL import ImageFont  # used only for bokeh font size calculations
 except ImportError:
@@ -589,13 +590,6 @@ def img_compare(img1: str, img2: str, show: bool = False) -> bool:
     Returns:
         True/False of existence of differences
     """
-    try:
-        cv2
-    except NameError:
-        print('img_compare requires opencv which was not found.  Please '
-              'run pip install opencv-python and try again.')
-        return False
-
     # read images
     img1 = cv2.imread(str(img1))
     img2 = cv2.imread(str(img2))
@@ -632,6 +626,76 @@ def img_compare(img1: str, img2: str, show: bool = False) -> bool:
             show_file('difference.png')
 
     return is_diff
+
+
+def img_data_format(kwargs: dict) -> Tuple[pd.DataFrame, dict]:
+    """Format image data into the required format for fivecentplots
+
+    Args:
+        kwargs: user input
+
+    Returns:
+        grouping info dataframe
+        dict of numpy array image data
+    """
+    shape_cols = ['rows', 'cols', 'channels']
+    df = kwargs['df']
+    imgs = kwargs.get('imgs', {})
+
+    # Find image data source (could be in df as 2D DataFrame or in images as numpy array)
+    if len(imgs) == 0 and isinstance(df, pd.DataFrame):
+        # Case 1: image data is in df
+        grouping_cols = [f for f in df_int_cols(df, True) if f not in shape_cols]
+        int_cols = df_int_cols(df)
+
+        if len(int_cols) == 0:
+            raise ValueError('image DataFrame does not contain 2D image data')
+
+        if len(grouping_cols) == 0:
+            imgs[0] = df[int_cols].to_numpy()
+            shape = imgs[0].shape
+            df_groups = pd.DataFrame({'rows': shape[0],
+                                      'cols': shape[1],
+                                      'channels': shape[2] if len(shape) > 2 else 1}, index=[0])
+        else:
+            df_groups = pd.DataFrame()
+            for ii, (nn, gg) in enumerate(df.groupby(grouping_cols, dropna=False)):
+                nn = validate_list(nn)
+                imgs[ii] = gg[int_cols].to_numpy()
+                shape = imgs[0].shape
+                temp = pd.DataFrame({'rows': shape[0], 'cols': shape[1], 'channels': shape[2] if len(shape) > 2 else 1},
+                                     index=[ii])
+                for igroup, group in enumerate(grouping_cols):
+                    temp[group] = nn[igroup]
+                df_groups = pd.concat([df_groups, temp])
+    elif len(imgs) == 0 and isinstance(df, np.ndarray):
+        imgs[0] = df
+        shape = imgs[0].shape
+        df_groups = pd.DataFrame({'rows': shape[0],
+                                  'cols': shape[1],
+                                  'channels': shape[2] if len(shape) > 2 else 1}, index=[0])
+
+    elif isinstance(imgs, dict) and isinstance(df, pd.DataFrame):
+        # Case 2: image data already in correct format
+        df_groups = df.copy()
+        df_groups['rows'] = -1
+        df_groups['cols'] = -1
+        df_groups['channels'] = -1
+        for k, v in imgs.items():
+            if k not in df.index:
+                raise KeyError(f'image array item "{k}" not found in grouping DataFrame')
+            if not isinstance(v, np.ndarray):
+                raise TypeError(f'image array item "{k}" must be a numpy array')
+            shape = v.shape
+            df_groups.loc[k, 'rows'] = shape[0]
+            df_groups.loc[k, 'cols'] = shape[1]
+            df_groups.loc[k, 'channels'] = shape[2] if len(shape) > 2 else 1
+
+    else:
+        raise TypeError('image data must be either a numpy array or a dict of numpy arrays with a DataFrame '
+                        'containing grouping information')
+
+    return df_groups, imgs
 
 
 def img_df_transform(data: Union[pd.DataFrame, np.ndarray, Tuple[pd.DataFrame, dict]]) -> Tuple[pd.DataFrame, dict]:
@@ -685,7 +749,7 @@ def img_df_transform(data: Union[pd.DataFrame, np.ndarray, Tuple[pd.DataFrame, d
             df_groups = pd.DataFrame({'rows': len(data.Row.unique()),
                                       'cols': len(data.Column.unique()),
                                       'channels': channels},
-                                      index=[0])
+                                     index=[0])
 
         else:
             temp_groups = []
@@ -728,7 +792,7 @@ def img_df_transform(data: Union[pd.DataFrame, np.ndarray, Tuple[pd.DataFrame, d
         # Case 2b: DataFrame has grouping columns
         else:
             temp_groups = []
-            for idx, (nn, gg) in enumerate(data.groupby(group_cols)):
+            for idx, (nn, gg) in enumerate(data.groupby(group_cols, dropna=False)):
                 gg = gg[int_cols].to_numpy()
                 nn = validate_list(nn)
                 ss = gg.shape
@@ -774,6 +838,41 @@ def img_df_transform(data: Union[pd.DataFrame, np.ndarray, Tuple[pd.DataFrame, d
     return df_groups, imgs
 
 
+def img_df_transform_from_dict(groups: pd.DataFrame, imgs: Dict[int, npt.NDArray]) -> Tuple[pd.DataFrame, dict]:
+    groups = groups.copy()
+
+    # Update dataframe
+    cols = ['rows', 'cols', 'channels']
+    for cc in cols:
+        if cc not in groups.columns:
+            groups[cc] = -1
+
+    # Format the numpy arrays
+    imgs_new = {}
+    for k, v in imgs.items():
+        if not k in groups.index:
+            continue
+        if not isinstance(v, np.ndarray):
+            raise TypeError('Image dictionary must contain numpy arrays')
+        if len(v.shape) == 2:
+            rows, cols, channels = v.shape[0], v.shape[1], 1
+        else:
+            rows, cols, channels = v.shape
+
+        # Transform the image to an fcp DataFrame
+        imgs_new[k] = img_df_transform(v)[1][0]
+
+        # Update the groups (I DON"T THINK THIS WORKS)
+        if groups.loc[k, cc] == -1:
+            groups.loc[k, 'rows'] = rows
+        if groups.loc[k, cc] == -1:
+            groups.loc[k, cc] == -1
+        if groups.loc[k, cc] == -1:
+            groups.loc[k, 'channels'] = channels
+
+    return groups, imgs_new
+
+
 def img_grayscale(img: np.ndarray) -> pd.DataFrame:
     """Convert an RGB image to grayscale and convert to a 2D DataFrame
 
@@ -786,6 +885,10 @@ def img_grayscale(img: np.ndarray) -> pd.DataFrame:
     r, g, b = img[:, :, 0], img[:, :, 1], img[:, :, 2]
 
     return pd.DataFrame(0.2989 * r + 0.5870 * g + 0.1140 * b)
+
+
+def img_rgb_to_df(data):
+    return img_df_transform(data)[1][0]
 
 
 def nq(data, column: str = 'Value', **kwargs) -> pd.DataFrame:
@@ -1187,7 +1290,6 @@ def split_color_planes(img: pd.DataFrame, cfa: str = 'rggb', as_dict: bool = Fal
 
         if as_dict:
             img2 = {}
-            rows, cols = img.Row.max() + 1, img.Column.max() + 1
             for ic, cc in enumerate(cp):
                 img2[cc] = img.loc[(img.Row % 2 == ic // 2) & (img.Column % 2 == (ic % 2))]
 
