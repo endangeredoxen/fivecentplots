@@ -11,7 +11,9 @@ import pathlib
 import re
 import shlex
 import inspect
+import imageio.v3 as imageio
 from matplotlib.font_manager import FontProperties, findfont
+from pathlib import Path
 from typing import Union, Tuple, Dict
 import numpy.typing as npt
 try:
@@ -1001,7 +1003,7 @@ def rgb2bayer(img: np.ndarray, cfa: str = 'rggb', bit_depth: int = np.uint8) -> 
         bit_depth (optional): bit depth of the input data. Defaults to 8-bit
 
     Returns:
-        DataFrame containing Bayer pixel values
+        np.array containing Bayer-like RAW pixel values
     """
     raw = np.zeros((img.shape[0], img.shape[1]), dtype=bit_depth)
     cp = list(cfa)
@@ -1014,7 +1016,7 @@ def rgb2bayer(img: np.ndarray, cfa: str = 'rggb', bit_depth: int = np.uint8) -> 
             col = 0 if ii % 2 == 0 else 1
             raw[row::2, col::2] = img[row::2, col::2, channel[cpp]]
 
-    return pd.DataFrame(raw)
+    return raw
 
 
 def rectangle_overlap(r1: [list, tuple], r2: [list, tuple]) -> bool:
@@ -1240,7 +1242,7 @@ def show_file(filename: str):
 
 
 def split_color_planes(img: pd.DataFrame, cfa: str = 'rggb', as_dict: bool = False) -> pd.DataFrame:
-    """Split image data into respective color planes.
+    """Split image data into respective color planes.  dtype changed to float
 
     Args:
         img: image data
@@ -1278,30 +1280,35 @@ def split_color_planes(img: pd.DataFrame, cfa: str = 'rggb', as_dict: bool = Fal
 
     # DataFrame input
     if isinstance(img, pd.DataFrame):
-        # Make sure input is in correct format with Row, Column, Values columns
-        if 'Row' not in img.columns:
-            img = img_df_transform(img)[1][0]
+        if len(img.shape) > 2:
+            raise ValueError('split_color_planes only supports 2D DataFrames')
 
         # Separate planes
+        planes = []
+        int_cols = df_int_cols(img)
+        other_cols = df_int_cols(img, True)
+        for ic, cc in enumerate(cp):
+            idx = [f for f in img.index if f % 2 == ic // 2]
+            cols = [f for f in int_cols if f % 2 == ic % 2]
+            sub = img.loc[idx, cols].copy().astype(float)
+            for oc in other_cols:
+                sub[oc] = img.loc[idx[0], oc]
+            if not as_dict:
+                sub['Plane'] = cc
+            planes += [sub]
+
         if not as_dict:
-            img['Plane'] = ''
-            for ic, cc in enumerate(cp):
-                img.loc[(img.Row % 2 == ic // 2) & (img.Column % 2 == (ic % 2)), 'Plane'] = cc
+            return pd.concat(planes)
 
         if as_dict:
-            img2 = {}
-            for ic, cc in enumerate(cp):
-                img2[cc] = img.loc[(img.Row % 2 == ic // 2) & (img.Column % 2 == (ic % 2))]
+            return dict(zip(cp, planes))
 
     # Numpy array input
     else:
         img2 = {}
         for ic, cc in enumerate(cp):
-            img2[cc] = img[ic // 2::2, (ic % 2)::2]
+            img2[cc] = img[ic // 2::2, (ic % 2)::2].astype(float)
 
-    if not as_dict:
-        return img
-    else:
         return img2
 
 
@@ -1366,6 +1373,139 @@ def test_checker(module) -> list:
     plts = [f[0].replace('plt_', '') for f in funcs if 'plt_' in f[0]]
 
     return [f for f in plts if f not in tests]
+
+
+def unit_test_get_img_name(name: str, make_reference: bool, reference_path: pathlib.Path) -> pathlib.Path:
+    """
+    Make the image path for a unit test
+
+    Args:
+        name: image name
+        make_reference: flag for making the reference images
+        reference_path:  path to the reference images
+    Returns:
+        image_path
+    """
+    path = reference_path / f'{name}_reference' if make_reference else Path(name)
+    return path.with_suffix('.png')
+
+
+def unit_test_options(make_reference: bool, show: Union[bool, int], img_path: pathlib.Path,
+                      reference_path: pathlib.Path):
+    """
+    Complete a unit test with one of four options:
+        1. Show the generated image only
+        2. Show the generated image, the reference image, and the difference image
+        3. Assert generated image and reference image are the same
+        4. Do nothing (if making new reference images)
+
+    Args:
+        make_reference:  make new references images (bypasses this function)
+        show:  if -1, show just the new generated image; if True, show the generated image, the reference image, and
+            the difference image
+        img_path: path to the generated image (or reference image if make_reference==True)
+        reference_path:  path to the reference image
+
+    Returns:
+        none
+    """
+    if make_reference:
+        return
+
+    reference_path = (reference_path / f'{img_path.stem}_reference').with_suffix('.png')
+    if show == -1:
+        show_file(img_path)
+    elif show:
+        show_file(reference_path)
+        show_file(img_path)
+        compare = img_compare(img_path, reference_path, show=True)
+    else:
+        compare = img_compare(img_path, reference_path)
+        os.remove(img_path)
+
+        assert not compare
+
+
+def unit_test_measure_axes(img_path: pathlib.Path, row: Union[int, str, None], col: Union[int, None],
+                           width: int=0, height: int=0, channel: int=1, alias=True):
+    """
+    Get axes size from pixel values.  Only works if surrounding border pixels are the same color but different
+    values than the axes area.
+
+    Args:
+        img_path: path the test image
+        row: row index on which to measure (should be clear of labels, legends, ticks etc); if None, skip
+        col: col index on which to measure (should be clear of labels, title, ticks, etc); if None, skip
+        width: target width; if None skip test
+        height: target height; if None skip test
+        channel: which color channel to use (RGB image only)
+        alias: skip up to 1 pixel due to axes edge aliasing
+    """
+    img = imageio.imread(img_path)
+    if len(img.shape) == 3:
+        img = img[:, :, channel]
+
+    if row:
+        if row == 'c':
+            row = int(img.shape[0] / 2)
+        row = img[row, :]
+        x0 = (np.diff(row)!=0).argmax(axis=0) + 1  # add 1 for diff
+        assert (row[x0:]==255).argmax(axis=0) == width - (1 if alias else 0), \
+               f'expected width: {width} | actual: {(row[x0:]==255).argmax(axis=0)}'
+
+    if col:
+        if col == 'c':
+            col = int(img.shape[1] / 2)
+        col = img[:, col]
+        y0 = (np.diff(col)!=0).argmax(axis=0) + 1
+        assert (col[y0:]==255).argmax(axis=0) == height - (1 if alias else 0), \
+               f'expected height: {height} | actual: {(col[y0:]==255).argmax(axis=0)}'
+
+
+def unit_test_measure_margin(img_path: pathlib.Path, row: Union[int, str, None], col: Union[int, None],
+                             left: Union[int, None]=None, right: Union[int, None]=None, top: Union[int, None]=None,
+                             bottom: Union[int, None]=None, channel: int=1, alias=True):
+    """
+    Get margin sizes from pixel values.  Only works if surrounding border pixels are the same color but different
+    values than the axes area.
+
+    Args:
+        img_path: path the test image
+        row: row index on which to measure (should be clear of labels, legends, ticks etc)
+        col: col index on which to measure (should be clear of labels, title, ticks, etc)
+        left: target left margin; if None skip measurement
+        right: target right margin; if None skip measurement
+        top: target top margin; if None skip measurement
+        bottom: target bottom margin; if None skip measurement
+        channel: which color channel to use (RGB image only)
+        alias: skip up to 1 pixel due to axes edge aliasing
+
+        Note: for np.diff statements, need to subtract 1
+    """
+    img = imageio.imread(img_path)
+    if len(img.shape) == 3:
+        img = img[:, :, channel]
+
+    if row:
+        if row == 'c':
+            row = int(img.shape[0] / 2)
+        row = img[row, :]
+        if left:
+            assert (np.diff(row)!=0).argmax(axis=0) == left - (1 if alias else 0) - 1, \
+               f'expected left margin: {left} | actual: {(np.diff(row)!=0).argmax(axis=0) + 1}'
+        if right:
+            assert (np.diff(row[::-1])!=0).argmax(axis=0) == right - (1 if alias else 0) - 1, \
+               f'expected right margin: {right} | actual: {(np.diff(row[::-1])!=0).argmax(axis=0) + 1}'
+    if col:
+        if col == 'c':
+            col = int(img.shape[1] / 2)
+        col = img[:, col]
+        if top:
+            assert (np.diff(col)!=0).argmax(axis=0) == top - (1 if alias else 0) - 1, \
+               f'expected top margin: {top} | actual: {(np.diff(col)!=0).argmax(axis=0) + 1}'
+        if bottom:
+            assert (np.diff(col[::-1])!=0).argmax(axis=0) == bottom - (1 if alias else 0) - 1, \
+               f'expected bottom: {bottom} | actual: {(np.diff(col[::-1])!=0).argmax(axis=0) + 1}'
 
 
 def validate_list(items: [str, int, float, list]) -> list:
