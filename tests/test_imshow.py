@@ -347,119 +347,71 @@ def plt_wrap_one(bm=False, make_reference=False, show=False):
 
 def plt_col_combos(bm=False, make_reference=False, show=False):
 
-    def compare_with_reference(make_reference, show, name):
-        if make_reference:
-            return
-        elif show == -1:
-            utl.show_file(name + '.png')
-        elif show:
-            utl.show_file(REFERENCE / name + '_reference.png')
-            utl.show_file(name + '.png')
-            compare = utl.img_compare(name + '.png', REFERENCE / name + '_reference.png', show=True)
-        else:
-            compare = utl.img_compare(name + '.png', REFERENCE / name + '_reference.png')
-            if remove:
-                os.remove(name + '.png')
-
-            assert not compare
-
-    # # 1 x 1
-    # name = REFERENCE / 'col_combos_1x1_reference' if make_reference else 'col_combos_1x1'
-    # fcp.imshow(img_all, ax_size=[300, 300], col='Number', label_rc_edge_width=2,
-    #            ax_edge_width=5, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
-    #            filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0"]')
-    # compare_with_reference(make_reference, show, name)
+    # 1 x 1
+    name = utl.unit_test_get_img_name('col_combos_1x1', make_reference, REFERENCE)
+    fcp.imshow(img_all, ax_size=[300, 300], col='Number', label_rc_edge_width=3,
+               ax_edge_width=5, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+               filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0"]')
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 1 x 2
-    name = REFERENCE / 'col_combos_1x2_reference' if make_reference else 'col_combos_1x2'
-    fcp.imshow(img_all, ax_size=[300, 300], col='Number', label_rc_edge_width=1,
-               ax_edge_width=5, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+    name = utl.unit_test_get_img_name('col_combos_1x2', make_reference, REFERENCE)
+    fcp.imshow(img_all, ax_size=[300, 300], col='Number', label_rc_edge_width=4,
+               ax_edge_width=6, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
                filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0", "Image 1"]')
-    compare_with_reference(make_reference, show, name)
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 1 x 3
-    # name = REFERENCE / 'col_combos_1x3_reference' if make_reference else 'col_combos_1x3'
-    # fcp.imshow(img_all, ax_size=[250, 250], col='Number', label_rc_edge_width=1,
-    #            ax_edge_width=1, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
-    #            filename=name.with_suffix('.png'), save=not bm, inline=False,
-    #            filter='Number in ["Image 0", "Image 1", "Image 5"]')
-    # compare_with_reference(make_reference, show, name)
+    name = utl.unit_test_get_img_name('col_combos_1x3', make_reference, REFERENCE)
+    fcp.imshow(img_all, ax_size=[250, 250], col='Number', label_rc_edge_width=1,
+               ax_edge_width=1, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+               filename=name.with_suffix('.png'), save=not bm, inline=False,
+               filter='Number in ["Image 0", "Image 1", "Image 5"]')
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
-    # # 1 x 3b
-    # name = REFERENCE / 'col_combos_1x3b_reference' if make_reference else 'col_combos_1x3b'
-    # fcp.imshow(img_all, ax_size=[250, 250], col='Number', label_rc_edge_width=1,
-    #            ax_edge_width=0, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
-    #            filename=name.with_suffix('.png'), save=not bm, inline=False,
-    #            filter='Number in ["Image 0", "Image 1", "Image 5"]')
-    # compare_with_reference(make_reference, show, name)
+    # 1 x 3b
+    name = utl.unit_test_get_img_name('col_combos_1x3b', make_reference, REFERENCE)
+    fcp.imshow(img_all, ax_size=[250, 250], col='Number', label_rc_edge_width=1,
+               ax_edge_width=0, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+               filename=name.with_suffix('.png'), save=not bm, inline=False,
+               filter='Number in ["Image 0", "Image 1", "Image 5"]')
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_row_combos(bm=False, make_reference=False, show=False):
 
-    def compare_with_reference(make_reference, show, name):
-        if make_reference:
-            return
-        elif show == -1:
-            utl.show_file(name + '.png')
-        elif show:
-            utl.show_file(REFERENCE / name + '_reference.png')
-            utl.show_file(name + '.png')
-            compare = utl.img_compare(name + '.png', REFERENCE / name + '_reference.png', show=True)
-        else:
-            compare = utl.img_compare(name + '.png', REFERENCE / name + '_reference.png')
-            if remove:
-                os.remove(name + '.png')
-
-            assert not compare
-
     # 1 x 1
-    name = REFERENCE / 'row_combos_1x1_reference' if make_reference else 'row_combos_1x1'
-    fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=1,
-               ax_edge_width=1, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+    name = utl.unit_test_get_img_name('row_combos_1x1', make_reference, REFERENCE)
+    fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=3,
+               ax_edge_width=5, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
                filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0"]')
-    compare_with_reference(make_reference, show, name)
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 2 x 1
-    name = REFERENCE / 'row_combos_2x1_reference' if make_reference else 'row_combos_2x1'
+    name = utl.unit_test_get_img_name('row_combos_2x1', make_reference, REFERENCE)
+    fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=4,
+               ax_edge_width=6, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+               filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0", "Image 1"]')
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+    # 3 x 1
+    name = utl.unit_test_get_img_name('row_combos_3x1', make_reference, REFERENCE)
     fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=1,
                ax_edge_width=1, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
-               filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0", "Image 1"]')
-    compare_with_reference(make_reference, show, name)
+               filename=name.with_suffix('.png'), save=not bm, inline=False,
+               filter='Number in ["Image 0", "Image 1", "Image 5"]')
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
-    # # 3 x 1
-    # name = REFERENCE / 'row_combos_3x1_reference' if make_reference else 'row_combos_3x1'
-    # fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=1,
-    #            ax_edge_width=1, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
-    #            filename=name.with_suffix('.png'), save=not bm, inline=False,
-    #            filter='Number in ["Image 0", "Image 1", "Image 5"]')
-    # compare_with_reference(make_reference, show, name)
-
-    # # 3 x 1b
-    # name = REFERENCE / 'row_combos_3x1b_reference' if make_reference else 'row_combos_3x1b'
-    # fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=1,
-    #            ax_edge_width=0, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
-    #            filename=name.with_suffix('.png'), save=not bm, inline=False,
-    #            filter='Number in ["Image 0", "Image 1", "Image 5"]')
-    # compare_with_reference(make_reference, show, name)
+    # 3 x 1b
+    name = utl.unit_test_get_img_name('row_combos_3x1b', make_reference, REFERENCE)
+    fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=1,
+               ax_edge_width=0, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+               filename=name.with_suffix('.png'), save=not bm, inline=False,
+               filter='Number in ["Image 0", "Image 1", "Image 5"]')
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_wrap_combos(bm=False, make_reference=False, show=False):
-
-    def compare_with_reference(make_reference, show, name):
-        if make_reference:
-            return
-        elif show == -1:
-            utl.show_file(name + '.png')
-        elif show:
-            utl.show_file(REFERENCE / name + '_reference.png')
-            utl.show_file(name + '.png')
-            compare = utl.img_compare(name + '.png', REFERENCE / name + '_reference.png', show=True)
-        else:
-            compare = utl.img_compare(name + '.png', REFERENCE / name + '_reference.png')
-            if remove:
-                os.remove(name + '.png')
-
-            assert not compare
 
     img_all = pd.DataFrame()
     img_test = pd.DataFrame(utl.img_grayscale(img_cat_orig).to_numpy()[300:600, 800:1100])
@@ -472,128 +424,112 @@ def plt_wrap_combos(bm=False, make_reference=False, show=False):
         img_all = pd.concat([img_all, temp])
 
     # 1 x 1
-    name = REFERENCE / 'wrap_combos_1x1_reference' if make_reference else 'wrap_combos_1x1'
+    name = utl.unit_test_get_img_name('wrap_combos_1x1', make_reference, REFERENCE)
     fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
-               ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
+               ax_edge_width=2, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
                filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0"]')
-    compare_with_reference(make_reference, show, name)
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 1 x 2
-    name = REFERENCE / 'wrap_combos_1x2_reference' if make_reference else 'wrap_combos_1x2'
+    name = utl.unit_test_get_img_name('wrap_combos_1x2', make_reference, REFERENCE)
     fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
                ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
                filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0", "Image 5"]')
-    compare_with_reference(make_reference, show, name)
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 1 x 3
-    name = REFERENCE / 'wrap_combos_1x3_reference' if make_reference else 'wrap_combos_1x3'
+    name = utl.unit_test_get_img_name('wrap_combos_1x3', make_reference, REFERENCE)
     fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
                ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
                filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0", "Image 2", "Image 4"]')
-    compare_with_reference(make_reference, show, name)
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 2 x 3
-    name = REFERENCE / 'wrap_combos_2x3_reference' if make_reference else 'wrap_combos_2x3'
+    name = utl.unit_test_get_img_name('wrap_combos_2x3', make_reference, REFERENCE)
     fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
                ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
                filename=name.with_suffix('.png'), save=not bm, inline=False)
-    compare_with_reference(make_reference, show, name)
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 3 x 1
-    name = REFERENCE / 'wrap_combos_3x1_reference' if make_reference else 'wrap_combos_3x1'
+    name = utl.unit_test_get_img_name('wrap_combos_3x1', make_reference, REFERENCE)
     fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=1, title_wrap_edge_color='aa00ff',
                ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
                filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0", "Image 2", "Image 4"]')
-    compare_with_reference(make_reference, show, name)
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 3 x 2
-    name = REFERENCE / 'wrap_combos_3x2_reference' if make_reference else 'wrap_combos_3x2'
+    name = utl.unit_test_get_img_name('wrap_combos_3x2', make_reference, REFERENCE)
     fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=2, title_wrap_edge_color='aa00ff',
                ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
                filename=name.with_suffix('.png'), save=not bm, inline=False, cmap=['inferno', 'gray'], share_col=True)
-    compare_with_reference(make_reference, show, name)
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 4 x 2
-    name = REFERENCE / 'wrap_combos_4x2_reference' if make_reference else 'wrap_combos_4x2'
+    name = utl.unit_test_get_img_name('wrap_combos_4x2', make_reference, REFERENCE)
     fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=4, title_wrap_edge_color='aa00ff',
                ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
                filename=name.with_suffix('.png'), save=not bm, inline=False, cmap=['gray', 'inferno'], share_row=True)
-    compare_with_reference(make_reference, show, name)
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_wrap_combos_cbar(bm=False, make_reference=False, show=False):
 
-    def compare_with_reference(make_reference, show, name):
-        if make_reference:
-            return
-        elif show == -1:
-            utl.show_file(name + '.png')
-        elif show:
-            utl.show_file(REFERENCE / name + '_reference.png')
-            utl.show_file(name + '.png')
-            compare = utl.img_compare(name + '.png', REFERENCE / name + '_reference.png', show=True)
-        else:
-            compare = utl.img_compare(name + '.png', REFERENCE / name + '_reference.png')
-            if remove:
-                os.remove(name + '.png')
-
-            assert not compare
-
-    # img_all = pd.DataFrame()
-    # img_test = pd.DataFrame(utl.img_grayscale(img_cat_orig).to_numpy()[300:600, 800:1100])
-    # for i in range(0, 6):
-    #     temp = img_test.copy() * (1 + 2 * i / 10)
-    #     temp['Number'] = f'Image {i}'
-    #     img_all = pd.concat([img_all, temp])
+    img_all = pd.DataFrame()
+    img_test = pd.DataFrame(utl.img_grayscale(img_cat_orig).to_numpy()[300:600, 800:1100])
+    for i in range(0, 6):
+        temp = img_test.copy() * (1 + 2 * i / 10)
+        temp['Number'] = f'Image {i}'
+        img_all = pd.concat([img_all, temp])
 
     # 1 x 1
-    name = REFERENCE / 'wrap_combos_1x1_cbar_reference' if make_reference else 'wrap_combos_1x1_cbar'
+    name = utl.unit_test_get_img_name('wrap_combos_1x1_cbar', make_reference, REFERENCE)
     fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
                ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
                filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0"]')
-    compare_with_reference(make_reference, show, name)
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 1 x 2
-    name = REFERENCE / 'wrap_combos_1x2_cbar_reference' if make_reference else 'wrap_combos_1x2_cbar'
+    name = utl.unit_test_get_img_name('wrap_combos_1x2_cbar', make_reference, REFERENCE)
     fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
                ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
                filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0", "Image 5"]')
-    compare_with_reference(make_reference, show, name)
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 1 x 3
-    name = REFERENCE / 'wrap_combos_1x3_cbar_reference' if make_reference else 'wrap_combos_1x3_cbar'
+    name = utl.unit_test_get_img_name('wrap_combos_1x3_cbar', make_reference, REFERENCE)
     fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
                ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
                filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0", "Image 2", "Image 4"]')
-    compare_with_reference(make_reference, show, name)
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
-    # 2 x 3
-    name = REFERENCE / 'wrap_combos_2x3_cbar_reference' if make_reference else 'wrap_combos_2x3_cbar'
-    fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
-               ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
-               filename=name.with_suffix('.png'), save=not bm, inline=False, zmin=[50, 100], zmax=[200, 300])
-    compare_with_reference(make_reference, show, name)
+    # # 2 x 3
+    # name = REFERENCE / 'wrap_combos_2x3_cbar_reference' if make_reference else 'wrap_combos_2x3_cbar'
+    # fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
+    #            ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
+    #            filename=name.with_suffix('.png'), save=not bm, inline=False, zmin=[50, 100], zmax=[200, 300])
+    # compare_with_reference(make_reference, show, name)
 
-    # 3 x 1
-    name = REFERENCE / 'wrap_combos_3x1_cbar_reference' if make_reference else 'wrap_combos_3x1_cbar'
-    fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=1, title_wrap_edge_color='aa00ff',
-               ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
-               filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0", "Image 2", "Image 4"]')
-    compare_with_reference(make_reference, show, name)
+    # # 3 x 1
+    # name = REFERENCE / 'wrap_combos_3x1_cbar_reference' if make_reference else 'wrap_combos_3x1_cbar'
+    # fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=1, title_wrap_edge_color='aa00ff',
+    #            ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
+    #            filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0", "Image 2", "Image 4"]')
+    # compare_with_reference(make_reference, show, name)
 
-    # 3 x 2
-    name = REFERENCE / 'wrap_combos_3x2_cbar_reference' if make_reference else 'wrap_combos_3x2_cbar'
-    fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=2, title_wrap_edge_color='aa00ff',
-               ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
-               filename=name.with_suffix('.png'), save=not bm, inline=False, cmap=['inferno', 'gray'], share_col=True)
-    compare_with_reference(make_reference, show, name)
+    # # 3 x 2
+    # name = REFERENCE / 'wrap_combos_3x2_cbar_reference' if make_reference else 'wrap_combos_3x2_cbar'
+    # fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=2, title_wrap_edge_color='aa00ff',
+    #            ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
+    #            filename=name.with_suffix('.png'), save=not bm, inline=False, cmap=['inferno', 'gray'], share_col=True)
+    # compare_with_reference(make_reference, show, name)
 
-    # 4 x 2
-    name = REFERENCE / 'wrap_combos_4x2_cbar_reference' if make_reference else 'wrap_combos_4x2_cbar'
-    fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=4, title_wrap_edge_color='aa00ff',
-               ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
-               filename=name.with_suffix('.png'), save=not bm, inline=False, cmap=['gray', 'inferno'], share_row=True)
-    compare_with_reference(make_reference, show, name)
+    # # 4 x 2
+    # name = REFERENCE / 'wrap_combos_4x2_cbar_reference' if make_reference else 'wrap_combos_4x2_cbar'
+    # fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=4, title_wrap_edge_color='aa00ff',
+    #            ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
+    #            filename=name.with_suffix('.png'), save=not bm, inline=False, cmap=['gray', 'inferno'], share_row=True)
+    # compare_with_reference(make_reference, show, name)
 
 
 # test_ functions call plt_ funcs 2x:

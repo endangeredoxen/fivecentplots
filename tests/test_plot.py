@@ -654,9 +654,8 @@ def plt_row_x_column_no_names(bm=False, master=False, remove=True, show=False):
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]', show=SHOW,
-             ax_size=[225, 225], label_rc_names=False,
-             filter='Substrate=="Si" & Target Wavelength==450', label_rc_font_size=13,
-             filename=name + '.png', save=not bm, inline=False)
+             ax_size=[225, 225], label_rc_names=False, filter='Substrate=="Si" & Target Wavelength==450',
+             label_rc_font_size=13, filename=name + '.png', save=not bm, inline=False)
     if bm:
         return
 

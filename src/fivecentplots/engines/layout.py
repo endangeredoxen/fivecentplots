@@ -1818,6 +1818,7 @@ class BaseLayout:
                     offset=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_offset', False),
                     padding=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_padding', 2),
                     scale_factor=1.5,
+                    edge_width=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_edge_width', 0)
                     )
         kwargs = self._from_list(self.tick_labels_major,
                                  ['font', 'font_color', 'font_size', 'font_style', 'font_weight', 'padding',
@@ -1932,6 +1933,7 @@ class BaseLayout:
                     else 1,
                     font_size=10,
                     padding=utl.kwget(kwargs, self.fcpp, 'tick_labels_minor_padding', 2),
+                    edge_width=utl.kwget(kwargs, self.fcpp, 'tick_labels_minor_edge_width', 0),
                     )
         kwargs = self._from_list(self.tick_labels_minor,
                                  ['font', 'font_color', 'font_size',
