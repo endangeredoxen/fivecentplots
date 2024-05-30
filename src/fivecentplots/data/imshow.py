@@ -20,24 +20,15 @@ class ImShow(data.Data):
         req = []
         opt = []
 
-        ## NEW APPROACH, change input to grouping dataframe and dict of numpy arrays not the other way around!
-
-        # For image data, grouping information is stored in kwargs['df'] but the actual image arrays are in
-        # the self.imgs dict
+        # For image data, grouping information is stored in kwargs['df'] but the actual image arrays are kwargs['imgs']
+        # which is a dict of numpy.ndarray's or 2D dataframes
         kwargs['df'], kwargs['imgs'] = utl.img_data_format(kwargs)
-        # kwargs['imgs'] = {}
-        # kwargs['imgs'][0] = kwargs['df'].to_numpy()
-        # kwargs['df'] = pd.DataFrame({'rows': 1000, 'cols': 2000, 'channels': 1}, index=[0])
-        # if isinstance(kwargs.get('imgs'), dict):
-        #     kwargs['df'], kwargs['imgs'] = utl.img_df_transform_from_dict(kwargs['df'], kwargs['imgs'])
-        # else:
-        #     kwargs['df'], kwargs['imgs'] = utl.img_df_transform(kwargs['df'])
 
         self.channels = kwargs['df'].iloc[0]['channels']
         if self.channels == 1:
-            self.shape = (kwargs['df'].iloc[0]['rows'], kwargs['df'].loc[0, 'cols'])
+            self.shape = (kwargs['df'].iloc[0]['rows'], kwargs['df'].iloc[0]['cols'])
         else:
-            self.shape = (kwargs['df'].iloc[0]['rows'], kwargs['df'].loc[0, 'cols'], self.channels)
+            self.shape = (kwargs['df'].iloc[0]['rows'], kwargs['df'].iloc[0]['cols'], self.channels)
 
         kwargs['ax_limit_padding'] = kwargs.get('ax_limit_padding', None)
 
@@ -128,6 +119,24 @@ class ImShow(data.Data):
 
         return vmin, vmax
 
+    def _zmin(self, df, zmin):
+        if isinstance(zmin, str) and 'q' in zmin:
+            qq = float(zmin[1:])
+            if qq > 1:
+                qq /= 100
+            return np.quantile(df, qq)
+        else:
+            return df.min()
+
+    def _zmax(self, df, zmax):
+        if isinstance(zmax, str) and 'q' in zmax:
+            qq = float(zmax[1:])
+            if qq > 1:
+                qq /= 100
+            return np.quantile(df, qq)
+        else:
+            return df.max()
+
     def _get_data_ranges(self):
         """ImShow-specific data range calculator by subplot."""
         # Get user ranges
@@ -136,7 +145,7 @@ class ImShow(data.Data):
         # Get the image indices associated with the figure
         idx = list(self.df_fig.index)
 
-        # Apply shared axes
+        # Apply x/y axes ranges
         for ir, ic, plot_num in self._get_subplot_index():
             # x- and y-axis min limits (always zero unless user overrides via kwargs)
             self._add_range(ir, ic, 'x', 'min', 0)
@@ -154,108 +163,208 @@ class ImShow(data.Data):
             self.ranges[ir, ic]['ymax'] = self.ranges[ir, ic]['ymin']
             self.ranges[ir, ic]['ymin'] = temp
 
-        # z-axis limits
-        # Share z
-        if getattr(self, 'share_z') and len(self.zmin) == 1:
-            zmin = 1E20
-            for ii in idx:
-                zmin = min(zmin, self.imgs[ii].min())
-            for ir, ic, plot_num in self._get_subplot_index():
-                self._add_range(ir, ic, 'z', 'min', zmin)
-        elif len(self.zmin) > 1:
-            for ir, ic, plot_num in self._get_subplot_index():
-                self._add_range(ir, ic, 'z', 'min', self.zmin[plot_num - 1])
-        elif getattr(self, 'share_z') and len(self.zmax) == 1:
-            zmax = 0
-            for ii in idx:
-                zmax = max(zmax, self.imgs[ii].max())
-            for ir, ic, plot_num in self._get_subplot_index():
-                self._add_range(ir, ic, 'z', 'max', zmax)
-        elif len(self.zmax) > 1:
-            for ir, ic, plot_num in self._get_subplot_index():
-                self._add_range(ir, ic, 'z', 'max', self.zmax[plot_num - 1])
+        # Get the z-axis ranges for each subplot
+        _zmin = np.array([[None] * self.ncol] * self.nrow)
+        _zmax = np.array([[None] * self.ncol] * self.nrow)
+        for ir, ic, plot_num in self._get_subplot_index():
+            df = self._subset(ir, ic)
+            if len(df) == 0:
+                # Empty dataframe
+                _zmin[ir, ic] = np.nan
+                _zmax[ir, ic] = np.nan
+                continue
 
-        # Share row
-        elif self.share_row and not self.wrap:
-            for irv, rv in enumerate(self.row_vals):
-                zmin = 1E20
-                zmax = 0
-                idx_row = self.df_fig.loc[self.df_fig[self.row[0]] == rv].index
-                for ii in idx_row:
-                    zmin = min(zmin, self.imgs[ii].min())
-                    zmax = max(zmax, self.imgs[ii].max())
-                for ir, ic, plot_num in self._get_subplot_index():
-                    if ir == irv:
-                        self._add_range(ir, ic, 'z', 'min', zmin)
-                        self._add_range(ir, ic, 'z', 'max', zmax)
+            # zmin's
+            if isinstance(self.zmin[plot_num], str) and 'q' in self.zmin[plot_num]:
+                qq = float(self.zmin[plot_num][1:])
+                if qq > 1:
+                    qq /= 100
+                _zmin[ir, ic] = np.quantile(df, qq)
+            else:
+                _zmin[ir, ic] = df.min()
 
-        elif self.share_row and self.wrap:
-            for ir in range(0, self.nrow):
-                zmin = 1E20
-                zmax = 0
-                idx_row = range(0 + ir * self.ncol, min(self.ncol + ir * self.ncol, len(self.imgs.keys())))
-                for ii in idx_row:
-                    zmin = min(zmin, self.imgs[ii].min())
-                    zmax = max(zmax, self.imgs[ii].max())
-                for ir, ic, plot_num in self._get_subplot_index():
-                    if plot_num in idx_row:
-                        self._add_range(ir, ic, 'z', 'min', zmin)
-                        self._add_range(ir, ic, 'z', 'max', zmax)
+            # zmax's
+            if isinstance(self.zmax[plot_num], str) and 'q' in self.zmax[plot_num]:
+                qq = float(self.zmax[plot_num][1:])
+                if qq > 1:
+                    qq /= 100
+                _zmax[ir, ic] = np.quantile(df, qq)
+            else:
+                _zmax[ir, ic] = df.max()
 
-        # Share col
-        elif self.share_col and not self.wrap:
-            for icv, cv in enumerate(self.col_vals):
-                zmin = 1E20
-                zmax = 0
-                idx_col = self.df_fig.loc[self.df_fig[self.col[0]] == cv].index
-                for ii in idx_col:
-                    zmin = min(zmin, self.imgs[ii].min())
-                    zmax = max(zmax, self.imgs[ii].max())
-                for ir, ic, plot_num in self._get_subplot_index():
-                    if ic == icv:
-                        self._add_range(ir, ic, 'z', 'min', zmin)
-                        self._add_range(ir, ic, 'z', 'max', zmax)
+        # Apply the z-ranges as specified by the user
+        for ir, ic, plot_num in self._get_subplot_index():
+            if len(self.zmin) > 1 or not any([self.share_z, self.share_row, self.share_col]):
+                self._add_range(ir, ic, 'z', 'min', _zmin[ir, ic])
+            elif self.share_z:
+                self._add_range(ir, ic, 'z', 'min', np.nanmin(_zmin))
+            elif self.share_row:
+                self._add_range(ir, ic, 'z', 'min', np.nanmin(_zmin[ir, :]))
+            else:
+                self._add_range(ir, ic, 'z', 'min', np.nanmin(_zmin[:, ic]))
 
-        elif self.share_col and self.wrap:
-            for ic in range(0, self.ncol):
-                zmin = 1E20
-                zmax = 0
-                idx_col = list(self.imgs.keys())[ic * (self.ncol - 1)::self.ncol]
-                for ii in idx_col:
-                    zmin = min(zmin, self.imgs[ii].min())
-                    zmax = max(zmax, self.imgs[ii].max())
-                for ir, ic, plot_num in self._get_subplot_index():
-                    if plot_num in idx_col:
-                        self._add_range(ir, ic, 'z', 'min', zmin)
-                        self._add_range(ir, ic, 'z', 'max', zmax)
+            if len(self.zmax) > 1 or not any([self.share_z, self.share_row, self.share_col]):
+                self._add_range(ir, ic, 'z', 'max', _zmax[ir, ic])
+            elif self.share_z:
+                self._add_range(ir, ic, 'z', 'max', np.nanmax(_zmax))
+            elif self.share_row:
+                self._add_range(ir, ic, 'z', 'max', np.nanmax(_zmax[ir, :]))
+            else:
+                self._add_range(ir, ic, 'z', 'max', np.nanmax(_zmax[:, ic]))
 
-        # subplot level when not shared
-        else:
-            for ir, ic, plot_num in self._get_subplot_index():
-                df_rc = self._subset(ir, ic)
+        # if self.share_z and len(self.zmin) == 1:
+        #     for ir, ic, plot_num in self._get_subplot_index():
+        #         self._add_range(ir, ic, 'z', 'min', _zmin.min())
+        # elif self.share_row:
+        #     for ir, ic, plot_num in self._get_subplot_index():
+        #         self._add_range(ir, ic, 'z', 'min', _zmin[ir, :].min())
+        # elif self.share_col:
+        #     for ir, ic, plot_num in self._get_subplot_index():
+        #         self._add_range(ir, ic, 'z', 'min', _zmin[:, ic].min())
 
-                # Empty rc
-                if len(df_rc) == 0:  # this doesn't exist yet!
-                    self._add_range(ir, ic, 'z', 'min', None)
-                    self._add_range(ir, ic, 'z', 'max', None)
-                    continue
 
-                # Existing rc
-                else:  # doesn't support the case of list of 'q's or q in % (check if data supports that)
-                    if isinstance(self.zmin[0], str) and 'q' in self.zmin[0]:
-                        self._add_range(ir, ic, 'z', 'zmin', np.quantile(df_rc[self.z], float(self.zmin[0][1:])))
-                    else:
-                        self._add_range(ir, ic, 'z', 'min', df_rc[self.z].min().min())
-                    if isinstance(self.zmin[0], str) and 'q' in self.zmax[0]:
-                        self._add_range(ir, ic, 'z', 'max', np.quantile(df_rc[self.z], float(self.zmax[0][1:])))
-                    else:
-                        self._add_range(ir, ic, 'z', 'max', df_rc[self.z].max().max())
+        # elif len(self.zmin) > 1:  # overrides share_z
+        #     for ir, ic, plot_num in self._get_subplot_index():
+        #         self._add_range(ir, ic, 'z', 'min', self.zmin[plot_num - 1])
+
+        # # Share row zmin
+        # elif self.share_row and not self.wrap:
+        #     for irv, rv in enumerate(self.row_vals):
+        #         zmin = 1E20
+        #         idx_row = self.df_fig.loc[self.df_fig[self.row[0]] == rv].index
+        #         for ii in idx_row:
+        #             zmin = min(zmin, self.imgs[ii].min())
+        #         for ir, ic, plot_num in self._get_subplot_index():
+        #             if ir == irv:
+        #                 self._add_range(ir, ic, 'z', 'min', zmin)
+
+        # # Share row and wrap zmin
+        # elif self.share_row and self.wrap:
+        #     for ir in range(0, self.nrow):
+        #         zmin = 1E20
+        #         idx_row = range(0 + ir * self.ncol, min(self.ncol + ir * self.ncol, len(self.imgs.keys())))
+        #         for ii in idx_row:
+        #             zmin = min(zmin, self.imgs[ii].min())
+        #         for ir, ic, plot_num in self._get_subplot_index():
+        #             if plot_num in idx_row:
+        #                 self._add_range(ir, ic, 'z', 'min', zmin)
+
+        # # Share col zmin
+        # elif self.share_col and not self.wrap:
+        #     for icv, cv in enumerate(self.col_vals):
+        #         zmin = 1E20
+        #         idx_col = self.df_fig.loc[self.df_fig[self.col[0]] == cv].index
+        #         for ii in idx_col:
+        #             zmin = min(zmin, self.imgs[ii].min())
+        #         for ir, ic, plot_num in self._get_subplot_index():
+        #             if ic == icv:
+        #                 self._add_range(ir, ic, 'z', 'min', zmin)
+
+        # # Share col and wrap zmin
+        # elif self.share_col and self.wrap:
+        #     for ic in range(0, self.ncol):
+        #         zmin = 1E20
+        #         idx_col = list(self.imgs.keys())[ic * (self.ncol - 1)::self.ncol]
+        #         for ii in idx_col:
+        #             zmin = min(zmin, self.imgs[ii].min())
+        #         for ir, ic, plot_num in self._get_subplot_index():
+        #             if plot_num in idx_col:
+        #                 self._add_range(ir, ic, 'z', 'min', zmin)
+
+        # # No sharing zmin
+        # else:
+        #     for ir, ic, plot_num in self._get_subplot_index():
+        #         df_rc = self._subset(ir, ic)
+
+        #         # Empty rc
+        #         if len(df_rc) == 0:  # this doesn't exist yet!
+        #             self._add_range(ir, ic, 'z', 'min', None)
+        #             continue
+
+        #         # Existing rc
+        #         else:  # doesn't support the case of list of 'q's or q in % (check if data supports that)
+        #             if isinstance(self.zmin[0], str) and 'q' in self.zmin[0]:
+        #                 self._add_range(ir, ic, 'z', 'min', np.quantile(df_rc, float(self.zmin[0][1:])))
+        #             else:
+        #                 self._add_range(ir, ic, 'z', 'min', df_rc.min())
+
+        # # zmax
+        # if self.share_z and len(self.zmax) == 1:
+        #     zmax = 0
+        #     for ii in idx:
+        #         zmax = max(zmax, self.imgs[ii].max())
+        #     for ir, ic, plot_num in self._get_subplot_index():
+        #         self._add_range(ir, ic, 'z', 'max', zmax)
+        # elif len(self.zmax) > 1:
+        #     for ir, ic, plot_num in self._get_subplot_index():
+        #         self._add_range(ir, ic, 'z', 'max', self.zmax[plot_num - 1])
+
+        # # Share row zmax
+        # elif self.share_row and not self.wrap:
+        #     for irv, rv in enumerate(self.row_vals):
+        #         zmax = 0
+        #         idx_row = self.df_fig.loc[self.df_fig[self.row[0]] == rv].index
+        #         for ii in idx_row:
+        #             zmax = max(zmax, self.imgs[ii].max())
+        #         for ir, ic, plot_num in self._get_subplot_index():
+        #             if ir == irv:
+        #                 self._add_range(ir, ic, 'z', 'max', zmax)
+
+        # # Share row and wrap zmax
+        # elif self.share_row and self.wrap:
+        #     for ir in range(0, self.nrow):
+        #         zmax = 0
+        #         idx_row = range(0 + ir * self.ncol, min(self.ncol + ir * self.ncol, len(self.imgs.keys())))
+        #         for ii in idx_row:
+        #             zmax = max(zmax, self.imgs[ii].max())
+        #         for ir, ic, plot_num in self._get_subplot_index():
+        #             if plot_num in idx_row:
+        #                 self._add_range(ir, ic, 'z', 'max', zmax)
+
+        # # Share col zmax
+        # elif self.share_col and not self.wrap:
+        #     for icv, cv in enumerate(self.col_vals):
+        #         zmax = 0
+        #         idx_col = self.df_fig.loc[self.df_fig[self.col[0]] == cv].index
+        #         for ii in idx_col:
+        #             zmax = max(zmax, self.imgs[ii].max())
+        #         for ir, ic, plot_num in self._get_subplot_index():
+        #             if ic == icv:
+        #                 self._add_range(ir, ic, 'z', 'max', zmax)
+
+        # # Share col and wrap zmax
+        # elif self.share_col and self.wrap:
+        #     for ic in range(0, self.ncol):
+        #         zmax = 0
+        #         idx_col = list(self.imgs.keys())[ic * (self.ncol - 1)::self.ncol]
+        #         for ii in idx_col:
+        #             zmax = max(zmax, self.imgs[ii].max())
+        #         for ir, ic, plot_num in self._get_subplot_index():
+        #             if plot_num in idx_col:
+        #                 self._add_range(ir, ic, 'z', 'max', zmax)
+
+        # # subplot level when not shared
+        # else:
+        #     for ir, ic, plot_num in self._get_subplot_index():
+        #         df_rc = self._subset(ir, ic)
+
+        #         # Empty rc
+        #         if len(df_rc) == 0:  # this doesn't exist yet!
+        #             self._add_range(ir, ic, 'z', 'max', None)
+        #             continue
+
+        #         # Existing rc
+        #         else:  # doesn't support the case of list of 'q's or q in % (check if data supports that)
+        #             if isinstance(self.zmin[0], str) and 'q' in self.zmax[0]:
+        #                 self._add_range(ir, ic, 'z', 'max', np.quantile(df_rc, float(self.zmax[0][1:])))
+        #             else:
+        #                 self._add_range(ir, ic, 'z', 'max', df_rc.max())
 
         # Matplotlib imshow extent offset fix
         if self.engine == 'mpl':
             for ir, ic, plot_num in self._get_subplot_index():
                 for val in self.ranges[ir, ic]:
-                    if ('x' in val or 'y' in val) and self.ranges[ir, ic][val] is not None:
+                    if (val[0] == 'x' or val[0] == 'y') and self.ranges[ir, ic][val] is not None:
                         self.ranges[ir, ic][val] -= 0.5
 
         # Update some size parameters based the new self.df_fig
@@ -271,7 +380,7 @@ class ImShow(data.Data):
             self.wh_ratio = width / height
 
     def _stretch(self, kwargs):
-        """Perform contrast strectching on an image
+        """Perform contrast stretching on an image
 
         Args:
             kwargs: user-defined keyword args
@@ -281,12 +390,9 @@ class ImShow(data.Data):
             stretch = utl.validate_list(stretch)
             if len(stretch) == 1:
                 stretch = [stretch[0], stretch[0]]
-            vals = []
-            for k, v in self.imgs.items():
-                vals += [v[self.z].values.T]
-            vals = np.concatenate(vals)
-            uu = vals.mean()
-            ss = vals.std()
+            all_data = np.concatenate(list(self.imgs.values()))
+            uu = all_data.mean()
+            ss = all_data.std()
             self.zmin.values[0] = uu - abs(stretch[0]) * ss
             self.zmax.values[0] = uu + stretch[1] * ss
 
@@ -303,9 +409,7 @@ class ImShow(data.Data):
             updated DataFrame with image data
         """
         if len(df.index) == 0:
-            #return df
-            db()
+            return df
 
         subset_dict = {key: value for key, value in self.imgs.items() if key in list(df.index)}
         return np.concatenate(list(subset_dict.values()), 1)
-        # return pd.concat([self.imgs[x] for x in list(df.index)])

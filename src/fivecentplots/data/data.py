@@ -81,6 +81,8 @@ class Data:
         self.share_y = utl.kwget(kwargs, self.fcpp, 'share_y', True)
         self.share_y2 = utl.kwget(kwargs, self.fcpp, 'share_y2', True)
         self.share_z = utl.kwget(kwargs, self.fcpp, 'share_z', True)
+        if utl.kwget(kwargs, self.fcpp, 'cbar_shared', False):
+            self.share_z = True
         if self.share_row or self.share_col:
             self.share_x = False
             self.share_y = False

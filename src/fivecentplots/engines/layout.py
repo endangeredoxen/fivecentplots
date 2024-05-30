@@ -370,17 +370,17 @@ class BaseLayout:
         # Axes labels
         label = Element('label', self.fcpp, kwargs,
                         obj=self.obj_array,
+                        edge_style=utl.kwget(kwargs, self.fcpp, 'label_edge_style', 'square'),
                         edge_width=utl.kwget(kwargs, self.fcpp, 'label_edge_width', 0),
-                        fill_alpha=utl.kwget(kwargs, self.fcpp, 'label_fill_alpha', 0),
+                        fill_alpha=utl.kwget(kwargs, self.fcpp, 'label_fill_alpha', 1),
                         fill_color=utl.kwget(kwargs, self.fcpp, 'label_fill_color', '#ffffff'),
                         font_color=utl.kwget(kwargs, self.fcpp, 'label_font_color', '#000000'),
                         font_style=utl.kwget(kwargs, self.fcpp, 'label_font_style', 'italic'),
                         font_weight=utl.kwget(kwargs, self.fcpp, 'label_font_weight', 'bold'),
-                        padding_bg=utl.kwget(kwargs, self.fcpp, ['label_padding', 'label_padding_bg'], 2),
-                        position_bg=[0, 0, 0, 0],
+                        padding=utl.kwget(kwargs, self.fcpp, ['label_padding'], 0.3),
                         )
-        if ('label_fill_color' in kwargs or 'label_fill_color' in self.fcpp) and 'label_fill_alpha' not in kwargs:
-            label.fill_alpha = 1
+        # if ('label_fill_color' in kwargs or 'label_fill_color' in self.fcpp) and 'label_fill_alpha' not in kwargs:
+        #     label.fill_alpha = 1
         labels = ['x', 'x2', 'y', 'y2', 'z']
         rotations = [0, 0, 90, 270, 270]
         for ilab, lab in enumerate(labels):
@@ -393,6 +393,8 @@ class BaseLayout:
                 setattr(getattr(self, 'label_%s' % lab), k.replace('label_%s_' % lab, ''), self.fcpp[k])
             for k in [f for f in kwargs.keys() if f'label_{lab}_' in f and '_text' not in f]:
                 setattr(getattr(self, 'label_%s' % lab), k.replace('label_%s_' % lab, ''), kwargs[k])
+            # if (f'label_{lab}_fill_color' in kwargs or f'label_{lab}_fill_color' in self.fcpp) and 'label_fill_alpha' not in kwargs:
+            #     getattr(self, 'label_%s' % lab).fill_alpha = 1
 
             # Update alphas
             getattr(self, 'label_%s' % lab).color_alpha('fill_color', 'fill_alpha')
@@ -839,6 +841,7 @@ class BaseLayout:
                             on=kwargs.get('cbar', False),
                             obj=self.obj_array,
                             size=[cbar_size if not isinstance(cbar_size, list) else cbar_size[0], self.axes.size[1]],
+                            shared=utl.kwget(kwargs, self.fcpp, 'cbar_shared', False),
                             )
         if not self.cbar.on:
             self.label_z.on = False
@@ -1590,14 +1593,16 @@ class BaseLayout:
                               obj=self.obj_array,
                               size=utl.kwget(kwargs, self.fcpp, 'label_rc_size', 30),
                               edge_color=utl.kwget(kwargs, self.fcpp, 'label_rc_edge_color', '#8c8c8c'),
+                              edge_style=utl.kwget(kwargs, self.fcpp, 'label_rc_edge_style', None),
                               edge_width=utl.kwget(kwargs, self.fcpp, 'label_rc_edge_width', 0),
                               fill_color=utl.kwget(kwargs, self.fcpp, 'label_rc_fill_color', '#8c8c8c'),
                               font_color=utl.kwget(kwargs, self.fcpp, 'label_rc_font_color', '#ffffff'),
                               font_size=utl.kwget(kwargs, self.fcpp, 'label_rc_font_size', 16),
                               font_style=utl.kwget(kwargs, self.fcpp, 'label_rc_font_style', 'normal'),
                               font_weight=utl.kwget(kwargs, self.fcpp, 'label_rc_font_weight', 'bold'),
-                              names=utl.kwget(kwargs, self.fcpp, 'label_rc_names', True),
                               align=utl.kwget(kwargs, self.fcpp, 'label_rc_align', 'center'),
+                              padding=utl.kwget(kwargs, self.fcpp, 'label_rc_padding', 0.3),
+                              values_only=utl.kwget(kwargs, self.fcpp, 'label_rc_values_only', False),
                               )
         self.label_row = copy.deepcopy(label_rc)
         self.label_row.on = utl.kwget(kwargs, self.fcpp, 'label_row_on', True) \
@@ -1605,28 +1610,32 @@ class BaseLayout:
         self.label_row.column = kwargs.get('row')
         self.label_row.edge_color = utl.kwget(kwargs, self.fcpp, 'label_row_edge_color', label_rc.edge_color)
         self.label_row.edge_alpha = utl.kwget(kwargs, self.fcpp, 'label_row_edge_alpha', label_rc.edge_alpha)
+        self.label_row.edge_style = utl.kwget(kwargs, self.fcpp, 'label_row_edge_style', label_rc.edge_style)
         self.label_row.edge_width = utl.kwget(kwargs, self.fcpp, 'label_row_edge_width', label_rc.edge_width)
         self.label_row.fill_color = utl.kwget(kwargs, self.fcpp, 'label_row_fill_color', label_rc.fill_color)
         self.label_row.font_color = utl.kwget(kwargs, self.fcpp, 'label_row_font_color', label_rc.font_color)
         self.label_row.font_size = utl.kwget(kwargs, self.fcpp, 'label_row_font_size', label_rc.font_size)
-        self.label_row.names = utl.kwget(kwargs, self.fcpp, 'label_row_names', label_rc.names)
+        self.label_row.padding = utl.kwget(kwargs, self.fcpp, 'label_row_padding', label_rc.padding)
+        self.label_row.rotation = utl.kwget(kwargs, self.fcpp, 'label_row_rotation', 270)
+        self.label_row.values_only = utl.kwget(kwargs, self.fcpp, 'label_row_values_only', label_rc.values_only)
         self.label_row.size = [utl.kwget(kwargs, self.fcpp, 'label_row_size', label_rc._size), self.axes.size[1]]
-        self.label_row.text_size = None
-        self.label_row.rotation = 270
 
         self.label_col = copy.deepcopy(label_rc)
         self.label_col.on = utl.kwget(kwargs, self.fcpp, 'label_col_on', True) \
             if kwargs.get('col') not in [None, 'x'] else False
         self.label_row.column = kwargs.get('col')
         self.label_col.edge_color = utl.kwget(kwargs, self.fcpp, 'label_col_edge_color', label_rc.edge_color)
+        self.label_col.edge_width = utl.kwget(kwargs, self.fcpp, 'label_col_edge_style', label_rc.edge_style)
         self.label_col.edge_width = utl.kwget(kwargs, self.fcpp, 'label_col_edge_width', label_rc.edge_width)
         self.label_col.edge_alpha = utl.kwget(kwargs, self.fcpp, 'label_col_edge_alpha', label_rc.edge_alpha)
         self.label_col.fill_color = utl.kwget(kwargs, self.fcpp, 'label_col_fill_color', label_rc.fill_color)
         self.label_col.font_color = utl.kwget(kwargs, self.fcpp, 'label_col_font_color', label_rc.font_color)
         self.label_col.font_size = utl.kwget(kwargs, self.fcpp, 'label_col_font_size', label_rc.font_size)
-        self.label_col.names = utl.kwget(kwargs, self.fcpp, 'label_col_names', label_rc.names)
+        self.label_col.padding = utl.kwget(kwargs, self.fcpp, 'label_col_padding', label_rc.padding)
+        self.label_col.values_only = utl.kwget(kwargs, self.fcpp, 'label_col_values_only', label_rc.values_only)
         self.label_col.size = [self.axes.size[0], utl.kwget(kwargs, self.fcpp, 'label_col_size', label_rc._size)]
-        self.label_col.text_size = None
+
+        ### ADJUST FONT SIZE FOR RECTS IF NEEDED!
 
         # Wrap label
         self.label_wrap = DF_Element('label_wrap', self.fcpp, kwargs,
@@ -1637,6 +1646,8 @@ class BaseLayout:
                                      size=[self.axes.size[0], utl.kwget(kwargs, self.fcpp, 'label_wrap_size', 30)],
                                      edge_color=utl.kwget(kwargs, self.fcpp, 'label_wrap_edge_color',
                                                           label_rc.edge_color),
+                                     edge_style=utl.kwget(kwargs, self.fcpp, 'label_wrap_edge_style',
+                                                          label_rc.edge_style),
                                      edge_width=utl.kwget(kwargs, self.fcpp, 'label_wrap_edge_width',
                                                           label_rc.edge_width),
                                      edge_alpha=utl.kwget(kwargs, self.fcpp, 'label_wrap_edge_alpha',
@@ -1654,8 +1665,10 @@ class BaseLayout:
                                                           label_rc.font_style),
                                      font_weight=utl.kwget(kwargs, self.fcpp, 'label_wrap_font_weight',
                                                            label_rc.font_weight),
-                                     text_size=None,
                                      align=utl.kwget(kwargs, self.fcpp, 'label_wrap_align', 'center'),
+                                     padding=utl.kwget(kwargs, self.fcpp, 'label_wrap_padding', label_rc.padding),
+                                     values_only=utl.kwget(kwargs, self.fcpp, 'label_wrap_values_only',
+                                                           label_rc.values_only),
                                      )
         if self.label_wrap.edge_width == 0 \
                 and not any(f in ['label_rc_edge_width', 'label_wrap_edge_width'] for f in kwargs.keys()):
@@ -1668,6 +1681,7 @@ class BaseLayout:
                                   if kwargs.get('wrap') else False,
                                   size=utl.kwget(kwargs, self.fcpp, 'title_wrap_size', label_rc.size),
                                   edge_color=utl.kwget(kwargs, self.fcpp, 'title_wrap_edge_color', '#5f5f5f'),
+                                  edge_style=utl.kwget(kwargs, self.fcpp, 'title_wrap_edge_style', label_rc.edge_style),
                                   edge_width=utl.kwget(kwargs, self.fcpp, 'title_wrap_edge_width', label_rc.edge_width),
                                   edge_alpha=utl.kwget(kwargs, self.fcpp, 'title_wrap_edge_alpha', label_rc.edge_alpha),
                                   fill_color=utl.kwget(kwargs, self.fcpp, 'title_wrap_fill_color', '#5f5f5f'),
@@ -1680,6 +1694,7 @@ class BaseLayout:
                                                         label_rc.font_weight),
                                   text=kwargs.get('title_wrap', None),
                                   align=utl.kwget(kwargs, self.fcpp, 'title_wrap_align', 'center'),
+                                  padding=utl.kwget(kwargs, self.fcpp, 'title_wrap_padding', label_rc.padding),
                                   )
 
         if not isinstance(self.title_wrap.size, list):
@@ -2003,6 +2018,7 @@ class BaseLayout:
         self.title = Element('title', self.fcpp, kwargs,
                              on=True if title is not None else False,
                              text=str(title) if title is not None else None,
+                             edge_style=utl.kwget(kwargs, self.fcpp, 'title_edge_style', None),
                              font_color=utl.kwget(kwargs, self.fcpp, 'title_font_color', '#333333'),
                              font_size=utl.kwget(kwargs, self.fcpp, 'title_font_size', 18),
                              font_weight=utl.kwget(kwargs, self.fcpp, 'title_font_weight', 'bold'),
