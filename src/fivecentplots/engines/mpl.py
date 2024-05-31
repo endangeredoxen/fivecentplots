@@ -564,9 +564,7 @@ class Layout(BaseLayout):
         right = ws_ax_fig \
             + self._labtick_y2 \
             + self._row_label_width \
-            + self.x_tick_xs \
-            + self.label_y2.size[0] # \
-            # + (self.label_z.size[0] * (self.ncol if self.separate_labels else 1) + self.ws_ticks_ax * self.label_z.on)
+            + self.x_tick_xs
 
         # box title excess
         if self.box_group_title.on and (self.ws_ax_box_title + self.box_title) > \
@@ -992,22 +990,26 @@ class Layout(BaseLayout):
                 text.set_color(self.legend.font_color)
                 text.set_fontsize(self.legend.font_size)
                 if self.name not in ['hist', 'bar', 'pie', 'gantt']:
-                    if isinstance(leg.legendHandles[itext], mpl.patches.Rectangle):
+                    if hasattr(leg, 'legendHandles'):
+                        leg_handle = leg.legendHandles[itext]
+                    else:
+                        leg_handle = leg.legend_handles[itext]
+                    if isinstance(leg_handle, mpl.patches.Rectangle):
                         continue
                     # Set legend point color and alpha
-                    leg.legendHandles[itext]._sizes = \
+                    leg_handle._sizes = \
                         np.ones(len(self.legend.values) + 1) * self.legend.marker_size**2
                     if not self.markers.on and self.legend.marker_alpha is not None:
-                        if hasattr(leg.legendHandles[itext], '_legmarker'):
-                            leg.legendHandles[itext]._legmarker.set_alpha(self.legend.marker_alpha)
+                        if hasattr(leg_handle, '_legmarker'):
+                            leg_handle._legmarker.set_alpha(self.legend.marker_alpha)
                         else:
                             # required for mpl 3.5
                             alpha = str(hex(int(self.legend.marker_alpha * 255)))[-2:].replace('x', '0')
                             base_color = self.markers.edge_color[itext][0:7] + alpha
-                            leg.legendHandles[itext]._markeredgecolor = base_color
-                            leg.legendHandles[itext]._markerfillcolor = base_color
+                            leg_handle._markeredgecolor = base_color
+                            leg_handle._markerfillcolor = base_color
                     elif self.legend.marker_alpha is not None:
-                        leg.legendHandles[itext].set_alpha(self.legend.marker_alpha)
+                        leg_handle.set_alpha(self.legend.marker_alpha)
 
             font = self.legend.font if self.legend.font != 'sans-serif' else 'sans'
             try:
@@ -1284,7 +1286,12 @@ class Layout(BaseLayout):
         self.label_y.position[3] = self.axes.obj[0,0].get_position().y0 + self.axes.size[1] / 2 / self.fig.size[1]
 
         # y2-label
-        self.label_y2.position[0] = 1 - (self._left + self.legend.size[0]) / self.fig.size[0]
+        self.label_y2.position[0] = 1 \
+                                    - (self.label_y2.size[0] / 2
+                                       + self._legx
+                                       + self.ws_fig_label
+                                       + (1 if self.label_y.edge_width % 2 == 1 else 0)) \
+                                       / self.fig.size[0]
         self.label_y2.position[3] = self.label_y.position[3]
 
         # z-label
@@ -1762,8 +1769,8 @@ class Layout(BaseLayout):
                 ax_y1 = self.axes.obj[0, 0].get_window_extent().y1
                 self.tick_z_top_xs = max(0, self.tick_z_top_xs, tt.size_all['y1'].max() - ax_y1)
 
-            # Set the padding from the axes  NNEDD TO ADD SECONDARY
-            if tick != 'z' and tick_num != '2':
+            # Set the padding from the axes
+            if tick != 'z':
                 for tlab in tlabs:
                     tlab.set_x(pad[0])
                     tlab.set_y(pad[1])
@@ -1810,10 +1817,10 @@ class Layout(BaseLayout):
         # secondary y-axis
         if self.axes2.on:
             getattr(self, 'tick_labels_major_y2').size_all_reset()
-            pad = -pad_y_major[0], pad_y_major[1]
+            pad = 1, 0
             self._get_tick_label_size(self.axes2, 'y', '2', 'major', pad)
             getattr(self, 'tick_labels_minor_y2').size_all_reset()
-            pad = -pad_y_minor[0], pad_y_minor[1]
+            pad = 1, 0
             self._get_tick_label_size(self.axes2, 'y', '2', 'minor', pad)
 
         # z-axis (major only)
@@ -3694,7 +3701,6 @@ class Layout(BaseLayout):
         for ir, ic in np.ndindex(self.label_wrap.obj.shape):
             if self.label_wrap.obj[ir, ic]:
                 bbox = self.axes.obj[ir, ic].get_position()
-                print(ir, ic, bbox.x0 * self.fig.size[0])
                 self.label_wrap.obj_bg[ir, ic].set_x(bbox.x0 - (self._ax_edge + self.label_wrap.edge_width / 2) / self.fig.size[0])
                 self.label_wrap.obj_bg[ir, ic].set_y(bbox.y1)
                 self.label_wrap.obj_bg[ir, ic].set_width(
