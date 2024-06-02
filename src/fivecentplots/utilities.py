@@ -685,7 +685,7 @@ def img_data_format(kwargs: dict) -> Tuple[pd.DataFrame, dict]:
         df_groups['channels'] = -1
         for k, v in imgs.items():
             if k not in df.index:
-                raise KeyError(f'image array item "{k}" not found in grouping DataFrame')
+                continue  # raise KeyError(f'image array item "{k}" not found in grouping DataFrame')
             if not isinstance(v, np.ndarray):
                 raise TypeError(f'image array item "{k}" must be a numpy array')
             shape = v.shape
@@ -1460,6 +1460,37 @@ def unit_test_measure_axes(img_path: pathlib.Path, row: Union[int, str, None], c
         y0 = (np.diff(col)!=0).argmax(axis=0) + 1
         assert (col[y0:]==255).argmax(axis=0) == height - (1 if alias else 0), \
                f'expected height: {height} | actual: {(col[y0:]==255).argmax(axis=0)}'
+
+
+def unit_test_measure_axes_cols(img_path: pathlib.Path, row: Union[int, str, None], target_pixel_value: int,
+                                width: int, channel: int=1, cbar: bool=False, tolerance=1):
+    """
+    Get margin sizes from pixel values.  Only works if surrounding border pixels are the same color but different
+    values than the axes area.
+
+    Args:
+        img_path: path the test image
+        row: row index on which to measure (should be clear of labels, legends, ticks etc)
+        target_pixel_value: pixel value to look for (whitespace 255 typically)
+        width: expected axes width for each column
+        channel: which color channel to use (RGB image only)
+        cbar: skip the cbars if enabled
+
+        Note: for np.diff statements, need to subtract 1
+    """
+    # Test width of all column images
+    img = imageio.imread(img_path)[:, :, channel]
+    if row == 'c':
+        row = int(img.shape[0] / 2)
+    dd = np.diff(np.concatenate(([False], img[row]==target_pixel_value, [False])).astype(int))
+    trans1 = np.argwhere(dd==-1).T[0]
+    trans2 = np.argwhere(dd==1).T[0]
+    if not cbar:
+        assert all((trans2[1:] - trans1[:-1]) - width <= tolerance), \
+               f'axes sizes are wrong: {trans2[1:] - trans1[:-1]}'
+    else:
+        assert all((trans2[1:] - trans1[:-1])[::2] - width <= tolerance), \
+               f'axes sizes are wrong: {trans2[1:] - trans1[:-1]}'
 
 
 def unit_test_measure_margin(img_path: pathlib.Path, row: Union[int, str, None], col: Union[int, None],

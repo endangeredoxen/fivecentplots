@@ -64,6 +64,7 @@ class Data:
         self.ax2_scale = kwargs.get('ax2_scale', self.ax_scale)
         # validate list? repeated list and all to lower
         self._ax_limit_pad(**kwargs)
+        self.cbar = utl.kwget(kwargs, self.fcpp, 'cbar', False)
         self.error_bars = False
         self.fit = kwargs.get('fit', False)
         self.fit_range_x = utl.kwget(kwargs, self.fcpp, 'fit_range_x', None)

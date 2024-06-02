@@ -339,6 +339,9 @@ def plt_column(bm=False, make_reference=False, show=False):
              filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
+
+    if show == False:
+        utl.unit_test_measure_axes_cols(name, 200, 255, 229, 0)  # add 1 for edge width and 1 for aliasing
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 

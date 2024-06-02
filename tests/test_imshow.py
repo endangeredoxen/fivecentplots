@@ -239,10 +239,30 @@ def plt_col(bm=False, make_reference=False, show=False):
     name = utl.unit_test_get_img_name('col', make_reference, REFERENCE)
 
     fcp.imshow(img_cp, imgs=cp, cmap='inferno', ax_size=[300, 300], col='Plane', filename=name.with_suffix('.png'),
+               save=not bm, inline=False, share_z=False, cbar=False)
+
+    if bm:
+        return
+
+    if show == False:
+        utl.unit_test_measure_axes_cols(name, 90, 255, 300, 0)
+        utl.unit_test_measure_margin(name, 'c', 150, left=10, right=10, top=10, bottom=10, alias=False)
+
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_col_cbar(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('col_cbar', make_reference, REFERENCE)
+
+    fcp.imshow(img_cp, imgs=cp, cmap='inferno', ax_size=[300, 300], col='Plane', filename=name.with_suffix('.png'),
                save=not bm, inline=False, share_z=False, cbar=True)
 
     if bm:
         return
+    if show == False:
+        utl.unit_test_measure_axes_cols(name, 90, 255, 300, 0, cbar=True)
+
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
@@ -275,7 +295,7 @@ def plt_col_z_user_range(bm=False, make_reference=False, show=False):
     name = utl.unit_test_get_img_name('col_z_user_range', make_reference, REFERENCE)
 
     fcp.imshow(img_cp, imgs=cp, cmap='viridis', ax_size=[300, 300], col='Plane', filename=name.with_suffix('.png'),
-               save=not bm, inline=False, zmin=[-100, 100], zmax=[400, 500, 600, 700], cbar=True)
+               share_z=True, save=not bm, inline=False, zmin=[-100, 100], zmax=[400, 500, 600, 700], cbar=True)
 
     if bm:
         return
@@ -284,10 +304,10 @@ def plt_col_z_user_range(bm=False, make_reference=False, show=False):
 
 def plt_col_quantiles(bm=False, make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('col_share_z', make_reference, REFERENCE)
+    name = utl.unit_test_get_img_name('col_quantiles', make_reference, REFERENCE)
 
     fcp.imshow(img_cp, imgs=cp, cmap='inferno', ax_size=[300, 300], col='Plane', filename=name.with_suffix('.png'),
-               save=not bm, inline=False, zmin=['q0.35', 'q10', 'q0.33', 0], zmax=['q0.36', 'q90'], share_z=True,
+               save=not bm, inline=False, zmin=['q0.35', 'q10', 'q1', 0], zmax=['q0.36', 'q90'], share_z=True,
                cbar=True)
 
     if bm:
@@ -578,6 +598,11 @@ def test_imshow_zoomed(benchmark):
 def test_col(benchmark):
     plt_col()
     benchmark(plt_col, True)
+
+
+def test_col_cbar(benchmark):
+    plt_col_cbar()
+    benchmark(plt_col_cbar, True)
 
 
 def test_col_shared_cbar(benchmark):

@@ -1643,7 +1643,8 @@ class BaseLayout:
                                      if kwargs.get('wrap') else False,
                                      obj=self.obj_array,
                                      column=kwargs.get('wrap'),
-                                     size=[self.axes.size[0], utl.kwget(kwargs, self.fcpp, 'label_wrap_size', 30)],
+                                     size=[self.axes.size[0],
+                                           utl.kwget(kwargs, self.fcpp, 'label_wrap_size', label_rc._size)],
                                      edge_color=utl.kwget(kwargs, self.fcpp, 'label_wrap_edge_color',
                                                           label_rc.edge_color),
                                      edge_style=utl.kwget(kwargs, self.fcpp, 'label_wrap_edge_style',
@@ -1670,6 +1671,7 @@ class BaseLayout:
                                      values_only=utl.kwget(kwargs, self.fcpp, 'label_wrap_values_only',
                                                            label_rc.values_only),
                                      )
+        db()
         if self.label_wrap.edge_width == 0 \
                 and not any(f in ['label_rc_edge_width', 'label_wrap_edge_width'] for f in kwargs.keys()):
             self.label_wrap.edge_width = self.axes.edge_width

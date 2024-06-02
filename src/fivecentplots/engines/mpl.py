@@ -3101,7 +3101,7 @@ class Layout(BaseLayout):
             if not self.label_row.values_only:
                 lab = f'{self.label_row.text}={self.label_row.values[ir]}'
             else:
-                lab = None
+                lab = {self.label_row.values[ir]}
             self.label_row.obj[ir, ic], self.label_row.obj_bg[ir, ic] = self.add_label_fig(ir, ic, self.label_row, lab)
 
         # Col/wrap labels
@@ -3121,7 +3121,7 @@ class Layout(BaseLayout):
                 if not self.label_col.values_only:
                     lab = f'{self.label_col.text}={self.label_col.values[ic]}'
                 else:
-                    lab = None
+                    lab = {self.label_col.values[ic]}
                 self.label_col.obj[ir, ic], self.label_col.obj_bg[ir, ic] = \
                     self.add_label_fig(ir, ic, self.label_col, lab)
 
@@ -3167,7 +3167,6 @@ class Layout(BaseLayout):
 
         # Format ticks
         for ia, aa in enumerate(axes):
-
             minor_on = max(self.ticks_minor_x.on, self.ticks_minor_y.on)
             tp = mpl_get_ticks(axes[ia], True, True, minor_on)
 
@@ -3411,6 +3410,9 @@ class Layout(BaseLayout):
                             text.set_fontproperties(ticks_font)
                             text.set_bbox(style)
 
+                        # Style offset text
+                        getattr(axes[ia], f'{ax}axis').get_offset_text().set_fontproperties(ticks_font)
+
             # Tick label shorthand
             tlmajx = getattr(self, 'tick_labels_major_x%s' % lab)
             tlmajy = getattr(self, 'tick_labels_major_y%s' % lab)
@@ -3510,6 +3512,27 @@ class Layout(BaseLayout):
                     # Set the tick decimal format
                     getattr(axes[ia], '%saxis' % axx).set_minor_formatter(
                         ticker.FormatStrFormatter('%%.%sf' % (decimals)))
+
+        if self.cbar.on:
+            for ir, ic in np.ndindex(self.cbar.obj.shape):
+                if not hasattr(self.cbar.obj[ir, ic], 'ax'):
+                    continue
+                ticks_font = font_manager.FontProperties(
+                    family=getattr(self, f'tick_labels_major_z').font,
+                    size=getattr(self, f'tick_labels_major_z').font_size,
+                    style=getattr(self, f'tick_labels_major_z').font_style,
+                    weight=getattr(self, f'tick_labels_major_z').font_weight,
+                    )
+                style = dict(edgecolor=getattr(self, f'tick_labels_major_z').edge_color[0],
+                             facecolor=getattr(self, f'tick_labels_major_z').fill_color[0],
+                             linewidth=getattr(self, f'tick_labels_major_z').edge_width,
+                             alpha=max(getattr(self, f'tick_labels_major_z').edge_alpha,
+                                       getattr(self, f'tick_labels_major_z').fill_alpha),
+                             pad=getattr(self, f'tick_labels_major_z').padding,
+                             )
+                text = self.cbar.obj[ir, ic].ax.yaxis.get_offset_text()
+                text.set_fontproperties(ticks_font)
+                text.set_bbox(style)
 
     def _set_colormap(self, data: 'Data', **kwargs):  # noqa: F821
         """Replace the color list with discrete values from a colormap.
@@ -3681,6 +3704,7 @@ class Layout(BaseLayout):
         # col
         for ir, ic in np.ndindex(self.label_col.obj.shape):
             if self.label_col.obj[ir, ic]:
+                # bkgd
                 self.label_col.obj_bg[ir, ic].set_x(
                     self.axes.obj[ir, ic].get_position().x0 - (self.label_col.edge_width / 2) / self.fig.size[0])
                 self.label_col.obj_bg[ir, ic].set_y(
@@ -3689,6 +3713,8 @@ class Layout(BaseLayout):
                 self.label_col.obj_bg[ir, ic].set_width(
                     (self.axes.size[0] + 2 * self.axes.edge_width - self.label_col.edge_width) / self.fig.size[0])
                 self.label_col.obj_bg[ir, ic].set_height(self.label_col.size[1] / self.fig.size[1])
+
+                # text
                 self.label_col.obj[ir, ic].set_x(
                     (self.axes.obj[ir, ic].get_position().x1 - self.axes.obj[ir, ic].get_position().x0) / 2
                     - self.cbar.on * (self.cbar.size[0] + self.ws_ax_cbar) / self.fig.size[0] / 2 \
@@ -3733,8 +3759,9 @@ class Layout(BaseLayout):
                 + self.axes.obj[0, 0].get_position().x0 \
                 - (self.cbar.on * (self.cbar.size[0] + self.ws_ax_cbar)) / 2 / self.fig.size[0])
             self.title_wrap.obj.set_y(
-                self.axes.obj[0, 0].get_position().y1 + self.label_wrap.size[1] / 2 / self.fig.size[1]
-                + self.title_wrap.size[1] / self.fig.size[1])
+                self.axes.obj[0, 0].get_position().y1
+                + (self.label_wrap.size[1] + self.title_wrap.size[1] / 2) / self.fig.size[1])
+
 
         # Set title position
         if self.title.on:
@@ -3765,14 +3792,10 @@ class Layout(BaseLayout):
 
                 # Column labels
                 if self.label_col.obj_bg[ir, ic] is not None:
-                    center_old = self.label_col.obj_bg[ir, ic].get_width() / 2 + self.label_col.obj_bg[ir, ic].get_x()
                     self.label_col.obj_bg[ir, ic].set_x(ax0)
                     self.label_col.obj_bg[ir, ic].set_width(self.axes.size[0] / self.fig.size[0])
                     center_new = self.label_col.obj_bg[ir, ic].get_width() / 2 + self.label_col.obj_bg[ir, ic].get_x()
-
-                    offset = center_new - center_old
-                    text_x0 = self.label_col.obj[ir, ic].get_position()[0]
-                    self.label_col.obj[ir, ic].set_x(text_x0 + offset)
+                    self.label_col.obj[ir, ic].set_x(center_new)
 
         # # Update axes positioning for cbar (probably a better way to do this, but alas...)
         # return
@@ -4165,6 +4188,8 @@ class Layout(BaseLayout):
         """Calculate and apply the subplots_adjust parameters for the axes.  There is some real hocus pocus here
         to fix the way that matplotlib treats axes widths.
 
+        Precise dimensions are subject to weird rounding error; try to check for them to address
+
         self.axes.position --> [left, right, top, bottom]
         """
         # Right
@@ -4173,12 +4198,18 @@ class Layout(BaseLayout):
             self.axes.position[1] = 1 - (right - self._ax_edge) / self.fig.size[0]
         else:
             self.axes.position[1] = 1 - (self._right + self._legx + self._ax_edge) / self.fig.size[0]
+            if (1 - self.axes.position[1]) * self.fig.size[0] > (self._right + self._legx + self._ax_edge):
+                self.axes.position[1] -= \
+                    (1 - self.axes.position[1]) * self.fig.size[0] - (self._right + self._legx + self._ax_edge)
 
         # Left
         self.axes.position[0] = (self._left + self._ax_edge) / self.fig.size[0]
 
         # Top
-        self.axes.position[2] = 1 - (self._top + self._ax_edge) / self.fig.size[1] #- self._edge_obj(self.axes, 'y', 'top')
+        self.axes.position[2] = 1 - (self._top + self._ax_edge) / self.fig.size[1]
+        if (1 - self.axes.position[2]) * self.fig.size[1] > (self._top + self._ax_edge):
+            self.axes.position[2] -= \
+                (1 - self.axes.position[2]) * self.fig.size[1] - (self._top + self._ax_edge)
 
         # Bottom
         self.axes.position[3] = (self._bottom + self._ax_edge) / self.fig.size[1]

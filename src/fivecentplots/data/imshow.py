@@ -119,24 +119,6 @@ class ImShow(data.Data):
 
         return vmin, vmax
 
-    def _zmin(self, df, zmin):
-        if isinstance(zmin, str) and 'q' in zmin:
-            qq = float(zmin[1:])
-            if qq > 1:
-                qq /= 100
-            return np.quantile(df, qq)
-        else:
-            return df.min()
-
-    def _zmax(self, df, zmax):
-        if isinstance(zmax, str) and 'q' in zmax:
-            qq = float(zmax[1:])
-            if qq > 1:
-                qq /= 100
-            return np.quantile(df, qq)
-        else:
-            return df.max()
-
     def _get_data_ranges(self):
         """ImShow-specific data range calculator by subplot."""
         # Get user ranges
@@ -177,7 +159,7 @@ class ImShow(data.Data):
             # zmin's
             if isinstance(self.zmin[plot_num], str) and 'q' in self.zmin[plot_num]:
                 qq = float(self.zmin[plot_num][1:])
-                if qq > 1:
+                if qq >= 1:
                     qq /= 100
                 _zmin[ir, ic] = np.quantile(df, qq)
             else:
