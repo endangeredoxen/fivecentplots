@@ -334,6 +334,7 @@ def plt_share_row(bm=False, make_reference=False, show=False):
 
     fcp.imshow(img_cp, imgs=cp, cmap='inferno', ax_size=[300, 300], col='Plane', filename=name.with_suffix('.png'),
                save=not bm, inline=False, row='Green?', cbar=True, label_rc_fill_color='#00FF00',
+               title='power up', title_fill_color='#eeddcc', title_span='fig',
                label_rc_font_color='#FF0000', share_row=True)
 
     if bm:
@@ -433,6 +434,8 @@ def plt_row_combos(bm=False, make_reference=False, show=False):
 
 def plt_wrap_combos(bm=False, make_reference=False, show=False):
 
+    enabled = ['1x1', '1x2', '1x3', '2x3', '3x1', '3x2', '4x2']
+
     img_all = pd.DataFrame()
     img_test = pd.DataFrame(utl.img_grayscale(img_cat_orig).to_numpy()[300:600, 800:1100])
     groups = ['hi', 'there', 'you', 'are', 'something', 'special', 'buddy', 'boy']
@@ -444,56 +447,78 @@ def plt_wrap_combos(bm=False, make_reference=False, show=False):
         img_all = pd.concat([img_all, temp])
 
     # 1 x 1
-    name = utl.unit_test_get_img_name('wrap_combos_1x1', make_reference, REFERENCE)
-    fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
-               ax_edge_width=2, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
-               filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0"]')
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    if '1x1' in enabled:
+        name = utl.unit_test_get_img_name('wrap_combos_1x1', make_reference, REFERENCE)
+        fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
+                ax_edge_width=0, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
+                filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0"]')
+        utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 1 x 2
-    name = utl.unit_test_get_img_name('wrap_combos_1x2', make_reference, REFERENCE)
-    fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
-               ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
-               filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0", "Image 5"]')
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    if '1x2' in enabled:
+        name = utl.unit_test_get_img_name('wrap_combos_1x2', make_reference, REFERENCE)
+        fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
+                   ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
+                   filename=name.with_suffix('.png'), save=not bm, inline=False,
+                   filter='Number in ["Image 0", "Image 5"]')
+        utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 1 x 3
-    name = utl.unit_test_get_img_name('wrap_combos_1x3', make_reference, REFERENCE)
-    fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
-               ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
-               filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0", "Image 2", "Image 4"]')
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    if '1x3' in enabled:
+        name = utl.unit_test_get_img_name('wrap_combos_1x3', make_reference, REFERENCE)
+        fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
+                   ax_edge_width=2, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
+                   filename=name.with_suffix('.png'), save=not bm, inline=False, title_wrap_edge_width=4,
+                   filter='Number in ["Image 0", "Image 2", "Image 4"]', label_wrap_edge_width=3)
+        utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 2 x 3
-    name = utl.unit_test_get_img_name('wrap_combos_2x3', make_reference, REFERENCE)
-    fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
-               ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
-               filename=name.with_suffix('.png'), save=not bm, inline=False)
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    if '2x3' in enabled:
+        name = utl.unit_test_get_img_name('wrap_combos_2x3', make_reference, REFERENCE)
+        fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
+                   ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
+                   filename=name.with_suffix('.png'), save=not bm, inline=False, label_edge_width=2,
+                   title_wrap_edge_width=3)
+        utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 3 x 1
-    name = utl.unit_test_get_img_name('wrap_combos_3x1', make_reference, REFERENCE)
-    fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=1, title_wrap_edge_color='aa00ff',
-               ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
-               filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0", "Image 2", "Image 4"]')
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    if '3x1' in enabled:
+        name = utl.unit_test_get_img_name('wrap_combos_3x1', make_reference, REFERENCE)
+        fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=1, title_wrap_edge_color='aa00ff',
+                   ax_edge_width=2, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
+                   filename=name.with_suffix('.png'), save=not bm, inline=False,
+                   filter='Number in ["Image 0", "Image 2", "Image 4"]')
+        utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 3 x 2
-    name = utl.unit_test_get_img_name('wrap_combos_3x2', make_reference, REFERENCE)
-    fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=2, title_wrap_edge_color='aa00ff',
-               ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
-               filename=name.with_suffix('.png'), save=not bm, inline=False, cmap=['inferno', 'gray'], share_col=True)
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    if '3x2' in enabled:
+        name = utl.unit_test_get_img_name('wrap_combos_3x2', make_reference, REFERENCE)
+        fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=2, title_wrap_edge_color='aa00ff',
+                   ax_edge_width=4, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
+                   filename=name.with_suffix('.png'), save=not bm, inline=False, cmap=['inferno', 'gray'],
+                   share_col=True, label_wrap_edge_width=3, title_wrap_edge_width=2)
+        utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 4 x 2
-    name = utl.unit_test_get_img_name('wrap_combos_4x2', make_reference, REFERENCE)
-    fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=4, title_wrap_edge_color='aa00ff',
-               ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
-               filename=name.with_suffix('.png'), save=not bm, inline=False, cmap=['gray', 'inferno'], share_row=True)
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    if '4x2' in enabled:
+        name = utl.unit_test_get_img_name('wrap_combos_4x2', make_reference, REFERENCE)
+        fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=4, title_wrap_edge_color='aa00ff',
+                   ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
+                   filename=name.with_suffix('.png'), save=not bm, inline=False, cmap=['gray', 'inferno'],
+                   share_row=True)
+        utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+        name = utl.unit_test_get_img_name('wrap_combos_4x2_no_edge', make_reference, REFERENCE)
+        fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=4, title_wrap_edge_color='aa00ff',
+                   ax_edge_width=0, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
+                   filename=name.with_suffix('.png'), save=not bm, inline=False, cmap=['gray', 'inferno'],
+                   share_row=True)
+        utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_wrap_combos_cbar(bm=False, make_reference=False, show=False):
+
+    enabled = ['1x1', '1x2', '1x3', '2x3', '3x1', '3x2', '4x2']
 
     img_all = pd.DataFrame()
     img_test = pd.DataFrame(utl.img_grayscale(img_cat_orig).to_numpy()[300:600, 800:1100])
@@ -503,53 +528,66 @@ def plt_wrap_combos_cbar(bm=False, make_reference=False, show=False):
         img_all = pd.concat([img_all, temp])
 
     # 1 x 1
-    name = utl.unit_test_get_img_name('wrap_combos_1x1_cbar', make_reference, REFERENCE)
-    fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
-               ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
-               filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0"]')
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    if '1x1' in enabled:
+        name = utl.unit_test_get_img_name('wrap_combos_1x1_cbar', make_reference, REFERENCE)
+        fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
+                   ax_edge_width=0, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
+                   filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0"]')
+        utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 1 x 2
-    name = utl.unit_test_get_img_name('wrap_combos_1x2_cbar', make_reference, REFERENCE)
-    fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
-               ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
-               filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0", "Image 5"]')
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    if '1x2' in enabled:
+        name = utl.unit_test_get_img_name('wrap_combos_1x2_cbar', make_reference, REFERENCE)
+        fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
+                   ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
+                   filename=name.with_suffix('.png'), save=not bm, inline=False,
+                   filter='Number in ["Image 0", "Image 5"]')
+        utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 1 x 3
-    name = utl.unit_test_get_img_name('wrap_combos_1x3_cbar', make_reference, REFERENCE)
-    fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
-               ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
-               filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0", "Image 2", "Image 4"]')
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    if '1x3' in enabled:
+        name = utl.unit_test_get_img_name('wrap_combos_1x3_cbar', make_reference, REFERENCE)
+        fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
+                   ax_edge_width=2, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
+                   filename=name.with_suffix('.png'), save=not bm, inline=False, title_wrap_edge_width=4,
+                   filter='Number in ["Image 0", "Image 2", "Image 4"]', label_wrap_edge_width=3)
+        utl.unit_test_options(make_reference, show, name, REFERENCE)
 
-    # # 2 x 3
-    # name = REFERENCE / 'wrap_combos_2x3_cbar_reference' if make_reference else 'wrap_combos_2x3_cbar'
-    # fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
-    #            ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
-    #            filename=name.with_suffix('.png'), save=not bm, inline=False, zmin=[50, 100], zmax=[200, 300])
-    # compare_with_reference(make_reference, show, name)
+    # 2 x 3
+    if '2x3' in enabled:
+        name = utl.unit_test_get_img_name('wrap_combos_2x3_cbar', make_reference, REFERENCE)
+        fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
+                   ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
+                   filename=name.with_suffix('.png'), save=not bm, inline=False, zmin=[50, 100], zmax=[200, 300],
+                   label_edge_width=2, title_wrap_edge_width=3)
+        utl.unit_test_options(make_reference, show, name, REFERENCE)
 
-    # # 3 x 1
-    # name = REFERENCE / 'wrap_combos_3x1_cbar_reference' if make_reference else 'wrap_combos_3x1_cbar'
-    # fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=1, title_wrap_edge_color='aa00ff',
-    #            ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
-    #            filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0", "Image 2", "Image 4"]')
-    # compare_with_reference(make_reference, show, name)
+    # 3 x 1
+    if '3x1' in enabled:
+        name = utl.unit_test_get_img_name('wrap_combos_3x1_cbar', make_reference, REFERENCE)
+        fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=1, title_wrap_edge_color='aa00ff',
+                   ax_edge_width=2, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
+                   filename=name.with_suffix('.png'), save=not bm, inline=False,
+                   filter='Number in ["Image 0", "Image 2", "Image 4"]')
+        utl.unit_test_options(make_reference, show, name, REFERENCE)
 
-    # # 3 x 2
-    # name = REFERENCE / 'wrap_combos_3x2_cbar_reference' if make_reference else 'wrap_combos_3x2_cbar'
-    # fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=2, title_wrap_edge_color='aa00ff',
-    #            ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
-    #            filename=name.with_suffix('.png'), save=not bm, inline=False, cmap=['inferno', 'gray'], share_col=True)
-    # compare_with_reference(make_reference, show, name)
+    # 3 x 2
+    if '3x2' in enabled:
+        name = utl.unit_test_get_img_name('wrap_combos_3x2_cbar', make_reference, REFERENCE)
+        fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=2, title_wrap_edge_color='aa00ff',
+                   ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
+                   filename=name.with_suffix('.png'), save=not bm, inline=False, cmap=['inferno', 'gray'],
+                   share_col=True, label_wrap_edge_width=3, title_wrap_edge_width=2)
+        utl.unit_test_options(make_reference, show, name, REFERENCE)
 
-    # # 4 x 2
-    # name = REFERENCE / 'wrap_combos_4x2_cbar_reference' if make_reference else 'wrap_combos_4x2_cbar'
-    # fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=4, title_wrap_edge_color='aa00ff',
-    #            ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
-    #            filename=name.with_suffix('.png'), save=not bm, inline=False, cmap=['gray', 'inferno'], share_row=True)
-    # compare_with_reference(make_reference, show, name)
+    # 4 x 2
+    if '4x2' in enabled:
+        name = utl.unit_test_get_img_name('wrap_combos_4x2_cbar', make_reference, REFERENCE)
+        fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=4, title_wrap_edge_color='aa00ff',
+                   ax_edge_width=0, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
+                   filename=name.with_suffix('.png'), save=not bm, inline=False, cmap=['gray', 'inferno'],
+                   share_row=True)
+        utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 # test_ functions call plt_ funcs 2x:

@@ -1671,7 +1671,6 @@ class BaseLayout:
                                      values_only=utl.kwget(kwargs, self.fcpp, 'label_wrap_values_only',
                                                            label_rc.values_only),
                                      )
-        db()
         if self.label_wrap.edge_width == 0 \
                 and not any(f in ['label_rc_edge_width', 'label_wrap_edge_width'] for f in kwargs.keys()):
             self.label_wrap.edge_width = self.axes.edge_width
@@ -2028,6 +2027,7 @@ class BaseLayout:
                              font_weight=utl.kwget(kwargs, self.fcpp, 'title_font_weight', 'bold'),
                              align=utl.kwget(kwargs, self.fcpp, 'title_align', 'center'),
                              padding=utl.kwget(kwargs, self.fcpp, 'title_padding', 0),
+                             span=utl.kwget(kwargs, self.fcpp, 'title_span', 'axes'),
                              )
         return kwargs
 

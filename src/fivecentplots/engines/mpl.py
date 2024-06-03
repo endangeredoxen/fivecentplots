@@ -423,6 +423,7 @@ class Layout(BaseLayout):
         self.fig_legend_border = 5
         self.x_tick_xs = 0
         self.ws_ticks_ax_adj = self.ws_ticks_ax + 0.373 * self.axes.edge_width
+        self.axes.edge_width_size = 0 if self.axes.edge_width == 1 else self.axes.edge_width
 
         # Other
         self._set_colormap(data)
@@ -431,15 +432,6 @@ class Layout(BaseLayout):
         if not kwargs.get('save_ext'):
             kwargs['save_ext'] = '.png'
         self.kwargs = kwargs
-
-    @property
-    def _ax_edge(self) -> float:
-        """Compute the effective axes edge width in terms of its impact on element spacing (1/2 of the width if > 1)."""
-        val = self.axes.edge_width / 2
-        if val == 0.5:
-            return 0
-        else:
-            return np.ceil(self.axes.edge_width / 2)
 
     @property
     def _bottom(self) -> float:
@@ -630,8 +622,8 @@ class Layout(BaseLayout):
     def _top(self) -> float:
         """Space above the top of the axes."""
         val = self._ws_title \
-            + self.title_wrap.size[1] \
-            + self.label_wrap.size[1] \
+            + self.title_wrap.size[1] + self.title_wrap.edge_width * self.title_wrap.on \
+            + self.label_wrap.size[1] + self.label_wrap.edge_width * self.label_wrap.on \
             + self.label_col.size[1] + self.label_col.edge_width * self.label_col.on \
             + (self.ws_label_col * self.label_col.on)
         val += self.tick_y_top_xs
@@ -1235,32 +1227,22 @@ class Layout(BaseLayout):
         if leg_name is not None:
             self.legend.add_value(leg_name, fill, 'fill')
 
-    def _edge_obj(self, obj, direction, side='left'):
-        """Compute an objects effective edge width to deal with matplotlib weirdness.
-
-        Args:
-            obj: an Element object
-            direction: 'x' or 'y'
-            side: 'left', 'right', 'top', 'bottom'
-
-        Returns:
-            edge width excess / fig size
-        """
-
-        if direction == 'x':
-            direction = 0
+    def _edge_offset(self, label: str) -> float:
+        """Get the offset between the axes edge and a label's edge widths and account for aliasing weirdness."""
+        edge_diff = (getattr(self, label).edge_width - self.axes.edge_width) / 2
+        if edge_diff < 0:
+            sign = -1
         else:
-            direction = 1
+            sign = 1
+        return sign * np.ceil(np.abs(edge_diff))
 
-        if obj.edge_width == 0:
+    def _edge_width(self, element_name: str) -> float:
+        """Compute the effective axes edge width in terms of its impact on element spacing (1/2 of the width if > 1)."""
+        val = getattr(self, element_name).edge_width / 2
+        if val == 0.5:
             return 0
-        elif obj.edge_width == 1:
-            return 1 / self.fig.size[direction]
-        elif side in ['left', 'bottom']:
-            return np.floor(obj.edge_width / 2) / self.fig.size[direction]
         else:
-            return np.ceil(obj.edge_width / 2) / self.fig.size[direction]
-
+            return np.ceil(val)
 
     def _get_axes_label_position(self):
         """
@@ -1786,12 +1768,12 @@ class Layout(BaseLayout):
         # primary x-axis
         getattr(self, 'tick_labels_major_x').size_all_reset()
         pad_x_major = 0, -(self.tick_labels_major_x.padding + self.tick_labels_major_x.edge_width + self.ws_ticks_ax
-                           + self._ax_edge) / self.axes.size[1]
+                           + self._edge_width('axes')) / self.axes.size[1]
         self._get_tick_label_size(self.axes, 'x', '', 'major', pad_x_major)
 
         getattr(self, 'tick_labels_minor_x').size_all_reset()
         pad_x_minor = 0, -(self.tick_labels_minor_x.padding + self.tick_labels_minor_x.edge_width + self.ws_ticks_ax
-                           + self._ax_edge) / self.axes.size[1]
+                           + self._edge_width('axes')) / self.axes.size[1]
         self._get_tick_label_size(self.axes, 'x', '', 'minor', pad_x_minor)
 
         # secondary x-axis
@@ -1806,12 +1788,12 @@ class Layout(BaseLayout):
         # primary y-axis
         getattr(self, 'tick_labels_major_y').size_all_reset()
         pad_y_major = -(self.tick_labels_major_y.padding + self.tick_labels_major_y.edge_width + self.ws_ticks_ax
-                        + self._ax_edge) / self.axes.size[0], 0
+                        + self._edge_width('axes')) / self.axes.size[0], 0
         self._get_tick_label_size(self.axes, 'y', '', 'major', pad_y_major)
 
         getattr(self, 'tick_labels_minor_x').size_all_reset()
         pad_y_minor = -(self.tick_labels_minor_y.padding + self.tick_labels_minor_y.edge_width + self.ws_ticks_ax
-                        + self._ax_edge) / self.axes.size[0], 0
+                        + self._edge_width('axes')) / self.axes.size[0], 0
         self._get_tick_label_size(self.axes, 'y', '', 'minor', pad_y_minor)
 
         # secondary y-axis
@@ -3031,7 +3013,9 @@ class Layout(BaseLayout):
                     continue
                 if ax == 'y2' and ic != self.ncol - 1 and utl.plot_num(ir, ic, self.ncol) != self.nwrap:
                     continue
-                if ax == 'z' and ic != self.ncol - 1 and utl.plot_num(ir, ic, self.ncol) != self.nwrap:
+                if ax == 'z' and ic != self.ncol - 1 \
+                        and utl.plot_num(ir, ic, self.ncol) != self.nwrap \
+                        and any(self.axes.visible[ir, (ic + 1):]):
                     continue
 
             # Add the label
@@ -3634,41 +3618,19 @@ class Layout(BaseLayout):
             x_bg, y_bg = getattr(self, f'label_{label}').position[0], getattr(self, f'label_{label}').position[3]
             for ir, ic in np.ndindex(lab.obj.shape):
                 if lab.obj[ir, ic]:
-                    # Set the background rectangle size and position
-                    #   (size must be set again because the fig size was adjusted)
-                    # lab.obj_bg[ir, ic].set_width((lab.size[0] - lab.edge_width) / self.fig.size[0])
-                    # lab.obj_bg[ir, ic].set_height((lab.size[1] - lab.edge_width) / self.fig.size[1])
-                    # lab.obj_bg[ir, ic].set_x(x)
-                    # lab.obj_bg[ir, ic].set_y(y)
-
-                    # # Set the label text object
-                    # bg = lab.obj_bg[ir, ic].get_window_extent()
-                    # text = lab.obj[ir, ic].get_window_extent()
-                    # xt = (bg.width / 2 + bg.x0) / self.fig.size[0]
-                    # yt = (bg.height / 2 + bg.y0) / self.fig.size[1]
+                    # Shift labels to the right subplot
                     xoffset, yoffset = 0, 0
                     if 'x' in label:
                         xoffset = self.axes.obj[0, 0].get_position().x0 - self.axes.obj[ir, ic].get_position().x0
                     if 'y' in label:
                         yoffset = self.axes.obj[0, 0].get_position().y0 - self.axes.obj[ir, ic].get_position().y0
+                    if 'z' in label:
+                        xoffset = \
+                            self.axes.obj[0, self.ncol - 1].get_position().x0 - self.axes.obj[ir, ic].get_position().x0
+                        yoffset = self.axes.obj[0, 0].get_position().y0 - self.axes.obj[ir, ic].get_position().y0
+
                     lab.obj[ir, ic].set_position((x - xoffset, y - yoffset))
                     if label == 'y2': db()
-                    # text = lab.obj[ir, ic].get_window_extent()
-                    # if label == 'z':
-                    #     print(label, bg, text)
-                    #db()
-                    #print(lab.obj[ir, ic].get_window_extent(), lab.obj_bg[ir, ic].get_window_extent())
-                    # offset = 0*max(lab.obj[ir, ic].get_window_extent().x0 - pos_bg.x0,
-                    #              lab.obj[ir, ic].get_window_extent().y0 - pos_bg.y0)
-                    # print(offset)
-
-                    # if lab.obj[ir, ic].get_rotation() == 270:
-                    #     xt = (pos_bg.x0 + lab.edge_width + lab.padding_bg - pos_text.x0 - offset) / self.fig.size[0]
-                    # elif lab.obj[ir, ic].get_rotation() == 90:
-                    #     xt = (pos_bg.x0 + lab.edge_width + lab.padding_bg - pos_text.x0 + offset) / self.fig.size[0]
-                    # elif lab.obj[ir, ic].get_rotation() == 0:
-                    #     yt = y + (lab.size[1] / 2 - offset) / self.fig.size[1]
-                    # lab.obj[ir, ic].set_position((xt, yt))  # final position
 
         # Update the rc label positions
         # row
@@ -3709,7 +3671,7 @@ class Layout(BaseLayout):
                     self.axes.obj[ir, ic].get_position().x0 - (self.label_col.edge_width / 2) / self.fig.size[0])
                 self.label_col.obj_bg[ir, ic].set_y(
                     self.axes.obj[ir, ic].get_position().y1 \
-                    + (self.ws_label_col + self._labtick_x2 + self._ax_edge) / self.fig.size[1])
+                    + (self.ws_label_col + self._labtick_x2 + self._edge_width('axes')) / self.fig.size[1])
                 self.label_col.obj_bg[ir, ic].set_width(
                     (self.axes.size[0] + 2 * self.axes.edge_width - self.label_col.edge_width) / self.fig.size[0])
                 self.label_col.obj_bg[ir, ic].set_height(self.label_col.size[1] / self.fig.size[1])
@@ -3727,55 +3689,68 @@ class Layout(BaseLayout):
         for ir, ic in np.ndindex(self.label_wrap.obj.shape):
             if self.label_wrap.obj[ir, ic]:
                 bbox = self.axes.obj[ir, ic].get_position()
-                self.label_wrap.obj_bg[ir, ic].set_x(bbox.x0 - (self._ax_edge + self.label_wrap.edge_width / 2) / self.fig.size[0])
-                self.label_wrap.obj_bg[ir, ic].set_y(bbox.y1)
+                edge_offset = np.ceil((self.axes.edge_width - self.label_wrap.edge_width) / 2)
+                yoffset = (self._edge_width('axes') + self._edge_width('label_wrap')) / self.fig.size[1]
+                self.label_wrap.obj_bg[ir, ic].set_x(bbox.x0  - edge_offset  / self.fig.size[0])
+                self.label_wrap.obj_bg[ir, ic].set_y(bbox.y1 + yoffset)
                 self.label_wrap.obj_bg[ir, ic].set_width(
-                    self.axes.obj[ir, ic].get_position().x1 - self.axes.obj[ir, ic].get_position().x0 \
-                    - (self.cbar.on * (self.cbar.size[0] + self.ws_ax_cbar)) / self.fig.size[0] \
-                    + self.axes.edge_width / self.fig.size[0])
+                    bbox.x1 - bbox.x0 + (self.axes.edge_width - self.label_wrap.edge_width) / self.fig.size[0] \
+                    - (self.cbar.on * (self.cbar.size[0] + self.ws_ax_cbar)) / self.fig.size[0])
                 self.label_wrap.obj_bg[ir, ic].set_height(self.label_wrap.size[1] / self.fig.size[1])
 
                 self.label_wrap.obj[ir, ic].set_x(
-                    (self.axes.obj[ir, ic].get_position().x1 - self.axes.obj[ir, ic].get_position().x0) / 2
-                    - (self.cbar.on * (self.cbar.size[0] + self.ws_ax_cbar)) / 2 / self.fig.size[0] \
-                    + self.axes.obj[ir, ic].get_position().x0)
+                    (bbox.x1 - bbox.x0) / 2 + bbox.x0 \
+                    - (self.cbar.on * (self.cbar.size[0] + self.ws_ax_cbar)) / 2 / self.fig.size[0])
                 self.label_wrap.obj[ir, ic].set_y(
-                    self.axes.obj[ir, ic].get_position().y1 + self.label_wrap.size[1] / 2 / self.fig.size[1])
+                    bbox.y1 + yoffset + self.label_wrap.size[1] / 2 / self.fig.size[1])
 
         # wrap title
         if self.title_wrap.on:
             bbox = self.axes.obj[0, 0].get_position()
-            self.title_wrap.obj_bg.set_x(bbox.x0 - (self._ax_edge + self.title_wrap.edge_width / 2) / self.fig.size[0])
-            self.title_wrap.obj_bg.set_y(self.axes.obj[0, self.ncol - 1].get_position().y1 +
-                                         (self.label_wrap.size[1] + self._ax_edge) / self.fig.size[1])
+            edge_offset = np.ceil((self.axes.edge_width - self.title_wrap.edge_width) / 2)
+            self.title_wrap.obj_bg.set_x(bbox.x0  - edge_offset  / self.fig.size[0])
+            self.title_wrap.obj_bg.set_y(bbox.y1 \
+                                        + (self.label_wrap.size[1]
+                                           + self.label_wrap.edge_width
+                                           + self._edge_width('axes')
+                                           + self._edge_width('label_wrap')) / self.fig.size[1])
             self.title_wrap.obj_bg.set_width(
-                self.axes.obj[0, self.ncol - 1].get_position().x1 - self.axes.obj[0, 0].get_position().x0 \
+                self.axes.obj[0, self.ncol - 1].get_position().x1 - bbox.x0 \
                 - (self.cbar.on * (self.cbar.size[0] + self.ws_ax_cbar)) / self.fig.size[0] \
-                + self.axes.edge_width / self.fig.size[0])
+                + (self.axes.edge_width - self.title_wrap.edge_width) / self.fig.size[0])
             self.title_wrap.obj_bg.set_height(self.title_wrap.size[1] / self.fig.size[1])
 
             self.title_wrap.obj.set_x(
-                (self.axes.obj[0, self.ncol - 1].get_position().x1 - self.axes.obj[0, 0].get_position().x0) / 2
-                + self.axes.obj[0, 0].get_position().x0 \
+                (self.axes.obj[0, self.ncol - 1].get_position().x1 - bbox.x0) / 2 + bbox.x0 \
                 - (self.cbar.on * (self.cbar.size[0] + self.ws_ax_cbar)) / 2 / self.fig.size[0])
             self.title_wrap.obj.set_y(
-                self.axes.obj[0, 0].get_position().y1
-                + (self.label_wrap.size[1] + self.title_wrap.size[1] / 2) / self.fig.size[1])
+                bbox.y1
+                + (self.label_wrap.size[1]
+                   + self.title_wrap.size[1] / 2
+                   + self.label_wrap.edge_width
+                   + self._edge_width('axes')
+                   + self._edge_width('label_wrap')) / self.fig.size[1])
 
 
         # Set title position
         if self.title.on:
-            self.title.obj_bg.set_x(self.axes.obj[0, 0].get_position().x0)
             self.title.obj_bg.set_y(1 - (self.title.size[1] + self.ws_fig_title) / self.fig.size[1])
-            width = self.axes.obj[0, self.ncol - 1].get_position().x1 - self.axes.obj[0, 0].get_position().x0 \
-                - self.cbar.on * (self.cbar.size[0] + self.ws_ax_cbar) / self.fig.size[0]
-
+            if self.title.span == 'fig':
+                self.title.obj_bg.set_x(0)
+                width = 1
+            else:
+                self.title.obj_bg.set_x(self.axes.obj[0, 0].get_position().x0)
+                width = self.axes.obj[0, self.ncol - 1].get_position().x1 - self.axes.obj[0, 0].get_position().x0 \
+                    - self.cbar.on * (self.cbar.size[0] + self.ws_ax_cbar) / self.fig.size[0]
             self.title.obj_bg.set_width(width)
             self.title.obj_bg.set_height((self.title.size[1] + 2 * self.title.padding) / self.fig.size[1])
 
-            self.title.obj.set_x(
-                (self.axes.obj[0, self.ncol - 1].get_position().x1 - self.axes.obj[0, 0].get_position().x0) / 2
-                + self.axes.obj[0, 0].get_position().x0)
+            if self.title.span == 'fig':
+                self.title.obj.set_x(0.5)
+            else:
+                self.title.obj.set_x(
+                    (self.axes.obj[0, self.ncol - 1].get_position().x1 - self.axes.obj[0, 0].get_position().x0) / 2
+                    + self.axes.obj[0, 0].get_position().x0)
             self.title.obj.set_y(1 - (self.title.size[1] / 2 + self.ws_fig_title) / self.fig.size[1])
 
         # Fix for shared cbar --> subplots_adjust doesn't work out of the box
@@ -4195,24 +4170,24 @@ class Layout(BaseLayout):
         # Right
         if self.cbar.on:
             right = self._right + self.label_z.size[0] + self.ws_ticks_ax + self.tick_labels_major_z.size[0]
-            self.axes.position[1] = 1 - (right - self._ax_edge) / self.fig.size[0]
+            self.axes.position[1] = 1 - (right - self._edge_width('axes')) / self.fig.size[0]
         else:
-            self.axes.position[1] = 1 - (self._right + self._legx + self._ax_edge) / self.fig.size[0]
-            if (1 - self.axes.position[1]) * self.fig.size[0] > (self._right + self._legx + self._ax_edge):
+            self.axes.position[1] = 1 - (self._right + self._legx + self._edge_width('axes')) / self.fig.size[0]
+            if (1 - self.axes.position[1]) * self.fig.size[0] > (self._right + self._legx + self._edge_width('axes')):
                 self.axes.position[1] -= \
-                    (1 - self.axes.position[1]) * self.fig.size[0] - (self._right + self._legx + self._ax_edge)
+                    (1 - self.axes.position[1]) * self.fig.size[0] - (self._right + self._legx + self._edge_width('axes'))
 
         # Left
-        self.axes.position[0] = (self._left + self._ax_edge) / self.fig.size[0]
+        self.axes.position[0] = (self._left + self._edge_width('axes')) / self.fig.size[0]
 
         # Top
-        self.axes.position[2] = 1 - (self._top + self._ax_edge) / self.fig.size[1]
-        if (1 - self.axes.position[2]) * self.fig.size[1] > (self._top + self._ax_edge):
+        self.axes.position[2] = 1 - (self._top + self._edge_width('axes')) / self.fig.size[1]
+        if (1 - self.axes.position[2]) * self.fig.size[1] > (self._top + self._edge_width('axes')):
             self.axes.position[2] -= \
-                (1 - self.axes.position[2]) * self.fig.size[1] - (self._top + self._ax_edge)
+                (1 - self.axes.position[2]) * self.fig.size[1] - (self._top + self._edge_width('axes'))
 
         # Bottom
-        self.axes.position[3] = (self._bottom + self._ax_edge) / self.fig.size[1]
+        self.axes.position[3] = (self._bottom + self._edge_width('axes')) / self.fig.size[1]
 
         # # Double check axes size and account for rounding errors
         # if not self.cbar.on:
@@ -4223,12 +4198,13 @@ class Layout(BaseLayout):
         #                 - (self.axes.position[1] - self.axes.position[0]) * self.fig.size[0]
         #     self.axes.position[1] += width_err / self.fig.size[0]
         #     print('subplots', height_err, width_err)
+        #     db()
 
         # wspace
         if self.cbar.on and not self.cbar.shared:
             ws_col = (self.cbar.size[0] + self.ws_ticks_ax + self.axes.edge_width) / self.axes.size[0]
         else:
-            ws_col = (self.ws_col + self.axes.edge_width) / self.axes.size[0]
+            ws_col = (self.ws_col + self.axes.edge_width_size) / self.axes.size[0]
 
         # Apply
         self.fig.obj.subplots_adjust(left=self.axes.position[0],
