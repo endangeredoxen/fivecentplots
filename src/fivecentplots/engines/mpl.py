@@ -1093,6 +1093,8 @@ class Layout(BaseLayout):
             coord (optional): MPL coordinate type. Defaults to None.
             units (optional): pixel or inches. Defaults to None which is 'pixel'.
         """
+        plot_num = utl.plot_num(ir, ic, self.ncol) - 1
+
         # Shortcuts
         ax = self.axes.obj[ir, ic]
         if element is None:
@@ -1118,6 +1120,12 @@ class Layout(BaseLayout):
 
         # Add each text box
         for itext, txt in enumerate(text):
+            if isinstance(txt, dict):
+                if plot_num in txt.keys():
+                    txt = txt[plot_num]
+                else:
+                    continue
+
             kw = {}
 
             # Set style attributes
@@ -1208,6 +1216,7 @@ class Layout(BaseLayout):
             twin (optional): denotes if twin axis is enabled or not.
                 Defaults to False.
         """
+        db()
         if twin:
             ax = self.axes2.obj[ir, ic]
         else:
@@ -1585,7 +1594,7 @@ class Layout(BaseLayout):
         elif self.axes2.on and (self.separate_ticks or self.axes2.share_x is False) and self.box.on is False:
             self.ws_row += self._tick_x2
         if self.separate_labels:
-            self.ws_col += self._labtick_y - self._tick_y + self.ws_ax_label_xs
+            self.ws_col = max(self._labtick_y - self._tick_y + self.ws_ax_label_xs, self.ws_col)
             if self.cbar.on:
                 self.ws_col += self.ws_label_tick
 
@@ -1701,11 +1710,26 @@ class Layout(BaseLayout):
             tlabs = [f for f in tlabs if approx_gte(f.get_position()[idx], min(vmin, vmax))
                      and approx_lte(f.get_position()[idx], max(vmin, vmax))]
             tt.obj[ir, ic] = tlabs
+            if len(tlabs) == 0:
+                continue
 
             # Get the label sizes (text and background) and store sizes as 2D array
             bboxes = [t.get_window_extent() for t in tlabs]
-            bboxes_bkg = [t._bbox_patch.get_window_extent() if hasattr(t, '_bbox_patch') else t.get_window_extent()
-                          for t in tlabs]
+            bboxes_bkg = []
+            for t in tlabs:
+                #bboxes_bkg = [t._bbox_patch.get_window_extent() if hasattr(t, '_bbox_patch') else t.get_window_extent()
+                #             for t in tlabs]
+                if hasattr(t, '_bbox_patch') and t._bbox_patch is not None:
+                    try:
+                        bboxes_bkg += [t._bbox_patch.get_window_extent()]
+                    except:
+                        db()
+                else:
+                    try:
+                        bboxes_bkg += [t.get_window_extent()]
+                    except:
+                        db()
+
             # if len(bboxes_bkg) > 0:
             #     width = np.array([f.width for f in bboxes])
             #     width_bkg = np.array([f.width for f in bboxes_bkg])
@@ -1882,8 +1906,8 @@ class Layout(BaseLayout):
                     self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', **kw)
                     x += self.axes.size[0]
                 else:
-                    x = -xticks.size_all.loc[0, 'width']
-                    y = self.axes.size[1] - yticks.size_all.loc[0, 'height'] / 2 / sf
+                    x = self.axes.size[0] - xticks.size_all.loc[0, 'width'] / 2
+                    y = - yticks.size_all.loc[0, 'height'] / 2 / sf - self.tick_labels_major_x.padding
                 precision = utl.get_decimals(xticks.limits[ir, ic][1], 8)
                 txt = f'{xticks.limits[ir, ic][1]:.{precision}f}'
                 kw['position'] = [x, y]
@@ -1936,17 +1960,19 @@ class Layout(BaseLayout):
                         xticks.obj[ir, ic][0].set_size(xticks.font_size / sf)
                         yticks.obj[ir, ic][0].set_size(yticks.font_size / sf)
 
-            # Shrink/remove overlapping ticks in grid plots at x-origin
+            # Shrink/remove overlapping ticks in column/wrap plots at x-origin
             if ic > 0 and len(xticks_size_all) > 0:
-                idx = xticks.size_cols.index('x0')
-                ax_x0 = self.axes.obj[ir, ic].get_window_extent().x0
-                tick_x0 = xticks_size_all[0][idx]
-                if ax_x0 - tick_x0 > self.ws_col:
-                    slop = xticks.obj[ir, ic][0].get_window_extent().width / 2
-                    if self.tick_cleanup == 'remove' or slop / sf > self.ws_col:
-                        xticks.obj[ir, ic][0].set_visible(False)
-                    else:
-                        xticks.obj[ir, ic][0].set_size(xticks.font_size / sf)
+                xxticks = xticks.size_all.set_index(['ir', 'ic', 'ii'])
+                if (ir, ic - 1) in xxticks.index:
+                    _, xwl, xhl, x0l, x1l, y0l, y1l, _ = xxticks.loc[ir, ic - 1].iloc[-1].values
+                    xcl = (x0l + (x1l - x0l) / 2, y0l + (y0l - y1l) / 2)
+                    _, xwf, xhf, x0f, x1f, y0f, y1f, _ = xxticks.loc[ir, ic].iloc[0].values
+                    xcf = (x0f + (x1f - x0f) / 2, y0f + (y0f - y1f) / 2)
+                    if utl.rectangle_overlap((xwl, xhl, xcl), (xwf, xhf, xcf)):
+                        if self.tick_cleanup == 'remove':
+                            xticks.obj[ir, ic - 1][-1].set_visible(False)
+                        else:
+                            xticks.obj[ir, ic - 1][-1].set_size(xticks.font_size / sf)
 
             # TODO: Shrink/remove overlapping ticks in grid plots at y-origin
 
@@ -3085,7 +3111,7 @@ class Layout(BaseLayout):
             if not self.label_row.values_only:
                 lab = f'{self.label_row.text}={self.label_row.values[ir]}'
             else:
-                lab = {self.label_row.values[ir]}
+                lab = self.label_row.values[ir]
             self.label_row.obj[ir, ic], self.label_row.obj_bg[ir, ic] = self.add_label_fig(ir, ic, self.label_row, lab)
 
         # Col/wrap labels
@@ -3105,7 +3131,7 @@ class Layout(BaseLayout):
                 if not self.label_col.values_only:
                     lab = f'{self.label_col.text}={self.label_col.values[ic]}'
                 else:
-                    lab = {self.label_col.values[ic]}
+                    lab = self.label_col.values[ic]
                 self.label_col.obj[ir, ic], self.label_col.obj_bg[ir, ic] = \
                     self.add_label_fig(ir, ic, self.label_col, lab)
 
@@ -4068,11 +4094,18 @@ class Layout(BaseLayout):
         obj = self.text
 
         for ir, ic in np.ndindex(self.axes.obj.shape):
+            plot_num = utl.plot_num(ir, ic, self.ncol) - 1
             ax = self.axes.obj[ir, ic]
             offsetx = ir * self.axes.size[0]
             offsety = ic * self.axes.size[1]
 
             for itext, txt in enumerate(obj.text.values):
+                if isinstance(txt, dict):
+                    if plot_num in txt.keys():
+                        txt = txt[plot_num]
+                    else:
+                        continue
+
                 # Set the coordinate so text is anchored to figure, axes, or the current
                 #    data range
                 coord = None if not hasattr(obj, 'coordinate') \
@@ -4101,10 +4134,8 @@ class Layout(BaseLayout):
                     position[1] /= self.fig.size[1]
                     offsety /= self.fig.size[1]
                 elif units == 'pixel' and coord != 'data':
-                    position[0] /= self.axes.size[0]
-                    offsetx /= self.axes.size[0]
-                    position[1] /= self.axes.size[1]
-                    offsety /= self.axes.size[1]
+                    position[0] = obj.position[itext][0] / self.axes.size[0]
+                    position[1] = obj.position[itext][1] / self.axes.size[1]
 
                 # Something goes weird with x = 0 so we need to adjust slightly
                 if position[0] == 0:
@@ -4202,7 +4233,8 @@ class Layout(BaseLayout):
 
         # wspace
         if self.cbar.on and not self.cbar.shared:
-            ws_col = (self.cbar.size[0] + self.ws_ticks_ax + self.axes.edge_width) / self.axes.size[0]
+            ws_col = max((self.cbar.size[0] + self.ws_ticks_ax + self.axes.edge_width),
+                          self.tick_labels_major_z.size[0]) / self.axes.size[0]
         else:
             ws_col = (self.ws_col + self.axes.edge_width_size) / self.axes.size[0]
 

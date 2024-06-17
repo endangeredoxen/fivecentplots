@@ -15,6 +15,7 @@ import imageio.v3 as imageio
 from matplotlib.font_manager import FontProperties, findfont
 from pathlib import Path
 from typing import Union, Tuple, Dict
+from . import data
 import numpy.typing as npt
 try:
     from PIL import ImageFont  # used only for bokeh font size calculations
@@ -35,6 +36,10 @@ if default_path.exists() and default_path not in sys.path:
         from defaults import *  # noqa
     except ModuleNotFoundError:
         from . themes.gray import *  # noqa
+
+# Read the package version file
+with open(Path(__file__).parent / 'version.txt', 'r') as fid:
+    __version__ = fid.readlines()[0].replace('\n', '')
 
 
 # Convenience kwargs
@@ -187,7 +192,7 @@ def ci(data: pd.Series, coeff: float = 0.95) -> [float, float]:
         return np.nan, np.nan
 
 
-def dfkwarg(args: tuple, kwargs: dict) -> dict:
+def dfkwarg(args: tuple, kwargs: dict, plotter: object) -> dict:
     """Add the DataFrame to kwargs.
 
     Args:
@@ -197,17 +202,25 @@ def dfkwarg(args: tuple, kwargs: dict) -> dict:
     Returns:
         updated kwargs
     """
-    if 'df' in kwargs.keys():
+    if 'df' in kwargs.keys() and isinstance(kwargs['df'], pd.DataFrame):
         return kwargs
-    elif isinstance(args, pd.DataFrame) or isinstance(args, np.ndarray):
+    elif isinstance(args, pd.DataFrame):
         kwargs['df'] = args
         return kwargs
-    elif isinstance(args, tuple) or isinstance(args, list) \
-            and len(args) == 2 and isinstance(args[0], pd.DataFrame) and isinstance(args[1], dict):
+    elif isinstance(args, np.ndarray) and plotter.name in ['hist', 'imshow']:
+        # Certain plots can accept a numpy array of 2D - 4D
+        if len(args.shape) < 2 or len(args.shape) > 4:
+            raise data.DataError('Data source has valid data type but invalid array shape!'
+                                 '\n\nPlease consult the docs for '
+                                 f'"{plotter.name}" plot '
+                                 'which describe the requirement for 2D, 3D, or 4D image array shapes'
+                                 f'\n{doc_url(plotter.url)}')
         kwargs['df'] = args
         return kwargs
     else:
-        raise TypeError('must define a valid data source!')
+        raise data.DataError('Data source has invalid data type!  '
+                             '\n\nPlease consult the docs for more information on which data types are allowed for a '
+                             f'"{plotter.name}" plot.\n{doc_url(plotter.url)}')
 
 
 def df_filter(df: pd.DataFrame, filt_orig: str, drop_cols: bool = False,
@@ -446,6 +459,26 @@ def df_unique(df: pd.DataFrame) -> dict:
             unq[col] = val[0]
 
     return unq
+
+
+def doc_url(paths=[]) -> str:
+    """Return the documentation url.
+
+    Args:
+        paths: add a subpath to the url
+
+    Returns:
+        string html path
+    """
+
+    url = f'https://endangeredoxen.github.io/fivecentplots/{__version__}'
+    if not isinstance(paths, list):
+        paths = [paths]
+
+    for path in paths:
+        url += f'/{path}'
+
+    return url
 
 
 def get_current_values(df: pd.DataFrame, text: str, key: str = '@') -> str:
@@ -1336,7 +1369,7 @@ def split_color_planes_wrapper(df_groups: pd.DataFrame,
             df_groups_.rows //= 2
             df_groups_.cols //= 2
         for j, (pk, pv) in enumerate(planes.items()):
-            imgs_[len(planes.keys()) * k + j] = pv
+            imgs_[len(planes.keys()) * i + j] = pv
 
     return df_groups_, imgs_
 

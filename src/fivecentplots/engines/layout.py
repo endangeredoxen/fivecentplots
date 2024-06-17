@@ -1745,7 +1745,7 @@ class BaseLayout:
                                                                'text_font_weight', 'normal'),
                                                      'text_font_weight'),
                             position=RepeatedList(position, 'text_position'),
-                            coordinate=utl.kwget(kwargs, self.fcpp, 'text_coordinate', 'axis'),
+                            coordinate=utl.kwget(kwargs, self.fcpp, ['text_coordinate', 'text_coord'], 'axis'),
                             rotation=RepeatedList(utl.kwget(kwargs, self.fcpp,
                                                   'text_rotation', 0), 'text_rotation'),
                             units=utl.kwget(kwargs, self.fcpp,

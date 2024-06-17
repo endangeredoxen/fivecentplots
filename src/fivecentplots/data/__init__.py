@@ -8,3 +8,4 @@ from . imshow import ImShow  # noqa
 from . nq import NQ  # noqa
 from . pie import Pie  # noqa
 from . xy import XY  # noqa
+from . data import DataError

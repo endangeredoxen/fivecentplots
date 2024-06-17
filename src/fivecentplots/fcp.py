@@ -34,6 +34,7 @@ except (ModuleNotFoundError, ImportError, NameError):
     pass
 with open(Path(__file__).parent / 'version.txt', 'r') as fid:
     __version__ = fid.readlines()[0].replace('\n', '')
+__version__ = utilities.__version__
 utl = utilities
 COLORS = DEFAULT_COLORS
 HIST = utl.HIST
@@ -114,7 +115,7 @@ def bar(df, **kwargs):
 
             .. figure:: ../_static/images/example_bar.png
     """
-    return plotter(data.Bar, **utl.dfkwarg(df, kwargs))
+    return plotter(data.Bar, **utl.dfkwarg(df, kwargs, data.Bar))
 
 
 def boxplot(df, **kwargs):
@@ -248,7 +249,7 @@ def boxplot(df, **kwargs):
 
             .. figure:: ../_static/images/example_boxplot.png
     """
-    return plotter(data.Box, **utl.dfkwarg(df, kwargs))
+    return plotter(data.Box, **utl.dfkwarg(df, kwargs, data.Box))
 
 
 def contour(df, **kwargs):
@@ -290,7 +291,7 @@ def contour(df, **kwargs):
             .. figure:: ../_static/images/example_contour.png
 
     """
-    return plotter(data.Contour, **utl.dfkwarg(df, kwargs))
+    return plotter(data.Contour, **utl.dfkwarg(df, kwargs, data.Contour))
 
 
 def deprecated(kwargs):
@@ -373,7 +374,7 @@ def gantt(df, **kwargs):
             .. figure:: ../_static/images/example_gantt.png
     """
 
-    return plotter(data.Gantt, **utl.dfkwarg(df, kwargs))
+    return plotter(data.Gantt, **utl.dfkwarg(df, kwargs, data.Gantt))
 
 
 def heatmap(df, **kwargs):
@@ -429,7 +430,7 @@ def heatmap(df, **kwargs):
             .. figure:: ../_static/images/example_heatmap2.png
 
     """
-    return plotter(data.Heatmap, **utl.dfkwarg(df, kwargs))
+    return plotter(data.Heatmap, **utl.dfkwarg(df, kwargs, data.Heatmap))
 
 
 def hist(df, **kwargs):
@@ -525,7 +526,7 @@ def hist(df, **kwargs):
             .. figure:: ../_static/images/example_hist2.png
     """
 
-    return plotter(data.Histogram, **utl.dfkwarg(df, kwargs))
+    return plotter(data.Histogram, **utl.dfkwarg(df, kwargs, data.Histogram))
 
 
 def imshow(df, **kwargs):
@@ -578,7 +579,7 @@ def imshow(df, **kwargs):
 
     kwargs['tick_labels'] = kwargs.get('tick_labels', True)
 
-    return plotter(data.ImShow, **utl.dfkwarg(df, kwargs))
+    return plotter(data.ImShow, **utl.dfkwarg(df, kwargs, data.ImShow))
 
 
 def nq(df, **kwargs):
@@ -622,7 +623,7 @@ def nq(df, **kwargs):
 
     kwargs['tick_labels'] = kwargs.get('tick_labels', True)
 
-    return plotter(data.NQ, **utl.dfkwarg(df, kwargs))
+    return plotter(data.NQ, **utl.dfkwarg(df, kwargs, data.NQ))
 
 
 def paste_kwargs(kwargs: dict) -> dict:
@@ -718,7 +719,7 @@ def pie(df, **kwargs):
 
             .. figure:: ../_static/images/example_pie.png
     """
-    return plotter(data.Pie, **utl.dfkwarg(df, kwargs))
+    return plotter(data.Pie, **utl.dfkwarg(df, kwargs, data.Pie))
 
 
 def plot(df, **kwargs):
@@ -863,7 +864,7 @@ def plot(df, **kwargs):
             .. figure:: ../_static/images/example_plot.png
 
     """
-    return plotter(data.XY, **utl.dfkwarg(df, kwargs))
+    return plotter(data.XY, **utl.dfkwarg(df, kwargs, data.XY))
 
 
 def plot_bar(data, layout, ir, ic, df_rc, kwargs):
@@ -1326,7 +1327,6 @@ def plot_interval(ir, ic, iline, data, layout, df, x, y, twin):
     """
 
     getattr(data, f'get_interval_{layout.interval.type}')(df, x, y)
-
     leg_name = None
     if layout.legend._on:
         if layout.interval.type == 'nq':
@@ -1553,53 +1553,54 @@ def plotter(dobj, **kwargs):
 
         # Make the subplots
         for ir, ic, df_rc in dd.get_rc_subset():
+            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | get_rc_subset')
             if not layout.axes.visible[ir, ic]:
                 continue
 
             # Set the axes colors
             layout.set_axes_colors(ir, ic, dd.ranges)
-            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_colors' % (ifig, ir, ic))
+            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_colors')
 
             # Add and format gridlines
             layout.set_axes_grid_lines(ir, ic)
-            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_grid_lines' % (ifig, ir, ic))
+            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_grid_lines')
 
             # Add horizontal and vertical lines
             layout.add_hvlines(ir, ic, df_rc)
-            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | add_hvlines' % (ifig, ir, ic))
+            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | add_hvlines')
 
             # Plot the data
             dd = globals()['plot_{}'.format(dd.name)](dd, layout, ir, ic, df_rc, kwargs)
-            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | plot' % (ifig, ir, ic))
+            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | plot')
 
             # Set linear or log axes scaling
             layout.set_axes_scale(ir, ic)
-            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_scale' % (ifig, ir, ic))
+            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_scale')
 
             # Set axis ranges
             layout.set_axes_ranges(ir, ic, dd.ranges)
-            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_ranges' % (ifig, ir, ic))
+            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_ranges')
 
             # Add axis labels
             layout.set_axes_labels(ir, ic)
-            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_labels' % (ifig, ir, ic))
+            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_labels')
 
             # Add rc labels
             layout.set_axes_rc_labels(ir, ic)
-            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_rc_labels' % (ifig, ir, ic))
+            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_rc_labels')
 
             # Adjust tick marks
             layout.set_axes_ticks(ir, ic)
-            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_ticks' % (ifig, ir, ic))
+            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_ticks')
 
             # Add box labels
             if dd.name == 'box':
                 layout.add_box_labels(ir, ic, dd)
-                kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | add_box_labels' % (ifig, ir, ic))
+                kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | add_box_labels')
 
             # Add arbitrary text
             layout.add_text(ir, ic)
-            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | add_text' % (ifig, ir, ic))
+            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | add_text')
 
         # Make the legend
         layout.add_legend(dd.legend_vals)
