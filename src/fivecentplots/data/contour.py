@@ -6,6 +6,11 @@ db = pdb.set_trace
 
 
 class Contour(data.Data):
+    name = 'hist'
+    req = ['x', 'y', 'z']
+    opt = []
+    url = 'contour.html'
+
     def __init__(self, **kwargs):
         """Contour-specific Data class to deal with operations applied to the
         input data (i.e., non-plotting operations)
@@ -13,12 +18,9 @@ class Contour(data.Data):
         Args:
             kwargs: user-defined keyword args
         """
-        name = 'contour'
-        req = ['x', 'y', 'z']
-        opt = []
         kwargs['ax_limit_padding_zmax'] = 0
         kwargs['ax_limit_padding_zmin'] = 0
 
-        super().__init__(name, req, opt, **kwargs)
+        super().__init__(self.name, self.req, self.opt, **kwargs)
 
         self.auto_scale = False

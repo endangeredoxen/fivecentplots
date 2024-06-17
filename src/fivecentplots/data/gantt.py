@@ -7,6 +7,11 @@ db = pdb.set_trace
 
 
 class Gantt(data.Data):
+    name = 'gantt'
+    req = ['x', 'y']
+    opt = []
+    url = 'gantt.html'
+
     def __init__(self, **kwargs):
         """Gantt-specific Data class to deal with operations applied to the
         input data (i.e., non-plotting operations)
@@ -14,12 +19,7 @@ class Gantt(data.Data):
         Args:
             kwargs: user-defined keyword args
         """
-        name = 'gantt'
-        req = ['x', 'y']
-        opt = []
-        kwargs['share_y'] = False
-
-        super().__init__(name, req, opt, **kwargs)
+        super().__init__(self.name, self.req, self.opt, **kwargs)
 
         # error checks
         if len(self.x) != 2:

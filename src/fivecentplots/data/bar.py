@@ -7,6 +7,9 @@ db = pdb.set_trace
 
 
 class Bar(data.Data):
+    name = 'hist'
+    url = 'barplot.html'
+
     def __init__(self, **kwargs):
         """Barplot-specific Data class to deal with operations applied to the
         input data (i.e., non-plotting operations)
@@ -14,8 +17,6 @@ class Bar(data.Data):
         Args:
             kwargs: user-defined keyword args
         """
-        name = 'bar'
-
         # Check for bad ranges
         horizontal = utl.kwget(kwargs, kwargs.get('fcpp', {}),
                                ['bar_horizontal', 'horizontal'], kwargs.get('horizontal', False))
@@ -32,7 +33,7 @@ class Bar(data.Data):
             if 'xmin' in kwargs or 'xmin' in kwargs:
                 raise data.RangeError('x-limits not allowed for bar plot!')
 
-        super().__init__(name, **kwargs)
+        super().__init__(self.name, **kwargs)
 
         # overrides
         self.horizontal = horizontal

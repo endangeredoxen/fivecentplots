@@ -7,6 +7,11 @@ db = pdb.set_trace
 
 
 class NQ(data.Data):
+    name = 'nq'
+    req = []
+    opt = ['x']
+    url = 'nq.html'
+
     def __init__(self, **kwargs):
         """NQ-specific Data class to deal with operations applied to the
         input data (i.e., non-plotting operations)
@@ -16,10 +21,6 @@ class NQ(data.Data):
         Args:
             kwargs: user-defined keyword args
         """
-        name = 'nq'
-        req = []
-        opt = ['x']
-
         # Check if input is image data
         try:
             # For image data, grouping information is stored in kwargs['df'] but the actual image arrays are in
@@ -55,7 +56,7 @@ class NQ(data.Data):
 
         kwargs['trans_x'] = 'nq'
 
-        super().__init__(name, req, opt, **kwargs)
+        super().__init__(self.name, self.req, self.opt, **kwargs)
 
         # overrides
         if kwargs.get('percentiles'):

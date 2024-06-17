@@ -8,6 +8,11 @@ db = pdb.set_trace
 
 
 class ImShow(data.Data):
+    name = 'imshow'
+    req = []
+    opt = []
+    url = 'imshow.html'
+
     def __init__(self, fcpp: dict = {}, **kwargs):
         """ImShow-specific Data class to deal with operations applied to the
         input data (i.e., non-plotting operations)
@@ -16,10 +21,6 @@ class ImShow(data.Data):
             fcpp: theme-file kwargs
             kwargs: user-defined keyword args
         """
-        name = 'imshow'
-        req = []
-        opt = []
-
         # For image data, grouping information is stored in kwargs['df'] but the actual image arrays are kwargs['imgs']
         # which is a dict of numpy.ndarray's or 2D dataframes
         kwargs['df'], kwargs['imgs'] = utl.img_data_format(kwargs)
@@ -61,7 +62,7 @@ class ImShow(data.Data):
         if 'legend' in kwargs and kwargs['legend'] is not None:
             raise data.GroupingError('legend not available for imshow plots')
 
-        super().__init__(name, req, opt, self.fcpp, **kwargs)
+        super().__init__(self.name, self.req, self.opt, self.fcpp, **kwargs)
 
         # overrides
         self.auto_scale = False

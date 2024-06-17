@@ -75,6 +75,7 @@ class Data:
         self.legend_vals = None
         self.pivot = False
         self.ranges = None
+        self.sample = int(utl.kwget(kwargs, self.fcpp, 'sample', 1))
         self.share_col = utl.kwget(kwargs, self.fcpp, 'share_col', False)
         self.share_row = utl.kwget(kwargs, self.fcpp, 'share_row', False)
         self.share_x = utl.kwget(kwargs, self.fcpp, 'share_x', True)
@@ -380,7 +381,7 @@ class Data:
     def _check_group_errors(self):
         """Check for common errors related to grouping keywords."""
         if self.row and len(self.row) > 1 or self.col and len(self.col) > 1:
-            error = 'Only one value can be specified for "%s"' % ('row' if self.row else 'col')
+            error = 'Only one value can be specified for "%s"' % ('row' if len(self.row) > 1 else 'col')
             raise GroupingError(error)
 
         if self.row is not None and self.row == self.col:
@@ -728,25 +729,26 @@ class Data:
         else:
             cols = getattr(self, ax)
 
-        # # Groupby for stats
-        # df = self._get_stat_groupings(df)
-
-        # Get the dataframe values for this axis
-        dfax = df[cols]
+        # Get the dataframe values for this axis; do calculation on numpy arrays
+        if isinstance(df, pd.DataFrame):
+            dfax = df[cols].values
+            dtypes = df[cols].dtypes.unique()
+        else:
+            dfax = df
+            dtypes = [np.ndarray]
 
         # Check dtypes
-        dtypes = dfax.dtypes.unique()
         if 'str' in dtypes or 'object' in dtypes or 'datetime64[ns]' in dtypes:
             return None, None
 
         # Calculate actual min / max vals for the axis
         if self.ax_scale in ['log%s' % ax, 'loglog', 'semilog%s' % ax, 'log']:
-            axmin = dfax[dfax > 0].stack().min()
-            axmax = dfax.stack().max()
+            axmin = dfax[dfax > 0].min()
+            axmax = dfax.max()
             axdelta = np.log10(axmax) - np.log10(axmin)
         else:
-            axmin = dfax.stack().min()
-            axmax = dfax.stack().max()
+            axmin = dfax.min()
+            axmax = dfax.max()
             axdelta = axmax - axmin
         if axdelta <= 0:
             axmin -= 0.1 * axmin

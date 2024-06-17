@@ -8,6 +8,11 @@ db = pdb.set_trace
 
 
 class Pie(data.Data):
+    name = 'pie'
+    req = ['x', 'y']
+    opt = []
+    url = 'pie.html'
+
     def __init__(self, **kwargs):
         """Pie-specific Data class to deal with operations applied to the
         input data (i.e., non-plotting operations)
@@ -15,11 +20,7 @@ class Pie(data.Data):
         Args:
             kwargs: user-defined keyword args
         """
-        name = 'pie'
-        req = ['x', 'y']
-        opt = []
-
-        super().__init__(name, req, opt, **kwargs)
+        super().__init__(self.name, self.req, self.opt, **kwargs)
 
         # check for invalid axis options
         vals = ['twin_x', 'twin_y']

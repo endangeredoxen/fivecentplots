@@ -9,6 +9,11 @@ db = pdb.set_trace
 
 
 class Heatmap(data.Data):
+    name = 'heatmap'
+    req = []
+    opt = ['x', 'y', 'z']
+    url = 'heatmap.html'
+
     def __init__(self, **kwargs):
         """Heatmap-specific Data class to deal with operations applied to the
         input data (i.e., non-plotting operations)
@@ -16,9 +21,6 @@ class Heatmap(data.Data):
         Args:
             kwargs: user-defined keyword args
         """
-        name = 'heatmap'
-        req = []
-        opt = ['x', 'y', 'z']
         kwargs['auto_scale'] = False
 
         # check for invalid axis options
@@ -37,7 +39,7 @@ class Heatmap(data.Data):
         if 'legend' in kwargs and kwargs['legend'] is not None:
             raise data.GroupingError('legend not available for heatmap plots')
 
-        super().__init__(name, req, opt, **kwargs)
+        super().__init__(self.name, self.req, self.opt, **kwargs)
 
         # Set values
         if 'x' not in kwargs.keys() and \

@@ -8,6 +8,11 @@ db = pdb.set_trace
 
 
 class Box(data.Data):
+    name = 'box'
+    req = ['y']
+    opt = []
+    url = 'boxplot.html'
+
     def __init__(self, **kwargs):
         """Boxplot-specific Data class to deal with operations applied to the
         input data (i.e., non-plotting operations)
@@ -15,11 +20,7 @@ class Box(data.Data):
         Args:
             kwargs: user-defined keyword args
         """
-        name = 'box'
-        req = ['y']
-        opt = []
-
-        super().__init__(name, req, opt, **kwargs)
+        super().__init__(self.name, self.req, self.opt, **kwargs)
 
     def _get_groups(self, df: pd.DataFrame) -> pd.DataFrame:
         """Return the groupby keys of a DataFrame
