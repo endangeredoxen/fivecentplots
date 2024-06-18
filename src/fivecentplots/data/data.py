@@ -117,6 +117,8 @@ class Data:
         self.y2max = utl.RepeatedList(kwargs.get('y2max', [None]), 'y2max')
         self.zmin = utl.RepeatedList(kwargs.get('zmin', [None]), 'zmin')
         self.zmax = utl.RepeatedList(kwargs.get('zmax', [None]), 'zmax')
+        for limit in ['xmin', 'xmax', 'x2min', 'x2max', 'ymin', 'y2max', 'zmin', 'zmax']:
+            self._check_limits(limit)
 
         # Update share
         if len(self.xmin) > 1 or len(self.xmax) > 1:
@@ -412,6 +414,23 @@ class Data:
             raise GroupingError('%s and %s grouping columns cannot be the same!'
                                 % (group1, group2))
 
+    def _check_limits(self, limit):
+        """Validate axis limits.
+
+        Args:
+            limit:  user-defined RepeatedList for an axis limit
+        """
+        limit_obj = getattr(self, limit)
+
+        for limit_val in limit_obj.values:
+            if isinstance(limit_val, str) and limit_val[0].lower() != 'q':
+                raise DataError(f'"{limit}" must be a float, int, or a valid quantile string starting with a "q" '
+                                'followed by a number between 0 and 1 [current value: "{limit_val}"]')
+            elif isinstance(limit_val, str):
+                if float(limit_val[1:]) < 0 or float(limit_val[1:]) > 100:
+                    raise DataError('Valid quantile strings must start with "q" followed by a number between '
+                                    f'0 and 1 [current value: "{limit_val}"]')
+
     def _check_xyz(self, xyz: str):
         """Validate the name and column data provided for x, y, and/or z.
 
@@ -522,6 +541,145 @@ class Data:
                         df = df[df[col] <= auto_scale_val]
 
         return df
+
+    def _get_data_range(self, ax: str, df: pd.DataFrame, plot_num: int) -> tuple:
+        """Determine the min/max values for a given axis based on user inputs.
+
+        Args:
+            ax: name of the axis ('x', 'y', etc)
+            df: data table to use for range calculation
+            plot_num: index number of the current subplot
+
+        Returns:
+            min, max tuple
+        """
+        if not hasattr(self, ax) or getattr(self, ax) in [None, []]:
+            return None, None
+        elif self.col == 'x' and self.share_x and ax == 'x':
+            cols = self.x_vals
+        elif self.col == 'x' and self.share_col and ax == 'x':
+            cols = [f for f in self.x_vals if f in df.columns]
+        elif self.row == 'y' and self.share_y and ax == 'y':
+            cols = self.y_vals
+        elif self.row == 'y' and self.share_row and ax == 'y':
+            cols = [f for f in self.y_vals if f in df.columns]
+        else:
+            cols = getattr(self, ax)
+
+        # Get the dataframe values for this axis; do calculation on numpy arrays
+        if isinstance(df, pd.DataFrame):
+            dfax = df[cols].values
+            dtypes = df[cols].dtypes.unique()
+        else:
+            dfax = df
+            dtypes = [np.ndarray]
+
+        # Check dtypes
+        if 'str' in dtypes or 'object' in dtypes or 'datetime64[ns]' in dtypes:
+            return None, None
+
+        # Calculate actual min / max vals for the axis
+        if self.ax_scale in ['log%s' % ax, 'loglog', 'semilog%s' % ax, 'log']:
+            axmin = dfax[dfax > 0].min()
+            axmax = dfax.max()
+            axdelta = np.log10(axmax) - np.log10(axmin)
+        else:
+            axmin = dfax.min()
+            axmax = dfax.max()
+            axdelta = axmax - axmin
+        if axdelta <= 0:
+            axmin -= 0.1 * axmin
+            axmax += 0.1 * axmax
+
+        # Check user-specified min values
+        vmin = getattr(self, '%smin' % ax)[plot_num]
+        if vmin is not None and 'iqr' in str(vmin).lower():
+            factor = str(vmin).split('*')
+            factor = float(factor[0])
+            if 'box' not in self.name or self.groups is None:
+                q1 = dfax.quantile(0.25).min()
+                q3 = dfax.quantile(0.75).max()
+                iqr = factor * (q3 - q1)
+                vmin = q1 - iqr
+            else:
+                q1 = df[self._groupers + cols].groupby(self._groupers) \
+                    .quantile(0.25)[cols].reset_index()
+                q3 = df[self._groupers + cols].groupby(self._groupers) \
+                    .quantile(0.75)[cols].reset_index()
+                iqr = factor * (q3[cols] - q1[cols])
+                vmin = (q1[cols] - iqr[cols]).min().iloc[0]
+        elif vmin is not None and 'q' in str(vmin).lower():
+            xq = float(str(vmin).lower().replace('q', '')) / 100
+            if self.groups is None:
+                vmin = dfax.quantile(xq).min()
+            elif 'box' in self.name:
+                vmin = df[self._groupers + cols].groupby(self._groupers) \
+                    .quantile(xq)[cols].min().iloc[0]
+            else:
+                vmin = df[self.groups + cols].groupby(self.groups) \
+                    .quantile(xq)[cols].min().iloc[0]
+        elif vmin is not None:
+            vmin = vmin
+        elif getattr(self, 'ax_limit_padding_%smin' % ax) is not None:
+            if self.ax_scale in ['log%s' % ax, 'loglog',
+                                 'semilog%s' % ax, 'log']:
+                axmin = np.log10(axmin) - \
+                    getattr(self, 'ax_limit_padding_%smin' % ax) * axdelta
+                vmin = 10**axmin
+            else:
+                axmin -= getattr(self, 'ax_limit_padding_%smin' % ax) * axdelta
+                vmin = axmin
+        else:
+            vmin = None
+
+        # Check user-specified max values
+        vmax = getattr(self, '%smax' % ax)[plot_num]
+        if vmax is not None and 'iqr' in str(vmax).lower():
+            factor = str(vmax).split('*')
+            factor = float(factor[0])
+            if 'box' not in self.name or self.groups is None:
+                q1 = dfax.quantile(0.25).min()
+                q3 = dfax.quantile(0.75).max()
+                iqr = factor * (q3 - q1)
+                vmax = q3 + iqr
+            else:
+                q1 = df[self._groupers + cols].groupby(self._groupers) \
+                    .quantile(0.25)[cols].reset_index()
+                q3 = df[self._groupers + cols].groupby(self._groupers) \
+                    .quantile(0.75)[cols].reset_index()
+                iqr = factor * (q3[cols] - q1[cols])
+                # should this be referred to median?
+                vmax = (q3[cols] + iqr[cols]).max().iloc[0]
+        elif vmax is not None and 'q' in str(vmax).lower():
+            xq = float(str(vmax).lower().replace('q', '')) / 100
+            if self.groups is None:
+                vmax = dfax.quantile(xq).max()
+            elif 'box' in self.name:  # move to data.box.py?
+                vmax = df[self._groupers + cols].groupby(self._groupers) \
+                    .quantile(xq)[cols].max().iloc[0]
+            else:
+                vmax = df[self.groups + cols].groupby(self.groups) \
+                    .quantile(xq)[cols].max().iloc[0]
+        elif vmax is not None:
+            vmax = vmax
+        elif getattr(self, 'ax_limit_padding_%smax' % ax) is not None:
+            if self.ax_scale in ['log%s' % ax, 'loglog',
+                                 'semilog%s' % ax, 'log']:
+                axmax = np.log10(axmax) + \
+                    getattr(self, 'ax_limit_padding_%smax' % ax) * axdelta
+                vmax = 10**axmax
+            else:
+                axmax += getattr(self, 'ax_limit_padding_%smax' % ax) * axdelta
+                vmax = axmax
+        else:
+            vmax = None
+
+        if type(vmin) in [float, np.float32, np.float64] and np.isnan(vmin):
+            vmin = None
+        if type(vmax) in [float, np.float32, np.float64] and np.isnan(vmax):
+            vmax = None
+
+        return vmin, vmax
 
     def _get_data_ranges(self):
         """Default data range calculator by subplot.
@@ -704,145 +862,6 @@ class Data:
         self.lcl = lower.reset_index()[y]
         self.ucl = df[[x, y]].groupby(x).quantile(self.interval[1]).reset_index()[y]
         self.stat_idx = lower.reset_index()[x]
-
-    def _get_data_range(self, ax: str, df: pd.DataFrame, plot_num: int) -> tuple:
-        """Determine the min/max values for a given axis based on user inputs.
-
-        Args:
-            ax: name of the axis ('x', 'y', etc)
-            df: data table to use for range calculation
-            plot_num: index number of the current subplot
-
-        Returns:
-            min, max tuple
-        """
-        if not hasattr(self, ax) or getattr(self, ax) in [None, []]:
-            return None, None
-        elif self.col == 'x' and self.share_x and ax == 'x':
-            cols = self.x_vals
-        elif self.col == 'x' and self.share_col and ax == 'x':
-            cols = [f for f in self.x_vals if f in df.columns]
-        elif self.row == 'y' and self.share_y and ax == 'y':
-            cols = self.y_vals
-        elif self.row == 'y' and self.share_row and ax == 'y':
-            cols = [f for f in self.y_vals if f in df.columns]
-        else:
-            cols = getattr(self, ax)
-
-        # Get the dataframe values for this axis; do calculation on numpy arrays
-        if isinstance(df, pd.DataFrame):
-            dfax = df[cols].values
-            dtypes = df[cols].dtypes.unique()
-        else:
-            dfax = df
-            dtypes = [np.ndarray]
-
-        # Check dtypes
-        if 'str' in dtypes or 'object' in dtypes or 'datetime64[ns]' in dtypes:
-            return None, None
-
-        # Calculate actual min / max vals for the axis
-        if self.ax_scale in ['log%s' % ax, 'loglog', 'semilog%s' % ax, 'log']:
-            axmin = dfax[dfax > 0].min()
-            axmax = dfax.max()
-            axdelta = np.log10(axmax) - np.log10(axmin)
-        else:
-            axmin = dfax.min()
-            axmax = dfax.max()
-            axdelta = axmax - axmin
-        if axdelta <= 0:
-            axmin -= 0.1 * axmin
-            axmax += 0.1 * axmax
-
-        # Check user-specified min values
-        vmin = getattr(self, '%smin' % ax)[plot_num]
-        if vmin is not None and 'iqr' in str(vmin).lower():
-            factor = str(vmin).split('*')
-            factor = float(factor[0])
-            if 'box' not in self.name or self.groups is None:
-                q1 = dfax.quantile(0.25).min()
-                q3 = dfax.quantile(0.75).max()
-                iqr = factor * (q3 - q1)
-                vmin = q1 - iqr
-            else:
-                q1 = df[self._groupers + cols].groupby(self._groupers) \
-                    .quantile(0.25)[cols].reset_index()
-                q3 = df[self._groupers + cols].groupby(self._groupers) \
-                    .quantile(0.75)[cols].reset_index()
-                iqr = factor * (q3[cols] - q1[cols])
-                vmin = (q1[cols] - iqr[cols]).min().iloc[0]
-        elif vmin is not None and 'q' in str(vmin).lower():
-            xq = float(str(vmin).lower().replace('q', '')) / 100
-            if self.groups is None:
-                vmin = dfax.quantile(xq).min()
-            elif 'box' in self.name:
-                vmin = df[self._groupers + cols].groupby(self._groupers) \
-                    .quantile(xq)[cols].min().iloc[0]
-            else:
-                vmin = df[self.groups + cols].groupby(self.groups) \
-                    .quantile(xq)[cols].min().iloc[0]
-        elif vmin is not None:
-            vmin = vmin
-        elif getattr(self, 'ax_limit_padding_%smin' % ax) is not None:
-            if self.ax_scale in ['log%s' % ax, 'loglog',
-                                 'semilog%s' % ax, 'log']:
-                axmin = np.log10(axmin) - \
-                    getattr(self, 'ax_limit_padding_%smin' % ax) * axdelta
-                vmin = 10**axmin
-            else:
-                axmin -= getattr(self, 'ax_limit_padding_%smin' % ax) * axdelta
-                vmin = axmin
-        else:
-            vmin = None
-
-        # Check user-specified max values
-        vmax = getattr(self, '%smax' % ax)[plot_num]
-        if vmax is not None and 'iqr' in str(vmax).lower():
-            factor = str(vmax).split('*')
-            factor = float(factor[0])
-            if 'box' not in self.name or self.groups is None:
-                q1 = dfax.quantile(0.25).min()
-                q3 = dfax.quantile(0.75).max()
-                iqr = factor * (q3 - q1)
-                vmax = q3 + iqr
-            else:
-                q1 = df[self._groupers + cols].groupby(self._groupers) \
-                    .quantile(0.25)[cols].reset_index()
-                q3 = df[self._groupers + cols].groupby(self._groupers) \
-                    .quantile(0.75)[cols].reset_index()
-                iqr = factor * (q3[cols] - q1[cols])
-                # should this be referred to median?
-                vmax = (q3[cols] + iqr[cols]).max().iloc[0]
-        elif vmax is not None and 'q' in str(vmax).lower():
-            xq = float(str(vmax).lower().replace('q', '')) / 100
-            if self.groups is None:
-                vmax = dfax.quantile(xq).max()
-            elif 'box' in self.name:  # move to data.box.py?
-                vmax = df[self._groupers + cols].groupby(self._groupers) \
-                    .quantile(xq)[cols].max().iloc[0]
-            else:
-                vmax = df[self.groups + cols].groupby(self.groups) \
-                    .quantile(xq)[cols].max().iloc[0]
-        elif vmax is not None:
-            vmax = vmax
-        elif getattr(self, 'ax_limit_padding_%smax' % ax) is not None:
-            if self.ax_scale in ['log%s' % ax, 'loglog',
-                                 'semilog%s' % ax, 'log']:
-                axmax = np.log10(axmax) + \
-                    getattr(self, 'ax_limit_padding_%smax' % ax) * axdelta
-                vmax = 10**axmax
-            else:
-                axmax += getattr(self, 'ax_limit_padding_%smax' % ax) * axdelta
-                vmax = axmax
-        else:
-            vmax = None
-
-        if type(vmin) in [float, np.float32, np.float64] and np.isnan(vmin):
-            vmin = None
-        if type(vmax) in [float, np.float32, np.float64] and np.isnan(vmax):
-            vmax = None
-
-        return vmin, vmax
 
     def get_df_figure(self):
         """Generator to subset the main DataFrame based on fig_item grouping.

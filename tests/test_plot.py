@@ -617,7 +617,7 @@ def plt_other_conf_int(bm=False, make_reference=False, show=False):
     name = utl.unit_test_get_img_name('other_conf-int', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.plot(df_interval, x='x', y='y', title='IV Data', lines=False, show=SHOW, legend=True,
+    fcp.plot(df_interval, x='x', y='y', title='IV Data', lines=False, show=SHOW, legend=True, timer=True,
              conf_int=0.95, filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return

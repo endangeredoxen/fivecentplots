@@ -165,16 +165,20 @@ class Histogram(data.Data):
             vals = np.arange(offset, data.max() + 1)
             counts = np.bincount(data - offset)
 
-            # Clean up
+        else:
+            # Case of image data but invalid dtype
+            if self.bins == 0:
+                self.bins = int(data.max() - data.min() + 1)
+
+            # If bins specified or data contains floats, use np.histogram (slower)
+            brange = data.min(), data.max()
+            counts, vals = np.histogram(data, bins=self.bins, density=self.norm, range=brange)
+
+        # Clean up
             if len(vals) != len(counts):
                 vals = vals[:-1]
             counts = counts[(vals >= data.min()) & (vals <= data.max())]
             vals = vals[(vals >= data.min()) & (vals <= data.max())]
-
-        else:
-            # If bins specified or data contains floats, use np.histogram (slower)
-            brange = data.min(), data.max()
-            counts, vals = np.histogram(data, bins=self.bins, density=self.norm, range=brange)
 
         # Additional manipulations for xy plots
         if self.name == 'xy':
@@ -211,7 +215,8 @@ class Histogram(data.Data):
             data.Data._get_data_ranges(self)
 
         elif self.imgs is not None:
-            # If xy plot but data are images, use custom range calculation
+            # If xy plot but data are images, use custom range calculations to avoid building a massive and
+            # slow DataFrame and just use the histogram vals/counts arrays
             data.Data._get_data_ranges_user_defined(self)
 
             # Apply shared axes
@@ -339,6 +344,50 @@ class Histogram(data.Data):
             if hasattr(self, 'horizontal') and self.horizontal:
                 self.swap_xy_ranges()
 
+    def get_plot_data(self, df: pd.DataFrame):
+        """Generator to subset into discrete sets of data for each curve.
+
+        Args:
+            df: data subset to plot
+
+        Yields:
+            iline: legend index
+            df: data subset to plot
+            row['x'] [x]: x-axis column name
+            row['y'] [y]: y-axis column name
+            self.z [z]: z-column name
+            leg [leg_name]: legend value name if legend enabled
+            twin: denotes if twin axis is enabled or not
+            len(vals) [ngroups]: total number of groups in the full data
+        """
+        if not self.imgs:
+            yield from data.Data.get_plot_data(self, df)
+
+        else:
+            if not isinstance(self.legend_vals, pd.DataFrame):
+                # Make the subset
+                df_hist = []
+                for idx in df.index:
+                    df_hist += [pd.DataFrame({self.x[0]: self.hists[idx][1], self.y[0]: self.hists[idx][0]})]
+                df_hist = pd.concat(df_hist)
+
+                yield 0, df_hist, self.x[0], self.y[0], None, None, False, 1
+
+            else:
+                for iline, row in self.legend_vals.iterrows():
+                    # Subset by legend value
+                    df2 = df[df[self.legend] == row['Leg']].copy()
+                    if len(df2) == 0:
+                        continue
+
+                    # Make the subset
+                    df_hist = []
+                    for idx in df2.index:
+                        df_hist += [pd.DataFrame({row['x']: self.hists[idx][1], row['y']: self.hists[idx][0]})]
+                    df_hist = pd.concat(df_hist)
+
+                    yield iline, df_hist, row['x'], row['y'], None, row['names'], False, len(self.legend_vals)
+
     def _get_rc_groupings(self, df: pd.DataFrame):
         """Determine the row, column, or wrap grid groupings.
 
@@ -406,32 +455,21 @@ class Histogram(data.Data):
 
         return list(set(grouper))
 
-    def _subset_modify(self, ir: int, ic: int, df: pd.DataFrame) -> pd.DataFrame:
-        """Wrapper to handle image data.
+    # def _subset_modify(self, ir: int, ic: int, df: pd.DataFrame) -> pd.DataFrame:
+    #     """Wrapper to handle image data.
 
-        Args:
-            ir: subplot row index
-            ic: subplot column index
-            df: df_groups subset based on self._subset
+    #     Args:
+    #         ir: subplot row index
+    #         ic: subplot column index
+    #         df: df_groups subset based on self._subset
 
-        Returns:
-            updated DataFrame
-        """
-        if len(df.index) == 0:
-            return df
+    #     Returns:
+    #         updated DataFrame
+    #     """
+    #     if len(df.index) == 0:
+    #         return df
 
-        if not self.imgs:
-            return data.Data._subset_modify(self, ir, ic, df)
-
-        else:
-            subset_dict = {key: value for key, value in self.hists.items() if key in list(df.index)}
-            vals = [f[1] for f in subset_dict.values()]
-            counts = [f[0] for f in subset_dict.values()]
-            for ival, val in enumerate(vals):
-                if len(val) > len(counts[ival]):
-                    vals[ival] = val[:-1]
-
-            return pd.DataFrame({self.x[0]: np.concatenate(vals), self.y[0]: np.concatenate(counts)})
+    #     return data.Data._subset_modify(self, ir, ic, df)
 
     def _subset_wrap(self, ir: int, ic: int) -> pd.DataFrame:
         """Histogram-specific version of subset_wrap.  Select the revelant subset
