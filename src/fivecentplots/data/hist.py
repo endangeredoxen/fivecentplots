@@ -175,10 +175,10 @@ class Histogram(data.Data):
             counts, vals = np.histogram(data, bins=self.bins, density=self.norm, range=brange)
 
         # Clean up
-            if len(vals) != len(counts):
-                vals = vals[:-1]
-            counts = counts[(vals >= data.min()) & (vals <= data.max())]
-            vals = vals[(vals >= data.min()) & (vals <= data.max())]
+        if len(vals) != len(counts):
+            vals = vals[:-1]
+        counts = counts[(vals >= data.min()) & (vals <= data.max())]
+        vals = vals[(vals >= data.min()) & (vals <= data.max())]
 
         # Additional manipulations for xy plots
         if self.name == 'xy':
@@ -194,6 +194,11 @@ class Histogram(data.Data):
             mask = (counts[:-2]==0) & (counts[2:]==0) & (counts[1:len(counts) - 1]==0)
             counts = np.concatenate((counts[:1], counts[1:-1][~mask], counts[-1:]))
             vals = np.concatenate((vals[:1], vals[1:-1][~mask], vals[-1:]))
+
+            # Remove leading zero bin
+            if counts[0] == 0 and vals[0] == 0 and self.bins == 0:
+                counts = counts[1:]
+                vals = vals[1:]
 
             # Optionally sub-sample the data, preserving the last discrete bin because it often contains valuable
             # image bin data
