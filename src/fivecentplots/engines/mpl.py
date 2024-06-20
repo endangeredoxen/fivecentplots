@@ -463,7 +463,7 @@ class Layout(BaseLayout):
         val = self.label_x.size[1] * self.label_x.on \
             + self.ws_label_tick * self.label_x.on \
             + self._tick_x
-        return val
+        return round(val)
 
     @property
     def _labtick_x2(self) -> float:
@@ -474,7 +474,7 @@ class Layout(BaseLayout):
         val = (self.label_x2.size[1] + self.label_x2.edge_width) * self.label_x2.on \
             + self.ws_label_tick * self.label_x2.on \
             + self._tick_x2
-        return val
+        return round(val)
 
     @property
     def _labtick_y(self) -> float:
@@ -487,7 +487,7 @@ class Layout(BaseLayout):
             + self._tick_y
         if self.label_y.on and self._tick_y == 0:
             val += self.ws_label_tick
-        return val
+        return round(val)
 
     @property
     def _labtick_y2(self) -> float:
@@ -500,7 +500,7 @@ class Layout(BaseLayout):
             + self._tick_y2
         if self.label_y2.on and self._tick_y == 0:
             val += self.ws_label_tick
-        return val
+        return round(val)
 
     # @property
     # def _labtick_z(self) -> float:
@@ -508,7 +508,7 @@ class Layout(BaseLayout):
     #     return 0*self.ws_label_tick * self.label_z.on + self.tick_labels_major_z.size[0]
 
     @property
-    def _left(self) -> float:
+    def _left(self) -> int:
         """Width of the space to the left of the axes object."""
         left = self.ws_fig_label + self._labtick_y
 
@@ -521,7 +521,7 @@ class Layout(BaseLayout):
         # pie labels
         left += self.pie.xs_left
 
-        return left
+        return round(left)
 
     @property
     def _legx(self) -> float:
@@ -547,7 +547,7 @@ class Layout(BaseLayout):
                 + 2 * self.label_row.edge_width) * self.label_row.on
 
     @property
-    def _right(self) -> float:
+    def _right(self) -> int:
         """Width of the space to the right of the axes object (ignores cbar [bar and tick labels] and legend)."""
         # axis to fig right side ws with or without legend
         ws_ax_fig = (self.ws_ax_fig if not self.legend._on or self.legend.location != 0 else 0)
@@ -576,7 +576,7 @@ class Layout(BaseLayout):
         # pie labels
         right += self.pie.xs_right
 
-        return right
+        return round(right)
 
     @property
     def _tick_x(self) -> float:
@@ -629,7 +629,7 @@ class Layout(BaseLayout):
         val += self.tick_y_top_xs
         val += self.tick_z_top_xs
 
-        return val
+        return round(val)
 
     @property
     def _ws_title(self) -> float:
@@ -1245,13 +1245,26 @@ class Layout(BaseLayout):
             sign = 1
         return sign * np.ceil(np.abs(edge_diff))
 
-    def _edge_width(self, element_name: str) -> float:
-        """Compute the effective axes edge width in terms of its impact on element spacing (1/2 of the width if > 1)."""
+    def _edge_width(self, element_name: str, up=True) -> float:
+        """
+        Compute the effective axes edge width in terms of its impact on element spacing (1/2 of the width
+        rounded either up or down depending on which side of the object.
+
+        Args:
+            element_name: the Element class name to reference the correct object
+            up:  if True, np.ceil; if False, np.floor
+
+        Returns:
+            effective edge width
+        """
         val = getattr(self, element_name).edge_width / 2
-        if val == 0.5:
-            return 0
-        else:
+        if up:
+            # if val == 0.5:
+            #     return 0
+            # else:
             return np.ceil(val)
+        else:
+            return np.floor(val)
 
     def _get_axes_label_position(self):
         """
@@ -3617,12 +3630,12 @@ class Layout(BaseLayout):
             width_err = self.fig.size[0] - self.fig.obj.get_window_extent().x1
             print('width error')
             self.fig.obj.set_figwidth(self.fig.size_inches[0] + width_err / self.fig.dpi)
+            self.fig.size[0] = self.fig.obj.get_window_extent().x1
         if self.fig.obj.get_window_extent().y1 < self.fig.size[1]:
             height_err = self.fig.size[1] - self.fig.obj.get_window_extent().y1
             print('height error')
             self.fig.obj.set_figheight(self.fig.size_inches[1] + height_err / self.fig.dpi)
-        self.fig.size[0] = self.fig.obj.get_window_extent().x1
-        self.fig.size[1] = self.fig.obj.get_window_extent().y1
+            self.fig.size[1] = self.fig.obj.get_window_extent().y1
 
         # Adjust subplot spacing
         self._subplots_adjust()
@@ -4203,33 +4216,21 @@ class Layout(BaseLayout):
             right = self._right + self.label_z.size[0] + self.ws_ticks_ax + self.tick_labels_major_z.size[0]
             self.axes.position[1] = 1 - (right - self._edge_width('axes')) / self.fig.size[0]
         else:
-            self.axes.position[1] = 1 - (self._right + self._legx + self._edge_width('axes')) / self.fig.size[0]
-            if (1 - self.axes.position[1]) * self.fig.size[0] > (self._right + self._legx + self._edge_width('axes')):
-                self.axes.position[1] -= \
-                    (1 - self.axes.position[1]) * self.fig.size[0] - (self._right + self._legx + self._edge_width('axes'))
+            self.axes.position[1] = \
+                1 - (self._right + self._legx + self._edge_width('axes')) / self.fig.size[0]
 
         # Left
-        self.axes.position[0] = (self._left + self._edge_width('axes')) / self.fig.size[0]
+        self.axes.position[0] = (round(self._left) + self._edge_width('axes', False)) / self.fig.size[0]
 
         # Top
-        self.axes.position[2] = 1 - (self._top + self._edge_width('axes')) / self.fig.size[1]
-        if (1 - self.axes.position[2]) * self.fig.size[1] > (self._top + self._edge_width('axes')):
-            self.axes.position[2] -= \
-                (1 - self.axes.position[2]) * self.fig.size[1] - (self._top + self._edge_width('axes'))
+        self.axes.position[2] = 1 - (self._top + self._edge_width('axes', False)) / self.fig.size[1]
 
         # Bottom
         self.axes.position[3] = (self._bottom + self._edge_width('axes')) / self.fig.size[1]
 
-        # # Double check axes size and account for rounding errors
-        # if not self.cbar.on:
-        #     height_err = (self.axes.size[1] * self.nrow + self.ws_row * (self.nrow - 1)) \
-        #                 - (self.axes.position[2] - self.axes.position[3]) * self.fig.size[1]
-        #     self.axes.position[2] += height_err / self.fig.size[1]
-        #     width_err = (self.axes.size[0] * self.ncol + self.ws_col * (self.ncol - 1)) \
-        #                 - (self.axes.position[1] - self.axes.position[0]) * self.fig.size[0]
-        #     self.axes.position[1] += width_err / self.fig.size[0]
-        #     print('subplots', height_err, width_err)
-        #     db()
+        # Prevent float rounding errors for the positions subtracted from 1
+        self.axes.position[1] -= 1E-14
+        self.axes.position[2] -= 1E-14
 
         # wspace
         if self.cbar.on and not self.cbar.shared:
@@ -4237,6 +4238,8 @@ class Layout(BaseLayout):
                           self.tick_labels_major_z.size[0]) / self.axes.size[0]
         else:
             ws_col = (self.ws_col + self.axes.edge_width_size) / self.axes.size[0]
+
+        # TODO: similar on ws_row height???
 
         # Apply
         self.fig.obj.subplots_adjust(left=self.axes.position[0],

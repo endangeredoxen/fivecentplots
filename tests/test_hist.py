@@ -25,9 +25,9 @@ else:
 
 # Sample data
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
-imgr = imageio.imread(Path(fcp.__file__).parent / 'test_data/hist_patch.png')
+img_patch = imageio.imread(Path(fcp.__file__).parent / 'test_data/hist_patch.png')
 img_cat_orig = imageio.imread(Path(fcp.__file__).parent / 'test_data/imshow_cat_pirate.png')
-
+img_cat = utl.img_grayscale(img_cat_orig)
 
 # Set theme
 fcp.set_theme('gray')
@@ -251,9 +251,9 @@ def plt_image(bm=False, make_reference=False, show=False):
     name = utl.unit_test_get_img_name('image', make_reference, REFERENCE)
 
     # Make the plot
-    img = fcp.utilities.rgb2bayer(imgr, 'bbbb')
+    img = fcp.utilities.rgb2bayer(img_patch, 'bbbb')
     dn = 255
-    max_count = (imgr == dn).sum()
+    max_count = (img_patch == dn).sum()
     fcp.hist(img, markers=False, ax_scale='logy', ax_size=[600, 400], line_width=2,
              show=SHOW, inline=False, save=not bm, filename=name.with_suffix('.png'), xmax=dn + 5,
              ax_hlines=max_count, ax_vlines=dn)
@@ -268,9 +268,9 @@ def plt_image_cdf(bm=False, make_reference=False, show=False):
     name = utl.unit_test_get_img_name('image_cdf', make_reference, REFERENCE)
 
     # Make the plot
-    img = fcp.utilities.rgb2bayer(imgr, 'bbbb')
+    img = fcp.utilities.rgb2bayer(img_patch, 'bbbb')
     dn = 255
-    max_count = (imgr == dn).sum()
+    max_count = (img_patch == dn).sum()
     fcp.hist(img, cdf=True, **fcp.HIST, show=SHOW, inline=False, save=not bm, filename=name.with_suffix('.png'), xmax=dn + 5,
              ax_hlines=max_count, ax_vlines=dn)
 
@@ -284,9 +284,9 @@ def plt_image_pdf(bm=False, make_reference=False, show=False):
     name = utl.unit_test_get_img_name('image_pdf', make_reference, REFERENCE)
 
     # Make the plot
-    img = fcp.utilities.rgb2bayer(imgr, 'bbbb')
+    img = fcp.utilities.rgb2bayer(img_patch, 'bbbb')
     dn = 255
-    max_count = (imgr == dn).sum()
+    max_count = (img_patch == dn).sum()
     fcp.hist(img, pdf=True, **fcp.HIST, show=SHOW, inline=False, save=not bm, filename=name.with_suffix('.png'), xmax=dn + 5,
              ax_hlines=max_count, ax_vlines=dn)
 
@@ -301,7 +301,7 @@ def plt_image_legend(bm=False, make_reference=False, show=False):
     name = utl.unit_test_get_img_name('image_legend', make_reference, REFERENCE)
 
     # Make the plot
-    img = fcp.utilities.rgb2bayer(imgr, 'rggb')
+    img = fcp.utilities.rgb2bayer(img_patch, 'rggb')
     dnr = 180
     dng = 230
     max_count_r = (img.loc[::2, img.columns[::2]].stack().values == dnr).sum()
@@ -322,7 +322,7 @@ def plt_image_legend_cdf(bm=False, make_reference=False, show=False):
     name = utl.unit_test_get_img_name('image_legend_cdf', make_reference, REFERENCE)
 
     # Make the plot
-    img = fcp.utilities.rgb2bayer(imgr, 'rggb')
+    img = fcp.utilities.rgb2bayer(img_patch, 'rggb')
     dnr = 180
     dng = 230
     max_count_r = (img.loc[::2, img.columns[::2]].stack().values == dnr).sum()
@@ -343,7 +343,7 @@ def plt_image_legend_pdf(bm=False, make_reference=False, show=False):
     name = utl.unit_test_get_img_name('image_legend_pdf', make_reference, REFERENCE)
 
     # Make the plot
-    img = fcp.utilities.rgb2bayer(imgr, 'rggb')
+    img = fcp.utilities.rgb2bayer(img_patch, 'rggb')
     dnr = 180
     dng = 230
     max_count_r = (img.loc[::2, img.columns[::2]].stack().values == dnr).sum()

@@ -1323,7 +1323,7 @@ def split_color_planes(img: pd.DataFrame, cfa: str = 'rggb', as_dict: bool = Fal
         for ic, cc in enumerate(cp):
             idx = [f for f in img.index if f % 2 == ic // 2]
             cols = [f for f in int_cols if f % 2 == ic % 2]
-            sub = img.loc[idx, cols].copy().astype(float)
+            sub = img.loc[idx, cols].copy()
             for oc in other_cols:
                 sub[oc] = img.loc[idx[0], oc]
             if not as_dict:
@@ -1340,7 +1340,7 @@ def split_color_planes(img: pd.DataFrame, cfa: str = 'rggb', as_dict: bool = Fal
     else:
         img2 = {}
         for ic, cc in enumerate(cp):
-            img2[cc] = img[ic // 2::2, (ic % 2)::2].astype(float)
+            img2[cc] = img[ic // 2::2, (ic % 2)::2]
 
         return img2
 
@@ -1448,6 +1448,7 @@ def unit_test_options(make_reference: bool, show: Union[bool, int], img_path: pa
     reference_path = (reference_path / f'{img_path.stem}_reference').with_suffix('.png')
     if show == -1:
         show_file(img_path)
+        unit_test_debug_margins(img_path)
     elif show:
         show_file(reference_path)
         show_file(img_path)
@@ -1524,6 +1525,37 @@ def unit_test_measure_axes_cols(img_path: pathlib.Path, row: Union[int, str, Non
     else:
         assert all((trans2[1:] - trans1[:-1])[::2] - width <= tolerance), \
                f'axes sizes are wrong: {trans2[1:] - trans1[:-1]}'
+
+
+def unit_test_debug_margins(img_path: pathlib.Path):
+    """Try to measure all the margins."""
+    img = imageio.imread(img_path)[:, :, 1]
+    if not (img[0,0] == img[-1, -1] == img[0, -1] == img[-1, 0]):
+        print('could not determine border color and detect margins')
+
+    border_color = img[0, 0]
+
+    # Side margins
+    left, right = [], []
+    for row in range(0, img.shape[0]):
+        left += [np.argmax(img[row, :] != border_color)]
+        right += [np.argmax(img[row, :][::-1] != border_color)]
+    left = np.argmax(np.bincount(left))
+    right = np.argmax(np.bincount(right))
+    width = img.shape[1] - left - right
+
+    # Top/bottom margins
+    top, bottom = [], []
+    for col in range(0, img.shape[1]):
+        top += [np.argmax(img[:, col] != border_color)]
+        bottom += [np.argmax(img[:, col][::-1] != border_color)]
+    top = np.argmax(np.bincount(top))
+    bottom = np.argmax(np.bincount(bottom))
+    height = img.shape[0] - top - bottom
+
+    print('Axes area and borders:')
+    print(f'axes: {width} x {height}\nleft: {left}\nright: {right}\ntop: {top}\nbottom: {bottom}')
+    print('Note: axes size includes subplots + whitespace + 2 * edge_width + 2 pixels for aliasing (if edge_width > 0)')
 
 
 def unit_test_measure_margin(img_path: pathlib.Path, row: Union[int, str, None], col: Union[int, None],

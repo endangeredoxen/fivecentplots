@@ -32,7 +32,7 @@ img_cat = utl.img_grayscale(img_cat_orig)
 # RGB split by color plane and pixel values modified by plane
 img_cp_orig = utl.rgb2bayer(imageio.imread(Path(fcp.__file__).parent / 'test_data/imshow_color_planes.png'))
 cp = utl.split_color_planes(img_cp_orig, as_dict=True)
-cp['r'] *= 0.5
+cp['r'] = cp['r']  * 0.5
 cp['b'] -= 50
 cp['b'][cp['b'] < 0] = 255
 cp['gr'][cp['gr'] < 25] = 25
