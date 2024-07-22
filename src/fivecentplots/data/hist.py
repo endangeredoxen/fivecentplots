@@ -24,6 +24,8 @@ class Histogram(data.Data):
             fcpp: theme-file kwargs
             kwargs: user-defined keyword args
         """
+        self.timer = kwargs['timer']
+
         # Set defaults
         if fcpp:
             self.fcpp = fcpp.copy()
@@ -367,49 +369,49 @@ class Histogram(data.Data):
             if hasattr(self, 'horizontal') and self.horizontal:
                 self.swap_xy_ranges()
 
-    def get_plot_data(self, df: pd.DataFrame):
-        """Generator to subset into discrete sets of data for each curve.
+    # def get_plot_data(self, df: pd.DataFrame):
+    #     """Generator to subset into discrete sets of data for each curve.
 
-        Args:
-            df: data subset to plot
+    #     Args:
+    #         df: data subset to plot
 
-        Yields:
-            iline: legend index
-            df: data subset to plot
-            row['x'] [x]: x-axis column name
-            row['y'] [y]: y-axis column name
-            self.z [z]: z-column name
-            leg [leg_name]: legend value name if legend enabled
-            twin: denotes if twin axis is enabled or not
-            len(vals) [ngroups]: total number of groups in the full data
-        """
-        if not self.imgs:
-            yield from data.Data.get_plot_data(self, df)
+    #     Yields:
+    #         iline: legend index
+    #         df: data subset to plot
+    #         row['x'] [x]: x-axis column name
+    #         row['y'] [y]: y-axis column name
+    #         self.z [z]: z-column name
+    #         leg [leg_name]: legend value name if legend enabled
+    #         twin: denotes if twin axis is enabled or not
+    #         len(vals) [ngroups]: total number of groups in the full data
+    #     """
+    #     if not self.imgs:
+    #         yield from data.Data.get_plot_data(self, df)
 
-        else:
-            if not isinstance(self.legend_vals, pd.DataFrame):
-                # Make the subset
-                df_hist = []
-                for idx in df.index:
-                    df_hist += [pd.DataFrame({self.x[0]: self.hists[idx][1], self.y[0]: self.hists[idx][0]})]
-                df_hist = pd.concat(df_hist)
+    #     else:
+    #         if not isinstance(self.legend_vals, pd.DataFrame):
+    #             # Make the subset
+    #             df_hist = []
+    #             for idx in df.index:
+    #                 df_hist += [pd.DataFrame({self.x[0]: self.hists[idx][1], self.y[0]: self.hists[idx][0]})]
+    #             df_hist = pd.concat(df_hist)
 
-                yield 0, df_hist, self.x[0], self.y[0], None, None, False, 1
+    #             yield 0, df_hist, self.x[0], self.y[0], None, None, False, 1
 
-            else:
-                for iline, row in self.legend_vals.iterrows():
-                    # Subset by legend value
-                    df2 = df[df[self.legend] == row['Leg']].copy()
-                    if len(df2) == 0:
-                        continue
+    #         else:
+    #             for iline, row in self.legend_vals.iterrows():
+    #                 # Subset by legend value
+    #                 df2 = df[df[self.legend] == row['Leg']].copy()
+    #                 if len(df2) == 0:
+    #                     continue
 
-                    # Make the subset
-                    df_hist = []
-                    for idx in df2.index:
-                        df_hist += [pd.DataFrame({row['x']: self.hists[idx][1], row['y']: self.hists[idx][0]})]
-                    df_hist = pd.concat(df_hist)
+    #                 # Make the subset
+    #                 df_hist = []
+    #                 for idx in df2.index:
+    #                     df_hist += [pd.DataFrame({row['x']: self.hists[idx][1], row['y']: self.hists[idx][0]})]
+    #                 df_hist = pd.concat(df_hist)
 
-                    yield iline, df_hist, row['x'], row['y'], None, row['names'], False, len(self.legend_vals)
+    #                 yield iline, df_hist, row['x'], row['y'], None, row['names'], False, len(self.legend_vals)
 
     def _get_rc_groupings(self, df: pd.DataFrame):
         """Determine the row, column, or wrap grid groupings.
@@ -494,32 +496,44 @@ class Histogram(data.Data):
 
     #     return data.Data._subset_modify(self, ir, ic, df)
 
-    def _subset_wrap(self, ir: int, ic: int) -> pd.DataFrame:
-        """Histogram-specific version of subset_wrap.  Select the revelant subset
-        from self.df_fig with one additional line of code compared with parent func
+    # def _subset_wrap(self, ir: int, ic: int) -> pd.DataFrame:
+    #     """Histogram-specific version of subset_wrap.  Select the revelant subset
+    #     from self.df_fig with one additional line of code compared with parent func
 
-        Args:
-            ir: subplot row index
-            ic: subplot column index
+    #     Args:
+    #         ir: subplot row index
+    #         ic: subplot column index
 
-        Returns:
-            self.df_fig DataFrame subset based on self.wrap value
-        """
-        if ir * self.ncol + ic > self.nwrap - 1:
-            return pd.DataFrame()
-        elif self.wrap == 'x':
-            self.x = utl.validate_list(self.wrap_vals[ic + ir * self.ncol])
-            cols = (self.x if self.x is not None else []) + \
-                   (self.y if self.y is not None else []) + \
-                   (self.groups if self.groups is not None else []) + \
-                   (utl.validate_list(self.legend)
-                    if self.legend is not None else [])
-            # need this extra line for hist
-            cols = [f for f in cols if f != 'Counts']
-            return self.df_fig[cols]
-        else:
-            wrap = dict(zip(self.wrap, utl.validate_list(self.wrap_vals[ir * self.ncol + ic])))
-            return self.df_fig.loc[(self.df_fig[list(wrap)] == pd.Series(wrap)).all(axis=1)].copy()
+    #     Returns:
+    #         self.df_fig DataFrame subset based on self.wrap value
+    #     """
+    #     if ir * self.ncol + ic > self.nwrap - 1:
+    #         return pd.DataFrame()
+    #     elif self.wrap == 'x':
+    #         self.x = utl.validate_list(self.wrap_vals[ic + ir * self.ncol])
+    #         cols = (self.x if self.x is not None else []) + \
+    #                (self.y if self.y is not None else []) + \
+    #                (self.groups if self.groups is not None else []) + \
+    #                (utl.validate_list(self.legend)
+    #                 if self.legend is not None else [])
+    #         # need this extra line for hist
+    #         cols = [f for f in cols if f != 'Counts']
+    #         return self.df_fig[cols]
+    #     else:
+    #         wrap = dict(zip(self.wrap, utl.validate_list(self.wrap_vals[ir * self.ncol + ic])))
+    #         return self.df_fig.loc[(self.df_fig[list(wrap)] == pd.Series(wrap)).all(axis=1)].copy()
+
+    def _subset_modify(self, ir: int, ic: int, df: pd.DataFrame) -> pd.DataFrame:
+        subset_dict = {key: value for key, value in self.imgs.items() if key in list(df.index)}
+        self.timer.get('reset')
+        counts, vals = self._calc_histograms(np.concatenate(list(subset_dict.values()), 1))
+
+        # Easiest way, need to check speed
+        self.timer.get('calc_hist')
+        df = pd.DataFrame({self.x[0]: vals, self.y[0]: counts})
+        self.timer.get('make_hist_df')
+        return df
+
 
     def switch_to_xy_plot(self, kwargs):
         """If bars are not enabled, switch everything to line plot.
@@ -532,5 +546,5 @@ class Histogram(data.Data):
             self.y = ['Counts']
 
         # Convert the image data to a histogram
-        self._get_legend_groupings(self.df_all)
-        self.df_all = self._iterate_hists(self.df_all)
+        #self._get_legend_groupings(self.df_all)
+        #self.df_all = self._iterate_hists(self.df_all)
