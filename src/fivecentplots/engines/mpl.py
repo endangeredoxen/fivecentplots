@@ -96,7 +96,7 @@ def cbar_ticks(cbar: 'Colorbar_Object', zmin: float, zmax: float):  # noqa: F821
 
 
 def df_tick(ticks: 'Element', ticks_size: 'np.array', ax: str) -> pd.DataFrame:
-    """Create a dataframe of tick extents.  Used to look for overlapping ticks.
+    """Create a DataFrame of tick extents.  Used to look for overlapping ticks.
 
     Args:
         ticks: Element class for tick lables
@@ -121,13 +121,13 @@ def df_tick(ticks: 'Element', ticks_size: 'np.array', ax: str) -> pd.DataFrame:
 
 
 def df_tick_update(tt: pd.DataFrame) -> pd.DataFrame:
-    """Calculate the next round of overlaps in the ticks dataframe
+    """Calculate the next round of overlaps in the ticks DataFrame
 
     Args:
-        tt: ticks dataframe
+        tt: ticks DataFrame
 
     Returns:
-        updated ticks dataframe
+        updated ticks DataFrame
     """
     tt = tt.copy()
 
@@ -148,7 +148,7 @@ def hide_overlaps(ticks: 'Element', tt: pd.DataFrame, ir: int, ic: int) -> pd.Da
 
     Args:
         ticks: Element class for tick lables
-        tt: tick dataframe created by df_ticks
+        tt: tick DataFrame created by df_ticks
         ir: current axes row index
         ic: current axes column index
 
@@ -1341,7 +1341,7 @@ class Layout(BaseLayout):
         self.fig.obj.canvas.draw()
 
         # labels
-        for label in ['x', 'x2', 'y', 'y2', 'z']:
+        for label in data.axs:
             lab = getattr(self, f'label_{label}')
             if not lab.on or lab.obj is None:
                 continue
@@ -1437,7 +1437,7 @@ class Layout(BaseLayout):
                         lab.obj[ir, ic][ii, jj].set_rotation(90)
                         bbox = lab.obj[ir, ic][ii, jj].get_window_extent()
 
-                    # update the size_all dataframe
+                    # update the size_all DataFrame
                     lab.size_all = (ir, ic, ii, jj, bbox.width, bbox.height, bbox.x0, bbox.x1, bbox.y0, bbox.y1,
                                     lab.obj[ir, ic][ii, jj].get_rotation())
                     lab.size_all_bg = (ir, ic, ii, jj, bbox.width, bbox.height, bbox.x0, bbox.x1, bbox.y0, bbox.y1,
@@ -1580,7 +1580,7 @@ class Layout(BaseLayout):
 
         # Adjust the column and row whitespace
         if self.label_wrap.on and 'ws_row' not in kwargs.keys():
-            self.ws_row = self.label_wrap.size[1]
+            self.ws_row = self.label_wrap.size[1] + self.label_wrap.edge_width
         if self.box_group_label.on and 'ws_row' not in kwargs.keys():#if self.box_group_label.on and self.label_wrap.on and 'ws_row' not in kwargs.keys():
             self.ws_row = self.box_labels + self.title_wrap.size[1]
         #else:
@@ -2573,15 +2573,16 @@ class Layout(BaseLayout):
             MPL imshow plot obj
         """
         ax = self.axes.obj[ir, ic]
-        ranges = data.ranges[ir, ic]
+        zmin = data.ranges['zmin'][ir, ic]
+        zmax = data.ranges['zmax'][ir, ic]
 
         # Make the imshow plot
         plot_num = utl.plot_num(ir, ic, self.ncol) - 1
-        im = ax.imshow(df, self.cmap[plot_num], vmin=ranges['zmin'], vmax=ranges['zmax'],
+        im = ax.imshow(df, self.cmap[plot_num], vmin=zmin, vmax=zmax,
                        interpolation=self.imshow.interp, aspect='auto',
                        #extent=[0, img.shape[1] + 1, img.shape[1] + 1, 1]
                        )
-        im.set_clim(ranges['zmin'], ranges['zmax'])
+        im.set_clim(zmin, zmax)
 
         # Add a cmap
         if self.cbar.on and (not self.cbar.shared or ic == self.ncol - 1):  # and (self.separate_ticks or ic == self.ncol - 1):
@@ -2831,7 +2832,7 @@ class Layout(BaseLayout):
             kwargs['linewidth'] = self.fig.edge_width
         self.fig.obj.savefig(filename, **kwargs)
 
-    def set_axes_colors(self, ir: int, ic: int, ranges: dict):
+    def set_axes_colors(self, ir: int, ic: int):
         """Set axes colors (fill, alpha, edge).
 
         Args:
@@ -2852,56 +2853,6 @@ class Layout(BaseLayout):
             else:
                 axes[-1].obj[ir, ic].spines[f].set_color(self.fig.fill_color[0])
             axes[-1].obj[ir, ic].spines[f].set_linewidth(self.axes.edge_width_adj)
-            #axes[-1].obj[ir, ic].spines[f].set_zorder(-1)
-
-        # # Adjust the spines to be in the correct position; mpl moves them in ways I cannot understand
-        # #   This is about to get gross...
-        # # Case 1: single axes window
-        # if self.nrow == 1 and self.ncol == 1:
-        #     if ic == 0 and self.axes.edge_width % 2 != 0 and self.axes.edge_width != 1:
-        #         axes[-1].obj[ir, ic].spines['left'].set_position(('outward', 1))
-        #     if ir == 0 and self.axes.edge_width % 2 != 0:
-        #         axes[-1].obj[ir, ic].spines['top'].set_position(('outward', 1))
-        #     if ir == 0 and self.axes.edge_width == 1:
-        #         axes[-1].obj[ir, ic].spines['bottom'].set_position(('outward', -1))
-        #         if ranges[ir, ic]['ymax'] is not None and ranges[ir, ic]['ymin'] is not None:
-        #             tick_per_pixel = (ranges[ir, ic]['ymax'] - ranges[ir, ic]['ymin']) / self.axes.size[1]
-        #             axes[-1].obj[ir, ic].spines['left'].set_bounds(ranges[ir, ic]['ymin'] + tick_per_pixel,
-        #                                                         ranges[ir, ic]['ymax'] + tick_per_pixel)
-        #             axes[-1].obj[ir, ic].spines['right'].set_bounds(ranges[ir, ic]['ymin'] + tick_per_pixel,
-        #                                                             ranges[ir, ic]['ymax'] + tick_per_pixel)
-
-        # # Case 2: multiple columns
-        # elif self.ncol > 1:
-        #     #if ic == 0 and self.axes.edge_width % 2 != 0 and self.axes.edge_width != 1:
-        #     if ic == 0:
-        #         axes[-1].obj[ir, ic].spines['left'].set_position(('outward', 1))
-
-        # # # shrink top and bottom spines by 1 pixel all sides
-        # # tick_per_pixel = (ranges[ir, ic]['xmax'] - ranges[ir, ic]['xmin']) / self.axes.size[0]
-        # # print(tick_per_pixel)
-        # # # axes[-1].obj[ir, ic].spines['top'].set_bounds(ranges[ir, ic]['xmin'] - tick_per_pixel,
-        # # #                                               ranges[ir, ic]['xmax'] - tick_per_pixel)
-        # # # axes[-1].obj[ir, ic].spines['bottom'].set_bounds(ranges[ir, ic]['xmin'],
-        # # #                                                  ranges[ir, ic]['xmax'] - 2 * tick_per_pixel)
-
-        # # db()
-        # # axes[-1].obj[ir, ic].spines['top'].set_bounds(ranges[ir, ic]['xmin'], ranges[ir, ic]['xmax'])
-        # # axes[-1].obj[ir, ic].spines['bottom'].set_bounds(ranges[ir, ic]['xmin'], ranges[ir, ic]['xmax'])
-        # # axes[-1].obj[ir, ic].spines['left'].set_bounds(ranges[ir, ic]['ymin'], ranges[ir, ic]['ymax'])
-        # # axes[-1].obj[ir, ic].spines['right'].set_bounds(ranges[ir, ic]['ymin'], ranges[ir, ic]['ymax'])
-
-        # # # minor adjustment so spines to extend too far and make a cross at the junctions
-        # # tick_per_pixel = (ranges[ir, ic]['ymax'] - ranges[ir, ic]['ymin']) / self.axes.size[1]
-        # # axes[-1].obj[ir, ic].spines['left'].set_bounds(ranges[ir, ic]['ymin'],
-        # #                                                ranges[ir, ic]['ymax'] - tick_per_pixel)
-        # # if ranges[ir, ic]['y2min'] is None:
-        # #     axes[-1].obj[ir, ic].spines['right'].set_bounds(ranges[ir, ic]['ymin'],
-        # #                                                     ranges[ir, ic]['ymax'] - tick_per_pixel)
-        # # else:
-        # #     tick_per_pixel = (ranges[ir, ic]['y2max'] - ranges[ir, ic]['y2min']) / self.axes.size[1]
-        # #     axes[-1].obj[ir, ic].spines['right'].set_bounds(ranges[ir, ic]['y2min'],
-        # #                                                     ranges[ir, ic]['y2max'] - tick_per_pixel)
 
     def set_axes_grid_lines(self, ir: int, ic: int):
         """Style the grid lines and toggle visibility.
@@ -3012,7 +2963,7 @@ class Layout(BaseLayout):
                 kwargs.update(self._get_grid_visibility_kwarg(False))
                 ax.obj[ir, ic].yaxis.grid(**kwargs)
 
-    def set_axes_labels(self, ir: int, ic: int):
+    def set_axes_labels(self, ir: int, ic: int, data: 'Data'):
         """Set the axes labels.
 
         Args:
@@ -3023,9 +2974,9 @@ class Layout(BaseLayout):
         if self.name in ['pie']:
             return
 
-        axis = ['x', 'x2', 'y', 'y2', 'z']
-        for ax in axis:
+        for ax in data.axs:
             label = getattr(self, 'label_%s' % ax)
+            labeltext = None
             if not label.on:
                 continue
             if type(label.text) not in [str, list]:
@@ -3058,7 +3009,7 @@ class Layout(BaseLayout):
                     continue
 
             # Add the label
-            label.obj[ir, ic], label.obj_bg[ir, ic] = self.add_label_fig(ir, ic, label)
+            label.obj[ir, ic], label.obj_bg[ir, ic] = self.add_label_fig(ir, ic, label, labeltext)
 
     def set_axes_ranges(self, ir: int, ic: int, ranges: dict):
         """Set the axes ranges.
@@ -3072,34 +3023,27 @@ class Layout(BaseLayout):
         if self.name in ['heatmap', 'pie']:  # skip these plot types
             return
 
-        # Add some padding to account for the width of the axes edge and make sure data points are hidden
-        scalex, scalex2, scaley, scaley2 = 0, 0, 0, 0
-        if ranges[ir, ic]['xmin'] is not None and ranges[ir, ic]['xmax'] is not None:
-            scalex = 0*(ranges[ir, ic]['xmax'] - ranges[ir, ic]['xmin']) / self.axes.size[0]
-        if ranges[ir, ic]['x2min'] is not None and ranges[ir, ic]['x2max'] is not None:
-            scalex2 = 0*(ranges[ir, ic]['x2max'] - ranges[ir, ic]['x2min']) / self.axes.size[0]
-        if ranges[ir, ic]['ymin'] is not None and ranges[ir, ic]['ymax'] is not None:
-            scaley = 0*(ranges[ir, ic]['ymax'] - ranges[ir, ic]['ymin']) / self.axes.size[0]
-        if ranges[ir, ic]['y2min'] is not None and ranges[ir, ic]['y2max'] is not None:
-            scaley2 = 0*(ranges[ir, ic]['ymax'] - ranges[ir, ic]['ymin']) / self.axes.size[0]
-
         # Set the ranges
-        if ranges[ir, ic]['xmin'] is not None:
-            self.axes.obj[ir, ic].set_xlim(left=ranges[ir, ic]['xmin'] - scalex * self.axes.edge_width / 2)
-        if ranges[ir, ic]['x2min'] is not None:
-            self.axes2.obj[ir, ic].set_xlim(left=ranges[ir, ic]['x2min'] - scalex2 * self.axes.edge_width / 2)
-        if ranges[ir, ic]['xmax'] is not None:
-            self.axes.obj[ir, ic].set_xlim(right=ranges[ir, ic]['xmax'] + scalex * (self.axes.edge_width + 0) / 2)
-        if ranges[ir, ic]['x2max'] is not None:
-            self.axes2.obj[ir, ic].set_xlim(right=ranges[ir, ic]['x2max'] + scalex2 * (self.axes.edge_width + 0) / 2)
-        if ranges[ir, ic]['ymin'] is not None:
-            self.axes.obj[ir, ic].set_ylim(bottom=ranges[ir, ic]['ymin'] - scaley * self.axes.edge_width / 2)
-        if ranges[ir, ic]['y2min'] is not None:
-            self.axes2.obj[ir, ic].set_ylim(bottom=ranges[ir, ic]['y2min'] - scaley2 * self.axes.edge_width / 2)
-        if ranges[ir, ic]['ymax'] is not None:
-            self.axes.obj[ir, ic].set_ylim(top=ranges[ir, ic]['ymax'] + scaley * (self.axes.edge_width + 0) / 2)
-        if ranges[ir, ic]['y2max'] is not None:
-            self.axes2.obj[ir, ic].set_ylim(top=ranges[ir, ic]['y2max'] + scaley2 * (self.axes.edge_width + 0) / 2)
+        if 'xmin' in ranges and ranges['xmin'][ir, ic] is not None:
+            self.axes.obj[ir, ic].set_xlim(left=ranges['xmin'][ir, ic])
+        if 'x2min' in ranges and ranges['x2min'][ir, ic] is not None:
+            self.axes2.obj[ir, ic].set_xlim(left=ranges['x2min'][ir, ic])
+        if 'xmax' in ranges and ranges['xmax'][ir, ic] is not None:
+            self.axes.obj[ir, ic].set_xlim(right=ranges['xmax'][ir, ic])
+        if 'x2max' in ranges and ranges['x2max'][ir, ic] is not None:
+            self.axes2.obj[ir, ic].set_xlim(right=ranges['x2max'][ir, ic])
+        if 'ymin' in ranges and ranges['ymin'][ir, ic] is not None:
+            self.axes.obj[ir, ic].set_ylim(bottom=ranges['ymin'][ir, ic])
+        if 'y2min' in ranges and ranges['y2min'][ir, ic] is not None:
+            self.axes2.obj[ir, ic].set_ylim(bottom=ranges['y2min'][ir, ic])
+        if 'ymax' in ranges and ranges['ymax'][ir, ic] is not None:
+            self.axes.obj[ir, ic].set_ylim(top=ranges['ymax'][ir, ic])
+        if 'y2max' in ranges and ranges['y2max'][ir, ic] is not None:
+            self.axes2.obj[ir, ic].set_ylim(top=ranges['y2max'][ir, ic])
+        if 'zmin' in ranges and ranges['zmin'][ir, ic] is not None:
+            self.axes.obj[ir, ic].get_images()[0].set_clim(vmin=ranges['zmin'][ir, ic])
+        if 'zmax' in ranges and ranges['zmax'][ir, ic] is not None:
+            self.axes.obj[ir, ic].get_images()[0].set_clim(vmax=ranges['zmax'][ir, ic])
 
     def set_axes_rc_labels(self, ir: int, ic: int):
         """Add the row/column label boxes and wrap titles.
@@ -3648,8 +3592,7 @@ class Layout(BaseLayout):
 
         # Update the axes labels
         self._get_axes_label_position()
-        labels = ['x', 'x2', 'y', 'y2', 'z']
-        for label in labels:
+        for label in data.axs:
             lab = getattr(self, f'label_{label}')
             if not lab.on:
                 continue
@@ -3675,6 +3618,14 @@ class Layout(BaseLayout):
         # row
         for ir, ic in np.ndindex(self.label_row.obj.shape):
             if self.label_row.obj[ir, ic]:
+                # Adjust the font size if needed
+                if self.scale_font_size:
+                    max_height = self.axes.size[1]
+                    text_height = self.label_row.obj[ir, ic].get_window_extent().height
+                    if text_height > max_height:
+                        sf = (max_height - 4) / text_height  # 2 pixel padding each side
+                        self.lbael_row.obj[ir, ic].set_fontsize(sf * self.label_row.font_size)
+
                 if self.box_group_title.on:
                     lab_x = 1 - (self.box_group_title.size[0] + self.ws_label_row) / self.fig.size[0]
                 else:
@@ -3705,6 +3656,14 @@ class Layout(BaseLayout):
         # col
         for ir, ic in np.ndindex(self.label_col.obj.shape):
             if self.label_col.obj[ir, ic]:
+                # Adjist the font size if needed
+                if self.scale_font_size:
+                    max_width = self.axes.size[0]
+                    text_width = self.label_col.obj[ir, ic].get_window_extent().width
+                    if text_width > max_width:
+                        sf = (max_width - 4) / text_width  # 2 pixel padding each side
+                        self.label_col.obj[ir, ic].set_fontsize(sf * self.label_col.font_size)
+
                 # bkgd
                 self.label_col.obj_bg[ir, ic].set_x(
                     self.axes.obj[ir, ic].get_position().x0 - (self.label_col.edge_width / 2) / self.fig.size[0])
@@ -3727,6 +3686,15 @@ class Layout(BaseLayout):
         # wrap label
         for ir, ic in np.ndindex(self.label_wrap.obj.shape):
             if self.label_wrap.obj[ir, ic]:
+                # Adjust the font size if needed
+                if self.scale_font_size:
+                    max_width = (self.axes.position[1] - self.axes.position[0]) * self.fig.size[0]
+                    text_width = self.label_wrap.obj[ir, ic].get_window_extent().width
+                    if text_width > max_width:
+                        sf = (max_width - 4) / text_width  # 2 pixel padding each side
+                        self.label_wrap.obj.set_fontsize(sf * self.label_wrap.font_size)
+
+                # Move the label
                 bbox = self.axes.obj[ir, ic].get_position()
                 edge_offset = np.ceil((self.axes.edge_width - self.label_wrap.edge_width) / 2)
                 yoffset = (self._edge_width('axes') + self._edge_width('label_wrap')) / self.fig.size[1]
@@ -3745,13 +3713,22 @@ class Layout(BaseLayout):
 
         # wrap title
         if self.title_wrap.on:
+            # Adjust the font size if needed
+            if self.scale_font_size:
+                max_width = (self.axes.position[1] - self.axes.position[0]) * self.fig.size[0]
+                text_width = self.title_wrap.obj.get_window_extent().width
+                if text_width > max_width:
+                    sf = (max_width - 4) / text_width  # 2 pixel padding each side
+                    self.title_wrap.obj.set_fontsize(sf * self.title_wrap.font_size)
+
+            # Move the title
             bbox = self.axes.obj[0, 0].get_position()
             edge_offset = np.ceil((self.axes.edge_width - self.title_wrap.edge_width) / 2)
             self.title_wrap.obj_bg.set_x(bbox.x0  - edge_offset  / self.fig.size[0])
             self.title_wrap.obj_bg.set_y(bbox.y1 \
                                         + (self.label_wrap.size[1]
                                            + self.label_wrap.edge_width
-                                           + self._edge_width('axes')
+                                           + self._edge_width('axes', False)
                                            + self._edge_width('label_wrap')) / self.fig.size[1])
             self.title_wrap.obj_bg.set_width(
                 self.axes.obj[0, self.ncol - 1].get_position().x1 - bbox.x0 \

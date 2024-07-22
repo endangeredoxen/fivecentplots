@@ -56,7 +56,8 @@ class Heatmap(data.Data):
 
         self.ax_limit_padding = kwargs.get('ax_limit_padding', None)
 
-        # Update valid axes
+        # Update valid axes (SHOULD ALREADY HAPPEN)
+        db()  # check
         self.axs = [f for f in ['x', 'x2', 'y', 'y2', 'z'] if getattr(self, f) not in [None, []]]
 
     def _check_xyz(self, xyz: str):
@@ -83,7 +84,7 @@ class Heatmap(data.Data):
         df_fig = self._get_auto_scale(df_fig)
 
         # set ranges by subset
-        for ir, ic, plot_num in self._get_subplot_index():
+        for ir, ic, plot_num in self.get_subplot_index():
             df_rc = self._subset(ir, ic)
 
             # auto cols option
@@ -147,7 +148,7 @@ class Heatmap(data.Data):
             return df
 
         if self.pivot:
-            # Reshape if input dataframe is stacked
+            # Reshape if input DataFrame is stacked
             df = pd.pivot_table(df, values=self.z[0],
                                 index=self.y[0], columns=self.x[0])
         if self.sort:

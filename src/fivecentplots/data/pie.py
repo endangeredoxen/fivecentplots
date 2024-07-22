@@ -40,7 +40,7 @@ class Pie(data.Data):
 
     def _get_data_ranges(self):
         """Pie-specific data range calculator by subplot."""
-        for ir, ic, plot_num in self._get_subplot_index():
+        for ir, ic, plot_num in self.get_subplot_index():
             self.ranges[ir, ic]['xmin'] = -1
             self.ranges[ir, ic]['xmax'] = 1
             self.ranges[ir, ic]['ymin'] = -1

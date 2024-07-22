@@ -30,25 +30,39 @@ class Histogram(data.Data):
         else:
             self.fcpp, _, _, _ = utl.reload_defaults(kwargs.get('theme', None))
 
-        # Adjust certain kwargs to match input data type
+        # Hist supports image data and regular non-image data
         if 'imgs' in kwargs and isinstance(kwargs['imgs'], dict) and len(kwargs['imgs']) > 0 \
                 or isinstance(kwargs['df'], np.ndarray) and len(kwargs['df'].shape) > 1:
-            # Image data
-            #    For image data, grouping information is stored in kwargs['df'] but the actual image arrays are
-            #    in the self.imgs dict
+            # Format input image data
+            #   kwargs['df']:
+            #       * Single image only:
+            #           - 2D numpy array of pixel data
+            #           - OR a 2D pd.DataFrame of pixel data
+            #       * Multiple images:
+            #           - pd.DataFrame with 1 row per image
+            #           - row index value must match a key in the kwargs['imgs'] dict
+            #           - other columns in this DataFrame are grouping columns
+            #   kwargs['imgs']:
+            #       * Single image only:
+            #           - Not defined or used
+            #       * Multiple images:
+            #           - dict of the actual image data; dict key must match a row index value in kwargs['df']
             kwargs['df'], kwargs['imgs'] = utl.img_data_format(kwargs)
             self.hists = {}
 
             # Other parameters
             self.channels = kwargs['df'].iloc[0]['channels']
-            if 'bins' not in kwargs:
-                # Image data defaults to a bin size of 1 digital number so the number of bins equals
-                # img.max() - img.min() + 1, unless user overrides this parameter in the function call
-                kwargs['bins'] = utl.kwget(kwargs, self.fcpp, 'bins', 0)
-            bars = utl.kwget(kwargs, self.fcpp, 'bars', kwargs.get('bars', False))
-            cfa = utl.kwget(kwargs, self.fcpp, 'cfa', kwargs.get('cfa', None))
-            if cfa is not None and self.channels == 1:
-                kwargs['df'], kwargs['imgs'] = utl.split_color_planes_wrapper(kwargs['df'], kwargs['imgs'], cfa)
+            # Image data defaults to a bin size of 1 digital number so the number of bins equals
+            # img.max() - img.min() + 1, unless user overrides this parameter in the function call
+            self.bins = utl.kwget(kwargs, self.fcpp, 'bins', kwargs.get('bins', 0))
+
+            # Image data defaults to no bars
+            self.bars = utl.kwget(kwargs, self.fcpp, 'bars', kwargs.get('bars', False))
+
+            # Optional color plane splitting
+            self.cfa = utl.kwget(kwargs, self.fcpp, 'cfa', kwargs.get('cfa', None))
+            if self.cfa is not None and self.channels == 1:
+                kwargs['df'], kwargs['imgs'] = utl.split_color_planes_wrapper(kwargs['df'], kwargs['imgs'], self.cfa)
 
             # TODO:: Reformat RGBA
             if self.channels > 1:
@@ -63,13 +77,13 @@ class Histogram(data.Data):
                             imgs[3 * ii + icol] = v[['Row', 'Column', col]]
                             imgs[3 * ii + icol].columns = ['Row', 'Column', 'Value']
 
-                    # Update the grouping table and image dataframe dict
+                    # Update the grouping table and image DataFrame dict
                     kwargs['df'] = pd.merge(kwargs['df'], pd.DataFrame({'Channel': ['R', 'G', 'B']}), how='cross')
                 else:
                     # Stack? need some kind of luma
                     db()
 
-                # Update the grouping table and image dataframe dict
+                # Update the grouping table and image DataFrame dict
                 kwargs['df'] = pd.merge(kwargs['df'], pd.DataFrame({'Channel': ['R', 'G', 'B']}), how='cross')
                 kwargs['imgs'] = imgs
 
@@ -77,7 +91,8 @@ class Histogram(data.Data):
             # Non-image data
             kwargs['imgs'] = None
             self.channels = -1
-            bars = utl.kwget(kwargs, self.fcpp, 'bars', kwargs.get('bars', True))
+            self.bars = utl.kwget(kwargs, self.fcpp, 'bars', kwargs.get('bars', True))
+            self.bins = utl.kwget(kwargs, self.fcpp, ['hist_bins', 'bins'], kwargs.get('bins', 20))
 
         else:
             raise TypeError('only a DataFrame or a 2D/3D numpy arrays of image data can be passed to fcp.hist')
@@ -96,10 +111,21 @@ class Histogram(data.Data):
         super().__init__(self.name, self.req, self.opt, self.fcpp, **kwargs)
 
         # Set axes
-        self.axs = ['x', 'y']
+        self.axs_on = ['x', 'y']
         if self.imgs:
             self.x = ['Value']
             self.y = ['Counts']
+
+        # Other attributes for histogram
+        self.auto_scale = False
+        normalize = utl.kwget(kwargs, self.fcpp, ['hist_normalize', 'normalize'], kwargs.get('normalize', False))
+        kde = utl.kwget(kwargs, self.fcpp, ['hist_kde', 'kde'], kwargs.get('kde', False))
+        if normalize or kde:
+            self.norm = True
+        else:
+            self.norm = False
+        self.cumulative = utl.kwget(kwargs, self.fcpp, ['hist_cumulative', 'cumulative'],
+                                    kwargs.get('cumulative', False))
 
         # cdf/pdf option (if conflict, prefer cdf)
         self.cdf = utl.kwget(kwargs, self.fcpp, ['cdf'], kwargs.get('cdf', False))
@@ -110,17 +136,9 @@ class Histogram(data.Data):
         if self.cdf or self.pdf:
             bars = False
 
-        # Other options
-        self.cumulative = utl.kwget(kwargs, self.fcpp, ['hist_cumulative', 'cumulative'],
-                                    kwargs.get('cumulative', False))
-
         # Toggle bars vs lines
-        if not bars:
+        if not self.bars:
             self.switch_to_xy_plot(kwargs)
-
-        # Post-super overrides
-        self.auto_scale = False
-        self.ax_limit_padding_ymax = kwargs['ax_limit_padding_ymax']
 
     def _calc_distribution(self, counts: npt.NDArray[int]) -> npt.NDArray[int]:
         """
@@ -225,7 +243,7 @@ class Histogram(data.Data):
             data.Data._get_data_ranges_user_defined(self)
 
             # Apply shared axes
-            for ir, ic, plot_num in self._get_subplot_index():
+            for ir, ic, plot_num in self.get_subplot_index():
                 for ax in self.axs:
                     if ax == 'x':
                         idx = 1
@@ -301,7 +319,7 @@ class Histogram(data.Data):
             min_y_col = np.zeros(self.ncol)
 
             # iterate through all rc_subsets in order to compute histogram counts
-            for ir, ic, plot_num in self._get_subplot_index():
+            for ir, ic, plot_num in self.get_subplot_index():
                 df_rc = self._subset(ir, ic)
 
                 if len(df_rc) == 0:
@@ -323,7 +341,7 @@ class Histogram(data.Data):
                 max_y_col[ic] = max(max_y_col[ic], vals[1])
 
             # compute actual ranges with option y-axis sharing
-            for ir, ic, plot_num in self._get_subplot_index():
+            for ir, ic, plot_num in self.get_subplot_index():
                 # share y
                 if self.share_y:
                     self._add_range(ir, ic, 'y', 'min', min_y)

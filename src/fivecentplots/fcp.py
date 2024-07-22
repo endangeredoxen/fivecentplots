@@ -14,6 +14,7 @@ __url__ = 'https://github.com/endangeredoxen/fivecentplots'
 
 import os
 import numpy as np
+import numpy.typing as npt
 import pandas as pd
 import pdb
 import copy
@@ -25,6 +26,7 @@ from . import data
 from . colors import DEFAULT_COLORS, RGB, RGGB, RCCG  # noqa
 from . import engines
 import fivecentplots as fcp
+from typing import Union
 try:
     # optional import - only used for paste_kwargs to use windows clipboard
     # to directly copy kwargs from ini file
@@ -294,37 +296,6 @@ def contour(df, **kwargs):
     return plotter(data.Contour, **utl.dfkwarg(df, kwargs, data.Contour))
 
 
-def deprecated(kwargs):
-    """Automatically fix deprecated keyword args."""
-
-    # leg_groups
-    if kwargs.get('leg_groups'):
-        kwargs['legend'] = kwargs['leg_groups']
-        kwargs.pop('leg_groups')
-        print('"leg_groups" is deprecated. Please use "legend" instead')
-
-    # labels
-    labels = ['x', 'x2', 'y', 'y2', 'z']
-    for ilab, lab in enumerate(labels):
-        # Deprecated style
-        keys = [f for f in kwargs.keys() if '%slabel' % lab in f]
-        if len(keys) > 0:
-            print('"%slabel" is deprecated. Please use "label_%s" instead' % (lab, lab))
-            for k in keys:
-                kwargs[k.replace('%slabel' % lab, 'label_%s' % lab)] = kwargs[k]
-                kwargs.pop(k)
-
-    # twin + share
-    vals = ['sharex', 'sharey', 'twinx', 'twiny']
-    for val in vals:
-        if val in kwargs:
-            print('"%s" is deprecated.  Please use "%s_%s" instead' % (val, val[0:-1], val[-1]))
-            kwargs['%s_%s' % (val[0:-1], val[-1])] = kwargs[val]
-            kwargs.pop(val)
-
-    return kwargs
-
-
 def docs():
     import webbrowser
     webbrowser.open(r'https://endangeredoxen.github.io/fivecentplots/index.html')
@@ -529,15 +500,25 @@ def hist(df, **kwargs):
     return plotter(data.Histogram, **utl.dfkwarg(df, kwargs, data.Histogram))
 
 
-def imshow(df, **kwargs):
+def imshow(df: Union[pd.DataFrame, npt.NDArray], **kwargs):
     """Image show plotting function.
 
     Args:
-        df (DataFrame | numpy array): DataFrame or numpy array containing 2D row/column
-            image data to plot [when passing a numpy array it is automatically converted
-            to a DataFrame]
+        df:
+            * Single image only:
+                - 2D numpy array of pixel data
+                - OR a 2D pd.DataFrame of pixel data
+            * Multiple images:
+                - pd.DataFrame with 1 row per image
+                - row index value must match a key in the kwargs['imgs'] dict
+                - other columns in this DataFrame are grouping columns
 
     Keyword Args:
+        imgs:
+            * Single image only:
+                - Not defined or used
+            * Multiple images:
+                - dict of the actual image data; dict key must match a row index value in kwargs['df']
         cfa (str): Color-filter array pattern that is used to split data from a Bayer image into separate color planes.
           Defaults to None. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/imshow.html#split-color-planes
         cmap (bool): Name of a color map to apply to the plot. Defaults to gray. Example:
@@ -1490,10 +1471,6 @@ def plotter(dobj, **kwargs):
     Returns:
         plots
     """
-
-    # Check for deprecated kwargs
-    kwargs = deprecated(kwargs)
-
     # Apply globals if they don't exist
     for k, v in fcp.KWARGS.items():
         if k not in kwargs.keys():
@@ -1539,8 +1516,23 @@ def plotter(dobj, **kwargs):
         dd = layout.make_figure(dd, **kwargs)
         kwargs['timer'].get('ifig=%s | make_figure' % ifig)
 
-        # Turn off empty subplots and populate layout.axes.visible)
-        for ir, ic, df_rc in dd.get_rc_subset():   # this gets duplicated, might be a better way
+        # # Turn off empty subplots and populate layout.axes.visible)
+        # for ir, ic, df_rc in dd.get_rc_subset():   # this gets duplicated, might be a better way
+        #     if len(df_rc) == 0:
+        #         if dd.wrap is None:
+        #             layout.set_axes_rc_labels(ir, ic)
+        #         layout.axes.obj[ir, ic].axis('off')
+        #         layout.axes.visible[ir, ic] = False
+        #         if layout.axes2.obj[ir, ic] is not None:
+        #             layout.axes2.obj[ir, ic].axis('off')
+        #         continue
+        # kwargs['timer'].get('ifig=%s | turn off empty subplots' % ifig)
+
+        # Make the subplots
+        for ir, ic, df_rc in dd.get_rc_subset():
+            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | get_rc_subset')
+
+            # Turn off empty subplots and populate layout.axes.visible (not sure why did it above so watch this)
             if len(df_rc) == 0:
                 if dd.wrap is None:
                     layout.set_axes_rc_labels(ir, ic)
@@ -1548,17 +1540,14 @@ def plotter(dobj, **kwargs):
                 layout.axes.visible[ir, ic] = False
                 if layout.axes2.obj[ir, ic] is not None:
                     layout.axes2.obj[ir, ic].axis('off')
-                continue
-        kwargs['timer'].get('ifig=%s | turn off empty subplots' % ifig)
+                # continue
+                # kwargs['timer'].get('ifig=%s | turn off empty subplots' % ifig)
 
-        # Make the subplots
-        for ir, ic, df_rc in dd.get_rc_subset():
-            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | get_rc_subset')
             if not layout.axes.visible[ir, ic]:
                 continue
 
             # Set the axes colors
-            layout.set_axes_colors(ir, ic, dd.ranges)
+            layout.set_axes_colors(ir, ic)
             kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_colors')
 
             # Add and format gridlines
@@ -1577,12 +1566,8 @@ def plotter(dobj, **kwargs):
             layout.set_axes_scale(ir, ic)
             kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_scale')
 
-            # Set axis ranges
-            layout.set_axes_ranges(ir, ic, dd.ranges)
-            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_ranges')
-
             # Add axis labels
-            layout.set_axes_labels(ir, ic)
+            layout.set_axes_labels(ir, ic, dd)
             kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_labels')
 
             # Add rc labels
@@ -1601,6 +1586,12 @@ def plotter(dobj, **kwargs):
             # Add arbitrary text
             layout.add_text(ir, ic)
             kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | add_text')
+
+        # Set axis ranges
+        dd.get_data_ranges(ifig)
+        for ir, ic, _ in dd.get_subplot_index():
+            layout.set_axes_ranges(ir, ic, dd.ranges)
+            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_ranges')
 
         # Make the legend
         layout.add_legend(dd.legend_vals)

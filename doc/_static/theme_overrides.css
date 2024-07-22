@@ -140,47 +140,47 @@ div.rendered_html table {
     table-layout: auto !important;
 }
 
-.dataframe {
+.DataFrame {
    border-collapse: collapse;
    border-spacing: 0;
    empty-cells: show;
    margin-bottom: 24px
 }
 
-.dataframe td,
-.dataframe th {
+.DataFrame td,
+.DataFrame th {
    font-size: 90%;
    margin: 0;
    overflow: visible;
    padding: 8px 16px
 }
 
-.dataframe td:first-child,
-.dataframe th:first-child,
+.DataFrame td:first-child,
+.DataFrame th:first-child,
 border-left-width: 0
 }
-.dataframe thead {
+.DataFrame thead {
    color: #000;
    text-align: left;
    vertical-align: bottom;
    white-space: nowrap
 }
-.dataframe thead th {
+.DataFrame thead th {
    font-weight: bold;
    background: #eeeeee;
    border-bottom: 1px solid #aaaaaa
 }
-.dataframe td {
+.DataFrame td {
    background-color: transparent;
    vertical-align: middle
 }
-.dataframe td p {
+.DataFrame td p {
    line-height: 18px
 }
-.dataframe td p:last-child {
+.DataFrame td p:last-child {
    margin-bottom: 0
 }
-.dataframe {
+.DataFrame {
    width: 1%;
    padding-right: 0;
    margin: 0

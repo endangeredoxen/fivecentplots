@@ -73,7 +73,7 @@ import matplotlib.pylab as plt
 import matplotlib
 import natsort
 
-# Filter the dataframe to get the subset of interest
+# Filter the DataFrame to get the subset of interest
 df_sub = df[(df.Substrate=="Si")&(df['Target Wavelength']==450)&(df['Temperature [C]']==25)]
 
 # Set some defaults

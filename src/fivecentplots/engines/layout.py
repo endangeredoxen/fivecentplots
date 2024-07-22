@@ -205,7 +205,7 @@ class BaseLayout:
         kwargs = self._init_figure(kwargs)
         kwargs = self._init_colors(kwargs)
         kwargs = self._init_axes(data, kwargs)
-        kwargs = self._init_axes_labels(kwargs)
+        kwargs = self._init_axes_labels(data, kwargs)
         kwargs = self._init_title(kwargs)
         kwargs = self._init_ticks(kwargs)
         kwargs = self._init_markers(kwargs, data)
@@ -232,6 +232,7 @@ class BaseLayout:
 
         # Some extra kwargs
         self.inline = utl.kwget(kwargs, self.fcpp, 'inline', None)
+        self.scale_font_size = utl.kwget(kwargs, self.fcpp, 'scale_font_size', True)
         self.separate_labels = utl.kwget(kwargs, self.fcpp,
                                          'separate_labels', False)
         self.separate_ticks = utl.kwget(kwargs, self.fcpp,
@@ -356,7 +357,7 @@ class BaseLayout:
 
         return kwargs
 
-    def _init_axes_labels(self, kwargs: dict) -> dict:
+    def _init_axes_labels(self, data, kwargs: dict) -> dict:
         """Set the axes label elements parameters except for text related
         parameters which are set later in self._set_label_text (to make sure
         any updates after init of data obj are included)
@@ -381,7 +382,7 @@ class BaseLayout:
                         )
         # if ('label_fill_color' in kwargs or 'label_fill_color' in self.fcpp) and 'label_fill_alpha' not in kwargs:
         #     label.fill_alpha = 1
-        labels = ['x', 'x2', 'y', 'y2', 'z']
+        labels = data.axs
         rotations = [0, 0, 90, 270, 270]
         for ilab, lab in enumerate(labels):
             # Copy base label object and set default rotation
@@ -1376,6 +1377,19 @@ class BaseLayout:
             self.legend.on = True
             self.legend.text = ''
 
+        # Special case: ax_hvline added to legend without legend grouping column
+        if kwargs['legend'] and (kwargs.get('ax_vlines') or kwargs.get('ax_hlines')):
+            for lines in ['ax_hlines', 'ax_vlines']:
+                if isinstance(kwargs.get(lines), list):
+                    for ll in getattr(self, lines):
+                        if len(ll) >= 6:
+                            self.legend.values[vv[6]] = []
+                elif isinstance(kwargs.get(lines), tuple) and len(kwargs.get(lines)) >= 6:
+                    self.legend.values[lines[6]] = []
+            if len(self.legend.values) > 0:
+                self.legend.text = ''
+                self.legend.on = True
+
         # Special case: fit line
         if not self.legend._on and self.fit.on \
                 and not (('legend' in kwargs.keys() and kwargs['legend'] is False)
@@ -2170,11 +2184,13 @@ class BaseLayout:
                         getattr(self, val).text = data.wrap_vals
                     elif lab == 'x' and data.col == 'x':
                         getattr(self, val).text = data.x_vals * self.nrow
-                    elif lab == 'y' and data.row == 'y':
+                    elif lab == 'y' and data.row == 'y' and 'label_y' not in kwargs:
                         yvals = []
                         for yval in data.y_vals:
                             yvals += [yval] * self.ncol
                         getattr(self, val).text = yvals
+                    elif val == 'title_wrap':
+                        getattr(self, val).text = lab_text if lab_text is not None else ' | '.join([str(f) for f in dd])
                     else:
                         getattr(self, val).text = lab_text if lab_text is not None else ' & '.join([str(f) for f in dd])
                 else:
@@ -3114,7 +3130,7 @@ class Legend_Element(DF_Element):
         self._values = value
 
     def add_value(self, key: str, curve: 'PlotObj', line_type_name: str):  # noqa: F821
-        """Add a new curve to the values dataframe.
+        """Add a new curve to the values DataFrame.
 
         Args:
             key: string name for legend label

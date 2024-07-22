@@ -3,6 +3,8 @@ from natsort import natsorted
 import scipy.stats as ss
 import pandas as pd
 import numpy as np
+import numpy.typing as npt
+from typing import Union
 from .. import utilities
 utl = utilities
 
@@ -62,7 +64,7 @@ class Data:
         self.auto_scale = utl.kwget(kwargs, self.fcpp, 'auto_scale', True)
         self.ax_scale = kwargs.get('ax_scale', None)
         self.ax2_scale = kwargs.get('ax2_scale', self.ax_scale)
-        # validate list? repeated list and all to lower
+        self.axs = ['x', 'x2', 'y', 'y2', 'z']  # all possible axes
         self._ax_limit_pad(**kwargs)
         self.cbar = utl.kwget(kwargs, self.fcpp, 'cbar', False)
         self.error_bars = False
@@ -107,28 +109,20 @@ class Data:
         self.twin_y = kwargs.get('twin_y', False)
         if self.twin_x == self.twin_y and self.twin_x:
             raise AxisError('cannot simultaneously twin x and y axes')
-        self.xmin = utl.RepeatedList(kwargs.get('xmin', [None]), 'xmin')
-        self.x2min = utl.RepeatedList(kwargs.get('x2min', [None]), 'x2min')
-        self.xmax = utl.RepeatedList(kwargs.get('xmax', [None]), 'xmax')
-        self.x2max = utl.RepeatedList(kwargs.get('x2max', [None]), 'x2max')
-        self.ymin = utl.RepeatedList(kwargs.get('ymin', [None]), 'ymin')
-        self.y2min = utl.RepeatedList(kwargs.get('y2min', [None]), 'y2min')
-        self.ymax = utl.RepeatedList(kwargs.get('ymax', [None]), 'ymax')
-        self.y2max = utl.RepeatedList(kwargs.get('y2max', [None]), 'y2max')
-        self.zmin = utl.RepeatedList(kwargs.get('zmin', [None]), 'zmin')
-        self.zmax = utl.RepeatedList(kwargs.get('zmax', [None]), 'zmax')
-        for limit in ['xmin', 'xmax', 'x2min', 'x2max', 'ymin', 'y2max', 'zmin', 'zmax']:
-            self._check_limits(limit)
 
-        # Update share
-        if len(self.xmin) > 1 or len(self.xmax) > 1:
-            self.share_x = False
-        if len(self.x2min) > 1 or len(self.x2max) > 1:
-            self.share_x2 = False
-        if len(self.ymin) > 1 or len(self.ymax) > 1:
-            self.share_y = False
-        if len(self.y2min) > 1 or len(self.y2max) > 1:
-            self.share_y2 = False
+        # Validate range limits
+        for limit in [ax+lim for ax in self.axs for lim in ['min', 'max']]:
+            setattr(self, limit, utl.RepeatedList(kwargs.get(limit, [None]), limit))
+            self._check_range_limit_format(limit)
+
+        # Option to flip min/max range limits (used by some plot types)
+        for ax in self.axs:
+            setattr(self, f'invert_range_limits_{ax}', kwargs.get(f'invert_range_limits_{ax}', False))
+
+        # Disable axes sharing if user provides
+        for ax in self.axs:
+            if len(getattr(self, f'{ax}min')) > 1 or len(getattr(self, f'{ax}max')) > 1:
+                setattr(self, f'share_{ax}', False)
 
         # Define DataFrames
         self.df_all = self._check_df(kwargs['df'])
@@ -154,9 +148,9 @@ class Data:
         if self.twin_y:
             self.x2 = [self.x[1]]
             self.x = [self.x[0]]
-        self.axs = [f for f in ['x', 'x2', 'y', 'y2', 'z'] if getattr(self, f) not in [None, []]]
+        self.axs_on = [f for f in self.axs if getattr(self, f) not in [None, []]]  # axes present in this plot only
 
-        # Ref line
+        # Reference line
         self.ref_line = kwargs.get('ref_line', None)
         if isinstance(self.ref_line, pd.Series):
             self.df_all['Ref Line'] = self.ref_line
@@ -169,18 +163,6 @@ class Data:
         self.stat_idx = []
         self.lcl = kwargs.get('lcl', [])
         self.ucl = kwargs.get('ucl', [])
-
-        # Special for hist
-        normalize = utl.kwget(kwargs, self.fcpp, ['hist_normalize', 'normalize'],
-                              kwargs.get('normalize', False))
-        kde = utl.kwget(kwargs, self.fcpp, ['hist_kde', 'kde'],
-                        kwargs.get('kde', False))
-        if normalize or kde:
-            self.norm = True
-        else:
-            self.norm = False
-        self.bins = utl.kwget(kwargs, self.fcpp, ['hist_bins', 'bins'],
-                              kwargs.get('bins', 20))
 
         # Apply an optional filter to the data
         self.filter = kwargs.get('filter', None)
@@ -219,7 +201,7 @@ class Data:
         self.nwrap = 0
         self.ngroups = 0
 
-        # Define legend grouping column names (legends are common to a figure, not an rc subplot)
+        # Define legend grouping column names (legends are shared by a figure, not an rc subplot)
         if 'legend' in kwargs.keys():
             if kwargs['legend'] is True:
                 self.legend = True
@@ -235,6 +217,7 @@ class Data:
             self.fig = self._check_group_columns('fig', kwargs.get('fig_groups', None))
         else:
             self.fig = self._check_group_columns('fig', kwargs.get('fig', None))
+        self._get_fig_groupings()
         self.fig_vals = None
 
         # Make sure groups, legend, and fig_groups are not the same
@@ -246,20 +229,20 @@ class Data:
         if self.groups and self.fig:
             self._check_group_matching('groups', 'fig')
 
-        # Define all the columns in use
-        self.cols_all = []
-        self.cols_all += self.x if self.x is not None else []
-        self.cols_all += self.x2 if self.x2 is not None else []
-        self.cols_all += self.y if self.y is not None else []
-        self.cols_all += self.y2 if self.y2 is not None else []
-        self.cols_all += self.z if self.z is not None else []
-        self.cols_all += self.col if self.col is not None else []
-        self.cols_all += self.row if self.row is not None else []
-        self.cols_all += self.wrap if self.wrap is not None else []
-        if isinstance(self.legend, list):
-            self.cols_all += self.legend
+        # # Define all the columns in use DON'T NEED?
+        # self.cols_all = []
+        # self.cols_all += self.x if self.x is not None else []
+        # self.cols_all += self.x2 if self.x2 is not None else []
+        # self.cols_all += self.y if self.y is not None else []
+        # self.cols_all += self.y2 if self.y2 is not None else []
+        # self.cols_all += self.z if self.z is not None else []
+        # self.cols_all += self.col if self.col is not None else []
+        # self.cols_all += self.row if self.row is not None else []
+        # self.cols_all += self.wrap if self.wrap is not None else []
+        # if isinstance(self.legend, list):
+        #     self.cols_all += self.legend
 
-        # Add all non-dataframe kwargs to self
+        # Add all non-DataFrame kwargs to self
         del kwargs['df']  # for memory
         self.kwargs = kwargs
 
@@ -268,7 +251,7 @@ class Data:
             self.swap_xy()
 
         # Transform data
-        self.transform()
+        self.transform()  # DO WE WANT TO DO THIS HERE?
 
         # Other kwargs
         for k, v in kwargs.items():
@@ -282,13 +265,13 @@ class Data:
         grouper = []
 
         for prop in props:
-            if getattr(self, prop) not in ['x', 'y', None]:
+            if getattr(self, prop) not in ['x', 'y', None, True, False]:
                 grouper += utl.validate_list(getattr(self, prop))
 
         return list(set(grouper))
 
-    def _add_range(self, ir: int, ic: int, ax: str, label: str, value: [None, float]):
-        """Add a range value unless it already exists.
+    def _add_range(self, ir: int, ic: int, ax: str, label: str, value: Union[None, float]):
+        """Add a range limit value unless it already exists.
 
         Args:
             ir: current axes row index
@@ -297,47 +280,44 @@ class Data:
             label: range type name ('min', 'max')
             value: value of the range
         """
-        key = '{}{}'.format(ax, label)
-        if key not in self.ranges[ir, ic].keys() or self.ranges[ir, ic][key] is None:
-            self.ranges[ir, ic][key] = value
+        #key = f'{ax}{label}'
+        #if key not in self.ranges[ir, ic].keys() or self.ranges[key][ir, ic][key] is None:
+        #if self.ranges[key][ir, ic] is None:
+        self.ranges[f'{ax}{label}'][ir, ic] = value
 
-    def _add_ranges_none(self, ir: int, ic: int):
+    def _add_ranges_all_none(self, ir: int, ic: int):
         """Add None for all range values.
 
         Args:
             ir: current axes row index
             ic: current axes column index
         """
-        for ax in ['x', 'x2', 'y', 'y2', 'z']:
+        for ax in self.axs_on:
             for mm in ['min', 'max']:
                 self._add_range(ir, ic, ax, mm, None)
 
     def _ax_limit_pad(self, **kwargs):
-        """Set padding limits for axis.
+        """
+        Set padding limits for axis.  Default is for ranges to go 5% beyond the (max - min) range.
 
         Args:
             kwargs: user-defined keyword args
         """
         self.ax_limit_padding = utl.kwget(kwargs, self.fcpp, 'ax_limit_padding', 0.05)
-        for ax in ['x', 'x2', 'y', 'y2', 'z']:
-            if not hasattr(self, 'ax_limit_padding_%smin' % ax):
-                setattr(self, 'ax_limit_padding_%smin' % ax,
-                        utl.kwget(kwargs, self.fcpp,
-                                  'ax_limit_padding_%smin' % ax, self.ax_limit_padding))
-            if not hasattr(self, 'ax_limit_padding_%smax' % ax):
-                setattr(self, 'ax_limit_padding_%smax' % ax,
-                        utl.kwget(kwargs, self.fcpp,
-                                  'ax_limit_padding_%smax' % ax, self.ax_limit_padding))
+        for ax in self.axs:
+            for mm in ['min', 'max']:
+                key = f'ax_limit_padding_{ax}{mm}'
+                if not hasattr(self, key):
+                    setattr(self, key, utl.kwget(kwargs, self.fcpp, key, self.ax_limit_padding))
 
     def _check_df(self, df: pd.DataFrame) -> pd.DataFrame:
-        """Validate the dataframe.
+        """Validate the DataFrame.
 
         Args:
             df: input DataFrame
 
         Returns:
-            copy of the now-validated DataFrame (copy avoids column name changes
-            with data filtering)
+            copy of the now-validated DataFrame (copy avoids column name changes with data filtering)
         """
         if df is None:
             raise DataError('Must provide a DataFrame for plotting!')
@@ -358,13 +338,13 @@ class Data:
         # Force list type
         values = utl.validate_list(col_names)
 
-        # Check that each value exists in the dataframe
+        # Check that each value exists in the DataFrame
         if values is None:
             return
 
         for val in values:
             if val not in self.df_all.columns:
-                raise GroupingError('Grouping column "%s" is not in the DataFrame!' % val)
+                raise GroupingError(f'Grouping column "{val}" is not in the DataFrame!')
 
         # Check for no groups
         if len(list(self.df_all.groupby(values).groups.keys())) == 0:
@@ -383,14 +363,14 @@ class Data:
     def _check_group_errors(self):
         """Check for common errors related to grouping keywords."""
         if self.row and len(self.row) > 1 or self.col and len(self.col) > 1:
-            error = 'Only one value can be specified for "%s"' % ('row' if len(self.row) > 1 else 'col')
+            error = f'Only one value can be specified for "{("row" if len(self.row) > 1 else "col")}"'
             raise GroupingError(error)
 
         if self.row is not None and self.row == self.col:
             raise GroupingError('Row and column values must be different!')
 
         if self.wrap is not None and (self.col or self.row):
-            error = 'Cannot combine "wrap" grouping with "%s"' % ('col' if self.col else 'row')
+            error = f'Cannot combine "wrap" grouping with "{("col" if self.col else "row")}"'
             raise GroupingError(error)
 
         if self.groups is not None:
@@ -411,11 +391,10 @@ class Data:
         equal = set(str(getattr(self, group1))) == set(str(getattr(self, group2)))
 
         if equal:
-            raise GroupingError('%s and %s grouping columns cannot be the same!'
-                                % (group1, group2))
+            raise GroupingError(f'"{group1}" and "{group2}" grouping columns cannot be the same!')
 
-    def _check_limits(self, limit):
-        """Validate axis limits.
+    def _check_range_limit_format(self, limit):
+        """Validate axis ranges.
 
         Args:
             limit:  user-defined RepeatedList for an axis limit
@@ -423,13 +402,13 @@ class Data:
         limit_obj = getattr(self, limit)
 
         for limit_val in limit_obj.values:
-            if isinstance(limit_val, str) and limit_val[0].lower() != 'q':
-                raise DataError(f'"{limit}" must be a float, int, or a valid quantile string starting with a "q" '
-                                'followed by a number between 0 and 1 [current value: "{limit_val}"]')
-            elif isinstance(limit_val, str):
-                if float(limit_val[1:]) < 0 or float(limit_val[1:]) > 100:
-                    raise DataError('Valid quantile strings must start with "q" followed by a number between '
-                                    f'0 and 1 [current value: "{limit_val}"]')
+            if isinstance(limit_val, str):
+                if limit_val[0].lower() == 'q' and (float(limit_val[1:]) < 0 or float(limit_val[1:]) > 100):
+                    raise DataError(f'"{limit}" must be a float, int, or a valid quantile string starting with a "q" '
+                                    'followed by a number between 0 and 1 [current value: "{limit_val}"]')
+                elif limit_val[0].lower() != 'q' and limit_val[-4:].lower != '*iqr':
+                    raise DataError(f'"{limit}" must be a float, int, or valid quantile/quartile string '
+                                    f'[current value: "{limit_val}"]')
 
     def _check_xyz(self, xyz: str):
         """Validate the name and column data provided for x, y, and/or z.
@@ -445,7 +424,7 @@ class Data:
 
         vals = getattr(self, xyz)
 
-        # Allow plotting by the dataframe index
+        # Allow plotting by the DataFrame index
         if vals is not None and 'index' in vals and self.name == 'xy':
             self.df_all.index.name = 'index'
         if vals is not None and self.df_all.index.name in vals and self.name == 'xy':
@@ -457,7 +436,7 @@ class Data:
         for val in vals:
             if self.imgs is None and val not in self.df_all.columns:
                 raise DataError(f'No column named "{val}" found in DataFrame')
-            elif self.imgs is not None and val not in self.imgs[list(self.imgs.keys())[0]].columns:
+            elif self.imgs is not None and val not in self.imgs[list(self.imgs.keys())[0]].columns:  # error here?
                 raise DataError(f'No column named "{val}" found in DataFrame')
 
             # Check case (non-image)
@@ -478,8 +457,6 @@ class Data:
                     continue
             except:  # noqa
                 continue
-            #     raise AxisError('Could not convert x-column "%s" to float or '
-                #  'datetime.' % val)
 
         # Check for axis errors
         if self.twin_x and len(self.y) != 2:
@@ -504,255 +481,267 @@ class Data:
             if len(self.df_all) == 0:
                 raise DataError('DataFrame is empty after applying filter')
 
-    def _get_auto_scale(self, df: pd.DataFrame) -> pd.DataFrame:
+    def _convert_q_range_limits(self, data: Union[pd.DataFrame, npt.NDArray], plot_num: int):
+        """Convert special interquartile and quantile range limit types to numerical values.
+
+        Args:
+            data: input data
+            plot_num: current plot number
+        """
+        for ax in self.axs:
+            for mm in ['min', 'max']:
+                key = f'{ax}{mm}'.format(ax, mm)
+                user_limits = getattr(self, key).values
+
+                # Limit is in a RepeatedList and not explictly defined
+                if plot_num + 1 > len(user_limits):
+                    continue
+
+                # Get user limit for this plot
+                user_limit = user_limits[plot_num]
+
+                # No limit defined
+                if user_limit is None:
+                    continue
+
+                if isinstance(data, pd.DataFrame):
+                    data = data[getattr(self, ax)]
+
+                # IQR style limit
+                if isinstance(user_limit, str) and 'iqr' in user_limit.lower():
+                    factor = float(str(user_limit.lower()).split('*')[0].rstrip())
+                    q1 = np.quantile(data, 0.25)
+                    q3 = np.quantile(data, 0.75)
+                    iqr = factor * (q3 - q1)
+                    if mm == 'min':
+                        getattr(self, key).values[plot_num] = q1 - iqr
+                    else:
+                        getattr(self, key).values[plot_num] = q3 + iqr
+
+                # Quantile limit
+                elif isinstance(user_limit, str) and user_limit[0] == 'q':
+                    if '.' in user_limit:
+                        xq = float(str(user_limit).lower().replace('q', ''))
+                    else:
+                        xq = float(str(user_limit).lower().replace('q', '')) / 100
+                    getattr(self, key).values[plot_num] = np.quantile(data, xq)
+
+    def _get_auto_scale(self,
+                        data: Union[pd.DataFrame, npt.NDArray],
+                        plot_num: int) -> Union[pd.DataFrame, npt.NDArray]:
         """Auto-scale the plot data.
 
         Args:
             df: either self.df_fig or self.df_rc
+            plot_num: plot number
 
         Returns:
             updated df with potentially reduced range of data
         """
-        if not self.auto_scale:
-            return df
-
-        # get the max/min autoscale values
+        # FIX FOR NUMPY
+        # Get the max/min autoscale values
         for ax in self.axs:
             for mm in ['min', 'max']:
-                for ir, ic, _ in self._get_subplot_index():
-                    key = '{}{}'.format(ax, mm)
-                    if ir == 0 and ic == 0 and self.ranges[ir][ic][key] is not None:
-                        auto_scale_val = self.ranges[ir][ic][key]
-                    elif self.ranges[ir][ic][key] is not None:
+                user_limit = getattr(self, f'{ax}{mm}')[plot_num]
+                if user_limit is not None:
+                    for col in getattr(self, ax):
                         if mm == 'min':
-                            auto_scale_val = min(auto_scale_val, self.ranges[ir][ic][key])
+                            data = data[data[col] >= user_limit]
                         else:
-                            auto_scale_val = max(auto_scale_val, self.ranges[ir][ic][key])
-                    else:
-                        auto_scale_val = None
-                if isinstance(auto_scale_val, str) or auto_scale_val is None:
-                    continue
+                            data = data[data[col] <= user_limit]
 
-                axx = getattr(self, ax)
-                for col in axx:
-                    if mm == 'min':
-                        df = df[df[col] >= auto_scale_val]
-                    else:
-                        df = df[df[col] <= auto_scale_val]
+        return data
 
-        return df
-
-    def _get_data_range(self, ax: str, df: pd.DataFrame, plot_num: int) -> tuple:
+    def _get_data_range(self, ax: str, data: Union[pd.DataFrame, npt.NDArray], plot_num: int) -> tuple:
         """Determine the min/max values for a given axis based on user inputs.
 
         Args:
             ax: name of the axis ('x', 'y', etc)
-            df: data table to use for range calculation
+            data: data to use for range calculation
             plot_num: index number of the current subplot
 
         Returns:
             min, max tuple
         """
-        if not hasattr(self, ax) or getattr(self, ax) in [None, []]:
-            return None, None
-        elif self.col == 'x' and self.share_x and ax == 'x':
-            cols = self.x_vals
-        elif self.col == 'x' and self.share_col and ax == 'x':
-            cols = [f for f in self.x_vals if f in df.columns]
-        elif self.row == 'y' and self.share_y and ax == 'y':
-            cols = self.y_vals
-        elif self.row == 'y' and self.share_row and ax == 'y':
-            cols = [f for f in self.y_vals if f in df.columns]
+        # Convert special user limit types
+        self._convert_q_range_limits(data, plot_num)
+
+        # Auto-scale the data based on user-defined range limits before calculating min/max values
+        if self.auto_scale:
+            data = self._get_auto_scale(data, plot_num)
+
+        # Case: data is pd.DataFrame - separate out values of interest and address special dtype issues
+        if isinstance(data, pd.DataFrame):
+            vals = data[getattr(self, ax)].stack().values  # convert to numpy array
+            dtypes = data[getattr(self, ax)].dtypes.unique()
+
+            # Check dtypes
+            if 'str' in dtypes or 'object' in dtypes:
+                return None, None
+            elif 'datetime64[ns]' in dtypes:
+                db()  # do something!
+
+        # Case: data is np.array
         else:
-            cols = getattr(self, ax)
+            vals = data
 
-        # Get the dataframe values for this axis; do calculation on numpy arrays
-        if isinstance(df, pd.DataFrame):
-            dfax = df[cols].values
-            dtypes = df[cols].dtypes.unique()
-        else:
-            dfax = df
-            dtypes = [np.ndarray]
-
-        # Check dtypes
-        if 'str' in dtypes or 'object' in dtypes or 'datetime64[ns]' in dtypes:
-            return None, None
-
-        # Calculate actual min / max vals for the axis
-        if self.ax_scale in ['log%s' % ax, 'loglog', 'semilog%s' % ax, 'log']:
-            axmin = dfax[dfax > 0].min()
-            axmax = dfax.max()
+        # Calculate the data range (max - min) and account for ax_scale type
+        if self.imgs is not None and len(vals.shape) >= 2 and ax == 'x':
+            # x-axis of image data
+            axmin = 0
+            axmax = vals.shape[1]
+            axdelta = axmax - axmin
+        elif self.imgs is not None and len(vals.shape) >= 2 and ax == 'y':
+            # y-axis of image data
+            axmin = 0
+            axmax = vals.shape[0]
+            axdelta = axmax - axmin
+        elif self.ax_scale in [f'log{ax}', 'loglog', f'semilog{ax}', 'log']:
+            # log data
+            axmin = np.min(vals[vals > 0])
+            axmax = np.max(vals)
             axdelta = np.log10(axmax) - np.log10(axmin)
         else:
-            axmin = dfax.min()
-            axmax = dfax.max()
+            # anything else
+            axmin = np.min(vals)
+            axmax = np.max(vals)
             axdelta = axmax - axmin
         if axdelta <= 0:
             axmin -= 0.1 * axmin
             axmax += 0.1 * axmax
 
-        # Check user-specified min values
-        vmin = getattr(self, '%smin' % ax)[plot_num]
-        if vmin is not None and 'iqr' in str(vmin).lower():
-            factor = str(vmin).split('*')
-            factor = float(factor[0])
-            if 'box' not in self.name or self.groups is None:
-                q1 = dfax.quantile(0.25).min()
-                q3 = dfax.quantile(0.75).max()
-                iqr = factor * (q3 - q1)
-                vmin = q1 - iqr
-            else:
-                q1 = df[self._groupers + cols].groupby(self._groupers) \
-                    .quantile(0.25)[cols].reset_index()
-                q3 = df[self._groupers + cols].groupby(self._groupers) \
-                    .quantile(0.75)[cols].reset_index()
-                iqr = factor * (q3[cols] - q1[cols])
-                vmin = (q1[cols] - iqr[cols]).min().iloc[0]
-        elif vmin is not None and 'q' in str(vmin).lower():
-            xq = float(str(vmin).lower().replace('q', '')) / 100
-            if self.groups is None:
-                vmin = dfax.quantile(xq).min()
-            elif 'box' in self.name:
-                vmin = df[self._groupers + cols].groupby(self._groupers) \
-                    .quantile(xq)[cols].min().iloc[0]
-            else:
-                vmin = df[self.groups + cols].groupby(self.groups) \
-                    .quantile(xq)[cols].min().iloc[0]
-        elif vmin is not None:
-            vmin = vmin
-        elif getattr(self, 'ax_limit_padding_%smin' % ax) is not None:
-            if self.ax_scale in ['log%s' % ax, 'loglog',
-                                 'semilog%s' % ax, 'log']:
-                axmin = np.log10(axmin) - \
-                    getattr(self, 'ax_limit_padding_%smin' % ax) * axdelta
+        # Get min value
+        if getattr(self, f'{ax}min')[plot_num] is None and getattr(self, f'ax_limit_padding_{ax}min') is not None:
+            if self.ax_scale in [f'log{ax}', 'loglog', f'semilog{ax}', 'log']:
+                axmin = np.log10(axmin) - getattr(self, f'ax_limit_padding_{ax}min') * axdelta
                 vmin = 10**axmin
             else:
-                axmin -= getattr(self, 'ax_limit_padding_%smin' % ax) * axdelta
+                axmin -= getattr(self, f'ax_limit_padding_{ax}min') * axdelta
                 vmin = axmin
         else:
-            vmin = None
+            vmin = getattr(self, f'{ax}min')[plot_num]
 
-        # Check user-specified max values
-        vmax = getattr(self, '%smax' % ax)[plot_num]
-        if vmax is not None and 'iqr' in str(vmax).lower():
-            factor = str(vmax).split('*')
-            factor = float(factor[0])
-            if 'box' not in self.name or self.groups is None:
-                q1 = dfax.quantile(0.25).min()
-                q3 = dfax.quantile(0.75).max()
-                iqr = factor * (q3 - q1)
-                vmax = q3 + iqr
-            else:
-                q1 = df[self._groupers + cols].groupby(self._groupers) \
-                    .quantile(0.25)[cols].reset_index()
-                q3 = df[self._groupers + cols].groupby(self._groupers) \
-                    .quantile(0.75)[cols].reset_index()
-                iqr = factor * (q3[cols] - q1[cols])
-                # should this be referred to median?
-                vmax = (q3[cols] + iqr[cols]).max().iloc[0]
-        elif vmax is not None and 'q' in str(vmax).lower():
-            xq = float(str(vmax).lower().replace('q', '')) / 100
-            if self.groups is None:
-                vmax = dfax.quantile(xq).max()
-            elif 'box' in self.name:  # move to data.box.py?
-                vmax = df[self._groupers + cols].groupby(self._groupers) \
-                    .quantile(xq)[cols].max().iloc[0]
-            else:
-                vmax = df[self.groups + cols].groupby(self.groups) \
-                    .quantile(xq)[cols].max().iloc[0]
-        elif vmax is not None:
-            vmax = vmax
-        elif getattr(self, 'ax_limit_padding_%smax' % ax) is not None:
-            if self.ax_scale in ['log%s' % ax, 'loglog',
-                                 'semilog%s' % ax, 'log']:
-                axmax = np.log10(axmax) + \
-                    getattr(self, 'ax_limit_padding_%smax' % ax) * axdelta
+        # Get max value
+        if getattr(self, f'{ax}max')[plot_num] is None and getattr(self, f'ax_limit_padding_{ax}max') is not None:
+            if self.ax_scale in [f'log{ax}', 'loglog', f'semilog{ax}', 'log']:
+                axmax = np.log10(axmax) + getattr(self, f'ax_limit_padding_{ax}max') * axdelta
                 vmax = 10**axmax
             else:
-                axmax += getattr(self, 'ax_limit_padding_%smax' % ax) * axdelta
+                axmax += getattr(self, f'ax_limit_padding_{ax}max') * axdelta
                 vmax = axmax
         else:
-            vmax = None
-
-        if type(vmin) in [float, np.float32, np.float64] and np.isnan(vmin):
-            vmin = None
-        if type(vmax) in [float, np.float32, np.float64] and np.isnan(vmax):
-            vmax = None
+            vmax = getattr(self, f'{ax}max')[plot_num]
 
         return vmin, vmax
 
-    def _get_data_ranges(self):
-        """Default data range calculator by subplot.
-        --> Some plot types need to override this func with a custom calc.
+    def get_data_ranges(self, fig_num):
+        """Calculate data range limits for a given figure.
+
+        Args:
+            fig_num: current figure index
         """
-        # First get any user defined range values and apply optional auto scaling
-        df_fig = self.df_fig.copy()  # use temporarily for setting ranges
-        self._get_data_ranges_user_defined()
-        df_fig = self._get_auto_scale(df_fig)
+        # For only 1 subplot, ranges are already set
+        if self.ncol == 1 and self.nrow == 1:
+            return
 
-        # Apply shared axes
-        for ir, ic, plot_num in self._get_subplot_index():
-            for ax in self.axs:
-                # Share axes (use self.df_fig to get global min/max)
-                if getattr(self, 'share_%s' % ax) and (ir > 0 or ic > 0):
-                    self._add_range(ir, ic, ax, 'min', self.ranges[0, 0]['%smin' % ax])
-                    self._add_range(ir, ic, ax, 'max', self.ranges[0, 0]['%smax' % ax])
-                elif getattr(self, 'share_%s' % ax):
-                    vals = self._get_data_range(ax, df_fig, plot_num)
-                    self._add_range(ir, ic, ax, 'min', vals[0])
-                    self._add_range(ir, ic, ax, 'max', vals[1])
+        rr = self._range_dict()  # new range dict with updates based on subplot contents
+        for ax in self.axs_on:
+            # Case 1: share_[ax] = True
+            if getattr(self, f'share_{ax}'):
+                rr[f'{ax}min'][rr[f'{ax}min'] == None] = self.ranges[f'{ax}min'].min()
+                rr[f'{ax}max'][rr[f'{ax}max'] == None] = self.ranges[f'{ax}max'].max()
 
-                # Share row
-                elif self.share_row and self.row is not None and ic > 0 and self.row != 'y':
-                    self._add_range(ir, ic, ax, 'min', self.ranges[ir, 0]['%smin' % ax])
-                    self._add_range(ir, ic, ax, 'max', self.ranges[ir, 0]['%smax' % ax])
+            # Case 2: share_row = True
+            elif self.share_row and self.row is not None and self.row != 'y':
+                for irow in range(0, self.nrow):
+                    rr[f'{ax}min'][irow, :] = self.ranges[f'{ax}min'][irow, :].min()
+                    rr[f'{ax}max'][irow, :] = self.ranges[f'{ax}max'][irow, :].max()
 
-                elif self.share_row and self.row is not None:
-                    if self.row == 'y':
-                        df_sub = pd.DataFrame(columns=[self.x[0], self.y[ir]], index=range(len(df_fig)))
-                        df_sub[self.x[0]] = df_fig[self.x[0]].values
-                        df_sub[self.y[ir]] = df_fig[self.y[ir]].values
-                        vals = self._get_data_range(ax, df_sub, plot_num)
-                    else:
-                        vals = self._get_data_range(ax, df_fig[self.df_fig[self.row[0]] == self.row_vals[ir]], plot_num)
-                    self._add_range(ir, ic, ax, 'min', vals[0])
-                    self._add_range(ir, ic, ax, 'max', vals[1])
+            # Case 3: share_col
+            elif self.share_col and self.col is not None:
+                for icol in range(0, self.ncol):
+                    rr[f'{ax}min'][:, icol] = self.ranges[f'{ax}min'][:, icol].min()
+                    rr[f'{ax}max'][:, icol] = self.ranges[f'{ax}max'][:, icol].max()
 
-                # Share col
-                elif self.share_col and self.col is not None and ir > 0 and self.col != 'x':
-                    self._add_range(ir, ic, ax, 'min', self.ranges[0, ic]['%smin' % ax])
-                    self._add_range(ir, ic, ax, 'max', self.ranges[0, ic]['%smax' % ax])
-                elif self.share_col and self.col is not None:
-                    if self.col == 'x':
-                        df_sub = pd.DataFrame(columns=[self.x[ic], self.y[0]], index=range(len(df_fig)))
-                        df_sub[self.x[ic]] = df_fig[self.x[ic]].values
-                        df_sub[self.y[0]] = df_fig[self.y[0]].values
-                        vals = self._get_data_range(ax, df_sub, plot_num)
-                    else:
-                        vals = self._get_data_range(ax, df_fig[df_fig[self.col[0]] == self.col_vals[ic]], plot_num)
-                    self._add_range(ir, ic, ax, 'min', vals[0])
-                    self._add_range(ir, ic, ax, 'max', vals[1])
+            # Case 4: no sharing
+            else:
+                rr = self.ranges
 
-                # subplot level when not shared
-                else:
-                    df_rc = self._subset(ir, ic)
+        # Overwrite previous ranges
+        self.ranges = rr
 
-                    # Empty rc
-                    if len(df_rc) == 0:  # this doesn't exist yet!
-                        self._add_range(ir, ic, ax, 'min', None)
-                        self._add_range(ir, ic, ax, 'max', None)
-                        continue
+    # def _get_data_ranges(self):
+    #     """Default data range calculator by subplot.
+    #     --> Some plot types need to override this func with a custom calc.
+    #     """
+    #     # First get any user defined range values and apply optional auto scaling
+    #     df_fig = self.df_fig.copy()  # use temporarily for setting ranges
+    #     self._get_data_ranges_user_defined()
+    #     df_fig = self._get_auto_scale(df_fig)
 
-                    # Not shared or wrap by x or y
-                    elif not getattr(self, 'share_%s' % ax) or \
-                            (self.wrap is not None and self.wrap == 'y' or self.wrap == 'x'):
-                        vals = self._get_data_range(ax, df_rc, plot_num)
-                        self._add_range(ir, ic, ax, 'min', vals[0])
-                        self._add_range(ir, ic, ax, 'max', vals[1])
+    #     # Apply shared axes
+    #     for ir, ic, plot_num in self.get_subplot_index():
+    #         for ax in self.axs:
+    #             # Share axes (use self.df_fig to get global min/max)
+    #             if getattr(self, 'share_%s' % ax) and (ir > 0 or ic > 0):
+    #                 self._add_range(ir, ic, ax, 'min', self.ranges[0, 0]['%smin' % ax])
+    #                 self._add_range(ir, ic, ax, 'max', self.ranges[0, 0]['%smax' % ax])
+    #             elif getattr(self, 'share_%s' % ax):
+    #                 vals = self._get_data_range(ax, df_fig, plot_num)
+    #                 self._add_range(ir, ic, ax, 'min', vals[0])
+    #                 self._add_range(ir, ic, ax, 'max', vals[1])
+
+    #             # Share row
+    #             elif self.share_row and self.row is not None and ic > 0 and self.row != 'y':
+    #                 self._add_range(ir, ic, ax, 'min', self.ranges[ir, 0]['%smin' % ax])
+    #                 self._add_range(ir, ic, ax, 'max', self.ranges[ir, 0]['%smax' % ax])
+
+    #             elif self.share_row and self.row is not None:
+    #                 if self.row == 'y':
+    #                     df_sub = pd.DataFrame(columns=[self.x[0], self.y[ir]], index=range(len(df_fig)))
+    #                     df_sub[self.x[0]] = df_fig[self.x[0]].values
+    #                     df_sub[self.y[ir]] = df_fig[self.y[ir]].values
+    #                     vals = self._get_data_range(ax, df_sub, plot_num)
+    #                 else:
+    #                     vals = self._get_data_range(ax, df_fig[self.df_fig[self.row[0]] == self.row_vals[ir]], plot_num)
+    #                 self._add_range(ir, ic, ax, 'min', vals[0])
+    #                 self._add_range(ir, ic, ax, 'max', vals[1])
+
+    #             # Share col
+    #             elif self.share_col and self.col is not None and ir > 0 and self.col != 'x':
+    #                 self._add_range(ir, ic, ax, 'min', self.ranges[0, ic]['%smin' % ax])
+    #                 self._add_range(ir, ic, ax, 'max', self.ranges[0, ic]['%smax' % ax])
+    #             elif self.share_col and self.col is not None:
+    #                 if self.col == 'x':
+    #                     df_sub = pd.DataFrame(columns=[self.x[ic], self.y[0]], index=range(len(df_fig)))
+    #                     df_sub[self.x[ic]] = df_fig[self.x[ic]].values
+    #                     df_sub[self.y[0]] = df_fig[self.y[0]].values
+    #                     vals = self._get_data_range(ax, df_sub, plot_num)
+    #                 else:
+    #                     vals = self._get_data_range(ax, df_fig[df_fig[self.col[0]] == self.col_vals[ic]], plot_num)
+    #                 self._add_range(ir, ic, ax, 'min', vals[0])
+    #                 self._add_range(ir, ic, ax, 'max', vals[1])
+
+    #             # subplot level when not shared
+    #             else:
+    #                 df_rc = self._subset(ir, ic)
+
+    #                 # Empty rc
+    #                 if len(df_rc) == 0:  # this doesn't exist yet!
+    #                     self._add_range(ir, ic, ax, 'min', None)
+    #                     self._add_range(ir, ic, ax, 'max', None)
+    #                     continue
+
+    #                 # Not shared or wrap by x or y
+    #                 elif not getattr(self, 'share_%s' % ax) or \
+    #                         (self.wrap is not None and self.wrap == 'y' or self.wrap == 'x'):
+    #                     vals = self._get_data_range(ax, df_rc, plot_num)
+    #                     self._add_range(ir, ic, ax, 'min', vals[0])
+    #                     self._add_range(ir, ic, ax, 'max', vals[1])
 
     def _get_data_ranges_user_defined(self):
         """Get user defined range values that were set by kwargs."""
-        for ir, ic, plot_num in self._get_subplot_index():
+        for ir, ic, plot_num in self.get_subplot_index():
             for ax in self.axs:
                 for mm in ['min', 'max']:
                     # User defined
@@ -879,7 +868,8 @@ class Data:
             self._get_legend_groupings(self.df_all)
             self._get_rc_groupings(self.df_all)
             self.df_fig = self.df_all
-            self._get_data_ranges()
+            # need to reset the axes limits??
+            #self._get_data_ranges()
 
             yield None, None, None, self
 
@@ -899,7 +889,7 @@ class Data:
 
                 self._get_legend_groupings(self.df_fig)
                 self._get_rc_groupings(self.df_fig)
-                self._get_data_ranges()
+                # self._get_data_ranges()
                 yield ifig, fig_val, self.fig, self
 
         self.df_fig = None
@@ -1197,7 +1187,7 @@ class Data:
 
         self.ranges = self._range_dict()
 
-    def _get_subplot_index(self):
+    def get_subplot_index(self):
         """Get an index for each subplot based on row x column numbers
 
         Yields:
@@ -1220,10 +1210,22 @@ class Data:
         for ir in range(0, self.nrow):
             for ic in range(0, self.ncol):
                 self.df_rc = self._subset(ir, ic)
+                plot_num = utl.plot_num(ir, ic, self.ncol) - 1
 
                 # Handle empty dfs
                 if len(self.df_rc) == 0:
                     self.df_rc = pd.DataFrame()
+
+                # Find data ranges for this subset
+                for ax in self.axs_on:
+                    vals = self._get_data_range(ax, self.df_rc, plot_num)
+                    if getattr(self, f'invert_range_limits_{ax}'):
+                        self._add_range(ir, ic, ax, 'min', vals[1])
+                        self._add_range(ir, ic, ax, 'max', vals[0])
+                    else:
+                        self._add_range(ir, ic, ax, 'min', vals[0])
+                        self._add_range(ir, ic, ax, 'max', vals[1])
+                self._post_range_calculations(ir, ic, self.df_rc)
 
                 # Yield the subset
                 yield ir, ic, self.df_rc
@@ -1259,15 +1261,16 @@ class Data:
                 print('stat "%s" is not supported...skipping stat calculation' % self.stat)
                 return None
 
+    def _post_range_calculations(self, ir, ic, df_rc):
+        """Optional calculations after ranges for a subset have been defined."""
+        pass
+
     def _range_dict(self):
         """Make a list of empty dicts for axes range limits."""
-        ranges = np.array([[None] * self.ncol] * self.nrow)
-        for ir in range(0, self.nrow):
-            for ic in range(0, self.ncol):
-                ranges[ir, ic] = {}
-                for ax in ['x', 'y', 'z', 'x2', 'y2']:
-                    ranges[ir, ic][f'{ax}min'] = None
-                    ranges[ir, ic][f'{ax}max'] = None
+        ranges = {}
+        for ax in self.axs_on:
+            for mm in ['min', 'max']:
+                ranges[f'{ax}{mm}'] = np.array([[None] * self.ncol] * self.nrow)
 
         return ranges
 
@@ -1371,7 +1374,10 @@ class Data:
             return self.df_fig[mask]
 
     def swap_xy(self):
-        """Swap the x and y axis attributes."""
+        """
+        Swap the x and y axis attributes. This is a convenience function to avoid having to rewrite a long list of
+        axis-specific kwargs.
+        """
         # Axis values
         x = self.x
         x2 = self.x2
@@ -1390,7 +1396,7 @@ class Data:
 
     def swap_xy_ranges(self):
         """Swap the x and y range values (used in case of horizontal plots)."""
-        for ir, ic, plot_num in self._get_subplot_index():
+        for ir, ic, plot_num in self.get_subplot_index():
             xmin = self.ranges[ir, ic]['xmin']
             xmax = self.ranges[ir, ic]['xmax']
             x2min = self.ranges[ir, ic]['x2min']

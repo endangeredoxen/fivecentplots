@@ -43,7 +43,7 @@ class Gantt(data.Data):
         self._get_data_ranges_user_defined()
         df_fig = self._get_auto_scale(df_fig)
 
-        for ir, ic, plot_num in self._get_subplot_index():
+        for ir, ic, plot_num in self.get_subplot_index():
             df_rc = self._subset(ir, ic)
 
             if len(df_rc) == 0:

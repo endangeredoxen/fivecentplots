@@ -46,7 +46,7 @@ class NQ(data.Data):
                     imgs[3 * ii + icol] = v[['Row', 'Column', col]]
                     imgs[3 * ii + icol].columns = ['Row', 'Column', 'Value']
 
-            # Update the grouping table and image dataframe dict
+            # Update the grouping table and image DataFrame dict
             kwargs['df'] = pd.merge(kwargs['df'], pd.DataFrame({'Channel': ['R', 'G', 'B']}), how='cross')
             kwargs['imgs'] = imgs
 

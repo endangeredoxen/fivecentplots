@@ -670,7 +670,7 @@ def img_data_format(kwargs: dict) -> Tuple[pd.DataFrame, dict]:
         kwargs: user input
 
     Returns:
-        grouping info dataframe
+        grouping info DataFrame
         dict of numpy array image data
     """
     shape_cols = ['rows', 'cols', 'channels']
@@ -876,7 +876,7 @@ def img_df_transform(data: Union[pd.DataFrame, np.ndarray, Tuple[pd.DataFrame, d
 def img_df_transform_from_dict(groups: pd.DataFrame, imgs: Dict[int, npt.NDArray]) -> Tuple[pd.DataFrame, dict]:
     groups = groups.copy()
 
-    # Update dataframe
+    # Update DataFrame
     cols = ['rows', 'cols', 'channels']
     for cc in cols:
         if cc not in groups.columns:
