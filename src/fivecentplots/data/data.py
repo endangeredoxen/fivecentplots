@@ -644,100 +644,45 @@ class Data:
         if self.ncol == 1 and self.nrow == 1:
             return
 
+        ## NOTE: THIS IS GOING TO BREAK ON DATETIME
         rr = self._range_dict()  # new range dict with updates based on subplot contents
         for ax in self.axs_on:
             # Case 1: share_[ax] = True
             if getattr(self, f'share_{ax}'):
-                rr[f'{ax}min'][rr[f'{ax}min'] == None] = self.ranges[f'{ax}min'].min()
-                rr[f'{ax}max'][rr[f'{ax}max'] == None] = self.ranges[f'{ax}max'].max()
+                mmin = self.ranges[f'{ax}min'][self.ranges[f'{ax}min'] != None]
+                if len(mmin) > 0:
+                    rr[f'{ax}min'][rr[f'{ax}min'] == None] = mmin.min()
+                mmax = self.ranges[f'{ax}max'][self.ranges[f'{ax}max'] != None]
+                if len(mmax) > 0:
+                    rr[f'{ax}max'][rr[f'{ax}max'] == None] = mmax.max()
 
             # Case 2: share_row = True
             elif self.share_row and self.row is not None and self.row != 'y':
                 for irow in range(0, self.nrow):
-                    rr[f'{ax}min'][irow, :] = self.ranges[f'{ax}min'][irow, :].min()
-                    rr[f'{ax}max'][irow, :] = self.ranges[f'{ax}max'][irow, :].max()
+                    mmin = self.ranges[f'{ax}min'][irow, :][self.ranges[f'{ax}min'][irow, :] != None]
+                    if len(mmin) > 0:
+                        rr[f'{ax}min'][irow, :] = mmin.min()
+                    mmax = self.ranges[f'{ax}max'][irow, :][self.ranges[f'{ax}max'][irow, :] != None]
+                    if len(mmax) > 0:
+                        rr[f'{ax}max'][irow, :] = mmax.max()
 
             # Case 3: share_col
             elif self.share_col and self.col is not None:
                 for icol in range(0, self.ncol):
-                    rr[f'{ax}min'][:, icol] = self.ranges[f'{ax}min'][:, icol].min()
-                    rr[f'{ax}max'][:, icol] = self.ranges[f'{ax}max'][:, icol].max()
+                    mmin = self.ranges[f'{ax}min'][:, icol][self.ranges[f'{ax}min'][:, icol] != None]
+                    if len(mmin) > 0:
+                        rr[f'{ax}min'][:, icol] = mmin.min()
+                    mmax = self.ranges[f'{ax}max'][:, icol][self.ranges[f'{ax}min'][:, icol] != None]
+                    if len(mmax) > 0:
+                        rr[f'{ax}max'][:, icol] = mmax.max()
 
             # Case 4: no sharing
             else:
-                rr = self.ranges
+                rr[f'{ax}min'] = self.ranges[f'{ax}min']
+                rr[f'{ax}max'] = self.ranges[f'{ax}max']
 
         # Overwrite previous ranges
         self.ranges = rr
-
-    # def _get_data_ranges(self):
-    #     """Default data range calculator by subplot.
-    #     --> Some plot types need to override this func with a custom calc.
-    #     """
-    #     # First get any user defined range values and apply optional auto scaling
-    #     df_fig = self.df_fig.copy()  # use temporarily for setting ranges
-    #     self._get_data_ranges_user_defined()
-    #     df_fig = self._get_auto_scale(df_fig)
-
-    #     # Apply shared axes
-    #     for ir, ic, plot_num in self.get_subplot_index():
-    #         for ax in self.axs:
-    #             # Share axes (use self.df_fig to get global min/max)
-    #             if getattr(self, 'share_%s' % ax) and (ir > 0 or ic > 0):
-    #                 self._add_range(ir, ic, ax, 'min', self.ranges[0, 0]['%smin' % ax])
-    #                 self._add_range(ir, ic, ax, 'max', self.ranges[0, 0]['%smax' % ax])
-    #             elif getattr(self, 'share_%s' % ax):
-    #                 vals = self._get_data_range(ax, df_fig, plot_num)
-    #                 self._add_range(ir, ic, ax, 'min', vals[0])
-    #                 self._add_range(ir, ic, ax, 'max', vals[1])
-
-    #             # Share row
-    #             elif self.share_row and self.row is not None and ic > 0 and self.row != 'y':
-    #                 self._add_range(ir, ic, ax, 'min', self.ranges[ir, 0]['%smin' % ax])
-    #                 self._add_range(ir, ic, ax, 'max', self.ranges[ir, 0]['%smax' % ax])
-
-    #             elif self.share_row and self.row is not None:
-    #                 if self.row == 'y':
-    #                     df_sub = pd.DataFrame(columns=[self.x[0], self.y[ir]], index=range(len(df_fig)))
-    #                     df_sub[self.x[0]] = df_fig[self.x[0]].values
-    #                     df_sub[self.y[ir]] = df_fig[self.y[ir]].values
-    #                     vals = self._get_data_range(ax, df_sub, plot_num)
-    #                 else:
-    #                     vals = self._get_data_range(ax, df_fig[self.df_fig[self.row[0]] == self.row_vals[ir]], plot_num)
-    #                 self._add_range(ir, ic, ax, 'min', vals[0])
-    #                 self._add_range(ir, ic, ax, 'max', vals[1])
-
-    #             # Share col
-    #             elif self.share_col and self.col is not None and ir > 0 and self.col != 'x':
-    #                 self._add_range(ir, ic, ax, 'min', self.ranges[0, ic]['%smin' % ax])
-    #                 self._add_range(ir, ic, ax, 'max', self.ranges[0, ic]['%smax' % ax])
-    #             elif self.share_col and self.col is not None:
-    #                 if self.col == 'x':
-    #                     df_sub = pd.DataFrame(columns=[self.x[ic], self.y[0]], index=range(len(df_fig)))
-    #                     df_sub[self.x[ic]] = df_fig[self.x[ic]].values
-    #                     df_sub[self.y[0]] = df_fig[self.y[0]].values
-    #                     vals = self._get_data_range(ax, df_sub, plot_num)
-    #                 else:
-    #                     vals = self._get_data_range(ax, df_fig[df_fig[self.col[0]] == self.col_vals[ic]], plot_num)
-    #                 self._add_range(ir, ic, ax, 'min', vals[0])
-    #                 self._add_range(ir, ic, ax, 'max', vals[1])
-
-    #             # subplot level when not shared
-    #             else:
-    #                 df_rc = self._subset(ir, ic)
-
-    #                 # Empty rc
-    #                 if len(df_rc) == 0:  # this doesn't exist yet!
-    #                     self._add_range(ir, ic, ax, 'min', None)
-    #                     self._add_range(ir, ic, ax, 'max', None)
-    #                     continue
-
-    #                 # Not shared or wrap by x or y
-    #                 elif not getattr(self, 'share_%s' % ax) or \
-    #                         (self.wrap is not None and self.wrap == 'y' or self.wrap == 'x'):
-    #                     vals = self._get_data_range(ax, df_rc, plot_num)
-    #                     self._add_range(ir, ic, ax, 'min', vals[0])
-    #                     self._add_range(ir, ic, ax, 'max', vals[1])
 
     def _get_data_ranges_user_defined(self):
         """Get user defined range values that were set by kwargs."""
@@ -868,8 +813,6 @@ class Data:
             self._get_legend_groupings(self.df_all)
             self._get_rc_groupings(self.df_all)
             self.df_fig = self.df_all
-            # need to reset the axes limits??
-            #self._get_data_ranges()
 
             yield None, None, None, self
 
@@ -889,7 +832,6 @@ class Data:
 
                 self._get_legend_groupings(self.df_fig)
                 self._get_rc_groupings(self.df_fig)
-                # self._get_data_ranges()
                 yield ifig, fig_val, self.fig, self
 
         self.df_fig = None
@@ -1217,15 +1159,18 @@ class Data:
                     self.df_rc = pd.DataFrame()
 
                 # Find data ranges for this subset
-                for ax in self.axs_on:
-                    vals = self._get_data_range(ax, self.df_rc, plot_num)
-                    if getattr(self, f'invert_range_limits_{ax}'):
-                        self._add_range(ir, ic, ax, 'min', vals[1])
-                        self._add_range(ir, ic, ax, 'max', vals[0])
-                    else:
-                        self._add_range(ir, ic, ax, 'min', vals[0])
-                        self._add_range(ir, ic, ax, 'max', vals[1])
-                self._post_range_calculations(ir, ic, self.df_rc)
+                else:
+                    for ax in self.axs_on:
+                        if getattr(self, ax) is None:
+                            continue
+                        vals = self._get_data_range(ax, self.df_rc, plot_num)
+                        if getattr(self, f'invert_range_limits_{ax}'):
+                            self._add_range(ir, ic, ax, 'min', vals[1])
+                            self._add_range(ir, ic, ax, 'max', vals[0])
+                        else:
+                            self._add_range(ir, ic, ax, 'min', vals[0])
+                            self._add_range(ir, ic, ax, 'max', vals[1])
+                    self._post_range_calculations(ir, ic, self.df_rc)
 
                 # Yield the subset
                 yield ir, ic, self.df_rc
@@ -1260,6 +1205,17 @@ class Data:
             except AttributeError:
                 print('stat "%s" is not supported...skipping stat calculation' % self.stat)
                 return None
+
+    def _kwargs_groupers(self, kwargs) -> list:
+        """Get all grouping values from kwargs"""
+        props = ['row', 'cols', 'wrap', 'groups', 'legend', 'fig']
+        grouper = []
+
+        for prop in props:
+            if kwargs.get(prop, None) not in ['x', 'y', None]:
+                grouper += utl.validate_list(kwargs.get(prop))
+
+        return list(set(grouper))
 
     def _post_range_calculations(self, ir, ic, df_rc):
         """Optional calculations after ranges for a subset have been defined."""

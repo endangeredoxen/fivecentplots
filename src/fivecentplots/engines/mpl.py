@@ -1343,7 +1343,7 @@ class Layout(BaseLayout):
         # labels
         for label in data.axs:
             lab = getattr(self, f'label_{label}')
-            if not lab.on or lab.obj is None:
+            if not lab.on or np.all(lab.obj == None):
                 continue
             for ir, ic in np.ndindex(lab.obj.shape):
                 if lab.obj[ir, ic] is None:
@@ -3040,10 +3040,11 @@ class Layout(BaseLayout):
             self.axes.obj[ir, ic].set_ylim(top=ranges['ymax'][ir, ic])
         if 'y2max' in ranges and ranges['y2max'][ir, ic] is not None:
             self.axes2.obj[ir, ic].set_ylim(top=ranges['y2max'][ir, ic])
-        if 'zmin' in ranges and ranges['zmin'][ir, ic] is not None:
-            self.axes.obj[ir, ic].get_images()[0].set_clim(vmin=ranges['zmin'][ir, ic])
-        if 'zmax' in ranges and ranges['zmax'][ir, ic] is not None:
-            self.axes.obj[ir, ic].get_images()[0].set_clim(vmax=ranges['zmax'][ir, ic])
+        if len(self.axes.obj[ir, ic].get_images()) > 0:
+            if 'zmin' in ranges and ranges['zmin'][ir, ic] is not None:
+                self.axes.obj[ir, ic].get_images()[0].set_clim(vmin=ranges['zmin'][ir, ic])
+            if 'zmax' in ranges and ranges['zmax'][ir, ic] is not None:
+                self.axes.obj[ir, ic].get_images()[0].set_clim(vmax=ranges['zmax'][ir, ic])
 
     def set_axes_rc_labels(self, ir: int, ic: int):
         """Add the row/column label boxes and wrap titles.
