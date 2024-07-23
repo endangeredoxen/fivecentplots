@@ -232,9 +232,20 @@ class Histogram(data.Data):
 
         return counts, vals
 
+    def _post_range_calculations(self, ir: int, ic: int, df_rc: pd.DataFrame):
+        """
+        For non-image histograms (i.e., hists that are calculated by a `hist` plotting function), we must
+        manually recalculate the y-axis ranges because "counts" are not in self.df_rc.
+        """
+        if self.imgs is not None:
+            return
+
+        plot_num = utl.plot_num(ir, ic, self.ncol) - 1
+        counts, vals = self._calc_histograms(df_rc[self.x])
+        self.ranges['ymin'][ir, ic], self.ranges['ymax'][ir, ic] = self._get_data_range('y', counts, plot_num)
+
     def _subset_modify(self, ir: int, ic: int, df: pd.DataFrame) -> pd.DataFrame:
         if self.imgs is None:
-            db()  # broken here
             return data.Data._subset_modify(self, ir, ic, df)
 
         else:

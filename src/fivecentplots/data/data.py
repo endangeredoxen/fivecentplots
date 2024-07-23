@@ -572,6 +572,8 @@ class Data:
 
         # Case: data is pd.DataFrame - separate out values of interest and address special dtype issues
         if isinstance(data, pd.DataFrame):
+            if len([f for f in getattr(self, ax) if f not in data.columns]) > 0:
+                return None, None
             vals = data[getattr(self, ax)].stack().values  # convert to numpy array
             dtypes = data[getattr(self, ax)].dtypes.unique()
 
@@ -583,6 +585,8 @@ class Data:
 
         # Case: data is np.array
         else:
+            if len(data) == 0:
+                return None, None
             vals = data
 
         # Calculate the data range (max - min) and account for ax_scale type
