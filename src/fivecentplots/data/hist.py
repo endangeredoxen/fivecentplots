@@ -118,7 +118,7 @@ class Histogram(data.Data):
         self.y = ['Counts']
 
         # Other attributes for histogram
-        self.auto_scale = False
+        self.auto_scale = True
         normalize = utl.kwget(kwargs, self.fcpp, ['hist_normalize', 'normalize'], kwargs.get('normalize', False))
         kde = utl.kwget(kwargs, self.fcpp, ['hist_kde', 'kde'], kwargs.get('kde', False))
         if normalize or kde:
@@ -234,17 +234,38 @@ class Histogram(data.Data):
 
     def _post_range_calculations(self, ir: int, ic: int, df_rc: pd.DataFrame):
         """
-        For non-image histograms (i.e., hists that are calculated by a `hist` plotting function), we must
-        manually recalculate the y-axis ranges because "counts" are not in self.df_rc.
+        For non-image histograms (i.e., histograms that are created by a `hist` plotting function),
+        need to compute y-column "Counts" for the df_rc
         """
         if self.imgs is not None:
             return
 
         plot_num = utl.plot_num(ir, ic, self.ncol) - 1
-        counts, vals = self._calc_histograms(df_rc[self.x])
-        self.ranges['ymin'][ir, ic], self.ranges['ymax'][ir, ic] = self._get_data_range('y', counts, plot_num)
+
+        groups = self._groupers
+        if len(groups) > 0:
+            for ii, (nn, sub) in enumerate(df_rc.groupby(self._groupers)):
+                counts, vals = self._calc_histograms(sub[self.x[0]])
+                df_hist = pd.DataFrame({self.x[0]: vals, self.y[0]: counts})
+                if ii == 0:
+                    ymin, ymax = self._get_data_range('y', df_hist, plot_num)
+                else:
+                    ymin_, ymax_ = self._get_data_range('y', df_hist, plot_num)
+                    ymin = min(ymin, ymin_)
+                    ymax = max(ymax, ymax_)
+
+        else:
+            counts, vals = self._calc_histograms(df_rc[self.x[0]])
+            df_hist = pd.DataFrame({self.x[0]: vals, self.y[0]: counts})
+            ymin, ymax = self._get_data_range('y', df_hist, plot_num)
+
+        # Pass the min/max values through _get_data_range to get ax
+        self.ranges['ymin'][ir, ic], self.ranges['ymax'][ir, ic] = ymin, ymax
 
     def _subset_modify(self, ir: int, ic: int, df: pd.DataFrame) -> pd.DataFrame:
+        if len(df) == 0:
+            return df
+
         if self.imgs is None:
             return data.Data._subset_modify(self, ir, ic, df)
 
