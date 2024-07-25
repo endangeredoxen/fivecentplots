@@ -481,7 +481,47 @@ class Data:
             if len(self.df_all) == 0:
                 raise DataError('DataFrame is empty after applying filter')
 
-    def _convert_q_range_limits(self, data: Union[pd.DataFrame, npt.NDArray], plot_num: int):
+    def _convert_q_range_limits(self, ax, key, data, plot_num):
+
+        user_limits = getattr(self, key).values
+
+        # Limit is in a RepeatedList and not explictly defined
+        if plot_num + 1 > len(user_limits):
+            return
+
+        # Get user limit for this plot
+        user_limit = user_limits[plot_num]
+
+        # Convert to numpy array
+        if isinstance(data, pd.DataFrame):
+            cols_found = [f for f in getattr(self, ax) if f in data.columns]
+            if len(cols_found) == 0:
+                return
+
+            # Columns found
+            data = data[getattr(self, ax)]
+            data = data[getattr(self, ax)].stack().values
+
+        # IQR style limit
+        if isinstance(user_limit, str) and 'iqr' in user_limit.lower():
+            factor = float(str(user_limit.lower()).split('*')[0].rstrip())
+            q1 = np.quantile(data, 0.25)
+            q3 = np.quantile(data, 0.75)
+            iqr = factor * (q3 - q1)
+            if mm == 'min':
+                getattr(self, key).values[plot_num] = q1 - iqr
+            else:
+                getattr(self, key).values[plot_num] = q3 + iqr
+
+        # Quantile limit
+        elif isinstance(user_limit, str) and user_limit[0] == 'q':
+            if '.' in user_limit:
+                xq = float(str(user_limit).lower().replace('q', ''))
+            else:
+                xq = float(str(user_limit).lower().replace('q', '')) / 100
+            getattr(self, key).values[plot_num] = np.quantile(data, xq)
+
+    def _convert_q_range_limits_old(self, data: Union[pd.DataFrame, npt.NDArray], plot_num: int):
         """Convert special interquartile and quantile range limit types to numerical values.
 
         Args:
@@ -504,8 +544,14 @@ class Data:
                 if user_limit is None:
                     continue
 
-                if isinstance(data, pd.DataFrame):
+                # Subset DataFrame
+                if isinstance(data, pd.DataFrame) and len([f for f in getattr(self, ax) if f in data.columns]) == 0:
+                    # Columns not found
+                    continue
+                elif isinstance(data, pd.DataFrame):
+                    # Columns found
                     data = data[getattr(self, ax)]
+                    data = data[getattr(self, ax)].stack().values  # convert to np.array
 
                 # IQR style limit
                 if isinstance(user_limit, str) and 'iqr' in user_limit.lower():
@@ -544,7 +590,19 @@ class Data:
             for mm in ['min', 'max']:
                 user_limit = getattr(self, f'{ax}{mm}')[plot_num]
                 if user_limit is not None:
+                    self._convert_q_range_limits(ax, f'{ax}{mm}', data, plot_num)
+                    user_limit = getattr(self, f'{ax}{mm}')[plot_num]
+
+                    if not self.auto_scale:
+                        continue
+
+                    if not isinstance(data, pd.DataFrame):
+                        # no autoscale for numpy array??
+                        continue
+
                     for col in getattr(self, ax):
+                        if col not in data.columns:
+                            continue
                         if mm == 'min':
                             data = data[data[col] >= user_limit]
                         else:
@@ -563,12 +621,9 @@ class Data:
         Returns:
             min, max tuple
         """
-        # Convert special user limit types
-        self._convert_q_range_limits(data, plot_num)
-
-        # Auto-scale the data based on user-defined range limits before calculating min/max values
-        if self.auto_scale:
-            data = self._get_auto_scale(data, plot_num)
+        # # Auto-scale the data based on user-defined range limits before calculating min/max values
+        # if self.auto_scale:
+        #     data = self._get_auto_scale(data, plot_num)
 
         # Case: data is pd.DataFrame - separate out values of interest and address special dtype issues
         if isinstance(data, pd.DataFrame):
@@ -687,17 +742,6 @@ class Data:
 
         # Overwrite previous ranges
         self.ranges = rr
-
-    def _get_data_ranges_user_defined(self):
-        """Get user defined range values that were set by kwargs."""
-        for ir, ic, plot_num in self.get_subplot_index():
-            for ax in self.axs:
-                for mm in ['min', 'max']:
-                    # User defined
-                    key = '{}{}'.format(ax, mm)
-                    val = getattr(self, key)[plot_num]
-                    if val is not None and not isinstance(val, str):
-                        self._add_range(ir, ic, ax, mm, val)
 
     def get_interval_confidence(self, df: pd.DataFrame, x: str, y: str, **kwargs) -> None:
         """Calculate confidence intervals point by point for a curve.
@@ -1164,10 +1208,12 @@ class Data:
 
                 # Find data ranges for this subset
                 else:
+                    df_rc = self._get_auto_scale(self.df_rc, plot_num)
+
                     for ax in self.axs_on:
                         if getattr(self, ax) is None:
                             continue
-                        vals = self._get_data_range(ax, self.df_rc, plot_num)
+                        vals = self._get_data_range(ax, df_rc, plot_num)
                         if getattr(self, f'invert_range_limits_{ax}'):
                             self._add_range(ir, ic, ax, 'min', vals[1])
                             self._add_range(ir, ic, ax, 'max', vals[0])
