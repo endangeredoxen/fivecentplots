@@ -2974,7 +2974,7 @@ class Layout(BaseLayout):
         if self.name in ['pie']:
             return
 
-        for ax in data.axs:
+        for ax in data.axs_on:
             label = getattr(self, 'label_%s' % ax)
             labeltext = None
             if not label.on:
@@ -2995,6 +2995,8 @@ class Layout(BaseLayout):
 
             # Toggle label visibility
             if not self.separate_labels:
+                if not self.axes.visible[ir, ic]:
+                    continue
                 if ax == 'x' and ir != self.nrow - 1 and self.axes.visible[ir + 1, ic]:  #and self.nwrap == 0
                     continue
                 if ax == 'x2' and ir != 0:
@@ -3061,11 +3063,6 @@ class Layout(BaseLayout):
 
         # Row labels
         if ic == self.ncol - 1 and self.label_row.on and not self.label_wrap.on:
-            # if self.label_row.text_size is not None:
-            #     text_size = self.label_row.text_size[ir, ic]
-            # else:
-            #     text_size = None
-
             if not self.label_row.values_only:
                 lab = f'{self.label_row.text}={self.label_row.values[ir]}'
             else:
@@ -3074,10 +3071,6 @@ class Layout(BaseLayout):
 
         # Col/wrap labels
         if (ir == 0 and self.label_col.on) or self.label_wrap.on:
-            # if self.label_row.text_size is not None:
-            #     text_size = self.label_col.text_size[ir, ic]
-            # else:
-            #     text_size = None  # noqa
             if self.label_wrap.on:
                 if not self.label_wrap.values_only:
                     lab = ' | '.join([str(f) for f in utl.validate_list(self.label_wrap.values[ir * self.ncol + ic])])
@@ -3593,7 +3586,7 @@ class Layout(BaseLayout):
 
         # Update the axes labels
         self._get_axes_label_position()
-        for label in data.axs:
+        for label in data.axs_on:
             lab = getattr(self, f'label_{label}')
             if not lab.on:
                 continue
@@ -3603,17 +3596,24 @@ class Layout(BaseLayout):
                 if lab.obj[ir, ic]:
                     # Shift labels to the right subplot
                     xoffset, yoffset = 0, 0
-                    if 'x' in label:
-                        xoffset = self.axes.obj[0, 0].get_position().x0 - self.axes.obj[ir, ic].get_position().x0
-                    if 'y' in label:
-                        yoffset = self.axes.obj[0, 0].get_position().y0 - self.axes.obj[ir, ic].get_position().y0
-                    if 'z' in label:
+                    if label == 'z':
                         xoffset = \
                             self.axes.obj[0, self.ncol - 1].get_position().x0 - self.axes.obj[ir, ic].get_position().x0
                         yoffset = self.axes.obj[0, 0].get_position().y0 - self.axes.obj[ir, ic].get_position().y0
+                    elif label == 'y':
+                        xoffset = self.axes.obj[0, 0].get_position().x0 - self.axes.obj[ir, ic].get_position().x0
+                        yoffset = self.axes.obj[0, 0].get_position().y0 - self.axes.obj[ir, ic].get_position().y0
+                    elif label == 'x':
+                        xoffset = self.axes.obj[0, 0].get_position().x0 - self.axes.obj[ir, ic].get_position().x0
+                        yoffset = self.axes.obj[-1, 0].get_position().y0 - self.axes.obj[ir, ic].get_position().y0
+                    elif label == 'y2':
+                        xoffset = self.axes.obj[0, -1].get_position().x0 - self.axes.obj[ir, ic].get_position().x0
+                        yoffset = self.axes.obj[0, 0].get_position().y0 - self.axes.obj[ir, ic].get_position().y0
+                    elif label == 'x2':
+                        xoffset = self.axes.obj[0, 0].get_position().x0 - self.axes.obj[ir, ic].get_position().x0
+                        yoffset = self.axes.obj[0, 0].get_position().y0 - self.axes.obj[ir, ic].get_position().y0
 
                     lab.obj[ir, ic].set_position((x - xoffset, y - yoffset))
-                    if label == 'y2': db()
 
         # Update the rc label positions
         # row
