@@ -1540,11 +1540,8 @@ def plotter(dobj, **kwargs):
                 layout.axes.visible[ir, ic] = False
                 if layout.axes2.obj[ir, ic] is not None:
                     layout.axes2.obj[ir, ic].axis('off')
-                # continue
-                # kwargs['timer'].get('ifig=%s | turn off empty subplots' % ifig)
-
-            if not layout.axes.visible[ir, ic]:
                 continue
+                kwargs['timer'].get('ifig=%s | turn off empty subplots' % ifig)
 
             # Set the axes colors
             layout.set_axes_colors(ir, ic)
@@ -1562,21 +1559,9 @@ def plotter(dobj, **kwargs):
             dd = globals()['plot_{}'.format(dd.name)](dd, layout, ir, ic, df_rc, kwargs)
             kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | plot')
 
-            # Set linear or log axes scaling
-            layout.set_axes_scale(ir, ic)
-            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_scale')
-
-            # Add axis labels
-            layout.set_axes_labels(ir, ic, dd)
-            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_labels')
-
             # Add rc labels
             layout.set_axes_rc_labels(ir, ic)
             kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_rc_labels')
-
-            # Adjust tick marks
-            layout.set_axes_ticks(ir, ic)
-            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_ticks')
 
             # Add box labels
             if dd.name == 'box':
@@ -1587,11 +1572,24 @@ def plotter(dobj, **kwargs):
             layout.add_text(ir, ic)
             kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | add_text')
 
-        # Set axis ranges
+        # Apply some functions after all subplots created
         dd.get_data_ranges(ifig)
         for ir, ic, _ in dd.get_subplot_index():
+            # Set axes ranges
             layout.set_axes_ranges(ir, ic, dd.ranges)
             kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_ranges')
+
+            # Set linear or log axes scaling
+            layout.set_axes_scale(ir, ic)
+            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_scale')
+
+            # Add axis labels
+            layout.set_axes_labels(ir, ic, dd)
+            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_labels')
+
+            # Adjust tick marks
+            layout.set_axes_ticks(ir, ic)
+            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_ticks')
 
         # Make the legend
         layout.add_legend(dd.legend_vals)
