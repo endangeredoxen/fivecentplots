@@ -1381,8 +1381,8 @@ class BaseLayout:
         if kwargs['legend'] and (kwargs.get('ax_vlines') or kwargs.get('ax_hlines')):
             for lines in ['ax_hlines', 'ax_vlines']:
                 if isinstance(kwargs.get(lines), list):
-                    for ll in getattr(self, lines):
-                        if len(ll) >= 6:
+                    for ll in kwargs.get(lines):
+                        if isinstance(ll, list) and len(ll) >= 6:
                             self.legend.values[vv[6]] = []
                 elif isinstance(kwargs.get(lines), tuple) and len(kwargs.get(lines)) >= 6:
                     self.legend.values[lines[6]] = []

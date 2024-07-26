@@ -50,7 +50,7 @@ class NQ(data.Data):
             # Other parameters
             self.channels = kwargs['df'].iloc[0]['channels']
 
-            # TODO:: Reformat RGBA
+            # Reformat RGBA
             if self.channels > 1:
                 # Need to reformat the group and image DataFrames
                 groups = self._kwargs_groupers(kwargs)
@@ -59,11 +59,12 @@ class NQ(data.Data):
                     for ii, (k, v) in enumerate(kwargs['imgs'].items()):
                         # Separate the RGB columns into separate images
                         for icol, col in enumerate(['R', 'G', 'B']):
-                            imgs[3 * ii + icol] = v[['Row', 'Column', col]]
-                            imgs[3 * ii + icol].columns = ['Row', 'Column', 'Value']
+                            imgs[3 * ii + icol] = v[icol]
 
                 # Update the grouping table and image DataFrame dict
+                kwargs['imgs'] = imgs
                 kwargs['df'] = pd.merge(kwargs['df'], pd.DataFrame({'Channel': ['R', 'G', 'B']}), how='cross')
+                kwargs['df']['channels'] = 1
             else:
                 # Stack? need some kind of luma or way to select just one color channel
                 pass
@@ -88,6 +89,7 @@ class NQ(data.Data):
             # self.ax_scale = 'prob' --> TODO: figure out the scale for prob plot
         else:
             self.y = ['Sigma']
+        self.axs_on = ['x', 'y']
 
     def _subset_modify(self, ir: int, ic: int, df: pd.DataFrame) -> pd.DataFrame:
         if self.legend is None:

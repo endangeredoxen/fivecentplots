@@ -621,10 +621,6 @@ class Data:
         Returns:
             min, max tuple
         """
-        # # Auto-scale the data based on user-defined range limits before calculating min/max values
-        # if self.auto_scale:
-        #     data = self._get_auto_scale(data, plot_num)
-
         # Case: data is pd.DataFrame - separate out values of interest and address special dtype issues
         if isinstance(data, pd.DataFrame):
             if len([f for f in getattr(self, ax) if f not in data.columns]) > 0:

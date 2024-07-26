@@ -65,28 +65,24 @@ class Histogram(data.Data):
             if self.cfa is not None and self.channels == 1:
                 kwargs['df'], kwargs['imgs'] = utl.split_color_planes_wrapper(kwargs['df'], kwargs['imgs'], self.cfa)
 
-            # TODO:: Reformat RGBA
+            # Reformat RGBA
             if self.channels > 1:
                 # Need to reformat the group and image DataFrames
                 groups = self._kwargs_groupers(kwargs)
                 if 'Channel' in groups:
-                    # Separate by color channel
                     imgs = {}
                     for ii, (k, v) in enumerate(kwargs['imgs'].items()):
                         # Separate the RGB columns into separate images
                         for icol, col in enumerate(['R', 'G', 'B']):
-                            imgs[3 * ii + icol] = v[['Row', 'Column', col]]
-                            imgs[3 * ii + icol].columns = ['Row', 'Column', 'Value']
+                            imgs[3 * ii + icol] = v[icol]
 
                     # Update the grouping table and image DataFrame dict
+                    kwargs['imgs'] = imgs
                     kwargs['df'] = pd.merge(kwargs['df'], pd.DataFrame({'Channel': ['R', 'G', 'B']}), how='cross')
+                    kwargs['df']['channels'] = 1
                 else:
                     # Stack? need some kind of luma
                     db()
-
-                # Update the grouping table and image DataFrame dict
-                kwargs['df'] = pd.merge(kwargs['df'], pd.DataFrame({'Channel': ['R', 'G', 'B']}), how='cross')
-                kwargs['imgs'] = imgs
 
         elif isinstance(kwargs['df'], pd.DataFrame):
             # Non-image data
@@ -132,6 +128,10 @@ class Histogram(data.Data):
         self.cdf = utl.kwget(kwargs, self.fcpp, ['cdf'], kwargs.get('cdf', False))
         if not self.cdf:
             self.pdf = utl.kwget(kwargs, self.fcpp, ['pdf'], kwargs.get('pdf', False))
+        else:
+            self.y = ['Cumulative Probability']
+        if self.pdf:
+            self.y = ['Probability Density']
         if (self.cdf or self.pdf) and kwargs.get('preset') == 'HIST':
             self.ax_scale = 'lin'
         if self.cdf or self.pdf:
@@ -246,6 +246,15 @@ class Histogram(data.Data):
         if len(groups) > 0:
             for ii, (nn, sub) in enumerate(df_rc.groupby(self._groupers)):
                 counts, vals = self._calc_histograms(sub[self.x[0]])
+
+                # special case of all values being equal
+                if len(counts) == 1:
+                    vals = np.insert(vals, 0, vals[0])
+                    if self.ax_scale in ['logy', 'log']:
+                        counts = np.insert(counts, 0, 1)
+                    else:
+                        counts = np.insert(counts, 0, 0)
+
                 df_hist = pd.DataFrame({self.x[0]: vals, self.y[0]: counts})
                 if ii == 0:
                     ymin, ymax = self._get_data_range('y', df_hist, plot_num)
@@ -256,11 +265,29 @@ class Histogram(data.Data):
 
         else:
             counts, vals = self._calc_histograms(df_rc[self.x[0]])
+
+            # special case of all values being equal
+            if len(counts) == 1:
+                vals = np.insert(vals, 0, vals[0])
+                if self.ax_scale in ['logy', 'log']:
+                    counts = np.insert(counts, 0, 1)
+                else:
+                    counts = np.insert(counts, 0, 0)
+
             df_hist = pd.DataFrame({self.x[0]: vals, self.y[0]: counts})
             ymin, ymax = self._get_data_range('y', df_hist, plot_num)
 
         # Pass the min/max values through _get_data_range to get ax
         self.ranges['ymin'][ir, ic], self.ranges['ymax'][ir, ic] = ymin, ymax
+
+        # Flip horizontal
+        if self.horizontal:
+            ymin = self.ranges['ymin']
+            ymax = self.ranges['ymax']
+            self.ranges['ymin'] = self.ranges['xmin']
+            self.ranges['ymax'] = self.ranges['xmax']
+            self.ranges['xmin'] = ymin
+            self.ranges['xmax'] = ymax
 
     def _subset_modify(self, ir: int, ic: int, df: pd.DataFrame) -> pd.DataFrame:
         if len(df) == 0:

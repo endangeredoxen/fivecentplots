@@ -207,7 +207,7 @@ def dfkwarg(args: tuple, kwargs: dict, plotter: object) -> dict:
     elif isinstance(args, pd.DataFrame):
         kwargs['df'] = args
         return kwargs
-    elif isinstance(args, np.ndarray) and plotter.name in ['hist', 'imshow']:
+    elif isinstance(args, np.ndarray) and plotter.name in ['hist', 'imshow', 'nq']:
         # Certain plots can accept a numpy array of 2D - 4D
         if len(args.shape) < 2 or len(args.shape) > 4:
             raise data.DataError('Data source has valid data type but invalid array shape!'

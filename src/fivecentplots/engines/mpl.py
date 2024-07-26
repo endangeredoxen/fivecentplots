@@ -1961,10 +1961,19 @@ class Layout(BaseLayout):
 
             # Shrink/remove overlapping ticks x-y origin
             if len(xticks_size_all) > 0 and len(yticks_size_all) > 0:
+                # If tick label edges are disabled, be a bit generous on the overlap
+                if self.tick_labels_major_x.edge_width > 0 or self.tick_labels_major_y.edge_width > 0:
+                    xs = 0
+                else:
+                    xs = 2  # this might not be enough to do anything
                 idx = xticks.size_cols.index('width')
                 xw, xh, xx0, xx1, xy0, xy1 = xticks_size_all[0][idx:-1]
+                xx0 += xs
+                xx1 -= xs
                 xc = (xx0 + (xx1 - xx0) / 2, xy0 + (xy0 - xy1) / 2)
                 yw, yh, yx0, yx1, yy0, yy1 = yticks_size_all[0][idx:-1]
+                yy0 += xs
+                yy1 -= xs
                 yc = (yx0 + (yx1 - yx0) / 2, yy0 + (yy0 - yy1) / 2)
                 if utl.rectangle_overlap((xw, xh, xc), (yw, yh, yc)):
                     if self.tick_cleanup == 'remove':
