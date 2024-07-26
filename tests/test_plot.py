@@ -76,13 +76,9 @@ def plt_xy_scatter(bm=False, make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('xy_scatter', make_reference, REFERENCE)
 
-    # Make the plot (use a different filepath here to test that function)
-    test_path = Path('../dummy')
-    if not os.path.exists(test_path):
-        os.mkdir(test_path)
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False,
              show=False, filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             filename=name.with_suffix('.png'), save=not bm, inline=False, filepath=test_path, ax_edge_width=14,
+             filename=name.with_suffix('.png'), save=not bm, inline=False, ax_edge_width=14,
              label_fill_color='#ff0000', label_font_style='italic', label_padding_bg=10, ticks_color='#ff0000',
              tick_labels_major_edge_color='#0000ff', label_edge_color='#000000', label_y_edge_width=2,
              label_x_edge_width=3, ws_fig_label=15, xmin=0.5, label_y_text='How', label_y_font_size=18)
@@ -255,7 +251,7 @@ def plt_multiple_xy_y(bm=False, make_reference=False, show=False):
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Boost Level', 'I [A]'], legend='Die', show=SHOW,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             filename=name.with_suffix('.png'), save=not bm, inline=False)
+             filename=name.with_suffix('.png'), save=not bm, inline=False, ymin=0.1)
     if bm:
         return
     utl.unit_test_options(make_reference, show, name, REFERENCE)

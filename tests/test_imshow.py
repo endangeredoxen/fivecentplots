@@ -108,8 +108,7 @@ def plt_imshow(bm=False, make_reference=False, show=False):
     name = utl.unit_test_get_img_name('imshow', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.imshow(img_cat, ax_size=[600, 600],
-               filename=name, save=not bm, inline=False, timer=False)
+    fcp.imshow(img_cat, ax_size=[600, 600], filename=name, save=not bm, inline=False, timer=False)
 
     if bm:
         return

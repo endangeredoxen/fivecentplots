@@ -196,7 +196,7 @@ def test_img_df_transform():
     assert np.all(imgs[0].columns == ['Row', 'Column', 'Value'])
     np.testing.assert_array_equal(df_groups.values[0], np.array([3, 3, 1]))
 
-    # Case 2: input is 2D dataframe
+    # Case 2: input is 2D DataFrame
     df = pd.DataFrame(columns=range(0, 5), index=range(0, 5), dtype=np.float64)
     df.loc[:, :] = 0.0
     df_groups, imgs = utl.img_df_transform(df)

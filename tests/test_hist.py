@@ -302,11 +302,11 @@ def plt_image_legend(bm=False, make_reference=False, show=False):
 
     # Make the plot
     img = fcp.utilities.rgb2bayer(img_patch, 'rggb')
-    dnr = 180
-    dng = 230
-    max_count_r = (img.loc[::2, img.columns[::2]].stack().values == dnr).sum()
-    max_count_gb = (img.loc[1::2, img.columns[::2]
-                            ].stack().values == dng).sum()
+    dnr = 183
+    dng = 226
+    max_count_r = np.unique(img[::2, ::2], return_counts=True)[1].max()
+    max_count_gb = np.unique(img[::2, 1::2], return_counts=True)[1].max()
+
     fcp.hist(img, show=SHOW, inline=False, save=not bm, filename=name.with_suffix('.png'),
              markers=False, ax_scale='logy', ax_size=[600, 400],
              legend='Plane', cfa='rggb', line_width=2, colors=fcp.RGGB,
@@ -323,11 +323,11 @@ def plt_image_legend_cdf(bm=False, make_reference=False, show=False):
 
     # Make the plot
     img = fcp.utilities.rgb2bayer(img_patch, 'rggb')
-    dnr = 180
-    dng = 230
-    max_count_r = (img.loc[::2, img.columns[::2]].stack().values == dnr).sum()
-    max_count_gb = (img.loc[1::2, img.columns[::2]
-                            ].stack().values == dng).sum()
+    dnr = 183
+    dng = 226
+    max_count_r = np.unique(img[::2, ::2], return_counts=True)[1].max()
+    max_count_gb = np.unique(img[::2, 1::2], return_counts=True)[1].max()
+
     fcp.hist(img, show=SHOW, inline=False, save=not bm, filename=name.with_suffix('.png'), cdf=True,
              markers=False, ax_scale='logy', ax_size=[600, 400],
              legend='Plane', cfa='rggb', line_width=2, colors=fcp.RGGB,
@@ -344,11 +344,11 @@ def plt_image_legend_pdf(bm=False, make_reference=False, show=False):
 
     # Make the plot
     img = fcp.utilities.rgb2bayer(img_patch, 'rggb')
-    dnr = 180
-    dng = 230
-    max_count_r = (img.loc[::2, img.columns[::2]].stack().values == dnr).sum()
-    max_count_gb = (img.loc[1::2, img.columns[::2]
-                            ].stack().values == dng).sum()
+    dnr = 183
+    dng = 226
+    max_count_r = np.unique(img[::2, ::2], return_counts=True)[1].max()
+    max_count_gb = np.unique(img[::2, 1::2], return_counts=True)[1].max()
+
     fcp.hist(img, show=SHOW, inline=False, save=not bm, filename=name.with_suffix('.png'),
              markers=False, ax_scale='logy', ax_size=[600, 400],
              legend='Plane', cfa='rggb', line_width=2, colors=fcp.RGGB,
