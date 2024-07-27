@@ -441,7 +441,8 @@ class Layout(BaseLayout):
             + self._legy \
             + self.pie.xs_top \
             + self.pie.xs_bottom \
-            + self._labtick_x
+            + self._labtick_x \
+            + self.legend.overflow
         return val
 
     @property
@@ -1650,8 +1651,7 @@ class Layout(BaseLayout):
             self.title_wrap.size[1] + self.label_wrap.size[1] + self._labtick_x2
 
         if self.legend.size[1] + header > self.fig.size[1]:
-            self.legend.overflow = self.legend.size[1] + \
-                header - self.fig.size[1]
+            self.legend.overflow = self.legend.size[1] + header - (self.fig.size[1] - self.ws_fig_label)
         self.fig.size[1] += self.legend.overflow
 
     @staticmethod
