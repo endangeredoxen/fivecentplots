@@ -43,7 +43,7 @@ fcp.KWARGS['inline'] = False
 # plt_ functions can be used directly outside of pytest for debug
 def plt_basic(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'basic_master') if master else 'basic'
+    name = utl.unit_test_get_img_name('basic', make_reference, REFERENCE)
 
     # Make the plot
     fcp.pie(df, x='Liquid', y='pH', show=SHOW,
@@ -58,7 +58,7 @@ def plt_basic(bm=False, make_reference=False, show=False):
 
 def plt_basic_no_sort(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'basic_no_sort_master') if master else 'basic_no_sort'
+    name = utl.unit_test_get_img_name('basic_no_sort', make_reference, REFERENCE)
 
     # Make the plot
     df_ = df.copy()
@@ -74,7 +74,7 @@ def plt_basic_no_sort(bm=False, make_reference=False, show=False):
 
 def plt_donut(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'donut_master') if master else 'donut'
+    name = utl.unit_test_get_img_name('donut', make_reference, REFERENCE)
 
     # Make the plot
     fcp.pie(df, x='Liquid', y='pH', show=SHOW,
@@ -90,7 +90,7 @@ def plt_donut(bm=False, make_reference=False, show=False):
 
 def plt_legend(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'legend_master') if master else 'legend'
+    name = utl.unit_test_get_img_name('legend', make_reference, REFERENCE)
 
     # Make the plot
     fcp.pie(df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A" & T [C]==25', start_angle=90, alpha=0.85,
@@ -103,7 +103,7 @@ def plt_legend(bm=False, make_reference=False, show=False):
 
 def plt_legend_unsort(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'legend_unsort_master') if master else 'legend_unsort'
+    name = utl.unit_test_get_img_name('legend_unsort', make_reference, REFERENCE)
 
     # Make the plot
     fcp.pie(df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A" & T [C]==25', start_angle=90, alpha=0.85,
@@ -116,7 +116,7 @@ def plt_legend_unsort(bm=False, make_reference=False, show=False):
 
 def plt_legend_rc(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'legend_rc_master') if master else 'legend_rc'
+    name = utl.unit_test_get_img_name('legend_rc', make_reference, REFERENCE)
 
     # Make the plot
     fcp.pie(df, x='Liquid', y='pH', show=SHOW, col='Measurement',
@@ -130,7 +130,7 @@ def plt_legend_rc(bm=False, make_reference=False, show=False):
 
 def plt_legend_wrap(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'legend_wrap_master') if master else 'legend_wrap'
+    name = utl.unit_test_get_img_name('legend_wrap', make_reference, REFERENCE)
 
     # Make the plot
     fcp.pie(df, x='Liquid', y='pH', show=SHOW, wrap='Measurement',
@@ -144,7 +144,7 @@ def plt_legend_wrap(bm=False, make_reference=False, show=False):
 
 def plt_percents(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'percents_master') if master else 'percents'
+    name = utl.unit_test_get_img_name('percents', make_reference, REFERENCE)
 
     # Make the plot
     fcp.pie(df, x='Liquid', y='pH', show=SHOW,
@@ -159,7 +159,7 @@ def plt_percents(bm=False, make_reference=False, show=False):
 
 def plt_explode(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'explode_master') if master else 'explode'
+    name = utl.unit_test_get_img_name('explode', make_reference, REFERENCE)
 
     # Make the plot
     fcp.pie(df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A" & T [C]==25', explode=(0, 0.1), start_angle=90,
@@ -172,7 +172,7 @@ def plt_explode(bm=False, make_reference=False, show=False):
 
 def plt_explode_all(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'explode_all_master') if master else 'explode_all'
+    name = utl.unit_test_get_img_name('explode_all', make_reference, REFERENCE)
 
     # Make the plot
     fcp.pie(df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A" & T [C]==25', explode=('all', 0.1),
@@ -185,7 +185,7 @@ def plt_explode_all(bm=False, make_reference=False, show=False):
 
 def plt_shadow(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'shadow_master') if master else 'shadow'
+    name = utl.unit_test_get_img_name('shadow', make_reference, REFERENCE)
 
     # Make the plot
     fcp.pie(df, x='Liquid', y='pH', show=SHOW,
@@ -200,7 +200,7 @@ def plt_shadow(bm=False, make_reference=False, show=False):
 
 def plt_angle(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'angle_master') if master else 'angle'
+    name = utl.unit_test_get_img_name('angle', make_reference, REFERENCE)
 
     # Make the plot
     fcp.pie(df, x='Liquid', y='pH', show=SHOW,

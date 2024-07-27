@@ -40,7 +40,7 @@ fcp.KWARGS['inline'] = False
 # plt_ functions can be used directly outside of pytest for debug
 def plt_basic(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'basic_master') if master else 'basic'
+    name = utl.unit_test_get_img_name('basic', make_reference, REFERENCE)
 
     # Make the plot
     fcp.gantt(df, x=['Start', 'Stop'], y='Task',
@@ -53,7 +53,7 @@ def plt_basic(bm=False, make_reference=False, show=False):
 
 def plt_sort_ascending(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'sort_ascending_master') if master else 'sort_ascending'
+    name = utl.unit_test_get_img_name('sort_ascending', make_reference, REFERENCE)
 
     # Make the plot
     fcp.gantt(df, x=['Start', 'Stop'], y='Task', sort='ascending',
@@ -66,7 +66,7 @@ def plt_sort_ascending(bm=False, make_reference=False, show=False):
 
 def plt_style(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'style_master') if master else 'style'
+    name = utl.unit_test_get_img_name('style', make_reference, REFERENCE)
 
     # Make the plot
     fcp.gantt(df, x=['Start', 'Stop'], y='Task',
@@ -81,7 +81,7 @@ def plt_style(bm=False, make_reference=False, show=False):
 
 def plt_legend(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'legend_master') if master else 'legend'
+    name = utl.unit_test_get_img_name('legend', make_reference, REFERENCE)
 
     if bm:
         return
@@ -94,7 +94,7 @@ def plt_legend(bm=False, make_reference=False, show=False):
 
 def plt_legend_order_by(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'legend_order_by_master') if master else 'legend_order_by'
+    name = utl.unit_test_get_img_name('legend_order_by', make_reference, REFERENCE)
 
     if bm:
         return
@@ -108,7 +108,7 @@ def plt_legend_order_by(bm=False, make_reference=False, show=False):
 
 def plt_row(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'row_master') if master else 'row'
+    name = utl.unit_test_get_img_name('row', make_reference, REFERENCE)
 
     if bm:
         return
@@ -121,7 +121,7 @@ def plt_row(bm=False, make_reference=False, show=False):
 
 def plt_col(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'col_master') if master else 'col'
+    name = utl.unit_test_get_img_name('col', make_reference, REFERENCE)
 
     if bm:
         return
@@ -134,7 +134,7 @@ def plt_col(bm=False, make_reference=False, show=False):
 
 def plt_rc_missing(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'rc_missing_master') if master else 'rc_missing'
+    name = utl.unit_test_get_img_name('rc_missing', make_reference, REFERENCE)
 
     # Make the plot
     df['Temp'] = 'Boom'
@@ -149,7 +149,7 @@ def plt_rc_missing(bm=False, make_reference=False, show=False):
 
 def plt_wrap(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'wrap_master') if master else 'wrap'
+    name = utl.unit_test_get_img_name('wrap', make_reference, REFERENCE)
 
     if bm:
         return

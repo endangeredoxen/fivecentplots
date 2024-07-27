@@ -43,7 +43,7 @@ fcp.KWARGS['inline'] = False
 # plt_ functions can be used directly outside of pytest for debug
 def plt_cat_no_label(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'cat_no_label_master') if master else 'cat_no_label'
+    name = utl.unit_test_get_img_name('cat_no_label', make_reference, REFERENCE)
 
     # Make the plot
     fcp.heatmap(df, x='Category', y='Player', z='Average', cbar=True, show=SHOW,
@@ -56,7 +56,7 @@ def plt_cat_no_label(bm=False, make_reference=False, show=False):
 
 def plt_cat_label(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'cat_label_master') if master else 'cat_label'
+    name = utl.unit_test_get_img_name('cat_label', make_reference, REFERENCE)
 
     # Make the plot
     fcp.heatmap(df, x='Category', y='Player', z='Average', cbar=True, data_labels=True,
@@ -70,7 +70,7 @@ def plt_cat_label(bm=False, make_reference=False, show=False):
 
 def plt_cat_cell_size(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'cat_cell_size_master') if master else 'cat_cell_size'
+    name = utl.unit_test_get_img_name('cat_cell_size', make_reference, REFERENCE)
 
     # Make the plot
     fcp.heatmap(df, x='Category', y='Player', z='Average', cbar=True, data_labels=True,
@@ -85,7 +85,7 @@ def plt_cat_cell_size(bm=False, make_reference=False, show=False):
 
 def plt_cat_non_uniform(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'cat_non-uniform_master') if master else 'cat_non-uniform'
+    name = utl.unit_test_get_img_name('cat_non-uniform', make_reference, REFERENCE)
 
     # Make the plot
     df2 = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_contour.csv')
@@ -101,7 +101,7 @@ def plt_cat_non_uniform(bm=False, make_reference=False, show=False):
 
 def plt_heatmap(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'heatmap_master') if master else 'heatmap'
+    name = utl.unit_test_get_img_name('heatmap', make_reference, REFERENCE)
 
     # Make the plot
     fcp.heatmap(img_cat, cmap='inferno', cbar=True, ax_size=[600, 600],
@@ -114,7 +114,7 @@ def plt_heatmap(bm=False, make_reference=False, show=False):
 
 def plt_heatmap_stretched(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'heatmap_stretched_master') if master else 'heatmap_stretched'
+    name = utl.unit_test_get_img_name('heatmap_stretched', make_reference, REFERENCE)
 
     # Make the plot
     uu = img_cat.stack().mean()
@@ -130,7 +130,7 @@ def plt_heatmap_stretched(bm=False, make_reference=False, show=False):
 
 def plt_heatmap_zoomed(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'heatmap_zoomed_master') if master else 'heatmap_zoomed'
+    name = utl.unit_test_get_img_name('heatmap_zoomed', make_reference, REFERENCE)
 
     # Make the plot
     fcp.heatmap(img_cat, cmap='inferno', cbar=True, ax_size=[600, 600], xmin=700, xmax=1100,

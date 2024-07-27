@@ -41,7 +41,7 @@ fcp.KWARGS['inline'] = False
 
 def test_default(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'default_master') if master else 'default'
+    name = utl.unit_test_get_img_name('default', make_reference, REFERENCE)
 
     # Make the plot
     sub = df[(df.Substrate == 'Si') & (df['Target Wavelength'] == 450)
@@ -53,7 +53,7 @@ def test_default(master=False, remove=True, show=False):
 
 def test_primary(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'primary_master') if master else 'primary'
+    name = utl.unit_test_get_img_name('primary', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend='Die', show=SHOW,
@@ -64,7 +64,7 @@ def test_primary(master=False, remove=True, show=False):
 
 def test_primary_qgroups(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'primary_qgroups_master') if master else 'primary_qgroups'
+    name = utl.unit_test_get_img_name('primary_qgroups', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', show=SHOW, groups='Die',
@@ -75,7 +75,7 @@ def test_primary_qgroups(master=False, remove=True, show=False):
 
 def test_primary_no_scale(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'primary_no-auto-scale_master') if master else 'primary_no-auto-scale'
+    name = utl.unit_test_get_img_name('primary_no-auto-scale', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend='Die', show=SHOW,
@@ -87,7 +87,7 @@ def test_primary_no_scale(master=False, remove=True, show=False):
 
 def test_primary_explicit(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'primary_explicit_master') if master else 'primary_explicit'
+    name = utl.unit_test_get_img_name('primary_explicit', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend='Die', show=SHOW,
@@ -99,7 +99,7 @@ def test_primary_explicit(master=False, remove=True, show=False):
 
 def test_secondary(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'secondary_master') if master else 'secondary'
+    name = utl.unit_test_get_img_name('secondary', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
@@ -110,7 +110,7 @@ def test_secondary(master=False, remove=True, show=False):
 
 def test_secondary_limits(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'secondary_limits_master') if master else 'secondary_limits'
+    name = utl.unit_test_get_img_name('secondary_limits', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
@@ -122,7 +122,7 @@ def test_secondary_limits(master=False, remove=True, show=False):
 
 def test_secondary_limits_no_scale(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'secondary_no-auto-scale_master') if master else 'secondary_no-auto-scale'
+    name = utl.unit_test_get_img_name('secondary_no-auto-scale', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
@@ -134,7 +134,7 @@ def test_secondary_limits_no_scale(master=False, remove=True, show=False):
 
 def test_secondary_limits_y(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'secondary_y-limit_master') if master else 'secondary_y-limit'
+    name = utl.unit_test_get_img_name('secondary_y-limit', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
@@ -146,7 +146,7 @@ def test_secondary_limits_y(master=False, remove=True, show=False):
 
 def test_multiple(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'multiple_master') if master else 'multiple'
+    name = utl.unit_test_get_img_name('multiple', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=False, show=SHOW, legend='Die',
@@ -157,7 +157,7 @@ def test_multiple(master=False, remove=True, show=False):
 
 def test_multiple_scaled(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'multiple_scaled_master') if master else 'multiple_scaled'
+    name = utl.unit_test_get_img_name('multiple_scaled', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=False, show=SHOW, legend='Die',
@@ -169,7 +169,7 @@ def test_multiple_scaled(master=False, remove=True, show=False):
 
 def test_boxplot(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'boxplot_master') if master else 'boxplot'
+    name = utl.unit_test_get_img_name('boxplot', make_reference, REFERENCE)
 
     # Make the plot
     fcp.boxplot(df_box, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', show=SHOW,
@@ -179,7 +179,7 @@ def test_boxplot(master=False, remove=True, show=False):
 
 def test_boxplot_quantile(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'boxplot_quantile_master') if master else 'boxplot_quantile'
+    name = utl.unit_test_get_img_name('boxplot_quantile', make_reference, REFERENCE)
 
     # Make the plot
     fcp.boxplot(df_box, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', show=SHOW, ymax='95q',
@@ -189,7 +189,7 @@ def test_boxplot_quantile(master=False, remove=True, show=False):
 
 def test_boxplot_iqr(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'boxplot_iqr_master') if master else 'boxplot_iqr'
+    name = utl.unit_test_get_img_name('boxplot_iqr', make_reference, REFERENCE)
 
     # Make the plot
     fcp.boxplot(df_box, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', show=SHOW,
@@ -200,7 +200,7 @@ def test_boxplot_iqr(master=False, remove=True, show=False):
 
 def test_shared(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'shared_master') if master else 'shared'
+    name = utl.unit_test_get_img_name('shared', make_reference, REFERENCE)
 
     # Make the plot
     sub = df[(df.Substrate == 'Si') & (df['Target Wavelength'] == 450)].copy()
@@ -212,7 +212,7 @@ def test_shared(master=False, remove=True, show=False):
 
 def test_shared_false(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'shared_false_master') if master else 'shared_false'
+    name = utl.unit_test_get_img_name('shared_false', make_reference, REFERENCE)
 
     # Make the plot
     sub = df[(df.Substrate == 'Si') & (df['Target Wavelength'] == 450)].copy()
@@ -224,7 +224,7 @@ def test_shared_false(master=False, remove=True, show=False):
 
 def test_shared_separate(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'shared_separate_master') if master else 'shared_separate'
+    name = utl.unit_test_get_img_name('shared_separate', make_reference, REFERENCE)
 
     # Make the plot
     sub = df[(df.Substrate == 'Si') & (df['Target Wavelength'] == 450)].copy()
@@ -237,7 +237,7 @@ def test_shared_separate(master=False, remove=True, show=False):
 
 def test_shared_rows(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'shared_rows_master') if master else 'shared_rows'
+    name = utl.unit_test_get_img_name('shared_rows', make_reference, REFERENCE)
 
     # Make the plot
     sub = df[(df.Substrate == 'Si') & (df['Target Wavelength'] == 450)].copy()
@@ -249,7 +249,7 @@ def test_shared_rows(master=False, remove=True, show=False):
 
 def test_shared_cols(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'shared_columns_master') if master else 'shared_columns'
+    name = utl.unit_test_get_img_name('shared_columns', make_reference, REFERENCE)
 
     # Make the plot
     sub = df[(df.Substrate == 'Si') & (df['Target Wavelength'] == 450)].copy()
@@ -261,7 +261,7 @@ def test_shared_cols(master=False, remove=True, show=False):
 
 def test_shared_no(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'shared_no_master') if master else 'shared_no'
+    name = utl.unit_test_get_img_name('shared_no', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',

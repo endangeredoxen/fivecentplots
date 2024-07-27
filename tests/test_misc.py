@@ -39,7 +39,7 @@ fcp.KWARGS['inline'] = False
 
 def test_text_box_single(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'text_box_single_master') if master else 'text_box_single'
+    name = utl.unit_test_get_img_name('text_box_single', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9,
@@ -51,7 +51,7 @@ def test_text_box_single(master=False, remove=True, show=False):
 
 def test_text_box_single_style(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'text_box_single_style_master') if master else 'text_box_single_style'
+    name = utl.unit_test_get_img_name('text_box_single_style', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9,
@@ -64,7 +64,7 @@ def test_text_box_single_style(master=False, remove=True, show=False):
 
 def test_text_box_multiple(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'text_box_multiple_master') if master else 'text_box_multiple'
+    name = utl.unit_test_get_img_name('text_box_multiple', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9,
@@ -78,7 +78,7 @@ def test_text_box_multiple(master=False, remove=True, show=False):
 
 def test_text_box_position_figure(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'text_box_position_figure_master') if master else 'text_box_position_figure'
+    name = utl.unit_test_get_img_name('text_box_position_figure', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9,
@@ -90,7 +90,7 @@ def test_text_box_position_figure(master=False, remove=True, show=False):
 
 def test_text_box_position_data(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'text_box_position_data_master') if master else 'text_box_position_data'
+    name = utl.unit_test_get_img_name('text_box_position_data', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9,
@@ -102,7 +102,7 @@ def test_text_box_position_data(master=False, remove=True, show=False):
 
 def test_text_box_position_units(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'text_box_position_units_master') if master else 'text_box_position_units'
+    name = utl.unit_test_get_img_name('text_box_position_units', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9,

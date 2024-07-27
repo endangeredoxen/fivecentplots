@@ -38,7 +38,7 @@ fcp.KWARGS['inline'] = False
 
 def test_fill_color(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'fill_color_master') if master else 'fill_color'
+    name = utl.unit_test_get_img_name('fill_color', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
@@ -52,7 +52,7 @@ def test_fill_color(master=False, remove=True, show=False):
 
 def test_edge_color(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'edge_color_master') if master else 'edge_color'
+    name = utl.unit_test_get_img_name('edge_color', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
@@ -66,7 +66,7 @@ def test_edge_color(master=False, remove=True, show=False):
 
 def test_spines(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'spines_master') if master else 'spines'
+    name = utl.unit_test_get_img_name('spines', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
@@ -78,7 +78,7 @@ def test_spines(master=False, remove=True, show=False):
 
 def test_alpha(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'alpha_master') if master else 'alpha'
+    name = utl.unit_test_get_img_name('alpha', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
@@ -95,7 +95,7 @@ def test_alpha(master=False, remove=True, show=False):
 
 def test_alpha_marker(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'alpha_marker_master') if master else 'alpha_marker'
+    name = utl.unit_test_get_img_name('alpha_marker', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
@@ -107,7 +107,7 @@ def test_alpha_marker(master=False, remove=True, show=False):
 
 def test_alpha_legend_marker(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'alpha_legend_marker_master') if master else 'alpha_legend_marker'
+    name = utl.unit_test_get_img_name('alpha_legend_marker', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
@@ -119,7 +119,7 @@ def test_alpha_legend_marker(master=False, remove=True, show=False):
 
 def test_line_color(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'line_color_master') if master else 'line_color'
+    name = utl.unit_test_get_img_name('line_color', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
@@ -130,7 +130,7 @@ def test_line_color(master=False, remove=True, show=False):
 
 def test_line_color_custom(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'line_color_custom_master') if master else 'line_color_custom'
+    name = utl.unit_test_get_img_name('line_color_custom', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
@@ -143,7 +143,7 @@ def test_line_color_custom(master=False, remove=True, show=False):
 
 def test_line_color_index(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'line_color_index_master') if master else 'line_color_index'
+    name = utl.unit_test_get_img_name('line_color_index', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
@@ -155,7 +155,7 @@ def test_line_color_index(master=False, remove=True, show=False):
 
 def test_line_color_cmap(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'line_color_cmap_master') if master else 'line_color_cmap'
+    name = utl.unit_test_get_img_name('line_color_cmap', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
@@ -167,7 +167,7 @@ def test_line_color_cmap(master=False, remove=True, show=False):
 
 def test_line_style(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'line_style_master') if master else 'line_style'
+    name = utl.unit_test_get_img_name('line_style', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
@@ -179,7 +179,7 @@ def test_line_style(master=False, remove=True, show=False):
 
 def test_line_style2(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'line_style2_master') if master else 'line_style2'
+    name = utl.unit_test_get_img_name('line_style2', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
@@ -191,7 +191,7 @@ def test_line_style2(master=False, remove=True, show=False):
 
 def test_line_style_by_line(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'line_style_by_line_master') if master else 'line_style_by_line'
+    name = utl.unit_test_get_img_name('line_style_by_line', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'], markers=False,
@@ -205,7 +205,7 @@ def test_line_style_by_line(master=False, remove=True, show=False):
 
 def test_marker_edge(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'marker_edge_master') if master else 'marker_edge'
+    name = utl.unit_test_get_img_name('marker_edge', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
@@ -217,7 +217,7 @@ def test_marker_edge(master=False, remove=True, show=False):
 
 def test_marker_fill(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'marker_fill_master') if master else 'marker_fill'
+    name = utl.unit_test_get_img_name('marker_fill', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
@@ -229,7 +229,7 @@ def test_marker_fill(master=False, remove=True, show=False):
 
 def test_marker_fill_default(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'marker_fill_default_master') if master else 'marker_fill_default'
+    name = utl.unit_test_get_img_name('marker_fill_default', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
@@ -241,7 +241,7 @@ def test_marker_fill_default(master=False, remove=True, show=False):
 
 def test_marker_fill_alpha(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'marker_fill_alpha_master') if master else 'marker_fill_alpha'
+    name = utl.unit_test_get_img_name('marker_fill_alpha', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
@@ -253,7 +253,7 @@ def test_marker_fill_alpha(master=False, remove=True, show=False):
 
 def test_marker_boxplot(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'boxplot_master') if master else 'boxplot'
+    name = utl.unit_test_get_img_name('boxplot', make_reference, REFERENCE)
 
     # Make the plot
     df_box = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
@@ -267,7 +267,7 @@ def test_marker_boxplot(master=False, remove=True, show=False):
 
 def test_marker_boxplot2(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'boxplot2_master') if master else 'boxplot2'
+    name = utl.unit_test_get_img_name('boxplot2', make_reference, REFERENCE)
 
     # Make the plot
     df_box = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
@@ -282,7 +282,7 @@ def test_marker_boxplot2(master=False, remove=True, show=False):
 
 def test_marker_boxplot3(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'boxplot3_master') if master else 'boxplot3'
+    name = utl.unit_test_get_img_name('boxplot3', make_reference, REFERENCE)
 
     # Make the plot
     fcp.set_theme('_test', verbose=True)
@@ -297,7 +297,7 @@ def test_marker_boxplot3(master=False, remove=True, show=False):
 
 def test_hist(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'hist_master') if master else 'hist'
+    name = utl.unit_test_get_img_name('hist', make_reference, REFERENCE)
 
     # Make the plot
     df_hist = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
@@ -307,7 +307,7 @@ def test_hist(master=False, remove=True, show=False):
 
 def test_hist_color(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'hist_color_master') if master else 'hist_color'
+    name = utl.unit_test_get_img_name('hist_color', make_reference, REFERENCE)
 
     # Make the plot
     df_hist = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
@@ -319,7 +319,7 @@ def test_hist_color(master=False, remove=True, show=False):
 
 def test_marker_type(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'marker_type_master') if master else 'marker_type'
+    name = utl.unit_test_get_img_name('marker_type', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
@@ -331,7 +331,7 @@ def test_marker_type(master=False, remove=True, show=False):
 
 def test_marker_type_none(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'marker_type_none_master') if master else 'marker_type_none'
+    name = utl.unit_test_get_img_name('marker_type_none', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
@@ -343,7 +343,7 @@ def test_marker_type_none(master=False, remove=True, show=False):
 
 def test_marker_size(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'marker_size_master') if master else 'marker_size'
+    name = utl.unit_test_get_img_name('marker_size', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
@@ -355,7 +355,7 @@ def test_marker_size(master=False, remove=True, show=False):
 
 def test_marker_size_legend(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'marker_size_legend_master') if master else 'marker_size_legend'
+    name = utl.unit_test_get_img_name('marker_size_legend', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
@@ -367,7 +367,7 @@ def test_marker_size_legend(master=False, remove=True, show=False):
 
 def test_marker_size_column(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'marker_size_column_master') if master else 'marker_size_column'
+    name = utl.unit_test_get_img_name('marker_size_column', make_reference, REFERENCE)
 
     # Make the plot
     df['marker_size'] = df['Voltage'] * 10
@@ -379,7 +379,7 @@ def test_marker_size_column(master=False, remove=True, show=False):
 
 def test_fonts(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'fonts_master') if master else 'fonts'
+    name = utl.unit_test_get_img_name('fonts', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
@@ -392,7 +392,7 @@ def test_fonts(master=False, remove=True, show=False):
 
 def test_theme_white(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'theme_white_master') if master else 'theme_white'
+    name = utl.unit_test_get_img_name('theme_white', make_reference, REFERENCE)
 
     # Make the plot
     fcp.set_theme('white')
@@ -405,7 +405,7 @@ def test_theme_white(master=False, remove=True, show=False):
 
 def test_theme_white_fly(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'theme_white_fly_master') if master else 'theme_white_fly'
+    name = utl.unit_test_get_img_name('theme_white_fly', make_reference, REFERENCE)
 
     # Make the plot
     fcp.set_theme('gray')
@@ -418,7 +418,7 @@ def test_theme_white_fly(master=False, remove=True, show=False):
 
 def test_theme_gray(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'theme_gray_master') if master else 'theme_gray'
+    name = utl.unit_test_get_img_name('theme_gray', make_reference, REFERENCE)
 
     # Make the plot
     fcp.set_theme('gray')

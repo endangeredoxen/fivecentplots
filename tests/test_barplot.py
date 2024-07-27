@@ -42,7 +42,7 @@ fcp.KWARGS['inline'] = False
 # plt_ functions can be used directly outside of pytest for debug
 def plt_vertical(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'vertical_master') if master else 'vertical'
+    name = utl.unit_test_get_img_name('vertical', make_reference, REFERENCE)
 
     # Make the plot
     fcp.bar(df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A" & T [C]==25',
@@ -56,7 +56,7 @@ def plt_vertical(bm=False, make_reference=False, show=False):
 
 def plt_vertical_zero_group(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'vertical_zero_group_master') if master else 'vertical_zero_group'
+    name = utl.unit_test_get_img_name('vertical_zero_group', make_reference, REFERENCE)
 
     # Make the plot
     temp = pd.DataFrame({'Liquid': ['Air'], 'pH': [0], 'Measurement': ['A'],
@@ -73,7 +73,7 @@ def plt_vertical_zero_group(bm=False, make_reference=False, show=False):
 
 def plt_horizontal(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'horizontal_master') if master else 'horizontal'
+    name = utl.unit_test_get_img_name('horizontal', make_reference, REFERENCE)
 
     # Make the plot
     fcp.bar(df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A"', horizontal=True, error_bars=True,
@@ -86,7 +86,7 @@ def plt_horizontal(bm=False, make_reference=False, show=False):
 
 def plt_error(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'error_master') if master else 'error'
+    name = utl.unit_test_get_img_name('error', make_reference, REFERENCE)
 
     # Make the plot
     fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, error_bars=True, ymin=0, ymax=35,
@@ -99,7 +99,7 @@ def plt_error(bm=False, make_reference=False, show=False):
 
 def plt_legend(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'legend_master') if master else 'legend'
+    name = utl.unit_test_get_img_name('legend', make_reference, REFERENCE)
 
     # Make the plot
     fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, legend='Measurement',
@@ -113,7 +113,7 @@ def plt_legend(bm=False, make_reference=False, show=False):
 
 def plt_stacked(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'stacked_master') if master else 'stacked'
+    name = utl.unit_test_get_img_name('stacked', make_reference, REFERENCE)
 
     # Make the plot
     fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, stacked=True, legend='Measurement',
@@ -126,7 +126,7 @@ def plt_stacked(bm=False, make_reference=False, show=False):
 
 def plt_stacked_horizontal(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'stacked_horizontal_master') if master else 'stacked_horizontal'
+    name = utl.unit_test_get_img_name('stacked_horizontal', make_reference, REFERENCE)
 
     # Make the plot
     fcp.bar(df, x='Liquid', y='pH', show=SHOW, stacked=True, legend='Measurement', xmin=0, xmax=41,
@@ -139,7 +139,7 @@ def plt_stacked_horizontal(bm=False, make_reference=False, show=False):
 
 def plt_row_col(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'row_col_master') if master else 'row_col'
+    name = utl.unit_test_get_img_name('row_col', make_reference, REFERENCE)
 
     # Make the plot
     fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, col='Measurement', row='T [C]',
@@ -153,7 +153,7 @@ def plt_row_col(bm=False, make_reference=False, show=False):
 
 def plt_col_shared(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'col_shared_master') if master else 'col_shared'
+    name = utl.unit_test_get_img_name('col_shared', make_reference, REFERENCE)
 
     # Make the plot
     fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, col='Measurement', row='T [C]',
@@ -167,7 +167,7 @@ def plt_col_shared(bm=False, make_reference=False, show=False):
 
 def plt_row_shared(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'row_shared_master') if master else 'row_shared'
+    name = utl.unit_test_get_img_name('row_shared', make_reference, REFERENCE)
 
     # Make the plot
     fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, col='Measurement', row='T [C]',
@@ -181,7 +181,7 @@ def plt_row_shared(bm=False, make_reference=False, show=False):
 
 def plt_wrap(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'wrap_master') if master else 'wrap'
+    name = utl.unit_test_get_img_name('wrap', make_reference, REFERENCE)
 
     # Make the plot
     fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, wrap='Measurement', ax_size=[300, 300],
@@ -194,7 +194,7 @@ def plt_wrap(bm=False, make_reference=False, show=False):
 
 def plt_rolling_mean(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'rolling_mean_master') if master else 'rolling_mean'
+    name = utl.unit_test_get_img_name('rolling_mean', make_reference, REFERENCE)
 
     # Make the plot
     fcp.bar(df2, x='date', y='cases', show=SHOW, ax_size=[800, 500],
@@ -208,7 +208,7 @@ def plt_rolling_mean(bm=False, make_reference=False, show=False):
 
 def plt_rolling_mean_styled(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'rolling_mean_styled_master') if master else 'rolling_mean_styled'
+    name = utl.unit_test_get_img_name('rolling_mean_styled', make_reference, REFERENCE)
 
     # Make the plot
     fcp.bar(df2, x='date', y='cases', show=SHOW, ax_size=[800, 500],

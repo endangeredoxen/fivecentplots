@@ -39,7 +39,7 @@ fcp.KWARGS['inline'] = False
 
 def test_grid_major(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'grid_major_master') if master else 'grid_major'
+    name = utl.unit_test_get_img_name('grid_major', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
@@ -50,7 +50,7 @@ def test_grid_major(master=False, remove=True, show=False):
 
 def test_grid_major_off(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'grid_major_off_master') if master else 'grid_major_off'
+    name = utl.unit_test_get_img_name('grid_major_off', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
@@ -62,7 +62,7 @@ def test_grid_major_off(master=False, remove=True, show=False):
 
 def test_grid_major_off_y(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'grid_major_off_y_master') if master else 'grid_major_off_y'
+    name = utl.unit_test_get_img_name('grid_major_off_y', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
@@ -74,7 +74,7 @@ def test_grid_major_off_y(master=False, remove=True, show=False):
 
 def test_grid_major_secondary(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'grid_major_secondary_master') if master else 'grid_major_secondary'
+    name = utl.unit_test_get_img_name('grid_major_secondary', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
@@ -85,7 +85,7 @@ def test_grid_major_secondary(master=False, remove=True, show=False):
 
 def test_grid_minor(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'grid_minor_master') if master else 'grid_minor'
+    name = utl.unit_test_get_img_name('grid_minor', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
@@ -97,7 +97,7 @@ def test_grid_minor(master=False, remove=True, show=False):
 
 def test_grid_logit(master=False, remove=True, show=False):
     """This scale doesn't seem to work.  Punting for now"""
-    name = osjoin(REFERENCE, 'grid_logit_master') if master else 'grid_logit'
+    name = utl.unit_test_get_img_name('grid_logit', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', show=SHOW, legend='Die', ax_scale='logit',
@@ -108,7 +108,7 @@ def test_grid_logit(master=False, remove=True, show=False):
 
 def test_grid_symlog(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'grid_symlog_master') if master else 'grid_symlog'
+    name = utl.unit_test_get_img_name('grid_symlog', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', show=SHOW, legend='Die', ax_scale='symlog',
@@ -119,7 +119,7 @@ def test_grid_symlog(master=False, remove=True, show=False):
 
 def test_ticks_minor(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'ticks_minor_master') if master else 'ticks_minor'
+    name = utl.unit_test_get_img_name('ticks_minor', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
@@ -131,7 +131,7 @@ def test_ticks_minor(master=False, remove=True, show=False):
 
 def test_ticks_style(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'ticks_style_master') if master else 'ticks_style'
+    name = utl.unit_test_get_img_name('ticks_style', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
@@ -143,7 +143,7 @@ def test_ticks_style(master=False, remove=True, show=False):
 
 def test_ticks_inc(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'ticks_inc_master') if master else 'ticks_inc'
+    name = utl.unit_test_get_img_name('ticks_inc', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
@@ -154,7 +154,7 @@ def test_ticks_inc(master=False, remove=True, show=False):
 
 def test_ticks_minor_number(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'ticks_minor_number_master') if master else 'ticks_minor_number'
+    name = utl.unit_test_get_img_name('ticks_minor_number', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
@@ -166,7 +166,7 @@ def test_ticks_minor_number(master=False, remove=True, show=False):
 
 def test_ticks_minor_number_log(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'ticks_minor_number_log_master') if master else 'ticks_minor_number_log'
+    name = utl.unit_test_get_img_name('ticks_minor_number_log', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
@@ -178,7 +178,7 @@ def test_ticks_minor_number_log(master=False, remove=True, show=False):
 
 def test_tick_tight(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'tick_labels_tight_master') if master else 'tick_labels_tight'
+    name = utl.unit_test_get_img_name('tick_labels_tight', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', show=SHOW, legend='Die', tick_labels_minor=True,
@@ -189,7 +189,7 @@ def test_tick_tight(master=False, remove=True, show=False):
 
 def test_tick_labels_log(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'tick_labels_log_master') if master else 'tick_labels_log'
+    name = utl.unit_test_get_img_name('tick_labels_log', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', show=SHOW, legend='Die', ax_scale='logy', ymin=0.8e-2, ymax=2e-2,
@@ -200,7 +200,7 @@ def test_tick_labels_log(master=False, remove=True, show=False):
 
 def test_tick_labels_log2(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'tick_labels_log2_master') if master else 'tick_labels_log2'
+    name = utl.unit_test_get_img_name('tick_labels_log2', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', show=SHOW, legend='Die', ax_scale='logy', ymin=1.1e-2, ymax=2e-2,
@@ -211,7 +211,7 @@ def test_tick_labels_log2(master=False, remove=True, show=False):
 
 def test_tick_labels_minor(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'tick_labels_minor_master') if master else 'tick_labels_minor'
+    name = utl.unit_test_get_img_name('tick_labels_minor', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', show=SHOW, legend='Die',
@@ -223,7 +223,7 @@ def test_tick_labels_minor(master=False, remove=True, show=False):
 
 def test_tick_cleanup(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'tick_cleanup_master') if master else 'tick_cleanup'
+    name = utl.unit_test_get_img_name('tick_cleanup', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
@@ -235,7 +235,7 @@ def test_tick_cleanup(master=False, remove=True, show=False):
 
 def test_tick_cleanup_off(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'tick_cleanup_off_master') if master else 'tick_cleanup_off'
+    name = utl.unit_test_get_img_name('tick_cleanup_off', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
@@ -247,7 +247,7 @@ def test_tick_cleanup_off(master=False, remove=True, show=False):
 
 def test_tick_cleanup2(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'tick_cleanup2_master') if master else 'tick_cleanup2'
+    name = utl.unit_test_get_img_name('tick_cleanup2', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
@@ -260,7 +260,7 @@ def test_tick_cleanup2(master=False, remove=True, show=False):
 
 def test_lin_sci(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'lin_sci_master') if master else 'lin_sci'
+    name = utl.unit_test_get_img_name('lin_sci', make_reference, REFERENCE)
 
     # Make the plot
     x = np.linspace(1, 10, 10)
@@ -272,7 +272,7 @@ def test_lin_sci(master=False, remove=True, show=False):
 
 def test_lin_sci2(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'lin_sci2_master') if master else 'lin_sci2'
+    name = utl.unit_test_get_img_name('lin_sci2', make_reference, REFERENCE)
 
     # Make the plot
     x = np.linspace(1, 10, 10)
@@ -284,7 +284,7 @@ def test_lin_sci2(master=False, remove=True, show=False):
 
 def test_lin_sci_off(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'lin_sci_off_master') if master else 'lin_sci_off'
+    name = utl.unit_test_get_img_name('lin_sci_off', make_reference, REFERENCE)
 
     # Make the plot
     x = np.linspace(1, 10, 10)
@@ -296,7 +296,7 @@ def test_lin_sci_off(master=False, remove=True, show=False):
 
 def test_log_sci(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'log_sci_master') if master else 'log_sci'
+    name = utl.unit_test_get_img_name('log_sci', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='Voltage', show=SHOW, legend='Die',
@@ -308,7 +308,7 @@ def test_log_sci(master=False, remove=True, show=False):
 
 def test_log_sci2(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'log_sci2_master') if master else 'log_sci2'
+    name = utl.unit_test_get_img_name('log_sci2', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='Voltage', show=SHOW, legend='Die',
@@ -320,7 +320,7 @@ def test_log_sci2(master=False, remove=True, show=False):
 
 def test_log_exp(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'log_exp_master') if master else 'log_exp'
+    name = utl.unit_test_get_img_name('log_exp', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='Voltage', show=SHOW, legend='Die',
@@ -332,7 +332,7 @@ def test_log_exp(master=False, remove=True, show=False):
 
 def test_sciz(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'sciz_master') if master else 'sciz'
+    name = utl.unit_test_get_img_name('sciz', make_reference, REFERENCE)
 
     # Make the plot
     df2 = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_contour.csv')
@@ -345,7 +345,7 @@ def test_sciz(master=False, remove=True, show=False):
 
 def test_sciz_remove(master=False, remove=True, show=False):
 
-    name = osjoin(REFERENCE, 'sciz_remove_master') if master else 'sciz_remove'
+    name = utl.unit_test_get_img_name('sciz_remove', make_reference, REFERENCE)
 
     # Make the plot
     df2 = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_contour.csv')

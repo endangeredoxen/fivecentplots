@@ -39,7 +39,7 @@ fcp.KWARGS['inline'] = False
 # plt_ functions can be used directly outside of pytest for debug
 def plt_basic(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'basic_master') if master else 'basic'
+    name = utl.unit_test_get_img_name('basic', make_reference, REFERENCE)
 
     # Make the plot
     fcp.contour(df, x='X', y='Y', z='Value', filled=False,
@@ -55,7 +55,7 @@ def plt_basic(bm=False, make_reference=False, show=False):
 
 def plt_basic_rc(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'basic_rc_master') if master else 'basic_rc'
+    name = utl.unit_test_get_img_name('basic_rc', make_reference, REFERENCE)
 
     # Make the plot
     fcp.contour(df, x='X', y='Y', z='Value', row='Batch', col='Experiment', filled=False,
@@ -71,7 +71,7 @@ def plt_basic_rc(bm=False, make_reference=False, show=False):
 
 def plt_basic_wrap(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'basic_wrap_master') if master else 'basic_wrap'
+    name = utl.unit_test_get_img_name('basic_wrap', make_reference, REFERENCE)
 
     # Make the plot
     fcp.contour(df, x='X', y='Y', z='Value', wrap=['Batch', 'Experiment'], filled=False,
@@ -87,7 +87,7 @@ def plt_basic_wrap(bm=False, make_reference=False, show=False):
 
 def plt_filled(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'filled_master') if master else 'filled'
+    name = utl.unit_test_get_img_name('filled', make_reference, REFERENCE)
 
     # Make the plot
     fcp.contour(df, x='X', y='Y', z='Value', row='Batch', col='Experiment', filled=True,
@@ -119,7 +119,7 @@ def plt_filled(bm=False, make_reference=False, show=False):
 
 def plt_filled_no_share(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'filled_no_share_master') if master else 'filled_no_share'
+    name = utl.unit_test_get_img_name('filled_no_share', make_reference, REFERENCE)
 
     # Make the plot
     fcp.contour(df, x='X', y='Y', z='Value', row='Batch', col='Experiment', filled=True,
@@ -151,7 +151,7 @@ def plt_filled_no_share(bm=False, make_reference=False, show=False):
 
 def plt_filled_separate(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'filled_separate_master') if master else 'filled_separate'
+    name = utl.unit_test_get_img_name('filled_separate', make_reference, REFERENCE)
 
     # Make the plot
     fcp.contour(df, x='X', y='Y', z='Value', row='Batch', col='Experiment', filled=True,
@@ -183,7 +183,7 @@ def plt_filled_separate(bm=False, make_reference=False, show=False):
 
 def plt_filled_range(bm=False, make_reference=False, show=False):
 
-    name = osjoin(REFERENCE, 'filled_range_master') if master else 'filled_range'
+    name = utl.unit_test_get_img_name('filled_range', make_reference, REFERENCE)
 
     # Make the plot
     fcp.contour(df, x='X', y='Y', z='Value', row='Batch', col='Experiment', filled=True,
