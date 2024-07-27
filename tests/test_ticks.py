@@ -31,7 +31,7 @@ fcp.set_theme('gray')
 def make_all():
     utl.unit_test_make_all(REFERENCE, sys.modules[__name__])
 def show_all(only_fails=True):
-    utl.unit_test_show_all(only_fails, REFERENCE, sys.modules[__name__])
+    utl.unit_test_show_all(only_fails, REFERENCE, sys.modules[__name__], start=start)
 SHOW = False
 fcp.KWARGS['save'] = True
 fcp.KWARGS['inline'] = False

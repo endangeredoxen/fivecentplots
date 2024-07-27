@@ -1614,25 +1614,30 @@ def unit_test_make_all(reference: pathlib.Path, name: str):
     if not reference.exists():
         os.makedirs(reference)
     members = inspect.getmembers(name)
-    members = sorted([f for f in members if 'plt_' in f[0]])
+    members = [f for f in members if 'plt_' in f[0]]
     for member in members:
         print('Running %s...' % member[0], end='')
         member[1](make_reference=True)
         print('done!')
 
 
-def unit_test_show_all(only_fails: bool, reference: pathlib.Path, name: str):
+def unit_test_show_all(only_fails: bool, reference: pathlib.Path, name: str, start: Union[str, None]=None):
     """Show all unit test plots.
 
     Args:
         only_fails: only show the test plots that fail the unit test
         reference: path to the reference test images
         name: sys.modules[__name__] for the test file
+        start: search string to start the show_all loop with a specific plot
     """
     if not reference.exists():
         os.makedirs(reference)
     members = inspect.getmembers(name)
-    members = [f for f in members if 'plt_' in f[0]]
+    members = sorted([f for f in members if 'plt_' in f[0]])
+    if start is not None:
+        idx_found = [i for (i, f) in enumerate(members) if start in f[0]]
+        if len(idx_found) > 0:
+            members = members[idx_found[0]:]
     for member in members:
         print('Running %s...' % member[0], end='')
         if only_fails:
