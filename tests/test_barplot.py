@@ -15,11 +15,11 @@ mpl.use('agg')
 
 test = 'barplot'
 if Path('../tests/test_images').exists():
-    MASTER = Path(f'../tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
+    REFERENCE = Path(f'../tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 elif Path('tests/test_images').exists():
-    MASTER = Path(f'tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
+    REFERENCE = Path(f'tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 else:
-    MASTER = Path(f'test_images/mpl_v{mpl.__version__}') / f'{test}.py'
+    REFERENCE = Path(f'test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 
 # Sample data
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_bar.csv')
@@ -40,36 +40,23 @@ fcp.KWARGS['inline'] = False
 
 
 # plt_ functions can be used directly outside of pytest for debug
-def plt_vertical(bm=False, master=False, remove=True, show=False):
+def plt_vertical(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'vertical_master') if master else 'vertical'
+    name = osjoin(REFERENCE, 'vertical_master') if master else 'vertical'
 
     # Make the plot
     fcp.bar(df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A" & T [C]==25',
             tick_labels_major_x_rotation=90,
-            filename=name + '.png', save=not bm, inline=False, jitter=False)
+            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_vertical_zero_group(bm=False, master=False, remove=True, show=False):
+def plt_vertical_zero_group(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'vertical_zero_group_master') if master else 'vertical_zero_group'
+    name = osjoin(REFERENCE, 'vertical_zero_group_master') if master else 'vertical_zero_group'
 
     # Make the plot
     temp = pd.DataFrame({'Liquid': ['Air'], 'pH': [0], 'Measurement': ['A'],
@@ -77,317 +64,161 @@ def plt_vertical_zero_group(bm=False, master=False, remove=True, show=False):
     fcp.bar(df=pd.concat([df, temp]), x='Liquid', y='pH', show=SHOW,
             filter='Measurement=="A" & T [C]==25',
             tick_labels_major_x_rotation=90, show_all_groups=True,
-            filename=name + '.png', save=not bm, inline=False, jitter=False)
+            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_horizontal(bm=False, master=False, remove=True, show=False):
+def plt_horizontal(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'horizontal_master') if master else 'horizontal'
+    name = osjoin(REFERENCE, 'horizontal_master') if master else 'horizontal'
 
     # Make the plot
     fcp.bar(df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A"', horizontal=True, error_bars=True,
-            filename=name + '.png', save=not bm, inline=False, jitter=False)
+            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_error(bm=False, master=False, remove=True, show=False):
+def plt_error(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'error_master') if master else 'error'
+    name = osjoin(REFERENCE, 'error_master') if master else 'error'
 
     # Make the plot
     fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, error_bars=True, ymin=0, ymax=35,
-            filename=name + '.png', save=not bm, inline=False, jitter=False, sort=False, color_by_bar=True)
+            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False, sort=False, color_by_bar=True)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_legend(bm=False, master=False, remove=True, show=False):
+def plt_legend(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'legend_master') if master else 'legend'
+    name = osjoin(REFERENCE, 'legend_master') if master else 'legend'
 
     # Make the plot
     fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, legend='Measurement',
-            filename=name + '.png', save=not bm, inline=False, jitter=False, label_edge_width=10,
+            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False, label_edge_width=10,
             label_edge_color='#000000', legend_font_size=6, legend_title_font_size=18)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_stacked(bm=False, master=False, remove=True, show=False):
+def plt_stacked(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'stacked_master') if master else 'stacked'
+    name = osjoin(REFERENCE, 'stacked_master') if master else 'stacked'
 
     # Make the plot
     fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, stacked=True, legend='Measurement',
-            filename=name + '.png', save=not bm, inline=False, jitter=False)
+            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_stacked_horizontal(bm=False, master=False, remove=True, show=False):
+def plt_stacked_horizontal(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'stacked_horizontal_master') if master else 'stacked_horizontal'
+    name = osjoin(REFERENCE, 'stacked_horizontal_master') if master else 'stacked_horizontal'
 
     # Make the plot
     fcp.bar(df, x='Liquid', y='pH', show=SHOW, stacked=True, legend='Measurement', xmin=0, xmax=41,
-            filename=name + '.png', save=not bm, inline=False, jitter=False, horizontal=True, width=0.3)
+            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False, horizontal=True, width=0.3)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_row_col(bm=False, master=False, remove=True, show=False):
+def plt_row_col(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'row_col_master') if master else 'row_col'
+    name = osjoin(REFERENCE, 'row_col_master') if master else 'row_col'
 
     # Make the plot
     fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, col='Measurement', row='T [C]',
             ax_hlines=0, ax_size=[300, 300],
-            filename=name + '.png', save=not bm, inline=False, jitter=False)
+            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_col_shared(bm=False, master=False, remove=True, show=False):
+def plt_col_shared(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'col_shared_master') if master else 'col_shared'
+    name = osjoin(REFERENCE, 'col_shared_master') if master else 'col_shared'
 
     # Make the plot
     fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, col='Measurement', row='T [C]',
             ax_hlines=0, ax_size=[300, 300], share_col=True,
-            filename=name + '.png', save=not bm, inline=False, jitter=False)
+            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_row_shared(bm=False, master=False, remove=True, show=False):
+def plt_row_shared(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'row_shared_master') if master else 'row_shared'
+    name = osjoin(REFERENCE, 'row_shared_master') if master else 'row_shared'
 
     # Make the plot
     fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, col='Measurement', row='T [C]',
             ax_hlines=0, ax_size=[300, 300], share_row=True,
-            filename=name + '.png', save=not bm, inline=False, jitter=False)
+            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_wrap(bm=False, master=False, remove=True, show=False):
+def plt_wrap(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'wrap_master') if master else 'wrap'
+    name = osjoin(REFERENCE, 'wrap_master') if master else 'wrap'
 
     # Make the plot
     fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, wrap='Measurement', ax_size=[300, 300],
-            filename=name + '.png', save=not bm, inline=False, jitter=False)
+            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_rolling_mean(bm=False, master=False, remove=True, show=False):
+def plt_rolling_mean(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'rolling_mean_master') if master else 'rolling_mean'
+    name = osjoin(REFERENCE, 'rolling_mean_master') if master else 'rolling_mean'
 
     # Make the plot
     fcp.bar(df2, x='date', y='cases', show=SHOW, ax_size=[800, 500],
             tick_labels_major_x_rotation=90, rolling_mean=14, legend=True,
-            filename=name + '.png', save=not bm, inline=False, jitter=False)
+            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_rolling_mean_styled(bm=False, master=False, remove=True, show=False):
+def plt_rolling_mean_styled(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'rolling_mean_styled_master') if master else 'rolling_mean_styled'
+    name = osjoin(REFERENCE, 'rolling_mean_styled_master') if master else 'rolling_mean_styled'
 
     # Make the plot
     fcp.bar(df2, x='date', y='cases', show=SHOW, ax_size=[800, 500],
             tick_labels_major_x_rotation=90, rolling_mean=14, bar_fill_color='#aaaaaa',
             rolling_mean_line_color='#000000', markers=True, marker_size=4,
-            filename=name + '.png', save=not bm, inline=False, jitter=False)
+            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 # test_ functions call plt_ funcs 2x:

@@ -15,11 +15,11 @@ mpl.use('agg')
 
 test = 'pie'
 if Path('../tests/test_images').exists():
-    MASTER = Path(f'../tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
+    REFERENCE = Path(f'../tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 elif Path('tests/test_images').exists():
-    MASTER = Path(f'tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
+    REFERENCE = Path(f'tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 else:
-    MASTER = Path(f'test_images/mpl_v{mpl.__version__}') / f'{test}.py'
+    REFERENCE = Path(f'test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 
 # Sample data
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_bar.csv')
@@ -41,332 +41,176 @@ fcp.KWARGS['inline'] = False
 
 
 # plt_ functions can be used directly outside of pytest for debug
-def plt_basic(bm=False, master=False, remove=True, show=False):
+def plt_basic(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'basic_master') if master else 'basic'
+    name = osjoin(REFERENCE, 'basic_master') if master else 'basic'
 
     # Make the plot
     fcp.pie(df, x='Liquid', y='pH', show=SHOW,
             filter='Measurement=="A" & T [C]==25',
-            start_angle=90, alpha=0.85, filename=name + '.png', save=not bm, inline=False,
+            start_angle=90, alpha=0.85, filename=name.with_suffix('.png'), save=not bm, inline=False,
             jitter=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_basic_no_sort(bm=False, master=False, remove=True, show=False):
+def plt_basic_no_sort(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'basic_no_sort_master') if master else 'basic_no_sort'
+    name = osjoin(REFERENCE, 'basic_no_sort_master') if master else 'basic_no_sort'
 
     # Make the plot
     df_ = df.copy()
     df_.loc[df_.Liquid == 'Orange juice', 'pH'] *= -1
     fcp.pie(df_, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A" & T [C]==25',
-            start_angle=90, alpha=0.85, filename=name + '.png', save=not bm, inline=False,
+            start_angle=90, alpha=0.85, filename=name.with_suffix('.png'), save=not bm, inline=False,
             jitter=False, sort=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_donut(bm=False, master=False, remove=True, show=False):
+def plt_donut(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'donut_master') if master else 'donut'
+    name = osjoin(REFERENCE, 'donut_master') if master else 'donut'
 
     # Make the plot
     fcp.pie(df, x='Liquid', y='pH', show=SHOW,
             filter='Measurement=="A" & T [C]==25',
-            start_angle=90, alpha=0.85, filename=name + '.png', save=not bm, inline=False,
+            start_angle=90, alpha=0.85, filename=name.with_suffix('.png'), save=not bm, inline=False,
             jitter=False,
             inner_radius=0.5, percents_distance=0.75)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_legend(bm=False, master=False, remove=True, show=False):
+def plt_legend(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'legend_master') if master else 'legend'
+    name = osjoin(REFERENCE, 'legend_master') if master else 'legend'
 
     # Make the plot
     fcp.pie(df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A" & T [C]==25', start_angle=90, alpha=0.85,
-            legend=True, filename=name + '.png', save=not bm, inline=False, jitter=False)
+            legend=True, filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_legend_unsort(bm=False, master=False, remove=True, show=False):
+def plt_legend_unsort(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'legend_unsort_master') if master else 'legend_unsort'
+    name = osjoin(REFERENCE, 'legend_unsort_master') if master else 'legend_unsort'
 
     # Make the plot
     fcp.pie(df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A" & T [C]==25', start_angle=90, alpha=0.85,
-            legend=True, filename=name + '.png', save=not bm, inline=False, jitter=False, sort=False)
+            legend=True, filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False, sort=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_legend_rc(bm=False, master=False, remove=True, show=False):
+def plt_legend_rc(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'legend_rc_master') if master else 'legend_rc'
+    name = osjoin(REFERENCE, 'legend_rc_master') if master else 'legend_rc'
 
     # Make the plot
     fcp.pie(df, x='Liquid', y='pH', show=SHOW, col='Measurement',
             row='T [C]', legend=True, ax_size=[250, 250],
-            filename=name + '.png', save=not bm, inline=False, jitter=False)
+            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_legend_wrap(bm=False, master=False, remove=True, show=False):
+def plt_legend_wrap(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'legend_wrap_master') if master else 'legend_wrap'
+    name = osjoin(REFERENCE, 'legend_wrap_master') if master else 'legend_wrap'
 
     # Make the plot
     fcp.pie(df, x='Liquid', y='pH', show=SHOW, wrap='Measurement',
             legend=True, ax_size=[250, 250],
-            filename=name + '.png', save=not bm, inline=False, jitter=False)
+            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_percents(bm=False, master=False, remove=True, show=False):
+def plt_percents(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'percents_master') if master else 'percents'
+    name = osjoin(REFERENCE, 'percents_master') if master else 'percents'
 
     # Make the plot
     fcp.pie(df, x='Liquid', y='pH', show=SHOW,
             filter='Measurement=="A" & T [C]==25',
             start_angle=90, alpha=0.85, percents=True,
-            filename=name + '.png', save=not bm, inline=False, jitter=False)
+            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_explode(bm=False, master=False, remove=True, show=False):
+def plt_explode(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'explode_master') if master else 'explode'
+    name = osjoin(REFERENCE, 'explode_master') if master else 'explode'
 
     # Make the plot
     fcp.pie(df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A" & T [C]==25', explode=(0, 0.1), start_angle=90,
-            alpha=0.85, percents=True, filename=name + '.png', save=not bm, inline=False, jitter=False)
+            alpha=0.85, percents=True, filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_explode_all(bm=False, master=False, remove=True, show=False):
+def plt_explode_all(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'explode_all_master') if master else 'explode_all'
+    name = osjoin(REFERENCE, 'explode_all_master') if master else 'explode_all'
 
     # Make the plot
     fcp.pie(df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A" & T [C]==25', explode=('all', 0.1),
-            start_angle=90, alpha=0.85, percents=True, filename=name + '.png', save=not bm, inline=False, jitter=False)
+            start_angle=90, alpha=0.85, percents=True, filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_shadow(bm=False, master=False, remove=True, show=False):
+def plt_shadow(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'shadow_master') if master else 'shadow'
+    name = osjoin(REFERENCE, 'shadow_master') if master else 'shadow'
 
     # Make the plot
     fcp.pie(df, x='Liquid', y='pH', show=SHOW,
             filter='Measurement=="A" & T [C]==25',
             explode=(0, 0.1), shadow=True, start_angle=90, percents=False,
-            filename=name + '.png', save=not bm, inline=False, jitter=False)
+            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_angle(bm=False, master=False, remove=True, show=False):
+def plt_angle(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'angle_master') if master else 'angle'
+    name = osjoin(REFERENCE, 'angle_master') if master else 'angle'
 
     # Make the plot
     fcp.pie(df, x='Liquid', y='pH', show=SHOW,
             filter='Measurement=="A" & T [C]==25',
             explode=(0, 0.1), start_angle=0, percents=True,
-            filename=name + '.png', save=not bm, inline=False, jitter=False)
+            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 # test_ functions call plt_ funcs 2x:

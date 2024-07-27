@@ -16,11 +16,11 @@ mpl.use('agg')
 
 test = 'heatmap'
 if Path('../tests/test_images').exists():
-    MASTER = Path(f'../tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
+    REFERENCE = Path(f'../tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 elif Path('tests/test_images').exists():
-    MASTER = Path(f'tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
+    REFERENCE = Path(f'tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 else:
-    MASTER = Path(f'test_images/mpl_v{mpl.__version__}') / f'{test}.py'
+    REFERENCE = Path(f'test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 
 # Sample data
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_heatmap.csv')
@@ -41,196 +41,105 @@ fcp.KWARGS['inline'] = False
 
 
 # plt_ functions can be used directly outside of pytest for debug
-def plt_cat_no_label(bm=False, master=False, remove=True, show=False):
+def plt_cat_no_label(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'cat_no_label_master') if master else 'cat_no_label'
+    name = osjoin(REFERENCE, 'cat_no_label_master') if master else 'cat_no_label'
 
     # Make the plot
     fcp.heatmap(df, x='Category', y='Player', z='Average', cbar=True, show=SHOW,
-                filename=name + '.png', save=not bm, inline=False)
+                filename=name.with_suffix('.png'), save=not bm, inline=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_cat_label(bm=False, master=False, remove=True, show=False):
+def plt_cat_label(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'cat_label_master') if master else 'cat_label'
+    name = osjoin(REFERENCE, 'cat_label_master') if master else 'cat_label'
 
     # Make the plot
     fcp.heatmap(df, x='Category', y='Player', z='Average', cbar=True, data_labels=True,
                 heatmap_font_color='#aaaaaa', show=SHOW, tick_labels_major_y_edge_width=0,
-                ws_ticks_ax=5, filename=name + '.png', save=not bm, inline=False)
+                ws_ticks_ax=5, filename=name.with_suffix('.png'), save=not bm, inline=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_cat_cell_size(bm=False, master=False, remove=True, show=False):
+def plt_cat_cell_size(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'cat_cell_size_master') if master else 'cat_cell_size'
+    name = osjoin(REFERENCE, 'cat_cell_size_master') if master else 'cat_cell_size'
 
     # Make the plot
     fcp.heatmap(df, x='Category', y='Player', z='Average', cbar=True, data_labels=True,
                 heatmap_font_color='#aaaaaa', show=SHOW, tick_labels_major_y_edge_width=0,
                 ws_ticks_ax=5, cell_size=100,
-                filename=name + '.png', save=not bm, inline=False)
+                filename=name.with_suffix('.png'), save=not bm, inline=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_cat_non_uniform(bm=False, master=False, remove=True, show=False):
+def plt_cat_non_uniform(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'cat_non-uniform_master') if master else 'cat_non-uniform'
+    name = osjoin(REFERENCE, 'cat_non-uniform_master') if master else 'cat_non-uniform'
 
     # Make the plot
     df2 = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_contour.csv')
     fcp.heatmap(df2, x='X', y='Y', z='Value', row='Batch', col='Experiment',
                 cbar=True, show=SHOW, share_z=True, ax_size=[400, 400],
                 data_labels=False, label_rc_font_size=12, filter='Batch==103', cmap='viridis',
-                filename=name + '.png', save=not bm, inline=False)
+                filename=name.with_suffix('.png'), save=not bm, inline=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_heatmap(bm=False, master=False, remove=True, show=False):
+def plt_heatmap(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'heatmap_master') if master else 'heatmap'
+    name = osjoin(REFERENCE, 'heatmap_master') if master else 'heatmap'
 
     # Make the plot
     fcp.heatmap(img_cat, cmap='inferno', cbar=True, ax_size=[600, 600],
-                filename=name + '.png', save=not bm, inline=False)
+                filename=name.with_suffix('.png'), save=not bm, inline=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_heatmap_stretched(bm=False, master=False, remove=True, show=False):
+def plt_heatmap_stretched(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'heatmap_stretched_master') if master else 'heatmap_stretched'
+    name = osjoin(REFERENCE, 'heatmap_stretched_master') if master else 'heatmap_stretched'
 
     # Make the plot
     uu = img_cat.stack().mean()
     ss = img_cat.stack().std()
     fcp.heatmap(img_cat, cmap='inferno', cbar=True, ax_size=[600, 600],
                 zmin=uu - 3 * ss, zmax=uu + 3 * ss,
-                filename=name + '.png', save=not bm, inline=False)
+                filename=name.with_suffix('.png'), save=not bm, inline=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_heatmap_zoomed(bm=False, master=False, remove=True, show=False):
+def plt_heatmap_zoomed(bm=False, make_reference=False, show=False):
 
-    name = osjoin(MASTER, 'heatmap_zoomed_master') if master else 'heatmap_zoomed'
+    name = osjoin(REFERENCE, 'heatmap_zoomed_master') if master else 'heatmap_zoomed'
 
     # Make the plot
     fcp.heatmap(img_cat, cmap='inferno', cbar=True, ax_size=[600, 600], xmin=700, xmax=1100,
                 ymin=300, ymax=400,
-                filename=name + '.png', save=not bm, inline=False)
+                filename=name.with_suffix('.png'), save=not bm, inline=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 # test_ functions call plt_ funcs 2x:

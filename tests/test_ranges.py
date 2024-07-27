@@ -14,11 +14,11 @@ mpl.use('agg')
 
 test = 'ranges'
 if Path('../tests/test_images').exists():
-    MASTER = Path(f'../tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
+    REFERENCE = Path(f'../tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 elif Path('tests/test_images').exists():
-    MASTER = Path(f'tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
+    REFERENCE = Path(f'tests/test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 else:
-    MASTER = Path(f'test_images/mpl_v{mpl.__version__}') / f'{test}.py'
+    REFERENCE = Path(f'test_images/mpl_v{mpl.__version__}') / f'{test}.py'
 
 # Sample data
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data.csv')
@@ -41,494 +41,234 @@ fcp.KWARGS['inline'] = False
 
 def test_default(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'default_master') if master else 'default'
+    name = osjoin(REFERENCE, 'default_master') if master else 'default'
 
     # Make the plot
     sub = df[(df.Substrate == 'Si') & (df['Target Wavelength'] == 450)
              & (df['Boost Level'] == 0.2) & (df['Temperature [C]'] == 25)]
     fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', show=SHOW,
-             filename=name + '.png')
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_primary(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'primary_master') if master else 'primary'
+    name = osjoin(REFERENCE, 'primary_master') if master else 'primary'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend='Die', show=SHOW,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             xmax=1.2, filename=name + '.png')
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+             xmax=1.2, filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_primary_qgroups(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'primary_qgroups_master') if master else 'primary_qgroups'
+    name = osjoin(REFERENCE, 'primary_qgroups_master') if master else 'primary_qgroups'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', show=SHOW, groups='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             xmin='q1', xmax='q99', filename=name + '.png')
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+             xmin='q1', xmax='q99', filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_primary_no_scale(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'primary_no-auto-scale_master') if master else 'primary_no-auto-scale'
+    name = osjoin(REFERENCE, 'primary_no-auto-scale_master') if master else 'primary_no-auto-scale'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend='Die', show=SHOW,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              xmax=1.2, auto_scale=False,
-             filename=name + '.png')
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_primary_explicit(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'primary_explicit_master') if master else 'primary_explicit'
+    name = osjoin(REFERENCE, 'primary_explicit_master') if master else 'primary_explicit'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend='Die', show=SHOW,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              xmax=1.2, auto_scale=False,
-             filename=name + '.png')
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_secondary(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'secondary_master') if master else 'secondary'
+    name = osjoin(REFERENCE, 'secondary_master') if master else 'secondary'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             filename=name + '.png')
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_secondary_limits(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'secondary_limits_master') if master else 'secondary_limits'
+    name = osjoin(REFERENCE, 'secondary_limits_master') if master else 'secondary_limits'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              xmin=1.3,
-             filename=name + '.png')
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_secondary_limits_no_scale(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'secondary_no-auto-scale_master') if master else 'secondary_no-auto-scale'
+    name = osjoin(REFERENCE, 'secondary_no-auto-scale_master') if master else 'secondary_no-auto-scale'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              xmax=1.2, auto_scale=False,
-             filename=name + '.png')
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_secondary_limits_y(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'secondary_y-limit_master') if master else 'secondary_y-limit'
+    name = osjoin(REFERENCE, 'secondary_y-limit_master') if master else 'secondary_y-limit'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              ymin=1,
-             filename=name + '.png')
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_multiple(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'multiple_master') if master else 'multiple'
+    name = osjoin(REFERENCE, 'multiple_master') if master else 'multiple'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=False, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             filename=name + '.png')
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_multiple_scaled(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'multiple_scaled_master') if master else 'multiple_scaled'
+    name = osjoin(REFERENCE, 'multiple_scaled_master') if master else 'multiple_scaled'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=False, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
              ymin=0.05,
-             filename=name + '.png')
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_boxplot(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'boxplot_master') if master else 'boxplot'
+    name = osjoin(REFERENCE, 'boxplot_master') if master else 'boxplot'
 
     # Make the plot
     fcp.boxplot(df_box, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', show=SHOW,
-                filename=name + '.png', jitter=False)
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+                filename=name.with_suffix('.png'), jitter=False)
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_boxplot_quantile(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'boxplot_quantile_master') if master else 'boxplot_quantile'
+    name = osjoin(REFERENCE, 'boxplot_quantile_master') if master else 'boxplot_quantile'
 
     # Make the plot
     fcp.boxplot(df_box, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', show=SHOW, ymax='95q',
-                filename=name + '.png', jitter=False)
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+                filename=name.with_suffix('.png'), jitter=False)
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_boxplot_iqr(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'boxplot_iqr_master') if master else 'boxplot_iqr'
+    name = osjoin(REFERENCE, 'boxplot_iqr_master') if master else 'boxplot_iqr'
 
     # Make the plot
     fcp.boxplot(df_box, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', show=SHOW,
                 ymin='1.5*iqr', ymax='1.5*iqr',
-                filename=name + '.png', jitter=False)
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+                filename=name.with_suffix('.png'), jitter=False)
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_shared(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'shared_master') if master else 'shared'
+    name = osjoin(REFERENCE, 'shared_master') if master else 'shared'
 
     # Make the plot
     sub = df[(df.Substrate == 'Si') & (df['Target Wavelength'] == 450)].copy()
     fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',
              show=SHOW, ax_size=[225, 225],
-             filename=name + '.png')
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_shared_false(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'shared_false_master') if master else 'shared_false'
+    name = osjoin(REFERENCE, 'shared_false_master') if master else 'shared_false'
 
     # Make the plot
     sub = df[(df.Substrate == 'Si') & (df['Target Wavelength'] == 450)].copy()
     fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',
              show=SHOW, ax_size=[225, 225], share_x=False, share_y=False,
-             filename=name + '.png')
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_shared_separate(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'shared_separate_master') if master else 'shared_separate'
+    name = osjoin(REFERENCE, 'shared_separate_master') if master else 'shared_separate'
 
     # Make the plot
     sub = df[(df.Substrate == 'Si') & (df['Target Wavelength'] == 450)].copy()
     fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level',
              row='Temperature [C]', show=SHOW, ax_size=[225, 225],
              separate_ticks=True, separate_labels=True,
-             filename=name + '.png')
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_shared_rows(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'shared_rows_master') if master else 'shared_rows'
+    name = osjoin(REFERENCE, 'shared_rows_master') if master else 'shared_rows'
 
     # Make the plot
     sub = df[(df.Substrate == 'Si') & (df['Target Wavelength'] == 450)].copy()
     fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level',
              row='Temperature [C]', show=SHOW, ax_size=[225, 225], share_row=True,
-             filename=name + '.png')
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_shared_cols(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'shared_columns_master') if master else 'shared_columns'
+    name = osjoin(REFERENCE, 'shared_columns_master') if master else 'shared_columns'
 
     # Make the plot
     sub = df[(df.Substrate == 'Si') & (df['Target Wavelength'] == 450)].copy()
     fcp.plot(df=sub, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',
              show=SHOW, ax_size=[225, 225], share_col=True,
-             filename=name + '.png')
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_shared_no(master=False, remove=True, show=False):
 
-    name = osjoin(MASTER, 'shared_no_master') if master else 'shared_no'
+    name = osjoin(REFERENCE, 'shared_no_master') if master else 'shared_no'
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',
              ax_size=[225, 225], filter='Substrate=="Si" & Target Wavelength==450', label_rc_font_size=14,
              xmin=[0, 0.1, 0.2, 0.3, 0.4], ymax=[1, 2, 3, 4, 5, 6],
-             filename=name + '.png')
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(MASTER, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(MASTER, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 if __name__ == '__main__':
