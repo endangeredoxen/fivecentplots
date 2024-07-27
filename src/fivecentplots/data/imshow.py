@@ -108,7 +108,7 @@ class ImShow(data.Data):
         """
         return getattr(self, xyz)
 
-    def _post_range_calculations(self, ir, ic, df_rc):
+    def _range_overrides(self, ir, ic, df_rc):
         """imshow-specific modifications."""
         # Update the wh_ratio
         if self.ranges['xmax'][ir, ic] is not None and self.ranges['xmin'][ir, ic] is not None:

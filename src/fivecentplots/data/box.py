@@ -22,6 +22,8 @@ class Box(data.Data):
         """
         super().__init__(self.name, self.req, self.opt, **kwargs)
 
+        self.axs_on = ['x', 'y']  # x still exists but is covered up by label boxes
+
     def _get_groups(self, df: pd.DataFrame) -> pd.DataFrame:
         """Return the groupby keys of a DataFrame
 
@@ -80,37 +82,51 @@ class Box(data.Data):
                 else:
                     self.changes.loc[i, col] = 1
 
-    def get_rc_subset(self):
-        """Override of parent method to subset the data by the row/col/wrap values.
+    # def get_rc_subset(self):
+    #     """Override of parent method to subset the data by the row/col/wrap values.
 
-        Yields:
+    #     Yields:
+    #         ir: subplot row index
+    #         ic: subplot column index
+    #         row/col data subset
+    #     """
+    #     for ir in range(0, self.nrow):
+    #         for ic in range(0, self.ncol):
+    #             self.df_rc = self._subset(ir, ic)
+
+    #             # Plot specific subsetting
+    #             self._subset_modify(ir, ic, self.df_rc)
+
+    #             # Deal with empty dfs
+    #             if len(self.df_rc) == 0:
+    #                 self.df_rc = pd.DataFrame()
+
+    #             # Get boxplot changes DataFrame
+    #             if 'box' in self.name and len(self.df_rc) > 0:
+    #                 if (self.groups is not None and self.groups != []) and len(self.df_rc.groupby(self.groups)) == 0:
+    #                     continue
+    #                 self.get_box_index_changes()
+    #                 self.ranges['xmin'][ir, ic] = 0.5
+    #                 self.ranges['xmax'][ir, ic] = len(self.changes) + 0.5
+
+    #             # Yield the subset
+    #             yield ir, ic, self.df_rc
+
+    #     self.df_sub = None
+
+    def _range_overrides(self, ir: int, ic: int, df_rc: pd.DataFrame):
+        """Modify boxplot ranges.
+
+        Args:
             ir: subplot row index
             ic: subplot column index
-            row/col data subset
+            df_rc: data subset
         """
-        for ir in range(0, self.nrow):
-            for ic in range(0, self.ncol):
-                self.df_rc = self._subset(ir, ic)
-
-                # Plot specific subsetting
-                self._subset_modify(ir, ic, self.df_rc)
-
-                # Deal with empty dfs
-                if len(self.df_rc) == 0:
-                    self.df_rc = pd.DataFrame()
-
-                # Get boxplot changes DataFrame
-                if 'box' in self.name and len(self.df_rc) > 0:
-                    if (self.groups is not None and self.groups != []) and len(self.df_rc.groupby(self.groups)) == 0:
-                        continue
-                    self.get_box_index_changes()
-                    self.ranges[ir, ic]['xmin'] = 0.5
-                    self.ranges[ir, ic]['xmax'] = len(self.changes) + 0.5
-
-                # Yield the subset
-                yield ir, ic, self.df_rc
-
-        self.df_sub = None
+        if (self.groups is not None and self.groups != []) and len(self.df_rc.groupby(self.groups)) == 0:
+            return
+        self.get_box_index_changes()
+        self.ranges['xmin'][ir, ic] = 0.5
+        self.ranges['xmax'][ir, ic] = len(self.changes) + 0.5
 
     def _subset_modify(self, ir: int, ic: int, df: pd.DataFrame) -> pd.DataFrame:
         """Modify the subset to deal with share x axis range.

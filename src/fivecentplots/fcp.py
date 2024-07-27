@@ -1572,16 +1572,16 @@ def plotter(dobj, **kwargs):
             layout.add_text(ir, ic)
             kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | add_text')
 
-        # Apply some functions after all subplots created
+        # After subplot creation, modify certain layout.Element properties
         dd.get_data_ranges(ifig)
         for ir, ic, _ in dd.get_subplot_index():
-            # Set axes ranges
-            layout.set_axes_ranges(ir, ic, dd.ranges)
-            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_ranges')
-
             # Set linear or log axes scaling
             layout.set_axes_scale(ir, ic)
             kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_scale')
+
+            # Set axes ranges
+            layout.set_axes_ranges(ir, ic, dd.ranges)
+            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_ranges')
 
             # Add axis labels
             layout.set_axes_labels(ir, ic, dd)

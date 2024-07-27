@@ -1216,7 +1216,7 @@ class Data:
                         else:
                             self._add_range(ir, ic, ax, 'min', vals[0])
                             self._add_range(ir, ic, ax, 'max', vals[1])
-                    self._post_range_calculations(ir, ic, self.df_rc)
+                    self._range_overrides(ir, ic, self.df_rc)
 
                 # Yield the subset
                 yield ir, ic, self.df_rc
@@ -1263,8 +1263,14 @@ class Data:
 
         return list(set(grouper))
 
-    def _post_range_calculations(self, ir, ic, df_rc):
-        """Optional calculations after ranges for a subset have been defined."""
+    def _range_overrides(self, ir: int, ic: int, df_rc: pd.DataFrame):
+        """Optional method to allow re-calculations of subset ranges.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            df_rc: data subset
+        """
         pass
 
     def _range_dict(self):
@@ -1273,7 +1279,6 @@ class Data:
         for ax in self.axs_on:
             for mm in ['min', 'max']:
                 ranges[f'{ax}{mm}'] = np.array([[None] * self.ncol] * self.nrow)
-
         return ranges
 
     def _subset(self, ir: int, ic: int) -> pd.DataFrame:

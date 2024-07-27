@@ -123,6 +123,8 @@ class Histogram(data.Data):
             self.norm = False
         self.cumulative = utl.kwget(kwargs, self.fcpp, ['hist_cumulative', 'cumulative'],
                                     kwargs.get('cumulative', False))
+        self.horizontal = utl.kwget(kwargs, self.fcpp, ['hist_horizontal', 'horizontal'],
+                                    kwargs.get('horizontal', False))
 
         # cdf/pdf option (if conflict, prefer cdf)
         self.cdf = utl.kwget(kwargs, self.fcpp, ['cdf'], kwargs.get('cdf', False))
@@ -204,12 +206,12 @@ class Histogram(data.Data):
             # Special case of all values being equal
             if len(counts) == 1:
                 vals = np.insert(vals, 0, vals[0])
-                if self.ax_scale in ['logx', 'log']:
+                if self.ax_scale in ['logy', 'log', 'semilogy', 'loglog']:
                     counts = np.insert(counts, 0, 1)
                 else:
                     counts = np.insert(counts, 0, 0)
 
-            # Eliminate repeating count values of zero to reduce data points and speed up processing/plotting
+            # Eliminate repeating count values of zero to reduce26 data points and speed up processing/plotting
             mask = (counts[:-2]==0) & (counts[2:]==0) & (counts[1:len(counts) - 1]==0)
             counts = np.concatenate((counts[:1], counts[1:-1][~mask], counts[-1:]))
             vals = np.concatenate((vals[:1], vals[1:-1][~mask], vals[-1:]))
@@ -232,12 +234,15 @@ class Histogram(data.Data):
 
         return counts, vals
 
-    def _post_range_calculations(self, ir: int, ic: int, df_rc: pd.DataFrame):
+    def _range_overrides(self, ir: int, ic: int, df_rc: pd.DataFrame):
         """
         For non-image histograms (i.e., histograms that are created by a `hist` plotting function),
         need to compute y-column "Counts" for the df_rc
         """
         if self.imgs is not None:
+            # Fix y-axis for single-bin case
+            if len(df_rc) == 2 and df_rc.Counts[0] in [0, 1] and self.ymin.values == [None]:
+                self.ranges['ymin'][ir, ic] = df_rc.Counts[0]
             return
 
         plot_num = utl.plot_num(ir, ic, self.ncol) - 1
@@ -246,15 +251,6 @@ class Histogram(data.Data):
         if len(groups) > 0:
             for ii, (nn, sub) in enumerate(df_rc.groupby(self._groupers)):
                 counts, vals = self._calc_histograms(sub[self.x[0]])
-
-                # special case of all values being equal
-                if len(counts) == 1:
-                    vals = np.insert(vals, 0, vals[0])
-                    if self.ax_scale in ['logy', 'log']:
-                        counts = np.insert(counts, 0, 1)
-                    else:
-                        counts = np.insert(counts, 0, 0)
-
                 df_hist = pd.DataFrame({self.x[0]: vals, self.y[0]: counts})
                 if ii == 0:
                     ymin, ymax = self._get_data_range('y', df_hist, plot_num)
@@ -265,15 +261,6 @@ class Histogram(data.Data):
 
         else:
             counts, vals = self._calc_histograms(df_rc[self.x[0]])
-
-            # special case of all values being equal
-            if len(counts) == 1:
-                vals = np.insert(vals, 0, vals[0])
-                if self.ax_scale in ['logy', 'log']:
-                    counts = np.insert(counts, 0, 1)
-                else:
-                    counts = np.insert(counts, 0, 0)
-
             df_hist = pd.DataFrame({self.x[0]: vals, self.y[0]: counts})
             ymin, ymax = self._get_data_range('y', df_hist, plot_num)
 
