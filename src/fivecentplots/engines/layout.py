@@ -332,7 +332,7 @@ class BaseLayout:
         self.axes.visible = np.array([[True] * self.ncol] * self.nrow)
 
         # auto-boxplot size option
-        if self.axes.size == 'auto':
+        if self.axes.size == ['auto']:
             self.box_scale = 'auto'
             self.axes.size = [400, 400]
 
@@ -976,8 +976,8 @@ class BaseLayout:
                            )
 
         self.fit.legend_text = utl.kwget(kwargs, self.fcpp, 'fit_legend_text', None)
-        self.fit.position[0] = self.fit.padding
-        self.fit.position[1] = self.axes.size[1] - (self.fit.padding + self.fit.font_size)
+        self.fit.position[0] = self.fit.padding  # these don't get used
+        self.fit.position[1] = - (self.fit.padding + self.fit.font_size)
 
         return kwargs
 

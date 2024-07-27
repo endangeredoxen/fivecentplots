@@ -136,7 +136,7 @@ def df_tick_update(tt: pd.DataFrame) -> pd.DataFrame:
 
     # Check the difference between stop coordinate of one tick and start of next; positive means overlap
     tt['delta'] = tt['stop'] - tt['next start']
-    tt['ol'] = tt['delta'] > TICK_OVL_MAX  # allow a litle bit of overlap (otherwise would choose > 0)
+    tt['ol'] = tt['delta'] > TICK_OVL_MAX    # allow a litle bit of overlap (otherwise would choose > 0)
     if 'visible' not in tt.columns:
         tt['visible'] = True
 
@@ -1607,7 +1607,7 @@ class Layout(BaseLayout):
         elif self.axes2.on and (self.separate_ticks or self.axes2.share_x is False) and self.box.on is False:
             self.ws_row += self._tick_x2
         if self.separate_labels:
-            self.ws_col = max(self._labtick_y - self._tick_y + self.ws_ax_label_xs, self.ws_col)
+            self.ws_col = max(self._labtick_y - self._tick_y + self.ws_ax_label_xs + self.ws_col, self.ws_col)
             if self.cbar.on:
                 self.ws_col += self.ws_label_tick
 
@@ -1828,7 +1828,7 @@ class Layout(BaseLayout):
                         + self._edge_width('axes')) / self.axes.size[0], 0
         self._get_tick_label_size(self.axes, 'y', '', 'major', pad_y_major)
 
-        getattr(self, 'tick_labels_minor_x').size_all_reset()
+        getattr(self, 'tick_labels_minor_y').size_all_reset()
         pad_y_minor = -(self.tick_labels_minor_y.padding + self.tick_labels_minor_y.edge_width + self.ws_ticks_ax
                         + self._edge_width('axes')) / self.axes.size[0], 0
         self._get_tick_label_size(self.axes, 'y', '', 'minor', pad_y_minor)
@@ -3215,7 +3215,7 @@ class Layout(BaseLayout):
                                     )
                 axes[0].tick_params(axis='x',
                                     which='minor',
-                                    pad=self.ws_ticks_ax_adj - 1,
+                                    pad=0, #self.ws_ticks_ax_adj - 1,
                                     colors=self.ticks_minor_x.color[0],
                                     labelcolor=self.tick_labels_minor_x.font_color,
                                     labelsize=self.tick_labels_minor_x.font_size,
@@ -3229,7 +3229,7 @@ class Layout(BaseLayout):
                                     )
                 axes[0].tick_params(axis='y',
                                     which='minor',
-                                    pad=self.ws_ticks_ax_adj,
+                                    pad=0,
                                     colors=self.ticks_minor_y.color[0],
                                     labelcolor=self.tick_labels_minor_y.font_color,
                                     labelsize=self.tick_labels_minor_y.font_size,
