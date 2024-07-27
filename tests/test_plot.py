@@ -32,44 +32,10 @@ fcp.set_theme('gray')
 
 # Other
 SHOW = False
-
-
-def make_all():
-    """
-    Remake all test reference images
-    """
-
-    if not REFERENCE.exists():
-        os.makedirs(REFERENCE)
-    members = inspect.getmembers(sys.modules[__name__])
-    members = [f for f in members if 'plt_' in f[0]]
-    for member in members:
-        print('Running %s...' % member[0], end='')
-        member[1](make_reference=True)
-        print('done!')
-
-
-def show_all(only_fails=True):
-    """
-    Run the show=True option on all plt functions
-    """
-
-    if not REFERENCE.exists():
-        os.makedirs(REFERENCE)
-    members = inspect.getmembers(sys.modules[__name__])
-    members = [f for f in members if 'plt_' in f[0]]
-    for member in members:
-        print('Running %s...' % member[0], end='')
-        if only_fails:
-            try:
-                member[1]()
-            except AssertionError:
-                member[1](show=True)
-                db()
-        else:
-            member[1](show=True)
-            db()
-
+make_all = utl.unit_test_make_all(reference=REFERENCE)
+show_all = utl.unit_test_show_all(only_fails=True, reference=REFERENCE)
+fcp.KWARGS['save'] = True
+fcp.KWARGS['inline'] = False
 
 # plt_ functions can be used directly outside of pytest for debug
 def plt_xy_scatter(bm=False, make_reference=False, show=False):

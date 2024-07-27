@@ -34,46 +34,11 @@ fcp.set_theme('gray')
 # fcp.set_theme('white')
 
 # Other
+make_all = utl.unit_test_make_all(reference=REFERENCE)
+show_all = utl.unit_test_show_all(only_fails=True, reference=REFERENCE)
 SHOW = False
 fcp.KWARGS['save'] = True
 fcp.KWARGS['inline'] = False
-
-
-def make_all():
-    """
-    Remake all test master images
-    """
-
-    if not REFERENCE.exists():
-        os.makedirs(REFERENCE)
-    members = inspect.getmembers(sys.modules[__name__])
-    members = [f for f in members if 'plt_' in f[0]]
-    for member in members:
-        print('Running %s...' % member[0], end='')
-        member[1](master=True)
-        print('done!')
-
-
-def show_all(only_fails=True):
-    """
-    Remake all test master images
-    """
-
-    if not REFERENCE.exists():
-        os.makedirs(REFERENCE)
-    members = inspect.getmembers(sys.modules[__name__])
-    members = [f for f in members if 'plt_' in f[0]]
-    for member in members:
-        print('Running %s...' % member[0], end='')
-        if only_fails:
-            try:
-                member[1]()
-            except AssertionError:
-                member[1](show=True)
-                db()
-        else:
-            member[1](show=True)
-            db()
 
 
 # plt_ functions can be used directly outside of pytest for debug
@@ -86,6 +51,8 @@ def plt_simple(bm=False, make_reference=False, show=False):
 
     if bm:
         return
+    if show == False:
+        utl.unit_test_measure_margin(name, 'c', 'c', right=10, top=10, alias=True)
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
@@ -295,7 +262,6 @@ def plt_image_pdf(bm=False, make_reference=False, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-# TEST JUST FAILED
 def plt_image_legend(bm=False, make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('image_legend', make_reference, REFERENCE)
@@ -314,6 +280,8 @@ def plt_image_legend(bm=False, make_reference=False, show=False):
 
     if bm:
         return
+    if show == False:
+        utl.unit_test_measure_margin(name, 'c', 'c', right=98, top=10, alias=True)
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 

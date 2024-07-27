@@ -1604,6 +1604,40 @@ def unit_test_measure_margin(img_path: pathlib.Path, row: Union[int, str, None],
                f'expected bottom: {bottom} | actual: {(np.diff(col[::-1])!=0).argmax(axis=0) + 1}'
 
 
+def unit_test_make_all(reference):
+    """Remake all reference test images."""
+    if not reference.exists():
+        os.makedirs(reference)
+    members = inspect.getmembers(sys.modules[__name__])
+    members = [f for f in members if 'plt_' in f[0]]
+    for member in members:
+        print('Running %s...' % member[0], end='')
+        member[1](make_reference=True)
+        print('done!')
+
+
+def unit_test_show_all(only_fails: bool, reference: pathlib.Path):
+    """
+    Show all unit test plots
+    """
+
+    if not reference.exists():
+        os.makedirs(reference)
+    members = inspect.getmembers(sys.modules[__name__])
+    members = [f for f in members if 'plt_' in f[0]]
+    for member in members:
+        print('Running %s...' % member[0], end='')
+        if only_fails:
+            try:
+                member[1]()
+            except AssertionError:
+                member[1](show=True)
+                db()
+        else:
+            member[1](show=True)
+            db()
+
+
 def validate_list(items: [str, int, float, list]) -> list:
     """Make sure a list variable is actually a list and not a single item.
     Excludes None.
