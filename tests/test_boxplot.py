@@ -227,7 +227,10 @@ def plt_group_auto_size_wrap(bm=False, make_reference=False, show=False):
     df4.loc[df4.Sample == 2, 'Sample'] = 11
     df4 = pd.concat([df4, df3, df2, df])
     fcp.boxplot(df4, y='Value', wrap='Batch', groups=['ID', 'Sample'],  ax_size='auto',
-                show=SHOW, filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
+                label_wrap_fill_color='#ff0000', label_wrap_edge_color='#0000ff', label_wrap_edge_width=5,
+                show=SHOW, filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False,
+                ax_edge_width=7, ax_edge_color='#03333d', filter='Batch != 106',
+                title_wrap_edge_width=3, title_wrap_edge_color='#afa500')
 
     if bm:
         return

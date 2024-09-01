@@ -1685,9 +1685,12 @@ class BaseLayout:
                                      values_only=utl.kwget(kwargs, self.fcpp, 'label_wrap_values_only',
                                                            label_rc.values_only),
                                      )
-        if self.label_wrap.edge_width == 0 \
-                and not any(f in ['label_rc_edge_width', 'label_wrap_edge_width'] for f in kwargs.keys()):
-            self.label_wrap.edge_width = self.axes.edge_width
+        # If no label edge width specified, match axes edge width for better alias matching
+        # if self.label_wrap.edge_width == 0 \
+        #         and not any(f in ['label_rc_edge_width', 'label_wrap_edge_width'] for f in kwargs.keys()):
+        #     self.label_wrap.edge_width = self.axes.edge_width
+        #     self.label_wrap._size[1] -= self.axes.edge_width
+        # Unless specified, edge color matches fill color
         if not any(f in ['label_rc_edge_color', 'label_wrap_edge_color'] for f in kwargs.keys()):
             self.label_wrap.edge_color = self.label_wrap.fill_color
 
@@ -1714,9 +1717,12 @@ class BaseLayout:
 
         if not isinstance(self.title_wrap.size, list):
             self.title_wrap.size = [self.axes.size[0], self.title_wrap.size]
-        if self.title_wrap.edge_width == 0 \
-                and not any(f in ['label_rc_edge_width', 'title_wrap_edge_width'] for f in kwargs.keys()):
-            self.title_wrap.edge_width = self.axes.edge_width
+        # # If no title edge width specified, match axes edge width for better alias matching
+        # if self.title_wrap.edge_width == 0 \
+        #         and not any(f in ['label_rc_edge_width', 'title_wrap_edge_width'] for f in kwargs.keys()):
+        #     self.title_wrap.edge_width = self.axes.edge_width
+        #     self.title_wrap._size[1] -= 2 * np.ceil(self.axes.edge_width / 2)
+        # Unless specified, edge color matches fill color
         if not any(f in ['title_rc_edge_color', 'title_wrap_edge_color'] for f in kwargs.keys()):
             self.title_wrap.edge_color = self.title_wrap.fill_color
 
@@ -2954,6 +2960,14 @@ class Element:
         """Return the element size in inches, not pixels."""
         if self.on:
             return [np.ceil(self._size[0]) / self.dpi, np.ceil(self._size[1]) / self.dpi]
+        else:
+            return [0, 0]
+
+    @property
+    def size_int(self):
+        """Return the element size in rounded up int, if enabled."""
+        if self.on:
+            return int(np.ceil(self._size[0])), int(np.ceil(self._size[1]))
         else:
             return [0, 0]
 

@@ -62,7 +62,7 @@ fcp.set_theme('gray')
 # Other
 def make_all():
     utl.unit_test_make_all(REFERENCE, sys.modules[__name__])
-def show_all(only_fails=True):
+def show_all(only_fails=True, start=None):
     utl.unit_test_show_all(only_fails, REFERENCE, sys.modules[__name__], start=start)
 SHOW = False
 fcp.KWARGS['save'] = True
@@ -329,6 +329,9 @@ def plt_wrap_one(bm=False, make_reference=False, show=False):
 
     if bm:
         return
+
+    if show == False:
+        utl.unit_test_measure_margin(name, 'c', 'c', left=10, right=10, top=10, bottom=10, alias=False)
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
@@ -364,6 +367,13 @@ def plt_col_combos(bm=False, make_reference=False, show=False):
                filter='Number in ["Image 0", "Image 1", "Image 5"]')
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
+    # 1 x 3c
+    name = utl.unit_test_get_img_name('col_combos_1x3c', make_reference, REFERENCE)
+    fcp.imshow(img_all, ax_size=[250, 250], col='Number', label_rc_edge_width=0,
+               ax_edge_width=0, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+               filename=name.with_suffix('.png'), save=not bm, inline=False,
+               filter='Number in ["Image 0", "Image 1", "Image 5"]')
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 def plt_row_combos(bm=False, make_reference=False, show=False):
 
@@ -397,10 +407,19 @@ def plt_row_combos(bm=False, make_reference=False, show=False):
                filter='Number in ["Image 0", "Image 1", "Image 5"]')
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
+    # 3 x 1c
+    name = utl.unit_test_get_img_name('row_combos_3x1c', make_reference, REFERENCE)
+    fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=0,
+               ax_edge_width=0, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+               filename=name.with_suffix('.png'), save=not bm, inline=False,
+               filter='Number in ["Image 0", "Image 1", "Image 5"]')
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
 
 def plt_wrap_combos(bm=False, make_reference=False, show=False):
 
     enabled = ['1x1', '1x2', '1x3', '2x3', '3x1', '3x2', '4x2']
+    # enabled = ['2x3', '3x2']
 
     img_all = pd.DataFrame()
     img_test = pd.DataFrame(utl.img_grayscale(img_cat_orig).to_numpy()[300:600, 800:1100])
@@ -424,9 +443,9 @@ def plt_wrap_combos(bm=False, make_reference=False, show=False):
     if '1x2' in enabled:
         name = utl.unit_test_get_img_name('wrap_combos_1x2', make_reference, REFERENCE)
         fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
-                   ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
-                   filename=name.with_suffix('.png'), save=not bm, inline=False,
-                   filter='Number in ["Image 0", "Image 5"]')
+                   ax_edge_width=3, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', title_wrap_edge_width=3,
+                   filename=name.with_suffix('.png'), save=not bm, inline=False, label_wrap_edge_width=7,
+                   filter='Number in ["Image 0", "Image 5"]', ws_col=20)
         utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 1 x 3
@@ -485,6 +504,7 @@ def plt_wrap_combos(bm=False, make_reference=False, show=False):
 def plt_wrap_combos_cbar(bm=False, make_reference=False, show=False):
 
     enabled = ['1x1', '1x2', '1x3', '2x3', '3x1', '3x2', '4x2']
+    # enabled = ['1x2', '1x3']
 
     img_all = pd.DataFrame()
     img_test = pd.DataFrame(utl.img_grayscale(img_cat_orig).to_numpy()[300:600, 800:1100])
@@ -497,24 +517,25 @@ def plt_wrap_combos_cbar(bm=False, make_reference=False, show=False):
     if '1x1' in enabled:
         name = utl.unit_test_get_img_name('wrap_combos_1x1_cbar', make_reference, REFERENCE)
         fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
-                   ax_edge_width=0, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
-                   filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0"]')
+                   ax_edge_width=7, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
+                   filename=name.with_suffix('.png'), title_wrap_edge_width=2,
+                   label_z_edge_width=1, label_z_edge_color='#555555', save=not bm, inline=False, filter='Number in ["Image 0"]')
         utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 1 x 2
     if '1x2' in enabled:
         name = utl.unit_test_get_img_name('wrap_combos_1x2_cbar', make_reference, REFERENCE)
         fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
-                   ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
+                   ax_edge_width=5, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
                    filename=name.with_suffix('.png'), save=not bm, inline=False,
-                   filter='Number in ["Image 0", "Image 5"]')
+                   filter='Number in ["Image 0", "Image 5"]', tick_labels_major=True)
         utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 1 x 3
     if '1x3' in enabled:
         name = utl.unit_test_get_img_name('wrap_combos_1x3_cbar', make_reference, REFERENCE)
         fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
-                   ax_edge_width=2, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
+                   ax_edge_width=3, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
                    filename=name.with_suffix('.png'), save=not bm, inline=False, title_wrap_edge_width=4,
                    filter='Number in ["Image 0", "Image 2", "Image 4"]', label_wrap_edge_width=3)
         utl.unit_test_options(make_reference, show, name, REFERENCE)
@@ -552,7 +573,7 @@ def plt_wrap_combos_cbar(bm=False, make_reference=False, show=False):
         fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=4, title_wrap_edge_color='aa00ff',
                    ax_edge_width=0, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
                    filename=name.with_suffix('.png'), save=not bm, inline=False, cmap=['gray', 'inferno'],
-                   share_row=True)
+                   share_row=True, title_wrap_edge_width=0, label_wrap_edge_width=0)
         utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
