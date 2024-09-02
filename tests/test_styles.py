@@ -29,7 +29,7 @@ fcp.set_theme('gray')
 # Other
 def make_all():
     utl.unit_test_make_all(REFERENCE, sys.modules[__name__])
-def show_all(only_fails=True):
+def show_all(only_fails=True, start=None):
     utl.unit_test_show_all(only_fails, REFERENCE, sys.modules[__name__], start=start)
 SHOW = False
 fcp.KWARGS['save'] = True

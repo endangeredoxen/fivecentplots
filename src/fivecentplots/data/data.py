@@ -280,9 +280,6 @@ class Data:
             label: range type name ('min', 'max')
             value: value of the range
         """
-        #key = f'{ax}{label}'
-        #if key not in self.ranges[ir, ic].keys() or self.ranges[key][ir, ic][key] is None:
-        #if self.ranges[key][ir, ic] is None:
         self.ranges[f'{ax}{label}'][ir, ic] = value
 
     def _add_ranges_all_none(self, ir: int, ic: int):
@@ -910,27 +907,27 @@ class Data:
             if isinstance(self.fit_range_x, list):
                 df2 = df2[(df2[x] >= self.fit_range_x[0])
                           & (df2[x] <= self.fit_range_x[1])].copy()
-                if self.ranges[ir, ic]['ymin'] is not None:
-                    df2 = df2[(df2[y]) >= self.ranges[ir, ic]['ymin']]
-                if self.ranges[ir, ic]['ymax'] is not None:
-                    df2 = df2[(df2[y]) <= self.ranges[ir, ic]['ymax']]
+                if self.ranges['ymin'][ir, ic] is not None:
+                    df2 = df2[(df2[y]) >= self.ranges['ymin'][ir, ic]]
+                if self.ranges['ymax'][ir, ic] is not None:
+                    df2 = df2[(df2[y]) <= self.ranges['ymax'][ir, ic]]
             elif isinstance(self.fit_range_y, list):
                 df2 = df2[(df2[y] >= self.fit_range_y[0])
                           & (df2[y] <= self.fit_range_y[1])].copy()
-                if self.ranges[ir, ic]['xmin'] is not None:
-                    df2 = df2[(df2[x]) >= self.ranges[ir, ic]['xmin']]
-                if self.ranges[ir, ic]['xmax'] is not None:
-                    df2 = df2[(df2[x]) <= self.ranges[ir, ic]['xmax']]
+                if self.ranges['xmin'][ir, ic] is not None:
+                    df2 = df2[(df2[x]) >= self.ranges['xmin'][ir, ic]]
+                if self.ranges['xmax'][ir, ic] is not None:
+                    df2 = df2[(df2[x]) <= self.ranges['xmax'][ir, ic]]
             else:
                 df2 = df2.copy()
-                if self.ranges[ir, ic]['xmin'] is not None:
-                    df2 = df2[(df2[x]) >= self.ranges[ir, ic]['xmin']]
-                if self.ranges[ir, ic]['xmax'] is not None:
-                    df2 = df2[(df2[x]) <= self.ranges[ir, ic]['xmax']]
-                if self.ranges[ir, ic]['ymin'] is not None:
-                    df2 = df2[(df2[y]) >= self.ranges[ir, ic]['ymin']]
-                if self.ranges[ir, ic]['ymax'] is not None:
-                    df2 = df2[(df2[y]) <= self.ranges[ir, ic]['ymax']]
+                if self.ranges['xmin'][ir, ic] is not None:
+                    df2 = df2[(df2[x]) >= self.ranges['xmin'][ir, ic]]
+                if self.ranges['xmax'][ir, ic] is not None:
+                    df2 = df2[(df2[x]) <= self.ranges['xmax'][ir, ic]]
+                if self.ranges['ymin'][ir, ic] is not None:
+                    df2 = df2[(df2[y]) >= self.ranges['ymin'][ir, ic]]
+                if self.ranges['ymax'][ir, ic] is not None:
+                    df2 = df2[(df2[y]) <= self.ranges['ymax'][ir, ic]]
 
             # Convert to arrays
             xx = np.array(df2[x])
@@ -949,8 +946,8 @@ class Data:
             rsq = ssreg / sstot
 
             # Add fit line
-            df['%s Fit' % x] = np.linspace(self.ranges[ir, ic]['xmin'],
-                                           self.ranges[ir, ic]['xmax'], len(df))
+            df['%s Fit' % x] = np.linspace(self.ranges['xmin'][ir, ic],
+                                           self.ranges['xmax'][ir, ic], len(df))
             df['%s Fit' % y] = np.polyval(coeffs, df['%s Fit' % x])
 
             return df, coeffs, rsq
@@ -1404,18 +1401,18 @@ class Data:
     def swap_xy_ranges(self):
         """Swap the x and y range values (used in case of horizontal plots)."""
         for ir, ic, plot_num in self.get_subplot_index():
-            xmin = self.ranges[ir, ic]['xmin']
-            xmax = self.ranges[ir, ic]['xmax']
-            x2min = self.ranges[ir, ic]['x2min']
-            x2max = self.ranges[ir, ic]['x2max']
-            self.ranges[ir, ic]['xmin'] = self.ranges[ir, ic]['ymin']
-            self.ranges[ir, ic]['xmax'] = self.ranges[ir, ic]['ymax']
-            self.ranges[ir, ic]['x2min'] = self.ranges[ir, ic]['y2min']
-            self.ranges[ir, ic]['x2max'] = self.ranges[ir, ic]['y2max']
-            self.ranges[ir, ic]['ymin'] = xmin
-            self.ranges[ir, ic]['ymax'] = xmax
-            self.ranges[ir, ic]['y2min'] = x2min
-            self.ranges[ir, ic]['y2max'] = x2max
+            xmin = self.ranges['xmin'][ir, ic]
+            xmax = self.ranges['xmax'][ir, ic]
+            x2min = self.ranges['x2min'][ir, ic]
+            x2max = self.ranges['x2max'][ir, ic]
+            self.ranges['xmin'][ir, ic] = self.ranges['ymin'][ir, ic]
+            self.ranges['xmax'][ir, ic] = self.ranges['ymax'][ir, ic]
+            self.ranges['x2min'][ir, ic] = self.ranges['y2min'][ir, ic]
+            self.ranges['x2max'][ir, ic] = self.ranges['y2max'][ir, ic]
+            self.ranges['ymin'][ir, ic] = xmin
+            self.ranges['ymax'][ir, ic] = xmax
+            self.ranges['y2min'][ir, ic] = x2min
+            self.ranges['y2max'][ir, ic] = x2max
 
     def transform(self):
         """Transform x, y, or z data by unique group."""

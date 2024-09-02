@@ -380,8 +380,6 @@ class BaseLayout:
                         font_weight=utl.kwget(kwargs, self.fcpp, 'label_font_weight', 'bold'),
                         padding=utl.kwget(kwargs, self.fcpp, ['label_padding'], 0.3),
                         )
-        # if ('label_fill_color' in kwargs or 'label_fill_color' in self.fcpp) and 'label_fill_alpha' not in kwargs:
-        #     label.fill_alpha = 1
         labels = data.axs
         rotations = [0, 0, 90, 270, 270]
         for ilab, lab in enumerate(labels):
@@ -394,8 +392,6 @@ class BaseLayout:
                 setattr(getattr(self, 'label_%s' % lab), k.replace('label_%s_' % lab, ''), self.fcpp[k])
             for k in [f for f in kwargs.keys() if f'label_{lab}_' in f and '_text' not in f]:
                 setattr(getattr(self, 'label_%s' % lab), k.replace('label_%s_' % lab, ''), kwargs[k])
-            # if (f'label_{lab}_fill_color' in kwargs or f'label_{lab}_fill_color' in self.fcpp) and 'label_fill_alpha' not in kwargs:
-            #     getattr(self, 'label_%s' % lab).fill_alpha = 1
 
             # Update alphas
             getattr(self, 'label_%s' % lab).color_alpha('fill_color', 'fill_alpha')
@@ -976,8 +972,15 @@ class BaseLayout:
                            )
 
         self.fit.legend_text = utl.kwget(kwargs, self.fcpp, 'fit_legend_text', None)
-        self.fit.position[0] = self.fit.padding  # these don't get used
-        self.fit.position[1] = - (self.fit.padding + self.fit.font_size)
+
+        # Set default text label positions
+        eqn_position = utl.kwget(kwargs, self.fcpp, 'eqn_position',
+                                 [self.fit.padding,
+                                  f'ymax - {(self.fit.padding + self.fit.font_size)}'])
+        rsq_position = utl.kwget(kwargs, self.fcpp, 'rsq_position',
+                                 [self.fit.padding,
+                                  f'ymax - {(self.fit.padding + self.fit.font_size) + 2.2 * self.fit.font_size}'])
+        self.fit.position = RepeatedList([eqn_position, rsq_position], 'fit_text_position')
 
         return kwargs
 

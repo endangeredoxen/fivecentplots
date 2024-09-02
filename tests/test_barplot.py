@@ -32,7 +32,7 @@ fcp.set_theme('gray')
 # Other
 def make_all():
     utl.unit_test_make_all(REFERENCE, sys.modules[__name__])
-def show_all(only_fails=True):
+def show_all(only_fails=True, start=None):
     utl.unit_test_show_all(only_fails, REFERENCE, sys.modules[__name__], start=start)
 SHOW = False
 fcp.KWARGS['save'] = True
@@ -40,31 +40,38 @@ fcp.KWARGS['inline'] = False
 
 
 # plt_ functions can be used directly outside of pytest for debug
-def plt_vertical(bm=False, make_reference=False, show=False):
+def plt_col_shared(bm=False, make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('vertical', make_reference, REFERENCE)
+    name = utl.unit_test_get_img_name('col_shared', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.bar(df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A" & T [C]==25',
-            tick_labels_major_x_rotation=90,
+    fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, col='Measurement', row='T [C]',
+            ax_hlines=0, ax_size=[300, 300], share_col=True, ax_edge_width=0,
             filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
+
+    if show == False:
+        # Axis width
+        utl.unit_test_measure_axes(name, 70, None, 300, None, 1, alias=True)
+        # Col label height
+        utl.unit_test_measure_axes(name, None, 190, None, 30, 1, alias=False)
+        # Axis height
+        utl.unit_test_measure_axes(name, None, 190, None, 300, 1, 45, alias=False)
+        # Margins
+        utl.unit_test_measure_margin(name, 170, 190, left=79)
+        utl.unit_test_measure_margin(name, 170, 190, right=10, top=10, bottom=158, alias=False)
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_vertical_zero_group(bm=False, make_reference=False, show=False):
+def plt_error(bm=False, make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('vertical_zero_group', make_reference, REFERENCE)
+    name = utl.unit_test_get_img_name('error', make_reference, REFERENCE)
 
     # Make the plot
-    temp = pd.DataFrame({'Liquid': ['Air'], 'pH': [0], 'Measurement': ['A'],
-                         'T [C]': [125]}, index=[30])
-    fcp.bar(df=pd.concat([df, temp]), x='Liquid', y='pH', show=SHOW,
-            filter='Measurement=="A" & T [C]==25',
-            tick_labels_major_x_rotation=90, show_all_groups=True,
-            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
+    fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, error_bars=True, ymin=0, ymax=35,
+            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False, sort=False, color_by_bar=True)
 
     if bm:
         return
@@ -84,19 +91,6 @@ def plt_horizontal(bm=False, make_reference=False, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_error(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('error', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, error_bars=True, ymin=0, ymax=35,
-            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False, sort=False, color_by_bar=True)
-
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
 def plt_legend(bm=False, make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('legend', make_reference, REFERENCE)
@@ -105,6 +99,63 @@ def plt_legend(bm=False, make_reference=False, show=False):
     fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, legend='Measurement',
             filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False, label_edge_width=10,
             label_edge_color='#000000', legend_font_size=6, legend_title_font_size=18)
+
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_rolling_mean(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('rolling_mean', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.bar(df2, x='date', y='cases', show=SHOW, ax_size=[800, 500],
+            tick_labels_major_x_rotation=90, rolling_mean=14, legend=True,
+            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
+
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_rolling_mean_styled(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('rolling_mean_styled', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.bar(df2, x='date', y='cases', show=SHOW, ax_size=[800, 500],
+            tick_labels_major_x_rotation=90, rolling_mean=14, bar_fill_color='#aaaaaa',
+            rolling_mean_line_color='#000000', markers=True, marker_size=4,
+            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
+
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_row_col(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('row_col', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, col='Measurement', row='T [C]',
+            ax_hlines=0, ax_size=[300, 300],
+            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
+
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_row_shared(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('row_shared', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, col='Measurement', row='T [C]',
+            ax_hlines=0, ax_size=[300, 300], share_row=True,
+            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
@@ -137,13 +188,13 @@ def plt_stacked_horizontal(bm=False, make_reference=False, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_row_col(bm=False, make_reference=False, show=False):
+def plt_vertical(bm=False, make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('row_col', make_reference, REFERENCE)
+    name = utl.unit_test_get_img_name('vertical', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, col='Measurement', row='T [C]',
-            ax_hlines=0, ax_size=[300, 300],
+    fcp.bar(df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A" & T [C]==25',
+            tick_labels_major_x_rotation=90,
             filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -151,27 +202,16 @@ def plt_row_col(bm=False, make_reference=False, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_col_shared(bm=False, make_reference=False, show=False):
+def plt_vertical_zero_group(bm=False, make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('col_shared', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, col='Measurement', row='T [C]',
-            ax_hlines=0, ax_size=[300, 300], share_col=True,
-            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
-
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_row_shared(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('row_shared', make_reference, REFERENCE)
+    name = utl.unit_test_get_img_name('vertical_zero_group', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, col='Measurement', row='T [C]',
-            ax_hlines=0, ax_size=[300, 300], share_row=True,
+    temp = pd.DataFrame({'Liquid': ['Air'], 'pH': [0], 'Measurement': ['A'],
+                         'T [C]': [125]}, index=[30])
+    fcp.bar(df=pd.concat([df, temp]), x='Liquid', y='pH', show=SHOW,
+            filter='Measurement=="A" & T [C]==25',
+            tick_labels_major_x_rotation=90, show_all_groups=True,
             filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -185,35 +225,6 @@ def plt_wrap(bm=False, make_reference=False, show=False):
 
     # Make the plot
     fcp.bar(df, x='Liquid', y='pH', show=SHOW, tick_labels_major_x_rotation=90, wrap='Measurement', ax_size=[300, 300],
-            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
-
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_rolling_mean(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('rolling_mean', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.bar(df2, x='date', y='cases', show=SHOW, ax_size=[800, 500],
-            tick_labels_major_x_rotation=90, rolling_mean=14, legend=True,
-            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
-
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_rolling_mean_styled(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('rolling_mean_styled', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.bar(df2, x='date', y='cases', show=SHOW, ax_size=[800, 500],
-            tick_labels_major_x_rotation=90, rolling_mean=14, bar_fill_color='#aaaaaa',
-            rolling_mean_line_color='#000000', markers=True, marker_size=4,
             filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:

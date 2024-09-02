@@ -41,17 +41,17 @@ class Pie(data.Data):
     def _get_data_ranges(self):
         """Pie-specific data range calculator by subplot."""
         for ir, ic, plot_num in self.get_subplot_index():
-            self.ranges[ir, ic]['xmin'] = -1
-            self.ranges[ir, ic]['xmax'] = 1
-            self.ranges[ir, ic]['ymin'] = -1
-            self.ranges[ir, ic]['ymax'] = 1
+            self.ranges['xmin'][ir, ic] = -1
+            self.ranges['xmax'][ir, ic] = 1
+            self.ranges['ymin'][ir, ic] = -1
+            self.ranges['ymax'][ir, ic] = 1
 
-            self.ranges[ir, ic]['x2min'] = None
-            self.ranges[ir, ic]['x2max'] = None
-            self.ranges[ir, ic]['y2min'] = None
-            self.ranges[ir, ic]['y2max'] = None
-            self.ranges[ir, ic]['zmin'] = None
-            self.ranges[ir, ic]['zmax'] = None
+            self.ranges['x2min'][ir, ic] = None
+            self.ranges['x2max'][ir, ic] = None
+            self.ranges['y2min'][ir, ic] = None
+            self.ranges['y2max'][ir, ic] = None
+            self.ranges['zmin'][ir, ic] = None
+            self.ranges['zmax'][ir, ic] = None
 
     def _get_legend_groupings(self, df: pd.DataFrame):
         """Determine the legend groupings.

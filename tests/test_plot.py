@@ -34,192 +34,89 @@ fcp.set_theme('gray')
 SHOW = False
 def make_all():
     utl.unit_test_make_all(REFERENCE, sys.modules[__name__])
-def show_all(only_fails=True):
+def show_all(only_fails=True, start=None):
     utl.unit_test_show_all(only_fails, REFERENCE, sys.modules[__name__], start=start)
 fcp.KWARGS['save'] = True
 fcp.KWARGS['inline'] = False
 
 # plt_ functions can be used directly outside of pytest for debug
-def plt_xy_scatter(bm=False, make_reference=False, show=False):
+def plt_column(bm=False, make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('xy_scatter', make_reference, REFERENCE)
-
-    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False,
-             show=False, filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             filename=name.with_suffix('.png'), save=not bm, inline=False, ax_edge_width=14,
-             label_fill_color='#ff0000', label_font_style='italic', label_padding_bg=10, ticks_color='#ff0000',
-             tick_labels_major_edge_color='#0000ff', label_edge_color='#000000', label_y_edge_width=2,
-             label_x_edge_width=3, ws_fig_label=15, xmin=0.5, label_y_text='How', label_y_font_size=18)
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_xy_scatter_swap(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('xy_scatter_swap', make_reference, REFERENCE)
-
+    name = utl.unit_test_get_img_name('grid-plots-column', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, swap=True,
-             show=False, filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', show=SHOW, ax_size=[225, 225],
+             filter='Substrate=="Si" & Target Wavelength==450 & Temperature [C]==25',
              filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
+
+    if show == False:
+        # Axis width
+        utl.unit_test_measure_axes(name, 70, None, 227, None, 1, alias=True)
+        # Col label height
+        utl.unit_test_measure_axes(name, None, 90, None, 30, 1, alias=False)
+        # Axis height
+        utl.unit_test_measure_axes(name, None, 90, None, 227, 1, 45, alias=True)
+        # Margins
+        utl.unit_test_measure_margin(name, 70, 115, left=70, right=119, bottom=76, alias=True)
+        utl.unit_test_measure_margin(name, 170, 190, top=10, alias=False)
+
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_xy_index(bm=False, make_reference=False, show=False):
+def plt_column_no_names(bm=False, make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('xy_index', make_reference, REFERENCE)
+    name = utl.unit_test_get_img_name('grid-plots-column-no-names', make_reference, REFERENCE)
 
-    # Make the plot using an unamed index column
-    fcp.plot(df, x='index', y='I [A]', legend='Die', show=SHOW, ymax=1.4,
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', show=SHOW, ax_size=[225, 225],
+             filter='Substrate=="Si" & Target Wavelength==450 & Temperature [C]==25',
+             label_col_values_only=True, filename=name.with_suffix('.png'), save=not bm, inline=False)
+    if bm:
+        return
+
+    if show == False:
+        # Axis width
+        utl.unit_test_measure_axes(name, 70, None, 227, None, 1, alias=True)
+        # Col label height
+        utl.unit_test_measure_axes(name, None, 90, None, 30, 1, alias=False)
+        # Axis height
+        utl.unit_test_measure_axes(name, None, 90, None, 227, 1, 45, alias=True)
+        # Margins
+        utl.unit_test_measure_margin(name, 70, 115, left=70, right=119, bottom=76, alias=True)
+        utl.unit_test_measure_margin(name, 170, 190, top=10, alias=False)
+
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_multiple_xy_both(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('multiple-xy_both', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x=['Boost Level', 'I [A]'], y=['Voltage', 'Temperature [C]'], legend='Die', show=SHOW,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
+
+    if show == False:
+        utl.unit_test_measure_axes(name, 60, 240, 402, 402, 1, alias=True)
+        utl.unit_test_measure_margin(name, 60, 240, top=10, alias=True)
+
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
-    ########################################################################################################
-    # Make the plot using an named index column
-    name = utl.unit_test_get_img_name('xy_index2', make_reference, REFERENCE)
 
-    df_idx = df.copy()
-    df_idx.index.name = 'weezer'
-    fcp.plot(df_idx, x='weezer', y='I [A]', legend='Die', show=SHOW, ymax=1.4,
+def plt_multiple_xy_both_label(bm=False, make_reference=False, show=False):
+    # Tests layout._set_label_text - both combinations
+    name = utl.unit_test_get_img_name('multiple-xy_both_label', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x=['Boost Level', 'I [A]'], y=['Voltage', 'Temperature [C]'], legend='Die', show=SHOW,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             label_x='yep', label_y_text='no way',
              filename=name.with_suffix('.png'), save=not bm, inline=False)
-
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_xy_legend(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('xy_legend', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', show=SHOW, ymax=1.4,
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             filename=name.with_suffix('.png'), save=not bm, inline=False)
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_xy_legend_no_sort(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('xy_legend_no_sort', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', show=SHOW, ymax=1.4, sort=False,
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             filename=name.with_suffix('.png'), save=not bm, inline=False)
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_xy_log_scale(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('xy_log-scale', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9, xmax=2.1,
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             grid_minor=True, filename=name.with_suffix('.png'), save=not bm, inline=False)
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_xy_categorical(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('xy_categorical', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Die', y='I [A]', show=SHOW,
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Voltage==1.5',
-             filename=name.with_suffix('.png'), save=not bm, inline=False)
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_xy_ts(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('xy_ts', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(ts, x='Date', y='Happiness Quotient', markers=False, ax_size=[1000, 250],
-             filename=name.with_suffix('.png'), save=not bm, inline=False)
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_secondary_xy_shared_y(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('secondary-xy_shared-y', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25', col='Die',
-             filename=name.with_suffix('.png'), save=not bm, inline=False)
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_secondary_xy_not_shared_y(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('secondary-xy_not_shared-y', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die', y2min=[0, -1],
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25', col='Die',
-             filename=name.with_suffix('.png'), save=not bm, inline=False)
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_secondary_xy_shared_x(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('secondary-xy_shared-x', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x=['Voltage', 'I [A]'], y='Voltage', legend='Die', twin_y=True, show=SHOW,
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25', row='Die',
-             filename=name.with_suffix('.png'), save=not bm, inline=False)
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_secondary_xy_not_shared_x(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('secondary-xy_not_shared-x', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x=['Voltage', 'I [A]'], y='Voltage', legend='Die', twin_y=True, show=SHOW, x2min=[-10, -20],
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25', row='Die',
-             filename=name.with_suffix('.png'), save=not bm, inline=False)
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_multiple_xy_y(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('multiple-xy_y-only', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y=['Boost Level', 'I [A]'], legend='Die', show=SHOW,
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             filename=name.with_suffix('.png'), save=not bm, inline=False, ymin=0.1)
     if bm:
         return
     utl.unit_test_options(make_reference, show, name, REFERENCE)
@@ -235,189 +132,22 @@ def plt_multiple_xy_x(bm=False, make_reference=False, show=False):
              filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_multiple_xy_both(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('multiple-xy_both', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x=['Boost Level', 'I [A]'], y=['Voltage', 'Temperature [C]'], legend='Die', show=SHOW,
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             filename=name.with_suffix('.png'), save=not bm, inline=False)
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_multiple_xy_both_label(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('multiple-xy_both_label', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x=['Boost Level', 'I [A]'], y=['Voltage', 'Temperature [C]'], legend='Die', show=SHOW,
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             label_x='yep', label_y_text='no way',
-             filename=name.with_suffix('.png'), save=not bm, inline=False)
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_row(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('grid-plots-row', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', row='Boost Level',
-             show=SHOW, ax_size=[225, 225],
-             filter='Substrate=="Si" & Target Wavelength==450 & Temperature [C]==25',
-             filename=name.with_suffix('.png'), save=not bm, inline=False)
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_row_no_names(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('grid-plots-row-no-names', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', row='Boost Level',
-             show=SHOW, ax_size=[225, 225], label_row_names=False,
-             filter='Substrate=="Si" & Target Wavelength==450 & Temperature [C]==25',
-             filename=name.with_suffix('.png'), save=not bm, inline=False)
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_column(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('grid-plots-column', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', show=SHOW, ax_size=[225, 225],
-             filter='Substrate=="Si" & Target Wavelength==450 & Temperature [C]==25',
-             filename=name.with_suffix('.png'), save=not bm, inline=False)
-    if bm:
-        return
 
     if show == False:
-        utl.unit_test_measure_axes_cols(name, 200, 255, 229, 0)  # add 1 for edge width and 1 for aliasing
+        utl.unit_test_measure_axes(name, 60, 240, 402, 402, 1, alias=True)
+        utl.unit_test_measure_margin(name, 60, 240, top=10, alias=True)
+
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_column_no_names(bm=False, make_reference=False, show=False):
+def plt_multiple_xy_y(bm=False, make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('grid-plots-column-no-names', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', show=SHOW, ax_size=[225, 225],
-             filter='Substrate=="Si" & Target Wavelength==450 & Temperature [C]==25', label_col_names=False,
-             filename=name.with_suffix('.png'), save=not bm, inline=False)
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_row_x_column(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('grid-plots-row-x-column', make_reference, REFERENCE)
+    name = utl.unit_test_get_img_name('multiple-xy_y-only', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]', show=SHOW,
-             ax_size=[225, 225], label_x_fill_color='#00ffff', label_y_fill_color='#00ff0f',
-             filter='Substrate=="Si" & Target Wavelength==450', label_rc_font_size=13,
-             filename=name.with_suffix('.png'), save=not bm, inline=False)
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_row_x_column_no_names(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('grid-plots-row-x-column-no-names', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]', show=SHOW,
-             ax_size=[225, 225], label_rc_names=False, filter='Substrate=="Si" & Target Wavelength==450',
-             label_rc_font_size=13, filename=name.with_suffix('.png'), save=not bm, inline=False)
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_row_x_column_empty(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('grid-plots-row-x-column_empty', make_reference, REFERENCE)
-
-    # Make the plot
-    df_empty = df.copy()
-    df_empty.loc[0, 'Temperature [C]'] = 77
-    fcp.plot(df_empty, y=['Voltage', 'I [A]'], x='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',
-             ax_size=[225, 225], filter='Substrate=="Si" & Target Wavelength==450', label_rc_font_size=13, show=SHOW,
-             filename=name.with_suffix('.png'), save=not bm, inline=False, share_x=False, twin_x=True)
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_row_x_column_sep_labels(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('grid-plots-row-x-column_sep_labels', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]', show=SHOW,
-             ax_size=[225, 225],
-             filter='Substrate=="Si" & Target Wavelength==450',
-             label_rc_font_size=13, separate_labels=True, share_y=False,
-             filename=name.with_suffix('.png'), save=not bm, inline=False)
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_wrap(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('grid-plots-wrap', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', wrap=['Temperature [C]', 'Boost Level'], show=SHOW,
-             ax_size=[225, 225], filter='Substrate=="Si" & Target Wavelength==450', label_rc_font_size=13,
-             filename=name.with_suffix('.png'), save=not bm, inline=False,
-             ax_hlines=[(1, '#FF0000'), (2, '#00FF00'), (3, '#0000FF'), (4, '#FFF000'), (5, '#000FFF'), 6],
-             ax_hlines_by_plot=True, ax_hlines_label=['sipping', 'on', 'gin', '&', 'juice', 'yall'])
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_other_lines(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('other_lines', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, show=SHOW, legend=True,
+    fcp.plot(df, x='Voltage', y=['Boost Level', 'I [A]'], legend='Die', show=SHOW,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             ax_hlines=[(0, '#FF0000', '--', 3, 1, 'Open'), 1.2], ax_vlines=[0, (1, '#00FF00')],
-             filename=name.with_suffix('.png'), save=not bm, inline=False)
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_other_lines_df(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('other_lines_df', make_reference, REFERENCE)
-
-    # Make the plot
-    df['Open'] = 0
-    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, show=SHOW, legend=True,
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             ax_hlines=[('Open', '#FF0000', '--', 3, 1), 1.2], ax_vlines=[0, (1, '#00FF00')],
-             filename=name.with_suffix('.png'), save=not bm, inline=False)
+             filename=name.with_suffix('.png'), save=not bm, inline=False, ymin=0.1)
     if bm:
         return
     utl.unit_test_options(make_reference, show, name, REFERENCE)
@@ -510,72 +240,6 @@ def plt_other_curve_fitting_legend2(bm=False, make_reference=False, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_other_stat_bad(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('other_stat-lines-bad', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='I [A]', y='Voltage', title='IV Data', lines=False, show=SHOW,
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             stat='median', filename=name.with_suffix('.png'), save=not bm, inline=False)
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_other_stat_bad2(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('other_stat-lines-bad2', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='I [A]', y='Voltage', title='IV Data', lines=False, show=SHOW,
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             stat='medianx', filename=name.with_suffix('.png'), save=not bm, inline=False)
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_other_stat_good(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('other_stat-lines-good', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='I [A]', y='Voltage', title='IV Data', lines=False, show=SHOW, grops='Die',
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             stat='median', stat_val='I Set', filename=name.with_suffix('.png'), save=not bm, inline=False)
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_other_stat_q(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('other_stat-lines-q', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='I [A]', y='Voltage', title='IV Data', lines=False, show=SHOW,
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             stat='q50', stat_val='I Set', markers=False, title_fill_color='#ff0000',
-             filename=name.with_suffix('.png'), save=not bm, inline=False)
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_other_stat_good_mult(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('other_stat-lines-good-multiple-y', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y=['Boost Level', 'I [A]'], show=SHOW, legend=True, stat='median',
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             filename=name.with_suffix('.png'), save=not bm, inline=False)
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
 def plt_other_conf_int(bm=False, make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('other_conf-int', make_reference, REFERENCE)
@@ -609,6 +273,63 @@ def plt_other_conf_int_no_std(bm=False, make_reference=False, show=False):
     df2 = pd.concat([df2, df2, df2, df2, df2])
     fcp.plot(df2, x='x', y='y', title='IV Data', lines=False, show=SHOW,
              conf_int=95, filename=name.with_suffix('.png'), save=not bm, inline=False)
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_other_lcl_only(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('other_lcl_only', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False,
+             show=False, filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             filename=name.with_suffix('.png'), save=not bm, inline=False,
+             lcl=-0.5, ymin=-1, lcl_fill_color='#FF0000')
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_other_lcl_only_inside(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('other_lcl_only_inside', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False,
+             show=False, filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             filename=name.with_suffix('.png'), save=not bm, inline=False, control_limit_side='inside',
+             lcl=-0.5, ymin=-1, lcl_fill_color='#FF0000')
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_other_lines(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('other_lines', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, show=SHOW, legend=True,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             ax_hlines=[(0, '#FF0000', '--', 3, 1, 'Open'), 1.2], ax_vlines=[0, (1, '#00FF00')],
+             filename=name.with_suffix('.png'), save=not bm, inline=False)
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_other_lines_df(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('other_lines_df', make_reference, REFERENCE)
+
+    # Make the plot
+    df['Open'] = 0
+    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, show=SHOW, legend=True,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             ax_hlines=[('Open', '#FF0000', '--', 3, 1), 1.2], ax_vlines=[0, (1, '#00FF00')],
+             filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
     utl.unit_test_options(make_reference, show, name, REFERENCE)
@@ -728,29 +449,67 @@ def plt_other_ref_line_complex(bm=False, make_reference=False, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_other_lcl_only(bm=False, make_reference=False, show=False):
+def plt_other_stat_bad(bm=False, make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('other_lcl_only', make_reference, REFERENCE)
+    name = utl.unit_test_get_img_name('other_stat-lines-bad', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False,
-             show=False, filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             filename=name.with_suffix('.png'), save=not bm, inline=False,
-             lcl=-0.5, ymin=-1, lcl_fill_color='#FF0000')
+    fcp.plot(df, x='I [A]', y='Voltage', title='IV Data', lines=False, show=SHOW,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             stat='median', filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_other_lcl_only_inside(bm=False, make_reference=False, show=False):
+def plt_other_stat_bad2(bm=False, make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('other_lcl_only_inside', make_reference, REFERENCE)
+    name = utl.unit_test_get_img_name('other_stat-lines-bad2', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False,
-             show=False, filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             filename=name.with_suffix('.png'), save=not bm, inline=False, control_limit_side='inside',
-             lcl=-0.5, ymin=-1, lcl_fill_color='#FF0000')
+    fcp.plot(df, x='I [A]', y='Voltage', title='IV Data', lines=False, show=SHOW,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             stat='medianx', filename=name.with_suffix('.png'), save=not bm, inline=False)
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_other_stat_good(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('other_stat-lines-good', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='I [A]', y='Voltage', title='IV Data', lines=False, show=SHOW, grops='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             stat='median', stat_val='I Set', filename=name.with_suffix('.png'), save=not bm, inline=False)
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_other_stat_q(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('other_stat-lines-q', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='I [A]', y='Voltage', title='IV Data', lines=False, show=SHOW,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             stat='q50', stat_val='I Set', markers=False, title_fill_color='#ff0000',
+             filename=name.with_suffix('.png'), save=not bm, inline=False)
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_other_stat_good_mult(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('other_stat-lines-good-multiple-y', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y=['Boost Level', 'I [A]'], show=SHOW, legend=True, stat='median',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
     utl.unit_test_options(make_reference, show, name, REFERENCE)
@@ -809,6 +568,278 @@ def plt_other_ucl_lcl_outside(bm=False, make_reference=False, show=False):
              filename=name.with_suffix('.png'), save=not bm, inline=False,
              ucl=1.0, ymax=3, lcl=-0.5, ymin=-1, ucl_fill_color='#FFFF00',
              legend=True)
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_row(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('grid-plots-row', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', row='Boost Level',
+             show=SHOW, ax_size=[225, 225],
+             filter='Substrate=="Si" & Target Wavelength==450 & Temperature [C]==25',
+             filename=name.with_suffix('.png'), save=not bm, inline=False)
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_row_no_names(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('grid-plots-row-no-names', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', row='Boost Level',
+             show=SHOW, ax_size=[225, 225], label_row_names=False,
+             filter='Substrate=="Si" & Target Wavelength==450 & Temperature [C]==25',
+             filename=name.with_suffix('.png'), save=not bm, inline=False)
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_row_x_column(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('grid-plots-row-x-column', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]', show=SHOW,
+             ax_size=[225, 225], label_x_fill_color='#00ffff', label_y_fill_color='#00ff0f',
+             filter='Substrate=="Si" & Target Wavelength==450', label_rc_font_size=13,
+             filename=name.with_suffix('.png'), save=not bm, inline=False)
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_row_x_column_empty(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('grid-plots-row-x-column_empty', make_reference, REFERENCE)
+
+    # Make the plot
+    df_empty = df.copy()
+    df_empty.loc[0, 'Temperature [C]'] = 77
+    fcp.plot(df_empty, y=['Voltage', 'I [A]'], x='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',
+             ax_size=[225, 225], filter='Substrate=="Si" & Target Wavelength==450', label_rc_font_size=13, show=SHOW,
+             filename=name.with_suffix('.png'), save=not bm, inline=False, share_x=False, twin_x=True)
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_row_x_column_no_names(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('grid-plots-row-x-column-no-names', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]', show=SHOW,
+             ax_size=[225, 225], label_rc_names=False, filter='Substrate=="Si" & Target Wavelength==450',
+             label_rc_font_size=13, filename=name.with_suffix('.png'), save=not bm, inline=False)
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_row_x_column_sep_labels(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('grid-plots-row-x-column_sep_labels', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', col='Boost Level', row='Temperature [C]', show=SHOW,
+             ax_size=[225, 225],
+             filter='Substrate=="Si" & Target Wavelength==450',
+             label_rc_font_size=13, separate_labels=True, share_y=False,
+             filename=name.with_suffix('.png'), save=not bm, inline=False)
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_secondary_xy_not_shared_x(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('secondary-xy_not_shared-x', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x=['Voltage', 'I [A]'], y='Voltage', legend='Die', twin_y=True, show=SHOW, x2min=[-10, -20],
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25', row='Die',
+             filename=name.with_suffix('.png'), save=not bm, inline=False)
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_secondary_xy_not_shared_y(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('secondary-xy_not_shared-y', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die', y2min=[0, -1],
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25', col='Die',
+             filename=name.with_suffix('.png'), save=not bm, inline=False)
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_secondary_xy_shared_x(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('secondary-xy_shared-x', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x=['Voltage', 'I [A]'], y='Voltage', legend='Die', twin_y=True, show=SHOW,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25', row='Die',
+             filename=name.with_suffix('.png'), save=not bm, inline=False)
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_secondary_xy_shared_y(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('secondary-xy_shared-y', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25', col='Die',
+             filename=name.with_suffix('.png'), save=not bm, inline=False)
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_wrap(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('grid-plots-wrap', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', wrap=['Temperature [C]', 'Boost Level'], show=SHOW,
+             ax_size=[225, 225], filter='Substrate=="Si" & Target Wavelength==450', label_rc_font_size=13,
+             filename=name.with_suffix('.png'), save=not bm, inline=False,
+             ax_hlines=[(1, '#FF0000'), (2, '#00FF00'), (3, '#0000FF'), (4, '#FFF000'), (5, '#000FFF'), 6],
+             ax_hlines_by_plot=True, ax_hlines_label=['sipping', 'on', 'gin', '&', 'juice', 'yall'])
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_xy_categorical(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('xy_categorical', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Die', y='I [A]', show=SHOW,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Voltage==1.5',
+             filename=name.with_suffix('.png'), save=not bm, inline=False)
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_xy_index(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('xy_index', make_reference, REFERENCE)
+
+    # Make the plot using an unamed index column
+    fcp.plot(df, x='index', y='I [A]', legend='Die', show=SHOW, ymax=1.4,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             filename=name.with_suffix('.png'), save=not bm, inline=False)
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+    ########################################################################################################
+    # Make the plot using an named index column
+    name = utl.unit_test_get_img_name('xy_index2', make_reference, REFERENCE)
+
+    df_idx = df.copy()
+    df_idx.index.name = 'weezer'
+    fcp.plot(df_idx, x='weezer', y='I [A]', legend='Die', show=SHOW, ymax=1.4,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             filename=name.with_suffix('.png'), save=not bm, inline=False)
+
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_xy_legend(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('xy_legend', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', show=SHOW, ymax=1.4,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             filename=name.with_suffix('.png'), save=not bm, inline=False)
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_xy_legend_no_sort(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('xy_legend_no_sort', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', show=SHOW, ymax=1.4, sort=False,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             filename=name.with_suffix('.png'), save=not bm, inline=False)
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_xy_log_scale(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('xy_log-scale', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9, xmax=2.1,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             grid_minor=True, filename=name.with_suffix('.png'), save=not bm, inline=False)
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_xy_scatter(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('xy_scatter', make_reference, REFERENCE)
+
+    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False,
+             show=False, filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             filename=name.with_suffix('.png'), save=not bm, inline=False, ax_edge_width=14,
+             label_fill_color='#ff0000', label_font_style='italic', label_padding_bg=10, ticks_color='#ff0000',
+             tick_labels_major_edge_color='#0000ff', label_edge_color='#000000', label_y_edge_width=2,
+             label_x_edge_width=3, ws_fig_label=15, xmin=0.5, label_y_text='How', label_y_font_size=18)
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_xy_scatter_swap(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('xy_scatter_swap', make_reference, REFERENCE)
+
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, swap=True,
+             show=False, filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             filename=name.with_suffix('.png'), save=not bm, inline=False)
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_xy_ts(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('xy_ts', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(ts, x='Date', y='Happiness Quotient', markers=False, ax_size=[1000, 250],
+             filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
     utl.unit_test_options(make_reference, show, name, REFERENCE)

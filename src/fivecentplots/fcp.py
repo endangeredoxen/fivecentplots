@@ -1198,8 +1198,7 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin, leg_name, ngroups):
         layout.add_text(ir, ic, eqn, 'fit')
 
     if layout.fit.rsq:
-        layout.add_text(ir, ic, 'R^2=%s' % round(rsq, 4), 'fit',
-                        offsety=-2.2 * layout.fit.font_size)
+        layout.add_text(ir, ic, 'R^2=%s' % round(rsq, 4), 'fit')
 
     return data
 

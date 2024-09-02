@@ -11,6 +11,7 @@ import pathlib
 import re
 import shlex
 import inspect
+import ast, operator
 import imageio.v3 as imageio
 from matplotlib.font_manager import FontProperties, findfont
 from pathlib import Path
@@ -169,6 +170,35 @@ class Timer:
     def stop(self):
         """Stop the timer."""
         self.init = None
+
+
+def arithmetic_eval (s):
+    s = s.replace(' ', '')
+    s = s.replace('--', '+')
+    s = s.replace('++', '+')
+    node = ast.parse(s, mode='eval')
+
+    def _eval(node):
+        binOps = {
+            ast.Add: operator.add,
+            ast.Sub: operator.sub,
+            ast.Mult: operator.mul,
+            ast.Div: operator.truediv,
+            ast.Mod: operator.mod
+        }
+
+        if isinstance(node, ast.Expression):
+            return _eval(node.body)
+        elif isinstance(node, ast.Str):
+            return node.s
+        elif isinstance(node, ast.Num):
+            return node.n
+        elif isinstance(node, ast.BinOp):
+            return binOps[type(node.op)](_eval(node.left), _eval(node.right))
+        else:
+            raise Exception('Unsupported type {}'.format(node))
+
+    return _eval(node.body)
 
 
 def ci(data: pd.Series, coeff: float = 0.95) -> [float, float]:
@@ -1461,7 +1491,7 @@ def unit_test_options(make_reference: bool, show: Union[bool, int], img_path: pa
 
 
 def unit_test_measure_axes(img_path: pathlib.Path, row: Union[int, str, None], col: Union[int, None],
-                           width: int=0, height: int=0, channel: int=1, alias=True):
+                           width: int=0, height: int=0, channel: int=1, skip: int=0, alias=True):
     """
     Get axes size from pixel values.  Only works if surrounding border pixels are the same color but different
     values than the axes area.
@@ -1473,6 +1503,7 @@ def unit_test_measure_axes(img_path: pathlib.Path, row: Union[int, str, None], c
         width: target width; if None skip test
         height: target height; if None skip test
         channel: which color channel to use (RGB image only)
+        skip: skip some number of pixels
         alias: skip up to 1 pixel due to axes edge aliasing
     """
     img = imageio.imread(img_path)
@@ -1482,17 +1513,17 @@ def unit_test_measure_axes(img_path: pathlib.Path, row: Union[int, str, None], c
     if row:
         if row == 'c':
             row = int(img.shape[0] / 2)
-        row = img[row, :]
+        row = img[row, skip:]
         x0 = (np.diff(row)!=0).argmax(axis=0) + 1  # add 1 for diff
-        assert (row[x0:]==255).argmax(axis=0) == width - (1 if alias else 0), \
+        assert (row[x0:]==255).argmax(axis=0) == width + (2 if alias else 0), \
                f'expected width: {width} | actual: {(row[x0:]==255).argmax(axis=0)}'
 
     if col:
         if col == 'c':
             col = int(img.shape[1] / 2)
-        col = img[:, col]
+        col = img[skip:, col]
         y0 = (np.diff(col)!=0).argmax(axis=0) + 1
-        assert (col[y0:]==255).argmax(axis=0) == height - (1 if alias else 0), \
+        assert (col[y0:]==255).argmax(axis=0) == height + (2 if alias else 0), \
                f'expected height: {height} | actual: {(col[y0:]==255).argmax(axis=0)}'
 
 
@@ -1587,20 +1618,20 @@ def unit_test_measure_margin(img_path: pathlib.Path, row: Union[int, str, None],
             row = int(img.shape[0] / 2)
         row = img[row, :]
         if left:
-            assert (np.diff(row)!=0).argmax(axis=0) == left - (1 if alias else 0) - 1, \
+            assert (np.diff(row)!=0).argmax(axis=0) + 1 == left - (1 if alias else 0), \
                f'expected left margin: {left} | actual: {(np.diff(row)!=0).argmax(axis=0) + 1}'
         if right:
-            assert (np.diff(row[::-1])!=0).argmax(axis=0) == right - (1 if alias else 0) - 1, \
+            assert (np.diff(row[::-1])!=0).argmax(axis=0) + 1 == right - (1 if alias else 0), \
                f'expected right margin: {right} | actual: {(np.diff(row[::-1])!=0).argmax(axis=0) + 1}'
     if col:
         if col == 'c':
             col = int(img.shape[1] / 2)
         col = img[:, col]
         if top:
-            assert (np.diff(col)!=0).argmax(axis=0) == top - (1 if alias else 0) - 1, \
+            assert (np.diff(col)!=0).argmax(axis=0) + 1 == top - (1 if alias else 0), \
                f'expected top margin: {top} | actual: {(np.diff(col)!=0).argmax(axis=0) + 1}'
         if bottom:
-            assert (np.diff(col[::-1])!=0).argmax(axis=0) == bottom - (1 if alias else 0) - 1, \
+            assert (np.diff(col[::-1])!=0).argmax(axis=0) + 1 == bottom - (1 if alias else 0), \
                f'expected bottom: {bottom} | actual: {(np.diff(col[::-1])!=0).argmax(axis=0) + 1}'
 
 

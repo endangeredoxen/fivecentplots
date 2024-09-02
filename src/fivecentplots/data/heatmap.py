@@ -160,18 +160,18 @@ class Heatmap(data.Data):
         if self.auto_cols:
             df = df[utl.df_int_cols(df)]
 
-            if 'xmin' in self.ranges[ir, ic].keys() and \
-                    self.ranges[ir, ic]['xmin'] is not None:
-                df = df[[f for f in df.columns if f >= self.ranges[ir, ic]['xmin']]]
-            if 'xmax' in self.ranges[ir, ic].keys() and \
-                    self.ranges[ir, ic]['xmax'] is not None:
-                df = df[[f for f in df.columns if f <= self.ranges[ir, ic]['xmax']]]
-            if 'ymin' in self.ranges[ir, ic].keys() and \
-                    self.ranges[ir, ic]['ymin'] is not None:
-                df = df.loc[[f for f in df.index if f >= self.ranges[ir, ic]['ymin']]]
-            if 'ymax' in self.ranges[ir, ic].keys() and \
-                    self.ranges[ir, ic]['ymax'] is not None:
-                df = df.loc[[f for f in df.index if f <= self.ranges[ir, ic]['ymax']]]
+            if 'xmin' in self.ranges and \
+                    self.ranges['xmin'][ir, ic] is not None:
+                df = df[[f for f in df.columns if f >= self.ranges['xmin'][ir, ic]]]
+            if 'xmax' in self.ranges and \
+                    self.ranges['xmax'][ir, ic] is not None:
+                df = df[[f for f in df.columns if f <= self.ranges['xmax'][ir, ic]]]
+            if 'ymin' in self.ranges and \
+                    self.ranges['ymin'][ir, ic] is not None:
+                df = df.loc[[f for f in df.index if f >= self.ranges['ymin'][ir, ic]]]
+            if 'ymax' in self.ranges and \
+                    self.ranges['ymax'][ir, ic] is not None:
+                df = df.loc[[f for f in df.index if f <= self.ranges['ymax'][ir, ic]]]
 
         # Check dtypes to properly designate tick labels
         dtypes = [int, np.int32, np.int64]

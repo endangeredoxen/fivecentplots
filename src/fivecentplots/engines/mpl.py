@@ -4,9 +4,11 @@ import scipy.stats
 import numpy as np
 import copy
 import math
+import ast
 from typing import Callable, Dict, Union, Tuple
-from .. utilities import RepeatedList
-from .. import utilities as utl
+#from .. utilities import RepeatedList
+from fivecentplots.utilities import RepeatedList
+import fivecentplots.utilities as utl
 from distutils.version import LooseVersion
 from . layout import LOGX, LOGY, SYMLOGX, SYMLOGY, LOGITX, LOGITY, LOG_ALLX, LOG_ALLY, BaseLayout, Element  # noqa
 import warnings
@@ -1096,7 +1098,7 @@ class Layout(BaseLayout):
     def add_text(self, ir: int, ic: int, text: [str, None] = None,
                  element: [str, None] = None, offsetx: int = 0,
                  offsety: int = 0, coord: ['mpl_coordinate', None] = None,  # noqa: F821
-                 units: [str, None] = None, **kwargs):
+                 units: [str, None] = None, track_obj: bool = True, **kwargs):
         """Add a text box.
 
         Args:
@@ -1108,6 +1110,7 @@ class Layout(BaseLayout):
             offsety (optional): y-axis shift. Defaults to 0.
             coord (optional): MPL coordinate type. Defaults to None.
             units (optional): pixel or inches. Defaults to None which is 'pixel'.
+            track_obj (optional): keep a reference to the text object to move later
         """
         plot_num = utl.plot_num(ir, ic, self.ncol) - 1
 
@@ -1120,19 +1123,6 @@ class Layout(BaseLayout):
         text = text if text is not None else obj.text.values
         if isinstance(text, str):
             text = [text]
-
-        # Set the coordinate so text is anchored to figure, axes, or the current
-        #    data range, or units
-        if not coord:
-            coord = None if not hasattr(obj, 'coordinate') else self.text.coordinate.lower()
-        if coord == 'figure':
-            transform = self.fig.obj.transFigure
-        elif coord == 'data':
-            transform = ax.transData
-        else:
-            transform = ax.transAxes
-        if not units:
-            units = 'pixel' if not hasattr(obj, 'units') else getattr(obj, 'units')
 
         # Add each text box
         for itext, txt in enumerate(text):
@@ -1158,14 +1148,19 @@ class Layout(BaseLayout):
                 elif hasattr(obj, attr):
                     kw[attr] = getattr(obj, attr)
 
-            if element:
-                # Get position
-                if 'position' in kwargs.keys():
-                    position = copy.copy(kwargs['position'])
-                elif hasattr(obj, 'position') and isinstance(getattr(obj, 'position'), RepeatedList):
-                    position = copy.copy(getattr(obj, 'position')[itext])
-                elif hasattr(obj, 'position'):
-                    position = copy.copy(getattr(obj, 'position'))
+            if element and not track_obj:
+                # Set the coordinate so text is anchored to figure, axes, or the current
+                #    data range, or units
+                if not coord:
+                    coord = None if not hasattr(obj, 'coordinate') else self.text.coordinate.lower()
+                if coord == 'figure':
+                    transform = self.fig.obj.transFigure
+                elif coord == 'data':
+                    transform = ax.transData
+                else:
+                    transform = ax.transAxes
+                if not units:
+                    units = 'pixel' if not hasattr(obj, 'units') else getattr(obj, 'units')
 
                 # Convert position to correct units
                 if units == 'pixel' and coord == 'figure':
@@ -1183,28 +1178,49 @@ class Layout(BaseLayout):
                 if position[0] == 0:
                     position[0] = 0.01
 
-                # Add the text
-                ax.text(position[0] + offsetx,
-                        position[1] + offsety,
-                        txt, transform=transform,
-                        rotation=kw['rotation'],
-                        color=kw['font_color'],
-                        fontname=kw['font'],
-                        style=kw['font_style'],
-                        weight=kw['font_weight'],
-                        size=kw['font_size'],
-                        bbox=dict(facecolor=kw['fill_color'], edgecolor=kw['edge_color']),
-                        zorder=45)
+                text_obj = ax.text(position[0] + offsetx,
+                                   position[1] + offsety,
+                                   txt, transform=transform,
+                                   rotation=kw['rotation'],
+                                   color=kw['font_color'],
+                                   fontname=kw['font'],
+                                   style=kw['font_style'],
+                                   weight=kw['font_weight'],
+                                   size=kw['font_size'],
+                                   bbox=dict(facecolor=kw['fill_color'],
+                                   edgecolor=kw['edge_color']),
+                                   zorder=45)
+
+            elif element:
+                text_obj = ax.text(0,
+                                   0,
+                                   txt,
+                                   rotation=kw['rotation'],
+                                   color=kw['font_color'],
+                                   fontname=kw['font'],
+                                   style=kw['font_style'],
+                                   weight=kw['font_weight'],
+                                   size=kw['font_size'],
+                                   bbox=dict(facecolor=kw['fill_color'],
+                                   edgecolor=kw['edge_color']),
+                                   zorder=45)
+                if not isinstance(getattr(self, element).text, RepeatedList):
+                    getattr(self, element).text = RepeatedList([text_obj], f'{element}_text')
+                else:
+                    getattr(self, element).text.values += [text_obj]
+
             else:
-                obj.obj[ir, ic][itext] = ax.text(0, 0,
-                                                 txt, transform=transform,
+                obj.obj[ir, ic][itext] = ax.text(0,
+                                                 0,
+                                                 txt,
                                                  rotation=kw['rotation'],
                                                  color=kw['font_color'],
                                                  fontname=kw['font'],
                                                  style=kw['font_style'],
                                                  weight=kw['font_weight'],
                                                  size=kw['font_size'],
-                                                 bbox=dict(facecolor=kw['fill_color'], edgecolor=kw['edge_color']),
+                                                 bbox=dict(facecolor=kw['fill_color'],
+                                                 edgecolor=kw['edge_color']),
                                                  zorder=45)
 
     @property
@@ -1578,11 +1594,12 @@ class Layout(BaseLayout):
 
         return data
 
-    def _get_figure_size(self, data: 'Data', **kwargs):  # noqa: F821
+    def _get_figure_size(self, data: 'Data', temp=False, **kwargs):  # noqa: F821
         """Determine the size of the mpl figure canvas in pixels and inches.
 
         Args:
             data: Data object
+            temp: first fig size calc is a dummy calc to get a rough size; don't resize user parameters
             kwargs: user-defined keyword args
         """
         # Set some values for convenience
@@ -1603,7 +1620,7 @@ class Layout(BaseLayout):
         if self.box_group_label.on and 'ws_row' not in kwargs.keys():
             self.ws_row = self.box_labels + self.label_wrap.size[1] + 2 * self.label_wrap.edge_width \
                 + self._edge_width('axes')
-        else:
+        elif not temp:
             self.ws_row += self.box_labels
 
         if self.cbar.on and utl.kwget(kwargs, self.fcpp, 'ws_col', -999) == -999 and not self.cbar.shared:
@@ -1617,19 +1634,24 @@ class Layout(BaseLayout):
         # separate ticks and labels
         if (self.separate_ticks or self.axes.share_y is False) and not self.cbar.on:
             self.ws_col = max(self._tick_y + self.ws_label_tick, self.ws_col_def)
-        elif (self.separate_ticks or self.axes.share_y is False) and self.cbar.on:
+        elif (self.separate_ticks or self.axes.share_y is False) and self.cbar.on and not temp:
             self.ws_col += self._tick_y
         if self.axes2.on and (self.separate_ticks or self.axes2.share_y is False) and not self.cbar.on:
             self.ws_col = max(self._tick_y2 + self.ws_label_tick, self.ws_col_def)
 
-        if self.separate_ticks or (self.axes.share_x is False and self.box.on is False):
+        if self.separate_ticks or (self.axes.share_x is False and self.box.on is False) and not temp:
             self.ws_row += max(self.tick_labels_major_x.size[1], self.tick_labels_minor_x.size[1]) + self.ws_ticks_ax
-        elif self.axes2.on and (self.separate_ticks or self.axes2.share_x is False) and self.box.on is False:
+        elif self.axes2.on \
+                and (self.separate_ticks or self.axes2.share_x is False) \
+                and self.box.on is False \
+                and not temp:
             self.ws_row += self._tick_x2
         if self.separate_labels:
             self.ws_col = max(self._labtick_y - self._tick_y + self.ws_ax_label_xs + self.ws_col, self.ws_col)
-            if self.cbar.on:
+            if self.cbar.on and not temp:
                 self.ws_col += self.ws_label_tick
+        self.ws_col = np.ceil(self.ws_col)  # round up to nearest whole pixel
+        self.ws_row = np.ceil(self.ws_row)  # round up to nearest whole pixel
 
         if self.name == 'heatmap' and self.heatmap.cell_size is not None and data.num_x is not None:
             self.axes.size = [self.heatmap.cell_size * data.num_x, self.heatmap.cell_size * data.num_y]
@@ -1648,11 +1670,11 @@ class Layout(BaseLayout):
                 self.label_wrap.size[0] = self.axes.size[0]
 
         # Compute the sum of axes edge thicknesses
-        if self.ws_col == 0 and not self.cbar.on:
+        if self.ws_col == 0 and not self.cbar.on and self.ncol > 1:
             col_edge_width = self.axes.edge_width * (self.ncol + 1)
         else:
             col_edge_width = 2 * self.axes.edge_width * self.ncol
-        if self.ws_row == 0 and not self.label_wrap.on:
+        if self.ws_row == 0 and not self.label_wrap.on and self.nrow > 1:
             row_edge_height = self.axes.edge_width * (self.nrow + 1)
         else:
             row_edge_height = 2 * self.axes.edge_width * self.nrow
@@ -1666,7 +1688,6 @@ class Layout(BaseLayout):
             + self._legx \
             + self.ws_col * (self.ncol - 1) \
             + self._cbar \
-            - 1E-13  # prevent rounding error
 
         # Figure height
         self.fig.size[1] = \
@@ -1681,7 +1702,6 @@ class Layout(BaseLayout):
             + self._legy \
             + self.pie.xs_top \
             + self.pie.xs_bottom \
-            - 1E-13  # prevent rounding error
 
         # Account for legends longer than the figure
         header = self._ws_title + \
@@ -1954,7 +1974,7 @@ class Layout(BaseLayout):
                     x = -kw['font_size']
                     y = -kw['font_size'] - self.ws_ticks_ax
                     kw['position'] = [x, y]
-                    self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', **kw)
+                    self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', track_obj=False, **kw)
                     x += self.axes.size[0]
                 else:
                     x = self.axes.size[0] - xticks.size_all.loc[0, 'width'] / 2
@@ -1962,7 +1982,7 @@ class Layout(BaseLayout):
                 precision = utl.get_decimals(xticks.limits[ir, ic][1], 8)
                 txt = f'{xticks.limits[ir, ic][1]:.{precision}f}'
                 kw['position'] = [x, y]
-                self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', **kw)
+                self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', track_obj=False, **kw)
 
             if len(yticks_size_all) <= 1 \
                     and self.name not in ['box', 'bar', 'pie'] \
@@ -1985,7 +2005,7 @@ class Layout(BaseLayout):
                     x = -kw['font_size'] * len(txt.replace('.', ''))
                     y = -kw['font_size'] / 2
                     kw['position'] = [x, y]
-                    self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', **kw)
+                    self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', track_obj=False, **kw)
                     y += self.axes.size[1]
                 else:
                     # this case happens if only one gridline is present on the plot
@@ -1995,7 +2015,7 @@ class Layout(BaseLayout):
                 txt = f'{yticks.limits[ir, ic][1]:.{precision}f}'
                 x = -kw['font_size'] * len(txt.replace('.', ''))
                 kw['position'] = [x, y]
-                self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', **kw)
+                self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', track_obj=False, **kw)
 
             # Shrink/remove overlapping ticks x-y origin
             if len(xticks_size_all) > 0 and len(yticks_size_all) > 0:
@@ -2127,7 +2147,7 @@ class Layout(BaseLayout):
         # Create the subplots
         #   Note we don't have the actual element sizes until rendereing
         #   so we use an approximate size based upon what is known
-        self._get_figure_size(data, **kwargs)
+        self._get_figure_size(data, temp=True, **kwargs)
         self.fig.obj, self.axes.obj = mplp.subplots(data.nrow, data.ncol,
                                                     figsize=[self.fig.size_inches[0], self.fig.size_inches[1]],
                                                     sharex=self.axes.share_x,
@@ -3607,8 +3627,8 @@ class Layout(BaseLayout):
 
         # Resize the figure and get rendered dimensions
         self._get_figure_size(data, **kwargs)
-        self.fig.size[0] = np.round(self.fig.size[0])
-        self.fig.size[1] = np.round(self.fig.size[1])
+        self.fig.size[0] = np.ceil(self.fig.size[0]- 1E-12)
+        self.fig.size[1] = np.ceil(self.fig.size[1]- 1E-12)
         self.fig.obj.set_size_inches((self.fig.size_inches[0], self.fig.size_inches[1]))
 
         # Double check fig size for rounding errors (small values can change a whole pixel)
@@ -3617,15 +3637,23 @@ class Layout(BaseLayout):
             width_err = self.fig.size[0] - self.fig.obj.get_window_extent().x1
             print('width error')
             self.fig.obj.set_figwidth(self.fig.size_inches[0] + width_err / self.fig.dpi)
-            self.fig.size[0] = self.fig.obj.get_window_extent().x1 - 1E-13
+            self.fig.size[0] = self.fig.obj.get_window_extent().x1
         if self.fig.obj.get_window_extent().y1 < self.fig.size[1]:
             height_err = self.fig.size[1] - self.fig.obj.get_window_extent().y1
             print('height error')
             self.fig.obj.set_figheight(self.fig.size_inches[1] + height_err / self.fig.dpi)
-            self.fig.size[1] = self.fig.obj.get_window_extent().y1 - 1E-13
+            self.fig.size[1] = self.fig.obj.get_window_extent().y1
 
-        # Adjust subplot spacing
+        # Adjust subplot spacing then correct cause god damn mpl
         self._subplots_adjust()
+        # for ir, ic in np.ndindex(self.label_wrap.obj.shape):
+        #     bbox = self.axes.obj[ir, ic].get_position()
+        #     print(ir, ic, np.ceil(bbox.x1 * self.fig.size_int[0]) - np.ceil(bbox.x0 * self.fig.size_int[0]))
+        #     # ax_x0 = np.round(ax.x0 * self.fig.size_int[0])
+        #     # width = (self.axes.size[0] + np.ceil(self.axes.edge_width / 2) + self.axes.edge_width \
+        #     #         + self.ws_ax_cbar + self.cbar.size[0]) / self.fig.size_int[0] - 1E-13
+        #     # self.axes.obj[ir, ic].set_position([ax_x0 / self.fig.size_int[0], ax.y0, width, ax.height])
+        #     # print(ir, ic, ax_x0, width * self.fig.size_int[0])
 
         # Tick overlap cleanup and set location
         self._get_tick_label_sizes()  # update after axes reshape
@@ -3664,15 +3692,6 @@ class Layout(BaseLayout):
 
                     lab.obj[ir, ic].set_position((x - xoffset, y - yoffset))
 
-        # Update the axis positions (rounding errors can cause problems with labels and sizes)
-        # for ir, ic in np.ndindex(self.label_wrap.obj.shape):
-        #     ax = self.axes.obj[ir, ic].get_position()
-        #     ax_x0 = np.round(ax.x0 * self.fig.size_int[0])
-        #     width = (self.axes.size[0] + np.ceil(self.axes.edge_width / 2) + self.axes.edge_width \
-        #             + self.ws_ax_cbar + self.cbar.size[0]) / self.fig.size_int[0] - 1E-13
-        #     self.axes.obj[ir, ic].set_position([ax_x0 / self.fig.size_int[0], ax.y0, width, ax.height])
-        #     print(ir, ic, ax_x0, width * self.fig.size_int[0])
-        # return
         # Update the rc label positions
         # row
         for ir, ic in np.ndindex(self.label_row.obj.shape):
@@ -3687,13 +3706,18 @@ class Layout(BaseLayout):
 
                 # x-position and width
                 if not self.cbar.on:
+                    if self.axes.edge_width == 0 and self.name not in ['imshow']:
+                        edge = -1
+                    else:
+                        edge = np.ceil(self.axes.edge_width / 2)
                     lab_x = self.axes.obj[ir, ic].get_position().x1 * self.fig.size_int[0] \
-                            + np.ceil(self.axes.edge_width / 2) \
+                            + edge \
                             + self.ws_label_row \
                             + np.floor(self.label_row.edge_width / 2)
 
                 else:
-                    lab_x = (1 - (self.ws_ax_fig + self.label_row.size[0] + self.label_row.edge_width) / self.fig.size_int[0]) * self.fig.size_int[0]
+                    lab_x = (1 - (self.ws_ax_fig + self.label_row.size[0] + self.label_row.edge_width) \
+                            / self.fig.size_int[0]) * self.fig.size_int[0]
 
                 self.label_row.obj_bg[ir, ic].set_x(lab_x / self.fig.size_int[0])
                 self.label_row.obj_bg[ir, ic].set_width(
@@ -3815,7 +3839,6 @@ class Layout(BaseLayout):
                 self.label_wrap.obj_bg[ir, ic].set_x(lab_x0 / self.fig.size_int[0])
                 self.label_wrap.obj_bg[ir, ic].set_width((lab_x1 - lab_x0) / self.fig.size_int[0])
 
-                # MAKE SURE THIS MATCHES CBAR NOW! AND FIX TITLE
                 # Move text
                 self.label_wrap.obj[ir, ic].set_x((bbox.x1 - bbox.x0) / 2 + bbox.x0 \
                     - (self.cbar.on * (self.cbar.size[0] + self.ws_ax_cbar)) / 2 / self.fig.size[0])
@@ -3970,7 +3993,6 @@ class Layout(BaseLayout):
                 center_new = self.title_wrap.obj_bg.get_width() / 2 + self.title_wrap.obj_bg.get_x()
                 self.title_wrap.obj.set_x(center_new)
 
-
         # Update the legend position
         if self.legend.on and self.legend.location in [0, 11]:
             self._get_legend_position()
@@ -4027,7 +4049,10 @@ class Layout(BaseLayout):
 
         # Text label adjustments
         if self.text.on:
-            self._set_text_position()
+            self._set_text_position(self.text)
+
+        if self.fit.on and self.fit.eqn:
+            self._set_text_position(self.fit)
 
     def set_figure_title(self):
         """Set a figure title."""
@@ -4202,10 +4227,8 @@ class Layout(BaseLayout):
 
         return ax
 
-    def _set_text_position(self):
+    def _set_text_position(self, obj):
         """Move text labels to the correct location."""
-        obj = self.text
-
         for ir, ic in np.ndindex(self.axes.obj.shape):
             plot_num = utl.plot_num(ir, ic, self.ncol) - 1
             ax = self.axes.obj[ir, ic]
@@ -4222,7 +4245,7 @@ class Layout(BaseLayout):
                 # Set the coordinate so text is anchored to figure, axes, or the current
                 #    data range
                 coord = None if not hasattr(obj, 'coordinate') \
-                    else self.text.coordinate.lower()
+                    else obj.coordinate.lower()
                 if coord == 'figure':
                     transform = self.fig.obj.transFigure
                 elif coord == 'data':
@@ -4232,31 +4255,43 @@ class Layout(BaseLayout):
                 units = 'pixel' if not hasattr(obj, 'units') else getattr(obj, 'units')
 
                 # Get position
-                if 'position' in self.kwargs.keys():
-                    position = copy.copy(self.kwargs['position'])
-                elif hasattr(obj, 'position') and \
-                        isinstance(getattr(obj, 'position'), RepeatedList):
+                if hasattr(obj, 'position') and \
+                        str(type(getattr(obj, 'position'))) == str(RepeatedList):
                     position = copy.copy(getattr(obj, 'position')[itext])
                 elif hasattr(obj, 'position'):
                     position = copy.copy(getattr(obj, 'position'))
+                else:
+                    position = txt.get_position()
 
                 # Convert position to correct units
                 if units == 'pixel' and coord == 'figure':
-                    position[0] /= self.fig.size[0]
-                    offsetx /= self.fig.size[0]
-                    position[1] /= self.fig.size[1]
-                    offsety /= self.fig.size[1]
+                    if isinstance(position[0], str):
+                        position[0] = position[0].replace('xmin', 0).replace('xmax', self.fig.size_int[0])
+                        position[0] = utl.arithmetic_eval(str(position[0]))
+                    if isinstance(position[1], str):
+                        position[1] = position[1].replace('ymin', '0').replace('ymax', str(self.fig.size_int[1]))
+                        position[1] = utl.arithmetic_eval(str(position[1]))
+                    position[0] /= self.fig.size_int[0]
+                    offsetx /= self.fig.size_int[0]
+                    position[1] /= self.fig.size_int[1]
+                    offsety /= self.fig.size_int[1]
                 elif units == 'pixel' and coord != 'data':
-                    position[0] = obj.position[itext][0] / self.axes.size[0]
-                    position[1] = obj.position[itext][1] / self.axes.size[1]
+                    if isinstance(position[0], str):
+                        position[0] = position[0].replace('xmin', 0).replace('xmax', self.axes.size[0])
+                        position[0] = utl.arithmetic_eval(str(position[0]))
+                    if isinstance(position[1], str):
+                        position[1] = position[1].replace('ymin', '0').replace('ymax', str(self.axes.size[1]))
+                        position[1] = utl.arithmetic_eval(str(position[1]))
+                    position[0] = position[0] / self.axes.size[0]
+                    position[1] = position[1] / self.axes.size[1]
 
                 # Something goes weird with x = 0 so we need to adjust slightly
                 if position[0] == 0:
                     position[0] = 0.01
 
-                # position
-                obj.obj[ir, ic][itext].set_x(position[0])
-                obj.obj[ir, ic][itext].set_y(position[1])
+                # Move text
+                txt.set_transform(transform)
+                txt.set_position(position)
 
     def _set_tick_position(self):
         """Update the tick positions except when tick lines have direction=='in'."""
@@ -4314,6 +4349,10 @@ class Layout(BaseLayout):
         fig_w = self.fig.size_int[0]
         fig_h = self.fig.size_int[1]
 
+        h_offset = 0
+        if self.axes.edge_width == 0 and self.name not in ['imshow']:
+            h_offset = 1
+
         # Right
         if self.cbar.on:
             cbar = np.ceil(self._right + (self.label_z.size[0] + self.ws_ticks_ax + self.tick_labels_major_z.size[0]))
@@ -4321,10 +4360,10 @@ class Layout(BaseLayout):
                 1 - cbar / fig_w
         else:
             self.axes.position[1] = \
-                1 - (self._right + np.ceil(self._legx) + np.ceil(self.axes.edge_width / 2)) / fig_w
+                1 - (self._right + np.ceil(self._legx) + np.ceil(self.axes.edge_width / 2) - h_offset) / fig_w
 
         # Left
-        self.axes.position[0] = (self._left + np.floor(self.axes.edge_width / 2)) / fig_w
+        self.axes.position[0] = (self._left + np.floor(self.axes.edge_width / 2) - h_offset) / fig_w
 
         # Top
         self.axes.position[2] = 1 - (self._top + np.floor(self.axes.edge_width / 2)) / fig_h
@@ -4338,15 +4377,25 @@ class Layout(BaseLayout):
 
         # wspace (not sure you actually want this)
         if self.cbar.on and not self.cbar.shared:
-            # ws_col = max((self.cbar.size[0] + self.ws_ticks_ax + 0*self.axes.edge_width),
-            #               self.tick_labels_major_z.size[0])
-            # ws_col = np.ceil(self.ws_ticks_ax + self.tick_labels_major_z.size[0])
             ws_col = self.tick_labels_major_z.size[0] - 1  # there is one extra pixel when ws_col = 0
         else:
-            ws_col = np.ceil(self.ws_col)
+            if self.axes.edge_width == 0 or self.name in ['imshow'] or self.ws_col == 0:
+                h_edge = -2 if self.ws_row > 0 else 0
+            elif self.axes.edge_width == 1:
+                h_edge = 1
+            else:
+                h_edge = 2 * np.floor(self.axes.edge_width / 2)
+
+            ws_col = self.ws_col + h_edge
 
         # hspace
-        ws_row = self.ws_row + self.axes.edge_width
+        if self.axes.edge_width == 0 or self.name in ['imshow'] or self.ws_row == 0:
+            v_edge = 0
+        elif self.axes.edge_width == 1:
+            v_edge = 1
+        else:
+            v_edge = np.floor(self.axes.edge_width / 2)
+        ws_row = self.ws_row + v_edge
 
         # Apply
         self.fig.obj.subplots_adjust(left=self.axes.position[0],
