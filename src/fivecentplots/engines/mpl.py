@@ -4,7 +4,7 @@ import scipy.stats
 import numpy as np
 import copy
 import math
-import ast
+import logging
 from typing import Callable, Dict, Union, Tuple
 #from .. utilities import RepeatedList
 from fivecentplots.utilities import RepeatedList
@@ -33,6 +33,10 @@ def custom_formatwarning(msg, *args, **kwargs):
 warnings.formatwarning = custom_formatwarning
 # weird error in boxplot with no groups
 warnings.filterwarnings("ignore", "invalid value encountered in double_scalars")
+
+# MPL fonts
+logging.getLogger('matplotlib.font_manager').disabled = True  # disable font logger
+FONT_LIST = font_manager.get_font_names()
 
 db = pdb.set_trace
 TICK_OVL_MAX = 0.75  # maximum allowed overlap for tick labels in float pixels
@@ -389,6 +393,7 @@ class Layout(BaseLayout):
         """
         # Set the layout engine
         self.engine = 'mpl'
+        self.font_warning = []
 
         # Set tick style to classic if using fcp tick_cleanup (default)
         if kwargs.get('tick_cleanup', True):
@@ -734,6 +739,7 @@ class Layout(BaseLayout):
         cbar.outline.set_linewidth(self.cbar.edge_width)
 
         # Style tick labels
+        self._check_font(getattr(self, 'tick_labels_major_z').font)
         ticks_font = \
             font_manager.FontProperties(family=getattr(self, 'tick_labels_major_z').font,
                                         size=getattr(self, 'tick_labels_major_z').font_size,
@@ -876,12 +882,6 @@ class Layout(BaseLayout):
         Returns:
             reference to the text box object
         """
-        # # Handle potential edge_width_adj
-        # if hasattr(label, 'edge_width_adj'):
-        #     edge_width = getattr(label, 'edge_width_adj')
-        # else:
-        #     edge_width = label
-
         # Label background is either a bbox patch of the Text class or a separate rect patch
         if getattr(label, 'edge_style'):
             boxstyle = dict(edgecolor=label.edge_color[0], facecolor=label.fill_color[0],
@@ -899,6 +899,7 @@ class Layout(BaseLayout):
         # Create the label text
         if not text_str:
             text_str = label.text
+        self._check_font(label.font)
         text = self.axes.obj[ir, ic].text(0, 0, text_str, bbox=boxstyle, transform=self.fig.obj.transFigure,
                                           horizontalalignment='center', verticalalignment='center',
                                           rotation=label.rotation, color=label.font_color, fontname=label.font,
@@ -1231,9 +1232,17 @@ class Layout(BaseLayout):
                                                  edgecolor=kw['edge_color']),
                                                  zorder=45)
 
-    @property
-    def _axes_edge(self):
-        return {0: 0, 1: 1}.get(self.axes.edge_width, self.axes.edge_width / 2)
+    def _check_font(self, font):
+        """Check if font exists and warn once if not."""
+        if f'font.{font}' in mpl.rcParams:
+            fonts = mpl.rcParams[f'font.{font}']
+        else:
+            fonts = [font]
+
+        if len(set(fonts) & set(FONT_LIST)) == 0:
+            if len(set(fonts) & set(self.font_warning)) == 0:
+                print('Font Warning!  Requested fonts are not installed; using defaults')
+            self.font_warning += fonts
 
     def close(self):
         """Close an inline plot window."""
@@ -3426,6 +3435,7 @@ class Layout(BaseLayout):
             for ax in axx:
                 for mm in majmin:
                     if getattr(self, f'tick_labels_{mm}_x{lab}').on:
+                        self._check_font(getattr(self, f'tick_labels_{mm}_{ax}{lab}').font)
                         ticks_font = font_manager.FontProperties(
                             family=getattr(self, f'tick_labels_{mm}_{ax}{lab}').font,
                             size=getattr(self, f'tick_labels_{mm}_{ax}{lab}').font_size,
@@ -3553,6 +3563,7 @@ class Layout(BaseLayout):
             for ir, ic in np.ndindex(self.cbar.obj.shape):
                 if not hasattr(self.cbar.obj[ir, ic], 'ax'):
                     continue
+                self._check_font(getattr(self, f'tick_labels_major_z').font)
                 ticks_font = font_manager.FontProperties(
                     family=getattr(self, f'tick_labels_major_z').font,
                     size=getattr(self, f'tick_labels_major_z').font_size,
