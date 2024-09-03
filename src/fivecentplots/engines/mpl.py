@@ -1149,6 +1149,14 @@ class Layout(BaseLayout):
                     kw[attr] = getattr(obj, attr)
 
             if element and not track_obj:
+                # Get position
+                if 'position' in kwargs.keys():
+                    position = copy.copy(kwargs['position'])
+                elif hasattr(obj, 'position') and isinstance(getattr(obj, 'position'), RepeatedList):
+                    position = copy.copy(getattr(obj, 'position')[itext])
+                elif hasattr(obj, 'position'):
+                    position = copy.copy(getattr(obj, 'position'))
+
                 # Set the coordinate so text is anchored to figure, axes, or the current
                 #    data range, or units
                 if not coord:
@@ -1231,12 +1239,9 @@ class Layout(BaseLayout):
         """Close an inline plot window."""
         mplp.close('all')
 
-    def fill_between_lines(self, ir: int, ic: int, iline: int,
-                           x: [np.ndarray, pd.Index],
-                           lcl: [np.ndarray, pd.Series],
-                           ucl: [np.ndarray, pd.Series],
-                           element: str, leg_name: [str, None] = None,
-                           twin: bool = False):
+    def fill_between_lines(self, ir: int, ic: int, iline: int, x: [np.ndarray, pd.Index],
+                           lcl: [np.ndarray, pd.Series], ucl: [np.ndarray, pd.Series], element: str,
+                           leg_name: [str, None] = None, twin: bool = False):
         """Shade a region between two curves.
 
         Args:
@@ -1259,10 +1264,9 @@ class Layout(BaseLayout):
         element = getattr(self, element)
         fc = element.fill_color
         ec = element.edge_color
-
         fill = ax.fill_between(x, lcl, ucl,
-                               facecolor=fc[iline] if isinstance(fc, RepeatedList) else fc,
-                               edgecolor=ec[iline] if isinstance(ec, RepeatedList) else ec,
+                               facecolor=fc[iline] if str(type(fc)) == str(RepeatedList) else fc,
+                               edgecolor=ec[iline] if str(type(ec)) == str(RepeatedList) else ec,
                                linestyle=element.edge_style,
                                linewidth=element.edge_width,
                                label='hi')
@@ -1327,6 +1331,7 @@ class Layout(BaseLayout):
                                     - (self.label_y2.size[0] / 2
                                        + self._legx
                                        + self.ws_fig_label
+                                       + self._row_label_width
                                        + (1 if self.label_y.edge_width % 2 == 1 else 0)) \
                                        / self.fig.size[0]
         self.label_y2.position[3] = self.label_y.position[3]
@@ -1978,7 +1983,8 @@ class Layout(BaseLayout):
                     x += self.axes.size[0]
                 else:
                     x = self.axes.size[0] - xticks.size_all.loc[0, 'width'] / 2
-                    y = - yticks.size_all.loc[0, 'height'] / 2 / sf - self.tick_labels_major_x.padding
+                    # y = - yticks.size_all.loc[0, 'height'] / 2 / sf - self.tick_labels_major_x.padding
+                    y = - yticks.size_all.loc[0, 'height'] /  sf - self.tick_labels_major_x.padding
                 precision = utl.get_decimals(xticks.limits[ir, ic][1], 8)
                 txt = f'{xticks.limits[ir, ic][1]:.{precision}f}'
                 kw['position'] = [x, y]
@@ -3070,7 +3076,8 @@ class Layout(BaseLayout):
                     continue
                 if ax == 'y' and ic != 0 and self.axes.visible[ir, ic - 1]:
                     continue
-                if ax == 'y2' and ic != self.ncol - 1 and utl.plot_num(ir, ic, self.ncol) != self.nwrap:
+                if ax == 'y2' and (ic != self.ncol - 1 and self.axes.visible[ir, ic + 1])\
+                        and utl.plot_num(ir, ic, self.ncol) != self.nwrap:
                     continue
                 if ax == 'z' and ic != self.ncol - 1 \
                         and utl.plot_num(ir, ic, self.ncol) != self.nwrap \
@@ -3409,6 +3416,7 @@ class Layout(BaseLayout):
                     and getattr(self, f'axes{lab}').share_y:
                 mplp.setp(axes[ia].get_yticklabels(), visible=False)
 
+            # Disable twinned ticks
             if not self.separate_ticks and ir != 0 and self.axes.twin_y and ia == 1 and self.axes2.share_x:
                 mplp.setp(axes[ia].get_xticklabels(), visible=False)
 
@@ -3689,7 +3697,6 @@ class Layout(BaseLayout):
                     elif label == 'x2':
                         xoffset = self.axes.obj[0, 0].get_position().x0 - self.axes.obj[ir, ic].get_position().x0
                         yoffset = self.axes.obj[0, 0].get_position().y0 - self.axes.obj[ir, ic].get_position().y0
-
                     lab.obj[ir, ic].set_position((x - xoffset, y - yoffset))
 
         # Update the rc label positions
@@ -3713,8 +3720,8 @@ class Layout(BaseLayout):
                     lab_x = self.axes.obj[ir, ic].get_position().x1 * self.fig.size_int[0] \
                             + edge \
                             + self.ws_label_row \
-                            + np.floor(self.label_row.edge_width / 2)
-
+                            + np.floor(self.label_row.edge_width / 2) \
+                            + np.ceil(self._labtick_y2)
                 else:
                     lab_x = (1 - (self.ws_ax_fig + self.label_row.size[0] + self.label_row.edge_width) \
                             / self.fig.size_int[0]) * self.fig.size_int[0]
@@ -3765,7 +3772,8 @@ class Layout(BaseLayout):
 
                 lab_y0 = bbox.y1 * self.fig.size_int[1] \
                     + (self.ws_label_col + self._labtick_x2 + np.floor(self.axes.edge_width / 2)
-                       + np.ceil(self.label_col.edge_width / 2))
+                    + np.ceil(self.label_col.edge_width / 2)) \
+                    + np.ceil(self._labtick_x2)
                 self.label_col.obj_bg[ir, ic].set_y(lab_y0 / self.fig.size_int[1])
 
                 self.label_col.obj_bg[ir, ic].set_height(
@@ -3841,8 +3849,9 @@ class Layout(BaseLayout):
 
                 # Move text
                 self.label_wrap.obj[ir, ic].set_x((bbox.x1 - bbox.x0) / 2 + bbox.x0 \
-                    - (self.cbar.on * (self.cbar.size[0] + self.ws_ax_cbar)) / 2 / self.fig.size[0])
-                self.label_wrap.obj[ir, ic].set_y((np.floor(lab_y0) + self.label_wrap.size[1] / 2) / self.fig.size[1])
+                    - (self.cbar.on * (self.cbar.size[0] + self.ws_ax_cbar)) / 2 / self.fig.size_int[0])
+                self.label_wrap.obj[ir, ic].set_y(
+                    (np.floor(lab_y0) + self.label_wrap.size[1] / 2) / self.fig.size_int[1])
 
         # wrap title
         if self.title_wrap.on:
@@ -3887,16 +3896,18 @@ class Layout(BaseLayout):
 
         # Set title position
         if self.title.on:
-            self.title.obj_bg.set_y(1 - (self.title.size[1] + self.ws_fig_title) / self.fig.size[1])
+            self.title.obj_bg.set_y(1 - (self.title.size[1] + self.ws_fig_title) / self.fig.size_int[1])
             if self.title.span == 'fig':
                 self.title.obj_bg.set_x(0)
                 width = 1
             else:
-                self.title.obj_bg.set_x(self.axes.obj[0, 0].get_position().x0)
+                self.title.obj_bg.set_x(self.axes.obj[0, 0].get_position().x0 \
+                                        - np.ceil(self.axes.edge_width / 2) / self.fig.size_int[0])
                 width = self.axes.obj[0, self.ncol - 1].get_position().x1 - self.axes.obj[0, 0].get_position().x0 \
-                    - self.cbar.on * (self.cbar.size[0] + self.ws_ax_cbar) / self.fig.size[0]
+                        - self.cbar.on * (self.cbar.size[0] + self.ws_ax_cbar) / self.fig.size_int[0] \
+                        + 2 * np.ceil(self.axes.edge_width / 2) / self.fig.size_int[0]
             self.title.obj_bg.set_width(width)
-            self.title.obj_bg.set_height((self.title.size[1] + 2 * self.title.padding) / self.fig.size[1])
+            self.title.obj_bg.set_height((self.title.size[1] + 2 * self.title.padding) / self.fig.size_int[1])
 
             if self.title.span == 'fig':
                 self.title.obj.set_x(0.5)
@@ -3904,7 +3915,7 @@ class Layout(BaseLayout):
                 self.title.obj.set_x(
                     (self.axes.obj[0, self.ncol - 1].get_position().x1 - self.axes.obj[0, 0].get_position().x0) / 2
                     + self.axes.obj[0, 0].get_position().x0)
-            self.title.obj.set_y(1 - (self.title.size[1] / 2 + self.ws_fig_title) / self.fig.size[1])
+            self.title.obj.set_y(1 - np.ceil(self._ws_title / 2 + 2) / self.fig.size_int[1])
 
         # Fix for shared cbar --> subplots_adjust doesn't work out of the box
         if self.cbar.on and self.cbar.shared:
@@ -4296,7 +4307,7 @@ class Layout(BaseLayout):
     def _set_tick_position(self):
         """Update the tick positions except when tick lines have direction=='in'."""
 
-        if self.ticks_major_x.direction == 'in' and self.ticks_major_y.direction == 'in':
+        if self.ticks_major_x.direction == 'in' and self.ticks_major_y.direction == 'in' and not self.axes.twin_y:
             return
 
         xticks = self.tick_labels_major_x.size_all.groupby(['ir', 'ic']).mean()

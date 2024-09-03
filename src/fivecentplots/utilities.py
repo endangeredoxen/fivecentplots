@@ -1619,10 +1619,10 @@ def unit_test_measure_margin(img_path: pathlib.Path, row: Union[int, str, None],
         row = img[row, :]
         if left:
             assert (np.diff(row)!=0).argmax(axis=0) + 1 == left - (1 if alias else 0), \
-               f'expected left margin: {left} | actual: {(np.diff(row)!=0).argmax(axis=0) + 1}'
+               f'expected left margin: {left - (1 if alias else 0)} | actual: {(np.diff(row)!=0).argmax(axis=0) + 1}'
         if right:
             assert (np.diff(row[::-1])!=0).argmax(axis=0) + 1 == right - (1 if alias else 0), \
-               f'expected right margin: {right} | actual: {(np.diff(row[::-1])!=0).argmax(axis=0) + 1}'
+               f'expected right margin: {right - (1 if alias else 0)} | actual: {(np.diff(row[::-1])!=0).argmax(axis=0) + 1}'
     if col:
         if col == 'c':
             col = int(img.shape[1] / 2)

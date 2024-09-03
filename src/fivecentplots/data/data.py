@@ -400,10 +400,10 @@ class Data:
 
         for limit_val in limit_obj.values:
             if isinstance(limit_val, str):
-                if limit_val[0].lower() == 'q' and (float(limit_val[1:]) < 0 or float(limit_val[1:]) > 100):
+                if limit_val[0].lower() == 'q' and (float(limit_val[1:]) <= 0 or float(limit_val[1:]) > 100):
                     raise DataError(f'"{limit}" must be a float, int, or a valid quantile string starting with a "q" '
                                     'followed by a number between 0 and 1 [current value: "{limit_val}"]')
-                elif limit_val[0].lower() != 'q' and limit_val[-4:].lower != '*iqr':
+                elif limit_val[0].lower() != 'q' and limit_val[-4:].lower() != '*iqr':
                     raise DataError(f'"{limit}" must be a float, int, or valid quantile/quartile string '
                                     f'[current value: "{limit_val}"]')
 
@@ -478,7 +478,19 @@ class Data:
             if len(self.df_all) == 0:
                 raise DataError('DataFrame is empty after applying filter')
 
-    def _convert_q_range_limits(self, ax, key, data, plot_num):
+    def _convert_q_range_limits(self, ax: str, key: str, data: Union[np.ndarray, pd.DataFrame],
+                                plot_num: int, mm: str):
+        """
+        Convert 'q' based range limits to hard numbers
+
+        Args:
+            ax: current axis
+            key: range key (xmin, ymax, etc.)
+            data: current data set
+            plot_num: current plot number
+            mm: 'min' or 'max'
+
+        """
 
         user_limits = getattr(self, key).values
 
@@ -587,7 +599,7 @@ class Data:
             for mm in ['min', 'max']:
                 user_limit = getattr(self, f'{ax}{mm}')[plot_num]
                 if user_limit is not None:
-                    self._convert_q_range_limits(ax, f'{ax}{mm}', data, plot_num)
+                    self._convert_q_range_limits(ax, f'{ax}{mm}', data, plot_num, mm)
                     user_limit = getattr(self, f'{ax}{mm}')[plot_num]
 
                     if not self.auto_scale:
@@ -629,7 +641,8 @@ class Data:
             if 'str' in dtypes or 'object' in dtypes:
                 return None, None
             elif 'datetime64[ns]' in dtypes:
-                db()  # do something!
+                # Auto-range this
+                return None, None
 
         # Case: data is np.array
         else:

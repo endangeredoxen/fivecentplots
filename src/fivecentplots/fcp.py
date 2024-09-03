@@ -1107,7 +1107,7 @@ def plot_control_limit(ir: int, ic: int, iline: int, layout: 'engines.Layout', d
 
     """
 
-    x = [data.ranges[ir, ic]['xmin'], data.ranges[ir, ic]['xmax']]
+    x = [data.ranges['xmin'][ir, ic], data.ranges['xmax'][ir, ic]]
     if layout.lcl.on:
         if layout.ucl.on and layout.control_limit_side == 'inside':
             lower = np.ones(2) * layout.lcl.value[0]
@@ -1115,11 +1115,11 @@ def plot_control_limit(ir: int, ic: int, iline: int, layout: 'engines.Layout', d
             leg_name = u'lcl \u2192 ucl'
         elif layout.lcl.on and layout.control_limit_side == 'inside':  # use the ucl for this
             lower = np.ones(2) * layout.lcl.value[0]
-            upper = np.ones(2) * data.ranges[ir, ic]['ymax']
+            upper = np.ones(2) * data.ranges['ymax'][ir, ic]
             leg_name = 'lcl'
         elif layout.lcl.on:
             upper = np.ones(2) * layout.lcl.value[0]
-            lower = np.ones(2) * data.ranges[ir, ic]['ymin']
+            lower = np.ones(2) * data.ranges['ymin'][ir, ic]
             leg_name = 'lcl'
         if not layout.legend._on:
             leg_name = None
@@ -1130,11 +1130,11 @@ def plot_control_limit(ir: int, ic: int, iline: int, layout: 'engines.Layout', d
     if layout.ucl.on:
         if layout.control_limit_side == 'inside':
             upper = np.ones(2) * layout.ucl.value[0]
-            lower = np.ones(2) * data.ranges[ir, ic]['ymin']
+            lower = np.ones(2) * data.ranges['ymin'][ir, ic]
             leg_name = 'ucl'
         else:
             lower = np.ones(2) * layout.ucl.value[0]
-            upper = np.ones(2) * data.ranges[ir, ic]['ymax']
+            upper = np.ones(2) * data.ranges['ymax'][ir, ic]
             leg_name = 'ucl'
         if not layout.legend._on:
             leg_name = None
@@ -1514,18 +1514,6 @@ def plotter(dobj, **kwargs):
         # Make the figure
         dd = layout.make_figure(dd, **kwargs)
         kwargs['timer'].get('ifig=%s | make_figure' % ifig)
-
-        # # Turn off empty subplots and populate layout.axes.visible)
-        # for ir, ic, df_rc in dd.get_rc_subset():   # this gets duplicated, might be a better way
-        #     if len(df_rc) == 0:
-        #         if dd.wrap is None:
-        #             layout.set_axes_rc_labels(ir, ic)
-        #         layout.axes.obj[ir, ic].axis('off')
-        #         layout.axes.visible[ir, ic] = False
-        #         if layout.axes2.obj[ir, ic] is not None:
-        #             layout.axes2.obj[ir, ic].axis('off')
-        #         continue
-        # kwargs['timer'].get('ifig=%s | turn off empty subplots' % ifig)
 
         # Make the subplots
         for ir, ic, df_rc in dd.get_rc_subset():
