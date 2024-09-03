@@ -121,7 +121,7 @@ def plt_imshow_rgb(bm=False, make_reference=False, show=False):
 
 def plt_imshow_rgb_wrap(bm=False, make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('imshow_rgb', make_reference, REFERENCE)
+    name = utl.unit_test_get_img_name('imshow_rgb_wrap', make_reference, REFERENCE)
 
     # Make the plot
     imgs = {}
@@ -680,17 +680,17 @@ def test_invalid():
 
 
     with pytest.raises(data.AxisError):
-        fcp.imshow(img_rc, twin_x=True)
+        fcp.imshow(img_test, twin_x=True)
     with pytest.raises(data.AxisError):
-        fcp.imshow(img_rc, twin_y=True)
+        fcp.imshow(img_test, twin_y=True)
     with pytest.raises(data.GroupingError):
-        fcp.imshow(img_rc, row='y')
+        fcp.imshow(img_test, row='y')
     with pytest.raises(data.GroupingError):
-        fcp.imshow(img_rc, wrap='y')
+        fcp.imshow(img_test, wrap='y')
     with pytest.raises(data.GroupingError):
-        fcp.imshow(img_rc, col='x')
+        fcp.imshow(img_test, col='x')
     with pytest.raises(data.GroupingError):
-        fcp.imshow(img_rc, legend=True)
+        fcp.imshow(img_test, legend=True)
 
 
 def test_wrap_combos(benchmark):
