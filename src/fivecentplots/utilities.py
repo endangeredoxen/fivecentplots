@@ -1493,8 +1493,8 @@ def unit_test_options(make_reference: bool, show: Union[bool, int], img_path: pa
 def unit_test_measure_axes(img_path: pathlib.Path, row: Union[int, str, None], col: Union[int, None],
                            width: int=0, height: int=0, channel: int=1, skip: int=0, alias=True):
     """
-    Get axes size from pixel values.  Only works if surrounding border pixels are the same color but different
-    values than the axes area.
+    Get axes + axes edge width size from pixel values.  Only works if surrounding border pixels are the same color but
+    different values than the axes area.
 
     Args:
         img_path: path the test image
@@ -1527,8 +1527,8 @@ def unit_test_measure_axes(img_path: pathlib.Path, row: Union[int, str, None], c
                f'expected height: {height} | actual: {(col[y0:]==255).argmax(axis=0)}'
 
 
-def unit_test_measure_axes_cols(img_path: pathlib.Path, row: Union[int, str, None], target_pixel_value: int,
-                                width: int, channel: int=1, cbar: bool=False, tolerance=1):
+def unit_test_measure_axes_cols(img_path: pathlib.Path, row: Union[int, str, None], width: int, num_cols: int,
+                                channel: int=1, target_pixel_value: int=255, alias=True, cbar: bool=False):
     """
     Get margin sizes from pixel values.  Only works if surrounding border pixels are the same color but different
     values than the axes area.
@@ -1536,10 +1536,11 @@ def unit_test_measure_axes_cols(img_path: pathlib.Path, row: Union[int, str, Non
     Args:
         img_path: path the test image
         row: row index on which to measure (should be clear of labels, legends, ticks etc)
-        target_pixel_value: pixel value to look for (whitespace 255 typically)
         width: expected axes width for each column
         channel: which color channel to use (RGB image only)
         cbar: skip the cbars if enabled
+        target_pixel_value: pixel value to look for (whitespace 255 typically)
+        alias: skip up to 1 pixel due to axes edge aliasing
 
         Note: for np.diff statements, need to subtract 1
     """
@@ -1551,11 +1552,11 @@ def unit_test_measure_axes_cols(img_path: pathlib.Path, row: Union[int, str, Non
     trans1 = np.argwhere(dd==-1).T[0]
     trans2 = np.argwhere(dd==1).T[0]
     if not cbar:
-        assert all((trans2[1:] - trans1[:-1]) - width <= tolerance), \
-               f'axes sizes are wrong: {trans2[1:] - trans1[:-1]}'
+        widths = trans2[1:] - trans1[:-1] - width - (2 if alias else 0)
     else:
-        assert all((trans2[1:] - trans1[:-1])[::2] - width <= tolerance), \
-               f'axes sizes are wrong: {trans2[1:] - trans1[:-1]}'
+        widths = (trans2[1:] - trans1[:-1])[::2] - width - (2 if alias else 0)
+    assert len(widths[widths==0]) == num_cols, \
+        f'expected {num_cols} columns with axes width {width} | detected: {widths + width}'
 
 
 def unit_test_debug_margins(img_path: pathlib.Path):
@@ -1619,34 +1620,44 @@ def unit_test_measure_margin(img_path: pathlib.Path, row: Union[int, str, None],
         row = img[row, :]
         if left:
             assert (np.diff(row)!=0).argmax(axis=0) + 1 == left - (1 if alias else 0), \
-               f'expected left margin: {left - (1 if alias else 0)} | actual: {(np.diff(row)!=0).argmax(axis=0) + 1}'
+               f'expected left margin: {left} | actual: {(np.diff(row)!=0).argmax(axis=0) + 1 + (1 if alias else 0)}'
         if right:
             assert (np.diff(row[::-1])!=0).argmax(axis=0) + 1 == right - (1 if alias else 0), \
-               f'expected right margin: {right - (1 if alias else 0)} | actual: {(np.diff(row[::-1])!=0).argmax(axis=0) + 1}'
+               f'expected right margin: {right} | ' + \
+               f'actual: {(np.diff(row[::-1])!=0).argmax(axis=0) + 1 + (1 if alias else 0)}'
     if col:
         if col == 'c':
             col = int(img.shape[1] / 2)
         col = img[:, col]
         if top:
             assert (np.diff(col)!=0).argmax(axis=0) + 1 == top - (1 if alias else 0), \
-               f'expected top margin: {top} | actual: {(np.diff(col)!=0).argmax(axis=0) + 1}'
+               f'expected top margin: {top} | actual: {(np.diff(col)!=0).argmax(axis=0) + 1 + (1 if alias else 0)}'
         if bottom:
             assert (np.diff(col[::-1])!=0).argmax(axis=0) + 1 == bottom - (1 if alias else 0), \
-               f'expected bottom: {bottom} | actual: {(np.diff(col[::-1])!=0).argmax(axis=0) + 1}'
+               f'expected bottom: {bottom} | actual: {(np.diff(col[::-1])!=0).argmax(axis=0) + 1 + (1 if alias else 0)}'
 
 
-def unit_test_make_all(reference: pathlib.Path, name: str):
+def unit_test_make_all(reference: pathlib.Path, name: str, start: Union[str, None]=None, stop: Union[str, None]=None):
     """Remake all reference test images.
 
     Args:
         reference: path to the reference test images
         name: sys.modules[__name__] for the test file
+        start: name of file to start with
+        stop: name of file to stop
     """
     if not reference.exists():
         os.makedirs(reference)
     members = inspect.getmembers(name)
-    members = [f for f in members if 'plt_' in f[0]]
+    members = sorted([f for f in members if 'plt_' in f[0]])
+    if start is not None:
+        idx_found = [i for (i, f) in enumerate(members) if start in f[0]]
+        if len(idx_found) > 0:
+            members = members[idx_found[0]:]
     for member in members:
+        if stop and stop in member[0]:
+            print('stopping!')
+            return
         print('Running %s...' % member[0], end='')
         member[1](make_reference=True)
         print('done!')

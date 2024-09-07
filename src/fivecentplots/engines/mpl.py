@@ -481,7 +481,7 @@ class Layout(BaseLayout):
         if not self.axes.twin_y:
             return 0
 
-        val = (self.label_x2.size[1] + self.label_x2.edge_width) * self.label_x2.on \
+        val = (self.label_x2.size[1] + 0*self.label_x2.edge_width) * self.label_x2.on \
             + self.ws_label_tick * self.label_x2.on \
             + self._tick_x2
         return val
@@ -639,7 +639,8 @@ class Layout(BaseLayout):
             + np.ceil(self.title_wrap.size[1] + 2 * self.title_wrap.edge_width * self.title_wrap.on) \
             + np.ceil(self.label_wrap.size[1] + 2 * self.label_wrap.edge_width * self.label_wrap.on) \
             + np.ceil(self.label_col.size[1] + 2 * self.label_col.edge_width * self.label_col.on) \
-            + np.ceil((self.ws_label_col * self.label_col.on))
+            + np.ceil(self.ws_label_col * self.label_col.on) \
+            + np.ceil(self._labtick_x2)
 
         tick_top_xs = 0
         if self.tick_y_top_xs + self.tick_labels_major_y.padding > val:
@@ -1326,8 +1327,11 @@ class Layout(BaseLayout):
 
         # x2-label
         self.label_x2.position[0] = self.label_x.position[0]
-        self.label_x2.position[3] = \
-            self.axes.obj[0,0].get_position().y1 + (self.label_x.size[1] / 2 + self._labtick_x2) / self.fig.size[1]
+        self.label_x2.position[3] = 1 \
+                                    - (self.label_x2.size[1] / 2
+                                       + self.ws_fig_label
+                                       + (1 if self.label_y.edge_width % 2 == 1 else 0)
+                                    ) / self.fig.size[1]
 
         # y-label
         self.label_y.position[0] = (self.label_y.size[0] / 2
@@ -1339,7 +1343,6 @@ class Layout(BaseLayout):
         self.label_y2.position[0] = 1 \
                                     - (self.label_y2.size[0] / 2
                                        + self._legx
-                                       + self.ws_fig_label
                                        + self._row_label_width
                                        + (1 if self.label_y.edge_width % 2 == 1 else 0)) \
                                        / self.fig.size[0]
@@ -1401,37 +1404,15 @@ class Layout(BaseLayout):
                 height = bbox.height + lab.edge_width
                 lab.size_all = (ir, ic, 0, 0, width, height, bbox.x0, bbox.x1, bbox.y0, bbox.y1, np.nan)
 
-                # # text label rect background (ax label has to be resized!)
-                # if label not in ['row', 'col', 'wrap']:
-                #     lab.obj_bg[ir, ic].set_width((width + lab.padding_bg * 2 + lab.edge_width) / self.fig.size[0])
-                #     # lab.obj_bg[ir, ic].set_width(10 / self.fig.size[0])
-                #     lab.obj_bg[ir, ic].set_height((height + lab.padding_bg * 2 + lab.edge_width) / self.fig.size[1])
-                #     bbox = lab.obj_bg[ir, ic].get_window_extent()
-                #     lab.size_all_bg = (ir, ic, 0, 0, bbox.width + lab.edge_width, bbox.height + lab.edge_width,
-                #                        bbox.x0, bbox.x1, bbox.y0, bbox.y1, np.nan)
-
-            # set max size
-            # width = lab.size_all.width.max()
-            # height = lab.size_all.height.max()
-            # if label in ['row', 'col', 'wrap']:
-            #     width_bg, height_bg = lab.size
-            # else:
-            #     width_bg = lab.size_all_bg.width.max()
-            #     height_bg = lab.size_all_bg.height.max()
-
-            # lab.size = [max(width, width_bg), max(height, height_bg)]
-            # lab.size_text = [width, height]
             lab.size = lab.size_all.width.max(), lab.size_all.height.max()
 
         # titles
         if self.title.on:
             self.title.size = self.title.obj.get_window_extent().width, self.title.obj.get_window_extent().height
-
         if self.title_wrap.on:
             # this prevents title_wrap font from being bigger than the rectangle but needs work!
             bbox = self.title_wrap.obj.get_window_extent()
             height = bbox.height
-            #self.title_wrap.size[1] = max(self.title_wrap_size[1], 1.1 * height)
 
         # legend
         if self.legend.on and self.legend.location in [0, 11]:
@@ -1664,6 +1645,7 @@ class Layout(BaseLayout):
             self.ws_col = max(self._labtick_y - self._tick_y + self.ws_ax_label_xs + self.ws_col, self.ws_col)
             if self.cbar.on and not temp:
                 self.ws_col += self.ws_label_tick
+            self.ws_row += self.ws_fig_label
         self.ws_col = np.ceil(self.ws_col)  # round up to nearest whole pixel
         self.ws_row = np.ceil(self.ws_row)  # round up to nearest whole pixel
 
@@ -1706,7 +1688,6 @@ class Layout(BaseLayout):
         # Figure height
         self.fig.size[1] = \
             self._top \
-            + self._labtick_x2 \
             + self.axes.size[1] * self.nrow \
             + row_edge_height \
             + self._labtick_x \
@@ -1715,7 +1696,7 @@ class Layout(BaseLayout):
             + self.box_labels \
             + self._legy \
             + self.pie.xs_top \
-            + self.pie.xs_bottom \
+            + self.pie.xs_bottom
 
         # Account for legends longer than the figure
         header = self._ws_title + \
@@ -1886,12 +1867,17 @@ class Layout(BaseLayout):
         self._get_tick_label_size(self.axes, 'x', '', 'minor', pad_x_minor)
 
         # secondary x-axis
-        if self.axes2.on:
+        if self.axes2.on and self.axes.twin_y:
             getattr(self, 'tick_labels_major_x2').size_all_reset()
-            pad = pad_x_major[0], -pad_x_major[1]
+            pad_x2_major = 0, -(self.tick_labels_major_x2.padding + self.tick_labels_major_x2.edge_width
+                                + self.ws_ticks_ax + self._edge_width('axes')) / self.axes.size[1]
+            pad = pad_x2_major[0], 1 - pad_x2_major[1]
             self._get_tick_label_size(self.axes2, 'x', '2', 'major', pad)
+
             getattr(self, 'tick_labels_minor_x2').size_all_reset()
-            pad = pad_x_minor[0], -pad_x_minor[1]
+            pad_x2_minor = 0, -(self.tick_labels_minor_x2.padding + self.tick_labels_minor_x2.edge_width + self.ws_ticks_ax
+                                + self._edge_width('axes')) / self.axes.size[1]
+            pad = pad_x2_minor[0], 1 - pad_x2_minor[1]
             self._get_tick_label_size(self.axes2, 'x', '2', 'minor', pad)
 
         # primary y-axis
@@ -1906,12 +1892,17 @@ class Layout(BaseLayout):
         self._get_tick_label_size(self.axes, 'y', '', 'minor', pad_y_minor)
 
         # secondary y-axis
-        if self.axes2.on:
+        if self.axes2.on and self.axes.twin_x:
             getattr(self, 'tick_labels_major_y2').size_all_reset()
-            pad = 1, 0
+            pad_y2_major = -(self.tick_labels_major_y2.padding + self.tick_labels_major_y2.edge_width + self.ws_ticks_ax
+                             + self._edge_width('axes')) / self.axes.size[0], 0
+            pad = 1 - pad_y2_major[0], pad_y2_major[1]
             self._get_tick_label_size(self.axes2, 'y', '2', 'major', pad)
+
             getattr(self, 'tick_labels_minor_y2').size_all_reset()
-            pad = 1, 0
+            pad_y2_minor = -(self.tick_labels_minor_y2.padding + self.tick_labels_minor_y2.edge_width + self.ws_ticks_ax
+                             + self._edge_width('axes')) / self.axes.size[0], 0
+            pad = 1 - pad_y2_minor[0], pad_y2_minor[1]
             self._get_tick_label_size(self.axes2, 'y', '2', 'minor', pad)
 
         # z-axis (major only)
@@ -2068,6 +2059,19 @@ class Layout(BaseLayout):
                             xticks.obj[ir, ic - 1][-1].set_visible(False)
                         else:
                             xticks.obj[ir, ic - 1][-1].set_size(xticks.font_size / sf)
+
+            # First and last x ticks that may fall under a wrap label
+            if len(xticks_size_all) > 0:
+                xxticks = xticks.size_all.set_index(['ir', 'ic', 'ii'])
+
+                if ic > 0 and self.label_wrap.on and len(xticks.obj[ir, ic]) > 0 \
+                        and xxticks.loc[ir, ic, 0]['x0'] < \
+                            self.axes.obj[ir, ic - 1].get_position().x1 * self.fig.size_int[0]:
+                    xticks.obj[ir, ic][0].set_visible(False)
+                if ic < self.ncol - 1 and self.label_wrap.on and len(xticks.obj[ir, ic]) > 0 \
+                        and xxticks.loc[ir, ic].iloc[-1]['x1'] < \
+                            self.axes.obj[ir, ic + 1].get_position().x0 * self.fig.size_int[0]:
+                    xticks.obj[ir, ic][-1].set_visible(False)
 
             # TODO: Shrink/remove overlapping ticks in grid plots at y-origin
 
@@ -3289,7 +3293,7 @@ class Layout(BaseLayout):
                                     )
                 axes[0].tick_params(axis='x',
                                     which='minor',
-                                    pad=0, #self.ws_ticks_ax_adj - 1,
+                                    pad=0,
                                     colors=self.ticks_minor_x.color[0],
                                     labelcolor=self.tick_labels_minor_x.font_color,
                                     labelsize=self.tick_labels_minor_x.font_size,
@@ -3320,7 +3324,7 @@ class Layout(BaseLayout):
                     if self.ticks_minor_y2.on:
                         axes[1].minorticks_on()
                     axes[1].tick_params(which='major',
-                                        pad=self.ws_ticks_ax_adj,
+                                        pad=0,
                                         colors=self.ticks_major_y2.color[0],
                                         labelcolor=self.tick_labels_major_y2.font_color,
                                         right=self.ticks_major_y2.on,
@@ -3330,7 +3334,7 @@ class Layout(BaseLayout):
                                         zorder=0,
                                         )
                     axes[1].tick_params(which='minor',
-                                        pad=self.ws_ticks_ax_adj,
+                                        pad=0,
                                         colors=self.ticks_minor_y2.color[0],
                                         labelcolor=self.tick_labels_minor_y2.font_color,
                                         right=self.ticks_minor_y2.on,
@@ -3343,7 +3347,7 @@ class Layout(BaseLayout):
                     if self.ticks_minor_x2.on:
                         axes[1].minorticks_on()
                     axes[1].tick_params(which='major',
-                                        pad=self.ws_ticks_ax_adj,
+                                        pad=0,
                                         colors=self.ticks_major_x2.color[0],
                                         labelcolor=self.tick_labels_major_x2.font_color,
                                         top=self.ticks_major_x2.on,
@@ -3352,7 +3356,7 @@ class Layout(BaseLayout):
                                         direction=self.ticks_major_x2.direction,
                                         )
                     axes[1].tick_params(which='minor',
-                                        pad=self.ws_ticks_ax_adj * 2,  # not sure on this one
+                                        pad=0,
                                         colors=self.ticks_minor.color[0],
                                         labelcolor=self.tick_labels_minor.font_color,
                                         top=self.ticks_minor_x2.on,
@@ -3629,15 +3633,16 @@ class Layout(BaseLayout):
             print('Could not find a colormap called "%s". Using default colors...' % self.cmap[0])
 
     def set_figure_final_layout(self, data: 'Data', **kwargs):  # noqa: F821
-        """Final adjustment of the figure size and plot spacing.
+        """
+        Final adjustment of the figure size and plot spacing.
+
+        Subplots within self.fig.obj are not currently in the right place and do not have the right size.  Before
+        checking for overlaps with other elements we temporarily move the subplots to (0, 0) and size properly
 
         Args:
             data: Data object
             kwargs: keyword args
         """
-        # Subplots within self.fig.obj are not currently in the right place and do not have the right size.  Before
-        #   checking for overlaps with other elements we temporarily move the subplots to (0, 0) and size properly
-
         # Render dummy figure to get the element sizes
         self._get_element_sizes(data)
 
@@ -3654,25 +3659,15 @@ class Layout(BaseLayout):
         width_err, height_err = 0, 0
         if self.fig.obj.get_window_extent().x1 < self.fig.size[0]:
             width_err = self.fig.size[0] - self.fig.obj.get_window_extent().x1
-            print('width error')
             self.fig.obj.set_figwidth(self.fig.size_inches[0] + width_err / self.fig.dpi)
-            self.fig.size[0] = self.fig.obj.get_window_extent().x1
+            self.fig.size[0] = np.round(self.fig.obj.get_window_extent().x1)
         if self.fig.obj.get_window_extent().y1 < self.fig.size[1]:
             height_err = self.fig.size[1] - self.fig.obj.get_window_extent().y1
-            print('height error')
             self.fig.obj.set_figheight(self.fig.size_inches[1] + height_err / self.fig.dpi)
-            self.fig.size[1] = self.fig.obj.get_window_extent().y1
+            self.fig.size[1] = np.round(self.fig.obj.get_window_extent().y1)
 
         # Adjust subplot spacing then correct cause god damn mpl
         self._subplots_adjust()
-        # for ir, ic in np.ndindex(self.label_wrap.obj.shape):
-        #     bbox = self.axes.obj[ir, ic].get_position()
-        #     print(ir, ic, np.ceil(bbox.x1 * self.fig.size_int[0]) - np.ceil(bbox.x0 * self.fig.size_int[0]))
-        #     # ax_x0 = np.round(ax.x0 * self.fig.size_int[0])
-        #     # width = (self.axes.size[0] + np.ceil(self.axes.edge_width / 2) + self.axes.edge_width \
-        #     #         + self.ws_ax_cbar + self.cbar.size[0]) / self.fig.size_int[0] - 1E-13
-        #     # self.axes.obj[ir, ic].set_position([ax_x0 / self.fig.size_int[0], ax.y0, width, ax.height])
-        #     # print(ir, ic, ax_x0, width * self.fig.size_int[0])
 
         # Tick overlap cleanup and set location
         self._get_tick_label_sizes()  # update after axes reshape
@@ -3707,7 +3702,7 @@ class Layout(BaseLayout):
                         yoffset = self.axes.obj[0, 0].get_position().y0 - self.axes.obj[ir, ic].get_position().y0
                     elif label == 'x2':
                         xoffset = self.axes.obj[0, 0].get_position().x0 - self.axes.obj[ir, ic].get_position().x0
-                        yoffset = self.axes.obj[0, 0].get_position().y0 - self.axes.obj[ir, ic].get_position().y0
+                        yoffset = self.axes.obj[0, 0].get_position().y1 - self.axes.obj[ir, ic].get_position().y1
                     lab.obj[ir, ic].set_position((x - xoffset, y - yoffset))
 
         # Update the rc label positions
@@ -3935,9 +3930,9 @@ class Layout(BaseLayout):
                 # Axes position
                 ax = self.axes.obj[ir, ic].get_position()
                 ax0 = (self._left + (self.ws_col + self.axes.size[0]) * ic) / self.fig.size_int[0]
-                width = self.axes.size[0] / self.fig.size[0]
+                width = self.axes.size[0] / self.fig.size_int[0]
                 if ic == self.ncol - 1:
-                    width += (self.cbar.size[0] + self.ws_ax_cbar - 1) / self.fig.size_int[0]  # -1 is empirical
+                    width += (self.cbar.size[0] + self.ws_ax_cbar) / self.fig.size_int[0]
                 self.axes.obj[ir, ic].set_position([ax0, ax.y0, width, ax.y1 - ax.y0])
 
                 # Column labels
@@ -4397,7 +4392,7 @@ class Layout(BaseLayout):
         self.axes.position[1] -= 1E-13
         self.axes.position[2] -= 1E-13
 
-        # wspace (not sure you actually want this)
+        # wspace
         if self.cbar.on and not self.cbar.shared:
             ws_col = self.tick_labels_major_z.size[0] - 1  # there is one extra pixel when ws_col = 0
         else:
@@ -4408,7 +4403,7 @@ class Layout(BaseLayout):
             else:
                 h_edge = 2 * np.floor(self.axes.edge_width / 2)
 
-            ws_col = self.ws_col + h_edge
+            ws_col = max(0, self.ws_col + h_edge)
 
         # hspace
         if self.axes.edge_width == 0 or self.name in ['imshow'] or self.ws_row == 0:
@@ -4417,7 +4412,7 @@ class Layout(BaseLayout):
             v_edge = 1
         else:
             v_edge = np.floor(self.axes.edge_width / 2)
-        ws_row = self.ws_row + v_edge
+        ws_row = max(0, self.ws_row + v_edge)
 
         # Apply
         self.fig.obj.subplots_adjust(left=self.axes.position[0],

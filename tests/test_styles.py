@@ -27,8 +27,8 @@ fcp.set_theme('gray')
 # fcp.set_theme('white')
 
 # Other
-def make_all():
-    utl.unit_test_make_all(REFERENCE, sys.modules[__name__])
+def make_all(start=None, stop=None):
+    utl.unit_test_make_all(REFERENCE, sys.modules[__name__], start=start, stop=stop)
 def show_all(only_fails=True, start=None):
     utl.unit_test_show_all(only_fails, REFERENCE, sys.modules[__name__], start=start)
 SHOW = False

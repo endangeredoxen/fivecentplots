@@ -60,8 +60,8 @@ fcp.set_theme('gray')
 # fcp.set_theme('white')
 
 # Other
-def make_all():
-    utl.unit_test_make_all(REFERENCE, sys.modules[__name__])
+def make_all(start=None, stop=None):
+    utl.unit_test_make_all(REFERENCE, sys.modules[__name__], start=start, stop=stop)
 def show_all(only_fails=True, start=None):
     utl.unit_test_show_all(only_fails, REFERENCE, sys.modules[__name__], start=start)
 SHOW = False
@@ -70,6 +70,134 @@ fcp.KWARGS['inline'] = False
 
 
 # plt_ functions can be used directly outside of pytest for debug
+def plt_col(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('col', make_reference, REFERENCE)
+
+    fcp.imshow(img_cp, imgs=cp, cmap='inferno', ax_size=[300, 300], col='Plane', filename=name.with_suffix('.png'),
+               save=not bm, inline=False, share_z=False, cbar=False)
+
+    if bm:
+        return
+
+    if show == False:
+        utl.unit_test_measure_axes_cols(name, 90, 300, 4, alias=False)
+        utl.unit_test_measure_margin(name, 'c', 150, left=10, right=10, top=10, bottom=10, alias=False)
+
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_col_cbar(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('col_cbar', make_reference, REFERENCE)
+
+    fcp.imshow(img_cp, imgs=cp, cmap='inferno', ax_size=[300, 300], col='Plane', filename=name.with_suffix('.png'),
+               save=not bm, inline=False, share_z=False, cbar=True)
+
+    if bm:
+        return
+    if show == False:
+        utl.unit_test_measure_axes_cols(name, 90, 300, 4, channel=0, cbar=True, alias=False)
+
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_col_combos(bm=False, make_reference=False, show=False):
+
+    # 1 x 1
+    name = utl.unit_test_get_img_name('col_combos_1x1', make_reference, REFERENCE)
+    fcp.imshow(img_all, ax_size=[300, 300], col='Number', label_rc_edge_width=3,
+               ax_edge_width=5, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+               filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0"]')
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+    # 1 x 2
+    name = utl.unit_test_get_img_name('col_combos_1x2', make_reference, REFERENCE)
+    fcp.imshow(img_all, ax_size=[300, 300], col='Number', label_rc_edge_width=4,
+               ax_edge_width=6, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+               filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0", "Image 1"]')
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+    # 1 x 3
+    name = utl.unit_test_get_img_name('col_combos_1x3', make_reference, REFERENCE)
+    fcp.imshow(img_all, ax_size=[250, 250], col='Number', label_rc_edge_width=1,
+               ax_edge_width=1, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+               filename=name.with_suffix('.png'), save=not bm, inline=False,
+               filter='Number in ["Image 0", "Image 1", "Image 5"]')
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+    # 1 x 3b
+    name = utl.unit_test_get_img_name('col_combos_1x3b', make_reference, REFERENCE)
+    fcp.imshow(img_all, ax_size=[250, 250], col='Number', label_rc_edge_width=1,
+               ax_edge_width=0, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+               filename=name.with_suffix('.png'), save=not bm, inline=False,
+               filter='Number in ["Image 0", "Image 1", "Image 5"]')
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+    # 1 x 3c
+    name = utl.unit_test_get_img_name('col_combos_1x3c', make_reference, REFERENCE)
+    fcp.imshow(img_all, ax_size=[250, 250], col='Number', label_rc_edge_width=0,
+               ax_edge_width=0, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+               filename=name.with_suffix('.png'), save=not bm, inline=False,
+               filter='Number in ["Image 0", "Image 1", "Image 5"]')
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_col_shared_cbar(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('col_shared_cbar', make_reference, REFERENCE)
+
+    fcp.imshow(img_cp, imgs=cp, cmap='inferno', ax_size=[300, 300], col='Plane', filename=name.with_suffix('.png'),
+               save=not bm, inline=False, share_z=False, cbar=True, cbar_shared=True)
+
+    if bm:
+        return
+
+    if show == False:
+        utl.unit_test_measure_axes_cols(name, 90, 300, 4, alias=False)
+        utl.unit_test_measure_margin(name, 'c', 150, left=10, top=10, bottom=10, alias=False)
+
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_col_share_z(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('col_share_z', make_reference, REFERENCE)
+
+    fcp.imshow(img_cp, imgs=cp, cmap='gray', ax_size=[300, 300], col='Plane', filename=name.with_suffix('.png'),
+               save=not bm, inline=False, share_z=True, cbar=True)
+
+    if bm:
+        return
+
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_col_z_user_range(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('col_z_user_range', make_reference, REFERENCE)
+
+    fcp.imshow(img_cp, imgs=cp, cmap='viridis', ax_size=[300, 300], col='Plane', filename=name.with_suffix('.png'),
+               share_z=True, save=not bm, inline=False, zmin=[-100, 100], zmax=[400, 500, 600, 700], cbar=True)
+
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_col_quantiles(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('col_quantiles', make_reference, REFERENCE)
+
+    fcp.imshow(img_cp, imgs=cp, cmap='inferno', ax_size=[300, 300], col='Plane', filename=name.with_suffix('.png'),
+               save=not bm, inline=False, zmin=['q0.35', 'q10', 'q1', 0], zmax=['q0.36', 'q90'], share_z=True,
+               cbar=True)
+
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
 def plt_imshow(bm=False, make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('imshow', make_reference, REFERENCE)
@@ -200,84 +328,44 @@ def plt_imshow_zoomed(bm=False, make_reference=False, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_col(bm=False, make_reference=False, show=False):
+def plt_row_combos(bm=False, make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('col', make_reference, REFERENCE)
-
-    fcp.imshow(img_cp, imgs=cp, cmap='inferno', ax_size=[300, 300], col='Plane', filename=name.with_suffix('.png'),
-               save=not bm, inline=False, share_z=False, cbar=False)
-
-    if bm:
-        return
-
-    if show == False:
-        utl.unit_test_measure_axes_cols(name, 90, 255, 300, 0)
-        utl.unit_test_measure_margin(name, 'c', 150, left=10, right=10, top=10, bottom=10, alias=False)
-
+    # 1 x 1
+    name = utl.unit_test_get_img_name('row_combos_1x1', make_reference, REFERENCE)
+    fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=3,
+               ax_edge_width=5, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+               filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0"]')
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
-
-def plt_col_cbar(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('col_cbar', make_reference, REFERENCE)
-
-    fcp.imshow(img_cp, imgs=cp, cmap='inferno', ax_size=[300, 300], col='Plane', filename=name.with_suffix('.png'),
-               save=not bm, inline=False, share_z=False, cbar=True)
-
-    if bm:
-        return
-    if show == False:
-        utl.unit_test_measure_axes_cols(name, 90, 255, 300, 0, cbar=True)
-
+    # 2 x 1
+    name = utl.unit_test_get_img_name('row_combos_2x1', make_reference, REFERENCE)
+    fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=4,
+               ax_edge_width=6, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+               filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0", "Image 1"]')
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
-
-def plt_col_shared_cbar(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('col_shared_cbar', make_reference, REFERENCE)
-
-    fcp.imshow(img_cp, imgs=cp, cmap='inferno', ax_size=[300, 300], col='Plane', filename=name.with_suffix('.png'),
-               save=not bm, inline=False, share_z=False, cbar=True, cbar_shared=True)
-
-    if bm:
-        return
+    # 3 x 1
+    name = utl.unit_test_get_img_name('row_combos_3x1', make_reference, REFERENCE)
+    fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=1,
+               ax_edge_width=1, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+               filename=name.with_suffix('.png'), save=not bm, inline=False,
+               filter='Number in ["Image 0", "Image 1", "Image 5"]')
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
-
-def plt_col_share_z(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('col_share_z', make_reference, REFERENCE)
-
-    fcp.imshow(img_cp, imgs=cp, cmap='gray', ax_size=[300, 300], col='Plane', filename=name.with_suffix('.png'),
-               save=not bm, inline=False, share_z=True, cbar=True)
-
-    if bm:
-        return
+    # 3 x 1b
+    name = utl.unit_test_get_img_name('row_combos_3x1b', make_reference, REFERENCE)
+    fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=1,
+               ax_edge_width=0, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+               filename=name.with_suffix('.png'), save=not bm, inline=False,
+               filter='Number in ["Image 0", "Image 1", "Image 5"]')
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
-
-def plt_col_z_user_range(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('col_z_user_range', make_reference, REFERENCE)
-
-    fcp.imshow(img_cp, imgs=cp, cmap='viridis', ax_size=[300, 300], col='Plane', filename=name.with_suffix('.png'),
-               share_z=True, save=not bm, inline=False, zmin=[-100, 100], zmax=[400, 500, 600, 700], cbar=True)
-
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_col_quantiles(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('col_quantiles', make_reference, REFERENCE)
-
-    fcp.imshow(img_cp, imgs=cp, cmap='inferno', ax_size=[300, 300], col='Plane', filename=name.with_suffix('.png'),
-               save=not bm, inline=False, zmin=['q0.35', 'q10', 'q1', 0], zmax=['q0.36', 'q90'], share_z=True,
-               cbar=True)
-
-    if bm:
-        return
+    # 3 x 1c
+    name = utl.unit_test_get_img_name('row_combos_3x1c', make_reference, REFERENCE)
+    fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=0,
+               ax_edge_width=0, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+               filename=name.with_suffix('.png'), save=not bm, inline=False,
+               filter='Number in ["Image 0", "Image 1", "Image 5"]')
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
@@ -317,102 +405,6 @@ def plt_wrap(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_wrap_one(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('wrap_one', make_reference, REFERENCE)
-
-    fcp.imshow(img_cp_orig, cmap='inferno', ax_size=[300, 300], cfa='rggb', filter='Plane=="gb"',
-               label_wrap_edge_color='#0000ff', filename=name.with_suffix('.png'), save=not bm, inline=False, wrap='Plane')
-
-    if bm:
-        return
-
-    if show == False:
-        utl.unit_test_measure_margin(name, 'c', 'c', left=10, right=10, top=10, bottom=10, alias=False)
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_col_combos(bm=False, make_reference=False, show=False):
-
-    # 1 x 1
-    name = utl.unit_test_get_img_name('col_combos_1x1', make_reference, REFERENCE)
-    fcp.imshow(img_all, ax_size=[300, 300], col='Number', label_rc_edge_width=3,
-               ax_edge_width=5, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
-               filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0"]')
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-    # 1 x 2
-    name = utl.unit_test_get_img_name('col_combos_1x2', make_reference, REFERENCE)
-    fcp.imshow(img_all, ax_size=[300, 300], col='Number', label_rc_edge_width=4,
-               ax_edge_width=6, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
-               filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0", "Image 1"]')
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-    # 1 x 3
-    name = utl.unit_test_get_img_name('col_combos_1x3', make_reference, REFERENCE)
-    fcp.imshow(img_all, ax_size=[250, 250], col='Number', label_rc_edge_width=1,
-               ax_edge_width=1, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
-               filename=name.with_suffix('.png'), save=not bm, inline=False,
-               filter='Number in ["Image 0", "Image 1", "Image 5"]')
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-    # 1 x 3b
-    name = utl.unit_test_get_img_name('col_combos_1x3b', make_reference, REFERENCE)
-    fcp.imshow(img_all, ax_size=[250, 250], col='Number', label_rc_edge_width=1,
-               ax_edge_width=0, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
-               filename=name.with_suffix('.png'), save=not bm, inline=False,
-               filter='Number in ["Image 0", "Image 1", "Image 5"]')
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-    # 1 x 3c
-    name = utl.unit_test_get_img_name('col_combos_1x3c', make_reference, REFERENCE)
-    fcp.imshow(img_all, ax_size=[250, 250], col='Number', label_rc_edge_width=0,
-               ax_edge_width=0, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
-               filename=name.with_suffix('.png'), save=not bm, inline=False,
-               filter='Number in ["Image 0", "Image 1", "Image 5"]')
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-def plt_row_combos(bm=False, make_reference=False, show=False):
-
-    # 1 x 1
-    name = utl.unit_test_get_img_name('row_combos_1x1', make_reference, REFERENCE)
-    fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=3,
-               ax_edge_width=5, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
-               filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0"]')
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-    # 2 x 1
-    name = utl.unit_test_get_img_name('row_combos_2x1', make_reference, REFERENCE)
-    fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=4,
-               ax_edge_width=6, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
-               filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0", "Image 1"]')
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-    # 3 x 1
-    name = utl.unit_test_get_img_name('row_combos_3x1', make_reference, REFERENCE)
-    fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=1,
-               ax_edge_width=1, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
-               filename=name.with_suffix('.png'), save=not bm, inline=False,
-               filter='Number in ["Image 0", "Image 1", "Image 5"]')
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-    # 3 x 1b
-    name = utl.unit_test_get_img_name('row_combos_3x1b', make_reference, REFERENCE)
-    fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=1,
-               ax_edge_width=0, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
-               filename=name.with_suffix('.png'), save=not bm, inline=False,
-               filter='Number in ["Image 0", "Image 1", "Image 5"]')
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-    # 3 x 1c
-    name = utl.unit_test_get_img_name('row_combos_3x1c', make_reference, REFERENCE)
-    fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=0,
-               ax_edge_width=0, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
-               filename=name.with_suffix('.png'), save=not bm, inline=False,
-               filter='Number in ["Image 0", "Image 1", "Image 5"]')
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
@@ -577,6 +569,22 @@ def plt_wrap_combos_cbar(bm=False, make_reference=False, show=False):
         utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
+def plt_wrap_one(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('wrap_one', make_reference, REFERENCE)
+
+    fcp.imshow(img_cp_orig, cmap='inferno', ax_size=[300, 300], cfa='rggb', filter='Plane=="gb"',
+               label_wrap_edge_color='#0000ff', filename=name.with_suffix('.png'), save=not bm, inline=False, wrap='Plane')
+
+    if bm:
+        return
+
+    if show == False:
+        utl.unit_test_measure_margin(name, 'c', 'c', left=10, right=10, top=10, bottom=10, alias=False)
+
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
 # test_ functions call plt_ funcs 2x:
 # 1) do the comparison with saved image
 # 2) do a test plot only with save=False and inline=False and benchmark spead
@@ -645,14 +653,12 @@ def test_col_z_user_range(benchmark):
     benchmark(plt_col_z_user_range, True)
 
 
-def test_col_combos(benchmark):
+def test_col_combos():
     plt_col_combos()
-    benchmark(plt_col_combos, True)
 
 
-def test_row_combos(benchmark):
+def test_row_combos():
     plt_row_combos()
-    benchmark(plt_row_combos, True)
 
 
 def test_share_col(benchmark):
@@ -698,9 +704,8 @@ def test_wrap_combos(benchmark):
     # benchmark(plt_wrap_combos, True)
 
 
-def test_wrap_combos_cbar(benchmark):
+def test_wrap_combos_cbar():
     plt_wrap_combos_cbar()
-    # benchmark(plt_wrap_combos_cbar, True)
 
 
 if __name__ == '__main__':

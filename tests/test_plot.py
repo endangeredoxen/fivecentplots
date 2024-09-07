@@ -32,8 +32,8 @@ fcp.set_theme('gray')
 
 # Other
 SHOW = False
-def make_all():
-    utl.unit_test_make_all(REFERENCE, sys.modules[__name__])
+def make_all(start=None, stop=None):
+    utl.unit_test_make_all(REFERENCE, sys.modules[__name__], start=start, stop=stop)
 def show_all(only_fails=True, start=None):
     utl.unit_test_show_all(only_fails, REFERENCE, sys.modules[__name__], start=start)
 fcp.KWARGS['save'] = True
@@ -227,7 +227,7 @@ def plt_other_curve_fitting_range(bm=False, make_reference=False, show=False):
 
     if show == False:
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 1, alias=True)
-        utl.unit_test_measure_margin(name, 110, 370, left=83, top=43, bottom=76, right=10,
+        utl.unit_test_measure_margin(name, 110, 370, left=83, top=43, bottom=76, right=98,
                                      alias=True)
 
     utl.unit_test_options(make_reference, show, name, REFERENCE)
@@ -269,7 +269,7 @@ def plt_other_conf_int(bm=False, make_reference=False, show=False):
     name = utl.unit_test_get_img_name('other_conf-int', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.plot(df_interval, x='x', y='y', title='IV Data', lines=False, show=SHOW, legend=True, timer=True,
+    fcp.plot(df_interval, x='x', y='y', title='IV Data', lines=False, show=SHOW, legend=True,
              conf_int=0.95, filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
@@ -440,8 +440,7 @@ def plt_other_ref_line(bm=False, make_reference=False, show=False):
 
     if show == False:
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 2, alias=True)
-        utl.unit_test_measure_margin(name, 110, 370, left=83, top=43, bottom=76, right=119,
-                                     alias=True)
+        utl.unit_test_measure_margin(name, 110, 370, left=83, top=43, bottom=76, alias=True)
 
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
@@ -461,8 +460,7 @@ def plt_other_ref_line_leg(bm=False, make_reference=False, show=False):
 
     if show == False:
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 2, alias=True)
-        utl.unit_test_measure_margin(name, 110, 370, left=83, top=43, bottom=76, right=141,
-                                     alias=True)
+        utl.unit_test_measure_margin(name, 110, 370, left=83, top=43, bottom=76)
 
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
@@ -499,8 +497,7 @@ def plt_other_ref_line_mult2(bm=False, make_reference=False, show=False):
 
     if show == False:
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 2, alias=True)
-        utl.unit_test_measure_margin(name, 110, 370, left=83, top=43, bottom=76, right=151,
-                                     alias=True)
+        utl.unit_test_measure_margin(name, 110, 370, left=83, top=43, bottom=76, alias=True)
 
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
@@ -694,8 +691,9 @@ def plt_row_x_column(bm=False, make_reference=False, show=False):
     if bm:
         return
 
-    if show:
-        utl.unit_test_measure_margin(name, 430, 145, left=10, bottom=10, alias=False)
+    if show == False:
+        utl.unit_test_measure_axes_cols(name, 340, 227, 3)
+        utl.unit_test_measure_margin(name, 430, 145, left=10, bottom=10, alias=False, channel=0)
 
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
@@ -709,7 +707,10 @@ def plt_row_x_column_empty(bm=False, make_reference=False, show=False):
     df_empty.loc[0, 'Temperature [C]'] = 77
     fcp.plot(df_empty, y=['Voltage', 'I [A]'], x='I [A]', legend='Die', col='Boost Level', row='Temperature [C]',
              ax_size=[225, 225], filter='Substrate=="Si" & Target Wavelength==450', label_rc_font_size=13, show=SHOW,
-             filename=name.with_suffix('.png'), save=not bm, inline=False, share_x=False, twin_x=True)
+             filename=name.with_suffix('.png'), save=not bm, inline=False, share_x=False, twin_x=True,
+             tick_labels_y2_edge_width=1, tick_labels_y2_edge_color='#000000',
+             label_y2_edge_width=1, label_y2_edge_color='#000000',
+             )
     if bm:
         return
     utl.unit_test_options(make_reference, show, name, REFERENCE)
@@ -740,6 +741,10 @@ def plt_row_x_column_sep_labels(bm=False, make_reference=False, show=False):
              filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
+
+    if show == False:
+        utl.unit_test_measure_axes_cols(name, 375, 227, 3)
+
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
@@ -753,6 +758,7 @@ def plt_secondary_xy_not_shared_x(bm=False, make_reference=False, show=False):
              filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
+
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
@@ -776,9 +782,20 @@ def plt_secondary_xy_shared_x(bm=False, make_reference=False, show=False):
     # Make the plot
     fcp.plot(df, x=['Voltage', 'I [A]'], y='Voltage', legend='Die', twin_y=True, show=SHOW,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25', row='Die',
-             filename=name.with_suffix('.png'), save=not bm, inline=False)
+             filename=name.with_suffix('.png'), save=not bm, inline=False,
+             label_x_edge_width=1, label_x_edge_color='#000000',
+             label_x2_edge_width=1, label_x2_edge_color='#000000',
+             tick_labels_major_x_edge_width=1, tick_labels_major_x_edge_color='#000000',
+             tick_labels_major_x2_edge_width=1, tick_labels_major_x2_edge_color='#000000',
+             )
     if bm:
         return
+
+    if show == False:
+        utl.unit_test_measure_axes(name, 650, 190, 402, 402, 2, alias=True)
+        utl.unit_test_measure_margin(name, 650, 285, left=83, top=10, bottom=10, alias=True)
+        utl.unit_test_measure_margin(name, 650, 285, right=257, alias=False)
+
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
@@ -844,8 +861,10 @@ def plt_xy_index(bm=False, make_reference=False, show=False):
     name = utl.unit_test_get_img_name('xy_index2', make_reference, REFERENCE)
 
     df_idx = df.copy()
-    df_idx.index.name = 'weezer'
-    fcp.plot(df_idx, x='weezer', y='I [A]', legend='Die', show=SHOW, ymax=1.4,
+    df_idx.index.name = 'tupac'
+    fcp.plot(df_idx, x='tupac', y='I [A]', legend='Die', show=SHOW, ymax=1.4,
+             label_x_edge_width=1, label_x_edge_color='#000000',
+             tick_labels_major_x_edge_color='#000000', tick_labels_major_x_edge_width=1,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              filename=name.with_suffix('.png'), save=not bm, inline=False)
 
@@ -864,6 +883,11 @@ def plt_xy_legend(bm=False, make_reference=False, show=False):
              filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
+
+    if show == False:
+        utl.unit_test_measure_axes(name, 150, 200, 402, 402, 2, alias=True)
+        utl.unit_test_measure_margin(name, 150, 200, left=83, top=13, bottom=76, right=119, alias=True)
+
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
