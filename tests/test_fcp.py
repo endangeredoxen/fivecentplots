@@ -11,12 +11,6 @@ db = pdb.set_trace
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_interval.csv')
 
 
-def test_deprecated():
-    kwargs = {'leg_groups': 'alive', 'ylabel': 'jeremey', 'sharex': 'nothing_man'}
-    kwargs = fcp.deprecated(kwargs)
-    assert list(sorted(kwargs.keys())) == ['label_y', 'legend', 'share_x']
-
-
 def test_paste_kwargs():
     kwargs = {'leg_groups': 'alive', 'ylabel': 'jeremey', 'sharex': 'nothing_man'}
     fcp.paste_kwargs(kwargs)

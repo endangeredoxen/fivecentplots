@@ -1631,7 +1631,8 @@ def plotter(dobj, **kwargs):
             filename = kwargs['save_data']
         else:
             filename = filename.split('.')[0] + '.csv'
-        dd.df_all[dd.cols_all].to_csv(filename, index=False)
+        if isinstance(dd.df_all, pd.DataFrame):
+            dd.df_all[dd.cols_all].to_csv(filename, index=False)
         kwargs['timer'].get('ifig=%s | save_data' % (ifig))
 
     kwargs['timer'].get_total()
