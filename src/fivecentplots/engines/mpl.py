@@ -1626,7 +1626,7 @@ class Layout(BaseLayout):
         if self.ncol == 1:
             self.ws_col = 0
 
-        # separate ticks and labels (CHECK CBAR AND TWIN CASES)
+        # separate ticks and labels
         if (self.separate_ticks or self.axes.share_y is False) and not self.cbar.on:
             self.ws_col = max(self._tick_y + self.ws_fig_label, max(self.ws_col, self.ws_col_def))
         elif (self.separate_ticks or self.axes.share_y is False) and self.cbar.on and not temp:
@@ -1643,7 +1643,6 @@ class Layout(BaseLayout):
                 and not temp:
             if self.ws_row < self.ws_row + self._tick_x2 + self.ws_fig_label:
                 self.ws_row += self._tick_x2 + self.ws_fig_label
-                #self.ws_row += self._tick_x2
 
         if self.separate_labels:
             self.ws_col = \
@@ -1653,8 +1652,10 @@ class Layout(BaseLayout):
             self.ws_row = \
                 max(self._labtick_x - self._tick_x + self._labtick_x2 - self._tick_x2 + self.ws_row, self.ws_row)
 
-        if self.label_wrap.on and 'ws_row' not in kwargs.keys():
+        if self.label_wrap.on and 'ws_row' not in kwargs.keys() and self.ws_row == self.ws_row_def:
             self.ws_row += self.label_wrap.size[1] + 2 * self.label_wrap.edge_width - self.ws_row_def
+        elif self.label_wrap.on and 'ws_row' not in kwargs.keys():
+            self.ws_row += self.label_wrap.size[1] + 2 * self.label_wrap.edge_width
         if self.box_group_label.on and 'ws_row' not in kwargs.keys():
             self.ws_row += self.box_labels + self.label_wrap.size[1] + 2 * self.label_wrap.edge_width \
                           + self._edge_width('axes') - self.ws_row_def
@@ -2078,14 +2079,17 @@ class Layout(BaseLayout):
             # First and last x ticks that may fall under a wrap label
             if len(xticks_size_all) > 0 and ir != self.nrow - 1:
                 xxticks = xticks.size_all.set_index(['ir', 'ic', 'ii'])
-                if ic > 0 and self.label_wrap.on and len(xticks.obj[ir, ic]) > 0 \
-                        and xxticks.loc[ir, ic, 0]['x0'] < \
-                            self.axes.obj[ir, ic - 1].get_position().x1 * self.fig.size_int[0]:
-                    xticks.obj[ir, ic][0].set_visible(False)
-                if ic < self.ncol - 1 and self.label_wrap.on and len(xticks.obj[ir, ic]) > 0 \
-                        and xxticks.loc[ir, ic].iloc[-1]['x1'] < \
-                            self.axes.obj[ir, ic + 1].get_position().x0 * self.fig.size_int[0]:
-                    xticks.obj[ir, ic][-1].set_visible(False)
+                if ic > 0 and self.label_wrap.on and len(xticks.obj[ir, ic]) > 0:
+                    x0_left_edge = xxticks.loc[ir, ic, 0]['x0'] - xxticks.loc[ir, ic, 0]['width'] / 2
+                    prev_ax_right_edge = self.axes.obj[ir, ic - 1].get_position().x1 * self.fig.size_int[0]
+                    if prev_ax_right_edge > x0_left_edge:
+                        xticks.obj[ir, ic][0].set_visible(False)
+
+                if ic < self.ncol - 1 and self.label_wrap.on and len(xticks.obj[ir, ic]) > 0:
+                    x1_right_edge = xxticks.loc[ir, ic].iloc[-1]['x1'] + xxticks.loc[ir, ic].iloc[-1]['width'] / 2
+                    next_ax_left_edge = self.axes.obj[ir, ic + 1].get_position().x0 * self.fig.size_int[0] + self.ws_col
+                    if x1_right_edge > next_ax_left_edge:
+                        xticks.obj[ir, ic][-1].set_visible(False)
 
             # TODO: Shrink/remove overlapping ticks in grid plots at y-origin
 
@@ -4437,6 +4441,7 @@ class Layout(BaseLayout):
         else:
             v_edge = 2 * np.floor(self.axes.edge_width / 2)
         ws_row = max(0, self.ws_row + v_edge)
+        print(ws_row)
 
         # Apply
         self.fig.obj.subplots_adjust(left=self.axes.position[0],
