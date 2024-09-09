@@ -34,7 +34,8 @@ img_cp_orig = utl.rgb2bayer(imageio.imread(Path(fcp.__file__).parent / 'test_dat
 cp = utl.split_color_planes(img_cp_orig, as_dict=True)
 cp['r'] = cp['r']  * 0.5
 cp['b'] -= 50
-cp['b'][cp['b'] < 0] = 255
+cp['b'][cp['b'] < 0] = 250
+cp['b'][cp['b'] == 255] = 250
 cp['gr'][cp['gr'] < 25] = 25
 img_cp = pd.DataFrame({'Plane': cp.keys(), 'Green?': [False, True, True, False]}, index=cp)
 
@@ -96,51 +97,111 @@ def plt_col_cbar(bm=False, make_reference=False, show=False):
 
     if bm:
         return
+
     if show == False:
-        utl.unit_test_measure_axes_cols(name, 90, 300, 4, channel=0, cbar=True, alias=False)
+        utl.unit_test_measure_axes_cols(name, 90, 300, 4, cbar=True, alias=False)
 
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_col_combos(bm=False, make_reference=False, show=False):
 
+    enabled = ['1x1', '1x2', '1x3', '2x3', '3x1', '3x2', '4x2', '4x2b']
+    # enabled = ['1x3']
+
     # 1 x 1
-    name = utl.unit_test_get_img_name('col_combos_1x1', make_reference, REFERENCE)
-    fcp.imshow(img_all, ax_size=[300, 300], col='Number', label_rc_edge_width=3,
-               ax_edge_width=5, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
-               filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0"]')
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    if '1x1' in enabled:
+        name = utl.unit_test_get_img_name('col_combos_1x1', make_reference, REFERENCE)
+        fcp.imshow(img_all, ax_size=[300, 300], col='Number', label_rc_edge_width=3,
+                ax_edge_width=5, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+                filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0"]')
+
+        if show == False:
+            # Axes margin
+            utl.unit_test_measure_margin(name, 150, 150, left=10, right=10, top=10, bottom=10, alias=True)
+            # Label margin
+            utl.unit_test_measure_margin(name, 20, 150, left=10, right=10, top=10, bottom=10, alias=True)
+
+        utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 1 x 2
-    name = utl.unit_test_get_img_name('col_combos_1x2', make_reference, REFERENCE)
-    fcp.imshow(img_all, ax_size=[300, 300], col='Number', label_rc_edge_width=4,
-               ax_edge_width=6, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
-               filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0", "Image 1"]')
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    if '1x2' in enabled:
+        name = utl.unit_test_get_img_name('col_combos_1x2', make_reference, REFERENCE)
+        fcp.imshow(img_all, ax_size=[300, 300], col='Number', label_rc_edge_width=4,
+                ax_edge_width=6, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+                filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0", "Image 1"]')
+
+        if show == False:
+            # Axes margin
+            utl.unit_test_measure_margin(name, 150, 150, left=10, right=10, top=10, bottom=10, alias=True)
+            # Label margin
+            utl.unit_test_measure_margin(name, 20, 150, left=10, right=10, top=10, bottom=10, alias=True)
+            # Axes widths
+            utl.unit_test_measure_axes_cols(name, 100, 312, 2, alias=True)
+            # Label widths
+            utl.unit_test_measure_axes_cols(name, 18, 312, 2, alias=True)
+
+        utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 1 x 3
-    name = utl.unit_test_get_img_name('col_combos_1x3', make_reference, REFERENCE)
-    fcp.imshow(img_all, ax_size=[250, 250], col='Number', label_rc_edge_width=1,
-               ax_edge_width=1, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
-               filename=name.with_suffix('.png'), save=not bm, inline=False,
-               filter='Number in ["Image 0", "Image 1", "Image 5"]')
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    if '1x3' in enabled:
+        name = utl.unit_test_get_img_name('col_combos_1x3', make_reference, REFERENCE)
+        fcp.imshow(img_all, ax_size=[250, 250], col='Number', label_rc_edge_width=1,
+                ax_edge_width=1, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+                filename=name.with_suffix('.png'), save=not bm, inline=False,
+                filter='Number in ["Image 0", "Image 1", "Image 5"]')
+
+        if show == False:
+            # Axes margin
+            utl.unit_test_measure_margin(name, 150, 150, left=10, right=10, top=10, bottom=10, alias=True)
+            # Label margin
+            utl.unit_test_measure_margin(name, 12, 150, left=10, right=10, top=10, bottom=10, alias=True)
+            # Axes widths
+            utl.unit_test_measure_axes_cols(name, 100, 252, 3, alias=True)
+            # Label widths
+            utl.unit_test_measure_axes_cols(name, 14, 252, 3, alias=True)
+
+        utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 1 x 3b
-    name = utl.unit_test_get_img_name('col_combos_1x3b', make_reference, REFERENCE)
-    fcp.imshow(img_all, ax_size=[250, 250], col='Number', label_rc_edge_width=1,
-               ax_edge_width=0, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
-               filename=name.with_suffix('.png'), save=not bm, inline=False,
-               filter='Number in ["Image 0", "Image 1", "Image 5"]')
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    if '1x3b' in enabled:
+        name = utl.unit_test_get_img_name('col_combos_1x3b', make_reference, REFERENCE)
+        fcp.imshow(img_all, ax_size=[250, 250], col='Number', label_rc_edge_width=1,
+                ax_edge_width=0, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+                filename=name.with_suffix('.png'), save=not bm, inline=False,
+                filter='Number in ["Image 0", "Image 1", "Image 5"]')
+
+        if show == False:
+            # Axes margin
+            utl.unit_test_measure_margin(name, 150, 150, left=10, right=10, bottom=10, alias=False)
+            # Label margin
+            utl.unit_test_measure_margin(name, 12, 150, left=10, right=10, top=10, alias=True)
+            # Axes widths
+            utl.unit_test_measure_axes_cols(name, 100, 250, 3, alias=False)
+            # Label widths
+            utl.unit_test_measure_axes_cols(name, 14, 250, 3, alias=True)
+
+        utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 1 x 3c
-    name = utl.unit_test_get_img_name('col_combos_1x3c', make_reference, REFERENCE)
-    fcp.imshow(img_all, ax_size=[250, 250], col='Number', label_rc_edge_width=0,
-               ax_edge_width=0, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
-               filename=name.with_suffix('.png'), save=not bm, inline=False,
-               filter='Number in ["Image 0", "Image 1", "Image 5"]')
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    if '1x3c' in enabled:
+        name = utl.unit_test_get_img_name('col_combos_1x3c', make_reference, REFERENCE)
+        fcp.imshow(img_all, ax_size=[250, 250], col='Number', label_rc_edge_width=0,
+                ax_edge_width=0, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+                filename=name.with_suffix('.png'), save=not bm, inline=False,
+                filter='Number in ["Image 0", "Image 1", "Image 5"]')
+
+        if show == False:
+            # Axes margin
+            utl.unit_test_measure_margin(name, 150, 150, left=10, right=10, bottom=10, alias=False)
+            # Label margin
+            utl.unit_test_measure_margin(name, 12, 150, left=10, right=10, top=10, alias=False)
+            # Axes widths
+            utl.unit_test_measure_axes_cols(name, 100, 250, 3, alias=False)
+            # Label widths
+            utl.unit_test_measure_axes_cols(name, 14, 250, 3, alias=False)
+
+        utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_col_shared_cbar(bm=False, make_reference=False, show=False):
@@ -170,6 +231,14 @@ def plt_col_share_z(bm=False, make_reference=False, show=False):
     if bm:
         return
 
+    if show == False:
+        # Axes widths
+        utl.unit_test_measure_axes_cols(name, 54, 300, 4, alias=False, cbar=True)
+        # Label widths
+        utl.unit_test_measure_axes_cols(name, 13, 300, 4, alias=False)
+        # Margins
+        utl.unit_test_measure_margin(name, 70, 150, left=10, right=81, top=10, bottom=10, alias=False)
+
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
@@ -182,6 +251,15 @@ def plt_col_z_user_range(bm=False, make_reference=False, show=False):
 
     if bm:
         return
+
+    if show == False:
+        # Axes widths
+        utl.unit_test_measure_axes_cols(name, 54, 300, 4, alias=False, cbar=True)
+        # Label widths
+        utl.unit_test_measure_axes_cols(name, 13, 300, 4, alias=False)
+        # Margins
+        utl.unit_test_measure_margin(name, 70, 150, left=10, right=88, top=10, bottom=10, alias=False)
+
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
@@ -330,43 +408,104 @@ def plt_imshow_zoomed(bm=False, make_reference=False, show=False):
 
 def plt_row_combos(bm=False, make_reference=False, show=False):
 
+    enabled = ['1x1', '2x1', '3x1', '3x1b', '3x1c']
+    # enabled = ['3x1c']
+
     # 1 x 1
-    name = utl.unit_test_get_img_name('row_combos_1x1', make_reference, REFERENCE)
-    fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=3,
-               ax_edge_width=5, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
-               filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0"]')
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    if '1x1' in enabled:
+        name = utl.unit_test_get_img_name('row_combos_1x1', make_reference, REFERENCE)
+        fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=3,
+                ax_edge_width=5, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+                filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0"]')
+
+        if show == False:
+            # Axes margin
+            utl.unit_test_measure_margin(name, 150, 150, left=10, right=10, top=10, bottom=10, alias=True)
+            # Label margin
+            utl.unit_test_measure_margin(name, None, 310, top=10, bottom=10, alias=True)
+            # Axes widths
+            utl.unit_test_measure_axes_cols(name, 150, 260, 1, alias=True)
+
+        utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 2 x 1
-    name = utl.unit_test_get_img_name('row_combos_2x1', make_reference, REFERENCE)
-    fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=4,
-               ax_edge_width=6, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
-               filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0", "Image 1"]')
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    if '2x1' in enabled:
+        name = utl.unit_test_get_img_name('row_combos_2x1', make_reference, REFERENCE)
+        fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=4,
+                ax_edge_width=6, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+                filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0", "Image 1"]')
+
+        if show == False:
+            # Axes margin
+            utl.unit_test_measure_margin(name, 150, 150, left=10, right=10, top=10, bottom=10, alias=True)
+            # Label margin
+            utl.unit_test_measure_margin(name, 20, 310, left=10, right=10, top=10, bottom=10, alias=True)
+            # Axes widths
+            utl.unit_test_measure_axes_rows(name, 'c', 262, 2, alias=True)
+            # Label widths
+            utl.unit_test_measure_axes_rows(name, 313, 262, 2, alias=True)
+
+        utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 3 x 1
-    name = utl.unit_test_get_img_name('row_combos_3x1', make_reference, REFERENCE)
-    fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=1,
-               ax_edge_width=1, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
-               filename=name.with_suffix('.png'), save=not bm, inline=False,
-               filter='Number in ["Image 0", "Image 1", "Image 5"]')
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    if '3x1' in enabled:
+        name = utl.unit_test_get_img_name('row_combos_3x1', make_reference, REFERENCE)
+        fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=1,
+                ax_edge_width=1, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+                filename=name.with_suffix('.png'), save=not bm, inline=False,
+                filter='Number in ["Image 0", "Image 1", "Image 5"]')
+
+        if show == False:
+            # Axes margin
+            utl.unit_test_measure_margin(name, 150, 150, left=10, right=10, top=10, bottom=10, alias=True)
+            # Label margin
+            utl.unit_test_measure_margin(name, None, 300, left=10, right=10, top=10, bottom=10, alias=True)
+            # Axes widths
+            utl.unit_test_measure_axes_rows(name, 'c', 252, 3, alias=True)
+            # Label widths
+            utl.unit_test_measure_axes_rows(name, 300, 252, 3, alias=True)
+
+        utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 3 x 1b
-    name = utl.unit_test_get_img_name('row_combos_3x1b', make_reference, REFERENCE)
-    fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=1,
-               ax_edge_width=0, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
-               filename=name.with_suffix('.png'), save=not bm, inline=False,
-               filter='Number in ["Image 0", "Image 1", "Image 5"]')
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    if '3x1b' in enabled:
+        name = utl.unit_test_get_img_name('row_combos_3x1b', make_reference, REFERENCE)
+        fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=1,
+                ax_edge_width=0, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+                filename=name.with_suffix('.png'), save=not bm, inline=False,
+                filter='Number in ["Image 0", "Image 1", "Image 5"]')
+
+        if show == False:
+            # Axes margin
+            utl.unit_test_measure_margin(name, 150, 150, left=10, top=10, bottom=10, alias=False)
+            # Label margin
+            utl.unit_test_measure_margin(name, None, 300, left=10, right=10, top=10, bottom=10, alias=True)
+            # Axes widths
+            utl.unit_test_measure_axes_rows(name, 'c', 250, 3, alias=False)
+            # Label widths
+            utl.unit_test_measure_axes_rows(name, 300, 250, 3, alias=True)
+
+        utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 3 x 1c
-    name = utl.unit_test_get_img_name('row_combos_3x1c', make_reference, REFERENCE)
-    fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=0,
-               ax_edge_width=0, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
-               filename=name.with_suffix('.png'), save=not bm, inline=False,
-               filter='Number in ["Image 0", "Image 1", "Image 5"]')
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    if '3x1c' in enabled:
+        name = utl.unit_test_get_img_name('row_combos_3x1c', make_reference, REFERENCE)
+        fcp.imshow(img_all, ax_size=[250, 250], row='Number', label_rc_edge_width=0,
+                ax_edge_width=0, ax_edge_color='#ff0000', label_rc_edge_color='#0000ff',
+                filename=name.with_suffix('.png'), save=not bm, inline=False,
+                filter='Number in ["Image 0", "Image 1", "Image 5"]')
+
+        if show == False:
+            # Axes margin
+            utl.unit_test_measure_margin(name, 150, 150, left=10, top=10, bottom=10, alias=False)
+            # Label margin
+            utl.unit_test_measure_margin(name, 150, 296, left=10, right=10, top=10, bottom=10, alias=False)
+            # Axes widths
+            utl.unit_test_measure_axes_rows(name, 'c', 250, 3, alias=False)
+            # Label widths
+            utl.unit_test_measure_axes_rows(name, 296, 250, 3, alias=False)
+
+        utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_share_col(bm=False, make_reference=False, show=False):
@@ -379,6 +518,14 @@ def plt_share_col(bm=False, make_reference=False, show=False):
 
     if bm:
         return
+
+    if show == False:
+        utl.unit_test_measure_axes_rows(name, 80, 225, 2, alias=False)
+        utl.unit_test_measure_axes_cols(name, 150, 300, 1, alias=False)
+        utl.unit_test_measure_axes_cols(name, 440, 300, 1, alias=False)
+        utl.unit_test_measure_axes_cols(name, 680, 300, 1, alias=False)
+        utl.unit_test_measure_axes_cols(name, 920, 300, 1, alias=False)
+
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
@@ -393,6 +540,22 @@ def plt_share_row(bm=False, make_reference=False, show=False):
 
     if bm:
         return
+
+    if show == False:
+        # Label margins
+        utl.unit_test_measure_margin(name, 48, None, left=10, right=161, alias=False)
+        # Label widths
+        utl.unit_test_measure_axes_cols(name, 48, 300, 4, alias=False)
+        # Axes margins
+        utl.unit_test_measure_margin(name, 180, None, left=10, right=10, alias=False)
+        # Axes widths
+        utl.unit_test_measure_axes_cols(name, 180, 300, 2, alias=False)
+        # Axes heights
+        utl.unit_test_measure_axes_rows(name, 110, 225, 1, alias=False)
+        utl.unit_test_measure_axes_rows(name, 480, 225, 1, alias=False)
+        utl.unit_test_measure_axes_rows(name, 860, 225, 1, alias=False)
+        utl.unit_test_measure_axes_rows(name, 1220, 225, 1, alias=False)
+
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
@@ -405,13 +568,24 @@ def plt_wrap(bm=False, make_reference=False, show=False):
 
     if bm:
         return
+
+    if show == False:
+        # Margins
+        utl.unit_test_measure_margin(name, 100, 100, left=10, right=10, top=10, bottom=10, alias=False)
+        # Label widths
+        utl.unit_test_measure_axes_cols(name, 42, 300 * 2, 1, alias=False)
+        # Axes widths
+        utl.unit_test_measure_axes_cols(name, 180, 300 * 2, 1, alias=False)
+        # Title width
+        utl.unit_test_measure_axes_cols(name, 13, 300 * 2, 1, alias=False)
+
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_wrap_combos(bm=False, make_reference=False, show=False):
 
-    enabled = ['1x1', '1x2', '1x3', '2x3', '3x1', '3x2', '4x2']
-    # enabled = ['2x3', '3x2']
+    enabled = ['1x1', '1x2', '1x3', '2x3', '3x1', '3x2', '4x2', '4x2b']
+    # enabled = ['4x2b']
 
     img_all = pd.DataFrame()
     img_test = pd.DataFrame(utl.img_grayscale(img_cat_orig).to_numpy()[300:600, 800:1100])
@@ -429,6 +603,16 @@ def plt_wrap_combos(bm=False, make_reference=False, show=False):
         fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
                 ax_edge_width=0, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
                 filename=name.with_suffix('.png'), save=not bm, inline=False, filter='Number in ["Image 0"]')
+
+        if show == False:
+            # Axes margin
+            utl.unit_test_measure_margin(name, 150, 150, left=10, right=10, top=10, bottom=10, alias=False)
+            # Axes width
+            utl.unit_test_measure_axes_cols(name, 100, 250, 1, alias=False)
+            # Label width
+            utl.unit_test_measure_margin(name, 45, None, left=10, right=10, alias=False)
+            # Title margin
+            utl.unit_test_measure_margin(name, 13, None, left=10, right=10, alias=False)
         utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 1 x 2
@@ -438,6 +622,16 @@ def plt_wrap_combos(bm=False, make_reference=False, show=False):
                    ax_edge_width=3, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', title_wrap_edge_width=3,
                    filename=name.with_suffix('.png'), save=not bm, inline=False, label_wrap_edge_width=7,
                    filter='Number in ["Image 0", "Image 5"]', ws_col=20)
+
+        if show == False:
+            # Axes margin
+            utl.unit_test_measure_margin(name, 150, 150, left=10, right=10, top=10, bottom=10, alias=True)
+            # Axes width
+            utl.unit_test_measure_axes_cols(name, 175, 256, 2, alias=True)
+            # Label width
+            utl.unit_test_measure_axes_cols(name, 58, 256, 2, alias=True)
+            # Title margin
+            utl.unit_test_measure_margin(name, 17, None, left=10, right=10, alias=True)
         utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 1 x 3
@@ -447,6 +641,16 @@ def plt_wrap_combos(bm=False, make_reference=False, show=False):
                    ax_edge_width=2, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
                    filename=name.with_suffix('.png'), save=not bm, inline=False, title_wrap_edge_width=4,
                    filter='Number in ["Image 0", "Image 2", "Image 4"]', label_wrap_edge_width=3)
+
+        if show == False:
+            # Axes margin
+            utl.unit_test_measure_margin(name, 150, 150, left=10, right=10, top=10, bottom=10, alias=True)
+            # Axes width
+            utl.unit_test_measure_axes_cols(name, 175, 758, 1, alias=True)
+            # Label width
+            utl.unit_test_measure_axes_cols(name, 58, 758, 1, alias=True)
+            # Title margin
+            utl.unit_test_measure_margin(name, 17, None, left=10, right=10, alias=True)
         utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 2 x 3
@@ -454,8 +658,20 @@ def plt_wrap_combos(bm=False, make_reference=False, show=False):
         name = utl.unit_test_get_img_name('wrap_combos_2x3', make_reference, REFERENCE)
         fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=3, title_wrap_edge_color='aa00ff',
                    ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
-                   filename=name.with_suffix('.png'), save=not bm, inline=False, label_edge_width=2,
+                   filename=name.with_suffix('.png'), save=not bm, inline=False, #label_edge_width=2,
                    title_wrap_edge_width=3)
+
+        if show == False:
+            # Axes margin
+            utl.unit_test_measure_margin(name, 150, 150, left=10, right=10, top=10, bottom=10, alias=True)
+            # Axes width
+            utl.unit_test_measure_axes_cols(name, 175, 754, 1, alias=True)
+            # Axes + label + title height
+            utl.unit_test_measure_axes_rows(name, 300, 250 * 2 + 4 + 2 * 30 + 30 + 6, 1, alias=True)
+            # Label width
+            utl.unit_test_measure_axes_cols(name, 50, 754, 1, alias=False)
+            # Title margin
+            utl.unit_test_measure_margin(name, 17, None, left=10, right=10, alias=True)
         utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 3 x 1
@@ -465,6 +681,15 @@ def plt_wrap_combos(bm=False, make_reference=False, show=False):
                    ax_edge_width=2, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
                    filename=name.with_suffix('.png'), save=not bm, inline=False,
                    filter='Number in ["Image 0", "Image 2", "Image 4"]')
+        if show == False:
+            # Axes margin
+            utl.unit_test_measure_margin(name, 150, 150, left=10, right=10, alias=True)
+            # Label margin
+            utl.unit_test_measure_margin(name, 45, None, left=10, right=10, alias=False)
+            # Title margin
+            utl.unit_test_measure_margin(name, 13, None, left=10, right=10, alias=False)
+            # Axes + label + title height
+            utl.unit_test_measure_axes_rows(name, 70, 250 * 3 + 2 * 6 + 3 * 30 + 30 - 1, 1, alias=True)
         utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 3 x 2
@@ -474,6 +699,19 @@ def plt_wrap_combos(bm=False, make_reference=False, show=False):
                    ax_edge_width=4, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
                    filename=name.with_suffix('.png'), save=not bm, inline=False, cmap=['inferno', 'gray'],
                    share_col=True, label_wrap_edge_width=3, title_wrap_edge_width=2)
+
+        if show == False:
+            # Axes margin
+            utl.unit_test_measure_margin(name, 150, 150, left=10, right=10, top=10, bottom=10, alias=True)
+            # Axes width
+            utl.unit_test_measure_axes_cols(name, 175, 250 * 2 + 4 * 3, 1, alias=True)
+            # Axes + label + title height
+            utl.unit_test_measure_axes_rows(name, 300, 250 * 3 + 4 * 6 + 3 * 30 + 6 * 3 + 30 + 4, 1, alias=True)
+            # Label width
+            utl.unit_test_measure_axes_cols(name, 50, 250 * 2 + 4 * 3, 1, alias=True)
+            # Title margin
+            utl.unit_test_measure_margin(name, 17, None, left=10, right=10, alias=True)
+
         utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 4 x 2
@@ -483,20 +721,47 @@ def plt_wrap_combos(bm=False, make_reference=False, show=False):
                    ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
                    filename=name.with_suffix('.png'), save=not bm, inline=False, cmap=['gray', 'inferno'],
                    share_row=True)
+
+        if show == False:
+            # Axes margin
+            utl.unit_test_measure_margin(name, 150, 150, left=10, right=10, bottom=10, alias=True)
+            # Axes width
+            utl.unit_test_measure_axes_cols(name, 175, 250 * 4 + 5, 1, alias=True)
+            # Axes + label + title height
+            utl.unit_test_measure_axes_rows(name, 300, 250 * 2 + 4 + 2 * 30 + 30 - 1, 1, alias=True)
+            # Label width
+            utl.unit_test_measure_axes_cols(name, 42, 250 * 4 + 5, 1, alias=False)
+            # Title margin
+            utl.unit_test_measure_margin(name, 17, None, left=10, right=10, alias=False)
+
         utl.unit_test_options(make_reference, show, name, REFERENCE)
 
+    if '4x2b' in enabled:
         name = utl.unit_test_get_img_name('wrap_combos_4x2_no_edge', make_reference, REFERENCE)
         fcp.imshow(img_all, ax_size=[250, 250], wrap='Number', ncol=4, title_wrap_edge_color='aa00ff',
                    ax_edge_width=0, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff',
                    filename=name.with_suffix('.png'), save=not bm, inline=False, cmap=['gray', 'inferno'],
                    share_row=True)
+
+        if show == False:
+            # Axes margin
+            utl.unit_test_measure_margin(name, 150, 150, left=10, right=10, bottom=10, alias=False)
+            # Axes width
+            utl.unit_test_measure_axes_cols(name, 175, 250 * 4, 1, alias=False)
+            # Axes + label + title height
+            utl.unit_test_measure_axes_rows(name, 300, 250 * 2 + 2 * 30 + 30, 1, alias=False)
+            # Label width
+            utl.unit_test_measure_axes_cols(name, 42, 250 * 4, 1, alias=False)
+            # Title margin
+            utl.unit_test_measure_margin(name, 17, None, left=10, right=10, alias=False)
+
         utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_wrap_combos_cbar(bm=False, make_reference=False, show=False):
 
     enabled = ['1x1', '1x2', '1x3', '2x3', '3x1', '3x2', '4x2']
-    # enabled = ['1x2', '1x3']
+    # enabled = ['3x2']
 
     img_all = pd.DataFrame()
     img_test = pd.DataFrame(utl.img_grayscale(img_cat_orig).to_numpy()[300:600, 800:1100])
@@ -512,6 +777,15 @@ def plt_wrap_combos_cbar(bm=False, make_reference=False, show=False):
                    ax_edge_width=7, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
                    filename=name.with_suffix('.png'), title_wrap_edge_width=2,
                    label_z_edge_width=1, label_z_edge_color='#555555', save=not bm, inline=False, filter='Number in ["Image 0"]')
+
+        if show == False:
+            # Axes
+            utl.unit_test_measure_margin(name, 150, None, left=10, alias=True)
+            # Label
+            utl.unit_test_measure_margin(name, 50, None, left=10, alias=False)
+            # Title
+            utl.unit_test_measure_margin(name, 25, 150, left=10, top=10, bottom=10, alias=True)
+
         utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 1 x 2
@@ -521,6 +795,19 @@ def plt_wrap_combos_cbar(bm=False, make_reference=False, show=False):
                    ax_edge_width=5, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
                    filename=name.with_suffix('.png'), save=not bm, inline=False,
                    filter='Number in ["Image 0", "Image 5"]', tick_labels_major=True)
+
+        if show == False:
+            # Axes
+            utl.unit_test_measure_margin(name, 100, None, left=44, alias=True)
+            # Label
+            utl.unit_test_measure_margin(name, 50, None, left=44, alias=False)
+            # Title
+            utl.unit_test_measure_margin(name, 25, 150, left=44, top=10, alias=False)
+            # Label widths
+            utl.unit_test_measure_axes_cols(name, 42, 260, 2, alias=False)
+            # Axes widths
+            utl.unit_test_measure_axes_cols(name, 100, 260, 2, cbar=True, alias=True)
+
         utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 1 x 3
@@ -530,6 +817,19 @@ def plt_wrap_combos_cbar(bm=False, make_reference=False, show=False):
                    ax_edge_width=3, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
                    filename=name.with_suffix('.png'), save=not bm, inline=False, title_wrap_edge_width=4,
                    filter='Number in ["Image 0", "Image 2", "Image 4"]', label_wrap_edge_width=3)
+
+        if show == False:
+            # Axes
+            utl.unit_test_measure_margin(name, 100, None, left=10, alias=True)
+            # Label
+            utl.unit_test_measure_margin(name, 50, None, left=10, alias=True)
+            # Title
+            utl.unit_test_measure_margin(name, 25, 150, left=10, top=10, alias=True)
+            # Label widths
+            utl.unit_test_measure_axes_cols(name, 55, 256, 3, alias=True)
+            # Axes widths
+            utl.unit_test_measure_axes_cols(name, 150, 256, 3, cbar=True, alias=True)
+
         utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 2 x 3
@@ -539,6 +839,17 @@ def plt_wrap_combos_cbar(bm=False, make_reference=False, show=False):
                    ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
                    filename=name.with_suffix('.png'), save=not bm, inline=False, zmin=[50, 100], zmax=[200, 300],
                    label_edge_width=2, title_wrap_edge_width=3)
+
+        if show == False:
+            # Axes
+            utl.unit_test_measure_margin(name, 150, None, left=10, alias=True)
+            # Label
+            utl.unit_test_measure_margin(name, 50, None, left=10, right=122, alias=False)
+            # Title
+            utl.unit_test_measure_margin(name, 25, 150, left=10, top=10, bottom=10, right=122, alias=True)
+            # Label widths
+            utl.unit_test_measure_axes_cols(name, 50, 252, 3, alias=False)
+
         utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 3 x 1
@@ -557,6 +868,17 @@ def plt_wrap_combos_cbar(bm=False, make_reference=False, show=False):
                    ax_edge_width=1, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
                    filename=name.with_suffix('.png'), save=not bm, inline=False, cmap=['inferno', 'gray'],
                    share_col=True, label_wrap_edge_width=3, title_wrap_edge_width=2)
+
+        if show == False:
+            # Axes
+            utl.unit_test_measure_margin(name, 150, None, left=10, alias=True)
+            # Label
+            utl.unit_test_measure_margin(name, 50, None, left=10, right=120, alias=True)
+            # Title
+            utl.unit_test_measure_margin(name, 25, 150, left=10, top=10, bottom=10, right=120, alias=True)
+            # Label widths
+            utl.unit_test_measure_axes_cols(name, 50, 252, 2, alias=True)
+
         utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 4 x 2
@@ -566,6 +888,17 @@ def plt_wrap_combos_cbar(bm=False, make_reference=False, show=False):
                    ax_edge_width=0, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
                    filename=name.with_suffix('.png'), save=not bm, inline=False, cmap=['gray', 'inferno'],
                    share_row=True, title_wrap_edge_width=0, label_wrap_edge_width=0)
+
+        if show == False:
+            # Axes
+            utl.unit_test_measure_margin(name, 150, None, left=10, alias=False)
+            # Label
+            utl.unit_test_measure_margin(name, 50, None, left=10, right=120, alias=False)
+            # Title
+            utl.unit_test_measure_margin(name, 25, 150, left=10, top=10, bottom=10, right=120, alias=False)
+            # Label widths
+            utl.unit_test_measure_axes_cols(name, 42, 250, 4, alias=False)
+
         utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 

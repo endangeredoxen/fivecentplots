@@ -1528,7 +1528,7 @@ def unit_test_measure_axes(img_path: pathlib.Path, row: Union[int, str, None], c
 
 
 def unit_test_measure_axes_cols(img_path: pathlib.Path, row: Union[int, str, None], width: int, num_cols: int,
-                                channel: int=1, target_pixel_value: int=255, alias=True, cbar: bool=False):
+                                target_pixel_value: int=255, alias=True, cbar: bool=False):
     """
     Get margin sizes from pixel values.  Only works if surrounding border pixels are the same color but different
     values than the axes area.
@@ -1537,7 +1537,7 @@ def unit_test_measure_axes_cols(img_path: pathlib.Path, row: Union[int, str, Non
         img_path: path the test image
         row: row index on which to measure (should be clear of labels, legends, ticks etc)
         width: expected axes width for each column
-        channel: which color channel to use (RGB image only)
+        num_cols: number of subplot columns
         cbar: skip the cbars if enabled
         target_pixel_value: pixel value to look for (whitespace 255 typically)
         alias: skip up to 1 pixel due to axes edge aliasing
@@ -1545,10 +1545,10 @@ def unit_test_measure_axes_cols(img_path: pathlib.Path, row: Union[int, str, Non
         Note: for np.diff statements, need to subtract 1
     """
     # Test width of all column images
-    img = imageio.imread(img_path)[:, :, channel]
+    img = imageio.imread(img_path)
     if row == 'c':
         row = int(img.shape[0] / 2)
-    dd = np.diff(np.concatenate(([False], img[row]==target_pixel_value, [False])).astype(int))
+    dd = np.diff(np.concatenate(([False], np.all(img[row] == target_pixel_value, axis=-1), [False])).astype(int))
     trans1 = np.argwhere(dd==-1).T[0]
     trans2 = np.argwhere(dd==1).T[0]
     if not cbar:
@@ -1557,6 +1557,34 @@ def unit_test_measure_axes_cols(img_path: pathlib.Path, row: Union[int, str, Non
         widths = (trans2[1:] - trans1[:-1])[::2] - width - (2 if alias else 0)
     assert len(widths[widths==0]) == num_cols, \
         f'expected {num_cols} columns with axes width {width} | detected: {widths + width}'
+
+
+def unit_test_measure_axes_rows(img_path: pathlib.Path, col: Union[int, str, None], height: int, num_rows: int,
+                                target_pixel_value: int=255, alias=True):
+    """
+    Get margin sizes from pixel values.  Only works if surrounding border pixels are the same color but different
+    values than the axes area.
+
+    Args:
+        img_path: path the test image
+        col: column index on which to measure (should be clear of labels, legends, ticks etc)
+        height: expected axes height for each column
+        num_rows: number of subplot rows
+        target_pixel_value: pixel value to look for (whitespace 255 typically)
+        alias: skip up to 1 pixel due to axes edge aliasing
+
+        Note: for np.diff statements, need to subtract 1
+    """
+    # Test width of all column images
+    img = imageio.imread(img_path)
+    if col == 'c':
+        col = int(img.shape[1] / 2)
+    dd = np.diff(np.concatenate(([False], np.all(img[:, col] == target_pixel_value, axis=-1), [False])).astype(int))
+    trans1 = np.argwhere(dd==-1).T[0]
+    trans2 = np.argwhere(dd==1).T[0]
+    heights = (trans2[1:] - trans1[:-1]) - height - (2 if alias else 0)
+    assert len(heights[heights==0]) == num_rows, \
+        f'expected {num_rows} rows with axes height {height} | detected: {heights + height}'
 
 
 def unit_test_debug_margins(img_path: pathlib.Path):
@@ -1592,7 +1620,7 @@ def unit_test_debug_margins(img_path: pathlib.Path):
 
 def unit_test_measure_margin(img_path: pathlib.Path, row: Union[int, str, None], col: Union[int, None],
                              left: Union[int, None]=None, right: Union[int, None]=None, top: Union[int, None]=None,
-                             bottom: Union[int, None]=None, channel: int=1, alias=True):
+                             bottom: Union[int, None]=None, alias=True, target_pixel_value=255):
     """
     Get margin sizes from pixel values.  Only works if surrounding border pixels are the same color but different
     values than the axes area.
@@ -1605,36 +1633,46 @@ def unit_test_measure_margin(img_path: pathlib.Path, row: Union[int, str, None],
         right: target right margin; if None skip measurement
         top: target top margin; if None skip measurement
         bottom: target bottom margin; if None skip measurement
-        channel: which color channel to use (RGB image only)
         alias: skip up to 1 pixel due to axes edge aliasing
 
         Note: for np.diff statements, need to subtract 1
     """
     img = imageio.imread(img_path)
-    if len(img.shape) == 3:
-        img = img[:, :, channel]
 
     if row:
         if row == 'c':
             row = int(img.shape[0] / 2)
-        row = img[row, :]
+
+        # Find the transitions from the target pixel to something else
+        tps = np.where(~(img[row, :]==target_pixel_value).all(axis=1))[0]
+
+        if len(tps) == 0:
+            raise ValueError('all pixels in specified row match the target pixel')
+
+        # Get column indexes are not preceeded by same value
         if left:
-            assert (np.diff(row)!=0).argmax(axis=0) + 1 == left - (1 if alias else 0), \
-               f'expected left margin: {left} | actual: {(np.diff(row)!=0).argmax(axis=0) + 1 + (1 if alias else 0)}'
+            assert tps[0] == left - (1 if alias else 0), \
+               f'expected left margin: {left} | actual: {tps[0] + (1 if alias else 0)}'
         if right:
-            assert (np.diff(row[::-1])!=0).argmax(axis=0) + 1 == right - (1 if alias else 0), \
+            assert img.shape[1] - (tps[-1] + 1) == right - (1 if alias else 0), \
                f'expected right margin: {right} | ' + \
-               f'actual: {(np.diff(row[::-1])!=0).argmax(axis=0) + 1 + (1 if alias else 0)}'
+               f'actual: {img.shape[1] - (tps[-1] + 1) + (1 if alias else 0)}'
     if col:
         if col == 'c':
             col = int(img.shape[1] / 2)
-        col = img[:, col]
+
+        # Find the transitions from the target pixel to something else
+        tps = np.where(~(img[:, col]==target_pixel_value).all(axis=1))[0]
+
+        if len(tps) == 0:
+            raise ValueError('all pixels in specified column match the target pixel')
+
         if top:
-            assert (np.diff(col)!=0).argmax(axis=0) + 1 == top - (1 if alias else 0), \
-               f'expected top margin: {top} | actual: {(np.diff(col)!=0).argmax(axis=0) + 1 + (1 if alias else 0)}'
+            assert tps[0] == top - (1 if alias else 0), \
+               f'expected top margin: {top} | actual: {tps[0] + (1 if alias else 0)}'
         if bottom:
-            assert (np.diff(col[::-1])!=0).argmax(axis=0) + 1 == bottom - (1 if alias else 0), \
-               f'expected bottom: {bottom} | actual: {(np.diff(col[::-1])!=0).argmax(axis=0) + 1 + (1 if alias else 0)}'
+            assert img.shape[0] - (tps[-1] + 1) == bottom - (1 if alias else 0), \
+               f'expected bottom: {bottom} | actual: {img.shape[0] - (tps[-1] + 1) + (1 if alias else 0)}'
 
 
 def unit_test_make_all(reference: pathlib.Path, name: str, start: Union[str, None]=None, stop: Union[str, None]=None):
@@ -1648,8 +1686,13 @@ def unit_test_make_all(reference: pathlib.Path, name: str, start: Union[str, Non
     """
     if not reference.exists():
         os.makedirs(reference)
-    members = inspect.getmembers(name)
-    members = sorted([f for f in members if 'plt_' in f[0]])
+    members_ = inspect.getmembers(name)
+    members = sorted([f for f in members_ if 'plt_' in f[0]])
+    if len(members) == 0:
+        members = sorted([f for f in members_ if 'test_' in f[0]])
+    if len(members) == 0:
+        print('no test functions found')
+        return
     if start is not None:
         idx_found = [i for (i, f) in enumerate(members) if start in f[0]]
         if len(idx_found) > 0:
@@ -1674,8 +1717,13 @@ def unit_test_show_all(only_fails: bool, reference: pathlib.Path, name: str, sta
     """
     if not reference.exists():
         os.makedirs(reference)
-    members = inspect.getmembers(name)
-    members = sorted([f for f in members if 'plt_' in f[0]])
+    members_ = inspect.getmembers(name)
+    members = sorted([f for f in members_ if 'plt_' in f[0]])
+    if len(members) == 0:
+        members = sorted([f for f in members_ if 'test_' in f[0]])
+    if len(members) == 0:
+        print('no test functions found')
+        return
     if start is not None:
         idx_found = [i for (i, f) in enumerate(members) if start in f[0]]
         if len(idx_found) > 0:

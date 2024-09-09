@@ -167,7 +167,7 @@ def plt_other_curve_fitting(bm=False, make_reference=False, show=False):
 
     if show == False:
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 1, alias=True)
-        utl.unit_test_measure_margin(name, 110, 370, left=83, top=43, bottom=76, right=10,
+        utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76, right=10,
                                      alias=True)
 
     utl.unit_test_options(make_reference, show, name, REFERENCE)
@@ -187,7 +187,7 @@ def plt_other_curve_fitting2(bm=False, make_reference=False, show=False):
 
     if show == False:
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 1, alias=True)
-        utl.unit_test_measure_margin(name, 110, 370, left=83, top=43, bottom=76, right=136,
+        utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76, right=136,
                                      alias=True)
 
     utl.unit_test_options(make_reference, show, name, REFERENCE)
@@ -207,7 +207,7 @@ def plt_other_curve_fitting3(bm=False, make_reference=False, show=False):
 
     if show == False:
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 1, alias=True)
-        utl.unit_test_measure_margin(name, 110, 370, left=83, top=43, bottom=76, right=10,
+        utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76, right=10,
                                      alias=True)
 
     utl.unit_test_options(make_reference, show, name, REFERENCE)
@@ -227,7 +227,7 @@ def plt_other_curve_fitting_range(bm=False, make_reference=False, show=False):
 
     if show == False:
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 1, alias=True)
-        utl.unit_test_measure_margin(name, 110, 370, left=83, top=43, bottom=76, right=98,
+        utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76, right=98,
                                      alias=True)
 
     utl.unit_test_options(make_reference, show, name, REFERENCE)
@@ -316,7 +316,7 @@ def plt_other_lcl_only(bm=False, make_reference=False, show=False):
 
     if show == False:
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 1, alias=True)
-        utl.unit_test_measure_margin(name, 110, 370, left=93, top=43, bottom=76, right=10,
+        utl.unit_test_measure_margin(name, 110, 370, left=94, top=43, bottom=76, right=10,
                                      alias=True)
 
     utl.unit_test_options(make_reference, show, name, REFERENCE)
@@ -336,7 +336,7 @@ def plt_other_lcl_only_inside(bm=False, make_reference=False, show=False):
 
     if show == False:
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 1, alias=True)
-        utl.unit_test_measure_margin(name, 110, 370, left=93, top=43, bottom=76, right=10,
+        utl.unit_test_measure_margin(name, 110, 370, left=94, top=43, bottom=76, right=10,
                                      alias=True)
 
     utl.unit_test_options(make_reference, show, name, REFERENCE)
@@ -355,7 +355,7 @@ def plt_other_lines(bm=False, make_reference=False, show=False):
 
     if show == False:
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 2, alias=True)
-        utl.unit_test_measure_margin(name, 110, 370, left=83, top=43, bottom=76, right=120,
+        utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76, right=120,
                                      alias=True)
 
     utl.unit_test_options(make_reference, show, name, REFERENCE)
@@ -376,7 +376,7 @@ def plt_other_lines_df(bm=False, make_reference=False, show=False):
 
     if show == False:
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 2, alias=True)
-        utl.unit_test_measure_margin(name, 110, 370, left=83, top=43, bottom=76, right=120,
+        utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76, right=120,
                                      alias=True)
 
     utl.unit_test_options(make_reference, show, name, REFERENCE)
@@ -440,7 +440,7 @@ def plt_other_ref_line(bm=False, make_reference=False, show=False):
 
     if show == False:
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 2, alias=True)
-        utl.unit_test_measure_margin(name, 110, 370, left=83, top=43, bottom=76, alias=True)
+        utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76, alias=True)
 
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
@@ -460,7 +460,7 @@ def plt_other_ref_line_leg(bm=False, make_reference=False, show=False):
 
     if show == False:
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 2, alias=True)
-        utl.unit_test_measure_margin(name, 110, 370, left=83, top=43, bottom=76)
+        utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76)
 
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
@@ -497,7 +497,7 @@ def plt_other_ref_line_mult2(bm=False, make_reference=False, show=False):
 
     if show == False:
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 2, alias=True)
-        utl.unit_test_measure_margin(name, 110, 370, left=83, top=43, bottom=76, alias=True)
+        utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76, alias=True)
 
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
@@ -658,6 +658,8 @@ def plt_row(bm=False, make_reference=False, show=False):
         utl.unit_test_measure_axes(name, 70, 165, 227, 227, 1, alias=True)
         # Row label width
         utl.unit_test_measure_axes(name, 70, None, 30, None, 1, skip=300, alias=False)
+        # Row label height
+        utl.unit_test_measure_axes_rows(name, 334, 227, 3, alias=False)
         # Margins
         utl.unit_test_measure_margin(name, 680, 105, left=70, top=10, bottom=76, alias=True)
         utl.unit_test_measure_margin(name, 680, 105, right=119, alias=False)
@@ -693,7 +695,7 @@ def plt_row_x_column(bm=False, make_reference=False, show=False):
 
     if show == False:
         utl.unit_test_measure_axes_cols(name, 340, 227, 3)
-        utl.unit_test_measure_margin(name, 430, 145, left=10, bottom=10, alias=False, channel=0)
+        utl.unit_test_measure_margin(name, 430, 145, left=10, bottom=10, alias=False)
 
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
@@ -793,7 +795,7 @@ def plt_secondary_xy_shared_x(bm=False, make_reference=False, show=False):
 
     if show == False:
         utl.unit_test_measure_axes(name, 650, 190, 402, 402, 2, alias=True)
-        utl.unit_test_measure_margin(name, 650, 285, left=83, top=10, bottom=10, alias=True)
+        utl.unit_test_measure_margin(name, 650, 285, left=84, top=10, bottom=10, alias=True)
         utl.unit_test_measure_margin(name, 650, 285, right=257, alias=False)
 
     utl.unit_test_options(make_reference, show, name, REFERENCE)
@@ -806,7 +808,11 @@ def plt_secondary_xy_shared_y(bm=False, make_reference=False, show=False):
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25', col='Die',
-             filename=name.with_suffix('.png'), save=not bm, inline=False)
+             filename=name.with_suffix('.png'), save=not bm, inline=False,
+             label_y_edge_width=1, label_y_edge_color='#000000',
+             label_y2_edge_width=1, label_y2_edge_color='#000000',
+             tick_labels_y_edge_width=1, tick_labels_y_edge_color='#000000',
+             tick_labels_y2_edge_width=1, tick_labels_y2_edge_color='#000000')
     if bm:
         return
     utl.unit_test_options(make_reference, show, name, REFERENCE)
@@ -886,7 +892,7 @@ def plt_xy_legend(bm=False, make_reference=False, show=False):
 
     if show == False:
         utl.unit_test_measure_axes(name, 150, 200, 402, 402, 2, alias=True)
-        utl.unit_test_measure_margin(name, 150, 200, left=83, top=13, bottom=76, right=119, alias=True)
+        utl.unit_test_measure_margin(name, 150, 200, left=84, top=13, bottom=76, right=119, alias=True)
 
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 

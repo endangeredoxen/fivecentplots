@@ -709,7 +709,6 @@ class Data:
         if self.ncol == 1 and self.nrow == 1:
             return
 
-        ## NOTE: THIS IS GOING TO BREAK ON DATETIME
         rr = self._range_dict()  # new range dict with updates based on subplot contents
         for ax in self.axs_on:
             # Case 1: share_[ax] = True
@@ -722,7 +721,7 @@ class Data:
                     rr[f'{ax}max'][rr[f'{ax}max'] == None] = mmax.max()
 
             # Case 2: share_row = True
-            elif self.share_row and self.row is not None and self.row != 'y':
+            elif self.share_row and self.row is not None:  # and self.row != 'y':
                 for irow in range(0, self.nrow):
                     mmin = self.ranges[f'{ax}min'][irow, :][self.ranges[f'{ax}min'][irow, :] != None]
                     if len(mmin) > 0:

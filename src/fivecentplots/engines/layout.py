@@ -2262,7 +2262,7 @@ class BaseLayout:
             self.ws_row = kwargs.get('ws_row', self.label_wrap._size[1])
             self.ws_row_def = int(self.ws_row)
             self.ws_col = kwargs.get('ws_col', 0)
-            self.ws_col_def = 0
+            self.ws_col_def = int(self.ws_col)
 
     @abc.abstractmethod
     def add_box_labels(self, ir: int, ic: int, data):
