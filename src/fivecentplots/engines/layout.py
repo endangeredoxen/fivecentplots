@@ -115,6 +115,7 @@ class BaseLayout:
         self.contour = None  # Element object for contour plot
         self.cmap = None  # color map to use in plot
         self.fig = None  # Element object for the figure
+        self.fills = None  # Element object for rectangular fills
         self.fit = None  # Element object for fit line
         self.gantt = None  # Element object for gannt chart
         self.grid_major = None  # Element object with default values for major grids not explicitly defined
@@ -224,6 +225,7 @@ class BaseLayout:
         kwargs = self._init_hist(kwargs)
         kwargs = self._init_box(kwargs)
         kwargs = self._init_axhvlines(kwargs)
+        kwargs = self._init_fills(kwargs)
         kwargs = self._init_grid(kwargs)
         kwargs = self._init_rc_labels(kwargs)
         kwargs = self._init_intervals(kwargs)
@@ -949,6 +951,58 @@ class BaseLayout:
 
         return kwargs
 
+    def _init_fills(self, kwargs: dict) -> dict:
+        """Set the rectangular fill element parameters
+
+        Args:
+            kwargs: user-defined keyword args
+
+        Returns:
+            updated kwargs
+        """
+        val = kwargs.get('fills', False);
+        if not isinstance(val, tuple):
+            vals = utl.validate_list(val)
+        else:
+            vals = [vals]
+
+        x0 = []
+        x1 = []
+        y0 = []
+        y1 = []
+        colors = []
+        alphas = []
+        labels = []
+        rows = []
+        cols = []
+        if val != False:
+            for ival, val in enumerate(vals):
+                x0 += [val[0]]
+                x1 += [val[1]]
+                y0 += [val[2]]
+                y1 += [val[3]]
+                colors += [val[4]]
+                alphas += [val[5]]
+                if len(val) > 6:
+                    labels += [val[6]]
+                else:
+                    labels += [None]
+                if len(val) > 7:
+                    rows += [val[7]]
+                else:
+                    rows += [None]
+                if len(val) > 8:
+                    cols += [val[8]]
+                else:
+                    cols += [None]
+
+        self.fills = Element('fills', self.fcpp, kwargs,
+                             on=True if kwargs.get('fills', False) else False,
+                             x0=x0, x1=x1, y0=y0, y1=y1, colors=colors, alphas=alphas, labels=labels,
+                             rows=rows, cols=cols)
+
+        return kwargs
+
     def _init_fit(self, kwargs: dict) -> dict:
         """Set the line fit element parameters
 
@@ -1384,6 +1438,7 @@ class BaseLayout:
         if kwargs['legend'] and (kwargs.get('ax_vlines') or kwargs.get('ax_hlines')):
             for lines in ['ax_hlines', 'ax_vlines']:
                 if isinstance(kwargs.get(lines), list):
+                    # think this is wrong
                     for ll in kwargs.get(lines):
                         if isinstance(ll, list) and len(ll) >= 6:
                             self.legend.values[vv[6]] = []

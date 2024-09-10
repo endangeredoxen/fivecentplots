@@ -762,6 +762,45 @@ class Layout(BaseLayout):
 
         return cbar
 
+    def add_fills(self, ir: int, ic: int, df: pd.DataFrame, data: 'Data'):
+        """Add rectangular fills to the plot.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            df: current data
+            data: fcp Data object
+
+        """
+        if not self.fills.on:
+            return
+
+        for ii in range(0, len(self.fills.x0)):
+            # Skip subplots if rows and cols defined
+            if not ((self.fills.rows[ii] is None or self.fills.rows[ii] == ir) \
+                    and (self.fills.cols[ii] is None or self.fills.cols[ii] == ic)):
+                continue
+
+            # Get the axis
+            ax = self.axes.obj[ir, ic]
+
+            # Get the x and y locations
+            x = [self.fills.x0[ii] if self.fills.x0[ii] is not None else data.ranges['xmin'][ir, ic],
+                 self.fills.x1[ii] if self.fills.x1[ii] is not None else data.ranges['xmax'][ir, ic]]
+            y0 = self.fills.y0[ii] if self.fills.y0[ii] is not None else data.ranges['ymin'][ir, ic]
+            y1 = self.fills.y1[ii] if self.fills.y1[ii] is not None else data.ranges['ymax'][ir, ic]
+
+            # Make the fill
+            fill = ax.fill_between(x, y0, y1,
+                                   facecolor=self.fills.colors[ii],
+                                   edgecolor=self.fills.colors[ii],
+                                   alpha=self.fills.alpha[ii],
+                                   label=self.fills.labels[ii]
+                                   )
+
+            if self.fills.labels[ii] is not None:
+                self.legend.add_value(self.fills.labels[ii], [fill], 'fill')
+
     def add_hvlines(self, ir: int, ic: int, df: [pd.DataFrame, None] = None):
         """Add horizontal/vertical lines.
 
@@ -1648,7 +1687,7 @@ class Layout(BaseLayout):
             self.ws_col = \
                 max(self._labtick_y - self._tick_y + self._labtick_y2 - self._tick_y2 + self.ws_col, self.ws_col)
             if self.cbar.on and not temp:
-                self.ws_col += self.ws_label_tick
+                self.ws_col += self.label_z.size[0] / 2
             self.ws_row = \
                 max(self._labtick_x - self._tick_x + self._labtick_x2 - self._tick_x2 + self.ws_row, self.ws_row)
 
@@ -2437,7 +2476,6 @@ class Layout(BaseLayout):
             reference to the colorbar object
         """
         ax = self.axes.obj[ir, ic]
-        ranges = data.ranges[ir, ic]
 
         # Convert data type
         xx = np.array(df[x])
@@ -2455,10 +2493,10 @@ class Layout(BaseLayout):
                                             method=self.contour.interp)
 
         # Deal with out of range values
-        zi = np.clip(zi, ranges['zmin'], ranges['zmax'])
+        zi = np.clip(zi, data.ranges['zmin'][ir, ic], data.ranges['zmax'][ir, ic])
 
         # Set the contours
-        levels = np.linspace(ranges['zmin'] * 0.999, ranges['zmax'] * 1.001,
+        levels = np.linspace(data.ranges['zmin'][ir, ic] * 0.999, data.ranges['zmax'][ir, ic] * 1.001,
                              self.contour.levels)
 
         # Plot
@@ -2473,7 +2511,7 @@ class Layout(BaseLayout):
         # Add a colorbar
         if self.cbar.on and (not self.cbar.shared or ic == self.ncol - 1):
             self.cbar.obj[ir, ic] = self.add_cbar(ax, cc)
-            new_ticks = cbar_ticks(self.cbar.obj[ir, ic], ranges['zmin'], ranges['zmax'])
+            new_ticks = cbar_ticks(self.cbar.obj[ir, ic], data.ranges['zmin'][ir, ic], data.ranges['zmax'][ir, ic])
             self.cbar.obj[ir, ic].set_ticks(new_ticks)
 
         # Show points
@@ -4422,7 +4460,7 @@ class Layout(BaseLayout):
 
         # wspace
         if self.cbar.on and not self.cbar.shared:
-            ws_col = self.tick_labels_major_z.size[0] - 1  # there is one extra pixel when ws_col = 0
+            ws_col = self.ws_col + self.tick_labels_major_z.size[0] - 1  # there is one extra pixel when ws_col = 0
         else:
             if self.axes.edge_width == 0 or self.ws_col == 0: # self.name in ['imshow']:
                 h_edge = -2 if self.ws_row > 0 else 0
@@ -4441,7 +4479,6 @@ class Layout(BaseLayout):
         else:
             v_edge = 2 * np.floor(self.axes.edge_width / 2)
         ws_row = max(0, self.ws_row + v_edge)
-        print(ws_row)
 
         # Apply
         self.fig.obj.subplots_adjust(left=self.axes.position[0],

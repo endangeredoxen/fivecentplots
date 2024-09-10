@@ -1562,6 +1562,10 @@ def plotter(dobj, **kwargs):
         # After subplot creation, modify certain layout.Element properties
         dd.get_data_ranges(ifig)
         for ir, ic, _ in dd.get_subplot_index():
+            # Add fills
+            layout.add_fills(ir, ic, df_rc, dd)
+            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | add_fills')
+
             # Set linear or log axes scaling
             layout.set_axes_scale(ir, ic)
             kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_scale')
