@@ -6,7 +6,7 @@ db = pdb.set_trace
 
 
 class Contour(data.Data):
-    name = 'hist'
+    name = 'contour'
     req = ['x', 'y', 'z']
     opt = []
     url = 'contour.html'

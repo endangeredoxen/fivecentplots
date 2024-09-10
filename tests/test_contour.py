@@ -42,14 +42,19 @@ def plt_basic(bm=False, make_reference=False, show=False):
     name = utl.unit_test_get_img_name('basic', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.contour(df, x='X', y='Y', z='Value', filled=False,
-                cbar=False, ax_size=[400, 400], show=SHOW, contour_width=2,
-                label_rc_font_size=12, levels=40, show_points=True,
-                filename=name.with_suffix('.png'), save=not bm, inline=False,
-                marker_edge_color='#000000', marker_fill_color='#000000')
+    fcp.contour(df, x='X', y='Y', z='Value', filled=False, cbar=False, ax_size=[400, 400], show=SHOW,
+                contour_width=2, label_rc_font_size=12, levels=40, show_points=True, filename=name.with_suffix('.png'),
+                save=not bm, inline=False, marker_edge_color='#000000', marker_fill_color='#000000')
 
     if bm:
         return
+
+    if show == False:
+        # Axis width
+        utl.unit_test_measure_axes(name, 70, None, 402, None, 1, alias=True)
+        # Margins
+        utl.unit_test_measure_margin(name, 70, 115, left=80, right=10, top=10, bottom=76, alias=True)
+
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
@@ -97,24 +102,7 @@ def plt_filled(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(REFERENCE, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(REFERENCE, name + '_master.png'), show=True)
-    elif show:
-        utl.show_file(osjoin(REFERENCE, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(REFERENCE, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(REFERENCE, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_filled_no_share(bm=False, make_reference=False, show=False):
@@ -129,24 +117,7 @@ def plt_filled_no_share(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(REFERENCE, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(REFERENCE, name + '_master.png'), show=True)
-    elif show:
-        utl.show_file(osjoin(REFERENCE, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(REFERENCE, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(REFERENCE, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_filled_separate(bm=False, make_reference=False, show=False):
@@ -157,28 +128,13 @@ def plt_filled_separate(bm=False, make_reference=False, show=False):
     fcp.contour(df, x='X', y='Y', z='Value', row='Batch', col='Experiment', filled=True,
                 cbar=True, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250, 250], show=SHOW,
                 label_rc_font_size=12, levels=40, separate_labels=True,
+                tick_labels_edge_width=1, tick_labels_edge_color='#000000',
+                label_z_edge_width=1, label_z_edge_color='#000000',
                 filename=name.with_suffix('.png'), save=not bm, inline=False)
 
     if bm:
         return
-
-    # Compare with master
-    if master:
-        return
-    elif show:
-        utl.show_file(osjoin(REFERENCE, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(REFERENCE, name + '_master.png'), show=True)
-    elif show:
-        utl.show_file(osjoin(REFERENCE, name + '_master.png'))
-        utl.show_file(name + '.png')
-        compare = utl.img_compare(name + '.png', osjoin(REFERENCE, name + '_master.png'), show=True)
-    else:
-        compare = utl.img_compare(name + '.png', osjoin(REFERENCE, name + '_master.png'))
-        if remove:
-            os.remove(name + '.png')
-
-        assert not compare
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_filled_range(bm=False, make_reference=False, show=False):
