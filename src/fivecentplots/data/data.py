@@ -699,12 +699,8 @@ class Data:
 
         return vmin, vmax
 
-    def get_data_ranges(self, fig_num):
-        """Calculate data range limits for a given figure.
-
-        Args:
-            fig_num: current figure index
-        """
+    def get_data_ranges(self):
+        """Calculate data range limits for a given figure."""
         # For only 1 subplot, ranges are already set
         if self.ncol == 1 and self.nrow == 1:
             return

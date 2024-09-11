@@ -36,18 +36,15 @@ class Gantt(data.Data):
             except:  # noqa
                 raise data.DataError('Stop column in gantt chart must be of type datetime')
 
-    def _get_data_ranges(self):
+    def get_data_ranges(self):
         """Gantt-specific data range calculator by subplot."""
         # First get any user defined range values and apply optional auto scaling
         df_fig = self.df_fig.copy()  # use temporarily for setting ranges
-        self._get_data_ranges_user_defined()
-        df_fig = self._get_auto_scale(df_fig)
-
         for ir, ic, plot_num in self.get_subplot_index():
             df_rc = self._subset(ir, ic)
 
             if len(df_rc) == 0:
-                for ax in self.axs:
+                for ax in self.axs_on:
                     self._add_range(ir, ic, ax, 'min', None)
                     self._add_range(ir, ic, ax, 'max', None)
                 continue
@@ -70,19 +67,9 @@ class Gantt(data.Data):
                 self._add_range(ir, ic, 'x', 'max', df_rc[self.x[1]].max())
             if not self.share_y:
                 self._add_range(ir, ic, 'y', 'max', len(df_rc[self.y[0]]) - 0.5)
-                # ymaxes += [len(df_rc[self.y[0]]) - 0.5]
-
-            # not used
-            self._add_range(ir, ic, 'x2', 'min', None)
-            self._add_range(ir, ic, 'y2', 'min', None)
-            self._add_range(ir, ic, 'x2', 'max', None)
-            self._add_range(ir, ic, 'y2', 'max', None)
-            self._add_range(ir, ic, 'z', 'min', None)
-            self._add_range(ir, ic, 'z', 'max', None)
 
     def get_plot_data(self, df):
-        """Gantt-specific generator to subset into discrete sets of data for
-        each curve.
+        """Gantt-specific generator to subset into discrete sets of data for each curve.
 
         Args:
             df: data subset to plot

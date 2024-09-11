@@ -1560,7 +1560,7 @@ def plotter(dobj, **kwargs):
             kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | add_text')
 
         # After subplot creation, modify certain layout.Element properties
-        dd.get_data_ranges(ifig)
+        dd.get_data_ranges()
         for ir, ic, _ in dd.get_subplot_index():
             # Add fills
             layout.add_fills(ir, ic, df_rc, dd)

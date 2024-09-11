@@ -51,31 +51,16 @@ def plt_basic(bm=False, make_reference=False, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_sort_ascending(bm=False, make_reference=False, show=False):
+def plt_col(bm=False, make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('sort_ascending', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.gantt(df, x=['Start', 'Stop'], y='Task', sort='ascending',
-              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[600, 400])
+    name = utl.unit_test_get_img_name('col', make_reference, REFERENCE)
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_style(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('style', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.gantt(df, x=['Start', 'Stop'], y='Task',
-              color_by_bar=True, gantt_edge_width=2, gantt_edge_color='#555555',
-              gantt_height=0.2, gantt_fill_alpha=1,
+    fcp.gantt(df, x=['Start', 'Stop'], y='Task', col='Category', share_x=False, share_y=False,
               filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[600, 400])
-
-    if bm:
-        return
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
@@ -106,6 +91,21 @@ def plt_legend_order_by(bm=False, make_reference=False, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
+def plt_rc_missing(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('rc_missing', make_reference, REFERENCE)
+
+    # Make the plot
+    df['Temp'] = 'Boom'
+    df.loc[5:, 'Temp'] = 'Boom2'
+    fcp.gantt(df, x=['Start', 'Stop'], y='Task', row='Category', col='Temp', share_y=False,
+              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[600, 400])
+
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
 def plt_row(bm=False, make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('row', make_reference, REFERENCE)
@@ -114,32 +114,32 @@ def plt_row(bm=False, make_reference=False, show=False):
         return
 
     # Make the plot
-    fcp.gantt(df, x=['Start', 'Stop'], y='Task', row='Category',
+    fcp.gantt(df, x=['Start', 'Stop'], y='Task', row='Category', share_y=False,
               filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[600, 400])
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_col(bm=False, make_reference=False, show=False):
+def plt_sort_ascending(bm=False, make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('col', make_reference, REFERENCE)
+    name = utl.unit_test_get_img_name('sort_ascending', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.gantt(df, x=['Start', 'Stop'], y='Task', sort='ascending',
+              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[600, 400])
 
     if bm:
         return
-
-    # Make the plot
-    fcp.gantt(df, x=['Start', 'Stop'], y='Task', col='Category', share_x=False,
-              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[600, 400])
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_rc_missing(bm=False, make_reference=False, show=False):
+def plt_style(bm=False, make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('rc_missing', make_reference, REFERENCE)
+    name = utl.unit_test_get_img_name('style', make_reference, REFERENCE)
 
     # Make the plot
-    df['Temp'] = 'Boom'
-    df.loc[5:, 'Temp'] = 'Boom2'
-    fcp.gantt(df, x=['Start', 'Stop'], y='Task', row='Category', col='Temp',
+    fcp.gantt(df, x=['Start', 'Stop'], y='Task',
+              color_by_bar=True, gantt_edge_width=2, gantt_edge_color='#555555',
+              gantt_height=0.2, gantt_fill_alpha=1,
               filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[600, 400])
 
     if bm:
