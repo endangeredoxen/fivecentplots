@@ -59,7 +59,7 @@ class NQ(data.Data):
                     for ii, (k, v) in enumerate(kwargs['imgs'].items()):
                         # Separate the RGB columns into separate images
                         for icol, col in enumerate(['R', 'G', 'B']):
-                            imgs[3 * ii + icol] = v[icol]
+                            imgs[3 * ii + icol] = v[:, :, icol]
 
                 # Update the grouping table and image DataFrame dict
                 kwargs['imgs'] = imgs
@@ -113,7 +113,7 @@ class NQ(data.Data):
                     temp = df.loc[df[self.legend] == row['Leg']]
                     del temp[self.legend]
                 temp = utl.nq(temp, self.x[0], sigma=self.sigma, tail=self.tail, step_tail=self.step_tail,
-                                step_inner=self.step_inner, percentiles=self.percentiles)
+                              step_inner=self.step_inner, percentiles=self.percentiles)
                 temp[self.legend] = row['Leg']
                 df_sub += [temp]
 

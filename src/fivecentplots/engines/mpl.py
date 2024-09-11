@@ -2599,13 +2599,13 @@ class Layout(BaseLayout):
             MPL imshow plot obj
         """
         ax = self.axes.obj[ir, ic]
-        ranges = data.ranges[ir, ic]
 
         # Make the heatmap
         plot_num = utl.plot_num(ir, ic, self.ncol) - 1
-        im = ax.imshow(df, self.cmap[plot_num], vmin=ranges['zmin'], vmax=ranges['zmax'],
+        ## NEED TO FIGURE THIS OUT --> RANGES NOT AVAILABLE YET
+        im = ax.imshow(df, self.cmap[plot_num], #vmin=data.ranges['zmin'][ir, ic], vmax=data.ranges['zmax'][ir, ic],
                        interpolation=self.heatmap.interp)
-        im.set_clim(ranges['zmin'], ranges['zmax'])
+        #im.set_clim(data.ranges['zmin'][ir, ic], data.ranges['zmax'][ir, ic])
 
         # Adjust the axes and rc label size based on the number of groups
         cols = len(df.columns)

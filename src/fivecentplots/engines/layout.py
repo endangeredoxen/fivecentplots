@@ -400,9 +400,9 @@ class BaseLayout:
             getattr(self, 'label_%s' % lab).color_alpha('edge_color', 'edge_alpha')
 
         # Turn off secondary labels
-        if not self.axes.twin_y:
+        if not self.axes.twin_y and self.label_x2 is not None:
             self.label_x2.on = False
-        if not self.axes.twin_x:
+        if not self.axes.twin_x and self.label_y2 is not None:
             self.label_y2.on = False
 
         # Twinned label colors
@@ -410,11 +410,15 @@ class BaseLayout:
             self.color_list_unique = pd.Series(self.color_list).unique()
             if self.axes.twin_x and 'label_y_font_color' not in kwargs.keys():
                 self.label_y.font_color = self.color_list_unique[0]
-            if self.axes.twin_x and 'label_y2_font_color' not in kwargs.keys():
+            if self.axes.twin_x \
+                    and 'label_y2_font_color' not in kwargs.keys() \
+                     and self.label_y2 is not None:
                 self.label_y2.font_color = self.color_list_unique[1]
             if self.axes.twin_y and 'label_x_font_color' not in kwargs.keys():
                 self.label_x.font_color = self.color_list_unique[0]
-            if self.axes.twin_y and 'label_x_font_color' not in kwargs.keys():
+            if self.axes.twin_y \
+                    and self.label_x2 is not None \
+                    and 'label_x_font_color' not in kwargs.keys():
                 self.label_x2.font_color = self.color_list_unique[1]
 
         return kwargs
