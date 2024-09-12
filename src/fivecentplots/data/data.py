@@ -666,12 +666,14 @@ class Data:
             axmin = np.min(vals[vals > 0])
             axmax = np.max(vals)
             axdelta = np.log10(axmax) - np.log10(axmin)
+        elif len(vals) == 0:
+            return None, None
         else:
             # anything else
             axmin = np.min(vals)
             axmax = np.max(vals)
             axdelta = axmax - axmin
-        if axdelta <= 0:
+        if axdelta and axdelta <= 0:
             axmin -= 0.1 * axmin
             axmax += 0.1 * axmax
 
@@ -708,6 +710,7 @@ class Data:
         rr = self._range_dict()  # new range dict with updates based on subplot contents
         for ax in self.axs_on:
             # Case 1: share_[ax] = True
+            #db()
             if getattr(self, f'share_{ax}'):
                 mmin = self.ranges[f'{ax}min'][self.ranges[f'{ax}min'] != None]
                 if len(mmin) > 0:

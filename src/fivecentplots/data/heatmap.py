@@ -57,7 +57,6 @@ class Heatmap(data.Data):
         self.ax_limit_padding = kwargs.get('ax_limit_padding', None)
 
         # Update valid axes (SHOULD ALREADY HAPPEN)
-        db()  # check
         self.axs = [f for f in ['x', 'x2', 'y', 'y2', 'z'] if getattr(self, f) not in [None, []]]
 
     def _check_xyz(self, xyz: str):
@@ -76,12 +75,10 @@ class Heatmap(data.Data):
 
         return vals
 
-    def _get_data_ranges(self):
+    def get_data_ranges(self):
         """Heatmap-specific data range calculator by subplot."""
         # First get any user defined range values and apply optional auto scaling
         df_fig = self.df_fig.copy()  # use temporarily for setting ranges
-        self._get_data_ranges_user_defined()
-        df_fig = self._get_auto_scale(df_fig)
 
         # set ranges by subset
         for ir, ic, plot_num in self.get_subplot_index():

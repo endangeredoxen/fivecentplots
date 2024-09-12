@@ -649,10 +649,10 @@ class Layout(BaseLayout):
 
         tick_top_xs = 0
         if self.tick_y_top_xs + self.tick_labels_major_y.padding > val:
-            tick_top_xs = np.ceil(self.tick_y_top_xs + self.tick_labels_major_y.padding - val)
+            tick_top_xs = np.ceil(self.tick_y_top_xs + 2 * self.tick_labels_major_y.padding - val)
 
         if self.tick_z_top_xs + self.tick_labels_major_z.padding > val:
-            tick_top_xs = max(tick_top_xs, np.ceil(self.tick_z_top_xs + self.tick_labels_major_z.padding - val))
+            tick_top_xs = max(tick_top_xs, np.ceil(self.tick_z_top_xs + 2 * self.tick_labels_major_z.padding - val))
         val += tick_top_xs
 
         return int(val)
@@ -2671,7 +2671,7 @@ class Layout(BaseLayout):
             MPL histogram plot object
             updated Data object
         """
-        hist = self.axes.obj[ir, ic].hist(df[x], bins=self.hist.bins,
+        hist = self.axes.obj[ir, ic].hist(df[x], bins=self.hist.bins, range=data.branges[ir, ic],
                                           color=self.hist.fill_color[iline],
                                           ec=self.hist.edge_color[iline],
                                           lw=self.hist.edge_width,
@@ -2691,10 +2691,10 @@ class Layout(BaseLayout):
         if self.kde.on:
             kde = scipy.stats.gaussian_kde(df[x])
             if not self.hist.horizontal:
-                x0 = np.linspace(data.ranges[ir, ic]['xmin'], data.ranges[ir, ic]['xmax'], 1000)
+                x0 = np.linspace(data.ranges['xmin'][ir, ic], data.ranges['xmax'][ir, ic], 1000)
                 y0 = kde(x0)
             else:
-                y0 = np.linspace(data.ranges[ir, ic]['ymin'], data.ranges[ir, ic]['ymax'], 1000)
+                y0 = np.linspace(data.ranges['ymin'][ir, ic], data.ranges['ymax'][ir, ic], 1000)
                 x0 = kde(y0)
             kwargs = self.make_kw_dict(self.kde)
             kwargs['color'] = RepeatedList(kwargs['color'][iline], 'color')
@@ -4373,8 +4373,12 @@ class Layout(BaseLayout):
                     position[0] = 0.01
 
                 # Move text
-                txt.set_transform(transform)
-                txt.set_position(position)
+                if isinstance(txt, mpl.text.Text):
+                    txt.set_transform(transform)
+                    txt.set_position(position)
+                else:
+                    obj.obj[ir, ic][itext].set_transform(transform)
+                    obj.obj[ir, ic][itext].set_position(position)
 
     def _set_tick_position(self):
         """Update the tick positions except when tick lines have direction=='in'."""

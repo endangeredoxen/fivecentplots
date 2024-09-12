@@ -116,6 +116,7 @@ class Histogram(data.Data):
         # Other attributes for histogram
         self.auto_scale = True
         normalize = utl.kwget(kwargs, self.fcpp, ['hist_normalize', 'normalize'], kwargs.get('normalize', False))
+        self.branges = None
         kde = utl.kwget(kwargs, self.fcpp, ['hist_kde', 'kde'], kwargs.get('kde', False))
         if normalize or kde:
             self.norm = True
@@ -131,16 +132,14 @@ class Histogram(data.Data):
         if not self.cdf:
             self.pdf = utl.kwget(kwargs, self.fcpp, ['pdf'], kwargs.get('pdf', False))
         else:
-            self.y = ['Cumulative Probability']
-        if self.pdf:
-            self.y = ['Probability Density']
+            self.pdf = False
         if (self.cdf or self.pdf) and kwargs.get('preset') == 'HIST':
             self.ax_scale = 'lin'
         if self.cdf or self.pdf:
             bars = False
 
         # Toggle bars vs lines
-        if not self.bars:
+        if not self.bars or self.cdf or self.pdf:
             self.switch_to_xy_plot(kwargs)
 
     def _calc_distribution(self, counts: npt.NDArray[int]) -> npt.NDArray[int]:
@@ -156,22 +155,25 @@ class Histogram(data.Data):
         if self.cdf:
             pdf = counts / sum(counts)
             counts = np.cumsum(pdf)
-            self.y = ['Cumulative Probability']
         elif self.pdf:
             counts = counts / sum(counts)
-            self.y = ['Probability Density']
 
         return counts
 
-    def _calc_histograms(self, data: Union[pd.DataFrame, npt.NDArray]) -> List[npt.NDArray]:
+    def _calc_histograms(self, ir: int, ic: int, data: Union[pd.DataFrame, npt.NDArray]) -> List[npt.NDArray]:
         """Calculate the histogram data for one data set.
 
         Args:
-            some input DataFrame
+            ir: current axes row index
+            ic: current axes column index
+            data: data subset
 
         Returns:
             list of histogram counts and bin values
         """
+        if self.branges is None:
+            self.branges = np.array([[None] * self.ncol] * self.nrow)
+
         if isinstance(data, pd.DataFrame):
             data = data.values
 
@@ -192,17 +194,35 @@ class Histogram(data.Data):
                 self.bins = int(data.max() - data.min() + 1)
 
             # If bins specified or data contains floats, use np.histogram (slower)
-            brange = data.min(), data.max()
+            # Step 1: get the x-axis range in which to apply self.bins number of bins; wherever the x-axis range
+            #   is shared, this should be the same range.  Normally, shared ranges are not computed until after
+            #   the plot is created (i.e., after counts are calculated), so we have to check shared x-axis cases
+            #   here instead of waiting for data.get_data_ranges
+            if self.share_x:
+                brange = self.df_all[self.x[0]].min(), self.df_all[self.x[0]].max()
+            elif self.share_row and self.row is not None:
+                df_row = self.df_all.loc[self.df_all[self.row[0]] == self.row_vals[ir]]
+                brange = df_row[self.x[0]].min(), df_row[self.x[0]].max()
+            elif self.share_col and self.col is not None:
+                df_col = self.df_all.loc[self.df_all[self.col[0]] == self.col_vals[ic]]
+                brange = df_col[self.x[0]].min(), df_col[self.x[0]].max()
+            else:
+                # No sharing, compute for this subset only
+                brange = data.min(), data.max()
+            self.branges[ir, ic] = brange
+
+            # Step 2: compute the counts
             counts, vals = np.histogram(data, bins=self.bins, density=self.norm, range=brange)
 
         # Clean up
         if len(vals) != len(counts):
             vals = vals[:-1]
-        counts = counts[(vals >= data.min()) & (vals <= data.max())]
-        vals = vals[(vals >= data.min()) & (vals <= data.max())]
 
-        # Additional manipulations for xy plots
-        if self.name == 'xy':
+        # Additional manipulations for image histograms
+        if self.imgs is not None:
+            counts = counts[(vals >= data.min()) & (vals <= data.max())]
+            vals = vals[(vals >= data.min()) & (vals <= data.max())]
+
             # Special case of all values being equal
             if len(counts) == 1:
                 vals = np.insert(vals, 0, vals[0])
@@ -211,7 +231,7 @@ class Histogram(data.Data):
                 else:
                     counts = np.insert(counts, 0, 0)
 
-            # Eliminate repeating count values of zero to reduce26 data points and speed up processing/plotting
+            # Eliminate repeating count values of zero to reduce data points and speed up processing/plotting
             mask = (counts[:-2]==0) & (counts[2:]==0) & (counts[1:len(counts) - 1]==0)
             counts = np.concatenate((counts[:1], counts[1:-1][~mask], counts[-1:]))
             vals = np.concatenate((vals[:1], vals[1:-1][~mask], vals[-1:]))
@@ -229,8 +249,18 @@ class Histogram(data.Data):
                 vals = np.concatenate((vals[:-self.sample:self.sample], vals_last_bin))
                 counts = np.concatenate((counts[:-self.sample:self.sample], counts_last_bin))
 
-        # cdf + pdf
-        counts = self._calc_distribution(counts)
+        # cdf or pdf
+        if self.cdf:
+            counts = self._calc_distribution(counts)
+
+            # Fill to max x-range
+            if self.imgs is None:
+                xmax = self.df_all[self.x[0]].max()
+            else:
+                xmax = 0
+                xmax = max([f.max() for f in self.imgs.values()])
+            vals = np.append(vals, xmax)
+            counts = np.append(counts, 1)
 
         return counts, vals
 
@@ -239,7 +269,7 @@ class Histogram(data.Data):
         For non-image histograms (i.e., histograms that are created by a `hist` plotting function),
         need to compute y-column "Counts" for the df_rc
         """
-        if self.imgs is not None:
+        if self.imgs is not None or self.name == 'xy':
             # Fix y-axis for single-bin case
             if len(df_rc) == 2 and df_rc.Counts[0] in [0, 1] and self.ymin.values == [None]:
                 self.ranges['ymin'][ir, ic] = df_rc.Counts[0]
@@ -250,7 +280,11 @@ class Histogram(data.Data):
         groups = self._groupers
         if len(groups) > 0:
             for ii, (nn, sub) in enumerate(df_rc.groupby(self._groupers)):
-                counts, vals = self._calc_histograms(sub[self.x[0]])
+                counts, vals = self._calc_histograms(ir, ic, sub[self.x[0]])
+                if len(counts) == 1:
+                    # Fix to get a valid range with only one data point
+                    counts = np.array([0, counts[0]])
+                    vals = np.array([0, vals[0]])
                 df_hist = pd.DataFrame({self.x[0]: vals, self.y[0]: counts})
                 if ii == 0:
                     ymin, ymax = self._get_data_range('y', df_hist, plot_num)
@@ -260,33 +294,43 @@ class Histogram(data.Data):
                     ymax = max(ymax, ymax_)
 
         else:
-            counts, vals = self._calc_histograms(df_rc[self.x[0]])
+            counts, vals = self._calc_histograms(ir, ic, df_rc[self.x[0]])
             df_hist = pd.DataFrame({self.x[0]: vals, self.y[0]: counts})
             ymin, ymax = self._get_data_range('y', df_hist, plot_num)
 
         # Pass the min/max values through _get_data_range to get ax
+        if self.ymin[plot_num] is None:
+            ymin = min(0, ymin)
         self.ranges['ymin'][ir, ic], self.ranges['ymax'][ir, ic] = ymin, ymax
 
         # Flip horizontal
         if self.horizontal:
-            ymin = self.ranges['ymin']
-            ymax = self.ranges['ymax']
-            self.ranges['ymin'] = self.ranges['xmin']
-            self.ranges['ymax'] = self.ranges['xmax']
-            self.ranges['xmin'] = ymin
-            self.ranges['xmax'] = ymax
+            ymin = self.ranges['ymin'][ir, ic]
+            ymax = self.ranges['ymax'][ir, ic]
+            self.ranges['ymin'][ir, ic] = self.ranges['xmin'][ir, ic]
+            self.ranges['ymax'][ir, ic] = self.ranges['xmax'][ir, ic]
+            self.ranges['xmin'][ir, ic] = ymin
+            self.ranges['xmax'][ir, ic] = ymax
 
     def _subset_modify(self, ir: int, ic: int, df: pd.DataFrame) -> pd.DataFrame:
         if len(df) == 0:
             return df
 
-        if self.imgs is None:
+        if self.imgs is None and self.name == 'xy':  #(self.cdf or self.pdf):
+            counts, vals = self._calc_histograms(ir, ic, df[self.x[0]])
+            df_sub = pd.DataFrame({self.x[0]: vals, self.y[0]: counts})
+            for group in self._groupers:
+                df_sub[group] = df[group].iloc[0]
+
+            return df_sub
+
+        elif self.imgs is None:
             return data.Data._subset_modify(self, ir, ic, df)
 
         else:
             if self.legend is None:
                 subset_dict = {key: value for key, value in self.imgs.items() if key in list(df.index)}
-                counts, vals = self._calc_histograms(np.concatenate(list(subset_dict.values()), 1))
+                counts, vals = self._calc_histograms(ir, ic, np.concatenate(list(subset_dict.values()), 1))
                 df_sub = pd.DataFrame({self.x[0]: vals, self.y[0]: counts})
                 return df_sub
 
@@ -295,11 +339,45 @@ class Histogram(data.Data):
                 for iline, row in self.legend_vals.iterrows():
                     idx = list(df.loc[df[self.legend] == row['Leg']].index)
                     subset_dict = {key: value for key, value in self.imgs.items() if key in idx}
-                    counts, vals = self._calc_histograms(np.concatenate(list(subset_dict.values()), 1))
+                    counts, vals = self._calc_histograms(ir, ic, np.concatenate(list(subset_dict.values()), 1))
                     temp = pd.DataFrame({self.x[0]: vals, self.y[0]: counts})
                     temp[self.legend] = row['Leg']
                     df_sub += [temp]
                 return pd.concat(df_sub)
+
+    def _subset_wrap(self, ir: int, ic: int) -> pd.DataFrame:
+        """For wrap plots, select the revelant subset from self.df_fig.  Subclassed to deal with missing hist column
+        names that don't show up until after hist calcs.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+
+        Returns:
+            self.df_fig DataFrame subset based on self.wrap value
+        """
+        if ir * self.ncol + ic > self.nwrap - 1:
+            return pd.DataFrame()
+        elif self.wrap == 'y':
+            # NOTE: can we drop these validate calls for speed?
+            self.y = utl.validate_list(self.wrap_vals[ic + ir * self.ncol])
+            cols = (self.x if self.x is not None else []) \
+                + (self.y if self.y is not None else []) \
+                + (self.groups if self.groups is not None else []) \
+                + (utl.validate_list(self.legend)
+                   if self.legend not in [None, True, False] else [])
+            return self.df_fig[cols]
+        elif self.wrap == 'x':
+            self.x = utl.validate_list(self.wrap_vals[ic + ir * self.ncol])
+            cols = (self.x if self.x is not None else []) + \
+                   (self.groups if self.groups is not None else []) + \
+                   (utl.validate_list(self.legend)
+                    if self.legend is not None else [])
+            return self.df_fig[cols]
+        else:
+            wrap = dict(zip(self.wrap, utl.validate_list(self.wrap_vals[ir * self.ncol + ic])))
+            mask = pd.concat([self.df_fig[x[0]].eq(x[1]) for x in wrap.items()], axis=1).all(axis=1)
+            return self.df_fig[mask]
 
     def switch_to_xy_plot(self, kwargs):
         """If bars are not enabled, switch everything to line plot.
@@ -308,5 +386,9 @@ class Histogram(data.Data):
             kwargs: user-defined keyword args
         """
         self.name = 'xy'
+        if self.cdf:
+            self.y = ['Cumulative Probability']
+        if self.pdf:
+            self.y = ['Probability Density']
         if not self.y:
             self.y = ['Counts']

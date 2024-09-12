@@ -37,7 +37,7 @@ fcp.KWARGS['save'] = True
 fcp.KWARGS['inline'] = False
 
 
-def test_text_box_single(master=False, remove=True, show=False):
+def test_text_box_single(make_reference=False, remove=True, show=False):
 
     name = utl.unit_test_get_img_name('text_box_single', make_reference, REFERENCE)
 
@@ -49,7 +49,7 @@ def test_text_box_single(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_text_box_single_style(master=False, remove=True, show=False):
+def test_text_box_single_style(make_reference=False, remove=True, show=False):
 
     name = utl.unit_test_get_img_name('text_box_single_style', make_reference, REFERENCE)
 
@@ -62,7 +62,7 @@ def test_text_box_single_style(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_text_box_multiple(master=False, remove=True, show=False):
+def test_text_box_multiple(make_reference=False, remove=True, show=False):
 
     name = utl.unit_test_get_img_name('text_box_multiple', make_reference, REFERENCE)
 
@@ -76,19 +76,19 @@ def test_text_box_multiple(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_text_box_position_figure(master=False, remove=True, show=False):
+def test_text_box_position_figure(make_reference=False, remove=True, show=False):
 
     name = utl.unit_test_get_img_name('text_box_position_figure', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', ax_scale='loglog', legend='Die', show=SHOW, xmin=0.9,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             text='Die (-1,2) shows best response', text_position=[208, 70], text_coordinate='figure',
+             text='Die (-1,2) shows best response', text_position=[208, 85], text_coordinate='figure',
              save=True, inline=False, filename=name.with_suffix('.png'), jitter=False)
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_text_box_position_data(master=False, remove=True, show=False):
+def test_text_box_position_data(make_reference=False, remove=True, show=False):
 
     name = utl.unit_test_get_img_name('text_box_position_data', make_reference, REFERENCE)
 
@@ -100,7 +100,7 @@ def test_text_box_position_data(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_text_box_position_units(master=False, remove=True, show=False):
+def test_text_box_position_units(make_reference=False, remove=True, show=False):
 
     name = utl.unit_test_get_img_name('text_box_position_units', make_reference, REFERENCE)
 

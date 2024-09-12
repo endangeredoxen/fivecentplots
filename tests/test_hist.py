@@ -44,97 +44,6 @@ fcp.KWARGS['inline'] = False
 
 
 # plt_ functions can be used directly outside of pytest for debug
-def plt_simple(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('simple', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.hist(df, x='Value', show=SHOW, inline=False, save=not bm, filename=name.with_suffix('.png'))
-
-    if bm:
-        return
-    if show == False:
-        utl.unit_test_measure_margin(name, 'c', 'c', right=10, top=10, alias=True)
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_simple_no_bars(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('simple_no_bars', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.hist(df, x='Value', show=SHOW, inline=False, save=not bm, filename=name.with_suffix('.png'), bars=False)
-
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_simple_cdf_row(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('simple_cdf_row', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.hist(df, x='Value', row='Region', cdf=True, **fcp.HIST, show=SHOW, inline=False, save=not bm,
-             filename=name.with_suffix('.png'))
-
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_horizontal(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('horizontal', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.hist(df, x='Value', show=SHOW, horizontal=True,
-             inline=False, save=not bm, filename=name.with_suffix('.png'))
-
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_legend(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('legend', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.hist(df, x='Value', show=SHOW, legend='Region',
-             inline=False, save=not bm, filename=name.with_suffix('.png'))
-
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_kde(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('kde', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.hist(df, x='Value', show=SHOW, legend='Region', kde=True, kde_width=2,
-             inline=False, save=not bm, filename=name.with_suffix('.png'))
-
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_kde_horizontal(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('kde_horizontal', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.hist(df, x='Value', show=SHOW, legend='Region', kde=True, kde_width=2,
-             inline=False, save=not bm, filename=name.with_suffix('.png'), horizontal=True,)
-
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
 def plt_grid(bm=False, make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('grid', make_reference, REFERENCE)
@@ -187,27 +96,12 @@ def plt_grid_share_row(bm=False, make_reference=False, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_wrap_values(bm=False, make_reference=False, show=False):
+def plt_horizontal(bm=False, make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('wrap_values', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.hist(df, x='Value', show=SHOW, legend='Region', wrap='Batch',
-             ax_size=[250, 250], horizontal=True, inline=False, save=not bm, filename=name.with_suffix('.png'))
-
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_wrap_names(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('wrap_names', make_reference, REFERENCE)
+    name = utl.unit_test_get_img_name('horizontal', make_reference, REFERENCE)
 
     # Make the plot
-    df['Value*2'] = 2 * df['Value']
-    df['Value*3'] = 3 * df['Value']
-    fcp.hist(df, x=['Value', 'Value*2', 'Value*3'], wrap='x', show=SHOW, ncol=3, ax_size=[250, 250],
+    fcp.hist(df, x='Value', show=SHOW, horizontal=True,
              inline=False, save=not bm, filename=name.with_suffix('.png'))
 
     if bm:
@@ -343,6 +237,45 @@ def plt_image_rgb(bm=False, make_reference=False, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
+def plt_kde(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('kde', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.hist(df, x='Value', show=SHOW, legend='Region', kde=True, kde_width=2,
+             inline=False, save=not bm, filename=name.with_suffix('.png'))
+
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_kde_horizontal(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('kde_horizontal', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.hist(df, x='Value', show=SHOW, legend='Region', kde=True, kde_width=2,
+             inline=False, save=not bm, filename=name.with_suffix('.png'), horizontal=True,)
+
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_legend(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('legend', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.hist(df, x='Value', show=SHOW, legend='Region',
+             inline=False, save=not bm, filename=name.with_suffix('.png'))
+
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
 def plt_patch_single(bm=False, make_reference=False, show=False):
     # TODO: deal with tick label near right side (too much?)
     name = utl.unit_test_get_img_name('patch_single', make_reference, REFERENCE)
@@ -385,6 +318,86 @@ def plt_patch_solid(bm=False, make_reference=False, show=False):
     fcp.hist(img_rgb, show=SHOW, inline=False, save=not bm, filename=name.with_suffix('.png'),
              markers=False, ax_scale='logy', ax_size=[600, 400], legend='Plane',
              cfa='grbg', line_width=2, xmin=-5, xmax=260, colors=fcp.RGGB)
+
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_simple(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('simple', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.hist(df, x='Value', show=SHOW, inline=False, save=not bm, filename=name.with_suffix('.png'))
+
+    if bm:
+        return
+    if show == False:
+        utl.unit_test_measure_margin(name, 'c', 'c', right=10, top=10, alias=True)
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_simple_cdf_row(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('simple_cdf_row', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.hist(df, x='Value', row='Region', cdf=True, **fcp.HIST, show=SHOW, inline=False, save=not bm,
+             filename=name.with_suffix('.png'))
+
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_simple_cdf_row_shared(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('simple_cdf_row_shared', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.hist(df, x='Value', row='Region', cdf=True, **fcp.HIST, show=SHOW, inline=False, save=not bm,
+             filename=name.with_suffix('.png'), share_row=True, xmax=10)
+
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_simple_no_bars(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('simple_no_bars', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.hist(df, x='Value', show=SHOW, inline=False, save=not bm, filename=name.with_suffix('.png'), bars=False)
+
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_wrap_values(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('wrap_values', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.hist(df, x='Value', show=SHOW, legend='Region', wrap='Batch',
+             ax_size=[250, 250], horizontal=True, inline=False, save=not bm, filename=name.with_suffix('.png'))
+
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_wrap_names(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('wrap_names', make_reference, REFERENCE)
+
+    # Make the plot
+    df['Value*2'] = 2 * df['Value']
+    df['Value*3'] = 3 * df['Value']
+    fcp.hist(df, x=['Value', 'Value*2', 'Value*3'], wrap='x', show=SHOW, ncol=3, ax_size=[250, 250],
+             inline=False, save=not bm, filename=name.with_suffix('.png'))
 
     if bm:
         return
