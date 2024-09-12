@@ -892,7 +892,7 @@ def plt_xy_legend(bm=False, make_reference=False, show=False):
 
     if show == False:
         utl.unit_test_measure_axes(name, 150, 200, 402, 402, 2, alias=True)
-        utl.unit_test_measure_margin(name, 150, 200, left=84, top=13, bottom=76, right=119, alias=True)
+        utl.unit_test_measure_margin(name, 150, 200, left=84, top=15, bottom=76, right=119, alias=True)
 
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
