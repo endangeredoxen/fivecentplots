@@ -11,6 +11,7 @@ import fivecentplots.data.data as data
 import fivecentplots.utilities as utl
 import matplotlib as mpl
 import inspect
+from io import StringIO
 osjoin = os.path.join
 db = pdb.set_trace
 mpl.use('agg')
@@ -26,6 +27,7 @@ else:
 # Sample data
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
 img_patch = imageio.imread(Path(fcp.__file__).parent / 'test_data/hist_patch.png')
+raw = imageio.imread(Path(fcp.__file__).parent / 'test_data/RAW.png')
 img_cat_orig = imageio.imread(Path(fcp.__file__).parent / 'test_data/imshow_cat_pirate.png')
 img_cat = utl.img_grayscale(img_cat_orig)
 
@@ -120,6 +122,37 @@ def plt_image(bm=False, make_reference=False, show=False):
     fcp.hist(img, markers=False, ax_scale='logy', ax_size=[600, 400], line_width=2,
              show=SHOW, inline=False, save=not bm, filename=name.with_suffix('.png'), xmax=dn + 5,
              ax_hlines=max_count, ax_vlines=dn)
+
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_image_multiple(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('image_multiple_int', make_reference, REFERENCE)
+
+    # With int
+    df_img = pd.DataFrame({'image': ['raw', 'raw_inv']}, index=['raw', 'raw_inv'])
+    imgs = {'raw': raw, 'raw_inv': ((1 - raw / raw.max()) * raw.max()).astype(np.uint16)}
+    fcp.hist(df_img, imgs=imgs, **fcp.HIST, legend='image', line_alpha=0.4,
+             show=SHOW, inline=False, save=not bm, filename=name.with_suffix('.png'))
+
+    if not bm:
+        utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+    name = utl.unit_test_get_img_name('image_multiple_float', make_reference, REFERENCE)
+
+    # With float
+    temp_out = StringIO()
+    sys.stdout = temp_out
+    df_img = pd.DataFrame({'image': ['raw', 'raw_inv']}, index=['raw', 'raw_inv'])
+    imgs = {'raw': raw, 'raw_inv': ((1 - raw / raw.max()) * raw.max())}
+    fcp.hist(df_img, imgs=imgs, **fcp.HIST, legend='image', line_alpha=0.4,
+             show=SHOW, inline=False, save=not bm, filename=name.with_suffix('.png'))
+    sys.stdout = sys.__stdout__
+
+    assert 'Warning: histograms of image data with float values is slow' in temp_out.getvalue()
 
     if bm:
         return
@@ -474,6 +507,11 @@ def test_wrap_names(benchmark):
 
 def test_image(benchmark):
     plt_image()
+    benchmark(plt_image, True)
+
+
+def test_image_multiple(benchmark):
+    plt_image_multiple()
     benchmark(plt_image, True)
 
 

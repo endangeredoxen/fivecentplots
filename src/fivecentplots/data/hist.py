@@ -189,6 +189,9 @@ class Histogram(data.Data):
             counts = np.bincount(data - offset)
 
         else:
+            if self.imgs is not None:
+                print('Warning: histograms of image data with float values is slow; consider using ints instead')
+
             # Case of image data but invalid dtype
             if self.bins == 0:
                 self.bins = int(data.max() - data.min() + 1)
@@ -199,13 +202,25 @@ class Histogram(data.Data):
             #   the plot is created (i.e., after counts are calculated), so we have to check shared x-axis cases
             #   here instead of waiting for data.get_data_ranges
             if self.share_x:
-                brange = self.df_all[self.x[0]].min(), self.df_all[self.x[0]].max()
+                if self.imgs is None:
+                    brange = self.df_all[self.x[0]].min(), self.df_all[self.x[0]].max()
+                else:
+                    brange = min([self.imgs[f].min() for f in self.df_all.index]), \
+                             max([self.imgs[f].max() for f in self.df_all.index])
             elif self.share_row and self.row is not None:
                 df_row = self.df_all.loc[self.df_all[self.row[0]] == self.row_vals[ir]]
-                brange = df_row[self.x[0]].min(), df_row[self.x[0]].max()
+                if self.imgs is None:
+                    brange = df_row[self.x[0]].min(), df_row[self.x[0]].max()
+                else:
+                    brange = min([self.imgs[f].min() for f in df_row.index]), \
+                             max([self.imgs[f].max() for f in df_row.index])
             elif self.share_col and self.col is not None:
                 df_col = self.df_all.loc[self.df_all[self.col[0]] == self.col_vals[ic]]
-                brange = df_col[self.x[0]].min(), df_col[self.x[0]].max()
+                if self.imgs is None:
+                    brange = df_col[self.x[0]].min(), df_col[self.x[0]].max()
+                else:
+                    brange = min([self.imgs[f].min() for f in df_col.index]), \
+                             max([self.imgs[f].max() for f in df_col.index])
             else:
                 # No sharing, compute for this subset only
                 brange = data.min(), data.max()

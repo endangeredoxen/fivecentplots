@@ -41,6 +41,21 @@ fcp.KWARGS['inline'] = False
 
 
 # plt_ functions can be used directly outside of pytest for debug
+def plt_cat_cell_size(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('cat_cell_size', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.heatmap(df, x='Category', y='Player', z='Average', cbar=True, data_labels=True,
+                heatmap_font_color='#aaaaaa', show=SHOW, tick_labels_major_y_edge_width=0,
+                ws_ticks_ax=5, cell_size=100,
+                filename=name.with_suffix('.png'), save=not bm, inline=False)
+
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
 def plt_cat_no_label(bm=False, make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('cat_no_label', make_reference, REFERENCE)
@@ -62,21 +77,6 @@ def plt_cat_label(bm=False, make_reference=False, show=False):
     fcp.heatmap(df, x='Category', y='Player', z='Average', cbar=True, data_labels=True,
                 heatmap_font_color='#aaaaaa', show=SHOW, tick_labels_major_y_edge_width=0,
                 ws_ticks_ax=5, filename=name.with_suffix('.png'), save=not bm, inline=False)
-
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_cat_cell_size(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('cat_cell_size', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.heatmap(df, x='Category', y='Player', z='Average', cbar=True, data_labels=True,
-                heatmap_font_color='#aaaaaa', show=SHOW, tick_labels_major_y_edge_width=0,
-                ws_ticks_ax=5, cell_size=100,
-                filename=name.with_suffix('.png'), save=not bm, inline=False)
 
     if bm:
         return
