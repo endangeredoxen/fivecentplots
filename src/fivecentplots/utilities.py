@@ -1575,7 +1575,7 @@ def unit_test_measure_axes_rows(img_path: pathlib.Path, col: Union[int, str, Non
 
         Note: for np.diff statements, need to subtract 1
     """
-    # Test width of all column images
+    # Test width of all row images
     img = imageio.imread(img_path)
     if col == 'c':
         col = int(img.shape[1] / 2)

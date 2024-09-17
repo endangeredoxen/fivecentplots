@@ -44,12 +44,12 @@ fcp.KWARGS['inline'] = False
 
 
 # plt_ functions can be used directly outside of pytest for debug
-def plt_simple(bm=False, make_reference=False, show=False):
+def plt_grand_means(bm=False, make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('simple', make_reference, REFERENCE)
+    name = utl.unit_test_get_img_name('grand_means', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.boxplot(df, y='Value', show=SHOW, tick_labels_minor=True, grid_minor=True,
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW, grand_mean=True, grand_median=True,
                 filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -57,12 +57,50 @@ def plt_simple(bm=False, make_reference=False, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_simple_groups_none(bm=False, make_reference=False, show=False):
+def plt_grid_column(bm=False, make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('simple_groups_none', make_reference, REFERENCE)
+    name = utl.unit_test_get_img_name('grid_column', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.boxplot(df, y='Value', show=SHOW, tick_labels_minor=True, grid_minor=True, groups=None,
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], col='Region', show=SHOW, ax_size=[300, 300],
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
+
+    if bm:
+        return
+
+    if show == False:
+        utl.unit_test_measure_axes_cols(name, 59, 302, 2)
+        utl.unit_test_measure_margin(name, 59, 120, left=74, right=81, bottom=10, alias=True)
+        utl.unit_test_measure_margin(name, 59, 120, top=10, alias=False)
+
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_grid_row(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('grid_row', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], row='Region', show=SHOW, ax_size=[300, 300],
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
+
+    if bm:
+        return
+
+    if show == False:
+        utl.unit_test_measure_axes_rows(name, 260, 302, 2)
+        utl.unit_test_measure_margin(name, 80, 120, left=74, top=10, bottom=10, alias=True)
+        utl.unit_test_measure_margin(name, 80, 120, right=41, alias=False)
+
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_grid_wrap(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('grid_wrap', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.boxplot(df, y='Value', groups=['Sample', 'Region'], wrap='Batch', show=SHOW, ax_size=[300, 300],
                 filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -70,12 +108,14 @@ def plt_simple_groups_none(bm=False, make_reference=False, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_simple_legend(bm=False, make_reference=False, show=False):
+def plt_grid_wrap_y(bm=False, make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('simple_legend', make_reference, REFERENCE)
+    name = utl.unit_test_get_img_name('grid_y', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.boxplot(df, y='Value', show=SHOW, tick_labels_minor=True, grid_minor=True, legend='Batch',
+    df['Value*2'] = 2 * df['Value']
+    fcp.boxplot(df, y=['Value', 'Value*2'], groups=['Batch', 'Sample', 'Region'], wrap='y', show=SHOW,
+                ax_size=[300, 300],
                 filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -83,95 +123,15 @@ def plt_simple_legend(bm=False, make_reference=False, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_one_group(bm=False, make_reference=False, show=False):
+def plt_grid_wrap_y_no_share(bm=False, make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('one_group', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', ymin='q0', ymax='q100',
-                show=SHOW, filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False, box_stat_line='q50',
-                box_group_label_font_size=24)  # font size is wrong!
-
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_group_single(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('group_single', make_reference, REFERENCE)
+    name = utl.unit_test_get_img_name('grid_y-no-share', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.boxplot(df, y='Value', groups='Batch', show=SHOW, box_whisker=False, box_group_title_font_size=24,
+    df['Value*2'] = 2 * df['Value']
+    fcp.boxplot(df, y=['Value', 'Value*2'], groups=['Batch', 'Sample', 'Region'], wrap='y', show=SHOW,
+                ax_size=[300, 300], share_y=False,
                 filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
-
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_group_multiple(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('group_multiple', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW,
-                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
-
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_group_multiple_nan(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('group_multiple_nan', make_reference, REFERENCE)
-
-    # Make the plot
-    df['Test'] = np.nan
-    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample', 'Test'], show=SHOW,
-                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False, box_stat_line='q0.5')
-
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_group_legend(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('group_legend', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], legend='Region', show=SHOW,
-                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
-
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_group_legend_lots(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('group_legend_lots', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.boxplot(df2, y='Value', groups=['Batch', 'Sample'], legend='Lots of Values', show=SHOW,
-                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False, legend_edge_color='#000000')
-
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_group_long(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('group_long', make_reference, REFERENCE)
-
-    # Make the plot
-    df2 = df.copy()
-    df2['This is a really long way to say show me your ID sucka'] = df['ID'] * 2
-    fcp.boxplot(df2, y='Value', groups=['Batch', 'This is a really long way to say show me your ID sucka', 'Sample'],
-                show=SHOW, filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
@@ -267,12 +227,12 @@ def plt_group_auto_size_crash_complex(bm=False, make_reference=False, show=False
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_grid_column(bm=False, make_reference=False, show=False):
+def plt_group_legend(bm=False, make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('grid_column', make_reference, REFERENCE)
+    name = utl.unit_test_get_img_name('group_legend', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], col='Region', show=SHOW, ax_size=[300, 300],
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], legend='Region', show=SHOW,
                 filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -280,69 +240,28 @@ def plt_grid_column(bm=False, make_reference=False, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_grid_row(bm=False, make_reference=False, show=False):
+def plt_group_legend_lots(bm=False, make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('grid_row', make_reference, REFERENCE)
+    name = utl.unit_test_get_img_name('group_legend_lots', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], row='Region', show=SHOW, ax_size=[300, 300],
-                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
+    fcp.boxplot(df2, y='Value', groups=['Batch', 'Sample'], legend='Lots of Values', show=SHOW,
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False, legend_edge_color='#000000')
 
     if bm:
         return
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_grid_wrap(bm=False, make_reference=False, show=False):
+def plt_group_long(bm=False, make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('grid_wrap', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.boxplot(df, y='Value', groups=['Sample', 'Region'], wrap='Batch', show=SHOW, ax_size=[300, 300],
-                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
-
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_grid_wrap_y(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('grid_y', make_reference, REFERENCE)
+    name = utl.unit_test_get_img_name('group_long', make_reference, REFERENCE)
 
     # Make the plot
-    df['Value*2'] = 2 * df['Value']
-    fcp.boxplot(df, y=['Value', 'Value*2'], groups=['Batch', 'Sample', 'Region'], wrap='y', show=SHOW,
-                ax_size=[300, 300],
-                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
-
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_grid_wrap_y_no_share(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('grid_y-no-share', make_reference, REFERENCE)
-
-    # Make the plot
-    df['Value*2'] = 2 * df['Value']
-    fcp.boxplot(df, y=['Value', 'Value*2'], groups=['Batch', 'Sample', 'Region'], wrap='y', show=SHOW,
-                ax_size=[300, 300], share_y=False,
-                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
-
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_grand_means(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('grand_means', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW, grand_mean=True, grand_median=True,
-                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
+    df2 = df.copy()
+    df2['This is a really long way to say show me your ID sucka'] = df['ID'] * 2
+    fcp.boxplot(df2, y='Value', groups=['Batch', 'This is a really long way to say show me your ID sucka', 'Sample'],
+                show=SHOW, filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
@@ -355,10 +274,60 @@ def plt_group_means(bm=False, make_reference=False, show=False):
 
     # Make the plot
     fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW, group_means=True,
+                ax_edge_width=1, box_group_label_edge_width=1,
+                #box_group_title_fill_color='#ff00ff', box_group_title_edge_color='#000000', box_group_title_edge_width=1,
                 filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
+
+    if show == False:
+        utl.unit_test_measure_margin(name, 20, 300, left=74, right=81, bottom=10, top=10, alias=True)
+
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_group_multiple(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('group_multiple', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW,
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
+
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_group_multiple_nan(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('group_multiple_nan', make_reference, REFERENCE)
+
+    # Make the plot
+    df['Test'] = np.nan
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample', 'Test'], show=SHOW,
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False, box_stat_line='q0.5')
+
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_group_single(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('group_single', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.boxplot(df, y='Value', groups='Batch', show=SHOW, box_whisker=False, box_group_title_font_size=24,
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False,
+                box_group_label_edge_color='#0000ff')
+
+    if bm:
+        return
+
+    if show == False:
+        utl.unit_test_measure_margin(name, 50, 190, left=74, bottom=10, top=10, right=106, alias=True)
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
@@ -383,6 +352,62 @@ def plt_mean_diamonds_filled(bm=False, make_reference=False, show=False):
     fcp.boxplot(df, y='Value', groups=['Batch'], show=SHOW, mean_diamonds=True, conf_coeff=0.95,
                 filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False,
                 mean_diamonds_fill_color='#ff0000', mean_diamonds_edge_color='#0000ff')
+
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_one_group(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('one_group', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', ymin='q0', ymax='q100',
+                show=SHOW, filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False, box_stat_line='q50',
+                box_group_label_font_size=24)  # font size is wrong!
+
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_simple(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('simple', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.boxplot(df, y='Value', show=SHOW, tick_labels_minor=True, grid_minor=True,
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
+
+    if bm:
+        return
+
+    if show == False:
+        utl.unit_test_measure_margin(name, 20, 150, left=75, bottom=10, top=10, right=10, alias=True)
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_simple_groups_none(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('simple_groups_none', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.boxplot(df, y='Value', show=SHOW, tick_labels_minor=True, grid_minor=True, groups=None,
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
+
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_simple_legend(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('simple_legend', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.boxplot(df, y='Value', show=SHOW, tick_labels_minor=True, grid_minor=True, legend='Batch',
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return

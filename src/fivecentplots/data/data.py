@@ -400,7 +400,7 @@ class Data:
 
         for limit_val in limit_obj.values:
             if isinstance(limit_val, str):
-                if limit_val[0].lower() == 'q' and (float(limit_val[1:]) <= 0 or float(limit_val[1:]) > 100):
+                if limit_val[0].lower() == 'q' and (float(limit_val[1:]) < 0 or float(limit_val[1:]) > 100):
                     raise DataError(f'"{limit}" must be a float, int, or a valid quantile string starting with a "q" '
                                     'followed by a number between 0 and 1 [current value: "{limit_val}"]')
                 elif limit_val[0].lower() != 'q' and limit_val[-4:].lower() != '*iqr':

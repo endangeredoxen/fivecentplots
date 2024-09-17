@@ -333,13 +333,15 @@ def plt_imshow_rgb_wrap(bm=False, make_reference=False, show=False):
     imgs = {}
     imgs[0] = img_cat_orig
     imgs[1] = ((1 - img_cat_orig / 255) * 255).astype(np.uint8)
-    df = pd.DataFrame({'case': ['original', 'inverse']}, index=[0, 1])
-    fcp.imshow(df, imgs=imgs, wrap='case', filename=name.with_suffix('.png'), save=not bm, inline=False)
+    df = pd.DataFrame({'case': ['this is the cat pirate named Meow Gary Gary Gar Gar',
+                                "this is the inverse Gary"]}, index=[0, 1])
+    fcp.imshow(df, imgs=imgs, wrap='case', filename=name.with_suffix('.png'), save=not bm, inline=False,
+               title_wrap_font_size=50, label_wrap_font_size=24)
 
     if bm:
         return
     if show == False:
-        utl.unit_test_measure_axes(name, 40, None, 800, alias=False)
+        utl.unit_test_measure_axes(name, 150, None, 800, alias=False)
         utl.unit_test_measure_margin(name, 'c', 'c', left=10, right=10, top=10, bottom=10, alias=False)
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 

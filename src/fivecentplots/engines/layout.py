@@ -481,6 +481,7 @@ class BaseLayout:
             setattr(self, axline,
                     Element(axline, self.fcpp, kwargs,
                             on=True if axline in kwargs.keys() else False,
+                            obj=self.obj_array,
                             values=values, color=colors, style=styles,
                             width=widths, alpha=alphas, text=labels,
                             by_plot=utl.kwget(kwargs, self.fcpp, '%s_by_plot' % axline, False),
@@ -603,7 +604,7 @@ class BaseLayout:
                                        edge_color=utl.kwget(kwargs, self.fcpp, 'box_group_label_edge_color', '#aaaaaa'),
                                        font_color=utl.kwget(kwargs, self.fcpp, 'box_group_label_font_color', '#666666'),
                                        font_size=utl.kwget(kwargs, self.fcpp, 'box_group_label_font_size', 12),
-                                       padding=utl.kwget(kwargs, self.fcpp, 'box_group_label_padding', 10),  # percent
+                                       height=utl.kwget(kwargs, self.fcpp, 'box_group_label_height', 20),
                                        rotation=utl.kwget(kwargs, self.fcpp, 'box_group_label_rotation', 0),
                                        )
 
@@ -742,6 +743,7 @@ class BaseLayout:
 
         self.box_divider = Element('box_divider', self.fcpp, kwargs,
                                    on=kwargs.get('box_divider', kwargs.get('box', True)),
+                                   obj=self.obj_array,
                                    color=utl.kwget(kwargs, self.fcpp,
                                                    ['box_divider_color', 'box_divider_line_color'],
                                                    '#bbbbbb'),
