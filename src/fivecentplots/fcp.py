@@ -1036,13 +1036,6 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
 
     # Add divider lines
     if layout.box_divider.on and len(dividers) > 0:
-        # layout.ax_vlines = copy.deepcopy(layout.box_divider)
-        # layout.ax_vlines.values = dividers
-        # layout.ax_vlines.color = copy.copy(layout.box_divider.color)
-        # layout.ax_vlines.style = copy.copy(layout.box_divider.style)
-        # layout.ax_vlines.width = copy.copy(layout.box_divider.width)
-        # layout.box_divider.obj = layout.add_hvlines(ir, ic)
-        # layout.ax_vlines.values = []
         layout.box_divider.values = dividers
         layout.add_hvlines(ir, ic, elements=['box_divider'])
 

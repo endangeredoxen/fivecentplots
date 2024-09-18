@@ -710,7 +710,6 @@ class Data:
         rr = self._range_dict()  # new range dict with updates based on subplot contents
         for ax in self.axs_on:
             # Case 1: share_[ax] = True
-            #db()
             if getattr(self, f'share_{ax}'):
                 mmin = self.ranges[f'{ax}min'][self.ranges[f'{ax}min'] != None]
                 if len(mmin) > 0:

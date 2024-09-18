@@ -2374,8 +2374,7 @@ class Layout(BaseLayout):
 
         return bp
 
-    def plot_contour(self, ir: int, ic: int, df: pd.DataFrame, x: str, y: str, z: str,
-                     data: 'Data') -> ['MPL_contour_object', 'MPL_colorbar_object']:  # noqa: F821
+    def plot_contour(self, ir: int, ic: int, df: pd.DataFrame, x: str, y: str, z: str, data: 'Data'):  # noqa: F821
         """Plot a contour plot.
 
         Args:
@@ -2386,10 +2385,6 @@ class Layout(BaseLayout):
             y: y-axis column name
             z: z-column name
             data: Data object
-
-        Returns:
-            reference to the contour plot object
-            reference to the colorbar object
         """
         ax = self.axes.obj[ir, ic]
 
@@ -2401,12 +2396,7 @@ class Layout(BaseLayout):
         # Make the grid
         xi = np.linspace(min(xx), max(xx))
         yi = np.linspace(min(yy), max(yy))
-        if LooseVersion(mpl.__version__) < LooseVersion('2.2'):
-            zi = mlab.griddata(xx, yy, zz, xi, yi, interp=self.contour.interp)
-        else:
-            zi = scipy.interpolate.griddata((xx, yy), zz,
-                                            (xi[None, :], yi[:, None]),
-                                            method=self.contour.interp)
+        zi = scipy.interpolate.griddata((xx, yy), zz, (xi[None, :], yi[:, None]), method=self.contour.interp)
 
         # Deal with out of range values
         zi = np.clip(zi, data.ranges['zmin'][ir, ic], data.ranges['zmax'][ir, ic])
@@ -2418,15 +2408,14 @@ class Layout(BaseLayout):
         # Plot
         plot_num = utl.plot_num(ir, ic, self.ncol) - 1
         if self.contour.filled:
-            cc = ax.contourf(xi, yi, zi, levels, cmap=self.cmap[plot_num], zorder=2)
+            self.contour.obj[ir, ic] = ax.contourf(xi, yi, zi, levels, cmap=self.cmap[plot_num], zorder=2)
         else:
-            cc = ax.contour(xi, yi, zi, levels,
-                            linewidths=self.contour.width.values,
-                            cmap=self.cmap[plot_num], zorder=2)
+            self.contour.obj[ir, ic]  = ax.contour(xi, yi, zi, levels, linewidths=self.contour.width.values,
+                                                   cmap=self.cmap[plot_num], zorder=2)
 
         # Add a colorbar
         if self.cbar.on and (not self.cbar.shared or ic == self.ncol - 1):
-            self.cbar.obj[ir, ic] = self.add_cbar(ax, cc)
+            self.cbar.obj[ir, ic] = self.add_cbar(ax, self.contour.obj[ir, ic])
             new_ticks = cbar_ticks(self.cbar.obj[ir, ic], data.ranges['zmin'][ir, ic], data.ranges['zmax'][ir, ic])
             self.cbar.obj[ir, ic].set_ticks(new_ticks)
 
@@ -2439,8 +2428,6 @@ class Layout(BaseLayout):
                        linewidths=self.markers.edge_width[0],
                        s=self.markers.size[0],
                        zorder=40)
-
-        return cc, self.cbar.obj
 
     def plot_gantt(self, ir: int, ic: int, iline: int, df: pd.DataFrame, x: str, y: str,
                    leg_name: str, yvals: list, ngroups: int):
@@ -2636,14 +2623,11 @@ class Layout(BaseLayout):
 
         # Make the imshow plot
         plot_num = utl.plot_num(ir, ic, self.ncol) - 1
-        im = ax.imshow(df, self.cmap[plot_num], vmin=zmin, vmax=zmax,
-                       interpolation=self.imshow.interp, aspect='auto',
-                       #extent=[0, img.shape[1] + 1, img.shape[1] + 1, 1]
-                       )
+        im = ax.imshow(df, self.cmap[plot_num], vmin=zmin, vmax=zmax, interpolation=self.imshow.interp, aspect='auto')
         im.set_clim(zmin, zmax)
 
         # Add a cmap
-        if self.cbar.on and (not self.cbar.shared or ic == self.ncol - 1):  # and (self.separate_ticks or ic == self.ncol - 1):
+        if self.cbar.on and (not self.cbar.shared or ic == self.ncol - 1):
             self.cbar.obj[ir, ic] = self.add_cbar(ax, im)
 
         return im
@@ -3101,11 +3085,16 @@ class Layout(BaseLayout):
             self.axes.obj[ir, ic].set_ylim(top=ranges['ymax'][ir, ic])
         if 'y2max' in ranges and ranges['y2max'][ir, ic] is not None:
             self.axes2.obj[ir, ic].set_ylim(top=ranges['y2max'][ir, ic])
-        if len(self.axes.obj[ir, ic].get_images()) > 0:
+        if self.name in ['imshow'] and len(self.axes.obj[ir, ic].get_images()) > 0:
             if 'zmin' in ranges and ranges['zmin'][ir, ic] is not None:
                 self.axes.obj[ir, ic].get_images()[0].set_clim(vmin=ranges['zmin'][ir, ic])
             if 'zmax' in ranges and ranges['zmax'][ir, ic] is not None:
                 self.axes.obj[ir, ic].get_images()[0].set_clim(vmax=ranges['zmax'][ir, ic])
+        elif self.name in ['contour', 'heatmap']:
+            if 'zmin' in ranges and ranges['zmin'][ir, ic] is not None:
+                getattr(self, self.name).obj[ir, ic].set_clim(vmin=ranges['zmin'][ir, ic])
+            if 'zmax' in ranges and ranges['zmax'][ir, ic] is not None:
+                getattr(self, self.name).obj[ir, ic].set_clim(vmax=ranges['zmax'][ir, ic])
 
     def set_axes_rc_labels(self, ir: int, ic: int):
         """Add the row/column label boxes and wrap titles.

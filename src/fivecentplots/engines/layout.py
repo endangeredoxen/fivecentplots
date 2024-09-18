@@ -932,6 +932,7 @@ class BaseLayout:
 
         self.contour = Element('contour', self.fcpp, kwargs,
                                on=True,
+                               obj=self.obj_array,
                                filled=utl.kwget(kwargs, self.fcpp, ['contour_filled', 'filled'],
                                                 kwargs.get('filled', True)),
                                levels=utl.kwget(kwargs, self.fcpp, ['contour_levels', 'levels'],
@@ -1178,6 +1179,7 @@ class BaseLayout:
             kwargs['heatmap_cell_size'] = kwargs['cell_size']
         self.heatmap = Element('heatmap', self.fcpp, kwargs,
                                on=True,
+                               obj=self.obj_array,
                                cell_size=utl.kwget(kwargs, self.fcpp, 'heatmap_cell_size',
                                                    60 if 'ax_size' not in kwargs else None),
                                edge_width=0,

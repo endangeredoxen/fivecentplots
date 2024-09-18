@@ -43,7 +43,7 @@ def plt_basic(bm=False, make_reference=False, show=False):
 
     # Make the plot
     fcp.contour(df, x='X', y='Y', z='Value', filled=False, cbar=False, ax_size=[400, 400], show=SHOW,
-                contour_width=2, label_rc_font_size=12, levels=40, show_points=True, filename=name.with_suffix('.png'),
+                contour_width=2, label_rc_font_size=12, levels=30, show_points=True, filename=name.with_suffix('.png'),
                 save=not bm, inline=False, marker_edge_color='#000000', marker_fill_color='#000000')
 
     if bm:
@@ -65,7 +65,7 @@ def plt_basic_rc(bm=False, make_reference=False, show=False):
     # Make the plot
     fcp.contour(df, x='X', y='Y', z='Value', row='Batch', col='Experiment', filled=False,
                 cbar=False, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250, 250], show=SHOW, contour_width=2,
-                label_rc_font_size=12, levels=40, show_points=True,
+                label_rc_font_size=12, levels=30, show_points=True,
                 filename=name.with_suffix('.png'), save=not bm, inline=False,
                 marker_edge_color='#000000', marker_fill_color='#000000')
 
@@ -81,7 +81,7 @@ def plt_basic_wrap(bm=False, make_reference=False, show=False):
     # Make the plot
     fcp.contour(df, x='X', y='Y', z='Value', wrap=['Batch', 'Experiment'], filled=False,
                 cbar=True, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250, 250], show=SHOW, contour_width=2,
-                label_rc_font_size=12, levels=40, show_points=True, filename=name.with_suffix('.png'), save=not bm, inline=False,
+                label_rc_font_size=12, levels=30, show_points=True, filename=name.with_suffix('.png'), save=not bm, inline=False,
                 marker_edge_color='#000000', marker_fill_color='#000000',
                 ax_edge_width=5)
 
@@ -97,7 +97,7 @@ def plt_filled(bm=False, make_reference=False, show=False):
     # Make the plot
     fcp.contour(df, x='X', y='Y', z='Value', row='Batch', col='Experiment', filled=True,
                 cbar=True, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250, 250], show=SHOW,
-                label_rc_font_size=12, levels=40,
+                label_rc_font_size=12, levels=30,
                 filename=name.with_suffix('.png'), save=not bm, inline=False)
 
     if bm:
@@ -112,24 +112,7 @@ def plt_filled_no_share(bm=False, make_reference=False, show=False):
     # Make the plot
     fcp.contour(df, x='X', y='Y', z='Value', row='Batch', col='Experiment', filled=True,
                 cbar=True, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250, 250], show=SHOW,
-                label_rc_font_size=12, levels=40, share_z=False, tick_labels_major_z_rotation=45,
-                filename=name.with_suffix('.png'), save=not bm, inline=False)
-
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_filled_separate(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('filled_separate', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.contour(df, x='X', y='Y', z='Value', row='Batch', col='Experiment', filled=True,
-                cbar=True, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250, 250], show=SHOW,
-                label_rc_font_size=12, levels=40, separate_labels=True,
-                tick_labels_edge_width=1, tick_labels_edge_color='#000000',
-                label_z_edge_width=1, label_z_edge_color='#000000',
+                label_rc_font_size=12, levels=30, share_z=False, tick_labels_major_z_rotation=45,
                 filename=name.with_suffix('.png'), save=not bm, inline=False)
 
     if bm:
@@ -144,7 +127,7 @@ def plt_filled_range(bm=False, make_reference=False, show=False):
     # Make the plot
     fcp.contour(df, x='X', y='Y', z='Value', row='Batch', col='Experiment', filled=True,
                 cbar=True, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250, 250], show=SHOW,
-                label_rc_font_size=12, zmin=1, zmax=3, levels=40,
+                label_rc_font_size=12, zmin=1, zmax=3, levels=30,
                 filename=name.with_suffix('.png'), save=not bm, inline=False)
 
     if bm:
