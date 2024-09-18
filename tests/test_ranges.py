@@ -39,7 +39,37 @@ fcp.KWARGS['save'] = True
 fcp.KWARGS['inline'] = False
 
 
-def test_default(master=False, remove=True, show=False):
+def test_boxplot(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('boxplot', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.boxplot(df_box, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', show=SHOW,
+                filename=name.with_suffix('.png'), jitter=False)
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_boxplot_iqr(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('boxplot_iqr', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.boxplot(df_box, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', show=SHOW,
+                ymin='1.5*iqr', ymax='1.5*iqr', filename=name.with_suffix('.png'), jitter=False)
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_boxplot_quantile(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('boxplot_quantile', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.boxplot(df_box, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', show=SHOW, ymax='q95',
+                filename=name.with_suffix('.png'), jitter=False)
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_default(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('default', make_reference, REFERENCE)
 
@@ -51,100 +81,7 @@ def test_default(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_primary(master=False, remove=True, show=False):
-
-    name = utl.unit_test_get_img_name('primary', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', show=SHOW,
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             xmax=1.2, filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_primary_qgroups(master=False, remove=True, show=False):
-
-    name = utl.unit_test_get_img_name('primary_qgroups', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', show=SHOW, groups='Die',
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             xmin='q1', xmax='q99', filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_primary_no_scale(master=False, remove=True, show=False):
-
-    name = utl.unit_test_get_img_name('primary_no-auto-scale', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', show=SHOW,
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             xmax=1.2, auto_scale=False,
-             filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_primary_explicit(master=False, remove=True, show=False):
-
-    name = utl.unit_test_get_img_name('primary_explicit', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', show=SHOW,
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             xmax=1.2, auto_scale=False,
-             filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_secondary(master=False, remove=True, show=False):
-
-    name = utl.unit_test_get_img_name('secondary', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_secondary_limits(master=False, remove=True, show=False):
-
-    name = utl.unit_test_get_img_name('secondary_limits', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             xmin=1.3,
-             filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_secondary_limits_no_scale(master=False, remove=True, show=False):
-
-    name = utl.unit_test_get_img_name('secondary_no-auto-scale', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             xmax=1.2, auto_scale=False,
-             filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_secondary_limits_y(master=False, remove=True, show=False):
-
-    name = utl.unit_test_get_img_name('secondary_y-limit', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             ymin=1,
-             filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_multiple(master=False, remove=True, show=False):
+def test_multiple(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('multiple', make_reference, REFERENCE)
 
@@ -155,7 +92,7 @@ def test_multiple(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_multiple_scaled(master=False, remove=True, show=False):
+def test_multiple_scaled(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('multiple_scaled', make_reference, REFERENCE)
 
@@ -167,38 +104,100 @@ def test_multiple_scaled(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_boxplot(master=False, remove=True, show=False):
+def test_primary(make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('boxplot', make_reference, REFERENCE)
+    name = utl.unit_test_get_img_name('primary', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.boxplot(df_box, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', show=SHOW,
-                filename=name.with_suffix('.png'), jitter=False)
+    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', show=SHOW,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             xmax=1.2, filename=name.with_suffix('.png'))
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_boxplot_quantile(master=False, remove=True, show=False):
+def test_primary_qgroups(make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('boxplot_quantile', make_reference, REFERENCE)
+    name = utl.unit_test_get_img_name('primary_qgroups', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.boxplot(df_box, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', show=SHOW, ymax='95q',
-                filename=name.with_suffix('.png'), jitter=False)
+    fcp.plot(df, x='Voltage', y='I [A]', show=SHOW, groups='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             xmin='q1', xmax='q99', filename=name.with_suffix('.png'))
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_boxplot_iqr(master=False, remove=True, show=False):
+def test_primary_no_scale(make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('boxplot_iqr', make_reference, REFERENCE)
+    name = utl.unit_test_get_img_name('primary_no-auto-scale', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.boxplot(df_box, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', show=SHOW,
-                ymin='1.5*iqr', ymax='1.5*iqr',
-                filename=name.with_suffix('.png'), jitter=False)
+    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', show=SHOW,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             xmax=1.2, auto_scale=False,
+             filename=name.with_suffix('.png'))
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_shared(master=False, remove=True, show=False):
+def test_primary_explicit(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('primary_explicit', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', legend='Die', show=SHOW,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             xmax=1.2, auto_scale=False,
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_secondary(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('secondary', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_secondary_limits(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('secondary_limits', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             xmin=1.3,
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_secondary_limits_no_scale(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('secondary_no-auto-scale', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             xmax=1.2, auto_scale=False,
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_secondary_limits_y(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('secondary_y-limit', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             ymin=1,
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_shared(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('shared', make_reference, REFERENCE)
 
@@ -210,7 +209,7 @@ def test_shared(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_shared_false(master=False, remove=True, show=False):
+def test_shared_false(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('shared_false', make_reference, REFERENCE)
 
@@ -222,7 +221,7 @@ def test_shared_false(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_shared_separate(master=False, remove=True, show=False):
+def test_shared_separate(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('shared_separate', make_reference, REFERENCE)
 
@@ -235,7 +234,7 @@ def test_shared_separate(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_shared_rows(master=False, remove=True, show=False):
+def test_shared_rows(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('shared_rows', make_reference, REFERENCE)
 
@@ -247,7 +246,7 @@ def test_shared_rows(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_shared_cols(master=False, remove=True, show=False):
+def test_shared_cols(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('shared_columns', make_reference, REFERENCE)
 
@@ -259,7 +258,7 @@ def test_shared_cols(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_shared_no(master=False, remove=True, show=False):
+def test_shared_no(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('shared_no', make_reference, REFERENCE)
 
