@@ -37,7 +37,18 @@ fcp.KWARGS['save'] = True
 fcp.KWARGS['inline'] = False
 
 
-def test_grid_major(master=False, remove=True, show=False):
+def test_grid_logit(make_reference=False, show=False):
+    """This scale doesn't seem to work.  Punting for now"""
+    name = utl.unit_test_get_img_name('grid_logit', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', show=SHOW, legend='Die', ax_scale='logit',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_grid_major(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('grid_major', make_reference, REFERENCE)
 
@@ -48,7 +59,7 @@ def test_grid_major(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_grid_major_off(master=False, remove=True, show=False):
+def test_grid_major_off(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('grid_major_off', make_reference, REFERENCE)
 
@@ -60,7 +71,7 @@ def test_grid_major_off(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_grid_major_off_y(master=False, remove=True, show=False):
+def test_grid_major_off_y(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('grid_major_off_y', make_reference, REFERENCE)
 
@@ -72,7 +83,7 @@ def test_grid_major_off_y(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_grid_major_secondary(master=False, remove=True, show=False):
+def test_grid_major_secondary(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('grid_major_secondary', make_reference, REFERENCE)
 
@@ -83,182 +94,7 @@ def test_grid_major_secondary(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_grid_minor(master=False, remove=True, show=False):
-
-    name = utl.unit_test_get_img_name('grid_minor', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             grid_minor=True,
-             filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_grid_logit(master=False, remove=True, show=False):
-    """This scale doesn't seem to work.  Punting for now"""
-    name = utl.unit_test_get_img_name('grid_logit', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', show=SHOW, legend='Die', ax_scale='logit',
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_grid_symlog(master=False, remove=True, show=False):
-
-    name = utl.unit_test_get_img_name('grid_symlog', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', show=SHOW, legend='Die', ax_scale='symlog',
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_ticks_minor(master=False, remove=True, show=False):
-
-    name = utl.unit_test_get_img_name('ticks_minor', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             ticks_minor=True,
-             filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_ticks_style(master=False, remove=True, show=False):
-
-    name = utl.unit_test_get_img_name('ticks_style', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             ticks_major_direction='out', ticks_major_color='#aaaaaa', ticks_major_length=5, ticks_major_width=0.8,
-             filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_ticks_inc(master=False, remove=True, show=False):
-
-    name = utl.unit_test_get_img_name('ticks_inc', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             ticks_major_y_increment=0.2, filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_ticks_minor_number(master=False, remove=True, show=False):
-
-    name = utl.unit_test_get_img_name('ticks_minor_number', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             ticks_minor_x_number=5, ticks_minor_y_number=10, ticks_minor_y2_number=4,
-             filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_ticks_minor_number_log(master=False, remove=True, show=False):
-
-    name = utl.unit_test_get_img_name('ticks_minor_number_log', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             ticks_minor_x_number=5, ticks_minor_y_number=10, ticks_minor_y2_number=4, ax_scale='logy',
-             ax2_scale='linear', filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_tick_tight(master=False, remove=True, show=False):
-
-    name = utl.unit_test_get_img_name('tick_labels_tight', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', show=SHOW, legend='Die', tick_labels_minor=True,
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             ax_size=[150, 150], filename=name.with_suffix('.png'), ticks_major_y_increment=0.05, ticks_major_x_increment=0.1)
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_tick_labels_log(master=False, remove=True, show=False):
-
-    name = utl.unit_test_get_img_name('tick_labels_log', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', show=SHOW, legend='Die', ax_scale='logy', ymin=0.8e-2, ymax=2e-2,
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             ticks_major=False, filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_tick_labels_log2(master=False, remove=True, show=False):
-
-    name = utl.unit_test_get_img_name('tick_labels_log2', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', show=SHOW, legend='Die', ax_scale='logy', ymin=1.1e-2, ymax=2e-2,
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             ticks_major=False, filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_tick_labels_minor(master=False, remove=True, show=False):
-
-    name = utl.unit_test_get_img_name('tick_labels_minor', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', show=SHOW, legend='Die',
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             tick_labels_minor=True,
-             filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_tick_cleanup(master=False, remove=True, show=False):
-
-    name = utl.unit_test_get_img_name('tick_cleanup', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             tick_labels_minor=True, ax_scale='logy', ax2_scale='lin', ticks_minor_x_number=5,
-             filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_tick_cleanup_off(master=False, remove=True, show=False):
-
-    name = utl.unit_test_get_img_name('tick_cleanup_off', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             tick_labels_minor=True, ax_scale='logy', ax2_scale='lin', ticks_minor_x_number=5, tick_cleanup=False,
-             filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_tick_cleanup2(master=False, remove=True, show=False):
-
-    name = utl.unit_test_get_img_name('tick_cleanup2', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
-             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             tick_labels_minor=True, ax_scale='logy', ax2_scale='lin', ticks_minor_x_number=5,
-             ax_size=[600, 400], tick_labels_minor_x_rotation=90,
-             filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_lin_sci(master=False, remove=True, show=False):
+def test_lin_sci(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('lin_sci', make_reference, REFERENCE)
 
@@ -270,7 +106,7 @@ def test_lin_sci(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_lin_sci2(master=False, remove=True, show=False):
+def test_lin_sci2(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('lin_sci2', make_reference, REFERENCE)
 
@@ -282,7 +118,7 @@ def test_lin_sci2(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_lin_sci_off(master=False, remove=True, show=False):
+def test_lin_sci_off(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('lin_sci_off', make_reference, REFERENCE)
 
@@ -294,7 +130,7 @@ def test_lin_sci_off(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_log_sci(master=False, remove=True, show=False):
+def test_log_sci(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('log_sci', make_reference, REFERENCE)
 
@@ -306,7 +142,7 @@ def test_log_sci(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_log_sci2(master=False, remove=True, show=False):
+def test_log_sci2(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('log_sci2', make_reference, REFERENCE)
 
@@ -318,7 +154,7 @@ def test_log_sci2(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_log_exp(master=False, remove=True, show=False):
+def test_log_exp(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('log_exp', make_reference, REFERENCE)
 
@@ -330,7 +166,30 @@ def test_log_exp(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_sciz(master=False, remove=True, show=False):
+def test_grid_minor(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('grid_minor', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             grid_minor=True,
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_grid_symlog(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('grid_symlog', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', show=SHOW, legend='Die', ax_scale='symlog',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_sciz(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('sciz', make_reference, REFERENCE)
 
@@ -343,7 +202,7 @@ def test_sciz(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_sciz_remove(master=False, remove=True, show=False):
+def test_sciz_remove(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('sciz_remove', make_reference, REFERENCE)
 
@@ -353,6 +212,147 @@ def test_sciz_remove(master=False, remove=True, show=False):
                 cbar=True, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250, 250], show=SHOW,
                 label_rc_font_size=12, levels=40, sci_z=True, tick_cleanup='remove',
                 filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_ticks_inc(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('ticks_inc', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             ticks_major_y_increment=0.2, filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_ticks_minor_number(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('ticks_minor_number', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             ticks_minor_x_number=5, ticks_minor_y_number=10, ticks_minor_y2_number=4,
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_ticks_minor_number_log(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('ticks_minor_number_log', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             ticks_minor_x_number=5, ticks_minor_y_number=10, ticks_minor_y2_number=4, ax_scale='logy',
+             ax2_scale='linear', filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_tick_labels_log(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('tick_labels_log', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', show=SHOW, legend='Die', ax_scale='logy', ymin=0.8e-2, ymax=2e-2,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             ticks_major=False, filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_tick_labels_log2(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('tick_labels_log2', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', show=SHOW, legend='Die', ax_scale='logy', ymin=1.1e-2, ymax=2e-2,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             ticks_major=False, filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_tick_labels_minor(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('tick_labels_minor', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             tick_labels_minor=True,
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_tick_cleanup(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('tick_cleanup', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             tick_labels_minor=True, ax_scale='logy', ax2_scale='lin', ticks_minor_x_number=5,
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_tick_cleanup_off(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('tick_cleanup_off', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             tick_labels_minor=True, ax_scale='logy', ax2_scale='lin', ticks_minor_x_number=5, tick_cleanup=False,
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_tick_cleanup2(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('tick_cleanup2', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             tick_labels_minor=True, ax_scale='logy', ax2_scale='lin', ticks_minor_x_number=5,
+             ax_size=[600, 400], tick_labels_minor_x_rotation=90,
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_ticks_minor(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('ticks_minor', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             ticks_minor=True,
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_ticks_style(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('ticks_style', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y=['Voltage', 'I [A]'], twin_x=True, show=SHOW, legend='Die',
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             ticks_major_direction='out', ticks_major_color='#aaaaaa', ticks_major_length=5, ticks_major_width=0.8,
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_ticks_tight(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('tick_labels_tight', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', show=SHOW, legend='Die', tick_labels_minor=True,
+             filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
+             ax_size=[150, 150], filename=name.with_suffix('.png'), ticks_major_y_increment=0.05, ticks_major_x_increment=0.1)
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
