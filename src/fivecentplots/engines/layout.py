@@ -386,8 +386,9 @@ class BaseLayout:
         rotations = [0, 0, 90, 270, 270]
         for ilab, lab in enumerate(labels):
             # Copy base label object and set default rotation
-            setattr(self, 'label_%s' % lab, copy.deepcopy(label))
-            getattr(self, 'label_%s' % lab).rotation = rotations[ilab]
+            setattr(self, f'label_{lab}', copy.deepcopy(label))
+            getattr(self, f'label_{lab}').name = f'label_{lab}'
+            getattr(self, f'label_{lab}').rotation = rotations[ilab]
 
             # Override params
             for k in [f for f in self.fcpp.keys() if f'label_{lab}_' in f and '_text' not in f]:

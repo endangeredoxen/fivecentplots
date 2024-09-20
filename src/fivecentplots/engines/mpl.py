@@ -409,7 +409,7 @@ class Layout(BaseLayout):
         # edge_width - this doesn't render correctly, maybe due to some aliasing issue?
         kwargs['corrections'] = {
             'edge_width': lambda self: 0 if getattr(self, 'edge_width') == 0
-            else (getattr(self, 'edge_width') + 0.3323) / 1.4059}
+                                       else (getattr(self, 'edge_width') + 0.3323) / 1.4059}
 
         # Inherit the base layout properties
         super().__init__(data, defaults, **kwargs)
@@ -890,7 +890,8 @@ class Layout(BaseLayout):
 
         # Optionally shrink font size for long labels (rotation = 0 or rotation = 90 only)
         # Maybe turn this off for axes labels??
-        if self.scale_font_size and text.get_rotation() in [0, 90]:
+        dont_scale = ['title']
+        if self.scale_font_size and text.get_rotation() in [0, 90] and label.name not in dont_scale:
             if text.get_rotation() == 0:
                 ax = 0
                 param = 'width'
@@ -1264,8 +1265,10 @@ class Layout(BaseLayout):
                                     ) / self.fig.size[1]
 
         # y-label
+        title_xs = self._left - np.ceil(self.ws_fig_label) - np.ceil(self._labtick_y)
         self.label_y.position[0] = (self.label_y.size[0] / 2
                                     + self.ws_fig_label
+                                    + title_xs
                                     - (1 if self.label_y.edge_width % 2 == 1 else 0)) / self.fig.size[0]
         self.label_y.position[3] = self.axes.obj[0,0].get_position().y0 + self.axes.size[1] / 2 / self.fig.size[1]
 

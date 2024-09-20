@@ -36,47 +36,7 @@ fcp.KWARGS['save'] = True
 fcp.KWARGS['inline'] = False
 
 
-def test_fill_color(master=False, remove=True, show=False):
-
-    name = utl.unit_test_get_img_name('fill_color', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
-             filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             fig_fill_color='#00FF00', legend_fill_color='#FF0000', ax_fill_color='#FFFFFF',
-             label_x_fill_color='#0000FF', label_y_fill_color='#FF00FF',
-             tick_labels_major_fill_color='#AAFB05',
-             filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_edge_color(master=False, remove=True, show=False):
-
-    name = utl.unit_test_get_img_name('edge_color', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
-             filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             fig_edge_color='#00FF00', legend_edge_color='#FF0000', ax_edge_color='#FFFFFF',
-             label_x_edge_color='#0000FF', label_y_edge_color='#FF00FF',
-             tick_labels_major_edge_color='#AAFB05', tick_labels_major_edge_width=5,
-             filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_spines(master=False, remove=True, show=False):
-
-    name = utl.unit_test_get_img_name('spines', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
-             filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             ax_edge_color='#FF0000', spine_left=False, spine_right=False,
-             filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_alpha(master=False, remove=True, show=False):
+def test_alpha(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('alpha', make_reference, REFERENCE)
 
@@ -93,7 +53,7 @@ def test_alpha(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_alpha_marker(master=False, remove=True, show=False):
+def test_alpha_marker(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('alpha_marker', make_reference, REFERENCE)
 
@@ -105,7 +65,7 @@ def test_alpha_marker(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_alpha_legend_marker(master=False, remove=True, show=False):
+def test_alpha_legend_marker(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('alpha_legend_marker', make_reference, REFERENCE)
 
@@ -117,7 +77,70 @@ def test_alpha_legend_marker(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_line_color(master=False, remove=True, show=False):
+def test_edge_color(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('edge_color', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
+             filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             fig_edge_color='#00FF00', legend_edge_color='#FF0000', ax_edge_color='#FFFFFF',
+             label_x_edge_color='#0000FF', label_y_edge_color='#FF00FF', label_edge_width=1,
+             tick_labels_major_edge_color='#AAFB05', tick_labels_major_edge_width=5,
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_fill_color(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('fill_color', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
+             filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             fig_fill_color='#00FF00', legend_fill_color='#FF0000', ax_fill_color='#FFFFFF',
+             label_x_fill_color='#0000FF', label_y_fill_color='#FF00FF',
+             tick_labels_major_fill_color='#AAFB05',
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_fonts(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('fonts', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
+             filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             title='My Oh My This Is Way Too Long of a Title for This Plot What Were You Thinking!',
+             title_font_style='italic', label_y_font_size=25, label_y_style='normal',
+             label_x_font_weight='normal', tick_labels_major_font='fantasy', filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_hist(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('hist', make_reference, REFERENCE)
+
+    # Make the plot
+    df_hist = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
+    fcp.hist(df_hist, x='Value', show=SHOW, legend='Region', hist_fill_alpha=1, filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_hist_color(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('hist_color', make_reference, REFERENCE)
+
+    # Make the plot
+    df_hist = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
+    fcp.hist(df_hist, x='Value', show=SHOW, legend='Region', hist_fill_alpha=1,
+             colors=['#FF0000', '#00FF11'],
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_line_color(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('line_color', make_reference, REFERENCE)
 
@@ -128,7 +151,19 @@ def test_line_color(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_line_color_custom(master=False, remove=True, show=False):
+def test_line_color_cmap(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('line_color_cmap', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
+             filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             cmap='inferno',
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_line_color_custom(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('line_color_custom', make_reference, REFERENCE)
 
@@ -141,7 +176,7 @@ def test_line_color_custom(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_line_color_index(master=False, remove=True, show=False):
+def test_line_color_index(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('line_color_index', make_reference, REFERENCE)
 
@@ -153,19 +188,7 @@ def test_line_color_index(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_line_color_cmap(master=False, remove=True, show=False):
-
-    name = utl.unit_test_get_img_name('line_color_cmap', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
-             filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             cmap='inferno',
-             filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_line_style(master=False, remove=True, show=False):
+def test_line_style(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('line_style', make_reference, REFERENCE)
 
@@ -177,7 +200,7 @@ def test_line_style(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_line_style2(master=False, remove=True, show=False):
+def test_line_style2(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('line_style2', make_reference, REFERENCE)
 
@@ -189,7 +212,7 @@ def test_line_style2(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_line_style_by_line(master=False, remove=True, show=False):
+def test_line_style_by_line(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('line_style_by_line', make_reference, REFERENCE)
 
@@ -203,55 +226,7 @@ def test_line_style_by_line(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_marker_edge(master=False, remove=True, show=False):
-
-    name = utl.unit_test_get_img_name('marker_edge', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
-             filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             marker_edge_color=['#555555'],
-             filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_marker_fill(master=False, remove=True, show=False):
-
-    name = utl.unit_test_get_img_name('marker_fill', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
-             filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             marker_edge_color=['#555555'], marker_fill_color='#FFFFFF',
-             filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_marker_fill_default(master=False, remove=True, show=False):
-
-    name = utl.unit_test_get_img_name('marker_fill_default', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
-             filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             marker_fill=True,
-             filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_marker_fill_alpha(master=False, remove=True, show=False):
-
-    name = utl.unit_test_get_img_name('marker_fill_alpha', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
-             filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             marker_fill=True, marker_fill_alpha=0.5,
-             filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_marker_boxplot(master=False, remove=True, show=False):
+def test_marker_boxplot(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('boxplot', make_reference, REFERENCE)
 
@@ -265,7 +240,7 @@ def test_marker_boxplot(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_marker_boxplot2(master=False, remove=True, show=False):
+def test_marker_boxplot2(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('boxplot2', make_reference, REFERENCE)
 
@@ -280,7 +255,7 @@ def test_marker_boxplot2(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_marker_boxplot3(master=False, remove=True, show=False):
+def test_marker_boxplot3(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('boxplot3', make_reference, REFERENCE)
 
@@ -295,29 +270,55 @@ def test_marker_boxplot3(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_hist(master=False, remove=True, show=False):
+def test_marker_edge(make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('hist', make_reference, REFERENCE)
-
-    # Make the plot
-    df_hist = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
-    fcp.hist(df_hist, x='Value', show=SHOW, legend='Region', hist_fill_alpha=1, filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def test_hist_color(master=False, remove=True, show=False):
-
-    name = utl.unit_test_get_img_name('hist_color', make_reference, REFERENCE)
+    name = utl.unit_test_get_img_name('marker_edge', make_reference, REFERENCE)
 
     # Make the plot
-    df_hist = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
-    fcp.hist(df_hist, x='Value', show=SHOW, legend='Region', hist_fill_alpha=1,
-             colors=['#FF0000', '#00FF11'],
+    fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
+             filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             marker_edge_color=['#555555'],
              filename=name.with_suffix('.png'))
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_marker_type(master=False, remove=True, show=False):
+def test_marker_fill(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('marker_fill', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
+             filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             marker_edge_color=['#555555'], marker_fill_color='#FFFFFF',
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_marker_fill_default(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('marker_fill_default', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
+             filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             marker_fill=True,
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_marker_fill_alpha(make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('marker_fill_alpha', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
+             filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
+             marker_fill=True, marker_fill_alpha=0.5,
+             filename=name.with_suffix('.png'))
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def test_marker_type(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('marker_type', make_reference, REFERENCE)
 
@@ -329,7 +330,7 @@ def test_marker_type(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_marker_type_none(master=False, remove=True, show=False):
+def test_marker_type_none(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('marker_type_none', make_reference, REFERENCE)
 
@@ -341,7 +342,7 @@ def test_marker_type_none(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_marker_size(master=False, remove=True, show=False):
+def test_marker_size(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('marker_size', make_reference, REFERENCE)
 
@@ -353,7 +354,7 @@ def test_marker_size(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_marker_size_legend(master=False, remove=True, show=False):
+def test_marker_size_legend(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('marker_size_legend', make_reference, REFERENCE)
 
@@ -365,7 +366,7 @@ def test_marker_size_legend(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_marker_size_column(master=False, remove=True, show=False):
+def test_marker_size_column(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('marker_size_column', make_reference, REFERENCE)
 
@@ -377,20 +378,19 @@ def test_marker_size_column(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_fonts(master=False, remove=True, show=False):
+def test_spines(make_reference=False, show=False):
 
-    name = utl.unit_test_get_img_name('fonts', make_reference, REFERENCE)
+    name = utl.unit_test_get_img_name('spines', make_reference, REFERENCE)
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
-             title='My Oh My This Is Way Too Long of a Title for This Plot What Were You Thinking!',
-             title_font_style='italic', label_y_font_size=25, label_y_style='normal',
-             label_x_font_weight='normal', tick_labels_major_font='fantasy', filename=name.with_suffix('.png'))
+             ax_edge_color='#FF0000', spine_left=False, spine_right=False,
+             filename=name.with_suffix('.png'))
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_theme_white(master=False, remove=True, show=False):
+def test_theme_white(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('theme_white', make_reference, REFERENCE)
 
@@ -403,7 +403,7 @@ def test_theme_white(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_theme_white_fly(master=False, remove=True, show=False):
+def test_theme_white_fly(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('theme_white_fly', make_reference, REFERENCE)
 
@@ -416,7 +416,7 @@ def test_theme_white_fly(master=False, remove=True, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def test_theme_gray(master=False, remove=True, show=False):
+def test_theme_gray(make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('theme_gray', make_reference, REFERENCE)
 
