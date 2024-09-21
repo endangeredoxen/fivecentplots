@@ -2477,8 +2477,8 @@ class Layout(BaseLayout):
                       color=self.gantt.fill_color[(iline, leg_name)])]
             self.legend.add_value(leg_name, handle, 'lines')
 
-    def plot_heatmap(self, ir: int, ic: int, df: pd.DataFrame, x: str, y: str,
-                     z: str, data: 'Data') -> 'MPL_imshow_object':  # noqa: F821
+    def plot_heatmap(self, ir: int, ic: int, df: pd.DataFrame, x: str, y: str, z: str,
+                     data: 'Data') -> 'MPL_imshow_object':  # noqa: F821
         """Plot a heatmap.
 
         Args:
@@ -2495,12 +2495,11 @@ class Layout(BaseLayout):
         """
         ax = self.axes.obj[ir, ic]
 
-        # Make the heatmap
+        # Make the heatmap (ranges get updated later)
         plot_num = utl.plot_num(ir, ic, self.ncol) - 1
-        ## NEED TO FIGURE THIS OUT --> RANGES NOT AVAILABLE YET
-        im = ax.imshow(df, self.cmap[plot_num], #vmin=data.ranges['zmin'][ir, ic], vmax=data.ranges['zmax'][ir, ic],
+        im = ax.imshow(df, self.cmap[plot_num], vmin=data.ranges['zmin'][ir, ic], vmax=data.ranges['zmax'][ir, ic],
                        interpolation=self.heatmap.interp)
-        #im.set_clim(data.ranges['zmin'][ir, ic], data.ranges['zmax'][ir, ic])
+        im.set_clim(data.ranges['zmin'][ir, ic], data.ranges['zmax'][ir, ic])
 
         # Adjust the axes and rc label size based on the number of groups
         cols = len(df.columns)
@@ -2522,9 +2521,9 @@ class Layout(BaseLayout):
             ax.grid(which="minor", color=self.heatmap.edge_color[0],
                     linestyle='-', linewidth=self.heatmap.edge_width)
             ax.tick_params(which="minor", bottom=False, left=False)
-        if ranges['xmin'] is not None and ranges['xmin'] > 0:
+        if data.ranges['xmin'][ir, ic] is not None and data.ranges['xmin'][ir, ic] > 0:
             xticks = ax.get_xticks()
-            ax.set_xticklabels([int(f + ranges['xmin']) for f in xticks])
+            ax.set_xticklabels([int(f + data.ranges['xmin'][ir, ic]) for f in xticks])
 
         # Add the cbar
         if self.cbar.on and (not self.cbar.shared or ic == self.ncol - 1):

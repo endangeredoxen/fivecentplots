@@ -375,6 +375,23 @@ def plt_imshow_tick_labels(bm=False, make_reference=False, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
+def plt_imshow_tick_and_axes_labels(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('imshow_tick_and_axes_labels', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.imshow(img_cat, cmap='inferno', cbar=True, ax_size=[600, 600], tick_labels_major=True,
+               filename=name.with_suffix('.png'), save=not bm, inline=False,
+               label_y='Row', label_x='Column')
+
+    if bm:
+        return
+
+    if show == False:
+        utl.unit_test_measure_axes(name, 40, 100, 600, 300, 1, alias=False)
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
 def plt_imshow_stretched(bm=False, make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('imshow_stretched', make_reference, REFERENCE)
@@ -951,6 +968,11 @@ def test_imshow_rotate(benchmark):
 def test_imshow_tick_labels(benchmark):
     plt_imshow_tick_labels()
     benchmark(plt_imshow_tick_labels, True)
+
+
+def test_imshow_tick_and_axes_labels(benchmark):
+    plt_imshow_tick_and_axes_labels()
+    benchmark(plt_imshow_tick_and_axes_labels, True)
 
 
 def test_imshow_stretched(benchmark):

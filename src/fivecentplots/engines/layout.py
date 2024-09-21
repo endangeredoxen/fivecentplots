@@ -385,10 +385,21 @@ class BaseLayout:
         labels = data.axs
         rotations = [0, 0, 90, 270, 270]
         for ilab, lab in enumerate(labels):
-            # Copy base label object and set default rotation
+            # Copy base label object
             setattr(self, f'label_{lab}', copy.deepcopy(label))
             getattr(self, f'label_{lab}').name = f'label_{lab}'
+
+            # Update rotation
             getattr(self, f'label_{lab}').rotation = rotations[ilab]
+
+            # Update label text
+            if utl.kwget(kwargs, self.fcpp, [f'label_{lab}', f'label_{lab}_text'], None) not in [None, True]:
+                if utl.kwget(kwargs, self.fcpp, f'label_{lab}_text', None):
+                    getattr(self, f'label_{lab}').text = utl.kwget(kwargs, self.fcpp, f'label_{lab}_text', None)
+                    getattr(self, f'label_{lab}').on = True
+                else:
+                    getattr(self, f'label_{lab}').text = utl.kwget(kwargs, self.fcpp, f'label_{lab}', None)
+                    getattr(self, f'label_{lab}').on = True
 
             # Override params
             for k in [f for f in self.fcpp.keys() if f'label_{lab}_' in f and '_text' not in f]:
@@ -1293,7 +1304,13 @@ class BaseLayout:
         if self.imshow.on and not utl.kwget(kwargs, self.fcpp, 'cmap', None):
             self.cmap = RepeatedList(['gray'], 'cmap')
 
-        # Special gridline/tick/axes defaults for heatmap
+        # Disable axes labels if no label name provided
+        if self.label_x.text == True:
+            self.label_x.on = False
+        if self.label_y.text == True:
+            self.label_y.on = False
+
+        # Special gridline/tick/axes defaults for imshow
         grids = [f for f in kwargs.keys() if f in
                  ['grid_major', 'grid_major_x', 'grid_major_y',
                   'grid_minor', 'grid_minor_x', 'grid_minor_y']]
@@ -1307,10 +1324,6 @@ class BaseLayout:
             kwargs['tick_cleanup'] = False
         self.ticks_major_x.on = utl.kwget(kwargs_orig, self.fcpp, ['ticks_major_x', 'ticks_major'], False)
         self.ticks_major_y.on = utl.kwget(kwargs_orig, self.fcpp, ['ticks_major_y', 'ticks_major'], False)
-        self.label_x.on = \
-            utl.kwget(kwargs_orig, self.fcpp, ['label_x'], False) or kwargs_orig.get('label_x_text') is not None
-        self.label_y.on = \
-            utl.kwget(kwargs_orig, self.fcpp, ['label_y'], False) or kwargs_orig.get('label_y_text') is not None
         self.tick_labels_major_x.rotation = utl.kwget(kwargs_orig, self.fcpp, 'tick_labels_major_x', 0)
         self.tick_labels_major_x.on = \
             utl.kwget(kwargs_orig, self.fcpp, ['tick_labels_major', 'tick_labels_major_x'], False)
