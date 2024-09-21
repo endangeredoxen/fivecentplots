@@ -163,11 +163,6 @@ def test_filled_no_share(benchmark):
     benchmark(plt_filled_no_share, True)
 
 
-def test_filled_separate(benchmark):
-    plt_filled_separate()
-    benchmark(plt_filled_separate, True)
-
-
 def test_filled_range(benchmark):
     plt_filled_range()
     benchmark(plt_filled_range, True)
