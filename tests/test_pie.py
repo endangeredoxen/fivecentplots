@@ -41,6 +41,21 @@ fcp.KWARGS['inline'] = False
 
 
 # plt_ functions can be used directly outside of pytest for debug
+def plt_angle(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('angle', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.pie(df, x='Liquid', y='pH', show=SHOW,
+            filter='Measurement=="A" & T [C]==25',
+            explode=(0, 0.1), start_angle=0, percents=True,
+            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
+
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
 def plt_basic(bm=False, make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('basic', make_reference, REFERENCE)
@@ -82,6 +97,32 @@ def plt_donut(bm=False, make_reference=False, show=False):
             start_angle=90, alpha=0.85, filename=name.with_suffix('.png'), save=not bm, inline=False,
             jitter=False,
             inner_radius=0.5, percents_distance=0.75)
+
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_explode(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('explode', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.pie(df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A" & T [C]==25', explode=(0, 0.1), start_angle=90,
+            alpha=0.85, percents=True, filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
+
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_explode_all(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('explode_all', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.pie(df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A" & T [C]==25', explode=('all', 0.1),
+            start_angle=90, alpha=0.85, percents=True, filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
@@ -157,32 +198,6 @@ def plt_percents(bm=False, make_reference=False, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
-def plt_explode(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('explode', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.pie(df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A" & T [C]==25', explode=(0, 0.1), start_angle=90,
-            alpha=0.85, percents=True, filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
-
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_explode_all(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('explode_all', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.pie(df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A" & T [C]==25', explode=('all', 0.1),
-            start_angle=90, alpha=0.85, percents=True, filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
-
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
 def plt_shadow(bm=False, make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('shadow', make_reference, REFERENCE)
@@ -191,21 +206,6 @@ def plt_shadow(bm=False, make_reference=False, show=False):
     fcp.pie(df, x='Liquid', y='pH', show=SHOW,
             filter='Measurement=="A" & T [C]==25',
             explode=(0, 0.1), shadow=True, start_angle=90, percents=False,
-            filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
-
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
-
-
-def plt_angle(bm=False, make_reference=False, show=False):
-
-    name = utl.unit_test_get_img_name('angle', make_reference, REFERENCE)
-
-    # Make the plot
-    fcp.pie(df, x='Liquid', y='pH', show=SHOW,
-            filter='Measurement=="A" & T [C]==25',
-            explode=(0, 0.1), start_angle=0, percents=True,
             filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:

@@ -938,7 +938,7 @@ def img_df_transform_from_dict(groups: pd.DataFrame, imgs: Dict[int, npt.NDArray
     return groups, imgs_new
 
 
-def img_grayscale(img: np.ndarray) -> pd.DataFrame:
+def img_grayscale(img: np.ndarray, as_array: bool = False) -> Union[pd.DataFrame, npt.NDArray]:
     """Convert an RGB image to grayscale and convert to a 2D DataFrame
 
     Args:
@@ -949,7 +949,11 @@ def img_grayscale(img: np.ndarray) -> pd.DataFrame:
     """
     r, g, b = img[:, :, 0], img[:, :, 1], img[:, :, 2]
 
-    return pd.DataFrame(0.2989 * r + 0.5870 * g + 0.1140 * b)
+    if not as_array:
+        return pd.DataFrame(0.2989 * r + 0.5870 * g + 0.1140 * b)
+
+    else:
+        return 0.2989 * r + 0.5870 * g + 0.1140 * b
 
 
 def img_rgb_to_df(data):
@@ -1304,14 +1308,13 @@ def show_file(filename: str):
         subprocess.call([opener, str(filename)])
 
 
-def split_color_planes(img: pd.DataFrame, cfa: str = 'rggb', as_dict: bool = False) -> pd.DataFrame:
+def split_color_planes(img: pd.DataFrame, cfa: str = 'rggb', as_dict: bool = True) -> pd.DataFrame:
     """Split image data into respective color planes.  dtype changed to float
 
     Args:
         img: image data
         cfa (optional): four-character cfa pattern. Defaults to 'rggb'.
-        as_dict (optional): return each plane DataFrame as a value in a dict.
-            Defaults to False.
+        as_dict (optional): return each plane DataFrame as a value in a dict. Defaults to True.
 
     Returns:
         updated DataFrame
@@ -1372,7 +1375,16 @@ def split_color_planes(img: pd.DataFrame, cfa: str = 'rggb', as_dict: bool = Fal
         for ic, cc in enumerate(cp):
             img2[cc] = img[ic // 2::2, (ic % 2)::2]
 
-        return img2
+        if not as_dict:
+            df = []
+            for k, v in img2.items():
+                temp = pd.DataFrame(v)
+                temp['Plane'] = k
+                df += [temp]
+            return pd.concat(df)
+
+        else:
+            return img2
 
 
 def split_color_planes_wrapper(df_groups: pd.DataFrame,

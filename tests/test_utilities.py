@@ -25,48 +25,20 @@ def df(scope='session'):
     return pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data.csv')
 
 
-def test_repeated_list():
-    with pytest.raises(ValueError):
-        test = utl.RepeatedList([], 'fake_plastic_trees')
-    with pytest.raises(ValueError):
-        test = utl.RepeatedList(None, 'fake_plastic_trees')
-
-    test = utl.RepeatedList([1, 2, 3], 'street_spirit', override={1: -1})
-    assert test[0] == 1
-    assert test[(0, 1)] == -1
-
-
-def test_timer():
-    test = utl.Timer()
-    assert test.get() is None
-    test.start()
-    test.get('hi')
-    assert test.total > 0
-    test.stop()
-
-    test = utl.Timer(start=True, units='ms', print=True)
-    test.get('hi', stop=True)
-    assert test.total > 0
-    test.get_total()
-
-    with pytest.raises(ValueError):
-        test = utl.Timer(start=True, units='gas')
-
-
 def test_ci(df):
     np.testing.assert_almost_equal(utl.ci(df['I [A]']), (0.1422958885037856, 0.18313061803216213))
     assert np.isnan(utl.ci(pd.Series())[0])
 
 
 def test_dfkwarg(df):
-    kwargs = utl.dfkwarg(df, {})
+    kwargs = utl.dfkwarg(df, {}, data.XY)
     assert 'df' in kwargs
 
-    kwargs = utl.dfkwarg(np.zeros((5, 5)), {})
+    kwargs = utl.dfkwarg(np.zeros((5, 5)), {}, data.ImShow)
     assert 'df' in kwargs
 
-    kwargs = utl.dfkwarg(1, {})
-    assert kwargs['df'] is None
+    with pytest.raises(data.DataError):
+        utl.dfkwarg(1, {}, data.XY)
 
 
 def test_df_filter(df):
@@ -259,10 +231,10 @@ def test_plot_num():
 
 def test_rgb2bayer(img_cat):
     df_ = utl.rgb2bayer(img_cat)
-    np.testing.assert_almost_equal(df_.loc[::2, ::2].stack().mean(), 175.746838)
-    np.testing.assert_almost_equal(df_.loc[1::2, ::2].stack().mean(), 161.181442)
-    np.testing.assert_almost_equal(df_.loc[::2, 1::2].stack().mean(), 161.2675)
-    np.testing.assert_almost_equal(df_.loc[1::2, 1::2].stack().mean(), 154.865044)
+    np.testing.assert_almost_equal(df_[::2, ::2].mean(), 175.746838)
+    np.testing.assert_almost_equal(df_[1::2, ::2].mean(), 161.181442)
+    np.testing.assert_almost_equal(df_[::2, 1::2].mean(), 161.2675)
+    np.testing.assert_almost_equal(df_[1::2, 1::2].mean(), 154.865044)
 
 
 def test_rectangle_overlap():
@@ -280,6 +252,17 @@ def test_reload_defaults():
     assert fcp_params['ax_fill_color'] == '#ffffff'
     fcp_params, colors, markers, rcParams = utl.reload_defaults()
     assert fcp_params['ax_fill_color'] == '#eaeaea'
+
+
+def test_repeated_list():
+    with pytest.raises(ValueError):
+        test = utl.RepeatedList([], 'fake_plastic_trees')
+    with pytest.raises(ValueError):
+        test = utl.RepeatedList(None, 'fake_plastic_trees')
+
+    test = utl.RepeatedList([1, 2, 3], 'street_spirit', override={1: -1})
+    assert test[0] == 1
+    assert test[(0, 1)] == -1
 
 
 def test_see():
@@ -376,24 +359,50 @@ def test_sigma(df):
 
 
 def test_split_color_planes(img_cat):
-    img = utl.img_grayscale(img_cat)
-
-    # Case 1: 2D pandas array in non-imshow format
+    # Case 1: DataFrame input, split to dictionary
+    img = utl.img_grayscale(img_cat)  # this is a DataFrame
     img_cp = utl.split_color_planes(img, cfa='grbg')
-    np.testing.assert_almost_equal(img_cp.loc[img_cp.Plane == 'r', 'Value'].mean(), 164.84421923940002)
-    np.testing.assert_almost_equal(img_cp.loc[img_cp.Plane == 'b', 'Value'].mean(), 164.79765575099998)
+    np.testing.assert_almost_equal(img_cp['r'].stack().mean(), 164.84421923940002)
+    np.testing.assert_almost_equal(img_cp['b'].stack().mean(), 164.79765575099998)
 
-    # Case 2: input is in imshow format
-    df_groups, imgs = utl.img_df_transform(img)
-    img_cp = utl.split_color_planes(imgs[0], cfa='grbg')
-    np.testing.assert_almost_equal(img_cp.loc[img_cp.Plane == 'r', 'Value'].mean(), 164.84421923940002)
-    np.testing.assert_almost_equal(img_cp.loc[img_cp.Plane == 'b', 'Value'].mean(), 164.79765575099998)
+    # Case 2: DataFrame input, split to DataFrame
+    img = utl.img_grayscale(img_cat)  # this is a DataFrame
+    img_cp = utl.split_color_planes(img, cfa='grbg', as_dict=False)
+    red = img_cp.loc[img_cp.Plane == 'r']
+    blue = img_cp.loc[img_cp.Plane == 'b']
+    np.testing.assert_almost_equal(red[utl.df_int_cols(red)].stack().mean(), 164.84421923940002)
+    np.testing.assert_almost_equal(blue[utl.df_int_cols(blue)].stack().mean(), 164.79765575099998)
 
-    # Case 3: as_dict
-    df_groups, imgs = utl.img_df_transform(img)
-    img_cp = utl.split_color_planes(imgs[0], cfa='grbg', as_dict=True)
-    np.testing.assert_almost_equal(img_cp['r']['Value'].mean(), 164.84421923940002)
-    np.testing.assert_almost_equal(img_cp['b']['Value'].mean(), 164.79765575099998)
+    # Case 3: NDArray input, split to dict
+    img = utl.img_grayscale(img_cat, as_array=True)  # this is a np.array
+    img_cp = utl.split_color_planes(img, cfa='grbg')
+    np.testing.assert_almost_equal(img_cp['r'].mean(), 164.84421923940002)
+    np.testing.assert_almost_equal(img_cp['b'].mean(), 164.79765575099998)
+
+    # Case 4: NDArray input, split to DataFrame
+    img = utl.img_grayscale(img_cat, as_array=True)  # this is a np.array
+    img_cp = utl.split_color_planes(img, cfa='grbg', as_dict=False)
+    red = img_cp.loc[img_cp.Plane == 'r']
+    blue = img_cp.loc[img_cp.Plane == 'b']
+    np.testing.assert_almost_equal(red[utl.df_int_cols(red)].stack().mean(), 164.84421923940002)
+    np.testing.assert_almost_equal(blue[utl.df_int_cols(blue)].stack().mean(), 164.79765575099998)
+
+
+def test_timer():
+    test = utl.Timer()
+    assert test.get() is None
+    test.start()
+    test.get('hi')
+    assert test.total > 0
+    test.stop()
+
+    test = utl.Timer(start=True, units='ms', print=True)
+    test.get('hi', stop=True)
+    assert test.total > 0
+    test.get_total()
+
+    with pytest.raises(ValueError):
+        test = utl.Timer(start=True, units='gas')
 
 
 def test_validate_list():

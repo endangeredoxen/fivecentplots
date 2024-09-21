@@ -448,7 +448,6 @@ class Layout(BaseLayout):
         val = np.ceil(self.ws_fig_label) \
             + np.ceil(self.box_labels) \
             + np.ceil(self._legy) \
-            + np.ceil(self.pie.xs_top) \
             + np.ceil(self.pie.xs_bottom) \
             + np.ceil(self._labtick_x) \
             + np.ceil(self.legend.overflow)
@@ -654,6 +653,8 @@ class Layout(BaseLayout):
         if np.ceil(self.tick_z_top_xs + self.tick_labels_major_z.padding >= val):
             tick_top_xs = max(tick_top_xs, np.ceil(self.tick_z_top_xs + 2 * self.tick_labels_major_z.padding - val))
         val += tick_top_xs
+
+        val += np.ceil(self.pie.xs_top)
 
         return int(val)
 
@@ -1509,18 +1510,6 @@ class Layout(BaseLayout):
 
                     top = self.pie.size_all['y1'].max() - ax_bbox.y1
                     self.pie.xs_top = max(top if top > 0 else 0, self.pie.xs_top)
-
-                if self.pie.explode:
-                    for iwedge, wedge in enumerate(self.pie.explode):
-                        if wedge == 0:
-                            continue
-                        # this is a bit of a hack and may not hold for all cases
-                        # and ignores the orientation of the wedge that is
-                        # exploding
-                        self.pie.xs_left += wedge * self.axes.size[0] / 4
-                        self.pie.xs_right += wedge * self.axes.size[0] / 4
-                        self.pie.xs_top += wedge * self.axes.size[0] / 4
-                        self.pie.xs_bottom += wedge * self.axes.size[0] / 4
 
             # # someday move labels to edge and draw a line from wedges to label
             # theta1 = self.pie.obj[0][0].theta1
@@ -3673,14 +3662,6 @@ class Layout(BaseLayout):
         # row
         for ir, ic in np.ndindex(self.label_row.obj.shape):
             if self.label_row.obj[ir, ic]:
-                # # Adjust the font size if needed
-                # if self.scale_font_size:
-                #     max_height = self.axes.size[1]
-                #     text_height = self.label_row.obj[ir, ic].get_window_extent().height
-                #     if text_height > max_height:
-                #         sf = (max_height - 4) / text_height  # 2 pixel padding each side
-                #         self.label_row.obj[ir, ic].set_fontsize(sf * self.label_row.font_size)
-
                 # x-position and width
                 if not self.cbar.on:
                     if self.axes.edge_width == 0 and self.name not in ['imshow']:
@@ -3726,14 +3707,6 @@ class Layout(BaseLayout):
         # col
         for ir, ic in np.ndindex(self.label_col.obj.shape):
             if self.label_col.obj[ir, ic]:
-                # # Adjist the font size if needed
-                # if self.scale_font_size:
-                #     max_width = self.axes.size[0]
-                #     text_width = self.label_col.obj[ir, ic].get_window_extent().width
-                #     if text_width > max_width:
-                #         sf = (max_width - 4) / text_width  # 2 pixel padding each side
-                #         self.label_col.obj[ir, ic].set_fontsize(sf * self.label_col.font_size)
-
                 # bkgd
                 bbox = self.axes.obj[ir, ic].get_position()
                 lab_x0 = np.round(bbox.x0 * self.fig.size_int[0]) - np.floor(self.axes.edge_width / 2) \
@@ -3764,14 +3737,6 @@ class Layout(BaseLayout):
         # wrap label
         for ir, ic in np.ndindex(self.label_wrap.obj.shape):
             if self.label_wrap.obj[ir, ic]:
-                # # Adjust the font size if needed
-                # if self.scale_font_size:
-                #     max_width = (self.axes.position[1] - self.axes.position[0]) * self.fig.size[0]
-                #     text_width = self.label_wrap.obj[ir, ic].get_window_extent().width
-                #     if text_width > max_width:
-                #         sf = (max_width - 4) / text_width  # 2 pixel padding each side
-                #         self.label_wrap.obj.set_fontsize(sf * self.label_wrap.font_size)
-
                 # Get axes position
                 bbox = self.axes.obj[ir, ic].get_position()
 
@@ -3801,14 +3766,6 @@ class Layout(BaseLayout):
 
         # wrap title
         if self.title_wrap.on:
-            # Adjust the font size if needed
-            # if self.scale_font_size:
-            #     max_width = (self.axes.position[1] - self.axes.position[0]) * self.fig.size[0]
-            #     text_width = self.title_wrap.obj.get_window_extent().width
-            #     if text_width > max_width:
-            #         sf = (max_width - 4) / text_width  # 2 pixel padding each side
-            #         self.title_wrap.obj.set_fontsize(sf * self.title_wrap.font_size)
-
             # Get axes position
             bbox = self.axes.obj[0, 0].get_position()
 
@@ -3966,10 +3923,6 @@ class Layout(BaseLayout):
             labt = self.box_group_title
             lab_bg_size = self.box_group_label.size_all_bg.set_index(['ir', 'ic', 'ii', 'jj'])
             labt_bg_size = self.box_group_title.size_all_bg.set_index(['ir', 'ic', 'ii'])
-            #hh = self._box_label_heights
-            #hh.iloc[-1] -= self.box_group_label.edge_width
-            #hh /= self.axes.size[1]
-            #hh = self.box_group_label.height
 
             # Iterate through labels
             offset_txt = 0.2 * lab.font_size  # to make labels line up better at default font sizes
