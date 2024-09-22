@@ -630,7 +630,7 @@ class Data:
         Returns:
             min, max tuple
         """
-        # Case: data is pd.DataFrame - separate out values of interest and address special dtype issues
+        # Case: data is a pd.DataFrame - separate out values of interest and address special dtype issues
         if isinstance(data, pd.DataFrame):
             if len([f for f in getattr(self, ax) if f not in data.columns]) > 0:
                 return None, None

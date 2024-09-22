@@ -4,6 +4,8 @@ import pandas as pd
 import numpy as np
 from .. import utilities
 from natsort import natsorted
+import numpy.typing as npt
+from typing import Union
 utl = utilities
 db = pdb.set_trace
 
@@ -17,6 +19,8 @@ class Heatmap(data.Data):
     def __init__(self, **kwargs):
         """Heatmap-specific Data class to deal with operations applied to the
         input data (i.e., non-plotting operations)
+
+        Deprecating support for image plotting --> use imshow
 
         Args:
             kwargs: user-defined keyword args
@@ -54,10 +58,13 @@ class Heatmap(data.Data):
         else:
             self.pivot = True
 
+        self.num_x = None
+        self.num_y = None
+
         self.ax_limit_padding = kwargs.get('ax_limit_padding', None)
 
-        # Update valid axes (SHOULD ALREADY HAPPEN)
-        self.axs = [f for f in ['x', 'x2', 'y', 'y2', 'z'] if getattr(self, f) not in [None, []]]
+        # Update valid axes
+        self.axs_on = ['x', 'y', 'z']
 
     def _check_xyz(self, xyz: str):
         """Validate the name and column data provided for x, y, and/or z.
@@ -75,60 +82,28 @@ class Heatmap(data.Data):
 
         return vals
 
-    def get_data_ranges(self):
-        """Heatmap-specific data range calculator by subplot."""
-        # First get any user defined range values and apply optional auto scaling
-        df_fig = self.df_fig.copy()  # use temporarily for setting ranges
+    def _get_data_range(self, ax: str, dd: Union[pd.DataFrame, npt.NDArray], plot_num: int) -> tuple:
+        """Determine the min/max values for a given axis based on user inputs.
 
-        # set ranges by subset
-        for ir, ic, plot_num in self.get_subplot_index():
-            df_rc = self._subset(ir, ic)
+        Args:
+            ax: name of the axis ('x', 'y', etc)
+            dd: data to use for range calculation
+            plot_num: index number of the current subplot
 
-            # auto cols option
-            if self.auto_cols:
-                df_rc = df_rc[utl.df_int_cols(df_rc)]
-
-                # x
-                cols = [f for f in df_rc.columns if isinstance(f, int)]
-                self._add_range(ir, ic, 'x', 'min', min(cols))
-                self._add_range(ir, ic, 'x', 'max', max(cols))
-
-                # y
-                rows = [f for f in df_rc.index if isinstance(f, int)]
-                self._add_range(ir, ic, 'y', 'min', min(rows))
-                self._add_range(ir, ic, 'y', 'max', max(rows))
-
-                # z
-                self._add_range(ir, ic, 'z', 'min', df_rc.min().min())
-                self._add_range(ir, ic, 'z', 'max', df_rc.max().max())
-
+        Returns:
+            min, max tuple
+        """
+        if self.pivot:
+            if ax == 'x':
+                return -0.5, len(dd.columns.values) - 0.5
+            elif ax == 'y':
+                return len(dd.index.values) - 0.5, -0.5
             else:
-                # x & y (no support)
-                self._add_range(ir, ic, 'x', 'min', None)
-                self._add_range(ir, ic, 'x', 'max', None)
-                self._add_range(ir, ic, 'y', 'min', None)
-                self._add_range(ir, ic, 'y', 'max', None)
+                dd = pd.DataFrame(dd.stack())
+                dd.columns = [self.z]
 
-                # z
-                if self.share_z and ir == 0 and ic == 0:
-                    self._add_range(ir, ic, 'z', 'min',
-                                    self.df_fig[self.z[0]].min())
-                    self._add_range(ir, ic, 'z', 'max',
-                                    self.df_fig[self.z[0]].max())
-                elif self.share_z:
-                    self._add_range(ir, ic, 'z', 'min',
-                                    self.ranges[0, 0]['zmin'])
-                    self._add_range(ir, ic, 'z', 'max',
-                                    self.ranges[0, 0]['zmax'])
-                else:
-                    self._add_range(ir, ic, 'z', 'min', df_rc.min().min())
-                    self._add_range(ir, ic, 'z', 'max', df_rc.max().max())
+        return data.Data._get_data_range(self, ax, dd, plot_num)
 
-            # not used
-            self._add_range(ir, ic, 'x2', 'min', None)
-            self._add_range(ir, ic, 'y2', 'min', None)
-            self._add_range(ir, ic, 'x2', 'max', None)
-            self._add_range(ir, ic, 'y2', 'max', None)
 
     def _subset_modify(self, ir: int, ic: int, df: pd.DataFrame) -> pd.DataFrame:
         """Extra modifications for Heatmap subsets
@@ -146,8 +121,7 @@ class Heatmap(data.Data):
 
         if self.pivot:
             # Reshape if input DataFrame is stacked
-            df = pd.pivot_table(df, values=self.z[0],
-                                index=self.y[0], columns=self.x[0])
+            df = pd.pivot_table(df, values=self.z[0], index=self.y[0], columns=self.x[0])
         if self.sort:
             cols = natsorted(df.columns)
             df = df[cols]

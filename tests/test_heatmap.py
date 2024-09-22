@@ -100,6 +100,8 @@ def plt_cat_non_uniform(bm=False, make_reference=False, show=False):
 
 
 def plt_heatmap(bm=False, make_reference=False, show=False):
+    print('deprecated: plt_heatmap')
+    return
 
     name = utl.unit_test_get_img_name('heatmap', make_reference, REFERENCE)
 
@@ -113,6 +115,9 @@ def plt_heatmap(bm=False, make_reference=False, show=False):
 
 
 def plt_heatmap_stretched(bm=False, make_reference=False, show=False):
+
+    print('deprecated: plt_heatmap_stretched')
+    return
 
     name = utl.unit_test_get_img_name('heatmap_stretched', make_reference, REFERENCE)
 
@@ -129,6 +134,9 @@ def plt_heatmap_stretched(bm=False, make_reference=False, show=False):
 
 
 def plt_heatmap_zoomed(bm=False, make_reference=False, show=False):
+
+    print('deprecated: plt_heatmap_zoomed')
+    return
 
     name = utl.unit_test_get_img_name('heatmap_zoomed', make_reference, REFERENCE)
 
@@ -165,16 +173,19 @@ def test_cat_non_uniform(benchmark):
     benchmark(plt_cat_non_uniform, True)
 
 
+@pytest.mark.skip(reason="deprecated; use imshow")
 def test_heatmap(benchmark):
     plt_heatmap()
     benchmark(plt_heatmap, True)
 
 
+@pytest.mark.skip(reason="deprecated; use imshow")
 def test_heatmap_stretched(benchmark):
     plt_heatmap_stretched()
     benchmark(plt_heatmap_stretched, True)
 
 
+@pytest.mark.skip(reason="deprecated; use imshow")
 def test_heatmap_zoomed(benchmark):
     plt_heatmap_zoomed()
     benchmark(plt_heatmap_zoomed, True)

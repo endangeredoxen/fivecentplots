@@ -3056,7 +3056,7 @@ class Layout(BaseLayout):
             ranges: min/max axes limits for each axis
 
         """
-        if self.name in ['heatmap', 'pie']:  # skip these plot types
+        if self.name in ['pie']:  # skip these plot types
             return
 
         # Set the ranges
@@ -3076,7 +3076,7 @@ class Layout(BaseLayout):
             self.axes.obj[ir, ic].set_ylim(top=ranges['ymax'][ir, ic])
         if 'y2max' in ranges and ranges['y2max'][ir, ic] is not None:
             self.axes2.obj[ir, ic].set_ylim(top=ranges['y2max'][ir, ic])
-        if self.name in ['imshow'] and len(self.axes.obj[ir, ic].get_images()) > 0:
+        if self.name in ['imshow', 'heatmap'] and len(self.axes.obj[ir, ic].get_images()) > 0:
             if 'zmin' in ranges and ranges['zmin'][ir, ic] is not None:
                 self.axes.obj[ir, ic].get_images()[0].set_clim(vmin=ranges['zmin'][ir, ic])
             if 'zmax' in ranges and ranges['zmax'][ir, ic] is not None:
