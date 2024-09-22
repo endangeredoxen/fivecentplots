@@ -2206,8 +2206,7 @@ class Layout(BaseLayout):
                     kwargs['left'] = stacked
             else:
                 kwargs['height'] = self.bar.width / ngroups
-                idx = [f + inst[i] * kwargs['height']
-                       for i, f in enumerate(idx)]
+                idx = [f + inst[i] * kwargs['height'] for i, f in enumerate(idx)]
                 init_off = (total - 1) / 2 * kwargs['height']
                 idx = list((idx - init_off).values)
         else:
@@ -2260,26 +2259,25 @@ class Layout(BaseLayout):
             tick_off = [f for f in new_ticks if f >= 0][0]
             if self.bar.horizontal:
                 axx = 'y'
-                data.ranges[ir, ic]['xmin'] = data.ranges[ir, ic]['ymin']
-                data.ranges[ir, ic]['xmax'] = data.ranges[ir, ic]['ymax']
-                data.ranges[ir, ic]['ymin'] = None
-                data.ranges[ir, ic]['ymax'] = None
+                data.ranges['xmin'][ir, ic] = data.ranges['ymin'][ir, ic]
+                data.ranges['xmax'][ir, ic] = data.ranges['ymax'][ir, ic]
+                data.ranges['ymin'][ir, ic] = None
+                data.ranges['ymax'][ir, ic] = None
             else:
                 axx = 'x'
             xoff = 3 * self.bar.width / 4
-            if data.ranges[ir, ic]['%smin' % axx] is None:
-                data.ranges[ir, ic]['%smin' % axx] = -xoff + tick_off
+            if data.ranges['%smin' % axx][ir, ic] is None:
+                data.ranges['%smin' % axx][ir, ic] = -xoff + tick_off
             else:
-                data.ranges[ir, ic]['%smin' % axx] += tick_off
-            if data.ranges[ir, ic]['%smax' % axx] is None:
-                data.ranges[ir, ic]['%smax' % axx] = len(xvals) - 1 + xoff + tick_off
+                data.ranges['%smin' % axx][ir, ic] += tick_off
+            if data.ranges['%smax' % axx][ir, ic] is None:
+                data.ranges['%smax' % axx][ir, ic] = len(xvals) - 1 + xoff + tick_off
             else:
-                data.ranges[ir, ic]['%smax' % axx] += tick_off
+                data.ranges['%smax' % axx][ir, ic] += tick_off
 
         # Legend
         if leg_name is not None:
-            handle = [patches.Rectangle((0, 0), 1, 1,
-                      color=self.bar.fill_color[(iline, leg_name)])]
+            handle = [patches.Rectangle((0, 0), 1, 1, color=self.bar.fill_color[(iline, leg_name)])]
             self.legend.add_value(leg_name, handle, 'lines')
 
         return data

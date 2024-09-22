@@ -60,7 +60,7 @@ def plt_col_shared(bm=False, make_reference=False, show=False):
         # Axis height
         utl.unit_test_measure_axes(name, None, 190, None, 300, 1, 45, alias=False)
         # Margins
-        utl.unit_test_measure_margin(name, 170, 190, left=79)
+        utl.unit_test_measure_margin(name, 170, 190, left=79, alias=False)
         utl.unit_test_measure_margin(name, 170, 190, right=10, top=10, bottom=158, alias=False)
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 

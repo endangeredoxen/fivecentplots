@@ -160,13 +160,13 @@ class Histogram(data.Data):
 
         return counts
 
-    def _calc_histograms(self, ir: int, ic: int, data: Union[pd.DataFrame, npt.NDArray]) -> List[npt.NDArray]:
+    def _calc_histograms(self, ir: int, ic: int, data_set: Union[pd.DataFrame, npt.NDArray]) -> List[npt.NDArray]:
         """Calculate the histogram data for one data set.
 
         Args:
             ir: current axes row index
             ic: current axes column index
-            data: data subset
+            data_set: data subset
 
         Returns:
             list of histogram counts and bin values
@@ -174,19 +174,19 @@ class Histogram(data.Data):
         if self.branges is None:
             self.branges = np.array([[None] * self.ncol] * self.nrow)
 
-        if isinstance(data, pd.DataFrame):
-            data = data.values
+        if isinstance(data_set, pd.DataFrame):
+            data_set = data_set.values
 
         # Remove nans
-        data = data[~np.isnan(data)]
+        data_set = data_set[~np.isnan(data_set)]
 
         # Calculate the histogram counts
-        if self.bins == 0 and data.dtype not in [float, np.float16, np.float32, np.float64]:
+        if self.bins == 0 and data_set.dtype not in [float, np.float16, np.float32, np.float64]:
             # If no bins defined, assume a bin size of 1 unit and use np.bincount for better speed
-            data = data.astype(int)
-            offset = data.min() if data.min() < 0 else 0  # bincount requires positives only
-            vals = np.arange(offset, data.max() + 1)
-            counts = np.bincount(data - offset)
+            data_set = data_set.astype(int)
+            offset = data_set.min() if data_set.min() < 0 else 0  # bincount requires positives only
+            vals = np.arange(offset, data_set.max() + 1)
+            counts = np.bincount(data_set - offset)
 
         else:
             if self.imgs is not None:
@@ -194,7 +194,7 @@ class Histogram(data.Data):
 
             # Case of image data but invalid dtype
             if self.bins == 0:
-                self.bins = int(data.max() - data.min() + 1)
+                self.bins = int(data_set.max() - data_set.min() + 1)
 
             # If bins specified or data contains floats, use np.histogram (slower)
             # Step 1: get the x-axis range in which to apply self.bins number of bins; wherever the x-axis range
@@ -223,11 +223,11 @@ class Histogram(data.Data):
                              max([self.imgs[f].max() for f in df_col.index])
             else:
                 # No sharing, compute for this subset only
-                brange = data.min(), data.max()
+                brange = data_set.min(), data_set.max()
             self.branges[ir, ic] = brange
 
             # Step 2: compute the counts
-            counts, vals = np.histogram(data, bins=self.bins, density=self.norm, range=brange)
+            counts, vals = np.histogram(data_set, bins=self.bins, density=self.norm, range=brange)
 
         # Clean up
         if len(vals) != len(counts):
@@ -235,8 +235,8 @@ class Histogram(data.Data):
 
         # Additional manipulations for image histograms
         if self.imgs is not None:
-            counts = counts[(vals >= data.min()) & (vals <= data.max())]
-            vals = vals[(vals >= data.min()) & (vals <= data.max())]
+            counts = counts[(vals >= data_set.min()) & (vals <= data_set.max())]
+            vals = vals[(vals >= data_set.min()) & (vals <= data_set.max())]
 
             # Special case of all values being equal
             if len(counts) == 1:

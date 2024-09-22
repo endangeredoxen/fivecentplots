@@ -82,7 +82,7 @@ class Heatmap(data.Data):
 
         return vals
 
-    def _get_data_range(self, ax: str, dd: Union[pd.DataFrame, npt.NDArray], plot_num: int) -> tuple:
+    def _get_data_range(self, ax: str, data_set: Union[pd.DataFrame, npt.NDArray], plot_num: int) -> tuple:
         """Determine the min/max values for a given axis based on user inputs.
 
         Args:
@@ -95,15 +95,14 @@ class Heatmap(data.Data):
         """
         if self.pivot:
             if ax == 'x':
-                return -0.5, len(dd.columns.values) - 0.5
+                return -0.5, len(data_set.columns.values) - 0.5
             elif ax == 'y':
-                return len(dd.index.values) - 0.5, -0.5
+                return len(data_set.index.values) - 0.5, -0.5
             else:
-                dd = pd.DataFrame(dd.stack())
-                dd.columns = [self.z]
+                data_set = pd.DataFrame(data_set.stack())
+                data_set.columns = [self.z]
 
-        return data.Data._get_data_range(self, ax, dd, plot_num)
-
+        return data.Data._get_data_range(self, ax, data_set, plot_num)
 
     def _subset_modify(self, ir: int, ic: int, df: pd.DataFrame) -> pd.DataFrame:
         """Extra modifications for Heatmap subsets

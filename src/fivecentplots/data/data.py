@@ -478,7 +478,7 @@ class Data:
             if len(self.df_all) == 0:
                 raise DataError('DataFrame is empty after applying filter')
 
-    def _convert_q_range_limits(self, ax: str, key: str, data: Union[np.ndarray, pd.DataFrame],
+    def _convert_q_range_limits(self, ax: str, key: str, data_set: Union[np.ndarray, pd.DataFrame],
                                 plot_num: int, mm: str):
         """
         Convert 'q' based range limits to hard numbers
@@ -486,7 +486,7 @@ class Data:
         Args:
             ax: current axis
             key: range key (xmin, ymax, etc.)
-            data: current data set
+            data_set: current data set
             plot_num: current plot number
             mm: 'min' or 'max'
 
@@ -502,20 +502,20 @@ class Data:
         user_limit = user_limits[plot_num]
 
         # Convert to numpy array
-        if isinstance(data, pd.DataFrame):
-            cols_found = [f for f in getattr(self, ax) if f in data.columns]
+        if isinstance(data_set, pd.DataFrame):
+            cols_found = [f for f in getattr(self, ax) if f in data_set.columns]
             if len(cols_found) == 0:
                 return
 
             # Columns found
-            data = data[getattr(self, ax)]
-            data = data[getattr(self, ax)].stack().values
+            data_set = data_set[getattr(self, ax)]
+            data_set = data_set[getattr(self, ax)].stack().values
 
         # IQR style limit
         if isinstance(user_limit, str) and 'iqr' in user_limit.lower():
             factor = float(str(user_limit.lower()).split('*')[0].rstrip())
-            q1 = np.quantile(data, 0.25)
-            q3 = np.quantile(data, 0.75)
+            q1 = np.quantile(data_set, 0.25)
+            q3 = np.quantile(data_set, 0.75)
             iqr = factor * (q3 - q1)
             if mm == 'min':
                 getattr(self, key).values[plot_num] = q1 - iqr
@@ -528,61 +528,10 @@ class Data:
                 xq = float(str(user_limit).lower().replace('q', ''))
             else:
                 xq = float(str(user_limit).lower().replace('q', '')) / 100
-            getattr(self, key).values[plot_num] = np.quantile(data, xq)
-
-    def _convert_q_range_limits_old(self, data: Union[pd.DataFrame, npt.NDArray], plot_num: int):
-        """Convert special interquartile and quantile range limit types to numerical values.
-
-        Args:
-            data: input data
-            plot_num: current plot number
-        """
-        for ax in self.axs:
-            for mm in ['min', 'max']:
-                key = f'{ax}{mm}'.format(ax, mm)
-                user_limits = getattr(self, key).values
-
-                # Limit is in a RepeatedList and not explictly defined
-                if plot_num + 1 > len(user_limits):
-                    continue
-
-                # Get user limit for this plot
-                user_limit = user_limits[plot_num]
-
-                # No limit defined
-                if user_limit is None:
-                    continue
-
-                # Subset DataFrame
-                if isinstance(data, pd.DataFrame) and len([f for f in getattr(self, ax) if f in data.columns]) == 0:
-                    # Columns not found
-                    continue
-                elif isinstance(data, pd.DataFrame):
-                    # Columns found
-                    data = data[getattr(self, ax)]
-                    data = data[getattr(self, ax)].stack().values  # convert to np.array
-
-                # IQR style limit
-                if isinstance(user_limit, str) and 'iqr' in user_limit.lower():
-                    factor = float(str(user_limit.lower()).split('*')[0].rstrip())
-                    q1 = np.quantile(data, 0.25)
-                    q3 = np.quantile(data, 0.75)
-                    iqr = factor * (q3 - q1)
-                    if mm == 'min':
-                        getattr(self, key).values[plot_num] = q1 - iqr
-                    else:
-                        getattr(self, key).values[plot_num] = q3 + iqr
-
-                # Quantile limit
-                elif isinstance(user_limit, str) and user_limit[0] == 'q':
-                    if '.' in user_limit:
-                        xq = float(str(user_limit).lower().replace('q', ''))
-                    else:
-                        xq = float(str(user_limit).lower().replace('q', '')) / 100
-                    getattr(self, key).values[plot_num] = np.quantile(data, xq)
+            getattr(self, key).values[plot_num] = np.quantile(data_set, xq)
 
     def _get_auto_scale(self,
-                        data: Union[pd.DataFrame, npt.NDArray],
+                        data_set: Union[pd.DataFrame, npt.NDArray],
                         plot_num: int) -> Union[pd.DataFrame, npt.NDArray]:
         """Auto-scale the plot data.
 
@@ -595,47 +544,47 @@ class Data:
         """
         # FIX FOR NUMPY
         # Get the max/min autoscale values
-        for ax in self.axs:
+        for ax in self.axs_on:
             for mm in ['min', 'max']:
                 user_limit = getattr(self, f'{ax}{mm}')[plot_num]
                 if user_limit is not None:
-                    self._convert_q_range_limits(ax, f'{ax}{mm}', data, plot_num, mm)
+                    self._convert_q_range_limits(ax, f'{ax}{mm}', data_set, plot_num, mm)
                     user_limit = getattr(self, f'{ax}{mm}')[plot_num]
 
                     if not self.auto_scale:
                         continue
 
-                    if not isinstance(data, pd.DataFrame):
+                    if not isinstance(data_set, pd.DataFrame):
                         # no autoscale for numpy array??
                         continue
 
                     for col in getattr(self, ax):
-                        if col not in data.columns:
+                        if col not in data_set.columns:
                             continue
                         if mm == 'min':
-                            data = data[data[col] >= user_limit]
+                            data_set = data_set[data_set[col] >= user_limit]
                         else:
-                            data = data[data[col] <= user_limit]
+                            data_set = data_set[data_set[col] <= user_limit]
 
-        return data
+        return data_set
 
-    def _get_data_range(self, ax: str, data: Union[pd.DataFrame, npt.NDArray], plot_num: int) -> tuple:
+    def _get_data_range(self, ax: str, data_set: Union[pd.DataFrame, npt.NDArray], plot_num: int) -> tuple:
         """Determine the min/max values for a given axis based on user inputs.
 
         Args:
             ax: name of the axis ('x', 'y', etc)
-            data: data to use for range calculation
+            data_set: data to use for range calculation
             plot_num: index number of the current subplot
 
         Returns:
             min, max tuple
         """
         # Case: data is a pd.DataFrame - separate out values of interest and address special dtype issues
-        if isinstance(data, pd.DataFrame):
-            if len([f for f in getattr(self, ax) if f not in data.columns]) > 0:
+        if isinstance(data_set, pd.DataFrame):
+            if len([f for f in getattr(self, ax) if f not in data_set.columns]) > 0:
                 return None, None
-            vals = data[getattr(self, ax)].stack().values  # convert to numpy array
-            dtypes = data[getattr(self, ax)].dtypes.unique()
+            vals = data_set[getattr(self, ax)].stack().values  # convert to numpy array
+            dtypes = data_set[getattr(self, ax)].dtypes.unique()
 
             # Check dtypes
             if 'str' in dtypes or 'object' in dtypes:
@@ -644,13 +593,13 @@ class Data:
                 # Auto-range this
                 return None, None
 
-        # Case: data is np.array
+        # Case: data_set is np.array
         else:
-            if len(data) == 0:
+            if len(data_set) == 0:
                 return None, None
-            vals = data
+            vals = data_set
 
-        # Calculate the data range (max - min) and account for ax_scale type
+        # Calculate the data (max - min) and account for ax_scale type
         if self.imgs is not None and len(vals.shape) >= 2 and ax == 'x':
             # x-axis of image data
             axmin = 0

@@ -82,38 +82,6 @@ class Box(data.Data):
                 else:
                     self.changes.loc[i, col] = 1
 
-    # def get_rc_subset(self):
-    #     """Override of parent method to subset the data by the row/col/wrap values.
-
-    #     Yields:
-    #         ir: subplot row index
-    #         ic: subplot column index
-    #         row/col data subset
-    #     """
-    #     for ir in range(0, self.nrow):
-    #         for ic in range(0, self.ncol):
-    #             self.df_rc = self._subset(ir, ic)
-
-    #             # Plot specific subsetting
-    #             self._subset_modify(ir, ic, self.df_rc)
-
-    #             # Deal with empty dfs
-    #             if len(self.df_rc) == 0:
-    #                 self.df_rc = pd.DataFrame()
-
-    #             # Get boxplot changes DataFrame
-    #             if 'box' in self.name and len(self.df_rc) > 0:
-    #                 if (self.groups is not None and self.groups != []) and len(self.df_rc.groupby(self.groups)) == 0:
-    #                     continue
-    #                 self.get_box_index_changes()
-    #                 self.ranges['xmin'][ir, ic] = 0.5
-    #                 self.ranges['xmax'][ir, ic] = len(self.changes) + 0.5
-
-    #             # Yield the subset
-    #             yield ir, ic, self.df_rc
-
-    #     self.df_sub = None
-
     def _range_overrides(self, ir: int, ic: int, df_rc: pd.DataFrame):
         """Modify boxplot ranges.
 
