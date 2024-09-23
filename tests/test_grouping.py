@@ -47,7 +47,7 @@ def test_figure(make_reference=False, remove=True, show=False):
              save=True, inline=False, filename=name.with_suffix('.png'))
 
     for die in df1.Die.unique():
-        tag = ' where %s=%s' % ('Die', die)
+        tag = f' where Die={die}'
 
         if make_reference:
             new_name = name.parent / (name.stem.replace('_reference', tag + '_reference') + '.png')

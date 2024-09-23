@@ -310,7 +310,7 @@ def mplc_to_hex(color: tuple, alpha: bool = True):
     for ic, cc in enumerate(color):
         if not alpha and ic == 3:
             continue
-        hexc += '%s' % hex(int(cc * 255))[2:].zfill(2)
+        hexc += f'{hex(int(cc * 255))[2:].zfill(2)}'
 
     return hexc
 
@@ -337,11 +337,11 @@ def mpl_get_ticks(ax: mplp.Axes, xon: bool = True, yon: bool = True,
 
     for vv in xy:
         tp[vv] = {}
-        lim = getattr(ax, 'get_%slim' % vv)()
+        lim = getattr(ax, f'get_{vv}lim')()
         tp[vv]['min'] = min(lim)
         tp[vv]['max'] = max(lim)
-        tp[vv]['ticks'] = getattr(ax, 'get_%sticks' % vv)()
-        tp[vv]['labels'] = [f for f in iterticks(getattr(ax, '%saxis' % vv), minor)]
+        tp[vv]['ticks'] = getattr(ax, f'get_{vv}ticks')()
+        tp[vv]['labels'] = [f for f in iterticks(getattr(ax, f'{vv}axis'), minor)]
         tp[vv]['label_vals'] = [f[1] for f in tp[vv]['labels']]
         tp[vv]['label_text'] = [f[2] for f in tp[vv]['labels']]
         try:
@@ -729,7 +729,7 @@ class Layout(BaseLayout):
         """
         from mpl_toolkits.axes_grid1 import make_axes_locatable
         self.cbar.divider = make_axes_locatable(ax)
-        size = '%s%%' % (100 * (self.cbar.size[0] / self.axes.size[0]))
+        size = f'{100 * (self.cbar.size[0] / self.axes.size[0])}%'
         if self.axes.edge_width > 1:
             ew = self.axes.edge_width / 2
         else:
@@ -2247,15 +2247,15 @@ class Layout(BaseLayout):
             df.index.astype('datetime64[ns]')
         except (TypeError, pd._libs.tslibs.parsing.DateParseError):
             # Show all labels
-            getattr(ax, 'set_%sticks' % axx)(np.arange(0, len(xvals), 1))
-        allowed_ticks = getattr(ax, 'get_%sticks' % axx)()  # mpl selected ticks
+            getattr(ax, f'set_{axx}ticks')(np.arange(0, len(xvals), 1))
+        allowed_ticks = getattr(ax, f'get_{axx}ticks')()  # mpl selected ticks
         allowed_ticks = list(set([int(f) for f in allowed_ticks if f >= 0 and f < len(xvals)]))
-        getattr(ax, 'set_%sticks' % axx)(np.array(ixvals)[allowed_ticks])
-        getattr(ax, 'set_%sticklabels' % axx)(xvals[allowed_ticks])
+        getattr(ax, f'set_{axx}ticks')(np.array(ixvals)[allowed_ticks])
+        getattr(ax, f'set_{axx}ticklabels')(xvals[allowed_ticks])
 
         if iline == 0:
             # Update ranges
-            new_ticks = getattr(ax, 'get_%sticks' % axx)()
+            new_ticks = getattr(ax, f'get_{axx}ticks')()
             tick_off = [f for f in new_ticks if f >= 0][0]
             if self.bar.horizontal:
                 axx = 'y'
@@ -2266,14 +2266,14 @@ class Layout(BaseLayout):
             else:
                 axx = 'x'
             xoff = 3 * self.bar.width / 4
-            if data.ranges['%smin' % axx][ir, ic] is None:
-                data.ranges['%smin' % axx][ir, ic] = -xoff + tick_off
+            if data.ranges[f'{axx}min'][ir, ic] is None:
+                data.ranges[f'{axx}min'][ir, ic] = -xoff + tick_off
             else:
-                data.ranges['%smin' % axx][ir, ic] += tick_off
-            if data.ranges['%smax' % axx][ir, ic] is None:
-                data.ranges['%smax' % axx][ir, ic] = len(xvals) - 1 + xoff + tick_off
+                data.ranges[f'{axx}min'][ir, ic] += tick_off
+            if data.ranges[f'{axx}max'][ir, ic] is None:
+                data.ranges[f'{axx}max'][ir, ic] = len(xvals) - 1 + xoff + tick_off
             else:
-                data.ranges['%smax' % axx][ir, ic] += tick_off
+                data.ranges[f'{axx}max'][ir, ic] += tick_off
 
         # Legend
         if leg_name is not None:
@@ -2879,7 +2879,7 @@ class Layout(BaseLayout):
         for f in ['bottom', 'top', 'right', 'left']:
             if len(axes) > 1:
                 axes[0].obj[ir, ic].spines[f].set_visible(False)
-            if getattr(self.axes, 'spine_%s' % f):
+            if getattr(self.axes, f'spine_{f}'):
                 axes[-1].obj[ir, ic].spines[f].set_color(axes[0].edge_color[utl.plot_num(ir, ic, self.ncol)])
             else:
                 axes[-1].obj[ir, ic].spines[f].set_color(self.fig.fill_color[0])
@@ -3006,7 +3006,7 @@ class Layout(BaseLayout):
             return
 
         for ax in data.axs_on:
-            label = getattr(self, 'label_%s' % ax)
+            label = getattr(self, f'label_{ax}')
             labeltext = None
             if not label.on:
                 continue
@@ -3175,12 +3175,12 @@ class Layout(BaseLayout):
 
             # Skip certain calculations if axes are shared and subplots > 1
             skipx, skipy = False, False
-            if hasattr(getattr(self, f'axes{lab}'), 'share_x%s' % lab) \
-                    and getattr(getattr(self, f'axes{lab}'), 'share_x%s' % lab) is True \
+            if hasattr(getattr(self, f'axes{lab}'), f'share_x{lab}') \
+                    and getattr(getattr(self, f'axes{lab}'), f'share_x{lab}') is True \
                     and (ir != 0 or ic != 0):
                 skipx = False
-            if hasattr(getattr(self, f'axes{lab}'), 'share_y%s' % lab) \
-                    and getattr(getattr(self, f'axes{lab}'), 'share_y%s' % lab) \
+            if hasattr(getattr(self, f'axes{lab}'), f'share_y{lab}') \
+                    and getattr(getattr(self, f'axes{lab}'), f'share_y{lab}') \
                     and (ir != 0 or ic != 0):
                 skipy = False
 
@@ -3317,17 +3317,14 @@ class Layout(BaseLayout):
 
             # Set custom tick increment
             redo = True
-            xinc = getattr(self, 'ticks_major_x%s' % lab).increment
+            xinc = getattr(self, f'ticks_major_x{lab}').increment
             if not skipx and xinc is not None and self.name not in ['bar']:
-                xstart = 0 if tp['x']['min'] == 0 else tp['x']['min'] + \
-                    xinc - tp['x']['min'] % xinc
+                xstart = 0 if tp['x']['min'] == 0 else tp['x']['min'] + xinc - tp['x']['min'] % xinc
                 axes[ia].set_xticks(np.arange(xstart, tp['x']['max'], xinc))
                 redo = True
-            yinc = getattr(self, 'ticks_major_y%s' % lab).increment
+            yinc = getattr(self, f'ticks_major_y{lab}').increment
             if not skipy and yinc is not None:
-                axes[ia].set_yticks(
-                    np.arange(tp['y']['min'] + yinc - tp['y']['min'] % yinc,
-                              tp['y']['max'], yinc))
+                axes[ia].set_yticks(np.arange(tp['y']['min'] + yinc - tp['y']['min'] % yinc, tp['y']['max'], yinc))
                 redo = True
 
             if redo:
@@ -3414,8 +3411,8 @@ class Layout(BaseLayout):
                         getattr(axes[ia], f'{ax}axis').get_offset_text().set_fontproperties(ticks_font)
 
             # Tick label shorthand
-            tlmajx = getattr(self, 'tick_labels_major_x%s' % lab)
-            tlmajy = getattr(self, 'tick_labels_major_y%s' % lab)
+            tlmajx = getattr(self, f'tick_labels_major_x{lab}')
+            tlmajy = getattr(self, f'tick_labels_major_y{lab}')
 
             # Turn off major tick labels
             if not tlmajx.on:
@@ -3442,8 +3439,8 @@ class Layout(BaseLayout):
 
             tlminon = False  # "tick label min"
             for axx in ax:
-                axl = '%s%s' % (axx, lab)
-                tlmin = getattr(self, 'ticks_minor_%s' % axl)
+                axl = f'{axx}{lab}'
+                tlmin = getattr(self, f'ticks_minor_{axl}')
 
                 if ia == 1 and axx == 'x' and self.axes.twin_x:
                     continue
@@ -3451,16 +3448,15 @@ class Layout(BaseLayout):
                 if ia == 1 and axx == 'y' and self.axes.twin_y:
                     continue
 
-                if getattr(self, 'ticks_minor_%s' % axl).number is not None:
-                    num_minor = getattr(self, 'ticks_minor_%s' % axl).number
-                    if getattr(self, 'axes%s' % lab).scale not in (LOG_ALLX if axx == 'x' else LOG_ALLY):
+                if getattr(self, f'ticks_minor_{axl}').number is not None:
+                    num_minor = getattr(self, f'ticks_minor_{axl}').number
+                    if getattr(self, f'axes{lab}').scale not in (LOG_ALLX if axx == 'x' else LOG_ALLY):
                         loc = None
                         loc = AutoMinorLocator(num_minor + 1)
-                        getattr(axes[ia], '%saxis' %
-                                axx).set_minor_locator(loc)
+                        getattr(axes[ia], f'{axx}axis').set_minor_locator(loc)
                         tp = mpl_get_ticks(axes[ia],
-                                           getattr(self, 'ticks_major_x%s' % lab).on,
-                                           getattr(self, 'ticks_major_y%s' % lab).on,
+                                           getattr(self, f'ticks_major_x{lab}').on,
+                                           getattr(self, f'ticks_major_y{lab}').on,
                                            True)
 
                 if not self.separate_ticks and axl == 'x' and ir != self.nrow - 1 and self.nwrap == 0 or \
@@ -3472,7 +3468,7 @@ class Layout(BaseLayout):
                     axes[ia].tick_params(which='minor', **sides[axl])
 
                 elif tlmin.on:
-                    if not getattr(self, 'tick_labels_minor_%s' % axl).on:
+                    if not getattr(self, f'tick_labels_minor_{axl}').on:
                         continue
                     elif 'x' in axx and skipx:
                         continue
@@ -3483,10 +3479,9 @@ class Layout(BaseLayout):
 
                     # Determine the minimum number of decimals needed to display the minor ticks
                     m0 = len(tp[axx]['ticks'])
-                    lim = getattr(axes[ia], 'get_%slim' % axx)()
+                    lim = getattr(axes[ia], f'get_{axx}lim')()
                     vals = [f for f in tp[axx]['ticks'] if f > lim[0]]
-                    label_vals = [f for f in tp[axx]
-                                  ['label_vals'] if f > lim[0]]
+                    label_vals = [f for f in tp[axx] ['label_vals'] if f > lim[0]]
                     inc = label_vals[1] - label_vals[0]
                     minor_ticks = [f[1] for f in tp[axx]['labels']][m0:]
 
@@ -3503,14 +3498,13 @@ class Layout(BaseLayout):
                     decimals = utl.get_decimals(inc / number)
 
                     # Check for minor ticks below the first major tick for log axes
-                    if getattr(self, 'axes%s' % lab).scale in (LOGX if axx == 'x' else LOGY):
-                        extra_minor = [f for f in minor_ticks
-                                       if f < label_vals[0] and f > lim[0]]
+                    if getattr(self, f'axes{lab}').scale in (LOGX if axx == 'x' else LOGY):
+                        extra_minor = [f for f in minor_ticks if f < label_vals[0] and f > lim[0]]
                         if len(extra_minor) > 0:
                             decimals += 1
 
                     # Set the tick decimal format
-                    getattr(axes[ia], '%saxis' % axx).set_minor_formatter(
+                    getattr(axes[ia], f'{axx}axis').set_minor_formatter(
                         ticker.FormatStrFormatter('%%.%sf' % (decimals)))
 
         if self.cbar.on:
@@ -3580,7 +3574,7 @@ class Layout(BaseLayout):
             self.markers.color_alpha('fill_color', 'fill_alpha')
 
         except:  # noqa
-            print('Could not find a colormap called "%s". Using default colors...' % self.cmap[0])
+            print(f'Could not find a colormap called "{self.cmap[0]}". Using default colors...')
 
     def set_figure_final_layout(self, data: 'Data', **kwargs):  # noqa: F821
         """

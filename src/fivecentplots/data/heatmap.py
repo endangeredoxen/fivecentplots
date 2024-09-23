@@ -78,7 +78,7 @@ class Heatmap(data.Data):
         vals = getattr(self, xyz)
 
         if vals is None and xyz not in self.opt:
-            raise data.AxisError('Must provide a column name for "%s"' % xyz)
+            raise data.AxisError(f'Must provide a column name for "{xyz}"')
 
         return vals
 

@@ -25,6 +25,7 @@ from . import utilities
 from . import data
 from . colors import DEFAULT_COLORS, RGB, RGGB, RCCG  # noqa
 from . import engines
+from . import kwargs as kwg
 import fivecentplots as fcp
 from typing import Union
 try:
@@ -1168,12 +1169,12 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin, leg_name, ngroups):
                 or len(np.unique(layout.fit.color.values)) > 1) \
                 and data.legend_vals is not None \
                 and layout.label_wrap.column is None:
-            leg_name = '%s [Fit]' % leg_name
+            leg_name = f'{leg_name} [Fit]'
         else:
             leg_name = 'Fit'
     else:
         leg_name = None
-    layout.plot_xy(ir, ic, iline, df, '%s Fit' % x, '%s Fit' % y,
+    layout.plot_xy(ir, ic, iline, df, f'{x} Fit', f'{y} Fit',
                    leg_name, twin, line_type='fit',
                    marker_disable=True)
 
@@ -1183,17 +1184,17 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin, leg_name, ngroups):
             if coeff > 0 and ico > 0:
                 eqn += '+'
             if len(coeffs) - 1 - ico > 1:
-                power = '^%s' % str(len(coeffs) - 1 - ico)
+                power = f'^{str(len(coeffs) - 1 - ico)}'
             else:
                 power = ''
-            eqn += '%s*x%s' % (round(coeff, 3), power)
+            eqn += f'{round(coeff, 3)}*x{power}'
         if coeffs[-1] > 0:
             eqn += '+'
-        eqn += '%s' % round(coeffs[-1], 3)
+        eqn += f'{round(coeffs[-1], 3)}'
         layout.add_text(ir, ic, eqn, 'fit')
 
     if layout.fit.rsq:
-        layout.add_text(ir, ic, 'R^2=%s' % round(rsq, 4), 'fit')
+        layout.add_text(ir, ic, f'R^2={round(rsq, 4)}', 'fit')
 
     return data
 
@@ -1465,6 +1466,9 @@ def plotter(dobj, **kwargs):
     Returns:
         plots
     """
+    # Validate kwargs
+    kwg.keywords.validate_kwargs(kwargs)
+
     # Apply globals if they don't exist
     for k, v in fcp.KWARGS.items():
         if k not in kwargs.keys():
@@ -1480,10 +1484,10 @@ def plotter(dobj, **kwargs):
     if not hasattr(engines, kwargs['engine']):
         if kwargs['engine'] in INSTALL.keys():
             installs = '\npip install '.join(INSTALL[kwargs['engine']])
-            raise EngineError('Plotting engine "%s" is supported but not installed! ' % kwargs['engine'] +
+            raise EngineError(f'Plotting engine \"{kwargs["engine"]}\" is supported but not installed! ' +
                               f'Please run the following:\npip install {installs}')
         else:
-            raise EngineError('Plotting engine "%s" is not supported' % kwargs['engine'])
+            raise EngineError(f'Plotting engine \"{kwargs["engine"]}\" is not supported')
         return
     else:
         engine = getattr(engines, kwargs['engine'])
@@ -1508,7 +1512,7 @@ def plotter(dobj, **kwargs):
 
         # Make the figure
         dd = layout.make_figure(dd, **kwargs)
-        kwargs['timer'].get('ifig=%s | make_figure' % ifig)
+        kwargs['timer'].get(f'ifig={ifig} | make_figure')
 
         # Make the subplots
         for ir, ic, df_rc in dd.get_rc_subset():
@@ -1523,7 +1527,7 @@ def plotter(dobj, **kwargs):
                 if layout.axes2.obj[ir, ic] is not None:
                     layout.axes2.obj[ir, ic].axis('off')
                 continue
-                kwargs['timer'].get('ifig=%s | turn off empty subplots' % ifig)
+                kwargs['timer'].get(f'ifig={ifig} | turn off empty subplots')
 
             # Set the axes colors
             layout.set_axes_colors(ir, ic)
@@ -1579,19 +1583,19 @@ def plotter(dobj, **kwargs):
 
         # Make the legend
         layout.add_legend(dd.legend_vals)
-        kwargs['timer'].get('ifig=%s | add_legend' % (ifig))
+        kwargs['timer'].get(f'ifig={ifig} | add_legend')
 
         # Add a figure title
         layout.set_figure_title()
-        kwargs['timer'].get('ifig=%s | set_figure_title' % (ifig))
+        kwargs['timer'].get(f'ifig={ifig} | set_figure_title')
 
         # Final adjustments
         layout.set_figure_final_layout(dd, **kwargs)
-        kwargs['timer'].get('ifig=%s | set_figure_final_layout' % (ifig))
+        kwargs['timer'].get(f'ifig={ifig} | set_figure_final_layout')
 
         # Build the save filename
         filename = utl.set_save_filename(dd.df_fig, ifig, fig_item, fig_cols, layout, kwargs)
-        if 'filepath' in kwargs.keys():
+        if kwargs.get('filepath'):
             filename = os.path.join(kwargs['filepath'], filename)
 
         # Optionally save and open
@@ -1615,14 +1619,14 @@ def plotter(dobj, **kwargs):
             # Disable inline unless explicitly called in kwargs
             if not kwargs.get('inline'):
                 kwargs['inline'] = False
-        kwargs['timer'].get('ifig=%s | save' % (ifig))
+        kwargs['timer'].get(f'ifig={ifig} | save')
 
         # Return inline plot
         if not kwargs.get('inline', True):
             layout.close()
         else:
             layout.show()
-        kwargs['timer'].get('ifig=%s | return inline' % (ifig))
+        kwargs['timer'].get(f'ifig={ifig} | return inline')
 
     # Save data used in the figures
     if kwargs.get('save_data', False):
@@ -1632,7 +1636,7 @@ def plotter(dobj, **kwargs):
             filename = filename.split('.')[0] + '.csv'
         if isinstance(dd.df_all, pd.DataFrame):
             dd.df_all[dd.cols_all].to_csv(filename, index=False)
-        kwargs['timer'].get('ifig=%s | save_data' % (ifig))
+        kwargs['timer'].get(f'ifig={ifig} | save_data')
 
     kwargs['timer'].get_total()
 
@@ -1659,10 +1663,10 @@ def set_theme(theme=None, verbose=False):
         print(f'theme: {theme}\nthemes: {themes}\nmythemes: {mythemes}\nmy_theme_dir: {my_theme_dir}')
 
     if theme in themes:
-        entry = themes.index('%s' % theme) + 1
+        entry = themes.index(f'{theme}') + 1
 
     elif theme in mythemes:
-        entry = mythemes.index('%s' % theme) + 1 + len(themes)
+        entry = mythemes.index(f'{theme}') + 1 + len(themes)
 
     elif theme is not None:
         print('Theme file not found!  Please try again')
@@ -1674,11 +1678,11 @@ def set_theme(theme=None, verbose=False):
         print('Select default styling theme:')
         print('   Built-in theme list:')
         for i, th in enumerate(themes):
-            print('      %s) %s' % (i + 1, th))
+            print(f'      {i + 1}) {th}')
         if len(themes) > 0:
             print('   User theme list:')
             for i, th in enumerate(mythemes):
-                print('      %s) %s' % (i + 1 + len(themes), th))
+                print(f'      {i + 1 + len(themes)}) {th}')
         entry = input('Entry: ')
 
         try:
@@ -1692,11 +1696,11 @@ def set_theme(theme=None, verbose=False):
             return
 
         if int(entry) <= len(themes):
-            print('Copying %s >> %s' % (themes[int(entry) - 1], osjoin(user_dir, '.fivecentplots', 'defaults.py')))
+            print(f"Copying {themes[int(entry) - 1]} >> {osjoin(user_dir, '.fivecentplots', 'defaults.py')}")
             theme = themes[int(entry) - 1]
         else:
-            print('Copying %s >> %s' % (mythemes[int(entry) - 1 - len(themes)],
-                                        osjoin(user_dir, '.fivecentplots', 'defaults.py')))
+            print(f"Copying {mythemes[int(entry) - 1 - len(themes)]} >> "
+                  f"{osjoin(user_dir, '.fivecentplots', 'defaults.py')}")
             theme = mythemes[int(entry) - 1 - len(themes)]
 
     if os.path.exists(osjoin(user_dir, '.fivecentplots', 'defaults.py')):

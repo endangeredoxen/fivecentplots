@@ -51,7 +51,7 @@ class Box(data.Data):
             for group in self.groups:
                 if len(self.df_rc[group].dropna()) == 0:
                     self.groups.remove(group)
-                    print('Column "%s" for at least one subplot is all NaN and will be excluded from plot' % group)
+                    print(f'Column "{group}" for at least one subplot is all NaN and will be excluded from plot')
 
         # Get the changes df
         if self.groups is None or self.groups == []:

@@ -858,8 +858,8 @@ class Data:
             rsq (for poly fit only)
         """
         df2 = df.copy()
-        df['%s Fit' % x] = np.nan
-        df['%s Fit' % y] = np.nan
+        df[f'{x} Fit'] = np.nan
+        df[f'{y} Fit'] = np.nan
 
         if self.fit is True or isinstance(self.fit, int):
             # Set range of the fit
@@ -905,9 +905,8 @@ class Data:
             rsq = ssreg / sstot
 
             # Add fit line
-            df['%s Fit' % x] = np.linspace(self.ranges['xmin'][ir, ic],
-                                           self.ranges['xmax'][ir, ic], len(df))
-            df['%s Fit' % y] = np.polyval(coeffs, df['%s Fit' % x])
+            df[f'{x} Fit'] = np.linspace(self.ranges['xmin'][ir, ic], self.ranges['xmax'][ir, ic], len(df))
+            df[f'{y} Fit'] = np.polyval(coeffs, df[f'{x} Fit'])
 
             return df, coeffs, rsq
 
@@ -1205,7 +1204,7 @@ class Data:
             try:
                 return getattr(df_stat, self.stat)(numeric_only=True).reset_index()
             except AttributeError:
-                print('stat "%s" is not supported...skipping stat calculation' % self.stat)
+                print(f'stat "{self.stat}" is not supported...skipping stat calculation')
                 return None
 
     def _kwargs_groupers(self, kwargs) -> list:

@@ -150,7 +150,7 @@ class Timer:
             label += ': '
 
         if self.print is True:
-            print(label + str(delta) + ' [%s]' % self.units)
+            print(label + str(delta) + f' [{self.units}]')
 
         if restart is True:
             self.start()
@@ -294,7 +294,7 @@ def df_filter(df: pd.DataFrame, filt_orig: str, drop_cols: bool = False,
 
     # Rename the columns to remove special characters
     cols_orig = [f for f in df.columns]
-    cols_new = ['fCp%s' % f for f in cols_orig.copy()]
+    cols_new = [f'fCp{f}' for f in cols_orig.copy()]
     cols_new = [special_chars(f) for f in cols_new]
     cols_used = []
 
@@ -307,24 +307,24 @@ def df_filter(df: pd.DataFrame, filt_orig: str, drop_cols: bool = False,
         if 'not in [' in aa:
             key, val = aa.split('not in ')
             key = key.rstrip(' ')
-            key = 'fCp%s' % special_chars(key)
+            key = f'fCp{special_chars(key)}'
             vals = val.replace('[', '').replace(']', '').split(',')
             for iv, vv in enumerate(vals):
                 vals[iv] = vv.lstrip().rstrip()
             key2 = '&' + key + '!='
-            ands[ia] = '(%s%s)' % (key + '!=', key2.join(vals))
+            ands[ia] = f'({key} != {key2.join(vals)})'
             continue
         elif 'in [' in aa:
             key, val = aa.split('in ')
             key = key.rstrip(' ')
-            key = 'fCp%s' % special_chars(key)
+            key = f'fCp{special_chars(key)}'
             vals = val.replace('[', '').replace(']', '')
             vals = shlex.split(vals, ',', posix=False)
             vals = [f for f in vals if f != ',']  # remove commas
             for iv, vv in enumerate(vals):
                 vals[iv] = vv.lstrip().rstrip()
             key2 = '|' + key + '=='
-            ands[ia] = '(%s%s)' % (key + '==', key2.join(vals))
+            ands[ia] = f'({key} == {key2.join(vals)})'
             continue
         ors = [f.lstrip() for f in aa.split('|')]
         for io, oo in enumerate(ors):
@@ -345,8 +345,8 @@ def df_filter(df: pd.DataFrame, filt_orig: str, drop_cols: bool = False,
                 cols_used += [vals[0]]
                 vals[1] = vals[1].lstrip()
                 if vals[1] == vals[0]:
-                    vals[1] = 'fCp%s' % special_chars(vals[1])
-                vals[0] = 'fCp%s' % special_chars(vals[0])
+                    vals[1] = f'fCp{special_chars(vals[1])}'
+                vals[0] = f'fCp{special_chars(vals[0])}'
                 ors[io] = op.join(vals)
                 if param_start:
                     ors[io] = '(' + ors[io]
@@ -384,8 +384,8 @@ def df_filter(df: pd.DataFrame, filt_orig: str, drop_cols: bool = False,
         return df
 
     except:  # noqa
-        print('Could not filter data!\n   Original filter string: %s\n   '
-              'Modified filter string: %s' % (filt_orig, filt))
+        print(f'Could not filter data!\n   Original filter string: {filt_orig}\n   '
+              f'Modified filter string: {filt}')
 
         df.columns = cols_orig
 
@@ -557,6 +557,38 @@ def get_decimals(value: [int, float], max_places: int = 4):
             last = current
 
     return i - 1
+
+
+def get_nested_files(path: Union[Path, str], pattern: Union[str, None] = None, exclude: list = []) -> list:
+    """Get a list of files within a nested directory.
+
+    Args:
+        path: top-level directory
+        pattern: substring to filter the list of files; defaults to None = no filtering
+
+    Returns:
+        list of file paths
+    """
+    if not isinstance(path, Path):
+        path = Path(path)
+
+    files = []
+    for entry in path.iterdir():
+        if entry.is_file():
+            if pattern and pattern in str(entry):
+                skip = False
+                for ex in exclude:
+                    if ex in str(entry):
+                        skip = True
+                if not skip:
+                    files += [entry]
+            elif not pattern:
+                files += [entry]
+        elif entry.is_dir():
+            files += get_nested_files(entry, pattern, exclude)
+
+    return files
+
 
 
 def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, font_weight: str, **kwargs) -> tuple:
@@ -1212,9 +1244,9 @@ def set_save_filename(df: pd.DataFrame, ifig: int, fig_item: [None, str],
         str filename
     """
     # Use provided filename
-    if 'filename' in kwargs.keys() and isinstance(kwargs['filename'], pathlib.PosixPath):
+    if kwargs.get('filename') and isinstance(kwargs['filename'], pathlib.PosixPath):
         kwargs['filename'] = str(kwargs['filename'])
-    if 'filename' in kwargs.keys() and isinstance(kwargs['filename'], str):
+    if kwargs.get('filename') and isinstance(kwargs['filename'], str):
         filename = kwargs['filename']
         ext = os.path.splitext(filename)[-1]
         if ext == '':
@@ -1226,7 +1258,7 @@ def set_save_filename(df: pd.DataFrame, ifig: int, fig_item: [None, str],
             for icol, col in enumerate(fig_cols):
                 if icol > 0:
                     fig += ' and'
-                fig += ' where %s=%s' % (col, fig_items[icol])
+                fig += f' where {col}={fig_items[icol]}'
         return filename + fig + ext
 
     # Build a filename
@@ -1259,11 +1291,11 @@ def set_save_filename(df: pd.DataFrame, ifig: int, fig_item: [None, str],
         for icol, col in enumerate(fig_cols):
             if icol > 0:
                 fig += ' and'
-            fig += ' where %s=%s' % (col, fig_items[icol])
+            fig += f' where {col}={fig_items[icol]}'
         if strip_html(layout.label_col.text) is None:
             col = ''
 
-    filename = '%s%s%s%s%s%s%s%s' % (z, y, x, row, col, wrap, groups, fig)
+    filename = f'{z}{y}{x}{row}{col}{wrap}{groups}{fig}'
 
     # Cleanup forbidden symbols
     bad_char = ['\\', '/', ':', '*', '?', '"', '<', '>', '|']
@@ -1713,7 +1745,7 @@ def unit_test_make_all(reference: pathlib.Path, name: str, start: Union[str, Non
         if stop and stop in member[0]:
             print('stopping!')
             return
-        print('Running %s...' % member[0], end='')
+        print(f'Running {member[0]}...', end='')
         member[1](make_reference=True)
         print('done!')
 
@@ -1741,7 +1773,7 @@ def unit_test_show_all(only_fails: bool, reference: pathlib.Path, name: str, sta
         if len(idx_found) > 0:
             members = members[idx_found[0]:]
     for member in members:
-        print('Running %s...' % member[0], end='')
+        print(f'Running {member[0]}...', end='')
         if only_fails:
             try:
                 member[1]()
