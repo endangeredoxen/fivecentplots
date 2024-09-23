@@ -425,124 +425,100 @@ def validate_kwargs(kwargs):
         print('Warning: the following kwargs are not supported: \n    - ' + "\n    - ".join(invalid))
 
 
-kw = make_docstrings()
-
-
-bar = kw_print(kw['bar'])
-
-
-boxplot = \
-    kw_header('BASIC',  indent=' ' * 8) + \
-    kw_print(kw['box']) + \
-    kw_header('GROUPING_TEXT') + \
-    kw_print(kw['box_label']) + \
-    kw_header('STAT_LINES') + \
-    kw_print(kw['box_stat']) + \
-    kw_header('DIAMONDS') + \
-    kw_print(kw['box_diamond']) + \
-    kw_header('VIOLINS') + \
-    kw_print(kw['box_violin'])
-
-
-contour = \
-    kw_header('BASIC',  indent=' ' * 8) + \
-    kw_print(kw['contour']) + \
-    kw_header('COLOR_BAR',  indent=' ' * 8) + \
-    kw_print(kw['cbar'])
-
-
-gantt = kw_print(kw['gantt'])
-
-
-heatmap = \
-    kw_header('BASIC',  indent=' ' * 8) + \
-    kw_print(kw['heatmap']) + \
-    kw_header('COLOR_BAR',  indent=' ' * 8) + \
-    kw_print(kw['cbar'])
-
-
-hist = kw_print(kw['hist'])
-
-
-imshow = kw_print(kw['imshow'])
-
-
-pie = kw_print(kw['pie'])
-
-
-nq = \
-    kw_header('BASIC',  indent=' ' * 8) + \
-    kw_print(kw['nq']) + \
-    kw_header('CALCULATION',  indent=' ' * 8) + \
-    kw_print(kw['nq_calc'])
-
-
-plot = \
-    kw_header('LINES',  indent=' ' * 8) + \
-    kw_print(kw['lines']) + \
-    kw_header('MARKERS',  indent=' ' * 8) + \
-    kw_print(kw['markers']) + \
-    kw_header('AX_[H|V]LINES',  indent=' ' * 8) + \
-    kw_print(kw['ax_lines']) + \
-    kw_header('CONTROL_LIMITS',  indent=' ' * 8) + \
-    kw_print(kw['control_limits']) + \
-    kw_header('CONFIDENCE_INTERVALS',  indent=' ' * 8) + \
-    kw_print(kw['conf_int']) + \
-    kw_header('FIT',  indent=' ' * 8) + \
-    kw_print(kw['fit']) + \
-    kw_header('REFERENCE_LINES',  indent=' ' * 8) + \
-    kw_print(kw['ref_line']) + \
-    kw_header('STAT_LINES',  indent=' ' * 8) + \
-    kw_print(kw['stat_line'])
-
-
-axes = kw_print(kw['axes'])
-
-
-cbar = kw_print(kw['cbar'])
-
-
-figure = kw_print(kw['figure'])
-
-
-gridlines = kw_print(kw['gridlines'])
-
-
-grouping = kw_print(kw['grouping'])
-
-
-labels = \
-    kw_header('AXES_LABELS',  indent=' ' * 8) + \
-    kw_print(kw['labels']) + \
-    kw_header('RC_LABELS',  indent=' ' * 8) + \
-    kw_print(kw['labels_rc'])
-
-
-legend = kw_print(kw['legend'])
-
-
-lines = kw_print(kw['lines'])
-
-
-options = kw_print(kw['options'])
-
-
-markers = kw_print(kw['markers'])
-
-
-ticks = kw_print(kw['ticks'])
-
-
-tick_labels = kw_print(kw['tick_labels'])
-
-
-titles = kw_print(kw['titles'])
-
-
-ws = kw_print(kw['ws'])
-
-
 if __name__ == '__main__':
+
+    kw = make_docstrings()
+
+    bar = kw_print(kw['bar'])
+
+    boxplot = \
+        kw_header('BASIC',  indent=' ' * 8) + \
+        kw_print(kw['box']) + \
+        kw_header('GROUPING_TEXT') + \
+        kw_print(kw['box_label']) + \
+        kw_header('STAT_LINES') + \
+        kw_print(kw['box_stat']) + \
+        kw_header('DIAMONDS') + \
+        kw_print(kw['box_diamond']) + \
+        kw_header('VIOLINS') + \
+        kw_print(kw['box_violin'])
+
+    contour = \
+        kw_header('BASIC',  indent=' ' * 8) + \
+        kw_print(kw['contour']) + \
+        kw_header('COLOR_BAR',  indent=' ' * 8) + \
+        kw_print(kw['cbar'])
+
+    gantt = kw_print(kw['gantt'])
+
+    heatmap = \
+        kw_header('BASIC',  indent=' ' * 8) + \
+        kw_print(kw['heatmap']) + \
+        kw_header('COLOR_BAR',  indent=' ' * 8) + \
+        kw_print(kw['cbar'])
+
+    hist = kw_print(kw['hist'])
+
+    imshow = kw_print(kw['imshow'])
+
+    pie = kw_print(kw['pie'])
+
+    nq = \
+        kw_header('BASIC',  indent=' ' * 8) + \
+        kw_print(kw['nq']) + \
+        kw_header('CALCULATION',  indent=' ' * 8) + \
+        kw_print(kw['nq_calc'])
+
+    plot = \
+        kw_header('LINES',  indent=' ' * 8) + \
+        kw_print(kw['lines']) + \
+        kw_header('MARKERS',  indent=' ' * 8) + \
+        kw_print(kw['markers']) + \
+        kw_header('AX_[H|V]LINES',  indent=' ' * 8) + \
+        kw_print(kw['ax_lines']) + \
+        kw_header('CONTROL_LIMITS',  indent=' ' * 8) + \
+        kw_print(kw['control_limits']) + \
+        kw_header('CONFIDENCE_INTERVALS',  indent=' ' * 8) + \
+        kw_print(kw['conf_int']) + \
+        kw_header('FIT',  indent=' ' * 8) + \
+        kw_print(kw['fit']) + \
+        kw_header('REFERENCE_LINES',  indent=' ' * 8) + \
+        kw_print(kw['ref_line']) + \
+        kw_header('STAT_LINES',  indent=' ' * 8) + \
+        kw_print(kw['stat_line'])
+
+    axes = kw_print(kw['axes'])
+
+    cbar = kw_print(kw['cbar'])
+
+    figure = kw_print(kw['figure'])
+
+    gridlines = kw_print(kw['gridlines'])
+
+    grouping = kw_print(kw['grouping'])
+
+    labels = \
+        kw_header('AXES_LABELS',  indent=' ' * 8) + \
+        kw_print(kw['labels']) + \
+        kw_header('RC_LABELS',  indent=' ' * 8) + \
+        kw_print(kw['labels_rc'])
+
+    legend = kw_print(kw['legend'])
+
+    lines = kw_print(kw['lines'])
+
+    options = kw_print(kw['options'])
+
+    markers = kw_print(kw['markers'])
+
+    ticks = kw_print(kw['ticks'])
+
+    tick_labels = kw_print(kw['tick_labels'])
+
+    titles = kw_print(kw['titles'])
+
+    ws = kw_print(kw['ws'])
+
     docs = ['bar', 'boxplot', 'contour', 'gantt', 'heatmap', 'hist', 'imshow', 'pie', 'nq',
             'plot', 'axes', 'cbar', 'figure', 'gridlines', 'labels', 'legend', 'lines',
             'markers', 'ticks', 'tick_labels', 'ws', 'grouping', 'titles', 'options']
