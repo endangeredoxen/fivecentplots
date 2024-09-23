@@ -660,30 +660,30 @@ class Data:
         for ax in self.axs_on:
             # Case 1: share_[ax] = True
             if getattr(self, f'share_{ax}'):
-                mmin = self.ranges[f'{ax}min'][self.ranges[f'{ax}min'] is not None]
+                mmin = self.ranges[f'{ax}min'][np.not_equal(self.ranges[f'{ax}min'], None)]
                 if len(mmin) > 0:
-                    rr[f'{ax}min'][rr[f'{ax}min'] is None] = mmin.min()
-                mmax = self.ranges[f'{ax}max'][self.ranges[f'{ax}max'] is not None]
+                    rr[f'{ax}min'][np.equal(rr[f'{ax}min'], None)] = mmin.min()
+                mmax = self.ranges[f'{ax}max'][np.not_equal(self.ranges[f'{ax}max'], None)]
                 if len(mmax) > 0:
-                    rr[f'{ax}max'][rr[f'{ax}max'] is None] = mmax.max()
+                    rr[f'{ax}max'][np.equal(rr[f'{ax}max'], None)] = mmax.max()
 
             # Case 2: share_row = True
-            elif self.share_row and self.row is not None:
+            elif self.share_row and self.row is not None:  # and self.row != 'y':
                 for irow in range(0, self.nrow):
-                    mmin = self.ranges[f'{ax}min'][irow, :][self.ranges[f'{ax}min'][irow, :] is not None]
+                    mmin = self.ranges[f'{ax}min'][irow, :][np.not_equal(self.ranges[f'{ax}min'][irow, :], None)]
                     if len(mmin) > 0:
                         rr[f'{ax}min'][irow, :] = mmin.min()
-                    mmax = self.ranges[f'{ax}max'][irow, :][self.ranges[f'{ax}max'][irow, :] is not None]
+                    mmax = self.ranges[f'{ax}max'][irow, :][np.not_equal(self.ranges[f'{ax}max'][irow, :], None)]
                     if len(mmax) > 0:
                         rr[f'{ax}max'][irow, :] = mmax.max()
 
             # Case 3: share_col
             elif self.share_col and self.col is not None:
                 for icol in range(0, self.ncol):
-                    mmin = self.ranges[f'{ax}min'][:, icol][self.ranges[f'{ax}min'][:, icol] is not None]
+                    mmin = self.ranges[f'{ax}min'][:, icol][np.not_equal(self.ranges[f'{ax}min'][:, icol], None)]
                     if len(mmin) > 0:
                         rr[f'{ax}min'][:, icol] = mmin.min()
-                    mmax = self.ranges[f'{ax}max'][:, icol][self.ranges[f'{ax}min'][:, icol] is not None]
+                    mmax = self.ranges[f'{ax}max'][:, icol][np.not_equal(self.ranges[f'{ax}min'][:, icol], None)]
                     if len(mmax) > 0:
                         rr[f'{ax}max'][:, icol] = mmax.max()
 
