@@ -8,7 +8,6 @@ from pathlib import Path
 import fivecentplots.data as data
 import fivecentplots.utilities as utl
 import matplotlib as mpl
-import inspect
 osjoin = os.path.join
 db = pdb.set_trace
 mpl.use('agg')
@@ -29,11 +28,16 @@ df2 = pd.read_csv(Path(fcp.__file__).parent / 'test_data/real_data_bar.csv')
 fcp.set_theme('gray')
 # fcp.set_theme('white')
 
+
 # Other
 def make_all(start=None, stop=None):
     utl.unit_test_make_all(REFERENCE, sys.modules[__name__], start=start, stop=stop)
+
+
 def show_all(only_fails=True, start=None):
     utl.unit_test_show_all(only_fails, REFERENCE, sys.modules[__name__], start=start)
+
+
 SHOW = False
 fcp.KWARGS['save'] = True
 fcp.KWARGS['inline'] = False
@@ -52,7 +56,7 @@ def plt_col_shared(bm=False, make_reference=False, show=False):
     if bm:
         return
 
-    if show == False:
+    if not show:
         # Axis width
         utl.unit_test_measure_axes(name, 70, None, 300, None, 1, alias=True)
         # Col label height

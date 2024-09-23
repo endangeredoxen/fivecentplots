@@ -6,7 +6,6 @@ import pdb
 from pathlib import Path
 import fivecentplots.utilities as utl
 import matplotlib as mpl
-import inspect
 import numpy as np
 osjoin = os.path.join
 db = pdb.set_trace
@@ -36,8 +35,12 @@ fcp.set_theme('gray')
 # Other
 def make_all(start=None, stop=None):
     utl.unit_test_make_all(REFERENCE, sys.modules[__name__], start=start, stop=stop)
+
+
 def show_all(only_fails=True, start=None):
     utl.unit_test_show_all(only_fails, REFERENCE, sys.modules[__name__], start=start)
+
+
 SHOW = False
 fcp.KWARGS['save'] = True
 fcp.KWARGS['inline'] = False
@@ -68,7 +71,7 @@ def plt_grid_column(bm=False, make_reference=False, show=False):
     if bm:
         return
 
-    if show == False:
+    if not show:
         utl.unit_test_measure_axes_cols(name, 59, 302, 2)
         utl.unit_test_measure_margin(name, 59, 120, left=74, right=81, bottom=10, alias=True)
         utl.unit_test_measure_margin(name, 59, 120, top=10, alias=False)
@@ -87,7 +90,7 @@ def plt_grid_row(bm=False, make_reference=False, show=False):
     if bm:
         return
 
-    if show == False:
+    if not show:
         utl.unit_test_measure_axes_rows(name, 260, 302, 2)
         utl.unit_test_measure_margin(name, 80, 120, left=74, top=10, bottom=10, alias=True)
         utl.unit_test_measure_margin(name, 80, 120, right=41, alias=False)
@@ -275,13 +278,12 @@ def plt_group_means(bm=False, make_reference=False, show=False):
     # Make the plot
     fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW, group_means=True,
                 ax_edge_width=1, box_group_label_edge_width=1,
-                #box_group_title_fill_color='#ff00ff', box_group_title_edge_color='#000000', box_group_title_edge_width=1,
                 filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
         return
 
-    if show == False:
+    if not show:
         utl.unit_test_measure_margin(name, 20, 300, left=74, right=81, bottom=10, top=10, alias=True)
 
     utl.unit_test_options(make_reference, show, name, REFERENCE)
@@ -326,7 +328,7 @@ def plt_group_single(bm=False, make_reference=False, show=False):
     if bm:
         return
 
-    if show == False:
+    if not show:
         utl.unit_test_measure_margin(name, 50, 190, left=74, bottom=10, top=10, right=106, alias=True)
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
@@ -364,8 +366,8 @@ def plt_one_group(bm=False, make_reference=False, show=False):
 
     # Make the plot
     fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], filter='Batch==101', ymin='q0', ymax='q100',
-                show=SHOW, filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False, box_stat_line='q50',
-                box_group_label_font_size=24)  # font size is wrong!
+                show=SHOW, filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False,
+                box_stat_line='q50', box_group_label_font_size=24)
 
     if bm:
         return
@@ -383,7 +385,7 @@ def plt_simple(bm=False, make_reference=False, show=False):
     if bm:
         return
 
-    if show == False:
+    if not show:
         utl.unit_test_measure_margin(name, 20, 150, left=75, bottom=10, top=10, right=10, alias=True)
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 

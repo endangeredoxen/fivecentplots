@@ -6,7 +6,6 @@ import pdb
 from pathlib import Path
 import fivecentplots.utilities as utl
 import matplotlib as mpl
-import inspect
 import pytest
 osjoin = os.path.join
 db = pdb.set_trace
@@ -31,13 +30,18 @@ fcp.set_theme('gray')
 
 
 # Other
-SHOW = False
 def make_all(start=None, stop=None):
     utl.unit_test_make_all(REFERENCE, sys.modules[__name__], start=start, stop=stop)
+
+
 def show_all(only_fails=True, start=None):
     utl.unit_test_show_all(only_fails, REFERENCE, sys.modules[__name__], start=start)
+
+
+SHOW = False
 fcp.KWARGS['save'] = True
 fcp.KWARGS['inline'] = False
+
 
 # plt_ functions can be used directly outside of pytest for debug
 def plt_column(bm=False, make_reference=False, show=False):
@@ -51,7 +55,7 @@ def plt_column(bm=False, make_reference=False, show=False):
     if bm:
         return
 
-    if show == False:
+    if not show:
         # Axis width
         utl.unit_test_measure_axes(name, 70, None, 227, None, 1, alias=True)
         # Col label height
@@ -76,7 +80,7 @@ def plt_column_no_names(bm=False, make_reference=False, show=False):
     if bm:
         return
 
-    if show == False:
+    if not show:
         # Axis width
         utl.unit_test_measure_axes(name, 70, None, 227, None, 1, alias=True)
         # Col label height
@@ -101,7 +105,7 @@ def plt_multiple_xy_both(bm=False, make_reference=False, show=False):
     if bm:
         return
 
-    if show == False:
+    if not show:
         utl.unit_test_measure_axes(name, 60, 240, 402, 402, 1, alias=True)
         utl.unit_test_measure_margin(name, 60, 240, top=10, alias=True)
 
@@ -133,7 +137,7 @@ def plt_multiple_xy_x(bm=False, make_reference=False, show=False):
     if bm:
         return
 
-    if show == False:
+    if not show:
         utl.unit_test_measure_axes(name, 60, 240, 402, 402, 1, alias=True)
         utl.unit_test_measure_margin(name, 60, 240, top=10, alias=True)
 
@@ -165,7 +169,7 @@ def plt_other_curve_fitting(bm=False, make_reference=False, show=False):
     if bm:
         return
 
-    if show == False:
+    if not show:
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 1, alias=True)
         utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76, right=10,
                                      alias=True)
@@ -185,7 +189,7 @@ def plt_other_curve_fitting2(bm=False, make_reference=False, show=False):
     if bm:
         return
 
-    if show == False:
+    if not show:
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 1, alias=True)
         utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76, right=136,
                                      alias=True)
@@ -205,7 +209,7 @@ def plt_other_curve_fitting3(bm=False, make_reference=False, show=False):
     if bm:
         return
 
-    if show == False:
+    if not show:
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 1, alias=True)
         utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76, right=10,
                                      alias=True)
@@ -225,7 +229,7 @@ def plt_other_curve_fitting_range(bm=False, make_reference=False, show=False):
     if bm:
         return
 
-    if show == False:
+    if not show:
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 1, alias=True)
         utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76, right=98,
                                      alias=True)
@@ -314,7 +318,7 @@ def plt_other_lcl_only(bm=False, make_reference=False, show=False):
     if bm:
         return
 
-    if show == False:
+    if not show:
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 1, alias=True)
         utl.unit_test_measure_margin(name, 110, 370, left=94, top=43, bottom=76, right=10,
                                      alias=True)
@@ -334,7 +338,7 @@ def plt_other_lcl_only_inside(bm=False, make_reference=False, show=False):
     if bm:
         return
 
-    if show == False:
+    if not show:
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 1, alias=True)
         utl.unit_test_measure_margin(name, 110, 370, left=94, top=43, bottom=76, right=10,
                                      alias=True)
@@ -353,7 +357,7 @@ def plt_other_lines(bm=False, make_reference=False, show=False):
     if bm:
         return
 
-    if show == False:
+    if not show:
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 2, alias=True)
         utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76, right=120,
                                      alias=True)
@@ -374,7 +378,7 @@ def plt_other_lines_df(bm=False, make_reference=False, show=False):
     if bm:
         return
 
-    if show == False:
+    if not show:
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 2, alias=True)
         utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76, right=120,
                                      alias=True)
@@ -406,7 +410,7 @@ def plt_other_nq_int2(bm=False, make_reference=False, show=False):
     if bm:
         return
 
-    if show == False:
+    if not show:
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 2, alias=True)
         utl.unit_test_measure_margin(name, 110, 370, left=98, top=43, bottom=76, right=10,
                                      alias=True)
@@ -438,7 +442,7 @@ def plt_other_ref_line(bm=False, make_reference=False, show=False):
     if bm:
         return
 
-    if show == False:
+    if not show:
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 2, alias=True)
         utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76, alias=True)
 
@@ -458,7 +462,7 @@ def plt_other_ref_line_leg(bm=False, make_reference=False, show=False):
     if bm:
         return
 
-    if show == False:
+    if not show:
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 2, alias=True)
         utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76)
 
@@ -491,11 +495,12 @@ def plt_other_ref_line_mult2(bm=False, make_reference=False, show=False):
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', show=SHOW, legend='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              xmin=0, ymin=0, xmax=1.6, ymax=1.6, ref_line=['Voltage', '2*Voltage'],
-             ref_line_style=['-', '--'], ref_line_color=[5, 6], filename=name.with_suffix('.png'), save=not bm, inline=False)
+             ref_line_style=['-', '--'], ref_line_color=[5, 6], filename=name.with_suffix('.png'), save=not bm,
+             inline=False)
     if bm:
         return
 
-    if show == False:
+    if not show:
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 2, alias=True)
         utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76, alias=True)
 
@@ -653,7 +658,7 @@ def plt_row(bm=False, make_reference=False, show=False):
     if bm:
         return
 
-    if show == False:
+    if not show:
         # Axis width
         utl.unit_test_measure_axes(name, 70, 165, 227, 227, 1, alias=True)
         # Row label width
@@ -693,7 +698,7 @@ def plt_row_x_column(bm=False, make_reference=False, show=False):
     if bm:
         return
 
-    if show == False:
+    if not show:
         utl.unit_test_measure_axes_cols(name, 340, 227, 3)
         utl.unit_test_measure_margin(name, 430, 145, left=10, bottom=10, alias=False)
 
@@ -744,7 +749,7 @@ def plt_row_x_column_sep_labels(bm=False, make_reference=False, show=False):
     if bm:
         return
 
-    if show == False:
+    if not show:
         utl.unit_test_measure_axes_cols(name, 375, 227, 3)
 
     utl.unit_test_options(make_reference, show, name, REFERENCE)
@@ -793,7 +798,7 @@ def plt_secondary_xy_shared_x(bm=False, make_reference=False, show=False):
     if bm:
         return
 
-    if show == False:
+    if not show:
         utl.unit_test_measure_axes(name, 650, 190, 402, 402, 2, alias=True)
         utl.unit_test_measure_margin(name, 650, 285, left=84, top=10, bottom=10, alias=True)
         utl.unit_test_measure_margin(name, 650, 285, right=257, alias=False)
@@ -890,7 +895,7 @@ def plt_xy_legend(bm=False, make_reference=False, show=False):
     if bm:
         return
 
-    if show == False:
+    if not show:
         utl.unit_test_measure_axes(name, 150, 200, 402, 402, 2, alias=True)
         utl.unit_test_measure_margin(name, 150, 200, left=84, top=15, bottom=76, right=119, alias=True)
 
@@ -936,7 +941,7 @@ def plt_xy_scatter(bm=False, make_reference=False, show=False):
     if bm:
         return
 
-    if show == False:
+    if not show:
         utl.unit_test_measure_axes(name, 110, 185, 428, 428, 2, alias=True)
         utl.unit_test_measure_margin(name, 265, 270, left=15, top=43, bottom=15, right=10, alias=True)
 
@@ -946,7 +951,6 @@ def plt_xy_scatter(bm=False, make_reference=False, show=False):
 def plt_xy_scatter_swap(bm=False, make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('xy_scatter_swap', make_reference, REFERENCE)
-
 
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False, swap=True,

@@ -6,7 +6,6 @@ import pdb
 from pathlib import Path
 import fivecentplots.utilities as utl
 import matplotlib as mpl
-import inspect
 osjoin = os.path.join
 db = pdb.set_trace
 mpl.use('agg')
@@ -27,11 +26,16 @@ df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_gantt.csv')
 fcp.set_theme('gray')
 # fcp.set_theme('white')
 
+
 # Other
 def make_all(start=None, stop=None):
     utl.unit_test_make_all(REFERENCE, sys.modules[__name__], start=start, stop=stop)
+
+
 def show_all(only_fails=True, start=None):
     utl.unit_test_show_all(only_fails, REFERENCE, sys.modules[__name__], start=start)
+
+
 SHOW = False
 fcp.KWARGS['save'] = True
 fcp.KWARGS['inline'] = False

@@ -8,7 +8,6 @@ from pathlib import Path
 import fivecentplots.data.data as data
 import fivecentplots.utilities as utl
 import matplotlib as mpl
-import inspect
 osjoin = os.path.join
 db = pdb.set_trace
 mpl.use('agg')
@@ -33,8 +32,12 @@ fcp.set_theme('gray')
 # Other
 def make_all(start=None, stop=None):
     utl.unit_test_make_all(REFERENCE, sys.modules[__name__], start=start, stop=stop)
+
+
 def show_all(only_fails=True, start=None):
     utl.unit_test_show_all(only_fails, REFERENCE, sys.modules[__name__], start=start)
+
+
 SHOW = False
 fcp.KWARGS['save'] = True
 fcp.KWARGS['inline'] = False
@@ -122,7 +125,8 @@ def plt_explode_all(bm=False, make_reference=False, show=False):
 
     # Make the plot
     fcp.pie(df, x='Liquid', y='pH', show=SHOW, filter='Measurement=="A" & T [C]==25', explode=('all', 0.1),
-            start_angle=90, alpha=0.85, percents=True, filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
+            start_angle=90, alpha=0.85, percents=True, filename=name.with_suffix('.png'), save=not bm, inline=False,
+            jitter=False)
 
     if bm:
         return

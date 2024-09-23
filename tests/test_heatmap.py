@@ -9,7 +9,6 @@ from pathlib import Path
 import fivecentplots.data.data as data
 import fivecentplots.utilities as utl
 import matplotlib as mpl
-import inspect
 osjoin = os.path.join
 db = pdb.set_trace
 mpl.use('agg')
@@ -30,11 +29,16 @@ img_cat = utl.img_grayscale(imageio.imread(Path(fcp.__file__).parent / 'test_dat
 fcp.set_theme('gray')
 # fcp.set_theme('white')
 
+
 # Other
 def make_all(start=None, stop=None):
     utl.unit_test_make_all(REFERENCE, sys.modules[__name__], start=start, stop=stop)
+
+
 def show_all(only_fails=True, start=None):
     utl.unit_test_show_all(only_fails, REFERENCE, sys.modules[__name__], start=start)
+
+
 SHOW = False
 fcp.KWARGS['save'] = True
 fcp.KWARGS['inline'] = False

@@ -6,7 +6,6 @@ import pdb
 from pathlib import Path
 import fivecentplots.utilities as utl
 import matplotlib as mpl
-import inspect
 osjoin = os.path.join
 db = pdb.set_trace
 mpl.use('agg')
@@ -27,11 +26,16 @@ df2 = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
 fcp.set_theme('gray')
 # fcp.set_theme('white')
 
+
 # Other
 def make_all(start=None, stop=None):
     utl.unit_test_make_all(REFERENCE, sys.modules[__name__], start=start, stop=stop)
+
+
 def show_all(only_fails=True, start=None):
     utl.unit_test_show_all(only_fails, REFERENCE, sys.modules[__name__], start=start)
+
+
 SHOW = False
 fcp.KWARGS['save'] = True
 fcp.KWARGS['inline'] = False
@@ -264,7 +268,7 @@ def test_legend_multiple(make_reference=False, remove=True, show=False):
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              save=True, inline=False, filename=name.with_suffix('.png'))
 
-    if show == False:
+    if not show:
         utl.unit_test_measure_axes(name, 305, 150, 402, 402, 1, alias=True)
         utl.unit_test_measure_margin(name, 305, 150, left=84, top=10, bottom=76, right=157, alias=True)
 

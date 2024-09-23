@@ -6,7 +6,6 @@ import pdb
 from pathlib import Path
 import fivecentplots.utilities as utl
 import matplotlib as mpl
-import inspect
 import imageio.v3 as imageio
 
 osjoin = os.path.join
@@ -29,11 +28,16 @@ img_cat = utl.img_grayscale(img_cat_orig)
 # Set theme
 fcp.set_theme('gray')
 
+
 # Other
 def make_all(start=None, stop=None):
     utl.unit_test_make_all(REFERENCE, sys.modules[__name__], start=start, stop=stop)
+
+
 def show_all(only_fails=True, start=None):
     utl.unit_test_show_all(only_fails, REFERENCE, sys.modules[__name__], start=start)
+
+
 SHOW = False
 fcp.KWARGS['save'] = True
 fcp.KWARGS['inline'] = False

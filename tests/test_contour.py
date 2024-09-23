@@ -6,7 +6,6 @@ import pdb
 from pathlib import Path
 import fivecentplots.utilities as utl
 import matplotlib as mpl
-import inspect
 osjoin = os.path.join
 db = pdb.set_trace
 mpl.use('agg')
@@ -26,11 +25,16 @@ df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_contour.csv')
 fcp.set_theme('gray')
 # fcp.set_theme('white')
 
+
 # Other
 def make_all(start=None, stop=None):
     utl.unit_test_make_all(REFERENCE, sys.modules[__name__], start=start, stop=stop)
+
+
 def show_all(only_fails=True, start=None):
     utl.unit_test_show_all(only_fails, REFERENCE, sys.modules[__name__], start=start)
+
+
 SHOW = False
 fcp.KWARGS['save'] = True
 fcp.KWARGS['inline'] = False
@@ -49,7 +53,7 @@ def plt_basic(bm=False, make_reference=False, show=False):
     if bm:
         return
 
-    if show == False:
+    if not show:
         # Axis width
         utl.unit_test_measure_axes(name, 70, None, 402, None, 1, alias=True)
         # Margins
@@ -81,8 +85,8 @@ def plt_basic_wrap(bm=False, make_reference=False, show=False):
     # Make the plot
     fcp.contour(df, x='X', y='Y', z='Value', wrap=['Batch', 'Experiment'], filled=False,
                 cbar=True, xmin=-3, xmax=3, ymin=-3, ymax=3, ax_size=[250, 250], show=SHOW, contour_width=2,
-                label_rc_font_size=12, levels=30, show_points=True, filename=name.with_suffix('.png'), save=not bm, inline=False,
-                marker_edge_color='#000000', marker_fill_color='#000000',
+                label_rc_font_size=12, levels=30, show_points=True, filename=name.with_suffix('.png'), save=not bm,
+                inline=False, marker_edge_color='#000000', marker_fill_color='#000000',
                 ax_edge_width=5)
 
     if bm:

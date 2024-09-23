@@ -7,7 +7,6 @@ import pdb
 from pathlib import Path
 import fivecentplots.utilities as utl
 import matplotlib as mpl
-import inspect
 osjoin = os.path.join
 db = pdb.set_trace
 mpl.use('agg')
@@ -27,11 +26,16 @@ df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data.csv')
 fcp.set_theme('gray')
 # fcp.set_theme('white')
 
+
 # Other
 def make_all(start=None, stop=None):
     utl.unit_test_make_all(REFERENCE, sys.modules[__name__], start=start, stop=stop)
+
+
 def show_all(only_fails=True, start=None):
     utl.unit_test_show_all(only_fails, REFERENCE, sys.modules[__name__], start=start)
+
+
 SHOW = False
 fcp.KWARGS['save'] = True
 fcp.KWARGS['inline'] = False
@@ -352,7 +356,8 @@ def test_ticks_tight(make_reference=False, show=False):
     # Make the plot
     fcp.plot(df, x='Voltage', y='I [A]', show=SHOW, legend='Die', tick_labels_minor=True,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25 & Die=="(-1,2)"',
-             ax_size=[150, 150], filename=name.with_suffix('.png'), ticks_major_y_increment=0.05, ticks_major_x_increment=0.1)
+             ax_size=[150, 150], filename=name.with_suffix('.png'), ticks_major_y_increment=0.05,
+             ticks_major_x_increment=0.1)
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 

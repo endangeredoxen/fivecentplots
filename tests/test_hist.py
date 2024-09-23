@@ -10,7 +10,6 @@ import numpy as np
 import fivecentplots.data.data as data
 import fivecentplots.utilities as utl
 import matplotlib as mpl
-import inspect
 from io import StringIO
 osjoin = os.path.join
 db = pdb.set_trace
@@ -35,11 +34,16 @@ img_cat = utl.img_grayscale(img_cat_orig)
 fcp.set_theme('gray')
 # fcp.set_theme('white')
 
+
 # Other
 def make_all(start=None, stop=None):
     utl.unit_test_make_all(REFERENCE, sys.modules[__name__], start=start, stop=stop)
+
+
 def show_all(only_fails=True, start=None):
     utl.unit_test_show_all(only_fails, REFERENCE, sys.modules[__name__], start=start)
+
+
 SHOW = False
 fcp.KWARGS['save'] = True
 fcp.KWARGS['inline'] = False
@@ -167,8 +171,8 @@ def plt_image_cdf(bm=False, make_reference=False, show=False):
     img = fcp.utilities.rgb2bayer(img_patch, 'bbbb')
     dn = 255
     max_count = (img_patch == dn).sum()
-    fcp.hist(img, cdf=True, **fcp.HIST, show=SHOW, inline=False, save=not bm, filename=name.with_suffix('.png'), xmax=dn + 5,
-             ax_hlines=max_count, ax_vlines=dn)
+    fcp.hist(img, cdf=True, **fcp.HIST, show=SHOW, inline=False, save=not bm,
+             filename=name.with_suffix('.png'), xmax=dn + 5, ax_hlines=max_count, ax_vlines=dn)
 
     if bm:
         return
@@ -183,8 +187,8 @@ def plt_image_pdf(bm=False, make_reference=False, show=False):
     img = fcp.utilities.rgb2bayer(img_patch, 'bbbb')
     dn = 255
     max_count = (img_patch == dn).sum()
-    fcp.hist(img, pdf=True, **fcp.HIST, show=SHOW, inline=False, save=not bm, filename=name.with_suffix('.png'), xmax=dn + 5,
-             ax_hlines=max_count, ax_vlines=dn)
+    fcp.hist(img, pdf=True, **fcp.HIST, show=SHOW, inline=False, save=not bm,
+             filename=name.with_suffix('.png'), xmax=dn + 5, ax_hlines=max_count, ax_vlines=dn)
 
     if bm:
         return
@@ -209,7 +213,7 @@ def plt_image_legend(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    if show == False:
+    if not show:
         utl.unit_test_measure_margin(name, 'c', 'c', right=98, top=10, alias=True)
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
@@ -366,7 +370,7 @@ def plt_simple(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    if show == False:
+    if not show:
         utl.unit_test_measure_margin(name, 'c', 'c', right=10, top=10, alias=True)
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
