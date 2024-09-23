@@ -11,7 +11,14 @@ import pathlib
 import re
 import shlex
 import inspect
+import ast
+import operator
+import imageio.v3 as imageio
 from matplotlib.font_manager import FontProperties, findfont
+from pathlib import Path
+from typing import Union, Tuple, Dict
+from . import data
+import numpy.typing as npt
 try:
     from PIL import ImageFont  # used only for bokeh font size calculations
 except ImportError:
@@ -31,6 +38,10 @@ if default_path.exists() and default_path not in sys.path:
         from defaults import *  # noqa
     except ModuleNotFoundError:
         from . themes.gray import *  # noqa
+
+# Read the package version file
+with open(Path(__file__).parent / 'version.txt', 'r') as fid:
+    __version__ = fid.readlines()[0].replace('\n', '')
 
 
 # Convenience kwargs
@@ -52,7 +63,7 @@ class RepeatedList:
         self.override = override
 
         if not isinstance(self.values, list) or len(self.values) < 1:
-            raise ValueError('RepeatedList must contain an actual list with more at least one element')
+            raise ValueError('RepeatedList must contain an actual list with at least one element')
 
     def __len__(self):
         """Custom length."""
@@ -71,6 +82,11 @@ class RepeatedList:
             return val
         else:
             return self.override[key]
+
+    def max(self):
+        """Return the maximum value of the RepeatedList."""
+        # TODO:  address NaN?
+        return max(self.values)
 
 
 class CFAError(Exception):
@@ -135,7 +151,7 @@ class Timer:
             label += ': '
 
         if self.print is True:
-            print(label + str(delta) + ' [%s]' % self.units)
+            print(label + str(delta) + f' [{self.units}]')
 
         if restart is True:
             self.start()
@@ -155,6 +171,35 @@ class Timer:
     def stop(self):
         """Stop the timer."""
         self.init = None
+
+
+def arithmetic_eval(s):
+    s = s.replace(' ', '')
+    s = s.replace('--', '+')
+    s = s.replace('++', '+')
+    node = ast.parse(s, mode='eval')
+
+    def _eval(node):
+        binOps = {
+            ast.Add: operator.add,
+            ast.Sub: operator.sub,
+            ast.Mult: operator.mul,
+            ast.Div: operator.truediv,
+            ast.Mod: operator.mod
+        }
+
+        if isinstance(node, ast.Expression):
+            return _eval(node.body)
+        elif isinstance(node, ast.Str):
+            return node.s
+        elif isinstance(node, ast.Num):
+            return node.n
+        elif isinstance(node, ast.BinOp):
+            return binOps[type(node.op)](_eval(node.left), _eval(node.right))
+        else:
+            raise Exception('Unsupported type {}'.format(node))
+
+    return _eval(node.body)
 
 
 def ci(data: pd.Series, coeff: float = 0.95) -> [float, float]:
@@ -178,7 +223,7 @@ def ci(data: pd.Series, coeff: float = 0.95) -> [float, float]:
         return np.nan, np.nan
 
 
-def dfkwarg(args: tuple, kwargs: dict) -> dict:
+def dfkwarg(args: tuple, kwargs: dict, plotter: object) -> dict:
     """Add the DataFrame to kwargs.
 
     Args:
@@ -188,12 +233,25 @@ def dfkwarg(args: tuple, kwargs: dict) -> dict:
     Returns:
         updated kwargs
     """
-    if isinstance(args, pd.DataFrame) or isinstance(args, np.ndarray):
+    if 'df' in kwargs.keys() and isinstance(kwargs['df'], pd.DataFrame):
+        return kwargs
+    elif isinstance(args, pd.DataFrame):
         kwargs['df'] = args
+        return kwargs
+    elif isinstance(args, np.ndarray) and plotter.name in ['hist', 'imshow', 'nq']:
+        # Certain plots can accept a numpy array of 2D - 4D
+        if len(args.shape) < 2 or len(args.shape) > 4:
+            raise data.DataError('Data source has valid data type but invalid array shape!'
+                                 '\n\nPlease consult the docs for '
+                                 f'"{plotter.name}" plot '
+                                 'which describe the requirement for 2D, 3D, or 4D image array shapes'
+                                 f'\n{doc_url(plotter.url)}')
+        kwargs['df'] = args
+        return kwargs
     else:
-        kwargs['df'] = None
-
-    return kwargs
+        raise data.DataError('Data source has invalid data type!  '
+                             '\n\nPlease consult the docs for more information on which data types are allowed for a '
+                             f'"{plotter.name}" plot.\n{doc_url(plotter.url)}')
 
 
 def df_filter(df: pd.DataFrame, filt_orig: str, drop_cols: bool = False,
@@ -237,7 +295,7 @@ def df_filter(df: pd.DataFrame, filt_orig: str, drop_cols: bool = False,
 
     # Rename the columns to remove special characters
     cols_orig = [f for f in df.columns]
-    cols_new = ['fCp%s' % f for f in cols_orig.copy()]
+    cols_new = [f'fCp{f}' for f in cols_orig.copy()]
     cols_new = [special_chars(f) for f in cols_new]
     cols_used = []
 
@@ -250,24 +308,24 @@ def df_filter(df: pd.DataFrame, filt_orig: str, drop_cols: bool = False,
         if 'not in [' in aa:
             key, val = aa.split('not in ')
             key = key.rstrip(' ')
-            key = 'fCp%s' % special_chars(key)
+            key = f'fCp{special_chars(key)}'
             vals = val.replace('[', '').replace(']', '').split(',')
             for iv, vv in enumerate(vals):
                 vals[iv] = vv.lstrip().rstrip()
             key2 = '&' + key + '!='
-            ands[ia] = '(%s%s)' % (key + '!=', key2.join(vals))
+            ands[ia] = f'({key} != {key2.join(vals)})'
             continue
         elif 'in [' in aa:
             key, val = aa.split('in ')
             key = key.rstrip(' ')
-            key = 'fCp%s' % special_chars(key)
+            key = f'fCp{special_chars(key)}'
             vals = val.replace('[', '').replace(']', '')
             vals = shlex.split(vals, ',', posix=False)
             vals = [f for f in vals if f != ',']  # remove commas
             for iv, vv in enumerate(vals):
                 vals[iv] = vv.lstrip().rstrip()
             key2 = '|' + key + '=='
-            ands[ia] = '(%s%s)' % (key + '==', key2.join(vals))
+            ands[ia] = f'({key} == {key2.join(vals)})'
             continue
         ors = [f.lstrip() for f in aa.split('|')]
         for io, oo in enumerate(ors):
@@ -288,8 +346,8 @@ def df_filter(df: pd.DataFrame, filt_orig: str, drop_cols: bool = False,
                 cols_used += [vals[0]]
                 vals[1] = vals[1].lstrip()
                 if vals[1] == vals[0]:
-                    vals[1] = 'fCp%s' % special_chars(vals[1])
-                vals[0] = 'fCp%s' % special_chars(vals[0])
+                    vals[1] = f'fCp{special_chars(vals[1])}'
+                vals[0] = f'fCp{special_chars(vals[0])}'
                 ors[io] = op.join(vals)
                 if param_start:
                     ors[io] = '(' + ors[io]
@@ -327,63 +385,12 @@ def df_filter(df: pd.DataFrame, filt_orig: str, drop_cols: bool = False,
         return df
 
     except:  # noqa
-        print('Could not filter data!\n   Original filter string: %s\n   '
-              'Modified filter string: %s' % (filt_orig, filt))
+        print(f'Could not filter data!\n   Original filter string: {filt_orig}\n   '
+              f'Modified filter string: {filt}')
 
         df.columns = cols_orig
 
         return df
-
-
-def df_from_array2d(arr: np.ndarray) -> pd.DataFrame:
-    """Convert 2D numpy array to DataFrame.
-
-    Args:
-        arr: input numpy array
-
-    Returns:
-        DataFrame of arr or original DataFrame if arr already of this dtype
-    """
-    if isinstance(arr, np.ndarray) and len(arr.shape) == 2:
-        return pd.DataFrame(arr)
-    elif isinstance(arr, pd.DataFrame):
-        return arr
-    else:
-        raise ValueError('input data must be a numpy array or a pandas DataFrame')
-
-
-def df_from_array3d(arr: np.ndarray, labels: [list, np.ndarray] = [],
-                    name: str = 'Item', verbose: bool = True) -> pd.DataFrame:
-    """Convert a 3d numpy array to a DataFrame.
-
-    Args:
-        arr: input data to stack into a DataFrame
-        label (optional): list of labels to designate each
-            sub array in the 3d input array; added to DataFrame in column
-            named ``label``. Defaults to [].
-        name (optional): name of label column. Defaults to 'Item'.
-        verbose (optional): toggle error print statements. Defaults to True.
-
-    Returns:
-        pd.DataFrame
-    """
-    shape = arr.shape
-    if len(shape) != 3:
-        raise ValueError('Input numpy array is not 3d')
-
-    # Regroup into a stacked DataFrame
-    m, n, r = shape
-    arr = np.column_stack((np.repeat(np.arange(m), n),
-                           arr.reshape(m * n, -1)))
-    df = pd.DataFrame(arr)
-
-    # Add a label column
-    if len(labels) > 0:
-        df[name] = np.repeat(labels, n)
-    else:
-        df[name] = np.floor(df.index / r).astype(int)
-
-    return df
 
 
 def df_int_cols(df: pd.DataFrame, non_int: bool = False) -> list:
@@ -485,6 +492,26 @@ def df_unique(df: pd.DataFrame) -> dict:
     return unq
 
 
+def doc_url(paths=[]) -> str:
+    """Return the documentation url.
+
+    Args:
+        paths: add a subpath to the url
+
+    Returns:
+        string html path
+    """
+
+    url = f'https://endangeredoxen.github.io/fivecentplots/{__version__}'
+    if not isinstance(paths, list):
+        paths = [paths]
+
+    for path in paths:
+        url += f'/{path}'
+
+    return url
+
+
 def get_current_values(df: pd.DataFrame, text: str, key: str = '@') -> str:
     """Parse a string looking for text enclosed by 'key' and replace with the current value from the DataFrame.
     This function is used by df_filter (but honestly can't remember why!)
@@ -533,6 +560,37 @@ def get_decimals(value: [int, float], max_places: int = 4):
     return i - 1
 
 
+def get_nested_files(path: Union[Path, str], pattern: Union[str, None] = None, exclude: list = []) -> list:
+    """Get a list of files within a nested directory.
+
+    Args:
+        path: top-level directory
+        pattern: substring to filter the list of files; defaults to None = no filtering
+
+    Returns:
+        list of file paths
+    """
+    if not isinstance(path, Path):
+        path = Path(path)
+
+    files = []
+    for entry in path.iterdir():
+        if entry.is_file():
+            if pattern and pattern in str(entry):
+                skip = False
+                for ex in exclude:
+                    if ex in str(entry):
+                        skip = True
+                if not skip:
+                    files += [entry]
+            elif not pattern:
+                files += [entry]
+        elif entry.is_dir():
+            files += get_nested_files(entry, pattern, exclude)
+
+    return files
+
+
 def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, font_weight: str, **kwargs) -> tuple:
     """Use pillow to try and figure out actual dimensions of text.
 
@@ -559,7 +617,8 @@ def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, f
     fp.set_style(font_style)
     fp.set_weight(font_weight)
     fontfile = findfont(fp, fallback_to_default=True)
-    size = ImageFont.truetype(fontfile, font_size).getsize(text)
+    font = ImageFont.truetype(fontfile, font_size)
+    size = font.getbbox(text)[2:]
 
     return size[0] * 1.125, size[1] * 1.125  # no idea why it is off
 
@@ -588,6 +647,33 @@ def kwget(dict1: dict, dict2: dict, vals: [str, list], default: [list, dict]):
     return default
 
 
+def img_array_from_df(df, shape, dtype=int):
+    cols = [f for f in df.columns if f in ['Value', 'R', 'G', 'B', 'A']]
+    return df[cols].to_numpy().reshape(shape).astype(int)
+
+
+def img_checker(rows, cols, num_x, num_y, high, low):
+    """Make a checker pattern array
+
+    Args:
+        rows: number rows in single checker square
+        cols: number cols in single checker square
+        num_x: number of horizontal squares
+        num_y: number of vertical squares
+        high: value of the higher checker squares
+        low: value of the lower checker squares
+
+    Returns:
+        2D numpy array
+    """
+    grid = [[high, low] * num_x, [low, high] * num_x] * num_y
+    square = np.ones([rows, cols])
+    total_rows = int(rows * num_y)
+    total_cols = int(cols * num_x)
+
+    return np.kron(grid, square)[:total_rows, :total_cols]
+
+
 def img_compare(img1: str, img2: str, show: bool = False) -> bool:
     """Read two images and compare for difference by pixel. This is an optional
     utility used only for developer tests, so the function will only work if
@@ -601,13 +687,6 @@ def img_compare(img1: str, img2: str, show: bool = False) -> bool:
     Returns:
         True/False of existence of differences
     """
-    try:
-        cv2
-    except NameError:
-        print('img_compare requires opencv which was not found.  Please '
-              'run pip install opencv-python and try again.')
-        return False
-
     # read images
     img1 = cv2.imread(str(img1))
     img2 = cv2.imread(str(img2))
@@ -646,8 +725,253 @@ def img_compare(img1: str, img2: str, show: bool = False) -> bool:
     return is_diff
 
 
-def img_grayscale(img: np.ndarray) -> pd.DataFrame:
-    """Convert an RGB image to grayscale.
+def img_data_format(kwargs: dict) -> Tuple[pd.DataFrame, dict]:
+    """Format image data into the required format for fivecentplots
+
+    Args:
+        kwargs: user input
+
+    Returns:
+        grouping info DataFrame
+        dict of numpy array image data
+    """
+    shape_cols = ['rows', 'cols', 'channels']
+    df = kwargs['df']
+    imgs = kwargs.get('imgs', {})
+
+    # Find image data source (could be in df as 2D DataFrame or in images as numpy array)
+    if len(imgs) == 0 and isinstance(df, pd.DataFrame):
+        # Case 1: image data is in df
+        grouping_cols = [f for f in df_int_cols(df, True) if f not in shape_cols]
+        int_cols = df_int_cols(df)
+
+        if len(int_cols) == 0:
+            raise ValueError('image DataFrame does not contain 2D image data')
+
+        if len(grouping_cols) == 0:
+            imgs[0] = df[int_cols].to_numpy()
+            shape = imgs[0].shape
+            df_groups = pd.DataFrame({'rows': shape[0],
+                                      'cols': shape[1],
+                                      'channels': shape[2] if len(shape) > 2 else 1}, index=[0])
+        else:
+            df_groups = pd.DataFrame()
+            for ii, (nn, gg) in enumerate(df.groupby(grouping_cols, dropna=False)):
+                nn = validate_list(nn)
+                imgs[ii] = gg[int_cols].to_numpy()
+                shape = imgs[0].shape
+                temp = pd.DataFrame({'rows': shape[0], 'cols': shape[1], 'channels': shape[2] if len(shape) > 2 else 1},
+                                    index=[ii])
+                for igroup, group in enumerate(grouping_cols):
+                    temp[group] = nn[igroup]
+                df_groups = pd.concat([df_groups, temp])
+    elif len(imgs) == 0 and isinstance(df, np.ndarray):
+        imgs[0] = df
+        shape = imgs[0].shape
+        df_groups = pd.DataFrame({'rows': shape[0],
+                                  'cols': shape[1],
+                                  'channels': shape[2] if len(shape) > 2 else 1}, index=[0])
+
+    elif isinstance(imgs, dict) and isinstance(df, pd.DataFrame):
+        # Case 2: image data already in correct format
+        df_groups = df.copy()
+        df_groups['rows'] = -1
+        df_groups['cols'] = -1
+        df_groups['channels'] = -1
+        for k, v in imgs.items():
+            if k not in df.index:
+                continue  # raise KeyError(f'image array item "{k}" not found in grouping DataFrame')
+            if not isinstance(v, np.ndarray):
+                raise TypeError(f'image array item "{k}" must be a numpy array')
+            shape = v.shape
+            df_groups.loc[k, 'rows'] = shape[0]
+            df_groups.loc[k, 'cols'] = shape[1]
+            df_groups.loc[k, 'channels'] = shape[2] if len(shape) > 2 else 1
+
+    else:
+        raise TypeError('image data must be either a numpy array or a dict of numpy arrays with a DataFrame '
+                        'containing grouping information')
+
+    return df_groups, imgs
+
+
+def img_df_transform(data: Union[pd.DataFrame, np.ndarray, Tuple[pd.DataFrame, dict]]) -> Tuple[pd.DataFrame, dict]:
+    """
+    Transform a numpy array or a DataFrame into the image DataFrame format used in fcp.  Image arrays can be very
+    large and memory-intensive (especially with string grouping labels) so this format is used to improve speed.
+    Support is provided for both 2D (Bayer-like) and 3/4D (RGB[A]) arrays.
+
+    Format:
+        1) df_groups = smaller DataFrame containing all the non-integer grouping columns without repeats and an index
+           value that corresponds to the key of item 2 below
+        2) dict of DataFrames with the actual image data
+
+    Args:
+        data: input data to convert into a DataFrame
+        label (optional): list of labels to designate each
+            sub array in the 3d input array; added to DataFrame in column
+            named ``label``. Defaults to [].
+        name (optional): name of label column. Defaults to 'Item'.
+        verbose (optional): toggle error print statements. Defaults to True.
+
+    Returns:
+        pd.DataFrame, dict
+    """
+    # Verify input type
+    if isinstance(data, tuple) or isinstance(data, list) \
+            and len(data) == 2 and isinstance(data[0], pd.DataFrame) and isinstance(data[1], dict):
+        # Check grouping DataFrame indexes match image data dict keys
+        if not list(data[0].index) == list(data[1].keys()):
+            raise ValueError('Cannot associate image grouping table with image data dict because indexes and dict keys '
+                             'do not match!')
+        return data
+    elif isinstance(data, pd.DataFrame) or isinstance(data, np.ndarray):
+        pass
+    else:
+        raise TypeError('Cannot create fcp image DataFrame.  Input data must be a numpy array, pandas DataFrame, '
+                        'or tuple of a grouping DataFrame and a dict of fcp-formatted image DataFrames')
+
+    # Output containers
+    imgs = {}
+
+    # Case 1: input DataFrame already in semi-correct format
+    if isinstance(data, pd.DataFrame) and 'Row' in data.columns and 'Column' in data.columns:
+        group_cols = [f for f in data.columns if f not in ['Row', 'Column', 'Value', 'R', 'G', 'B', 'A']]
+        channels = max(1, len([f for f in data.columns if f in ['R', 'G', 'B', 'A']]))
+
+        if len(group_cols) == 0:
+            imgs[0] = data
+
+            # Make the grouping DataFrame
+            df_groups = pd.DataFrame({'rows': len(data.Row.unique()),
+                                      'cols': len(data.Column.unique()),
+                                      'channels': channels},
+                                     index=[0])
+
+        else:
+            temp_groups = []
+            for idx, (nn, gg) in enumerate(data.groupby(group_cols)):
+                imgs[idx] = gg[[f for f in gg.columns if f not in group_cols]]
+                ss = (len(gg.Row.unique()), len(gg.Column.unique()))
+                nn = validate_list(nn)
+
+                # Make the grouping DataFrame
+                temp = pd.DataFrame({'rows': ss[0], 'cols': ss[1], 'channels': channels}, index=[idx])
+                for igroup, group in enumerate(group_cols):
+                    temp[group] = nn[igroup]
+                temp_groups += [temp]
+
+            df_groups = pd.concat(temp_groups)
+
+    # Case 2: input DataFrame in 2D format
+    elif isinstance(data, pd.DataFrame) and len(data.shape) == 2:
+        # Separate the input columns by integer or string (i.e., group labels) type
+        group_cols = df_int_cols(data, True)
+        int_cols = df_int_cols(data)
+
+        if len(int_cols) == 0:
+            raise TypeError('image DataFrame has incorrect format; expecting integer-labeled columns')
+
+        # Case 2a: no groups
+        if len(group_cols) == 0:
+            # Convert subset to numpy array and reshape
+            data = data[int_cols].to_numpy()
+            ss = data.shape
+
+            # Make the img DataFrame
+            imgs[0] = pd.DataFrame(data.reshape(ss[0] * ss[1], -1), columns=['Value'])
+            imgs[0]['Row'] = imgs[0].index // ss[1]
+            imgs[0]['Column'] = np.tile(np.arange(ss[1]), ss[0])
+
+            # Make the grouping DataFrame
+            df_groups = pd.DataFrame({'rows': ss[0], 'cols': ss[1], 'channels': 1}, index=[0])
+
+        # Case 2b: DataFrame has grouping columns
+        else:
+            temp_groups = []
+            for idx, (nn, gg) in enumerate(data.groupby(group_cols, dropna=False)):
+                gg = gg[int_cols].to_numpy()
+                nn = validate_list(nn)
+                ss = gg.shape
+
+                # Make the img DataFrame
+                imgs[idx] = pd.DataFrame(gg.reshape(ss[0] * ss[1], -1), columns=['Value'])
+                imgs[idx]['Row'] = imgs[idx].index // ss[1]
+                imgs[idx]['Column'] = np.tile(np.arange(ss[1]), ss[0])
+
+                # Make the grouping DataFrame
+                temp = pd.DataFrame({'rows': ss[0], 'cols': ss[1], 'channels': 1}, index=[idx])
+                for igroup, group in enumerate(group_cols):
+                    temp[group] = nn[igroup]
+                temp_groups += [temp]
+
+            df_groups = pd.concat(temp_groups)
+
+    # Case 3: input numpy array (2D, 3D, or 4D)
+    else:
+        # Check valid dtype
+        try:
+            data.astype(float)
+        except ValueError:
+            raise ValueError('Image array can only contain numeric data')
+
+        # Input numpy array
+        ss = data.shape
+
+        # Get the correct column names
+        if len(ss) == 2:
+            cols = ['Value']
+        else:
+            cols = ['R', 'G', 'B', 'A'][0:ss[-1]]
+
+        # Make the img DataFrame
+        imgs[0] = pd.DataFrame(data.reshape(ss[0] * ss[1], -1), columns=cols)
+        imgs[0]['Row'] = imgs[0].index // ss[1]
+        imgs[0]['Column'] = np.tile(np.arange(ss[1]), ss[0])
+
+        # Make the grouping DataFrame
+        df_groups = pd.DataFrame({'rows': ss[0], 'cols': ss[1], 'channels': len(cols)}, index=[0])
+
+    return df_groups, imgs
+
+
+def img_df_transform_from_dict(groups: pd.DataFrame, imgs: Dict[int, npt.NDArray]) -> Tuple[pd.DataFrame, dict]:
+    groups = groups.copy()
+
+    # Update DataFrame
+    cols = ['rows', 'cols', 'channels']
+    for cc in cols:
+        if cc not in groups.columns:
+            groups[cc] = -1
+
+    # Format the numpy arrays
+    imgs_new = {}
+    for k, v in imgs.items():
+        if k not in groups.index:
+            continue
+        if not isinstance(v, np.ndarray):
+            raise TypeError('Image dictionary must contain numpy arrays')
+        if len(v.shape) == 2:
+            rows, cols, channels = v.shape[0], v.shape[1], 1
+        else:
+            rows, cols, channels = v.shape
+
+        # Transform the image to an fcp DataFrame
+        imgs_new[k] = img_df_transform(v)[1][0]
+
+        # Update the groups (I DON"T THINK THIS WORKS)
+        if groups.loc[k, cc] == -1:
+            groups.loc[k, 'rows'] = rows
+        if groups.loc[k, cc] == -1:
+            groups.loc[k, cc] == -1
+        if groups.loc[k, cc] == -1:
+            groups.loc[k, 'channels'] = channels
+
+    return groups, imgs_new
+
+
+def img_grayscale(img: np.ndarray, as_array: bool = False) -> Union[pd.DataFrame, npt.NDArray]:
+    """Convert an RGB image to grayscale and convert to a 2D DataFrame
 
     Args:
         img: 3D array of image data
@@ -657,7 +981,15 @@ def img_grayscale(img: np.ndarray) -> pd.DataFrame:
     """
     r, g, b = img[:, :, 0], img[:, :, 1], img[:, :, 2]
 
-    return pd.DataFrame(0.2989 * r + 0.5870 * g + 0.1140 * b)
+    if not as_array:
+        return pd.DataFrame(0.2989 * r + 0.5870 * g + 0.1140 * b)
+
+    else:
+        return 0.2989 * r + 0.5870 * g + 0.1140 * b
+
+
+def img_rgb_to_df(data):
+    return img_df_transform(data)[1][0]
 
 
 def nq(data, column: str = 'Value', **kwargs) -> pd.DataFrame:
@@ -674,9 +1006,13 @@ def nq(data, column: str = 'Value', **kwargs) -> pd.DataFrame:
     tail = abs(kwargs.get('tail', 3))  # start of the tail region
     step_tail = kwargs.get('step_tail', 0.2)  # step size of the tail region
     step_inner = kwargs.get('step_inner', 0.5)  # step size of the non-tail region
+    percentiles_on = kwargs.get('percentiles', False)  # display y-axis as percentiles instead of sigma
 
-    # Flatten the DataFrame to an array
-    data = data.values.flatten()
+    # Flatten the DataFrame/2D array to a 1D array
+    if isinstance(data, pd.DataFrame):
+        data = data.values.flatten()
+    elif isinstance(data, np.ndarray) and len(data.shape) > 1:
+        data = data.flatten()
 
     # Get sigma
     if not sig:
@@ -687,12 +1023,15 @@ def nq(data, column: str = 'Value', **kwargs) -> pd.DataFrame:
     index = np.concatenate([np.arange(-sig, -tail, step_tail),
                             np.arange(-tail, tail, step_inner),
                             np.arange(tail, sig + 1e-9, step_tail)])
-    # Get the sigma value
-    values = np.zeros(len(index))
-    for ii, idx in enumerate(index):
-        values[ii] = np.percentile(data, ss.norm.cdf(idx) * 100)
 
-    return pd.DataFrame({'Sigma': index, column: values})
+    # Get the sigma value
+    percentiles = ss.norm.cdf(index) * 100
+    values = np.percentile(data, percentiles)
+
+    if percentiles_on:
+        return pd.DataFrame({'Percent': percentiles, column: values})
+    else:
+        return pd.DataFrame({'Sigma': index, column: values})
 
 
 def pie_wedge_labels(x: np.ndarray, y: np.ndarray, start_angle: float) -> [float, float]:
@@ -734,9 +1073,28 @@ def plot_num(ir: int, ic: int, ncol: int) -> int:
     return (ic + ir * ncol + 1)
 
 
-def rgb2bayer(img: np.ndarray, cfa: str = 'rggb',
-              bit_depth: int = np.uint8) -> pd.DataFrame:
-    """Approximate a Bayer raw image using an RGB image.
+def qt(last: Union[None, datetime.datetime] = None, label='timer') -> datetime.datetime:
+    """
+    Quick timer for speed debugging; time print out is in ms
+
+    Args:
+        last: previous timer
+        label: optional string label
+
+    Return:
+        new timer start
+    """
+
+    if last is None:
+        return datetime.datetime.now()
+
+    else:
+        print(f'{label}: {(datetime.datetime.now() - last).total_seconds() * 1000} [ms]')
+        return datetime.datetime.now()
+
+
+def rgb2bayer(img: np.ndarray, cfa: str = 'rggb', bit_depth: int = np.uint8) -> pd.DataFrame:
+    """Crudely approximate a Bayer raw image using an RGB image.
 
     Args:
         img: 3D numpy array of RGB pixel values
@@ -744,7 +1102,7 @@ def rgb2bayer(img: np.ndarray, cfa: str = 'rggb',
         bit_depth (optional): bit depth of the input data. Defaults to 8-bit
 
     Returns:
-        DataFrame containing Bayer pixel values
+        np.array containing Bayer-like RAW pixel values
     """
     raw = np.zeros((img.shape[0], img.shape[1]), dtype=bit_depth)
     cp = list(cfa)
@@ -757,7 +1115,7 @@ def rgb2bayer(img: np.ndarray, cfa: str = 'rggb',
             col = 0 if ii % 2 == 0 else 1
             raw[row::2, col::2] = img[row::2, col::2, channel[cpp]]
 
-    return pd.DataFrame(raw)
+    return raw
 
 
 def rectangle_overlap(r1: [list, tuple], r2: [list, tuple]) -> bool:
@@ -886,9 +1244,9 @@ def set_save_filename(df: pd.DataFrame, ifig: int, fig_item: [None, str],
         str filename
     """
     # Use provided filename
-    if 'filename' in kwargs.keys() and isinstance(kwargs['filename'], pathlib.PosixPath):
+    if kwargs.get('filename') and isinstance(kwargs['filename'], pathlib.PosixPath):
         kwargs['filename'] = str(kwargs['filename'])
-    if 'filename' in kwargs.keys() and isinstance(kwargs['filename'], str):
+    if kwargs.get('filename') and isinstance(kwargs['filename'], str):
         filename = kwargs['filename']
         ext = os.path.splitext(filename)[-1]
         if ext == '':
@@ -900,31 +1258,31 @@ def set_save_filename(df: pd.DataFrame, ifig: int, fig_item: [None, str],
             for icol, col in enumerate(fig_cols):
                 if icol > 0:
                     fig += ' and'
-                fig += ' where %s=%s' % (col, fig_items[icol])
+                fig += f' where {col}={fig_items[icol]}'
         return filename + fig + ext
 
     # Build a filename
     if 'z' in kwargs.keys():
-        z = layout.label_z.text + ' vs '
+        z = strip_html(layout.label_z.text) + ' vs '
     else:
         z = ''
-    y = ' and '.join(validate_list(layout.label_y.text))
+    y = ' and '.join(validate_list(strip_html(layout.label_y.text)))
     if layout.axes.twin_x:
-        y += ' + ' + layout.label_y2.text
+        y += ' + ' + strip_html(layout.label_y2.text)
     if 'x' in kwargs.keys():
         y += ' vs '
-        x = ' and '.join(validate_list(layout.label_x.text))
+        x = ' and '.join(validate_list(strip_html(layout.label_x.text)))
     else:
         x = ''
     if layout.axes.twin_y:
-        x += ' + ' + layout.label_x2.text
+        x += ' + ' + strip_html(layout.label_x2.text)
     row, col, wrap, groups, fig = '', '', '', '', ''
     if layout.label_row.text is not None:
-        row = ' by ' + layout.label_row.text
+        row = ' by ' + strip_html(layout.label_row.text)
     if layout.label_col.text is not None:
-        col = ' by ' + layout.label_col.text
+        col = ' by ' + strip_html(layout.label_col.text)
     if layout.title_wrap.text is not None:
-        wrap = ' by ' + layout.title_wrap.text
+        wrap = ' by ' + strip_html(layout.title_wrap.text)
     # this one may need to change with box plot
     if kwargs.get('groups', False):
         groups = ' by ' + ' + '.join(validate_list(kwargs['groups']))
@@ -933,11 +1291,11 @@ def set_save_filename(df: pd.DataFrame, ifig: int, fig_item: [None, str],
         for icol, col in enumerate(fig_cols):
             if icol > 0:
                 fig += ' and'
-            fig += ' where %s=%s' % (col, fig_items[icol])
-        if layout.label_col.text is None:
+            fig += f' where {col}={fig_items[icol]}'
+        if strip_html(layout.label_col.text) is None:
             col = ''
 
-    filename = '%s%s%s%s%s%s%s%s' % (z, y, x, row, col, wrap, groups, fig)
+    filename = f'{z}{y}{x}{row}{col}{wrap}{groups}{fig}'
 
     # Cleanup forbidden symbols
     bad_char = ['\\', '/', ':', '*', '?', '"', '<', '>', '|']
@@ -945,8 +1303,14 @@ def set_save_filename(df: pd.DataFrame, ifig: int, fig_item: [None, str],
         filename = filename.replace(bad, '_')
 
     # Make sure extension has a '.'
+    if not kwargs.get('save_ext'):
+        kwargs['save_ext'] = '.png'  # set a default
     if kwargs.get('save_ext')[0] != '.':
         kwargs['save_ext'] = '.' + kwargs['save_ext']
+
+    if len(filename + kwargs.get('save_ext')) > 255:
+        filename = 'filename_too_long'
+        print('Warning!  Default filename is too long...saving with non-unique name')
 
     return filename + kwargs.get('save_ext')
 
@@ -976,15 +1340,13 @@ def show_file(filename: str):
         subprocess.call([opener, str(filename)])
 
 
-def split_color_planes(img: pd.DataFrame, cfa: str = 'rggb',
-                       as_dict: bool = False) -> pd.DataFrame:
-    """Split image data into respective color planes.
+def split_color_planes(img: pd.DataFrame, cfa: str = 'rggb', as_dict: bool = True) -> pd.DataFrame:
+    """Split image data into respective color planes.  dtype changed to float
 
     Args:
         img: image data
         cfa (optional): four-character cfa pattern. Defaults to 'rggb'.
-        as_dict (optional): return each plane DataFrame as a value in a dict.
-            Defaults to False.
+        as_dict (optional): return each plane DataFrame as a value in a dict. Defaults to True.
 
     Returns:
         updated DataFrame
@@ -1014,25 +1376,93 @@ def split_color_planes(img: pd.DataFrame, cfa: str = 'rggb',
         for ii in idx:
             cp[ii] = f'{cp[ii]}{ii}'
 
-    # Separate planes
-    if as_dict:
-        img2 = {}
-    else:
-        img2 = pd.DataFrame()
+    # DataFrame input
+    if isinstance(img, pd.DataFrame):
+        if len(img.shape) > 2:
+            raise ValueError('split_color_planes only supports 2D DataFrames')
 
-    for ic, cc in enumerate(cp):
-        temp = img.loc[ic // 2::2, (ic % 2)::2]
+        # Separate planes
+        planes = []
+        int_cols = df_int_cols(img)
+        other_cols = df_int_cols(img, True)
+        for ic, cc in enumerate(cp):
+            idx = [f for f in img.index if f % 2 == ic // 2]
+            cols = [f for f in int_cols if f % 2 == ic % 2]
+            sub = img.loc[idx, cols].copy()
+            for oc in other_cols:
+                sub[oc] = img.loc[idx[0], oc]
+            if not as_dict:
+                sub['Plane'] = cc
+            planes += [sub]
+
+        if not as_dict:
+            return pd.concat(planes)
+
         if as_dict:
-            img2[cc] = temp
+            return dict(zip(cp, planes))
+
+    # Numpy array input
+    else:
+        img2 = {}
+        for ic, cc in enumerate(cp):
+            img2[cc] = img[ic // 2::2, (ic % 2)::2]
+
+        if not as_dict:
+            df = []
+            for k, v in img2.items():
+                temp = pd.DataFrame(v)
+                temp['Plane'] = k
+                df += [temp]
+            return pd.concat(df)
+
         else:
-            temp['Plane'] = cc
-            img2 = pd.concat([img2, temp])
+            return img2
 
-    if as_dict:
-        return img2
 
-    cols = df_int_cols(img2) + ['Plane']
-    return img2[cols]
+def split_color_planes_wrapper(df_groups: pd.DataFrame,
+                               imgs: Dict[int, pd.DataFrame],
+                               cfa: str) -> Tuple[pd.DataFrame, Dict[int, pd.DataFrame]]:
+    """
+    Wrapper function for Data classes using img data that need to split planes
+
+    Args:
+        df_groups: grouping DataFrame from img_df_transform
+        imgs: dict of img DataFrames
+        cfa: cfa-type name
+
+    Returns:
+        updated df_groups
+        updated imgs dict
+    """
+    imgs_ = {}
+    for i, (k, v) in enumerate(imgs.items()):
+        planes = split_color_planes(v, cfa, as_dict=True)
+        if i == 0:
+            df_groups_ = pd.merge(df_groups.reset_index(),
+                                  pd.DataFrame({'Plane': list(planes.keys())}), how='cross')
+            df_groups_.rows //= 2
+            df_groups_.cols //= 2
+        for j, (pk, pv) in enumerate(planes.items()):
+            imgs_[len(planes.keys()) * i + j] = pv
+
+    return df_groups_, imgs_
+
+
+def strip_html(text: str):
+    """Remove text in between HTML tags, if present.
+
+    Args:
+        text: input string
+
+    Returns:
+        cleaned up text
+    """
+    if not isinstance(text, str):
+        return text
+    if '<' in text and '>' in text:
+        return re.sub('<[^>]*>', '', text)
+    else:
+        return text
 
 
 def test_checker(module) -> list:
@@ -1050,6 +1480,311 @@ def test_checker(module) -> list:
     plts = [f[0].replace('plt_', '') for f in funcs if 'plt_' in f[0]]
 
     return [f for f in plts if f not in tests]
+
+
+def unit_test_get_img_name(name: str, make_reference: bool, reference_path: pathlib.Path) -> pathlib.Path:
+    """
+    Make the image path for a unit test
+
+    Args:
+        name: image name
+        make_reference: flag for making the reference images
+        reference_path:  path to the reference images
+    Returns:
+        image_path
+    """
+    path = reference_path / f'{name}_reference' if make_reference else Path(name)
+    return path.with_suffix('.png')
+
+
+def unit_test_options(make_reference: bool, show: Union[bool, int], img_path: pathlib.Path,
+                      reference_path: pathlib.Path):
+    """
+    Complete a unit test with one of four options:
+        1. Show the generated image only
+        2. Show the generated image, the reference image, and the difference image
+        3. Assert generated image and reference image are the same
+        4. Do nothing (if making new reference images)
+
+    Args:
+        make_reference:  make new references images (bypasses this function)
+        show:  if -1, show just the new generated image; if True, show the generated image, the reference image, and
+            the difference image
+        img_path: path to the generated image (or reference image if make_reference==True)
+        reference_path:  path to the reference image
+
+    Returns:
+        none
+    """
+    if make_reference:
+        return
+
+    reference_path = (reference_path / f'{img_path.stem}_reference').with_suffix('.png')
+    if show == -1:
+        show_file(img_path)
+        unit_test_debug_margins(img_path)
+    elif show:
+        show_file(reference_path)
+        show_file(img_path)
+        compare = img_compare(img_path, reference_path, show=True)
+    else:
+        compare = img_compare(img_path, reference_path)
+        os.remove(img_path)
+
+        assert not compare
+
+
+def unit_test_measure_axes(img_path: pathlib.Path, row: Union[int, str, None], col: Union[int, None],
+                           width: int = 0, height: int = 0, channel: int = 1, skip: int = 0, alias=True):
+    """
+    Get axes + axes edge width size from pixel values.  Only works if surrounding border pixels are the same color but
+    different values than the axes area.
+
+    Args:
+        img_path: path the test image
+        row: row index on which to measure (should be clear of labels, legends, ticks etc); if None, skip
+        col: col index on which to measure (should be clear of labels, title, ticks, etc); if None, skip
+        width: target width; if None skip test
+        height: target height; if None skip test
+        channel: which color channel to use (RGB image only)
+        skip: skip some number of pixels
+        alias: skip up to 1 pixel due to axes edge aliasing
+    """
+    img = imageio.imread(img_path)
+    if len(img.shape) == 3:
+        img = img[:, :, channel]
+
+    if row:
+        if row == 'c':
+            row = int(img.shape[0] / 2)
+        row = img[row, skip:]
+        x0 = (np.diff(row) != 0).argmax(axis=0) + 1  # add 1 for diff
+        assert (row[x0:] == 255).argmax(axis=0) == width + (2 if alias else 0), \
+               f'expected width: {width} | actual: {(row[x0:] == 255).argmax(axis=0)}'
+
+    if col:
+        if col == 'c':
+            col = int(img.shape[1] / 2)
+        col = img[skip:, col]
+        y0 = (np.diff(col) != 0).argmax(axis=0) + 1
+        assert (col[y0:] == 255).argmax(axis=0) == height + (2 if alias else 0), \
+               f'expected height: {height} | actual: {(col[y0:] == 255).argmax(axis=0)}'
+
+
+def unit_test_measure_axes_cols(img_path: pathlib.Path, row: Union[int, str, None], width: int, num_cols: int,
+                                target_pixel_value: int = 255, alias=True, cbar: bool = False):
+    """
+    Get margin sizes from pixel values.  Only works if surrounding border pixels are the same color but different
+    values than the axes area.
+
+    Args:
+        img_path: path the test image
+        row: row index on which to measure (should be clear of labels, legends, ticks etc)
+        width: expected axes width for each column
+        num_cols: number of subplot columns
+        cbar: skip the cbars if enabled
+        target_pixel_value: pixel value to look for (whitespace 255 typically)
+        alias: skip up to 1 pixel due to axes edge aliasing
+
+        Note: for np.diff statements, need to subtract 1
+    """
+    # Test width of all column images
+    img = imageio.imread(img_path)
+    if row == 'c':
+        row = int(img.shape[0] / 2)
+    dd = np.diff(np.concatenate(([False], np.all(img[row] == target_pixel_value, axis=-1), [False])).astype(int))
+    trans1 = np.argwhere(dd == -1).T[0]
+    trans2 = np.argwhere(dd == 1).T[0]
+    if not cbar:
+        widths = trans2[1:] - trans1[:-1] - width - (2 if alias else 0)
+    else:
+        widths = (trans2[1:] - trans1[:-1])[::2] - width - (2 if alias else 0)
+    assert len(widths[widths == 0]) == num_cols, \
+        f'expected {num_cols} columns with axes width {width} | detected: {widths + width}'
+
+
+def unit_test_measure_axes_rows(img_path: pathlib.Path, col: Union[int, str, None], height: int, num_rows: int,
+                                target_pixel_value: int = 255, alias=True):
+    """
+    Get margin sizes from pixel values.  Only works if surrounding border pixels are the same color but different
+    values than the axes area.
+
+    Args:
+        img_path: path the test image
+        col: column index on which to measure (should be clear of labels, legends, ticks etc)
+        height: expected axes height for each column
+        num_rows: number of subplot rows
+        target_pixel_value: pixel value to look for (whitespace 255 typically)
+        alias: skip up to 1 pixel due to axes edge aliasing
+
+        Note: for np.diff statements, need to subtract 1
+    """
+    # Test width of all row images
+    img = imageio.imread(img_path)
+    if col == 'c':
+        col = int(img.shape[1] / 2)
+    dd = np.diff(np.concatenate(([False], np.all(img[:, col] == target_pixel_value, axis=-1), [False])).astype(int))
+    trans1 = np.argwhere(dd == -1).T[0]
+    trans2 = np.argwhere(dd == 1).T[0]
+    heights = (trans2[1:] - trans1[:-1]) - height - (2 if alias else 0)
+    assert len(heights[heights == 0]) == num_rows, \
+        f'expected {num_rows} rows with axes height {height} | detected: {heights + height}'
+
+
+def unit_test_debug_margins(img_path: pathlib.Path):
+    """Try to measure all the margins."""
+    img = imageio.imread(img_path)[:, :, 1]
+    if not (img[0, 0] == img[-1, -1] == img[0, -1] == img[-1, 0]):
+        print('could not determine border color and detect margins')
+
+    border_color = img[0, 0]
+
+    # Side margins
+    left, right = [], []
+    for row in range(0, img.shape[0]):
+        left += [np.argmax(img[row, :] != border_color)]
+        right += [np.argmax(img[row, :][::-1] != border_color)]
+    left = np.argmax(np.bincount(left))
+    right = np.argmax(np.bincount(right))
+    width = img.shape[1] - left - right
+
+    # Top/bottom margins
+    top, bottom = [], []
+    for col in range(0, img.shape[1]):
+        top += [np.argmax(img[:, col] != border_color)]
+        bottom += [np.argmax(img[:, col][::-1] != border_color)]
+    top = np.argmax(np.bincount(top))
+    bottom = np.argmax(np.bincount(bottom))
+    height = img.shape[0] - top - bottom
+
+    print('Axes area and borders:')
+    print(f'axes: {width} x {height}\nleft: {left}\nright: {right}\ntop: {top}\nbottom: {bottom}')
+    print('Note: axes size includes subplots + whitespace + 2 * edge_width + 2 pixels for aliasing (if edge_width > 0)')
+
+
+def unit_test_measure_margin(img_path: pathlib.Path, row: Union[int, str, None], col: Union[int, None],
+                             left: Union[int, None] = None, right: Union[int, None] = None,
+                             top: Union[int, None] = None, bottom: Union[int, None] = None, alias=True,
+                             target_pixel_value=255):
+    """
+    Get margin sizes from pixel values.  Only works if surrounding border pixels are the same color but different
+    values than the axes area.
+
+    Args:
+        img_path: path the test image
+        row: row index on which to measure (should be clear of labels, legends, ticks etc)
+        col: col index on which to measure (should be clear of labels, title, ticks, etc)
+        left: target left margin; if None skip measurement
+        right: target right margin; if None skip measurement
+        top: target top margin; if None skip measurement
+        bottom: target bottom margin; if None skip measurement
+        alias: skip up to 1 pixel due to axes edge aliasing
+
+        Note: for np.diff statements, need to subtract 1
+    """
+    img = imageio.imread(img_path)
+
+    if row:
+        if row == 'c':
+            row = int(img.shape[0] / 2)
+
+        # Find the transitions from the target pixel to something else
+        tps = np.where(~(img[row, :] == target_pixel_value).all(axis=1))[0]
+
+        if len(tps) == 0:
+            raise ValueError('all pixels in specified row match the target pixel')
+
+        # Get column indexes are not preceeded by same value
+        if left:
+            assert tps[0] == left - (1 if alias else 0), \
+               f'expected left margin: {left} | actual: {tps[0] + (1 if alias else 0)}'
+        if right:
+            assert img.shape[1] - (tps[-1] + 1) == right - (1 if alias else 0), \
+               f'expected right margin: {right} | ' + \
+               f'actual: {img.shape[1] - (tps[-1] + 1) + (1 if alias else 0)}'
+    if col:
+        if col == 'c':
+            col = int(img.shape[1] / 2)
+
+        # Find the transitions from the target pixel to something else
+        tps = np.where(~(img[:, col] == target_pixel_value).all(axis=1))[0]
+
+        if len(tps) == 0:
+            raise ValueError('all pixels in specified column match the target pixel')
+
+        if top:
+            assert tps[0] == top - (1 if alias else 0), \
+               f'expected top margin: {top} | actual: {tps[0] + (1 if alias else 0)}'
+        if bottom:
+            assert img.shape[0] - (tps[-1] + 1) == bottom - (1 if alias else 0), \
+               f'expected bottom: {bottom} | actual: {img.shape[0] - (tps[-1] + 1) + (1 if alias else 0)}'
+
+
+def unit_test_make_all(reference: pathlib.Path, name: str, start: Union[str, None] = None,
+                       stop: Union[str, None] = None):
+    """Remake all reference test images.
+
+    Args:
+        reference: path to the reference test images
+        name: sys.modules[__name__] for the test file
+        start: name of file to start with
+        stop: name of file to stop
+    """
+    if not reference.exists():
+        os.makedirs(reference)
+    members_ = inspect.getmembers(name)
+    members = sorted([f for f in members_ if 'plt_' in f[0]])
+    if len(members) == 0:
+        members = sorted([f for f in members_ if 'test_' in f[0]])
+    if len(members) == 0:
+        print('no test functions found')
+        return
+    if start is not None:
+        idx_found = [i for (i, f) in enumerate(members) if start in f[0]]
+        if len(idx_found) > 0:
+            members = members[idx_found[0]:]
+    for member in members:
+        if stop and stop in member[0]:
+            print('stopping!')
+            return
+        print(f'Running {member[0]}...', end='')
+        member[1](make_reference=True)
+        print('done!')
+
+
+def unit_test_show_all(only_fails: bool, reference: pathlib.Path, name: str, start: Union[str, None] = None):
+    """Show all unit test plots.
+
+    Args:
+        only_fails: only show the test plots that fail the unit test
+        reference: path to the reference test images
+        name: sys.modules[__name__] for the test file
+        start: search string to start the show_all loop with a specific plot
+    """
+    if not reference.exists():
+        os.makedirs(reference)
+    members_ = inspect.getmembers(name)
+    members = sorted([f for f in members_ if 'plt_' in f[0]])
+    if len(members) == 0:
+        members = sorted([f for f in members_ if 'test_' in f[0]])
+    if len(members) == 0:
+        print('no test functions found')
+        return
+    if start is not None:
+        idx_found = [i for (i, f) in enumerate(members) if start in f[0]]
+        if len(idx_found) > 0:
+            members = members[idx_found[0]:]
+    for member in members:
+        print(f'Running {member[0]}...', end='')
+        if only_fails:
+            try:
+                member[1]()
+            except AssertionError:
+                member[1](show=True)
+                db()
+        else:
+            member[1](show=True)
+            db()
 
 
 def validate_list(items: [str, int, float, list]) -> list:

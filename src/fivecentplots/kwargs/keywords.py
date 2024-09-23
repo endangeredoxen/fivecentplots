@@ -1,5 +1,6 @@
 """ Keyword docstrings """
 import pandas as pd
+import fivecentplots.utilities as utl
 import os
 import sys
 import pdb
@@ -16,6 +17,148 @@ try:
     from colors import DEFAULT_COLORS
 except ModuleNotFoundError:
     from .colors import DEFAULT_COLORS
+
+
+def get_all_allowed_kwargs() -> list:
+    with open(Path(__file__).parents[0] / 'kwargs_all.txt', 'r') as input:
+        kwargs = input.readlines()
+    return [f.replace('\n', '') for f in kwargs]
+
+
+def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
+    """Brute force through all files to look for supported kwargs.
+
+    Args:
+        path: top-level directory
+        write: save the kwargs_all list
+
+    Returns:
+        list of kwarg names found
+    """
+    # TODO separate by engine
+
+    # f-string replacements
+    axs = ['x', 'y', 'z', 'x2', 'y2']
+    control_limits = ['ucl', 'lcl']
+    intervals = ['perc_int', 'nq_int', 'conf_int']
+    axlines = ['ax_hlines', 'ax_vlines', 'ax2_hlines', 'ax2_vlines']
+    color_params = ['fill_alpha', 'fill_color', 'edge_alpha', 'edge_color', 'color']
+    exclude = ['prop', 'preset', 'on', 'kwargs', 'axline']
+
+    # Get files
+    py_files = utl.get_nested_files(path, '.py', ['.pyc'])
+
+    # regex to find method calls in python files
+    func_regex = r'(\w+)\(((?:[^()]*\([^()]*\))*[^()]*)\)'
+    bracket_regex = r',(?![^\(\[]*[\]\)])'
+
+    kwargs_list = ['df', 'imgs'] + axs + [f'{f}min' for f in axs] + [f'{f}max' for f in axs]
+    names_list = []
+
+    for py in py_files:
+        with open(py, 'r') as input:
+            contents = input.read()
+            funcs = re.findall(func_regex, contents)
+
+            # Step one:  find all calls to utl.kwget
+            found_kwget = [f[1] for f in funcs if 'kwget' in f[0]]
+
+            for ff in funcs:
+                if 'kwget' not in ff[1]:
+                    continue
+                elif len(ff[1].split('kwget')) > 2:
+                    for f in ff[1].split('kwget'):
+                        if f.startswith('(kwargs'):
+                            found_kwget += [f.replace(')', '').replace('(', '')]
+                else:
+                    found_kwget += [ff[1].replace('kwget(', '').replace(')', '')]
+
+            for fk in found_kwget:
+                # skip the actual kwget function
+                if fk == 'dict1: dict, dict2: dict, vals: [str, list], default: [list, dict]':
+                    continue
+
+                vals = re.split(bracket_regex, fk)
+                if len(vals) < 4:
+                    continue
+                kwargs = vals[2].replace('[', '').replace(']', '').split(',')
+                for kwarg in kwargs:
+                    kw = kwarg.strip()
+
+                    # Apply f-string replacements
+                    if "f'{name}" in kw:
+                        # Do these later
+                        if kw not in names_list and kw:
+                            names_list += [kw]
+                        break
+                    elif '{lab}' in kw:
+                        for ax in axs:
+                            kwargs_list += [kw.replace('{lab}', ax).replace("f'", "").replace("'", '')]
+                    elif '{ax}' in kw:
+                        for ax in axs:
+                            kwargs_list += [kw.replace('{ax}', ax).replace("f'", "").replace("'", '')]
+                    elif '{axline}' in kw:
+                        for axline in axlines:
+                            kwargs_list += [kw.replace('{axline}', axline).replace("f'", "").replace("'", '')]
+                    elif '{interval}' in kw:
+                        for interval in intervals:
+                            kwargs_list += [kw.replace('{interval}', interval).replace("f'", "").replace("'", '')]
+                    elif '{cl}' in kw:
+                        for cl in control_limits:
+                            kwargs_list += [kw.replace('{cl}', cl).replace("f'", "").replace("'", '')]
+                    elif '{cp}' in kw:
+                        for cp in color_params:
+                            kwargs_list += [kw.replace('{cp}', cp).replace("f'", "").replace("'", '')]
+                    else:
+                        # no f-string, replace extra quotes
+                        kwargs_list += [kw.replace("'", '')]
+
+            # Step 2: find all calls to kwargs.get
+            found_kwargs_get = [f[1] for f in funcs if f[0] == 'get']
+            for fkg in found_kwargs_get:
+                kws = fkg.split(',')
+                if len(kws) > 2 or ' ' in kws[0] or '.' in kws[0]:
+                    continue
+                else:
+                    kwargs_list += [kws[0].replace("'", '').replace('"', '').strip()]
+
+            # Step 3: get all Element names and populate kwargs
+            names = []
+            found_element = [f[1] for f in funcs if 'Element' in f[0] and f[1] not in ['Element', 'DF_Element']]
+            for fe in found_element:
+                names += [fe.split(',')[0].replace("f'", '')]
+            for name in names:
+                if '{ax}' in name:
+                    for ax in axs:
+                        name_ = name.replace('{ax}', ax).replace("'", '')
+                        kwargs_list += [f.replace("f'{name}", name_).replace("'", '').strip() for f in names_list]
+                elif name == "'label'":
+                    # special case axes
+                    for ax in axs:
+                        name_ = name.replace("'", '')
+                        kwargs_list += [f.replace("f'{name}", f'{name_}_{ax}').replace("'", '').strip()
+                                        for f in names_list]
+                elif name == 'axline':
+                    # special case axlines
+                    for axline in axlines:
+                        kwargs_list += [f.replace("f'{name}", axline).replace("'", '').strip() for f in names_list]
+                else:
+                    kwargs_list += [f.replace("f'{name}", name).replace("'", '').strip() for f in names_list]
+
+    # special cases ticks
+    kwargs_list += [f.replace('_major', '') for f in kwargs_list if 'tick_labels_major' in f]
+    kwargs_list += [f.replace('_major', '') for f in kwargs_list if 'ticks_major' in f]
+    kwargs_list += [f.replace('_minor', '') for f in kwargs_list if 'ticks_minor' in f]
+
+    kwargs_list = [f for f in kwargs_list if f not in exclude]
+
+    kwargs_list = sorted(list(set(kwargs_list)))
+
+    if write:
+        with open(Path('kwargs_all.txt'), 'w') as output:
+            output.write(''.join(f"{row}\n" for row in kwargs_list))
+
+    return kwargs_list
 
 
 def make_docstrings():
@@ -59,7 +202,7 @@ def kw_header(val, indent=' ' * 8):
     Indent header names
     """
 
-    return '%s%s:\n' % (indent, val)
+    return f'{indent}{val}:\n'
 
 
 def kw_print(kw, width=120):
@@ -271,124 +414,111 @@ def markdown(docstring: str) -> str:
     return output
 
 
-kw = make_docstrings()
+def validate_kwargs(kwargs):
+    allowed = get_all_allowed_kwargs()
+    invalid = []
+    for k, v in kwargs.items():
+        if k not in allowed:
+            invalid += [k]
 
-
-bar = kw_print(kw['bar'])
-
-
-boxplot = \
-    kw_header('BASIC',  indent=' ' * 8) + \
-    kw_print(kw['box']) + \
-    kw_header('GROUPING_TEXT') + \
-    kw_print(kw['box_label']) + \
-    kw_header('STAT_LINES') + \
-    kw_print(kw['box_stat']) + \
-    kw_header('DIAMONDS') + \
-    kw_print(kw['box_diamond']) + \
-    kw_header('VIOLINS') + \
-    kw_print(kw['box_violin'])
-
-
-contour = \
-    kw_header('BASIC',  indent=' ' * 8) + \
-    kw_print(kw['contour']) + \
-    kw_header('COLOR_BAR',  indent=' ' * 8) + \
-    kw_print(kw['cbar'])
-
-
-gantt = kw_print(kw['gantt'])
-
-
-heatmap = \
-    kw_header('BASIC',  indent=' ' * 8) + \
-    kw_print(kw['heatmap']) + \
-    kw_header('COLOR_BAR',  indent=' ' * 8) + \
-    kw_print(kw['cbar'])
-
-
-hist = kw_print(kw['hist'])
-
-
-imshow = kw_print(kw['imshow'])
-
-
-pie = kw_print(kw['pie'])
-
-
-nq = \
-    kw_header('BASIC',  indent=' ' * 8) + \
-    kw_print(kw['nq']) + \
-    kw_header('CALCULATION',  indent=' ' * 8) + \
-    kw_print(kw['nq_calc'])
-
-
-plot = \
-    kw_header('LINES',  indent=' ' * 8) + \
-    kw_print(kw['lines']) + \
-    kw_header('MARKERS',  indent=' ' * 8) + \
-    kw_print(kw['markers']) + \
-    kw_header('AX_[H|V]LINES',  indent=' ' * 8) + \
-    kw_print(kw['ax_lines']) + \
-    kw_header('CONTROL_LIMITS',  indent=' ' * 8) + \
-    kw_print(kw['control_limits']) + \
-    kw_header('CONFIDENCE_INTERVALS',  indent=' ' * 8) + \
-    kw_print(kw['conf_int']) + \
-    kw_header('FIT',  indent=' ' * 8) + \
-    kw_print(kw['fit']) + \
-    kw_header('REFERENCE_LINES',  indent=' ' * 8) + \
-    kw_print(kw['ref_line']) + \
-    kw_header('STAT_LINES',  indent=' ' * 8) + \
-    kw_print(kw['stat_line'])
-
-
-axes = kw_print(kw['axes'])
-
-
-cbar = kw_print(kw['cbar'])
-
-
-figure = kw_print(kw['figure'])
-
-
-gridlines = kw_print(kw['gridlines'])
-
-
-grouping = kw_print(kw['grouping'])
-
-
-labels = \
-    kw_header('AXES_LABELS',  indent=' ' * 8) + \
-    kw_print(kw['labels']) + \
-    kw_header('RC_LABELS',  indent=' ' * 8) + \
-    kw_print(kw['labels_rc'])
-
-
-legend = kw_print(kw['legend'])
-
-
-lines = kw_print(kw['lines'])
-
-
-options = kw_print(kw['options'])
-
-
-markers = kw_print(kw['markers'])
-
-
-ticks = kw_print(kw['ticks'])
-
-
-tick_labels = kw_print(kw['tick_labels'])
-
-
-titles = kw_print(kw['titles'])
-
-
-ws = kw_print(kw['ws'])
+    if len(invalid) > 0:
+        print('Warning: the following kwargs are not supported: \n    - ' + "\n    - ".join(invalid))
 
 
 if __name__ == '__main__':
+
+    kw = make_docstrings()
+
+    bar = kw_print(kw['bar'])
+
+    boxplot = \
+        kw_header('BASIC',  indent=' ' * 8) + \
+        kw_print(kw['box']) + \
+        kw_header('GROUPING_TEXT') + \
+        kw_print(kw['box_label']) + \
+        kw_header('STAT_LINES') + \
+        kw_print(kw['box_stat']) + \
+        kw_header('DIAMONDS') + \
+        kw_print(kw['box_diamond']) + \
+        kw_header('VIOLINS') + \
+        kw_print(kw['box_violin'])
+
+    contour = \
+        kw_header('BASIC',  indent=' ' * 8) + \
+        kw_print(kw['contour']) + \
+        kw_header('COLOR_BAR',  indent=' ' * 8) + \
+        kw_print(kw['cbar'])
+
+    gantt = kw_print(kw['gantt'])
+
+    heatmap = \
+        kw_header('BASIC',  indent=' ' * 8) + \
+        kw_print(kw['heatmap']) + \
+        kw_header('COLOR_BAR',  indent=' ' * 8) + \
+        kw_print(kw['cbar'])
+
+    hist = kw_print(kw['hist'])
+
+    imshow = kw_print(kw['imshow'])
+
+    pie = kw_print(kw['pie'])
+
+    nq = \
+        kw_header('BASIC',  indent=' ' * 8) + \
+        kw_print(kw['nq']) + \
+        kw_header('CALCULATION',  indent=' ' * 8) + \
+        kw_print(kw['nq_calc'])
+
+    plot = \
+        kw_header('LINES',  indent=' ' * 8) + \
+        kw_print(kw['lines']) + \
+        kw_header('MARKERS',  indent=' ' * 8) + \
+        kw_print(kw['markers']) + \
+        kw_header('AX_[H|V]LINES',  indent=' ' * 8) + \
+        kw_print(kw['ax_lines']) + \
+        kw_header('CONTROL_LIMITS',  indent=' ' * 8) + \
+        kw_print(kw['control_limits']) + \
+        kw_header('CONFIDENCE_INTERVALS',  indent=' ' * 8) + \
+        kw_print(kw['conf_int']) + \
+        kw_header('FIT',  indent=' ' * 8) + \
+        kw_print(kw['fit']) + \
+        kw_header('REFERENCE_LINES',  indent=' ' * 8) + \
+        kw_print(kw['ref_line']) + \
+        kw_header('STAT_LINES',  indent=' ' * 8) + \
+        kw_print(kw['stat_line'])
+
+    axes = kw_print(kw['axes'])
+
+    cbar = kw_print(kw['cbar'])
+
+    figure = kw_print(kw['figure'])
+
+    gridlines = kw_print(kw['gridlines'])
+
+    grouping = kw_print(kw['grouping'])
+
+    labels = \
+        kw_header('AXES_LABELS',  indent=' ' * 8) + \
+        kw_print(kw['labels']) + \
+        kw_header('RC_LABELS',  indent=' ' * 8) + \
+        kw_print(kw['labels_rc'])
+
+    legend = kw_print(kw['legend'])
+
+    lines = kw_print(kw['lines'])
+
+    options = kw_print(kw['options'])
+
+    markers = kw_print(kw['markers'])
+
+    ticks = kw_print(kw['ticks'])
+
+    tick_labels = kw_print(kw['tick_labels'])
+
+    titles = kw_print(kw['titles'])
+
+    ws = kw_print(kw['ws'])
+
     docs = ['bar', 'boxplot', 'contour', 'gantt', 'heatmap', 'hist', 'imshow', 'pie', 'nq',
             'plot', 'axes', 'cbar', 'figure', 'gridlines', 'labels', 'legend', 'lines',
             'markers', 'ticks', 'tick_labels', 'ws', 'grouping', 'titles', 'options']

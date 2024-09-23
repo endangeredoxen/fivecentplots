@@ -14,17 +14,19 @@ __url__ = 'https://github.com/endangeredoxen/fivecentplots'
 
 import os
 import numpy as np
+import numpy.typing as npt
 import pandas as pd
 import pdb
-import copy
 import shutil
 import sys
 from pathlib import Path
 from . import utilities
 from . import data
-from . colors import DEFAULT_COLORS, BAYER  # noqa
+from . colors import DEFAULT_COLORS, RGB, RGGB, RCCG  # noqa
 from . import engines
+from . import kwargs as kwg
 import fivecentplots as fcp
+from typing import Union
 try:
     # optional import - only used for paste_kwargs to use windows clipboard
     # to directly copy kwargs from ini file
@@ -34,7 +36,9 @@ except (ModuleNotFoundError, ImportError, NameError):
     pass
 with open(Path(__file__).parent / 'version.txt', 'r') as fid:
     __version__ = fid.readlines()[0].replace('\n', '')
+__version__ = utilities.__version__
 utl = utilities
+COLORS = DEFAULT_COLORS
 HIST = utl.HIST
 db = pdb.set_trace
 osjoin = os.path.join
@@ -56,6 +60,7 @@ else:
 global INSTALL
 INSTALL = {}
 INSTALL['bokeh'] = ['bokeh']
+INSTALL['plotly'] = ['plotly']
 
 # Global kwargs to override anything
 global KWARGS
@@ -112,7 +117,7 @@ def bar(df, **kwargs):
 
             .. figure:: ../_static/images/example_bar.png
     """
-    return plotter(data.Bar, **utl.dfkwarg(df, kwargs))
+    return plotter(data.Bar, **utl.dfkwarg(df, kwargs, data.Bar))
 
 
 def boxplot(df, **kwargs):
@@ -246,7 +251,7 @@ def boxplot(df, **kwargs):
 
             .. figure:: ../_static/images/example_boxplot.png
     """
-    return plotter(data.Box, **utl.dfkwarg(df, kwargs))
+    return plotter(data.Box, **utl.dfkwarg(df, kwargs, data.Box))
 
 
 def contour(df, **kwargs):
@@ -288,38 +293,7 @@ def contour(df, **kwargs):
             .. figure:: ../_static/images/example_contour.png
 
     """
-    return plotter(data.Contour, **utl.dfkwarg(df, kwargs))
-
-
-def deprecated(kwargs):
-    """Automatically fix deprecated keyword args."""
-
-    # leg_groups
-    if kwargs.get('leg_groups'):
-        kwargs['legend'] = kwargs['leg_groups']
-        kwargs.pop('leg_groups')
-        print('"leg_groups" is deprecated. Please use "legend" instead')
-
-    # labels
-    labels = ['x', 'x2', 'y', 'y2', 'z']
-    for ilab, lab in enumerate(labels):
-        # Deprecated style
-        keys = [f for f in kwargs.keys() if '%slabel' % lab in f]
-        if len(keys) > 0:
-            print('"%slabel" is deprecated. Please use "label_%s" instead' % (lab, lab))
-            for k in keys:
-                kwargs[k.replace('%slabel' % lab, 'label_%s' % lab)] = kwargs[k]
-                kwargs.pop(k)
-
-    # twin + share
-    vals = ['sharex', 'sharey', 'twinx', 'twiny']
-    for val in vals:
-        if val in kwargs:
-            print('"%s" is deprecated.  Please use "%s_%s" instead' % (val, val[0:-1], val[-1]))
-            kwargs['%s_%s' % (val[0:-1], val[-1])] = kwargs[val]
-            kwargs.pop(val)
-
-    return kwargs
+    return plotter(data.Contour, **utl.dfkwarg(df, kwargs, data.Contour))
 
 
 def docs():
@@ -371,7 +345,7 @@ def gantt(df, **kwargs):
             .. figure:: ../_static/images/example_gantt.png
     """
 
-    return plotter(data.Gantt, **utl.dfkwarg(df, kwargs))
+    return plotter(data.Gantt, **utl.dfkwarg(df, kwargs, data.Gantt))
 
 
 def heatmap(df, **kwargs):
@@ -396,6 +370,7 @@ def heatmap(df, **kwargs):
         heatmap_font_size (int): Font size of the value label text. Defaults to 12.
         heatmap_interp|interp (str): imshow interpolation scheme [see matplotlib docs for more details]. Defaults to
           'none’.
+        heatmap_rounding (int): Number of digits to round heatmap data labels.  Defaults to None.
         COLOR_BAR:
         cbar (bool): Toggle colorbar on/off for contour and heatmap plots. Defaults to False. Example:
           https://endangeredoxen.github.io/fivecentplots/0.6.0/contour.html#Filled-contour
@@ -426,7 +401,7 @@ def heatmap(df, **kwargs):
             .. figure:: ../_static/images/example_heatmap2.png
 
     """
-    return plotter(data.Heatmap, **utl.dfkwarg(df, kwargs))
+    return plotter(data.Heatmap, **utl.dfkwarg(df, kwargs, data.Heatmap))
 
 
 def hist(df, **kwargs):
@@ -517,23 +492,33 @@ def hist(df, **kwargs):
         >>> img_rgb[::2, 1::2] += np.random.normal(-0.1*img_rgb[::2, 1::2].mean(), 0.1*img_rgb[::2, 1::2].mean(),
         >>>                                        img_rgb[::2, 1::2].shape)
         >>> img_rgb = img_rgb.astype(np.uint16)
-        >>> fcp.hist(img_rgb, ax_size=[600, 400], legend='Plane', cfa='grbg', colors=fcp.BAYER, **fcp.HIST)
+        >>> fcp.hist(img_rgb, ax_size=[600, 400], legend='Plane', cfa='grbg', colors=fcp.RGGB, **fcp.HIST)
 
             .. figure:: ../_static/images/example_hist2.png
     """
 
-    return plotter(data.Histogram, **utl.dfkwarg(df, kwargs))
+    return plotter(data.Histogram, **utl.dfkwarg(df, kwargs, data.Histogram))
 
 
-def imshow(df, **kwargs):
+def imshow(df: Union[pd.DataFrame, npt.NDArray], **kwargs):
     """Image show plotting function.
 
     Args:
-        df (DataFrame | numpy array): DataFrame or numpy array containing 2D row/column
-            image data to plot [when passing a numpy array it is automatically converted
-            to a DataFrame]
+        df:
+            * Single image only:
+                - 2D numpy array of pixel data
+                - OR a 2D pd.DataFrame of pixel data
+            * Multiple images:
+                - pd.DataFrame with 1 row per image
+                - row index value must match a key in the kwargs['imgs'] dict
+                - other columns in this DataFrame are grouping columns
 
     Keyword Args:
+        imgs:
+            * Single image only:
+                - Not defined or used
+            * Multiple images:
+                - dict of the actual image data; dict key must match a row index value in kwargs['df']
         cfa (str): Color-filter array pattern that is used to split data from a Bayer image into separate color planes.
           Defaults to None. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/imshow.html#split-color-planes
         cmap (bool): Name of a color map to apply to the plot. Defaults to gray. Example:
@@ -552,7 +537,7 @@ def imshow(df, **kwargs):
         >>> import fivecentplots as fcp
         >>> from pathlib import Path
         >>> import pandas as pd
-        >>> import imageio
+        >>> import imageio.v3 as imageio
         >>> # Read an image from the world-wide web
         >>> url = 'https://imagesvc.meredithcorp.io/v3/mm/image?q=85&c=sc&rect=0%2C214%2C2000%2C1214&' \
         >>>       + 'poi=%5B920%2C546%5D&w=2000&h=1000&url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads' \
@@ -575,7 +560,7 @@ def imshow(df, **kwargs):
 
     kwargs['tick_labels'] = kwargs.get('tick_labels', True)
 
-    return plotter(data.ImShow, **utl.dfkwarg(df, kwargs))
+    return plotter(data.ImShow, **utl.dfkwarg(df, kwargs, data.ImShow))
 
 
 def nq(df, **kwargs):
@@ -619,7 +604,7 @@ def nq(df, **kwargs):
 
     kwargs['tick_labels'] = kwargs.get('tick_labels', True)
 
-    return plotter(data.NQ, **utl.dfkwarg(df, kwargs))
+    return plotter(data.NQ, **utl.dfkwarg(df, kwargs, data.NQ))
 
 
 def paste_kwargs(kwargs: dict) -> dict:
@@ -715,7 +700,7 @@ def pie(df, **kwargs):
 
             .. figure:: ../_static/images/example_pie.png
     """
-    return plotter(data.Pie, **utl.dfkwarg(df, kwargs))
+    return plotter(data.Pie, **utl.dfkwarg(df, kwargs, data.Pie))
 
 
 def plot(df, **kwargs):
@@ -860,7 +845,7 @@ def plot(df, **kwargs):
             .. figure:: ../_static/images/example_plot.png
 
     """
-    return plotter(data.XY, **utl.dfkwarg(df, kwargs))
+    return plotter(data.XY, **utl.dfkwarg(df, kwargs, data.XY))
 
 
 def plot_bar(data, layout, ir, ic, df_rc, kwargs):
@@ -876,6 +861,8 @@ def plot_bar(data, layout, ir, ic, df_rc, kwargs):
         kwargs (dict): keyword args
 
     """
+
+    df_rc = df_rc.copy()
 
     # would need to update to support multiple x
     if not kwargs.get('sort', True):
@@ -1001,6 +988,20 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
                 if len(temp) > 0:
                     layout.plot_xy(ir, ic, irow, temp, 'x', dd.y[0], None, False, zorder=10)
 
+            # plot mean diamonds
+            if layout.box_mean_diamonds.on:
+                low, high = utl.ci(temp[dd.y[0]], layout.box_mean_diamonds.conf_coeff)
+                mm = temp[dd.y[0]].mean()
+                x1 = -layout.box_mean_diamonds.width[0] / 2
+                x2 = layout.box_mean_diamonds.width[0] / 2
+                points = [[irow + 1 + x1, mm],
+                          [irow + 1, high],
+                          [irow + 1 + x2, mm],
+                          [irow + 1, low],
+                          [irow + 1 + x1, mm],
+                          [irow + 1 + x2, mm]]
+                layout.plot_polygon(ir, ic, points, **layout.box_mean_diamonds.kwargs)
+
     else:
         data = [df_rc[dd.y].dropna()]
         labels = ['']
@@ -1035,13 +1036,8 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
 
     # Add divider lines
     if layout.box_divider.on and len(dividers) > 0:
-        layout.ax_vlines = copy.deepcopy(layout.box_divider)
-        layout.ax_vlines.values = dividers
-        layout.ax_vlines.color = copy.copy(layout.box_divider.color)
-        layout.ax_vlines.style = copy.copy(layout.box_divider.style)
-        layout.ax_vlines.width = copy.copy(layout.box_divider.width)
-        layout.add_hvlines(ir, ic)
-        layout.ax_vlines.values = []
+        layout.box_divider.values = dividers
+        layout.add_hvlines(ir, ic, elements=['box_divider'])
 
     # Add mean/median connecting lines
     if layout.box_stat_line.on and len(stats) > 0:
@@ -1076,22 +1072,6 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
         y = [mm for f in x]
         layout.plot_line(ir, ic, x, y, **layout.box_grand_median.kwargs)
 
-    # add mean confidence diamonds
-    if layout.box_mean_diamonds.on:
-        mgroups = df_rc.groupby(dd.groups)
-        for ii, (nn, mm) in enumerate(mgroups):
-            low, high = utl.ci(mm[dd.y[0]], layout.box_mean_diamonds.conf_coeff)
-            mm = mm[dd.y[0]].mean()
-            x1 = -layout.box_mean_diamonds.width[0] / 2
-            x2 = layout.box_mean_diamonds.width[0] / 2
-            points = [[ii + 1 + x1, mm],
-                      [ii + 1, high],
-                      [ii + 1 + x2, mm],
-                      [ii + 1, low],
-                      [ii + 1 + x1, mm],
-                      [ii + 1 + x2, mm]]
-            layout.plot_polygon(ir, ic, points, **layout.box_mean_diamonds.kwargs)
-
     return dd
 
 
@@ -1122,7 +1102,7 @@ def plot_control_limit(ir: int, ic: int, iline: int, layout: 'engines.Layout', d
 
     """
 
-    x = [data.ranges[ir, ic]['xmin'], data.ranges[ir, ic]['xmax']]
+    x = [data.ranges['xmin'][ir, ic], data.ranges['xmax'][ir, ic]]
     if layout.lcl.on:
         if layout.ucl.on and layout.control_limit_side == 'inside':
             lower = np.ones(2) * layout.lcl.value[0]
@@ -1130,11 +1110,11 @@ def plot_control_limit(ir: int, ic: int, iline: int, layout: 'engines.Layout', d
             leg_name = u'lcl \u2192 ucl'
         elif layout.lcl.on and layout.control_limit_side == 'inside':  # use the ucl for this
             lower = np.ones(2) * layout.lcl.value[0]
-            upper = np.ones(2) * data.ranges[ir, ic]['ymax']
+            upper = np.ones(2) * data.ranges['ymax'][ir, ic]
             leg_name = 'lcl'
         elif layout.lcl.on:
             upper = np.ones(2) * layout.lcl.value[0]
-            lower = np.ones(2) * data.ranges[ir, ic]['ymin']
+            lower = np.ones(2) * data.ranges['ymin'][ir, ic]
             leg_name = 'lcl'
         if not layout.legend._on:
             leg_name = None
@@ -1145,11 +1125,11 @@ def plot_control_limit(ir: int, ic: int, iline: int, layout: 'engines.Layout', d
     if layout.ucl.on:
         if layout.control_limit_side == 'inside':
             upper = np.ones(2) * layout.ucl.value[0]
-            lower = np.ones(2) * data.ranges[ir, ic]['ymin']
+            lower = np.ones(2) * data.ranges['ymin'][ir, ic]
             leg_name = 'ucl'
         else:
             lower = np.ones(2) * layout.ucl.value[0]
-            upper = np.ones(2) * data.ranges[ir, ic]['ymax']
+            upper = np.ones(2) * data.ranges['ymax'][ir, ic]
             leg_name = 'ucl'
         if not layout.legend._on:
             leg_name = None
@@ -1188,12 +1168,12 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin, leg_name, ngroups):
                 or len(np.unique(layout.fit.color.values)) > 1) \
                 and data.legend_vals is not None \
                 and layout.label_wrap.column is None:
-            leg_name = '%s [Fit]' % leg_name
+            leg_name = f'{leg_name} [Fit]'
         else:
             leg_name = 'Fit'
     else:
         leg_name = None
-    layout.plot_xy(ir, ic, iline, df, '%s Fit' % x, '%s Fit' % y,
+    layout.plot_xy(ir, ic, iline, df, f'{x} Fit', f'{y} Fit',
                    leg_name, twin, line_type='fit',
                    marker_disable=True)
 
@@ -1203,18 +1183,17 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin, leg_name, ngroups):
             if coeff > 0 and ico > 0:
                 eqn += '+'
             if len(coeffs) - 1 - ico > 1:
-                power = '^%s' % str(len(coeffs) - 1 - ico)
+                power = f'^{str(len(coeffs) - 1 - ico)}'
             else:
                 power = ''
-            eqn += '%s*x%s' % (round(coeff, 3), power)
+            eqn += f'{round(coeff, 3)}*x{power}'
         if coeffs[-1] > 0:
             eqn += '+'
-        eqn += '%s' % round(coeffs[-1], 3)
+        eqn += f'{round(coeffs[-1], 3)}'
         layout.add_text(ir, ic, eqn, 'fit')
 
     if layout.fit.rsq:
-        layout.add_text(ir, ic, 'R^2=%s' % round(rsq, 4), 'fit',
-                        offsety=-2.2 * layout.fit.font_size)
+        layout.add_text(ir, ic, f'R^2={round(rsq, 4)}', 'fit')
 
     return data
 
@@ -1323,7 +1302,6 @@ def plot_interval(ir, ic, iline, data, layout, df, x, y, twin):
     """
 
     getattr(data, f'get_interval_{layout.interval.type}')(df, x, y)
-
     leg_name = None
     if layout.legend._on:
         if layout.interval.type == 'nq':
@@ -1487,9 +1465,8 @@ def plotter(dobj, **kwargs):
     Returns:
         plots
     """
-
-    # Check for deprecated kwargs
-    kwargs = deprecated(kwargs)
+    # Validate kwargs
+    kwg.keywords.validate_kwargs(kwargs)
 
     # Apply globals if they don't exist
     for k, v in fcp.KWARGS.items():
@@ -1502,29 +1479,31 @@ def plotter(dobj, **kwargs):
     # Set the plotting engine
     verbose = kwargs.get('verbose', False)
     defaults = utl.reload_defaults(kwargs.get('theme', None), verbose=verbose)
-    engine = utl.kwget(kwargs, defaults[0], 'engine', 'mpl')
-    if not hasattr(engines, engine):
-        if engine in INSTALL.keys():
-            installs = '\npip install '.join(INSTALL[engine])
-            raise EngineError(f'Plotting engine "{engine}" is supported by not installed! '
+    kwargs['engine'] = utl.kwget(kwargs, defaults[0], 'engine', 'mpl').lower()
+    if not hasattr(engines, kwargs['engine']):
+        if kwargs['engine'] in INSTALL.keys():
+            installs = '\npip install '.join(INSTALL[kwargs['engine']])
+            raise EngineError(f'Plotting engine \"{kwargs["engine"]}\" is supported but not installed! ' +
                               f'Please run the following:\npip install {installs}')
         else:
-            raise EngineError(f'Plotting engine "{engine}" is not supported')
+            raise EngineError(f'Plotting engine \"{kwargs["engine"]}\" is not supported')
         return
     else:
-        engine = getattr(engines, engine)
+        engine = getattr(engines, kwargs['engine'])
     kwargs['timer'].get('Layout obj')
 
     # Build the data object and update kwargs
     dd = dobj(fcpp=defaults[0], **kwargs)
+    kwargs['timer'].get('Data obj')
     for k, v in kwargs.items():
         if k in dd.__dict__.keys():
             kwargs[k] = getattr(dd, k)
-    kwargs['timer'].get('Data obj')
+    kwargs['timer'].get('update kwargs')
 
     # Iterate over discrete figures
     for ifig, fig_item, fig_cols, dd in dd.get_df_figure():
-        kwargs['timer'].get('dd.get_df_figure')
+        kwargs['timer'].get('dd.get_df_figure')  # data._get_data_ranges is slowest step
+
         # Create a layout object
         layout = engine.Layout(dd, defaults, **kwargs)
         kwargs = layout.kwargs
@@ -1532,11 +1511,14 @@ def plotter(dobj, **kwargs):
 
         # Make the figure
         dd = layout.make_figure(dd, **kwargs)
-        kwargs['timer'].get('ifig=%s | make_figure' % ifig)
+        kwargs['timer'].get(f'ifig={ifig} | make_figure')
 
-        # Turn off empty subplots and populate layout.axes.visible)
+        # Make the subplots
         for ir, ic, df_rc in dd.get_rc_subset():
-            if len(df_rc) == 0:  # could set this value in Data after first time to avoid recalc
+            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | get_rc_subset')
+
+            # Turn off empty subplots and populate layout.axes.visible (not sure why did it above so watch this)
+            if len(df_rc) == 0:
                 if dd.wrap is None:
                     layout.set_axes_rc_labels(ir, ic)
                 layout.axes.obj[ir, ic].axis('off')
@@ -1544,73 +1526,75 @@ def plotter(dobj, **kwargs):
                 if layout.axes2.obj[ir, ic] is not None:
                     layout.axes2.obj[ir, ic].axis('off')
                 continue
-        kwargs['timer'].get('ifig=%s | turn off empty subplots' % ifig)
-
-        # Make the subplots
-        for ir, ic, df_rc in dd.get_rc_subset():
-            if not layout.axes.visible[ir, ic]:
-                continue
+                kwargs['timer'].get(f'ifig={ifig} | turn off empty subplots')
 
             # Set the axes colors
             layout.set_axes_colors(ir, ic)
-            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_colors' % (ifig, ir, ic))
+            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_colors')
 
             # Add and format gridlines
             layout.set_axes_grid_lines(ir, ic)
-            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_grid_lines' % (ifig, ir, ic))
+            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_grid_lines')
 
             # Add horizontal and vertical lines
             layout.add_hvlines(ir, ic, df_rc)
-            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | add_hvlines' % (ifig, ir, ic))
+            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | add_hvlines')
 
             # Plot the data
             dd = globals()['plot_{}'.format(dd.name)](dd, layout, ir, ic, df_rc, kwargs)
-            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | plot' % (ifig, ir, ic))
-
-            # Set linear or log axes scaling
-            layout.set_axes_scale(ir, ic)
-            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_scale' % (ifig, ir, ic))
-
-            # Set axis ranges
-            layout.set_axes_ranges(ir, ic, dd.ranges)
-            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_ranges' % (ifig, ir, ic))
-
-            # Add axis labels
-            layout.set_axes_labels(ir, ic)
-            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_labels' % (ifig, ir, ic))
+            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | plot')
 
             # Add rc labels
             layout.set_axes_rc_labels(ir, ic)
-            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_rc_labels' % (ifig, ir, ic))
-
-            # Adjust tick marks
-            layout.set_axes_ticks(ir, ic)
-            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | set_axes_ticks' % (ifig, ir, ic))
+            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_rc_labels')
 
             # Add box labels
             if dd.name == 'box':
                 layout.add_box_labels(ir, ic, dd)
-                kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | add_box_labels' % (ifig, ir, ic))
+                kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | add_box_labels')
 
             # Add arbitrary text
             layout.add_text(ir, ic)
-            kwargs['timer'].get('ifig=%s | ir=%s | ic=%s | add_text' % (ifig, ir, ic))
+            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | add_text')
+
+        # After subplot creation, modify certain layout.Element properties
+        dd.get_data_ranges()
+        for ir, ic, _ in dd.get_subplot_index():
+            # Add fills
+            layout.add_fills(ir, ic, df_rc, dd)
+            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | add_fills')
+
+            # Set linear or log axes scaling
+            layout.set_axes_scale(ir, ic)
+            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_scale')
+
+            # Set axes ranges
+            layout.set_axes_ranges(ir, ic, dd.ranges)
+            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_ranges')
+
+            # Add axis labels
+            layout.set_axes_labels(ir, ic, dd)
+            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_labels')
+
+            # Adjust tick marks
+            layout.set_axes_ticks(ir, ic)
+            kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_ticks')
 
         # Make the legend
         layout.add_legend(dd.legend_vals)
-        kwargs['timer'].get('ifig=%s | add_legend' % (ifig))
+        kwargs['timer'].get(f'ifig={ifig} | add_legend')
 
         # Add a figure title
         layout.set_figure_title()
-        kwargs['timer'].get('ifig=%s | set_figure_title' % (ifig))
+        kwargs['timer'].get(f'ifig={ifig} | set_figure_title')
 
         # Final adjustments
         layout.set_figure_final_layout(dd, **kwargs)
-        kwargs['timer'].get('ifig=%s | set_figure_final_layout' % (ifig))
+        kwargs['timer'].get(f'ifig={ifig} | set_figure_final_layout')
 
         # Build the save filename
         filename = utl.set_save_filename(dd.df_fig, ifig, fig_item, fig_cols, layout, kwargs)
-        if 'filepath' in kwargs.keys():
+        if kwargs.get('filepath'):
             filename = os.path.join(kwargs['filepath'], filename)
 
         # Optionally save and open
@@ -1634,14 +1618,14 @@ def plotter(dobj, **kwargs):
             # Disable inline unless explicitly called in kwargs
             if not kwargs.get('inline'):
                 kwargs['inline'] = False
-        kwargs['timer'].get('ifig=%s | save' % (ifig))
+        kwargs['timer'].get(f'ifig={ifig} | save')
 
         # Return inline plot
         if not kwargs.get('inline', True):
             layout.close()
         else:
             layout.show()
-        kwargs['timer'].get('ifig=%s | return inline' % (ifig))
+        kwargs['timer'].get(f'ifig={ifig} | return inline')
 
     # Save data used in the figures
     if kwargs.get('save_data', False):
@@ -1649,8 +1633,9 @@ def plotter(dobj, **kwargs):
             filename = kwargs['save_data']
         else:
             filename = filename.split('.')[0] + '.csv'
-        dd.df_all[dd.cols_all].to_csv(filename, index=False)
-        kwargs['timer'].get('ifig=%s | save_data' % (ifig))
+        if isinstance(dd.df_all, pd.DataFrame):
+            dd.df_all[dd.cols_all].to_csv(filename, index=False)
+        kwargs['timer'].get(f'ifig={ifig} | save_data')
 
     kwargs['timer'].get_total()
 
@@ -1677,10 +1662,10 @@ def set_theme(theme=None, verbose=False):
         print(f'theme: {theme}\nthemes: {themes}\nmythemes: {mythemes}\nmy_theme_dir: {my_theme_dir}')
 
     if theme in themes:
-        entry = themes.index('%s' % theme) + 1
+        entry = themes.index(f'{theme}') + 1
 
     elif theme in mythemes:
-        entry = mythemes.index('%s' % theme) + 1 + len(themes)
+        entry = mythemes.index(f'{theme}') + 1 + len(themes)
 
     elif theme is not None:
         print('Theme file not found!  Please try again')
@@ -1692,11 +1677,11 @@ def set_theme(theme=None, verbose=False):
         print('Select default styling theme:')
         print('   Built-in theme list:')
         for i, th in enumerate(themes):
-            print('      %s) %s' % (i + 1, th))
+            print(f'      {i + 1}) {th}')
         if len(themes) > 0:
             print('   User theme list:')
             for i, th in enumerate(mythemes):
-                print('      %s) %s' % (i + 1 + len(themes), th))
+                print(f'      {i + 1 + len(themes)}) {th}')
         entry = input('Entry: ')
 
         try:
@@ -1710,11 +1695,11 @@ def set_theme(theme=None, verbose=False):
             return
 
         if int(entry) <= len(themes):
-            print('Copying %s >> %s' % (themes[int(entry) - 1], osjoin(user_dir, '.fivecentplots', 'defaults.py')))
+            print(f"Copying {themes[int(entry) - 1]} >> {osjoin(user_dir, '.fivecentplots', 'defaults.py')}")
             theme = themes[int(entry) - 1]
         else:
-            print('Copying %s >> %s' % (mythemes[int(entry) - 1 - len(themes)],
-                                        osjoin(user_dir, '.fivecentplots', 'defaults.py')))
+            print(f"Copying {mythemes[int(entry) - 1 - len(themes)]} >> "
+                  f"{osjoin(user_dir, '.fivecentplots', 'defaults.py')}")
             theme = mythemes[int(entry) - 1 - len(themes)]
 
     if os.path.exists(osjoin(user_dir, '.fivecentplots', 'defaults.py')):
@@ -2020,7 +2005,7 @@ def labels():
 
     Keyword Args:
         AXES_LABELS:
-        label_bg_padding (float): Padding around the label text for the background object behind the text. Defaults to
+        label_padding_bg (float): Padding around the label text for the background object behind the text. Defaults to
           2.
         label_q (str): Custom text for a specific axes label [where q = x, y, x2, y2]. Defaults to DataFrame column
           name. Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/plot.html#Multiple-y-only
@@ -2279,7 +2264,7 @@ def options():
     """Dummy function to return the API for other control options with `help()` (not used directly for plotting).
 
     Keyword Args:
-        BAYER (list): Color scheme for RGGB channel data so lines and markers match CFA type. Defaults to None. Example:
+        RGGB (list): Color scheme for RGGB channel data so lines and markers match CFA type. Defaults to None. Example:
           https://endangeredoxen.github.io/fivecentplots/0.6.0/hist.html#RGB
         DEFAULT_COLORS (list): Default color scheme used for lines and markers (from colors.py). Defaults to None.
         engine (str): Specify the plotting engine {'mpl', 'bokeh'}. Defaults to 'mpl'. Example:

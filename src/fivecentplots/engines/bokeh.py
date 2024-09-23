@@ -57,7 +57,7 @@ def format_marker(fig, marker):
 
 class Layout(BaseLayout):
     def __init__(self, data: 'data.Data', defaults: list = [], **kwargs):  # noqa F821
-        """Layout attributes and methods for matplotlib Figure.
+        """Layout attributes and methods for bokeh Figure.
 
         Args:
             data: fcp Data object
@@ -65,8 +65,7 @@ class Layout(BaseLayout):
             kwargs: input args from user
         """
         # Set the layout engine
-        global ENGINE
-        ENGINE = 'bokeh'
+        self.engine = 'bokeh'
 
         # Inherit the base layout properties
         super().__init__(data, defaults, **kwargs)
@@ -225,8 +224,6 @@ class Layout(BaseLayout):
                 elif self.axes.twin_y:
                     self.axes.obj[ir, ic].extra_x_ranges = {'x2': bm.Range1d(start=0, end=1)}
                     self.axes.obj[ir, ic].add_layout(bm.LinearAxis(x_range_name='x2'), 'above')
-
-        self.axes.visible = np.array([[True] * self.ncol] * self.nrow)
 
         return data
 
@@ -773,8 +770,8 @@ class Layout(BaseLayout):
                     setattr(ax, f'{mm}_tick_in', 0)
 
     def set_figure_final_layout(self, data, **kwargs):
-        self.legend.size[0] = 30 + max(utl.validate_list(self.markers.sizes)) + 10 \
-            + max(self.legend.values['Key'].apply(lambda x: len(x)))
+        key_len = max(self.legend.values['Key'].apply(lambda x: len(x) if x else 0))
+        self.legend.size[0] = 30 + max(utl.validate_list(self.markers.sizes)) + 10 + key_len
 
     def set_figure_title(self):
         """Set a figure title."""

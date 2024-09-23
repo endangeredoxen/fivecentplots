@@ -7,6 +7,7 @@ from .. utilities import RepeatedList
 from .. import utilities as utl
 from distutils.version import LooseVersion
 from collections import defaultdict
+from typing import Callable, Dict
 import warnings
 import abc
 from .. import data
@@ -53,7 +54,6 @@ LOGITX = ['logitx', 'logit']
 LOGITY = ['logity', 'logit']
 LOG_ALLX = LOGX + SYMLOGX + LOGITX
 LOG_ALLY = LOGY + SYMLOGY + LOGITY
-ENGINE = ''
 
 
 class BaseLayout:
@@ -80,6 +80,13 @@ class BaseLayout:
             marker_list = defaults[2].copy()
         else:
             self.fcpp, self.color_list, marker_list, rcParams = utl.reload_defaults(kwargs.get('theme', None))
+
+        # Rendering corrections (use when the nominal Element value doesn't match the rendered size)
+        #   These corrections are added as properties to the Element class
+        if kwargs.get('render_corrections', True):
+            self.corrections: Dict[str, Callable] = kwargs.get('corrections', {})
+            for k, v in kwargs.get('corrections', {}).items():
+                setattr(Element, f'{k}_adj', property(v))
 
         # Class attribute definition (alphabetical)
         self.auto_tick_threshold = None  # Threshold value for placement of auto-generated ticks
@@ -108,6 +115,7 @@ class BaseLayout:
         self.contour = None  # Element object for contour plot
         self.cmap = None  # color map to use in plot
         self.fig = None  # Element object for the figure
+        self.fills = None  # Element object for rectangular fills
         self.fit = None  # Element object for fit line
         self.gantt = None  # Element object for gannt chart
         self.grid_major = None  # Element object with default values for major grids not explicitly defined
@@ -198,7 +206,7 @@ class BaseLayout:
         kwargs = self._init_figure(kwargs)
         kwargs = self._init_colors(kwargs)
         kwargs = self._init_axes(data, kwargs)
-        kwargs = self._init_axes_labels(kwargs)
+        kwargs = self._init_axes_labels(data, kwargs)
         kwargs = self._init_title(kwargs)
         kwargs = self._init_ticks(kwargs)
         kwargs = self._init_markers(kwargs, data)
@@ -217,6 +225,7 @@ class BaseLayout:
         kwargs = self._init_hist(kwargs)
         kwargs = self._init_box(kwargs)
         kwargs = self._init_axhvlines(kwargs)
+        kwargs = self._init_fills(kwargs)
         kwargs = self._init_grid(kwargs)
         kwargs = self._init_rc_labels(kwargs)
         kwargs = self._init_intervals(kwargs)
@@ -225,6 +234,7 @@ class BaseLayout:
 
         # Some extra kwargs
         self.inline = utl.kwget(kwargs, self.fcpp, 'inline', None)
+        self.scale_font_size = utl.kwget(kwargs, self.fcpp, 'scale_font_size', True)
         self.separate_labels = utl.kwget(kwargs, self.fcpp,
                                          'separate_labels', False)
         self.separate_ticks = utl.kwget(kwargs, self.fcpp,
@@ -301,7 +311,7 @@ class BaseLayout:
         spines = utl.kwget(kwargs, self.fcpp, 'spines', True)
         self.axes = Element('ax', self.fcpp, kwargs,
                             obj=self.obj_array,
-                            size=utl.kwget(kwargs, self.fcpp, 'ax_size', [400, 400]),
+                            size=utl.validate_list(utl.kwget(kwargs, self.fcpp, 'ax_size', [400, 400])),
                             edge_color=utl.kwget(kwargs, self.fcpp, 'ax_edge_color', '#aaaaaa'),
                             fill_color=utl.kwget(kwargs, self.fcpp, 'ax_fill_color', '#eaeaea'),
                             primary=True,
@@ -320,8 +330,11 @@ class BaseLayout:
                             twin_x=kwargs.get('twin_x', False),
                             twin_y=kwargs.get('twin_y', False),
                             )
+        # Set default axes visibility
+        self.axes.visible = np.array([[True] * self.ncol] * self.nrow)
+
         # auto-boxplot size option
-        if self.axes.size == 'auto':
+        if self.axes.size == ['auto']:
             self.box_scale = 'auto'
             self.axes.size = [400, 400]
 
@@ -346,7 +359,7 @@ class BaseLayout:
 
         return kwargs
 
-    def _init_axes_labels(self, kwargs: dict) -> dict:
+    def _init_axes_labels(self, data, kwargs: dict) -> dict:
         """Set the axes label elements parameters except for text related
         parameters which are set later in self._set_label_text (to make sure
         any updates after init of data obj are included)
@@ -360,34 +373,49 @@ class BaseLayout:
         # Axes labels
         label = Element('label', self.fcpp, kwargs,
                         obj=self.obj_array,
+                        edge_color=utl.kwget(kwargs, self.fcpp, 'label_edge_color', '#ffffff'),
+                        edge_style=utl.kwget(kwargs, self.fcpp, 'label_edge_style', 'square'),
+                        edge_width=utl.kwget(kwargs, self.fcpp, 'label_edge_width', 0),
+                        fill_alpha=utl.kwget(kwargs, self.fcpp, 'label_fill_alpha', 1),
+                        fill_color=utl.kwget(kwargs, self.fcpp, 'label_fill_color', '#ffffff'),
                         font_color=utl.kwget(kwargs, self.fcpp, 'label_font_color', '#000000'),
                         font_style=utl.kwget(kwargs, self.fcpp, 'label_font_style', 'italic'),
                         font_weight=utl.kwget(kwargs, self.fcpp, 'label_font_weight', 'bold'),
-                        bg_padding=utl.kwget(kwargs, self.fcpp, 'label_bg_padding', 2),
+                        padding=utl.kwget(kwargs, self.fcpp, ['label_padding'], 0.3),
                         )
-        labels = ['x', 'x2', 'y', 'y2', 'z']
+        labels = data.axs
         rotations = [0, 0, 90, 270, 270]
         for ilab, lab in enumerate(labels):
-            # Copy base label object and set default rotation
-            setattr(self, 'label_%s' % lab, copy.deepcopy(label))
-            getattr(self, 'label_%s' % lab).rotation = rotations[ilab]
+            # Copy base label object
+            setattr(self, f'label_{lab}', copy.deepcopy(label))
+            getattr(self, f'label_{lab}').name = f'label_{lab}'
+
+            # Update rotation
+            getattr(self, f'label_{lab}').rotation = rotations[ilab]
+
+            # Update label text
+            if utl.kwget(kwargs, self.fcpp, [f'label_{lab}', f'label_{lab}_text'], None) not in [None, True]:
+                if utl.kwget(kwargs, self.fcpp, f'label_{lab}_text', None):
+                    getattr(self, f'label_{lab}').text = utl.kwget(kwargs, self.fcpp, f'label_{lab}_text', None)
+                    getattr(self, f'label_{lab}').on = True
+                else:
+                    getattr(self, f'label_{lab}').text = utl.kwget(kwargs, self.fcpp, f'label_{lab}', None)
+                    getattr(self, f'label_{lab}').on = True
 
             # Override params
-            keys = [f for f in kwargs.keys() if 'label_%s' % lab in f]
-            for k in keys:
-                v = kwargs[k]
-                if k == 'label_%s' % lab or '_text' in k:
-                    continue  # k = 'label_%s_text' % lab
-                setattr(getattr(self, 'label_%s' % lab), k.replace('label_%s_' % lab, ''), v)
+            for k in [f for f in self.fcpp.keys() if f'label_{lab}_' in f and '_text' not in f]:
+                setattr(getattr(self, f'label_{lab}'), k.replace(f'label_{lab}_', ''), self.fcpp[k])
+            for k in [f for f in kwargs.keys() if f'label_{lab}_' in f and '_text' not in f]:
+                setattr(getattr(self, f'label_{lab}'), k.replace(f'label_{lab}_', ''), kwargs[k])
 
             # Update alphas
-            getattr(self, 'label_%s' % lab).color_alpha('fill_color', 'fill_alpha')
-            getattr(self, 'label_%s' % lab).color_alpha('edge_color', 'edge_alpha')
+            getattr(self, f'label_{lab}').color_alpha('fill_color', 'fill_alpha')
+            getattr(self, f'label_{lab}').color_alpha('edge_color', 'edge_alpha')
 
         # Turn off secondary labels
-        if not self.axes.twin_y:
+        if not self.axes.twin_y and self.label_x2 is not None:
             self.label_x2.on = False
-        if not self.axes.twin_x:
+        if not self.axes.twin_x and self.label_y2 is not None:
             self.label_y2.on = False
 
         # Twinned label colors
@@ -395,11 +423,15 @@ class BaseLayout:
             self.color_list_unique = pd.Series(self.color_list).unique()
             if self.axes.twin_x and 'label_y_font_color' not in kwargs.keys():
                 self.label_y.font_color = self.color_list_unique[0]
-            if self.axes.twin_x and 'label_y2_font_color' not in kwargs.keys():
+            if self.axes.twin_x \
+                    and 'label_y2_font_color' not in kwargs.keys() \
+                    and self.label_y2 is not None:
                 self.label_y2.font_color = self.color_list_unique[1]
             if self.axes.twin_y and 'label_x_font_color' not in kwargs.keys():
                 self.label_x.font_color = self.color_list_unique[0]
-            if self.axes.twin_y and 'label_x_font_color' not in kwargs.keys():
+            if self.axes.twin_y \
+                    and self.label_x2 is not None \
+                    and 'label_x_font_color' not in kwargs.keys():
                 self.label_x2.font_color = self.color_list_unique[1]
 
         return kwargs
@@ -436,36 +468,37 @@ class BaseLayout:
                 if (isinstance(val, list) or isinstance(val, tuple)) and len(val) > 1:
                     colors += [val[1]]
                 else:
-                    colors += [utl.kwget(kwargs, self.fcpp, '%s_color' % axline, '#000000')]
+                    colors += [utl.kwget(kwargs, self.fcpp, f'{axline}_color', '#000000')]
                 if (isinstance(val, list) or isinstance(val, tuple)) and len(val) > 2:
                     styles += [val[2]]
                 else:
-                    styles += [utl.kwget(kwargs, self.fcpp, '%s_style' % axline, '-')]
+                    styles += [utl.kwget(kwargs, self.fcpp, f'{axline}_style', '-')]
                 if (isinstance(val, list) or isinstance(val, tuple)) and len(val) > 3:
                     widths += [val[3]]
                 else:
-                    widths += [utl.kwget(kwargs, self.fcpp, '%s_width' % axline, 1)]
+                    widths += [utl.kwget(kwargs, self.fcpp, f'{axline}_width', 1)]
                 if (isinstance(val, list) or isinstance(val, tuple)) and len(val) > 4:
                     alphas += [val[4]]
                 else:
-                    alphas += [utl.kwget(kwargs, self.fcpp, '%s_alpha' % axline, 1)]
+                    alphas += [utl.kwget(kwargs, self.fcpp, f'{axline}_alpha', 1)]
                 if (isinstance(val, list) or isinstance(val, tuple)) and len(val) > 5:
                     labels += [val[5]]
                 elif (isinstance(val, list) or isinstance(val, tuple)) and isinstance(val[0], str):
                     labels += [val[0]]
                 else:
-                    labels += [utl.kwget(kwargs, self.fcpp, '%s_label' % axline, None)]
-            by_plot = utl.kwget(kwargs, self.fcpp, '%s_by_plot' % axline, False)
+                    labels += [utl.kwget(kwargs, self.fcpp, f'{axline}_label', None)]
+            by_plot = utl.kwget(kwargs, self.fcpp, f'{axline}_by_plot', False)
             if by_plot:
                 labels = labels[0]
 
             setattr(self, axline,
                     Element(axline, self.fcpp, kwargs,
                             on=True if axline in kwargs.keys() else False,
+                            obj=self.obj_array,
                             values=values, color=colors, style=styles,
                             width=widths, alpha=alphas, text=labels,
-                            by_plot=utl.kwget(kwargs, self.fcpp, '%s_by_plot' % axline, False),
-                            zorder=utl.kwget(kwargs, self.fcpp, '%s_zorder' % axline, 1),
+                            by_plot=utl.kwget(kwargs, self.fcpp, f'{axline}_by_plot', False),
+                            zorder=utl.kwget(kwargs, self.fcpp, f'{axline}_zorder', 1),
                             ))
 
         return kwargs
@@ -584,12 +617,12 @@ class BaseLayout:
                                        edge_color=utl.kwget(kwargs, self.fcpp, 'box_group_label_edge_color', '#aaaaaa'),
                                        font_color=utl.kwget(kwargs, self.fcpp, 'box_group_label_font_color', '#666666'),
                                        font_size=utl.kwget(kwargs, self.fcpp, 'box_group_label_font_size', 12),
-                                       padding=utl.kwget(kwargs, self.fcpp, 'box_group_label_padding', 10),  # percent
+                                       height=utl.kwget(kwargs, self.fcpp, 'box_group_label_height', 20),
                                        rotation=utl.kwget(kwargs, self.fcpp, 'box_group_label_rotation', 0),
                                        )
 
         # Must have groups to have group labels
-        if 'groups' not in kwargs.keys():
+        if 'groups' not in kwargs.keys() or kwargs['groups'] is None:
             self.box_group_title.on = False
             self.box_group_label.on = False
 
@@ -723,6 +756,7 @@ class BaseLayout:
 
         self.box_divider = Element('box_divider', self.fcpp, kwargs,
                                    on=kwargs.get('box_divider', kwargs.get('box', True)),
+                                   obj=self.obj_array,
                                    color=utl.kwget(kwargs, self.fcpp,
                                                    ['box_divider_color', 'box_divider_line_color'],
                                                    '#bbbbbb'),
@@ -746,7 +780,7 @@ class BaseLayout:
             # edge color
             if not kwargs.get('colors') \
                     and not kwargs.get('marker_edge_color') \
-                    and not self.legend._on:
+                    and (not self.legend._on or str(self.legend.column) == 'True'):
                 self.markers.edge_color = self.color_list[1]
                 self.markers.color_alpha('edge_color', 'edge_alpha')
             elif not kwargs.get('colors') and not kwargs.get('marker_edge_color'):
@@ -825,6 +859,7 @@ class BaseLayout:
                             on=kwargs.get('cbar', False),
                             obj=self.obj_array,
                             size=[cbar_size if not isinstance(cbar_size, list) else cbar_size[0], self.axes.size[1]],
+                            shared=utl.kwget(kwargs, self.fcpp, 'cbar_shared', False),
                             )
         if not self.cbar.on:
             self.label_z.on = False
@@ -852,17 +887,17 @@ class BaseLayout:
             self.color_list = copy.copy(DEFAULT_COLORS)
 
         # Set the cmap
-        self.cmap = kwargs.get('cmap', None)
-        if self.name in ['contour', 'heatmap', 'imshow']:
-            self.cmap = utl.kwget(kwargs, self.fcpp, 'cmap', 'inferno')
+        self.cmap = RepeatedList(utl.validate_list(kwargs.get('cmap', [None])), 'cmap')
+        if self.name in ['contour', 'heatmap']:
+            self.cmap = RepeatedList(utl.validate_list(utl.kwget(kwargs, self.fcpp, 'cmap', ['inferno'])), 'cmap')
 
         # Program any legend value specific color overrides
-        vals = ['fill_alpha', 'fill_color', 'edge_alpha', 'edge_color', 'color']
-        for val in vals:
-            if '%s_override' % val in kwargs.keys():
-                kwargs['%s_override' % val] = utl.kwget(kwargs, self.fcpp, '%s_override' % val, {})
+        color_params = ['fill_alpha', 'fill_color', 'edge_alpha', 'edge_color', 'color']
+        for cp in color_params:
+            if f'{cp}_override' in kwargs.keys():
+                kwargs[f'{cp}_override'] = utl.kwget(kwargs, self.fcpp, f'{cp}_override', {})
             else:
-                kwargs['%s_override' % val] = utl.kwget(kwargs, self.fcpp, 'color_override', {})
+                kwargs[f'{cp}_override'] = utl.kwget(kwargs, self.fcpp, 'color_override', {})
 
         return kwargs
 
@@ -875,21 +910,21 @@ class BaseLayout:
         Returns:
             updated kwargs
         """
-        keys = ['lcl', 'ucl']
-        for key in keys:
-            setattr(self, key, Element(key, self.fcpp, kwargs,
-                                       on=True if kwargs.get(key, False) else False,
-                                       edge_color=utl.kwget(kwargs, self.fcpp, f'{key}_edge_color',
-                                                            copy.copy(self.color_list)),
-                                       edge_alpha=utl.kwget(kwargs, self.fcpp, f'{key}_edge_alpha', 0.25),
-                                       edge_style=utl.kwget(kwargs, self.fcpp, f'{key}_edge_style', '-'),
-                                       edge_width=utl.kwget(kwargs, self.fcpp, f'{key}_edge_width', 1),
-                                       fill_color=utl.kwget(kwargs, self.fcpp, f'{key}_fill_color',
-                                                            copy.copy(self.color_list)),
-                                       fill_alpha=utl.kwget(kwargs, self.fcpp, f'{key}_fill_alpha', 0.2),
-                                       value=utl.validate_list(kwargs.get(key, None)),
-                                       key=key,
-                                       ))
+        control_limits = ['lcl', 'ucl']
+        for cl in control_limits:
+            setattr(self, cl, Element(cl, self.fcpp, kwargs,
+                                      on=True if kwargs.get(cl, False) else False,
+                                      edge_color=utl.kwget(kwargs, self.fcpp, f'{cl}_edge_color',
+                                                           copy.copy(self.color_list)),
+                                      edge_alpha=utl.kwget(kwargs, self.fcpp, f'{cl}_edge_alpha', 0.25),
+                                      edge_style=utl.kwget(kwargs, self.fcpp, f'{cl}_edge_style', '-'),
+                                      edge_width=utl.kwget(kwargs, self.fcpp, f'{cl}_edge_width', 1),
+                                      fill_color=utl.kwget(kwargs, self.fcpp, f'{cl}_fill_color',
+                                                           copy.copy(self.color_list)),
+                                      fill_alpha=utl.kwget(kwargs, self.fcpp, f'{cl}_fill_alpha', 0.2),
+                                      value=utl.validate_list(kwargs.get(cl, None)),
+                                      key=cl,
+                                      ))
         self.control_limit_side = utl.kwget(kwargs, self.fcpp, 'control_limit_side', 'outside')
 
         return kwargs
@@ -910,6 +945,7 @@ class BaseLayout:
 
         self.contour = Element('contour', self.fcpp, kwargs,
                                on=True,
+                               obj=self.obj_array,
                                filled=utl.kwget(kwargs, self.fcpp, ['contour_filled', 'filled'],
                                                 kwargs.get('filled', True)),
                                levels=utl.kwget(kwargs, self.fcpp, ['contour_levels', 'levels'],
@@ -932,6 +968,58 @@ class BaseLayout:
             updated kwargs
         """
         self.fig = Element('fig', self.fcpp, kwargs, edge_width=3)
+
+        return kwargs
+
+    def _init_fills(self, kwargs: dict) -> dict:
+        """Set the rectangular fill element parameters
+
+        Args:
+            kwargs: user-defined keyword args
+
+        Returns:
+            updated kwargs
+        """
+        val = kwargs.get('fills', False)
+        if not isinstance(val, tuple):
+            vals = utl.validate_list(val)
+        else:
+            vals = [vals]
+
+        x0 = []
+        x1 = []
+        y0 = []
+        y1 = []
+        colors = []
+        alphas = []
+        labels = []
+        rows = []
+        cols = []
+        if val is not False:
+            for ival, val in enumerate(vals):
+                x0 += [val[0]]
+                x1 += [val[1]]
+                y0 += [val[2]]
+                y1 += [val[3]]
+                colors += [val[4]]
+                alphas += [val[5]]
+                if len(val) > 6:
+                    labels += [val[6]]
+                else:
+                    labels += [None]
+                if len(val) > 7:
+                    rows += [val[7]]
+                else:
+                    rows += [None]
+                if len(val) > 8:
+                    cols += [val[8]]
+                else:
+                    cols += [None]
+
+        self.fills = Element('fills', self.fcpp, kwargs,
+                             on=True if kwargs.get('fills', False) else False,
+                             x0=x0, x1=x1, y0=y0, y1=y1, colors=colors, alphas=alphas, labels=labels,
+                             rows=rows, cols=cols)
 
         return kwargs
 
@@ -958,9 +1046,15 @@ class BaseLayout:
                            )
 
         self.fit.legend_text = utl.kwget(kwargs, self.fcpp, 'fit_legend_text', None)
-        self.fit.position[0] = self.fit.padding
-        self.fit.position[1] = self.axes.size[1] - \
-            (self.fit.padding + self.fit.font_size)
+
+        # Set default text label positions
+        eqn_position = utl.kwget(kwargs, self.fcpp, 'eqn_position',
+                                 [self.fit.padding,
+                                  f'ymax - {(self.fit.padding + self.fit.font_size)}'])
+        rsq_position = utl.kwget(kwargs, self.fcpp, 'rsq_position',
+                                 [self.fit.padding,
+                                  f'ymax - {(self.fit.padding + self.fit.font_size) + 2.2 * self.fit.font_size}'])
+        self.fit.position = RepeatedList([eqn_position, rsq_position], 'fit_text_position')
 
         return kwargs
 
@@ -1037,20 +1131,20 @@ class BaseLayout:
                     ['x2'] if kwargs.get('grid_major_x2') is True else []
         for ax in ['x', 'y'] + secondary:
             # secondary axes cannot get the grid
-            setattr(self, 'grid_major_%s' % ax,
-                    Element('grid_major_%s' % ax, self.fcpp, kwargs,
-                            on=kwargs.get('grid_major_%s' % ax, self.grid_major.on),
+            setattr(self, f'grid_major_{ax}',
+                    Element(f'grid_major_{ax}', self.fcpp, kwargs,
+                            on=kwargs.get(f'grid_major_{ax}', self.grid_major.on),
                             color=utl.kwget(kwargs, self.fcpp, f'grid_major_{ax}_color', self.grid_major.color),
                             style=utl.kwget(kwargs, self.fcpp, f'grid_major_{ax}_style', self.grid_major.style),
                             width=utl.kwget(kwargs, self.fcpp, f'grid_major_{ax}_width', self.grid_major.width),
                             zorder=utl.kwget(kwargs, self.fcpp, f'grid_major_{ax}_zorder', self.grid_major.zorder),
                             ))
-            if getattr(getattr(self, 'grid_major_%s' % ax), 'on') \
+            if getattr(getattr(self, f'grid_major_{ax}'), 'on') \
                     and ('ticks' not in kwargs.keys() or kwargs['ticks'] is not False) \
-                    and ('ticks_%s' % ax not in kwargs.keys() or kwargs['ticks_%s' % ax] is not False) \
+                    and (f'ticks_{ax}' not in kwargs.keys() or kwargs[f'ticks_{ax}'] is not False) \
                     and ('ticks_major' not in kwargs.keys() or kwargs['ticks_major'] is not False) \
-                    and ('ticks_major_%s' % ax not in kwargs.keys() or kwargs['ticks_major_%s' % ax] is not False):
-                setattr(getattr(self, 'ticks_major_%s' % ax), 'on', True)
+                    and (f'ticks_major_{ax}' not in kwargs.keys() or kwargs[f'ticks_major_{ax}'] is not False):
+                setattr(getattr(self, f'ticks_major_{ax}'), 'on', True)
 
         # Minor gridlines
         self.grid_minor = Element('grid_minor', self.fcpp, kwargs,
@@ -1062,19 +1156,19 @@ class BaseLayout:
                     ['x2'] if kwargs.get('grid_major_x2') is True else []
         for ax in ['x', 'y'] + secondary:
             # secondary axes cannot get the grid
-            setattr(self, 'grid_minor_%s' % ax,
-                    Element('grid_minor_%s' % ax, self.fcpp, kwargs,
-                            on=kwargs.get('grid_minor_%s' % ax, self.grid_minor.on),
-                            color=utl.kwget(kwargs, self.fcpp, 'grid_minor_color_%s' % ax, self.grid_minor.color),
+            setattr(self, f'grid_minor_{ax}',
+                    Element(f'grid_minor_{ax}', self.fcpp, kwargs,
+                            on=kwargs.get(f'grid_minor_{ax}', self.grid_minor.on),
+                            color=utl.kwget(kwargs, self.fcpp, f'grid_minor_color_{ax}', self.grid_minor.color),
                             style=utl.kwget(kwargs, self.fcpp, f'grid_minor_{ax}_style', self.grid_minor.style),
                             width=utl.kwget(kwargs, self.fcpp, f'grid_minor_{ax}_width', self.grid_minor.width),
                             zorder=utl.kwget(kwargs, self.fcpp, f'grid_minor_{ax}_zorder', self.grid_minor.zorder),
                             ))
-            if getattr(self, 'grid_minor_%s' % ax).on and \
+            if getattr(self, f'grid_minor_{ax}').on and \
                     ('ticks' not in kwargs.keys() or kwargs['ticks'] is not False) and \
                     ('ticks_minor' not in kwargs.keys() or kwargs['ticks_minor'] is not False) and \
-                    ('ticks_minor_%s' % ax not in kwargs.keys() or kwargs['ticks_minor_%s' % ax] is not False):
-                getattr(self, 'ticks_minor_%s' % ax).on = True
+                    (f'ticks_minor_{ax}' not in kwargs.keys() or kwargs[f'ticks_minor_{ax}'] is not False):
+                getattr(self, f'ticks_minor_{ax}').on = True
 
         return kwargs
 
@@ -1098,17 +1192,19 @@ class BaseLayout:
             kwargs['heatmap_cell_size'] = kwargs['cell_size']
         self.heatmap = Element('heatmap', self.fcpp, kwargs,
                                on=True,
+                               obj=self.obj_array,
                                cell_size=utl.kwget(kwargs, self.fcpp, 'heatmap_cell_size',
                                                    60 if 'ax_size' not in kwargs else None),
                                edge_width=0,
                                font_color=utl.kwget(kwargs, self.fcpp, 'heatmap_font_color', '#ffffff'),
-                               font_size=12,
+                               font_size=utl.kwget(kwargs, self.fcpp, 'heatmap_font_size', 12),
                                interp=utl.kwget(kwargs, self.fcpp, ['heatmap_interp', 'interp'],
                                                 kwargs.get('interp', 'none')),
+                               rounding=utl.kwget(kwargs, self.fcpp, 'data_labels_rounding', None),
                                text=utl.kwget(kwargs, self.fcpp, 'data_labels', False),
                                )
         if self.heatmap.on and data.x != ['Column']:
-            self.tick_labels_major_x.rotation = utl.kwget(kwargs, self.fcpp, 'tick_labels_major_x', 90)
+            self.tick_labels_major_x.rotation = utl.kwget(kwargs, self.fcpp, 'tick_labels_major_x_rotation', 90)
 
         # Enable cbars by default
         if self.heatmap.on and kwargs.get('cbar', True):
@@ -1200,17 +1296,22 @@ class BaseLayout:
 
         self.imshow = Element('imshow', self.fcpp, kwargs,
                               on=True,
-                              interp=utl.kwget(kwargs, self.fcpp,
-                                               ['imshow_interp', 'interp'],
+                              interp=utl.kwget(kwargs, self.fcpp, ['imshow_interp', 'interp'],
                                                kwargs.get('interp', 'none')),
                               )
 
         # unless the color map is explicity defined in kwargs or self.fcpp,
         # override the inferno default for imshow
         if self.imshow.on and not utl.kwget(kwargs, self.fcpp, 'cmap', None):
-            self.cmap = 'gray'
+            self.cmap = RepeatedList(['gray'], 'cmap')
 
-        # Special gridline/tick/axes defaults for heatmap
+        # Disable axes labels if no label name provided
+        if self.label_x.text is True:
+            self.label_x.on = False
+        if self.label_y.text is True:
+            self.label_y.on = False
+
+        # Special gridline/tick/axes defaults for imshow
         grids = [f for f in kwargs.keys() if f in
                  ['grid_major', 'grid_major_x', 'grid_major_y',
                   'grid_minor', 'grid_minor_x', 'grid_minor_y']]
@@ -1224,8 +1325,6 @@ class BaseLayout:
             kwargs['tick_cleanup'] = False
         self.ticks_major_x.on = utl.kwget(kwargs_orig, self.fcpp, ['ticks_major_x', 'ticks_major'], False)
         self.ticks_major_y.on = utl.kwget(kwargs_orig, self.fcpp, ['ticks_major_y', 'ticks_major'], False)
-        self.label_x.on = utl.kwget(kwargs_orig, self.fcpp, ['label_x'], False)
-        self.label_y.on = utl.kwget(kwargs_orig, self.fcpp, ['label_y'], False)
         self.tick_labels_major_x.rotation = utl.kwget(kwargs_orig, self.fcpp, 'tick_labels_major_x', 0)
         self.tick_labels_major_x.on = \
             utl.kwget(kwargs_orig, self.fcpp, ['tick_labels_major', 'tick_labels_major_x'], False)
@@ -1253,40 +1352,40 @@ class BaseLayout:
         if kwargs.get('perc_int'):
             itype = 'percentile'
             on = True
-            key = 'perc_int'
+            interval = 'perc_int'
         elif kwargs.get('nq_int'):
             itype = 'nq'
             on = True
-            key = 'nq_int'
+            interval = 'nq_int'
         elif kwargs.get('conf_int'):
             itype = 'confidence'
             on = True
-            key = 'conf_int'
+            interval = 'conf_int'
         else:
             itype = None
             on = False
-            key = None
+            interval = None  # this is weird for the params below
         self.interval = Element('interval', self.fcpp, kwargs,
                                 on=on,
                                 type=itype,
                                 edge_color=utl.kwget(kwargs, self.fcpp,
-                                                     f'{key}_edge_color',
+                                                     f'{interval}_edge_color',
                                                      copy.copy(self.color_list)),
                                 edge_alpha=utl.kwget(kwargs, self.fcpp,
-                                                     f'{key}_edge_alpha',
+                                                     f'{interval}_edge_alpha',
                                                      0.25),
                                 edge_style=utl.kwget(kwargs, self.fcpp,
-                                                     f'{key}_edge_style', '-'),
+                                                     f'{interval}_edge_style', '-'),
                                 edge_width=utl.kwget(kwargs, self.fcpp,
-                                                     f'{key}_edge_width', 1),
+                                                     f'{interval}_edge_width', 1),
                                 fill_color=utl.kwget(kwargs, self.fcpp,
-                                                     f'{key}_fill_color',
+                                                     f'{interval}_fill_color',
                                                      copy.copy(self.color_list)),
                                 fill_alpha=utl.kwget(kwargs, self.fcpp,
-                                                     f'{key}_fill_alpha',
+                                                     f'{interval}_fill_alpha',
                                                      0.2),
-                                value=utl.validate_list(kwargs.get(key, None)),
-                                key=key,
+                                value=utl.validate_list(kwargs.get(interval, None)),
+                                key=interval,
                                 )
 
         # Case of percentages instead of decimals between 0 and 1
@@ -1344,6 +1443,7 @@ class BaseLayout:
                                      overflow=0,
                                      text=kwargs.get('legend_title',
                                                      kwargs.get('legend') if kwargs.get('legend') is not True else ''),
+                                     title_font_size=utl.kwget(kwargs, self.fcpp, 'legend_title_font_size', 12),
                                      )
 
         # For pie plot user must force legend enabled
@@ -1356,6 +1456,20 @@ class BaseLayout:
                 self.legend.values[ref_line_legend_text] = []
             self.legend.on = True
             self.legend.text = ''
+
+        # Special case: ax_hvline added to legend without legend grouping column
+        if kwargs['legend'] and (kwargs.get('ax_vlines') or kwargs.get('ax_hlines')):
+            for lines in ['ax_hlines', 'ax_vlines']:
+                if isinstance(kwargs.get(lines), list):
+                    # think this is wrong
+                    for ll in kwargs.get(lines):
+                        if isinstance(ll, list) and len(ll) >= 6:
+                            self.legend.values[ll[6]] = []
+                elif isinstance(kwargs.get(lines), tuple) and len(kwargs.get(lines)) >= 6:
+                    self.legend.values[lines[6]] = []
+            if len(self.legend.values) > 0:
+                self.legend.text = ''
+                self.legend.on = True
 
         # Special case: fit line
         if not self.legend._on and self.fit.on \
@@ -1388,12 +1502,12 @@ class BaseLayout:
         """
         for k in list(kwargs.keys()):
             # Update any kwargs with `line_` to `lines_` to match the actual element name
-            if 'line_' in k and '%ss_%s' % (k.split('_')[0], k.split('_')[1]) \
-                    not in kwargs.keys():
-                kwargs['%ss_%s' % (k.split('_')[0], k.split('_')[1])] = kwargs[k]
+            if 'line_' in k and f"{k.split('_')[0]}s_{k.split('_')[1]}" not in kwargs.keys():
+                kwargs[f"{k.split('_')[0]}s_{k.split('_')[1]}"] = kwargs[k]
+        colors = RepeatedList(copy.copy(self.color_list), 'colors')
         self.lines = Element('lines', self.fcpp, kwargs,
                              on=kwargs.get('lines', True),
-                             color=RepeatedList(copy.copy(self.color_list), 'colors'),
+                             color=utl.kwget(kwargs, self.fcpp, ['lines_color', 'line_color'], colors),
                              values=[],
                              )
 
@@ -1416,21 +1530,23 @@ class BaseLayout:
         else:
             marker_list = utl.validate_list(DEFAULT_MARKERS)
         markers = RepeatedList(marker_list, 'markers')
-        marker_edge_color = utl.kwget(kwargs, self.fcpp, 'marker_edge_color', self.color_list)
-        marker_fill_color = utl.kwget(kwargs, self.fcpp, 'marker_fill_color', self.color_list)
-        if kwargs.get('marker_fill_color'):
+        marker_edge_color = utl.kwget(kwargs, self.fcpp, ['marker_edge_color', 'markers_edge_color'], self.color_list)
+        marker_fill_color = utl.kwget(kwargs, self.fcpp, ['marker_fill_color', 'markers_fill_color'], self.color_list)
+        if kwargs.get('marker_fill_color') or kwargs.get('markers_fill_color'):
             kwargs['marker_fill'] = True
-        self.markers = Element('marker', self.fcpp, kwargs,
+        self.markers = Element('markers', self.fcpp, kwargs,
                                on=utl.kwget(kwargs, self.fcpp, 'markers', True),
-                               filled=utl.kwget(kwargs, self.fcpp, 'marker_fill', False),
+                               filled=utl.kwget(kwargs, self.fcpp, ['marker_fill', 'markers_fill'], False),
+                               edge_alpha=utl.kwget(kwargs, self.fcpp, ['marker_edge_alpha', 'markers_edge_alpha'], 1),
                                edge_color=copy.copy(marker_edge_color),
-                               edge_width=utl.kwget(kwargs, self.fcpp, 'marker_edge_width', 1.5),
+                               edge_width=utl.kwget(kwargs, self.fcpp,
+                                                    ['marker_edge_width', 'markers_edge_width'], 1.5),
                                fill_color=copy.copy(marker_fill_color),
                                jitter=utl.kwget(kwargs, self.fcpp, ['marker_jitter', 'jitter'],
                                                 kwargs.get('jitter', False)),
-                               size=utl.kwget(kwargs, self.fcpp, 'marker_size', 6),
+                               size=utl.kwget(kwargs, self.fcpp, ['marker_size', 'markers_size'], 6),
                                type=markers,
-                               zorder=utl.kwget(kwargs, self.fcpp, 'zorder', 2),
+                               zorder=utl.kwget(kwargs, self.fcpp, ['marker_zorder', 'markers_zorder'], 2),
                                )
         if isinstance(self.markers.size, str) and self.markers.size in data.df_all.columns:
             pass
@@ -1571,14 +1687,16 @@ class BaseLayout:
                               obj=self.obj_array,
                               size=utl.kwget(kwargs, self.fcpp, 'label_rc_size', 30),
                               edge_color=utl.kwget(kwargs, self.fcpp, 'label_rc_edge_color', '#8c8c8c'),
+                              edge_style=utl.kwget(kwargs, self.fcpp, 'label_rc_edge_style', None),
                               edge_width=utl.kwget(kwargs, self.fcpp, 'label_rc_edge_width', 0),
                               fill_color=utl.kwget(kwargs, self.fcpp, 'label_rc_fill_color', '#8c8c8c'),
                               font_color=utl.kwget(kwargs, self.fcpp, 'label_rc_font_color', '#ffffff'),
                               font_size=utl.kwget(kwargs, self.fcpp, 'label_rc_font_size', 16),
                               font_style=utl.kwget(kwargs, self.fcpp, 'label_rc_font_style', 'normal'),
                               font_weight=utl.kwget(kwargs, self.fcpp, 'label_rc_font_weight', 'bold'),
-                              names=utl.kwget(kwargs, self.fcpp, 'label_rc_names', True),
                               align=utl.kwget(kwargs, self.fcpp, 'label_rc_align', 'center'),
+                              padding=utl.kwget(kwargs, self.fcpp, 'label_rc_padding', 0.3),
+                              values_only=utl.kwget(kwargs, self.fcpp, 'label_rc_values_only', False),
                               )
         self.label_row = copy.deepcopy(label_rc)
         self.label_row.on = utl.kwget(kwargs, self.fcpp, 'label_row_on', True) \
@@ -1586,26 +1704,30 @@ class BaseLayout:
         self.label_row.column = kwargs.get('row')
         self.label_row.edge_color = utl.kwget(kwargs, self.fcpp, 'label_row_edge_color', label_rc.edge_color)
         self.label_row.edge_alpha = utl.kwget(kwargs, self.fcpp, 'label_row_edge_alpha', label_rc.edge_alpha)
+        self.label_row.edge_style = utl.kwget(kwargs, self.fcpp, 'label_row_edge_style', label_rc.edge_style)
         self.label_row.edge_width = utl.kwget(kwargs, self.fcpp, 'label_row_edge_width', label_rc.edge_width)
         self.label_row.fill_color = utl.kwget(kwargs, self.fcpp, 'label_row_fill_color', label_rc.fill_color)
         self.label_row.font_color = utl.kwget(kwargs, self.fcpp, 'label_row_font_color', label_rc.font_color)
-        self.label_row.names = utl.kwget(kwargs, self.fcpp, 'label_row_names', label_rc.names)
+        self.label_row.font_size = utl.kwget(kwargs, self.fcpp, 'label_row_font_size', label_rc.font_size)
+        self.label_row.padding = utl.kwget(kwargs, self.fcpp, 'label_row_padding', label_rc.padding)
+        self.label_row.rotation = utl.kwget(kwargs, self.fcpp, 'label_row_rotation', 270)
+        self.label_row.values_only = utl.kwget(kwargs, self.fcpp, 'label_row_values_only', label_rc.values_only)
         self.label_row.size = [utl.kwget(kwargs, self.fcpp, 'label_row_size', label_rc._size), self.axes.size[1]]
-        self.label_row.text_size = None
-        self.label_row.rotation = 270
 
         self.label_col = copy.deepcopy(label_rc)
         self.label_col.on = utl.kwget(kwargs, self.fcpp, 'label_col_on', True) \
             if kwargs.get('col') not in [None, 'x'] else False
         self.label_row.column = kwargs.get('col')
         self.label_col.edge_color = utl.kwget(kwargs, self.fcpp, 'label_col_edge_color', label_rc.edge_color)
+        self.label_col.edge_width = utl.kwget(kwargs, self.fcpp, 'label_col_edge_style', label_rc.edge_style)
         self.label_col.edge_width = utl.kwget(kwargs, self.fcpp, 'label_col_edge_width', label_rc.edge_width)
         self.label_col.edge_alpha = utl.kwget(kwargs, self.fcpp, 'label_col_edge_alpha', label_rc.edge_alpha)
         self.label_col.fill_color = utl.kwget(kwargs, self.fcpp, 'label_col_fill_color', label_rc.fill_color)
         self.label_col.font_color = utl.kwget(kwargs, self.fcpp, 'label_col_font_color', label_rc.font_color)
-        self.label_col.names = utl.kwget(kwargs, self.fcpp, 'label_col_names', label_rc.names)
+        self.label_col.font_size = utl.kwget(kwargs, self.fcpp, 'label_col_font_size', label_rc.font_size)
+        self.label_col.padding = utl.kwget(kwargs, self.fcpp, 'label_col_padding', label_rc.padding)
+        self.label_col.values_only = utl.kwget(kwargs, self.fcpp, 'label_col_values_only', label_rc.values_only)
         self.label_col.size = [self.axes.size[0], utl.kwget(kwargs, self.fcpp, 'label_col_size', label_rc._size)]
-        self.label_col.text_size = None
 
         # Wrap label
         self.label_wrap = DF_Element('label_wrap', self.fcpp, kwargs,
@@ -1613,9 +1735,12 @@ class BaseLayout:
                                      if kwargs.get('wrap') else False,
                                      obj=self.obj_array,
                                      column=kwargs.get('wrap'),
-                                     size=[self.axes.size[0], utl.kwget(kwargs, self.fcpp, 'label_wrap_size', 30)],
+                                     size=[self.axes.size[0],
+                                           utl.kwget(kwargs, self.fcpp, 'label_wrap_size', label_rc._size)],
                                      edge_color=utl.kwget(kwargs, self.fcpp, 'label_wrap_edge_color',
                                                           label_rc.edge_color),
+                                     edge_style=utl.kwget(kwargs, self.fcpp, 'label_wrap_edge_style',
+                                                          label_rc.edge_style),
                                      edge_width=utl.kwget(kwargs, self.fcpp, 'label_wrap_edge_width',
                                                           label_rc.edge_width),
                                      edge_alpha=utl.kwget(kwargs, self.fcpp, 'label_wrap_edge_alpha',
@@ -1633,15 +1758,26 @@ class BaseLayout:
                                                           label_rc.font_style),
                                      font_weight=utl.kwget(kwargs, self.fcpp, 'label_wrap_font_weight',
                                                            label_rc.font_weight),
-                                     text_size=None,
                                      align=utl.kwget(kwargs, self.fcpp, 'label_wrap_align', 'center'),
+                                     padding=utl.kwget(kwargs, self.fcpp, 'label_wrap_padding', label_rc.padding),
+                                     values_only=utl.kwget(kwargs, self.fcpp, 'label_wrap_values_only',
+                                                           label_rc.values_only),
                                      )
+        # If no label edge width specified, match axes edge width for better alias matching
+        # if self.label_wrap.edge_width == 0 \
+        #         and not any(f in ['label_rc_edge_width', 'label_wrap_edge_width'] for f in kwargs.keys()):
+        #     self.label_wrap.edge_width = self.axes.edge_width
+        #     self.label_wrap._size[1] -= self.axes.edge_width
+        # Unless specified, edge color matches fill color
+        if not any(f in ['label_rc_edge_color', 'label_wrap_edge_color'] for f in kwargs.keys()):
+            self.label_wrap.edge_color = self.label_wrap.fill_color
 
         self.title_wrap = Element('title_wrap', self.fcpp, kwargs,
                                   on=utl.kwget(kwargs, self.fcpp, 'title_wrap_on', True)
                                   if kwargs.get('wrap') else False,
                                   size=utl.kwget(kwargs, self.fcpp, 'title_wrap_size', label_rc.size),
                                   edge_color=utl.kwget(kwargs, self.fcpp, 'title_wrap_edge_color', '#5f5f5f'),
+                                  edge_style=utl.kwget(kwargs, self.fcpp, 'title_wrap_edge_style', label_rc.edge_style),
                                   edge_width=utl.kwget(kwargs, self.fcpp, 'title_wrap_edge_width', label_rc.edge_width),
                                   edge_alpha=utl.kwget(kwargs, self.fcpp, 'title_wrap_edge_alpha', label_rc.edge_alpha),
                                   fill_color=utl.kwget(kwargs, self.fcpp, 'title_wrap_fill_color', '#5f5f5f'),
@@ -1654,10 +1790,19 @@ class BaseLayout:
                                                         label_rc.font_weight),
                                   text=kwargs.get('title_wrap', None),
                                   align=utl.kwget(kwargs, self.fcpp, 'title_wrap_align', 'center'),
+                                  padding=utl.kwget(kwargs, self.fcpp, 'title_wrap_padding', label_rc.padding),
                                   )
 
         if not isinstance(self.title_wrap.size, list):
             self.title_wrap.size = [self.axes.size[0], self.title_wrap.size]
+        # # If no title edge width specified, match axes edge width for better alias matching
+        # if self.title_wrap.edge_width == 0 \
+        #         and not any(f in ['label_rc_edge_width', 'title_wrap_edge_width'] for f in kwargs.keys()):
+        #     self.title_wrap.edge_width = self.axes.edge_width
+        #     self.title_wrap._size[1] -= 2 * np.ceil(self.axes.edge_width / 2)
+        # Unless specified, edge color matches fill color
+        if not any(f in ['title_rc_edge_color', 'title_wrap_edge_color'] for f in kwargs.keys()):
+            self.title_wrap.edge_color = self.title_wrap.fill_color
 
         return kwargs
 
@@ -1673,7 +1818,7 @@ class BaseLayout:
         position = utl.kwget(kwargs, self.fcpp, 'text_position', [0, 0])
         if not isinstance(position[0], list):
             position = [position]
-        self.text = Element('text', self.fcpp, {},
+        self.text = Element('text', self.fcpp, {'engine': kwargs.get('engine', 'undefined')},
                             on=True if utl.kwget(kwargs, self.fcpp, 'text', None)
                             is not None else False,
                             obj=self.obj_array,
@@ -1698,7 +1843,7 @@ class BaseLayout:
                                                                'text_font_weight', 'normal'),
                                                      'text_font_weight'),
                             position=RepeatedList(position, 'text_position'),
-                            coordinate=utl.kwget(kwargs, self.fcpp, 'text_coordinate', 'axis'),
+                            coordinate=utl.kwget(kwargs, self.fcpp, ['text_coordinate', 'text_coord'], 'axis'),
                             rotation=RepeatedList(utl.kwget(kwargs, self.fcpp,
                                                   'text_rotation', 0), 'text_rotation'),
                             units=utl.kwget(kwargs, self.fcpp,
@@ -1724,11 +1869,12 @@ class BaseLayout:
         # Major ticks
         if 'ticks' in kwargs.keys() and 'ticks_major' not in kwargs.keys():
             kwargs['ticks_major'] = kwargs['ticks']
-        ticks_length = utl.kwget(kwargs, self.fcpp, 'ticks_length', 6.2)
-        ticks_width = utl.kwget(kwargs, self.fcpp, 'ticks_width', 2.2)
+        ticks_length = utl.kwget(kwargs, self.fcpp, ['tick_length', 'ticks_length'], 6.2)
+        ticks_width = utl.kwget(kwargs, self.fcpp, ['tick_width', 'ticks_width'], 2.2)
         self.ticks_major = Element('ticks_major', self.fcpp, kwargs,
                                    on=utl.kwget(kwargs, self.fcpp, 'ticks_major', True),
-                                   color=utl.kwget(kwargs, self.fcpp, 'ticks_major_color', '#ffffff'),
+                                   color=utl.kwget(kwargs, self.fcpp,
+                                                   ['tick_color', 'ticks_color', 'ticks_major_color'], '#ffffff'),
                                    direction=utl.kwget(kwargs, self.fcpp, 'ticks_major_direction', 'in'),
                                    increment=utl.kwget(kwargs, self.fcpp, 'ticks_major_increment', None),
                                    size=[utl.kwget(kwargs, self.fcpp, 'ticks_major_length', ticks_length),
@@ -1736,27 +1882,25 @@ class BaseLayout:
                                    )
         kwargs = self._from_list(self.ticks_major, ['color', 'increment'], 'ticks_major', kwargs)
         for ia, ax in enumerate(self.ax):
-            setattr(self, 'ticks_major_%s' % ax,
-                    Element('ticks_major_%s' % ax, self.fcpp, kwargs,
-                            on=utl.kwget(kwargs, self.fcpp,
-                                         'ticks_major_%s' % ax, self.ticks_major.on),
+            setattr(self, f'ticks_major_{ax}',
+                    Element(f'ticks_major_{ax}', self.fcpp, kwargs,
+                            on=utl.kwget(kwargs, self.fcpp, f'ticks_major_{ax}', self.ticks_major.on),
                             color=copy.copy(self.ticks_major.color),
                             direction=utl.kwget(kwargs, self.fcpp,
-                                                'ticks_major_%s_direction' % ax,
+                                                f'ticks_major_{ax}_direction',
                                                 self.ticks_major.direction),
                             increment=utl.kwget(kwargs, self.fcpp,
-                                                'ticks_major_%s_increment' % ax,
+                                                f'ticks_major_{ax}_increment',
                                                 self.ticks_major.increment),
                             size=self.ticks_major.size,
                             ))
-        if 'tick_labels' in kwargs.keys() \
-                and 'tick_labels_major' not in kwargs.keys():
+        if 'tick_labels' in kwargs.keys() and 'tick_labels_major' not in kwargs.keys():
             kwargs['tick_labels_major'] = kwargs['tick_labels']
         for k, v in kwargs.copy().items():
             if 'tick_labels' in k and 'major' not in k and 'minor' not in k:
-                kwargs['tick_labels_major%s' % k.split('tick_labels')[1]] = v
+                kwargs[f"tick_labels_major{k.split('tick_labels')[1]}"] = v
                 if k != 'tick_labels':
-                    kwargs['tick_labels_minor%s' % k.split('tick_labels')[1]] = v
+                    kwargs[f"tick_labels_minor{k.split('tick_labels')[1]}"] = v
         self.tick_labels_major = \
             Element('tick_labels_major', self.fcpp, kwargs,
                     on=utl.kwget(kwargs, self.fcpp, 'tick_labels_major', kwargs.get('tick_labels', True)),
@@ -1771,40 +1915,28 @@ class BaseLayout:
                     font=utl.kwget(kwargs, self.fcpp, 'tick_labels_font', 'sans-serif'),
                     font_size=utl.kwget(kwargs, self.fcpp, 'tick_labels_font_size', 13),
                     offset=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_offset', False),
-                    padding=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_padding', 1),
+                    padding=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_padding', 2),
                     scale_factor=1.5,
+                    edge_width=utl.kwget(kwargs, self.fcpp, 'tick_labels_major_edge_width', 0)
                     )
         kwargs = self._from_list(self.tick_labels_major,
-                                 ['font', 'font_color', 'font_size',
-                                  'font_style', 'font_weight', 'padding',
+                                 ['font', 'font_color', 'font_size', 'font_style', 'font_weight', 'padding',
                                   'rotation'], 'tick_labels_major', kwargs)
         for ax in self.ax + ['z']:
-            fill_alpha = utl.kwget(kwargs, self.fcpp,
-                                   'tick_labels_major_%s_fill_alpha' % ax,
-                                   utl.kwget(kwargs, self.fcpp,
-                                             'tick_labels_major_fill_alpha',
-                                             None))
-            fill_color = utl.kwget(kwargs, self.fcpp,
-                                   'tick_labels_major_%s_fill_color' % ax,
-                                   utl.kwget(kwargs, self.fcpp,
-                                             'tick_labels_major_fill_color',
-                                             None))
+            fill_alpha = utl.kwget(kwargs, self.fcpp, f'tick_labels_major_{ax}_fill_alpha',
+                                   utl.kwget(kwargs, self.fcpp, 'tick_labels_major_fill_alpha', None))
+            fill_color = utl.kwget(kwargs, self.fcpp, f'tick_labels_major_{ax}_fill_color',
+                                   utl.kwget(kwargs, self.fcpp, 'tick_labels_major_fill_color', None))
             if not fill_alpha and fill_color:
                 fill_alpha = 1
             elif not fill_alpha and not fill_color:
                 fill_alpha = 0
             if not fill_color:
                 fill_color = copy.copy(self.tick_labels_major.fill_color)
-            edge_alpha = utl.kwget(kwargs, self.fcpp,
-                                   'tick_labels_major_%s_edge_alpha' % ax,
-                                   utl.kwget(kwargs, self.fcpp,
-                                             'tick_labels_major_edge_alpha',
-                                             None))
-            edge_color = utl.kwget(kwargs, self.fcpp,
-                                   'tick_labels_major_%s_edge_color' % ax,
-                                   utl.kwget(kwargs, self.fcpp,
-                                             'tick_labels_major_edge_color',
-                                             None))
+            edge_alpha = utl.kwget(kwargs, self.fcpp, f'tick_labels_major_{ax}_edge_alpha',
+                                   utl.kwget(kwargs, self.fcpp, 'tick_labels_major_edge_alpha', None))
+            edge_color = utl.kwget(kwargs, self.fcpp, f'tick_labels_major_{ax}_edge_color',
+                                   utl.kwget(kwargs, self.fcpp, 'tick_labels_major_edge_color', None))
             if not edge_alpha and edge_color:
                 edge_alpha = 1
             elif not edge_alpha and not edge_color:
@@ -1816,22 +1948,18 @@ class BaseLayout:
                 axl = '2'
             else:
                 axl = ''
-            if getattr(self, 'axes%s' % axl).scale in globals()['LOG%s' % ax[0].upper()] and \
-                    not utl.kwget(kwargs, self.fcpp, 'sci_%s' % ax, False) and \
-                    'sci_%s' % ax not in kwargs.keys():
-                kwargs['sci_%s' % ax] = 'best'
+            if getattr(self, f'axes{axl}').scale in globals()[f'LOG{ax[0].upper()}'] and \
+                    not utl.kwget(kwargs, self.fcpp, f'sci_{ax}', False) and f'sci_{ax}' not in kwargs.keys():
+                kwargs[f'sci_{ax}'] = 'best'
 
-            setattr(self, 'tick_labels_major_%s' % ax,
-                    Element('tick_labels_major_%s' % ax, self.fcpp, kwargs,
-                            on=utl.kwget(kwargs, self.fcpp,
-                                         'tick_labels_major_%s' % ax,
-                                         self.tick_labels_major.on),
+            setattr(self, f'tick_labels_major_{ax}',
+                    Element(f'tick_labels_major_{ax}', self.fcpp, kwargs,
+                            on=utl.kwget(kwargs, self.fcpp, f'tick_labels_major_{ax}', self.tick_labels_major.on),
                             obj=self.obj_array,
                             edge_color=edge_color,
                             edge_alpha=edge_alpha,
                             edge_width=utl.kwget(kwargs, self.fcpp,
-                                                 [f'tick_labels_major_{ax}_edge_width',
-                                                  'tick_labels_major_edge_width'],
+                                                 [f'tick_labels_major_{ax}_edge_width', 'tick_labels_major_edge_width'],
                                                  self.tick_labels_major.edge_width),
                             fill_color=fill_color,
                             fill_alpha=fill_alpha,
@@ -1854,19 +1982,21 @@ class BaseLayout:
                             offset=utl.kwget(kwargs, self.fcpp,
                                              [f'tick_labels_major_{ax}_offset', 'tick_labels_major_offset'],
                                              self.tick_labels_major.offset),
+                            padding=utl.kwget(kwargs, self.fcpp,
+                                              [f'tick_labels_major_{ax}_padding', 'tick_labels_major_padding'],
+                                              self.tick_labels_major.padding),
                             rotation=utl.kwget(kwargs, self.fcpp,
                                                [f'tick_labels_major_{ax}_rotation', 'tick_labels_major_rotation'],
                                                self.tick_labels_major.rotation),
                             size=[0, 0],
                             scale_factor=self.tick_labels_major.scale_factor,
-                            sci=utl.kwget(kwargs, self.fcpp, 'sci_%s' % ax, 'best'),
+                            sci=utl.kwget(kwargs, self.fcpp, f'sci_{ax}', 'best'),
                             ))
         self.auto_tick_threshold = utl.kwget(kwargs, self.fcpp, 'auto_tick_threshold', [1e-6, 1e6])
 
         # Minor ticks
         self.ticks_minor = Element('ticks_minor', self.fcpp, kwargs,
-                                   on=utl.kwget(kwargs, self.fcpp,
-                                                'ticks_minor', False),
+                                   on=utl.kwget(kwargs, self.fcpp, 'ticks_minor', False),
                                    color='#ffffff',
                                    direction=utl.kwget(kwargs, self.fcpp, 'ticks_minor_direction', 'in'),
                                    number=utl.kwget(kwargs, self.fcpp, 'ticks_minor_number', 3),
@@ -1875,27 +2005,22 @@ class BaseLayout:
                                    )
         kwargs = self._from_list(self.ticks_minor, ['color', 'number'], 'ticks_minor', kwargs)
         for ax in self.ax:
-            setattr(self, 'ticks_minor_%s' % ax,
-                    Element('ticks_minor_%s' % ax, self.fcpp, kwargs,
-                            on=utl.kwget(kwargs, self.fcpp,
-                                         'ticks_minor_%s' % ax, self.ticks_minor.on),
+            setattr(self, f'ticks_minor_{ax}',
+                    Element(f'ticks_minor_{ax}', self.fcpp, kwargs,
+                            on=utl.kwget(kwargs, self.fcpp, f'ticks_minor_{ax}', self.ticks_minor.on),
                             color=copy.copy(self.ticks_minor.color),
                             direction=utl.kwget(kwargs, self.fcpp,
-                                                'ticks_minor_%s_direction' % ax,
+                                                f'ticks_minor_{ax}_direction',
                                                 self.ticks_minor.direction),
-                            number=utl.kwget(kwargs, self.fcpp,
-                                             'ticks_minor_%s_number' % ax,
-                                             self.ticks_minor.number),
+                            number=utl.kwget(kwargs, self.fcpp, f'ticks_minor_{ax}_number', self.ticks_minor.number),
                             size=self.ticks_minor._size,
                             ))
-            if 'ticks_minor_%s_number' % ax in kwargs.keys():
-                getattr(self, 'ticks_minor_%s' % ax).on = True
+            if f'ticks_minor_{ax}_number' in kwargs.keys():
+                getattr(self, f'ticks_minor_{ax}').on = True
 
         self.tick_labels_minor = \
             Element('tick_labels_minor', self.fcpp, kwargs,
-                    on=utl.kwget(kwargs, self.fcpp,
-                                 'tick_labels_minor',
-                                 False),
+                    on=utl.kwget(kwargs, self.fcpp, 'tick_labels_minor', False),
                     edge_alpha=0 if not kwargs.get('tick_labels_edge_alpha', None)
                     and not kwargs.get('tick_labels_minor_edge_alpha', None)
                     and not kwargs.get('tick_labels_minor_edge_color', None)
@@ -1905,17 +2030,17 @@ class BaseLayout:
                     and not kwargs.get('tick_labels_minor_fill_color', None)
                     else 1,
                     font_size=10,
-                    padding=utl.kwget(kwargs, self.fcpp,
-                                      'tick_labels_minor_padding', 3),
+                    padding=utl.kwget(kwargs, self.fcpp, 'tick_labels_minor_padding', 2),
+                    edge_width=utl.kwget(kwargs, self.fcpp, 'tick_labels_minor_edge_width', 0),
                     )
         kwargs = self._from_list(self.tick_labels_minor,
                                  ['font', 'font_color', 'font_size',
                                   'font_style', 'font_weight', 'padding',
                                   'rotation'], 'tick_labels_minor', kwargs)
         for ax in self.ax:
-            fill_alpha = utl.kwget(kwargs, self.fcpp, 'tick_labels_minor_%s_fill_alpha' % ax,
+            fill_alpha = utl.kwget(kwargs, self.fcpp, f'tick_labels_minor_{ax}_fill_alpha',
                                    utl.kwget(kwargs, self.fcpp, 'tick_labels_minor_fill_alpha', None))
-            fill_color = utl.kwget(kwargs, self.fcpp, 'tick_labels_minor_%s_fill_color' % ax,
+            fill_color = utl.kwget(kwargs, self.fcpp, f'tick_labels_minor_{ax}_fill_color',
                                    utl.kwget(kwargs, self.fcpp, 'tick_labels_minor_fill_color', None))
             if not fill_alpha and fill_color:
                 fill_alpha = 1
@@ -1924,9 +2049,9 @@ class BaseLayout:
             if not fill_color:
                 fill_color = copy.copy(self.tick_labels_minor.fill_color)
 
-            edge_alpha = utl.kwget(kwargs, self.fcpp, 'tick_labels_minor_%s_edge_alpha' % ax,
+            edge_alpha = utl.kwget(kwargs, self.fcpp, f'tick_labels_minor_{ax}_edge_alpha',
                                    utl.kwget(kwargs, self.fcpp, 'tick_labels_minor_edge_alpha', None))
-            edge_color = utl.kwget(kwargs, self.fcpp, 'tick_labels_minor_%s_edge_color' % ax,
+            edge_color = utl.kwget(kwargs, self.fcpp, f'tick_labels_minor_{ax}_edge_color',
                                    utl.kwget(kwargs, self.fcpp, 'tick_labels_minor_edge_color', None))
             if not edge_alpha and edge_color:
                 edge_alpha = 1
@@ -1935,11 +2060,9 @@ class BaseLayout:
             if not edge_color:
                 edge_color = copy.copy(self.tick_labels_minor.edge_color)
 
-            setattr(self, 'tick_labels_minor_%s' % ax,
-                    Element('tick_labels_minor_%s' % ax, self.fcpp, kwargs,
-                            on=utl.kwget(kwargs, self.fcpp,
-                                         'tick_labels_minor_%s' % ax,
-                                         self.tick_labels_minor.on),
+            setattr(self, f'tick_labels_minor_{ax}',
+                    Element(f'tick_labels_minor_{ax}', self.fcpp, kwargs,
+                            on=utl.kwget(kwargs, self.fcpp, f'tick_labels_minor_{ax}', self.tick_labels_minor.on),
                             obj=self.obj_array,
                             edge_color=edge_color,
                             edge_alpha=edge_alpha,
@@ -1964,17 +2087,21 @@ class BaseLayout:
                                                   [f'tick_labels_minor_{ax}_font_weight',
                                                    'tick_labels_minor_font_weight'],
                                                   self.tick_labels_minor.font_weight),
+                            padding=utl.kwget(kwargs, self.fcpp,
+                                              [f'tick_labels_minor_{ax}_padding', 'tick_labels_minor_padding'],
+                                              self.tick_labels_minor.padding),
                             rotation=utl.kwget(kwargs, self.fcpp,
                                                [f'tick_labels_minor_{ax}_rotation', 'tick_labels_minor_rotation'],
                                                self.tick_labels_minor.rotation),
                             size=[0, 0],
-                            sci=utl.kwget(kwargs, self.fcpp, 'sci_%s' % ax, False),
+                            sci=utl.kwget(kwargs, self.fcpp, f'sci_{ax}', False),
                             ))
 
-            if getattr(self, 'tick_labels_minor_%s' % ax).on:
-                getattr(self, 'ticks_minor_%s' % ax).on = True
+            if getattr(self, f'tick_labels_minor_{ax}').on:
+                getattr(self, f'ticks_minor_{ax}').on = True
 
         self.tick_y_top_xs = 0
+        self.tick_z_top_xs = 0
 
         return kwargs
 
@@ -1991,10 +2118,13 @@ class BaseLayout:
         self.title = Element('title', self.fcpp, kwargs,
                              on=True if title is not None else False,
                              text=str(title) if title is not None else None,
+                             edge_style=utl.kwget(kwargs, self.fcpp, 'title_edge_style', None),
                              font_color=utl.kwget(kwargs, self.fcpp, 'title_font_color', '#333333'),
                              font_size=utl.kwget(kwargs, self.fcpp, 'title_font_size', 18),
                              font_weight=utl.kwget(kwargs, self.fcpp, 'title_font_weight', 'bold'),
                              align=utl.kwget(kwargs, self.fcpp, 'title_align', 'center'),
+                             padding=utl.kwget(kwargs, self.fcpp, 'title_padding', 0),
+                             span=utl.kwget(kwargs, self.fcpp, 'title_span', 'axes'),
                              )
         return kwargs
 
@@ -2060,12 +2190,12 @@ class BaseLayout:
         for attr in attrs:
             if isinstance(getattr(base, attr), list):
                 setattr(base, attr, getattr(base, attr) + [None] * (len(getattr(base, attr)) - 3))
-                kwargs['%s_x_%s' % (name, attr)] = getattr(base, attr)[0]
-                kwargs['%s_y_%s' % (name, attr)] = getattr(base, attr)[1]
+                kwargs[f'{name}_x_{attr}'] = getattr(base, attr)[0]
+                kwargs[f'{name}_y_{attr}'] = getattr(base, attr)[1]
                 if 'twin_x' in kwargs.keys() and kwargs['twin_x']:
-                    kwargs['%s_y2_%s' % (name, attr)] = getattr(base, attr)[2]
+                    kwargs[f'{name}_y2_{attr}'] = getattr(base, attr)[2]
                 if 'twin_y' in kwargs.keys() and kwargs['twin_y']:
-                    kwargs['%s_x2_%s' % (name, attr)] = getattr(base, attr)[2]
+                    kwargs[f'{name}_x2_{attr}'] = getattr(base, attr)[2]
 
         return kwargs
 
@@ -2095,8 +2225,7 @@ class BaseLayout:
         """
 
     def _set_label_text(self, data: 'data.Data'):
-        """Set the default label text for x, y, z axes and col, row, wrap
-        grouping labels
+        """Set the default label text for x, y, z axes and col, row, wrap grouping labels.
 
         Args:
             data: Data class object for the plot
@@ -2111,59 +2240,50 @@ class BaseLayout:
                 continue
 
             # Get label override name if in kwargs
-            if 'label_%s' % lab in kwargs.keys():
-                lab_text = str(kwargs.get('label_%s' % lab))
-                lab_text2 = str(kwargs.get('label_%s2' % lab))
-            elif 'label_%s_text' % lab in kwargs.keys():
-                lab_text = str(kwargs.get('label_%s_text' % lab))
-                lab_text2 = str(kwargs.get('label_%s2_text' % lab))
+            if f'label_{lab}' in kwargs.keys():
+                lab_text = str(kwargs.get(f'label_{lab}'))
+                lab_text2 = str(kwargs.get(f'label_{lab}2'))
+            elif f'label_{lab}_text' in kwargs.keys():
+                lab_text = str(kwargs.get(f'label_{lab}_text'))
+                lab_text2 = str(kwargs.get(f'label_{lab}2_text'))
             else:
                 lab_text = None
                 lab_text2 = None
 
             if lab == 'x' and self.axes.twin_y:
-                getattr(self, 'label_x').text = \
-                    lab_text if lab_text is not None else dd[0]
-                getattr(self, 'label_x2').text = \
-                    lab_text2 if lab_text2 is not None else getattr(data, '%s2' % lab)[
-                    0]
+                getattr(self, 'label_x').text = lab_text if lab_text is not None else dd[0]
+                getattr(self, 'label_x2').text = lab_text2 if lab_text2 is not None else getattr(data, f'{lab}2')[0]
             elif lab == 'y' and self.axes.twin_x:
-                getattr(self, 'label_y').text = \
-                    lab_text if lab_text is not None else dd[0]
-                getattr(self, 'label_y2').text = \
-                    lab_text2 if lab_text2 is not None else getattr(data, '%s2' % lab)[
-                    0]
+                getattr(self, 'label_y').text = lab_text if lab_text is not None else dd[0]
+                getattr(self, 'label_y2').text = lab_text2 if lab_text2 is not None else getattr(data, f'{lab}2')[0]
             else:
                 if lab == 'wrap':
                     # special case
                     val = 'title_wrap'
                 else:
-                    val = 'label_%s' % lab
+                    val = f'label_{lab}'
                 if isinstance(dd, list):
-                    if data.wrap == 'y' and lab == 'y' \
-                            or data.wrap == 'x' and lab == 'x':
+                    if data.wrap == 'y' and lab == 'y' or data.wrap == 'x' and lab == 'x':
                         getattr(self, val).text = data.wrap_vals
                     elif lab == 'x' and data.col == 'x':
                         getattr(self, val).text = data.x_vals * self.nrow
-                    elif lab == 'y' and data.row == 'y':
+                    elif lab == 'y' and data.row == 'y' and 'label_y' not in kwargs:
                         yvals = []
                         for yval in data.y_vals:
                             yvals += [yval] * self.ncol
                         getattr(self, val).text = yvals
+                    elif val == 'title_wrap':
+                        getattr(self, val).text = lab_text if lab_text is not None else ' | '.join([str(f) for f in dd])
                     else:
-                        getattr(self, val).text = \
-                            lab_text if lab_text is not None \
-                            else ' & '.join([str(f) for f in dd])
+                        getattr(self, val).text = lab_text if lab_text is not None else ' & '.join([str(f) for f in dd])
                 else:
                     getattr(self, val).text = dd
-                if lab != 'z' and hasattr(self, 'label_%s2' % lab):
-                    getattr(self, 'label_%s2' % lab).text = \
-                        lab_text2 if lab_text2 is not None \
-                        else ' & '.join([str(f) for f in dd])
+                if lab != 'z' and hasattr(self, f'label_{lab}2') and getattr(self, f'label_{lab}2').text is not None:
+                    getattr(self, f'label_{lab}2').text = \
+                        lab_text2 if lab_text2 is not None else ' & '.join([str(f) for f in dd])
 
-            if hasattr(data, '%s_vals' % lab):
-                getattr(self, 'label_%s' % lab).values = \
-                    getattr(data, '%s_vals' % lab)
+            if hasattr(data, f'{lab}_vals'):
+                getattr(self, f'label_{lab}').values = getattr(data, f'{lab}_vals')
 
         if 'hist' in self.name:
             if self.hist.normalize:
@@ -2216,7 +2336,7 @@ class BaseLayout:
             self.ws_row = kwargs.get('ws_row', self.label_wrap._size[1])
             self.ws_row_def = int(self.ws_row)
             self.ws_col = kwargs.get('ws_col', 0)
-            self.ws_col_def = 0
+            self.ws_col_def = int(self.ws_col)
 
     @abc.abstractmethod
     def add_box_labels(self, ir: int, ic: int, data):
@@ -2338,6 +2458,7 @@ class BaseLayout:
         kwargs['fill_color'] = copy.copy(element.fill_color)
         kwargs['edge_color'] = copy.copy(element.edge_color)
         kwargs['edge_width'] = copy.copy(element.edge_width)
+        kwargs['edge_width_adj'] = copy.copy(element.edge_width_adj)
         kwargs['font'] = copy.copy(element.font)
         kwargs['font_weight'] = copy.copy(element.font_weight)
         kwargs['font_style'] = copy.copy(element.font_style)
@@ -2683,6 +2804,7 @@ class Element:
         # Defaults
         self._on = kwargs.get('on', True)  # visbile or not
         self.name = name
+        self.engine = kwargs.get('engine', 'undefined').lower()
         self.dpi = utl.kwget(kwargs, fcpp, 'dpi', 100)
         if obj is None:
             self.obj = None
@@ -2697,9 +2819,9 @@ class Element:
         self._size_orig = kwargs.get('size', [0, 0])
         self._text = kwargs.get('text', True)  # text label
         self._text_orig = kwargs.get('text')
-        self.rotation = utl.kwget(kwargs, fcpp, '%s_rotation' % name,
+        self.rotation = utl.kwget(kwargs, fcpp, f'{name}_rotation',
                                   kwargs.get('rotation', 0))
-        self.zorder = utl.kwget(kwargs, fcpp, '%s_zorder' % name,
+        self.zorder = utl.kwget(kwargs, fcpp, f'{name}_zorder',
                                 kwargs.get('zorder', 0))
 
         # For some elements that are unique by axes, track sizes as DataFrame
@@ -2709,11 +2831,11 @@ class Element:
 
         # fill and edge colors
         if 'fill_alpha' not in kwargs:
-            self.fill_alpha = utl.kwget(kwargs, fcpp, '%s_fill_alpha' % name, kwargs.get('fill_alpha', 1))
+            self.fill_alpha = utl.kwget(kwargs, fcpp, f'{name}_fill_alpha', kwargs.get('fill_alpha', 1))
         else:
             self.fill_alpha = kwargs['fill_alpha']
         if 'fill_color' not in kwargs:
-            self.fill_color = utl.kwget(kwargs, fcpp, '%s_fill_color' % name, kwargs.get('fill_color', '#ffffff'))
+            self.fill_color = utl.kwget(kwargs, fcpp, f'{name}_fill_color', kwargs.get('fill_color', '#ffffff'))
         else:
             self.fill_color = kwargs['fill_color']
         if not isinstance(self.fill_color, RepeatedList) \
@@ -2721,15 +2843,15 @@ class Element:
                 or self.fill_alpha != 1:
             self.color_alpha('fill_color', 'fill_alpha')
         if 'edge_width' not in kwargs:
-            self.edge_width = utl.kwget(kwargs, fcpp, '%s_edge_width' % name, kwargs.get('edge_width', 1))
+            self.edge_width = utl.kwget(kwargs, fcpp, f'{name}_edge_width', kwargs.get('edge_width', 1))
         else:
             self.edge_width = kwargs['edge_width']
         if 'edge_alpha' not in kwargs:
-            self.edge_alpha = utl.kwget(kwargs, fcpp, '%s_edge_alpha' % name, kwargs.get('edge_alpha', 1))
+            self.edge_alpha = utl.kwget(kwargs, fcpp, f'{name}_edge_alpha', kwargs.get('edge_alpha', 1))
         else:
             self.edge_alpha = kwargs['edge_alpha']
         if 'edge_color' not in kwargs:
-            self.edge_color = utl.kwget(kwargs, fcpp, '%s_edge_color' % name, kwargs.get('edge_color', '#ffffff'))
+            self.edge_color = utl.kwget(kwargs, fcpp, f'{name}_edge_color', kwargs.get('edge_color', '#ffffff'))
         else:
             self.edge_color = kwargs['edge_color']
         if not isinstance(self.edge_color, RepeatedList) or self.edge_alpha != 1:
@@ -2737,46 +2859,46 @@ class Element:
 
         # fonts
         if 'font' not in kwargs:
-            self.font = utl.kwget(kwargs, fcpp, '%s_font' % name, kwargs.get('font', 'sans-serif'))
+            self.font = utl.kwget(kwargs, fcpp, f'{name}_font', kwargs.get('font', 'sans-serif'))
         else:
             self.font = kwargs['font']
         if 'font_color' not in kwargs:
-            self.font_color = utl.kwget(kwargs, fcpp, '%s_font_color' % name, kwargs.get('font_color', '#000000'))
+            self.font_color = utl.kwget(kwargs, fcpp, f'{name}_font_color', kwargs.get('font_color', '#000000'))
         else:
             self.font_color = kwargs['font_color']
         if 'font_size' not in kwargs:
-            self.font_size = utl.kwget(kwargs, fcpp, '%s_font_size' % name, kwargs.get('font_size', 14))
+            self.font_size = utl.kwget(kwargs, fcpp, f'{name}_font_size', kwargs.get('font_size', 14))
         else:
             self.font_size = kwargs['font_size']
         if 'font_style' not in kwargs:
-            self.font_style = utl.kwget(kwargs, fcpp, '%s_font_style' % name, kwargs.get('font_style', 'normal'))
+            self.font_style = utl.kwget(kwargs, fcpp, f'{name}_font_style', kwargs.get('font_style', 'normal'))
         else:
             self.font_style = kwargs['font_style']
         if 'font_weight' not in kwargs:
-            self.font_weight = utl.kwget(kwargs, fcpp, '%s_font_weight' % name, kwargs.get('font_weight', 'normal'))
+            self.font_weight = utl.kwget(kwargs, fcpp, f'{name}_font_weight', kwargs.get('font_weight', 'normal'))
         else:
             self.font_weight = kwargs['font_weight']
 
         # lines
         if 'alpha' not in kwargs:
-            self.alpha = utl.kwget(kwargs, fcpp, '%s_alpha' % name, kwargs.get('alpha', 1))
+            self.alpha = utl.kwget(kwargs, fcpp, f'{name}_alpha', kwargs.get('alpha', 1))
         else:
             self.alpha = kwargs['alpha']
         if 'color' not in kwargs:
-            self.color = utl.kwget(kwargs, fcpp, ['%s_color' % name, 'color'], kwargs.get('color', '#000000'))
+            self.color = utl.kwget(kwargs, fcpp, [f'{name}_color', 'color'], kwargs.get('color', '#000000'))
         else:
             self.color = kwargs['color']
         if not isinstance(self.color, RepeatedList) or self.alpha != 1:
             self.color_alpha('color', 'alpha')
         if self.name != 'bar':
             if 'width' not in kwargs:
-                self.width = utl.kwget(kwargs, fcpp, '%s_width' % name, kwargs.get('width', 1))
+                self.width = utl.kwget(kwargs, fcpp, f'{name}_width', kwargs.get('width', 1))
             else:
                 self.width = kwargs['width']
             if not isinstance(self.width, RepeatedList):
                 self.width = RepeatedList(self.width, 'width')
         if 'style' not in kwargs:
-            self.style = utl.kwget(kwargs, fcpp, '%s_style' % name, kwargs.get('style', '-'))
+            self.style = utl.kwget(kwargs, fcpp, f'{name}_style', kwargs.get('style', '-'))
         else:
             self.style = kwargs['style']
         if not isinstance(self.style, RepeatedList):
@@ -2787,7 +2909,7 @@ class Element:
         for attr in attrs:
             if getattr(self, attr) is None:
                 continue
-            getattr(self, attr).override = others.get('%s_override' % attr, {})
+            getattr(self, attr).override = others.get(f'{attr}_override', {})
 
         # kwargs to ignore
         skip_keys = ['df', 'x', 'y', 'z']
@@ -2914,7 +3036,15 @@ class Element:
     def size_inches(self):
         """Return the element size in inches, not pixels."""
         if self.on:
-            return [self._size[0] / self.dpi, self._size[1] / self.dpi]
+            return [np.ceil(self._size[0]) / self.dpi, np.ceil(self._size[1]) / self.dpi]
+        else:
+            return [0, 0]
+
+    @property
+    def size_int(self):
+        """Return the element size in rounded up int, if enabled."""
+        if self.on:
+            return int(np.ceil(self._size[0])), int(np.ceil(self._size[1]))
         else:
             return [0, 0]
 
@@ -2946,7 +3076,7 @@ class Element:
         """
         # MPL < v2 does not support alpha in hex color code
         skip_alpha = False
-        if ENGINE == 'mpl' and LooseVersion(mpl.__version__) < LooseVersion('2'):
+        if (self.engine == 'mpl' and LooseVersion(mpl.__version__) < LooseVersion('2')) or self.engine in ['plotly']:
             skip_alpha = True
 
         alpha = RepeatedList(getattr(self, alpha), 'temp')
@@ -2994,16 +3124,14 @@ class Element:
 
 class DF_Element(Element):
     def __init__(self, name: str = 'None', fcpp: dict = {}, others: dict = {}, **kwargs):
-        """Wrapper for Element that is only visible if the `values` attribute
-        exists and contains items.  Used for rc labels and legends
+        """Wrapper for Element that is only visible if the `values` attribute exists and contains items.  Used for rc
+        labels and legends.
 
         Args:
             name (optional): Name of the element. Defaults to 'None'.
-            fcpp (optional): Default kwargs loaded from a theme file.
-                Defaults to {}.
-            others (optional): Other kwargs which override those in fcpp.
-                Typically, these are the user-defined kwargs set in the
-                plotting function call.  Defaults to {}.
+            fcpp (optional): Default kwargs loaded from a theme file.  Defaults to {}.
+            others (optional): Other kwargs which override those in fcpp. Typically, these are the user-defined kwargs
+                set in the plotting function call.  Defaults to {}.
             kwargs
         """
         super().__init__(name=name, fcpp=fcpp, others=others, **kwargs)
@@ -3016,8 +3144,7 @@ class DF_Element(Element):
     @property
     def on(self):
         """Return visibility state; True only if self.values is not None."""
-        return True if self._on and self.values is not None \
-            and len(self.values) > 0 else False
+        return True if self._on and self.values is not None and len(self.values) > 0 else False
 
     @on.setter
     def on(self, state):
@@ -3094,7 +3221,7 @@ class Legend_Element(DF_Element):
         self._values = value
 
     def add_value(self, key: str, curve: 'PlotObj', line_type_name: str):  # noqa: F821
-        """Add a new curve to the values dataframe.
+        """Add a new curve to the values DataFrame.
 
         Args:
             key: string name for legend label

@@ -1,4 +1,4 @@
-        BAYER (list): Color scheme for RGGB channel data so lines and markers match CFA type. Defaults to None. Example:
+        RGGB (list): Color scheme for RGGB channel data so lines and markers match CFA type. Defaults to None. Example:
           https://endangeredoxen.github.io/fivecentplots/0.6.0/hist.html#RGB
         DEFAULT_COLORS (list): Default color scheme used for lines and markers (from colors.py). Defaults to None.
         engine (str): Specify the plotting engine {'mpl', 'bokeh'}. Defaults to 'mpl'. Example:
