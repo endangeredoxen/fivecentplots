@@ -11,7 +11,8 @@ import pathlib
 import re
 import shlex
 import inspect
-import ast, operator
+import ast
+import operator
 import imageio.v3 as imageio
 from matplotlib.font_manager import FontProperties, findfont
 from pathlib import Path
@@ -172,7 +173,7 @@ class Timer:
         self.init = None
 
 
-def arithmetic_eval (s):
+def arithmetic_eval(s):
     s = s.replace(' ', '')
     s = s.replace('--', '+')
     s = s.replace('++', '+')
@@ -590,7 +591,6 @@ def get_nested_files(path: Union[Path, str], pattern: Union[str, None] = None, e
     return files
 
 
-
 def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, font_weight: str, **kwargs) -> tuple:
     """Use pillow to try and figure out actual dimensions of text.
 
@@ -761,7 +761,7 @@ def img_data_format(kwargs: dict) -> Tuple[pd.DataFrame, dict]:
                 imgs[ii] = gg[int_cols].to_numpy()
                 shape = imgs[0].shape
                 temp = pd.DataFrame({'rows': shape[0], 'cols': shape[1], 'channels': shape[2] if len(shape) > 2 else 1},
-                                     index=[ii])
+                                    index=[ii])
                 for igroup, group in enumerate(grouping_cols):
                     temp[group] = nn[igroup]
                 df_groups = pd.concat([df_groups, temp])
@@ -947,7 +947,7 @@ def img_df_transform_from_dict(groups: pd.DataFrame, imgs: Dict[int, npt.NDArray
     # Format the numpy arrays
     imgs_new = {}
     for k, v in imgs.items():
-        if not k in groups.index:
+        if k not in groups.index:
             continue
         if not isinstance(v, np.ndarray):
             raise TypeError('Image dictionary must contain numpy arrays')
@@ -1535,7 +1535,7 @@ def unit_test_options(make_reference: bool, show: Union[bool, int], img_path: pa
 
 
 def unit_test_measure_axes(img_path: pathlib.Path, row: Union[int, str, None], col: Union[int, None],
-                           width: int=0, height: int=0, channel: int=1, skip: int=0, alias=True):
+                           width: int = 0, height: int = 0, channel: int = 1, skip: int = 0, alias=True):
     """
     Get axes + axes edge width size from pixel values.  Only works if surrounding border pixels are the same color but
     different values than the axes area.
@@ -1558,21 +1558,21 @@ def unit_test_measure_axes(img_path: pathlib.Path, row: Union[int, str, None], c
         if row == 'c':
             row = int(img.shape[0] / 2)
         row = img[row, skip:]
-        x0 = (np.diff(row)!=0).argmax(axis=0) + 1  # add 1 for diff
-        assert (row[x0:]==255).argmax(axis=0) == width + (2 if alias else 0), \
-               f'expected width: {width} | actual: {(row[x0:]==255).argmax(axis=0)}'
+        x0 = (np.diff(row) != 0).argmax(axis=0) + 1  # add 1 for diff
+        assert (row[x0:] == 255).argmax(axis=0) == width + (2 if alias else 0), \
+               f'expected width: {width} | actual: {(row[x0:] == 255).argmax(axis=0)}'
 
     if col:
         if col == 'c':
             col = int(img.shape[1] / 2)
         col = img[skip:, col]
-        y0 = (np.diff(col)!=0).argmax(axis=0) + 1
-        assert (col[y0:]==255).argmax(axis=0) == height + (2 if alias else 0), \
-               f'expected height: {height} | actual: {(col[y0:]==255).argmax(axis=0)}'
+        y0 = (np.diff(col) != 0).argmax(axis=0) + 1
+        assert (col[y0:] == 255).argmax(axis=0) == height + (2 if alias else 0), \
+               f'expected height: {height} | actual: {(col[y0:] == 255).argmax(axis=0)}'
 
 
 def unit_test_measure_axes_cols(img_path: pathlib.Path, row: Union[int, str, None], width: int, num_cols: int,
-                                target_pixel_value: int=255, alias=True, cbar: bool=False):
+                                target_pixel_value: int = 255, alias=True, cbar: bool = False):
     """
     Get margin sizes from pixel values.  Only works if surrounding border pixels are the same color but different
     values than the axes area.
@@ -1593,18 +1593,18 @@ def unit_test_measure_axes_cols(img_path: pathlib.Path, row: Union[int, str, Non
     if row == 'c':
         row = int(img.shape[0] / 2)
     dd = np.diff(np.concatenate(([False], np.all(img[row] == target_pixel_value, axis=-1), [False])).astype(int))
-    trans1 = np.argwhere(dd==-1).T[0]
-    trans2 = np.argwhere(dd==1).T[0]
+    trans1 = np.argwhere(dd == -1).T[0]
+    trans2 = np.argwhere(dd == 1).T[0]
     if not cbar:
         widths = trans2[1:] - trans1[:-1] - width - (2 if alias else 0)
     else:
         widths = (trans2[1:] - trans1[:-1])[::2] - width - (2 if alias else 0)
-    assert len(widths[widths==0]) == num_cols, \
+    assert len(widths[widths == 0]) == num_cols, \
         f'expected {num_cols} columns with axes width {width} | detected: {widths + width}'
 
 
 def unit_test_measure_axes_rows(img_path: pathlib.Path, col: Union[int, str, None], height: int, num_rows: int,
-                                target_pixel_value: int=255, alias=True):
+                                target_pixel_value: int = 255, alias=True):
     """
     Get margin sizes from pixel values.  Only works if surrounding border pixels are the same color but different
     values than the axes area.
@@ -1624,17 +1624,17 @@ def unit_test_measure_axes_rows(img_path: pathlib.Path, col: Union[int, str, Non
     if col == 'c':
         col = int(img.shape[1] / 2)
     dd = np.diff(np.concatenate(([False], np.all(img[:, col] == target_pixel_value, axis=-1), [False])).astype(int))
-    trans1 = np.argwhere(dd==-1).T[0]
-    trans2 = np.argwhere(dd==1).T[0]
+    trans1 = np.argwhere(dd == -1).T[0]
+    trans2 = np.argwhere(dd == 1).T[0]
     heights = (trans2[1:] - trans1[:-1]) - height - (2 if alias else 0)
-    assert len(heights[heights==0]) == num_rows, \
+    assert len(heights[heights == 0]) == num_rows, \
         f'expected {num_rows} rows with axes height {height} | detected: {heights + height}'
 
 
 def unit_test_debug_margins(img_path: pathlib.Path):
     """Try to measure all the margins."""
     img = imageio.imread(img_path)[:, :, 1]
-    if not (img[0,0] == img[-1, -1] == img[0, -1] == img[-1, 0]):
+    if not (img[0, 0] == img[-1, -1] == img[0, -1] == img[-1, 0]):
         print('could not determine border color and detect margins')
 
     border_color = img[0, 0]
@@ -1663,8 +1663,9 @@ def unit_test_debug_margins(img_path: pathlib.Path):
 
 
 def unit_test_measure_margin(img_path: pathlib.Path, row: Union[int, str, None], col: Union[int, None],
-                             left: Union[int, None]=None, right: Union[int, None]=None, top: Union[int, None]=None,
-                             bottom: Union[int, None]=None, alias=True, target_pixel_value=255):
+                             left: Union[int, None] = None, right: Union[int, None] = None,
+                             top: Union[int, None] = None, bottom: Union[int, None] = None, alias=True,
+                             target_pixel_value=255):
     """
     Get margin sizes from pixel values.  Only works if surrounding border pixels are the same color but different
     values than the axes area.
@@ -1688,7 +1689,7 @@ def unit_test_measure_margin(img_path: pathlib.Path, row: Union[int, str, None],
             row = int(img.shape[0] / 2)
 
         # Find the transitions from the target pixel to something else
-        tps = np.where(~(img[row, :]==target_pixel_value).all(axis=1))[0]
+        tps = np.where(~(img[row, :] == target_pixel_value).all(axis=1))[0]
 
         if len(tps) == 0:
             raise ValueError('all pixels in specified row match the target pixel')
@@ -1706,7 +1707,7 @@ def unit_test_measure_margin(img_path: pathlib.Path, row: Union[int, str, None],
             col = int(img.shape[1] / 2)
 
         # Find the transitions from the target pixel to something else
-        tps = np.where(~(img[:, col]==target_pixel_value).all(axis=1))[0]
+        tps = np.where(~(img[:, col] == target_pixel_value).all(axis=1))[0]
 
         if len(tps) == 0:
             raise ValueError('all pixels in specified column match the target pixel')
@@ -1719,7 +1720,8 @@ def unit_test_measure_margin(img_path: pathlib.Path, row: Union[int, str, None],
                f'expected bottom: {bottom} | actual: {img.shape[0] - (tps[-1] + 1) + (1 if alias else 0)}'
 
 
-def unit_test_make_all(reference: pathlib.Path, name: str, start: Union[str, None]=None, stop: Union[str, None]=None):
+def unit_test_make_all(reference: pathlib.Path, name: str, start: Union[str, None] = None,
+                       stop: Union[str, None] = None):
     """Remake all reference test images.
 
     Args:
@@ -1750,7 +1752,7 @@ def unit_test_make_all(reference: pathlib.Path, name: str, start: Union[str, Non
         print('done!')
 
 
-def unit_test_show_all(only_fails: bool, reference: pathlib.Path, name: str, start: Union[str, None]=None):
+def unit_test_show_all(only_fails: bool, reference: pathlib.Path, name: str, start: Union[str, None] = None):
     """Show all unit test plots.
 
     Args:

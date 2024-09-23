@@ -4,7 +4,6 @@ import pandas as pd
 import numpy as np
 import numpy.typing as npt
 from .. import utilities
-from natsort import natsorted
 from typing import List, Union
 utl = utilities
 db = pdb.set_trace
@@ -135,8 +134,6 @@ class Histogram(data.Data):
             self.pdf = False
         if (self.cdf or self.pdf) and kwargs.get('preset') == 'HIST':
             self.ax_scale = 'lin'
-        if self.cdf or self.pdf:
-            bars = False
 
         # Toggle bars vs lines
         if not self.bars or self.cdf or self.pdf:
@@ -247,7 +244,7 @@ class Histogram(data.Data):
                     counts = np.insert(counts, 0, 0)
 
             # Eliminate repeating count values of zero to reduce data points and speed up processing/plotting
-            mask = (counts[:-2]==0) & (counts[2:]==0) & (counts[1:len(counts) - 1]==0)
+            mask = (counts[:-2] == 0) & (counts[2:] == 0) & (counts[1:len(counts) - 1] == 0)
             counts = np.concatenate((counts[:1], counts[1:-1][~mask], counts[-1:]))
             vals = np.concatenate((vals[:1], vals[1:-1][~mask], vals[-1:]))
 
@@ -331,7 +328,7 @@ class Histogram(data.Data):
         if len(df) == 0:
             return df
 
-        if self.imgs is None and self.name == 'xy':  #(self.cdf or self.pdf):
+        if self.imgs is None and self.name == 'xy':
             counts, vals = self._calc_histograms(ir, ic, df[self.x[0]])
             df_sub = pd.DataFrame({self.x[0]: vals, self.y[0]: counts})
             for group in self._groupers:

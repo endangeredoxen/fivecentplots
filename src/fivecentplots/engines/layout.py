@@ -424,7 +424,7 @@ class BaseLayout:
                 self.label_y.font_color = self.color_list_unique[0]
             if self.axes.twin_x \
                     and 'label_y2_font_color' not in kwargs.keys() \
-                     and self.label_y2 is not None:
+                    and self.label_y2 is not None:
                 self.label_y2.font_color = self.color_list_unique[1]
             if self.axes.twin_y and 'label_x_font_color' not in kwargs.keys():
                 self.label_x.font_color = self.color_list_unique[0]
@@ -979,7 +979,7 @@ class BaseLayout:
         Returns:
             updated kwargs
         """
-        val = kwargs.get('fills', False);
+        val = kwargs.get('fills', False)
         if not isinstance(val, tuple):
             vals = utl.validate_list(val)
         else:
@@ -994,7 +994,7 @@ class BaseLayout:
         labels = []
         rows = []
         cols = []
-        if val != False:
+        if val is not False:
             for ival, val in enumerate(vals):
                 x0 += [val[0]]
                 x1 += [val[1]]
@@ -1305,9 +1305,9 @@ class BaseLayout:
             self.cmap = RepeatedList(['gray'], 'cmap')
 
         # Disable axes labels if no label name provided
-        if self.label_x.text == True:
+        if self.label_x.text is True:
             self.label_x.on = False
-        if self.label_y.text == True:
+        if self.label_y.text is True:
             self.label_y.on = False
 
         # Special gridline/tick/axes defaults for imshow
@@ -1463,7 +1463,7 @@ class BaseLayout:
                     # think this is wrong
                     for ll in kwargs.get(lines):
                         if isinstance(ll, list) and len(ll) >= 6:
-                            self.legend.values[vv[6]] = []
+                            self.legend.values[ll[6]] = []
                 elif isinstance(kwargs.get(lines), tuple) and len(kwargs.get(lines)) >= 6:
                     self.legend.values[lines[6]] = []
             if len(self.legend.values) > 0:
@@ -1727,8 +1727,6 @@ class BaseLayout:
         self.label_col.padding = utl.kwget(kwargs, self.fcpp, 'label_col_padding', label_rc.padding)
         self.label_col.values_only = utl.kwget(kwargs, self.fcpp, 'label_col_values_only', label_rc.values_only)
         self.label_col.size = [self.axes.size[0], utl.kwget(kwargs, self.fcpp, 'label_col_size', label_rc._size)]
-
-        ### ADJUST FONT SIZE FOR RECTS IF NEEDED!
 
         # Wrap label
         self.label_wrap = DF_Element('label_wrap', self.fcpp, kwargs,

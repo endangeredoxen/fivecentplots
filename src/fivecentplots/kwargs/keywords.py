@@ -25,7 +25,7 @@ def get_all_allowed_kwargs() -> list:
     return [f.replace('\n', '') for f in kwargs]
 
 
-def get_all_allowed_kwargs_parse(path: Path, write: bool=False) -> list:
+def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
     """Brute force through all files to look for supported kwargs.
 
     Args:
@@ -35,7 +35,7 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool=False) -> list:
     Returns:
         list of kwarg names found
     """
-    ## TODO separate by engine
+    # TODO separate by engine
 
     # f-string replacements
     axs = ['x', 'y', 'z', 'x2', 'y2']
@@ -52,7 +52,7 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool=False) -> list:
     func_regex = r'(\w+)\(((?:[^()]*\([^()]*\))*[^()]*)\)'
     bracket_regex = r',(?![^\(\[]*[\]\)])'
 
-    kwargs_list = ['df', 'imgs'] + axs  #ADD OTHER DEFAULTS!
+    kwargs_list = ['df', 'imgs'] + axs
     names_list = []
 
     for py in py_files:
@@ -69,7 +69,7 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool=False) -> list:
                 elif len(ff[1].split('kwget')) > 2:
                     for f in ff[1].split('kwget'):
                         if f.startswith('(kwargs'):
-                            found_kwget += [f.replace(')', '').replace('(','')]
+                            found_kwget += [f.replace(')', '').replace('(', '')]
                 else:
                     found_kwget += [ff[1].replace('kwget(', '').replace(')', '')]
 
@@ -77,8 +77,6 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool=False) -> list:
                 # skip the actual kwget function
                 if fk == 'dict1: dict, dict2: dict, vals: [str, list], default: [list, dict]':
                     continue
-
-                if 'ticks_minorz' in fk: db()
 
                 vals = re.split(bracket_regex, fk)
                 if len(vals) < 4:
@@ -148,11 +146,8 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool=False) -> list:
                     kwargs_list += [f.replace("f'{name}", name).replace("'", '').strip() for f in names_list]
 
     # special cases ticks
-    tick_labels_major = list(set([f for f in kwargs_list if 'tick_labels_major' in f]))
     kwargs_list += [f.replace('_major', '') for f in kwargs_list if 'tick_labels_major' in f]
-    ticks_major = list(set([f for f in kwargs_list if 'ticks_major' in f]))
     kwargs_list += [f.replace('_major', '') for f in kwargs_list if 'ticks_major' in f]
-    ticks_minor = list(set([f for f in kwargs_list if 'ticks_minor' in f]))
     kwargs_list += [f.replace('_minor', '') for f in kwargs_list if 'ticks_minor' in f]
 
     kwargs_list = [f for f in kwargs_list if f not in exclude]

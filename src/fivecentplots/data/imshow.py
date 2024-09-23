@@ -2,8 +2,6 @@ from . import data
 import pdb
 import pandas as pd
 import numpy as np
-import numpy.typing as npt
-from typing import Union
 from .. import utilities
 utl = utilities
 db = pdb.set_trace
@@ -126,15 +124,6 @@ class ImShow(data.Data):
             for limit in ['xmin', 'xmax', 'ymin', 'ymax']:
                 if self.ranges[limit][ir, ic] is not None:
                     self.ranges[limit][ir, ic] -= 0.5
-
-        ## DO I NEED THIS??
-        # # Update some size parameters based the new self.df_fig
-        # if self.channels > 1:
-        #     self.shape = (self.df_fig.loc[idx]['rows'].max(), self.df_fig.loc[idx, 'cols'].iloc[0], self.channels)
-        # elif len(self._groupers) > 0:
-        #     self.shape = (self.df_fig.loc[idx]['rows'].max(), self.df_fig.loc[idx, 'cols'].iloc[0])
-        # else:
-        #     self.shape = (self.df_fig.loc[idx]['rows'].sum(), self.df_fig.loc[idx, 'cols'].iloc[0])
 
     def _stretch(self, kwargs):
         """Perform contrast stretching on an image
