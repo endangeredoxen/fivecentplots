@@ -761,6 +761,7 @@ label_col_padding
 label_col_size
 label_col_values_only
 label_distance
+label_edge_color
 label_edge_style
 label_edge_width
 label_fill_alpha
@@ -1939,6 +1940,16 @@ ws_ticks_ax
 ws_title_ax
 x
 x2
+x2max
+x2min
+xmax
+xmin
 y
 y2
+y2max
+y2min
+ymax
+ymin
 z
+zmax
+zmin

@@ -111,7 +111,7 @@ class Data:
             raise AxisError('cannot simultaneously twin x and y axes')
 
         # Validate range limits
-        for limit in [ax+lim for ax in self.axs for lim in ['min', 'max']]:
+        for limit in [ax + lim for ax in self.axs for lim in ['min', 'max']]:
             setattr(self, limit, utl.RepeatedList(kwargs.get(limit, [None]), limit))
             self._check_range_limit_format(limit)
 

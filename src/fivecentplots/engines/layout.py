@@ -373,6 +373,7 @@ class BaseLayout:
         # Axes labels
         label = Element('label', self.fcpp, kwargs,
                         obj=self.obj_array,
+                        edge_color=utl.kwget(kwargs, self.fcpp, 'label_edge_color', '#ffffff'),
                         edge_style=utl.kwget(kwargs, self.fcpp, 'label_edge_style', 'square'),
                         edge_width=utl.kwget(kwargs, self.fcpp, 'label_edge_width', 0),
                         fill_alpha=utl.kwget(kwargs, self.fcpp, 'label_fill_alpha', 1),

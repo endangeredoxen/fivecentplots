@@ -553,7 +553,7 @@ def plt_other_stat_good(bm=False, make_reference=False, show=False):
     name = utl.unit_test_get_img_name('other_stat-lines-good', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.plot(df, x='I [A]', y='Voltage', title='IV Data', lines=False, show=SHOW, grops='Die',
+    fcp.plot(df, x='I [A]', y='Voltage', title='IV Data', lines=False, show=SHOW, groups='Die',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              stat='median', stat_val='I Set', filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:

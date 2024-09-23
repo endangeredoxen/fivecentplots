@@ -52,7 +52,7 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
     func_regex = r'(\w+)\(((?:[^()]*\([^()]*\))*[^()]*)\)'
     bracket_regex = r',(?![^\(\[]*[\]\)])'
 
-    kwargs_list = ['df', 'imgs'] + axs
+    kwargs_list = ['df', 'imgs'] + axs + [f'{f}min' for f in axs] + [f'{f}max' for f in axs]
     names_list = []
 
     for py in py_files:
