@@ -345,6 +345,7 @@ cbar_style
 cbar_width
 cbar_zorder
 cdf
+cell_size
 cfa
 cl
 cmap
@@ -717,6 +718,8 @@ groups
 heatmap_alpha
 heatmap_cell_size
 heatmap_color
+heatmap_data_labels
+heatmap_data_labels_rounding
 heatmap_edge_alpha
 heatmap_edge_color
 heatmap_edge_width

@@ -23,9 +23,10 @@ else:
 # Test images
 # RGB cat
 img_cat_orig = imageio.imread(Path(fcp.__file__).parent / 'test_data/imshow_cat_pirate.png')
+img_color_bars = imageio.imread(Path(fcp.__file__).parent / 'test_data/imshow_color_bars.png')
 
 # RGB cat in grayscale
-img_cat = utl.img_grayscale(img_cat_orig)
+img_cat = utl.img_grayscale_deprecated(img_cat_orig)
 
 # RGB split by color plane and pixel values modified by plane
 img_cp_orig = utl.rgb2bayer(imageio.imread(Path(fcp.__file__).parent / 'test_data/imshow_color_planes.png'))
@@ -39,7 +40,7 @@ img_cp = pd.DataFrame({'Plane': cp.keys(), 'Green?': [False, True, True, False]}
 
 # RGB cat in grayscale with grouping columns for row, col, wrap tests
 img_all = pd.DataFrame()
-img_test = pd.DataFrame(utl.img_grayscale(img_cat_orig).to_numpy()[300:600, 800:1100])
+img_test = pd.DataFrame(utl.img_grayscale_deprecated(img_cat_orig).to_numpy()[300:600, 800:1100])
 img_test.loc[[0, 299]] = 100
 img_test[[0, 299]] = 100
 img_test.loc[3, range(3, 297)] = 0
@@ -285,7 +286,7 @@ def plt_imshow(bm=False, make_reference=False, show=False):
     name = utl.unit_test_get_img_name('imshow', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.imshow(img_cat, ax_size=[600, 600], filename=name, save=not bm, inline=False, timer=False)
+    fcp.imshow(img_cat, ax_size=[600, 600], filename=name, save=not bm, inline=False)
 
     if bm:
         return
@@ -304,7 +305,7 @@ def plt_imshow_cbar(bm=False, make_reference=False, show=False):
                label_y_text='Rowgs', label_y_edge_width=7, label_y_edge_color='#ff00ff',
                label_x_text='Coljs', label_x_edge_width=15, label_x_edge_color='#ff00ff',
                label_z_edge_width=4, label_z_edge_color='#ff0000', label_z_text='Valyue', label_z_fill_color='#00ff00',
-               filename=name, save=not bm, inline=False, timer=False)
+               filename=name, save=not bm, inline=False)
 
     if bm:
         return
@@ -609,10 +610,10 @@ def plt_wrap(bm=False, make_reference=False, show=False):
 def plt_wrap_combos(bm=False, make_reference=False, show=False):
 
     enabled = ['1x1', '1x2', '1x3', '2x3', '3x1', '3x2', '4x2', '4x2b']
-    # enabled = ['4x2b']
+    enabled = ['1x3']
 
     img_all = pd.DataFrame()
-    img_test = pd.DataFrame(utl.img_grayscale(img_cat_orig).to_numpy()[300:600, 800:1100])
+    img_test = pd.DataFrame(utl.img_grayscale_deprecated(img_cat_orig).to_numpy()[300:600, 800:1100])
     groups = ['hi', 'there', 'you', 'are', 'something', 'special', 'buddy', 'boy']
     for i in range(0, 6):
         temp = img_test.copy() * (1 + 2 * i / 10)
@@ -787,7 +788,7 @@ def plt_wrap_combos_cbar(bm=False, make_reference=False, show=False):
     # enabled = ['3x2']
 
     img_all = pd.DataFrame()
-    img_test = pd.DataFrame(utl.img_grayscale(img_cat_orig).to_numpy()[300:600, 800:1100])
+    img_test = pd.DataFrame(utl.img_grayscale_deprecated(img_cat_orig).to_numpy()[300:600, 800:1100])
     for i in range(0, 6):
         temp = img_test.copy() * (1 + 2 * i / 10)
         temp['Number'] = f'Image {i}'
@@ -939,6 +940,28 @@ def plt_wrap_one(bm=False, make_reference=False, show=False):
 
     if not show:
         utl.unit_test_measure_margin(name, 'c', 'c', left=10, right=10, top=10, bottom=10, alias=False)
+
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_wrap_ws(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('wrap_ws', make_reference, REFERENCE)
+
+    df = pd.DataFrame({'alpha_blend': [1, 10, 50], 'gamma': [1, 2.2, 1.8]}, index=['img0', 'img1', 'img2'])
+    imgs = {'img0': img_color_bars,
+            'img1': (1.75 * img_color_bars).astype(np.uint8),
+            'img2': (0.15 * img_color_bars).astype(np.uint8)}
+
+    fcp.imshow(df, imgs=imgs, wrap=['gamma', 'alpha_blend'], ncol=3, ws_col=15, filename=name.with_suffix('.png'),
+               save=not bm, inline=False)
+
+    if bm:
+        return
+
+    if not show:
+        utl.unit_test_measure_margin(name, 'c', 'c', left=10, right=10, top=10, bottom=10, alias=False)
+        utl.unit_test_measure_axes_cols(name, 175, 400, 3, alias=False, ws=15)
 
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 

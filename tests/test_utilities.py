@@ -196,11 +196,11 @@ def test_img_df_transform():
 
 
 def test_img_grayscale(img_cat):
-    np.testing.assert_almost_equal(utl.img_grayscale(img_cat).stack().mean(), 164.82078274505002)
+    np.testing.assert_almost_equal(utl.img_grayscale_deprecated(img_cat).stack().mean(), 164.82078274505002)
 
 
 def test_nq(img_cat):
-    img_df = utl.img_grayscale(img_cat)
+    img_df = utl.img_grayscale_deprecated(img_cat)
     nq = utl.nq(img_df)
     np.testing.assert_almost_equal(nq.loc[nq.Sigma == 0]['Value'].values[0], img_df.stack().median())
 
@@ -360,13 +360,13 @@ def test_sigma(df):
 
 def test_split_color_planes(img_cat):
     # Case 1: DataFrame input, split to dictionary
-    img = utl.img_grayscale(img_cat)  # this is a DataFrame
+    img = utl.img_grayscale_deprecated(img_cat)  # this is a DataFrame
     img_cp = utl.split_color_planes(img, cfa='grbg')
     np.testing.assert_almost_equal(img_cp['r'].stack().mean(), 164.84421923940002)
     np.testing.assert_almost_equal(img_cp['b'].stack().mean(), 164.79765575099998)
 
     # Case 2: DataFrame input, split to DataFrame
-    img = utl.img_grayscale(img_cat)  # this is a DataFrame
+    img = utl.img_grayscale_deprecated(img_cat)  # this is a DataFrame
     img_cp = utl.split_color_planes(img, cfa='grbg', as_dict=False)
     red = img_cp.loc[img_cp.Plane == 'r']
     blue = img_cp.loc[img_cp.Plane == 'b']
@@ -374,13 +374,13 @@ def test_split_color_planes(img_cat):
     np.testing.assert_almost_equal(blue[utl.df_int_cols(blue)].stack().mean(), 164.79765575099998)
 
     # Case 3: NDArray input, split to dict
-    img = utl.img_grayscale(img_cat, as_array=True)  # this is a np.array
+    img = utl.img_grayscale_deprecated(img_cat, as_array=True)  # this is a np.array
     img_cp = utl.split_color_planes(img, cfa='grbg')
     np.testing.assert_almost_equal(img_cp['r'].mean(), 164.84421923940002)
     np.testing.assert_almost_equal(img_cp['b'].mean(), 164.79765575099998)
 
     # Case 4: NDArray input, split to DataFrame
-    img = utl.img_grayscale(img_cat, as_array=True)  # this is a np.array
+    img = utl.img_grayscale_deprecated(img_cat, as_array=True)  # this is a np.array
     img_cp = utl.split_color_planes(img, cfa='grbg', as_dict=False)
     red = img_cp.loc[img_cp.Plane == 'r']
     blue = img_cp.loc[img_cp.Plane == 'b']

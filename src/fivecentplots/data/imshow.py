@@ -108,6 +108,16 @@ class ImShow(data.Data):
 
     def _range_overrides(self, ir, ic, df_rc):
         """imshow-specific modifications."""
+        # Prevent cropping beyond limits
+        if self.ranges['xmin'][ir, ic] < 0:
+            self.ranges['xmin'][ir, ic] = 0
+        if self.ranges['xmax'][ir, ic] > df_rc.shape[1]:
+            self.ranges['xmax'][ir, ic] = df_rc.shape[1]
+        if self.ranges['ymax'][ir, ic] < 0:
+            self.ranges['ymax'][ir, ic] = 0
+        if self.ranges['ymin'][ir, ic] > df_rc.shape[0]:
+            self.ranges['ymin'][ir, ic] = df_rc.shape[0]
+
         # Update the wh_ratio
         if self.ranges['xmax'][ir, ic] is not None and self.ranges['xmin'][ir, ic] is not None:
             width = self.ranges['xmax'][ir, ic] - self.ranges['xmin'][ir, ic]

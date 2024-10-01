@@ -320,8 +320,8 @@ def df_filter(df: pd.DataFrame, filt_orig: str, drop_cols: bool = False,
             key = key.rstrip(' ')
             key = f'fCp{special_chars(key)}'
             vals = val.replace('[', '').replace(']', '')
-            vals = shlex.split(vals, ',', posix=False)
-            vals = [f for f in vals if f != ',']  # remove commas
+            vals = shlex.split(vals, ',', posix=False)  # why is this here??
+            vals = [f.replace(',', '') for f in vals if f != ',']  # remove commas
             for iv, vv in enumerate(vals):
                 vals[iv] = vv.lstrip().rstrip()
             key2 = '|' + key + '=='
@@ -970,8 +970,33 @@ def img_df_transform_from_dict(groups: pd.DataFrame, imgs: Dict[int, npt.NDArray
     return groups, imgs_new
 
 
-def img_grayscale(img: np.ndarray, as_array: bool = False) -> Union[pd.DataFrame, npt.NDArray]:
+def img_grayscale(img: np.ndarray, bit_depth: int = 16, as_df: bool = False) -> Union[pd.DataFrame, npt.NDArray]:
     """Convert an RGB image to grayscale and convert to a 2D DataFrame
+
+    Args:
+        img: 3D array of RGB image data
+        bit_depth: scale to this bit depth
+        as_df: if True, return image as pd.DataFrame
+
+    Returns:
+        DataFrame with grayscale pixel values
+    """
+    r, g, b = img[:, :, 0], img[:, :, 1], img[:, :, 2]
+    raw = (0.2989 * r + 0.5870 * g + 0.1140 * b) * (2**(bit_depth) - 1) / (2**8 - 1)
+    if bit_depth > 16:
+        raw = raw.astype(np.uint32)
+    else:
+        raw = raw.astype(np.uint16)
+
+    if as_df:
+        return pd.DataFrame(raw)
+
+    else:
+        return raw
+
+
+def img_grayscale_deprecated(img: np.ndarray, as_array: bool = False) -> Union[pd.DataFrame, npt.NDArray]:
+    """Old function for converting an RGB image to grayscale and convert to a 2D DataFrame; keeping for tests
 
     Args:
         img: 3D array of image data
@@ -1227,9 +1252,8 @@ def see(obj) -> pd.DataFrame:
     return df
 
 
-def set_save_filename(df: pd.DataFrame, ifig: int, fig_item: [None, str],
-                      fig_cols: [None, str], layout: 'engines.Layout',  # noqa
-                      kwargs: dict) -> str:
+def set_save_filename(df: pd.DataFrame, ifig: int, fig_item: [None, str], fig_cols: [None, str],
+                      layout: 'engines.Layout', kwargs: dict) -> str:  # noqa
     """Build a filename based on the plot setup parameters.
 
     Args:
@@ -1288,10 +1312,10 @@ def set_save_filename(df: pd.DataFrame, ifig: int, fig_item: [None, str],
         groups = ' by ' + ' + '.join(validate_list(kwargs['groups']))
     if fig_item is not None:
         fig_items = validate_list(fig_item)
-        for icol, col in enumerate(fig_cols):
-            if icol > 0:
+        for ifig, fig_col in enumerate(fig_cols):
+            if ifig > 0:
                 fig += ' and'
-            fig += f' where {col}={fig_items[icol]}'
+            fig += f' where {fig_col}={fig_items[ifig]}'
         if strip_html(layout.label_col.text) is None:
             col = ''
 
@@ -1560,7 +1584,7 @@ def unit_test_measure_axes(img_path: pathlib.Path, row: Union[int, str, None], c
         row = img[row, skip:]
         x0 = (np.diff(row) != 0).argmax(axis=0) + 1  # add 1 for diff
         assert (row[x0:] == 255).argmax(axis=0) == width + (2 if alias else 0), \
-               f'expected width: {width} | actual: {(row[x0:] == 255).argmax(axis=0)}'
+               f'expected width: {width} | actual: {(row[x0:] == 255).argmax(axis=0) - (2 if alias else 0)}'
 
     if col:
         if col == 'c':
@@ -1568,11 +1592,11 @@ def unit_test_measure_axes(img_path: pathlib.Path, row: Union[int, str, None], c
         col = img[skip:, col]
         y0 = (np.diff(col) != 0).argmax(axis=0) + 1
         assert (col[y0:] == 255).argmax(axis=0) == height + (2 if alias else 0), \
-               f'expected height: {height} | actual: {(col[y0:] == 255).argmax(axis=0)}'
+               f'expected height: {height} | actual: {(col[y0:] == 255).argmax(axis=0) - (2 if alias else 0)}'
 
 
 def unit_test_measure_axes_cols(img_path: pathlib.Path, row: Union[int, str, None], width: int, num_cols: int,
-                                target_pixel_value: int = 255, alias=True, cbar: bool = False):
+                                target_pixel_value: int = 255, alias=True, cbar: bool = False, ws=False):
     """
     Get margin sizes from pixel values.  Only works if surrounding border pixels are the same color but different
     values than the axes area.
@@ -1582,9 +1606,10 @@ def unit_test_measure_axes_cols(img_path: pathlib.Path, row: Union[int, str, Non
         row: row index on which to measure (should be clear of labels, legends, ticks etc)
         width: expected axes width for each column
         num_cols: number of subplot columns
-        cbar: skip the cbars if enabled
         target_pixel_value: pixel value to look for (whitespace 255 typically)
         alias: skip up to 1 pixel due to axes edge aliasing
+        cbar: skip the cbars if enabled
+        ws: check the ws between columns
 
         Note: for np.diff statements, need to subtract 1
     """
@@ -1601,6 +1626,11 @@ def unit_test_measure_axes_cols(img_path: pathlib.Path, row: Union[int, str, Non
         widths = (trans2[1:] - trans1[:-1])[::2] - width - (2 if alias else 0)
     assert len(widths[widths == 0]) == num_cols, \
         f'expected {num_cols} columns with axes width {width} | detected: {widths + width}'
+
+    if ws:
+        ws_meas = (trans1 - trans2)[1:-1]
+        assert np.all(ws_meas == ws), \
+            f'expected ws between columns {ws} | detected: {ws_meas[1]}'
 
 
 def unit_test_measure_axes_rows(img_path: pathlib.Path, col: Union[int, str, None], height: int, num_rows: int,

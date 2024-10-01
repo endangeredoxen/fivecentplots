@@ -379,6 +379,7 @@ class BaseLayout:
                         fill_alpha=utl.kwget(kwargs, self.fcpp, 'label_fill_alpha', 1),
                         fill_color=utl.kwget(kwargs, self.fcpp, 'label_fill_color', '#ffffff'),
                         font_color=utl.kwget(kwargs, self.fcpp, 'label_font_color', '#000000'),
+                        font_size=utl.kwget(kwargs, self.fcpp, 'label_font_size', 'italic'),
                         font_style=utl.kwget(kwargs, self.fcpp, 'label_font_style', 'italic'),
                         font_weight=utl.kwget(kwargs, self.fcpp, 'label_font_weight', 'bold'),
                         padding=utl.kwget(kwargs, self.fcpp, ['label_padding'], 0.3),
@@ -1188,20 +1189,19 @@ class BaseLayout:
             self.heatmap = Element('heatmap', self.fcpp, kwargs, on=False)
             return kwargs
 
-        if 'cell_size' in kwargs.keys():
-            kwargs['heatmap_cell_size'] = kwargs['cell_size']
         self.heatmap = Element('heatmap', self.fcpp, kwargs,
                                on=True,
                                obj=self.obj_array,
-                               cell_size=utl.kwget(kwargs, self.fcpp, 'heatmap_cell_size',
+                               cell_size=utl.kwget(kwargs, self.fcpp, ['heatmap_cell_size', 'cell_size'],
                                                    60 if 'ax_size' not in kwargs else None),
                                edge_width=0,
                                font_color=utl.kwget(kwargs, self.fcpp, 'heatmap_font_color', '#ffffff'),
                                font_size=utl.kwget(kwargs, self.fcpp, 'heatmap_font_size', 12),
                                interp=utl.kwget(kwargs, self.fcpp, ['heatmap_interp', 'interp'],
                                                 kwargs.get('interp', 'none')),
-                               rounding=utl.kwget(kwargs, self.fcpp, 'data_labels_rounding', None),
-                               text=utl.kwget(kwargs, self.fcpp, 'data_labels', False),
+                               rounding=utl.kwget(kwargs, self.fcpp,
+                                                  ['heatmap_data_labels_rounding', 'data_labels_rounding'], None),
+                               text=utl.kwget(kwargs, self.fcpp, ['heatmap_data_labels', 'data_labels'], False),
                                )
         if self.heatmap.on and data.x != ['Column']:
             self.tick_labels_major_x.rotation = utl.kwget(kwargs, self.fcpp, 'tick_labels_major_x_rotation', 90)

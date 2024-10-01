@@ -3633,10 +3633,7 @@ class Layout(BaseLayout):
             if self.label_row.obj[ir, ic]:
                 # x-position and width
                 if not self.cbar.on:
-                    if self.axes.edge_width == 0 and self.name not in ['imshow']:
-                        edge = -1
-                    else:
-                        edge = np.ceil(self.axes.edge_width / 2)
+                    edge = np.ceil(self.axes.edge_width / 2)
                     lab_x = self.axes.obj[ir, ic].get_position().x1 * self.fig.size_int[0] \
                         + edge \
                         + self.ws_label_row \
@@ -4272,10 +4269,6 @@ class Layout(BaseLayout):
         fig_w = self.fig.size_int[0]
         fig_h = self.fig.size_int[1]
 
-        h_offset = 0
-        if self.axes.edge_width == 0 and self.name not in ['imshow']:
-            h_offset = 1
-
         # Right
         if self.cbar.on:
             cbar = np.ceil(self._right + (self.label_z.size[0] + self.ws_ticks_ax + self.tick_labels_major_z.size[0]))
@@ -4283,10 +4276,10 @@ class Layout(BaseLayout):
                 1 - cbar / fig_w
         else:
             self.axes.position[1] = \
-                1 - (self._right + np.ceil(self._legx) + np.ceil(self.axes.edge_width / 2) - h_offset) / fig_w
+                1 - (self._right + np.ceil(self._legx) + np.ceil(self.axes.edge_width / 2)) / fig_w
 
         # Left
-        self.axes.position[0] = (self._left + np.floor(self.axes.edge_width / 2) - h_offset) / fig_w
+        self.axes.position[0] = (self._left + np.floor(self.axes.edge_width / 2)) / fig_w
 
         # Top
         self.axes.position[2] = 1 - (self._top + np.floor(self.axes.edge_width / 2)) / fig_h
@@ -4302,7 +4295,9 @@ class Layout(BaseLayout):
         if self.cbar.on and not self.cbar.shared:
             ws_col = self.ws_col + self.tick_labels_major_z.size[0] - 1  # there is one extra pixel when ws_col = 0
         else:
-            if self.axes.edge_width == 0 or self.ws_col == 0:
+            if self.axes.edge_width == 0 and self.ws_col > 0:
+                h_edge = 0
+            elif self.axes.edge_width == 0 or self.ws_col == 0:
                 h_edge = -2 if self.ws_row > 0 else 0
             elif self.axes.edge_width == 1:
                 h_edge = 1

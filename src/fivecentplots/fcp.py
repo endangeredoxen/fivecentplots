@@ -1610,14 +1610,16 @@ def plotter(dobj, **kwargs):
                     return osjoin(kwargs['filepath'], filename)
                 else:
                     return osjoin(os.getcwd(), filename)
-            if kwargs.get('print_filename', False):
-                print(filename)
             if kwargs.get('show', False):
                 utl.show_file(filename)
 
             # Disable inline unless explicitly called in kwargs
             if not kwargs.get('inline'):
                 kwargs['inline'] = False
+
+        if kwargs.get('print_filename', False):
+            print('\033[1m' + filename + '\033[0m')
+
         kwargs['timer'].get(f'ifig={ifig} | save')
 
         # Return inline plot

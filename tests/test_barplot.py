@@ -58,13 +58,13 @@ def plt_col_shared(bm=False, make_reference=False, show=False):
 
     if not show:
         # Axis width
-        utl.unit_test_measure_axes(name, 70, None, 300, None, 1, alias=True)
+        utl.unit_test_measure_axes(name, 70, None, 300, None, 1, alias=False)
         # Col label height
-        utl.unit_test_measure_axes(name, None, 190, None, 30, 1, alias=False)
+        utl.unit_test_measure_axes(name, None, 130, None, 30, 1, alias=False)
         # Axis height
         utl.unit_test_measure_axes(name, None, 190, None, 300, 1, 45, alias=False)
         # Margins
-        utl.unit_test_measure_margin(name, 170, 190, left=79, alias=False)
+        utl.unit_test_measure_margin(name, 170, 190, left=80, alias=False)
         utl.unit_test_measure_margin(name, 170, 190, right=10, top=10, bottom=158, alias=False)
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 

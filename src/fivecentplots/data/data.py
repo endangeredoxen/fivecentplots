@@ -566,6 +566,10 @@ class Data:
                         else:
                             data_set = data_set[data_set[col] <= user_limit]
 
+            vmin, vmax = getattr(self, f'{ax}min')[plot_num], getattr(self, f'{ax}max')[plot_num]
+            if vmin is not None and vmax is not None and vmin >= vmax:
+                raise DataError(f'{ax}min must be less than {ax}max [{vmin} >= {vmax}]')
+
         return data_set
 
     def _get_data_range(self, ax: str, data_set: Union[pd.DataFrame, npt.NDArray], plot_num: int) -> tuple:
@@ -647,6 +651,9 @@ class Data:
                 vmax = axmax
         else:
             vmax = getattr(self, f'{ax}max')[plot_num]
+
+        # if vmin >= vmax:
+        #     raise DataError(f'{ax}min must be less than {ax}max [{vmin} >= {vmax}]')
 
         return vmin, vmax
 
