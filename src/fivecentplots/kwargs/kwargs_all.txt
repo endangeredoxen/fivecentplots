@@ -1,3 +1,5 @@
+align
+alpha
 auto_scale
 auto_tick_threshold
 ax2_hlines_alpha
@@ -124,6 +126,7 @@ bar_width
 bar_zorder
 bars
 bins
+box
 box_alpha
 box_color
 box_divider_alpha
@@ -346,6 +349,7 @@ cfa
 cl
 cmap
 col
+color
 color_by_bar
 color_override
 colors
@@ -386,13 +390,17 @@ data_labels
 data_labels_rounding
 df
 dpi
+edge_alpha
 edge_alpha_override
+edge_color
 edge_color_override
+edge_width
 engine
 eqn_position
 error_bars
 error_color
 explode
+fig
 fig_alpha
 fig_color
 fig_edge_alpha
@@ -405,6 +413,7 @@ fig_font_color
 fig_font_size
 fig_font_style
 fig_font_weight
+fig_groups
 fig_rotation
 fig_style
 fig_width
@@ -413,6 +422,7 @@ filename
 filepath
 fill_alpha
 fill_alpha_override
+fill_color
 fill_color_override
 filled
 fills
@@ -433,6 +443,7 @@ fills_style
 fills_width
 fills_zorder
 filter
+finvert_range_limits_{ax}
 fit
 fit_alpha
 fit_color
@@ -458,6 +469,15 @@ fit_rsq
 fit_style
 fit_width
 fit_zorder
+flabel_{lab}
+flabel_{lab}2
+flabel_{lab}2_text
+flabel_{lab}_text
+font
+font_color
+font_size
+font_style
+font_weight
 f{attr}_override
 gantt_alpha
 gantt_color
@@ -712,6 +732,7 @@ heatmap_rotation
 heatmap_style
 heatmap_width
 heatmap_zorder
+height
 hist_align
 hist_bins
 hist_cumulative
@@ -746,6 +767,7 @@ imshow_zorder
 inline
 inner_radius
 interp
+interval
 jitter
 kde
 kde_width
@@ -767,6 +789,7 @@ label_edge_width
 label_fill_alpha
 label_fill_color
 label_font_color
+label_font_size
 label_font_style
 label_font_weight
 label_padding
@@ -1075,6 +1098,7 @@ rolling_mean_style
 rolling_mean_width
 rolling_mean_zorder
 rotate_labels
+rotation
 row
 rsq_position
 sample
@@ -1116,7 +1140,9 @@ step_inner
 step_tail
 sticky
 stretch
+style
 swap
+tail
 text
 text_coord
 text_coordinate
@@ -1130,6 +1156,7 @@ text_font_weight
 text_position
 text_rotation
 text_units
+theme
 tick_cleanup
 tick_color
 tick_labels
@@ -1953,3 +1980,4 @@ ymin
 z
 zmax
 zmin
+zorder

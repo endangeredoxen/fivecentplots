@@ -62,7 +62,6 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
 
             # Step one:  find all calls to utl.kwget
             found_kwget = [f[1] for f in funcs if 'kwget' in f[0]]
-
             for ff in funcs:
                 if 'kwget' not in ff[1]:
                     continue
@@ -115,12 +114,14 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
 
             # Step 2: find all calls to kwargs.get
             found_kwargs_get = [f[1] for f in funcs if f[0] == 'get']
+            found_kwargs_get += [f[1].split('.get')[1] for f in funcs if '.get(' in f[1]]
+
             for fkg in found_kwargs_get:
                 kws = fkg.split(',')
                 if len(kws) > 2 or ' ' in kws[0] or '.' in kws[0]:
                     continue
                 else:
-                    kwargs_list += [kws[0].replace("'", '').replace('"', '').strip()]
+                    kwargs_list += [kws[0].replace("'", '').replace('"', '').replace('(', '').replace(')', '').strip()]
 
             # Step 3: get all Element names and populate kwargs
             names = []
