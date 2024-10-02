@@ -1954,6 +1954,7 @@ violin_font_color
 violin_font_size
 violin_font_style
 violin_font_weight
+violin_markers
 violin_median_color
 violin_median_marker
 violin_median_size
