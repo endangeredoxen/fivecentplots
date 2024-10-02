@@ -40,11 +40,7 @@ for nb in ipynb:
         url = '<a' + ff[api:stop].split('<a')[1] + 'See the full API </a>'
         ff = ff[:api] + url + ff[ff[api:].find('/a>') + api + 3:]
 
-    # fix admonitions
-    for admonition in ['Note', 'Warning', 'Caution']:
-        ff.replace(f'<p class="admonition-title"><p>{admonition}</p>', f'<p class="admonition-title">{admonition}')
-
-
+    # write output
     with open(cur_dir / '_build/html' / nb, 'w') as output:
         output.write(ff)
 
