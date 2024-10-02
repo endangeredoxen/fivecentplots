@@ -1,0 +1,52 @@
+Metadata-Version: 2.1
+Name: fivecentplots
+Version: 0.6.0a0
+Summary: Wrapper for popular python plotting packages to make visually appealing plots easier
+Home-page: https://github.com/endangeredoxen/fivecentplots
+Download-URL: https://github.com/endangeredoxen/fivecentplots/archive/refs/tags/v0.6.0-alpha.tar.gz
+Author: Steve Nicholes
+License: GPLv3
+Platform: linux
+Platform: osx
+Platform: win32
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.7
+Description-Content-Type: text/x-rst
+Requires-Dist: pandas>=1.0.5
+Requires-Dist: numpy
+Requires-Dist: matplotlib>=3.0.3
+Requires-Dist: scipy
+Requires-Dist: natsort
+Provides-Extra: test
+Requires-Dist: pytest==7.2.1; extra == "test"
+Requires-Dist: pytest-benchmark==4.0.0; extra == "test"
+Requires-Dist: pytest-cov==4.0.0; extra == "test"
+Requires-Dist: opencv-python==4.8.1.78; extra == "test"
+Requires-Dist: imageio==2.25.0; extra == "test"
+Requires-Dist: flake8==6.0.0; extra == "test"
+Requires-Dist: pandas==1.5.3; extra == "test"
+Requires-Dist: numpy==1.24.1; extra == "test"
+Requires-Dist: matplotlib==3.6.3; extra == "test"
+Requires-Dist: scipy==1.10.0; extra == "test"
+Requires-Dist: natsort==8.2.0; extra == "test"
+Provides-Extra: doc
+Requires-Dist: sphinx==4.1.2; extra == "doc"
+Requires-Dist: nbsphinx==0.8.6; extra == "doc"
+Requires-Dist: sphinx_rtd_theme==0.5.2; extra == "doc"
+Requires-Dist: sphinxcontrib-napoleon==0.7; extra == "doc"
+Requires-Dist: nbconvert==5.6.1; extra == "doc"
+Requires-Dist: jupyter==1.0.0; extra == "doc"
+Requires-Dist: jupyter-contrib-nbextensions==0.5.1; extra == "doc"
+Requires-Dist: jupyterlab-pygments==0.1.2; extra == "doc"
+Requires-Dist: jupyter-contrib-core==0.3.3; extra == "doc"
+Requires-Dist: jinja2==3.0.1; extra == "doc"
+Requires-Dist: pandoc==2.2; extra == "doc"
+Requires-Dist: colour-demosaicing==0.2.2; extra == "doc"
+
+Install latest release using:
+
+pip install fivecentplots
+
+Read the docs at:
+
+https://endangeredoxen.github.io/fivecentplots
