@@ -583,8 +583,7 @@ div.rendered_html tbody tr:hover {
 <p>First consider a case where both the <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> DataFrame columns contain categorical data values:</p>
 <div class="section" id="No-data-labels">
 <h3>No data labels<a class="headerlink" href="#No-data-labels" title="Permalink to this headline">¶</a></h3>
-<div class="admonition note"><p class="admonition-title"></p><p><p>Note that colorbars are enabled by default for heatmaps and must be intentionally disabled with <code class="docutils literal notranslate"><span class="pre">cbar=False</span></code> to remove.</p>
-</p></div><div class="nbinput docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
@@ -597,10 +596,10 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/heatmap_14_0.png" src="_images/heatmap_14_0.png" />
+<img alt="_images/heatmap_13_0.png" src="_images/heatmap_13_0.png" />
 </div>
 </div>
-<p>Note that for heatmaps the <code class="docutils literal notranslate"><span class="pre">x</span></code> tick labels are rotated 90° by default. This can be overridden via the keyword <code class="docutils literal notranslate"><span class="pre">tick_labels_major_x_rotation</span></code>.</p>
+<p>..note:: 1. Colorbars are enabled by default for heatmaps and must be intentionally disabled with <code class="docutils literal notranslate"><span class="pre">cbar=False</span></code> to remove 2. Heatmaps the <code class="docutils literal notranslate"><span class="pre">x</span></code> tick labels are rotated 90° by default. This can be overridden via the keyword <code class="docutils literal notranslate"><span class="pre">tick_labels_major_x_rotation</span></code></p>
 </div>
 <div class="section" id="With-data-labels">
 <h3>With data labels<a class="headerlink" href="#With-data-labels" title="Permalink to this headline">¶</a></h3>
@@ -619,13 +618,13 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/heatmap_18_0.png" src="_images/heatmap_18_0.png" />
+<img alt="_images/heatmap_17_0.png" src="_images/heatmap_17_0.png" />
 </div>
 </div>
 </div>
 <div class="section" id="Cell-size">
 <h3>Cell size<a class="headerlink" href="#Cell-size" title="Permalink to this headline">¶</a></h3>
-<p>The size of the heatmap cell will default to a width of 60 pixels unless: (1) the keyword <code class="docutils literal notranslate"><span class="pre">heatmap_cell_size</span></code> (or <code class="docutils literal notranslate"><span class="pre">cell_size</span></code> when directly supplying the value to the function call) is specified; or (2) <code class="docutils literal notranslate"><span class="pre">ax_size</span></code> is explicitly defined. Note that for a heatmap the cells are always square with width=height.</p>
+<p>The size of the heatmap cell will default to a width of 60 pixels unless: (1) the keyword <code class="docutils literal notranslate"><span class="pre">heatmap_cell_size</span></code> (or <code class="docutils literal notranslate"><span class="pre">cell_size</span></code> when directly supplying the value to the function call) is specified; or (2) <code class="docutils literal notranslate"><span class="pre">ax_size</span></code> is explicitly defined:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -640,14 +639,15 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/heatmap_21_0.png" src="_images/heatmap_21_0.png" />
+<img alt="_images/heatmap_20_0.png" src="_images/heatmap_20_0.png" />
 </div>
 </div>
+<p>..note:: Heatmap cells are always square with width = height</p>
 </div>
 </div>
 <div class="section" id="Non-uniform-data">
 <h2>Non-uniform data<a class="headerlink" href="#Non-uniform-data" title="Permalink to this headline">¶</a></h2>
-<p>A major difference between heatmaps and contour plots is that contour plots assume that the <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> DataFrame column values are numerical and continuous. With a heatmap, we can cast numerical data into categorical form. Note that any missing values get mapped as <code class="docutils literal notranslate"><span class="pre">nan</span></code> values are not not plotted.</p>
+<p>A major difference between heatmaps and contour plots is that contour plots assume that the <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> DataFrame column values are numerical and continuous. With a heatmap, we can cast numerical data into categorical form</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -676,7 +676,7 @@ div.rendered_html tbody tr:hover {
 <img alt="_images/heatmap_25_0.png" src="_images/heatmap_25_0.png" />
 </div>
 </div>
-<p>Note that the x-axis width is not 400px as specified by the keyword <code class="docutils literal notranslate"><span class="pre">ax_scale</span></code>. This occurs because the data set does not have as many values on the x-axis as on the y-axis. fivecentplots applies the axis size to the axis with the most items and scales the other axis accordingly.</p>
+<p>..note:: 1. any missing values get mapped as <code class="docutils literal notranslate"><span class="pre">nan</span></code> values are not not plotted 2. the x-axis width is not 400px as specified by the keyword <code class="docutils literal notranslate"><span class="pre">ax_scale</span></code>. This occurs because the data set does not have as many values on the x-axis as on the y-axis. fivecentplots applies the axis size to the axis with the most items and scales the other axis accordingly</p>
 </div>
 <div class="section" id="imshow-alternative">
 <h2>imshow alternative<a class="headerlink" href="#imshow-alternative" title="Permalink to this headline">¶</a></h2>

@@ -713,7 +713,7 @@ div.rendered_html tbody tr:hover {
 <h2>Bar plot types<a class="headerlink" href="#Bar-plot-types" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="Vertical-bars">
 <h3>Vertical bars<a class="headerlink" href="#Vertical-bars" title="Permalink to this headline">¶</a></h3>
-<p>We can plot a basic vertical bar chart as follows. Note: * <code class="docutils literal notranslate"><span class="pre">filter</span></code> is applied to show only measurement “A” at 25C * tick labels are rotated 90° for readability (<code class="docutils literal notranslate"><span class="pre">fcp.bar</span></code> does <strong>not</strong> currently have auto-rotation for long tick labels)</p>
+<p>We can plot a basic vertical bar chart as follows:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -730,12 +730,19 @@ div.rendered_html tbody tr:hover {
 <img alt="_images/barplot_13_0.png" src="_images/barplot_13_0.png" />
 </div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>* <code class="docutils literal notranslate"><span class="pre">filter</span></code> is applied to show only measurement “A” at 25C * tick labels are rotated 90° for readability (<code class="docutils literal notranslate"><span class="pre">fcp.bar</span></code> does <strong>not</strong> currently have auto-rotation for long tick labels)</p>
+</div>
 </div>
 <div class="section" id="Horizontal-bars">
 <h3>Horizontal bars<a class="headerlink" href="#Horizontal-bars" title="Permalink to this headline">¶</a></h3>
 <p>We can plot the same data with horizontal bars by adding the keyword <code class="docutils literal notranslate"><span class="pre">horizontal=True</span></code>.</p>
-<div class="admonition note"><p class="admonition-title"></p><p><p>For convenience, fivecentplots often supports two versions of plot-specific keywords (in this case, horizontal or bar_horizontal). For inline plotting the shorter version may be preferred but for cases where kwargs are pulled from theme files or when precision is required to avoid applying a particular kwarg to other <code class="docutils literal notranslate"><span class="pre">Elements</span></code> in the plot, the long version is recommended.</p>
-</p></div><div class="nbinput docutils container">
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For convenience, fivecentplots often supports two versions of plot-specific keywords for the same feature (in this case, horizontal or bar_horizontal). For inline plotting the shorter version may be preferred but for cases where <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> are listed in theme files or when precision is required to avoid inadvertently applying a particular kwarg to other <code class="docutils literal notranslate"><span class="pre">Elements</span></code> in the plot, the long version is recommended.</p>
+</div>
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
@@ -748,7 +755,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/barplot_16_0.png" src="_images/barplot_16_0.png" />
+<img alt="_images/barplot_17_0.png" src="_images/barplot_17_0.png" />
 </div>
 </div>
 </div>
@@ -768,7 +775,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/barplot_19_0.png" src="_images/barplot_19_0.png" />
+<img alt="_images/barplot_20_0.png" src="_images/barplot_20_0.png" />
 </div>
 </div>
 </div>
@@ -800,7 +807,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/barplot_24_0.png" src="_images/barplot_24_0.png" />
+<img alt="_images/barplot_25_0.png" src="_images/barplot_25_0.png" />
 </div>
 </div>
 </div>
@@ -820,7 +827,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/barplot_27_0.png" src="_images/barplot_27_0.png" />
+<img alt="_images/barplot_28_0.png" src="_images/barplot_28_0.png" />
 </div>
 </div>
 </div>
@@ -840,7 +847,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/barplot_30_0.png" src="_images/barplot_30_0.png" />
+<img alt="_images/barplot_31_0.png" src="_images/barplot_31_0.png" />
 </div>
 </div>
 </div>
@@ -860,7 +867,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/barplot_33_0.png" src="_images/barplot_33_0.png" />
+<img alt="_images/barplot_34_0.png" src="_images/barplot_34_0.png" />
 </div>
 </div>
 </div>
@@ -893,7 +900,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/barplot_39_0.png" src="_images/barplot_39_0.png" />
+<img alt="_images/barplot_40_0.png" src="_images/barplot_40_0.png" />
 </div>
 </div>
 </div>
@@ -914,7 +921,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/barplot_42_0.png" src="_images/barplot_42_0.png" />
+<img alt="_images/barplot_43_0.png" src="_images/barplot_43_0.png" />
 </div>
 </div>
 </div>
@@ -938,7 +945,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/barplot_47_0.png" src="_images/barplot_47_0.png" />
+<img alt="_images/barplot_48_0.png" src="_images/barplot_48_0.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -955,7 +962,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/barplot_48_0.png" src="_images/barplot_48_0.png" />
+<img alt="_images/barplot_49_0.png" src="_images/barplot_49_0.png" />
 </div>
 </div>
 </div>
@@ -975,7 +982,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/barplot_50_0.png" src="_images/barplot_50_0.png" />
+<img alt="_images/barplot_51_0.png" src="_images/barplot_51_0.png" />
 </div>
 </div>
 </div>

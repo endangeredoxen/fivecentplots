@@ -830,7 +830,7 @@ Warning: the following kwargs are not supported:
 <p>For minor ticks however, it is easier to specify the <em>number</em> of minor ticks to use via the <code class="docutils literal notranslate"><span class="pre">ticks_minor_&lt;x|y|x2|y2&gt;_number</span></code> keyword. The interval between minor ticks will then be calculated automatically. Setting the number of ticks automatically turns on the tick marks without explicitly setting <code class="docutils literal notranslate"><span class="pre">ticks_minor_&lt;x|y|x2|y2&gt;=True</span></code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Note that this option only works for linearly scaled axis. Minor log axis will always have 8 minor ticks with log spacing (notice the <code class="docutils literal notranslate"><span class="pre">number</span></code> is ignored for the “y2” axis below).</p>
+<p>This option only works for linearly scaled axis. Minor log axis will always have 8 minor ticks with log spacing (notice the <code class="docutils literal notranslate"><span class="pre">number</span></code> is ignored for the “y2” axis below).</p>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
@@ -856,7 +856,7 @@ Warning: the following kwargs are not supported:
 <h2>Tick labels<a class="headerlink" href="#Tick-labels" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="General-comments">
 <h3>General comments<a class="headerlink" href="#General-comments" title="Permalink to this headline">¶</a></h3>
-<p>In addition to tick markers, we can control the labels associated with those markers for both major and minor axes. Note the following:</p>
+<p>In addition to tick markers, we can control the labels associated with those markers for both major and minor axes. Be aware of the following:</p>
 <ul class="simple">
 <li><p>Tick marks are automatically enabled if tick labels are enabled</p></li>
 <li><p>Tick labels are not automatically enabled when tick marks are enabled, but they are automatically disabled if tick marks are disabled</p></li>

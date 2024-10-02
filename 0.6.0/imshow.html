@@ -859,13 +859,20 @@ fcp.imshow(img, **kwargs)
 </pre></div></div>
 </div>
 <p>And the plot is executed as follows:</p>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">imgs</span><span class="o">=</span><span class="n">imgs</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="s1">&#39;alpha_blend&#39;</span><span class="p">],</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">ws_col</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
 </pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/imshow_15_0.png" src="_images/imshow_15_0.png" />
 </div>
 </div>
 </div>
@@ -900,10 +907,8 @@ fcp.imshow(img, **kwargs)
 (1000, 2000, 3)
 </pre></div></div>
 </div>
-<div class="admonition note"><p class="admonition-title"><p>Notes:</p>
-</p><ol><li><p>when specifying <code class="docutils literal notranslate"><span class="pre">ax_size</span></code> the aspect ratio of the original data will be preserved and the larger value between actual height or width will adopt the specified height or width</p>
-</li><li><p>tick labels are disable by default for <code class="docutils literal notranslate"><span class="pre">imshow</span></code> (use <code class="docutils literal notranslate"><span class="pre">tick_labels_major=True</span></code> to enable)</p>
-</li></ol></div></div>
+<p>..note:: * when specifying <code class="docutils literal notranslate"><span class="pre">ax_size</span></code> the aspect ratio of the original data will be preserved and the larger value between <em>actual</em> height or width will adopt the <em>specified</em> height or width * tick labels are disable by default for <code class="docutils literal notranslate"><span class="pre">imshow</span></code> (use <code class="docutils literal notranslate"><span class="pre">tick_labels_major=True</span></code> to enable)</p>
+</div>
 <div class="section" id="RAW-/-Grayscale">
 <h3>RAW / Grayscale<a class="headerlink" href="#RAW-/-Grayscale" title="Permalink to this headline">¶</a></h3>
 <p>fivecentplots can also be used to display 2D RAW/grayscale image data. For this example, we first covert the above RGB image into a scaled 16-bit grayscale <code class="docutils literal notranslate"><span class="pre">pd.DataFrame</span></code> using an <code class="docutils literal notranslate"><span class="pre">fcp.utilities</span></code> functions:</p>
@@ -1249,9 +1254,8 @@ fcp.imshow(img, **kwargs)
 <img alt="_images/imshow_24_0.png" src="_images/imshow_24_0.png" />
 </div>
 </div>
-<div class="admonition note"><p class="admonition-title"><p>Note:</p>
-</p><p><p><code class="docutils literal notranslate"><span class="pre">imshow</span></code> uses the “gray” colormap by default for single-channel RAW images</p>
-</p></div></div>
+<p>..note:: <code class="docutils literal notranslate"><span class="pre">imshow</span></code> uses the “gray” colormap by default for single-channel RAW images</p>
+</div>
 </div>
 <div class="section" id="Colors">
 <h2>Colors<a class="headerlink" href="#Colors" title="Permalink to this headline">¶</a></h2>
@@ -1321,13 +1325,12 @@ fcp.imshow(img, **kwargs)
 <img alt="_images/imshow_36_0.png" src="_images/imshow_36_0.png" />
 </div>
 </div>
-<div class="admonition warning"><p class="admonition-title"><p>Warning:</p>
-</p><p><p>Private eyes</p>
-</p><p><p>They’re watching you</p>
-</p><p><p>They see your every move</p>
-</p></div><p>Zooming can be achieved by changing the <code class="docutils literal notranslate"><span class="pre">ax_size</span></code> values for the cropped image. We can also add axes labels:</p>
+<p>..caution:: Private eyes</p>
+<p>They’re watching you</p>
+<p>They see your every move</p>
+<p>Zooming can be achieved by changing the <code class="docutils literal notranslate"><span class="pre">ax_size</span></code> values for the cropped image. We can also add axes labels:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[206]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1342,9 +1345,8 @@ fcp.imshow(img, **kwargs)
 <img alt="_images/imshow_39_0.png" src="_images/imshow_39_0.png" />
 </div>
 </div>
-<div class="admonition note"><p class="admonition-title"><p>Note:</p>
-</p><p><p>If a crop limit exceeds the actual dimensions of the image, the min or max value is automatically used instead</p>
-</p></div></div>
+<p>..note:: If a crop limit exceeds the actual dimensions of the image, the min or max value is automatically used instead</p>
+</div>
 <div class="section" id="Contrast-stretching">
 <h2>Contrast stretching<a class="headerlink" href="#Contrast-stretching" title="Permalink to this headline">¶</a></h2>
 <p>This section applies only to single-channel image data</p>
@@ -1355,8 +1357,8 @@ fcp.imshow(img, **kwargs)
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="c1"># First calculate the mean and std to help define stretching limits</span>
-<span class="n">uu</span> <span class="o">=</span> <span class="n">img_raw</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-<span class="n">ss</span> <span class="o">=</span> <span class="n">img_raw</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+<span class="n">uu</span> <span class="o">=</span> <span class="n">img_raw</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">ss</span> <span class="o">=</span> <span class="n">img_raw</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
 
 <span class="c1"># Plot with stretching</span>
 <span class="n">fcp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img_raw</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax_size</span><span class="o">=</span><span class="p">[</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">],</span> <span class="n">zmin</span><span class="o">=</span><span class="n">uu</span><span class="o">-</span><span class="mi">3</span><span class="o">*</span><span class="n">ss</span><span class="p">,</span> <span class="n">zmax</span><span class="o">=</span><span class="n">uu</span><span class="o">+</span><span class="mi">3</span><span class="o">*</span><span class="n">ss</span><span class="p">)</span>
@@ -1429,7 +1431,7 @@ fcp.imshow(img, **kwargs)
 <h2>Split color planes<a class="headerlink" href="#Split-color-planes" title="Permalink to this headline">¶</a></h2>
 <p>This section applies only to single-channel image data</p>
 <p>When analyzing Bayer-type images, it is often useful to split the image data based on the color-filter array pattern used on the image sensor. fivecentplots provides a simple utility function to do this and <code class="docutils literal notranslate"><span class="pre">imshow</span></code> can be used to display the result. Consider the following image:</p>
-<p><img alt="5a9268e8e5604f86906e483de712815f" src="https://upload.wikimedia.org/wikipedia/commons/2/28/RGB_illumination.jpg" /></p>
+<p><img alt="5d085110a2184711a25e3a6219b86b2f" src="https://upload.wikimedia.org/wikipedia/commons/2/28/RGB_illumination.jpg" /></p>
 <p>First we read the image from the world-wide web and convert into a Bayer-like RAW image (rough hack for the purposes of this example):</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
@@ -1467,11 +1469,8 @@ array([[ 0,  0,  0, ..., 34,  1,  1],
 </pre></div></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">fcp.imshow</span></code> has a built-in hook to separate RAW single-channel data into discrete color planes if the CFA pattern of the RAW data is supplied with the keyword <code class="docutils literal notranslate"><span class="pre">cfa</span></code>. This automatically creates a new grouping column for the data called “Plane”, which was can use to separate the color planes into discrete subplots for visualization.</p>
-<div class="admonition note"><p class="admonition-title"><p>Note:</p>
-</p><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;p&gt;Only CFAs with a 2x2 grid of colors is supported&lt;/p&gt;
-</pre></div>
-</div>
-</div><div class="nbinput docutils container">
+<p>..note:: Only CFAs with a 2x2 grid of colors is supported</p>
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
@@ -1684,7 +1683,7 @@ array([[ 0,  0,  0, ..., 34,  1,  1],
 <h3>More advanced example<a class="headerlink" href="#More-advanced-example" title="Permalink to this headline">¶</a></h3>
 <p>Let’s consider a more complicated example with multiple grouping factors using an ISO 12233 eSFR chart:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[190]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1708,7 +1707,7 @@ array([[ 0,  0,  0, ..., 34,  1,  1],
 <p>which yields a data set of 32 images for plotting with <code class="docutils literal notranslate"><span class="pre">imshow</span></code>.</p>
 <p><p>Although the specifics of this example are a bit silly, one can readily see the power of fivecentplots for analyzing complex image processing experiments.</p>
 </p><div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[218]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1724,7 +1723,7 @@ array([[ 0,  0,  0, ..., 34,  1,  1],
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[218]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1983,7 +1982,7 @@ array([[ 0,  0,  0, ..., 34,  1,  1],
 </div>
 <p>First, we plot all combinations using the <code class="docutils literal notranslate"><span class="pre">kernel</span></code> value for each column of images, the <code class="docutils literal notranslate"><span class="pre">sigma</span></code> value for each row of images, and <code class="docutils literal notranslate"><span class="pre">gain</span></code> as the sole entry in <code class="docutils literal notranslate"><span class="pre">fig_groups</span></code> which yields a separate plot for each <code class="docutils literal notranslate"><span class="pre">gain</span></code> value. Notice that the saved filename is printed above each plot, designating the <code class="docutils literal notranslate"><span class="pre">gain</span></code> value used.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[208]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -2023,7 +2022,7 @@ array([[ 0,  0,  0, ..., 34,  1,  1],
 </div>
 <p>Let’s say we are interested in down selecting to only a few cases and zooming in to see the result. This can be accomplished as follows:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[223]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -2038,9 +2037,8 @@ array([[ 0,  0,  0, ..., 34,  1,  1],
 <img alt="_images/imshow_74_0.png" src="_images/imshow_74_0.png" />
 </div>
 </div>
-<div class="admonition note"><p class="admonition-title"><p>Note:</p>
-</p><p><p>The above images are zoomed in automatically because our crop dimensions are smaller than the default value for <code class="docutils literal notranslate"><span class="pre">ax_size=[400,</span> <span class="pre">400]</span></code></p>
-</p></div></div>
+<p>..note:: The above images are zoomed in automatically because our crop dimensions are smaller than the default value for <code class="docutils literal notranslate"><span class="pre">ax_size=[400,</span> <span class="pre">400]</span></code></p>
+</div>
 </div>
 <div class="section" id="Pixel-accuracy">
 <h2>Pixel accuracy<a class="headerlink" href="#Pixel-accuracy" title="Permalink to this headline">¶</a></h2>
@@ -2238,9 +2236,8 @@ array([[  0,   0,   0, 243, 243, 243,   0,   0, 243, 243, 243,   0,   0,
 <img alt="_images/imshow_96_0.png" src="_images/imshow_96_0.png" />
 </div>
 </div>
-<div class="admonition note"><p class="admonition-title"><p>Note:</p>
-</p><p><p>Interpolation can be helpful when plotting high-resolution color images that look pixelated</p>
-</p></div><div class="nbinput nblast docutils container">
+<p>..note:: Interpolation can be helpful when plotting high-resolution color images that look pixelated</p>
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>

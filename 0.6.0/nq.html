@@ -911,8 +911,8 @@ Warning: histograms of image data with float values is slow; consider using ints
 <img alt="_images/nq_47_0.png" src="_images/nq_47_0.png" />
 </div>
 </div>
-<div class="admonition note"><p class="admonition-title"></p><p><p>Note there is currently nothing that prevents you from supplying a meaningless number for <code class="docutils literal notranslate"><span class="pre">sigma</span></code>. For instance, if your dataset is small you may not have enough points to calculate +/-3 sigma accurately. The auto-calculation of sigma will handle this, but there is no check on a custom <code class="docutils literal notranslate"><span class="pre">sigma</span></code> value</p>
-</p></div></div>
+<p>..warning:: Nothing that prevents you from supplying a meaningless number for <code class="docutils literal notranslate"><span class="pre">sigma</span></code>. For instance, if your dataset is small you may not have enough points to calculate +/-3 sigma accurately. The auto-calculation of sigma will handle this, but there is no validation on user-provided <code class="docutils literal notranslate"><span class="pre">sigma</span></code> values</p>
+</div>
 <div class="section" id="Custom-tail">
 <h3>Custom tail<a class="headerlink" href="#Custom-tail" title="Permalink to this headline">¶</a></h3>
 <p>Now suppose you only consider +/-4 sigma to be the tail of your distribution. You can change that using the keyword <code class="docutils literal notranslate"><span class="pre">tail</span></code>. Notice the increased density of tail points now starts only at +/-4 sigma.</p>
@@ -935,7 +935,7 @@ Warning: histograms of image data with float values is slow; consider using ints
 </div>
 <div class="section" id="Point-density">
 <h3>Point density<a class="headerlink" href="#Point-density" title="Permalink to this headline">¶</a></h3>
-<p>The sigma spacing between tail and non-tail points can be controlled separately using <code class="docutils literal notranslate"><span class="pre">step_tail</span></code> and <code class="docutils literal notranslate"><span class="pre">step_inner</span></code> keywords, respectively. Note that more points will slow the calculation time.</p>
+<p>The sigma spacing between tail and non-tail points can be controlled separately using <code class="docutils literal notranslate"><span class="pre">step_tail</span></code> and <code class="docutils literal notranslate"><span class="pre">step_inner</span></code> keywords, respectively:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -952,6 +952,7 @@ Warning: histograms of image data with float values is slow; consider using ints
 <img alt="_images/nq_54_0.png" src="_images/nq_54_0.png" />
 </div>
 </div>
+<p>..caution:: increasing the number of points will slow the calculation time</p>
 </div>
 </div>
 <div class="section" id="Line-fit">
@@ -971,7 +972,7 @@ Warning: histograms of image data with float values is slow; consider using ints
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/nq_57_0.png" src="_images/nq_57_0.png" />
+<img alt="_images/nq_58_0.png" src="_images/nq_58_0.png" />
 </div>
 </div>
 </div>
@@ -991,20 +992,10 @@ Warning: histograms of image data with float values is slow; consider using ints
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/nq_60_0.png" src="_images/nq_60_0.png" />
+<img alt="_images/nq_61_0.png" src="_images/nq_61_0.png" />
 </div>
 </div>
-<div class="admonition warning"><p class="admonition-title"><p>Warning:</p>
-</p><p><p>Don’t ever style a plot like this</p>
-</p></div><div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>
-</pre></div>
-</div>
-</div>
+<p>..caution:: Don’t ever style a plot like this. Just don’t</p>
 </div>
 </div>
 

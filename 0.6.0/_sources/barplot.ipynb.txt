@@ -315,9 +315,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "We can plot a basic vertical bar chart as follows.  Note:\n",
-    "* `filter` is applied to show only measurement \"A\" at 25C\n",
-    "* tick labels are rotated 90° for readability (`fcp.bar` does **not** currently have auto-rotation for long tick labels)"
+    "We can plot a basic vertical bar chart as follows:  "
    ]
   },
   {
@@ -344,6 +342,15 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
+    ".. note:: \n",
+    "* `filter` is applied to show only measurement \"A\" at 25C\n",
+    "* tick labels are rotated 90° for readability (`fcp.bar` does **not** currently have auto-rotation for long tick labels) "
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
     "### Horizontal bars"
    ]
   },
@@ -353,10 +360,7 @@
    "source": [
     "We can plot the same data with horizontal bars by adding the keyword ``horizontal=True``. \n",
     "\n",
-    "<div class=\"admonition note\">\n",
-    "<p class=\"admonition-title\"></p>\n",
-    "<p>For convenience, <b>fivecentplots</b> often supports two versions of plot-specific keywords (in this case, <strong>horizontal</strong> or <strong>bar_horizontal</strong>).  For inline plotting the shorter version may be preferred but for cases where <strong>kwargs</strong> are pulled from theme files or when precision is required to avoid applying a particular kwarg to other `Elements` in the plot, the long version is recommended.</p>\n",
-    "</div>"
+    ".. note:: For convenience, <b>fivecentplots</b> often supports two versions of plot-specific keywords for the same feature (in this case, <strong>horizontal</strong> or <strong>bar_horizontal</strong>).  For inline plotting the shorter version may be preferred but for cases where `kwargs` are listed in theme files or when precision is required to avoid inadvertently applying a particular kwarg to other `Elements` in the plot, the long version is recommended."
    ]
   },
   {

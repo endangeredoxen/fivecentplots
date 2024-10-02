@@ -636,10 +636,8 @@ div.rendered_html tbody tr:hover {
 <h2>Simple histogram<a class="headerlink" href="#Simple-histogram" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="Vertical-bars">
 <h3>Vertical bars<a class="headerlink" href="#Vertical-bars" title="Permalink to this headline">¶</a></h3>
-<p>We calculate a simple histogram with default bin size of 20.</p>
-<div class="admonition note"><p class="admonition-title"><p>Note</p>
-</p><p><p>“Counts” are automatically calculated based on the data in the “x” column</p>
-</p></div><div class="nbinput docutils container">
+<p>We calculate a simple histogram with default bin size of 20:</p>
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
@@ -655,6 +653,7 @@ div.rendered_html tbody tr:hover {
 <img alt="_images/hist_16_0.png" src="_images/hist_16_0.png" />
 </div>
 </div>
+<p>..note:: “Counts” are automatically calculated based on the data in the “x” column</p>
 </div>
 <div class="section" id="Horizontal-bars">
 <h3>Horizontal bars<a class="headerlink" href="#Horizontal-bars" title="Permalink to this headline">¶</a></h3>
@@ -672,7 +671,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_19_0.png" src="_images/hist_19_0.png" />
+<img alt="_images/hist_20_0.png" src="_images/hist_20_0.png" />
 </div>
 </div>
 </div>
@@ -692,7 +691,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_22_0.png" src="_images/hist_22_0.png" />
+<img alt="_images/hist_23_0.png" src="_images/hist_23_0.png" />
 </div>
 </div>
 </div>
@@ -715,7 +714,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_26_0.png" src="_images/hist_26_0.png" />
+<img alt="_images/hist_27_0.png" src="_images/hist_27_0.png" />
 </div>
 </div>
 </div>
@@ -735,7 +734,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_29_0.png" src="_images/hist_29_0.png" />
+<img alt="_images/hist_30_0.png" src="_images/hist_30_0.png" />
 </div>
 </div>
 </div>
@@ -755,7 +754,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_32_0.png" src="_images/hist_32_0.png" />
+<img alt="_images/hist_33_0.png" src="_images/hist_33_0.png" />
 </div>
 </div>
 <p>Next we wrap by <code class="docutils literal notranslate"><span class="pre">x</span></code> which means we make a subplot for each x-column name provided. To illustrate this, we create a couple of new columns in the <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> that are just multiples of the “Value” column:</p>
@@ -774,7 +773,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_34_0.png" src="_images/hist_34_0.png" />
+<img alt="_images/hist_35_0.png" src="_images/hist_35_0.png" />
 </div>
 </div>
 </div>
@@ -795,7 +794,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_37_0.png" src="_images/hist_37_0.png" />
+<img alt="_images/hist_38_0.png" src="_images/hist_38_0.png" />
 </div>
 </div>
 </div>
@@ -815,7 +814,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_40_0.png" src="_images/hist_40_0.png" />
+<img alt="_images/hist_41_0.png" src="_images/hist_41_0.png" />
 </div>
 </div>
 <div class="section" id="Cumulative">
@@ -834,7 +833,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_43_0.png" src="_images/hist_43_0.png" />
+<img alt="_images/hist_44_0.png" src="_images/hist_44_0.png" />
 </div>
 </div>
 </div>
@@ -854,7 +853,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_46_0.png" src="_images/hist_46_0.png" />
+<img alt="_images/hist_47_0.png" src="_images/hist_47_0.png" />
 </div>
 </div>
 </div>
@@ -862,9 +861,8 @@ div.rendered_html tbody tr:hover {
 <div class="section" id="Images">
 <h2>Images<a class="headerlink" href="#Images" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">fcp.hist</span></code> is a powerful tool for data analysis of RAW and color images in image sensor / camera engineering activities. By default, image histograms are automatically converted to line plots with a histogram bin for each digital code from <code class="docutils literal notranslate"><span class="pre">0</span></code> to <code class="docutils literal notranslate"><span class="pre">2**bit_depth</span> <span class="pre">-</span> <span class="pre">1</span></code>. Additional options are also provided to split RAW images by color-filter array (CFA) pattern and color images by channel.</p>
-<div class="admonition note"><p class="admonition-title"><p>Note</p>
-</p><p><p>For images with high bit-depth and thus a very high number of bins, user of <code class="docutils literal notranslate"><span class="pre">np.histogram</span></code> can be slow. However, if the image data is of interger data type, fivecentplots will use <code class="docutils literal notranslate"><span class="pre">np.bincount</span></code> which is insanely faster. Therefore, we recommend using integer-type image data wherever possible.</p>
-</p></div><div class="section" id="RAW">
+<p>..warning:: For images with high bit-depth and thus a very high number of bins, user of <code class="docutils literal notranslate"><span class="pre">np.histogram</span></code> can be slow. However, if the image data is of interger data type, fivecentplots will use <code class="docutils literal notranslate"><span class="pre">np.bincount</span></code> which is insanely faster. Therefore, we recommend using integer-type image data wherever possible</p>
+<div class="section" id="RAW">
 <h3>RAW<a class="headerlink" href="#RAW" title="Permalink to this headline">¶</a></h3>
 <p>First, consider a simple example of a 300x300 gray patch with all pixel values near the mid-level of a 16-bit camera with no color-filter array.</p>
 <div class="nbinput docutils container">
@@ -906,7 +904,7 @@ array([[511, 511, 511, ..., 511, 511, 511],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_51_0.png" src="_images/hist_51_0.png" />
+<img alt="_images/hist_52_0.png" src="_images/hist_52_0.png" />
 </div>
 </div>
 <p>In this case, our histogram is a single point with 300 * 300 counts:</p>
@@ -923,7 +921,7 @@ array([[511, 511, 511, ..., 511, 511, 511],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_53_0.png" src="_images/hist_53_0.png" />
+<img alt="_images/hist_54_0.png" src="_images/hist_54_0.png" />
 </div>
 </div>
 <p>Now let’s multiplying our patch by a 2D Gaussian to approximate lens shading:</p>
@@ -947,7 +945,7 @@ array([[511, 511, 511, ..., 511, 511, 511],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_55_0.png" src="_images/hist_55_0.png" />
+<img alt="_images/hist_56_0.png" src="_images/hist_56_0.png" />
 </div>
 </div>
 <p>The resulting histogram is shown below:</p>
@@ -964,7 +962,7 @@ array([[511, 511, 511, ..., 511, 511, 511],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_57_0.png" src="_images/hist_57_0.png" />
+<img alt="_images/hist_58_0.png" src="_images/hist_58_0.png" />
 </div>
 </div>
 </div>
@@ -989,7 +987,7 @@ array([[511, 511, 511, ..., 511, 511, 511],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_60_0.png" src="_images/hist_60_0.png" />
+<img alt="_images/hist_61_0.png" src="_images/hist_61_0.png" />
 </div>
 </div>
 <p>Which after basic demosaicing (no edge treatment) would give :</p>
@@ -1007,7 +1005,7 @@ array([[511, 511, 511, ..., 511, 511, 511],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_62_0.png" src="_images/hist_62_0.png" />
+<img alt="_images/hist_63_0.png" src="_images/hist_63_0.png" />
 </div>
 </div>
 <p>By default, the <code class="docutils literal notranslate"><span class="pre">fcp.hist</span></code> does not distinguish between pixel CFA type, so we end up with three distinct histogram peaks:</p>
@@ -1024,7 +1022,7 @@ array([[511, 511, 511, ..., 511, 511, 511],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_64_0.png" src="_images/hist_64_0.png" />
+<img alt="_images/hist_65_0.png" src="_images/hist_65_0.png" />
 </div>
 </div>
 <p>However, if we specify the CFA via the keyword <code class="docutils literal notranslate"><span class="pre">cfa</span></code>, a new column in the grouping data named “Plane” is created. We can then legend by this color plane. Notice in this example that the “gr” and “gb” pixels overlap.</p>
@@ -1042,12 +1040,11 @@ array([[511, 511, 511, ..., 511, 511, 511],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_66_0.png" src="_images/hist_66_0.png" />
+<img alt="_images/hist_67_0.png" src="_images/hist_67_0.png" />
 </div>
 </div>
-<div class="admonition note"><p class="admonition-title"><p>Note:</p>
-</p><p><p>For better visualization above, we also invoke a special color scheme shortcut <code class="docutils literal notranslate"><span class="pre">fcp.RGGB</span></code> to color the histograms for each plane according to their filter color</p>
-</p></div><p>Now lets add some shading and noise to make a more meaningful histogram. This results in the color patch below.</p>
+<p>..note:: For better visualization above, we also invoke a special color scheme shortcut <code class="docutils literal notranslate"><span class="pre">fcp.RGGB</span></code> to color the histograms for each plane according to their filter color</p>
+<p>Now lets add some shading and noise to make a more meaningful histogram. This results in the color patch below.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
@@ -1075,7 +1072,7 @@ array([[511, 511, 511, ..., 511, 511, 511],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_69_0.png" src="_images/hist_69_0.png" />
+<img alt="_images/hist_70_0.png" src="_images/hist_70_0.png" />
 </div>
 </div>
 <p>Again, invoking the <code class="docutils literal notranslate"><span class="pre">cfa</span></code> keyword with legending we get the following:</p>
@@ -1092,7 +1089,7 @@ array([[511, 511, 511, ..., 511, 511, 511],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_71_0.png" src="_images/hist_71_0.png" />
+<img alt="_images/hist_72_0.png" src="_images/hist_72_0.png" />
 </div>
 </div>
 </div>
@@ -1113,7 +1110,7 @@ array([[511, 511, 511, ..., 511, 511, 511],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_74_0.png" src="_images/hist_74_0.png" />
+<img alt="_images/hist_75_0.png" src="_images/hist_75_0.png" />
 </div>
 </div>
 <p>If no, color channel information is provided to <code class="docutils literal notranslate"><span class="pre">fcp.hist</span></code>, the luminosity histogram of the grayscale representation of the RGB image is provided:</p>
@@ -1130,7 +1127,7 @@ array([[511, 511, 511, ..., 511, 511, 511],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_76_0.png" src="_images/hist_76_0.png" />
+<img alt="_images/hist_77_0.png" src="_images/hist_77_0.png" />
 </div>
 </div>
 <p>If color channel separation is desired, use the grouping label “Channel” (which is automatically calculated by fivecentplots) with a grouping kwarg:</p>
@@ -1147,12 +1144,11 @@ array([[511, 511, 511, ..., 511, 511, 511],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_78_0.png" src="_images/hist_78_0.png" />
+<img alt="_images/hist_79_0.png" src="_images/hist_79_0.png" />
 </div>
 </div>
-<div class="admonition note"><p class="admonition-title"><p>Note:</p>
-</p><p><p>For better visualization above, we also invoke a special color scheme shortcut <code class="docutils literal notranslate"><span class="pre">fcp.RGB</span></code> to color the histograms according to the specific color channel</p>
-</p></div></div>
+<p>..note:: For better visualization above, we also invoke a special color scheme shortcut <code class="docutils literal notranslate"><span class="pre">fcp.RGB</span></code> to color the histograms according to the specific color channel</p>
+</div>
 </div>
 <div class="section" id="PDF">
 <h2>PDF<a class="headerlink" href="#PDF" title="Permalink to this headline">¶</a></h2>
@@ -1170,7 +1166,7 @@ array([[511, 511, 511, ..., 511, 511, 511],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_82_0.png" src="_images/hist_82_0.png" />
+<img alt="_images/hist_83_0.png" src="_images/hist_83_0.png" />
 </div>
 </div>
 </div>
@@ -1190,7 +1186,7 @@ array([[511, 511, 511, ..., 511, 511, 511],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_85_0.png" src="_images/hist_85_0.png" />
+<img alt="_images/hist_86_0.png" src="_images/hist_86_0.png" />
 </div>
 </div>
 <p>With color plane separation:</p>
@@ -1207,7 +1203,7 @@ array([[511, 511, 511, ..., 511, 511, 511],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_87_0.png" src="_images/hist_87_0.png" />
+<img alt="_images/hist_88_0.png" src="_images/hist_88_0.png" />
 </div>
 </div>
 </div>
@@ -1231,7 +1227,7 @@ array([[511, 511, 511, ..., 511, 511, 511],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_92_0.png" src="_images/hist_92_0.png" />
+<img alt="_images/hist_93_0.png" src="_images/hist_93_0.png" />
 </div>
 </div>
 </div>
@@ -1251,7 +1247,7 @@ array([[511, 511, 511, ..., 511, 511, 511],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_95_0.png" src="_images/hist_95_0.png" />
+<img alt="_images/hist_96_0.png" src="_images/hist_96_0.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -1267,7 +1263,7 @@ array([[511, 511, 511, ..., 511, 511, 511],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_96_0.png" src="_images/hist_96_0.png" />
+<img alt="_images/hist_97_0.png" src="_images/hist_97_0.png" />
 </div>
 </div>
 </div>
@@ -1287,7 +1283,7 @@ array([[511, 511, 511, ..., 511, 511, 511],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_99_0.png" src="_images/hist_99_0.png" />
+<img alt="_images/hist_100_0.png" src="_images/hist_100_0.png" />
 </div>
 </div>
 </div>
@@ -1327,7 +1323,7 @@ array([[511, 511, 511, ..., 511, 511, 511],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_104_0.png" src="_images/hist_104_0.png" />
+<img alt="_images/hist_105_0.png" src="_images/hist_105_0.png" />
 </div>
 </div>
 <p>With the preset:</p>
@@ -1344,7 +1340,7 @@ array([[511, 511, 511, ..., 511, 511, 511],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hist_106_0.png" src="_images/hist_106_0.png" />
+<img alt="_images/hist_107_0.png" src="_images/hist_107_0.png" />
 </div>
 </div>
 </div>
