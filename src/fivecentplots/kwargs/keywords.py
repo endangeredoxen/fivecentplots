@@ -43,7 +43,8 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
     intervals = ['perc_int', 'nq_int', 'conf_int']
     axlines = ['ax_hlines', 'ax_vlines', 'ax2_hlines', 'ax2_vlines']
     color_params = ['fill_alpha', 'fill_color', 'edge_alpha', 'edge_color', 'color']
-    exclude = ['prop', 'on', 'kwargs', 'axline']
+    other = ['marker_type']
+    exclude = ['prop', 'on', 'kwargs', 'axline', 'self', 'fcpp', 'utl.kwargs']
 
     # Get files
     py_files = utl.get_nested_files(path, '.py', ['.pyc'])
@@ -118,7 +119,8 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
 
             for fkg in found_kwargs_get:
                 kws = fkg.split(',')
-                if len(kws) > 2 or ' ' in kws[0] or '.' in kws[0]:
+                if any(ele in kws[0] for ele in [' ', '.', '[', ']', '{', '}']) \
+                        or not any(ele in kws[0] for ele in ['"', "'"]):
                     continue
                 else:
                     kwargs_list += [kws[0].replace("'", '').replace('"', '').replace('(', '').replace(')', '').strip()]
@@ -144,6 +146,7 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
                     for axline in axlines:
                         kwargs_list += [f.replace("f'{name}", axline).replace("'", '').strip() for f in names_list]
                 else:
+                    kwargs_list += [name.replace("'", '').strip()]
                     kwargs_list += [f.replace("f'{name}", name).replace("'", '').strip() for f in names_list]
 
     # special cases ticks
@@ -154,8 +157,13 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
     # special case lines
     kwargs_list += [f.replace('lines_', 'line_') for f in kwargs_list if f.startswith('lines_')]
 
+    # manual extras that just don't work
+    kwargs_list += other
+
+    # excludes
     kwargs_list = [f for f in kwargs_list if f not in exclude]
 
+    # delete duplicates and sort
     kwargs_list = sorted(list(set(kwargs_list)))
 
     if write:

@@ -2,6 +2,7 @@ align
 alpha
 auto_scale
 auto_tick_threshold
+ax
 ax2_hlines_alpha
 ax2_hlines_by_plot
 ax2_hlines_color
@@ -100,6 +101,7 @@ ax_vlines_width
 ax_vlines_zorder
 ax_width
 ax_zorder
+bar
 bar_align
 bar_alpha
 bar_color
@@ -129,6 +131,7 @@ bins
 box
 box_alpha
 box_color
+box_divider
 box_divider_alpha
 box_divider_color
 box_divider_edge_alpha
@@ -190,6 +193,7 @@ box_grand_median_rotation
 box_grand_median_style
 box_grand_median_width
 box_grand_median_zorder
+box_group_label
 box_group_label_alpha
 box_group_label_color
 box_group_label_edge_alpha
@@ -224,6 +228,7 @@ box_group_means_rotation
 box_group_means_style
 box_group_means_width
 box_group_means_zorder
+box_group_title
 box_group_title_alpha
 box_group_title_color
 box_group_title_edge_alpha
@@ -241,6 +246,7 @@ box_group_title_rotation
 box_group_title_style
 box_group_title_width
 box_group_title_zorder
+box_labels_on
 box_marker_edge_alpha
 box_marker_edge_color
 box_marker_edge_width
@@ -288,6 +294,7 @@ box_range_lines_style
 box_range_lines_width
 box_range_lines_zorder
 box_rotation
+box_stat_line
 box_stat_line_alpha
 box_stat_line_color
 box_stat_line_edge_alpha
@@ -300,6 +307,7 @@ box_stat_line_font_color
 box_stat_line_font_size
 box_stat_line_font_style
 box_stat_line_font_weight
+box_stat_line_on
 box_stat_line_rotation
 box_stat_line_style
 box_stat_line_width
@@ -347,7 +355,6 @@ cbar_zorder
 cdf
 cell_size
 cfa
-cl
 cmap
 col
 color
@@ -363,6 +370,7 @@ conf_int_edge_style
 conf_int_edge_width
 conf_int_fill_alpha
 conf_int_fill_color
+contour
 contour_alpha
 contour_color
 contour_edge_alpha
@@ -444,7 +452,6 @@ fills_style
 fills_width
 fills_zorder
 filter
-finvert_range_limits_{ax}
 fit
 fit_alpha
 fit_color
@@ -470,16 +477,12 @@ fit_rsq
 fit_style
 fit_width
 fit_zorder
-flabel_{lab}
-flabel_{lab}2
-flabel_{lab}2_text
-flabel_{lab}_text
 font
 font_color
 font_size
 font_style
 font_weight
-f{attr}_override
+gantt
 gantt_alpha
 gantt_color
 gantt_color_by_bar
@@ -715,6 +718,7 @@ group_means_color
 group_means_style
 group_means_width
 groups
+heatmap
 heatmap_alpha
 heatmap_cell_size
 heatmap_color
@@ -752,6 +756,7 @@ hist_rwidth
 hold
 horizontal
 imgs
+imshow
 imshow_alpha
 imshow_color
 imshow_edge_alpha
@@ -772,7 +777,6 @@ imshow_zorder
 inline
 inner_radius
 interp
-interval
 jitter
 kde
 kde_width
@@ -798,6 +802,7 @@ label_font_size
 label_font_style
 label_font_weight
 label_padding
+label_rc
 label_rc_align
 label_rc_alpha
 label_rc_color
@@ -831,6 +836,7 @@ label_row_padding
 label_row_rotation
 label_row_size
 label_row_values_only
+label_wrap
 label_wrap_align
 label_wrap_alpha
 label_wrap_color
@@ -952,6 +958,8 @@ lcl_fill_color
 legend
 legend_edge_color
 legend_edge_width
+legend_fill_alpha
+legend_fill_color
 legend_font
 legend_font_size
 legend_location
@@ -1003,6 +1011,7 @@ marker_fill_alpha
 marker_fill_color
 marker_jitter
 marker_size
+marker_type
 marker_zorder
 markers
 markers_edge_alpha
@@ -1045,6 +1054,7 @@ percents_distance
 percents_font_color
 percents_font_size
 percents_font_weight
+pie
 pie_alpha
 pie_color
 pie_colors
@@ -1076,6 +1086,7 @@ pie_start_angle
 pie_style
 pie_width
 pie_zorder
+position
 preset
 print_filename
 radius
@@ -1148,6 +1159,7 @@ show
 show_all_groups
 show_points
 sigma
+size
 sort
 spine_bottom
 spine_left
@@ -1860,6 +1872,7 @@ ticks_z_style
 ticks_z_width
 ticks_z_zorder
 ticks_zorder
+timer
 title
 title_align
 title_alpha
@@ -1880,6 +1893,7 @@ title_rotation
 title_span
 title_style
 title_width
+title_wrap
 title_wrap_align
 title_wrap_alpha
 title_wrap_color
@@ -1902,6 +1916,7 @@ title_wrap_style
 title_wrap_width
 title_wrap_zorder
 title_zorder
+toolbar
 toolbar_active_zoom
 toolbar_alpha
 toolbar_color
@@ -1937,7 +1952,6 @@ ucl_edge_style
 ucl_edge_width
 ucl_fill_alpha
 ucl_fill_color
-utl.kwargs
 verbose
 violin
 violin_alpha
