@@ -1244,9 +1244,9 @@ class BaseLayout:
         """
         # If this plot type is disabled, create minimal set of element parameters
         if self.name != 'hist':
-            self.hist = Element('hist', self.fcpp, kwargs, on=False,
-                                cdf=utl.kwget(kwargs, self.fcpp, ['cdf'],
-                                              kwargs.get('cdf', False)),
+            self.hist = Element('hist', self.fcpp, kwargs,
+                                on=False,
+                                cdf=utl.kwget(kwargs, self.fcpp, ['cdf'], kwargs.get('cdf', False)),
                                 horizontal=False)
             return kwargs
 
@@ -1254,10 +1254,10 @@ class BaseLayout:
                             on=True if 'hist' in self.name and kwargs.get('hist_on', True) else False,
                             align=utl.kwget(kwargs, self.fcpp, 'hist_align', 'mid'),
                             bins=utl.kwget(kwargs, self.fcpp, ['hist_bins', 'bins'], kwargs.get('bins', 20)),
-                            edge_color=copy.copy(self.color_list),
+                            edge_color=utl.kwget(kwargs, self.fcpp, ['hist_edge_color'], copy.copy(self.color_list)),
                             edge_width=utl.kwget(kwargs, self.fcpp, ['hist_edge_width'], 0),
                             fill_alpha=utl.kwget(kwargs, self.fcpp, ['hist_fill_alpha'], 0.5),
-                            fill_color=copy.copy(self.color_list),
+                            fill_color=utl.kwget(kwargs, self.fcpp, ['hist_fill_color'], copy.copy(self.color_list)),
                             cumulative=utl.kwget(kwargs, self.fcpp, ['hist_cumulative', 'cumulative'],
                                                  kwargs.get('cumulative', False)),
                             kde=utl.kwget(kwargs, self.fcpp, ['hist_kde', 'kde'], kwargs.get('kde', False)),

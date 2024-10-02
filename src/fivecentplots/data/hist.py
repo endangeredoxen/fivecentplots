@@ -80,8 +80,9 @@ class Histogram(data.Data):
                     kwargs['df'] = pd.merge(kwargs['df'], pd.DataFrame({'Channel': ['R', 'G', 'B']}), how='cross')
                     kwargs['df']['channels'] = 1
                 else:
-                    # Stack? need some kind of luma
-                    db()
+                    # Use luminosity histogram of grayscale
+                    for k, v in kwargs['imgs'].items():
+                        kwargs['imgs'][k] = utl.img_grayscale(v, bit_depth=8)
 
         elif isinstance(kwargs['df'], pd.DataFrame):
             # Non-image data
@@ -125,6 +126,7 @@ class Histogram(data.Data):
                                     kwargs.get('cumulative', False))
         self.horizontal = utl.kwget(kwargs, self.fcpp, ['hist_horizontal', 'horizontal'],
                                     kwargs.get('horizontal', False))
+        self.warning_speed = False
 
         # cdf/pdf option (if conflict, prefer cdf)
         self.cdf = utl.kwget(kwargs, self.fcpp, ['cdf'], kwargs.get('cdf', False))
@@ -186,8 +188,9 @@ class Histogram(data.Data):
             counts = np.bincount(data_set - offset)
 
         else:
-            if self.imgs is not None:
+            if self.imgs is not None and not self.warning_speed:
                 print('Warning: histograms of image data with float values is slow; consider using ints instead')
+                self.warning_speed = True  # to not print this again
 
             # Case of image data but invalid dtype
             if self.bins == 0:
@@ -297,6 +300,8 @@ class Histogram(data.Data):
                     # Fix to get a valid range with only one data point
                     counts = np.array([0, counts[0]])
                     vals = np.array([0, vals[0]])
+                if self.cumulative:
+                    counts = counts.cumsum()
                 df_hist = pd.DataFrame({self.x[0]: vals, self.y[0]: counts})
                 if ii == 0:
                     ymin, ymax = self._get_data_range('y', df_hist, plot_num)
@@ -307,6 +312,8 @@ class Histogram(data.Data):
 
         else:
             counts, vals = self._calc_histograms(ir, ic, df_rc[self.x[0]])
+            if self.cumulative:
+                counts = counts.cumsum()
             df_hist = pd.DataFrame({self.x[0]: vals, self.y[0]: counts})
             ymin, ymax = self._get_data_range('y', df_hist, plot_num)
 

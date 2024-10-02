@@ -1017,7 +1017,7 @@ def img_rgb_to_df(data):
     return img_df_transform(data)[1][0]
 
 
-def nq(data, column: str = 'Value', **kwargs) -> pd.DataFrame:
+def nq(data: Union[npt.NDArray, pd.DataFrame], column: str = 'Value', **kwargs) -> pd.DataFrame:
     """Normal quantile calculation.
 
     Args:
@@ -1034,8 +1034,10 @@ def nq(data, column: str = 'Value', **kwargs) -> pd.DataFrame:
     percentiles_on = kwargs.get('percentiles', False)  # display y-axis as percentiles instead of sigma
 
     # Flatten the DataFrame/2D array to a 1D array
-    if isinstance(data, pd.DataFrame):
+    if isinstance(data, pd.DataFrame) and column not in data.columns:
         data = data.values.flatten()
+    elif isinstance(data, pd.DataFrame):
+        data = data[column]
     elif isinstance(data, np.ndarray) and len(data.shape) > 1:
         data = data.flatten()
 

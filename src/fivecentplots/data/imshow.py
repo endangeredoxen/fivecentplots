@@ -91,7 +91,6 @@ class ImShow(data.Data):
         if self.channels > 1 and hasattr(self, 'cbar') and self.cbar:
             raise ValueError('Colorbar option not available for 3D image data')
             self.cbar = False
-        self.wh_ratio = 1  # temporary; update later
         self.invert_range_limits_y = True
 
         # auto stretching
@@ -119,15 +118,16 @@ class ImShow(data.Data):
             self.ranges['ymin'][ir, ic] = df_rc.shape[0]
 
         # Update the wh_ratio
-        if self.ranges['xmax'][ir, ic] is not None and self.ranges['xmin'][ir, ic] is not None:
-            width = self.ranges['xmax'][ir, ic] - self.ranges['xmin'][ir, ic]
-        else:
-            width = df_rc.shape[1]
-        if self.ranges['ymin'][ir, ic] is not None and self.ranges['ymax'][ir, ic] is not None:
-            height = self.ranges['ymin'][ir, ic] - self.ranges['ymax'][ir, ic]
-        else:
-            height = df_rc.shape[0]
-        self.wh_ratio = width / height
+        if not self.wh_ratio:
+            if self.ranges['xmax'][ir, ic] is not None and self.ranges['xmin'][ir, ic] is not None:
+                width = self.ranges['xmax'][ir, ic] - self.ranges['xmin'][ir, ic]
+            else:
+                width = df_rc.shape[1]
+            if self.ranges['ymin'][ir, ic] is not None and self.ranges['ymax'][ir, ic] is not None:
+                height = self.ranges['ymin'][ir, ic] - self.ranges['ymax'][ir, ic]
+            else:
+                height = df_rc.shape[0]
+            self.wh_ratio = width / height
 
         # Matplotlib imshow extent offset fix
         if self.engine == 'mpl':

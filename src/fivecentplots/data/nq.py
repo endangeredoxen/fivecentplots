@@ -94,10 +94,15 @@ class NQ(data.Data):
     def _subset_modify(self, ir: int, ic: int, df: pd.DataFrame) -> pd.DataFrame:
         if self.legend is None:
             if self.imgs is not None:
+                # New image format
                 subset_dict = {key: value for key, value in self.imgs.items() if key in list(df.index)}
                 df_sub = np.concatenate(list(subset_dict.values()), 1)
-            else:
+            elif self.x[0] not in df.columns:
+                # pd.DataFrame image data
                 df_sub = df[utl.df_int_cols(df)]
+            else:
+                df_sub = df.copy()
+
             df_sub = utl.nq(df_sub, self.x[0], sigma=self.sigma, tail=self.tail, step_tail=self.step_tail,
                             step_inner=self.step_inner, percentiles=self.percentiles)
             return df_sub

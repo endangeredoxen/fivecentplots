@@ -646,10 +646,10 @@ class Layout(BaseLayout):
             + np.ceil(self._labtick_x2)
 
         tick_top_xs = 0
-        if np.ceil(self.tick_y_top_xs + self.tick_labels_major_y.padding) >= val:
+        if np.ceil(self.tick_y_top_xs + self.tick_labels_major_y.padding) >= val and self.tick_labels_major_y.on:
             tick_top_xs = np.ceil(self.tick_y_top_xs + 2 * self.tick_labels_major_y.padding - val)
 
-        if np.ceil(self.tick_z_top_xs + self.tick_labels_major_z.padding >= val):
+        if np.ceil(self.tick_z_top_xs + self.tick_labels_major_z.padding >= val) and self.tick_labels_major_z.on:
             tick_top_xs = max(tick_top_xs, np.ceil(self.tick_z_top_xs + 2 * self.tick_labels_major_z.padding - val))
         val += tick_top_xs
 
@@ -1617,7 +1617,7 @@ class Layout(BaseLayout):
             self.label_wrap.size[1] = self.axes.size[0]
 
         # imshow ax adjustment
-        if self.name == 'imshow' and hasattr(data, 'wh_ratio'):
+        if self.name == 'imshow' and getattr(data, 'wh_ratio'):
             if data.wh_ratio >= 1:
                 self.axes.size[1] = self.axes.size[0] / data.wh_ratio
                 self.label_row.size[1] = self.axes.size[1]
@@ -2548,7 +2548,8 @@ class Layout(BaseLayout):
                                           color=self.hist.fill_color[iline],
                                           ec=self.hist.edge_color[iline],
                                           lw=self.hist.edge_width,
-                                          zorder=3, align=self.hist.align,
+                                          zorder=3,
+                                          align=self.hist.align,
                                           cumulative=self.hist.cumulative,
                                           density=self.hist.normalize,
                                           rwidth=self.hist.rwidth,
