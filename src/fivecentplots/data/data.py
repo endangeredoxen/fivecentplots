@@ -406,6 +406,9 @@ class Data:
                 elif limit_val[0].lower() != 'q' and limit_val[-4:].lower() != '*iqr':
                     raise DataError(f'"{limit}" must be a float, int, or valid quantile/quartile string '
                                     f'[current value: "{limit_val}"]')
+            elif isinstance(limit_val, pd.DataFrame) or isinstance(limit_val, pd.Series):
+                raise DataError(f'"{limit}" must be a float, int, or valid quantile/quartile string '
+                                f'[current value has type "{type(limit_val)}"]')
 
     def _check_xyz(self, xyz: str):
         """Validate the name and column data provided for x, y, and/or z.
@@ -542,7 +545,6 @@ class Data:
         Returns:
             updated df with potentially reduced range of data
         """
-        # FIX FOR NUMPY
         # Get the max/min autoscale values
         for ax in self.axs_on:
             for mm in ['min', 'max']:

@@ -320,10 +320,9 @@ def df_filter(df: pd.DataFrame, filt_orig: str, drop_cols: bool = False,
             key = key.rstrip(' ')
             key = f'fCp{special_chars(key)}'
             vals = val.replace('[', '').replace(']', '')
-            vals = shlex.split(vals, ',', posix=False)  # why is this here??
-            vals = [f.replace(',', '') for f in vals if f != ',']  # remove commas
-            for iv, vv in enumerate(vals):
-                vals[iv] = vv.lstrip().rstrip()
+            vals = shlex.split(vals, '(', posix=False)  # to ignore within parentheses
+            vals = [f.rstrip(',').lstrip().rstrip() for f in vals]  # remove trailing commas or ws
+            vals = [f for f in vals if f != '']
             key2 = '|' + key + '=='
             ands[ia] = f'({key} == {key2.join(vals)})'
             continue

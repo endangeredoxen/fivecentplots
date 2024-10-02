@@ -757,8 +757,7 @@ class BaseLayout:
         self.box_divider = Element('box_divider', self.fcpp, kwargs,
                                    on=kwargs.get('box_divider', kwargs.get('box', True)),
                                    obj=self.obj_array,
-                                   color=utl.kwget(kwargs, self.fcpp,
-                                                   ['box_divider_color', 'box_divider_line_color'],
+                                   color=utl.kwget(kwargs, self.fcpp, ['box_divider_color', 'box_divider_line_color'],
                                                    '#bbbbbb'),
                                    text=None,
                                    zorder=2,
@@ -769,7 +768,7 @@ class BaseLayout:
                                        color=utl.kwget(kwargs, self.fcpp, 'box_range_lines_color', '#cccccc'),
                                        style=utl.kwget(kwargs, self.fcpp, 'box_range_lines_style', '-'),
                                        style2=RepeatedList('--', 'style2'),
-                                       zorder=utl.kwget(kwargs, self.fcpp, 'box_range_lines', 3),
+                                       zorder=utl.kwget(kwargs, self.fcpp, 'box_range_lines_zorder', 3),
                                        )
         if 'box' in self.name:
             self.lines.on = False
@@ -1424,11 +1423,14 @@ class BaseLayout:
         kwargs['legend'] = kwargs.get('legend', None)
         if isinstance(kwargs['legend'], list):
             kwargs['legend'] = ' | '.join(utl.validate_list(kwargs['legend']))
+
         self.legend = Legend_Element('legend', self.fcpp, kwargs,
                                      on=True if (kwargs.get('legend') and kwargs.get('legend_on', True)) else False,
                                      column=kwargs['legend'],
                                      edge_color=utl.kwget(kwargs, self.fcpp, 'legend_edge_color', '#ffffff'),
                                      edge_width=utl.kwget(kwargs, self.fcpp, 'legend_edge_width', 1),
+                                     fill_alpha=utl.kwget(kwargs, self.fcpp, 'legend_fill_alpha', 1),
+                                     fill_color=utl.kwget(kwargs, self.fcpp, 'legend_fill_color', '#ffffff'),
                                      font=utl.kwget(kwargs, self.fcpp, 'legend_font', 'sans-serif'),
                                      font_size=utl.kwget(kwargs, self.fcpp, 'legend_font_size', 12),
                                      location=LEGEND_LOCATION[utl.kwget(kwargs, self.fcpp, 'legend_location', 0)],
@@ -2818,10 +2820,8 @@ class Element:
         self._size_orig = kwargs.get('size', [0, 0])
         self._text = kwargs.get('text', True)  # text label
         self._text_orig = kwargs.get('text')
-        self.rotation = utl.kwget(kwargs, fcpp, f'{name}_rotation',
-                                  kwargs.get('rotation', 0))
-        self.zorder = utl.kwget(kwargs, fcpp, f'{name}_zorder',
-                                kwargs.get('zorder', 0))
+        self.rotation = utl.kwget(kwargs, fcpp, f'{name}_rotation', kwargs.get('rotation', 0))
+        self.zorder = utl.kwget(kwargs, fcpp, f'{name}_zorder', kwargs.get('zorder', 0))
 
         # For some elements that are unique by axes, track sizes as DataFrame
         self._size_all = pd.DataFrame()
@@ -3177,8 +3177,7 @@ class Legend_Element(DF_Element):
             kwargs
         """
         self.cols = ['Key', 'Curve', 'LineType']
-        self.default = pd.DataFrame(columns=self.cols, data=[
-                                    ['NaN', None, None]], index=[0])
+        self.default = pd.DataFrame(columns=self.cols, data=[['NaN', None, None]], index=[0])
 
         if not kwargs.get('legend'):
             self._values = pd.DataFrame(columns=self.cols)
