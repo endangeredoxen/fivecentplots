@@ -43,7 +43,7 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
     intervals = ['perc_int', 'nq_int', 'conf_int']
     axlines = ['ax_hlines', 'ax_vlines', 'ax2_hlines', 'ax2_vlines']
     color_params = ['fill_alpha', 'fill_color', 'edge_alpha', 'edge_color', 'color']
-    exclude = ['prop', 'preset', 'on', 'kwargs', 'axline']
+    exclude = ['prop', 'on', 'kwargs', 'axline']
 
     # Get files
     py_files = utl.get_nested_files(path, '.py', ['.pyc'])
@@ -150,6 +150,9 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
     kwargs_list += [f.replace('_major', '') for f in kwargs_list if 'tick_labels_major' in f]
     kwargs_list += [f.replace('_major', '') for f in kwargs_list if 'ticks_major' in f]
     kwargs_list += [f.replace('_minor', '') for f in kwargs_list if 'ticks_minor' in f]
+
+    # special case lines
+    kwargs_list += [f.replace('lines_', 'line_') for f in kwargs_list if f.startswith('lines_')]
 
     kwargs_list = [f for f in kwargs_list if f not in exclude]
 
