@@ -3428,7 +3428,7 @@ class Layout(BaseLayout):
                 if ia == 1 and axx == 'y' and self.axes.twin_y:
                     continue
 
-                if getattr(self, f'ticks_minor_{axl}').number is not None:
+                if getattr(self, f'ticks_minor_{axl}').number is not None and tlmin.on:
                     num_minor = getattr(self, f'ticks_minor_{axl}').number
                     if getattr(self, f'axes{lab}').scale not in (LOG_ALLX if axx == 'x' else LOG_ALLY):
                         loc = None
