@@ -169,6 +169,35 @@ def plt_group_auto_size(bm=False, make_reference=False, show=False):
     utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
+def plt_group_auto_size_90(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('group_auto_size_90', make_reference, REFERENCE)
+
+    # Make the plot
+    df2 = df.copy()
+    df2.Value *= 2
+    df2.loc[df2.Sample == 1, 'Sample'] = 4
+    df2.loc[df2.Sample == 2, 'Sample'] = 5
+    df2.loc[df2.Sample == 3, 'Sample'] = 6
+    df3 = df.copy()
+    df3.Value *= 3
+    df3.loc[df3.Sample == 1, 'Sample'] = 7
+    df3.loc[df3.Sample == 2, 'Sample'] = 8
+    df3.loc[df3.Sample == 3, 'Sample'] = 9
+    df4 = df.copy()
+    df4.Value *= 4
+    df4.loc[df4.Sample == 1, 'Sample'] = 10
+    df4.loc[df4.Sample == 2, 'Sample'] = 11
+    df4 = pd.concat([df4, df3, df2, df])
+    fcp.boxplot(df4, y='Value', groups=['Batch', 'ID', 'Sample'],  ax_size='auto', label_y_fill_color='#ff0000',
+                show=SHOW, filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False,
+                box_group_label_rotation=90)
+
+    if bm:
+        return
+    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
 def plt_group_auto_size_wrap(bm=False, make_reference=False, show=False):
 
     name = utl.unit_test_get_img_name('group_auto_size_wrap', make_reference, REFERENCE)
@@ -294,7 +323,7 @@ def plt_group_multiple(bm=False, make_reference=False, show=False):
     name = utl.unit_test_get_img_name('group_multiple', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample'], show=SHOW,
+    fcp.boxplot(df, y='Value', groups=['Batch', 'Sample', 'Region'], show=SHOW,
                 filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False)
 
     if bm:
@@ -575,6 +604,11 @@ def test_group_legend_lots(benchmark):
 def test_group_auto_size(benchmark):
     plt_group_auto_size()
     benchmark(plt_group_auto_size, True)
+
+
+def test_group_auto_size_90(benchmark):
+    plt_group_auto_size_90()
+    benchmark(plt_group_auto_size_90, True)
 
 
 def test_group_auto_size_wrap(benchmark):

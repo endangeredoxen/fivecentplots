@@ -1395,7 +1395,9 @@ class Layout(BaseLayout):
                         label_max_width = bbox.width + 1
 
                     # rotate labels that are longer than the box axis size
-                    if bbox.width > label_max_width and not (self.box_scale == 'auto' and ii == 0):
+                    if bbox.width > label_max_width \
+                            and not (self.box_scale == 'auto') \
+                            and utl.kwget(self.kwargs, self.fcpp, 'box_group_label_rotation', None) is None:
                         lab.obj[ir, ic][ii, jj].set_rotation(90)
                         bbox = lab.obj[ir, ic][ii, jj].get_window_extent()
 
@@ -1420,26 +1422,48 @@ class Layout(BaseLayout):
                     bg.loc[irow, 'height'] = new_height + 2 * np.floor(lab.edge_width) + 12  # padding
                 lab._size_all_bg = bg.reset_index()
 
+            # Auto resizing via ax_size = 'auto'
             if self.box_scale == 'auto':
-                # Resize the axes width
+                # Get the max label for each grouping label row
                 maxes = lab.size_all.groupby(['ir', 'ic', 'ii']).max()
+                margin = 4 + self.box_group_label.edge_width
+
+                # Compare every two rows to make sure widths line up
+                chg = data.changes.copy()
+                cols = chg.columns
+                chg = chg[list(reversed([f for f in chg.columns]))]
+                chg.columns = cols
+                wchg = (maxes.loc[(ir, ic), 'width'].values + margin) * chg  # 4 is for margins
+
+                num_label_rows = len(wchg.columns)
+                for irow in range(0, num_label_rows - 1):
+                    # Get two adjacent label rows
+                    row_top = num_label_rows - irow - 2
+                    row_bot = num_label_rows - irow - 1
+                    sub = wchg[[row_top, row_bot]].copy()
+
+                    # Set float dtype
+                    sub[row_top] = sub[row_top].astype(np.float32)
+                    sub[row_bot] = sub[row_bot].astype(np.float32)
+
+                    # Get the  if row_bot labels can fit in row_top width
+                    sub['group'] = sub[row_bot].ne(sub[row_bot].shift()).cumsum()
+                    sub.loc[sub['group'] % 2 == 1, 'group'] += 1
+                    sub['cumsum'] = sub.groupby('group')[row_top].cumsum()
+                    row_bot_sum = sub.loc[sub[row_bot] != 0, row_bot].values
+                    row_top_sum = sub.loc[sub.group % 2 == 0].groupby('group')['cumsum'].max().values
+
+                    # Calculate the required bottom row width to fit the top row data
+                    if len(row_bot_sum) == len(row_top_sum) and any(row_bot_sum > row_top_sum):
+                        bot_row_width_max = np.maximum(row_top_sum, row_bot_sum).sum() / len(row_bot_sum)
+                        maxes.loc[(ir, ic, num_label_rows - irow - 1), 'width'] = bot_row_width_max
+
+                # Calculate that axes width
                 size0 = (maxes['jj'] + 1) * maxes['width'] + divider
-                margin = 4 * maxes['jj'].max()
-                self.axes.size[0] = size0.max() + margin
+                self.axes.size[0] = size0.max() + margin * maxes['jj'].max()
 
-                # Recheck the rotation (inefficient to loop 2x, maybe find a better way)
-                lens_all = lens_all.set_index(['ir', 'ic', 'ii'])
-                for iii, (nn, gg) in enumerate(lab.size_all.groupby(['ir', 'ic', 'ii'])):
-                    gg = gg.copy()
-                    if iii == 0:
-                        continue
-                    gg['num'] = lens_all.loc[nn]['vals']
-                    gg['label_max_width'] = self.axes.size[0] / gg['num'].sum() * gg['num']
-                    revert = gg.loc[(gg.rotation == 90) & (gg['height'] < gg['label_max_width'])]
-                    for irow, row in revert.iterrows():
-                        lab.obj[nn[0], nn[1]][nn[2], gg.loc[irow, 'jj']].set_rotation(0)
-
-                # Reset the horizontal label widths
+                # Reset the horizontal label widths and rotated box group label heights
+                bg = lab.size_all_bg.set_index(['ir', 'ic', 'ii'])
                 for ir, ic in np.ndindex(lab.obj.shape):
                     if self.label_y.obj_bg[ir, ic] is not None:
                         self.label_y.obj_bg[ir, ic].set_width(
@@ -1447,13 +1471,11 @@ class Layout(BaseLayout):
                     if self.label_row.obj_bg[ir, ic]:
                         self.label_row.obj_bg[ir, ic].set_width(
                             self.label_row.obj_bg[ir, ic].get_window_extent().width / self.axes.size[0])
-
-            # set max size
-            width = lab.size_all.width.max()
-            height = lab.size_all.height.max()
-            width_bg = lab.size_all_bg.width.max()  # do we want this?
-            height_bg = lab.size_all_bg.height.max()
-            lab.size = [max(width, width_bg), max(height, height_bg)]
+                    for ii, jj in np.ndindex(lab.obj[ir, ic].shape):
+                        row_height = lab.size_all_bg.groupby(['ir', 'ic', 'ii']).max()['height'].loc[ir, ic, ii].max()
+                        if lab.obj_bg[ir, ic][ii, jj] is not None:
+                            bg.loc[(ir, ic, ii), 'height'] = row_height
+                lab._size_all_bg = bg.reset_index()
 
         if self.box_group_title.on:
             lab = self.box_group_title
@@ -3920,7 +3942,7 @@ class Layout(BaseLayout):
                         + np.ceil(self.box_group_label.edge_width / 2) \
                         - lab_bg_size.loc[ir, ic, :ii, 0].height.sum() \
                         + ax_overlap \
-                        + (self.box_group_label.edge_width if ii > 0 else 0)
+                        + self.box_group_label.edge_width * ii
 
                     lab.obj_bg[ir, ic][ii, jj].set_y(y0 / self.fig.size_int[1])
                     height = lab_bg_size.loc[ir, ic, ii, jj].height - lab.edge_width
