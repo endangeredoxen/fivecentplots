@@ -56,7 +56,7 @@ def plt_angle(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_basic(bm=False, make_reference=False, show=False):
@@ -71,7 +71,7 @@ def plt_basic(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_basic_no_sort(bm=False, make_reference=False, show=False):
@@ -87,7 +87,7 @@ def plt_basic_no_sort(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_donut(bm=False, make_reference=False, show=False):
@@ -103,7 +103,7 @@ def plt_donut(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_explode(bm=False, make_reference=False, show=False):
@@ -116,7 +116,7 @@ def plt_explode(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_explode_all(bm=False, make_reference=False, show=False):
@@ -130,7 +130,7 @@ def plt_explode_all(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_legend(bm=False, make_reference=False, show=False):
@@ -143,7 +143,7 @@ def plt_legend(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_legend_unsort(bm=False, make_reference=False, show=False):
@@ -156,7 +156,7 @@ def plt_legend_unsort(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_legend_rc(bm=False, make_reference=False, show=False):
@@ -170,7 +170,7 @@ def plt_legend_rc(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_legend_wrap(bm=False, make_reference=False, show=False):
@@ -184,7 +184,7 @@ def plt_legend_wrap(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_percents(bm=False, make_reference=False, show=False):
@@ -199,7 +199,7 @@ def plt_percents(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_shadow(bm=False, make_reference=False, show=False):
@@ -214,7 +214,7 @@ def plt_shadow(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 # test_ functions call plt_ funcs 2x:

@@ -63,10 +63,10 @@ def plt_column(bm=False, make_reference=False, show=False):
         # Axis height
         utl.unit_test_measure_axes(name, None, 90, None, 227, 1, 45, alias=True)
         # Margins
-        utl.unit_test_measure_margin(name, 70, 115, left=70, right=119, bottom=76, alias=True)
+        utl.unit_test_measure_margin(name, 70, 115, left=70, right=117, bottom=76, alias=True)
         utl.unit_test_measure_margin(name, 170, 190, top=10, alias=False)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_column_no_names(bm=False, make_reference=False, show=False):
@@ -88,10 +88,10 @@ def plt_column_no_names(bm=False, make_reference=False, show=False):
         # Axis height
         utl.unit_test_measure_axes(name, None, 90, None, 227, 1, 45, alias=True)
         # Margins
-        utl.unit_test_measure_margin(name, 70, 115, left=70, right=119, bottom=76, alias=True)
+        utl.unit_test_measure_margin(name, 70, 115, left=70, right=117, bottom=76, alias=True)
         utl.unit_test_measure_margin(name, 170, 190, top=10, alias=False)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_multiple_xy_both(bm=False, make_reference=False, show=False):
@@ -109,7 +109,7 @@ def plt_multiple_xy_both(bm=False, make_reference=False, show=False):
         utl.unit_test_measure_axes(name, 60, 240, 402, 402, 1, alias=True)
         utl.unit_test_measure_margin(name, 60, 240, top=10, alias=True)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_multiple_xy_both_label(bm=False, make_reference=False, show=False):
@@ -123,7 +123,7 @@ def plt_multiple_xy_both_label(bm=False, make_reference=False, show=False):
              filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_multiple_xy_x(bm=False, make_reference=False, show=False):
@@ -141,7 +141,7 @@ def plt_multiple_xy_x(bm=False, make_reference=False, show=False):
         utl.unit_test_measure_axes(name, 60, 240, 402, 402, 1, alias=True)
         utl.unit_test_measure_margin(name, 60, 240, top=10, alias=True)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_multiple_xy_y(bm=False, make_reference=False, show=False):
@@ -150,11 +150,18 @@ def plt_multiple_xy_y(bm=False, make_reference=False, show=False):
 
     # Make the plot
     fcp.plot(df, x='Voltage', y=['Boost Level', 'I [A]'], legend='Die', show=SHOW,
+             legend_edge_width=4, legend_edge_color='#000000',
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              filename=name.with_suffix('.png'), save=not bm, inline=False, ymin=0.1)
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+    if not show:
+        utl.unit_test_measure_axes(name, 60, 400, 402, 402, 1, alias=True)
+        utl.unit_test_measure_margin(name, 60, 240, left=84, right=10, bottom=76, top=10, alias=True)
+        utl.unit_test_measure_margin(name, 400, 240, right=219, alias=True)
+
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_other_curve_fitting(bm=False, make_reference=False, show=False):
@@ -174,7 +181,7 @@ def plt_other_curve_fitting(bm=False, make_reference=False, show=False):
         utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76, right=10,
                                      alias=True)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_other_curve_fitting2(bm=False, make_reference=False, show=False):
@@ -191,10 +198,10 @@ def plt_other_curve_fitting2(bm=False, make_reference=False, show=False):
 
     if not show:
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 1, alias=True)
-        utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76, right=136,
+        utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76, right=134,
                                      alias=True)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_other_curve_fitting3(bm=False, make_reference=False, show=False):
@@ -214,7 +221,7 @@ def plt_other_curve_fitting3(bm=False, make_reference=False, show=False):
         utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76, right=10,
                                      alias=True)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_other_curve_fitting_range(bm=False, make_reference=False, show=False):
@@ -231,10 +238,10 @@ def plt_other_curve_fitting_range(bm=False, make_reference=False, show=False):
 
     if not show:
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 1, alias=True)
-        utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76, right=98,
+        utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76, right=96,
                                      alias=True)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_other_curve_fitting_legend(bm=False, make_reference=False, show=False):
@@ -248,7 +255,7 @@ def plt_other_curve_fitting_legend(bm=False, make_reference=False, show=False):
              filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_other_curve_fitting_legend2(bm=False, make_reference=False, show=False):
@@ -265,7 +272,7 @@ def plt_other_curve_fitting_legend2(bm=False, make_reference=False, show=False):
              filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_other_conf_int(bm=False, make_reference=False, show=False):
@@ -277,7 +284,7 @@ def plt_other_conf_int(bm=False, make_reference=False, show=False):
              conf_int=0.95, filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_other_conf_int2(bm=False, make_reference=False, show=False):
@@ -289,7 +296,7 @@ def plt_other_conf_int2(bm=False, make_reference=False, show=False):
              conf_int=95, filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_other_conf_int_no_std(bm=False, make_reference=False, show=False):
@@ -303,7 +310,7 @@ def plt_other_conf_int_no_std(bm=False, make_reference=False, show=False):
              conf_int=95, filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_other_lcl_only(bm=False, make_reference=False, show=False):
@@ -323,7 +330,7 @@ def plt_other_lcl_only(bm=False, make_reference=False, show=False):
         utl.unit_test_measure_margin(name, 110, 370, left=94, top=43, bottom=76, right=10,
                                      alias=True)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_other_lcl_only_inside(bm=False, make_reference=False, show=False):
@@ -343,7 +350,7 @@ def plt_other_lcl_only_inside(bm=False, make_reference=False, show=False):
         utl.unit_test_measure_margin(name, 110, 370, left=94, top=43, bottom=76, right=10,
                                      alias=True)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_other_lines(bm=False, make_reference=False, show=False):
@@ -359,10 +366,10 @@ def plt_other_lines(bm=False, make_reference=False, show=False):
 
     if not show:
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 2, alias=True)
-        utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76, right=120,
+        utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76, right=118,
                                      alias=True)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_other_lines_df(bm=False, make_reference=False, show=False):
@@ -380,10 +387,10 @@ def plt_other_lines_df(bm=False, make_reference=False, show=False):
 
     if not show:
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 2, alias=True)
-        utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76, right=120,
+        utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76, right=118,
                                      alias=True)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_other_nq_int(bm=False, make_reference=False, show=False):
@@ -397,7 +404,7 @@ def plt_other_nq_int(bm=False, make_reference=False, show=False):
              nq_int=[-2, 2], filename=name.with_suffix('.png'), save=not bm, inline=False, legend=True)
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_other_nq_int2(bm=False, make_reference=False, show=False):
@@ -415,7 +422,7 @@ def plt_other_nq_int2(bm=False, make_reference=False, show=False):
         utl.unit_test_measure_margin(name, 110, 370, left=98, top=43, bottom=76, right=10,
                                      alias=True)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_other_percentile_int(bm=False, make_reference=False, show=False):
@@ -427,7 +434,7 @@ def plt_other_percentile_int(bm=False, make_reference=False, show=False):
              perc_int=[0.25, 0.75], filename=name.with_suffix('.png'), save=not bm, inline=False, legend=True)
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_other_ref_line(bm=False, make_reference=False, show=False):
@@ -446,7 +453,7 @@ def plt_other_ref_line(bm=False, make_reference=False, show=False):
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 2, alias=True)
         utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76, alias=True)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_other_ref_line_leg(bm=False, make_reference=False, show=False):
@@ -466,7 +473,7 @@ def plt_other_ref_line_leg(bm=False, make_reference=False, show=False):
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 2, alias=True)
         utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_other_ref_line_mult(bm=False, make_reference=False, show=False):
@@ -483,7 +490,7 @@ def plt_other_ref_line_mult(bm=False, make_reference=False, show=False):
              ref_line_color=[5, 6], filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_other_ref_line_mult2(bm=False, make_reference=False, show=False):
@@ -504,7 +511,7 @@ def plt_other_ref_line_mult2(bm=False, make_reference=False, show=False):
         utl.unit_test_measure_axes(name, 110, 370, 402, 402, 2, alias=True)
         utl.unit_test_measure_margin(name, 110, 370, left=84, top=43, bottom=76, alias=True)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_other_ref_line_complex(bm=False, make_reference=False, show=False):
@@ -519,7 +526,7 @@ def plt_other_ref_line_complex(bm=False, make_reference=False, show=False):
              filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_other_stat_bad(bm=False, make_reference=False, show=False):
@@ -532,7 +539,7 @@ def plt_other_stat_bad(bm=False, make_reference=False, show=False):
              stat='median', filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_other_stat_bad2(bm=False, make_reference=False, show=False):
@@ -545,7 +552,7 @@ def plt_other_stat_bad2(bm=False, make_reference=False, show=False):
              stat='medianx', filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_other_stat_good(bm=False, make_reference=False, show=False):
@@ -558,7 +565,7 @@ def plt_other_stat_good(bm=False, make_reference=False, show=False):
              stat='median', stat_val='I Set', filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_other_stat_q(bm=False, make_reference=False, show=False):
@@ -572,7 +579,7 @@ def plt_other_stat_q(bm=False, make_reference=False, show=False):
              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_edge_width=5)
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_other_stat_good_mult(bm=False, make_reference=False, show=False):
@@ -585,7 +592,7 @@ def plt_other_stat_good_mult(bm=False, make_reference=False, show=False):
              filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_other_ucl_only(bm=False, make_reference=False, show=False):
@@ -599,7 +606,7 @@ def plt_other_ucl_only(bm=False, make_reference=False, show=False):
              ucl=1.0, ymax=3, ucl_fill_alpha=0.8)
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_other_ucl_only_inside(bm=False, make_reference=False, show=False):
@@ -613,7 +620,7 @@ def plt_other_ucl_only_inside(bm=False, make_reference=False, show=False):
              ucl=1.0, ymax=3, ucl_fill_alpha=0.8)
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_other_ucl_lcl_inside(bm=False, make_reference=False, show=False):
@@ -628,7 +635,7 @@ def plt_other_ucl_lcl_inside(bm=False, make_reference=False, show=False):
              legend=True)
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_other_ucl_lcl_outside(bm=False, make_reference=False, show=False):
@@ -643,7 +650,7 @@ def plt_other_ucl_lcl_outside(bm=False, make_reference=False, show=False):
              legend=True)
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_row(bm=False, make_reference=False, show=False):
@@ -667,9 +674,9 @@ def plt_row(bm=False, make_reference=False, show=False):
         utl.unit_test_measure_axes_rows(name, 334, 227, 3, alias=False)
         # Margins
         utl.unit_test_measure_margin(name, 680, 105, left=70, top=10, bottom=76, alias=True)
-        utl.unit_test_measure_margin(name, 680, 105, right=119, alias=False)
+        utl.unit_test_measure_margin(name, 680, 105, right=117, alias=False)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_row_no_names(bm=False, make_reference=False, show=False):
@@ -683,7 +690,7 @@ def plt_row_no_names(bm=False, make_reference=False, show=False):
              filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_row_x_column(bm=False, make_reference=False, show=False):
@@ -702,7 +709,7 @@ def plt_row_x_column(bm=False, make_reference=False, show=False):
         utl.unit_test_measure_axes_cols(name, 340, 227, 3)
         utl.unit_test_measure_margin(name, 430, 145, left=10, bottom=10, alias=False)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_row_x_column_empty(bm=False, make_reference=False, show=False):
@@ -720,7 +727,7 @@ def plt_row_x_column_empty(bm=False, make_reference=False, show=False):
              )
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_row_x_column_no_names(bm=False, make_reference=False, show=False):
@@ -733,7 +740,7 @@ def plt_row_x_column_no_names(bm=False, make_reference=False, show=False):
              label_rc_font_size=13, filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_row_x_column_sep_labels(bm=False, make_reference=False, show=False):
@@ -752,7 +759,7 @@ def plt_row_x_column_sep_labels(bm=False, make_reference=False, show=False):
     if not show:
         utl.unit_test_measure_axes_cols(name, 375, 227, 3)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_secondary_xy_not_shared_x(bm=False, make_reference=False, show=False):
@@ -766,7 +773,7 @@ def plt_secondary_xy_not_shared_x(bm=False, make_reference=False, show=False):
     if bm:
         return
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_secondary_xy_not_shared_y(bm=False, make_reference=False, show=False):
@@ -779,7 +786,7 @@ def plt_secondary_xy_not_shared_y(bm=False, make_reference=False, show=False):
              filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_secondary_xy_shared_x(bm=False, make_reference=False, show=False):
@@ -801,9 +808,9 @@ def plt_secondary_xy_shared_x(bm=False, make_reference=False, show=False):
     if not show:
         utl.unit_test_measure_axes(name, 650, 190, 402, 402, 2, alias=True)
         utl.unit_test_measure_margin(name, 650, 285, left=84, top=10, bottom=10, alias=True)
-        utl.unit_test_measure_margin(name, 650, 285, right=257, alias=False)
+        utl.unit_test_measure_margin(name, 650, 285, right=255, alias=False)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_secondary_xy_shared_y(bm=False, make_reference=False, show=False):
@@ -820,7 +827,7 @@ def plt_secondary_xy_shared_y(bm=False, make_reference=False, show=False):
              tick_labels_y2_edge_width=1, tick_labels_y2_edge_color='#000000')
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_wrap(bm=False, make_reference=False, show=False):
@@ -839,7 +846,7 @@ def plt_wrap(bm=False, make_reference=False, show=False):
     if show:
         utl.unit_test_measure_margin(name, 25, 115, top=10, alias=False)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_xy_categorical(bm=False, make_reference=False, show=False):
@@ -852,7 +859,7 @@ def plt_xy_categorical(bm=False, make_reference=False, show=False):
              filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_xy_index(bm=False, make_reference=False, show=False):
@@ -865,7 +872,7 @@ def plt_xy_index(bm=False, make_reference=False, show=False):
              filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     ########################################################################################################
     # Make the plot using an named index column
@@ -881,7 +888,7 @@ def plt_xy_index(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_xy_legend(bm=False, make_reference=False, show=False):
@@ -897,9 +904,9 @@ def plt_xy_legend(bm=False, make_reference=False, show=False):
 
     if not show:
         utl.unit_test_measure_axes(name, 150, 200, 402, 402, 2, alias=True)
-        utl.unit_test_measure_margin(name, 150, 200, left=84, top=15, bottom=76, right=119, alias=True)
+        utl.unit_test_measure_margin(name, 150, 200, left=84, top=15, bottom=76, right=117, alias=True)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_xy_legend_no_sort(bm=False, make_reference=False, show=False):
@@ -912,7 +919,7 @@ def plt_xy_legend_no_sort(bm=False, make_reference=False, show=False):
              filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_xy_log_scale(bm=False, make_reference=False, show=False):
@@ -925,7 +932,7 @@ def plt_xy_log_scale(bm=False, make_reference=False, show=False):
              grid_minor=True, filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_xy_scatter(bm=False, make_reference=False, show=False):
@@ -935,7 +942,7 @@ def plt_xy_scatter(bm=False, make_reference=False, show=False):
     fcp.plot(df, x='Voltage', y='I [A]', title='IV Data', lines=False,
              show=False, filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_edge_width=14,
-             label_fill_color='#ff0000', label_font_style='italic', label_padding_bg=10, ticks_color='#ff0000',
+             label_fill_color='#ff0000', label_font_style='italic', ticks_color='#ff0000',
              tick_labels_major_edge_color='#0000ff', label_edge_color='#000000', label_y_edge_width=2,
              label_x_edge_width=3, ws_fig_label=15, xmin=0.5, label_y_text='How', label_y_font_size=18)
     if bm:
@@ -945,7 +952,7 @@ def plt_xy_scatter(bm=False, make_reference=False, show=False):
         utl.unit_test_measure_axes(name, 110, 185, 428, 428, 2, alias=True)
         utl.unit_test_measure_margin(name, 265, 270, left=15, top=43, bottom=15, right=10, alias=True)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_xy_scatter_swap(bm=False, make_reference=False, show=False):
@@ -958,7 +965,7 @@ def plt_xy_scatter_swap(bm=False, make_reference=False, show=False):
              filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_xy_ts(bm=False, make_reference=False, show=False):
@@ -970,7 +977,7 @@ def plt_xy_ts(bm=False, make_reference=False, show=False):
              filename=name.with_suffix('.png'), save=not bm, inline=False)
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 # test_ functions call plt_ funcs 2x:

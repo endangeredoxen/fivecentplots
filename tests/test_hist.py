@@ -60,7 +60,7 @@ def plt_grid(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_grid_no_share(bm=False, make_reference=False, show=False):
@@ -73,7 +73,7 @@ def plt_grid_no_share(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_grid_share_col(bm=False, make_reference=False, show=False):
@@ -86,7 +86,7 @@ def plt_grid_share_col(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_grid_share_row(bm=False, make_reference=False, show=False):
@@ -99,7 +99,7 @@ def plt_grid_share_row(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_horizontal(bm=False, make_reference=False, show=False):
@@ -112,7 +112,7 @@ def plt_horizontal(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_image(bm=False, make_reference=False, show=False):
@@ -129,7 +129,7 @@ def plt_image(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_image_multiple(bm=False, make_reference=False, show=False):
@@ -143,7 +143,7 @@ def plt_image_multiple(bm=False, make_reference=False, show=False):
              show=SHOW, inline=False, save=not bm, filename=name.with_suffix('.png'))
 
     if not bm:
-        utl.unit_test_options(make_reference, show, name, REFERENCE)
+        return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     name = utl.unit_test_get_img_name('image_multiple_float', make_reference, REFERENCE)
 
@@ -160,7 +160,7 @@ def plt_image_multiple(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_image_cdf(bm=False, make_reference=False, show=False):
@@ -176,7 +176,7 @@ def plt_image_cdf(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_image_pdf(bm=False, make_reference=False, show=False):
@@ -192,7 +192,7 @@ def plt_image_pdf(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_image_legend(bm=False, make_reference=False, show=False):
@@ -214,8 +214,8 @@ def plt_image_legend(bm=False, make_reference=False, show=False):
     if bm:
         return
     if not show:
-        utl.unit_test_measure_margin(name, 'c', 'c', right=98, top=10, alias=True)
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+        utl.unit_test_measure_margin(name, 'c', 'c', right=96, top=10, alias=True)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_image_legend_cdf(bm=False, make_reference=False, show=False):
@@ -236,7 +236,7 @@ def plt_image_legend_cdf(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_image_legend_pdf(bm=False, make_reference=False, show=False):
@@ -257,7 +257,7 @@ def plt_image_legend_pdf(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_image_rgb(bm=False, make_reference=False, show=False):
@@ -271,7 +271,7 @@ def plt_image_rgb(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_kde(bm=False, make_reference=False, show=False):
@@ -284,7 +284,7 @@ def plt_kde(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_kde_horizontal(bm=False, make_reference=False, show=False):
@@ -297,7 +297,7 @@ def plt_kde_horizontal(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_legend(bm=False, make_reference=False, show=False):
@@ -310,7 +310,7 @@ def plt_legend(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_patch_single(bm=False, make_reference=False, show=False):
@@ -324,7 +324,7 @@ def plt_patch_single(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_patch_single_log(bm=False, make_reference=False, show=False):
@@ -338,7 +338,7 @@ def plt_patch_single_log(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_patch_solid(bm=False, make_reference=False, show=False):
@@ -358,7 +358,7 @@ def plt_patch_solid(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_simple(bm=False, make_reference=False, show=False):
@@ -372,7 +372,7 @@ def plt_simple(bm=False, make_reference=False, show=False):
         return
     if not show:
         utl.unit_test_measure_margin(name, 'c', 'c', right=10, top=10, alias=True)
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_simple_cdf_row(bm=False, make_reference=False, show=False):
@@ -385,7 +385,7 @@ def plt_simple_cdf_row(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_simple_cdf_row_shared(bm=False, make_reference=False, show=False):
@@ -398,7 +398,7 @@ def plt_simple_cdf_row_shared(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_simple_no_bars(bm=False, make_reference=False, show=False):
@@ -410,7 +410,7 @@ def plt_simple_no_bars(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_wrap_values(bm=False, make_reference=False, show=False):
@@ -423,7 +423,7 @@ def plt_wrap_values(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_wrap_names(bm=False, make_reference=False, show=False):
@@ -438,7 +438,7 @@ def plt_wrap_names(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 # test_ functions call plt_ funcs 2x:

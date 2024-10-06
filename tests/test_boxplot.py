@@ -57,7 +57,7 @@ def plt_grand_means(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_grid_column(bm=False, make_reference=False, show=False):
@@ -76,7 +76,7 @@ def plt_grid_column(bm=False, make_reference=False, show=False):
         utl.unit_test_measure_margin(name, 59, 120, left=74, right=81, bottom=10, alias=True)
         utl.unit_test_measure_margin(name, 59, 120, top=10, alias=False)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_grid_row(bm=False, make_reference=False, show=False):
@@ -95,7 +95,7 @@ def plt_grid_row(bm=False, make_reference=False, show=False):
         utl.unit_test_measure_margin(name, 80, 120, left=74, top=10, bottom=10, alias=True)
         utl.unit_test_measure_margin(name, 80, 120, right=41, alias=False)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_grid_wrap(bm=False, make_reference=False, show=False):
@@ -108,7 +108,7 @@ def plt_grid_wrap(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_grid_wrap_y(bm=False, make_reference=False, show=False):
@@ -123,7 +123,7 @@ def plt_grid_wrap_y(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_grid_wrap_y_no_share(bm=False, make_reference=False, show=False):
@@ -138,7 +138,7 @@ def plt_grid_wrap_y_no_share(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_group_auto_size(bm=False, make_reference=False, show=False):
@@ -166,7 +166,7 @@ def plt_group_auto_size(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_group_auto_size_90(bm=False, make_reference=False, show=False):
@@ -195,7 +195,7 @@ def plt_group_auto_size_90(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_group_auto_size_wrap(bm=False, make_reference=False, show=False):
@@ -226,7 +226,7 @@ def plt_group_auto_size_wrap(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_group_auto_size_crash_simple(bm=False, make_reference=False, show=False):
@@ -241,7 +241,7 @@ def plt_group_auto_size_crash_simple(bm=False, make_reference=False, show=False)
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_group_auto_size_crash_complex(bm=False, make_reference=False, show=False):
@@ -256,7 +256,7 @@ def plt_group_auto_size_crash_complex(bm=False, make_reference=False, show=False
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_group_legend(bm=False, make_reference=False, show=False):
@@ -269,7 +269,7 @@ def plt_group_legend(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_group_legend_lots(bm=False, make_reference=False, show=False):
@@ -282,7 +282,7 @@ def plt_group_legend_lots(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_group_long(bm=False, make_reference=False, show=False):
@@ -297,7 +297,7 @@ def plt_group_long(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_group_means(bm=False, make_reference=False, show=False):
@@ -315,7 +315,7 @@ def plt_group_means(bm=False, make_reference=False, show=False):
     if not show:
         utl.unit_test_measure_margin(name, 20, 300, left=74, right=81, bottom=10, top=10, alias=True)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_group_multiple(bm=False, make_reference=False, show=False):
@@ -328,7 +328,7 @@ def plt_group_multiple(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_group_multiple_nan(bm=False, make_reference=False, show=False):
@@ -342,7 +342,7 @@ def plt_group_multiple_nan(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_group_single(bm=False, make_reference=False, show=False):
@@ -359,7 +359,7 @@ def plt_group_single(bm=False, make_reference=False, show=False):
 
     if not show:
         utl.unit_test_measure_margin(name, 50, 190, left=74, bottom=10, top=10, right=106, alias=True)
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_mean_diamonds(bm=False, make_reference=False, show=False):
@@ -372,7 +372,7 @@ def plt_mean_diamonds(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_mean_diamonds_filled(bm=False, make_reference=False, show=False):
@@ -386,7 +386,7 @@ def plt_mean_diamonds_filled(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_one_group(bm=False, make_reference=False, show=False):
@@ -400,7 +400,7 @@ def plt_one_group(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_simple(bm=False, make_reference=False, show=False):
@@ -416,7 +416,7 @@ def plt_simple(bm=False, make_reference=False, show=False):
 
     if not show:
         utl.unit_test_measure_margin(name, 20, 150, left=75, bottom=10, top=10, right=10, alias=True)
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_simple_groups_none(bm=False, make_reference=False, show=False):
@@ -429,7 +429,7 @@ def plt_simple_groups_none(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_simple_legend(bm=False, make_reference=False, show=False):
@@ -442,7 +442,7 @@ def plt_simple_legend(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_violin(bm=False, make_reference=False, show=False):
@@ -455,7 +455,7 @@ def plt_violin(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_violin_styled(bm=False, make_reference=False, show=False):
@@ -471,7 +471,7 @@ def plt_violin_styled(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_violin_box_off(bm=False, make_reference=False, show=False):
@@ -485,7 +485,7 @@ def plt_violin_box_off(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_stat_mean(bm=False, make_reference=False, show=False):
@@ -498,7 +498,7 @@ def plt_stat_mean(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_stat_median(bm=False, make_reference=False, show=False):
@@ -511,7 +511,7 @@ def plt_stat_median(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_stat_std_dev(bm=False, make_reference=False, show=False):
@@ -524,7 +524,7 @@ def plt_stat_std_dev(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_dividers(bm=False, make_reference=False, show=False):
@@ -537,7 +537,7 @@ def plt_dividers(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_range_lines(bm=False, make_reference=False, show=False):
@@ -550,7 +550,7 @@ def plt_range_lines(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 # test_ functions call plt_ funcs 2x:

@@ -59,7 +59,7 @@ def plt_basic(bm=False, make_reference=False, show=False):
         # Margins
         utl.unit_test_measure_margin(name, 70, 115, left=80, right=10, top=10, bottom=76, alias=True)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_basic_rc(bm=False, make_reference=False, show=False):
@@ -75,7 +75,7 @@ def plt_basic_rc(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_basic_wrap(bm=False, make_reference=False, show=False):
@@ -91,7 +91,7 @@ def plt_basic_wrap(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_filled(bm=False, make_reference=False, show=False):
@@ -106,7 +106,7 @@ def plt_filled(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_filled_no_share(bm=False, make_reference=False, show=False):
@@ -121,7 +121,7 @@ def plt_filled_no_share(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_filled_range(bm=False, make_reference=False, show=False):
@@ -136,7 +136,7 @@ def plt_filled_range(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 # test_ functions call plt_ funcs 2x:

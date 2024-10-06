@@ -66,7 +66,7 @@ def plt_col_shared(bm=False, make_reference=False, show=False):
         # Margins
         utl.unit_test_measure_margin(name, 170, 190, left=80, alias=False)
         utl.unit_test_measure_margin(name, 170, 190, right=10, top=10, bottom=158, alias=False)
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_error(bm=False, make_reference=False, show=False):
@@ -79,7 +79,7 @@ def plt_error(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_horizontal(bm=False, make_reference=False, show=False):
@@ -92,7 +92,7 @@ def plt_horizontal(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_legend(bm=False, make_reference=False, show=False):
@@ -106,7 +106,7 @@ def plt_legend(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_rolling_mean(bm=False, make_reference=False, show=False):
@@ -120,7 +120,7 @@ def plt_rolling_mean(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_rolling_mean_styled(bm=False, make_reference=False, show=False):
@@ -135,7 +135,7 @@ def plt_rolling_mean_styled(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_row_col(bm=False, make_reference=False, show=False):
@@ -149,7 +149,7 @@ def plt_row_col(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_row_shared(bm=False, make_reference=False, show=False):
@@ -163,7 +163,7 @@ def plt_row_shared(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_stacked(bm=False, make_reference=False, show=False):
@@ -176,7 +176,7 @@ def plt_stacked(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_stacked_horizontal(bm=False, make_reference=False, show=False):
@@ -189,7 +189,7 @@ def plt_stacked_horizontal(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_vertical(bm=False, make_reference=False, show=False):
@@ -203,7 +203,7 @@ def plt_vertical(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_vertical_zero_group(bm=False, make_reference=False, show=False):
@@ -220,7 +220,7 @@ def plt_vertical_zero_group(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_wrap(bm=False, make_reference=False, show=False):
@@ -233,7 +233,7 @@ def plt_wrap(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 # test_ functions call plt_ funcs 2x:

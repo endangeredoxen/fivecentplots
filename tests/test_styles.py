@@ -54,7 +54,7 @@ def test_alpha(make_reference=False, show=False):
              label_y_fill_color='#FF00FF', label_y_fill_alpha=0.2,
              tick_labels_major_fill_color='#AAFB05', tick_labels_major_fill_alpha=0.45,
              filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_alpha_marker(make_reference=False, show=False):
@@ -66,7 +66,7 @@ def test_alpha_marker(make_reference=False, show=False):
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              marker_edge_alpha=0.3,
              filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_alpha_legend_marker(make_reference=False, show=False):
@@ -78,7 +78,7 @@ def test_alpha_legend_marker(make_reference=False, show=False):
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              marker_edge_alpha=0.3, legend_marker_alpha=0.3,
              filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_edge_color(make_reference=False, show=False):
@@ -92,7 +92,7 @@ def test_edge_color(make_reference=False, show=False):
              label_x_edge_color='#0000FF', label_y_edge_color='#FF00FF', label_edge_width=1,
              tick_labels_major_edge_color='#AAFB05', tick_labels_major_edge_width=5,
              filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_fill_color(make_reference=False, show=False):
@@ -106,7 +106,7 @@ def test_fill_color(make_reference=False, show=False):
              label_x_fill_color='#0000FF', label_y_fill_color='#FF00FF',
              tick_labels_major_fill_color='#AAFB05',
              filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_fonts(make_reference=False, show=False):
@@ -119,7 +119,7 @@ def test_fonts(make_reference=False, show=False):
              title='My Oh My This Is Way Too Long of a Title for This Plot What Were You Thinking!',
              title_font_style='italic', label_y_font_size=25, label_y_style='normal',
              label_x_font_weight='normal', tick_labels_major_font='fantasy', filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_hist(make_reference=False, show=False):
@@ -129,7 +129,7 @@ def test_hist(make_reference=False, show=False):
     # Make the plot
     df_hist = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_box.csv')
     fcp.hist(df_hist, x='Value', show=SHOW, legend='Region', hist_fill_alpha=1, filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_hist_color(make_reference=False, show=False):
@@ -141,7 +141,7 @@ def test_hist_color(make_reference=False, show=False):
     fcp.hist(df_hist, x='Value', show=SHOW, legend='Region', hist_fill_alpha=1,
              colors=['#FF0000', '#00FF11'],
              filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_line_color(make_reference=False, show=False):
@@ -152,7 +152,7 @@ def test_line_color(make_reference=False, show=False):
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_line_color_cmap(make_reference=False, show=False):
@@ -164,7 +164,7 @@ def test_line_color_cmap(make_reference=False, show=False):
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              cmap='inferno',
              filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_line_color_custom(make_reference=False, show=False):
@@ -177,7 +177,7 @@ def test_line_color_custom(make_reference=False, show=False):
              colors=['#FF0000', '#FF7777', '#FFAAAA'], tick_labels_minor=True, tick_labels_minor_fill_color='#ff0000',
              filename=name.with_suffix('.png'), tick_labels_minor_edge_color='#0000ff',
              tick_labels_minor_font_style=['normal', 'italic'], xlabel='volts')
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_line_color_index(make_reference=False, show=False):
@@ -189,7 +189,7 @@ def test_line_color_index(make_reference=False, show=False):
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              colors=[0, 0, 3, 3, 6, 6],
              filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_line_style(make_reference=False, show=False):
@@ -201,7 +201,7 @@ def test_line_style(make_reference=False, show=False):
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              lines_alpha=0.33, lines_style='--', lines_width=3,
              filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_line_style2(make_reference=False, show=False):
@@ -213,7 +213,7 @@ def test_line_style2(make_reference=False, show=False):
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              line_alpha=0.33, line_style='--', line_width=3,
              filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_line_style_by_line(make_reference=False, show=False):
@@ -227,7 +227,7 @@ def test_line_style_by_line(make_reference=False, show=False):
              lines_width=[3, 1, 3, 1, 3, 1], lines_style=['--', '-'],
              lines_alpha=[0.6, 1],
              filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_marker_boxplot(make_reference=False, show=False):
@@ -241,7 +241,7 @@ def test_marker_boxplot(make_reference=False, show=False):
                 marker_edge_color=[0, 0, 1, 1, 2, 2], marker_type=['o', '+'],
                 box_whisker_color=[0, 0, 1, 1, 2, 2], box_whisker_width=1, jitter=False,
                 filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_marker_boxplot2(make_reference=False, show=False):
@@ -256,7 +256,7 @@ def test_marker_boxplot2(make_reference=False, show=False):
                 box_marker_edge_alpha=0.6, box_marker_fill_alpha=1, box_marker_fill_color=['#00FF00', '#FF0000'],
                 box_marker_fill=True, box_marker_type=['o'],
                 filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_marker_boxplot3(make_reference=False, show=False):
@@ -271,7 +271,7 @@ def test_marker_boxplot3(make_reference=False, show=False):
                 box_marker_edge_alpha=0.6, box_marker_fill_alpha=1, box_marker_type=['+'], verbose=True,
                 filename=name.with_suffix('.png'))
     fcp.set_theme('gray', verbose=True)
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_marker_edge(make_reference=False, show=False):
@@ -283,7 +283,7 @@ def test_marker_edge(make_reference=False, show=False):
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              marker_edge_color=['#555555'],
              filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_marker_fill(make_reference=False, show=False):
@@ -295,7 +295,7 @@ def test_marker_fill(make_reference=False, show=False):
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              marker_edge_color=['#555555'], marker_fill_color='#FFFFFF',
              filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_marker_fill_default(make_reference=False, show=False):
@@ -307,7 +307,7 @@ def test_marker_fill_default(make_reference=False, show=False):
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              marker_fill=True,
              filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_marker_fill_alpha(make_reference=False, show=False):
@@ -319,7 +319,7 @@ def test_marker_fill_alpha(make_reference=False, show=False):
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              marker_fill=True, marker_fill_alpha=0.5,
              filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_marker_type(make_reference=False, show=False):
@@ -331,7 +331,7 @@ def test_marker_type(make_reference=False, show=False):
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              markers=['o', 'd'],
              filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_marker_type_none(make_reference=False, show=False):
@@ -343,7 +343,7 @@ def test_marker_type_none(make_reference=False, show=False):
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              markers=['o', None, '+', '*', 'B', None],
              filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_marker_size(make_reference=False, show=False):
@@ -355,7 +355,7 @@ def test_marker_size(make_reference=False, show=False):
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              marker_size=2,
              filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_marker_size_legend(make_reference=False, show=False):
@@ -367,7 +367,7 @@ def test_marker_size_legend(make_reference=False, show=False):
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              marker_size=2, legend_marker_size=2,
              filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_marker_size_column(make_reference=False, show=False):
@@ -379,7 +379,7 @@ def test_marker_size_column(make_reference=False, show=False):
     fcp.plot(df, x='Voltage', y='I [A]', legend='Die', show=SHOW,
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              filename=name.with_suffix('.png'), inline=False, marker_size='marker_size')
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_spines(make_reference=False, show=False):
@@ -391,7 +391,7 @@ def test_spines(make_reference=False, show=False):
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              ax_edge_color='#FF0000', spine_left=False, spine_right=False,
              filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_theme_white(make_reference=False, show=False):
@@ -404,7 +404,7 @@ def test_theme_white(make_reference=False, show=False):
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              filename=name.with_suffix('.png'))
     fcp.set_theme('gray')  # return to default gray
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_theme_white_fly(make_reference=False, show=False):
@@ -417,7 +417,7 @@ def test_theme_white_fly(make_reference=False, show=False):
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              filename=name.with_suffix('.png'))
     fcp.set_theme('gray')  # return to default gray
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_theme_gray(make_reference=False, show=False):
@@ -429,7 +429,7 @@ def test_theme_gray(make_reference=False, show=False):
     fcp.plot(df, x='Voltage', y='I [A]', legend=['Die', 'Substrate'],
              filter='Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              filename=name.with_suffix('.png'))
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 if __name__ == '__main__':

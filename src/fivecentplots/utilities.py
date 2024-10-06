@@ -223,6 +223,39 @@ def ci(data: pd.Series, coeff: float = 0.95) -> [float, float]:
         return np.nan, np.nan
 
 
+def close_preview_windows_macos(filenames: Union[str, list]):
+    """
+    MACOS only, close open Preview windows for image files
+
+    Args:
+        filenames: name of single file or list of filenames that are open
+
+    """
+    if sys.platform != 'darwin':
+        return
+
+    try:
+        import osascript  # noqa
+    except ModuleNotFoundError:
+        return
+
+    filenames = validate_list(filenames)
+
+    for ff in filenames:
+        script = """
+                 tell application "Preview"
+                     activate
+                     repeat with w in windows
+                         if name of w contains "%s" then
+                             close w
+                             exit repeat
+                         end if
+                     end repeat
+                 end tell
+                 """ % ff
+        osascript.run(script)
+
+
 def dfkwarg(args: tuple, kwargs: dict, plotter: object) -> dict:
     """Add the DataFrame to kwargs.
 
@@ -718,6 +751,9 @@ def img_compare(img1: str, img2: str, show: bool = False) -> bool:
                 difference = cv2.subtract(img2, img1)
                 is_diff = np.any(np.where(difference > 1))
         if show and is_diff:
+            # macos only convenience - close last opened files
+            close_preview_windows_macos('difference.png')
+
             cv2.imwrite('difference.png', 10 * difference)
             show_file('difference.png')
 
@@ -1548,10 +1584,12 @@ def unit_test_options(make_reference: bool, show: Union[bool, int], img_path: pa
     if show == -1:
         show_file(img_path)
         unit_test_debug_margins(img_path)
+        return img_path
     elif show:
         show_file(reference_path)
         show_file(img_path)
         compare = img_compare(img_path, reference_path, show=True)
+        return img_path, reference_path
     else:
         compare = img_compare(img_path, reference_path)
         os.remove(img_path)
@@ -1807,15 +1845,20 @@ def unit_test_show_all(only_fails: bool, reference: pathlib.Path, name: str, sta
             members = members[idx_found[0]:]
     for member in members:
         print(f'Running {member[0]}...', end='')
+        paths = []
         if only_fails:
             try:
                 member[1]()
             except AssertionError:
-                member[1](show=True)
+                paths = member[1](show=True)
                 db()
         else:
-            member[1](show=True)
+            paths = member[1](show=True)
             db()
+
+        # macos only convenience - close last opened files
+        if len(paths) > 0:
+            close_preview_windows_macos([f.name for f in paths] + ['difference.png'])
 
 
 def validate_list(items: [str, int, float, list]) -> list:

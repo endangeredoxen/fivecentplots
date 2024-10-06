@@ -89,7 +89,7 @@ def plt_col(bm=False, make_reference=False, show=False):
         utl.unit_test_measure_axes_cols(name, 90, 300, 4, alias=False)
         utl.unit_test_measure_margin(name, 'c', 150, left=10, right=10, top=10, bottom=10, alias=False)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_col_cbar(bm=False, make_reference=False, show=False):
@@ -105,7 +105,7 @@ def plt_col_cbar(bm=False, make_reference=False, show=False):
     if not show:
         utl.unit_test_measure_axes_cols(name, 90, 300, 4, cbar=True, alias=False)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_col_combos(bm=False, make_reference=False, show=False):
@@ -126,7 +126,7 @@ def plt_col_combos(bm=False, make_reference=False, show=False):
             # Label margin
             utl.unit_test_measure_margin(name, 20, 150, left=10, right=10, top=10, bottom=10, alias=True)
 
-        utl.unit_test_options(make_reference, show, name, REFERENCE)
+        return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 1 x 2
     if '1x2' in enabled:
@@ -146,7 +146,7 @@ def plt_col_combos(bm=False, make_reference=False, show=False):
             # Label widths
             utl.unit_test_measure_axes_cols(name, 18, 312, 2, alias=True)
 
-        utl.unit_test_options(make_reference, show, name, REFERENCE)
+        return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 1 x 3
     if '1x3' in enabled:
@@ -166,7 +166,7 @@ def plt_col_combos(bm=False, make_reference=False, show=False):
             # Label widths
             utl.unit_test_measure_axes_cols(name, 14, 252, 3, alias=True)
 
-        utl.unit_test_options(make_reference, show, name, REFERENCE)
+        return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 1 x 3b
     if '1x3b' in enabled:
@@ -186,7 +186,7 @@ def plt_col_combos(bm=False, make_reference=False, show=False):
             # Label widths
             utl.unit_test_measure_axes_cols(name, 14, 250, 3, alias=True)
 
-        utl.unit_test_options(make_reference, show, name, REFERENCE)
+        return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 1 x 3c
     if '1x3c' in enabled:
@@ -206,7 +206,7 @@ def plt_col_combos(bm=False, make_reference=False, show=False):
             # Label widths
             utl.unit_test_measure_axes_cols(name, 14, 250, 3, alias=False)
 
-        utl.unit_test_options(make_reference, show, name, REFERENCE)
+        return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_col_shared_cbar(bm=False, make_reference=False, show=False):
@@ -223,7 +223,7 @@ def plt_col_shared_cbar(bm=False, make_reference=False, show=False):
         utl.unit_test_measure_axes_cols(name, 90, 300, 4, alias=False)
         utl.unit_test_measure_margin(name, 'c', 150, left=10, top=10, bottom=10, alias=False)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_col_share_z(bm=False, make_reference=False, show=False):
@@ -244,7 +244,7 @@ def plt_col_share_z(bm=False, make_reference=False, show=False):
         # Margins
         utl.unit_test_measure_margin(name, 70, 150, left=10, right=81, top=10, bottom=10, alias=False)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_col_z_user_range(bm=False, make_reference=False, show=False):
@@ -265,7 +265,7 @@ def plt_col_z_user_range(bm=False, make_reference=False, show=False):
         # Margins
         utl.unit_test_measure_margin(name, 70, 150, left=10, right=88, top=10, bottom=10, alias=False)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_col_quantiles(bm=False, make_reference=False, show=False):
@@ -278,7 +278,7 @@ def plt_col_quantiles(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_imshow(bm=False, make_reference=False, show=False):
@@ -293,7 +293,7 @@ def plt_imshow(bm=False, make_reference=False, show=False):
 
     if not show:
         utl.unit_test_measure_margin(name, 'c', 'c', left=10, right=10, top=10, bottom=10, alias=False)
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_imshow_cbar(bm=False, make_reference=False, show=False):
@@ -313,7 +313,7 @@ def plt_imshow_cbar(bm=False, make_reference=False, show=False):
     if not show:
         utl.unit_test_measure_axes(name, 40, 100, 600, 300, 1, alias=False)
         utl.unit_test_measure_margin(name, 170, 365, left=10, right=10, bottom=10)
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_imshow_rgb(bm=False, make_reference=False, show=False):
@@ -327,7 +327,7 @@ def plt_imshow_rgb(bm=False, make_reference=False, show=False):
         return
     if not show:
         utl.unit_test_measure_margin(name, 'c', 'c', left=10, right=10, top=10, bottom=10, alias=False)
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_imshow_rgb_wrap(bm=False, make_reference=False, show=False):
@@ -348,7 +348,7 @@ def plt_imshow_rgb_wrap(bm=False, make_reference=False, show=False):
     if not show:
         utl.unit_test_measure_axes(name, 150, None, 800, alias=False)
         utl.unit_test_measure_margin(name, 'c', 'c', left=10, right=10, top=10, bottom=10, alias=False)
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_imshow_rotate(bm=False, make_reference=False, show=False):
@@ -361,7 +361,7 @@ def plt_imshow_rotate(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_imshow_tick_labels(bm=False, make_reference=False, show=False):
@@ -377,7 +377,7 @@ def plt_imshow_tick_labels(bm=False, make_reference=False, show=False):
 
     if not show:
         utl.unit_test_measure_axes(name, 40, 100, 600, 300, 1, alias=False)
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_imshow_tick_and_axes_labels(bm=False, make_reference=False, show=False):
@@ -394,7 +394,7 @@ def plt_imshow_tick_and_axes_labels(bm=False, make_reference=False, show=False):
 
     if not show:
         utl.unit_test_measure_axes(name, 40, 100, 600, 300, 1, alias=False)
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_imshow_stretched(bm=False, make_reference=False, show=False):
@@ -410,7 +410,7 @@ def plt_imshow_stretched(bm=False, make_reference=False, show=False):
     if not show:
         utl.unit_test_measure_axes(name, 40, 100, 600, 300, 1, alias=False)
         utl.unit_test_measure_margin(name, 170, 365, left=10, top=10, bottom=10, alias=False)
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_imshow_zoomed(bm=False, make_reference=False, show=False):
@@ -427,7 +427,7 @@ def plt_imshow_zoomed(bm=False, make_reference=False, show=False):
     if not show:
         utl.unit_test_measure_axes(name, 40, 100, size_x, int((size_x / (xmax - xmin) * (ymax - ymin))), 1, alias=False)
         utl.unit_test_measure_margin(name, 50, 100, left=10, bottom=10, alias=False)
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_row_combos(bm=False, make_reference=False, show=False):
@@ -450,7 +450,7 @@ def plt_row_combos(bm=False, make_reference=False, show=False):
             # Axes widths
             utl.unit_test_measure_axes_cols(name, 150, 260, 1, alias=True)
 
-        utl.unit_test_options(make_reference, show, name, REFERENCE)
+        return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 2 x 1
     if '2x1' in enabled:
@@ -470,7 +470,7 @@ def plt_row_combos(bm=False, make_reference=False, show=False):
             # Label widths
             utl.unit_test_measure_axes_rows(name, 313, 262, 2, alias=True)
 
-        utl.unit_test_options(make_reference, show, name, REFERENCE)
+        return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 3 x 1
     if '3x1' in enabled:
@@ -490,7 +490,7 @@ def plt_row_combos(bm=False, make_reference=False, show=False):
             # Label widths
             utl.unit_test_measure_axes_rows(name, 300, 252, 3, alias=True)
 
-        utl.unit_test_options(make_reference, show, name, REFERENCE)
+        return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 3 x 1b
     if '3x1b' in enabled:
@@ -510,7 +510,7 @@ def plt_row_combos(bm=False, make_reference=False, show=False):
             # Label widths
             utl.unit_test_measure_axes_rows(name, 300, 250, 3, alias=True)
 
-        utl.unit_test_options(make_reference, show, name, REFERENCE)
+        return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 3 x 1c
     if '3x1c' in enabled:
@@ -530,7 +530,7 @@ def plt_row_combos(bm=False, make_reference=False, show=False):
             # Label widths
             utl.unit_test_measure_axes_rows(name, 296, 250, 3, alias=False)
 
-        utl.unit_test_options(make_reference, show, name, REFERENCE)
+        return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_share_col(bm=False, make_reference=False, show=False):
@@ -551,7 +551,7 @@ def plt_share_col(bm=False, make_reference=False, show=False):
         utl.unit_test_measure_axes_cols(name, 680, 300, 1, alias=False)
         utl.unit_test_measure_axes_cols(name, 920, 300, 1, alias=False)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_share_row(bm=False, make_reference=False, show=False):
@@ -581,7 +581,7 @@ def plt_share_row(bm=False, make_reference=False, show=False):
         utl.unit_test_measure_axes_rows(name, 860, 225, 1, alias=False)
         utl.unit_test_measure_axes_rows(name, 1220, 225, 1, alias=False)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_wrap(bm=False, make_reference=False, show=False):
@@ -604,7 +604,7 @@ def plt_wrap(bm=False, make_reference=False, show=False):
         # Title width
         utl.unit_test_measure_axes_cols(name, 13, 300 * 2, 1, alias=False)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_wrap_combos(bm=False, make_reference=False, show=False):
@@ -638,7 +638,7 @@ def plt_wrap_combos(bm=False, make_reference=False, show=False):
             utl.unit_test_measure_margin(name, 45, None, left=10, right=10, alias=False)
             # Title margin
             utl.unit_test_measure_margin(name, 13, None, left=10, right=10, alias=False)
-        utl.unit_test_options(make_reference, show, name, REFERENCE)
+        return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 1 x 2
     if '1x2' in enabled:
@@ -657,7 +657,7 @@ def plt_wrap_combos(bm=False, make_reference=False, show=False):
             utl.unit_test_measure_axes_cols(name, 58, 256, 2, alias=True)
             # Title margin
             utl.unit_test_measure_margin(name, 17, None, left=10, right=10, alias=True)
-        utl.unit_test_options(make_reference, show, name, REFERENCE)
+        return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 1 x 3
     if '1x3' in enabled:
@@ -676,7 +676,7 @@ def plt_wrap_combos(bm=False, make_reference=False, show=False):
             utl.unit_test_measure_axes_cols(name, 58, 758, 1, alias=True)
             # Title margin
             utl.unit_test_measure_margin(name, 17, None, left=10, right=10, alias=True)
-        utl.unit_test_options(make_reference, show, name, REFERENCE)
+        return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 2 x 3
     if '2x3' in enabled:
@@ -696,7 +696,7 @@ def plt_wrap_combos(bm=False, make_reference=False, show=False):
             utl.unit_test_measure_axes_cols(name, 50, 754, 1, alias=False)
             # Title margin
             utl.unit_test_measure_margin(name, 17, None, left=10, right=10, alias=True)
-        utl.unit_test_options(make_reference, show, name, REFERENCE)
+        return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 3 x 1
     if '3x1' in enabled:
@@ -714,7 +714,7 @@ def plt_wrap_combos(bm=False, make_reference=False, show=False):
             utl.unit_test_measure_margin(name, 13, None, left=10, right=10, alias=False)
             # Axes + label + title height
             utl.unit_test_measure_axes_rows(name, 70, 250 * 3 + 2 * 6 + 3 * 30 + 30 - 1, 1, alias=True)
-        utl.unit_test_options(make_reference, show, name, REFERENCE)
+        return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 3 x 2
     if '3x2' in enabled:
@@ -736,7 +736,7 @@ def plt_wrap_combos(bm=False, make_reference=False, show=False):
             # Title margin
             utl.unit_test_measure_margin(name, 17, None, left=10, right=10, alias=True)
 
-        utl.unit_test_options(make_reference, show, name, REFERENCE)
+        return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 4 x 2
     if '4x2' in enabled:
@@ -758,7 +758,7 @@ def plt_wrap_combos(bm=False, make_reference=False, show=False):
             # Title margin
             utl.unit_test_measure_margin(name, 17, None, left=10, right=10, alias=False)
 
-        utl.unit_test_options(make_reference, show, name, REFERENCE)
+        return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     if '4x2b' in enabled:
         name = utl.unit_test_get_img_name('wrap_combos_4x2_no_edge', make_reference, REFERENCE)
@@ -779,7 +779,7 @@ def plt_wrap_combos(bm=False, make_reference=False, show=False):
             # Title margin
             utl.unit_test_measure_margin(name, 17, None, left=10, right=10, alias=False)
 
-        utl.unit_test_options(make_reference, show, name, REFERENCE)
+        return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_wrap_combos_cbar(bm=False, make_reference=False, show=False):
@@ -811,7 +811,7 @@ def plt_wrap_combos_cbar(bm=False, make_reference=False, show=False):
             # Title
             utl.unit_test_measure_margin(name, 25, 150, left=10, top=10, bottom=10, alias=True)
 
-        utl.unit_test_options(make_reference, show, name, REFERENCE)
+        return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 1 x 2
     if '1x2' in enabled:
@@ -833,7 +833,7 @@ def plt_wrap_combos_cbar(bm=False, make_reference=False, show=False):
             # Axes widths
             utl.unit_test_measure_axes_cols(name, 100, 260, 2, cbar=True, alias=True)
 
-        utl.unit_test_options(make_reference, show, name, REFERENCE)
+        return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 1 x 3
     if '1x3' in enabled:
@@ -855,7 +855,7 @@ def plt_wrap_combos_cbar(bm=False, make_reference=False, show=False):
             # Axes widths
             utl.unit_test_measure_axes_cols(name, 150, 256, 3, cbar=True, alias=True)
 
-        utl.unit_test_options(make_reference, show, name, REFERENCE)
+        return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 2 x 3
     if '2x3' in enabled:
@@ -875,7 +875,7 @@ def plt_wrap_combos_cbar(bm=False, make_reference=False, show=False):
             # Label widths
             utl.unit_test_measure_axes_cols(name, 50, 252, 3, alias=False)
 
-        utl.unit_test_options(make_reference, show, name, REFERENCE)
+        return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 3 x 1
     if '3x1' in enabled:
@@ -884,7 +884,7 @@ def plt_wrap_combos_cbar(bm=False, make_reference=False, show=False):
                    ax_edge_width=2, ax_edge_color='#ff0000', label_wrap_edge_color='#0000ff', cbar=True,
                    filename=name.with_suffix('.png'), save=not bm, inline=False,
                    filter='Number in ["Image 0", "Image 2", "Image 4"]')
-        utl.unit_test_options(make_reference, show, name, REFERENCE)
+        return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 3 x 2
     if '3x2' in enabled:
@@ -904,7 +904,7 @@ def plt_wrap_combos_cbar(bm=False, make_reference=False, show=False):
             # Label widths
             utl.unit_test_measure_axes_cols(name, 50, 252, 2, alias=True)
 
-        utl.unit_test_options(make_reference, show, name, REFERENCE)
+        return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # 4 x 2
     if '4x2' in enabled:
@@ -924,7 +924,7 @@ def plt_wrap_combos_cbar(bm=False, make_reference=False, show=False):
             # Label widths
             utl.unit_test_measure_axes_cols(name, 42, 250, 4, alias=False)
 
-        utl.unit_test_options(make_reference, show, name, REFERENCE)
+        return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_wrap_one(bm=False, make_reference=False, show=False):
@@ -941,7 +941,7 @@ def plt_wrap_one(bm=False, make_reference=False, show=False):
     if not show:
         utl.unit_test_measure_margin(name, 'c', 'c', left=10, right=10, top=10, bottom=10, alias=False)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_wrap_ws(bm=False, make_reference=False, show=False):
@@ -963,7 +963,7 @@ def plt_wrap_ws(bm=False, make_reference=False, show=False):
         utl.unit_test_measure_margin(name, 'c', 'c', left=10, right=10, top=10, bottom=10, alias=False)
         utl.unit_test_measure_axes_cols(name, 175, 400, 3, alias=False, ws=15)
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 # test_ functions call plt_ funcs 2x:

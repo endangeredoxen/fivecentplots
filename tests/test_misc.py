@@ -49,7 +49,7 @@ def test_text_box_single(make_reference=False, remove=True, show=False):
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              text='Die (-1,2) shows best response', text_position=[120, 10],
              save=True, inline=False, filename=name.with_suffix('.png'), jitter=False)
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_text_box_single_style(make_reference=False, remove=True, show=False):
@@ -62,7 +62,7 @@ def test_text_box_single_style(make_reference=False, remove=True, show=False):
              text='Die (-1,2) shows\nbest response', text_position=[10, 340], text_font_size=20,
              text_edge_color='#FF0000', text_font_color='#00FF00', text_fill_color='#ffffff',
              save=True, inline=False, filename=name.with_suffix('.png'), jitter=False)
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_text_box_multiple(make_reference=False, remove=True, show=False):
@@ -76,7 +76,7 @@ def test_text_box_multiple(make_reference=False, remove=True, show=False):
              text_position=[[10, 379], [10, 10], [320, 15]], text_font_color=['#000000', '#FF00FF'],
              text_font_size=[14, 8, 18], text_fill_color='#FFFFFF',
              save=True, inline=False, filename=name.with_suffix('.png'), jitter=False)
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_text_box_position_figure(make_reference=False, remove=True, show=False):
@@ -88,7 +88,7 @@ def test_text_box_position_figure(make_reference=False, remove=True, show=False)
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              text='Die (-1,2) shows best response', text_position=[208, 85], text_coordinate='figure',
              save=True, inline=False, filename=name.with_suffix('.png'), jitter=False)
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_text_box_position_data(make_reference=False, remove=True, show=False):
@@ -100,7 +100,7 @@ def test_text_box_position_data(make_reference=False, remove=True, show=False):
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              text='Die (-1,2) shows best response', text_position=[1.077, 0.00085], text_coordinate='data',
              save=True, inline=False, filename=name.with_suffix('.png'), jitter=False)
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_text_box_position_units(make_reference=False, remove=True, show=False):
@@ -112,4 +112,4 @@ def test_text_box_position_units(make_reference=False, remove=True, show=False):
              filter='Substrate=="Si" & Target Wavelength==450 & Boost Level==0.2 & Temperature [C]==25',
              text='Die (-1,2) shows best response', text_position=[0.3, 0.025], text_units='relative',
              save=True, inline=False, filename=name.with_suffix('.png'), jitter=False)
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)

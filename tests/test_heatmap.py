@@ -57,7 +57,7 @@ def plt_cat_cell_size(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_cat_no_label(bm=False, make_reference=False, show=False):
@@ -70,7 +70,7 @@ def plt_cat_no_label(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_cat_label(bm=False, make_reference=False, show=False):
@@ -84,7 +84,7 @@ def plt_cat_label(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_cat_non_uniform(bm=False, make_reference=False, show=False):
@@ -100,7 +100,7 @@ def plt_cat_non_uniform(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_heatmap(bm=False, make_reference=False, show=False):
@@ -115,7 +115,7 @@ def plt_heatmap(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_heatmap_stretched(bm=False, make_reference=False, show=False):
@@ -134,7 +134,7 @@ def plt_heatmap_stretched(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_heatmap_zoomed(bm=False, make_reference=False, show=False):
@@ -151,7 +151,7 @@ def plt_heatmap_zoomed(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 # test_ functions call plt_ funcs 2x:

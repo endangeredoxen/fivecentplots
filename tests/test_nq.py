@@ -50,7 +50,7 @@ def test_nq(make_reference=False, show=False):
     # Make the plot
     fcp.nq(img_cat, filename=name.with_suffix('.png'))
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_nq_percentiles(make_reference=False, show=False):
@@ -60,7 +60,7 @@ def test_nq_percentiles(make_reference=False, show=False):
     # Make the plot
     fcp.nq(img_cat, percentiles=True, filename=name.with_suffix('.png'))
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_nq_legend(make_reference=False, show=False):
@@ -77,7 +77,7 @@ def test_nq_legend(make_reference=False, show=False):
     # Make the plot
     fcp.nq(img, legend='State', filename=name.with_suffix('.png'))
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_nq_multiple_no_group(make_reference=False, show=False):
@@ -94,7 +94,7 @@ def test_nq_multiple_no_group(make_reference=False, show=False):
     # Make the plot
     fcp.nq(img, filename=name.with_suffix('.png'))
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def test_nq_rgb(make_reference=False, show=False):
@@ -104,7 +104,7 @@ def test_nq_rgb(make_reference=False, show=False):
     # Make the plot
     fcp.nq(img_cat_orig, legend='Channel', colors=fcp.RGB, filename=name.with_suffix('.png'))
 
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 if __name__ == '__main__':

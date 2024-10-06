@@ -52,7 +52,7 @@ def plt_basic(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_col(bm=False, make_reference=False, show=False):
@@ -65,7 +65,7 @@ def plt_col(bm=False, make_reference=False, show=False):
     # Make the plot
     fcp.gantt(df, x=['Start', 'Stop'], y='Task', col='Category', share_x=False, share_y=False,
               filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[600, 400])
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_legend(bm=False, make_reference=False, show=False):
@@ -78,7 +78,7 @@ def plt_legend(bm=False, make_reference=False, show=False):
     # Make the plot
     fcp.gantt(df, x=['Start', 'Stop'], y='Task', legend='Assigned',
               filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[600, 400])
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_legend_order_by(bm=False, make_reference=False, show=False):
@@ -92,7 +92,7 @@ def plt_legend_order_by(bm=False, make_reference=False, show=False):
     fcp.gantt(df, x=['Start', 'Stop'], y='Task', legend='Assigned',
               gantt_tick_labels_x_rotation=45, order_by_legend=True,
               filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[600, 400])
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_rc_missing(bm=False, make_reference=False, show=False):
@@ -107,7 +107,7 @@ def plt_rc_missing(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_row(bm=False, make_reference=False, show=False):
@@ -120,7 +120,7 @@ def plt_row(bm=False, make_reference=False, show=False):
     # Make the plot
     fcp.gantt(df, x=['Start', 'Stop'], y='Task', row='Category', share_y=False,
               filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[600, 400])
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_sort_ascending(bm=False, make_reference=False, show=False):
@@ -133,7 +133,7 @@ def plt_sort_ascending(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_style(bm=False, make_reference=False, show=False):
@@ -148,7 +148,7 @@ def plt_style(bm=False, make_reference=False, show=False):
 
     if bm:
         return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 def plt_wrap(bm=False, make_reference=False, show=False):
@@ -161,7 +161,7 @@ def plt_wrap(bm=False, make_reference=False, show=False):
     # Make the plot
     fcp.gantt(df, x=['Start', 'Stop'], y='Task', wrap='Category',
               filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[600, 400])
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
 # test_ functions call plt_ funcs 2x:
