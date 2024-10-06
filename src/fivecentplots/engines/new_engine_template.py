@@ -59,6 +59,17 @@ class Layout(BaseLayout):
             data: fcp Data object
         """
 
+    def add_fills(self, ir: int, ic: int, df: pd.DataFrame, data: 'Data'):  # noqa: F821
+        """Add rectangular fills to the plot.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            df: current data
+            data: fcp Data object
+
+        """
+
     def add_hvlines(self, ir: int, ic: int, df: [pd.DataFrame, None] = None):
         """Add horizontal/vertical lines.
 
@@ -352,12 +363,13 @@ class Layout(BaseLayout):
 
         """
 
-    def set_axes_labels(self, ir: int, ic: int):
+    def set_axes_labels(self, ir: int, ic: int, data: 'Data'):  # noqa: F821
         """Set the axes labels.
 
         Args:
             ir: subplot row index
             ic: subplot column index
+            data: fcp.data object
 
         """
 

@@ -3008,6 +3008,7 @@ class Layout(BaseLayout):
         Args:
             ir: subplot row index
             ic: subplot column index
+            data: fcp.data object
 
         """
         if self.name in ['pie']:

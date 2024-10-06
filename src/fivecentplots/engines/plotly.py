@@ -122,6 +122,17 @@ class Layout(BaseLayout):
             data: fcp Data object
         """
 
+    def add_fills(self, ir: int, ic: int, df: pd.DataFrame, data: 'Data'):  # noqa: F821
+        """Add rectangular fills to the plot.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            df: current data
+            data: fcp Data object
+
+        """
+
     def add_hvlines(self, ir: int, ic: int, df: [pd.DataFrame, None] = None):
         """Add horizontal/vertical lines.
 
@@ -202,8 +213,8 @@ class Layout(BaseLayout):
 
         for ir, ic in np.ndindex(self.axes.obj.shape):
             # x-axis --> just need the approximate height of text, don't care about tick values
-            if data.ranges[ir, ic]['xmin'] is not None:
-                val = str(data.ranges[0, 0]['xmin'])
+            if data.ranges['xmin'][ir, ic] is not None:
+                val = str(data.ranges['xmin'][ir, ic])
                 xticks = self.tick_labels_major_x
                 size = utl.get_text_dimensions(val, xticks.font, xticks.font_size,
                                                xticks.font_style, xticks.font_weight)
@@ -587,12 +598,13 @@ class Layout(BaseLayout):
                                                            griddash=dash,
                                                            )
 
-    def set_axes_labels(self, ir: int, ic: int):
+    def set_axes_labels(self, ir: int, ic: int, data: 'Data'):  # noqa: F821
         """Set the axes labels.
 
         Args:
             ir: subplot row index
             ic: subplot column index
+            data: fcp.data object
 
         """
         axis = ['x', 'x2', 'y', 'y2']
@@ -645,13 +657,13 @@ class Layout(BaseLayout):
         """
         # TODO address secondary axes and what happens if None
         if str(self.axes.scale).lower() in LOGX:
-            self.kwargs['ul_xaxis_range'][ir, ic] = [np.log10(ranges[ir, ic]['xmin']), np.log10(ranges[ir, ic]['xmax'])]
+            self.kwargs['ul_xaxis_range'][ir, ic] = [np.log10(ranges['xmin'][ir, ic]), np.log10(ranges['xmax'][ir, ic])]
         else:
-            self.kwargs['ul_xaxis_range'][ir, ic] = [ranges[ir, ic]['xmin'], ranges[ir, ic]['xmax']]
+            self.kwargs['ul_xaxis_range'][ir, ic] = [ranges['xmin'][ir, ic], ranges['xmax'][ir, ic]]
         if str(self.axes.scale).lower() in LOGY:
-            self.kwargs['ul_yaxis_range'][ir, ic] = [np.log10(ranges[ir, ic]['ymin']), np.log10(ranges[ir, ic]['ymax'])]
+            self.kwargs['ul_yaxis_range'][ir, ic] = [np.log10(ranges['ymin'][ir, ic]), np.log10(ranges['ymax'][ir, ic])]
         else:
-            self.kwargs['ul_yaxis_range'][ir, ic] = [ranges[ir, ic]['ymin'], ranges[ir, ic]['ymax']]
+            self.kwargs['ul_yaxis_range'][ir, ic] = [ranges['ymin'][ir, ic], ranges['ymax'][ir, ic]]
 
     def set_axes_rc_labels(self, ir: int, ic: int):
         """Add the row/column label boxes and wrap titles.

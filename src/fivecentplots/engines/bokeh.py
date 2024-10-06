@@ -100,6 +100,17 @@ class Layout(BaseLayout):
         """
         pass
 
+    def add_fills(self, ir: int, ic: int, df: pd.DataFrame, data: 'Data'):  # noqa: F821
+        """Add rectangular fills to the plot.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            df: current data
+            data: fcp Data object
+
+        """
+
     def add_hvlines(self, ir: int, ic: int, df: [pd.DataFrame, None] = None):
         """Add horizontal/vertical lines.
 
@@ -558,12 +569,13 @@ class Layout(BaseLayout):
 
         # Twinning -- may not be possible
 
-    def set_axes_labels(self, ir: int, ic: int):
+    def set_axes_labels(self, ir: int, ic: int, data: 'Data'):  # noqa: F821
         """Set the axes labels.
 
         Args:
             ir: subplot row index
             ic: subplot column index
+            data: fcp.data object
 
         """
         axis = ['x', 'y', 'x2', 'y2']  # , 'z']
@@ -621,22 +633,22 @@ class Layout(BaseLayout):
         if self.name in ['heatmap', 'pie']:  # skip these plot types
             return
 
-        if ranges[ir, ic]['xmin'] is not None:
-            self.axes.obj[ir, ic].x_range.start = ranges[ir, ic]['xmin']
-        if ranges[ir, ic]['x2min'] is not None:
-            self.axes.obj[ir, ic].extra_x_ranges['x2'].start = ranges[ir, ic]['x2min']
-        if ranges[ir, ic]['xmax'] is not None:
-            self.axes.obj[ir, ic].x_range.end = ranges[ir, ic]['xmax']
-        if ranges[ir, ic]['x2max'] is not None:
-            self.axes.obj[ir, ic].extra_x_ranges['x2'].end = ranges[ir, ic]['x2max']
-        if ranges[ir, ic]['ymin'] is not None:
-            self.axes.obj[ir, ic].y_range.start = ranges[ir, ic]['ymin']
-        if ranges[ir, ic]['y2min'] is not None:
-            self.axes.obj[ir, ic].extra_y_ranges['y2'].start = ranges[ir, ic]['y2min']
-        if ranges[ir, ic]['ymax'] is not None:
-            self.axes.obj[ir, ic].y_range.end = ranges[ir, ic]['ymax']
-        if ranges[ir, ic]['y2max'] is not None:
-            self.axes.obj[ir, ic].extra_y_ranges['y2'].end = ranges[ir, ic]['y2max']
+        if ranges['xmin'][ir, ic] is not None:
+            self.axes.obj[ir, ic].x_range.start = ranges['xmin'][ir, ic]
+        if ranges['x2min'][ir, ic] is not None:
+            self.axes.obj[ir, ic].extra_x_ranges['x2'].start = ranges['x2min'][ir, ic]
+        if ranges['xmax'][ir, ic] is not None:
+            self.axes.obj[ir, ic].x_range.end = ranges['xmax'][ir, ic]
+        if ranges['x2max'][ir, ic] is not None:
+            self.axes.obj[ir, ic].extra_x_ranges['x2'].end = ranges['x2max'][ir, ic]
+        if ranges['ymin'][ir, ic] is not None:
+            self.axes.obj[ir, ic].y_range.start = ranges['ymin'][ir, ic]
+        if ranges['y2min'][ir, ic] is not None:
+            self.axes.obj[ir, ic].extra_y_ranges['y2'].start = ranges['y2min'][ir, ic]
+        if ranges['ymax'][ir, ic] is not None:
+            self.axes.obj[ir, ic].y_range.end = ranges['ymax'][ir, ic]
+        if ranges['y2max'][ir, ic] is not None:
+            self.axes.obj[ir, ic].extra_y_ranges['y2'].end = ranges['y2max'][ir, ic]
 
     def set_axes_rc_labels(self, ir: int, ic: int):
         """Add the row/column label boxes and wrap titles.
