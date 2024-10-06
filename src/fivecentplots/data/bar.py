@@ -82,16 +82,16 @@ class Bar(data.Data):
         """
         # Sum up by group
         if self.stacked:
-            data_sum = data_set.groupby(self.x).sum()
+            data_sum = data_set.groupby(self.x).sum(numeric_only=True)
         else:
-            data_sum = data_set.groupby(self.x + self._groupers).sum()
+            data_sum = data_set.groupby(self.x + self._groupers).sum(numeric_only=True)
 
         # Add error bar range
         if self.error_bars:
             if self.stacked:
-                yys = data_set.groupby(self.x).std()
+                yys = data_set.groupby(self.x).std(numeric_only=True)
             else:
-                yys = data_set.groupby(self.x + self._groupers).std()
+                yys = data_set.groupby(self.x + self._groupers).std(numeric_only=True)
             data_plus = data_sum.copy()
             data_plus[self.y] += yys[self.y]
             data_minus = data_sum.copy()

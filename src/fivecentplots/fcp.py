@@ -886,11 +886,11 @@ def plot_bar(data, layout, ir, ic, df_rc, kwargs):
     for iline, df, x, y, z, leg_name, twin, ngroups in data.get_plot_data(df_rc):
 
         df2 = df.groupby(x).sum()[y].loc[xvals]
-        inst = df.groupby(x).mean()['Instance']
-        total = df.groupby(x).mean()['Total']
+        inst = df.groupby(x).mean(numeric_only=True)['Instance']
+        total = df.groupby(x).mean(numeric_only=True)['Total']
 
         if layout.bar.error_bars:
-            std = df.groupby(x).std()[y]
+            std = df.groupby(x).std(numeric_only=True)[y]
         else:
             std = None
 
@@ -911,7 +911,7 @@ def plot_bar(data, layout, ir, ic, df_rc, kwargs):
                            line_type='rolling_mean')
 
         if layout.bar.stacked:
-            ss = stacked.groupby(stacked.index).sum()[0]
+            ss = stacked.groupby(stacked.index).sum(numeric_only=True)[stacked.columns[0]]
 
     return data
 
@@ -966,9 +966,6 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
                     stats += [temp.quantile(float(ss.strip('q')) / 100).iloc[0]]
             else:
                 stats += [temp.mean().iloc[0]]
-            # if not isinstance(row, tuple):  # don't believe this case is possible
-            #     row = [row]
-            # else:
             row = [str(f) for f in row]
             labels += ['']
 
@@ -1044,7 +1041,7 @@ def plot_box(dd, layout, ir, ic, df_rc, kwargs):
         x = np.linspace(1, dd.ngroups, dd.ngroups)
         layout.plot_line(ir, ic, x, stats, **layout.box_stat_line.kwargs)
 
-    # add group means
+    # Add group means
     if layout.box_group_means.on is True:
         mgroups = df_rc.groupby(dd.groups[0:1])
         x = -0.5
