@@ -623,7 +623,8 @@ def get_nested_files(path: Union[Path, str], pattern: Union[str, None] = None, e
     return files
 
 
-def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, font_weight: str, **kwargs) -> tuple:
+def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, font_weight: str, rotation: float = 0,
+                        ignore_html: bool = True, **kwargs) -> tuple:
     """Use pillow to try and figure out actual dimensions of text.
 
     Args:
@@ -632,7 +633,8 @@ def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, f
         font_size: font size
         font_style: normal vs italic
         font_weight: normal vs bold
-        kwargs: in place to
+        rotation: text rotation
+        ignore_html: strip html tags
 
     Returns:
         size tuple
@@ -650,9 +652,22 @@ def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, f
     fp.set_weight(font_weight)
     fontfile = findfont(fp, fallback_to_default=True)
     font = ImageFont.truetype(fontfile, font_size)
+
+    if ignore_html:
+        text = strip_html(text)
+
     size = font.getbbox(text)[2:]
 
-    return size[0] * 1.125, size[1] * 1.125  # no idea why it is off
+    if rotation != 0:
+        w = size[0] * 1.125 * np.abs(np.cos(rotation * np.pi / 180)) \
+            + size[1] * 1.125 * np.abs(np.sin(rotation * np.pi / 180))
+        h = size[1] * 1.125 * np.abs(np.cos(rotation * np.pi / 180)) \
+            + size[0] * 1.125 * np.abs(np.sin(rotation * np.pi / 180))
+    else:
+        w = size[0] * 1.125  # extra buffer to get closer to real result
+        h = size[1] * 1.125
+
+    return w, h  # no idea why it is off
 
 
 def kwget(dict1: dict, dict2: dict, vals: [str, list], default: [list, dict]):
