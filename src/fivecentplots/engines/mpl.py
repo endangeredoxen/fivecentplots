@@ -425,7 +425,7 @@ class Layout(BaseLayout):
         # Weird spacing defaults out of our control
         self.legend_top_offset = 8
         self.legend_border = 3
-        self.fig_legend_border = 5
+        self.fig_legend_border = 8
         self.x_tick_xs = 0
         self.ws_ticks_ax_adj = self.ws_ticks_ax + 0.373 * self.axes.edge_width
         self.axes.edge_width_size = 0 if self.axes.edge_width == 1 else self.axes.edge_width
@@ -538,7 +538,7 @@ class Layout(BaseLayout):
         """Legend whitespace x if location == 0."""
         if self.legend.location == 0 and self.legend._on:
             return self.legend.size[0] + self.ws_ax_leg + self.ws_leg_fig + self.fig_legend_border \
-                   + self.legend.edge_width - (self.fig_legend_border if self.legend._on else 0)
+                   + np.ceil(self.legend.edge_width / 2) - (self.fig_legend_border if self.legend._on else 0)
         else:
             return 0
 
@@ -964,7 +964,7 @@ class Layout(BaseLayout):
             leg.get_frame().set_facecolor(self.legend.fill_color[0])
             leg.get_frame().set_alpha(self.legend.fill_alpha)
             leg.get_frame().set_edgecolor(self.legend.edge_color[0])
-            leg.get_frame().set_linewidth(self.legend.edge_width)
+            leg.get_frame().set_linewidth(self.legend.edge_width_adj)
 
         if self.legend.on and len(self.legend.values) > 0:
 
@@ -1352,8 +1352,8 @@ class Layout(BaseLayout):
         # legend
         if self.legend.on and self.legend.location in [0, 11]:
             self.legend.size = \
-                [self.legend.obj.get_window_extent().width + self.legend_border,
-                 self.legend.obj.get_window_extent().height + self.legend_border]
+                [self.legend.obj.get_window_extent().width - 1e-12 + np.ceil(self.legend.edge_width / 2),
+                 self.legend.obj.get_window_extent().height - 1e-12 + np.ceil(self.legend.edge_width / 2)]
 
         # tick labels
         self._get_tick_label_sizes()
@@ -1715,8 +1715,13 @@ class Layout(BaseLayout):
                 self.legend.position[1] = 1 + (self.fig_legend_border - self.ws_leg_fig - self.ws_ax_box_title
                                                - self.box_title + self.ws_ax_fig - title_xs) / self.fig.size[0]
             else:
-                self.legend.position[1] = 1 + (self.fig_legend_border - self.ws_leg_fig - title_xs) / self.fig.size[0]
-            self.legend.position[2] = self.axes.position[2] + self.legend_top_offset / self.fig.size[1]
+                self.legend.position[1] = \
+                    1 \
+                    + (self.fig_legend_border - np.floor(self.legend.edge_width / 2) - self.ws_leg_fig - title_xs) \
+                    / self.fig.size_int[0]
+            self.legend.position[2] = \
+                self.axes.position[2] \
+                + (self.fig_legend_border - np.floor(self.legend.edge_width / 2)) / self.fig.size_int[1]
         if self.legend.location == 11:
             self.legend.position[1] = 0.5
             self.legend.position[2] = 0
