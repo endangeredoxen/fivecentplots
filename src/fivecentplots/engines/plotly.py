@@ -3,7 +3,11 @@ import pdb
 import numpy as np
 from .. import utilities as utl
 from . layout import LOGX, LOGY, BaseLayout, RepeatedList, Element
+<<<<<<< HEAD
 # from . import layout
+=======
+from . import layout
+>>>>>>> 520e540 (updates to plotly)
 from .. import data
 import warnings
 import plotly.offline as pyo
@@ -54,6 +58,7 @@ class Layout(BaseLayout):
 
         # Engine-specific "update_layout" keywords; store in one dict to minimize calls to "update_layout"
         self.ul = {}
+<<<<<<< HEAD
         self.ul['legend'] = {}
         self.ul['plot_bgcolor'] = None
         self.ul['title'] = {}
@@ -69,6 +74,28 @@ class Layout(BaseLayout):
         self.imshow.binary = utl.kwget(kwargs, self.fcpp, ['binary', 'binary_string'], None)
         # Add other imshow params later
 
+=======
+        self.ul['plot_bgcolor'] = None
+        self.ul['title'] = {}
+        self.ul['xaxis_range'] = np.array([[None] * self.ncol] * self.nrow)
+        self.ul['xaxis_style'] = {}
+        self.ul['xgrid'] = {}
+        self.ul['x2grid'] = {}
+        self.ul['xscale'] = {}
+        self.ul['xticks'] = {}
+        self.ul['xaxis_title'] = {}
+        self.ul['x2axis_title'] = {}
+        self.ul['yaxis_range'] = np.array([[None] * self.ncol] * self.nrow)
+        self.ul['yaxis_style'] = {}
+        self.ul['ygrid'] = {}
+        self.ul['y2grid'] = {}
+        self.ul['yscale'] = {}
+        self.ul['yticks'] = {}
+        self.ul['yaxis_title'] = {}
+        self.ul['y2axis_title'] = {}
+
+        # Other engine specific attributes
+>>>>>>> 520e540 (updates to plotly)
         self.modebar = Element('modebar', self.fcpp, kwargs,
                                on=utl.kwget(kwargs, self.fcpp, ['modebar', 'modebar_on'], True),
                                bg_color=utl.kwget(kwargs, self.fcpp, 'modebar_bg_color', None),
@@ -79,8 +106,12 @@ class Layout(BaseLayout):
                                orientation=utl.kwget(kwargs, self.fcpp, 'modebar_orientaiton', 'v'),
                                visible=utl.kwget(kwargs, self.fcpp, 'modebar_visible', False)
                                )
+<<<<<<< HEAD
         self.modebar.size[0] = 25  # the plotly toolbar
         self.ws_leg_modebar = 5  # space between a legend and modebar
+=======
+        self.ws_modebar = 30  # the plotly toolbar
+>>>>>>> 520e540 (updates to plotly)
 
         # Check for unsupported kwargs
         # unsupported = []
@@ -187,7 +218,11 @@ class Layout(BaseLayout):
     def _legx(self) -> float:
         """Legend whitespace x if location == 0."""
         if self.legend.location == 0 and self.legend._on:
+<<<<<<< HEAD
             return self.legend.size[0] + self.ws_ax_leg
+=======
+            return self.legend.size[0] + self.ws_ax_leg + self.ws_leg_fig + np.ceil(self.legend.edge_width / 2)
+>>>>>>> 520e540 (updates to plotly)
         else:
             return 0
 
@@ -209,11 +244,19 @@ class Layout(BaseLayout):
         ws_ax_fig = (self.ws_ax_fig if not self.legend._on or self.legend.location != 0 else 0)
 
         # sum all parts
+<<<<<<< HEAD
         right = np.ceil(ws_ax_fig) + np.ceil(self._labtick_y2) + self._legx
 
         # modebar
         if self.modebar.orientation == 'v':  # always add extra ws
             right += self.modebar.size[0] + self.ws_leg_modebar * self.legend.on
+=======
+        right = np.ceil(ws_ax_fig)+ np.ceil(self._labtick_y2) + self._legx
+
+        # modebar
+        if self.modebar.orientation=='v':  # always add extra ws
+            right += self.ws_modebar
+>>>>>>> 520e540 (updates to plotly)
 
         # # box title excess
         # if self.box_group_title.on and (self.ws_ax_box_title + self.box_title) > \
@@ -284,7 +327,12 @@ class Layout(BaseLayout):
         Returns:
             margin in pixels
         """
+<<<<<<< HEAD
         toolbar = self.modebar.size[0] if self.modebar.orientation == 'h' else 0
+=======
+        # toolbar = utl.kwget(self.kwargs, self.fcpp, 'save', False) * self.ws_modebar??  Does save force this?
+        toolbar =  self.ws_modebar if (self.modebar.visible and self.modebar.orientation=='h') else 0
+>>>>>>> 520e540 (updates to plotly)
         padding = self.ws_fig_title if self.title.on else self.ws_fig_ax
         return padding + self.title.size[1] + self.ws_title_ax * self.title.on + toolbar
 
@@ -363,6 +411,7 @@ class Layout(BaseLayout):
             key_dim = utl.get_text_dimensions(longest_key, self.legend.font, self.legend.font_size,
                                               self.legend.font_style, self.legend.font_weight)
             title_dim = utl.get_text_dimensions(self.legend.text, self.legend.font, self.legend.title_font_size,
+<<<<<<< HEAD
                                                 self.legend.font_style, self.legend.font_weight, scale_x=1, scale_y=1)
 
             # Add width for the marker part of the legend and padding with axes (based off empirical measurements)
@@ -397,6 +446,15 @@ class Layout(BaseLayout):
                      bordercolor=self.legend.edge_color[0],
                      borderwidth=self.legend.edge_width
                      )
+=======
+                                                self.legend.font_style, self.legend.font_weight)
+            max_len = max(key_dim[0], title_dim[0])
+
+            # add width for the marker part of the legend and padding with axes
+            self.legend.size[0] = self.markers.size.max() + max_len + 0  # padding
+            self.legend.size[1] = \
+                (title_dim[1] if self.legend.text != '' else 0) + len(leg_vals) * key_dim[1] + 0  # padding
+>>>>>>> 520e540 (updates to plotly)
 
     def add_text(self, ir: int, ic: int, text: [str, None] = None,
                  element: [str, None] = None, offsetx: int = 0,
@@ -415,6 +473,7 @@ class Layout(BaseLayout):
             units (optional): pixel or inches. Defaults to None which is 'pixel'.
         """
 
+<<<<<<< HEAD
     def _get_figure_size(self, data: 'Data', temp=False, **kwargs):  # noqa: F821
         """Determine the size of the mpl figure canvas in pixels and inches.
 
@@ -426,6 +485,20 @@ class Layout(BaseLayout):
         # SKIPPING A LOT FROM MPL, CONSIDER REUSING
         self.box_labels = 0
 
+=======
+
+    def _get_figure_size(self, data: 'Data', temp=False, **kwargs):  # noqa: F821
+        """Determine the size of the mpl figure canvas in pixels and inches.
+
+        Args:
+            data: Data object
+            temp: first fig size calc is a dummy calc to get a rough size; don't resize user parameters
+            kwargs: user-defined keyword args
+        """
+        # SKIPPING A LOT FROM MPL, CONSIDER REUSING
+        self.box_labels = 0
+
+>>>>>>> 520e540 (updates to plotly)
         # Compute the sum of axes edge thicknesses
         if self.ws_col == 0 and not self.cbar.on and self.ncol > 1:
             col_edge_width = self.axes.edge_width * (self.ncol + 1)
@@ -902,9 +975,15 @@ class Layout(BaseLayout):
                 if grid is not None:
                     dash = dash_lookup.get(grid.style[0], grid.style[0])
                     self.ul[f'{ax}{ss}grid'] = dict(gridcolor=grid.color[0],
+<<<<<<< HEAD
                                                     gridwidth=grid.width[0],
                                                     griddash=dash,
                                                     )
+=======
+                                                           gridwidth=grid.width[0],
+                                                           griddash=dash,
+                                                           )
+>>>>>>> 520e540 (updates to plotly)
 
     def set_axes_labels(self, ir: int, ic: int, data: 'Data'):  # noqa: F821
         """Set the axes labels.
@@ -954,8 +1033,13 @@ class Layout(BaseLayout):
                                color=label.font_color),
                      standoff=self.ws_label_tick)
             lab = getattr(self, f'label_{ax}')
+<<<<<<< HEAD
             lab.size = utl.get_text_dimensions(lab.text, lab.font, lab.font_size, lab.font_style,
                                                lab.font_weight, lab.rotation)
+=======
+            lab.size = \
+                utl.get_text_dimensions(lab.text, lab.font, lab.font_size, lab.font_style, lab.font_weight, lab.rotation)
+>>>>>>> 520e540 (updates to plotly)
 
     def set_axes_ranges(self, ir: int, ic: int, ranges: dict):
         """Set the axes ranges.
@@ -968,6 +1052,7 @@ class Layout(BaseLayout):
         """
         # TODO address secondary axes and what happens if None
         if str(self.axes.scale).lower() in LOGX:
+<<<<<<< HEAD
             self.ul['xaxis_range'][ir, ic] = \
                 np.array([np.log10(ranges['xmin'][ir, ic]), np.log10(ranges['xmax'][ir, ic])])
         else:
@@ -975,6 +1060,13 @@ class Layout(BaseLayout):
         if str(self.axes.scale).lower() in LOGY:
             self.ul['yaxis_range'][ir, ic] = \
                 np.array([np.log10(ranges['ymin'][ir, ic]), np.log10(ranges['ymax'][ir, ic])])
+=======
+            self.ul['xaxis_range'][ir, ic] = np.array([np.log10(ranges['xmin'][ir, ic]), np.log10(ranges['xmax'][ir, ic])])
+        else:
+            self.ul['xaxis_range'][ir, ic] = np.array([ranges['xmin'][ir, ic], ranges['xmax'][ir, ic]])
+        if str(self.axes.scale).lower() in LOGY:
+            self.ul['yaxis_range'][ir, ic] = np.array([np.log10(ranges['ymin'][ir, ic]), np.log10(ranges['ymax'][ir, ic])])
+>>>>>>> 520e540 (updates to plotly)
         else:
             self.ul['yaxis_range'][ir, ic] = np.array([ranges['ymin'][ir, ic], ranges['ymax'][ir, ic]])
 
@@ -1100,9 +1192,14 @@ class Layout(BaseLayout):
         self.ul['title']['x'] = \
             0.5 + (self.label_y.font_size + self.tick_labels_major_y.font_size) / self.fig.size[0]
         self.ul['title']['y'] = \
+<<<<<<< HEAD
             1 - ((self.modebar.size[0] if (self.modebar.visible and self.modebar.orientation == 'h') else 0) +
                  self.title.font_size / 2) / self.fig.size[1]
         # ws_leg_modebar??
+=======
+            1 - ((self.ws_modebar if (self.modebar.visible and self.modebar.orientation=='h') else 0) +
+                 self.title.font_size / 2) / self.fig.size[1]
+>>>>>>> 520e540 (updates to plotly)
 
         # Update the x/y axes
         for ax in data.axs_on:
@@ -1111,6 +1208,7 @@ class Layout(BaseLayout):
             kw.update(self.ul[f'{ax}axis_style'])
             kw.update(self.ul[f'{ax}grid'])
             kw.update(self.ul[f'{ax}scale'])
+<<<<<<< HEAD
             try:
                 getattr(self.fig.obj, f'update_{ax}axes')(kw)
             except:  # noqa
@@ -1124,6 +1222,13 @@ class Layout(BaseLayout):
         self.fig.obj.update_yaxes(ticksuffix=" ")
         if self.axes.twin_x:
             self.fig.obj['layout']['yaxis2'].update(dict(tickprefix=" "))
+=======
+            getattr(self.fig.obj, f'update_{ax}axes')(kw)
+>>>>>>> 520e540 (updates to plotly)
+
+        # Update the axes labels
+        axis_labels = self.ul['xaxis_title']
+        axis_labels.update(self.ul['yaxis_title'])
 
         # Iterate through subplots to add the traces
         for ir in range(0, self.nrow):
@@ -1166,8 +1271,14 @@ class Layout(BaseLayout):
         self.fig.obj.update_layout()
 
         if self.axes.twin_x:
+<<<<<<< HEAD
             self.fig.obj['layout']['yaxis2'].update(self.ul['y2grid'])
             self.fig.obj['layout']['yaxis2']['title'] = self.ul['y2axis_title']['yaxis_title']
+=======
+            leg = dict(yanchor='top', y=0.99, xanchor='right', x=1.55)  # this needs an algo
+            self.fig.obj['layout']['yaxis2'].update(self.ul['y2grid'])
+            self.fig.obj.update_layout(yaxis2_title=self.ul['y2axis_title'], legend=leg)
+>>>>>>> 520e540 (updates to plotly)
 
         if self.axes.twin_y:
             self.fig.obj.data[1].update(xaxis='x2')
@@ -1188,6 +1299,13 @@ class Layout(BaseLayout):
         # Set the modebar config
         self.modebar.obj = {'displaylogo': self.modebar.logo,
                             'modeBarButtonsToRemove': self.modebar.remove_buttons}
+        if self.modebar.visible:
+            self.modebar.obj['displayModeBar'] = self.modebar.visible
+
+        # Set the modebar config
+        self.modebar.obj = {'displaylogo': self.modebar.logo,
+                            'modeBarButtonsToRemove': self.modebar.remove_buttons,
+                           }
         if self.modebar.visible:
             self.modebar.obj['displayModeBar'] = self.modebar.visible
 
@@ -1217,6 +1335,7 @@ class Layout(BaseLayout):
 
         Args:
             data: data object
+<<<<<<< HEAD
         """  # noqa: E501
         return
         # def getBase(v, roughDTick):
@@ -1274,6 +1393,66 @@ class Layout(BaseLayout):
         #             # ax.dtick = roundDTick(roughDTick, base, roundBase10);
 
         #             db()
+=======
+        """
+        return
+        def getBase(v, roughDTick):
+            return v ** np.floor(np.log(roughDTick) / np.log(10))
+
+        def roundUp(val, arrayIn, reverse):
+            """
+            Modified from plotly.js
+
+            Return the smallest element from (sorted) array arrayIn that's bigger than val,
+            or (reverse) the largest element smaller than val
+            used to find the best tick given the minimum (non-rounded) tick
+            particularly useful for date/time where things are not powers of 10
+            binary search is probably overkill here...
+            """
+            low = 0
+            high = len(arrayIn) - 1
+            c = 0
+            dlow = 0 if reverse else 1
+            dhigh = 1 if reverse else 0
+            rounded = np.ceil if reverse else np.floor
+            # c is just to avoid infinite loops if there's an error
+            while low < high and c < 100:
+                mid = rounded((low + high) / 2)
+                if arrayIn[mid] <= val:
+                    low = mid + dlow
+                else:
+                    high = mid - dhigh
+                c += 1
+            return arrayIn[low]
+
+        def roundDTick(roughDTick, base, roundingSet):
+            return base * roundUp(roughDTick / base, roundingSet)
+
+        roundBase10 = [2, 5, 10]
+        roundBase24 = [1, 2, 3, 6, 12]
+        roundBase60 = [1, 2, 5, 10, 15, 30]
+        # 2&3 day ticks are weird, but need something btwn 1&7
+        roundDays = [1, 2, 3, 7, 14]
+        # these don't have to be exact, just close enough to round to the right value
+        # approx. tick positions for log axes, showing all (1) and just 1, 2, 5 (2)
+        roundLog1 = [-0.046, 0, 0.301, 0.477, 0.602, 0.699, 0.778, 0.845, 0.903, 0.954, 1]
+        roundLog2 = [-0.301, 0, 0.301, 0.699, 1]
+        roundAngles = [15, 30, 45, 90, 180]
+
+        for ax in data.axs_on:
+            ww, hh = 0, 0
+            for ir, ic in np.ndindex(self.axes.obj.shape):
+                vmin, vmax = data.ranges[f'{ax}min'][ir, ic], data.ranges[f'{ax}max'][ir, ic]
+                if self.axes.scale in getattr(layout, f'LOG{ax.upper()}'):
+                    db()
+                else:
+                    # ax.tick0 = 0;
+                    # base = getBase(10);
+                    # ax.dtick = roundDTick(roughDTick, base, roundBase10);
+
+                    db()
+
+>>>>>>> 520e540 (updates to plotly)
 
         # for ax in data.axs_on:
         #     tick = getattr(self, f'tick_labels_major_{ax}')
@@ -1282,7 +1461,10 @@ class Layout(BaseLayout):
         #         longest = max([str(f) for f in trace[ax]] + [longest], key=len)
         #     tick.size = utl.get_text_dimensions(longest, tick.font, tick.font_size, tick.font_style,
         #                                         tick.font_weight, tick.rotation)
+<<<<<<< HEAD
         pass
+=======
+>>>>>>> 520e540 (updates to plotly)
 
     def _set_weight_and_style(self, element: str):
         """Add html tags to the text string of an element to address font weight and style.

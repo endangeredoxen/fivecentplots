@@ -754,10 +754,15 @@ def get_repeating_decimal_end(value: float) -> int:
     return 0, ''
 
 
+<<<<<<< HEAD
 >>>>>>> 86b0e55 (fix some tick problems)
 def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, font_weight: str,
                         dpi: int = 100, **kwargs) -> tuple:
 >>>>>>> 3eac44c (better_gannt first files)
+=======
+def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, font_weight: str, rotation: float = 0,
+                        ignore_html: bool = True, dpi: int = 100, **kwargs) -> tuple:
+>>>>>>> 520e540 (updates to plotly)
     """Use pillow to try and figure out actual dimensions of text.
 
     Args:
@@ -773,8 +778,13 @@ def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, f
         ignore_html: strip html tags
 =======
         dpi: dots per inch, mpl uses px for font and pillow uses pt so need to convert
+<<<<<<< HEAD
         kwargs: in place to
 >>>>>>> 3eac44c (better_gannt first files)
+=======
+        rotation: text rotation
+        ignore_html: strip html tags
+>>>>>>> 520e540 (updates to plotly)
 
     Returns:
         size tuple
@@ -818,11 +828,27 @@ def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, f
 >>>>>>> 4a2fd0e (better gantt arrows and some bug fixes)
 =======
     font = ImageFont.truetype(fontfile, int(np.ceil(font_size * dpi / 72)))
+<<<<<<< HEAD
 >>>>>>> 1029ca2 (date tick formatting fixes)
     size = font.getbbox(text)[2:]
 
     return size
 >>>>>>> 3eac44c (better_gannt first files)
+=======
+
+    if ignore_html:
+        text = strip_html(text)
+
+    size = font.getbbox(text)[2:]
+
+    if rotation != 0:
+        w = size[0] * np.abs(np.cos(rotation * np.pi / 180)) \
+            + size[1] * np.abs(np.sin(rotation * np.pi / 180))
+        h = size[1] * np.abs(np.cos(rotation * np.pi / 180)) \
+            + size[0] * np.abs(np.sin(rotation * np.pi / 180))
+
+    return w, h  # no idea why it is off
+>>>>>>> 520e540 (updates to plotly)
 
 
 def kwget(dict1: dict, dict2: dict, vals: [str, list], default: [list, dict]):
