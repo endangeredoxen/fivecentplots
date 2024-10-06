@@ -528,6 +528,7 @@ grid_major_font_weight
 grid_major_rotation
 grid_major_style
 grid_major_width
+grid_major_x
 grid_major_x2
 grid_major_x2_alpha
 grid_major_x2_color
@@ -561,6 +562,7 @@ grid_major_x_rotation
 grid_major_x_style
 grid_major_x_width
 grid_major_x_zorder
+grid_major_y
 grid_major_y2
 grid_major_y2_alpha
 grid_major_y2_color
@@ -594,6 +596,7 @@ grid_major_y_rotation
 grid_major_y_style
 grid_major_y_width
 grid_major_y_zorder
+grid_major_z
 grid_major_z_alpha
 grid_major_z_color
 grid_major_z_edge_alpha
@@ -632,6 +635,8 @@ grid_minor_font_weight
 grid_minor_rotation
 grid_minor_style
 grid_minor_width
+grid_minor_x
+grid_minor_x2
 grid_minor_x2_alpha
 grid_minor_x2_color
 grid_minor_x2_edge_alpha
@@ -664,6 +669,8 @@ grid_minor_x_rotation
 grid_minor_x_style
 grid_minor_x_width
 grid_minor_x_zorder
+grid_minor_y
+grid_minor_y2
 grid_minor_y2_alpha
 grid_minor_y2_color
 grid_minor_y2_edge_alpha
@@ -696,6 +703,7 @@ grid_minor_y_rotation
 grid_minor_y_style
 grid_minor_y_width
 grid_minor_y_zorder
+grid_minor_z
 grid_minor_z_alpha
 grid_minor_z_color
 grid_minor_z_edge_alpha
@@ -854,6 +862,7 @@ label_wrap_font_weight
 label_wrap_on
 label_wrap_padding
 label_wrap_rotation
+label_wrap_size
 label_wrap_style
 label_wrap_values_only
 label_wrap_width

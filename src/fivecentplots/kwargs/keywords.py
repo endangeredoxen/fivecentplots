@@ -79,7 +79,10 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
                     continue
 
                 vals = re.split(bracket_regex, fk)
-                if len(vals) < 4:
+                if vals[0].startswith('kwargs, self.fcpp') and len(vals[0].split(',')) > 2:
+                    kwargs_list += [vals[0].split(',')[2].strip().replace("'", '')]
+                    continue
+                elif len(vals) < 4:
                     continue
                 kwargs = vals[2].replace('[', '').replace(']', '').split(',')
                 for kwarg in kwargs:
@@ -134,6 +137,7 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
                 if '{ax}' in name:
                     for ax in axs:
                         name_ = name.replace('{ax}', ax).replace("'", '')
+                        kwargs_list += [name_]
                         kwargs_list += [f.replace("f'{name}", name_).replace("'", '').strip() for f in names_list]
                 elif name == "'label'":
                     # special case axes
