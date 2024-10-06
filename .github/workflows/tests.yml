@@ -6,7 +6,7 @@ on:
 
 jobs:
   test_old:
-    runs-on: macos-13
+    runs-on: macos-14
     strategy:
       matrix:
         python-version: ['3.8']
@@ -28,7 +28,7 @@ jobs:
         python -m pytest tests -s
 
   test:
-    runs-on: macos-13
+    runs-on: macos-14
     strategy:
       matrix:
         python-version: ['3.10']
