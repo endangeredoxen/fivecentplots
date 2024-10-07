@@ -9,6 +9,8 @@ import warnings
 import plotly.offline as pyo
 import plotly.io as pio
 import plotly.graph_objects as go
+import plotly.express as px
+import plotly.utils as putl
 from plotly.subplots import make_subplots
 
 
@@ -54,24 +56,18 @@ class Layout(BaseLayout):
         self.ul = {}
         self.ul['plot_bgcolor'] = None
         self.ul['title'] = {}
-        self.ul['xaxis_range'] = np.array([[None] * self.ncol] * self.nrow)
-        self.ul['xaxis_style'] = {}
-        self.ul['xgrid'] = {}
-        self.ul['x2grid'] = {}
-        self.ul['xscale'] = {}
-        self.ul['xticks'] = {}
-        self.ul['xaxis_title'] = {}
-        self.ul['x2axis_title'] = {}
-        self.ul['yaxis_range'] = np.array([[None] * self.ncol] * self.nrow)
-        self.ul['yaxis_style'] = {}
-        self.ul['ygrid'] = {}
-        self.ul['y2grid'] = {}
-        self.ul['yscale'] = {}
-        self.ul['yticks'] = {}
-        self.ul['yaxis_title'] = {}
-        self.ul['y2axis_title'] = {}
+        for ax in data.axs_on:
+            self.ul[f'{ax}axis_range'] = np.array([[None] * self.ncol] * self.nrow)
+            self.ul[f'{ax}axis_style'] = {}
+            self.ul[f'{ax}axis_title'] = {}
+            self.ul[f'{ax}grid'] = {}
+            self.ul[f'{ax}scale'] = {}
+            self.ul[f'{ax}ticks'] = {}
 
         # Other engine specific attributes
+        self.imshow.binary = utl.kwget(kwargs, self.fcpp, ['binary', 'binary_string'], None)
+        # Add other imshow params later
+
         self.modebar = Element('modebar', self.fcpp, kwargs,
                                on=utl.kwget(kwargs, self.fcpp, ['modebar', 'modebar_on'], True),
                                bg_color=utl.kwget(kwargs, self.fcpp, 'modebar_bg_color', None),
@@ -594,7 +590,7 @@ class Layout(BaseLayout):
         """
 
     def plot_imshow(self, ir: int, ic: int, df: pd.DataFrame, data: 'data.Data'):
-        """Plot an image.
+        """Plot an image.  Copies strategies / code from plotly.express._imshow
 
         Args:
             ir: subplot row index
@@ -605,6 +601,74 @@ class Layout(BaseLayout):
         Returns:
             imshow plot obj
         """
+        # TODO: add colorbar support
+        # Make the imshow plot
+        # plot_num = utl.plot_num(ir, ic, self.ncol) - 1
+        # self.axes.obj[ir, ic] = [go.Image(z=df)]
+        # self.cmap[plot_num], vmin=zmin, vmax=zmax, interpolation=self.imshow.interp, aspect='auto')
+        # im.set_clim(zmin, zmax)
+
+        # # Add a cmap
+        # if self.cbar.on and (not self.cbar.shared or ic == self.ncol - 1):
+        #     self.cbar.obj[ir, ic] = self.add_cbar(ax, im)
+
+        zmin = data.ranges['zmin'][ir, ic]
+        zmax = data.ranges['zmax'][ir, ic]
+
+        # Enable/disable binary rescaling and encoding as uint8 and then passed to plotly.js as a b64 PNG string
+        # If False, data are passed unchanged as a numerical array
+        # Setting to True may lead to performance gains, at the (possible) cost of a loss of precision
+        # Default behaviour of binary_string: True for RGB images, False for 2D
+        if self.imshow.binary is None:
+            self.imshow.binary = df.ndim >= 3  # + slice_dimensions) # and not is_dataframe
+
+        # # Contrast rescaling
+        # if self.imshow.contrast_rescaling is None:
+        #     self.imshow.contrast_rescaling = 'minmax' if df.ndim == (2 + slice_dimensions) else 'infer'
+
+        # For 2D data, use Heatmap trace, unless self.imshow.binary is True
+        if df.ndim == 2 and not self.imshow.binary:
+            if df.dtype in [np.uint8, np.uint16, np.uint32, int]:
+                hovertemplate = 'x: %{x}<br>y: %{y}<br>z: %{z:.0f}<extra></extra>'
+            else:
+                hovertemplate = 'x: %{x}<br>y: %{y}<br>z: %{z:.2f}<extra></extra>'
+            self.axes.obj[ir, ic] = [go.Heatmap(z=df,
+                                                colorscale='gray',
+                                                hovertemplate=hovertemplate
+                                                )
+                                     ]
+            # autorange = True if origin == "lower" else "reversed"
+            # layout = dict(yaxis=dict(autorange=autorange))
+            # if aspect == "equal":
+            #     layout["xaxis"] = dict(scaleanchor="y", constrain="domain")
+            #     layout["yaxis"]["constrain"] = "domain"
+
+            self.fig.obj.layout.yaxis['autorange'] = 'reversed'
+            self.fig.obj.layout.xaxis['scaleanchor'] = 'y'
+
+            # these are for equal aspect ratio
+            self.fig.obj.layout.xaxis['constrain'] = 'domain'
+            self.fig.obj.layout.yaxis['constrain'] = 'domain'
+
+            return
+
+        # For 3D data or self.imshow.binary is True
+        rescale_image = True if not (zmin is None and zmax is None) else False
+        if rescale_image and df.ndim == 2:
+            df = px.imshow_utils.rescale_intensity(df, (zmin, zmax), np.uint8)
+        elif df.ndim >= 3:
+            df = np.stack(
+                    [
+                        px.imshow_utils.rescale_intensity(
+                            df[..., ch], (df[..., ch].min(), df[..., ch].max()), np.uint8,
+                        )
+                        for ch in range(df.shape[-1])
+                    ],
+                    axis=-1,
+                )
+
+        img_str = putl.image_array_to_data_uri(df, backend='auto',  compression=4,  ext='png')  # parameterize later
+        self.axes.obj[ir, ic] = [go.Image(source=img_str)]  # , x0=x0, y0=y0, dx=dx, dy=dy)
 
     def plot_line(self, ir: int, ic: int, x0: float, y0: float, x1: float = None,
                   y1: float = None, **kwargs):
@@ -979,6 +1043,7 @@ class Layout(BaseLayout):
                 ticklen=getattr(self, f'ticks_major_{ax}')._size[0],
                 tickwidth=getattr(self, f'ticks_major_{ax}')._size[1],
                 dtick=getattr(self, f'ticks_major_{ax}').increment,
+                showticklabels=getattr(self, f'tick_labels_major_{ax}').on,
                 )
 
     def set_figure_final_layout(self, data, **kwargs):
@@ -1005,7 +1070,10 @@ class Layout(BaseLayout):
             kw.update(self.ul[f'{ax}axis_style'])
             kw.update(self.ul[f'{ax}grid'])
             kw.update(self.ul[f'{ax}scale'])
-            getattr(self.fig.obj, f'update_{ax}axes')(kw)
+            try:
+                getattr(self.fig.obj, f'update_{ax}axes')(kw)
+            except:  # noqa
+                pass
 
         # Update the axes labels
         axis_labels = self.ul['xaxis_title']
@@ -1021,10 +1089,11 @@ class Layout(BaseLayout):
                     else:
                         self.fig.obj.add_trace(self.axes.obj[ir, ic][trace], row=ir + 1, col=ic + 1)
 
-                # Set the ranges
-                self.fig.obj.update_layout(xaxis_range=self.ul['xaxis_range'][ir, ic])
-                self.fig.obj.update_layout(yaxis_range=self.ul['yaxis_range'][ir, ic])
+                # # Set the ranges
+                # self.fig.obj.update_layout(xaxis_range=self.ul['xaxis_range'][ir, ic])
+                # self.fig.obj.update_layout(yaxis_range=self.ul['yaxis_range'][ir, ic])
 
+        return
         # Get the tick sizes
         for ax in data.axs_on:
             self._set_tick_sizes(data)
