@@ -59,6 +59,9 @@ class Layout(BaseLayout):
         # Engine-specific "update_layout" keywords; store in one dict to minimize calls to "update_layout"
         self.ul = {}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 4daa967 (plotly updates)
         self.ul['legend'] = {}
         self.ul['plot_bgcolor'] = None
         self.ul['title'] = {}
@@ -107,11 +110,16 @@ class Layout(BaseLayout):
                                visible=utl.kwget(kwargs, self.fcpp, 'modebar_visible', False)
                                )
 <<<<<<< HEAD
+<<<<<<< HEAD
         self.modebar.size[0] = 25  # the plotly toolbar
         self.ws_leg_modebar = 5  # space between a legend and modebar
 =======
         self.ws_modebar = 30  # the plotly toolbar
 >>>>>>> 520e540 (updates to plotly)
+=======
+        self.modebar.size[0] = 25  # the plotly toolbar
+        self.ws_leg_modebar = 5  # space between a legend and modebar
+>>>>>>> 4daa967 (plotly updates)
 
         # Check for unsupported kwargs
         # unsupported = []
@@ -219,10 +227,14 @@ class Layout(BaseLayout):
         """Legend whitespace x if location == 0."""
         if self.legend.location == 0 and self.legend._on:
 <<<<<<< HEAD
+<<<<<<< HEAD
             return self.legend.size[0] + self.ws_ax_leg
 =======
             return self.legend.size[0] + self.ws_ax_leg + self.ws_leg_fig + np.ceil(self.legend.edge_width / 2)
 >>>>>>> 520e540 (updates to plotly)
+=======
+            return self.legend.size[0] + self.ws_ax_leg
+>>>>>>> 4daa967 (plotly updates)
         else:
             return 0
 
@@ -250,6 +262,7 @@ class Layout(BaseLayout):
         # modebar
         if self.modebar.orientation == 'v':  # always add extra ws
             right += self.modebar.size[0] + self.ws_leg_modebar * self.legend.on
+<<<<<<< HEAD
 =======
         right = np.ceil(ws_ax_fig)+ np.ceil(self._labtick_y2) + self._legx
 
@@ -257,6 +270,8 @@ class Layout(BaseLayout):
         if self.modebar.orientation=='v':  # always add extra ws
             right += self.ws_modebar
 >>>>>>> 520e540 (updates to plotly)
+=======
+>>>>>>> 4daa967 (plotly updates)
 
         # # box title excess
         # if self.box_group_title.on and (self.ws_ax_box_title + self.box_title) > \
@@ -328,11 +343,15 @@ class Layout(BaseLayout):
             margin in pixels
         """
 <<<<<<< HEAD
+<<<<<<< HEAD
         toolbar = self.modebar.size[0] if self.modebar.orientation == 'h' else 0
 =======
         # toolbar = utl.kwget(self.kwargs, self.fcpp, 'save', False) * self.ws_modebar??  Does save force this?
         toolbar =  self.ws_modebar if (self.modebar.visible and self.modebar.orientation=='h') else 0
 >>>>>>> 520e540 (updates to plotly)
+=======
+        toolbar = self.modebar.size[0] if self.modebar.orientation == 'h' else 0
+>>>>>>> 4daa967 (plotly updates)
         padding = self.ws_fig_title if self.title.on else self.ws_fig_ax
         return padding + self.title.size[1] + self.ws_title_ax * self.title.on + toolbar
 
@@ -412,6 +431,7 @@ class Layout(BaseLayout):
                                               self.legend.font_style, self.legend.font_weight)
             title_dim = utl.get_text_dimensions(self.legend.text, self.legend.font, self.legend.title_font_size,
 <<<<<<< HEAD
+<<<<<<< HEAD
                                                 self.legend.font_style, self.legend.font_weight, scale_x=1, scale_y=1)
 
             # Add width for the marker part of the legend and padding with axes (based off empirical measurements)
@@ -449,12 +469,47 @@ class Layout(BaseLayout):
 =======
                                                 self.legend.font_style, self.legend.font_weight)
             max_len = max(key_dim[0], title_dim[0])
+=======
+                                                self.legend.font_style, self.legend.font_weight, scale_x=1, scale_y=1)
+>>>>>>> 4daa967 (plotly updates)
 
-            # add width for the marker part of the legend and padding with axes
-            self.legend.size[0] = self.markers.size.max() + max_len + 0  # padding
+            # Add width for the marker part of the legend and padding with axes (based off empirical measurements)
+            marker_leg_edge_to_text = 40
+            text_to_leg_edge = 5
+            legend_key_width = marker_leg_edge_to_text + key_dim[0] + text_to_leg_edge
+
+            # Set approximate legend size
+            self.legend.size[0] = max(title_dim[0], legend_key_width) + 2 * self.legend.edge_width
             self.legend.size[1] = \
+<<<<<<< HEAD
                 (title_dim[1] if self.legend.text != '' else 0) + len(leg_vals) * key_dim[1] + 0  # padding
 >>>>>>> 520e540 (updates to plotly)
+=======
+                (title_dim[1] if self.legend.text != '' else 0) \
+                + len(leg_vals) * key_dim[1] \
+                + 2 * self.legend.edge_width \
+                + 5 * len(self.legend.values) + 10  # padding
+            print(self.legend.size)
+            print(max(title_dim[0], legend_key_width))
+
+            # Legend styling
+            self.ul['legend'] = \
+                dict(x=1,
+                     y=1,
+                     xanchor='left',
+                     traceorder='normal',
+                     title=dict(text=self.legend.text,
+                                font=dict(family=self.legend.font, size=self.legend.title_font_size)),
+                     font=dict(
+                         family=self.legend.font,
+                         size=self.legend.font_size,
+                         color='black'  # no styling for this right now
+                     ),
+                     bgcolor=self.legend.fill_color[0],
+                     bordercolor=self.legend.edge_color[0],
+                     borderwidth=self.legend.edge_width
+                     )
+>>>>>>> 4daa967 (plotly updates)
 
     def add_text(self, ir: int, ic: int, text: [str, None] = None,
                  element: [str, None] = None, offsetx: int = 0,
@@ -1193,6 +1248,7 @@ class Layout(BaseLayout):
             0.5 + (self.label_y.font_size + self.tick_labels_major_y.font_size) / self.fig.size[0]
         self.ul['title']['y'] = \
 <<<<<<< HEAD
+<<<<<<< HEAD
             1 - ((self.modebar.size[0] if (self.modebar.visible and self.modebar.orientation == 'h') else 0) +
                  self.title.font_size / 2) / self.fig.size[1]
         # ws_leg_modebar??
@@ -1200,6 +1256,11 @@ class Layout(BaseLayout):
             1 - ((self.ws_modebar if (self.modebar.visible and self.modebar.orientation=='h') else 0) +
                  self.title.font_size / 2) / self.fig.size[1]
 >>>>>>> 520e540 (updates to plotly)
+=======
+            1 - ((self.modebar.size[0] if (self.modebar.visible and self.modebar.orientation == 'h') else 0) +
+                 self.title.font_size / 2) / self.fig.size[1]
+        # ws_leg_modebar??
+>>>>>>> 4daa967 (plotly updates)
 
         # Update the x/y axes
         for ax in data.axs_on:
@@ -1222,6 +1283,7 @@ class Layout(BaseLayout):
         self.fig.obj.update_yaxes(ticksuffix=" ")
         if self.axes.twin_x:
             self.fig.obj['layout']['yaxis2'].update(dict(tickprefix=" "))
+<<<<<<< HEAD
 =======
             getattr(self.fig.obj, f'update_{ax}axes')(kw)
 >>>>>>> 520e540 (updates to plotly)
@@ -1229,6 +1291,8 @@ class Layout(BaseLayout):
         # Update the axes labels
         axis_labels = self.ul['xaxis_title']
         axis_labels.update(self.ul['yaxis_title'])
+=======
+>>>>>>> 4daa967 (plotly updates)
 
         # Iterate through subplots to add the traces
         for ir in range(0, self.nrow):
@@ -1272,6 +1336,7 @@ class Layout(BaseLayout):
 
         if self.axes.twin_x:
 <<<<<<< HEAD
+<<<<<<< HEAD
             self.fig.obj['layout']['yaxis2'].update(self.ul['y2grid'])
             self.fig.obj['layout']['yaxis2']['title'] = self.ul['y2axis_title']['yaxis_title']
 =======
@@ -1279,6 +1344,10 @@ class Layout(BaseLayout):
             self.fig.obj['layout']['yaxis2'].update(self.ul['y2grid'])
             self.fig.obj.update_layout(yaxis2_title=self.ul['y2axis_title'], legend=leg)
 >>>>>>> 520e540 (updates to plotly)
+=======
+            self.fig.obj['layout']['yaxis2'].update(self.ul['y2grid'])
+            self.fig.obj['layout']['yaxis2']['title'] = self.ul['y2axis_title']['yaxis_title']
+>>>>>>> 4daa967 (plotly updates)
 
         if self.axes.twin_y:
             self.fig.obj.data[1].update(xaxis='x2')

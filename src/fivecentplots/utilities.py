@@ -783,6 +783,8 @@ def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, f
 >>>>>>> 3eac44c (better_gannt first files)
 =======
         rotation: text rotation
+        scale_x: optional factor by which to multiply the horizontal text size
+        scale_y: optional factor by which to multiply the vertical text size
         ignore_html: strip html tags
 >>>>>>> 520e540 (updates to plotly)
 
