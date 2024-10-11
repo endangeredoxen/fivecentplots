@@ -624,7 +624,7 @@ def get_nested_files(path: Union[Path, str], pattern: Union[str, None] = None, e
 
 
 def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, font_weight: str, rotation: float = 0,
-                        ignore_html: bool = True, **kwargs) -> tuple:
+                        scale_x: float = 1.125, scale_y: float = 1.125, ignore_html: bool = True, **kwargs) -> tuple:
     """Use pillow to try and figure out actual dimensions of text.
 
     Args:
@@ -634,6 +634,8 @@ def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, f
         font_style: normal vs italic
         font_weight: normal vs bold
         rotation: text rotation
+        scale_x: optional factor by which to multiply the horizontal text size
+        scale_y: optional factor by which to multiply the vertical text size
         ignore_html: strip html tags
 
     Returns:
@@ -659,13 +661,13 @@ def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, f
     size = font.getbbox(text)[2:]
 
     if rotation != 0:
-        w = size[0] * 1.125 * np.abs(np.cos(rotation * np.pi / 180)) \
-            + size[1] * 1.125 * np.abs(np.sin(rotation * np.pi / 180))
-        h = size[1] * 1.125 * np.abs(np.cos(rotation * np.pi / 180)) \
-            + size[0] * 1.125 * np.abs(np.sin(rotation * np.pi / 180))
+        w = size[0] * scale_x * np.abs(np.cos(rotation * np.pi / 180)) \
+            + size[1] * scale_y * np.abs(np.sin(rotation * np.pi / 180))
+        h = size[1] * scale_y * np.abs(np.cos(rotation * np.pi / 180)) \
+            + size[0] * scale_x * np.abs(np.sin(rotation * np.pi / 180))
     else:
-        w = size[0] * 1.125  # extra buffer to get closer to real result
-        h = size[1] * 1.125
+        w = size[0] * scale_x  # extra buffer to get closer to real result
+        h = size[1] * scale_y
 
     return w, h  # no idea why it is off
 

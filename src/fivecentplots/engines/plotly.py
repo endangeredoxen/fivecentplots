@@ -54,6 +54,7 @@ class Layout(BaseLayout):
 
         # Engine-specific "update_layout" keywords; store in one dict to minimize calls to "update_layout"
         self.ul = {}
+        self.ul['legend'] = {}
         self.ul['plot_bgcolor'] = None
         self.ul['title'] = {}
         for ax in data.axs_on:
@@ -78,7 +79,8 @@ class Layout(BaseLayout):
                                orientation=utl.kwget(kwargs, self.fcpp, 'modebar_orientaiton', 'v'),
                                visible=utl.kwget(kwargs, self.fcpp, 'modebar_visible', False)
                                )
-        self.ws_modebar = 30  # the plotly toolbar
+        self.modebar.size[0] = 25  # the plotly toolbar
+        self.ws_leg_modebar = 5  # space between a legend and modebar
 
         # Check for unsupported kwargs
         # unsupported = []
@@ -185,7 +187,7 @@ class Layout(BaseLayout):
     def _legx(self) -> float:
         """Legend whitespace x if location == 0."""
         if self.legend.location == 0 and self.legend._on:
-            return self.legend.size[0] + self.ws_ax_leg + self.ws_leg_fig + np.ceil(self.legend.edge_width / 2)
+            return self.legend.size[0] + self.ws_ax_leg
         else:
             return 0
 
@@ -211,7 +213,7 @@ class Layout(BaseLayout):
 
         # modebar
         if self.modebar.orientation == 'v':  # always add extra ws
-            right += self.ws_modebar
+            right += self.modebar.size[0] + self.ws_leg_modebar * self.legend.on
 
         # # box title excess
         # if self.box_group_title.on and (self.ws_ax_box_title + self.box_title) > \
@@ -282,8 +284,7 @@ class Layout(BaseLayout):
         Returns:
             margin in pixels
         """
-        # toolbar = utl.kwget(self.kwargs, self.fcpp, 'save', False) * self.ws_modebar??  Does save force this?
-        toolbar = self.ws_modebar if (self.modebar.visible and self.modebar.orientation == 'h') else 0
+        toolbar = self.modebar.size[0] if self.modebar.orientation == 'h' else 0
         padding = self.ws_fig_title if self.title.on else self.ws_fig_ax
         return padding + self.title.size[1] + self.ws_title_ax * self.title.on + toolbar
 
@@ -362,13 +363,40 @@ class Layout(BaseLayout):
             key_dim = utl.get_text_dimensions(longest_key, self.legend.font, self.legend.font_size,
                                               self.legend.font_style, self.legend.font_weight)
             title_dim = utl.get_text_dimensions(self.legend.text, self.legend.font, self.legend.title_font_size,
-                                                self.legend.font_style, self.legend.font_weight)
-            max_len = max(key_dim[0], title_dim[0])
+                                                self.legend.font_style, self.legend.font_weight, scale_x=1, scale_y=1)
 
-            # add width for the marker part of the legend and padding with axes
-            self.legend.size[0] = self.markers.size.max() + max_len + 0  # padding
+            # Add width for the marker part of the legend and padding with axes (based off empirical measurements)
+            marker_leg_edge_to_text = 40
+            text_to_leg_edge = 5
+            legend_key_width = marker_leg_edge_to_text + key_dim[0] + text_to_leg_edge
+
+            # Set approximate legend size
+            self.legend.size[0] = max(title_dim[0], legend_key_width) + 2 * self.legend.edge_width
             self.legend.size[1] = \
-                (title_dim[1] if self.legend.text != '' else 0) + len(leg_vals) * key_dim[1] + 0  # padding
+                (title_dim[1] if self.legend.text != '' else 0) \
+                + len(leg_vals) * key_dim[1] \
+                + 2 * self.legend.edge_width \
+                + 5 * len(self.legend.values) + 10  # padding
+            print(self.legend.size)
+            print(max(title_dim[0], legend_key_width))
+
+            # Legend styling
+            self.ul['legend'] = \
+                dict(x=1,
+                     y=1,
+                     xanchor='left',
+                     traceorder='normal',
+                     title=dict(text=self.legend.text,
+                                font=dict(family=self.legend.font, size=self.legend.title_font_size)),
+                     font=dict(
+                         family=self.legend.font,
+                         size=self.legend.font_size,
+                         color='black'  # no styling for this right now
+                     ),
+                     bgcolor=self.legend.fill_color[0],
+                     bordercolor=self.legend.edge_color[0],
+                     borderwidth=self.legend.edge_width
+                     )
 
     def add_text(self, ir: int, ic: int, text: [str, None] = None,
                  element: [str, None] = None, offsetx: int = 0,
@@ -787,6 +815,21 @@ class Layout(BaseLayout):
         else:
             xaxis = 'x1'
 
+        # Define markers and lines (TODO: add style support)
+        if self.markers.on:
+            mls = dict(marker_symbol=marker_symbol,
+                       marker_size=self.markers.size[iline],
+                       marker_color=self.markers.fill_color[iline],
+                       marker=dict(line=dict(color=self.markers.edge_color[iline],
+                                             width=self.markers.edge_width[iline])),
+                       line=dict(width=self.lines.width[iline])
+                       )
+        elif self.lines.on:
+            mls = dict(line=dict(width=self.lines.width[iline],
+                                 color=self.lines.color[iline]))
+        else:
+            mls = {}
+
         # Make the scatter trace
         show_legend = False
         if leg_name not in self.legend.values['Key'].values:
@@ -796,15 +839,10 @@ class Layout(BaseLayout):
                        y=df[y][mask],
                        name=leg_name,
                        mode=mode,
-                       line=None,
-                       marker_symbol=marker_symbol,
-                       marker_size=self.markers.size[iline],
-                       marker_color=self.markers.fill_color[iline],
-                       marker=dict(line=dict(color=self.markers.edge_color[iline],
-                                             width=self.markers.edge_width[iline])),
                        xaxis=xaxis,
                        yaxis=yaxis,
                        showlegend=show_legend,
+                       **mls
                        )]
 
         # Add a reference to the line to self.lines
@@ -911,7 +949,9 @@ class Layout(BaseLayout):
             key = f'{ax[0]}axis{plot_num}_title'
             self.ul[f'{ax}axis_title'][key] = \
                 dict(text=label.text,
-                     font=dict(family=label.font, size=label.font_size, color=label.font_color),
+                     font=dict(family=label.font,
+                               size=label.font_size,
+                               color=label.font_color),
                      standoff=self.ws_label_tick)
             lab = getattr(self, f'label_{ax}')
             lab.size = utl.get_text_dimensions(lab.text, lab.font, lab.font_size, lab.font_style,
@@ -1060,8 +1100,9 @@ class Layout(BaseLayout):
         self.ul['title']['x'] = \
             0.5 + (self.label_y.font_size + self.tick_labels_major_y.font_size) / self.fig.size[0]
         self.ul['title']['y'] = \
-            1 - ((self.ws_modebar if (self.modebar.visible and self.modebar.orientation == 'h') else 0) +
+            1 - ((self.modebar.size[0] if (self.modebar.visible and self.modebar.orientation == 'h') else 0) +
                  self.title.font_size / 2) / self.fig.size[1]
+        # ws_leg_modebar??
 
         # Update the x/y axes
         for ax in data.axs_on:
@@ -1079,6 +1120,11 @@ class Layout(BaseLayout):
         axis_labels = self.ul['xaxis_title']
         axis_labels.update(self.ul['yaxis_title'])
 
+        # Add space for tick labels
+        self.fig.obj.update_yaxes(ticksuffix=" ")
+        if self.axes.twin_x:
+            self.fig.obj['layout']['yaxis2'].update(dict(tickprefix=" "))
+
         # Iterate through subplots to add the traces
         for ir in range(0, self.nrow):
             for ic in range(0, self.ncol):
@@ -1089,11 +1135,10 @@ class Layout(BaseLayout):
                     else:
                         self.fig.obj.add_trace(self.axes.obj[ir, ic][trace], row=ir + 1, col=ic + 1)
 
-                # # Set the ranges
-                # self.fig.obj.update_layout(xaxis_range=self.ul['xaxis_range'][ir, ic])
-                # self.fig.obj.update_layout(yaxis_range=self.ul['yaxis_range'][ir, ic])
+                # Set the ranges
+                self.fig.obj.update_layout(xaxis_range=self.ul['xaxis_range'][ir, ic])
+                self.fig.obj.update_layout(yaxis_range=self.ul['yaxis_range'][ir, ic])
 
-        return
         # Get the tick sizes
         for ax in data.axs_on:
             self._set_tick_sizes(data)
@@ -1121,9 +1166,8 @@ class Layout(BaseLayout):
         self.fig.obj.update_layout()
 
         if self.axes.twin_x:
-            leg = dict(yanchor='top', y=0.99, xanchor='right', x=1.55)  # this needs an algo
             self.fig.obj['layout']['yaxis2'].update(self.ul['y2grid'])
-            self.fig.obj.update_layout(yaxis2_title=self.ul['y2axis_title'], legend=leg)
+            self.fig.obj['layout']['yaxis2']['title'] = self.ul['y2axis_title']['yaxis_title']
 
         if self.axes.twin_y:
             self.fig.obj.data[1].update(xaxis='x2')
@@ -1134,9 +1178,12 @@ class Layout(BaseLayout):
             for k, v in self.ul['x2axis_title'].items():
                 setattr(self.fig.obj.layout.xaxis2.title, k, v)
 
-        # # algo needed, account for rc_labels with legend position and update fig size
-        # leg = dict(yanchor='top', y=0.99, xanchor='right', x=1.65)
-        # self.fig.obj.update_layout(legend=leg)
+        # Adjust the legend position (only for outside of plot right now)
+        if self.legend.on:
+            leg_x = (self._labtick_y2 + self.ws_ax_leg + self.axes.edge_width) / self.axes.size[0]
+            self.ul['legend']['x'] += leg_x
+            self.ul['legend']['y'] += self.axes.edge_width / self.axes.size[1]
+            self.fig.obj.update_layout(legend=self.ul['legend'])
 
         # Set the modebar config
         self.modebar.obj = {'displaylogo': self.modebar.logo,
