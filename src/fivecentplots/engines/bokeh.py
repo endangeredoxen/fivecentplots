@@ -236,8 +236,6 @@ class Layout(BaseLayout):
                     self.axes.obj[ir, ic].extra_x_ranges = {'x2': bm.Range1d(start=0, end=1)}
                     self.axes.obj[ir, ic].add_layout(bm.LinearAxis(x_range_name='x2'), 'above')
 
-        return data
-
     def plot_bar(self, ir: int, ic: int, iline: int, df: pd.DataFrame,
                  leg_name: str, data: 'data.Data', ngroups: int, stacked: bool,
                  std: [None, float], xvals: np.ndarray, inst: pd.Series,

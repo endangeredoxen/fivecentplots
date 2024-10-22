@@ -1037,6 +1037,7 @@ mean_diamonds_edge_style
 mean_diamonds_edge_width
 mean_diamonds_fill_color
 mean_diamonds_width
+mosaic
 ncol
 nleg
 normalize
@@ -1095,6 +1096,7 @@ pie_start_angle
 pie_style
 pie_width
 pie_zorder
+plot_func
 position
 preset
 print_filename

@@ -171,7 +171,7 @@ class Histogram(data.Data):
             list of histogram counts and bin values
         """
         if self.branges is None:
-            self.branges = np.array([[None] * self.ncol] * self.nrow)
+            self.branges = self.obj_array
 
         if isinstance(data_set, pd.DataFrame):
             data_set = data_set.values

@@ -73,6 +73,9 @@ class BaseLayout:
         # Set the plot type name
         self.name = data.name
 
+        # Check for mosiac plot type
+        self.mosaic = kwargs.get('mosaic', False)
+
         # Reload default file
         if len(defaults) > 0:
             self.fcpp = defaults[0].copy()
@@ -314,6 +317,8 @@ class BaseLayout:
                             size=utl.validate_list(utl.kwget(kwargs, self.fcpp, 'ax_size', [400, 400])),
                             edge_color=utl.kwget(kwargs, self.fcpp, 'ax_edge_color', '#aaaaaa'),
                             fill_color=utl.kwget(kwargs, self.fcpp, 'ax_fill_color', '#eaeaea'),
+                            mosaic_heights=None,
+                            mosaic_widths=None,
                             primary=True,
                             scale=utl.kwget(kwargs, self.fcpp, 'ax_scale', kwargs.get('ax_scale', None)),
                             share_x=utl.kwget(kwargs, self.fcpp, 'share_x', kwargs.get('share_x', None)),
@@ -329,6 +334,8 @@ class BaseLayout:
                             spine_top=utl.kwget(kwargs, self.fcpp, ['spine_top', 'ax_edge_top'], spines),
                             twin_x=kwargs.get('twin_x', False),
                             twin_y=kwargs.get('twin_y', False),
+                            height_ratios=None,
+                            width_ratios=None,
                             )
         # Set default axes visibility
         self.axes.visible = np.array([[True] * self.ncol] * self.nrow)
@@ -341,12 +348,15 @@ class BaseLayout:
         # twinned axes
         twinned = kwargs.get('twin_x', False) or kwargs.get('twin_y', False)
         if not twinned:
-            self.axes2 = Element('ax', self.fcpp, kwargs, on=False,
+            self.axes2 = Element('ax', self.fcpp, kwargs,
+                                 on=False,
+                                 obj=self.obj_array,
                                  scale=kwargs.get('ax2_scale', None))
             return kwargs
 
         self.axes2 = Element('ax', self.fcpp, kwargs,
                              on=True if twinned else False,
+                             obj=self.obj_array,
                              edge_color=self.axes.edge_color,
                              fill_color=self.axes.fill_color,
                              primary=False,
@@ -1241,15 +1251,17 @@ class BaseLayout:
             updated kwargs
         """
         # If this plot type is disabled, create minimal set of element parameters
-        if self.name != 'hist':
+        hist = utl.kwget(kwargs, self.fcpp, ['hist', 'hist_on'], False)
+        if self.name != 'hist' and not (self.name == 'xy' and hist):
             self.hist = Element('hist', self.fcpp, kwargs,
                                 on=False,
                                 cdf=utl.kwget(kwargs, self.fcpp, ['cdf'], kwargs.get('cdf', False)),
+                                size=utl.kwget(kwargs, self.fcpp, ['hist_size'], 0),
                                 horizontal=False)
             return kwargs
 
         self.hist = Element('hist', self.fcpp, kwargs,
-                            on=True if 'hist' in self.name and kwargs.get('hist_on', True) else False,
+                            on=hist,
                             align=utl.kwget(kwargs, self.fcpp, 'hist_align', 'mid'),
                             bins=utl.kwget(kwargs, self.fcpp, ['hist_bins', 'bins'], kwargs.get('bins', 20)),
                             edge_color=utl.kwget(kwargs, self.fcpp, ['hist_edge_color'], copy.copy(self.color_list)),
@@ -1264,6 +1276,7 @@ class BaseLayout:
                             rwidth=utl.kwget(kwargs, self.fcpp, 'hist_rwidth', None),
                             horizontal=utl.kwget(kwargs, self.fcpp, ['hist_horizontal', 'horizontal'],
                                                  kwargs.get('horizontal', False)),
+                            size=utl.kwget(kwargs, self.fcpp, ['hist_size'], 125 if self.name == 'xy' else 0),
                             )
 
         # kde element defined separately from self.hist to store unique parameters
@@ -1408,7 +1421,7 @@ class BaseLayout:
         """
         self.ncol = data.ncol
         self.nrow = data.nrow
-        self.obj_array = np.array([[None] * self.ncol] * self.nrow)
+        self.obj_array = data.obj_array
 
     def _init_legend(self, kwargs, data: 'data.Data') -> dict:
         """Set the legend element parameters
@@ -1425,6 +1438,7 @@ class BaseLayout:
             kwargs['legend'] = ' | '.join(utl.validate_list(kwargs['legend']))
 
         self.legend = Legend_Element('legend', self.fcpp, kwargs,
+                                     obj=self.obj_array,
                                      on=True if (kwargs.get('legend') and kwargs.get('legend_on', True)) else False,
                                      column=kwargs['legend'],
                                      edge_color=utl.kwget(kwargs, self.fcpp, 'legend_edge_color', '#ffffff'),
@@ -1433,6 +1447,7 @@ class BaseLayout:
                                      fill_color=utl.kwget(kwargs, self.fcpp, 'legend_fill_color', '#ffffff'),
                                      font=utl.kwget(kwargs, self.fcpp, 'legend_font', 'sans-serif'),
                                      font_size=utl.kwget(kwargs, self.fcpp, 'legend_font_size', 12),
+                                     in_ws=False,
                                      location=LEGEND_LOCATION[utl.kwget(kwargs, self.fcpp, 'legend_location', 0)],
                                      marker_alpha=utl.kwget(kwargs, self.fcpp, 'legend_marker_alpha', 1),
                                      marker_size=utl.kwget(kwargs, self.fcpp, 'legend_marker_size', 7),
@@ -2961,7 +2976,10 @@ class Element:
         if self.on:
             return self._size
         else:
-            return [0, 0]
+            if isinstance(self._size, list):
+                return [0, 0]
+            else:
+                return 0
 
     @size.setter
     def size(self, value: list):
@@ -3176,6 +3194,7 @@ class Legend_Element(DF_Element):
                 plotting function call.  Defaults to {}.
             kwargs
         """
+        self.bypass_values = False
         self.cols = ['Key', 'Curve', 'LineType']
         self.default = pd.DataFrame(columns=self.cols, data=[['NaN', None, None]], index=[0])
 
@@ -3193,6 +3212,9 @@ class Legend_Element(DF_Element):
     @property
     def values(self):
         """Get the legend values properly ordered."""
+        if self.bypass_values:
+            return [-999]
+
         if len(self._values) <= 1:
             return self._values
 

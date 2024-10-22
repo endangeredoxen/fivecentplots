@@ -258,6 +258,25 @@ class Data:
             if not hasattr(self, k):  # k not in ['df', 'func', 'x', 'y', 'z']:
                 setattr(self, k, v)
 
+    def __getitem__(self, index):
+        return self
+
+    def __len__(self):
+        return 1
+
+    def __setitem__(self, index, value):
+        self = value
+
+    @property
+    def obj_array(self) -> npt.NDArray:
+        """Make a grid array that matches the dimensions of the plot grid filled with None."""
+        return np.array([[None] * self.ncol] * self.nrow)
+
+    @property
+    def obj_array_zeros(self) -> npt.NDArray:
+        """Make a grid array that matches the dimensions of the plot grid filled with zeros."""
+        return np.array([[0] * self.ncol] * self.nrow)
+
     @property
     def _groupers(self) -> list:
         """Get all grouping values."""
@@ -1155,6 +1174,7 @@ class Data:
         Yields:
             ir: subplot row index
             ic: subplot column index
+            plot_num: numeric plot number
             row/col data subset
         """
         for ir in range(0, self.nrow):
@@ -1183,7 +1203,7 @@ class Data:
                     self._range_overrides(ir, ic, self.df_rc)
 
                 # Yield the subset
-                yield ir, ic, self.df_rc
+                yield ir, ic, plot_num, self.df_rc
 
         self.df_sub = None
 
@@ -1242,7 +1262,7 @@ class Data:
         ranges = {}
         for ax in self.axs_on:
             for mm in ['min', 'max']:
-                ranges[f'{ax}{mm}'] = np.array([[None] * self.ncol] * self.nrow)
+                ranges[f'{ax}{mm}'] = self.obj_array
         return ranges
 
     def _subset(self, ir: int, ic: int) -> pd.DataFrame:

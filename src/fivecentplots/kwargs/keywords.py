@@ -45,6 +45,7 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
     color_params = ['fill_alpha', 'fill_color', 'edge_alpha', 'edge_color', 'color']
     other = ['marker_type']
     exclude = ['prop', 'on', 'kwargs', 'axline', 'self', 'fcpp', 'utl.kwargs']
+    special = ['df', 'imgs', 'plot_func', 'mosaic']
 
     # Get files
     py_files = utl.get_nested_files(path, '.py', ['.pyc'])
@@ -53,7 +54,7 @@ def get_all_allowed_kwargs_parse(path: Path, write: bool = False) -> list:
     func_regex = r'(\w+)\(((?:[^()]*\([^()]*\))*[^()]*)\)'
     bracket_regex = r',(?![^\(\[]*[\]\)])'
 
-    kwargs_list = ['df', 'imgs'] + axs + [f'{f}min' for f in axs] + [f'{f}max' for f in axs]
+    kwargs_list = special + axs + [f'{f}min' for f in axs] + [f'{f}max' for f in axs]
     names_list = []
 
     for py in py_files:

@@ -58,7 +58,7 @@ class Layout(BaseLayout):
         self.ul['plot_bgcolor'] = None
         self.ul['title'] = {}
         for ax in data.axs_on:
-            self.ul[f'{ax}axis_range'] = np.array([[None] * self.ncol] * self.nrow)
+            self.ul[f'{ax}axis_range'] = data.obj_array
             self.ul[f'{ax}axis_style'] = {}
             self.ul[f'{ax}axis_title'] = {}
             self.ul[f'{ax}grid'] = {}
@@ -460,7 +460,7 @@ class Layout(BaseLayout):
             data: fcp Data object
             **kwargs: input args from user
         """
-        self.axes.obj = np.array([[None] * self.ncol] * self.nrow)
+        self.axes.obj = data.obj_array
         specs = [[{"secondary_y": self.axes.twin_x}] * self.ncol] * self.nrow
 
         self.fig.obj = make_subplots(rows=self.nrow,
@@ -501,8 +501,6 @@ class Layout(BaseLayout):
         #     + self.pie.xs_top \
         #     + self.pie.xs_bottom \
         #     + self.tick_y_top_xs
-
-        return data
 
     def plot_bar(self, ir: int, ic: int, iline: int, df: pd.DataFrame,
                  leg_name: str, data: 'data.Data', ngroups: int, stacked: bool,

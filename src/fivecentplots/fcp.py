@@ -26,7 +26,7 @@ from . colors import DEFAULT_COLORS, RGB, RGGB, RCCG  # noqa
 from . import engines
 from . import kwargs as kwg
 import fivecentplots as fcp
-from typing import Union
+from typing import Callable, Dict, List, Tuple, Union
 try:
     # optional import - only used for paste_kwargs to use windows clipboard
     # to directly copy kwargs from ini file
@@ -73,11 +73,17 @@ class EngineError(Exception):
         Exception.__init__(self, *args, **kwargs)
 
 
-def bar(df, **kwargs):
+class KwargsError(Exception):
+    def __init__(self, *args, **kwargs):
+        """Invalid kwargs error."""
+        Exception.__init__(self, *args, **kwargs)
+
+
+def bar(df: pd.DataFrame, **kwargs):
     """Bar chart.
 
     Args:
-        df (pandas.DataFrame): DataFrame containing data to plot
+        df: DataFrame containing data to plot
 
     Keyword Args:
         x (str): x-axis column name [REQUIRED]
@@ -120,12 +126,12 @@ def bar(df, **kwargs):
     return plotter(data.Bar, **utl.dfkwarg(df, kwargs, data.Bar))
 
 
-def boxplot(df, **kwargs):
+def boxplot(df: pd.DataFrame, **kwargs):
     """Box plot modeled after the "Variability Chart" in JMP which Dummy function to return convenient,
     multi-level group labels automatically along the x-axis.
 
     Args:
-        df (pandas.DataFrame): DataFrame containing data to plot
+        df: DataFrame containing data to plot
 
     Keyword Args:
         y (str): y-axis column name contining the box plot data [REQUIRED]
@@ -254,11 +260,11 @@ def boxplot(df, **kwargs):
     return plotter(data.Box, **utl.dfkwarg(df, kwargs, data.Box))
 
 
-def contour(df, **kwargs):
+def contour(df: pd.DataFrame, **kwargs):
     """Contour plot module.
 
     Args:
-        df (DataFrame): DataFrame containing data to plot
+        df: DataFrame containing data to plot
 
     Keyword Args:
         x (str): x-axis column name [REQUIRED]
@@ -301,12 +307,12 @@ def docs():
     webbrowser.open(r'https://endangeredoxen.github.io/fivecentplots/index.html')
 
 
-def gantt(df, **kwargs):
+def gantt(df: pd.DataFrame, **kwargs):
     """Gantt chart plotting function.  This plot is built off of a horizontal
        implementation of `fcp.bar`.
 
     Args:
-        df (DataFrame): DataFrame containing data to plot
+        df: DataFrame containing data to plot
 
     Keyword Args:
         x (list): two x-axis column names containing Datetime values [REQUIRED]
@@ -348,11 +354,11 @@ def gantt(df, **kwargs):
     return plotter(data.Gantt, **utl.dfkwarg(df, kwargs, data.Gantt))
 
 
-def heatmap(df, **kwargs):
+def heatmap(df: pd.DataFrame, **kwargs):
     """Heatmap plot.
 
     Args:
-        df (DataFrame): DataFrame containing data to plot
+        df: DataFrame containing data to plot
 
     Keyword Args:
         x (str): x-axis column name [REQUIRED]
@@ -404,7 +410,7 @@ def heatmap(df, **kwargs):
     return plotter(data.Heatmap, **utl.dfkwarg(df, kwargs, data.Heatmap))
 
 
-def hist(df, **kwargs):
+def hist(df: pd.DataFrame, **kwargs):
     """Histogram plot.
 
     Args:
@@ -563,7 +569,82 @@ def imshow(df: Union[pd.DataFrame, npt.NDArray], **kwargs):
     return plotter(data.ImShow, **utl.dfkwarg(df, kwargs, data.ImShow))
 
 
-def nq(df, **kwargs):
+def merge_mosaics(layouts: List['engines.Layout'], dobjs: List['data.Data'], kws: Dict[str, dict]):
+    """For a mosaic plot, transfer some objects to the primary layout prior to final figure cleanup
+
+    Args:
+        layouts: all layout classes for the mosaic plot
+        dobjs: all data classes for the mosaic plot
+        kws: all the kwargs dicts for the mosaic plot
+    """
+    legends = dobjs[0].obj_array
+    legend_edge_width = dobjs[0].obj_array
+
+    # Transfer Element information to primary layout
+    for ir, ic, plot_num in dobjs.get_subplot_index():
+        if plot_num == 0 or plot_num > len(dobjs) - 1:
+            legends[ir, ic] = layouts[plot_num].legend.obj[0, 0]
+            legend_edge_width[ir, ic] = layouts[plot_num].legend.edge_width
+            continue
+
+        # data.axs_on
+        dobjs[0].axs_on += [f for f in dobjs[plot_num].axs_on if f not in dobjs[0].axs_on]
+
+        # Labels
+        for lab in dobjs[plot_num].axs_on:
+            getattr(layouts[0], f'label_{lab}').obj[ir, ic] = getattr(layouts[plot_num], f'label_{lab}').obj[ir, ic]
+
+        # Legends
+        if hasattr(dobjs[plot_num], 'legend') and getattr(dobjs[plot_num], 'legend') is not None:
+            legends[ir, ic] = layouts[plot_num].legend.obj[0, 0]
+            legend_edge_width[ir, ic] = layouts[plot_num].legend.edge_width
+
+    # Update primary legend with all subplot legends
+    if np.any(legends):
+        layouts[0].legend.obj = legends
+        layouts[0].legend.edge_width = legend_edge_width
+        layouts[0].legend._on = True
+        layouts[0].legend.bypass_values = True
+
+
+def mosaic(plot_list: List[Tuple[str, dict]], ncol: int = 2, **mosaic_kwargs):
+    """Make a grid containing different plot types
+
+    Args:
+        plot_list: list of tuples of plot function name and its kwargs
+                - first item of each tuple is the plotting function string name
+                - second item of each tuple is a dictionary of kwargs for that plot
+        ncol: number of columns for the final plot; rows calculated automatically
+    """
+    kwargs = {}
+    shares = dict.fromkeys([f'share_{f}' for f in ['x', 'x2', 'y', 'y2', 'z', 'col', 'row']], False)
+
+    for iplt, plt in enumerate(plot_list):
+        # Validate plot types
+        if plt[0] not in dir(fcp):
+            raise ValueError(f'plot type "{plt[0]}" does not exist')
+        if 'df' not in plt[1]:
+            raise KwargsError(f'plot type "{plt[1]}" must include a valid data source at dict key "df"')
+
+        # Validate input data source by plot type and make kwarg dict, forcing some parameters
+        key = 'xy' if plt[0] == 'plot' else plt[0]  # some renaming to match data class
+        subplot = utl.dfkwarg(plt[1]['df'], plt[1], data.Mosaic.data_lut[key], iplt)
+        subplot[str(iplt)]['mosaic'] = True
+        subplot[str(iplt)]['ncol'] = ncol
+        subplot[str(iplt)]['separate_labels'] = ncol
+        subplot[str(iplt)]['separate_ticks'] = ncol
+        subplot[str(iplt)].update(shares)
+
+        kwargs.update(subplot)
+
+    # Title in main kwargs overrides others
+    if mosaic_kwargs.get('title'):
+        kwargs['0']['title'] = mosaic_kwargs['title']
+
+    return plotter(data.Mosaic, True, **kwargs)
+
+
+def nq(df: pd.DataFrame, **kwargs):
     """Plot the normal quantiles of a data set.
 
     Args:
@@ -634,11 +715,11 @@ def paste_kwargs(kwargs: dict) -> dict:
               'and pywin32 for the win32clipboard module')
 
 
-def pie(df, **kwargs):
+def pie(df: pd.DataFrame, **kwargs):
     """Pie chart
 
     Args:
-        df (DataFrame): DataFrame containing data to plot
+        df: DataFrame containing data to plot
 
     Keyword Args:
         x (str): x-axis column name with categorical data [REQUIRED]
@@ -703,11 +784,11 @@ def pie(df, **kwargs):
     return plotter(data.Pie, **utl.dfkwarg(df, kwargs, data.Pie))
 
 
-def plot(df, **kwargs):
+def plot(df: pd.DataFrame, **kwargs):
     """XY plot.
 
     Args:
-        df (DataFrame): DataFrame containing data to plot
+        df: DataFrame containing data to plot
 
     Keyword Args:
         x (str | list): x-axis column name(s) [REQUIRED]
@@ -1444,14 +1525,8 @@ def plot_xy(data, layout, ir, ic, df_rc, kwargs):
     return data
 
 
-def plotter(dobj, **kwargs):
+def plotter(dobj, mosaic=False, **kwargs):
     """ Main plotting function
-
-    UPDATE At minimum, it requires a pandas DataFrame with at
-    least two columns and two column names for the x and y axis.  Plots can be
-    customized and enhanced by passing keyword arguments as defined below.
-    Default values that must be defined in order to generate the plot are
-    pulled from the fcp_params default dictionary
 
     Args:
         dobj (Data object):  data class for the specific plot type
@@ -1462,174 +1537,231 @@ def plotter(dobj, **kwargs):
     Returns:
         plots
     """
-    # Validate kwargs
-    kwg.keywords.validate_kwargs(kwargs)
+    # Kwargs setup
+    verbose = False
+    theme = None
+    for plot_num, kws in kwargs.items():
+        # Validate kwargs
+        kwg.keywords.validate_kwargs(kws)
 
-    # Apply globals if they don't exist
-    for k, v in fcp.KWARGS.items():
-        if k not in kwargs.keys():
-            kwargs[k] = v
+        # Apply globals if they don't exist
+        for k, v in fcp.KWARGS.items():
+            if k not in kws.keys():
+                kwargs[plot_num][k] = v
 
-    # Build the Timer
-    kwargs['timer'] = utl.Timer(print=kwargs.get('timer', False), start=True, units='ms')
+        # Update verbosity
+        if not verbose:
+            verbose = kws.get('verbose', False)
 
-    # Set the plotting engine
-    verbose = kwargs.get('verbose', False)
+        # If mosaic plot, ensure theme are same between plots
+        if theme is None:
+            theme = kws.get('theme', None)
+        elif theme != kws.get('theme', None):
+            raise KwargsError(f'theme must be the same for all subplots in fcp.mosaic \n{(" ") * 13}' + \
+                f'- "{plot_num}: {kws["plot_func"]}" specifies theme "{kws.get("theme")}" ' + \
+                f'but theme already set to "{theme}"')
+
+    # Set the plotting engine (priority: kwargs --> theme file --> 'mpl')
     defaults = utl.reload_defaults(kwargs.get('theme', None), verbose=verbose)
-    kwargs['engine'] = utl.kwget(kwargs, defaults[0], 'engine', 'mpl').lower()
+    requested_engine = {}
+    for plot_name, kws in kwargs.items():
+        requested_engine['plot' if plot_name == 'xy' else plot_name] = utl.kwget(kws, defaults[0], 'engine', None)
+
+    requested_engines = list(set([f.lower() for f in requested_engine.values() if f is not None]))
+    if len(requested_engines) > 1:
+        raise EngineError(f'engine must be the same for all subplots in fcp.mosaic \n{(" ") * 13}' + \
+            f'- specified engines: {requested_engines}')
+
+    kwargs['engine'] = \
+        requested_engines[0] if len(requested_engines) > 0 else utl.kwget(kwargs, defaults[0], 'engine', 'mpl')
     if not hasattr(engines, kwargs['engine']):
         if kwargs['engine'] in INSTALL.keys():
             installs = '\npip install '.join(INSTALL[kwargs['engine']])
             raise EngineError(f'Plotting engine \"{kwargs["engine"]}\" is supported but not installed! ' +
                               f'Please run the following:\npip install {installs}')
-        else:
+        elif kwargs['engine'] != 'mpl':
             raise EngineError(f'Plotting engine \"{kwargs["engine"]}\" is not supported')
         return
-    else:
-        engine = getattr(engines, kwargs['engine'])
+
+    # Build the Timer
+    kwargs['timer'] = utl.Timer(print=kwargs.get('timer', False), start=True, units='ms')
+
+    # Get the layout engine
+    engine = getattr(engines, kwargs['engine'])
     kwargs['timer'].get('Layout obj')
 
     # Build the data object and update kwargs
-    dd = dobj(fcpp=defaults[0], **kwargs)
+    if mosaic:
+        dd = dobj(fcpp=defaults[0], **kwargs)
+    else:
+        dd = dobj(fcpp=defaults[0], **kwargs['0'])
     kwargs['timer'].get('Data obj')
-    for k, v in kwargs.items():
-        if k in dd.__dict__.keys():
-            kwargs[k] = getattr(dd, k)
+    for nk in utl.numeric_keys(kwargs):
+        for k, v in kwargs[nk].items():
+            if k in dd[int(nk)].__dict__.keys():
+                kwargs[nk][k] = getattr(dd[int(nk)], k)
     kwargs['timer'].get('update kwargs')
 
     # Iterate over discrete figures
     for ifig, fig_item, fig_cols, dd in dd.get_df_figure():
-        kwargs['timer'].get('dd.get_df_figure')  # data._get_data_ranges is slowest step
+        kwargs['timer'].get('dd.get_df_figure')
 
-        # Create a layout object
-        layout = engine.Layout(dd, defaults, **kwargs)
-        kwargs = layout.kwargs
-        kwargs['timer'].get('layout class')
+        # Create a list of layout objects
+        layouts = [engine.Layout(dd[ii], defaults, **kwargs[str(ii)]) for ii in range(0, len(dd))]
+        layouts = utl.axes_size_ratios(layouts)  # update the size ratios
+        kwargs['timer'].get('layout classes')
 
-        # Make the figure
-        dd = layout.make_figure(dd, **kwargs)
+        # Make the figure (always use the zero indexed layout and data object)
+        layouts[0].make_figure(dd[0], **kwargs['0'])
         kwargs['timer'].get(f'ifig={ifig} | make_figure')
 
+        # Link secondary layout classes to layout_main
+        props = ['fig', 'axes']
+        for ilayout in range(1, len(layouts)):
+            for pp in props:
+                getattr(layouts[ilayout], pp).obj = getattr(layouts[0], pp).obj
+
         # Make the subplots
-        for ir, ic, df_rc in dd.get_rc_subset():
+        for ir, ic, plot_num, df_rc in dd.get_rc_subset():
             kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | get_rc_subset')
 
-            # Turn off empty subplots and populate layout.axes.visible (not sure why did it above so watch this)
-            if len(df_rc) == 0:
-                if dd.wrap is None:
-                    layout.set_axes_rc_labels(ir, ic)
-                layout.axes.obj[ir, ic].axis('off')
-                layout.axes.visible[ir, ic] = False
-                if layout.axes2.obj[ir, ic] is not None:
-                    layout.axes2.obj[ir, ic].axis('off')
-                continue
+            # Turn off empty subplots and populate layout.axes.visible
+            if plot_num > len(dd) - 1:
+                layouts[0].axes.obj[ir, ic].axis('off')
+                layouts[0].axes.visible[ir, ic] = False
+                if layouts[0].axes2.obj[ir, ic] is not None:
+                    layouts[0].axes2.obj[ir, ic].axis('off')
                 kwargs['timer'].get(f'ifig={ifig} | turn off empty subplots')
+                continue
+            elif len(df_rc) == 0:
+                if dd[plot_num].wrap is None:
+                    layouts[plot_num].set_axes_rc_labels(ir, ic)
+                layouts[plot_num].axes.obj[ir, ic].axis('off')
+                layouts[plot_num].axes.visible[ir, ic] = False
+                if layouts[plot_num].axes2.obj[ir, ic] is not None:
+                    layouts[plot_num].axes2.obj[ir, ic].axis('off')
+                kwargs['timer'].get(f'ifig={ifig} | turn off empty subplots')
+                continue
 
             # Set the axes colors
-            layout.set_axes_colors(ir, ic)
+            layouts[plot_num].set_axes_colors(ir, ic)
             kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_colors')
 
             # Add and format gridlines
-            layout.set_axes_grid_lines(ir, ic)
+            layouts[plot_num].set_axes_grid_lines(ir, ic)
             kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_grid_lines')
 
             # Add horizontal and vertical lines
-            layout.add_hvlines(ir, ic, df_rc)
+            layouts[plot_num].add_hvlines(ir, ic, df_rc)
             kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | add_hvlines')
 
             # Plot the data
-            dd = globals()['plot_{}'.format(dd.name)](dd, layout, ir, ic, df_rc, kwargs)
+            dd[plot_num] = globals()[f'plot_{dd[plot_num].name}'](dd[plot_num], layouts[plot_num], ir, ic,
+                                                                  df_rc, kwargs[str(plot_num)])
             kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | plot')
 
             # Add rc labels
-            layout.set_axes_rc_labels(ir, ic)
+            layouts[plot_num].set_axes_rc_labels(ir, ic)
             kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_rc_labels')
 
             # Add box labels
-            if dd.name == 'box':
-                layout.add_box_labels(ir, ic, dd)
+            if dd[plot_num].name == 'box':
+                layouts[plot_num].add_box_labels(ir, ic, dd[plot_num])
                 kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | add_box_labels')
 
             # Add arbitrary text
-            layout.add_text(ir, ic)
+            layouts[plot_num].add_text(ir, ic)
             kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | add_text')
 
         # After subplot creation, modify certain layout.Element properties
         dd.get_data_ranges()
-        for ir, ic, _ in dd.get_subplot_index():
+        for ir, ic, plot_num in dd.get_subplot_index():
+            if plot_num > len(dd) - 1:
+                continue
+
             # Add fills
-            layout.add_fills(ir, ic, df_rc, dd)
+            layouts[plot_num].add_fills(ir, ic, df_rc, dd[plot_num])
             kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | add_fills')
 
             # Set linear or log axes scaling
-            layout.set_axes_scale(ir, ic)
+            layouts[plot_num].set_axes_scale(ir, ic)
             kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_scale')
 
             # Set axes ranges
-            layout.set_axes_ranges(ir, ic, dd.ranges)
+            layouts[plot_num].set_axes_ranges(ir, ic, dd[plot_num].ranges)
             kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_ranges')
 
             # Add axis labels
-            layout.set_axes_labels(ir, ic, dd)
+            layouts[plot_num].set_axes_labels(ir, ic, dd[plot_num])
             kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_labels')
 
             # Adjust tick marks
-            layout.set_axes_ticks(ir, ic)
+            layouts[plot_num].set_axes_ticks(ir, ic)
             kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_ticks')
 
-        # Make the legend
-        layout.add_legend(dd.legend_vals)
+        # Make the legend  NOT SURE ABOUT THIS FOR mosaic
+        for ileg, ll in enumerate(layouts):
+            ll.add_legend(dd[ileg].legend_vals)
         kwargs['timer'].get(f'ifig={ifig} | add_legend')
+
+        # Shortcuts
+        layout = layouts[0]
+        kws = kwargs['0']
 
         # Add a figure title
         layout.set_figure_title()
         kwargs['timer'].get(f'ifig={ifig} | set_figure_title')
 
+        # Merge mosaic plots into primary layout
+        if mosaic:
+            merge_mosaics(layouts, dd, kwargs)
+            kwargs['timer'].get(f'ifig={ifig} | merge_mosaics')
+
         # Final adjustments
-        layout.set_figure_final_layout(dd, **kwargs)
+        layout.set_figure_final_layout(dd[0], **kws)
         kwargs['timer'].get(f'ifig={ifig} | set_figure_final_layout')
 
         # Build the save filename
-        filename = utl.set_save_filename(dd.df_fig, ifig, fig_item, fig_cols, layout, kwargs)
-        if kwargs.get('filepath'):
-            filename = os.path.join(kwargs['filepath'], filename)
+        filename = utl.set_save_filename(dd[0].df_fig, ifig, fig_item, fig_cols, layout, kws)
+        if kws.get('filepath'):
+            filename = os.path.join(kws['filepath'], filename)
 
         # Optionally save and open
-        if kwargs.get('save', False) or kwargs.get('show', False):
+        if kws.get('save', False) or kws.get('show', False):
             if ifig:
                 idx = ifig
             else:
                 idx = 0
             layout.save(filename, idx)
-            if kwargs.get('return_filename'):
+            if kws.get('return_filename'):
                 layout.close()
-                if 'filepath' in kwargs.keys():
-                    return osjoin(kwargs['filepath'], filename)
+                if 'filepath' in kws.keys():
+                    return osjoin(kws['filepath'], filename)
                 else:
                     return osjoin(os.getcwd(), filename)
-            if kwargs.get('show', False):
+            if kws.get('show', False):
                 utl.show_file(filename)
 
             # Disable inline unless explicitly called in kwargs
-            if not kwargs.get('inline'):
-                kwargs['inline'] = False
+            if not kws.get('inline'):
+                kws['inline'] = False
 
-        if kwargs.get('print_filename', False):
+        if kws.get('print_filename', False):
             print('\033[1m' + filename + '\033[0m')
 
         kwargs['timer'].get(f'ifig={ifig} | save')
 
         # Return inline plot
-        if not kwargs.get('inline', True):
+        if not kws.get('inline', True):
             layout.close()
         else:
             layout.show()
         kwargs['timer'].get(f'ifig={ifig} | return inline')
 
     # Save data used in the figures
-    if kwargs.get('save_data', False):
-        if isinstance(kwargs['save_data'], str):
-            filename = kwargs['save_data']
+    if kws.get('save_data', False):
+        if isinstance(kws['save_data'], str):
+            filename = kws['save_data']
         else:
             filename = filename.split('.')[0] + '.csv'
         if isinstance(dd.df_all, pd.DataFrame):

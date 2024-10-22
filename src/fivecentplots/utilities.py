@@ -16,7 +16,7 @@ import operator
 import imageio.v3 as imageio
 from matplotlib.font_manager import FontProperties, findfont
 from pathlib import Path
-from typing import Union, Tuple, Dict
+from typing import Dict, List, Tuple, Union
 from . import data
 import numpy.typing as npt
 try:
@@ -63,7 +63,8 @@ class RepeatedList:
         self.override = override
 
         if not isinstance(self.values, list) or len(self.values) < 1:
-            raise ValueError('RepeatedList must contain an actual list with at least one element')
+            db()
+            raise ValueError(f'RepeatedList "{name}" must contain an actual list with at least one element')
 
     def __len__(self):
         """Custom length."""
@@ -202,6 +203,44 @@ def arithmetic_eval(s):
     return _eval(node.body)
 
 
+def axes_size_ratios(layouts: List['Layout']) -> List['Layout']:  # noqa: F821)
+    """Compute the relative widths and heights for mosaic plots.  Only valid for mpl plots
+
+    Args:
+        layouts: list of layout options
+
+    Returns:
+        update list of layout objects
+    """
+    ncol = layouts[0].ncol
+    nrow = layouts[0].nrow
+    if len(layouts) == 1:
+        # all ratios == 1
+        layouts[0].axes.height_ratios = np.array([1 for f in range(0, ncol)])
+        layouts[0].axes.width_ratios = np.array([1 for f in range(0, nrow)])
+    else:
+        # allow for different figure sizes
+        widths = np.array([[0] * ncol] * nrow)
+        heights = np.array([[0] * ncol] * nrow)
+        for ir in range(0, nrow):
+            for ic in range(0, ncol):
+                num = plot_num(ir, ic, ncol) - 1
+                if num > len(layouts) - 1:
+                    break
+                widths[ir, ic] = layouts[num].axes.size[0]
+                heights[ir, ic] = layouts[num].axes.size[1]
+
+        layouts[0].axes.width_ratios = np.max(widths, axis=0) / layouts[0].axes.size[0]
+        layouts[0].axes.height_ratios = np.max(heights, axis=1) / layouts[0].axes.size[1]
+
+        # Record the specific requested sizes for each mosaic plot type
+        for ll in layouts:
+            ll.axes.mosaic_widths = widths
+            ll.axes.mosaic_heights = heights
+
+    return layouts
+
+
 def ci(data: pd.Series, coeff: float = 0.95) -> [float, float]:
     """Compute a confidence interval.
 
@@ -256,7 +295,7 @@ def close_preview_windows_macos(filenames: Union[str, list]):
         osascript.run(script)
 
 
-def dfkwarg(args: tuple, kwargs: dict, plotter: object) -> dict:
+def dfkwarg(args: tuple, kwargs: dict, plotter: object, index: int=0) -> dict:
     """Add the DataFrame to kwargs.
 
     Args:
@@ -266,11 +305,12 @@ def dfkwarg(args: tuple, kwargs: dict, plotter: object) -> dict:
     Returns:
         updated kwargs
     """
+    kwargs['plot_func'] = plotter.name
     if 'df' in kwargs.keys() and isinstance(kwargs['df'], pd.DataFrame):
-        return kwargs
+        return {str(index): kwargs}
     elif isinstance(args, pd.DataFrame):
         kwargs['df'] = args
-        return kwargs
+        return {str(index): kwargs}
     elif isinstance(args, np.ndarray) and plotter.name in ['hist', 'imshow', 'nq']:
         # Certain plots can accept a numpy array of 2D - 4D
         if len(args.shape) < 2 or len(args.shape) > 4:
@@ -280,7 +320,7 @@ def dfkwarg(args: tuple, kwargs: dict, plotter: object) -> dict:
                                  'which describe the requirement for 2D, 3D, or 4D image array shapes'
                                  f'\n{doc_url(plotter.url)}')
         kwargs['df'] = args
-        return kwargs
+        return {str(index): kwargs}
     else:
         raise data.DataError('Data source has invalid data type!  '
                              '\n\nPlease consult the docs for more information on which data types are allowed for a '
@@ -696,6 +736,27 @@ def kwget(dict1: dict, dict2: dict, vals: [str, list], default: [list, dict]):
     return default
 
 
+def load_test_data(name: str) -> Union[pd.DataFrame, npt.NDArray]:
+    """Load a fivecentplots sample data set
+
+    Args:
+        name: name of the csv file to load
+
+    Return:
+        pandas DataFrame or numpy array of sample data
+    """
+    test_data_path = Path(__file__).parent / 'test_data'
+    filename = [f for f in os.listdir(test_data_path) if name in f]
+    if len(filename) == 1:
+        filename = filename[0]
+        if '.csv' in filename:
+            return pd.read_csv(test_data_path / filename)
+        else:
+            return imageio.imread(test_data_path / filename)
+    else:
+        raise FileNotFoundError(f'no test data file named "{name}" was found!')
+
+
 def img_array_from_df(df, shape, dtype=int):
     cols = [f for f in df.columns if f in ['Value', 'R', 'G', 'B', 'A']]
     return df[cols].to_numpy().reshape(shape).astype(int)
@@ -723,31 +784,31 @@ def img_checker(rows, cols, num_x, num_y, high, low):
     return np.kron(grid, square)[:total_rows, :total_cols]
 
 
-def img_compare(img1: str, img2: str, show: bool = False) -> bool:
+def img_compare(img1_path: str, img2_path: str, show: bool = False) -> bool:
     """Read two images and compare for difference by pixel. This is an optional
     utility used only for developer tests, so the function will only work if
     opencv is installed.
 
     Args:
-        img1: path to file #1
-        img2: path to file #2
+        img1_path: path to file #1
+        img2_path: path to file #2
         show: display the difference
 
     Returns:
         True/False of existence of differences
     """
     # read images
-    img1 = cv2.imread(str(img1))
-    img2 = cv2.imread(str(img2))
+    img1 = cv2.imread(str(img1_path))
+    img2 = cv2.imread(str(img2_path))
 
     # compare
     if img1 is None:
         is_diff = True
-        print('master image not available')
+        print('test image not available')
 
     elif img2 is None:
         is_diff = True
-        print('test image not availble')
+        print('reference image not availble')
 
     else:
         if img1.shape != img2.shape:
@@ -1111,6 +1172,19 @@ def nq(data: Union[npt.NDArray, pd.DataFrame], column: str = 'Value', **kwargs) 
         return pd.DataFrame({'Percent': percentiles, column: values})
     else:
         return pd.DataFrame({'Sigma': index, column: values})
+
+
+def numeric_keys(dd: dict) -> List[str]:
+    """
+    Return the numeric keys from a dict.  Used primarily for managing mosaic-plot data.
+
+    Args:
+        dd: input dictionary
+
+    Returns:
+        list of string keys that are numeric
+    """
+    return [f for f in dd.keys() if f.isdigit()]
 
 
 def pie_wedge_labels(x: np.ndarray, y: np.ndarray, start_angle: float) -> [float, float]:

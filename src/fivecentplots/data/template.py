@@ -7,6 +7,7 @@ db = pdb.set_trace
 
 class YourPlot(data.Data):
     name = ''
+    url = ''
     req = []
     opt = []
 
