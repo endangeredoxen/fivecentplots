@@ -570,7 +570,9 @@ def imshow(df: Union[pd.DataFrame, npt.NDArray], **kwargs):
 
 
 def merge_mosaics(layouts: List['engines.Layout'], dobjs: List['data.Data'], kws: Dict[str, dict]):
-    """For a mosaic plot, transfer some objects to the primary layout prior to final figure cleanup
+    """
+    For a mosaic plot, transfer some objects to the primary layout prior to final figure cleanup.  This is
+    super hacky.
 
     Args:
         layouts: all layout classes for the mosaic plot
@@ -579,32 +581,42 @@ def merge_mosaics(layouts: List['engines.Layout'], dobjs: List['data.Data'], kws
     """
     legends = dobjs[0].obj_array
     legend_edge_width = dobjs[0].obj_array
+    cbar_sizes = dobjs[0].obj_array
+    ws_ax_cbars = dobjs[0].obj_array
 
     # Transfer Element information to primary layout
     for ir, ic, plot_num in dobjs.get_subplot_index():
-        if plot_num == 0 or plot_num > len(dobjs) - 1:
-            legends[ir, ic] = layouts[plot_num].legend.obj[0, 0]
-            legend_edge_width[ir, ic] = layouts[plot_num].legend.edge_width
-            continue
-
         # data.axs_on
-        dobjs[0].axs_on += [f for f in dobjs[plot_num].axs_on if f not in dobjs[0].axs_on]
+        if plot_num != 0:
+            dobjs[0].axs_on += [f for f in dobjs[plot_num].axs_on if f not in dobjs[0].axs_on]
 
         # Labels
-        for lab in dobjs[plot_num].axs_on:
-            getattr(layouts[0], f'label_{lab}').obj[ir, ic] = getattr(layouts[plot_num], f'label_{lab}').obj[ir, ic]
+        if plot_num != 0:
+            for lab in dobjs[plot_num].axs_on:
+                getattr(layouts[0], f'label_{lab}').obj[ir, ic] = getattr(layouts[plot_num], f'label_{lab}').obj[ir, ic]
 
         # Legends
         if hasattr(dobjs[plot_num], 'legend') and getattr(dobjs[plot_num], 'legend') is not None:
             legends[ir, ic] = layouts[plot_num].legend.obj[0, 0]
             legend_edge_width[ir, ic] = layouts[plot_num].legend.edge_width
 
-    # Update primary legend with all subplot legends
+        # cbars
+        layouts[0].cbar.obj[ir, ic] = layouts[plot_num].cbar.obj[ir, ic]
+        cbar_sizes[ir, ic] = layouts[plot_num].cbar.size[0]
+        ws_ax_cbars[ir, ic] = layouts[plot_num].ws_ax_cbar
+
+
+    # Update other values
     if np.any(legends):
         layouts[0].legend.obj = legends
         layouts[0].legend.edge_width = legend_edge_width
         layouts[0].legend._on = True
         layouts[0].legend.bypass_values = True
+
+    if np.any(layouts[0].cbar.obj):
+        layouts[0].cbar.on = True
+        layouts[0].cbar.sizes = cbar_sizes
+        layouts[0].cbar.ws_ax_cbars = ws_ax_cbars
 
 
 def mosaic(plot_list: List[Tuple[str, dict]], ncol: int = 2, **mosaic_kwargs):
@@ -637,9 +649,11 @@ def mosaic(plot_list: List[Tuple[str, dict]], ncol: int = 2, **mosaic_kwargs):
 
         kwargs.update(subplot)
 
-    # Title in main kwargs overrides others
-    if mosaic_kwargs.get('title'):
-        kwargs['0']['title'] = mosaic_kwargs['title']
+    # Main kwargs overrides others
+    for k, v in mosaic_kwargs.items():
+        if k == 'ncol':
+            continue
+        kwargs['0'][k] = v
 
     return plotter(data.Mosaic, True, **kwargs)
 

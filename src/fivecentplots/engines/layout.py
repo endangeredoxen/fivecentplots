@@ -315,12 +315,14 @@ class BaseLayout:
         self.axes = Element('ax', self.fcpp, kwargs,
                             obj=self.obj_array,
                             size=utl.validate_list(utl.kwget(kwargs, self.fcpp, 'ax_size', [400, 400])),
-                            edge_color=utl.kwget(kwargs, self.fcpp, 'ax_edge_color', '#aaaaaa'),
-                            fill_color=utl.kwget(kwargs, self.fcpp, 'ax_fill_color', '#eaeaea'),
+                            edge_color=utl.kwget(kwargs, self.fcpp, ['ax_edge_color', 'axes_edge_color'], '#aaaaaa'),
+                            edge_width=utl.kwget(kwargs, self.fcpp, ['ax_edge_width', 'axes_edge_width'], 1),
+                            fill_color=utl.kwget(kwargs, self.fcpp, ['ax_fill_color', 'axes_fill_color'], '#eaeaea'),
                             mosaic_heights=None,
                             mosaic_widths=None,
                             primary=True,
-                            scale=utl.kwget(kwargs, self.fcpp, 'ax_scale', kwargs.get('ax_scale', None)),
+                            scale=utl.kwget(kwargs, self.fcpp, ['ax_scale', 'axes_scale'],
+                                            kwargs.get('ax_scale', None)),
                             share_x=utl.kwget(kwargs, self.fcpp, 'share_x', kwargs.get('share_x', None)),
                             share_y=utl.kwget(kwargs, self.fcpp, 'share_y', kwargs.get('share_y', None)),
                             share_z=utl.kwget(kwargs, self.fcpp, 'share_z', kwargs.get('share_z', None)),
@@ -1441,8 +1443,6 @@ class BaseLayout:
                                      obj=self.obj_array,
                                      on=True if (kwargs.get('legend') and kwargs.get('legend_on', True)) else False,
                                      column=kwargs['legend'],
-                                     edge_color=utl.kwget(kwargs, self.fcpp, 'legend_edge_color', '#ffffff'),
-                                     edge_width=utl.kwget(kwargs, self.fcpp, 'legend_edge_width', 1),
                                      fill_alpha=utl.kwget(kwargs, self.fcpp, 'legend_fill_alpha', 1),
                                      fill_color=utl.kwget(kwargs, self.fcpp, 'legend_fill_color', '#ffffff'),
                                      font=utl.kwget(kwargs, self.fcpp, 'legend_font', 'sans-serif'),
@@ -2135,6 +2135,7 @@ class BaseLayout:
                              on=True if title is not None else False,
                              text=str(title) if title is not None else None,
                              edge_style=utl.kwget(kwargs, self.fcpp, 'title_edge_style', None),
+                             fill_color=utl.kwget(kwargs, self.fcpp, 'title_fill_color', '#333333'),
                              font_color=utl.kwget(kwargs, self.fcpp, 'title_font_color', '#333333'),
                              font_size=utl.kwget(kwargs, self.fcpp, 'title_font_size', 18),
                              font_weight=utl.kwget(kwargs, self.fcpp, 'title_font_weight', 'bold'),
@@ -2142,6 +2143,7 @@ class BaseLayout:
                              padding=utl.kwget(kwargs, self.fcpp, 'title_padding', 0),
                              span=utl.kwget(kwargs, self.fcpp, 'title_span', 'axes'),
                              )
+        #db()
         return kwargs
 
     def _init_white_space(self, kwargs: dict) -> dict:
@@ -2844,6 +2846,7 @@ class Element:
         self.size_cols = ['ir', 'ic', 'ii', 'jj', 'width', 'height', 'x0', 'x1', 'y0', 'y1', 'rotation']
 
         # fill and edge colors
+        #if self.name == 'title': db()
         if 'fill_alpha' not in kwargs:
             self.fill_alpha = utl.kwget(kwargs, fcpp, f'{name}_fill_alpha', kwargs.get('fill_alpha', 1))
         else:
@@ -2857,7 +2860,7 @@ class Element:
                 or self.fill_alpha != 1:
             self.color_alpha('fill_color', 'fill_alpha')
         if 'edge_width' not in kwargs:
-            self.edge_width = utl.kwget(kwargs, fcpp, f'{name}_edge_width', kwargs.get('edge_width', 1))
+            self.edge_width = utl.kwget(kwargs, fcpp, f'{name}_edge_width', kwargs.get('edge_width', 0))
         else:
             self.edge_width = kwargs['edge_width']
         if 'edge_alpha' not in kwargs:
@@ -2865,7 +2868,7 @@ class Element:
         else:
             self.edge_alpha = kwargs['edge_alpha']
         if 'edge_color' not in kwargs:
-            self.edge_color = utl.kwget(kwargs, fcpp, f'{name}_edge_color', kwargs.get('edge_color', '#ffffff'))
+            self.edge_color = utl.kwget(kwargs, fcpp, f'{name}_edge_color', kwargs.get('edge_color', '#555555'))
         else:
             self.edge_color = kwargs['edge_color']
         if not isinstance(self.edge_color, RepeatedList) or self.edge_alpha != 1:

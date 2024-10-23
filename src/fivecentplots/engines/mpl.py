@@ -4034,12 +4034,19 @@ class Layout(BaseLayout):
         # Fix for non-shared cbar
         if self.cbar.on and not self.cbar.shared:
             for ir, ic in np.ndindex(self.axes.obj.shape):
+                if self.cbar.obj[ir, ic] is None:
+                    continue
                 # Force correct size of axes --> cbar can screw this up and we can't guarentee that self.ws_ax_cbar
                 # and self.cbar.size[0] render correctly
                 ax = self.axes.obj[ir, ic].get_position()
                 ax_x0 = np.round(ax.x0 * self.fig.size_int[0])
-                width = (self.axes.size[0] + np.ceil(self.axes.edge_width / 2) + self.axes.edge_width
-                         + self.ws_ax_cbar + self.cbar.size[0]) / self.fig.size_int[0]
+                if self.mosaic:
+                    width = (self.axes.size[0] * self.axes.width_ratios[ic] + np.ceil(self.axes.edge_width / 2)
+                             + self.axes.edge_width + self.cbar.ws_ax_cbars[ir, ic]
+                             + self.cbar.sizes[ir, ic]) / self.fig.size_int[0]
+                else:
+                    width = (self.axes.size[0] + np.ceil(self.axes.edge_width / 2)
+                             + self.axes.edge_width + self.ws_ax_cbar + self.cbar.size[0]) / self.fig.size_int[0]
                 self.axes.obj[ir, ic].set_position([ax_x0 / self.fig.size_int[0], ax.y0, width, ax.height])
 
                 # Column labels
