@@ -7,7 +7,8 @@ from .. utilities import RepeatedList
 from .. import utilities as utl
 from distutils.version import LooseVersion
 from collections import defaultdict
-from typing import Callable, Dict
+from typing import Callable, Dict, List, Tuple, Union
+from types import SimpleNamespace
 import warnings
 import abc
 from .. import data
@@ -31,7 +32,7 @@ DEFAULT_MARKERS = ['o', '+', 's', 'x', 'd', 'Z', '^', 'Y', 'v', r'\infty',
                    u'\u22A1', u'\u20DF', r'\gamma', r'\sigma', r'\star', ]
 
 LEGEND_LOCATION = defaultdict(int,
-                              {'outside': 0,  # always "best" outside of the damn plot
+                              {'outside': 0,  # always "best" outside of the damn plot c'mon folks
                                'upper right': 1, 1: 1,
                                'upper left': 2, 2: 2,
                                'lower left': 3, 3: 3,
@@ -72,6 +73,12 @@ class BaseLayout:
 
         # Set the plot type name
         self.name = data.name
+
+        # Set the subplot grid dimensions, both as attributes and kwargs
+        self.ncol = data.ncol
+        self.nrow = data.nrow
+        kwargs['ncol'] = self.ncol
+        kwargs['nrow'] = self.nrow
 
         # Check for mosiac plot type
         self.mosaic = kwargs.get('mosaic', False)
@@ -144,12 +151,9 @@ class BaseLayout:
         self.label_y2 = None  # Element object for the secondary y-label
         self.label_z = None  # Element object for the z-label
         self.lcl = None  # Element object for lower control limit shading
-        self.legend = None  # Legend_Element for figure legend
+        self.legend = None  # LegendElement for figure legend
         self.lines = None  # Element object for plot lines
         self.markers = None  # Element object for markers
-        self.ncol = None  # number of subplot columns
-        self.nrow = None  # number of subplot rows
-        self.obj_array = None  # row x column array for Element objects
         self.pie = None  # Element object for pie chart
         self.ref_line = None  # Element object for reference line
         self.rolling_mean = None  # Element object for the rolling mean XY plot on bar chart
@@ -205,8 +209,7 @@ class BaseLayout:
         self.ws_title_ax = 0  # white space between plot title and top axis edge
 
         # Init the elements and their parameters
-        self._init_layout_rc(data)
-        kwargs = self._init_figure(kwargs)
+        kwargs = self._init_figure(data, kwargs)
         kwargs = self._init_colors(kwargs)
         kwargs = self._init_axes(data, kwargs)
         kwargs = self._init_axes_labels(data, kwargs)
@@ -313,13 +316,12 @@ class BaseLayout:
         # Axis
         spines = utl.kwget(kwargs, self.fcpp, 'spines', True)
         self.axes = Element('ax', self.fcpp, kwargs,
-                            obj=self.obj_array,
-                            size=utl.validate_list(utl.kwget(kwargs, self.fcpp, 'ax_size', [400, 400])),
+                            size=utl.kwget(kwargs, self.fcpp, ['ax_size', 'axes_size'], [400, 400]),
                             edge_color=utl.kwget(kwargs, self.fcpp, ['ax_edge_color', 'axes_edge_color'], '#aaaaaa'),
                             edge_width=utl.kwget(kwargs, self.fcpp, ['ax_edge_width', 'axes_edge_width'], 1),
                             fill_color=utl.kwget(kwargs, self.fcpp, ['ax_fill_color', 'axes_fill_color'], '#eaeaea'),
-                            mosaic_heights=None,
-                            mosaic_widths=None,
+                            heights_array=utl.subplot_array(self.nrow, self.ncol, 0),
+                            height_ratios=None,
                             primary=True,
                             scale=utl.kwget(kwargs, self.fcpp, ['ax_scale', 'axes_scale'],
                                             kwargs.get('ax_scale', None)),
@@ -336,11 +338,10 @@ class BaseLayout:
                             spine_top=utl.kwget(kwargs, self.fcpp, ['spine_top', 'ax_edge_top'], spines),
                             twin_x=kwargs.get('twin_x', False),
                             twin_y=kwargs.get('twin_y', False),
-                            height_ratios=None,
+                            visible=utl.subplot_array(self.nrow, self.ncol, True),
+                            widths_array=utl.subplot_array(self.nrow, self.ncol, 0),
                             width_ratios=None,
                             )
-        # Set default axes visibility
-        self.axes.visible = np.array([[True] * self.ncol] * self.nrow)
 
         # auto-boxplot size option
         if self.axes.size == ['auto']:
@@ -352,13 +353,11 @@ class BaseLayout:
         if not twinned:
             self.axes2 = Element('ax', self.fcpp, kwargs,
                                  on=False,
-                                 obj=self.obj_array,
                                  scale=kwargs.get('ax2_scale', None))
             return kwargs
 
         self.axes2 = Element('ax', self.fcpp, kwargs,
                              on=True if twinned else False,
-                             obj=self.obj_array,
                              edge_color=self.axes.edge_color,
                              fill_color=self.axes.fill_color,
                              primary=False,
@@ -384,7 +383,6 @@ class BaseLayout:
         """
         # Axes labels
         label = Element('label', self.fcpp, kwargs,
-                        obj=self.obj_array,
                         edge_color=utl.kwget(kwargs, self.fcpp, 'label_edge_color', '#ffffff'),
                         edge_style=utl.kwget(kwargs, self.fcpp, 'label_edge_style', 'square'),
                         edge_width=utl.kwget(kwargs, self.fcpp, 'label_edge_width', 0),
@@ -402,6 +400,8 @@ class BaseLayout:
             # Copy base label object
             setattr(self, f'label_{lab}', copy.deepcopy(label))
             getattr(self, f'label_{lab}').name = f'label_{lab}'
+            getattr(self, f'label_{lab}').position.name = f'label_{lab}'
+            getattr(self, f'label_{lab}').size.name = f'label_{lab}'
 
             # Update rotation
             getattr(self, f'label_{lab}').rotation = rotations[ilab]
@@ -507,7 +507,6 @@ class BaseLayout:
             setattr(self, axline,
                     Element(axline, self.fcpp, kwargs,
                             on=True if axline in kwargs.keys() else False,
-                            obj=self.obj_array,
                             values=values, color=colors, style=styles,
                             width=widths, alpha=alphas, text=labels,
                             by_plot=utl.kwget(kwargs, self.fcpp, f'{axline}_by_plot', False),
@@ -533,8 +532,7 @@ class BaseLayout:
 
         self.bar = Element('bar', self.fcpp, kwargs,
                            on=True,
-                           width=utl.kwget(kwargs, self.fcpp, ['bar_width', 'width'],
-                                           kwargs.get('width', 0.8)),
+                           bar_width=utl.kwget(kwargs, self.fcpp, ['bar_width'], 0.8),
                            align=utl.kwget(kwargs, self.fcpp, 'bar_align',
                                            kwargs.get('align', 'center')),
                            edge_color=utl.kwget(kwargs, self.fcpp, 'bar_edge_color',
@@ -618,15 +616,16 @@ class BaseLayout:
 
         self.box_group_title = Element('box_group_title', self.fcpp, kwargs,
                                        on=True if kwargs.get('box_labels_on', True) else False,
-                                       obj=self.obj_array,
                                        font_color=utl.kwget(kwargs, self.fcpp, 'box_group_title_font_color', '#666666'),
                                        font_size=utl.kwget(kwargs, self.fcpp, 'box_group_title_font_size', 13),
-                                       padding=utl.kwget(kwargs, self.fcpp, 'box_group_title_padding', 10),  # percent
+                                       margin=utl.kwget(kwargs, self.fcpp,
+                                                        'box_group_title_margin', [10, 0]),
+                                       position=utl.kwget(kwargs, self.fcpp,
+                                                          'box_group_title_position', [0, 0, 0, 0]),
                                        )
         self.box_group_label = Element('box_group_label', self.fcpp, kwargs,
                                        align={},
                                        on=True if 'box' in self.name and kwargs.get('box_labels_on', True) else False,
-                                       obj=self.obj_array,
                                        edge_color=utl.kwget(kwargs, self.fcpp, 'box_group_label_edge_color', '#aaaaaa'),
                                        font_color=utl.kwget(kwargs, self.fcpp, 'box_group_label_font_color', '#666666'),
                                        font_size=utl.kwget(kwargs, self.fcpp, 'box_group_label_font_size', 12),
@@ -768,7 +767,6 @@ class BaseLayout:
 
         self.box_divider = Element('box_divider', self.fcpp, kwargs,
                                    on=kwargs.get('box_divider', kwargs.get('box', True)),
-                                   obj=self.obj_array,
                                    color=utl.kwget(kwargs, self.fcpp, ['box_divider_color', 'box_divider_line_color'],
                                                    '#bbbbbb'),
                                    text=None,
@@ -830,9 +828,9 @@ class BaseLayout:
             self.markers.filled = \
                 utl.kwget(kwargs, {}, ['box_marker_fill', 'marker_fill'],
                           utl.kwget(self.fcpp, {}, 'box_marker_fill', self.markers.filled))
-            self.markers.size = \
+            self.markers.size.value = \
                 utl.kwget(kwargs, {}, ['box_marker_size', 'marker_size'],
-                          utl.kwget(self.fcpp, {}, 'box_marker_size', 4))
+                          utl.kwget(self.fcpp, {}, 'box_marker_size', 4), True, 'box_markers')
             self.markers.zorder = \
                 utl.kwget(kwargs, {}, ['box_marker_zorder', 'marker_zorder'],
                           utl.kwget(self.fcpp, {}, 'box_marker_zorder', self.markers.zorder))
@@ -849,7 +847,7 @@ class BaseLayout:
                 self.markers.type = RepeatedList('o', 'marker_type')
 
             # convert some attributes to RepeatedList
-            vals = ['size', 'edge_width', 'edge_color', 'fill_color']
+            vals = ['edge_width', 'edge_color', 'fill_color']
             for val in vals:
                 if not isinstance(getattr(self.markers, val), RepeatedList):
                     setattr(self.markers, val, RepeatedList(getattr(self.markers, val), val))
@@ -868,8 +866,7 @@ class BaseLayout:
         cbar_size = utl.kwget(kwargs, self.fcpp, 'cbar_size', 30)
         self.cbar = Element('cbar', self.fcpp, kwargs,
                             on=kwargs.get('cbar', False),
-                            obj=self.obj_array,
-                            size=[cbar_size if not isinstance(cbar_size, list) else cbar_size[0], self.axes.size[1]],
+                            size=[utl.kwget(kwargs, self.fcpp, ['cbar_size', 'cbar_width'], 30), self.axes.size.height],
                             shared=utl.kwget(kwargs, self.fcpp, 'cbar_shared', False),
                             )
         if not self.cbar.on:
@@ -901,14 +898,6 @@ class BaseLayout:
         self.cmap = RepeatedList(utl.validate_list(kwargs.get('cmap', [None])), 'cmap')
         if self.name in ['contour', 'heatmap']:
             self.cmap = RepeatedList(utl.validate_list(utl.kwget(kwargs, self.fcpp, 'cmap', ['inferno'])), 'cmap')
-
-        # Program any legend value specific color overrides
-        color_params = ['fill_alpha', 'fill_color', 'edge_alpha', 'edge_color', 'color']
-        for cp in color_params:
-            if f'{cp}_override' in kwargs.keys():
-                kwargs[f'{cp}_override'] = utl.kwget(kwargs, self.fcpp, f'{cp}_override', {})
-            else:
-                kwargs[f'{cp}_override'] = utl.kwget(kwargs, self.fcpp, 'color_override', {})
 
         return kwargs
 
@@ -956,7 +945,6 @@ class BaseLayout:
 
         self.contour = Element('contour', self.fcpp, kwargs,
                                on=True,
-                               obj=self.obj_array,
                                filled=utl.kwget(kwargs, self.fcpp, ['contour_filled', 'filled'],
                                                 kwargs.get('filled', True)),
                                levels=utl.kwget(kwargs, self.fcpp, ['contour_levels', 'levels'],
@@ -969,7 +957,7 @@ class BaseLayout:
 
         return kwargs
 
-    def _init_figure(self, kwargs: dict) -> dict:
+    def _init_figure(self, data, kwargs: dict) -> dict:
         """Set the figure element parameters
 
         Args:
@@ -978,7 +966,8 @@ class BaseLayout:
         Returns:
             updated kwargs
         """
-        self.fig = Element('fig', self.fcpp, kwargs, edge_width=3)
+        self.fig = Element('fig', self.fcpp, kwargs)
+
 
         return kwargs
 
@@ -1201,7 +1190,6 @@ class BaseLayout:
 
         self.heatmap = Element('heatmap', self.fcpp, kwargs,
                                on=True,
-                               obj=self.obj_array,
                                cell_size=utl.kwget(kwargs, self.fcpp, ['heatmap_cell_size', 'cell_size'],
                                                    60 if 'ax_size' not in kwargs else None),
                                edge_width=0,
@@ -1258,7 +1246,7 @@ class BaseLayout:
             self.hist = Element('hist', self.fcpp, kwargs,
                                 on=False,
                                 cdf=utl.kwget(kwargs, self.fcpp, ['cdf'], kwargs.get('cdf', False)),
-                                size=utl.kwget(kwargs, self.fcpp, ['hist_size'], 0),
+                                size=utl.kwget(kwargs, self.fcpp, ['hist_size'], [0, 0]),
                                 horizontal=False)
             return kwargs
 
@@ -1278,7 +1266,8 @@ class BaseLayout:
                             rwidth=utl.kwget(kwargs, self.fcpp, 'hist_rwidth', None),
                             horizontal=utl.kwget(kwargs, self.fcpp, ['hist_horizontal', 'horizontal'],
                                                  kwargs.get('horizontal', False)),
-                            size=utl.kwget(kwargs, self.fcpp, ['hist_size'], 125 if self.name == 'xy' else 0),
+                            size=utl.kwget(kwargs, self.fcpp, ['hist_size'],
+                                           [125, self.axes.size.height] if self.name == 'xy' else [0, 0]),
                             )
 
         # kde element defined separately from self.hist to store unique parameters
@@ -1414,17 +1403,6 @@ class BaseLayout:
 
         return kwargs
 
-    def _init_layout_rc(self, data: 'data.Data') -> dict:
-        """Initialize layout attributes for rows and columns
-
-        Args:
-            data: Data class object for the plot
-
-        """
-        self.ncol = data.ncol
-        self.nrow = data.nrow
-        self.obj_array = data.obj_array
-
     def _init_legend(self, kwargs, data: 'data.Data') -> dict:
         """Set the legend element parameters
 
@@ -1439,24 +1417,20 @@ class BaseLayout:
         if isinstance(kwargs['legend'], list):
             kwargs['legend'] = ' | '.join(utl.validate_list(kwargs['legend']))
 
-        self.legend = Legend_Element('legend', self.fcpp, kwargs,
-                                     obj=self.obj_array,
+        self.legend = LegendElement('legend', self.fcpp, kwargs,
                                      on=True if (kwargs.get('legend') and kwargs.get('legend_on', True)) else False,
                                      column=kwargs['legend'],
                                      fill_alpha=utl.kwget(kwargs, self.fcpp, 'legend_fill_alpha', 1),
                                      fill_color=utl.kwget(kwargs, self.fcpp, 'legend_fill_color', '#ffffff'),
                                      font=utl.kwget(kwargs, self.fcpp, 'legend_font', 'sans-serif'),
                                      font_size=utl.kwget(kwargs, self.fcpp, 'legend_font_size', 12),
-                                     in_ws=False,
                                      location=LEGEND_LOCATION[utl.kwget(kwargs, self.fcpp, 'legend_location', 0)],
                                      marker_alpha=utl.kwget(kwargs, self.fcpp, 'legend_marker_alpha', 1),
                                      marker_size=utl.kwget(kwargs, self.fcpp, 'legend_marker_size', 7),
                                      nleg=utl.kwget(kwargs, self.fcpp, 'nleg', -1),
                                      points=utl.kwget(kwargs, self.fcpp, 'legend_points', 1),
                                      ordered_curves=[],
-                                     ordered_fits=[],
-                                     ordered_ref_lines=[],
-                                     overflow=0,
+                                     separate=utl.kwget(kwargs, self.fcpp, 'separate_legends', True),
                                      text=kwargs.get('legend_title',
                                                      kwargs.get('legend') if kwargs.get('legend') is not True else ''),
                                      title_font_size=utl.kwget(kwargs, self.fcpp, 'legend_title_font_size', 12),
@@ -1505,6 +1479,11 @@ class BaseLayout:
             self.legend.values = self.legend.get_default_values_df()
             self.legend.on = True
 
+        if self.legend.location == 0 and \
+                not utl.kwget(kwargs, self.fcpp, 'separate_legends', False) and \
+                not self.mosaic:
+            self.legend.separate = False
+
         return kwargs
 
     def _init_lines(self, kwargs: dict) -> dict:
@@ -1550,27 +1529,21 @@ class BaseLayout:
         marker_fill_color = utl.kwget(kwargs, self.fcpp, ['marker_fill_color', 'markers_fill_color'], self.color_list)
         if kwargs.get('marker_fill_color') or kwargs.get('markers_fill_color'):
             kwargs['marker_fill'] = True
-        self.markers = Element('markers', self.fcpp, kwargs,
-                               on=utl.kwget(kwargs, self.fcpp, 'markers', True),
-                               filled=utl.kwget(kwargs, self.fcpp, ['marker_fill', 'markers_fill'], False),
-                               edge_alpha=utl.kwget(kwargs, self.fcpp, ['marker_edge_alpha', 'markers_edge_alpha'], 1),
-                               edge_color=copy.copy(marker_edge_color),
-                               edge_width=utl.kwget(kwargs, self.fcpp,
-                                                    ['marker_edge_width', 'markers_edge_width'], 1.5),
-                               fill_color=copy.copy(marker_fill_color),
-                               jitter=utl.kwget(kwargs, self.fcpp, ['marker_jitter', 'jitter'],
-                                                kwargs.get('jitter', False)),
-                               size=utl.kwget(kwargs, self.fcpp, ['marker_size', 'markers_size'], 6),
-                               type=markers,
-                               zorder=utl.kwget(kwargs, self.fcpp, ['marker_zorder', 'markers_zorder'], 2),
-                               )
-        if isinstance(self.markers.size, str) and self.markers.size in data.df_all.columns:
-            pass
-        elif not isinstance(self.markers.size, RepeatedList):
-            self.markers.sizes = self.markers.size
-            self.markers.size = RepeatedList(self.markers.size, 'marker_size')
-        if not isinstance(self.markers.edge_width, RepeatedList):
-            self.markers.edge_width = RepeatedList(self.markers.edge_width, 'marker_edge_width')
+        self.markers = MarkerElement(
+            data, 'markers', self.fcpp, kwargs,
+            on=utl.kwget(kwargs, self.fcpp, 'markers', True),
+            filled=utl.kwget(kwargs, self.fcpp, ['marker_fill', 'markers_fill'], False),
+            edge_alpha=utl.kwget(kwargs, self.fcpp, ['marker_edge_alpha', 'markers_edge_alpha'], 1),
+            edge_color=copy.copy(marker_edge_color),
+            edge_width=utl.kwget(kwargs, self.fcpp,
+                                ['marker_edge_width', 'markers_edge_width'], 1.5, True, 'edge_color'),
+            fill_color=copy.copy(marker_fill_color),
+            jitter=utl.kwget(kwargs, self.fcpp, ['marker_jitter', 'jitter'],
+                            kwargs.get('jitter', False)),
+            size=utl.kwget(kwargs, self.fcpp, ['marker_size', 'markers_size'], 6),
+            type=markers,
+            zorder=utl.kwget(kwargs, self.fcpp, ['marker_zorder', 'markers_zorder'], 2),
+            )
 
         return kwargs
 
@@ -1595,9 +1568,6 @@ class BaseLayout:
 
         self.pie = Element('pie', self.fcpp, kwargs,
                            on=True,
-                           alpha=utl.kwget(kwargs, self.fcpp, ['pie_fill_alpha', 'fill_alpha'],
-                                           kwargs.get('fill_alpha', 0.85)),
-                           colors=utl.kwget(kwargs, self.fcpp, 'pie_colors', copy.copy(self.color_list)),
                            counter_clock=utl.kwget(kwargs, self.fcpp, ['pie_counter_clock', 'counter_clock'],
                                                    kwargs.get('counter_clock', False)),
                            edge_color=utl.kwget(kwargs, self.fcpp, 'pie_edge_color',
@@ -1607,6 +1577,10 @@ class BaseLayout:
                            edge_width=1,
                            explode=utl.kwget(kwargs, self.fcpp, ['pie_explode', 'explode'],
                                              kwargs.get('explode', None)),
+                           fill_alpha=utl.kwget(kwargs, self.fcpp, ['pie_fill_alpha', 'fill_alpha'],
+                                                kwargs.get('fill_alpha', 0.85)),
+                           fill_color=utl.kwget(kwargs, self.fcpp, ['pie_colors', 'pie_fill_color'],
+                                                copy.copy(self.color_list)),
                            inner_radius=utl.kwget(kwargs, self.fcpp, ['pie_inner_radius', 'inner_radius'],
                                                   kwargs.get('inner_radius', None)),
                            label_distance=utl.kwget(kwargs, self.fcpp, ['pie_label_distance', 'label_distance'],
@@ -1698,10 +1672,13 @@ class BaseLayout:
             updated kwargs
         """
         # Row column label
+        size = utl.validate_list(utl.kwget(kwargs, self.fcpp, 'label_rc_size', 30))
+        if len(size) == 1:
+            size = [self.axes.size.width, size[0]]
+
         label_rc = DF_Element('label_rc', self.fcpp, kwargs,
                               on=True,
-                              obj=self.obj_array,
-                              size=utl.kwget(kwargs, self.fcpp, 'label_rc_size', 30),
+                              size=size,
                               edge_color=utl.kwget(kwargs, self.fcpp, 'label_rc_edge_color', '#8c8c8c'),
                               edge_style=utl.kwget(kwargs, self.fcpp, 'label_rc_edge_style', None),
                               edge_width=utl.kwget(kwargs, self.fcpp, 'label_rc_edge_width', 0),
@@ -1728,7 +1705,8 @@ class BaseLayout:
         self.label_row.padding = utl.kwget(kwargs, self.fcpp, 'label_row_padding', label_rc.padding)
         self.label_row.rotation = utl.kwget(kwargs, self.fcpp, 'label_row_rotation', 270)
         self.label_row.values_only = utl.kwget(kwargs, self.fcpp, 'label_row_values_only', label_rc.values_only)
-        self.label_row.size = [utl.kwget(kwargs, self.fcpp, 'label_row_size', label_rc._size), self.axes.size[1]]
+        self.label_row.size = [utl.kwget(kwargs, self.fcpp, 'label_row_size', label_rc.size.height),
+                               self.axes.size.height]
 
         self.label_col = copy.deepcopy(label_rc)
         self.label_col.on = utl.kwget(kwargs, self.fcpp, 'label_col_on', True) \
@@ -1743,16 +1721,16 @@ class BaseLayout:
         self.label_col.font_size = utl.kwget(kwargs, self.fcpp, 'label_col_font_size', label_rc.font_size)
         self.label_col.padding = utl.kwget(kwargs, self.fcpp, 'label_col_padding', label_rc.padding)
         self.label_col.values_only = utl.kwget(kwargs, self.fcpp, 'label_col_values_only', label_rc.values_only)
-        self.label_col.size = [self.axes.size[0], utl.kwget(kwargs, self.fcpp, 'label_col_size', label_rc._size)]
+        self.label_col.size = [self.axes.size.width,
+                               utl.kwget(kwargs, self.fcpp, 'label_col_size', label_rc.size.height)]
 
         # Wrap label
         self.label_wrap = DF_Element('label_wrap', self.fcpp, kwargs,
                                      on=utl.kwget(kwargs, self.fcpp, 'label_wrap_on', True)
                                      if kwargs.get('wrap') else False,
-                                     obj=self.obj_array,
                                      column=kwargs.get('wrap'),
-                                     size=[self.axes.size[0],
-                                           utl.kwget(kwargs, self.fcpp, 'label_wrap_size', label_rc._size)],
+                                     size=[self.axes.size.width,
+                                           utl.kwget(kwargs, self.fcpp, 'label_wrap_size', label_rc.size.height)],
                                      edge_color=utl.kwget(kwargs, self.fcpp, 'label_wrap_edge_color',
                                                           label_rc.edge_color),
                                      edge_style=utl.kwget(kwargs, self.fcpp, 'label_wrap_edge_style',
@@ -1791,7 +1769,8 @@ class BaseLayout:
         self.title_wrap = Element('title_wrap', self.fcpp, kwargs,
                                   on=utl.kwget(kwargs, self.fcpp, 'title_wrap_on', True)
                                   if kwargs.get('wrap') else False,
-                                  size=utl.kwget(kwargs, self.fcpp, 'title_wrap_size', label_rc.size),
+                                  size=[self.axes.size.width,
+                                        utl.kwget(kwargs, self.fcpp, 'title_wrap_size', label_rc.size)],
                                   edge_color=utl.kwget(kwargs, self.fcpp, 'title_wrap_edge_color', '#5f5f5f'),
                                   edge_style=utl.kwget(kwargs, self.fcpp, 'title_wrap_edge_style', label_rc.edge_style),
                                   edge_width=utl.kwget(kwargs, self.fcpp, 'title_wrap_edge_width', label_rc.edge_width),
@@ -1810,7 +1789,7 @@ class BaseLayout:
                                   )
 
         if not isinstance(self.title_wrap.size, list):
-            self.title_wrap.size = [self.axes.size[0], self.title_wrap.size]
+            self.title_wrap.size = [self.axes.size.width, self.title_wrap.size]
         # # If no title edge width specified, match axes edge width for better alias matching
         # if self.title_wrap.edge_width == 0 \
         #         and not any(f in ['label_rc_edge_width', 'title_wrap_edge_width'] for f in kwargs.keys()):
@@ -1834,10 +1813,12 @@ class BaseLayout:
         position = utl.kwget(kwargs, self.fcpp, 'text_position', [0, 0])
         if not isinstance(position[0], list):
             position = [position]
-        self.text = Element('text', self.fcpp, {'engine': kwargs.get('engine', 'undefined')},
+        self.text = Element('text', self.fcpp,
+                            {'engine': kwargs.get('engine', 'undefined'),
+                             'ncol': kwargs['ncol'],
+                             'nrow': kwargs['nrow']},
                             on=True if utl.kwget(kwargs, self.fcpp, 'text', None)
                             is not None else False,
-                            obj=self.obj_array,
                             edge_color=RepeatedList(utl.kwget(kwargs, self.fcpp,
                                                     'text_edge_color', 'none'),
                                                     'text_edge_color'),
@@ -1971,7 +1952,6 @@ class BaseLayout:
             setattr(self, f'tick_labels_major_{ax}',
                     Element(f'tick_labels_major_{ax}', self.fcpp, kwargs,
                             on=utl.kwget(kwargs, self.fcpp, f'tick_labels_major_{ax}', self.tick_labels_major.on),
-                            obj=self.obj_array,
                             edge_color=edge_color,
                             edge_alpha=edge_alpha,
                             edge_width=utl.kwget(kwargs, self.fcpp,
@@ -2079,7 +2059,6 @@ class BaseLayout:
             setattr(self, f'tick_labels_minor_{ax}',
                     Element(f'tick_labels_minor_{ax}', self.fcpp, kwargs,
                             on=utl.kwget(kwargs, self.fcpp, f'tick_labels_minor_{ax}', self.tick_labels_minor.on),
-                            obj=self.obj_array,
                             edge_color=edge_color,
                             edge_alpha=edge_alpha,
                             edge_width=utl.kwget(kwargs, self.fcpp,
@@ -2140,10 +2119,10 @@ class BaseLayout:
                              font_size=utl.kwget(kwargs, self.fcpp, 'title_font_size', 18),
                              font_weight=utl.kwget(kwargs, self.fcpp, 'title_font_weight', 'bold'),
                              align=utl.kwget(kwargs, self.fcpp, 'title_align', 'center'),
-                             padding=utl.kwget(kwargs, self.fcpp, 'title_padding', 0),
+                             padding=utl.kwget(kwargs, self.fcpp, 'title_padding', 4),
                              span=utl.kwget(kwargs, self.fcpp, 'title_span', 'axes'),
                              )
-        #db()
+
         return kwargs
 
     def _init_white_space(self, kwargs: dict) -> dict:
@@ -2414,10 +2393,12 @@ class BaseLayout:
         """
 
     @abc.abstractmethod
-    def add_legend(self, leg_vals: pd.DataFrame):
+    def add_legend(self, ir: int, ic: int, leg_vals: pd.DataFrame):
         """Add a legend to a figure.
 
         Args:
+            ir: subplot row index
+            ic: subplot column index
             data.legend_vals, used to ensure proper sorting
         """
 
@@ -2793,149 +2774,105 @@ class BaseLayout:
 
 
 class Element:
-    def __init__(self, name: str = 'None', fcpp: dict = {}, others: dict = {},
-                 obj: [None, 'ObjectArray'] = None, **kwargs):
-        """Element object is a container for storing/accessing the attributes
-        that are applied to a given plot element.  Examples of plot elements
-        include axes labels, ticks, fit lines, or a type of plot (box, hist, etc.).
-        The attributes of the elements may differ based on the use of an object
-        but can include things like font (size, weight, type), color, padding, or
-        specific options relevant to a plot type (for example, a hist plot contains
-        attributes to set the number of bins or enable/disable a kde overlay.
+    def __init__(self, name: str = 'None', fcpp: dict = {}, plot_kwargs: dict = {}, **element_kwargs):
+        """Element object is a container for storing/accessing the attributes that are applied to a given plot
+        element.  Examples of plot elements include axes labels, ticks, fit lines, or a type of plot
+        (box, hist, etc.).  The attributes of the elements may differ based on the use of an object but can include
+        things like font (size, weight, type), color, padding, or specific options relevant to a plot type (for
+        example, a hist plot contains attributes to set the number of bins or enable/disable a kde overlay.
 
         Args:
             name (optional): Name of the element. Defaults to 'None'.
             fcpp (optional): Default kwargs loaded from a theme file.
                 Defaults to {}.
-            others (optional): Other kwargs which override those in fcpp.
-                Typically, these are the user-defined kwargs set in the
-                plotting function call.  Defaults to {}.
-            obj (optional): if this element is unique on each subplot,
-                pass an ObjectArray class to define one for each row x column
-                index; else defaults to None.
+            plot_kwargs (optional): user-defined kwargs set in the plotting function call that override
+                any defaults in the fcpp theme. Defaults to {}.
+
+        Keyword args:
+            Element class attributes defined as kwargs in the constructor call for the Element object
         """
-        # Update kwargs
-        for k, v in others.items():
-            if k not in kwargs.keys():
-                kwargs[k] = v
+        # Add plot_kwargs to element_kwargs kwargs
+        self.element_keys = list(element_kwargs.keys())  # backup the original element key names
+        element_kwargs.update(plot_kwargs)
+        ek = element_kwargs  # shortcut
 
         # Defaults
-        self._on = kwargs.get('on', True)  # visbile or not
+        self._on = ek.get('on', True)  # visible or not
         self.name = name
-        self.engine = kwargs.get('engine', 'undefined').lower()
-        self.dpi = utl.kwget(kwargs, fcpp, 'dpi', 100)
-        if obj is None:
-            self.obj = None
-            self.obj_bg = None
-            self.limits = []
-        else:
-            self.obj = obj.copy()  # plot object reference
-            self.obj_bg = obj.copy()  # background rect
-            self.limits = obj.copy()
-        self.position = kwargs.get('position', [0, 0, 0, 0])  # left, right, top, bottom
-        self._size = kwargs.get('size', [0, 0])  # width, height
-        self._size_orig = kwargs.get('size', [0, 0])
-        self._text = kwargs.get('text', True)  # text label
-        self._text_orig = kwargs.get('text')
-        self.rotation = utl.kwget(kwargs, fcpp, f'{name}_rotation', kwargs.get('rotation', 0))
-        self.zorder = utl.kwget(kwargs, fcpp, f'{name}_zorder', kwargs.get('zorder', 0))
+        self.dpi = utl.kwget(ek, fcpp, 'dpi', 100)
+        self.engine = ek.get('engine', 'undefined').lower()
+        self.ncol = plot_kwargs['ncol']
+        self.nrow = plot_kwargs['nrow']
+        self.obj = utl.subplot_array(self.nrow, self.ncol)  # plot object reference
+        self.obj_bg = utl.subplot_array(self.nrow, self.ncol)  # background rect
+        self.limits = utl.subplot_array(self.nrow, self.ncol)
+        self.padding = ek.get('padding', 0)
+        self._text = ek.get('text', True)  # text label
+        self._text_orig = ek.get('text')
+        self.rotation = utl.kwget(ek, fcpp, f'{name}_rotation', ek.get('rotation', 0))
+        self.zorder = utl.kwget(ek, fcpp, f'{name}_zorder', ek.get('zorder', 0))
 
-        # For some elements that are unique by axes, track sizes as DataFrame
-        self._size_all = pd.DataFrame()
-        self._size_all_bg = pd.DataFrame()
-        self.size_cols = ['ir', 'ic', 'ii', 'jj', 'width', 'height', 'x0', 'x1', 'y0', 'y1', 'rotation']
+        # Position
+        self.position = utl.kwget(ek, fcpp, f'{name}_position', ek.get('position', [0, 0, 0, 0]))
+        self.margin = utl.kwget(ek, fcpp, f'{name}_margin', ek.get('margin', [0, 0]))  # left and top margins
+        if isinstance(self.position, RepeatedList):
+            self.position.values = [ElementPosition(f, self.margin, self.name) for f in self.position.values]
+        else:
+            self.position = ElementPosition(self.position, self.margin, self.name)
 
-        # fill and edge colors
-        #if self.name == 'title': db()
-        if 'fill_alpha' not in kwargs:
-            self.fill_alpha = utl.kwget(kwargs, fcpp, f'{name}_fill_alpha', kwargs.get('fill_alpha', 1))
-        else:
-            self.fill_alpha = kwargs['fill_alpha']
-        if 'fill_color' not in kwargs:
-            self.fill_color = utl.kwget(kwargs, fcpp, f'{name}_fill_color', kwargs.get('fill_color', '#ffffff'))
-        else:
-            self.fill_color = kwargs['fill_color']
-        if not isinstance(self.fill_color, RepeatedList) \
-                and self.fill_color is not None \
-                or self.fill_alpha != 1:
-            self.color_alpha('fill_color', 'fill_alpha')
-        if 'edge_width' not in kwargs:
-            self.edge_width = utl.kwget(kwargs, fcpp, f'{name}_edge_width', kwargs.get('edge_width', 0))
-        else:
-            self.edge_width = kwargs['edge_width']
-        if 'edge_alpha' not in kwargs:
-            self.edge_alpha = utl.kwget(kwargs, fcpp, f'{name}_edge_alpha', kwargs.get('edge_alpha', 1))
-        else:
-            self.edge_alpha = kwargs['edge_alpha']
-        if 'edge_color' not in kwargs:
-            self.edge_color = utl.kwget(kwargs, fcpp, f'{name}_edge_color', kwargs.get('edge_color', '#555555'))
-        else:
-            self.edge_color = kwargs['edge_color']
-        if not isinstance(self.edge_color, RepeatedList) or self.edge_alpha != 1:
-            self.color_alpha('edge_color', 'edge_alpha')
+        # Overall size of an element by row and column
+        self.subplot = False if self.name in ['fig'] else True
+        self._size = ElementSize(ek.get('size', [0, 0]), self.name, self.nrow, self.ncol, self.subplot)
+        self._size_orig = copy.copy(self._size)  # keep track of the original specified value[s]
+
+        # Store size and location of each discrete element and its background rectangle in a DataFrame
+        self.size_all_cols = ['ir', 'ic', 'ii', 'jj', 'width', 'height', 'x0', 'x1', 'y0', 'y1', 'rotation']
+        self._size_all = pd.DataFrame(columns=self.size_all_cols)
+        self._size_all_bg = pd.DataFrame(columns=self.size_all_cols)
+
+        # fill colors
+        self.fill_alpha = utl.kwget(ek, fcpp, f'{name}_fill_alpha', ek.get('fill_alpha', 1))
+        self.fill_color = utl.kwget(ek, fcpp, f'{name}_fill_color', ek.get('fill_color', '#ffffff'))
+        self.color_alpha('fill_color', 'fill_alpha')
+
+        # edge colors
+        self.edge_width = utl.kwget(ek, fcpp, f'{name}_edge_width', ek.get('edge_width', 0))
+        self.edge_alpha = utl.kwget(ek, fcpp, f'{name}_edge_alpha', ek.get('edge_alpha', 1))
+        self.edge_color = utl.kwget(ek, fcpp, f'{name}_edge_color', ek.get('edge_color', '#aaaaaa'))
+        self.color_alpha('edge_color', 'edge_alpha')
+        if utl.kwget(ek, fcpp, f'{name}_edge_color', None) is not None and self.edge_width == 0:
+            # If user specifies an edge color, ensure there is an edge width
+            self.edge_width = 1
 
         # fonts
-        if 'font' not in kwargs:
-            self.font = utl.kwget(kwargs, fcpp, f'{name}_font', kwargs.get('font', 'sans-serif'))
-        else:
-            self.font = kwargs['font']
-        if 'font_color' not in kwargs:
-            self.font_color = utl.kwget(kwargs, fcpp, f'{name}_font_color', kwargs.get('font_color', '#000000'))
-        else:
-            self.font_color = kwargs['font_color']
-        if 'font_size' not in kwargs:
-            self.font_size = utl.kwget(kwargs, fcpp, f'{name}_font_size', kwargs.get('font_size', 14))
-        else:
-            self.font_size = kwargs['font_size']
-        if 'font_style' not in kwargs:
-            self.font_style = utl.kwget(kwargs, fcpp, f'{name}_font_style', kwargs.get('font_style', 'normal'))
-        else:
-            self.font_style = kwargs['font_style']
-        if 'font_weight' not in kwargs:
-            self.font_weight = utl.kwget(kwargs, fcpp, f'{name}_font_weight', kwargs.get('font_weight', 'normal'))
-        else:
-            self.font_weight = kwargs['font_weight']
+        self.font = utl.kwget(ek, fcpp, f'{name}_font', ek.get('font', 'sans-serif'))
+        self.font_color = utl.kwget(ek, fcpp, f'{name}_font_color', ek.get('font_color', '#000000'))
+        self.font_size = utl.kwget(ek, fcpp, f'{name}_font_size', ek.get('font_size', 14))
+        self.font_style = utl.kwget(ek, fcpp, f'{name}_font_style', ek.get('font_style', 'normal'))
+        self.font_weight = utl.kwget(ek, fcpp, f'{name}_font_weight', ek.get('font_weight', 'normal'))
 
-        # lines
-        if 'alpha' not in kwargs:
-            self.alpha = utl.kwget(kwargs, fcpp, f'{name}_alpha', kwargs.get('alpha', 1))
-        else:
-            self.alpha = kwargs['alpha']
-        if 'color' not in kwargs:
-            self.color = utl.kwget(kwargs, fcpp, [f'{name}_color', 'color'], kwargs.get('color', '#000000'))
-        else:
-            self.color = kwargs['color']
-        if not isinstance(self.color, RepeatedList) or self.alpha != 1:
-            self.color_alpha('color', 'alpha')
-        if self.name != 'bar':
-            if 'width' not in kwargs:
-                self.width = utl.kwget(kwargs, fcpp, f'{name}_width', kwargs.get('width', 1))
-            else:
-                self.width = kwargs['width']
-            if not isinstance(self.width, RepeatedList):
-                self.width = RepeatedList(self.width, 'width')
-        if 'style' not in kwargs:
-            self.style = utl.kwget(kwargs, fcpp, f'{name}_style', kwargs.get('style', '-'))
-        else:
-            self.style = kwargs['style']
-        if not isinstance(self.style, RepeatedList):
-            self.style = RepeatedList(self.style, 'style')
-
-        # overrides
-        attrs = ['color', 'fill_color', 'edge_color']
-        for attr in attrs:
-            if getattr(self, attr) is None:
-                continue
-            getattr(self, attr).override = others.get(f'{attr}_override', {})
+        # lines, ticks
+        self.alpha = utl.kwget(ek, fcpp, f'{name}_alpha', ek.get('alpha', None))
+        self.color = utl.kwget(ek, fcpp, [f'{name}_color', 'color'], ek.get('color', None),
+                               True if ek.get('color', None) is not None else False, self.name + '_color')
+        self.color_alpha('color', 'alpha')
+        self.width = utl.kwget(ek, fcpp, f'{name}_width', ek.get('width', None),
+                               True if ek.get('width', None) is not None else False, self.name + '_width')
+        self.style = utl.kwget(ek, fcpp, f'{name}_style', ek.get('style', None),
+                               True if ek.get('style', None) is not None else False, self.name + '_style')
 
         # kwargs to ignore
-        skip_keys = ['df', 'x', 'y', 'z']
-        for k, v in kwargs.items():
+        skip_keys = ['df', 'x', 'x2', 'y', 'y2', 'z']
+        for k, v in ek.items():
             try:
                 if not hasattr(self, k) and k not in skip_keys:
                     setattr(self, k, v)
             except AttributeError:
                 pass
+
+    def __getitem__(self, loc):
+        """This aligns code for a single element with multi-layout Elements in a mosaic grid plot."""
+        return self
 
     @property
     def kwargs(self):
@@ -2960,7 +2897,8 @@ class Element:
         self._on = state
 
         if not self.on:
-            self._size = [0, 0]  # no size if not visible
+            self._size.width = 0
+            self._size.height = 0
             self._text = None
 
         else:
@@ -2968,21 +2906,12 @@ class Element:
             self._text = self._text_orig
 
     @property
-    def position_xy(self):
-        """Return the x, y coordinates of the element."""
-        x, y = map(self.position.__getitem__, [0, 3])
-        return x, y
-
-    @property
     def size(self):
         """Return the element size, if enabled."""
         if self.on:
             return self._size
         else:
-            if isinstance(self._size, list):
-                return [0, 0]
-            else:
-                return 0
+            return ElementSize([0, 0], self.name + '_off', self.nrow, self.ncol, self.subplot)
 
     @size.setter
     def size(self, value: list):
@@ -2994,7 +2923,7 @@ class Element:
         if self._size_orig is None and value is not None:
             self._size_orig = value
 
-        self._size = value
+        self._size = ElementSize(value, self.name, self.nrow, self.ncol, self.subplot)
 
     @property
     def size_all(self):
@@ -3010,19 +2939,20 @@ class Element:
                    each value can be a single item or a list
         """
         data = {}
-        if len(vals) != len(self.size_cols):
+        if len(vals) != len(self.size_all_cols):
             raise ValueError('incorrect size_all table values')
 
-        for icol, col in enumerate(self.size_cols):
+        for icol, col in enumerate(self.size_all_cols):
             data[col] = utl.validate_list(vals[icol])
-
-        # temp = pd.DataFrame(data)
 
         if len(self._size_all) == 0:
             self._size_all = pd.DataFrame(data)
-
         else:
             self._size_all = pd.concat([self._size_all, pd.DataFrame(data)], axis=0).reset_index(drop=True)
+
+        # recalculate the row and column max size values
+        self._size_rows = self._size_all.groupby('ir').max().height.values
+        self._size_cols = self._size_all.groupby('ic').max().width.values
 
     @property
     def size_all_bg(self):
@@ -3038,10 +2968,10 @@ class Element:
                 each value can be a single item or a list
         """
         data = {}
-        if len(vals) != len(self.size_cols):
+        if len(vals) != len(self.size_all_cols):
             raise ValueError('incorrect size_all table values')
 
-        for icol, col in enumerate(self.size_cols):
+        for icol, col in enumerate(self.size_all_cols):
             data[col] = utl.validate_list(vals[icol])
 
         temp = pd.DataFrame(data)
@@ -3053,20 +2983,34 @@ class Element:
             self._size_all_bg = pd.concat([self._size_all_bg, temp]).reset_index(drop=True)
 
     @property
+    def size_cols(self):
+        """Return the maximum size of the elements for each subplot column."""
+        return self._size_cols
+
+    @property
     def size_inches(self):
         """Return the element size in inches, not pixels."""
         if self.on:
-            return [np.ceil(self._size[0]) / self.dpi, np.ceil(self._size[1]) / self.dpi]
+            return ElementSize([np.ceil(self._size.width) / self.dpi,
+                                np.ceil(self._size.height) / self.dpi],
+                               self.name, self.nrow, self.ncol, self.subplot)
         else:
-            return [0, 0]
+            return ElementSize([0, 0], self.name + '_off', self.nrow, self.ncol, self.subplot)
 
     @property
     def size_int(self):
-        """Return the element size in rounded up int, if enabled."""
+        """Return the element size as an integer rounded up, if enabled."""
         if self.on:
-            return int(np.ceil(self._size[0])), int(np.ceil(self._size[1]))
+            return ElementSize([int(np.ceil(self._size.width)),
+                                int(np.ceil(self._size.height))],
+                               self.name, self.nrow, self.ncol, self.subplot)
         else:
-            return [0, 0]
+            return ElementSize([0, 0], self.name + '_off', self.nrow, self.ncol, self.subplot)
+
+    @property
+    def size_rows(self):
+        """Return the maximum size of the elements for each subplot row."""
+        return self._size_rows
 
     @property
     def text(self):
@@ -3085,55 +3029,54 @@ class Element:
 
         self._text = value
 
-    def color_alpha(self, attr: str, alpha: str):
-        """Add alpha to each color in the color list and make it a RepeatedList.
+    def color_alpha(self, color: str, alpha: str):
+        """
+        Convert the color string to a RepeatedList and, if supported by the plotting engine, append the hex code
+        for the alpha value.  Also convert any DEFAULT_COLORS ints to the correct hex color string
 
         Args:
-            attr: kwarg key of the "color" attribute to set of the element
+            color: kwarg key of the "color" attribute to set of the element
                 Ex: 'fill_color'
             alpha:  kwarg key of the "alpha" attribute to set of the element
                 Ex: 'fill_alpha'
         """
-        # MPL < v2 does not support alpha in hex color code
+        if getattr(self, alpha) is None or getattr(self, color) is None:
+            return
+
+        # Not all plotting engines support hex codes with appended alpha codes
         skip_alpha = False
-        if (self.engine == 'mpl' and LooseVersion(mpl.__version__) < LooseVersion('2')) or self.engine in ['plotly']:
+        if self.engine in ['plotly']:
             skip_alpha = True
 
-        alpha = RepeatedList(getattr(self, alpha), 'temp')
+        # Convert color to RepeatedList
+        if not isinstance(getattr(self, color), RepeatedList):
+            setattr(self, color, RepeatedList(utl.validate_list(getattr(self, color)), color))
 
-        if not isinstance(getattr(self, attr), RepeatedList):
-            self.color_list = utl.validate_list(getattr(self, attr))
+        # Set alpha value as a temporary repeated list
+        temp_alpha = RepeatedList(getattr(self, alpha), 'temp_alpha')
 
-            for ic, color in enumerate(self.color_list):
-                if isinstance(color, int):
-                    color = DEFAULT_COLORS[color]
-                if color[0] != '#' and color != 'none':
-                    color = '#' + color
-                if skip_alpha or color == 'none':
-                    astr = ''
-                else:
-                    astr = str(hex(int(alpha[ic] * 255))
-                               )[-2:].replace('x', '0')
-                self.color_list[ic] = color[0:7].lower() + astr
-
-            setattr(self, attr, RepeatedList(self.color_list, attr))
-
-        else:
-            # Update existing RepeatedList alphas
-            setattr(self, attr, copy.copy(getattr(self, attr)))
-            new_vals = []
-            for ival, val in enumerate(getattr(self, attr).values):
-                if skip_alpha:
-                    astr = ''
-                else:
-                    astr = str(hex(int(alpha[ival] * 255))
-                               )[-2:].replace('x', '0')
-                if len(val) > 7:
-                    new_vals += [val[0:-2] + astr]
-                else:
-                    new_vals += [val + astr]
-
-            getattr(self, attr).values = new_vals
+        # Update color values
+        cc = getattr(self, color)
+        for ival, val in enumerate(cc.values):
+            # Skip 'none'
+            if val == 'none':
+                continue
+            # Update DEFAULT_COLORS indexes
+            if isinstance(val, int):
+                cc.values[ival] = DEFAULT_COLORS[color]
+            # Make sure color string is hex
+            if val[0] != '#' and val != 'none':
+                val = '#' + val
+            # Addend the alpha hex code
+            if skip_alpha:
+                continue
+            if not isinstance(temp_alpha[ival], str):
+                alpha_hex = str(hex(int(temp_alpha[ival] * 255)))[-2:].replace('x', '0')
+            elif isinstance(temp_alpha[ival], str) and temp_alpha[ival][0:2] == '0x':
+                alpha_hex = temp_alpha[ival][2:]
+            else:
+                raise ValueError(f'invalid alpha value of {temp_alpha[ival]} for "{self.name}.{color}"')
+            cc.values[ival] = val[0:7] + alpha_hex
 
     def size_all_reset(self):
         """Reset the size_all arrays."""
@@ -3143,18 +3086,20 @@ class Element:
 
 
 class DF_Element(Element):
-    def __init__(self, name: str = 'None', fcpp: dict = {}, others: dict = {}, **kwargs):
+    def __init__(self, name: str = 'None', fcpp: dict = {}, plot_kwargs: dict = {}, **element_kwargs):
         """Wrapper for Element that is only visible if the `values` attribute exists and contains items.  Used for rc
         labels and legends.
 
         Args:
             name (optional): Name of the element. Defaults to 'None'.
             fcpp (optional): Default kwargs loaded from a theme file.  Defaults to {}.
-            others (optional): Other kwargs which override those in fcpp. Typically, these are the user-defined kwargs
-                set in the plotting function call.  Defaults to {}.
-            kwargs
+            plot_kwargs (optional): user-defined kwargs set in the plotting function call that override
+                any defaults in the fcpp theme. Defaults to {}.
+
+        Keyword args:
+            Element class attributes defined as kwargs in the constructor call for the Element object
         """
-        super().__init__(name=name, fcpp=fcpp, others=others, **kwargs)
+        super().__init__(name=name, fcpp=fcpp, plot_kwargs=plot_kwargs, **element_kwargs)
 
         if not hasattr(self, 'column'):
             self.column = None
@@ -3184,33 +3129,39 @@ class DF_Element(Element):
             self._text = self._text_orig
 
 
-class Legend_Element(DF_Element):
-    def __init__(self, name='None', fcpp={}, others={}, **kwargs):
+class LegendElement(DF_Element):
+    def __init__(self, name='None', fcpp={}, plot_kwargs={}, **element_kwargs):
         """Wrapper for DF_Elements for legends
 
         Args:
             name (optional): Name of the element. Defaults to 'None'.
             fcpp (optional): Default kwargs loaded from a theme file.
                 Defaults to {}.
-            others (optional): Other kwargs which override those in fcpp.
-                Typically, these are the user-defined kwargs set in the
-                plotting function call.  Defaults to {}.
-            kwargs
+            plot_kwargs (optional): user-defined kwargs set in the plotting function call that override
+                any defaults in the fcpp theme. Defaults to {}.
+
+        Keyword args:
+            Element class attributes defined as kwargs in the constructor call for the Element object
         """
         self.bypass_values = False
         self.cols = ['Key', 'Curve', 'LineType']
         self.default = pd.DataFrame(columns=self.cols, data=[['NaN', None, None]], index=[0])
 
-        if not kwargs.get('legend'):
+        if not element_kwargs.get('legend'):
             self._values = pd.DataFrame(columns=self.cols)
         else:
             self._values = self.get_default_values_df()
-        if kwargs.get('sort') is True:
+        if element_kwargs.get('sort') is True:
             self.sort = True
         else:
             self.sort = False
 
-        super().__init__(name=name, fcpp=fcpp, others=others, **kwargs)
+        # Legend size overflow values
+        self.overflow = 0
+        self.xs_col = 0
+        self.xs_row = 0
+
+        super().__init__(name=name, fcpp=fcpp, plot_kwargs=plot_kwargs, **element_kwargs)
 
     @property
     def values(self):
@@ -3273,43 +3224,191 @@ class Legend_Element(DF_Element):
         return self.default.copy()
 
 
-class ObjectArray:
-    def __init__(self):
-        """Automatically appending np.array."""
-        self._obj = np.array([])
-
-    def __len__(self):
-        """Return the array length."""
-        return len(self.obj)
-
-    def __getitem__(self, idx: int):
-        """Get an array by index.
+class MarkerElement(Element):
+    def __init__(self, data, name='None', fcpp={}, plot_kwargs={}, **element_kwargs):
+        """Customized Element for markers
 
         Args:
-            idx: index of the item to get
+            data: data object
+            name (optional): Name of the element. Defaults to 'None'.
+            fcpp (optional): Default kwargs loaded from a theme file.
+                Defaults to {}.
+            plot_kwargs (optional): user-defined kwargs set in the plotting function call that override
+                any defaults in the fcpp theme. Defaults to {}.
 
+        Keyword args:
+            Element class attributes defined as kwargs in the constructor call for the Element object
         """
-        return self.obj[idx]
+        _size = element_kwargs.get('size')
+        element_kwargs.pop('size')
+
+        super().__init__(name=name, fcpp=fcpp, plot_kwargs=plot_kwargs, **element_kwargs)
+
+        self._size = _size
+
+        # Modify the marker size value
+        if isinstance(self._size, str) and self._size not in data.df_all.columns:
+            raise ValueError(f'No marker size column named "{self._size}" found in DataFrame')
+        elif not isinstance(self._size, RepeatedList):
+            self._size = RepeatedList(self._size, 'marker_size')
 
     @property
-    def obj(self):
-        """Return the objects."""
-        return self._obj
+    def size(self):
+        """Return the element size, if enabled."""
+        if self.on:
+            return self._size
+        else:
+            return 0
 
-    @obj.setter
-    def obj(self, new_obj):
-        """Append a new object to the array.
-
-        Args:
-            new_obj (multiple): the new object to add to the array
-        """
-        self._obj = np.append(self._obj, new_obj)
-
-    def reshape(self, r: int, c: int):
-        """Reshape the object array.
+    @size.setter
+    def size(self, value: list):
+        """Set the element size.
 
         Args:
-            r: new object array row size
-            c: new object array column size
+            value: width, height
         """
-        self._obj = self._obj.reshape(r, c)
+        if self._size_orig is None and value is not None:
+            self._size_orig = value
+
+        self._size = value
+
+
+class ElementPosition(SimpleNamespace):
+    def __init__(self, position: Union[List[int], Tuple[int]], margin: Union[List[int], Tuple[int]], name: str):
+        """Stores the position within a plot figure of an Element.
+
+        Args:
+            position: two to six elements for left, top, right, bottom, left margin offset, and top margin offset;
+                only left and top must be defined
+            name: name of the element
+
+        """
+        self.name = name
+        position = utl.validate_list(position)
+        if len(position) < 2:
+            raise ValueError('ElementPosition requires at least a left and top position value; '
+                             f'"{name}" was specified with position {position}')
+
+        margin = utl.validate_list(margin)
+        if len(margin) < 2:
+            raise ValueError('ElementPosition requires at least a left and top margin value; '
+                             f'"{name}" was specified with margin {margin}')
+
+        vals = dict(_left=0, _right=0, _top=0, _bottom=0, _margin_left=0, _margin_top=0)
+        for ipp, pp in enumerate(position):
+            if ipp == 0:
+                vals['_left'] = pp
+            elif ipp == 1:
+                vals['_top'] = pp
+            elif ipp == 2:
+                vals['_right'] = pp
+            elif ipp == 3:
+                vals['_bottom'] = pp
+        for imm, mm in enumerate(margin):
+            if imm == 0:
+                vals['_margin_left'] = mm
+            elif imm == 1:
+                vals['_margin_top'] = mm
+        super().__init__(**vals)
+
+    def __copy__(self):
+        # Create a shallow copy
+        new_obj = ElementPosition([self._left, self._right, self._top, self._bottom],
+                                  [self._margin_left, self._margin_top], self._name)
+        return new_obj
+
+    def __deepcopy__(self, memo):
+        # Create a deep copy
+        new_data = copy.deepcopy([self._left, self._right, self._top, self._bottom, self._margin_left,
+                                  self._margin_top], memo)
+        new_obj = ElementPosition(new_data[0:4], new_data[4:], self.name)
+        return new_obj
+
+    def __repr__(self):
+        keys = sorted(self.__dict__)
+        items = ("{}={!r}".format(k[1:] if k[0] == '_' else k, self.__dict__[k]) for k in keys)
+        return "{}({})".format(type(self).__name__, ", ".join(items))
+
+    @property
+    def left(self):
+        return self._left + self._margin_left
+
+    @left.setter
+    def left(self, value):
+        self._left = value
+
+    @property
+    def right(self):
+        return self._right + self._margin_left
+
+    @right.setter
+    def right(self, value):
+        self._right = value
+
+    @property
+    def top(self):
+        return self._top + self._margin_top
+
+    @top.setter
+    def top(self, value):
+        self._top = value
+
+    @property
+    def bottom(self):
+        return self._bottom + self._margin_top
+
+    @bottom.setter
+    def bottom(self, value):
+        self._bottom = value
+
+    @property
+    def margin(self):
+        return self._margin
+
+    @margin.setter
+    def margin(self, value):
+        if (isinstance(value, list) or isinstance(value, tuple)) and len(value) == 2:
+            self._margin = value
+        else:
+            raise ValueError('margin must be a list of [left, top] offset values in pixels')
+
+
+class ElementSize(SimpleNamespace):
+    def __init__(self, size: List[float], name: str, nrow: int = 1, ncol: int = 1, use_subplot=True):
+        self.name = name
+        if isinstance(size, tuple):
+            size = list(size)
+        if isinstance(size, ElementSize):
+            super().__init__(**dict(width=size.width, height=size.height))
+        elif isinstance(size, list) and len(size) == 2 and not use_subplot:
+            super().__init__(**dict(width=size[0], height=size[1]))
+        elif isinstance(size, list) and len(size) == 2:
+            for iss, ss in enumerate(size):
+                if not isinstance(ss, utl.SubplotArray):
+                    size[iss] = utl.subplot_array(nrow, ncol, ss)
+            super().__init__(**dict(width=size[0], height=size[1]))
+        else:
+            raise ValueError(f'ElementSize should be a list of [width, height] but "{size}" ' +
+                             f'was specified for "{name}"')
+
+    def __repr__(self):
+        if isinstance(self.width, utl.SubplotArray):
+            width = '\n' + ' ' * 12 + 'width=(' + self.width.__repr__().replace('\n', '\n' + ' ' * 19)
+        else:
+            width = ' ' + 'width=' + self.width.__repr__().replace('\n', ' ')
+        if isinstance(self.height, utl.SubplotArray):
+            height = '\n' + ' ' * 12 + 'height=(' + self.height.__repr__().replace('\n', '\n' + ' ' * 20)
+        else:
+            height = ' ' + 'height=' + self.height.__repr__().replace('\n', '\n' + ' ' * 20)
+        return f"ElementSize(name='{self.name}',{width},{height})"
+
+    def __copy__(self):
+        # Create a shallow copy
+        new_obj = ElementSize([self.width, self.height], self.name)
+        return new_obj
+
+    def __deepcopy__(self, memo):
+        # Create a deep copy
+        new_data = copy.deepcopy([self.width, self.height], memo)
+        new_data = ElementSize(new_data, self.name)
+        return new_data

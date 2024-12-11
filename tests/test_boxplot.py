@@ -278,7 +278,8 @@ def plt_group_legend_lots(bm=False, make_reference=False, show=False):
 
     # Make the plot
     fcp.boxplot(df2, y='Value', groups=['Batch', 'Sample'], legend='Lots of Values', show=SHOW,
-                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False, legend_edge_color='#000000')
+                filename=name.with_suffix('.png'), save=not bm, inline=False, jitter=False,
+                legend_edge_color='#000000')
 
     if bm:
         return

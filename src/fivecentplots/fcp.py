@@ -579,47 +579,27 @@ def merge_mosaics(layouts: List['engines.Layout'], dobjs: List['data.Data'], kws
         dobjs: all data classes for the mosaic plot
         kws: all the kwargs dicts for the mosaic plot
     """
-    legends = dobjs[0].obj_array
-    legend_edge_width = dobjs[0].obj_array
-    cbar_sizes = dobjs[0].obj_array
-    ws_ax_cbars = dobjs[0].obj_array
+    elements = ['axes', 'legend', 'cbar', 'box_group_label'] + [f'label_{ax}' for ax in dobjs[0].axs]
 
-    # Transfer Element information to primary layout
-    for ir, ic, plot_num in dobjs.get_subplot_index():
-        # data.axs_on
-        if plot_num != 0:
-            dobjs[0].axs_on += [f for f in dobjs[plot_num].axs_on if f not in dobjs[0].axs_on]
+    for el in elements:
+        element_array = dobjs[0].subplot_array()
 
-        # Labels
-        if plot_num != 0:
-            for lab in dobjs[plot_num].axs_on:
-                getattr(layouts[0], f'label_{lab}').obj[ir, ic] = getattr(layouts[plot_num], f'label_{lab}').obj[ir, ic]
+        # Add each mosaic layout to the element array
+        for ir, ic, plot_num in dobjs[0].get_subplot_index():
+            element_array[ir, ic] = getattr(layouts[plot_num], el)
 
-        # Legends
-        if hasattr(dobjs[plot_num], 'legend') and getattr(dobjs[plot_num], 'legend') is not None:
-            legends[ir, ic] = layouts[plot_num].legend.obj[0, 0]
-            legend_edge_width[ir, ic] = layouts[plot_num].legend.edge_width
+            # Add the plot object to the obj_array of the primary layout
+            getattr(layouts[0], el).obj[ir, ic] = getattr(layouts[plot_num], el).obj[ir, ic]
 
-        # cbars
-        layouts[0].cbar.obj[ir, ic] = layouts[plot_num].cbar.obj[ir, ic]
-        cbar_sizes[ir, ic] = layouts[plot_num].cbar.size[0]
-        ws_ax_cbars[ir, ic] = layouts[plot_num].ws_ax_cbar
+        # In the primary layout, replace the given element with the array of elements
+        setattr(layouts[0], el, element_array)
+
+        # Turn on the element in the primary layout if there are active elements in other layouts
+        if np.any(getattr(layouts[0], el)[0, 0].obj):
+            getattr(layouts[0], el)[0, 0]._on = True
 
 
-    # Update other values
-    if np.any(legends):
-        layouts[0].legend.obj = legends
-        layouts[0].legend.edge_width = legend_edge_width
-        layouts[0].legend._on = True
-        layouts[0].legend.bypass_values = True
-
-    if np.any(layouts[0].cbar.obj):
-        layouts[0].cbar.on = True
-        layouts[0].cbar.sizes = cbar_sizes
-        layouts[0].cbar.ws_ax_cbars = ws_ax_cbars
-
-
-def mosaic(plot_list: List[Tuple[str, dict]], ncol: int = 2, **mosaic_kwargs):
+def mosaic(plot_list: List[Tuple[str, dict]], ncol: int = 0, **mosaic_kwargs):
     """Make a grid containing different plot types
 
     Args:
@@ -629,7 +609,8 @@ def mosaic(plot_list: List[Tuple[str, dict]], ncol: int = 2, **mosaic_kwargs):
         ncol: number of columns for the final plot; rows calculated automatically
     """
     kwargs = {}
-    shares = dict.fromkeys([f'share_{f}' for f in ['x', 'x2', 'y', 'y2', 'z', 'col', 'row']], False)
+    invalid = []
+    no_share = dict.fromkeys([f'share_{f}' for f in ['x', 'x2', 'y', 'y2', 'z', 'col', 'row']], False)
 
     for iplt, plt in enumerate(plot_list):
         # Validate plot types
@@ -641,19 +622,19 @@ def mosaic(plot_list: List[Tuple[str, dict]], ncol: int = 2, **mosaic_kwargs):
         # Validate input data source by plot type and make kwarg dict, forcing some parameters
         key = 'xy' if plt[0] == 'plot' else plt[0]  # some renaming to match data class
         subplot = utl.dfkwarg(plt[1]['df'], plt[1], data.Mosaic.data_lut[key], iplt)
+
+        # kwargs defined outside of individual plot dicts override any kwargs in the plot dicts
+        for k, v in mosaic_kwargs.items():
+            subplot[str(iplt)][k] = v
+
+        # Mandatory mosaic kwargs
         subplot[str(iplt)]['mosaic'] = True
-        subplot[str(iplt)]['ncol'] = ncol
-        subplot[str(iplt)]['separate_labels'] = ncol
-        subplot[str(iplt)]['separate_ticks'] = ncol
-        subplot[str(iplt)].update(shares)
+        subplot[str(iplt)]['separate_labels'] = True  # force separate labels
+        subplot[str(iplt)]['separate_ticks'] = True  # force separate ticks
+        subplot[str(iplt)].update(no_share)  # force no axis sharing
 
+        # Update the main kwargs dict
         kwargs.update(subplot)
-
-    # Main kwargs overrides others
-    for k, v in mosaic_kwargs.items():
-        if k == 'ncol':
-            continue
-        kwargs['0'][k] = v
 
     return plotter(data.Mosaic, True, **kwargs)
 
@@ -1540,7 +1521,9 @@ def plot_xy(data, layout, ir, ic, df_rc, kwargs):
 
 
 def plotter(dobj, mosaic=False, **kwargs):
-    """ Main plotting function
+    """
+    Builds the final plot(s) which may be of a single plot type and data set or mosaic plot that combines multiple
+    plot types and data sets.  For mosaic plots, the "primary" layout and keyword dict are at the zero index
 
     Args:
         dobj (Data object):  data class for the specific plot type
@@ -1620,6 +1603,10 @@ def plotter(dobj, mosaic=False, **kwargs):
     for ifig, fig_item, fig_cols, dd in dd.get_df_figure():
         kwargs['timer'].get('dd.get_df_figure')
 
+        # Should we have a separate primary layout for the main mosaic instead of ramming into the first?
+        # Should we forego the first get_figure_size call and do something simpler just based on axes sizes?
+        # What to do about all the indexes???
+
         # Create a list of layout objects
         layouts = [engine.Layout(dd[ii], defaults, **kwargs[str(ii)]) for ii in range(0, len(dd))]
         layouts = utl.axes_size_ratios(layouts)  # update the size ratios
@@ -1629,11 +1616,10 @@ def plotter(dobj, mosaic=False, **kwargs):
         layouts[0].make_figure(dd[0], **kwargs['0'])
         kwargs['timer'].get(f'ifig={ifig} | make_figure')
 
-        # Link secondary layout classes to layout_main
-        props = ['fig', 'axes']
+        # Link the fig and axes elements of non-primary layout classes to those of the main layout (mosaic only)
         for ilayout in range(1, len(layouts)):
-            for pp in props:
-                getattr(layouts[ilayout], pp).obj = getattr(layouts[0], pp).obj
+            getattr(layouts[ilayout], 'fig').obj = getattr(layouts[0], 'fig').obj
+            getattr(layouts[ilayout], 'axes').obj = getattr(layouts[0], 'axes').obj
 
         # Make the subplots
         for ir, ic, plot_num, df_rc in dd.get_rc_subset():
@@ -1713,17 +1699,13 @@ def plotter(dobj, mosaic=False, **kwargs):
             layouts[plot_num].set_axes_ticks(ir, ic)
             kwargs['timer'].get(f'ifig={ifig} | ir={ir} | ic={ic} | set_axes_ticks')
 
-        # Make the legend  NOT SURE ABOUT THIS FOR mosaic
-        for ileg, ll in enumerate(layouts):
-            ll.add_legend(dd[ileg].legend_vals)
-        kwargs['timer'].get(f'ifig={ifig} | add_legend')
-
-        # Shortcuts
-        layout = layouts[0]
-        kws = kwargs['0']
+            # Make the legend
+            for ileg, ll in enumerate(layouts):
+                ll.add_legend(ir, ic, dd[ileg].legend_vals)
+            kwargs['timer'].get(f'ifig={ifig} | add_legend')
 
         # Add a figure title
-        layout.set_figure_title()
+        layouts[0].set_figure_title()
         kwargs['timer'].get(f'ifig={ifig} | set_figure_title')
 
         # Merge mosaic plots into primary layout
@@ -1732,50 +1714,50 @@ def plotter(dobj, mosaic=False, **kwargs):
             kwargs['timer'].get(f'ifig={ifig} | merge_mosaics')
 
         # Final adjustments
-        layout.set_figure_final_layout(dd[0], **kws)
+        layouts[0].set_figure_final_layout(dd[0], **kwargs['0'])
         kwargs['timer'].get(f'ifig={ifig} | set_figure_final_layout')
 
         # Build the save filename
-        filename = utl.set_save_filename(dd[0].df_fig, ifig, fig_item, fig_cols, layout, kws)
-        if kws.get('filepath'):
-            filename = os.path.join(kws['filepath'], filename)
+        filename = utl.set_save_filename(dd[0].df_fig, ifig, fig_item, fig_cols, layouts[0], kwargs['0'])
+        if kwargs['0'].get('filepath'):
+            filename = os.path.join(kwargs['0']['filepath'], filename)
 
         # Optionally save and open
-        if kws.get('save', False) or kws.get('show', False):
+        if kwargs['0'].get('save', False) or kwargs['0'].get('show', False):
             if ifig:
                 idx = ifig
             else:
                 idx = 0
-            layout.save(filename, idx)
-            if kws.get('return_filename'):
-                layout.close()
-                if 'filepath' in kws.keys():
-                    return osjoin(kws['filepath'], filename)
+            layouts[0].save(filename, idx)
+            if kwargs['0'].get('return_filename'):
+                layouts[0].close()
+                if 'filepath' in kwargs['0'].keys():
+                    return osjoin(kwargs['0']['filepath'], filename)
                 else:
                     return osjoin(os.getcwd(), filename)
-            if kws.get('show', False):
+            if kwargs['0'].get('show', False):
                 utl.show_file(filename)
 
             # Disable inline unless explicitly called in kwargs
-            if not kws.get('inline'):
-                kws['inline'] = False
+            if not kwargs['0'].get('inline'):
+                kwargs['0']['inline'] = False
 
-        if kws.get('print_filename', False):
+        if kwargs['0'].get('print_filename', False):
             print('\033[1m' + filename + '\033[0m')
 
         kwargs['timer'].get(f'ifig={ifig} | save')
 
         # Return inline plot
-        if not kws.get('inline', True):
-            layout.close()
+        if not kwargs['0'].get('inline', True):
+            layouts[0].close()
         else:
-            layout.show()
+            layouts[0].show()
         kwargs['timer'].get(f'ifig={ifig} | return inline')
 
     # Save data used in the figures
-    if kws.get('save_data', False):
-        if isinstance(kws['save_data'], str):
-            filename = kws['save_data']
+    if kwargs['0'].get('save_data', False):
+        if isinstance(kwargs['0']['save_data'], str):
+            filename = kwargs['0']['save_data']
         else:
             filename = filename.split('.')[0] + '.csv'
         if isinstance(dd.df_all, pd.DataFrame):

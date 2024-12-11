@@ -37,11 +37,11 @@ def test_element():
 
 
 def test_legend_element():
-    leg = layout.Legend_Element()
+    leg = layout.LegendElement()
     expected = pd.DataFrame(columns=['Key', 'Curve', 'LineType'])
     pd.testing.assert_frame_equal(leg._values, expected)
 
-    leg = layout.Legend_Element(legend=True, sort=True)
+    leg = layout.LegendElement(legend=True, sort=True)
     leg.values = pd.DataFrame({'Key': 'hi', 'Curve': 'bye', 'LineType': 'fire'}, index=[0])
     expected = pd.DataFrame({'Key': 'hi', 'Curve': 'bye', 'LineType': 'fire'}, index=[0])
     pd.testing.assert_frame_equal(leg.values, expected)

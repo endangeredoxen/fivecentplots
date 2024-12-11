@@ -16,7 +16,7 @@ import operator
 import imageio.v3 as imageio
 from matplotlib.font_manager import FontProperties, findfont
 from pathlib import Path
-from typing import Dict, List, Tuple, Union
+from typing import Any, Dict, List, Tuple, Union
 from . import data
 import numpy.typing as npt
 try:
@@ -28,6 +28,7 @@ try:
 except (ImportError, ModuleNotFoundError):
     pass
 db = pdb.set_trace
+
 
 # Get user default file
 user_dir = pathlib.Path.home()
@@ -48,22 +49,27 @@ with open(Path(__file__).parent / 'version.txt', 'r') as fid:
 HIST = {'ax_scale': 'logy', 'markers': False, 'line_width': 2, 'preset': 'HIST'}
 
 
+class CFAError(Exception):
+    def __init__(self, *args, **kwargs):
+        """Exception class for CFA definition issues."""
+        Exception.__init__(self, *args, **kwargs)
+
+
 class RepeatedList:
-    def __init__(self, values: list, name: str, override: dict = {}):
-        """Set a default list of items and loop through it beyond the maximum
-        index value.
+    def __init__(self, values: Union[list, 'RepeatedList'], name: str):
+        """Enhanced 1D list that allows looping beyond the maximum index value.
 
         Args:
             values: user-defined list of values
             name: label to describe contents of class
-            override: override the RepeatedList value based on the legend value for this item
         """
+        if isinstance(values, RepeatedList):
+            return
+
         self.values = validate_list(values)
         self.shift = 0
-        self.override = override
 
         if not isinstance(self.values, list) or len(self.values) < 1:
-            db()
             raise ValueError(f'RepeatedList "{name}" must contain an actual list with at least one element')
 
     def __len__(self):
@@ -77,12 +83,7 @@ class RepeatedList:
         else:
             key = None
 
-        val = self.values[(idx + self.shift) % len(self.values)]
-
-        if len(list(self.override.keys())) == 0 or key not in self.override.keys():
-            return val
-        else:
-            return self.override[key]
+        return self.values[(idx + self.shift) % len(self.values)]
 
     def max(self):
         """Return the maximum value of the RepeatedList."""
@@ -90,10 +91,66 @@ class RepeatedList:
         return max(self.values)
 
 
-class CFAError(Exception):
-    def __init__(self, *args, **kwargs):
-        """Exception class for CFA definition issues."""
-        Exception.__init__(self, *args, **kwargs)
+class SubplotArray(np.ndarray):
+    def __new__(cls, nrow: int, ncol: int, value: Union[Any] = None):
+        """
+        Make an array with the same indices as the subplot grid.
+
+        Args:
+            nrow: number of plot rows
+            ncol: number of plot columns
+
+        Keyword Args:
+            value: a value to replicate in the array
+        """
+        arr = np.array([[value] * ncol] * nrow)
+        obj = np.asarray(arr, dtype='object').view(cls)
+        obj.nrow = nrow
+        obj.ncol = ncol
+        return obj
+
+    def __array_finalize__(self, obj):
+        # Finalize the new array
+        if obj is None: return
+        self.nrow = getattr(obj, 'nrow', None)
+        self.ncol = getattr(obj, 'ncol', None)
+
+    def __getitem__(self, idx):
+        """Allow [ir, ic] indexing and a single plot_num index."""
+        if isinstance(idx, int) and len(self.shape) == 2:
+            row = idx // 2
+            col = idx % 2
+            if row > self.nrow - 1 or col > self.ncol - 1:
+                raise IndexError(f'index {idx} is output bounds for a {self.nrow} x {self.ncol} subplot_array')
+            idx = (row, col)
+        return super().__getitem__(idx)
+
+    def __setitem__(self, idx, value):
+        """Allow [ir, ic] indexing and a single plot_num index."""
+        if isinstance(idx, int):
+            row = idx // 2
+            col = idx % 2
+            if row > self.nrow - 1 or col > self.ncol - 1:
+                raise IndexError(f'index {idx} is output bounds for a {self.nrow} x {self.ncol} subplot_array')
+            return super().__setitem__((row, col), value)
+        else:
+            return super().__setitem__(idx, value)
+
+    def col_max(self):
+        """Get the maximum value of each column."""
+        return self.max(axis=0)
+
+    def row_max(self):
+        """Get the maximum value of each row."""
+        return self.max(axis=1).reshape((self.nrow, 1))
+
+    def col_sum(self):
+        """Get the sum of the max of all columns."""
+        return float(self.col_max().sum())
+
+    def row_sum(self):
+        """Get the sum of the max of all rows."""
+        return float(self.row_max().sum())
 
 
 class Timer:
@@ -220,23 +277,23 @@ def axes_size_ratios(layouts: List['Layout']) -> List['Layout']:  # noqa: F821)
         layouts[0].axes.width_ratios = np.array([1 for f in range(0, nrow)])
     else:
         # allow for different figure sizes
-        widths = np.array([[0] * ncol] * nrow)
-        heights = np.array([[0] * ncol] * nrow)
+        widths = subplot_array(nrow, ncol, 0)
+        heights = subplot_array(nrow, ncol, 0)
         for ir in range(0, nrow):
             for ic in range(0, ncol):
                 num = plot_num(ir, ic, ncol) - 1
                 if num > len(layouts) - 1:
                     break
-                widths[ir, ic] = layouts[num].axes.size[0]
-                heights[ir, ic] = layouts[num].axes.size[1]
+                widths[ir, ic] = layouts[num].axes.size.width[ir, ic]
+                heights[ir, ic] = layouts[num].axes.size.height[ir, ic]
 
-        layouts[0].axes.width_ratios = np.max(widths, axis=0) / layouts[0].axes.size[0]
-        layouts[0].axes.height_ratios = np.max(heights, axis=1) / layouts[0].axes.size[1]
+        layouts[0].axes.width_ratios = (widths / layouts[0].axes.size.width).col_max()
+        layouts[0].axes.height_ratios = (heights / layouts[0].axes.size.height).row_max().reshape(nrow)
 
-        # Record the specific requested sizes for each mosaic plot type
-        for ll in layouts:
-            ll.axes.mosaic_widths = widths
-            ll.axes.mosaic_heights = heights
+    # # Record the specific requested sizes for each mosaic plot type
+    # for ll in layouts:
+    #     ll.axes.widths_array = widths
+    #     ll.axes.heights_array = heights
 
     return layouts
 
@@ -712,7 +769,8 @@ def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, f
     return w, h  # no idea why it is off
 
 
-def kwget(dict1: dict, dict2: dict, vals: [str, list], default: [list, dict]):
+def kwget(dict1: dict, dict2: dict, vals: [str, list], default: [list, dict],
+          make_repeated_list: bool=False, name: Union[None, str]=None):
     """Augmented kwargs.get function.
 
     Args:
@@ -720,20 +778,29 @@ def kwget(dict1: dict, dict2: dict, vals: [str, list], default: [list, dict]):
         dict2: second dictionary to check for the value
         vals: value(s) to look for
         default: default value if not found in dict1 or dict2 keys
+        make_repeated_list: return the result as a RepeatedList
+        name: RepeatedList name
 
     Returns:
         value to use (dtype varies)
     """
+    def repeated_list(value, name):
+        if make_repeated_list and not isinstance(value, RepeatedList):
+            if name is None:
+                raise ValueError('kwget requires an element name to return a RepeatedList')
+            return RepeatedList(value, name)
+        else:
+            return value
+
     vals = validate_list(vals)
-
     for val in vals:
-        if val in dict1.keys():
-            return dict1[val]
+        if val in dict1:
+            return repeated_list(dict1[val], name)
     for val in vals:
-        if val in dict2.keys():
-            return dict2[val]
+        if val in dict2:
+            return repeated_list(dict2[val], name)
 
-    return default
+    return repeated_list(default, name)
 
 
 def load_test_data(name: str) -> Union[pd.DataFrame, npt.NDArray]:
@@ -1615,6 +1682,11 @@ def strip_html(text: str):
         return re.sub('<[^>]*>', '', text)
     else:
         return text
+
+
+def subplot_array(nrow: int, ncol: int, value: Union[Any] = None):
+    """Wrapper for SubplotArray class."""
+    return SubplotArray(nrow, ncol, value)
 
 
 def test_checker(module) -> list:

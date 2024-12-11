@@ -58,7 +58,7 @@ class Layout(BaseLayout):
         self.ul['plot_bgcolor'] = None
         self.ul['title'] = {}
         for ax in data.axs_on:
-            self.ul[f'{ax}axis_range'] = data.obj_array
+            self.ul[f'{ax}axis_range'] = data.subplot_array
             self.ul[f'{ax}axis_style'] = {}
             self.ul[f'{ax}axis_title'] = {}
             self.ul[f'{ax}grid'] = {}
@@ -79,7 +79,7 @@ class Layout(BaseLayout):
                                orientation=utl.kwget(kwargs, self.fcpp, 'modebar_orientaiton', 'v'),
                                visible=utl.kwget(kwargs, self.fcpp, 'modebar_visible', False)
                                )
-        self.modebar.size[0] = 25  # the plotly toolbar
+        self.modebar.size.width = 25  # the plotly toolbar
         self.ws_leg_modebar = 5  # space between a legend and modebar
 
         # Check for unsupported kwargs
@@ -107,9 +107,9 @@ class Layout(BaseLayout):
         #     return 0
 
         # val = \
-        #     (self.ws_ax_cbar + self.cbar.size[0] + self.tick_labels_major_z.size[0]) \
+        #     (self.ws_ax_cbar + self.cbar.size.width + self.tick_labels_major_z.size.width) \
         #     * (self.ncol if not self.cbar.shared else 1) \
-        #     + (self.label_z.size[0] * (self.ncol if self.separate_labels else 1)
+        #     + (self.label_z.size.width * (self.ncol if self.separate_labels else 1)
         #        + self.ws_ticks_ax * (self.ncol - 1 if not self.cbar.shared else 0)  # btwn z-ticks and the next axes
         #        + self.ws_ticks_ax * self.label_z.on)  # this is between the z-ticks and label_z
         return val
@@ -117,7 +117,7 @@ class Layout(BaseLayout):
     @property
     def _labtick_x(self) -> float:
         """Height of the x label + x tick labels + related whitespace."""
-        val = self.label_x.size[1] * self.label_x.on \
+        val = self.label_x.size.height * self.label_x.on \
             + self.ws_label_tick * ((self.tick_labels_major_x.on | self.tick_labels_minor_x.on) & self.label_x.on) \
             + self._tick_x
         if self.label_x.on and self._tick_x == 0:
@@ -130,7 +130,7 @@ class Layout(BaseLayout):
         if not self.axes.twin_y:
             return 0
 
-        val = self.label_x2.size[1] * self.label_x2.on \
+        val = self.label_x2.size.height * self.label_x2.on \
             + self.ws_label_tick * ((self.tick_labels_major_x2.on | self.tick_labels_minor_x2.on) & self.label_x2.on) \
             + self._tick_x2
         if self.label_x2.on and self._tick_x2 == 0:
@@ -143,7 +143,7 @@ class Layout(BaseLayout):
         if self.pie.on:
             return 0
 
-        val = self.label_y.size[0] * self.label_y.on \
+        val = self.label_y.size.width * self.label_y.on \
             + self.ws_label_tick * ((self.tick_labels_major_y.on | self.tick_labels_minor_y.on) & self.label_y.on) \
             + self._tick_y
         if self.label_y.on and self._tick_y == 0:
@@ -156,7 +156,7 @@ class Layout(BaseLayout):
         if not self.axes.twin_x:
             return 0
 
-        val = self.label_y2.size[0] * self.label_y2.on \
+        val = self.label_y2.size.width * self.label_y2.on \
             + self.ws_label_tick * ((self.tick_labels_major_y2.on | self.tick_labels_minor_y2.on) & self.label_y2.on) \
             + self._tick_y2
         if self.label_y2.on and self._tick_y2 == 0:
@@ -172,8 +172,8 @@ class Layout(BaseLayout):
         """
         left = np.ceil(self.ws_fig_label) + np.ceil(self._labtick_y)
 
-        title_xs_left = np.ceil(self.title.size[0] / 2) + np.ceil(self.ws_fig_ax if self.title.on else 0) \
-            - (left + np.ceil(self.axes.size[0] * self.ncol + self.ws_col * (self.ncol - 1)) / 2)
+        title_xs_left = np.ceil(self.title.size.width / 2) + np.ceil(self.ws_fig_ax if self.title.on else 0) \
+            - (left + np.ceil(self.axes.size.width * self.ncol + self.ws_col * (self.ncol - 1)) / 2)
         if title_xs_left < 0:
             title_xs_left = 0
         left += title_xs_left
@@ -187,7 +187,7 @@ class Layout(BaseLayout):
     def _legx(self) -> float:
         """Legend whitespace x if location == 0."""
         if self.legend.location == 0 and self.legend._on:
-            return self.legend.size[0] + self.ws_ax_leg
+            return self.legend.size.width + self.ws_ax_leg
         else:
             return 0
 
@@ -195,7 +195,7 @@ class Layout(BaseLayout):
     def _legy(self) -> float:
         """Legend whitespace y is location == 11."""
         if self.legend.location == 11 and self.legend._on:
-            return self.legend.size[1]
+            return self.legend.size.height
         else:
             return 0
 
@@ -213,20 +213,20 @@ class Layout(BaseLayout):
 
         # modebar
         if self.modebar.orientation == 'v':  # always add extra ws
-            right += self.modebar.size[0] + self.ws_leg_modebar * self.legend.on
+            right += self.modebar.size.width + self.ws_leg_modebar * self.legend.on
 
         # # box title excess
         # if self.box_group_title.on and (self.ws_ax_box_title + self.box_title) > \
         #         self._legx + (self.fig_legend_border if self.legend._on else 0):
         #     right = np.ceil(self.ws_ax_box_title) + np.ceil(self.box_title) \
         #          + np.ceil((self.ws_ax_fig if not self.legend.on else 0))
-        # if self.box_group_title.on and self.legend.size[1] > self.axes.size[1]:
+        # if self.box_group_title.on and self.legend.size.height > self.axes.size.height:
         #     right += np.ceil(self.box_title)
 
         # # Main figure title excess size
-        # title_xs_right = np.ceil(self.title.size[0] / 2) \
-        #     - np.ceil((right + (self.axes.size[0] * self.ncol + self.ws_col * (self.ncol - 1)) / 2)) \
-        #     - np.ceil(self.legend.size[0])
+        # title_xs_right = np.ceil(self.title.size.width / 2) \
+        #     - np.ceil((right + (self.axes.size.width * self.ncol + self.ws_col * (self.ncol - 1)) / 2)) \
+        #     - np.ceil(self.legend.size.width)
         # if title_xs_right < 0:
         #     title_xs_right = 0
 
@@ -240,42 +240,42 @@ class Layout(BaseLayout):
     @property
     def _tick_x(self) -> float:
         """Height of the primary x ticks and whitespace."""
-        if self.tick_labels_major_x.size[1] > self.tick_labels_minor_x.size[1]:
+        if self.tick_labels_major_x.size.height > self.tick_labels_minor_x.size.height:
             tick = self.tick_labels_major_x
         else:
             tick = self.tick_labels_minor_x
 
-        return (tick.size[1] + tick.edge_width + self.ws_ticks_ax) * tick.on
+        return (tick.size.height + tick.edge_width + self.ws_ticks_ax) * tick.on
 
     @property
     def _tick_x2(self) -> float:
         """Height of the secondary x ticks and whitespace."""
-        if self.tick_labels_major_x2.size[1] > self.tick_labels_minor_x2.size[1]:
+        if self.tick_labels_major_x2.size.height > self.tick_labels_minor_x2.size.height:
             tick = self.tick_labels_major_x2
         else:
             tick = self.tick_labels_minor_x2
 
-        return (tick.size[1] + tick.edge_width + self.ws_ticks_ax) * tick.on
+        return (tick.size.height + tick.edge_width + self.ws_ticks_ax) * tick.on
 
     @property
     def _tick_y(self) -> float:
         """Width of the primary y ticks and whitespace."""
-        if self.tick_labels_major_y.size[0] > self.tick_labels_minor_y.size[0]:
+        if self.tick_labels_major_y.size.width > self.tick_labels_minor_y.size.width:
             tick = self.tick_labels_major_y
         else:
             tick = self.tick_labels_minor_y
 
-        return (tick.size[0] + tick.edge_width + self.ws_ticks_ax) * tick.on
+        return (tick.size.width + tick.edge_width + self.ws_ticks_ax) * tick.on
 
     @property
     def _tick_y2(self) -> float:
         """Width of the secondary y ticks and whitespace."""
-        if self.tick_labels_major_y2.size[0] > self.tick_labels_minor_y2.size[0]:
+        if self.tick_labels_major_y2.size.width > self.tick_labels_minor_y2.size.width:
             tick = self.tick_labels_major_y2
         else:
             tick = self.tick_labels_minor_y2
 
-        return (tick.size[0] + tick.edge_width + self.ws_ticks_ax) * tick.on
+        return (tick.size.width + tick.edge_width + self.ws_ticks_ax) * tick.on
 
     @property
     def _top(self) -> float:
@@ -284,9 +284,9 @@ class Layout(BaseLayout):
         Returns:
             margin in pixels
         """
-        toolbar = self.modebar.size[0] if self.modebar.orientation == 'h' else 0
+        toolbar = self.modebar.size.width if self.modebar.orientation == 'h' else 0
         padding = self.ws_fig_title if self.title.on else self.ws_fig_ax
-        return padding + self.title.size[1] + self.ws_title_ax * self.title.on + toolbar
+        return padding + self.title.size.height + self.ws_title_ax * self.title.on + toolbar
 
     def add_box_labels(self, ir: int, ic: int, data):
         """Add box group labels and titles (JMP style).
@@ -371,8 +371,8 @@ class Layout(BaseLayout):
             legend_key_width = marker_leg_edge_to_text + key_dim[0] + text_to_leg_edge
 
             # Set approximate legend size
-            self.legend.size[0] = max(title_dim[0], legend_key_width) + 2 * self.legend.edge_width
-            self.legend.size[1] = \
+            self.legend.size.width = max(title_dim[0], legend_key_width) + 2 * self.legend.edge_width
+            self.legend.size.height = \
                 (title_dim[1] if self.legend.text != '' else 0) \
                 + len(leg_vals) * key_dim[1] \
                 + 2 * self.legend.edge_width \
@@ -437,18 +437,18 @@ class Layout(BaseLayout):
             row_edge_height = 2 * self.axes.edge_width * self.nrow
 
         # Set figure width
-        self.fig.size[0] = \
+        self.fig.size.width = \
             self._left \
-            + self.axes.size[0] * self.ncol \
+            + self.axes.size.width * self.ncol \
             + col_edge_width \
             + self._right \
             + self.ws_col * (self.ncol - 1) \
             + self._cbar
 
         # Figure height
-        self.fig.size[1] = \
+        self.fig.size.height = \
             self._top \
-            + self.axes.size[1] * self.nrow \
+            + self.axes.size.height * self.nrow \
             + row_edge_height \
             + self.ws_row * (self.nrow - 1) \
             + self._bottom
@@ -460,7 +460,7 @@ class Layout(BaseLayout):
             data: fcp Data object
             **kwargs: input args from user
         """
-        self.axes.obj = data.obj_array
+        self.axes.obj = data.subplot_array
         specs = [[{"secondary_y": self.axes.twin_x}] * self.ncol] * self.nrow
 
         self.fig.obj = make_subplots(rows=self.nrow,
@@ -468,8 +468,8 @@ class Layout(BaseLayout):
                                      shared_xaxes=self.axes.share_x,
                                      shared_yaxes=self.axes.share_y,
                                      specs=specs,
-                                     horizontal_spacing=self.ws_col / (self.axes.size[0] * self.ncol),
-                                     vertical_spacing=self.ws_row / (self.axes.size[1] * self.nrow),
+                                     horizontal_spacing=self.ws_col / (self.axes.size.width * self.ncol),
+                                     vertical_spacing=self.ws_row / (self.axes.size.height * self.nrow),
                                      )
 
         if self.axes.twin_y:
@@ -478,21 +478,21 @@ class Layout(BaseLayout):
 
         # # Need more spacing to account for labels and stuff, same problem as mpl
         # #   Note: this is not the full final size; margins are added in set_figure_final_layout
-        # self.fig.size = [self.axes.size[0] * self.ncol, self.axes.size[1] * self.nrow]
+        # self.fig.size = [self.axes.size.width * self.ncol, self.axes.size.height * self.nrow]
 
         # if self.title.on:
-        #     self.ws_title = self.ws_fig_title + self.title.size[1] + self.ws_title_ax
+        #     self.ws_title = self.ws_fig_title + self.title.size.height + self.ws_title_ax
         # else:
         #     self.ws_title = self.ws_fig_ax
         # self.box_labels = 0
         # self._legy = 0
 
-        # self.fig.size[1] = int(
+        # self.fig.size.height = int(
         #     self.ws_title
-        #     + (self.label_col.size[1] + self.ws_label_col) * self.label_col.on
-        #     + self.title_wrap.size[1] + self.label_wrap.size[1]
+        #     + (self.label_col.size.height + self.ws_label_col) * self.label_col.on
+        #     + self.title_wrap.size.height + self.label_wrap.size.height
         #     # + self._labtick_x2
-        #     + self.axes.size[1] * self.nrow
+        #     + self.axes.size.height * self.nrow
         #     # + self._labtick_x
         #     + self.ws_fig_label
         #     + self.ws_row * (self.nrow - 1)
@@ -996,7 +996,7 @@ class Layout(BaseLayout):
 
             # add margin to the figure for the labels (one time only) and set style
             if ir == 0 and ic == 0:
-                self.fig.obj.update_layout(margin=dict(r=self.ws_label_row + self.label_row.size[1]))
+                self.fig.obj.update_layout(margin=dict(r=self.ws_label_row + self.label_row.size.height))
 
             # add the rectangle
             self.fig.obj.add_shape(type='rect', x0=1.05, y0=1, x1=1.2, y1=0,
@@ -1036,7 +1036,7 @@ class Layout(BaseLayout):
 
                 # add margin to the figure for the labels (one time only) and set style
                 if ir == 0 and ic == 0:
-                    self.fig.obj.update_layout(margin=dict(t=self.ws_label_col + self.label_col.size[1]))
+                    self.fig.obj.update_layout(margin=dict(t=self.ws_label_col + self.label_col.size.height))
 
                 # add the rectangle
                 self.fig.obj.add_shape(type='rect', x0=0, y0=1.05, x1=1, y1=1.2,
@@ -1096,10 +1096,10 @@ class Layout(BaseLayout):
 
         # Update the title position
         self.ul['title']['x'] = \
-            0.5 + (self.label_y.font_size + self.tick_labels_major_y.font_size) / self.fig.size[0]
+            0.5 + (self.label_y.font_size + self.tick_labels_major_y.font_size) / self.fig.size.width
         self.ul['title']['y'] = \
-            1 - ((self.modebar.size[0] if (self.modebar.visible and self.modebar.orientation == 'h') else 0) +
-                 self.title.font_size / 2) / self.fig.size[1]
+            1 - ((self.modebar.size.width if (self.modebar.visible and self.modebar.orientation == 'h') else 0) +
+                 self.title.font_size / 2) / self.fig.size.height
         # ws_leg_modebar??
 
         # Update the x/y axes
@@ -1143,7 +1143,7 @@ class Layout(BaseLayout):
 
         # Update the figure layout
         self.fig.obj.update_layout(autosize=False,  # do we need this?
-                                   height=self.fig.size[1],
+                                   height=self.fig.size.height,
                                    legend_title_text=self.legend.text,
                                    margin=dict(l=self._left,
                                                r=self._right,
@@ -1157,7 +1157,7 @@ class Layout(BaseLayout):
                                    plot_bgcolor=self.ul['plot_bgcolor'],
                                    showlegend=self.legend.on,
                                    title=self.ul['title'],
-                                   width=self.fig.size[0],
+                                   width=self.fig.size.width,
                                    **axis_labels)
 
         # Update the plot labels
@@ -1178,9 +1178,9 @@ class Layout(BaseLayout):
 
         # Adjust the legend position (only for outside of plot right now)
         if self.legend.on:
-            leg_x = (self._labtick_y2 + self.ws_ax_leg + self.axes.edge_width) / self.axes.size[0]
+            leg_x = (self._labtick_y2 + self.ws_ax_leg + self.axes.edge_width) / self.axes.size.width
             self.ul['legend']['x'] += leg_x
-            self.ul['legend']['y'] += self.axes.edge_width / self.axes.size[1]
+            self.ul['legend']['y'] += self.axes.edge_width / self.axes.size.height
             self.fig.obj.update_layout(legend=self.ul['legend'])
 
         # Set the modebar config
@@ -1196,7 +1196,7 @@ class Layout(BaseLayout):
 
         # TODO: deal with other alignments
         self._set_weight_and_style('title')
-        self.title.size[1] = self.title.font_size
+        self.title.size.height = self.title.font_size
         self.ul['title'] = \
             dict(text=self.title.text,
                  xanchor='center',

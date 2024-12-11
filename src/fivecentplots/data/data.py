@@ -268,16 +268,6 @@ class Data:
         self = value
 
     @property
-    def obj_array(self) -> npt.NDArray:
-        """Make a grid array that matches the dimensions of the plot grid filled with None."""
-        return np.array([[None] * self.ncol] * self.nrow)
-
-    @property
-    def obj_array_zeros(self) -> npt.NDArray:
-        """Make a grid array that matches the dimensions of the plot grid filled with zeros."""
-        return np.array([[0] * self.ncol] * self.nrow)
-
-    @property
     def _groupers(self) -> list:
         """Get all grouping values."""
         props = ['row', 'col', 'wrap', 'groups', 'legend', 'fig']
@@ -1262,7 +1252,7 @@ class Data:
         ranges = {}
         for ax in self.axs_on:
             for mm in ['min', 'max']:
-                ranges[f'{ax}{mm}'] = self.obj_array
+                ranges[f'{ax}{mm}'] = utl.subplot_array(self.nrow, self.ncol)
         return ranges
 
     def _subset(self, ir: int, ic: int) -> pd.DataFrame:

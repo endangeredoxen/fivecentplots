@@ -216,8 +216,8 @@ class Layout(BaseLayout):
                 x_range, y_range = self._set_axes_custom_range(ir, ic, data)
                 self.axes.obj[ir, ic] = bp.figure(x_axis_type=x_type,
                                                   y_axis_type=y_type,
-                                                  frame_width=self.axes.size[0],  # sizing is so easy! thank you bokeh
-                                                  frame_height=self.axes.size[1],
+                                                  frame_width=self.axes.size.width,  # sizing is so easy! thank you bokeh
+                                                  frame_height=self.axes.size.height,
                                                   tools=self.toolbar.tools,
                                                   toolbar_sticky=self.toolbar.sticky,
                                                   )
@@ -769,19 +769,19 @@ class Layout(BaseLayout):
                 # tick line color
                 setattr(ax, f'{mm}_tick_line_color', getattr(self, f'ticks_{mm}_{xy}').color[0])
                 # tick line width
-                setattr(ax, f'{mm}_tick_line_width', int(getattr(self, f'ticks_{mm}_{xy}').size[1]))
+                setattr(ax, f'{mm}_tick_line_width', int(getattr(self, f'ticks_{mm}_{xy}').size.height))
                 # tick line style
                 # tick direction
                 if getattr(self, f'ticks_{mm}').direction == 'in':
-                    setattr(ax, f'{mm}_tick_in', int(getattr(self, f'ticks_{mm}_{xy}').size[0]))
+                    setattr(ax, f'{mm}_tick_in', int(getattr(self, f'ticks_{mm}_{xy}').size.width))
                     setattr(ax, f'{mm}_tick_out', 0)
                 else:
-                    setattr(ax, f'{mm}_tick_out', int(getattr(self, f'ticks_{mm}_{xy}').size[0]))
+                    setattr(ax, f'{mm}_tick_out', int(getattr(self, f'ticks_{mm}_{xy}').size.width))
                     setattr(ax, f'{mm}_tick_in', 0)
 
     def set_figure_final_layout(self, data, **kwargs):
         key_len = max(self.legend.values['Key'].apply(lambda x: len(x) if x else 0))
-        self.legend.size[0] = 30 + max(utl.validate_list(self.markers.sizes)) + 10 + key_len
+        self.legend.size.width = 30 + max(utl.validate_list(self.markers.sizes)) + 10 + key_len
 
     def set_figure_title(self):
         """Set a figure title."""

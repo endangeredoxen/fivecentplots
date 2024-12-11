@@ -104,7 +104,7 @@ section of the docs.
    * **label_y2**:  Element object for the secondary y-label
    * **label_z**:  Element object for the z-label
    * **lcl**:  Element object for lower control limit shading
-   * **legend**:  Legend_Element for figure legend
+   * **legend**:  LegendElement for figure legend
    * **lines**:  Element object for plot lines
    * **markers**:  Element object for markers
    * **pie**:  Element object for pie chart
