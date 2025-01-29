@@ -623,8 +623,13 @@ def get_nested_files(path: Union[Path, str], pattern: Union[str, None] = None, e
     return files
 
 
+<<<<<<< HEAD
 def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, font_weight: str, rotation: float = 0,
                         scale_x: float = 1.125, scale_y: float = 1.125, ignore_html: bool = True, **kwargs) -> tuple:
+=======
+def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, font_weight: str,
+                        dpi: int = 100, **kwargs) -> tuple:
+>>>>>>> 3eac44c (better_gannt first files)
     """Use pillow to try and figure out actual dimensions of text.
 
     Args:
@@ -633,10 +638,15 @@ def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, f
         font_size: font size
         font_style: normal vs italic
         font_weight: normal vs bold
+<<<<<<< HEAD
         rotation: text rotation
         scale_x: optional factor by which to multiply the horizontal text size
         scale_y: optional factor by which to multiply the vertical text size
         ignore_html: strip html tags
+=======
+        dpi: dots per inch, mpl uses px for font and pillow uses pt so need to convert
+        kwargs: in place to
+>>>>>>> 3eac44c (better_gannt first files)
 
     Returns:
         size tuple
@@ -649,10 +659,11 @@ def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, f
         return False
 
     fp = FontProperties()
-    fp.set_family(font)
+    fp.set_name(font)
     fp.set_style(font_style)
     fp.set_weight(font_weight)
     fontfile = findfont(fp, fallback_to_default=True)
+<<<<<<< HEAD
     font = ImageFont.truetype(fontfile, font_size)
 
     if ignore_html:
@@ -670,6 +681,12 @@ def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, f
         h = size[1] * scale_y
 
     return w, h  # no idea why it is off
+=======
+    font = ImageFont.truetype(fontfile, font_size * dpi / 72)
+    size = font.getbbox(text)[2:]
+
+    return size
+>>>>>>> 3eac44c (better_gannt first files)
 
 
 def kwget(dict1: dict, dict2: dict, vals: [str, list], default: [list, dict]):

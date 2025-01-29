@@ -118,6 +118,7 @@ class BaseLayout:
         self.fills = None  # Element object for rectangular fills
         self.fit = None  # Element object for fit line
         self.gantt = None  # Element object for gannt chart
+        self.gantt_scale = False  # auto-scale axes width for gantt plot
         self.grid_major = None  # Element object with default values for major grids not explicitly defined
         self.grid_major_x = None  # Element object for x major grid (defaults to self.grid_major)
         self.grid_major_x2 = None  # Element object for x2 major grid (defaults to self.grid_major)
@@ -333,9 +334,10 @@ class BaseLayout:
         # Set default axes visibility
         self.axes.visible = np.array([[True] * self.ncol] * self.nrow)
 
-        # auto-boxplot size option
+        # auto-boxplot / auto-gantt size option
         if self.axes.size == ['auto']:
             self.box_scale = 'auto'
+            self.gantt_scale = 'auto'
             self.axes.size = [400, 400]
 
         # twinned axes
@@ -379,7 +381,7 @@ class BaseLayout:
                         fill_alpha=utl.kwget(kwargs, self.fcpp, 'label_fill_alpha', 1),
                         fill_color=utl.kwget(kwargs, self.fcpp, 'label_fill_color', '#ffffff'),
                         font_color=utl.kwget(kwargs, self.fcpp, 'label_font_color', '#000000'),
-                        font_size=utl.kwget(kwargs, self.fcpp, 'label_font_size', 'italic'),
+                        font_size=utl.kwget(kwargs, self.fcpp, 'label_font_size', 14),
                         font_style=utl.kwget(kwargs, self.fcpp, 'label_font_style', 'italic'),
                         font_weight=utl.kwget(kwargs, self.fcpp, 'label_font_weight', 'bold'),
                         padding=utl.kwget(kwargs, self.fcpp, ['label_padding'], 0.3),
@@ -539,11 +541,11 @@ class BaseLayout:
                                                 kwargs.get('error_bars', False)),
                            error_color=utl.kwget(kwargs, self.fcpp, ['bar_error_color', 'error_color'],
                                                  kwargs.get('error_color', '#555555')),
-                           color_by_bar=utl.kwget(kwargs, self.fcpp, ['bar_color_by_bar', 'color_by_bar'],
-                                                  kwargs.get('color_by_bar', False)),
+                           color_by=utl.kwget(kwargs, self.fcpp, ['bar_color_by', 'color_by'],
+                                                  kwargs.get('color_by', None)),
                            )
         if 'colors' in kwargs.keys():
-            self.bar.color_by_bar = True
+            self.bar.color_by = 'bar'
 
         # rolling mean options
         rolling = utl.kwget(kwargs, self.fcpp, ['bar_rolling_mean', 'rolling_mean',
@@ -1071,22 +1073,82 @@ class BaseLayout:
             self.gantt = Element('gantt', self.fcpp, kwargs, on=False)
             return kwargs
 
+        gantt_labels = \
+            Element('gantt_labels', self.fcpp, kwargs, on=True,
+                    obj=self.obj_array,
+                    columns=None,
+                    edge_color=RepeatedList(
+                        utl.kwget(kwargs, self.fcpp, 'gantt_label_edge_color', 'none'), 'gantt_label_edge_color'),
+                    fill_color=RepeatedList(
+                        utl.kwget(kwargs, self.fcpp, 'gantt_label_fill_color', 'none'), 'gantt_label_fill_color'),
+                    font=RepeatedList(
+                        utl.kwget(kwargs, self.fcpp, 'gantt_label_font', 'Times'), 'gantt_label_font'),
+                    font_color=RepeatedList(
+                        utl.kwget(kwargs, self.fcpp, 'gantt_label_font_color', '#777777'), 'gantt_label_font_color'),
+                    font_size=RepeatedList(
+                        utl.kwget(kwargs, self.fcpp, 'gantt_label_font_size', 12), 'gantt_label_font_size'),
+                    font_style=RepeatedList(
+                        utl.kwget(kwargs, self.fcpp, 'gantt_label_font_style', 'normal'), 'gantt_label_font_style'),
+                    font_weight=RepeatedList(
+                        utl.kwget(kwargs, self.fcpp, 'gantt_label_font_weight', 'normal'), 'gantt_label_font_weight'),
+                    position=[0.01, 0],
+                    coordinate=utl.kwget(kwargs, self.fcpp, ['gantt_label_coordinate', 'gantt_label_coord'], 'data'),
+                    rotation=RepeatedList(
+                        utl.kwget(kwargs, self.fcpp, 'gantt_label_rotation', 0), 'gantt_label_rotation'),
+                    units=utl.kwget(kwargs, self.fcpp, 'gantt_label_units', 'pixel'),
+                    text=[],
+                    )
+
         self.gantt = Element('gantt', self.fcpp, kwargs,
                              on=True,
-                             height=utl.kwget(kwargs, self.fcpp, 'gantt_height', kwargs.get('height', 0.9)),
-                             sort=utl.kwget(kwargs, self.fcpp, 'sort', 'descending'),
-                             edge_color=utl.kwget(kwargs, self.fcpp, 'gantt_edge_color', copy.copy(self.color_list)),
-                             edge_width=utl.kwget(kwargs, self.fcpp, 'gantt_edge_width', 0),
-                             fill_alpha=utl.kwget(kwargs, self.fcpp, 'gantt_fill_alpha', 0.75),
-                             fill_color=utl.kwget(kwargs, self.fcpp, 'gantt_fill_color', copy.copy(self.color_list)),
-                             color_by_bar=utl.kwget(kwargs, self.fcpp, ['gantt_color_by_bar', 'color_by_bar'],
-                                                    kwargs.get('color_by_bar', False)),
+                             bar_labels=utl.kwget(kwargs, self.fcpp, ['gantt_bar_labels', 'bar_labels'], None),
+                             color_by=utl.kwget(kwargs, self.fcpp, ['gantt_color_by', 'color_by'], 'bar'),
+                             date_location=utl.kwget(kwargs, self.fcpp, ['gantt_date_location', 'date_location'],
+                                                     'top'),
+                             date_type=utl.kwget(kwargs, self.fcpp, ['gantt_date_type', 'date_type'], None),
+                             edge_color=utl.kwget(
+                                kwargs, self.fcpp, ['gantt_edge_color', 'bar_edge_color'], copy.copy(self.color_list)),
+                             edge_width=utl.kwget(
+                                kwargs, self.fcpp, ['gantt_edge_width', 'bar_edge_width'], 0),
+                             fill_alpha=utl.kwget(
+                                kwargs, self.fcpp, ['gantt_fill_alpha', 'bar_fill_alpha'], 0.75),
+                             fill_color=utl.kwget(
+                                kwargs, self.fcpp, ['gantt_fill_color', 'bar_fill_color'], copy.copy(self.color_list)),
+                             height=utl.kwget(kwargs, self.fcpp, ['gantt_height', 'bar_height'], 0.9),
+                             label_x=utl.kwget(kwargs, self.fcpp, 'gantt_label_x', kwargs.get('gantt_label_x', '')),
+                             labels_as_yticks=utl.kwget(
+                                kwargs, self.fcpp, ['gantt_labels_as_yticks', 'labels_as_yticks'], True),
+                             milestones=utl.kwget(kwargs, self.fcpp, ['gantt_milestones', 'milestones'], None),
                              order_by_legend=utl.kwget(kwargs, self.fcpp, ['gantt_order_by_legend', 'order_by_legend'],
                                                        kwargs.get('order_by_legend', False)),
-                             label_x=utl.kwget(kwargs, self.fcpp, 'gantt_label_x', kwargs.get('gantt_label_x', '')),
+                             sort=utl.kwget(kwargs, self.fcpp, 'sort', 'descending'),
                              tick_labels_x_rotation=utl.kwget(kwargs, self.fcpp, 'gantt_tick_labels_x_rotation',
                                                               kwargs.get('gantt_tick_labels_x_rotation', 90)),
+                             today=utl.kwget(kwargs, self.fcpp, ['gantt_today', 'today'], True),
+                             workstreams=utl.kwget(kwargs, self.fcpp, ['gantt_workstreams', 'workstreams'], None),
                              )
+
+        if self.gantt.bar_labels is not None:
+            # Set the bar label columns
+            cols = utl.validate_list(self.gantt.bar_labels)
+            self.gantt.bar_labels = copy.deepcopy(gantt_labels)
+            self.gantt.bar_labels.columns = cols
+
+            # If y column in bar_labels, disable labels_as_yticks unless user forces it
+            common = [f for f in kwargs['y'] if f in self.gantt.bar_labels.columns]
+            if len(common) > 0 \
+                    and not utl.kwget(kwargs, self.fcpp, ['gantt_labels_as_yticks', 'labels_as_yticks'], False):
+                self.gantt.labels_as_yticks = False
+
+        # Legend defaults
+        if self.legend.column is not None:
+            if not utl.kwget(kwargs, self.fcpp, ['gantt_color_by', 'color_by'], False):
+                self.gantt.color_by = 'legend'
+            if utl.kwget(kwargs, self.fcpp, ['gantt_order_by_legend', 'order_by_legend'],
+                         kwargs.get('order_by_legend', True)):
+                self.gantt.order_by_legend = True
+
+
         if self.gantt.on and \
                 ('tick_labels_major_rotation' not in kwargs.keys()
                  or 'tick_labels_major_x_rotation' not in kwargs.keys()

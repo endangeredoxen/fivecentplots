@@ -105,7 +105,7 @@ bar
 bar_align
 bar_alpha
 bar_color
-bar_color_by_bar
+bar_color_by
 bar_edge_alpha
 bar_edge_color
 bar_edge_width
@@ -358,7 +358,7 @@ cfa
 cmap
 col
 color
-color_by_bar
+color_by
 color_override
 colors
 conf_band
@@ -485,7 +485,7 @@ font_weight
 gantt
 gantt_alpha
 gantt_color
-gantt_color_by_bar
+gantt_color_by
 gantt_edge_alpha
 gantt_edge_color
 gantt_edge_width

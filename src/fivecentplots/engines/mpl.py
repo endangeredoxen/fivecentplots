@@ -5,7 +5,9 @@ import numpy as np
 import copy
 import math
 import logging
-from typing import Callable, Dict, Union, Tuple
+import datetime
+from typing import Callable, Dict, List, Tuple, Union
+import numpy.typing as npt
 from fivecentplots.utilities import RepeatedList
 import fivecentplots.utilities as utl
 from distutils.version import LooseVersion
@@ -20,6 +22,7 @@ from matplotlib.ticker import AutoMinorLocator, MaxNLocator
 import matplotlib.transforms as mtransforms
 from matplotlib.patches import FancyBboxPatch
 from matplotlib.collections import PatchCollection
+import matplotlib.dates as mdates
 warnings.filterwarnings('ignore', category=UserWarning)
 
 
@@ -1029,33 +1032,52 @@ class Layout(BaseLayout):
                         format_legend(self, self.legend.obj)
 
     def add_text(self, ir: int, ic: int, text: [str, None] = None,
-                 element: [str, None] = None, offsetx: int = 0,
-                 offsety: int = 0, coord: ['mpl_coordinate', None] = None,  # noqa: F821
-                 units: [str, None] = None, track_obj: bool = True, **kwargs):
+                 element: Union[str, None, 'layout.Element'] = None, # noqa: F821
+                 coord: Union['mpl_coordinate', None] = None,  # noqa: F821
+                 position: Union[None, List[List[float]], List[float]] = None,
+                 offsetx: int = 0, offsety: int = 0,
+                 units: [str, None] = None, track_element: bool = True, **kwargs):
         """Add a text box.
 
         Args:
             ir: subplot row index
             ic: subplot column index
             text (optional): text str to add. Defaults to None.
-            element (optional): name of the Element object. Defaults to None.
+            element (optional): name of or reference to an Element object. Defaults to None.
             offsetx (optional): x-axis shift. Defaults to 0.
             offsety (optional): y-axis shift. Defaults to 0.
             coord (optional): MPL coordinate type. Defaults to None.
             units (optional): pixel or inches. Defaults to None which is 'pixel'.
-            track_obj (optional): keep a reference to the text object to move later
+            track_element (optional): keep a reference to the text object to move later
         """
         plot_num = utl.plot_num(ir, ic, self.ncol) - 1
 
         # Shortcuts
         ax = self.axes.obj[ir, ic]
+
         if element is None:
-            obj = self.text
+            el = self.text
+        elif isinstance(element, str):
+            el = getattr(self, element)
         else:
-            obj = getattr(self, element)
-        text = text if text is not None else obj.text.values
-        if isinstance(text, str):
-            text = [text]
+            el = element
+
+        if text is not None:
+            text = utl.validate_list(text)
+        elif el is not None and hasattr(el, 'text') and hasattr(el.text, 'values'):
+            text = el.text.values
+        else:
+            text = el.text
+
+        # Set the coordinate transform
+        if not coord:
+            coord = None if not hasattr(el, 'coordinate') else el.coordinate.lower()
+        if coord == 'figure':
+            transform = self.fig.obj.transFigure
+        elif coord == 'data':
+            transform = ax.transData
+        else:
+            transform = ax.transAxes
 
         # Add each text box
         for itext, txt in enumerate(text):
@@ -1065,62 +1087,63 @@ class Layout(BaseLayout):
                 else:
                     continue
 
-            kw = {}
+            # Get/set position (this may be updated in set_figure_final_layout)
+            if isinstance(position, list) and (isinstance(position[0], list) or isinstance(position[0], tuple)):
+                pos = position[itext]
+            elif position is not None:
+                pos = position
+            elif hasattr(el, 'position') and isinstance(el.position, RepeatedList):
+                pos = copy.copy(el.position[itext])
+            elif hasattr(el, 'position'):
+                pos = copy.copy(el.position)
+            else:
+                pos = [0.01, 0]  # 0.01 prevents a weird bug
+
+            # Set the units
+            if not units:
+                units = 'pixel' if not hasattr(el, 'units') else el.units
+            if units == 'pixel' and coord == 'figure':
+                if isinstance(pos[0], str):
+                    pos[0] = 0.01
+                else:
+                    pos[0] /= self.fig.size[0]
+                offsetx /= self.fig.size[0]
+                if isinstance(pos[1], str):
+                    pos[1] = 0
+                else:
+                    pos[1] /= self.fig.size[1]
+                offsety /= self.fig.size[1]
+            elif units == 'pixel' and coord != 'data':
+                if isinstance(pos[0], str):
+                    pos[0] = 0.01
+                else:  # can have some equations that evaluated in final figure layout
+                    pos[0] /= self.axes.size[0]
+                offsetx /= self.axes.size[0]
+                if isinstance(pos[1], str):
+                    pos[1] = 0
+                else:
+                    pos[1] /= self.axes.size[1]
+                offsety /= self.axes.size[1]
+
 
             # Set style attributes
-            attrs = ['rotation', 'font_color', 'font', 'fill_color', 'edge_color',
-                     'font_style', 'font_weight', 'font_size']
+            kw = {}
+            attrs = ['rotation', 'font_color', 'font', 'fill_color', 'edge_color', 'font_style', 'font_weight',
+                     'font_size']
             for attr in attrs:
                 if attr in kwargs.keys():
                     kw[attr] = kwargs[attr]
-                elif hasattr(obj, attr) and isinstance(getattr(obj, attr), RepeatedList):
-                    kw[attr] = getattr(obj, attr)[itext]
-                elif hasattr(obj, attr) and str(type(getattr(obj, attr))) == str(RepeatedList):
+                elif hasattr(el, attr) and isinstance(getattr(el, attr), RepeatedList):
+                    kw[attr] = getattr(el, attr)[itext]
+                elif hasattr(el, attr) and str(type(getattr(el, attr))) == str(RepeatedList):
                     # isinstance fails on python3.6, so hack this way
-                    kw[attr] = getattr(obj, attr)[itext]
-                elif hasattr(obj, attr):
-                    kw[attr] = getattr(obj, attr)
+                    kw[attr] = getattr(el, attr)[itext]
+                elif hasattr(el, attr):
+                    kw[attr] = getattr(el, attr)
 
-            if element and not track_obj:
-                # Get position
-                if 'position' in kwargs.keys():
-                    position = copy.copy(kwargs['position'])
-                elif hasattr(obj, 'position') and isinstance(getattr(obj, 'position'), RepeatedList):
-                    position = copy.copy(getattr(obj, 'position')[itext])
-                elif hasattr(obj, 'position'):
-                    position = copy.copy(getattr(obj, 'position'))
-
-                # Set the coordinate so text is anchored to figure, axes, or the current
-                #    data range, or units
-                if not coord:
-                    coord = None if not hasattr(obj, 'coordinate') else self.text.coordinate.lower()
-                if coord == 'figure':
-                    transform = self.fig.obj.transFigure
-                elif coord == 'data':
-                    transform = ax.transData
-                else:
-                    transform = ax.transAxes
-                if not units:
-                    units = 'pixel' if not hasattr(obj, 'units') else getattr(obj, 'units')
-
-                # Convert position to correct units
-                if units == 'pixel' and coord == 'figure':
-                    position[0] /= self.fig.size[0]
-                    offsetx /= self.fig.size[0]
-                    position[1] /= self.fig.size[1]
-                    offsety /= self.fig.size[1]
-                elif units == 'pixel' and coord != 'data':
-                    position[0] /= self.axes.size[0]
-                    offsetx /= self.axes.size[0]
-                    position[1] /= self.axes.size[1]
-                    offsety /= self.axes.size[1]
-
-                # Something goes weird with x = 0 so we need to adjust slightly
-                if position[0] == 0:
-                    position[0] = 0.01
-
-                text_obj = ax.text(position[0] + offsetx,
-                                   position[1] + offsety,
+            if element is not None:
+                text_obj = ax.text(pos[0] + offsetx,
+                                   pos[1] + offsety,
                                    txt, transform=transform,
                                    rotation=kw['rotation'],
                                    color=kw['font_color'],
@@ -1132,37 +1155,31 @@ class Layout(BaseLayout):
                                              edgecolor=kw['edge_color']),
                                    zorder=45)
 
-            elif element:
-                text_obj = ax.text(0,
-                                   0,
-                                   txt,
-                                   rotation=kw['rotation'],
-                                   color=kw['font_color'],
-                                   fontname=kw['font'],
-                                   style=kw['font_style'],
-                                   weight=kw['font_weight'],
-                                   size=kw['font_size'],
-                                   bbox=dict(facecolor=kw['fill_color'],
-                                             edgecolor=kw['edge_color']),
-                                   zorder=45)
-                if not isinstance(getattr(self, element).text, RepeatedList):
-                    getattr(self, element).text = RepeatedList([text_obj], f'{element}_text')
-                else:
-                    getattr(self, element).text.values += [text_obj]
-
             else:
-                obj.obj[ir, ic][itext] = ax.text(0,
-                                                 0,
-                                                 txt,
-                                                 rotation=kw['rotation'],
-                                                 color=kw['font_color'],
-                                                 fontname=kw['font'],
-                                                 style=kw['font_style'],
-                                                 weight=kw['font_weight'],
-                                                 size=kw['font_size'],
-                                                 bbox=dict(facecolor=kw['fill_color'],
-                                                           edgecolor=kw['edge_color']),
-                                                 zorder=45)
+                el.obj[ir, ic][itext] = ax.text(0,
+                                                0,
+                                                txt,
+                                                rotation=kw['rotation'],
+                                                color=kw['font_color'],
+                                                fontname=kw['font'],
+                                                style=kw['font_style'],
+                                                weight=kw['font_weight'],
+                                                size=kw['font_size'],
+                                                bbox=dict(facecolor=kw['fill_color'],
+                                                          edgecolor=kw['edge_color']),
+                                                zorder=45)
+
+            # Update element with the actual object reference
+            if element and track_element:
+                if el.obj is None:
+                    el.obj = text_obj
+                elif isinstance(el.obj, mpl.text.Text):
+                    el.obj = [el.obj]
+                    el.obj += [text_obj]
+                elif len(el.obj[ir, ic]) == itext + 1:
+                    el.obj[itext] = text_obj
+                else:
+                    el.obj[ir, ic] += [text_obj]
 
     def _check_font(self, font):
         """Check if font exists and warn once if not."""
@@ -1549,6 +1566,13 @@ class Layout(BaseLayout):
             #                             connectionstyle="arc,angleA=-90,angleB=0,armA=0,armB=40,rad=0",
             #                             ),
             #             )
+
+        # gantt text labels
+        # if self.gantt.on and not self.gantt.labels_as_yticks:
+        #     for ir, ic in np.ndindex(lab.obj.shape):
+        #         for txt in self.gantt.labels.obj[ir, ic]:
+        #             db()
+
 
         return data
 
@@ -1950,19 +1974,21 @@ class Layout(BaseLayout):
                     txt = f'{xticks.limits[ir, ic][0]:.{precision}f}'
                     x = -kw['font_size']
                     y = -kw['font_size'] - self.ws_ticks_ax
-                    kw['position'] = [x, y]
-                    self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', track_obj=False, **kw)
+                    position = [x, y]
+                    self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', track_element=False,
+                                  position=position, **kw)
                     x += self.axes.size[0]
                 else:
                     x = self.axes.size[0] - xticks.size_all.loc[0, 'width'] / 2
                     y = - yticks.size_all.loc[0, 'height'] / sf - self.tick_labels_major_x.padding
                 precision = utl.get_decimals(xticks.limits[ir, ic][1], 8)
                 txt = f'{xticks.limits[ir, ic][1]:.{precision}f}'
-                kw['position'] = [x, y]
-                self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', track_obj=False, **kw)
+                position = [x, y]
+                self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', track_element=False,
+                              position=position, **kw)
 
             if len(yticks_size_all) <= 1 \
-                    and self.name not in ['box', 'bar', 'pie'] \
+                    and self.name not in ['box', 'bar', 'pie', 'gantt'] \
                     and (not self.axes.share_y or len(self.axes.obj.flatten()) == 1) \
                     and axis != '2' \
                     and yticks.limits[ir, ic]:
@@ -1981,8 +2007,9 @@ class Layout(BaseLayout):
                     txt = f'{yticks.limits[ir, ic][0]:.{precision}f}'
                     x = -kw['font_size'] * len(txt.replace('.', ''))
                     y = -kw['font_size'] / 2
-                    kw['position'] = [x, y]
-                    self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', track_obj=False, **kw)
+                    position = [x, y]
+                    self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', track_element=False,
+                                  position=position, **kw)
                     y += self.axes.size[1]
                 else:
                     # this case happens if only one gridline is present on the plot
@@ -1991,8 +2018,9 @@ class Layout(BaseLayout):
                 precision = utl.get_decimals(yticks.limits[ir, ic][1], 8)
                 txt = f'{yticks.limits[ir, ic][1]:.{precision}f}'
                 x = -kw['font_size'] * len(txt.replace('.', ''))
-                kw['position'] = [x, y]
-                self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', track_obj=False, **kw)
+                position = [x, y]
+                self.add_text(ir, ic, txt, element='text', coord='axis', units='pixel', track_element=False,
+                              position=position, **kw)
 
             # Shrink/remove overlapping ticks x-y origin
             if len(xticks_size_all) > 0 and len(yticks_size_all) > 0:
@@ -2232,7 +2260,7 @@ class Layout(BaseLayout):
                 init_off = (total - 1) / 2 * kwargs['width']
                 idx = list((idx - init_off).values)
 
-        if self.bar.color_by_bar:
+        if self.bar.color_by == 'bar':
             edgecolor = [self.bar.edge_color[i] for i, f in enumerate(df.index)]
             fillcolor = [self.bar.fill_color[i] for i, f in enumerate(df.index)]
         else:
@@ -2428,7 +2456,7 @@ class Layout(BaseLayout):
                        zorder=40)
 
     def plot_gantt(self, ir: int, ic: int, iline: int, df: pd.DataFrame, x: str, y: str,
-                   leg_name: str, yvals: list, ngroups: int):
+                   leg_name: str, xvals: npt.NDArray, yvals: list, bar_labels: list, ngroups: int):
         """Plot gantt graph.
 
         Args:
@@ -2439,25 +2467,23 @@ class Layout(BaseLayout):
             x: x-axis column name
             y: y-axis column name
             leg_name: legend value name if legend enabled
+            xvals: list of tuples of dates
             yvals: list of tuples of groupling column values
-            ngroups: total number of groups in the full data set based on
-                data.get_plot_data
-
+            bar_labels: list of bar labels
+            ngroups: total number of groups in the full data set based on data.get_plot_data
         """
         ax = self.axes.obj[ir, ic]
         bar = ax.broken_barh
+        new_xmax = None
 
         # Set the color values
-        if self.gantt.color_by_bar:
-            edgecolor = [self.gantt.edge_color[i]
-                         for i, f in enumerate(df.index)]
-            fillcolor = [self.gantt.fill_color[i]
-                         for i, f in enumerate(df.index)]
+        if self.gantt.color_by == 'bar':
+            edgecolor = [self.gantt.edge_color[i] for i, f in enumerate(df.index)]
+            fillcolor = [self.gantt.fill_color[i] for i, f in enumerate(df.index)]
+        # todo add other options for column names based grouping
         else:
-            edgecolor = [self.gantt.edge_color[(iline, leg_name)]
-                         for i, f in enumerate(df.index)]
-            fillcolor = [self.gantt.fill_color[(iline, leg_name)]
-                         for i, f in enumerate(df.index)]
+            edgecolor = [self.gantt.edge_color[(iline, leg_name)] for i, f in enumerate(df.index)]
+            fillcolor = [self.gantt.fill_color[(iline, leg_name)] for i, f in enumerate(df.index)]
 
         # Plot the bars
         for ii, (irow, row) in enumerate(df.iterrows()):
@@ -2472,16 +2498,55 @@ class Layout(BaseLayout):
                 linewidth=self.gantt.edge_width)
 
         # Adjust the yticklabels
-        if iline + 1 == ngroups:
+        if iline + 1 == ngroups and self.gantt.labels_as_yticks:
             yvals = [f[0] for f in yvals]
             ax.set_yticks(range(-1, len(yvals)))
             ax.set_yticklabels([''] + list(yvals))
+
+        # Add bar labels
+        if iline + 1 == ngroups and self.gantt.bar_labels is not None:
+            # Add text strings to the right of the bars
+            self.gantt.bar_labels.text = bar_labels
+            for i in range(len(yvals)):
+                position = [(xvals[i][1], i) for i in range(len(yvals))]
+            self.gantt.bar_labels.obj[ir, ic] = []
+            self.add_text(ir, ic, element=self.gantt.bar_labels, position=position,
+                          offsetx=datetime.timedelta(days=1), offsety=0)
+            if not self.gantt.labels_as_yticks:
+                ax.set_yticks(range(-1, len(yvals)))
+                ax.set_yticklabels([''] + ['' for f in yvals])
+
+            # Update xmax range value
+            xmax_xs = 0
+            for itxt, txt in enumerate(self.gantt.bar_labels.obj[ir, ic]):
+                txt_size = utl.get_text_dimensions(txt.get_text(),
+                                                   self.gantt.bar_labels.font[itxt],
+                                                   self.gantt.bar_labels.font_size[itxt],
+                                                   self.gantt.bar_labels.font_style[itxt],
+                                                   self.gantt.bar_labels.font_weight[itxt])
+                x, y = txt.get_position()
+                x = mdates.date2num(x)
+                loc = ax.transData.transform((x, y))
+                xmax_xs = max(xmax_xs, loc[0] + txt_size[0] - self.axes.size[0])
+
+                # Tweak position
+                pos = txt.get_position()
+                xoffset = (xvals[:, 1].max() - xvals[:, 0].min()) * 0.01  # 1% of total time span
+                yoffset = txt_size[1] / 4 / self.axes.size[1] * ax.get_ylim()[1]
+                txt.set_position((pos[0] + xoffset, pos[1] - yoffset))
+
+            if xmax_xs > 0:
+                xmax_xs *= 1.1
+                new_xmax = mdates.num2date(ax.transData.inverted().transform((xmax_xs + self.axes.size[0], 0))[0])
+                self.axes.size[0] += xmax_xs
 
         # Legend
         if leg_name is not None:
             handle = [patches.Rectangle((0, 0), 1, 1,
                       color=self.gantt.fill_color[(iline, leg_name)])]
             self.legend.add_value(leg_name, handle, 'lines')
+
+        return new_xmax
 
     def plot_heatmap(self, ir: int, ic: int, df: pd.DataFrame, x: str, y: str, z: str,
                      data: 'Data') -> 'MPL_imshow_object':  # noqa: F821
@@ -3083,6 +3148,8 @@ class Layout(BaseLayout):
             self.axes.obj[ir, ic].set_ylim(top=ranges['ymax'][ir, ic])
         if 'y2max' in ranges and ranges['y2max'][ir, ic] is not None:
             self.axes2.obj[ir, ic].set_ylim(top=ranges['y2max'][ir, ic])
+
+        # Plot specific adjustments
         if self.name in ['imshow', 'heatmap'] and len(self.axes.obj[ir, ic].get_images()) > 0:
             if 'zmin' in ranges and ranges['zmin'][ir, ic] is not None:
                 self.axes.obj[ir, ic].get_images()[0].set_clim(vmin=ranges['zmin'][ir, ic])
@@ -3093,6 +3160,16 @@ class Layout(BaseLayout):
                 getattr(self, self.name).obj[ir, ic].set_clim(vmin=ranges['zmin'][ir, ic])
             if 'zmax' in ranges and ranges['zmax'][ir, ic] is not None:
                 getattr(self, self.name).obj[ir, ic].set_clim(vmax=ranges['zmax'][ir, ic])
+        elif self.name == 'gantt' and not self.gantt.labels_as_yticks and self.gantt_scale == 'auto':
+            xmax = self.axes.obj[ir, ic].get_position().x1
+            # label_max = 0
+            # for itxt, txt in enumerate(self.gantt.labels.obj[ir, ic]):
+            #     label_max = max(label_max, txt.get_bbox_patch().get_extents().x1)
+            #     print(txt.get_bbox_patch().get_extents().width)
+            #     kw = self.make_kw_dict(self.gantt.labels)
+            #     print(utl.get_text_dimensions(txt.get_text(), kw['font'][itxt], kw['font_size'][itxt],
+            #                                   kw['font_style'][itxt], kw['font_weight'][itxt]))
+
 
     def set_axes_rc_labels(self, ir: int, ic: int):
         """Add the row/column label boxes and wrap titles.
@@ -3278,6 +3355,9 @@ class Layout(BaseLayout):
                                     width=self.ticks_minor_y._size[1],
                                     direction=self.ticks_minor_y.direction,
                                     )
+                if self.name == 'gantt' and not self.gantt.labels_as_yticks:
+                    axes[0].tick_params(left=False)
+
                 if self.axes.twin_x:
                     if self.ticks_minor_y2.on:
                         axes[1].minorticks_on()
@@ -3460,12 +3540,16 @@ class Layout(BaseLayout):
                     num_minor = getattr(self, f'ticks_minor_{axl}').number
                     if getattr(self, f'axes{lab}').scale not in (LOG_ALLX if axx == 'x' else LOG_ALLY):
                         loc = None
-                        loc = AutoMinorLocator(num_minor + 1)
+                        if axl == 'x' and self.name == 'gantt2':
+                            loc = mdates.AutoDateLocator()
+                        else:
+                            loc = AutoMinorLocator(num_minor + 1)
                         getattr(axes[ia], f'{axx}axis').set_minor_locator(loc)
                         tp = mpl_get_ticks(axes[ia],
                                            getattr(self, f'ticks_major_x{lab}').on,
                                            getattr(self, f'ticks_major_y{lab}').on,
                                            True)
+                        db()
 
                 if not self.separate_ticks and axl == 'x' and ir != self.nrow - 1 and self.nwrap == 0 or \
                         not self.separate_ticks and axl == 'y2' and ic != self.ncol - 1 and self.nwrap == 0 or \
@@ -3995,9 +4079,18 @@ class Layout(BaseLayout):
         # Text label adjustments
         if self.text.on:
             self._set_text_position(self.text)
-
         if self.fit.on and self.fit.eqn:
             self._set_text_position(self.fit)
+
+        # # if self.gantt.on:
+        # #     self._set_text_position(self.gantt)
+        # self.axes.obj[0, 0].set_xlim(right=data.ranges['xmax'][0, 0] + datetime.timedelta(days=180))
+        # kww = self.make_kw_dict(self.gantt.labels)
+        # for itxt, txt in enumerate(self.gantt.labels.obj[0, 0]):
+        #     size_mpl = txt.get_bbox_patch().get_extents().width, txt.get_bbox_patch().get_extents().height
+        #     size_pillow = utl.get_text_dimensions(txt.get_text(), kww['font'][itxt], kww['font_size'][itxt], kww['font_style'][itxt], kww['font_weight'][itxt])
+        #     print(size_mpl, size_pillow, size_mpl[0] - size_pillow[0], size_mpl[1] - size_pillow[1])
+
 
     def set_figure_title(self):
         """Set a figure title."""
@@ -4180,7 +4273,11 @@ class Layout(BaseLayout):
             offsetx = ir * self.axes.size[0]
             offsety = ic * self.axes.size[1]
 
-            for itext, txt in enumerate(obj.text.values):
+            if hasattr(obj.text, 'values'):
+                text_vals = obj.text.values
+            else:
+                text_vals = obj.obj
+            for itext, txt in enumerate(text_vals):
                 if isinstance(txt, dict):
                     if plot_num in txt.keys():
                         txt = txt[plot_num]

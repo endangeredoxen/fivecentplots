@@ -35,6 +35,9 @@ class Gantt(data.Data):
                 self.df_all[self.x[1]].astype('datetime64[ns]')
             except:  # noqa
                 raise data.DataError('Stop column in gantt chart must be of type datetime')
+        for col in utl.kwget(kwargs, self.fcpp, ['bar_labels', 'gantt_bar_labels'], []):
+            if col not in self.df_all.columns:
+                raise data.DataError(f'Bar label column "{col}" is not in DataFrame')
 
     def get_data_ranges(self):
         """Gantt-specific data range calculator by subplot."""
@@ -54,7 +57,10 @@ class Gantt(data.Data):
             # shared axes
             if self.share_x or (self.nrow == 1 and self.ncol == 1):
                 self._add_range(ir, ic, 'x', 'min', df_fig[self.x[0]].min())
-                self._add_range(ir, ic, 'x', 'max', df_fig[self.x[1]].max())
+                if self.ranges['xmax'][ir, ic] is not None:
+                    self._add_range(ir, ic, 'x', 'max', self.ranges['xmax'][ir, ic])
+                else:
+                    self._add_range(ir, ic, 'x', 'max', df_fig[self.x[1]].max())
             if self.share_y or (self.nrow == 1 and self.ncol == 1):
                 if self.legend is not None:
                     self._add_range(ir, ic, 'y', 'max', len(df_fig[self.y[0]]) - 0.5)
@@ -64,7 +70,10 @@ class Gantt(data.Data):
             # non-shared axes
             if not self.share_x:
                 self._add_range(ir, ic, 'x', 'min', df_rc[self.x[0]].min())
-                self._add_range(ir, ic, 'x', 'max', df_rc[self.x[1]].max())
+                if self.ranges['xmax'][ir, ic] is not None:
+                    self._add_range(ir, ic, 'x', 'max', self.ranges['xmax'][ir, ic])
+                else:
+                    self._add_range(ir, ic, 'x', 'max', df_rc[self.x[1]].max())
             if not self.share_y:
                 self._add_range(ir, ic, 'y', 'max', len(df_rc[self.y[0]]) - 0.5)
 
@@ -122,23 +131,44 @@ class Gantt(data.Data):
         Returns:
             modified DataFrame subset
         """
-        # remove duplicates with legend
+        # Deal with missing dates
+        earliest_start = df[self.x[0]].min()
+        latest_end = df[self.x[1]].max()
+
+        # Missing dates case 1:  no start or end date --> set duration as 1 day at earliest start date
+        no_start_end = df.loc[(df[self.x[0]].isnull()) & (df[self.x[1]].isnull())].index
+        #self.df_all.loc[no_start_end, self.x[0]] = earliest_start
+        df.loc[no_start_end, self.x[0]] = earliest_start
+        #self.df_all.loc[no_start_end, self.x[1]] = earliest_start + pd.Timedelta(days=1)
+        df.loc[no_start_end, self.x[1]] = earliest_start + pd.Timedelta(days=1)
+
+        # Missing dates case 2:  start date but no end data --> set as latest date
+        no_end = df.loc[df[self.x[1]].isnull()].index
+        #self.df_all.loc[no_end, self.x[1]] = latest_end
+        df.loc[no_end, self.x[1]] = latest_end
+
+        # Missing dates case 3: end date but no start date --> set start as one before end date
+        no_start = df.loc[df[self.x[0]].isnull()].index
+        #self.df_all.loc[no_start, self.x[0]] = latest_end - pd.Timedelta(days=1)
+        df.loc[no_start, self.x[0]] = latest_end - pd.Timedelta(days=1)
+
+        # Remove duplicates with legend
         if self.legend is None and len(df) > 0:
             idx = []
             [idx.append(x) for x in df.set_index(self.y).index if x not in idx]
-            df_start = df.groupby(self.y).min()
-            df_stop = df.groupby(self.y).max()
+            df_start = df.groupby(self.y)[self.x].min()
+            df_stop = df.groupby(self.y)[self.x].max()
             df_start[self.x[1]] = df_stop.loc[df_start.index, self.x[1]]
             df = df_start.reindex(idx).reset_index()
 
-        # account for rc plots with shared y-axis
+        # Account for rc plots with shared y-axis
         if (self.wrap is not None or self.col is not None or self.row is not None) \
                 and self.share_y:
             # set the top level index
             idx = []
             [idx.append(x) for x in self.df_all.set_index(self.y).index if x not in idx]
-            df_start = self.df_all.groupby(self.y).min()
-            df_stop = self.df_all.groupby(self.y).max()
+            df_start = self.df_all.groupby(self.y)[self.x].min()
+            df_stop = self.df_all.groupby(self.y)[self.x].max()
             df_start[self.x[1]] = df_stop.loc[df_start.index, self.x[1]]
             df_all = df_start.reindex(idx).reset_index()
 

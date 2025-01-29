@@ -1,4 +1,5 @@
-        gantt_color_by_bar|color_by_bar (bool): Color each Gantt bar differently. Defaults to False. Example:
+        gantt_color_by|color_by (bool): Color each bar differently based on a grouping criterion.
+          Defaults to 'bar'. Example:
           https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Styling
         gantt_edge_color (str): Hex color string for the edge of the Gantt bars. Defaults to fcp.DEFAULT_COLORS.
           Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Styling

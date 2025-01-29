@@ -1,0 +1,14 @@
+Quarter,Priority,Workstream,Description,Owner,Start date,End date,Milestone,Dependency
+2025-Q1,P0,Design,Pixel layout,Gary Garrison,01-10-2025,02-21-2025,,
+2025-Q1,P0,Design,Periphery circuits,Andy Anderson,01-20-2025,03-31-2025,,
+2025-Q1,P1,Design,TCAD simulation,Sam Samuelson,02-22-2025,03-21-2025,,Pixel layout
+2025-Q1,P2,Design,Initial tape out,Amber Amberly,02-22-2025,03-15-2025,,Pixel layout
+2025-Q2,P0,Design,Finalize tape out,Amber Amberly,03-15-2025,06-15-2025,,Pixel layout; Periphery circuits; Initial tape out
+2025-Q2,P1,Fabrication,Test chip,Karthik Sweeny,03-01-2025,04-15-2025,,
+2025-Q3,P0,Fabrication,Alpha samples,Karthik Sweeny,06-15-2025,09-15-2025,,Finalize tape out
+2025-Q3,P0,Fabrication,Beta samples,Karthik Sweeny,07-01-2025,02-15-2026,,Alpha samples
+2025-Q2,P0,Characterization,Test chip eval,Denvyr Loydd,04-15-2025,05-15-2025,,Test chip
+2025-Q4,P0,Characterization,Alpha sample testing,Denvyr Loydd,09-15-2025,12-15-2025,,Alpha samples
+2025-Q2,P4,Marketing,Lie about performance,Harry Harrison,05-15-2025,06-30-2025,,Test chip eval
+2025-Q3,P4,Marketing,Lie about schedule,Harry Harrison,07-15-2025,12-30-2025,,Alpha samples
+2025-Q4,P4,Marketing,Stress engineers about schedule,Harry Harrison,01-15-2025,12-30-2026,,
