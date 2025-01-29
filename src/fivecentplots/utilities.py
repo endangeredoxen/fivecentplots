@@ -623,7 +623,8 @@ def get_nested_files(path: Union[Path, str], pattern: Union[str, None] = None, e
     return files
 
 
-def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, font_weight: str, **kwargs) -> tuple:
+def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, font_weight: str,
+                        dpi: int = 100, **kwargs) -> tuple:
     """Use pillow to try and figure out actual dimensions of text.
 
     Args:
@@ -632,6 +633,7 @@ def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, f
         font_size: font size
         font_style: normal vs italic
         font_weight: normal vs bold
+        dpi: dots per inch, mpl uses px for font and pillow uses pt so need to convert
         kwargs: in place to
 
     Returns:
@@ -645,14 +647,14 @@ def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, f
         return False
 
     fp = FontProperties()
-    fp.set_family(font)
+    fp.set_name(font)
     fp.set_style(font_style)
     fp.set_weight(font_weight)
     fontfile = findfont(fp, fallback_to_default=True)
-    font = ImageFont.truetype(fontfile, font_size)
+    font = ImageFont.truetype(fontfile, font_size * dpi / 72)
     size = font.getbbox(text)[2:]
 
-    return size[0] * 1.125, size[1] * 1.125  # no idea why it is off
+    return size
 
 
 def kwget(dict1: dict, dict2: dict, vals: [str, list], default: [list, dict]):

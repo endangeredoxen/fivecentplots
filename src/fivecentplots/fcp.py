@@ -84,8 +84,9 @@ def bar(df, **kwargs):
         y (str): y-axis column name [REQUIRED]
         bar_align (str): If ‘center’ aligns center of bar to x-axis value; if ‘edge’ aligns the left edge of the bar to
           the x-axis value. Defaults to ‘center’ .
-        bar_color_by_bar|color_by_bar (bool): Color each bar differently. Defaults to False. Example:
-          https://endangeredoxen.github.io/fivecentplots/0.6.0/barplot.html#Color-by-bar
+        bar_color_by|color_by (None, str): Color each bar differently based on a grouping criterion.
+          Defaults to 'bar'. Example:
+          https://endangeredoxen.github.io/fivecentplots/0.6.0/barplot.html#Color-by
         bar_edge_color (str): Hex color string for the edge of the bar. Defaults to fcp.DEFAULT_COLORS.
         bar_edge_width (float): Width of the edge of the bar in pixels. Defaults to 0.
         bar_error_bars|error_bars (bool): Display error bars on each bar. Defaults to False. Example:
@@ -313,7 +314,7 @@ def gantt(df, **kwargs):
             - 1) the start time for each item in the Gantt chart
             - 2) the stop time for each item in the Gantt chart
         y (str): y-axis column name [REQUIRED]
-        gantt_color_by_bar|color_by_bar (bool): Color each Gantt bar differently. Defaults to False. Example:
+        gantt_color_by|color_by (None, str): Color grouping column. Defaults to 'bar'. Example:
           https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Styling
         gantt_edge_color (str): Hex color string for the edge of the Gantt bars. Defaults to fcp.DEFAULT_COLORS.
           Example: https://endangeredoxen.github.io/fivecentplots/0.6.0/gantt.html#Styling
@@ -1170,9 +1171,7 @@ def plot_fit(data, layout, ir, ic, iline, df, x, y, twin, leg_name, ngroups):
             leg_name = 'Fit'
     else:
         leg_name = None
-    layout.plot_xy(ir, ic, iline, df, f'{x} Fit', f'{y} Fit',
-                   leg_name, twin, line_type='fit',
-                   marker_disable=True)
+    layout.plot_xy(ir, ic, iline, df, f'{x} Fit', f'{y} Fit', leg_name, twin, line_type='fit', marker_disable=True)
 
     if layout.fit.eqn:
         eqn = 'y='
@@ -1212,18 +1211,24 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
     # Sort the values
     ascending = False if layout.gantt.sort.lower() == 'descending' else True
     df_rc = df_rc.sort_values(data.x[0], ascending=ascending)
-    if layout.gantt.order_by_legend:
+    if layout.gantt.order_by_legend and data.legend is not None:
         df_rc = df_rc.sort_values(data.legend, ascending=ascending)
 
     cols = data.y
     if data.legend is not None:
-        cols += [f for f in utl.validate_list(data.legend)
-                 if f is not None and f not in cols]
+        cols += [f for f in utl.validate_list(data.legend) if f is not None and f not in cols]
 
+    xvals = df_rc[data.x].values
     yvals = [tuple(f) for f in df_rc[cols].values]
+    bar_labels = None
+    if layout.gantt.bar_labels is not None:
+        bar_labels = [' | '. join(f) for f in df_rc[layout.gantt.bar_labels.columns].values]
 
     for iline, df, x, y, z, leg_name, twin, ngroups in data.get_plot_data(df_rc):
-        layout.plot_gantt(ir, ic, iline, df, data.x, y, leg_name, yvals, ngroups)
+        new_xmax = layout.plot_gantt(ir, ic, iline, df, data.x, y, leg_name, xvals, yvals, bar_labels, ngroups)
+
+        if new_xmax is not None:
+            data.ranges['xmax'][ir, ic] = new_xmax
 
     return data
 

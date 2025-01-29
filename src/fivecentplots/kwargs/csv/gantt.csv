@@ -1,5 +1,5 @@
 Keyword,Data Type,Description,Default,Example
-gantt_color_by_bar|color_by_bar,bool,Color each Gantt bar differently,False,gantt.html#Styling
+gantt_color_by|color_by,str|None,Color each bar differently based on a grouping criterion,'bar',gantt.html#Styling
 gantt_height|height,float,Set the fractional height of the Gantt bars between 0-1,0.9,gantt.html#Styling
 gantt_edge_color,str,Hex color string for the edge of the Gantt bars,fcp.DEFAULT_COLORS,gantt.html#Styling
 gantt_edge_width,float,Width of the edge of the Gantt bars in pixels,0,gantt.html#Styling
