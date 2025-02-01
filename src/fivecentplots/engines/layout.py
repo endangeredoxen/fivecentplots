@@ -1187,7 +1187,8 @@ class BaseLayout:
                     on=True,
                     bar_labels=utl.kwget(kwargs, self.fcpp, ['gantt_bar_labels', 'bar_labels'], None),
                     boxes=utl.kwget(kwargs, self.fcpp, ['gantt_label_boxes', 'label_boxes'], True),
-                    box_padding=utl.kwget(kwargs, self.fcpp, ['gantt_label_box_padding', 'label_box_padding'], 2),
+                    box_padding_x=utl.kwget(kwargs, self.fcpp, ['gantt_label_box_padding_x', 'label_box_padding_x'], 2),
+                    box_padding_y=utl.kwget(kwargs, self.fcpp, ['gantt_label_box_padding_x', 'label_box_padding_y'], 6),
                     color_by=utl.kwget(kwargs, self.fcpp, ['gantt_color_by', 'color_by'], None),
                     date_location=utl.kwget(kwargs, self.fcpp, ['gantt_date_location', 'date_location'], 'top'),
                     date_type=utl.kwget(kwargs, self.fcpp, ['gantt_date_type', 'date_type'], None),
@@ -1227,8 +1228,11 @@ class BaseLayout:
             if len(common) > 0 \
                     and not utl.kwget(kwargs, self.fcpp, ['gantt_labels_as_yticks', 'labels_as_yticks'], False):
                 self.gantt.labels_as_yticks = False
+
             if not self.gantt.labels_as_yticks:
-                self.gantt.boxes = False
+                self.tick_labels_major_y.on = False
+                self.tick_labels_minor_y.on = False
+                self.gantt.box_padding_x = 0
 
         # Today text
         self.gantt.today = \

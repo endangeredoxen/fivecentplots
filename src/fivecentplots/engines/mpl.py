@@ -522,6 +522,7 @@ class Layout(BaseLayout):
             + self._tick_y
         if self.label_y.on and self._tick_y == 0:
             val += self.ws_label_tick
+
         return np.ceil(val)
 
     @property
@@ -4316,7 +4317,7 @@ class Layout(BaseLayout):
                             - edge \
                             - self._tick_y \
                             - self.gantt.workstreams.size[0] \
-                            - self.gantt.box_padding
+                            - self.gantt.box_padding_x
                     else:
                         db()
 
@@ -4748,43 +4749,58 @@ class Layout(BaseLayout):
                 ax.set_xticks([float(n) + delta for n in ax.get_xticks()])
 
                 # Minor ticks
+                if self.ticks_minor_x.on:
+                    num_minor = self.ticks_minor_x.number
+                    ax.xaxis.set_minor_locator(mdates.MonthLocator(bymonth=[1, 4, 7, 10]))
 
+        # Remove tick labels that get cut off of the axes
+        for ir, ic in np.ndindex(self.axes.obj.shape):
+            ax = self.axes.obj[ir, ic]
+            ax_x1 = ax.get_window_extent().x1
+            tlabs = ax.xaxis.get_ticklabels()
+            for tt in tlabs:
+                x1 = tt.get_window_extent().x1
+                if x1 > ax_x1:
+                    tt.set_visible(False)
 
         # Gantt boxes
         if self.gantt.boxes:
             for ir, ic in np.ndindex(self.axes.obj.shape):
-                # y-axis left alignment
-                yticks = self.tick_labels_major_y.size_all.groupby(['ir', 'ic']).mean()
+                if self.gantt.labels_as_yticks:
+                    # y-axis left alignment
+                    yticks = self.tick_labels_major_y.size_all.groupby(['ir', 'ic']).mean()
+                    ax_loc = self.axes.obj[ir, ic].get_window_extent()
+                    ax_x0 = ax_loc.x0
+                    tt_x1 = yticks.loc[ir, ic]['x1']
+                    w = yticks.loc[ir, ic]['width']
+                    pad = tt_x1 - ax_x0 - self.gantt.box_padding_x * self.ws_ticks_ax + w / 2
+                    self.axes.obj[ir, ic].tick_params(axis='y', which='both', pad=pad)
+
+                    # Make y-axis boxes
+                    yticklabs = [f for f in self.axes.obj[ir, ic].get_yticklabels() if f.get_text() != '']
+                    height = self.axes.size[1] / len(yticklabs)
+                    for iytl, ytl in enumerate(yticklabs):
+                        x0 = (ytl.get_window_extent().x0 - self.gantt.box_padding_x) / self.fig.size_int[0]
+                        y0 = (ax_loc.y0 + iytl * height) / self.fig.size_int[1]
+                        rect = patches.Rectangle((x0, y0),
+                                                (ax_x0) / self.fig.size[0] - x0,
+                                                height / self.fig.size_int[1],
+                                                fill=True, transform=self.fig.obj.transFigure,
+                                                edgecolor=self.axes.edge_color[0],
+                                                lw=self.grid_major_y.width[0], facecolor='#ffffff', zorder=-2
+                        )
+                        self.fig.obj.patches.extend([rect])
+
+                # Make x-axis boxes
                 ax_loc = self.axes.obj[ir, ic].get_window_extent()
                 ax_x0 = ax_loc.x0
                 ax_x1 = ax_loc.x1
-                tt_x1 = yticks.loc[ir, ic]['x1']
-                w = yticks.loc[ir, ic]['width']
-                pad = tt_x1 - ax_x0 - self.gantt.box_padding * self.ws_ticks_ax + w / 2
-                self.axes.obj[ir, ic].tick_params(axis='y', which='both', pad=pad)
-
-                # Make y-axis boxes
-                yticklabs = [f for f in self.axes.obj[ir, ic].get_yticklabels() if f.get_text() != '']
-                height = self.axes.size[1] / len(yticklabs)
-                for iytl, ytl in enumerate(yticklabs):
-                    x0 = (ytl.get_window_extent().x0 - self.gantt.box_padding) / self.fig.size_int[0]
-                    y0 = (ax_loc.y0 + iytl * height) / self.fig.size_int[1]
-                    rect = patches.Rectangle((x0, y0),
-                                             (ax_x0) / self.fig.size[0] - x0,
-                                             height / self.fig.size_int[1],
-                                             fill=True, transform=self.fig.obj.transFigure,
-                                             edgecolor=self.axes.edge_color[0],
-                                             lw=self.grid_major_y.width[0], facecolor='#ffffff', zorder=-2
-                    )
-                    self.fig.obj.patches.extend([rect])
-
-                # Make x-axis boxes
                 xmin, xmax = self.axes.obj[0,0].get_xlim()
                 xticklabs = [f for f in self.axes.obj[ir, ic].get_xticklabels() if f.get_text() != '']
                 xlocs = self.axes.obj[0,0].xaxis.get_minorticklocs()
                 xlocs_ = [((f - xmin) * (ax_x1 - ax_x0) / (xmax - xmin) + ax_x0) / self.fig.size_int[0] for f in xlocs]
                 xlocs_ = [ax_x0 / self.fig.size_int[0]] + xlocs_ + [ax_x1 / self.fig.size_int[0]]
-                height = xticklabs[0].get_window_extent().y1 - ax_loc.y1 + 2 * self.gantt.box_padding
+                height = xticklabs[0].get_window_extent().y1 - ax_loc.y1 + 2 * self.gantt.box_padding_y
                 y0 = (ax_loc.y1 if self.gantt.date_location == 'top' else ax_loc.y0) - self.axes.edge_width
                 for ii, xtl in enumerate(xlocs_[:-1]):
                     rect = patches.Rectangle((xlocs_[ii], y0 / self.fig.size_int[1]),
