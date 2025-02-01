@@ -18,6 +18,7 @@ import numpy.typing as npt
 import pandas as pd
 import pdb
 import shutil
+import datetime
 import sys
 from pathlib import Path
 from . import utilities
@@ -1207,28 +1208,110 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
         kwargs (dict): keyword args
 
     """
+    # Check if workstream column is in data
+    if layout.gantt.workstreams.column not in df_rc.columns:
+        layout.gantt.workstreams.on = False
+        layout.gantt.workstreams_title.on = False
 
     # Sort the values
     ascending = False if layout.gantt.sort.lower() == 'descending' else True
     df_rc = df_rc.sort_values(data.x[0], ascending=ascending)
-    if layout.gantt.order_by_legend and data.legend is not None:
+    if layout.gantt.order_by_legend and data.legend is not None and not layout.gantt.workstreams.on:
         df_rc = df_rc.sort_values(data.legend, ascending=ascending)
+    elif layout.gantt.order_by_legend and data.legend is not None and layout.gantt.workstreams.on:
+        df_rc = df_rc.sort_values(layout.gantt.workstreams.column, ascending=ascending)
 
     cols = data.y
-    if data.legend is not None:
+    if layout.gantt.workstreams.on and layout.gantt.workstreams.column != layout.legend.column:
+        cols += [f for f in utl.validate_list(layout.gantt.workstreams.column)
+                 if f is not None and f not in cols]
+    elif data.legend is not None:
         cols += [f for f in utl.validate_list(data.legend) if f is not None and f not in cols]
 
     xvals = df_rc[data.x].values
     yvals = [tuple(f) for f in df_rc[cols].values]
     bar_labels = None
     if layout.gantt.bar_labels is not None:
+        # Bar labels can have data from multiple columns; store as tuple with text string and boolean for
+        # whether or not the entry has a dependency
         bar_labels = [' | '. join(f) for f in df_rc[layout.gantt.bar_labels.columns].values]
+        # if layout.gantt.dependencies in df_rc.columns:
+        #     df_rc_temp = df_rc.reset_index(drop=True)
+        #     deps = [f for f in df_rc[layout.gantt.dependencies].values if str(f) != 'nan']
+        #     deps = [val.lstrip() for f in deps for val in f.split(';')]
+        #     for ibl, bar_label in enumerate(bar_labels):
+        #         vals = bar_label[0].split(' | ')
+        #         for val in vals:
+        #             if val in deps:
+        #                 bar_labels[ibl] = (bar_labels[ibl][0], True)
 
+    # Plot the bars
     for iline, df, x, y, z, leg_name, twin, ngroups in data.get_plot_data(df_rc):
-        new_xmax = layout.plot_gantt(ir, ic, iline, df, data.x, y, leg_name, xvals, yvals, bar_labels, ngroups)
+        new_xmax = layout.plot_gantt(ir, ic, iline, df, df_rc, data.x, y, leg_name, xvals, yvals, bar_labels,
+                                     ngroups, data)
 
         if new_xmax is not None:
             data.ranges['xmax'][ir, ic] = new_xmax
+
+    # Connect dependencies with arrows
+    def find_tuple_index(tuple_list, search_value):
+      return next((i for i, t in enumerate(tuple_list) if t[0] == search_value), -1)
+
+    if layout.gantt.dependencies in df_rc.columns:
+        for irow, row in df_rc.iterrows():
+            if str(row[layout.gantt.dependencies]) == 'nan':
+              continue
+            deps = [f.lstrip() for f in row[layout.gantt.dependencies].split(';')]
+            for dep in deps:
+              sub = df_rc.loc[df_rc[data.y[0]] == dep]
+              if len(sub) == 0:
+                  continue
+              for ii, val in sub.iterrows():
+                  start_idx = find_tuple_index(yvals, val[data.y[0]])
+                  end_idx = find_tuple_index(yvals, row[data.y[0]])
+                  min_collision = row[data.x[0]]
+                  max_collision = val[data.x[1]]
+                  for idx in range(min(start_idx, end_idx) + 1, max(start_idx, end_idx)):
+                      item = yvals[idx][0]
+                      min_collision = min(min_collision, df_rc.loc[df_rc[data.y[0]] == item, data.x[0]].iloc[0])
+                      max_collision = max(max_collision, df_rc.loc[df_rc[data.y[0]] == item, data.x[1]].iloc[0])
+                  layout.plot_gantt_dependencies(ir, ic, (val[data.x[1]], start_idx), (row[data.x[0]], end_idx),
+                                                 min_collision, max_collision)
+
+    # Add workstream labels
+    if layout.gantt.workstreams.on:
+        layout.gantt.workstreams.obj[ir, ic] = []
+        layout.gantt.workstreams.obj_bg[ir, ic]
+        if layout.gantt.workstreams.location == 'inline':
+            db()
+        else:
+            # Labels
+            for icol, col in enumerate(df_rc[layout.gantt.workstreams.column].unique()):
+                rows = len(df_rc.loc[df_rc[layout.gantt.workstreams.column]==col])
+                obj, obj_bg = layout.add_label(
+                    ir, ic, layout.gantt.workstreams, col, layout.axes.size[1] / len(df_rc) * rows)
+                if icol == 0:
+                    layout.gantt.workstreams.obj[ir, ic] = [obj]
+                    layout.gantt.workstreams.obj_bg[ir, ic] = [obj_bg]
+                else:
+                    layout.gantt.workstreams.obj[ir, ic] += [obj]
+                    layout.gantt.workstreams.obj_bg[ir, ic] += [obj_bg]
+                layout.gantt.workstreams.rows += [rows]
+
+            # Title
+            layout.gantt.workstreams_title.obj[ir, ic], layout.gantt.workstreams_title.obj_bg[ir, ic] = \
+                layout.add_label(ir, ic, layout.gantt.workstreams_title, layout.gantt.workstreams_title.text)
+    else:
+        layout.gantt.workstreams.on = False
+
+    # Add today line
+    if layout.gantt.today.on and layout.gantt.today.obj[ir, ic] is None:
+        layout.plot_gantt_today(ir, ic)
+
+    # Milestones
+    if layout.gantt.milestones is not False and layout.gantt.milestones in df_rc.columns:
+        # think this through
+        pass
 
     return data
 
