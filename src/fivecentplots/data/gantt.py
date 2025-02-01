@@ -19,9 +19,15 @@ class Gantt(data.Data):
         Args:
             kwargs: user-defined keyword args
         """
+        self.workstreams = kwargs.get('workstreams')
+        if self.workstreams is not None and 'legend' not in kwargs:
+            kwargs['legend'] = self.workstreams
+
         super().__init__(self.name, self.req, self.opt, **kwargs)
 
         # error checks
+        if self.workstreams not in self.df_all.columns:
+            raise data.DataError('Workstreams column "{self.workstreams}" is not in DataFrame')
         if len(self.x) != 2:
             raise data.DataError('Gantt charts require both a start and a stop column')
         if self.df_all[self.x[0]].dtype != 'datetime64[ns]':
@@ -99,26 +105,37 @@ class Gantt(data.Data):
             lenx = 1 if not self.x else len(xx)
             leny = 1 if not self.y else len(yy)
             vals = pd.DataFrame({'x': self.x if not self.x else xx * leny,
-                                 'y': self.y if not self.y else yy * lenx})
+                                'y': self.y if not self.y else yy * lenx})
 
             for irow, row in vals.iterrows():
                 yield irow, df, row['x'], row['y'], None if self.z is None else self.z[0], None, False, len(vals)
 
         else:
-            for irow, row in self.legend_vals.iterrows():
-                # Subset by legend value
-                if row['Leg'] is not None:
-                    df2 = df[df[self.legend] == row['Leg']].copy()
+            if self.workstreams is not None and self.legend != self.workstreams:
+                # Workstream defined with different legend column
+                for iws, ws in enumerate(df[self.workstreams].unique()):
+                    # Subset by workstream value
+                    df2 = df.loc[df[self.workstreams] == ws].copy()
 
-                # Filter out all nan data
-                if row['x'] and row['x'] in df2.columns and len(df2[row['x']].dropna()) == 0 \
-                        or row['y'] and row['y'] in df2.columns and len(df2[row['y']].dropna()) == 0:
-                    continue
+                    # Set twin ax status
+                    yield iws, df2, None, self.y[0], None, ws, False, len(df2)
 
-                # Set twin ax status
-                yield irow, df2, row['x'], row['y'], \
-                    None if self.z is None else self.z[0], row['names'], \
-                    False, len(self.legend_vals)
+            else:
+                # No workstream defined OR workstream defined with no legend
+                for irow, row in self.legend_vals.iterrows():
+                    # Subset by legend value
+                    if row['Leg'] is not None:
+                        df2 = df[df[self.legend] == row['Leg']].copy()
+
+                    # Filter out all nan data
+                    if row['x'] and row['x'] in df2.columns and len(df2[row['x']].dropna()) == 0 \
+                            or row['y'] and row['y'] in df2.columns and len(df2[row['y']].dropna()) == 0:
+                        continue
+
+                    # Set twin ax status
+                    yield irow, df2, row['x'], row['y'], \
+                        None if self.z is None else self.z[0], row['names'], \
+                        False, len(self.legend_vals)
 
     def _subset_modify(self, ir: int, ic: int, df: pd.DataFrame) -> pd.DataFrame:
         """Modify subset to deal with duplicate Gantt entries

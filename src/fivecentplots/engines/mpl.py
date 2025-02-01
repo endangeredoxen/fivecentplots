@@ -22,7 +22,10 @@ from matplotlib.ticker import AutoMinorLocator, MaxNLocator
 import matplotlib.transforms as mtransforms
 from matplotlib.patches import FancyBboxPatch
 from matplotlib.collections import PatchCollection
+from matplotlib.patches import ConnectionPatch
+from matplotlib.dates import DateFormatter
 import matplotlib.dates as mdates
+
 warnings.filterwarnings('ignore', category=UserWarning)
 
 
@@ -453,6 +456,9 @@ class Layout(BaseLayout):
             + np.ceil(self._labtick_x) \
             + np.ceil(self.legend.overflow)
 
+        if self.gantt.date_location == 'top' and self.gantt.today.on:
+            val += np.ceil(self.gantt.today.size[1] + self.gantt.today.edge_width)
+
         return int(val)
 
     @property
@@ -472,16 +478,29 @@ class Layout(BaseLayout):
     @property
     def _labtick_x(self) -> float:
         """Height of the x label + x tick labels + related whitespace."""
+        if self.name == 'gantt' and self.gantt.date_location == 'top':
+            return 0
+
         val = self.label_x.size[1] * self.label_x.on \
             + self.ws_label_tick * ((self.tick_labels_major_x.on | self.tick_labels_minor_x.on) & self.label_x.on) \
             + self._tick_x
         if self.label_x.on and self._tick_x == 0:
             val += self.ws_label_tick
+
         return val
 
     @property
     def _labtick_x2(self) -> float:
         """Height of the secondary x label + x tick labels + related whitespace."""
+        if self.name == 'gantt' and self.gantt.date_location == 'top':
+            # Flip tick and label to the top for some gantt cases
+            val = self.label_x.size[1] * self.label_x.on \
+                + self.ws_label_tick * ((self.tick_labels_major_x.on | self.tick_labels_minor_x.on) & self.label_x.on) \
+                + self._tick_x
+            if self.label_x.on and self._tick_x == 0:
+                val += self.ws_label_tick
+            return val
+
         if not self.axes.twin_y:
             return 0
 
@@ -533,6 +552,12 @@ class Layout(BaseLayout):
 
         # pie labels
         left += np.ceil(self.pie.xs_left)
+
+        # gantt workstream labels
+        if self.gantt.on and self.gantt.workstreams.on and self.gantt.workstreams.location == 'left':
+            left += np.ceil(self.gantt.workstreams.size[0] + self.gantt.workstreams.edge_width)
+        if self.gantt.on and self.gantt.workstreams_title.on and self.gantt.workstreams.location == 'left':
+            left += np.ceil(self.gantt.workstreams_title.size[0] + self.gantt.workstreams_title.edge_width)
 
         return int(left)
 
@@ -593,6 +618,12 @@ class Layout(BaseLayout):
 
         # pie labels
         right += np.ceil(self.pie.xs_right)
+
+        # gantt workstream labels
+        if self.gantt.on and self.gantt.workstreams.on and self.gantt.workstreams.location == 'right':
+            right += np.ceil(self.gantt.workstreams.size[0] + self.gantt.workstreams.edge_width)
+        if self.gantt.on and self.gantt.workstreams_title.on and self.gantt.workstreams.location == 'right':
+            right += np.ceil(self.gantt.workstreams_title.size[0] + self.gantt.workstreams_title.edge_width)
 
         return int(right)
 
@@ -657,6 +688,9 @@ class Layout(BaseLayout):
         val += tick_top_xs
 
         val += np.ceil(self.pie.xs_top)
+
+        if self.gantt.date_location == 'bottom' and self.gantt.today.on:
+            val += np.ceil(self.gantt.today.size[1] + self.gantt.today.edge_width)
 
         return int(val)
 
@@ -852,7 +886,7 @@ class Layout(BaseLayout):
                 ll.obj[ir, ic] = lines
 
     def add_label(self, ir: int, ic: int, label: Element,
-                  text_str: Union[None, str] = None) -> ['Text_Object']:  # noqa: F821
+                  text_str: Union[None, str] = None, max_dimension = None) -> ['Text_Object']:  # noqa: F821
         """
         Add a label to the plot with figure coordinates.
 
@@ -860,7 +894,8 @@ class Layout(BaseLayout):
             ir: subplot row index
             ic: subplot column index
             label:  fcp Element object
-            text: override for Element.text value
+            text_str: override for Element.text value
+            max_dimension: maximum dimension for scaling font size
 
         Keyword Args:
             dict of value overrides
@@ -901,12 +936,18 @@ class Layout(BaseLayout):
             elif text.get_rotation() == 90:
                 ax = 1
                 param = 'height'
-            max_dimension = self.axes.size[ax] * self.ncol if label.name in ['title_wrap', 'title'] \
-                else self.axes.size[ax]
+            if label.name in ['title_wrap', 'title'] :
+                max_dimension = self.axes.size[ax] * self.ncol
+            elif max_dimension is None:
+                max_dimension = self.axes.size[ax]
             text_dimension = getattr(text.get_window_extent(), param)
             if text_dimension > max_dimension:
                 scale_factor = (max_dimension - 4) / text_dimension  # 2 pixel padding each side
-                text.set_fontsize(scale_factor * getattr(self, f'{label.name}').font_size)
+                if '.' in label.name:
+                    names = label.name.split('.')
+                    text.set_fontsize(scale_factor * getattr(getattr(self, f'{names[0]}'), f'{names[1]}').font_size)
+                else:
+                    text.set_fontsize(scale_factor * getattr(self, f'{label.name}').font_size)
 
         # Auto-adjust the background height to match oversized text unless background size explicitly defined in kwargs
         if f'{label.name}_size' not in self.kwargs \
@@ -914,7 +955,11 @@ class Layout(BaseLayout):
                 and text.get_window_extent().height > rect.get_window_extent().height:
             height = text.get_window_extent().height + 4  # 2 pixels
             rect.set_height(height / self.fig.size[1])
-            getattr(self, f'{label.name}').size[1] = height
+            if '.' in label.name:
+                names = label.name.split('.')
+                getattr(getattr(self, f'{names[0]}'), f'{names[1]}').size[1] = height
+            else:
+                getattr(self, f'{label.name}').size[1] = height
 
         return text, rect
 
@@ -1044,9 +1089,8 @@ class Layout(BaseLayout):
             ic: subplot column index
             text (optional): text str to add. Defaults to None.
             element (optional): name of or reference to an Element object. Defaults to None.
-            offsetx (optional): x-axis shift. Defaults to 0.
-            offsety (optional): y-axis shift. Defaults to 0.
             coord (optional): MPL coordinate type. Defaults to None.
+            position: position of the text box. Defaults to None.
             units (optional): pixel or inches. Defaults to None which is 'pixel'.
             track_element (optional): keep a reference to the text object to move later
         """
@@ -1124,12 +1168,14 @@ class Layout(BaseLayout):
                 else:
                     pos[1] /= self.axes.size[1]
                 offsety /= self.axes.size[1]
+            if isinstance(pos[0], datetime.datetime):
+                offsetx = datetime.timedelta(offsetx)
 
 
             # Set style attributes
             kw = {}
             attrs = ['rotation', 'font_color', 'font', 'fill_color', 'edge_color', 'font_style', 'font_weight',
-                     'font_size']
+                     'font_size', 'padding']
             for attr in attrs:
                 if attr in kwargs.keys():
                     kw[attr] = kwargs[attr]
@@ -1152,7 +1198,9 @@ class Layout(BaseLayout):
                                    weight=kw['font_weight'],
                                    size=kw['font_size'],
                                    bbox=dict(facecolor=kw['fill_color'],
-                                             edgecolor=kw['edge_color']),
+                                             edgecolor=kw['edge_color'],
+                                             pad=kw['padding'],
+                                             ),
                                    zorder=45)
 
             else:
@@ -1166,7 +1214,9 @@ class Layout(BaseLayout):
                                                 weight=kw['font_weight'],
                                                 size=kw['font_size'],
                                                 bbox=dict(facecolor=kw['fill_color'],
-                                                          edgecolor=kw['edge_color']),
+                                                          edgecolor=kw['edge_color'],
+                                                          pad=kw['padding'],
+                                                          ),
                                                 zorder=45)
 
             # Update element with the actual object reference
@@ -1176,6 +1226,8 @@ class Layout(BaseLayout):
                 elif isinstance(el.obj, mpl.text.Text):
                     el.obj = [el.obj]
                     el.obj += [text_obj]
+                elif el.obj[ir, ic] is None:
+                    el.obj[ir, ic] = [text_obj]
                 elif len(el.obj[ir, ic]) == itext + 1:
                     el.obj[itext] = text_obj
                 else:
@@ -1567,7 +1619,11 @@ class Layout(BaseLayout):
             #                             ),
             #             )
 
-        # gantt text labels
+        # gantt labels
+        if self.gantt.on:
+            txt = self.gantt.today.obj[0, 0][0]._bbox_patch.get_window_extent()
+            self.gantt.today.size = txt.width, txt.height
+
         # if self.gantt.on and not self.gantt.labels_as_yticks:
         #     for ir, ic in np.ndindex(lab.obj.shape):
         #         for txt in self.gantt.labels.obj[ir, ic]:
@@ -1697,13 +1753,8 @@ class Layout(BaseLayout):
             self._top \
             + self.axes.size[1] * self.nrow \
             + row_edge_height \
-            + self._labtick_x \
-            + self.ws_fig_label \
             + self.ws_row * (self.nrow - 1) \
-            + self.box_labels \
-            + self._legy \
-            + self.pie.xs_top \
-            + self.pie.xs_bottom
+            + self._bottom
 
         # Account for legends longer than the figure
         header = self._ws_title + \
@@ -1743,9 +1794,15 @@ class Layout(BaseLayout):
                     1 \
                     + (self.fig_legend_border - np.floor(self.legend.edge_width / 2) - self.ws_leg_fig - title_xs) \
                     / self.fig.size_int[0]
+
             self.legend.position[2] = \
                 self.axes.position[2] \
                 + (self.fig_legend_border - np.floor(self.legend.edge_width / 2)) / self.fig.size_int[1]
+        #if self.name == 'gantt' and self.gantt.date_location == 'top':
+            #     print(s
+            # elf.ws_ticks_ax)
+                #self.legend.position[2] += self.ws_ticks_ax / self.fig.size_int[0]
+
         if self.legend.location == 11:
             self.legend.position[1] = 0.5
             self.legend.position[2] = 0
@@ -2455,8 +2512,9 @@ class Layout(BaseLayout):
                        s=self.markers.size[0],
                        zorder=40)
 
-    def plot_gantt(self, ir: int, ic: int, iline: int, df: pd.DataFrame, x: str, y: str,
-                   leg_name: str, xvals: npt.NDArray, yvals: list, bar_labels: list, ngroups: int):
+    def plot_gantt(self, ir: int, ic: int, iline: int, df: pd.DataFrame, df_all: pd.DataFrame, x: str, y: str,
+                   leg_name: str, xvals: npt.NDArray, yvals: list, bar_labels: list, ngroups: int,
+                   data: 'Data'):  # noqa: F821
         """Plot gantt graph.
 
         Args:
@@ -2478,10 +2536,22 @@ class Layout(BaseLayout):
 
         # Set the color values
         if self.gantt.color_by == 'bar':
+            # Every bar gets a different color
             edgecolor = [self.gantt.edge_color[i] for i, f in enumerate(df.index)]
             fillcolor = [self.gantt.fill_color[i] for i, f in enumerate(df.index)]
-        # todo add other options for column names based grouping
+        elif self.gantt.workstreams.on and self.legend._on and self.gantt.workstreams.column != self.legend.column:
+            # Workstreams define the bar positioning but the legend grouping defines the color
+            edgecolor = []
+            fillcolor = []
+            for irow, row in df.iterrows():
+                leg_val = row[self.legend.column]
+                idx = int(data.legend_vals.loc[data.legend_vals.Leg == leg_val].index[0])
+                edgecolor += [self.gantt.edge_color[idx]]
+                fillcolor += [self.gantt.fill_color[idx]]
+                handle = [patches.Rectangle((0, 0), 1, 1, color=self.gantt.fill_color[idx])]
+                self.legend.add_value(leg_val, handle, 'lines')
         else:
+            # Use grouping scheme
             edgecolor = [self.gantt.edge_color[(iline, leg_name)] for i, f in enumerate(df.index)]
             fillcolor = [self.gantt.fill_color[(iline, leg_name)] for i, f in enumerate(df.index)]
 
@@ -2497,7 +2567,7 @@ class Layout(BaseLayout):
                 edgecolor=edgecolor[ii],
                 linewidth=self.gantt.edge_width)
 
-        # Adjust the yticklabels
+        # Covert the tick labels into actual labels so we can add boxes and align as desired
         if iline + 1 == ngroups and self.gantt.labels_as_yticks:
             yvals = [f[0] for f in yvals]
             ax.set_yticks(range(-1, len(yvals)))
@@ -2542,11 +2612,128 @@ class Layout(BaseLayout):
 
         # Legend
         if leg_name is not None:
-            handle = [patches.Rectangle((0, 0), 1, 1,
-                      color=self.gantt.fill_color[(iline, leg_name)])]
-            self.legend.add_value(leg_name, handle, 'lines')
+            if self.gantt.workstreams.on and self.legend._on:
+                # Handled above
+                pass
+            else:
+                handle = [patches.Rectangle((0, 0), 1, 1, color=self.gantt.fill_color[(iline, leg_name)])]
+                self.legend.add_value(leg_name, handle, 'lines')
+
+        # Boxes around the labels need left justification
+        if self.gantt.boxes:
+            mplp.setp(self.axes.obj[ir, ic].get_yticklabels(), ha='left')
 
         return new_xmax
+
+    def plot_gantt_dependencies(self, ir, ic, start, end, min_collision, max_collision,
+                                color='gray', linewidth=1, zorder=1,
+                                min_x_distance=5, start_offset=5, end_offset=12):
+        """
+        Plot a dependency arrow between two points in a Matplotlib Gantt chart using right angles.
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+            start: tuple of (x, y) for start point (end of predecessor task)
+            end: tuple of (x, y) for end point (start of dependent task)
+            min_collision: earliest date in the range of the connection line to avoid drawing over the bar
+            max_collision: latest date in the range of the connection line to avoid drawing over the bar
+            color: color of the arrow
+            linewidth: width of the arrow line
+            zorder: drawing order (higher numbers draw on top)
+            min_x_distance: minimum x-distance (in days) to use horizontal connector
+            start_offset: length of initial horizontal segment in pixels
+            end_offset: length of final horizontal segment in pixels
+        """
+        ax = self.axes.obj[ir, ic]
+        start_x, start_y = start
+        end_x, end_y = end
+
+        # Convert dates to numbers for comparison
+        start_x = mdates.date2num(start_x)
+        end_x = mdates.date2num(end_x)
+        min_collision = mdates.date2num(min_collision)
+        max_collision = mdates.date2num(max_collision)
+        x_distance = end_x - start_x
+        sign = -1 if start_y < end_y else 1
+
+        # If the dependent bar start before the predecessor ends, loop back to the left
+        if start_x > end_x or end_x < max_collision:
+            points = [
+                [start_x, start_y],
+                [start_x + start_offset, start_y],  # Initial horizontal segment
+                [start_x + start_offset, start_y - 0.5 * sign],  # Go just below the bar
+                [min_collision - end_offset, start_y - 0.5 * sign],  # Circle back
+                [min_collision - end_offset, end_y],  # Go vertically to the destination bar
+                [end_x, end_y]
+            ]
+
+        # If the dependent bar starts after the predecessor ends, go to the new row and draw a line to the right
+        else:
+            # Check for bar labels and move them if needed to avoid overlapping the arrow
+            if self.gantt.bar_labels is not None:
+                x, y = self.gantt.bar_labels.obj[ir, ic][start_y].get_position()
+                x_new = mdates.num2date(mdates.date2num(x) + x_distance) + datetime.timedelta(days=1)
+                self.gantt.bar_labels.obj[ir, ic][start_y].set_x(x_new)  # from plot_gantt
+
+            points = [
+                [start_x, start_y],
+                [start_x + x_distance, start_y],  # Initial horizontal segment
+                [start_x + x_distance, end_y + 0.5 * sign]
+            ]
+
+        # Draw the lines
+        for i in range(len(points) - 1):
+            conn = ConnectionPatch(
+                xyA=points[i],
+                xyB=points[i + 1],
+                coordsA="data",
+                coordsB="data",
+                axesA=ax,
+                axesB=ax,
+                color=color,
+                linewidth=linewidth,
+                linestyle='-',
+                zorder=zorder
+            )
+            ax.add_artist(conn)
+
+        # Add arrow head at the end
+        arrow_head = ConnectionPatch(
+            xyA=points[-2],
+            xyB=points[-1],
+            coordsA="data",
+            coordsB="data",
+            axesA=ax,
+            axesB=ax,
+            color=color,
+            linewidth=linewidth,
+            linestyle='-',
+            zorder=zorder,
+            arrowstyle='-|>'
+        )
+        ax.add_artist(arrow_head)
+
+    def plot_gantt_today(self, ir, ic):
+        """
+        Add a line indicating today's date (or an alternate date specified by the user)
+
+        Args:
+            ir: subplot row index
+            ic: subplot column index
+
+        """
+        if self.gantt.today.on and self.gantt.today.obj[ir, ic] is None:
+            if self.gantt.date_location == 'top':
+                ymin = -0.01
+                ymax = 1 - self.axes.edge_width / self.axes.size[0]
+            else:
+                ymin = 0
+                ymax = 1 + (self.gantt.today.padding + self.axes.edge_width) / self.axes.size[0]
+            self.add_text(ir, ic, self.gantt.today.text, self.gantt.today)
+            self.axes.obj[ir, ic].axvline(self.gantt.today.date, color=self.gantt.today.color[0],
+                                          linestyle=self.gantt.today.style[0], linewidth=self.gantt.today.width[0],
+                                          ymin=ymin, ymax=ymax, clip_on=False, zorder=2000)
 
     def plot_heatmap(self, ir: int, ic: int, df: pd.DataFrame, x: str, y: str, z: str,
                      data: 'Data') -> 'MPL_imshow_object':  # noqa: F821
@@ -3355,6 +3542,7 @@ class Layout(BaseLayout):
                                     width=self.ticks_minor_y._size[1],
                                     direction=self.ticks_minor_y.direction,
                                     )
+
                 if self.name == 'gantt' and not self.gantt.labels_as_yticks:
                     axes[0].tick_params(left=False)
 
@@ -3540,7 +3728,7 @@ class Layout(BaseLayout):
                     num_minor = getattr(self, f'ticks_minor_{axl}').number
                     if getattr(self, f'axes{lab}').scale not in (LOG_ALLX if axx == 'x' else LOG_ALLY):
                         loc = None
-                        if axl == 'x' and self.name == 'gantt2':
+                        if axl == 'x' and self.name == 'gantt':
                             loc = mdates.AutoDateLocator()
                         else:
                             loc = AutoMinorLocator(num_minor + 1)
@@ -3549,7 +3737,6 @@ class Layout(BaseLayout):
                                            getattr(self, f'ticks_major_x{lab}').on,
                                            getattr(self, f'ticks_major_y{lab}').on,
                                            True)
-                        db()
 
                 if not self.separate_ticks and axl == 'x' and ir != self.nrow - 1 and self.nwrap == 0 or \
                         not self.separate_ticks and axl == 'y2' and ic != self.ncol - 1 and self.nwrap == 0 or \
@@ -3620,6 +3807,13 @@ class Layout(BaseLayout):
                 text = self.cbar.obj[ir, ic].ax.yaxis.get_offset_text()
                 text.set_fontproperties(ticks_font)
                 text.set_bbox(style)
+
+        # Convert gantt to annual or quarter format (have to redo this in _set_tick_position)
+        if self.gantt.on and self.gantt.date_type == 'quarter':
+            axes[ia].xaxis.set_major_locator(mdates.MonthLocator(interval=3))
+            axes[ia].xaxis.set_major_formatter(mdates.DateFormatter("%Y\nQ%m"))
+            labels = [f.get_text().replace('04', '2').replace('07', '3').replace('10', '4').replace('01', '1')
+                      for f in axes[ia].get_xticklabels()]
 
     def _set_colormap(self, data: 'Data', **kwargs):  # noqa: F821
         """Replace the color list with discrete values from a colormap.
@@ -3728,6 +3922,9 @@ class Layout(BaseLayout):
                         yoffset = self.axes.obj[0, 0].get_position().y0 - self.axes.obj[ir, ic].get_position().y0
                     elif label == 'y':
                         xoffset = self.axes.obj[0, 0].get_position().x0 - self.axes.obj[ir, ic].get_position().x0
+                        if self.gantt.on and self.gantt.workstreams.on:
+                            xoffset += self.gantt.workstreams.size[0] / self.fig.size_int[0]
+                            xoffset += self.gantt.workstreams_title.size[0] / self.fig.size_int[0]
                         yoffset = self.axes.obj[0, 0].get_position().y0 - self.axes.obj[ir, ic].get_position().y0
                     elif label == 'x':
                         xoffset = self.axes.obj[0, 0].get_position().x0 - self.axes.obj[ir, ic].get_position().x0
@@ -4082,6 +4279,103 @@ class Layout(BaseLayout):
         if self.fit.on and self.fit.eqn:
             self._set_text_position(self.fit)
 
+        # Gantt adjustments
+        if self.gantt.today.on:
+            # Today text
+            for ir, ic in np.ndindex(self.axes.obj.shape):
+                ax = self.axes.obj[ir, ic]
+                txt = self.gantt.today.obj[ir, ic][0]
+                x, y = txt.get_position()
+                x0 = mdates.date2num(x)
+                w = txt.get_window_extent().width
+                h = txt.get_window_extent().height
+                transform = (ax.transData + ax.transAxes.inverted())
+                x_axis, y_axis = transform.transform((x0, y))
+                if self.gantt.date_location == 'top':
+                    y0 = -(h + self.gantt.today.edge_width + self.gantt.today.padding) / self.axes.size[1]
+                else:
+                    y0 = 1 + (h / 2 + self.gantt.today.edge_width + self.gantt.today.padding) / self.axes.size[1]
+                txt.set_position((x_axis - w / 2 / self.axes.size[0], y0))
+                txt.set_transform(ax.transAxes)
+
+        if self.gantt.workstreams.on:
+            # Workstreams
+            for ir, ic in np.ndindex(self.axes.obj.shape):
+                y0 = 0
+                # labels
+                for iws, ws in enumerate(self.gantt.workstreams.obj[ir, ic]):
+                    if self.gantt.workstreams.location == 'inline':
+                        break
+
+                    ws_bg = self.gantt.workstreams.obj_bg[ir, ic][iws]
+
+                    # x-position and width
+                    edge = np.ceil(self.axes.edge_width / 2)
+                    if self.gantt.workstreams.location == 'left':
+                        lab_x = self.axes.obj[ir, ic].get_position().x0 * self.fig.size_int[0] \
+                            - edge \
+                            - self._tick_y \
+                            - self.gantt.workstreams.size[0] \
+                            - self.gantt.box_padding
+                    else:
+                        db()
+
+                    ws_bg.set_x(lab_x / self.fig.size_int[0])
+                    ws_bg.set_width(
+                        (self.gantt.workstreams.size[0] + self.gantt.workstreams.edge_width) / self.fig.size_int[0])
+
+                    # y-position and height
+                    bbox = self.axes.obj[ir, ic].get_position()
+                    lab_y0 = np.round(bbox.y0 * self.fig.size_int[1]) \
+                        + np.ceil(self.gantt.workstreams.edge_width / 2) - np.ceil(self.axes.edge_width / 2)
+                    lab_y1 = np.round(bbox.y1 * self.fig.size_int[1]) + np.floor(self.axes.edge_width / 2) \
+                        - np.floor(self.gantt.workstreams.edge_width / 2)
+
+                    ws_bg.set_y((lab_y0 + y0) / self.fig.size_int[1])
+                    ws_bg.set_height(
+                        self.gantt.workstreams.rows[iws] * self.axes.size[1] / len(data.df_all) / self.fig.size_int[1])
+                    ws_bg.set_width(self.gantt.workstreams.size[0] / self.fig.size_int[0])
+
+                    # Special offset if certain characters are missing (crude; only tested on mac with default font)
+                    if not any(e in ['y', 'j', 'g', 'q', 'p'] for e in ws.get_text()):
+                        offsetx = 0.05 * self.gantt.workstreams.font_size + 2
+                    elif any(e in ['[', ']'] for e in ws.get_text()):
+                        offsetx = 0.125 * self.gantt.workstreams.font_size
+                    else:
+                        offsetx = 0.125 * self.gantt.workstreams.font_size
+                    ws.set_x((lab_x + self.gantt.workstreams.size[0] / 2 - offsetx) / self.fig.size[0])
+                    ws.set_y(
+                        (ws_bg.get_window_extent().y0 + ws_bg.get_window_extent().height / 2) / self.fig.size_int[1])
+
+                    y0 += self.gantt.workstreams.rows[iws] * self.axes.size[1] / len(data.df_all)
+
+                # title
+                bbox = self.axes.obj[ir, ic].get_position()
+                lab_x -= self.gantt.workstreams_title.size[0]
+                lab_y0 = np.round(bbox.y0 * self.fig.size_int[1]) \
+                    + np.ceil(self.gantt.workstreams_title.edge_width / 2) - np.ceil(self.axes.edge_width / 2)
+                lab_y1 = np.round(bbox.y1 * self.fig.size_int[1]) + np.floor(self.axes.edge_width / 2) \
+                    - np.floor(self.gantt.workstreams_title.edge_width / 2)
+
+                self.gantt.workstreams_title.obj_bg[ir, ic].set_x(lab_x / self.fig.size_int[0])
+                self.gantt.workstreams_title.obj_bg[ir, ic].set_y(lab_y0 / self.fig.size_int[1])
+                self.gantt.workstreams_title.obj_bg[ir, ic].set_width(
+                    self.gantt.workstreams_title.size[0] / self.fig.size_int[0])
+                self.gantt.workstreams_title.obj_bg[ir, ic].set_height((lab_y1 - lab_y0) / self.fig.size_int[1])
+
+                # Special offset if certain characters are missing (crude; only tested on mac with default font)
+                if not any(e in ['y', 'j', 'g', 'q', 'p'] for e in self.gantt.workstreams_title.obj[ir, ic].get_text()):
+                    offsetx = 0.05 * self.gantt.workstreams_title.font_size - 2
+                elif any(e in ['[', ']'] for e in self.gantt.workstreams_title.obj[ir, ic].get_text()):
+                    offsetx = 0.125 * self.gantt.workstreams_title.font_size
+                else:
+                    offsetx = 0.125 * self.gantt.workstreams_title.font_size
+                self.gantt.workstreams_title.obj[ir, ic].set_x(
+                    (lab_x + self.gantt.workstreams_title.size[0] / 2 - offsetx) / self.fig.size[0])
+                self.gantt.workstreams_title.obj[ir, ic].set_y(
+                    (self.axes.obj[ir, ic].get_position().y1 - self.axes.obj[ir, ic].get_position().y0) / 2
+                    + self.axes.obj[ir, ic].get_position().y0)
+
         # # if self.gantt.on:
         # #     self._set_text_position(self.gantt)
         # self.axes.obj[0, 0].set_xlim(right=data.ranges['xmax'][0, 0] + datetime.timedelta(days=180))
@@ -4090,7 +4384,6 @@ class Layout(BaseLayout):
         #     size_mpl = txt.get_bbox_patch().get_extents().width, txt.get_bbox_patch().get_extents().height
         #     size_pillow = utl.get_text_dimensions(txt.get_text(), kww['font'][itxt], kww['font_size'][itxt], kww['font_style'][itxt], kww['font_weight'][itxt])
         #     print(size_mpl, size_pillow, size_mpl[0] - size_pillow[0], size_mpl[1] - size_pillow[1])
-
 
     def set_figure_title(self):
         """Set a figure title."""
@@ -4277,6 +4570,7 @@ class Layout(BaseLayout):
                 text_vals = obj.text.values
             else:
                 text_vals = obj.obj
+
             for itext, txt in enumerate(text_vals):
                 if isinstance(txt, dict):
                     if plot_num in txt.keys():
@@ -4342,9 +4636,15 @@ class Layout(BaseLayout):
     def _set_tick_position(self):
         """Update the tick positions except when tick lines have direction=='in'."""
 
+        # Gantt plot move ticks and labels to top (this doesn't work in set_axes_ticks)
+        if self.name == 'gantt' and self.gantt.on:
+            self._set_tick_position_gantt()
+
+        # No adjustment needed for inward ticks
         if self.ticks_major_x.direction == 'in' and self.ticks_major_y.direction == 'in' and not self.axes.twin_y:
             return
 
+        # Outward ticks
         xticks = self.tick_labels_major_x.size_all.groupby(['ir', 'ic']).mean()
         yticks = self.tick_labels_major_y.size_all.groupby(['ir', 'ic']).mean()
         for ir, ic in np.ndindex(self.axes.obj.shape):
@@ -4379,6 +4679,122 @@ class Layout(BaseLayout):
                 tt_x0 = yticks2.loc[ir, ic]['x0'] + 2
                 pad = tt_x0 - ax_x1 + yticks2.loc[ir, ic]['width'] / 2
                 self.axes2.obj[ir, ic].tick_params(axis='y', which='both', pad=pad / 2)
+
+    def _set_tick_position_gantt(self):
+        """Tick position specific to gantt plots."""
+        if self.gantt.date_location == 'top':
+            ticks_font = font_manager.FontProperties(
+                family=self.tick_labels_major_x.font,
+                size=self.tick_labels_major_x.font_size,
+                style=self.tick_labels_major_x.font_style,
+                weight=self.tick_labels_major_x.font_weight,
+                )
+            style = dict(edgecolor=self.tick_labels_major_x.edge_color[0],
+                         facecolor=self.tick_labels_major_x.fill_color[0],
+                         linewidth=self.tick_labels_major_x.edge_width,
+                         alpha=max(self.tick_labels_major_x.edge_alpha,
+                                 self.tick_labels_major_x.fill_alpha),
+                         pad=self.tick_labels_major_x.padding,
+                         )
+            rotation = self.tick_labels_major_x.rotation
+
+            for ir, ic in np.ndindex(self.axes.obj.shape):
+                ax_y0 = self.axes.obj[ir, ic].get_window_extent().y0
+                xticks = self.tick_labels_major_x.size_all.groupby(['ir', 'ic']).mean()
+                tt_y1 = xticks.loc[ir, ic]['y1']
+                pad = ax_y0 - tt_y1
+
+                self.axes.obj[ir, ic].xaxis.set_ticks_position('top')
+                self.axes.obj[ir, ic].xaxis.set_label_position('top')
+                self.axes.obj[ir, ic].tick_params(axis='x',
+                                                  which='major',
+                                                  labelrotation=self.tick_labels_major_x.rotation,
+                                                  pad=pad,
+                                                  colors=self.ticks_major_x.color[0],
+                                                  labelcolor=self.tick_labels_major_x.font_color,
+                                                  zorder=1000)
+                if self.gantt.date_type is None:
+                    self.axes.obj[ir, ic].minorticks_off()
+                else:
+                    self.axes.obj[ir, ic].tick_params(axis='x',
+                                                      which='major',
+                                                      width=0,
+                                                      length=0)
+                    self.axes.obj[ir, ic].tick_params(axis='x',
+                                                      which='minor',
+                                                      width=0,
+                                                      length=0)
+
+                for text in self.axes.obj[ir, ic].get_xticklabels(which='major'):
+                    if rotation != 0:
+                        text.set_rotation(rotation)
+                    text.set_fontproperties(ticks_font)
+                    text.set_bbox(style)
+
+                # Style offset text
+                self.axes.obj[ir, ic].xaxis.get_offset_text().set_fontproperties(ticks_font)
+
+        # Gantt date type (major tick is the first month of the quater so use middle minor tick)
+        if self.gantt.date_type == 'quarter':
+            for ir, ic in np.ndindex(self.axes.obj.shape):
+                # Major ticks
+                ax = self.axes.obj[ir, ic]
+                ax.xaxis.set_major_locator(mdates.MonthLocator(bymonth=[1, 4, 7, 10]))
+                ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y\nQ%m"))
+                labels = [f.get_text().replace('04', '2').replace('07', '3').replace('10', '4').replace('01', '1')
+                          for f in ax.get_xticklabels()]
+                ax.set_xticklabels(labels)
+                delta = np.diff(ax.get_xticks()).mean() / 2
+                ax.set_xticks([float(n) + delta for n in ax.get_xticks()])
+
+                # Minor ticks
+
+
+        # Gantt boxes
+        if self.gantt.boxes:
+            for ir, ic in np.ndindex(self.axes.obj.shape):
+                # y-axis left alignment
+                yticks = self.tick_labels_major_y.size_all.groupby(['ir', 'ic']).mean()
+                ax_loc = self.axes.obj[ir, ic].get_window_extent()
+                ax_x0 = ax_loc.x0
+                ax_x1 = ax_loc.x1
+                tt_x1 = yticks.loc[ir, ic]['x1']
+                w = yticks.loc[ir, ic]['width']
+                pad = tt_x1 - ax_x0 - self.gantt.box_padding * self.ws_ticks_ax + w / 2
+                self.axes.obj[ir, ic].tick_params(axis='y', which='both', pad=pad)
+
+                # Make y-axis boxes
+                yticklabs = [f for f in self.axes.obj[ir, ic].get_yticklabels() if f.get_text() != '']
+                height = self.axes.size[1] / len(yticklabs)
+                for iytl, ytl in enumerate(yticklabs):
+                    x0 = (ytl.get_window_extent().x0 - self.gantt.box_padding) / self.fig.size_int[0]
+                    y0 = (ax_loc.y0 + iytl * height) / self.fig.size_int[1]
+                    rect = patches.Rectangle((x0, y0),
+                                             (ax_x0) / self.fig.size[0] - x0,
+                                             height / self.fig.size_int[1],
+                                             fill=True, transform=self.fig.obj.transFigure,
+                                             edgecolor=self.axes.edge_color[0],
+                                             lw=self.grid_major_y.width[0], facecolor='#ffffff', zorder=-2
+                    )
+                    self.fig.obj.patches.extend([rect])
+
+                # Make x-axis boxes
+                xmin, xmax = self.axes.obj[0,0].get_xlim()
+                xticklabs = [f for f in self.axes.obj[ir, ic].get_xticklabels() if f.get_text() != '']
+                xlocs = self.axes.obj[0,0].xaxis.get_minorticklocs()
+                xlocs_ = [((f - xmin) * (ax_x1 - ax_x0) / (xmax - xmin) + ax_x0) / self.fig.size_int[0] for f in xlocs]
+                xlocs_ = [ax_x0 / self.fig.size_int[0]] + xlocs_ + [ax_x1 / self.fig.size_int[0]]
+                height = xticklabs[0].get_window_extent().y1 - ax_loc.y1 + 2 * self.gantt.box_padding
+                y0 = (ax_loc.y1 if self.gantt.date_location == 'top' else ax_loc.y0) - self.axes.edge_width
+                for ii, xtl in enumerate(xlocs_[:-1]):
+                    rect = patches.Rectangle((xlocs_[ii], y0 / self.fig.size_int[1]),
+                                             xlocs_[ii + 1] - xlocs_[ii],
+                                             height / self.fig.size_int[1],
+                                             fill=True, transform=self.fig.obj.transFigure,
+                                             edgecolor=self.axes.edge_color[0],
+                                             lw=self.grid_major_y.width[0], facecolor='#ffffff', zorder=-2
+                    )
+                    self.fig.obj.patches.extend([rect])
 
     def show(self, *args):
         """Display the plot window."""
