@@ -6,6 +6,7 @@ import sys
 import pdb
 import textwrap
 import re
+import warnings
 from pathlib import Path
 with open(Path(__file__).parents[1] / r'version.txt', 'r') as fid:
     __version__ = fid.readlines()[0].replace('\n', '')
@@ -438,7 +439,8 @@ def validate_kwargs(kwargs):
             invalid += [k]
 
     if len(invalid) > 0:
-        print('Warning: the following kwargs are not supported: \n    - ' + "\n    - ".join(invalid))
+        msg = 'The following kwargs are not supported: \n    - ' + "\n    - ".join(invalid)
+        warnings.warn(msg, utl.CustomWarning)
 
 
 if __name__ == '__main__':

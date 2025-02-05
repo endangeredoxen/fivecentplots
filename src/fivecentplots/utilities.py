@@ -173,6 +173,10 @@ class Timer:
         self.init = None
 
 
+class CustomWarning(Warning):
+    pass
+
+
 def arithmetic_eval(s):
     s = s.replace(' ', '')
     s = s.replace('--', '+')

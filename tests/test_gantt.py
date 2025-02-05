@@ -172,7 +172,7 @@ def plt_bar_labels(bm=False, make_reference=False, show=False):
 
     # Make the plot
     fcp.gantt(df2, x=['Start date', 'End date'], y='Description', bar_labels='Description',
-              xmax=datetime.datetime(2025, 6, 15), today=False,
+              xmax=datetime.datetime(2025, 6, 15),
               workstreams='Workstream', workstreams_label_font_size=12,
               filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
 
@@ -203,7 +203,7 @@ def plt_workstreams_monthly(bm=False, make_reference=False, show=False):
     # Make the plot
     fcp.gantt(df2, x=['Start date', 'End date'], y='Description', bar_labels='Owner',
               xmin=datetime.datetime(2025, 6, 15),
-              date_type='monthly', workstreams='Workstream', workstreams_label_font_size=12,
+              date_type='month', workstreams='Workstream', workstreams_label_font_size=12,
               filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
 
     if bm:
@@ -216,7 +216,7 @@ def plt_workstreams_quarter(bm=False, make_reference=False, show=False):
     name = utl.unit_test_get_img_name('workstreams_quarter', make_reference, REFERENCE)
 
     # Make the plot
-    fcp.gantt(df2, x=['Start date', 'End date'], y='Description',
+    fcp.gantt(df2, x=['Start date', 'End date'], y='Description', today=True,
               date_type='quarter', workstreams='Workstream', workstreams_label_font_size=12,
               filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
 
