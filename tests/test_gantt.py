@@ -3,6 +3,7 @@ import pandas as pd
 import os
 import sys
 import pdb
+import datetime
 from pathlib import Path
 import fivecentplots.utilities as utl
 import matplotlib as mpl
@@ -20,6 +21,7 @@ else:
 
 
 df = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_gantt.csv')
+df2 = pd.read_csv(Path(fcp.__file__).parent / 'test_data/fake_data_gantt_milestone.csv')
 
 
 # Set theme
@@ -164,6 +166,65 @@ def plt_wrap(bm=False, make_reference=False, show=False):
     return utl.unit_test_options(make_reference, show, name, REFERENCE)
 
 
+def plt_bar_labels(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('bar_labels', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.gantt(df2, x=['Start date', 'End date'], y='Description', bar_labels='Description',
+              xmax=datetime.datetime(2025, 6, 15), today=False,
+              workstreams='Workstream', workstreams_label_font_size=12,
+              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
+
+    if bm:
+        return
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_today(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('today', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.gantt(df2, x=['Start date', 'End date'], y='Description', today=datetime.datetime(2026, 3, 6),
+              today_text='Giddie up', today_color='#ff0000', today_style='--', today_fill_color='#00ff00',
+              workstreams='Workstream', workstreams_label_font_size=12, dependencies=False,
+              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
+
+    if bm:
+        return
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_workstreams_monthly(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('workstreams_monthly', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.gantt(df2, x=['Start date', 'End date'], y='Description', bar_labels='Owner',
+              xmin=datetime.datetime(2025, 6, 15),
+              date_type='monthly', workstreams='Workstream', workstreams_label_font_size=12,
+              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
+
+    if bm:
+        return
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
+def plt_workstreams_quarter(bm=False, make_reference=False, show=False):
+
+    name = utl.unit_test_get_img_name('workstreams_quarter', make_reference, REFERENCE)
+
+    # Make the plot
+    fcp.gantt(df2, x=['Start date', 'End date'], y='Description',
+              date_type='quarter', workstreams='Workstream', workstreams_label_font_size=12,
+              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
+
+    if bm:
+        return
+    return utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+
 # test_ functions call plt_ funcs 2x:
 # 1) do the comparison with saved image
 # 2) do a test plot only with save=False and inline=False and benchmark spead
@@ -210,6 +271,26 @@ def test_rc_missing(benchmark):
 def test_wrap(benchmark):
     plt_wrap()
     benchmark(plt_wrap, True)
+
+
+def test_bar_labels(benchmark):
+    plt_bar_labels()
+    benchmark(plt_bar_labels, True)
+
+
+def test_today(benchmark):
+    plt_today()
+    benchmark(plt_today, True)
+
+
+def test_workstreams_monthly(benchmark):
+    plt_workstreams_monthly()
+    benchmark(plt_workstreams_monthly, True)
+
+
+def test_workstreams_quarter(benchmark):
+    plt_workstreams_quarter()
+    benchmark(plt_workstreams_quarter, True)
 
 
 if __name__ == '__main__':

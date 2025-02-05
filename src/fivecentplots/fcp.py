@@ -18,7 +18,6 @@ import numpy.typing as npt
 import pandas as pd
 import pdb
 import shutil
-import datetime
 import sys
 from pathlib import Path
 from . import utilities
@@ -1246,7 +1245,7 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
 
     # Connect dependencies with arrows
     def find_tuple_index(tuple_list, search_value):
-      return next((i for i, t in enumerate(tuple_list) if t[0] == search_value), -1)
+        return next((i for i, t in enumerate(tuple_list) if t[0] == search_value), -1)
 
     if layout.gantt.dependencies in df_rc.columns:
         for irow, row in df_rc.iterrows():
@@ -1255,12 +1254,18 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
             deps = [f.lstrip() for f in row[layout.gantt.dependencies].split(';')]
             for dep in deps:
                 sub = df_rc.loc[(df_rc[data.y[0]] == dep)]
-                if data.ranges['xmin'][ir, ic] is not None:
-                    sub = sub.loc[sub[data.x[0]] >= data.ranges['xmin'][ir, ic]]
-                if data.ranges['xmax'][ir, ic] is not None:
-                    sub = sub.loc[sub[data.x[0]] <= data.ranges['xmax'][ir, ic]]
                 if len(sub) == 0:
                     continue
+                if data.ranges['xmin'][ir, ic] is not None:
+                    try:
+                        sub = sub.loc[sub[data.x[0]] >= data.ranges['xmin'][ir, ic]]
+                    except TypeError:
+                        sub = sub.loc[sub[data.x[0]] >= data.ranges['xmin'][ir, ic].date()]
+                if data.ranges['xmax'][ir, ic] is not None:
+                    try:
+                        sub = sub.loc[sub[data.x[1]] <= data.ranges['xmax'][ir, ic]]
+                    except TypeError:
+                        sub = sub.loc[sub[data.x[1]] <= data.ranges['xmax'][ir, ic].date()]
                 for ii, val in sub.iterrows():
                     start_idx = find_tuple_index(yvals, val[data.y[0]])
                     end_idx = find_tuple_index(yvals, row[data.y[0]])
@@ -1271,20 +1276,20 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
                         min_collision = min(min_collision, df_rc.loc[df_rc[data.y[0]] == item, data.x[0]].iloc[0])
                         max_collision = max(max_collision, df_rc.loc[df_rc[data.y[0]] == item, data.x[1]].iloc[0])
                     layout.plot_gantt_dependencies(ir, ic, (val[data.x[1]], start_idx), (row[data.x[0]], end_idx),
-                                                    min_collision, max_collision)
+                                                   min_collision, max_collision)
 
     # Add workstream labels
     if layout.gantt.workstreams.on:
         layout.gantt.workstreams.obj[ir, ic] = []
         layout.gantt.workstreams.obj_bg[ir, ic]
         if layout.gantt.workstreams.location == 'inline':
-            db()
+            raise NotImplementedError('sorry, this is not working yet')
         else:
             # Labels
             layout.gantt.workstreams.rows[ir, ic] = []
             layout.gantt.workstreams.edge_width = layout.grid_major_y.width[0]
             for icol, col in enumerate(df_rc[layout.gantt.workstreams.column].unique()):
-                rows = len(df_rc.loc[df_rc[layout.gantt.workstreams.column]==col])
+                rows = len(df_rc.loc[df_rc[layout.gantt.workstreams.column] == col])
                 obj, obj_bg = layout.add_label(
                     ir, ic, layout.gantt.workstreams, col, layout.axes.size[1] / len(df_rc) * rows)
                 if icol == 0:

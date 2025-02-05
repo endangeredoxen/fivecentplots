@@ -157,19 +157,15 @@ class Gantt(data.Data):
 
         # Missing dates case 1:  no start or end date --> set duration as 1 day at earliest start date
         no_start_end = df.loc[(df[self.x[0]].isnull()) & (df[self.x[1]].isnull())].index
-        #self.df_all.loc[no_start_end, self.x[0]] = earliest_start
         df.loc[no_start_end, self.x[0]] = earliest_start
-        #self.df_all.loc[no_start_end, self.x[1]] = earliest_start + pd.Timedelta(days=1)
         df.loc[no_start_end, self.x[1]] = earliest_start + pd.Timedelta(days=1)
 
         # Missing dates case 2:  start date but no end data --> set as latest date
         no_end = df.loc[df[self.x[1]].isnull()].index
-        #self.df_all.loc[no_end, self.x[1]] = latest_end
         df.loc[no_end, self.x[1]] = latest_end
 
         # Missing dates case 3: end date but no start date --> set start as one before end date
         no_start = df.loc[df[self.x[0]].isnull()].index
-        #self.df_all.loc[no_start, self.x[0]] = latest_end - pd.Timedelta(days=1)
         df.loc[no_start, self.x[0]] = latest_end - pd.Timedelta(days=1)
 
         # Remove duplicates with legend
