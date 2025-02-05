@@ -1115,9 +1115,6 @@ class BaseLayout:
                                          self.axes.edge_color),
                     edge_style=utl.kwget(kwargs, self.fcpp,
                                          ['gantt_workstreams_label_edge_style', 'workstreams_label_edge_style'], None),
-                    # edge_width=utl.kwget(kwargs, self.fcpp,
-                    #                      ['gantt_workstreams_label_edge_width', 'workstreams_label_edge_width'],
-                    #                      self.grid_major_y.edge_width),
                     fill_color=utl.kwget(kwargs, self.fcpp,
                                          ['gantt_workstreams_label_fill_color', 'workstreams_label_fill_color'],
                                          '#8c8c8c'),
@@ -1217,6 +1214,7 @@ class BaseLayout:
                     workstreams_title=gantt_workstreams_title,
                     years=copy.copy(self.obj_array)
                     )
+        self.gantt.DATE_TYPES = ['quarter', 'month']
 
         # Bar labels
         if self.gantt.bar_labels is not None or not self.gantt.labels_as_yticks:
@@ -1241,7 +1239,7 @@ class BaseLayout:
         # Today text
         self.gantt.today = \
             Element('gantt_today', self.fcpp, kwargs,
-                    on=False if utl.kwget(kwargs, self.fcpp, ['gantt_today', 'today'], True) is False else True,
+                    on=False if utl.kwget(kwargs, self.fcpp, ['gantt_today', 'today'], False) is False else True,
                     obj=self.obj_array,
                     color=utl.kwget(kwargs, self.fcpp, ['gantt_today_color', 'today_color'], '#555555'),
                     coordinate=utl.kwget(kwargs, self.fcpp, ['gantt_today_coordinate', 'today_coordinate'], 'data'),
@@ -1289,23 +1287,27 @@ class BaseLayout:
         if self.gantt.workstreams.on and not utl.kwget(kwargs, self.fcpp, ['gantt_label_boxes', 'label_boxes'], False):
             self.gantt.label_boxes = True
 
-        # Adjust some style parameters based on user inputs
-        if self.gantt.date_type is None and 'date_location' not in kwargs \
+        ### Adjust some style parameters based on user inputs  # noqa
+        # x-ticks default to bottom unless a date_type is specified
+        if self.gantt.date_type not in self.gantt.DATE_TYPES \
+                and 'date_location' not in kwargs \
                 and 'gantt_date_location' not in kwargs:
             self.gantt.date_location = 'bottom'
         else:
             self.gantt.date_location = 'top'
 
-        if self.gantt.date_type is not None:
+        # x-grid uses major for no date type or else minor
+        if self.gantt.date_type in self.gantt.DATE_TYPES:
             if 'ticks_minor_number' not in kwargs and 'ticks_minor_x_number' not in kwargs:
                 self.ticks_minor_x.number = 1
-                kwargs['grid_minor_x'] = True
-                kwargs['grid_major_x'] = False
-                kwargs['grid_minor_x_width'] = 1.3
-                kwargs['grid_minor_color'] = '#ffffff'
+                kwargs['grid_minor_x'] = kwargs.get('grid_minor_x', True)
+                kwargs['grid_major_x'] = kwargs.get('grid_major_x', False)
+                kwargs['grid_minor_x_width'] = kwargs.get('grid_minor_x_width', 1.3)
+                kwargs['grid_minor_color'] = kwargs.get('grid_minor_color', '#ffffff')
+                self.ticks_major_x.width = 0
                 self.ticks_major_y.width = 0
 
-            if 'gantt_tick_labels_x_rotation' not in kwargs:
+            if 'gantt_tick_labels_x_rotation' not in kwargs and self.gantt.date_type in self.gantt.DATE_TYPES:
                 self.gantt.tick_labels_x_rotation = 0
 
             if 'ticks_minor_width' not in kwargs and 'ticks_minor_x_width' not in kwargs:
@@ -1341,6 +1343,15 @@ class BaseLayout:
 
         if self.gantt.workstreams.on and self.legend.column == self.gantt.workstreams.column:
             self.legend._on = False
+
+        # Option warnings
+        msgs = []
+        date_types = [None] + self.gantt.DATE_TYPES
+        if self.gantt.date_type not in date_types:
+            valid = ', '.join([f'"{f}"' if isinstance(f, str) else str(f) for f in date_types])
+            msgs += [f'Invalid Gantt date type "{self.gantt.date_type}".  Options: [{valid}]']
+        for msg in msgs:
+            warnings.warn(msg, utl.CustomWarning)
 
         return kwargs
 

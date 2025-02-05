@@ -2590,6 +2590,13 @@ class Layout(BaseLayout):
             self.gantt.bar_labels.text = bar_labels
             for i in range(len(yvals)):
                 position = [(xvals[i][1], i) for i in range(len(yvals))]
+
+            # Filter out any labels that are outside of the range (xmax handled below)
+            for ipos, pos in enumerate(position):
+                if data.ranges['xmin'][ir, ic] is not None and pos[0] < data.ranges['xmin'][ir, ic]:
+                    self.gantt.bar_labels.text[ipos] = ''
+
+            # Add the labels
             self.gantt.bar_labels.obj[ir, ic] = []
             self.add_text(ir, ic, element=self.gantt.bar_labels, position=position,
                           offsetx=datetime.timedelta(days=1), offsety=0)
@@ -4831,7 +4838,7 @@ class Layout(BaseLayout):
                         self.fig.obj.patches.extend([rect])
 
                 # Make x-axis boxes
-                if self.gantt.date_type in ['month', 'quarter']:
+                if self.gantt.date_type in self.gantt.DATE_TYPES:
                     ax_loc = self.axes.obj[ir, ic].get_window_extent()
                     ax_x0 = ax_loc.x0
                     ax_x1 = ax_loc.x1
@@ -4855,7 +4862,7 @@ class Layout(BaseLayout):
                     y0 += height
 
                 # Make year labels
-                if self.gantt.date_type in ['quarter', 'month']:
+                if self.gantt.date_type in self.gantt.DATE_TYPES:
                     years = sorted(list(set(self.gantt.years[ir, ic])))
                     counts = list(np.cumsum([self.gantt.years[ir, ic].count(f) for f in years]))
                     x0 = ax_x0 / self.fig.size_int[0]

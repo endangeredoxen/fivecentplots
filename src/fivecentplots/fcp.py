@@ -1308,7 +1308,7 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
         layout.gantt.workstreams.on = False
 
     # Add today line
-    if layout.gantt.today.on and layout.gantt.today.obj[ir, ic] is None:
+    if layout.gantt.today.on:
         layout.plot_gantt_today(ir, ic)
 
     # Milestones
