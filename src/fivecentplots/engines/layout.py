@@ -1107,7 +1107,7 @@ class BaseLayout:
             Element('gantt.workstreams', self.fcpp, kwargs,
                     on=True if utl.kwget(kwargs, self.fcpp,
                                          ['gantt_workstreams', 'workstreams'], False) is not False else False,
-                    obj=self.obj_array,
+                    obj=copy.copy(self.obj_array),
                     align=utl.kwget(kwargs, self.fcpp, 'gantt_workstreams_label_align', 'center'),
                     column=utl.kwget(kwargs, self.fcpp, ['gantt_workstreams', 'workstreams'], None),
                     edge_color=utl.kwget(kwargs, self.fcpp,
@@ -1115,8 +1115,9 @@ class BaseLayout:
                                          self.axes.edge_color),
                     edge_style=utl.kwget(kwargs, self.fcpp,
                                          ['gantt_workstreams_label_edge_style', 'workstreams_label_edge_style'], None),
-                    edge_width=utl.kwget(kwargs, self.fcpp,
-                                         ['gantt_workstreams_label_edge_width', 'workstreams_label_edge_width'], 1),
+                    # edge_width=utl.kwget(kwargs, self.fcpp,
+                    #                      ['gantt_workstreams_label_edge_width', 'workstreams_label_edge_width'],
+                    #                      self.grid_major_y.edge_width),
                     fill_color=utl.kwget(kwargs, self.fcpp,
                                          ['gantt_workstreams_label_fill_color', 'workstreams_label_fill_color'],
                                          '#8c8c8c'),
@@ -1137,7 +1138,7 @@ class BaseLayout:
                                       ['gantt_workstreams_label_padding', 'workstreams_label_padding'], 0.3),
                     rotation=utl.kwget(kwargs, self.fcpp,
                                        ['gantt_workstreams_rotation', 'workstreams_label_rotation'], 90),
-                    rows=[],
+                    rows=self.obj_array,
                     size=utl.kwget(kwargs, self.fcpp,
                                    ['gantt_workstreams_label_size', 'workstreams_label_size'], 30),
                     )
@@ -1186,8 +1187,7 @@ class BaseLayout:
             Element('gantt', self.fcpp, kwargs,
                     on=True,
                     bar_labels=utl.kwget(kwargs, self.fcpp, ['gantt_bar_labels', 'bar_labels'], None),
-                    boxes=utl.kwget(kwargs, self.fcpp, ['gantt_label_boxes', 'label_boxes'], True),
-                    box_padding_x=utl.kwget(kwargs, self.fcpp, ['gantt_label_box_padding_x', 'label_box_padding_x'], 2),
+                    box_padding_x=utl.kwget(kwargs, self.fcpp, ['gantt_label_box_padding_x', 'label_box_padding_x'], 8),
                     box_padding_y=utl.kwget(kwargs, self.fcpp, ['gantt_label_box_padding_x', 'label_box_padding_y'], 6),
                     color_by=utl.kwget(kwargs, self.fcpp, ['gantt_color_by', 'color_by'], None),
                     date_location=utl.kwget(kwargs, self.fcpp, ['gantt_date_location', 'date_location'], 'top'),
@@ -1203,6 +1203,7 @@ class BaseLayout:
                     label_x=utl.kwget(kwargs, self.fcpp, 'gantt_label_x', kwargs.get('gantt_label_x', '')),
                     labels_as_yticks=utl.kwget(
                        kwargs, self.fcpp, ['gantt_labels_as_yticks', 'labels_as_yticks'], True),
+                    label_boxes=utl.kwget(kwargs, self.fcpp, ['gantt_label_boxes', 'label_boxes'], False),
                     milestones=utl.kwget(kwargs, self.fcpp, ['gantt_milestones', 'milestones'], 'Milestone'),
                     order_by_legend=utl.kwget(kwargs, self.fcpp, ['gantt_order_by_legend', 'order_by_legend'],
                                               kwargs.get('order_by_legend', False)),
@@ -1212,6 +1213,7 @@ class BaseLayout:
                     today=utl.kwget(kwargs, self.fcpp, ['gantt_today', 'today'], True),
                     workstreams=gantt_workstreams,
                     workstreams_title=gantt_workstreams_title,
+                    years=copy.copy(self.obj_array)
                     )
 
         # Bar labels
@@ -1237,7 +1239,7 @@ class BaseLayout:
         # Today text
         self.gantt.today = \
             Element('gantt_today', self.fcpp, kwargs,
-                    on=False if utl.kwget(kwargs, self.fcpp, ['gantt_today', 'today'], False) else True,
+                    on=False if utl.kwget(kwargs, self.fcpp, ['gantt_today', 'today'], False) is False else True,
                     obj=self.obj_array,
                     color=utl.kwget(kwargs, self.fcpp, ['gantt_today_color', 'today_color'], '#555555'),
                     coordinate=utl.kwget(kwargs, self.fcpp, ['gantt_today_coordinate', 'today_coordinate'], 'data'),
@@ -1282,6 +1284,8 @@ class BaseLayout:
         elif self.gantt.workstreams.location == 'inline':
             self.gantt.workstreams.rotation = 0
             self.gantt.workstreams_title.rotation = 0
+        if self.gantt.workstreams.on and not utl.kwget(kwargs, self.fcpp, ['gantt_label_boxes', 'label_boxes'], False):
+            self.gantt.label_boxes = True
 
         # Adjust some style parameters based on user inputs
         if self.gantt.date_type is None and 'date_location' not in kwargs \
@@ -1304,10 +1308,6 @@ class BaseLayout:
 
             if 'ticks_minor_width' not in kwargs and 'ticks_minor_x_width' not in kwargs:
                 self.ticks_minor_x.width = 0
-
-        else:
-            if 'gantt_label_boxes' not in kwargs and 'label_boxes' not in kwargs:
-                self.gantt.label_boxes = False
 
         if 'tick_labels_major_rotation' not in kwargs \
                 or 'tick_labels_major_x_rotation' not in kwargs \
@@ -2075,6 +2075,7 @@ class BaseLayout:
                             font_weight=RepeatedList(utl.kwget(kwargs, self.fcpp,
                                                                'text_font_weight', 'normal'),
                                                      'text_font_weight'),
+                            padding=utl.kwget(kwargs, self.fcpp, 'text_padding', 4),
                             position=RepeatedList(position, 'text_position'),
                             coordinate=utl.kwget(kwargs, self.fcpp, ['text_coordinate', 'text_coord'], 'axis'),
                             rotation=RepeatedList(utl.kwget(kwargs, self.fcpp,
@@ -2473,7 +2474,7 @@ class BaseLayout:
                 continue
 
             # Get label override name if in kwargs
-            if f'label_{lab}' in kwargs.keys():
+            if f'label_{lab}' in kwargs.keys() and kwargs[f'label_{lab}'] not in [True, False]:
                 lab_text = str(kwargs.get(f'label_{lab}'))
                 lab_text2 = str(kwargs.get(f'label_{lab}2'))
             elif f'label_{lab}_text' in kwargs.keys():

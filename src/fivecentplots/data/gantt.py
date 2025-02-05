@@ -26,7 +26,7 @@ class Gantt(data.Data):
         super().__init__(self.name, self.req, self.opt, **kwargs)
 
         # error checks
-        if self.workstreams not in self.df_all.columns:
+        if self.workstreams is not None and self.workstreams not in self.df_all.columns:
             raise data.DataError('Workstreams column "{self.workstreams}" is not in DataFrame')
         if len(self.x) != 2:
             raise data.DataError('Gantt charts require both a start and a stop column')
@@ -41,7 +41,7 @@ class Gantt(data.Data):
                 self.df_all[self.x[1]].astype('datetime64[ns]')
             except:  # noqa
                 raise data.DataError('Stop column in gantt chart must be of type datetime')
-        for col in utl.kwget(kwargs, self.fcpp, ['bar_labels', 'gantt_bar_labels'], []):
+        for col in utl.validate_list(utl.kwget(kwargs, self.fcpp, ['bar_labels', 'gantt_bar_labels'], [])):
             if col not in self.df_all.columns:
                 raise data.DataError(f'Bar label column "{col}" is not in DataFrame')
 
@@ -62,7 +62,10 @@ class Gantt(data.Data):
 
             # shared axes
             if self.share_x or (self.nrow == 1 and self.ncol == 1):
-                self._add_range(ir, ic, 'x', 'min', df_fig[self.x[0]].min())
+                if self.ranges['xmin'][ir, ic] is not None:
+                    self._add_range(ir, ic, 'x', 'min', self.ranges['xmin'][ir, ic])
+                else:
+                    self._add_range(ir, ic, 'x', 'min', df_fig[self.x[0]].min())
                 if self.ranges['xmax'][ir, ic] is not None:
                     self._add_range(ir, ic, 'x', 'max', self.ranges['xmax'][ir, ic])
                 else:

@@ -4,6 +4,7 @@ import scipy.stats as ss
 import pandas as pd
 import numpy as np
 import numpy.typing as npt
+import datetime
 from typing import Union
 from .. import utilities
 utl = utilities
@@ -563,6 +564,12 @@ class Data:
                     for col in getattr(self, ax):
                         if col not in data_set.columns:
                             continue
+
+                        if len(data_set) > 0 \
+                                and isinstance(data_set[col].iloc[0], datetime.date) \
+                                and isinstance(user_limit, datetime.datetime):
+                            user_limit = user_limit.date()
+
                         if mm == 'min':
                             data_set = data_set[data_set[col] >= user_limit]
                         else:
@@ -593,10 +600,14 @@ class Data:
             dtypes = data_set[getattr(self, ax)].dtypes.unique()
 
             # Check dtypes
-            if 'str' in dtypes or 'object' in dtypes:
-                return None, None
-            elif 'datetime64[ns]' in dtypes:
-                # Auto-range this
+            if 'datetime64[ns]' in dtypes or all([isinstance(f, datetime.date) for f in vals]):
+                vmin, vmax = None, None
+                if getattr(self, f'{ax}min')[plot_num] is not None:
+                    vmin = np.min(vals)
+                if getattr(self, f'{ax}max')[plot_num] is not None:
+                    vmax = np.max(vals)
+                return vmin, vmax
+            elif 'str' in dtypes or 'object' in dtypes:
                 return None, None
 
         # Case: data_set is np.array
