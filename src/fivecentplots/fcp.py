@@ -1235,15 +1235,6 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
         # Bar labels can have data from multiple columns; store as tuple with text string and boolean for
         # whether or not the entry has a dependency
         bar_labels = [' | '. join(f) for f in df_rc[layout.gantt.bar_labels.columns].values]
-        # if layout.gantt.dependencies in df_rc.columns:
-        #     df_rc_temp = df_rc.reset_index(drop=True)
-        #     deps = [f for f in df_rc[layout.gantt.dependencies].values if str(f) != 'nan']
-        #     deps = [val.lstrip() for f in deps for val in f.split(';')]
-        #     for ibl, bar_label in enumerate(bar_labels):
-        #         vals = bar_label[0].split(' | ')
-        #         for val in vals:
-        #             if val in deps:
-        #                 bar_labels[ibl] = (bar_labels[ibl][0], True)
 
     # Plot the bars
     for iline, df, x, y, z, leg_name, twin, ngroups in data.get_plot_data(df_rc):
@@ -1260,23 +1251,27 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
     if layout.gantt.dependencies in df_rc.columns:
         for irow, row in df_rc.iterrows():
             if str(row[layout.gantt.dependencies]) == 'nan':
-              continue
+                continue
             deps = [f.lstrip() for f in row[layout.gantt.dependencies].split(';')]
             for dep in deps:
-              sub = df_rc.loc[df_rc[data.y[0]] == dep]
-              if len(sub) == 0:
-                  continue
-              for ii, val in sub.iterrows():
-                  start_idx = find_tuple_index(yvals, val[data.y[0]])
-                  end_idx = find_tuple_index(yvals, row[data.y[0]])
-                  min_collision = row[data.x[0]]
-                  max_collision = val[data.x[1]]
-                  for idx in range(min(start_idx, end_idx) + 1, max(start_idx, end_idx)):
-                      item = yvals[idx][0]
-                      min_collision = min(min_collision, df_rc.loc[df_rc[data.y[0]] == item, data.x[0]].iloc[0])
-                      max_collision = max(max_collision, df_rc.loc[df_rc[data.y[0]] == item, data.x[1]].iloc[0])
-                  layout.plot_gantt_dependencies(ir, ic, (val[data.x[1]], start_idx), (row[data.x[0]], end_idx),
-                                                 min_collision, max_collision)
+                sub = df_rc.loc[(df_rc[data.y[0]] == dep)]
+                if data.ranges['xmin'][ir, ic] is not None:
+                    sub = sub.loc[sub[data.x[0]] >= data.ranges['xmin'][ir, ic]]
+                if data.ranges['xmax'][ir, ic] is not None:
+                    sub = sub.loc[sub[data.x[0]] <= data.ranges['xmax'][ir, ic]]
+                if len(sub) == 0:
+                    continue
+                for ii, val in sub.iterrows():
+                    start_idx = find_tuple_index(yvals, val[data.y[0]])
+                    end_idx = find_tuple_index(yvals, row[data.y[0]])
+                    min_collision = row[data.x[0]]
+                    max_collision = val[data.x[1]]
+                    for idx in range(min(start_idx, end_idx) + 1, max(start_idx, end_idx)):
+                        item = yvals[idx][0]
+                        min_collision = min(min_collision, df_rc.loc[df_rc[data.y[0]] == item, data.x[0]].iloc[0])
+                        max_collision = max(max_collision, df_rc.loc[df_rc[data.y[0]] == item, data.x[1]].iloc[0])
+                    layout.plot_gantt_dependencies(ir, ic, (val[data.x[1]], start_idx), (row[data.x[0]], end_idx),
+                                                    min_collision, max_collision)
 
     # Add workstream labels
     if layout.gantt.workstreams.on:
@@ -1286,6 +1281,8 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
             db()
         else:
             # Labels
+            layout.gantt.workstreams.rows[ir, ic] = []
+            layout.gantt.workstreams.edge_width = layout.grid_major_y.width[0]
             for icol, col in enumerate(df_rc[layout.gantt.workstreams.column].unique()):
                 rows = len(df_rc.loc[df_rc[layout.gantt.workstreams.column]==col])
                 obj, obj_bg = layout.add_label(
@@ -1296,9 +1293,10 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
                 else:
                     layout.gantt.workstreams.obj[ir, ic] += [obj]
                     layout.gantt.workstreams.obj_bg[ir, ic] += [obj_bg]
-                layout.gantt.workstreams.rows += [rows]
+                layout.gantt.workstreams.rows[ir, ic] += [rows]
 
             # Title
+            layout.gantt.workstreams_title.edge_width = layout.grid_major_y.width[0]
             layout.gantt.workstreams_title.obj[ir, ic], layout.gantt.workstreams_title.obj_bg[ir, ic] = \
                 layout.add_label(ir, ic, layout.gantt.workstreams_title, layout.gantt.workstreams_title.text)
     else:
