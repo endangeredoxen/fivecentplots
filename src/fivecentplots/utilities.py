@@ -16,7 +16,7 @@ import operator
 import imageio.v3 as imageio
 from matplotlib.font_manager import FontProperties, findfont
 from pathlib import Path
-from typing import Union, Tuple, Dict
+from typing import Any, Union, Tuple, Dict, List
 from . import data
 import numpy.typing as npt
 try:
@@ -1279,6 +1279,21 @@ def reload_defaults(theme: [str, None] = None, verbose: bool = False):
     return fcp_params, colors, markers, rcParams  # could convert to dict in future
 
 
+def remove_duplicates_list_preserve_order(seq: List[Any]) -> List[Any]:
+    """
+    Remove duplicates from a list while preserving original order
+
+    Args:
+        seq: original list
+
+    Returns:
+        updated list
+    """
+    seen = set()
+    seen_add = seen.add
+    return [x for x in seq if not (x in seen or seen_add(x))]
+
+
 def see(obj) -> pd.DataFrame:
     """Prints a readable list of class attributes.
 
@@ -1547,6 +1562,21 @@ def test_checker(module) -> list:
     plts = [f[0].replace('plt_', '') for f in funcs if 'plt_' in f[0]]
 
     return [f for f in plts if f not in tests]
+
+
+def tuple_list_index(tuple_list: List[Tuple[Any]], search_value: Any, idx: int = 0) -> int:
+    """
+    Find the index of a search value that matches the value of a tuple at a specific tuple index in a list of tuples.
+
+    Args:
+        tuple_list: list of tuples; tuples can have any len
+        search_value:  the value to find
+        idx: the index within a specific tuple to search
+
+    Return:
+        index or -1 if not found
+    """
+    return next((i for i, t in enumerate(tuple_list) if t[0] == search_value), -1)
 
 
 def unit_test_get_img_name(name: str, make_reference: bool, reference_path: pathlib.Path) -> pathlib.Path:

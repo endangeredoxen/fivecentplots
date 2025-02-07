@@ -451,10 +451,11 @@ class Data:
                 if self.imgs is None:
                     self.df_all[val] = self.df_all[val].astype('datetime64[ns]')
                     # if all are 00:00:00 time, leave only date
-                    if len(self.df_all.loc[self.df_all[val].dt.hour != 0, val]) == 0 and \
-                            len(self.df_all.loc[self.df_all[val].dt.minute != 0, val]) == 0 and \
-                            len(self.df_all.loc[self.df_all[val].dt.second != 0, val]) == 0:
-                        self.df_all[val] = pd.DatetimeIndex(self.df_all[val]).date
+                    # if len(self.df_all.loc[self.df_all[val].dt.hour != 0, val]) == 0 and \
+                    #         len(self.df_all.loc[self.df_all[val].dt.minute != 0, val]) == 0 and \
+                    #         len(self.df_all.loc[self.df_all[val].dt.second != 0, val]) == 0:
+                    #     self.df_all[val] = pd.DatetimeIndex(self.df_all[val]).date
+                    self._strip_timestamp(val)
                     continue
             except:  # noqa
                 continue
@@ -603,10 +604,15 @@ class Data:
             if 'datetime64[ns]' in dtypes or all([isinstance(f, datetime.date) for f in vals]):
                 vmin, vmax = None, None
                 if getattr(self, f'{ax}min')[plot_num] is not None:
-                    vmin = np.min(vals)
+                    vmin = getattr(self, f'{ax}min')[plot_num]
+                else:
+                    vmin =  np.min(vals)
                 if getattr(self, f'{ax}max')[plot_num] is not None:
+                    vmax = getattr(self, f'{ax}max')[plot_num]
+                else:
                     vmax = np.max(vals)
                 return vmin, vmax
+
             elif 'str' in dtypes or 'object' in dtypes:
                 return None, None
 
@@ -1255,6 +1261,18 @@ class Data:
             for mm in ['min', 'max']:
                 ranges[f'{ax}{mm}'] = np.array([[None] * self.ncol] * self.nrow)
         return ranges
+
+    def _strip_timestamp(self, val: str):
+        """
+        If all are 00:00:00 time, leave only date
+
+        Args:
+            val: column name
+        """
+        if len(self.df_all.loc[self.df_all[val].dt.hour != 0, val]) == 0 and \
+                            len(self.df_all.loc[self.df_all[val].dt.minute != 0, val]) == 0 and \
+                            len(self.df_all.loc[self.df_all[val].dt.second != 0, val]) == 0:
+                        self.df_all[val] = pd.DatetimeIndex(self.df_all[val]).date
 
     def _subset(self, ir: int, ic: int) -> pd.DataFrame:
         """Handles creation of a new data subset based on the type of plot selected.

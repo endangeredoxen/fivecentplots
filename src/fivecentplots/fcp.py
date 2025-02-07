@@ -1227,26 +1227,33 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
     elif data.legend is not None:
         cols += [f for f in utl.validate_list(data.legend) if f is not None and f not in cols]
 
-    xvals = df_rc[data.x].values
-    yvals = [tuple(f) for f in df_rc[cols].values]
+    if layout.gantt.milestone in df_rc.columns:
+        xvals = df_rc.loc[df_rc[layout.gantt.milestone].isna(), data.x].values
+    else:
+        xvals = df_rc[data.x].values
+    yvals = utl.remove_duplicates_list_preserve_order([tuple(f) for f in df_rc[cols].values])
+
     bar_labels = None
     if layout.gantt.bar_labels is not None:
         # Bar labels can have data from multiple columns; store as tuple with text string and boolean for
         # whether or not the entry has a dependency
-        bar_labels = [' | '. join(f) for f in df_rc[layout.gantt.bar_labels.columns].values]
+        if layout.gantt.milestone in df_rc.columns:
+            vals = df_rc.loc[df_rc[layout.gantt.milestone].isna(), layout.gantt.bar_labels.columns].values
+            bar_labels = [' | '. join(f) for f in vals]
+        else:
+            bar_labels = [' | '. join(f) for f in df_rc[layout.gantt.bar_labels.columns].values]
 
     # Plot the bars
     for iline, df, x, y, z, leg_name, twin, ngroups in data.get_plot_data(df_rc):
         new_xmax = layout.plot_gantt(ir, ic, iline, df, df_rc, data.x, y, leg_name, xvals, yvals, bar_labels,
                                      ngroups, data)
 
-        if new_xmax is not None:
+        if new_xmax is not None and data.ranges['xmax'][ir, ic] is None:
             data.ranges['xmax'][ir, ic] = new_xmax
+        elif new_xmax is not None:
+            data.ranges['xmax'][ir, ic] = max(data.ranges['xmax'][ir, ic], new_xmax.replace(tzinfo=None))
 
     # Connect dependencies with arrows
-    def find_tuple_index(tuple_list, search_value):
-        return next((i for i, t in enumerate(tuple_list) if t[0] == search_value), -1)
-
     if layout.gantt.dependencies in df_rc.columns:
         for irow, row in df_rc.iterrows():
             if str(row[layout.gantt.dependencies]) == 'nan':
@@ -1267,8 +1274,8 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
                     except TypeError:
                         sub = sub.loc[sub[data.x[1]] <= data.ranges['xmax'][ir, ic].date()]
                 for ii, val in sub.iterrows():
-                    start_idx = find_tuple_index(yvals, val[data.y[0]])
-                    end_idx = find_tuple_index(yvals, row[data.y[0]])
+                    start_idx = utl.tuple_list_index(yvals, val[data.y[0]])
+                    end_idx = utl.tuple_list_index(yvals, row[data.y[0]])
                     min_collision = row[data.x[0]]
                     max_collision = val[data.x[1]]
                     for idx in range(min(start_idx, end_idx) + 1, max(start_idx, end_idx)):
@@ -1289,7 +1296,7 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
             layout.gantt.workstreams.rows[ir, ic] = []
             layout.gantt.workstreams.edge_width = layout.grid_major_y.width[0]
             for icol, col in enumerate(df_rc[layout.gantt.workstreams.column].unique()):
-                rows = len(df_rc.loc[df_rc[layout.gantt.workstreams.column] == col])
+                rows = len(df_rc.loc[df_rc[layout.gantt.workstreams.column] == col, data.y[0]].unique())
                 obj, obj_bg = layout.add_label(
                     ir, ic, layout.gantt.workstreams, col, layout.axes.size[1] / len(df_rc) * rows)
                 if icol == 0:
@@ -1310,11 +1317,6 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
     # Add today line
     if layout.gantt.today.on:
         layout.plot_gantt_today(ir, ic)
-
-    # Milestones
-    if layout.gantt.milestones is not False and layout.gantt.milestones in df_rc.columns:
-        # think this through
-        pass
 
     return data
 
