@@ -19,11 +19,15 @@ class Gantt(data.Data):
         Args:
             kwargs: user-defined keyword args
         """
-        self.workstreams = kwargs.get('workstreams')
-        if self.workstreams is not None and 'legend' not in kwargs:
-            kwargs['legend'] = self.workstreams
-
         super().__init__(self.name, self.req, self.opt, **kwargs)
+
+        # Get some important kwargs
+        self.workstreams = utl.kwget(kwargs, self.fcpp, ['gantt_workstreams', 'workstreams'], None)
+        if self.workstreams is not None and 'legend' not in kwargs:
+            self.legend = self.workstreams
+        self.duration = utl.kwget(kwargs, self.fcpp, ['gantt_duration', 'duration'], 'Duration')
+        self.dependencies = utl.kwget(kwargs, self.fcpp, ['gantt_dependencies', 'dependencies'], 'Dependency')
+        self.milestone=utl.kwget(kwargs, self.fcpp, ['gantt_milestones', 'milestones'], 'Milestone'),
 
         # error checks
         if self.workstreams is not None and self.workstreams not in self.df_all.columns:
@@ -44,6 +48,14 @@ class Gantt(data.Data):
         for col in utl.validate_list(utl.kwget(kwargs, self.fcpp, ['bar_labels', 'gantt_bar_labels'], [])):
             if col not in self.df_all.columns:
                 raise data.DataError(f'Bar label column "{col}" is not in DataFrame')
+
+        self._populate_dates()
+
+        # Update date time formats and replace NaT with fake datetime
+        self.df_all[self.x[0]] = pd.to_datetime(self.df_all[self.x[0]])
+        self._strip_timestamp(self.x[0])
+        self.df_all[self.x[1]] = pd.to_datetime(self.df_all[self.x[1]])
+        self._strip_timestamp(self.x[1])
 
     def get_data_ranges(self):
         """Gantt-specific data range calculator by subplot."""
@@ -71,7 +83,7 @@ class Gantt(data.Data):
                 else:
                     self._add_range(ir, ic, 'x', 'max', df_fig[self.x[1]].max())
             if self.share_y or (self.nrow == 1 and self.ncol == 1):
-                if self.legend is not None:
+                if self.legend is not None and self.workstreams != self.legend:
                     self._add_range(ir, ic, 'y', 'max', len(df_fig[self.y[0]]) - 0.5)
                 else:
                     self._add_range(ir, ic, 'y', 'max', len(df_fig[self.y[0]].unique()) - 0.5)
@@ -139,6 +151,27 @@ class Gantt(data.Data):
                     yield irow, df2, row['x'], row['y'], \
                         None if self.z is None else self.z[0], row['names'], \
                         False, len(self.legend_vals)
+
+    def _populate_dates(self):
+        """Compute dates that are based on a dependency or duration."""
+        # Fill in missing start dates based on dependencies
+        missing_start = self.df_all.loc[self.df_all[self.x[0]].isna()]
+        for irow, row in missing_start.iterrows():
+            if self.dependencies not in row or str(row[self.dependencies]) == 'nan':
+                raise data.DataError(f'No start time defined for "{self.y[0]}" (specify a date or dependency)')
+            deps = [f.lstrip() for f in row[self.dependencies].split(';')]
+            start = self.df_all.loc[self.df_all[self.y[0]].isin(deps)][self.x[1]].max()
+            self.df_all.loc[irow, self.x[0]] = start
+
+        # Fill in missing end dates using duration or treat as discrete milestones
+        missing_end = self.df_all.loc[self.df_all[self.x[1]].isna()]
+        for irow, row in missing_end.iterrows():
+            if self.duration in row:
+                db()
+            else:
+                # Milestones have same start and end date
+                self.df_all.loc[irow, self.x[1]] = row[self.x[0]]
+
 
     def _subset_modify(self, ir: int, ic: int, df: pd.DataFrame) -> pd.DataFrame:
         """Modify subset to deal with duplicate Gantt entries

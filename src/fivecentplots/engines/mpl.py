@@ -1155,7 +1155,7 @@ class Layout(BaseLayout):
                 pos = position[itext]
             elif position is not None:
                 pos = position
-            elif hasattr(el, 'position') and isinstance(el.position, RepeatedList):
+            elif hasattr(el, 'position') and str(type(el.position)) == str(RepeatedList):
                 pos = copy.copy(el.position[itext])
             elif hasattr(el, 'position'):
                 pos = copy.copy(el.position)
@@ -1187,7 +1187,7 @@ class Layout(BaseLayout):
                 else:
                     pos[1] /= self.axes.size[1]
                 offsety /= self.axes.size[1]
-            if isinstance(pos[0], datetime.datetime):
+            if isinstance(pos[0], datetime.datetime) and isinstance(offsetx, int):
                 offsetx = datetime.timedelta(offsetx)
 
             # Set style attributes
@@ -1205,10 +1205,12 @@ class Layout(BaseLayout):
                 elif hasattr(el, attr):
                     kw[attr] = getattr(el, attr)
 
+            txt = txt.replace('\\n', '\n')
             if element is not None:
                 text_obj = ax.text(pos[0] + offsetx,
                                    pos[1] + offsety,
-                                   txt, transform=transform,
+                                   txt,
+                                   transform=transform,
                                    rotation=kw['rotation'],
                                    color=kw['font_color'],
                                    fontname=kw['font'],
@@ -2572,11 +2574,43 @@ class Layout(BaseLayout):
                 yi = yvals.index((row[y], leg_name))
             else:
                 yi = yvals.index((row[y],))
-            bar([(row[x[0]], row[x[1]] - row[x[0]])],
-                (yi - self.gantt.height / 2, self.gantt.height),
-                facecolor=fillcolor[ii],
-                edgecolor=edgecolor[ii],
-                linewidth=self.gantt.edge_width)
+            if row[x[0]] == row[x[1]]:
+                # Milestone
+                marker_size = self.axes.size[1] / (len (yvals) - 1) * self.gantt.height / 2 - 2
+                ax.plot([row[x[0]]], [yi], self.gantt.milestone_marker,
+                        markersize=marker_size,
+                        mfc=fillcolor[ii],
+                        mec='#ffffff')
+                if self.gantt.milestone in row and str(row['Milestone']) != 'nan':
+                    txt_size = utl.get_text_dimensions(row['Milestone'],
+                                                    self.gantt.milestone_text.font,
+                                                    self.gantt.milestone_text.font_size,
+                                                    self.gantt.milestone_text.font_style,
+                                                    self.gantt.milestone_text.font_weight)
+                    loc = ax.transData.transform((mdates.date2num(xvals[ii][1]), yi))
+                    offsety = 0
+                    if self.gantt.milestone_text.location == 'top':
+                        loc_new = loc + np.array([-txt_size[0] / 2, 0])
+                        offsetx = datetime.timedelta(days=1)
+                        offsety = self.gantt.height / 2 * 1.025  # add some ws buffer
+                    elif self.gantt.milestone_text.location == 'left':
+                        loc_new = loc + np.array([-txt_size[0] - marker_size - 5, -txt_size[1] / 2 + 2])
+                        offsetx = 0  # these positions need some work
+                    else:
+                        loc_new = loc + np.array([marker_size, -txt_size[1] / 2 + 2])
+                        offsetx = datetime.timedelta(days=1)
+                    loc_data = ax.transData.inverted().transform(loc_new)
+                    position = [mdates.num2date(loc_data[0]), loc_data[1]]
+                    self.add_text(ir, ic, row['Milestone'], element=self.gantt.milestone_text,
+                                  position=position, offsetx=offsetx, offsety=offsety)
+                    # Should the positioning be moved to final reformatting function?  PROBABLY YES AND BAR LABELS
+            else:
+                # Bar
+                bar([(row[x[0]], row[x[1]] - row[x[0]])],
+                    (yi - self.gantt.height / 2, self.gantt.height),
+                    facecolor=fillcolor[ii],
+                    edgecolor=edgecolor[ii],
+                    linewidth=self.gantt.edge_width)
 
         # Covert the tick labels into actual labels so we can add boxes and align as desired
         if iline + 1 == ngroups and self.gantt.labels_as_yticks:
