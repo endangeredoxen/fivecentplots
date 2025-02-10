@@ -1,9 +1,15 @@
 from . import data
 import pdb
 import pandas as pd
+import numpy as np
+try:
+    from pandas.tseries.offset import BDay
+except:
+    from pandas.tseries.offsets import BDay
 from .. import utilities
 utl = utilities
 db = pdb.set_trace
+NULLS = [None, np.nan, 'nan', pd.NaT, 'NaT', 'N/A', 'n/a', 'Nan', 'NAN', 'NaN', 'None', '']
 
 
 class Gantt(data.Data):
@@ -25,13 +31,14 @@ class Gantt(data.Data):
         self.workstreams = utl.kwget(kwargs, self.fcpp, ['gantt_workstreams', 'workstreams'], None)
         if self.workstreams is not None and 'legend' not in kwargs:
             self.legend = self.workstreams
+        self.show_all = utl.kwget(kwargs, self.fcpp, ['gantt_show_all', 'show_all'], False)
         self.duration = utl.kwget(kwargs, self.fcpp, ['gantt_duration', 'duration'], 'Duration')
         self.dependencies = utl.kwget(kwargs, self.fcpp, ['gantt_dependencies', 'dependencies'], 'Dependency')
-        self.milestone=utl.kwget(kwargs, self.fcpp, ['gantt_milestones', 'milestones'], 'Milestone'),
+        self.milestone = utl.kwget(kwargs, self.fcpp, ['gantt_milestones', 'milestones'], 'Milestone'),
 
         # error checks
-        if self.workstreams is not None and self.workstreams not in self.df_all.columns:
-            raise data.DataError('Workstreams column "{self.workstreams}" is not in DataFrame')
+        if self.workstreams is not [None, False] and self.workstreams not in self.df_all.columns:
+            raise data.DataError(f'Workstreams column "{self.workstreams}" is not in DataFrame')
         if len(self.x) != 2:
             raise data.DataError('Gantt charts require both a start and a stop column')
         if self.df_all[self.x[0]].dtype != 'datetime64[ns]':
@@ -49,13 +56,17 @@ class Gantt(data.Data):
             if col not in self.df_all.columns:
                 raise data.DataError(f'Bar label column "{col}" is not in DataFrame')
 
+        # Attempt to populate missing dates
         self._populate_dates()
 
-        # Update date time formats and replace NaT with fake datetime
+        # Optionally hide tasks with no dates specified
+        if not self.show_all:
+            self.df_all = self.df_all.loc[~((self.df_all[self.x[0]].isin(NULLS)) & \
+                                            (self.df_all[self.x[1]].isin(NULLS)))]
+
+        # Update date time formats to avoid comparison errors later
         self.df_all[self.x[0]] = pd.to_datetime(self.df_all[self.x[0]])
-        self._strip_timestamp(self.x[0])
         self.df_all[self.x[1]] = pd.to_datetime(self.df_all[self.x[1]])
-        self._strip_timestamp(self.x[1])
 
     def get_data_ranges(self):
         """Gantt-specific data range calculator by subplot."""
@@ -120,7 +131,7 @@ class Gantt(data.Data):
             lenx = 1 if not self.x else len(xx)
             leny = 1 if not self.y else len(yy)
             vals = pd.DataFrame({'x': self.x if not self.x else xx * leny,
-                                'y': self.y if not self.y else yy * lenx})
+                                 'y': self.y if not self.y else yy * lenx})
 
             for irow, row in vals.iterrows():
                 yield irow, df, row['x'], row['y'], None if self.z is None else self.z[0], None, False, len(vals)
@@ -153,25 +164,100 @@ class Gantt(data.Data):
                         False, len(self.legend_vals)
 
     def _populate_dates(self):
-        """Compute dates that are based on a dependency or duration."""
-        # Fill in missing start dates based on dependencies
-        missing_start = self.df_all.loc[self.df_all[self.x[0]].isna()]
-        for irow, row in missing_start.iterrows():
-            if self.dependencies not in row or str(row[self.dependencies]) == 'nan':
-                raise data.DataError(f'No start time defined for "{self.y[0]}" (specify a date or dependency)')
-            deps = [f.lstrip() for f in row[self.dependencies].split(';')]
-            start = self.df_all.loc[self.df_all[self.y[0]].isin(deps)][self.x[1]].max()
-            self.df_all.loc[irow, self.x[0]] = start
+        """Fill in missing dates"""
+        # For all rows with a start date and a duration, calculate the end date
+        if self.duration in self.df_all.columns:
+            sub = self.df_all.loc[~(self.df_all[self.x[0]].isin(NULLS)) & \
+                                  ~(self.df_all[self.duration].isin(NULLS))]
+            for irow, row in sub.iterrows():
+                self.df_all.loc[irow, self.x[1]] = self._calc_durations(row)
 
-        # Fill in missing end dates using duration or treat as discrete milestones
-        missing_end = self.df_all.loc[self.df_all[self.x[1]].isna()]
-        for irow, row in missing_end.iterrows():
-            if self.duration in row:
-                db()
+        # Calculate start dates based on dependencies
+        self._calc_dependent_start_dates()
+
+        # Check duration again since some start dates were filled in by dependencies (DO I NEED THIS??)
+        if self.duration in self.df_all.columns:
+            sub = self.df_all.loc[~(self.df_all[self.x[0]].isin(NULLS)) & \
+                                  ~(self.df_all[self.duration].isin(NULLS))]
+            for irow, row in sub.iterrows():
+                self.df_all.loc[irow, self.x[1]] = self._calc_durations(row)
+
+        # Assume that rows with a start date but no end date are milestones and set end date = start date
+        self.df_all.loc[(~self.df_all[self.x[0]].isin(NULLS)) & (self.df_all[self.x[1]].isin(NULLS)), self.x[1]] = \
+            self.df_all[self.x[0]]
+
+    def _calc_dependent_start_dates(self):
+        """Calculate start dates that are based on a dependency"""
+        if self.dependencies not in self.df_all.columns:
+            return
+
+        # Find the dependent rows ("children" are dependent on "parents")
+        children = self.df_all.loc[~self.df_all[self.dependencies].isin(NULLS)].copy()
+        dep_vals = [f.lstrip() for f in ';'.join(children[self.dependencies].values).split(';')]
+
+        # Check parent dates for errors
+        parents = self.df_all.loc[(self.df_all[self.y[0]].isin(dep_vals)) & \
+                                  (self.df_all[self.dependencies].isin(NULLS))]
+        for irow, row in parents.iterrows():
+            if row[self.x[1]] in NULLS:
+                raise data.DataError(f'Missing end date for "{row[self.y[0]]}"; cannot calculate dependent dates')
+
+        # Multiple dependencies can be specified for a single row, separated by a semicolon
+        children_idx = ~self.df_all[self.dependencies].isin(NULLS)
+        self.df_all.loc[children_idx, self.dependencies] = \
+            self.df_all.loc[children_idx, self.dependencies].str.split(';')
+        self.df_all.loc[children_idx, self.dependencies] = \
+            self.df_all.loc[children_idx, self.dependencies].apply(lambda x: [f.strip() for f in x])
+
+        # Fill in child dates
+        def resolve_dep(row):
+            """Resolve nested dependencies"""
+            parent = self.df_all.loc[self.df_all[self.y[0]].isin(row[self.dependencies])]
+            if len(parent.loc[parent[self.x[1]].isin(NULLS)]) == 0:
+                dep = self.df_all.loc[self.df_all[self.y[0]].isin(row[self.dependencies])]
+                if len(dep) == 0 and self.milestone in row:
+                    date = self.df_all.loc[self.df_all[self.milestone].isin(row[self.dependencies]), self.x[0]]
+                elif len(dep) > 0:
+                    date = dep[self.x[1]]
+                else:
+                    raise data.DataError(f'Cannot find dependency date for "{row[self.y[0]]}"')
+                return date.max()
+            elif len(parent.loc[~parent[self.dependencies].isin(NULLS)]) > 0:
+                deps = parent.loc[~parent[self.dependencies].isin(NULLS)]
+                for irow, row_ in deps.iterrows():
+                    self.df_all.loc[irow, self.x[0]] = resolve_dep(row_)
             else:
-                # Milestones have same start and end date
-                self.df_all.loc[irow, self.x[1]] = row[self.x[0]]
+                # ERROR
+                db()
 
+        for irow, row in self.df_all.iterrows():
+            if row[self.dependencies] in NULLS:
+                continue
+            self.df_all.loc[irow, self.x[0]] = resolve_dep(row)
+
+            # Update duration
+            if row[self.x[1]] in NULLS and self.duration in row and row[self.duration] not in NULLS:
+                self.df_all.loc[irow, self.x[1]] = self._calc_durations(self.df_all.loc[irow])
+
+    def _calc_durations(self, row):
+        """Calculate durations for a given row in the DataFrame"""
+        if isinstance(row[self.duration], int):
+            # Default is days
+            duration = int(row[self.duration])
+        elif isinstance(row[self.duration], str):
+            date_type = row[self.duration][-1:]
+            try:
+                duration = int(row[self.duration][:-1])
+            except ValueError:
+                raise data.DataError(f'Invalid duration "{date_type}" defined for row index {irow}')
+            if date_type.lower() == 'w':
+                return row[self.x[0]] + pd.Timedelta(weeks=duration) + pd.offsets.BDay()
+            elif date_type.lower() == 'm':
+                return row[self.x[0]] + pd.Timedelta(months=duration) + pd.offsets.BDay()
+            elif date_type.lower() == 'd':
+                return row[self.x[0]] + pd.Timedelta(days=duration) + pd.offsets.BDay()
+            else:
+                raise data.DataError(f'Unknown duration date type "{date_type}" defined for row index {irow}')
 
     def _subset_modify(self, ir: int, ic: int, df: pd.DataFrame) -> pd.DataFrame:
         """Modify subset to deal with duplicate Gantt entries

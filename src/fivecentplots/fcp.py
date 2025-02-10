@@ -1214,17 +1214,32 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
 
     # Sort the values
     ascending = False if layout.gantt.sort.lower() == 'descending' else True
-    df_rc = df_rc.sort_values(data.x[0], ascending=ascending)
     if layout.gantt.order_by_legend and data.legend is not None and not layout.gantt.workstreams.on:
-        df_rc = df_rc.sort_values(data.legend, ascending=ascending)
+        df_rc = df_rc.sort_values([data.legend, data.x[0]], ascending=ascending)
     elif layout.gantt.order_by_legend and data.legend is not None and layout.gantt.workstreams.on:
-        df_rc = df_rc.sort_values(layout.gantt.workstreams.column, ascending=ascending)
+        df_rc = df_rc.sort_values([layout.gantt.workstreams.column, data.x[0]], ascending=ascending)
+    else:
+        df_rc = df_rc.sort_values(data.x[0], ascending=ascending)
 
+    # Update df and legend_vals with a custom order for workstreams
+    if layout.gantt.workstreams.on:
+        temp = [df_rc.loc[~df_rc[layout.gantt.workstreams.column].isin(layout.gantt.workstreams.order)]]
+        for order in list(reversed(layout.gantt.workstreams.order)):
+            temp += [df_rc.loc[df_rc[layout.gantt.workstreams.column] == order]]
+        temp += []
+        df_rc = pd.concat(temp)
+
+        if layout.legend is not None and layout.legend.column == layout.gantt.workstreams.column:
+            temp = data.legend_vals.set_index('names')
+            index = list(reversed(df_rc[layout.gantt.workstreams.column].unique()))
+            data.legend_vals = temp.loc[index].reset_index()
+
+    # Prepare data for plotting
     cols = data.y
     if layout.gantt.workstreams.on and layout.gantt.workstreams.column != layout.legend.column:
         cols += [f for f in utl.validate_list(layout.gantt.workstreams.column)
                  if f is not None and f not in cols]
-    elif data.legend is not None:
+    elif data.legend not in [None, False]:
         cols += [f for f in utl.validate_list(data.legend) if f is not None and f not in cols]
 
     if layout.gantt.milestone in df_rc.columns:
@@ -1245,8 +1260,7 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
 
     # Plot the bars
     for iline, df, x, y, z, leg_name, twin, ngroups in data.get_plot_data(df_rc):
-        new_xmax = layout.plot_gantt(ir, ic, iline, df, df_rc, data.x, y, leg_name, xvals, yvals, bar_labels,
-                                     ngroups, data)
+        new_xmax = layout.plot_gantt(ir, ic, iline, df, data.x, y, leg_name, xvals, yvals, bar_labels, ngroups, data)
 
         if new_xmax is not None and data.ranges['xmax'][ir, ic] is None:
             data.ranges['xmax'][ir, ic] = new_xmax
@@ -1258,30 +1272,29 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
         for irow, row in df_rc.iterrows():
             if str(row[layout.gantt.dependencies]) == 'nan':
                 continue
-            deps = [f.lstrip() for f in row[layout.gantt.dependencies].split(';')]
-            for dep in deps:
+            if not isinstance(row[layout.gantt.dependencies], list):
+                continue
+            for dep in row[layout.gantt.dependencies]:
+                # Try dependency column first, then milestone column
                 sub = df_rc.loc[(df_rc[data.y[0]] == dep)]
+                if len(sub) == 0:
+                    sub = df_rc.loc[(df_rc[data.milestone] == dep)]
                 if len(sub) == 0:
                     continue
                 if data.ranges['xmin'][ir, ic] is not None:
-                    try:
-                        sub = sub.loc[sub[data.x[0]] >= data.ranges['xmin'][ir, ic]]
-                    except TypeError:
-                        sub = sub.loc[sub[data.x[0]] >= data.ranges['xmin'][ir, ic].date()]
+                    sub = sub.loc[sub[data.x[0]] >= pd.to_datetime(data.ranges['xmin'][ir, ic])]
                 if data.ranges['xmax'][ir, ic] is not None:
-                    try:
-                        sub = sub.loc[sub[data.x[1]] <= data.ranges['xmax'][ir, ic]]
-                    except TypeError:
-                        sub = sub.loc[sub[data.x[1]] <= data.ranges['xmax'][ir, ic].date()]
+                    sub = sub.loc[sub[data.x[1]] <= pd.to_datetime(data.ranges['xmax'][ir, ic])]
                 for ii, val in sub.iterrows():
                     start_idx = utl.tuple_list_index(yvals, val[data.y[0]])
                     end_idx = utl.tuple_list_index(yvals, row[data.y[0]])
                     min_collision = row[data.x[0]]
                     max_collision = val[data.x[1]]
-                    for idx in range(min(start_idx, end_idx) + 1, max(start_idx, end_idx)):
+                    for idx in range(min(start_idx, end_idx), max(start_idx, end_idx)):
                         item = yvals[idx][0]
                         min_collision = min(min_collision, df_rc.loc[df_rc[data.y[0]] == item, data.x[0]].iloc[0])
-                        max_collision = max(max_collision, df_rc.loc[df_rc[data.y[0]] == item, data.x[1]].iloc[0])
+                        if df_rc.loc[df_rc[data.y[0]] == item, data.x[0]].iloc[0] < val[data.x[1]]:
+                            max_collision = max(max_collision, df_rc.loc[df_rc[data.y[0]] == item, data.x[1]].iloc[0])
                     layout.plot_gantt_dependencies(ir, ic, (val[data.x[1]], start_idx), (row[data.x[0]], end_idx),
                                                    min_collision, max_collision)
 
@@ -1295,8 +1308,12 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
             # Labels
             layout.gantt.workstreams.rows[ir, ic] = []
             layout.gantt.workstreams.edge_width = layout.grid_major_y.width[0]
-            for icol, col in enumerate(df_rc[layout.gantt.workstreams.column].unique()):
+            unique_workstreams = df_rc[layout.gantt.workstreams.column].unique()
+            for icol, col in enumerate(unique_workstreams):
                 rows = len(df_rc.loc[df_rc[layout.gantt.workstreams.column] == col, data.y[0]].unique())
+                if layout.gantt.workstreams.match_bar_color:
+                    layout.gantt.workstreams.fill_color.values[0] = \
+                        layout.gantt.fill_color[len(unique_workstreams) - icol - 1]
                 obj, obj_bg = layout.add_label(
                     ir, ic, layout.gantt.workstreams, col, layout.axes.size[1] / len(df_rc) * rows)
                 if icol == 0:

@@ -1162,6 +1162,10 @@ class BaseLayout:
                                           'bold'),
                     location=utl.kwget(kwargs, self.fcpp,  # left, right, inline
                                        ['gantt_workstreams_location', 'workstreams_location'], 'left'),
+                    match_bar_color=utl.kwget(kwargs, self.fcpp,
+                                              ['gantt_workstreams_match_bar_color',
+                                               'workstreams_match_bar_color'], False),
+                    order=utl.kwget(kwargs, self.fcpp, ['gantt_workstreams_order', 'workstreams_order'], []),
                     padding=utl.kwget(kwargs, self.fcpp,
                                       ['gantt_workstreams_label_padding', 'workstreams_label_padding'], 0.3),
                     rotation=utl.kwget(kwargs, self.fcpp,
@@ -1240,6 +1244,7 @@ class BaseLayout:
                     milestone_text=gantt_milestone_text,
                     order_by_legend=utl.kwget(kwargs, self.fcpp, ['gantt_order_by_legend', 'order_by_legend'],
                                               kwargs.get('order_by_legend', False)),
+                    show_all=utl.kwget(kwargs, self.fcpp, ['gantt_show_all', 'show_all'], False),
                     sort=utl.kwget(kwargs, self.fcpp, 'sort', 'descending'),
                     tick_labels_x_rotation=utl.kwget(kwargs, self.fcpp, 'gantt_tick_labels_x_rotation',
                                                      kwargs.get('gantt_tick_labels_x_rotation', 90)),
@@ -1271,13 +1276,14 @@ class BaseLayout:
                 self.gantt.box_padding_x = 0
 
         # Today text
+        now = datetime.datetime.now()
         self.gantt.today = \
             Element('gantt_today', self.fcpp, kwargs,
                     on=False if utl.kwget(kwargs, self.fcpp, ['gantt_today', 'today'], False) is False else True,
                     obj=self.obj_array,
                     color=utl.kwget(kwargs, self.fcpp, ['gantt_today_color', 'today_color'], '#555555'),
                     coordinate=utl.kwget(kwargs, self.fcpp, ['gantt_today_coordinate', 'today_coordinate'], 'data'),
-                    date=utl.kwget(kwargs, self.fcpp, ['gantt_today', 'today'], datetime.datetime.now()),
+                    date=utl.kwget(kwargs, self.fcpp, ['gantt_today', 'today'], now),
                     edge_color=utl.kwget(kwargs, self.fcpp, ['gantt_today_edge_color', 'today_edge_color'],
                                          '#555555'),
                     edge_width=utl.kwget(kwargs, self.fcpp, ['gantt_today_edge_width', 'today_edge_width'], 0),
@@ -1298,6 +1304,8 @@ class BaseLayout:
                     units=utl.kwget(kwargs, self.fcpp, ['gantt_today_units', 'today_units'], 'pixel'),
                     width=utl.kwget(kwargs, self.fcpp, ['gantt_today_width', 'today_width'], 1.5),
                     )
+        if self.gantt.today.date is True:
+            self.gantt.today.date = now
         self.gantt.today.position[0] = self.gantt.today.date
 
         # Legend defaults

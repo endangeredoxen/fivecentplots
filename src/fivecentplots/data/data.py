@@ -563,13 +563,19 @@ class Data:
                         continue
 
                     for col in getattr(self, ax):
-                        if col not in data_set.columns:
+                        if col not in data_set.columns or len(data_set) == 0:
                             continue
 
-                        if len(data_set) > 0 \
-                                and isinstance(data_set[col].iloc[0], datetime.date) \
-                                and isinstance(user_limit, datetime.datetime):
-                            user_limit = user_limit.date()
+                        if isinstance(user_limit, datetime.date) or isinstance(user_limit, datetime.datetime):
+                            # Ensure dtypes are aligned for the filtering
+                            try:
+                                data_set[col] = data_set[col].astype('datetime64[ns]')
+                            except:  # noqa
+                                raise DataError(f'Column "{col}" could not be cast to datetime dtype')
+                            try:
+                                user_limit = pd.to_datetime(user_limit)
+                            except:  # noqa
+                                raise DataError(f'User limit "{user_limit}" could not be cast to datetime dtype')
 
                         if mm == 'min':
                             data_set = data_set[data_set[col] >= user_limit]
@@ -1185,7 +1191,7 @@ class Data:
 
                 # Find data ranges for this subset
                 else:
-                    df_rc = self._get_auto_scale(self.df_rc, plot_num)
+                    df_rc = self._get_auto_scale(self.df_rc.copy(), plot_num)  # is this copy ok??
 
                     for ax in self.axs_on:
                         if getattr(self, ax) is None:
