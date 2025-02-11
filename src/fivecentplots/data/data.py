@@ -547,6 +547,8 @@ class Data:
         Returns:
             updated df with potentially reduced range of data
         """
+        data_set = data_set.copy()
+
         # Get the max/min autoscale values
         for ax in self.axs_on:
             for mm in ['min', 'max']:
@@ -1191,7 +1193,7 @@ class Data:
 
                 # Find data ranges for this subset
                 else:
-                    df_rc = self._get_auto_scale(self.df_rc.copy(), plot_num)  # is this copy ok??
+                    df_rc = self._get_auto_scale(self.df_rc, plot_num)  # is this copy ok??
 
                     for ax in self.axs_on:
                         if getattr(self, ax) is None:
