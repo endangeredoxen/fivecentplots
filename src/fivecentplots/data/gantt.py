@@ -34,10 +34,10 @@ class Gantt(data.Data):
         self.show_all = utl.kwget(kwargs, self.fcpp, ['gantt_show_all', 'show_all'], False)
         self.duration = utl.kwget(kwargs, self.fcpp, ['gantt_duration', 'duration'], 'Duration')
         self.dependencies = utl.kwget(kwargs, self.fcpp, ['gantt_dependencies', 'dependencies'], 'Dependency')
-        self.milestone = utl.kwget(kwargs, self.fcpp, ['gantt_milestones', 'milestones'], 'Milestone'),
+        self.milestone = utl.kwget(kwargs, self.fcpp, ['gantt_milestones', 'milestones'], 'Milestone')
 
         # error checks
-        if self.workstreams is not [None, False] and self.workstreams not in self.df_all.columns:
+        if self.workstreams not in [None, False] and self.workstreams not in self.df_all.columns:
             raise data.DataError(f'Workstreams column "{self.workstreams}" is not in DataFrame')
         if len(self.x) != 2:
             raise data.DataError('Gantt charts require both a start and a stop column')
@@ -175,12 +175,12 @@ class Gantt(data.Data):
         # Calculate start dates based on dependencies
         self._calc_dependent_start_dates()
 
-        # Check duration again since some start dates were filled in by dependencies (DO I NEED THIS??)
-        if self.duration in self.df_all.columns:
-            sub = self.df_all.loc[~(self.df_all[self.x[0]].isin(NULLS)) & \
-                                  ~(self.df_all[self.duration].isin(NULLS))]
-            for irow, row in sub.iterrows():
-                self.df_all.loc[irow, self.x[1]] = self._calc_durations(row)
+        # # Check duration again since some start dates were filled in by dependencies (DO I NEED THIS??)
+        # if self.duration in self.df_all.columns:
+        #     sub = self.df_all.loc[~(self.df_all[self.x[0]].isin(NULLS)) & \
+        #                           ~(self.df_all[self.duration].isin(NULLS))]
+        #     for irow, row in sub.iterrows():
+        #         self.df_all.loc[irow, self.x[1]] = self._calc_durations(row)
 
         # Assume that rows with a start date but no end date are milestones and set end date = start date
         self.df_all.loc[(~self.df_all[self.x[0]].isin(NULLS)) & (self.df_all[self.x[1]].isin(NULLS)), self.x[1]] = \
@@ -214,11 +214,20 @@ class Gantt(data.Data):
             """Resolve nested dependencies"""
             parent = self.df_all.loc[self.df_all[self.y[0]].isin(row[self.dependencies])]
             if len(parent.loc[parent[self.x[1]].isin(NULLS)]) == 0:
+                # If start date already exists, use it
+                if row[self.x[0]] not in NULLS:
+                    return row[self.x[0]]
+
+                # If not, find all rows in the main dataframe that contain the depedency strings
                 dep = self.df_all.loc[self.df_all[self.y[0]].isin(row[self.dependencies])]
+
+                # Nothing found in dependency column but milestone column exists
                 if len(dep) == 0 and self.milestone in row:
                     date = self.df_all.loc[self.df_all[self.milestone].isin(row[self.dependencies]), self.x[0]]
+                # One or more dependencies found; use latest date as new start date
                 elif len(dep) > 0:
                     date = dep[self.x[1]]
+                # Nothing found, raise error
                 else:
                     raise data.DataError(f'Cannot find dependency date for "{row[self.y[0]]}"')
                 return date.max()
@@ -228,10 +237,10 @@ class Gantt(data.Data):
                     self.df_all.loc[irow, self.x[0]] = resolve_dep(row_)
             else:
                 # ERROR
-                db()
+                raise data.DataError(f'Cannot find dependency date for "{row[self.y[0]]}"')
 
         for irow, row in self.df_all.iterrows():
-            if row[self.dependencies] in NULLS:
+            if row[self.dependencies] in NULLS or (row[self.x[0]] not in NULLS and row[self.x[1]] not in NULLS):
                 continue
             self.df_all.loc[irow, self.x[0]] = resolve_dep(row)
 
@@ -247,17 +256,17 @@ class Gantt(data.Data):
         elif isinstance(row[self.duration], str):
             date_type = row[self.duration][-1:]
             try:
-                duration = int(row[self.duration][:-1])
+                duration = float(row[self.duration][:-1])
             except ValueError:
-                raise data.DataError(f'Invalid duration "{date_type}" defined for row index {irow}')
+                raise data.DataError(f'Invalid duration "{date_type}" defined for row index {row.name}')
             if date_type.lower() == 'w':
                 return row[self.x[0]] + pd.Timedelta(weeks=duration) + pd.offsets.BDay()
             elif date_type.lower() == 'm':
-                return row[self.x[0]] + pd.Timedelta(months=duration) + pd.offsets.BDay()
+                return row[self.x[0]] + pd.Timedelta(weeks=4 * duration) + pd.offsets.BDay()
             elif date_type.lower() == 'd':
                 return row[self.x[0]] + pd.Timedelta(days=duration) + pd.offsets.BDay()
             else:
-                raise data.DataError(f'Unknown duration date type "{date_type}" defined for row index {irow}')
+                raise data.DataError(f'Unknown duration date type "{date_type}" defined for row index {row.name}')
 
     def _subset_modify(self, ir: int, ic: int, df: pd.DataFrame) -> pd.DataFrame:
         """Modify subset to deal with duplicate Gantt entries

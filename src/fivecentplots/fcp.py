@@ -1207,6 +1207,8 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
         kwargs (dict): keyword args
 
     """
+    NULLS = [None, np.nan, 'nan', pd.NaT, 'NaT', 'N/A', 'n/a', 'Nan', 'NAN', 'NaN', 'None', '']
+
     # Check if workstream column is in data
     if layout.gantt.workstreams.column not in df_rc.columns:
         layout.gantt.workstreams.on = False
@@ -1295,8 +1297,16 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
                         min_collision = min(min_collision, df_rc.loc[df_rc[data.y[0]] == item, data.x[0]].iloc[0])
                         if df_rc.loc[df_rc[data.y[0]] == item, data.x[0]].iloc[0] < val[data.x[1]]:
                             max_collision = max(max_collision, df_rc.loc[df_rc[data.y[0]] == item, data.x[1]].iloc[0])
+                    is_milestone_start = False
+                    if val[data.x[0]] == val[data.x[1]]:
+                        is_milestone_start = True
+                    is_milestone_end = False
+                    if row[data.x[0]] == row[data.x[1]]:
+                        is_milestone_end = True
                     layout.plot_gantt_dependencies(ir, ic, (val[data.x[1]], start_idx), (row[data.x[0]], end_idx),
-                                                   min_collision, max_collision)
+                                                   min_collision, max_collision,
+                                                   is_milestone_start=is_milestone_start,
+                                                   is_milestone_end=is_milestone_end)
 
     # Add workstream labels
     if layout.gantt.workstreams.on:

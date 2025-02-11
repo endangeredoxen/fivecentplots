@@ -668,6 +668,7 @@ def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, f
     fp.set_weight(font_weight)
     fontfile = findfont(fp, fallback_to_default=True)
 <<<<<<< HEAD
+<<<<<<< HEAD
     font = ImageFont.truetype(fontfile, font_size)
 
     if ignore_html:
@@ -687,6 +688,9 @@ def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, f
     return w, h  # no idea why it is off
 =======
     font = ImageFont.truetype(fontfile, font_size * dpi / 72)
+=======
+    font = ImageFont.truetype(fontfile, int(font_size * dpi / 72))
+>>>>>>> 4a2fd0e (better gantt arrows and some bug fixes)
     size = font.getbbox(text)[2:]
 
     return size

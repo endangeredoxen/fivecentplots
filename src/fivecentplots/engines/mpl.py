@@ -1867,18 +1867,10 @@ class Layout(BaseLayout):
             bboxes = [t.get_window_extent() for t in tlabs]
             bboxes_bkg = []
             for t in tlabs:
-                # bboxes_bkg = [t._bbox_patch.get_window_extent() if hasattr(t, '_bbox_patch')
-                #               else t.get_window_extent() for t in tlabs]
                 if hasattr(t, '_bbox_patch') and t._bbox_patch is not None:
-                    try:
-                        bboxes_bkg += [t._bbox_patch.get_window_extent()]
-                    except:  # noqa
-                        db()
+                    bboxes_bkg += [t._bbox_patch.get_window_extent()]
                 else:
-                    try:
-                        bboxes_bkg += [t.get_window_extent()]
-                    except:  # noqa
-                        db()
+                    bboxes_bkg += [t.get_window_extent()]
 
             iir, iic, ii, jj, width, height, x0, x1, y0, y1, rotation = [], [], [], [], [], [], [], [], [], [], []
             for ib, bbox in enumerate(bboxes):
@@ -2580,9 +2572,9 @@ class Layout(BaseLayout):
 
             # Milestone
             if row[x[0]] == row[x[1]]:
-                marker_size = self.axes.size[1] / (len (yvals) - 1) * self.gantt.height / 2 - 2
+                self.gantt.milestone_marker_size = self.axes.size[1] / (len (yvals) - 1) * self.gantt.height / 2 - 2
                 ax.plot([row[x[0]]], [yi], self.gantt.milestone_marker,
-                        markersize=marker_size,
+                        markersize=self.gantt.milestone_marker_size,
                         mfc=fillcolor[ii],
                         mec='#ffffff')
                 if self.gantt.milestone in row and str(row['Milestone']) not in \
@@ -2600,10 +2592,10 @@ class Layout(BaseLayout):
                         offsetx = datetime.timedelta(days=1)
                         offsety = self.gantt.height / 2 * 1.025  # add some ws buffer
                     elif self.gantt.milestone_text.location == 'left':
-                        loc_new = loc + np.array([-txt_size[0] - marker_size - 5, -txt_size[1] / 2 + 2])
+                        loc_new = loc + np.array([-txt_size[0] - self.gantt.milestone_marker_size - 5, -txt_size[1] / 2 + 2])
                         offsetx = 0  # these positions need some work
                     else:
-                        loc_new = loc + np.array([marker_size, -txt_size[1] / 2 + 2])
+                        loc_new = loc + np.array([self.gantt.milestone_marker_size, -txt_size[1] / 2 + 2])
                         offsetx = datetime.timedelta(days=1)
                     loc_data = ax.transData.inverted().transform(loc_new)
                     position = [mdates.num2date(loc_data[0]), loc_data[1]]
@@ -2685,7 +2677,8 @@ class Layout(BaseLayout):
 
     def plot_gantt_dependencies(self, ir, ic, start, end, min_collision, max_collision,
                                 color='gray', linewidth=1, zorder=1,
-                                min_x_distance=5, start_offset=5, end_offset=12):
+                                min_x_distance=5, start_offset=5, end_offset=12,
+                                is_milestone_start=False, is_milestone_end=False):
         """
         Plot a dependency arrow between two points in a Matplotlib Gantt chart using right angles.
 
@@ -2702,10 +2695,15 @@ class Layout(BaseLayout):
             min_x_distance: minimum x-distance (in days) to use horizontal connector
             start_offset: length of initial horizontal segment in pixels
             end_offset: length of final horizontal segment in pixels
+            is_milestone_start: whether the start point is a milestone
+            is_milestone_end: whether the end point is a milestone
         """
         ax = self.axes.obj[ir, ic]
+        xmin, xmax = ax.get_xlim()
+
         start_x, start_y = start
         end_x, end_y = end
+        start_offset *= (xmax - xmin) / ax.get_window_extent().width
 
         # Convert dates to numbers for comparison
         start_x = mdates.date2num(start_x)
@@ -2720,13 +2718,13 @@ class Layout(BaseLayout):
             points = [
                 [start_x, start_y],
                 [start_x + start_offset, start_y],  # Initial horizontal segment
-                [start_x + start_offset, start_y - 0.5 * sign],  # Go just below the bar
-                [min_collision - end_offset, start_y - 0.5 * sign],  # Circle back
+                [start_x + start_offset, start_y - (0.5 - 0.15 * is_milestone_end) * sign],  # Go just below the bar
+                [min_collision - end_offset, start_y - (0.5 - 0.15 * is_milestone_end) * sign],  # Circle back
                 [min_collision - end_offset, end_y],  # Go vertically to the destination bar
                 [end_x, end_y]
             ]
 
-        # If the dependent bar starts after the predecessor ends, go to the new row and draw a line to the right
+        # If the dependent bar starts after the predecessor ends, go to the new row and draw a line up/down
         else:
             # Check for bar labels and move them if needed to avoid overlapping the arrow
             if self.gantt.bar_labels is not None:
@@ -2734,10 +2732,20 @@ class Layout(BaseLayout):
                 x_new = mdates.num2date(mdates.date2num(x) + x_distance) + datetime.timedelta(days=1)
                 self.gantt.bar_labels.obj[ir, ic][start_y].set_x(x_new)  # from plot_gantt
 
+            if is_milestone_end:
+                start_offset = 0  # ???
+                yoffset = sign * (0.5  - (1 - self.gantt.height) / 2)
+            else:
+                yoffset = sign * (0.5  - (1 - self.gantt.height) / 3)  # div by 2 would hit top of bar, give some buffer
+            if is_milestone_start:
+                xs = self.gantt.milestone_marker_size * (xmax - xmin) / ax.get_window_extent().width
+                start_x += xs
+                x_distance -= xs
+
             points = [
                 [start_x, start_y],
-                [start_x + x_distance, start_y],  # Initial horizontal segment
-                [start_x + x_distance, end_y + 0.5 * sign]
+                [start_x + x_distance + start_offset, start_y],  # Initial horizontal segment
+                [start_x + x_distance + start_offset, end_y + yoffset]
             ]
 
         # Draw the lines
@@ -4365,10 +4373,10 @@ class Layout(BaseLayout):
                 edge = np.ceil(self.gantt.workstreams.edge_width / 2)
                 if self.gantt.workstreams.location.lower() == 'inline':
                     # TODO: define this
-                    db()
+                    raise NotImplementedError('"inline" workstream labels not yet supported')
                 elif self.gantt.workstreams.location == 'right':
                     # TODO: define this
-                    db()
+                    raise NotImplementedError('"right" aligned workstream labels not yet supported')
                 else:  # left align
                     lab_x0 = self.axes.obj[ir, ic].get_window_extent().x0 - self._labtick_y
                     lab_x0 -= edge + self.gantt.workstreams.size[0]
@@ -4418,10 +4426,10 @@ class Layout(BaseLayout):
                 # x-position
                 if self.gantt.workstreams.location.lower() == 'inline':
                     # TODO: define this
-                    db()
+                    raise NotImplementedError('"inline" workstream title not yet supported')  # might not need
                 elif self.gantt.workstreams.location == 'right':
                     # TODO: define this
-                    db()
+                    raise NotImplementedError('"right" aligned workstream title not yet supported')
                 else:  # left align
                     lab_x0 = \
                         self._left \
