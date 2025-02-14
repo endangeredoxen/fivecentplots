@@ -1242,8 +1242,10 @@ class BaseLayout:
                     milestone_marker=utl.kwget(kwargs, self.fcpp, ['gantt_milestone_marker', 'milestone_marker'],
                                                'D'),
                     milestone_text=gantt_milestone_text,
+                    months=copy.copy(self.obj_array),
                     order_by_legend=utl.kwget(kwargs, self.fcpp, ['gantt_order_by_legend', 'order_by_legend'],
                                               kwargs.get('order_by_legend', False)),
+                    quarters=copy.copy(self.obj_array),
                     show_all=utl.kwget(kwargs, self.fcpp, ['gantt_show_all', 'show_all'], False),
                     sort=utl.kwget(kwargs, self.fcpp, 'sort', 'descending'),
                     tick_labels_x_rotation=utl.kwget(kwargs, self.fcpp, 'gantt_tick_labels_x_rotation',
@@ -1253,7 +1255,8 @@ class BaseLayout:
                     workstreams_title=gantt_workstreams_title,
                     years=copy.copy(self.obj_array)
                     )
-        self.gantt.DATE_TYPES = ['quarter', 'month']
+        self.gantt.DATE_TYPES = ['year', 'quarter', 'month']
+        self.gantt.date_type = utl.validate_list(self.gantt.date_type)
 
         # Bar labels
         if self.gantt.bar_labels is not None or not self.gantt.labels_as_yticks:
@@ -1331,7 +1334,7 @@ class BaseLayout:
 
         ### Adjust some style parameters based on user inputs  # noqa
         # x-ticks default to bottom unless a date_type is specified
-        if self.gantt.date_type not in self.gantt.DATE_TYPES \
+        if not any(f in self.gantt.date_type for f in self.gantt.DATE_TYPES) \
                 and 'date_location' not in kwargs \
                 and 'gantt_date_location' not in kwargs:
             self.gantt.date_location = 'bottom'
@@ -1339,7 +1342,7 @@ class BaseLayout:
             self.gantt.date_location = 'top'
 
         # x-grid uses major for no date type or else minor
-        if self.gantt.date_type in self.gantt.DATE_TYPES:
+        if any(f in self.gantt.date_type for f in self.gantt.DATE_TYPES):
             if 'ticks_minor_number' not in kwargs and 'ticks_minor_x_number' not in kwargs:
                 self.ticks_minor_x.number = 1
                 kwargs['grid_minor_x'] = kwargs.get('grid_minor_x', True)
@@ -1349,7 +1352,8 @@ class BaseLayout:
                 self.ticks_major_x.width = 0
                 self.ticks_major_y.width = 0
 
-            if 'gantt_tick_labels_x_rotation' not in kwargs and self.gantt.date_type in self.gantt.DATE_TYPES:
+            if 'gantt_tick_labels_x_rotation' not in kwargs \
+                    and any(f in self.gantt.date_type for f in self.gantt.DATE_TYPES):
                 self.gantt.tick_labels_x_rotation = 0
 
             if 'ticks_minor_width' not in kwargs and 'ticks_minor_x_width' not in kwargs:
@@ -1389,9 +1393,10 @@ class BaseLayout:
         # Option warnings
         msgs = []
         date_types = [None] + self.gantt.DATE_TYPES
-        if self.gantt.date_type not in date_types:
+        invalid = [f for f in self.gantt.date_type if f not in date_types]
+        if len(invalid) > 0:
             valid = ', '.join([f'"{f}"' if isinstance(f, str) else str(f) for f in date_types])
-            msgs += [f'Invalid Gantt date type "{self.gantt.date_type}".  Options: [{valid}]']
+            msgs += [f'Invalid Gantt date type(s) {invalid}.  Supported options: [{valid}]']
         for msg in msgs:
             warnings.warn(msg, utl.CustomWarning)
 
