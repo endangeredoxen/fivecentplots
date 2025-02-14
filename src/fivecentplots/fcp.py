@@ -1243,12 +1243,13 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
                  if f is not None and f not in cols]
     elif data.legend not in [None, False]:
         cols += [f for f in utl.validate_list(data.legend) if f is not None and f not in cols]
+    yvals = utl.remove_duplicates_list_preserve_order([tuple(f) for f in df_rc[cols].values])
 
+    # note: values gives list of np.datetime64 which can't be directly compared to datetimes
     if layout.gantt.milestone in df_rc.columns:
         xvals = df_rc.loc[df_rc[layout.gantt.milestone].isna(), data.x].values
     else:
         xvals = df_rc[data.x].values
-    yvals = utl.remove_duplicates_list_preserve_order([tuple(f) for f in df_rc[cols].values])
 
     bar_labels = None
     if layout.gantt.bar_labels is not None:
@@ -1261,13 +1262,15 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
             bar_labels = [' | '. join(f) for f in df_rc[layout.gantt.bar_labels.columns].values]
 
     # Plot the bars
+    user_xmax = data.ranges['xmax'][ir, ic] is not None
     for iline, df, x, y, z, leg_name, twin, ngroups in data.get_plot_data(df_rc):
         new_xmax = layout.plot_gantt(ir, ic, iline, df, data.x, y, leg_name, xvals, yvals, bar_labels, ngroups, data)
 
-        if new_xmax is not None and data.ranges['xmax'][ir, ic] is None:
+        # Update the xmax range to accomodate size of plot objects like bar labels; do not override user xmax
+        if new_xmax is not None and not user_xmax:
             data.ranges['xmax'][ir, ic] = new_xmax
         elif new_xmax is not None:
-            data.ranges['xmax'][ir, ic] = max(data.ranges['xmax'][ir, ic], new_xmax.replace(tzinfo=None))
+            data.ranges['xmax'][ir, ic] = max(data.ranges['xmax'][ir, ic], new_xmax)
 
     # Connect dependencies with arrows
     if layout.gantt.dependencies in df_rc.columns:
@@ -1284,9 +1287,9 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
                 if len(sub) == 0:
                     continue
                 if data.ranges['xmin'][ir, ic] is not None:
-                    sub = sub.loc[sub[data.x[0]] >= pd.to_datetime(data.ranges['xmin'][ir, ic])]
+                    sub = sub.loc[sub[data.x[0]] >= data.ranges['xmin'][ir, ic]]
                 if data.ranges['xmax'][ir, ic] is not None:
-                    sub = sub.loc[sub[data.x[1]] <= pd.to_datetime(data.ranges['xmax'][ir, ic])]
+                    sub = sub.loc[sub[data.x[1]] <= data.ranges['xmax'][ir, ic]]
                 for ii, val in sub.iterrows():
                     start_idx = utl.tuple_list_index(yvals, val[data.y[0]])
                     end_idx = utl.tuple_list_index(yvals, row[data.y[0]])
