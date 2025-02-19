@@ -28,7 +28,9 @@ class Gantt(data.Data):
         super().__init__(self.name, self.req, self.opt, **kwargs)
 
         # Get some important kwargs
+        self.DATE_TYPES = ['year', 'quarter', 'month', 'quarter-year', 'month-year']  # fyi, not linked to layout.py
         self.workstreams = utl.kwget(kwargs, self.fcpp, ['gantt_workstreams', 'workstreams'], None)
+        self.date_type = utl.validate_list(utl.kwget(kwargs, self.fcpp, ['gantt_date_type', 'date_type'], None))
         if self.workstreams is not None and 'legend' not in kwargs:
             self.legend = self.workstreams
         self.show_all = utl.kwget(kwargs, self.fcpp, ['gantt_show_all', 'show_all'], False)
@@ -55,6 +57,14 @@ class Gantt(data.Data):
         for col in utl.validate_list(utl.kwget(kwargs, self.fcpp, ['bar_labels', 'gantt_bar_labels'], [])):
             if col not in self.df_all.columns:
                 raise data.DataError(f'Bar label column "{col}" is not in DataFrame')
+        invalid_date_types = [f for f in self.date_type if f not in self.DATE_TYPES]
+        if len(invalid_date_types) > 0:
+            raise data.DataError(f'Invalid date type[s] {invalid_date_types} specfied for Gantt chart; '
+                                 f'allowed values: {self.DATE_TYPES}')
+        if 'month-year' in self.date_type and len(self.date_type) > 1:
+            raise data.DataError(f'Date type "month-year" cannot be specified with other date types')
+        if 'quarter-year' in self.date_type and len(self.date_type) > 1:
+            raise data.DataError(f'Date type "quarter-year" cannot be specified with other date types')
 
         # Attempt to populate missing dates
         self._populate_dates()
