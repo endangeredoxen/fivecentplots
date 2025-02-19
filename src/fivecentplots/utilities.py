@@ -669,6 +669,7 @@ def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, f
     fontfile = findfont(fp, fallback_to_default=True)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     font = ImageFont.truetype(fontfile, font_size)
 
     if ignore_html:
@@ -691,6 +692,9 @@ def get_text_dimensions(text: str, font: str, font_size: int, font_style: str, f
 =======
     font = ImageFont.truetype(fontfile, int(font_size * dpi / 72))
 >>>>>>> 4a2fd0e (better gantt arrows and some bug fixes)
+=======
+    font = ImageFont.truetype(fontfile, int(np.ceil(font_size * dpi / 72)))
+>>>>>>> 1029ca2 (date tick formatting fixes)
     size = font.getbbox(text)[2:]
 
     return size

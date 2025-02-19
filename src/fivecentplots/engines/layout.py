@@ -1255,7 +1255,7 @@ class BaseLayout:
                     workstreams_title=gantt_workstreams_title,
                     years=copy.copy(self.obj_array)
                     )
-        self.gantt.DATE_TYPES = ['year', 'quarter', 'month']
+        self.gantt.DATE_TYPES = ['year', 'quarter', 'month', 'quarter-year', 'month-year']  # fyi not linked to data
         self.gantt.date_type = utl.validate_list(self.gantt.date_type)
 
         # Bar labels
@@ -1375,6 +1375,9 @@ class BaseLayout:
                 kwargs['grid_minor_y_color'] = '#ffffff'
             if 'grid_minor_width' not in kwargs and 'grid_minor_y_width' not in kwargs:
                 kwargs['grid_minor_y_width'] = 1.3
+            if 'ticks_minor_length' not in kwargs and 'ticks_minor_y_length' not in kwargs:
+                self.ticks_minor_y._size[0] = 0
+                self.ticks_minor_y._size[1] = 0
 
         if 'ticks_major' not in kwargs or 'ticks_major_y' not in kwargs:
             self.ticks_major_y.on = False
@@ -2186,7 +2189,8 @@ class BaseLayout:
                             increment=utl.kwget(kwargs, self.fcpp,
                                                 f'ticks_major_{ax}_increment',
                                                 self.ticks_major.increment),
-                            size=self.ticks_major.size,
+                            size=[utl.kwget(kwargs, self.fcpp, f'ticks_major_{ax}_length', ticks_length),
+                                  utl.kwget(kwargs, self.fcpp, f'ticks_major_{ax}_width', ticks_width)],
                             ))
         if 'tick_labels' in kwargs.keys() and 'tick_labels_major' not in kwargs.keys():
             kwargs['tick_labels_major'] = kwargs['tick_labels']
@@ -2307,7 +2311,8 @@ class BaseLayout:
                                                 f'ticks_minor_{ax}_direction',
                                                 self.ticks_minor.direction),
                             number=utl.kwget(kwargs, self.fcpp, f'ticks_minor_{ax}_number', self.ticks_minor.number),
-                            size=self.ticks_minor._size,
+                            size=[utl.kwget(kwargs, self.fcpp, f'ticks_minor_{ax}_length', ticks_length * 0.67),
+                                  utl.kwget(kwargs, self.fcpp, f'ticks_minor_{ax}_width', ticks_width * 0.6)],
                             ))
             if f'ticks_minor_{ax}_number' in kwargs.keys():
                 getattr(self, f'ticks_minor_{ax}').on = True
