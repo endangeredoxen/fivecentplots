@@ -4859,9 +4859,12 @@ class Layout(BaseLayout):
                 ax.xaxis.set_major_locator(mdates.YearLocator())
                 ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y"))
                 delta = np.diff(ax.get_xticks()).mean() / 2
-                xmax = ax.get_xlim()[1]  # preserve the xmax limit
-                ax.set_xticks([float(n) + delta for n in ax.get_xticks()])
-                ax.set_xlim(right=xmax)
+                xmin, xmax = ax.get_xlim()
+                xticks = [float(n) + delta for n in ax.get_xticks()]
+                xticks[0] = xmin + (xticks[0] + delta - xmin) / 2
+                xticks[-1] = (xticks[-1] - delta) + (xmax - (xticks[-1] - delta)) / 2
+                ax.set_xticks(xticks)
+                ax.set_xlim(left=xmin, right=xmax)
 
                 # Minor ticks
                 if self.ticks_minor_x.on:
@@ -4892,9 +4895,12 @@ class Layout(BaseLayout):
                             for f in ax.get_xticklabels()]
                     ax.set_xticklabels(labels)
                     delta = np.diff(ax.get_xticks()).mean() / 2
-                    xmax = ax.get_xlim()[1]  # preserve the xmax limit
-                    ax.set_xticks([float(n) + delta for n in ax.get_xticks()])
-                    ax.set_xlim(right=xmax)
+                    xmin, xmax = ax.get_xlim()
+                    xticks = [float(n) + delta for n in ax.get_xticks()]
+                    xticks[0] = xmin + (xticks[0] + delta - xmin) / 2
+                    xticks[-1] = (xticks[-1] - delta) + (xmax - (xticks[-1] - delta)) / 2
+                    ax.set_xticks(xticks)
+                    ax.set_xlim(left=xmin, right=xmax)
 
                     # Minor ticks
                     if self.ticks_minor_x.on:
@@ -4910,7 +4916,14 @@ class Layout(BaseLayout):
                     date = '%b\n%y'
 
                 ax.xaxis.set_major_formatter(mdates.DateFormatter(date))
-                ax.set_xticks([float(n) + 0.5 for n in ax.get_xticks()])
+                xmin, xmax = ax.get_xlim()
+                xticks = [float(n) for n in ax.get_xticks()]
+                xticks[0] = mdates.date2num(
+                    mdates.num2date(xmin) + \
+                    ((mdates.num2date(xticks[0]) + datetime.timedelta(days=15.5)) - mdates.num2date(xmin)) / 2)
+                # need an xticks[-1]??
+                ax.set_xticks(xticks)
+                ax.set_xlim(left=xmin, right=xmax)
 
                 # Minor ticks
                 if self.ticks_minor_x.on:

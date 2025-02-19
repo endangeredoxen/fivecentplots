@@ -200,63 +200,88 @@ def plt_today(bm=False, make_reference=False, show=False):
 
 def plt_workstreams_date_type(bm=False, make_reference=False, show=False):
 
-    # Clean dates: month
-    name = utl.unit_test_get_img_name('workstreams_date_type_month', make_reference, REFERENCE)
-    fcp.gantt(df2, x=['Start date', 'End date'], y='Description',
-              date_type=['month'], workstreams='Workstream', workstreams_label_font_size=12,
-              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
-    if bm:
-        return
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    kw = {
+          'clean': {},
+          'date_min': {'xmin': datetime.datetime(2025, 12, 5)},
+          'date_max': {'xmax': datetime.datetime(2026, 3, 4)}
+    }
+    plots = [
+             'month',
+             'quarter',
+             'year',
+             'month-year',
+             'quarter-year',
+             'month + quarter',
+             'quarter + year',
+             'month + quarter + year',
+    ]
 
-    # Clean dates: quarter
-    name = utl.unit_test_get_img_name('workstreams_date_type_quarter', make_reference, REFERENCE)
-    fcp.gantt(df2, x=['Start date', 'End date'], y='Description',
-              date_type=['quarter'], workstreams='Workstream', workstreams_label_font_size=12,
-              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+    for k, v in kw.items():
+        # month
+        if 'month' in plots:
+            name = utl.unit_test_get_img_name(f'workstreams_date_type_month_{k}', make_reference, REFERENCE)
+            fcp.gantt(df2, x=['Start date', 'End date'], y='Description',
+                    date_type=['month'], workstreams='Workstream', workstreams_label_font_size=12,
+                    filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400], **v)
+            if bm:
+                return
+            utl.unit_test_options(make_reference, show, name, REFERENCE)
 
-    # Clean dates: year
-    name = utl.unit_test_get_img_name('workstreams_date_type_year', make_reference, REFERENCE)
-    fcp.gantt(df2, x=['Start date', 'End date'], y='Description',
-              date_type=['year'], workstreams='Workstream', workstreams_label_font_size=12,
-              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+        # quarter
+        if 'quarter' in plots:
+            name = utl.unit_test_get_img_name(f'workstreams_date_type_quarter_{k}', make_reference, REFERENCE)
+            fcp.gantt(df2, x=['Start date', 'End date'], y='Description',
+                    date_type=['quarter'], workstreams='Workstream', workstreams_label_font_size=12,
+                    filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400], **v)
+            utl.unit_test_options(make_reference, show, name, REFERENCE)
 
-    # Clean dates: month-year
-    name = utl.unit_test_get_img_name('workstreams_date_type_month-year', make_reference, REFERENCE)
-    fcp.gantt(df2, x=['Start date', 'End date'], y='Description',
-              date_type=['month-year'], workstreams='Workstream', workstreams_label_font_size=12,
-              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+        # year
+        if 'year' in plots:
+            name = utl.unit_test_get_img_name(f'workstreams_date_type_year_{k}', make_reference, REFERENCE)
+            fcp.gantt(df2, x=['Start date', 'End date'], y='Description',
+                    date_type=['year'], workstreams='Workstream', workstreams_label_font_size=12,
+                    filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400], **v)
+            utl.unit_test_options(make_reference, show, name, REFERENCE)
 
-    # Clean dates: quarter-year
-    name = utl.unit_test_get_img_name('workstreams_date_type_quarter-year', make_reference, REFERENCE)
-    fcp.gantt(df2, x=['Start date', 'End date'], y='Description',
-              date_type=['quarter-year'], workstreams='Workstream', workstreams_label_font_size=12,
-              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+        # month-year
+        if 'month-year' in plots:
+            name = utl.unit_test_get_img_name(f'workstreams_date_type_month-year_{k}', make_reference, REFERENCE)
+            fcp.gantt(df2, x=['Start date', 'End date'], y='Description',
+                    date_type=['month-year'], workstreams='Workstream', workstreams_label_font_size=12,
+                    filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400], **v)
+            utl.unit_test_options(make_reference, show, name, REFERENCE)
 
-    # Clean dates:  month + quarter
-    name = utl.unit_test_get_img_name('workstreams_date_type_month_and_quarter', make_reference, REFERENCE)
-    fcp.gantt(df2, x=['Start date', 'End date'], y='Description',
-              date_type=['month', 'quarter'], workstreams='Workstream', workstreams_label_font_size=12,
-              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+        # quarter-year
+        if 'quarter-year' in plots:
+            name = utl.unit_test_get_img_name(f'workstreams_date_type_quarter-year_{k}', make_reference, REFERENCE)
+            fcp.gantt(df2, x=['Start date', 'End date'], y='Description',
+                    date_type=['quarter-year'], workstreams='Workstream', workstreams_label_font_size=12,
+                    filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400], **v)
+            utl.unit_test_options(make_reference, show, name, REFERENCE)
 
-    # Clean dates:  quarter + year
-    name = utl.unit_test_get_img_name('workstreams_date_type_quarter_and_year', make_reference, REFERENCE)
-    fcp.gantt(df2, x=['Start date', 'End date'], y='Description',
-              date_type=['quarter', 'year'], workstreams='Workstream', workstreams_label_font_size=12,
-              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+        #  month + quarter
+        if 'month + quarter' in plots:
+            name = utl.unit_test_get_img_name(f'workstreams_date_type_month_and_quarter_{k}', make_reference, REFERENCE)
+            fcp.gantt(df2, x=['Start date', 'End date'], y='Description',
+                    date_type=['month', 'quarter'], workstreams='Workstream', workstreams_label_font_size=12,
+                    filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400], **v)
+            utl.unit_test_options(make_reference, show, name, REFERENCE)
 
-    # Clean dates:  month + quarter + year
-    name = utl.unit_test_get_img_name('workstreams_date_type_quarter_and_year', make_reference, REFERENCE)
-    fcp.gantt(df2, x=['Start date', 'End date'], y='Description',
-              date_type=['month', 'quarter', 'year'], workstreams='Workstream', workstreams_label_font_size=12,
-              filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400])
-    utl.unit_test_options(make_reference, show, name, REFERENCE)
+        #  quarter + year
+        if 'quarter + year' in plots:
+            name = utl.unit_test_get_img_name(f'workstreams_date_type_quarter_and_year_{k}', make_reference, REFERENCE)
+            fcp.gantt(df2, x=['Start date', 'End date'], y='Description',
+                    date_type=['quarter', 'year'], workstreams='Workstream', workstreams_label_font_size=12,
+                    filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400], **v)
+            utl.unit_test_options(make_reference, show, name, REFERENCE)
+
+        #  month + quarter + year
+        if 'month + quarter + year' in plots:
+            name = utl.unit_test_get_img_name(f'workstreams_date_type_quarter_and_year_{k}', make_reference, REFERENCE)
+            fcp.gantt(df2, x=['Start date', 'End date'], y='Description',
+                    date_type=['month', 'quarter', 'year'], workstreams='Workstream', workstreams_label_font_size=12,
+                    filename=name.with_suffix('.png'), save=not bm, inline=False, ax_size=[900, 400], **v)
+            utl.unit_test_options(make_reference, show, name, REFERENCE)
 
     # Bad date type errors ADD OTHERS
     name = Path('error')
