@@ -1255,7 +1255,7 @@ class BaseLayout:
                     workstreams_title=gantt_workstreams_title,
                     years=copy.copy(self.obj_array)
                     )
-        self.gantt.DATE_TYPES = ['year', 'quarter', 'month', 'quarter-year', 'month-year']  # fyi not linked to data
+        self.gantt.DATE_TYPES = ['year', 'quarter', 'month', 'week', 'quarter-year', 'month-year']  # not linked to data
         self.gantt.date_type = utl.validate_list(self.gantt.date_type)
 
         # Bar labels

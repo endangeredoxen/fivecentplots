@@ -582,11 +582,18 @@ class Data:
                         if mm == 'min':
                             data_set = data_set[data_set[col] >= user_limit]
                         else:
-                            data_set = data_set[data_set[col] <= user_limit]
+                            if data_set[col].dtype == 'datetime64[ns]' and \
+                                    len(data_set[data_set[col] <= user_limit]) == 0:
+                                data_set[col] = user_limit
+                            else:
+                                data_set = data_set[data_set[col] <= user_limit]
 
             vmin, vmax = getattr(self, f'{ax}min')[plot_num], getattr(self, f'{ax}max')[plot_num]
             if vmin is not None and vmax is not None and vmin >= vmax:
                 raise DataError(f'{ax}min must be less than {ax}max [{vmin} >= {vmax}]')
+
+            if len(data_set) == 0:
+                raise DataError(f'No data found after applying user-specfied min/max values')
 
         return data_set
 
@@ -601,6 +608,9 @@ class Data:
         Returns:
             min, max tuple
         """
+        if len(data_set) == 0:
+            return None, None
+
         # Case: data is a pd.DataFrame - separate out values of interest and address special dtype issues
         if isinstance(data_set, pd.DataFrame):
             if len([f for f in getattr(self, ax) if f not in data_set.columns]) > 0:

@@ -15,6 +15,7 @@ import ast
 import operator
 import imageio.v3 as imageio
 from matplotlib.font_manager import FontProperties, findfont
+import matplotlib.dates as mdates
 from pathlib import Path
 from typing import Any, Union, Tuple, Dict, List
 from . import data
@@ -258,6 +259,40 @@ def close_preview_windows_macos(filenames: Union[str, list]):
                  end tell
                  """ % ff
         osascript.run(script)
+
+
+def date_to_pixels(date: Union[datetime.datetime, float], vmin: float, vmax: float, pxmin: float, pxmax: float) -> float:
+    """Convert a matplotlib date to pixels.
+
+    Args:
+        date: datetime or matplotlib date float to convert to pixels
+        vmin: minimum date or matplotlib date float
+        vmax: maximum date or matplotlib date float
+        pxmin: minimum pixel value of the axes range
+        pxmax: maximum pixel value of the axes range
+
+    Returns:
+        date value in pixels
+    """
+    if isinstance(date, datetime.datetime):
+        date = mdates.date2num(date)
+
+    return (date - vmin) * (pxmax - pxmin) / (vmax - vmin) + pxmin
+
+
+def date_vals(date_num: Union[datetime.datetime, float]) -> Tuple[int, int, int]:
+    """Convert a date number to a datetime object.
+
+    Args:
+        date_num: matplotlib date number
+
+    Returns:
+        day, month, year as integers
+    """
+    if isinstance(date_num, datetime.datetime):
+        return date_num.day, date_num.month, date_num.year
+    else:
+        return mdates.num2date(date_num).day, mdates.num2date(date_num).month, mdates.num2date(date_num).year
 
 
 def dfkwarg(args: tuple, kwargs: dict, plotter: object) -> dict:
