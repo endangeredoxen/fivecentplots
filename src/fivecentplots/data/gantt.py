@@ -28,7 +28,7 @@ class Gantt(data.Data):
         super().__init__(self.name, self.req, self.opt, **kwargs)
 
         # Get some important kwargs
-        self.DATE_TYPES = ['year', 'quarter', 'month', 'quarter-year', 'month-year']  # fyi, not linked to layout.py
+        self.DATE_TYPES = ['year', 'quarter', 'month', 'week', 'quarter-year', 'month-year']  # fyi, not linked to layout.py
         self.workstreams = utl.kwget(kwargs, self.fcpp, ['gantt_workstreams', 'workstreams'], None)
         self.date_type = utl.validate_list(utl.kwget(kwargs, self.fcpp, ['gantt_date_type', 'date_type'], None))
         if self.workstreams is not None and 'legend' not in kwargs:
