@@ -261,7 +261,8 @@ def close_preview_windows_macos(filenames: Union[str, list]):
         osascript.run(script)
 
 
-def date_to_pixels(date: Union[datetime.datetime, float], vmin: float, vmax: float, pxmin: float, pxmax: float) -> float:
+def date_to_pixels(date: Union[datetime.datetime, float], vmin: float, vmax: float,
+                   pxmin: float, pxmax: float) -> float:
     """Convert a matplotlib date to pixels.
 
     Args:

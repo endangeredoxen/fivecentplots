@@ -4,8 +4,8 @@ import pandas as pd
 import numpy as np
 try:
     from pandas.tseries.offset import BDay
-except:
-    from pandas.tseries.offsets import BDay
+except:  # noqa
+    from pandas.tseries.offsets import BDay  # noqa
 from .. import utilities
 utl = utilities
 db = pdb.set_trace
@@ -28,11 +28,16 @@ class Gantt(data.Data):
         super().__init__(self.name, self.req, self.opt, **kwargs)
 
         # Get some important kwargs
-        self.DATE_TYPES = ['year', 'quarter', 'month', 'week', 'quarter-year', 'month-year']  # fyi, not linked to layout.py
+        self.DATE_TYPES = ['year', 'quarter', 'month', 'week', 'quarter-year', 'month-year']  # not linked to layout.py
         self.workstreams = utl.kwget(kwargs, self.fcpp, ['gantt_workstreams', 'workstreams'], None)
         self.date_type = utl.validate_list(utl.kwget(kwargs, self.fcpp, ['gantt_date_type', 'date_type'], None))
         if self.workstreams is not None and 'legend' not in kwargs:
             self.legend = self.workstreams
+        inline = utl.kwget(kwargs, self.fcpp, ['gantt_workstreams_location', 'workstreams_location'], 'left')
+        if inline == 'inline':
+            self.workstreams_inline = True
+        else:
+            self.workstreams_inline = False
         self.show_all = utl.kwget(kwargs, self.fcpp, ['gantt_show_all', 'show_all'], False)
         self.duration = utl.kwget(kwargs, self.fcpp, ['gantt_duration', 'duration'], 'Duration')
         self.dependencies = utl.kwget(kwargs, self.fcpp, ['gantt_dependencies', 'dependencies'], 'Dependency')
@@ -57,21 +62,42 @@ class Gantt(data.Data):
         for col in utl.validate_list(utl.kwget(kwargs, self.fcpp, ['bar_labels', 'gantt_bar_labels'], [])):
             if col not in self.df_all.columns:
                 raise data.DataError(f'Bar label column "{col}" is not in DataFrame')
+
+        # Date type restrictions
         invalid_date_types = [f for f in self.date_type if f not in self.DATE_TYPES]
         if len(invalid_date_types) > 0:
             raise data.DataError(f'Invalid date type[s] {invalid_date_types} specfied for Gantt chart; '
                                  f'allowed values: {self.DATE_TYPES}')
-        if 'month-year' in self.date_type and len(self.date_type) > 1:
-            raise data.DataError(f'Date type "month-year" cannot be specified with other date types')
-        if 'quarter-year' in self.date_type and len(self.date_type) > 1:
-            raise data.DataError(f'Date type "quarter-year" cannot be specified with other date types')
+        if 'quarter-year' in self.date_type:
+            allowed_combos = ['month', 'week', 'quarter-year']
+            if any([f for f in self.date_type if f not in allowed_combos]):
+                allowed_combos_str = [f'"{f}"' for f in allowed_combos[:-1]]
+                raise data.DataError('Date type "quarter-year" can only be combined with "month" or "week"')
+        if 'month-year' in self.date_type:
+            allowed_combos = ['quarter', 'week', 'month-year']
+            if any([f for f in self.date_type if f not in allowed_combos]):
+                allowed_combos_str = [f'"{f}"' for f in allowed_combos[:-1]]
+                raise data.DataError('Date type "month-year" can only be combined with "quarter" or "week"')
 
         # Attempt to populate missing dates
         self._populate_dates()
 
+        # Inline workstreams df adjustment
+        if self.workstreams_inline:
+            df_inline = []
+            for nn, gg in self.df_all.groupby(self.workstreams):
+                df_inline += [pd.DataFrame({self.workstreams: [nn],
+                                            self.x[0]: gg[self.x[0]].min(),
+                                            self.x[1]: gg[self.x[1]].max(),
+                                            self.y[0]: [nn],
+                                            '_is_workstream': [1]},
+                                           index=[0])]
+            self.df_all['_is_workstream'] = 2
+            self.df_all = pd.concat([pd.concat(df_inline), self.df_all])
+
         # Optionally hide tasks with no dates specified
         if not self.show_all:
-            self.df_all = self.df_all.loc[~((self.df_all[self.x[0]].isin(NULLS)) & \
+            self.df_all = self.df_all.loc[~((self.df_all[self.x[0]].isin(NULLS)) &
                                             (self.df_all[self.x[1]].isin(NULLS)))]
 
         # Update date times to np.datetime64
@@ -91,7 +117,7 @@ class Gantt(data.Data):
         dep_vals = [f.lstrip() for f in ';'.join(children[self.dependencies].values).split(';')]
 
         # Check parent dates for errors
-        parents = self.df_all.loc[(self.df_all[self.y[0]].isin(dep_vals)) & \
+        parents = self.df_all.loc[(self.df_all[self.y[0]].isin(dep_vals)) &
                                   (self.df_all[self.dependencies].isin(NULLS))]
         for irow, row in parents.iterrows():
             if row[self.x[1]] in NULLS:
@@ -262,7 +288,7 @@ class Gantt(data.Data):
         """Fill in missing dates"""
         # For all rows with a start date and a duration, calculate the end date
         if self.duration in self.df_all.columns:
-            sub = self.df_all.loc[~(self.df_all[self.x[0]].isin(NULLS)) & \
+            sub = self.df_all.loc[~(self.df_all[self.x[0]].isin(NULLS)) &
                                   ~(self.df_all[self.duration].isin(NULLS))]
             for irow, row in sub.iterrows():
                 self.df_all.loc[irow, self.x[1]] = self._calc_durations(row)
