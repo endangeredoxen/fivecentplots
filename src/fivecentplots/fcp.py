@@ -1207,8 +1207,6 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
         kwargs (dict): keyword args
 
     """
-    NULLS = [None, np.nan, 'nan', pd.NaT, 'NaT', 'N/A', 'n/a', 'Nan', 'NAN', 'NaN', 'None', '']
-
     # Check if workstream column is in data
     if layout.gantt.workstreams.column not in df_rc.columns:
         layout.gantt.workstreams.on = False
@@ -1218,6 +1216,11 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
     ascending = False if layout.gantt.sort.lower() == 'descending' else True
     if layout.gantt.order_by_legend and data.legend is not None and not layout.gantt.workstreams.on:
         df_rc = df_rc.sort_values([data.legend, data.x[0]], ascending=ascending)
+    elif layout.gantt.order_by_legend and data.legend is not None and \
+            layout.gantt.workstreams.on and \
+            layout.gantt.workstreams.location == 'inline':
+        df_rc = df_rc.sort_values([layout.gantt.workstreams.column, '_is_workstream', data.x[0]],
+                                  ascending=ascending)
     elif layout.gantt.order_by_legend and data.legend is not None and layout.gantt.workstreams.on:
         df_rc = df_rc.sort_values([layout.gantt.workstreams.column, data.x[0]], ascending=ascending)
     else:
@@ -1299,6 +1302,12 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
                         item = yvals[idx][0]
                         min_collision = min(min_collision, df_rc.loc[df_rc[data.y[0]] == item, data.x[0]].iloc[0])
                         if df_rc.loc[df_rc[data.y[0]] == item, data.x[0]].iloc[0] < val[data.x[1]]:
+                            # Skip workstream rows
+                            if layout.gantt.workstreams.on and \
+                                    layout.gantt.workstreams.location == 'inline' and \
+                                    df_rc.loc[df_rc[data.y[0]] == item, '_is_workstream'].iloc[0] == 1:
+                                continue
+                            # Update max_collision
                             max_collision = max(max_collision, df_rc.loc[df_rc[data.y[0]] == item, data.x[1]].iloc[0])
                     is_milestone_start = False
                     if val[data.x[0]] == val[data.x[1]]:
@@ -1312,35 +1321,36 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
                                                    is_milestone_end=is_milestone_end)
 
     # Add workstream labels
-    if layout.gantt.workstreams.on:
+    if layout.gantt.workstreams.on and layout.gantt.workstreams.location != 'inline':
         layout.gantt.workstreams.obj[ir, ic] = []
         layout.gantt.workstreams.obj_bg[ir, ic]
-        if layout.gantt.workstreams.location == 'inline':
-            raise NotImplementedError('sorry, this is not working yet')
-        else:
-            # Labels
-            layout.gantt.workstreams.rows[ir, ic] = []
-            layout.gantt.workstreams.edge_width = layout.grid_major_y.width[0]
-            unique_workstreams = df_rc[layout.gantt.workstreams.column].unique()
-            for icol, col in enumerate(unique_workstreams):
-                rows = len(df_rc.loc[df_rc[layout.gantt.workstreams.column] == col, data.y[0]].unique())
-                if layout.gantt.workstreams.match_bar_color:
-                    layout.gantt.workstreams.fill_color.values[0] = \
-                        layout.gantt.fill_color[len(unique_workstreams) - icol - 1]
-                obj, obj_bg = layout.add_label(
-                    ir, ic, layout.gantt.workstreams, col, layout.axes.size[1] / len(df_rc) * rows)
-                if icol == 0:
-                    layout.gantt.workstreams.obj[ir, ic] = [obj]
-                    layout.gantt.workstreams.obj_bg[ir, ic] = [obj_bg]
-                else:
-                    layout.gantt.workstreams.obj[ir, ic] += [obj]
-                    layout.gantt.workstreams.obj_bg[ir, ic] += [obj_bg]
-                layout.gantt.workstreams.rows[ir, ic] += [rows]
 
-            # Title
-            layout.gantt.workstreams_title.edge_width = layout.grid_major_y.width[0]
-            layout.gantt.workstreams_title.obj[ir, ic], layout.gantt.workstreams_title.obj_bg[ir, ic] = \
-                layout.add_label(ir, ic, layout.gantt.workstreams_title, layout.gantt.workstreams_title.text)
+        # Labels
+        layout.gantt.workstreams.rows[ir, ic] = []
+        layout.gantt.workstreams.edge_width = layout.grid_major_y.width[0]
+        unique_workstreams = df_rc[layout.gantt.workstreams.column].unique()
+        for icol, col in enumerate(unique_workstreams):
+            rows = len(df_rc.loc[df_rc[layout.gantt.workstreams.column] == col, data.y[0]].unique())
+            if layout.gantt.workstreams.match_bar_color:
+                layout.gantt.workstreams.fill_color.values[0] = \
+                    layout.gantt.fill_color[len(unique_workstreams) - icol - 1]
+            obj, obj_bg = layout.add_label(
+                ir, ic, layout.gantt.workstreams, col, layout.axes.size[1] / len(df_rc) * rows)
+            if icol == 0:
+                layout.gantt.workstreams.obj[ir, ic] = [obj]
+                layout.gantt.workstreams.obj_bg[ir, ic] = [obj_bg]
+            else:
+                layout.gantt.workstreams.obj[ir, ic] += [obj]
+                layout.gantt.workstreams.obj_bg[ir, ic] += [obj_bg]
+            layout.gantt.workstreams.rows[ir, ic] += [rows]
+
+        # Title
+        layout.gantt.workstreams_title.edge_width = layout.grid_major_y.width[0]
+        layout.gantt.workstreams_title.obj[ir, ic], layout.gantt.workstreams_title.obj_bg[ir, ic] = \
+            layout.add_label(ir, ic, layout.gantt.workstreams_title, layout.gantt.workstreams_title.text)
+
+    elif layout.gantt.workstreams.on and layout.gantt.workstreams.location == 'inline':
+        pass
     else:
         layout.gantt.workstreams.on = False
 

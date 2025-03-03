@@ -593,7 +593,7 @@ class Data:
                 raise DataError(f'{ax}min must be less than {ax}max [{vmin} >= {vmax}]')
 
             if len(data_set) == 0:
-                raise DataError(f'No data found after applying user-specfied min/max values')
+                raise DataError('No data found after applying user-specfied min/max values')
 
         return data_set
 
@@ -624,7 +624,7 @@ class Data:
                 if getattr(self, f'{ax}min')[plot_num] is not None:
                     vmin = getattr(self, f'{ax}min')[plot_num]
                 else:
-                    vmin =  np.min(vals)
+                    vmin = np.min(vals)
                 if getattr(self, f'{ax}max')[plot_num] is not None:
                     vmax = getattr(self, f'{ax}max')[plot_num]
                 else:
@@ -1288,9 +1288,9 @@ class Data:
             val: column name
         """
         if len(self.df_all.loc[self.df_all[val].dt.hour != 0, val]) == 0 and \
-                            len(self.df_all.loc[self.df_all[val].dt.minute != 0, val]) == 0 and \
-                            len(self.df_all.loc[self.df_all[val].dt.second != 0, val]) == 0:
-                        self.df_all[val] = pd.DatetimeIndex(self.df_all[val]).date
+                len(self.df_all.loc[self.df_all[val].dt.minute != 0, val]) == 0 and \
+                len(self.df_all.loc[self.df_all[val].dt.second != 0, val]) == 0:
+            self.df_all[val] = pd.DatetimeIndex(self.df_all[val]).date
 
     def _subset(self, ir: int, ic: int) -> pd.DataFrame:
         """Handles creation of a new data subset based on the type of plot selected.
