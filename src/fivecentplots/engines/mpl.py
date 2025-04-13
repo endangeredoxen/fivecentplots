@@ -1254,7 +1254,7 @@ class Layout(BaseLayout):
             if element and track_element:
                 if el.obj is None:
                     el.obj = text_obj
-                elif isinstance(el.obj, mpl.text.Text):
+                elif isinstance(el.obj[ir, ic], mpl.text.Text):
                     el.obj = [el.obj]
                     el.obj += [text_obj]
                 elif el.obj[ir, ic] is None:
@@ -2197,7 +2197,7 @@ class Layout(BaseLayout):
                     idx = xticks.size_cols.index('x1')
                 xxs = self.axes.obj[ir, ic].get_window_extent().x1 + self._right + self.legend.size[0] \
                     - xticks_size_all[-1][idx]
-                if xxs < 0 and (not self.gantt.on and any(f in self.gantt.date_type for f in self.gantt.DATE_TYPES)):
+                if xxs < 0 and not self.gantt.on:
                     self.x_tick_xs = -int(np.floor(xxs)) + 1
 
             if len(yticks_size_all) > 0:
@@ -2324,7 +2324,7 @@ class Layout(BaseLayout):
             axx = 'x'
             if self.bar.stacked:
                 kwargs['width'] = self.bar.width
-                if iline > 0:
+                if len(stacked) > 0:
                     if isinstance(stacked, pd.Series):
                         stacked = stacked.loc[xvals[idx]].values
                     kwargs['bottom'] = stacked
@@ -2549,7 +2549,7 @@ class Layout(BaseLayout):
         """
         ax = self.axes.obj[ir, ic]
         bar = ax.broken_barh
-        new_xmax = None
+        new_xmax = np.datetime64('0000-01-01')
 
         # Set the color values
         if self.gantt.color_by == 'bar':
@@ -2585,37 +2585,37 @@ class Layout(BaseLayout):
                 ax.plot([row[x[0]]], [yi], self.gantt.milestone_marker, markersize=self.gantt.milestone_marker_size,
                         mfc=fillcolor[ii], mec='#ffffff')
 
-                # Add xs x width if milestone is at xmax
+                # Add xs x width if milestone marker is at xmax
                 if row[x[0]] == data.ranges['xmax'][ir, ic]:
                     xmin, xmax = self.axes.obj[ir, ic].get_xlim()
                     w_px = self.gantt.milestone_marker_size
-                    new_xmax = np.datetime64(mdates.num2date(w_px / self.axes.size[0] * (xmax - xmin) + xmax))
+                    new_xmax = max(new_xmax,
+                        np.datetime64(mdates.num2date(w_px / self.axes.size[0] * (xmax - xmin) + xmax)))
 
                 # Add milestone text
                 if self.gantt.milestone in row and str(row['Milestone']) not in \
-                        [None, np.nan, 'nan', pd.NaT, 'NaT', 'N/A', 'n/a', 'Nan', 'NAN', 'NaN', '', 'None']:
+                        [None, np.nan, 'nan', pd.NaT, 'NaT', 'N/A', 'n/a', 'Nan', 'NAN', 'NaN', '', 'None'] \
+                        and self.gantt.milestone_text.on:
+
+                    # Add text and position to the milestone text element object
+                    self.gantt.milestone_text.text += [row['Milestone']]
+                    self.gantt.milestone_text.position += [(row[x[0]], yi)]
+
+                    # Predict the milestone label size (no current support for multiple font types)
                     txt_size = utl.get_text_dimensions(row['Milestone'],
                                                        self.gantt.milestone_text.font,
                                                        self.gantt.milestone_text.font_size,
                                                        self.gantt.milestone_text.font_style,
                                                        self.gantt.milestone_text.font_weight)
-                    loc = ax.transData.transform((mdates.date2num(row[x[0]]), yi))
-                    offsety = 0
+
+                    # Update xmax range value for labels that go beyond the axes range
+                    xmin, xmax = self.axes.obj[ir, ic].get_xlim()
                     if self.gantt.milestone_text.location == 'top':
-                        loc_new = loc + np.array([-txt_size[0] / 2, 0])
-                        offsetx = datetime.timedelta(days=0)
-                        offsety = self.gantt.height / 3
-                    elif self.gantt.milestone_text.location == 'left':
-                        loc_new = loc + np.array([-txt_size[0] - self.gantt.milestone_marker_size - 5,
-                                                 -txt_size[1] / 2 + 2])
-                        offsetx = 0
+                        xs = (txt_size[0] / 2) / self.axes.size[0] * (xmax - xmin) + xmax
                     else:
-                        loc_new = loc + np.array([self.gantt.milestone_marker_size, -txt_size[1] / 2 + 2])
-                        offsetx = datetime.timedelta(days=1)
-                    loc_data = ax.transData.inverted().transform(loc_new)
-                    position = [mdates.num2date(loc_data[0]), loc_data[1]]
-                    self.add_text(ir, ic, row['Milestone'], element=self.gantt.milestone_text,
-                                  position=position, offsetx=offsetx, offsety=offsety)
+                        xs = txt_size[0] / self.axes.size[0] * (xmax - xmin) + xmax
+                    print(row['Milestone'], new_xmax, np.datetime64(mdates.num2date(xs)))
+                    new_xmax = max(new_xmax, np.datetime64(mdates.num2date(xs)))
 
             # Workstream bracket
             elif self.gantt.workstreams.location == 'inline' and row[self.gantt.workstreams.column] == row[data.y[0]]:
@@ -2662,13 +2662,14 @@ class Layout(BaseLayout):
 
             # Add the labels
             self.gantt.bar_labels.obj[ir, ic] = []
+
             self.add_text(ir, ic, element=self.gantt.bar_labels, position=position,
-                          offsetx=np.timedelta64(datetime.timedelta(days=1), 'D'), offsety=0)
+                          offsetx=0, offsety=0) # np.timedelta64(datetime.timedelta(days=1), 'D'), offsety=0)
             if not self.gantt.labels_as_yticks:
                 ax.set_yticks(range(-1, len(yvals)))
                 ax.set_yticklabels([''] + ['' for f in yvals])
 
-            # Update xmax range value
+            # Update xmax range value for labels that go beyond the axes range
             xmax_xs = 0
             for itxt, txt in enumerate(self.gantt.bar_labels.obj[ir, ic]):
                 txt_size = utl.get_text_dimensions(txt.get_text(),
@@ -2683,18 +2684,33 @@ class Layout(BaseLayout):
 
                 # Tweak position
                 pos = txt.get_position()
-                xoffset = (xvals[:, 1].max() - xvals[:, 0].min()) * 0.01  # 1% of total time span
+                xmin, xmax = ax.get_xlim()
+                pixel_2_mdate = (xmax - xmin) / self.axes.size[0]
+                xoffset = 4 * pixel_2_mdate
                 yoffset = txt_size[1] / 4 / self.axes.size[1] * ax.get_ylim()[1]
-                txt.set_position((pos[0] + xoffset, pos[1] - yoffset))
+                if xvals[itxt][1] == xvals[itxt][0]:
+                    # Discrete milestone
+                    xoffset += self.gantt.milestone_marker_size * pixel_2_mdate
+                if len(data.df_rc.loc[data.df_rc[data.y[0]] == yvals[itxt][0], 'Milestone'].dropna()) > 0:
+                    # Milestone on a bar
+                    xoffset += self.gantt.milestone_marker_size * pixel_2_mdate
+                txt.set_position((mdates.num2date(mdates.date2num(pos[0]) + xoffset), pos[1] - yoffset))
 
             if xmax_xs > 0:
                 xmax_xs *= 1.1
                 new_xmax_ = mdates.num2date(ax.transData.inverted().transform((xmax_xs + self.axes.size[0], 0))[0])
-                if new_xmax is not None:
-                    new_xmax = max(np.datetime64(new_xmax_), new_xmax)
-                else:
-                    new_xmax = np.datetime64(new_xmax_)
+                new_xmax = max(np.datetime64(new_xmax_), new_xmax)
                 self.axes.size[0] += xmax_xs
+
+        # Add the milestone labels
+        if iline + 1 == ngroups and self.gantt.milestone_text.on and len(self.gantt.milestone_text.text) > 0:
+            # for i in range(len(yvals)):
+            #     position = [(xvals[i][1], i) for i in range(len(yvals))]
+
+            # Add the labels
+            self.gantt.milestone_text.obj[ir, ic] = []
+            self.add_text(ir, ic, element=self.gantt.milestone_text, position=self.gantt.milestone_text.position,
+                          offsetx=np.timedelta64(datetime.timedelta(days=1), 'D'), offsety=0)
 
         # Legend
         if leg_name is not None:
@@ -2713,8 +2729,8 @@ class Layout(BaseLayout):
 
     def plot_gantt_dependencies(self, ir, ic, start, end, min_collision, max_collision,
                                 color='gray', linewidth=1, zorder=1,
-                                min_x_distance=5, start_offset=7, end_offset=12,
-                                is_milestone_start=False, is_milestone_end=False):
+                                start_offset=5, end_offset=10,
+                                is_milestone_start=False, is_milestone_end=False, repeat_dep=False):
         """
         Plot a dependency arrow between two points in a Matplotlib Gantt chart using right angles.
 
@@ -2728,25 +2744,27 @@ class Layout(BaseLayout):
             color: color of the arrow
             linewidth: width of the arrow line
             zorder: drawing order (higher numbers draw on top)
-            min_x_distance: minimum x-distance (in days) to use horizontal connector
             start_offset: length of initial horizontal segment in pixels
             end_offset: length of final horizontal segment in pixels
             is_milestone_start: whether the start point is a milestone
             is_milestone_end: whether the end point is a milestone
+            repeat_dep: flag for deps that have already been processed to avoid double margin spacing
         """
         ax = self.axes.obj[ir, ic]
         xmin, xmax = ax.get_xlim()
+        pixel_2_mdate = (xmax - xmin) / self.axes.size[0]
 
         start_x, start_y = start
         end_x, end_y = end
-        start_offset *= (xmax - xmin) / ax.get_window_extent().width
+        start_offset *= pixel_2_mdate  # units == mdates float
+        end_offset *= pixel_2_mdate  # units == mdates float
 
         # Convert dates to numbers for comparison
         start_x = mdates.date2num(start_x)
         end_x = mdates.date2num(end_x)
         min_collision = mdates.date2num(min_collision)
         max_collision = mdates.date2num(max_collision)
-        x_distance = end_x - start_x
+        x_distance = end_x - start_x  # units == mdates float
         sign = -1 if start_y < end_y else 1
 
         # If the dependent bar starts before the predecessor ends, loop back to the left
@@ -2762,27 +2780,27 @@ class Layout(BaseLayout):
 
         # If the dependent bar starts after the predecessor ends, go to the new row and draw a line up/down
         else:
-            # Check for bar labels and move them if needed to avoid overlapping the arrow
-            if self.gantt.bar_labels is not None:
-                x, y = self.gantt.bar_labels.obj[ir, ic][start_y].get_position()
-                x_new = mdates.num2date(mdates.date2num(x) + x_distance) + datetime.timedelta(days=1)
-                self.gantt.bar_labels.obj[ir, ic][start_y].set_x(x_new)  # from plot_gantt
-
             if is_milestone_end:
                 start_offset = 0
                 yoffset = sign * (0.5 - (1 - self.gantt.height) / 2)
             else:
                 yoffset = sign * (0.5 - (1 - self.gantt.height) / 3)  # div by 2 would hit top of bar, give some buffer
             if is_milestone_start:
-                xs = self.gantt.milestone_marker_size * (xmax - xmin) / ax.get_window_extent().width
+                xs = self.gantt.milestone_marker_size * pixel_2_mdate
                 start_x += xs
                 x_distance -= xs
-
             points = [
                 [start_x, start_y],
                 [start_x + x_distance + start_offset, start_y],  # Initial horizontal segment
                 [start_x + x_distance + start_offset, end_y + yoffset]
             ]
+            # Check for bar labels and move them if needed to avoid overlapping the arrow
+            if self.gantt.bar_labels is not None and not repeat_dep:
+                x, y = self.gantt.bar_labels.obj[ir, ic][start_y].get_position()
+                x_new = mdates.date2num(x) + x_distance + start_offset
+                if is_milestone_start:
+                    x_new += xs
+                self.gantt.bar_labels.obj[ir, ic][start_y].set_x(mdates.num2date(x_new))  # from plot_gantt
 
         # Draw the lines
         for i in range(len(points) - 1):
@@ -4374,9 +4392,8 @@ class Layout(BaseLayout):
         if self.fit.on and self.fit.eqn:
             self._set_text_position(self.fit)
 
-        # Gantt adjustments
+        # Gantt today text
         if self.gantt.on and self.gantt.today.on:
-            # Today text
             for ir, ic in np.ndindex(self.axes.obj.shape):
                 if self.gantt.today.obj[ir, ic] is None:
                     continue
@@ -4438,6 +4455,11 @@ class Layout(BaseLayout):
                     else:
                         y1_idx = int(sum(self.gantt.workstreams.rows[ir, ic][:iws + 1]))
                         y1 = ygridlines[y1_idx].get_window_extent().y0
+                    if iws == len(self.gantt.workstreams.obj[ir, ic]) - 1 and \
+                            self.grid_major_y.width[0] > self.axes.edge_width:
+                        # Correct top label box so it better aligns with axes edge
+                        y1 -= np.ceil(self.grid_major_y.width[0] - self.axes.edge_width)
+
                     ws_bg.set_y((y0 - y_delta / 2) / self.fig.size_int[1])
                     ws_bg.set_height((y1 - y0) / self.fig.size_int[1])
 
@@ -4458,14 +4480,14 @@ class Layout(BaseLayout):
         if self.gantt.on and self.gantt.workstreams_title.on:
             for ir, ic in np.ndindex(self.axes.obj.shape):
                 # y-grid position
-                # valid_ticks = [i for (i, f) in enumerate(self.axes.obj[ir, ic].get_yticklabels())
-                #                if f.get_text() != '']
                 valid_ticks = [i for (i, f) in enumerate(self.axes.obj[ir, ic].get_yticklabels())
                                if f.get_position()[1] >= 0]
                 ygridlines = [self.axes.obj[ir, ic].get_ygridlines()[i] for i in valid_ticks]
                 y_delta = np.diff([f.get_window_extent().y0 for f in ygridlines]).mean()
                 y0 = ygridlines[0].get_window_extent().y0 - y_delta / 2
                 y1 = ygridlines[-1].get_window_extent().y0 + y_delta / 2
+                if self.grid_major_y.width[0] > self.axes.edge_width:
+                    y1 -= np.ceil(self.grid_major_y.width[0] - self.axes.edge_width)
 
                 # x-position
                 if self.gantt.workstreams.location.lower() == 'inline':
@@ -4508,15 +4530,32 @@ class Layout(BaseLayout):
                     (self.axes.obj[ir, ic].get_position().y1 - self.axes.obj[ir, ic].get_position().y0) / 2
                     + self.axes.obj[ir, ic].get_position().y0)
 
-        # # if self.gantt.on:
-        # #     self._set_text_position(self.gantt)
-        # self.axes.obj[0, 0].set_xlim(right=data.ranges['xmax'][0, 0] + datetime.timedelta(days=180))
-        # kww = self.make_kw_dict(self.gantt.labels)
-        # for itxt, txt in enumerate(self.gantt.labels.obj[0, 0]):
-        #     size_mpl = txt.get_bbox_patch().get_extents().width, txt.get_bbox_patch().get_extents().height
-        #     size_pillow = utl.get_text_dimensions(txt.get_text(), kww['font'][itxt],
-        #                   kww['font_size'][itxt], kww['font_style'][itxt], kww['font_weight'][itxt])
-        #     print(size_mpl, size_pillow, size_mpl[0] - size_pillow[0], size_mpl[1] - size_pillow[1])
+        # Gantt hide first x-tick mark if it falls on the yticklabel box edge
+        if self.gantt.label_boxes and self.gantt.labels_as_yticks and self.gantt.date_location != 'top':
+            for ir, ic in np.ndindex(self.axes.obj.shape):
+                ax = self.axes.obj[ir, ic]
+                if ax.xaxis.get_major_ticks()[0].get_loc() == ax.get_xlim()[0]:
+                    ax.xaxis.get_major_ticks()[0].tick1line.set_visible(False)
+
+        # Gantt milestone labels (center above the marker)
+        if self.gantt.on and self.gantt.milestone_text.on and len(self.gantt.milestone_text.obj[ir, ic]) > 0:
+            for itxt, txt in enumerate(self.gantt.milestone_text.obj[ir, ic]):
+                # txt.set_x(mdates.date2num(txt.get_position()[0]) - self.gantt.milestone_text.size[0] / 2)
+                ax = self.axes.obj[ir, ic]
+                x, y = txt.get_position()
+                x0 = mdates.date2num(x)
+                w = txt.get_window_extent().width
+                h = txt.get_window_extent().height
+                transform = (ax.transData + ax.transAxes.inverted())
+                x_axis, y_axis = transform.transform((x0, y))
+                if self.gantt.milestone_text.location == 'top':
+                    x0 = x_axis - w / 2 / self.axes.size[0]
+                    y0 = y_axis + (2 + self.gantt.milestone_marker_size) / (self.axes.size[1])  # 2 == edge_width + 1
+                else:
+                    x0 = x_axis + (2 + self.gantt.milestone_marker_size) / (self.axes.size[0])  # 2 == edge_width + 1
+                    y0 = y_axis - (h / 2 - 1) / self.axes.size[1]
+                txt.set_position((x0, y0))
+                txt.set_transform(ax.transAxes)
 
     def set_figure_title(self):
         """Set a figure title."""
@@ -4868,220 +4907,221 @@ class Layout(BaseLayout):
                 # Style offset text
                 self.axes.obj[ir, ic].xaxis.get_offset_text().set_fontproperties(ticks_font)
 
-        # Set custom tick labels (painful!)
+        # Set custom tick labels (ouch!)
         for ir, ic in np.ndindex(self.axes.obj.shape):
             # Shortest duration becomes actual tick labels while other durations become custom text boxes
             # (i.e., week < month/month-year < quarter/quarter-year < year)
             ax = self.axes.obj[ir, ic]
 
-            locator = {'year': mdates.YearLocator(),
-                       'quarter': mdates.MonthLocator(bymonth=[1, 4, 7, 10]),
-                       'quarter-year': mdates.MonthLocator(bymonth=[1, 4, 7, 10]),
-                       'month': mdates.MonthLocator(bymonthday=15),
-                       'month-year': mdates.MonthLocator(bymonthday=15),
-                       'week': mdates.WeekdayLocator(mdates.TH)
+            if len(self.gantt.date_type) > 0:
+                locator = {'year': mdates.YearLocator(),
+                           'quarter': mdates.MonthLocator(bymonth=[1, 4, 7, 10]),
+                           'quarter-year': mdates.MonthLocator(bymonth=[1, 4, 7, 10]),
+                           'month': mdates.MonthLocator(bymonthday=15),
+                           'month-year': mdates.MonthLocator(bymonthday=15),
+                           'week': mdates.WeekdayLocator(mdates.TH)
+                           }
+                minor_locator = {'year': mdates.MonthLocator(bymonth=[1]),
+                                 'quarter': mdates.MonthLocator(bymonth=[1, 4, 7, 10]),
+                                 'quarter-year': mdates.MonthLocator(bymonth=[1, 4, 7, 10]),
+                                 'month': mdates.MonthLocator(bymonth=range(1, 13)),
+                                 'month-year': mdates.MonthLocator(bymonth=range(1, 13)),
+                                 'week': mdates.WeekdayLocator(mdates.MO)
+                                 }
+                fmt = {'year': mdates.DateFormatter('%Y'),
+                       'quarter': mdates.DateFormatter('Q%m'),
+                       'quarter-year': mdates.DateFormatter('%yQ%m'),
+                       'month': mdates.DateFormatter('%b'),
+                       'month-year': mdates.DateFormatter('%b\n%y'),
+                       'week': mdates.DateFormatter('WW%W')
                        }
-            minor_locator = {'year': mdates.MonthLocator(bymonth=[1]),
-                             'quarter': mdates.MonthLocator(bymonth=[1, 4, 7, 10]),
-                             'quarter-year': mdates.MonthLocator(bymonth=[1, 4, 7, 10]),
-                             'month': mdates.MonthLocator(bymonth=range(1, 13)),
-                             'month-year': mdates.MonthLocator(bymonth=range(1, 13)),
-                             'week': mdates.WeekdayLocator(mdates.MO)
-                             }
-            fmt = {'year': mdates.DateFormatter('%Y'),
-                   'quarter': mdates.DateFormatter('Q%m'),
-                   'quarter-year': mdates.DateFormatter('%yQ%m'),
-                   'month': mdates.DateFormatter('%b'),
-                   'month-year': mdates.DateFormatter('%b\n%y'),
-                   'week': mdates.DateFormatter('WW%W')
-                   }
 
-            def get_tick_bounds(ax: 'mpl.axes', date: Union[datetime.datetime, float],
-                                date_type: str) -> Dict[str, Tuple]:
-                """
-                Compute the date and pixel location for the previous, current, and next minor tick gridlines
+                def get_tick_bounds(ax: 'mpl.axes', date: Union[datetime.datetime, float],
+                                    date_type: str) -> Dict[str, Tuple]:
+                    """
+                    Compute the date and pixel location for the previous, current, and next minor tick gridlines
 
-                Args:
-                    ax: the axes object
-                    date: current date as a datetime or mpl float
-                    date_type: 'year', 'quarter', 'quarter-year', 'month', 'month-year', 'week'
+                    Args:
+                        ax: the axes object
+                        date: current date as a datetime or mpl float
+                        date_type: 'year', 'quarter', 'quarter-year', 'month', 'month-year', 'week'
 
-                Returns:
-                    next date as a datetime
-                """
-                if isinstance(date, float):
-                    date = mdates.num2date(date)
+                    Returns:
+                        next date as a datetime
+                    """
+                    if isinstance(date, float):
+                        date = mdates.num2date(date)
 
-                dd, mm, yy = utl.date_vals(date)
-                xmin, xmax = ax.get_xlim()
-                px_x0, px_x1 = ax.get_window_extent().x0, ax.get_window_extent().x1
+                    dd, mm, yy = utl.date_vals(date)
+                    xmin, xmax = ax.get_xlim()
+                    px_x0, px_x1 = ax.get_window_extent().x0, ax.get_window_extent().x1
 
-                if date_type in ['year']:
-                    tick = datetime.datetime(yy, 7, dd)
-                    left = datetime.datetime(yy, 1, 1)
-                    right = datetime.datetime(yy + 1, 1, 1)
-                elif date_type in ['month', 'month-year']:
-                    tick = datetime.datetime(yy, mm, dd)
-                    left = datetime.datetime(yy, mm, 1)
-                    right = datetime.datetime(yy + (mm + 1) // 13, (mm % 12) + 1, 1)
-                elif date_type in ['quarter', 'quarter-year']:
-                    if mm not in [1, 4, 7, 10]:
-                        # Use this for ticks in partial boxes
+                    if date_type in ['year']:
+                        tick = datetime.datetime(yy, 7, dd)
+                        left = datetime.datetime(yy, 1, 1)
+                        right = datetime.datetime(yy + 1, 1, 1)
+                    elif date_type in ['month', 'month-year']:
                         tick = datetime.datetime(yy, mm, dd)
-                        left = datetime.datetime(yy, mm - 1, 1)
-                        right = datetime.datetime(yy + (mm > 10), (((mm - 1) // 3) + 1) % 4 * 3 + 1, 1)
-                    elif dd != 15:
-                        # Use this if the tick is at the beginning of the quarter
-                        tick = datetime.datetime(yy + (mm + 1) // 13, mm + 1, 15)
                         left = datetime.datetime(yy, mm, 1)
-                        right = datetime.datetime(yy + (mm > 10), (mm + 2) % 12 + 1, 1)
-                    else:
-                        # Use this if the tick has already been shifted to mid-quarter
+                        right = datetime.datetime(yy + (mm + 1) // 13, (mm % 12) + 1, 1)
+                    elif date_type in ['quarter', 'quarter-year']:
+                        if mm not in [1, 4, 7, 10]:
+                            # Use this for ticks in partial boxes
+                            tick = datetime.datetime(yy, mm, dd)
+                            left = datetime.datetime(yy, mm - 1, 1)
+                            right = datetime.datetime(yy + (mm > 10), (((mm - 1) // 3) + 1) % 4 * 3 + 1, 1)
+                        elif dd != 15:
+                            # Use this if the tick is at the beginning of the quarter
+                            tick = datetime.datetime(yy + (mm + 1) // 13, mm + 1, 15)
+                            left = datetime.datetime(yy, mm, 1)
+                            right = datetime.datetime(yy + (mm > 10), (mm + 2) % 12 + 1, 1)
+                        else:
+                            # Use this if the tick has already been shifted to mid-quarter
+                            tick = datetime.datetime(yy, mm, dd)
+                            left = datetime.datetime(yy, mm - 1, 1)
+                            right = datetime.datetime(yy + (mm > 10), (mm + 2) % 12 + 1, 1)
+                    elif date_type in ['week']:
                         tick = datetime.datetime(yy, mm, dd)
-                        left = datetime.datetime(yy, mm - 1, 1)
-                        right = datetime.datetime(yy + (mm > 10), (mm + 2) % 12 + 1, 1)
-                elif date_type in ['week']:
-                    tick = datetime.datetime(yy, mm, dd)
-                    left = tick - datetime.timedelta(days=date.weekday())
-                    right = tick + datetime.timedelta(days=date.weekday() % 7 + 1)
-                    tick = datetime.datetime(yy, mm, dd, 12)  # offset by 12 hours to center
+                        left = tick - datetime.timedelta(days=date.weekday())
+                        right = tick + datetime.timedelta(days=date.weekday() % 7 + 1)
+                        tick = datetime.datetime(yy, mm, dd, 12)  # offset by 12 hours to center
+                    else:
+                        raise NotImplementedError(f'tick bounds not implemented for {date_type}')
+
+                    if left < mdates.num2date(xmin).replace(tzinfo=None):
+                        left = mdates.num2date(xmin)
+                    if right > mdates.num2date(xmax).replace(tzinfo=None):
+                        right = mdates.num2date(xmax)
+
+                    return {'left': {'date': left.replace(tzinfo=None),
+                                     'float': mdates.date2num(left),
+                                     'px': utl.date_to_pixels(left, xmin, xmax, px_x0, px_x1)},
+                            'tick': {'date': tick.replace(tzinfo=None),
+                                     'float': mdates.date2num(tick),
+                                     'px': utl.date_to_pixels(tick, xmin, xmax, px_x0, px_x1)},
+                            'right': {'date': right.replace(tzinfo=None),
+                                      'float': mdates.date2num(right),
+                                      'px': utl.date_to_pixels(right, xmin, xmax, px_x0, px_x1)}
+                            }
+
+                # Select the major tick date type
+                DATE_TYPES = ['week', 'month', 'month-year', 'quarter', 'quarter-year', 'year']
+                for tick_type in DATE_TYPES:
+                    if tick_type in self.gantt.date_type:
+                        primary = tick_type
+                        break
+
+                # Set x-major ticks
+                ax.xaxis.set_major_locator(locator[primary])
+                ax.xaxis.set_major_formatter(fmt[primary])
+
+                # Update some tick labels
+                if primary in ['quarter', 'quarter-year']:
+                    labels = [f.get_text().replace('04', '2').replace('07', '3').replace('10', '4').replace('01', '1')
+                              for f in ax.get_xticklabels()]
+                    ax.set_xticklabels(labels)
                 else:
-                    raise NotImplementedError(f'tick bounds not implemented for {date_type}')
+                    labels = ax.get_xticklabels()
 
-                if left < mdates.num2date(xmin).replace(tzinfo=None):
-                    left = mdates.num2date(xmin)
-                if right > mdates.num2date(xmax).replace(tzinfo=None):
-                    right = mdates.num2date(xmax)
+                # Adjust tick positions to center in tick label boxes
+                xmin, xmax = ax.get_xlim()
+                xticks = ax.get_xticks()
+                partial_start, partial_end = False, False
+                tick_font_size = self.tick_labels_major_x.font_size
+                height = ax.get_xticklabels()[0].get_window_extent().y1 - ax.get_window_extent().y1 + \
+                    2 * self.gantt.box_padding_y
 
-                return {'left': {'date': left.replace(tzinfo=None),
-                                 'float': mdates.date2num(left),
-                                 'px': utl.date_to_pixels(left, xmin, xmax, px_x0, px_x1)},
-                        'tick': {'date': tick.replace(tzinfo=None),
-                                 'float': mdates.date2num(tick),
-                                 'px': utl.date_to_pixels(tick, xmin, xmax, px_x0, px_x1)},
-                        'right': {'date': right.replace(tzinfo=None),
-                                  'float': mdates.date2num(right),
-                                  'px': utl.date_to_pixels(right, xmin, xmax, px_x0, px_x1)}
-                        }
+                t0 = get_tick_bounds(ax, xticks[0], primary)
+                if t0['left']['date'] != t0['right']['date']:
+                    xticks[0] = t0['left']['float'] + (t0['right']['float'] - t0['left']['float']) / 2
+                    partial_start = True
+                else:
+                    xticks[0] = t0['tick']['float']
 
-            # Select the major tick date type
-            DATE_TYPES = ['week', 'month', 'month-year', 'quarter', 'quarter-year', 'year']
-            for tick_type in DATE_TYPES:
-                if tick_type in self.gantt.date_type:
-                    primary = tick_type
-                    break
+                for ixt, xt in enumerate(xticks[1:-1]):
+                    tt = get_tick_bounds(ax, xt, primary)
+                    xticks[ixt + 1] = tt['tick']['float']
+                    if ixt == 0:
+                        # Check tick label font size and adjust if too big for the tick box (not perfect)
+                        label_width = ax.get_xticklabels()[ixt].get_window_extent().width
+                        box_width = tt['right']['px'] - tt['left']['px']
+                        if box_width < label_width:
+                            tick_font_size = self.tick_labels_major_x.font_size * (box_width - 2) / label_width
 
-            # Set x-major ticks
-            ax.xaxis.set_major_locator(locator[primary])
-            ax.xaxis.set_major_formatter(fmt[primary])
+                t1 = get_tick_bounds(ax, xticks[-1], primary)
+                if t1['left']['date'] != t1['right']['date']:
+                    xticks[-1] = t1['left']['float'] + (t1['right']['float'] - t1['left']['float']) / 2
+                    partial_end = True
+                else:
+                    xticks[-1] = t1['tick']['float']
 
-            # Update some tick labels
-            if primary in ['quarter', 'quarter-year']:
-                labels = [f.get_text().replace('04', '2').replace('07', '3').replace('10', '4').replace('01', '1')
-                          for f in ax.get_xticklabels()]
-                ax.set_xticklabels(labels)
-            else:
-                labels = ax.get_xticklabels()
+                # Add additional ticks if there is space in the partial tick boxes
+                if partial_start:
+                    label_width = ax.get_xticklabels()[0].get_window_extent().width
+                    if t0['left']['px'] - ax.get_window_extent().x0 > label_width:
+                        xticks = [xmin + (t0['left']['float'] - xmin) / 2] + list(xticks)
+                        if primary in ['quarter', 'quarter-year']:
+                            label = mdates.num2date(xticks[0])
+                            label = datetime.datetime(label.year, (label.month - 1) // 3 + 1, label.day)
+                            label = label.strftime(fmt[primary].fmt).replace('0', '')
+                        elif primary == 'week':
+                            label = mdates.num2date(xticks[-1]) + datetime.timedelta(days=7)
+                            label = label.strftime(fmt[primary].fmt)
+                        else:
+                            label = mdates.num2date(xticks[0]).strftime(fmt[primary].fmt)
+                        labels = [label] + labels
+                if partial_end:
+                    label_width = ax.get_xticklabels()[-1].get_window_extent().width
+                    if ax.get_window_extent().x1 - t1['right']['px'] > label_width:
+                        xticks = list(xticks) + [t1['right']['float'] + (xmax - t1['right']['float']) / 2]
+                        if primary in ['quarter', 'quarter-year']:
+                            label = mdates.num2date(xticks[-1])
+                            label = datetime.datetime(label.year, (label.month - 1) // 3 + 1, label.day)
+                            label = label.strftime(fmt[primary].fmt).replace('0', '')
+                        elif primary == 'week':
+                            label = mdates.num2date(xticks[-1]) + datetime.timedelta(days=7)
+                            label = label.strftime(fmt[primary].fmt)
+                        else:
+                            label = mdates.num2date(xticks[-1]).strftime(fmt[primary].fmt)
+                        labels = labels + [label]
 
-            # Adjust tick positions to center in tick label boxes
-            xmin, xmax = ax.get_xlim()
-            xticks = ax.get_xticks()
-            partial_start, partial_end = False, False
-            tick_font_size = self.tick_labels_major_x.font_size
-            height = ax.get_xticklabels()[0].get_window_extent().y1 - ax.get_window_extent().y1 + \
-                2 * self.gantt.box_padding_y
+                # Update the major ticks
+                ax.set_xticks(xticks)
+                ax.set_xticklabels(labels, fontsize=tick_font_size)
+                ax.set_xlim(left=xmin, right=xmax)
 
-            t0 = get_tick_bounds(ax, xticks[0], primary)
-            if t0['left']['date'] != t0['right']['date']:
-                xticks[0] = t0['left']['float'] + (t0['right']['float'] - t0['left']['float']) / 2
-                partial_start = True
-            else:
-                xticks[0] = t0['tick']['float']
+                # Minor ticks
+                if self.ticks_minor_x.on:
+                    ax.xaxis.set_minor_locator(minor_locator[primary])
 
-            for ixt, xt in enumerate(xticks[1:-1]):
-                tt = get_tick_bounds(ax, xt, primary)
-                xticks[ixt + 1] = tt['tick']['float']
-                if ixt == 0:
-                    # Check tick label font size and adjust if too big for the tick box (not perfect)
-                    label_width = ax.get_xticklabels()[ixt].get_window_extent().width
-                    box_width = tt['right']['px'] - tt['left']['px']
-                    if box_width < label_width:
-                        tick_font_size = self.tick_labels_major_x.font_size * (box_width - 2) / label_width
+                # Remove tick labels that get cut off of the axes
+                ax = self.axes.obj[ir, ic]
+                ax_x0 = ax.get_window_extent().x0
+                ax_x1 = ax.get_window_extent().x1
+                tlabs = ax.xaxis.get_ticklabels()
+                for itt, tt in enumerate(tlabs):
+                    # Left side
+                    x0 = tt.get_window_extent().x0
+                    if x0 <= ax_x0 - 1:  # give a 1 pixel buffer
+                        tt.set_visible(False)
+                        if self.gantt.quarters[ir, ic] is not None and \
+                                self.gantt.quarters[ir, ic][itt] != self.gantt.quarters[ir, ic][itt + 1]:
+                            self.gantt.quarters[ir, ic][itt] = ''
+                        if self.gantt.years[ir, ic] is not None and \
+                                self.gantt.years[ir, ic][itt] != self.gantt.years[ir, ic][itt + 1]:
+                            self.gantt.years[ir, ic][itt] = ''
+                        continue
 
-            t1 = get_tick_bounds(ax, xticks[-1], primary)
-            if t1['left']['date'] != t1['right']['date']:
-                xticks[-1] = t1['left']['float'] + (t1['right']['float'] - t1['left']['float']) / 2
-                partial_end = True
-            else:
-                xticks[-1] = t1['tick']['float']
-
-            # Add additional ticks if there is space in the partial tick boxes
-            if partial_start:
-                label_width = ax.get_xticklabels()[0].get_window_extent().width
-                if t0['left']['px'] - ax.get_window_extent().x0 > label_width:
-                    xticks = [xmin + (t0['left']['float'] - xmin) / 2] + list(xticks)
-                    if primary in ['quarter', 'quarter-year']:
-                        label = mdates.num2date(xticks[0])
-                        label = datetime.datetime(label.year, (label.month - 1) // 3 + 1, label.day)
-                        label = label.strftime(fmt[primary].fmt).replace('0', '')
-                    elif primary == 'week':
-                        label = mdates.num2date(xticks[-1]) + datetime.timedelta(days=7)
-                        label = label.strftime(fmt[primary].fmt)
-                    else:
-                        label = mdates.num2date(xticks[0]).strftime(fmt[primary].fmt)
-                    labels = [label] + labels
-            if partial_end:
-                label_width = ax.get_xticklabels()[-1].get_window_extent().width
-                if ax.get_window_extent().x1 - t1['right']['px'] > label_width:
-                    xticks = list(xticks) + [t1['right']['float'] + (xmax - t1['right']['float']) / 2]
-                    if primary in ['quarter', 'quarter-year']:
-                        label = mdates.num2date(xticks[-1])
-                        label = datetime.datetime(label.year, (label.month - 1) // 3 + 1, label.day)
-                        label = label.strftime(fmt[primary].fmt).replace('0', '')
-                    elif primary == 'week':
-                        label = mdates.num2date(xticks[-1]) + datetime.timedelta(days=7)
-                        label = label.strftime(fmt[primary].fmt)
-                    else:
-                        label = mdates.num2date(xticks[-1]).strftime(fmt[primary].fmt)
-                    labels = labels + [label]
-
-            # Update the major ticks
-            ax.set_xticks(xticks)
-            ax.set_xticklabels(labels, fontsize=tick_font_size)
-            ax.set_xlim(left=xmin, right=xmax)
-
-            # Minor ticks
-            if self.ticks_minor_x.on:
-                ax.xaxis.set_minor_locator(minor_locator[primary])
-
-            # Remove tick labels that get cut off of the axes
-            ax = self.axes.obj[ir, ic]
-            ax_x0 = ax.get_window_extent().x0
-            ax_x1 = ax.get_window_extent().x1
-            tlabs = ax.xaxis.get_ticklabels()
-            for itt, tt in enumerate(tlabs):
-                # Left side
-                x0 = tt.get_window_extent().x0
-                if x0 <= ax_x0 - 1:  # give a 1 pixel buffer
-                    tt.set_visible(False)
-                    if self.gantt.quarters[ir, ic] is not None and \
-                            self.gantt.quarters[ir, ic][itt] != self.gantt.quarters[ir, ic][itt + 1]:
-                        self.gantt.quarters[ir, ic][itt] = ''
-                    if self.gantt.years[ir, ic] is not None and \
-                            self.gantt.years[ir, ic][itt] != self.gantt.years[ir, ic][itt + 1]:
-                        self.gantt.years[ir, ic][itt] = ''
-                    continue
-
-                # Right side
-                x1 = tt.get_window_extent().x1
-                if x1 > ax_x1 + 1:  # give a 1 pixel buffer
-                    tt.set_visible(False)
-                    if self.gantt.quarters[ir, ic] is not None and \
-                            self.gantt.quarters[ir, ic].count(self.gantt.quarters[ir, ic][itt]) == 1:
-                        self.gantt.quarters[ir, ic][itt] = ''
-                    if self.gantt.years[ir, ic] is not None and \
-                            self.gantt.years[ir, ic].count(self.gantt.years[ir, ic][itt]) == 1:
-                        self.gantt.years[ir, ic][itt] = ''
+                    # Right side
+                    x1 = tt.get_window_extent().x1
+                    if x1 > ax_x1 + 1:  # give a 1 pixel buffer
+                        tt.set_visible(False)
+                        if self.gantt.quarters[ir, ic] is not None and \
+                                self.gantt.quarters[ir, ic].count(self.gantt.quarters[ir, ic][itt]) == 1:
+                            self.gantt.quarters[ir, ic][itt] = ''
+                        if self.gantt.years[ir, ic] is not None and \
+                                self.gantt.years[ir, ic].count(self.gantt.years[ir, ic][itt]) == 1:
+                            self.gantt.years[ir, ic][itt] = ''
 
             # Gantt tick label boxes
             if self.gantt.label_boxes:
@@ -5121,6 +5161,9 @@ class Layout(BaseLayout):
                         grid0 = ygridlines[iytl - 1].get_window_extent().y0
                         y0 = (grid0 + (grid1 - grid0) / 2) / self.fig.size_int[1]
                         height = grid1 - grid0
+                        if iytl == len(yticklabs) - 1 and self.grid_major_y.width[0] > self.axes.edge_width:
+                            # Correct top y-tick box so it better aligns with axes edge
+                            height -= np.ceil(self.grid_major_y.width[0] - self.axes.edge_width)
 
                         # Add the rectangle
                         rect = patches.Rectangle((x0, y0),
@@ -5132,121 +5175,28 @@ class Layout(BaseLayout):
                         self.fig.obj.patches.extend([rect])
 
                 # xtick date boxes (applies to the lowest date level)
-                xticklabs = [f for f in ax.get_xticklabels() if f.get_text() != '']
-                height = xticklabs[0].get_window_extent().y1 - ax.get_window_extent().y1 + 2 * self.gantt.box_padding_y
-                for xtick in xticks:
-                    tt = get_tick_bounds(ax, xtick, primary)
-                    self.tick_labels_major_x.obj_bg[ir, ic] = \
-                        [patches.Rectangle((tt['left']['px'] / self.fig.size_int[0],
-                                            ax.get_window_extent().y1 / self.fig.size_int[1]),
-                                           (tt['right']['px'] - tt['left']['px']) / self.fig.size_int[0],
-                                           height / self.fig.size_int[1],
-                                           fill=True, transform=self.fig.obj.transFigure,
-                                           edgecolor=self.axes.edge_color[0],
-                                           lw=self.grid_major_y.width[0], facecolor='#ffffff', zorder=-2)]
-                    self.fig.obj.patches.extend([self.tick_labels_major_x.obj_bg[ir, ic][-1]])
+                if len(self.gantt.date_type) > 0:
+                    xticklabs = [f for f in ax.get_xticklabels() if f.get_text() != '']
+                    height = \
+                        xticklabs[0].get_window_extent().y1 - ax.get_window_extent().y1 + 2 * self.gantt.box_padding_y
+                    xticks = ax.get_xticks()
+                    for xtick in xticks:
+                        tt = get_tick_bounds(ax, xtick, primary)
+                        self.tick_labels_major_x.obj_bg[ir, ic] = \
+                            [patches.Rectangle((tt['left']['px'] / self.fig.size_int[0],
+                                                ax.get_window_extent().y1 / self.fig.size_int[1]),
+                                               (tt['right']['px'] - tt['left']['px']) / self.fig.size_int[0],
+                                               height / self.fig.size_int[1],
+                                               fill=True, transform=self.fig.obj.transFigure,
+                                               edgecolor=self.axes.edge_color[0],
+                                               lw=self.grid_major_y.width[0], facecolor='#ffffff', zorder=-2)]
+                        self.fig.obj.patches.extend([self.tick_labels_major_x.obj_bg[ir, ic][-1]])
 
-                # xtick leading and trailing partial boxes
-                t0 = get_tick_bounds(ax, xticks[0], primary)
-                if t0['left']['float'] != xmin:
-                    rect = patches.Rectangle((ax.get_window_extent().x0 / self.fig.size_int[0],
-                                              ax.get_window_extent().y1 / self.fig.size_int[1]),
-                                             (t0['left']['px'] - ax.get_window_extent().x0) / self.fig.size_int[0],
-                                             height / self.fig.size_int[1],
-                                             fill=True, transform=self.fig.obj.transFigure,
-                                             edgecolor=self.axes.edge_color[0],
-                                             lw=self.grid_major_y.width[0], facecolor='#ffffff', zorder=-2)
-                    self.fig.obj.patches.extend([rect])
-
-                t1 = get_tick_bounds(ax, ax.get_xticks()[-1], primary)
-                if t1['right']['float'] != xmax:
-                    rect = patches.Rectangle((t1['right']['px'] / self.fig.size_int[0],
-                                              ax.get_window_extent().y1 / self.fig.size_int[1]),
-                                             (ax.get_window_extent().x1 - t1['right']['px']) / self.fig.size_int[0],
-                                             height / self.fig.size_int[1],
-                                             fill=True, transform=self.fig.obj.transFigure,
-                                             edgecolor=self.axes.edge_color[0],
-                                             lw=self.grid_major_y.width[0], facecolor='#ffffff', zorder=-2)
-                    self.fig.obj.patches.extend([rect])
-
-                # secondary date labels (create manually as text boxes using the actual xticks)
-                # TODO: allow quarter-years
-                secondary_dates = [f for f in DATE_TYPES[DATE_TYPES.index(primary) + 1:]]
-                secondary_dates = [f for f in secondary_dates if f in self.gantt.date_type]
-                tick = self.tick_labels_major_x
-                for ii, secondary in enumerate(secondary_dates):
-                    # Get the secondary date values
-                    dates = []
-                    for ixt, xt in enumerate(xticks):
-                        if secondary == 'year':
-                            dates += [str(mdates.num2date(xt).year)]
-                            attr = 'year'
-                        elif secondary == 'quarter':
-                            dates += [f'Q{(mdates.num2date(xt).month - 1) // 3 + 1}']
-                            attr = 'month'
-                        elif secondary == 'quarter-year':
-                            dates += \
-                                [f'{str(mdates.num2date(xt).year)[-2:]}Q{(mdates.num2date(xt).month - 1) // 3 + 1}']
-                            attr = 'month'
-                        else:
-                            dates += [mdates.num2date(xt).strftime(fmt[secondary].fmt)]
-                            attr = 'month'
-
-                    # Create text boxes for the dates
-                    counts = [0] + list(np.cumsum([sum(1 for _ in group) for _, group in groupby(dates)]))
-                    y_rect = ax.get_window_extent().y1 + (ii + 1) * height
-                    y_text = y_rect + self.ws_ticks_ax / 2 + self.tick_labels_major_x.size[1] / 2
-                    label_width = utl.get_text_dimensions(
-                        dates[0], tick.font, tick.font_size, tick.font_style, tick.font_weight)[0]
-                    if primary == 'month-year':
-                        height = (xticklabs[0].get_window_extent().y1 - ax.get_window_extent().y1) / 2 + \
-                            2 * self.gantt.box_padding_y
-
-                    for icount, count in enumerate(counts[:-1]):
-                        # Determine start and stop point (special care for the partial boxes near the min and max)
-                        if secondary in ['quarter', 'quarter-year']:
-                            same_date_start = (getattr(mdates.num2date(xmin), attr) - 1) // 3 == \
-                                (getattr(mdates.num2date(xticks[0]), attr) - 1) // 3
-                        else:
-                            same_date_start = \
-                                getattr(mdates.num2date(xmin), attr) == getattr(mdates.num2date(xticks[0]), attr)
-                        if icount == 0 and same_date_start:
-                            x0 = ax.get_window_extent().x0
-                        else:
-                            x0 = get_tick_bounds(ax, xticks[count], primary)['left']['px']
-
-                        if secondary in ['quarter', 'quarter-year']:
-                            same_date_end = (getattr(mdates.num2date(xmax), attr) - 1) // 3 == \
-                                (getattr(mdates.num2date(xticks[-1]), attr) - 1) // 3
-                        else:
-                            same_date_end = \
-                                getattr(mdates.num2date(xmax), attr) == getattr(mdates.num2date(xticks[-1]), attr)
-                        if icount + 1 == len(counts) - 1 and same_date_end:
-                            x1 = ax.get_window_extent().x1
-                        else:
-                            x1 = get_tick_bounds(ax, xticks[counts[icount + 1] - 1], primary)['right']['px']
-                        y0 = ax.get_window_extent().y1 + (ii + 1) * height
-                        rect = patches.Rectangle((x0 / self.fig.size_int[0], y_rect / self.fig.size_int[1]),
-                                                 (x1 - x0) / self.fig.size_int[0],
-                                                 height / self.fig.size_int[1],
-                                                 fill=True, transform=self.fig.obj.transFigure,
-                                                 edgecolor=self.axes.edge_color[0],
-                                                 lw=self.grid_major_y.width[0], facecolor='#ffffff', zorder=-2)
-                        self.fig.obj.patches.extend([rect])
-
-                        if x1 - x0 > label_width:
-                            self.axes.obj[ir, ic].text(
-                                (x0 + (x1 - x0) / 2) / self.fig.size_int[0], y_text / self.fig.size_int[1],
-                                dates[count], transform=self.fig.obj.transFigure,
-                                horizontalalignment='center', verticalalignment='center', rotation=tick.rotation,
-                                color=tick.font_color, fontname=tick.font, style=tick.font_style,
-                                weight=tick.font_weight, size=tick.font_size)
-
-                    # leading and trailing partial boxes
+                    # xtick leading and trailing partial boxes
                     t0 = get_tick_bounds(ax, xticks[0], primary)
-                    if not same_date_start:
+                    if t0['left']['float'] != xmin:
                         rect = patches.Rectangle((ax.get_window_extent().x0 / self.fig.size_int[0],
-                                                  y_rect / self.fig.size_int[1]),
+                                                 ax.get_window_extent().y1 / self.fig.size_int[1]),
                                                  (t0['left']['px'] - ax.get_window_extent().x0) / self.fig.size_int[0],
                                                  height / self.fig.size_int[1],
                                                  fill=True, transform=self.fig.obj.transFigure,
@@ -5254,24 +5204,10 @@ class Layout(BaseLayout):
                                                  lw=self.grid_major_y.width[0], facecolor='#ffffff', zorder=-2)
                         self.fig.obj.patches.extend([rect])
 
-                        # if (t0['left']['px'] - ax.get_window_extent().x0) > label_width:
-                        #     x0 = ax.get_window_extent().x0
-                        #     x1 = t0['left']['px']
-                        #     if secondary == 'quarter':
-                        #         txt = f"Q{(t0['left']['date'].month - 1) // 3 + 1}"
-                        #     else:
-                        #         txt = t0['left']['date'].strftime(fmt[secondary].fmt)
-                        #     self.axes.obj[ir, ic].text(
-                        #         (x0 + (x1 - x0) / 2) / self.fig.size_int[0], y_text / self.fig.size_int[1],
-                        #         dates[count], transform=self.fig.obj.transFigure,
-                        #         horizontalalignment='center', verticalalignment='center', rotation=tick.rotation,
-                        #         color=tick.font_color, fontname=tick.font, style=tick.font_style,
-                        #         weight=tick.font_weight, size=tick.font_size)
-
-                    t1 = get_tick_bounds(ax, xticks[-1], primary)
-                    if not same_date_end:
+                    t1 = get_tick_bounds(ax, ax.get_xticks()[-1], primary)
+                    if t1['right']['float'] != xmax:
                         rect = patches.Rectangle((t1['right']['px'] / self.fig.size_int[0],
-                                                  y_rect / self.fig.size_int[1]),
+                                                 ax.get_window_extent().y1 / self.fig.size_int[1]),
                                                  (ax.get_window_extent().x1 - t1['right']['px']) / self.fig.size_int[0],
                                                  height / self.fig.size_int[1],
                                                  fill=True, transform=self.fig.obj.transFigure,
@@ -5279,21 +5215,103 @@ class Layout(BaseLayout):
                                                  lw=self.grid_major_y.width[0], facecolor='#ffffff', zorder=-2)
                         self.fig.obj.patches.extend([rect])
 
-                        # db()
-                        # if (ax.get_window_extent().x1 - t1['right']['px']) > label_width and /
-                        #         xticks[-1] > (t1['right']['float'] + (xmax - t1['right']['float']) / 2):
-                        #     x0 = t1['right']['px']
-                        #     x1 = ax.get_window_extent().x1
-                        #     if secondary == 'quarter':
-                        #         txt = f"Q{(t1['right']['date'].month - 1) // 3 + 1}"
-                        #     else:
-                        #         txt = t1['right']['date'].strftime(fmt[secondary].fmt)
-                        #     self.axes.obj[ir, ic].text(
-                        #         (x0 + (x1 - x0) / 2) / self.fig.size_int[0], y_text / self.fig.size_int[1],
-                        #         txt, transform=self.fig.obj.transFigure,
-                        #         horizontalalignment='center', verticalalignment='center', rotation=tick.rotation,
-                        #         color=tick.font_color, fontname=tick.font, style=tick.font_style,
-                        #         weight=tick.font_weight, size=tick.font_size)
+                    # secondary date labels (create manually as text boxes using the actual xticks)
+                    # TODO: allow quarter-years
+                    secondary_dates = [f for f in DATE_TYPES[DATE_TYPES.index(primary) + 1:]]
+                    secondary_dates = [f for f in secondary_dates if f in self.gantt.date_type]
+                    tick = self.tick_labels_major_x
+                    for ii, secondary in enumerate(secondary_dates):
+                        # Get the secondary date values
+                        dates = []
+                        for ixt, xt in enumerate(xticks):
+                            if secondary == 'year':
+                                dates += [str(mdates.num2date(xt).year)]
+                                attr = 'year'
+                            elif secondary == 'quarter':
+                                dates += [f'Q{(mdates.num2date(xt).month - 1) // 3 + 1}']
+                                attr = 'month'
+                            elif secondary == 'quarter-year':
+                                dates += \
+                                    [f'{str(mdates.num2date(xt).year)[-2:]}Q{(mdates.num2date(xt).month - 1) // 3 + 1}']
+                                attr = 'month'
+                            else:
+                                dates += [mdates.num2date(xt).strftime(fmt[secondary].fmt)]
+                                attr = 'month'
+
+                        # Create text boxes for the dates
+                        counts = [0] + list(np.cumsum([sum(1 for _ in group) for _, group in groupby(dates)]))
+                        y_rect = ax.get_window_extent().y1 + (ii + 1) * height
+                        y_text = y_rect + self.ws_ticks_ax / 2 + self.tick_labels_major_x.size[1] / 2
+                        label_width = utl.get_text_dimensions(
+                            dates[0], tick.font, tick.font_size, tick.font_style, tick.font_weight)[0]
+                        if primary == 'month-year':
+                            height = (xticklabs[0].get_window_extent().y1 - ax.get_window_extent().y1) / 2 + \
+                                2 * self.gantt.box_padding_y
+
+                        for icount, count in enumerate(counts[:-1]):
+                            # Determine start and stop point (special care for the partial boxes near the min and max)
+                            if secondary in ['quarter', 'quarter-year']:
+                                same_date_start = (getattr(mdates.num2date(xmin), attr) - 1) // 3 == \
+                                    (getattr(mdates.num2date(xticks[0]), attr) - 1) // 3
+                            else:
+                                same_date_start = \
+                                    getattr(mdates.num2date(xmin), attr) == getattr(mdates.num2date(xticks[0]), attr)
+                            if icount == 0 and same_date_start:
+                                x0 = ax.get_window_extent().x0
+                            else:
+                                x0 = get_tick_bounds(ax, xticks[count], primary)['left']['px']
+
+                            if secondary in ['quarter', 'quarter-year']:
+                                same_date_end = (getattr(mdates.num2date(xmax), attr) - 1) // 3 == \
+                                    (getattr(mdates.num2date(xticks[-1]), attr) - 1) // 3
+                            else:
+                                same_date_end = \
+                                    getattr(mdates.num2date(xmax), attr) == getattr(mdates.num2date(xticks[-1]), attr)
+                            if icount + 1 == len(counts) - 1 and same_date_end:
+                                x1 = ax.get_window_extent().x1
+                            else:
+                                x1 = get_tick_bounds(ax, xticks[counts[icount + 1] - 1], primary)['right']['px']
+                            y0 = ax.get_window_extent().y1 + (ii + 1) * height
+                            rect = patches.Rectangle((x0 / self.fig.size_int[0], y_rect / self.fig.size_int[1]),
+                                                     (x1 - x0) / self.fig.size_int[0],
+                                                     height / self.fig.size_int[1],
+                                                     fill=True, transform=self.fig.obj.transFigure,
+                                                     edgecolor=self.axes.edge_color[0],
+                                                     lw=self.grid_major_y.width[0], facecolor='#ffffff', zorder=-2)
+                            self.fig.obj.patches.extend([rect])
+
+                            if x1 - x0 > label_width:
+                                self.axes.obj[ir, ic].text(
+                                    (x0 + (x1 - x0) / 2) / self.fig.size_int[0], y_text / self.fig.size_int[1],
+                                    dates[count], transform=self.fig.obj.transFigure,
+                                    horizontalalignment='center', verticalalignment='center', rotation=tick.rotation,
+                                    color=tick.font_color, fontname=tick.font, style=tick.font_style,
+                                    weight=tick.font_weight, size=tick.font_size)
+
+                        # leading and trailing partial boxes
+                        t0 = get_tick_bounds(ax, xticks[0], primary)
+                        if not same_date_start:
+                            rect = patches.Rectangle((ax.get_window_extent().x0 / self.fig.size_int[0],
+                                                     y_rect / self.fig.size_int[1]),
+                                                     (t0['left']['px'] - ax.get_window_extent().x0) /
+                                                     self.fig.size_int[0],
+                                                     height / self.fig.size_int[1],
+                                                     fill=True, transform=self.fig.obj.transFigure,
+                                                     edgecolor=self.axes.edge_color[0],
+                                                     lw=self.grid_major_y.width[0], facecolor='#ffffff', zorder=-2)
+                            self.fig.obj.patches.extend([rect])
+
+                        t1 = get_tick_bounds(ax, xticks[-1], primary)
+                        if not same_date_end:
+                            rect = patches.Rectangle((t1['right']['px'] / self.fig.size_int[0],
+                                                     y_rect / self.fig.size_int[1]),
+                                                     (ax.get_window_extent().x1 - t1['right']['px']) /
+                                                     self.fig.size_int[0],
+                                                     height / self.fig.size_int[1],
+                                                     fill=True, transform=self.fig.obj.transFigure,
+                                                     edgecolor=self.axes.edge_color[0],
+                                                     lw=self.grid_major_y.width[0], facecolor='#ffffff', zorder=-2)
+                            self.fig.obj.patches.extend([rect])
 
     def show(self, *args):
         """Display the plot window."""

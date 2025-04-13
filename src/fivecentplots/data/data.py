@@ -74,6 +74,7 @@ class Data:
         self.fit_range_y = utl.kwget(kwargs, self.fcpp, 'fit_range_y', None)
         self.imgs = utl.kwget(kwargs, self.fcpp, 'imgs', None)  # used only for image based plotting
         self.interval = utl.validate_list(kwargs.get('perc_int', kwargs.get('nq_int', kwargs.get('conf_int', False))))
+        self.ignore_dates = kwargs.get('ignore_dates', False)
         self.legend = None
         self.legend_vals = None
         self.pivot = False
@@ -448,13 +449,8 @@ class Data:
             except ValueError:
                 pass
             try:
-                if self.imgs is None:
+                if self.imgs is None and not self.ignore_dates:
                     self.df_all[val] = self.df_all[val].astype('datetime64[ns]')
-                    # if all are 00:00:00 time, leave only date
-                    # if len(self.df_all.loc[self.df_all[val].dt.hour != 0, val]) == 0 and \
-                    #         len(self.df_all.loc[self.df_all[val].dt.minute != 0, val]) == 0 and \
-                    #         len(self.df_all.loc[self.df_all[val].dt.second != 0, val]) == 0:
-                    #     self.df_all[val] = pd.DatetimeIndex(self.df_all[val]).date
                     self._strip_timestamp(val)
                     continue
             except:  # noqa
@@ -1110,11 +1106,10 @@ class Data:
                 # Subset by legend value
                 if row['Leg'] is not None:
                     df2 = df[df[self.legend] == row['Leg']].copy()
-
-                # Filter out all nan data
-                if row['x'] and row['x'] in df2.columns and len(df2[row['x']].dropna()) == 0 \
-                        or row['y'] and row['y'] in df2.columns and len(df2[row['y']].dropna()) == 0:
-                    continue
+                    # Filter out all nan data
+                    if row['x'] and row['x'] in df2.columns and len(df2[row['x']].dropna()) == 0 \
+                            or row['y'] and row['y'] in df2.columns and len(df2[row['y']].dropna()) == 0:
+                        continue
 
                 # Set twin ax status
                 twin = False

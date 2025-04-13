@@ -3,9 +3,14 @@ import pdb
 import pandas as pd
 import numpy as np
 try:
-    from pandas.tseries.offset import BDay
-except:  # noqa
-    from pandas.tseries.offsets import BDay  # noqa
+    from pandas.tseries.offset import BusinessDay
+    from pandas.tseries.offset import DateOffset
+    from pandas.tseries.offset import CustomBusinessDay
+except ImportError:
+    from pandas.tseries.offsets import BusinessDay
+    from pandas.tseries.offsets import DateOffset
+    from pandas.tseries.offsets import CustomBusinessDay
+from pandas.tseries.holiday import USFederalHolidayCalendar
 from .. import utilities
 utl = utilities
 db = pdb.set_trace
@@ -29,8 +34,10 @@ class Gantt(data.Data):
 
         # Get some important kwargs
         self.DATE_TYPES = ['year', 'quarter', 'month', 'week', 'quarter-year', 'month-year']  # not linked to layout.py
+        self.business_days = utl.kwget(kwargs, self.fcpp, ['gantt_business_days', 'business_days'], True)
+        self.us_holidays = utl.kwget(kwargs, self.fcpp, ['gantt_us_holidays', 'us_holidays'], True)
+        self.date_type = utl.validate_list(utl.kwget(kwargs, self.fcpp, ['gantt_date_type', 'date_type'], []))
         self.workstreams = utl.kwget(kwargs, self.fcpp, ['gantt_workstreams', 'workstreams'], None)
-        self.date_type = utl.validate_list(utl.kwget(kwargs, self.fcpp, ['gantt_date_type', 'date_type'], None))
         if self.workstreams is not None and 'legend' not in kwargs:
             self.legend = self.workstreams
         inline = utl.kwget(kwargs, self.fcpp, ['gantt_workstreams_location', 'workstreams_location'], 'left')
@@ -71,12 +78,10 @@ class Gantt(data.Data):
         if 'quarter-year' in self.date_type:
             allowed_combos = ['month', 'week', 'quarter-year']
             if any([f for f in self.date_type if f not in allowed_combos]):
-                allowed_combos_str = [f'"{f}"' for f in allowed_combos[:-1]]
                 raise data.DataError('Date type "quarter-year" can only be combined with "month" or "week"')
         if 'month-year' in self.date_type:
             allowed_combos = ['quarter', 'week', 'month-year']
             if any([f for f in self.date_type if f not in allowed_combos]):
-                allowed_combos_str = [f'"{f}"' for f in allowed_combos[:-1]]
                 raise data.DataError('Date type "month-year" can only be combined with "quarter" or "week"')
 
         # Attempt to populate missing dates
@@ -171,6 +176,9 @@ class Gantt(data.Data):
 
     def _calc_durations(self, row):
         """Calculate durations for a given row in the DataFrame"""
+        if row[self.x[1]] not in NULLS:
+            # Don't calculate if there is already an end date
+            return row[self.x[1]]
         if isinstance(row[self.duration], int):
             # Default is days
             duration = int(row[self.duration])
@@ -178,14 +186,30 @@ class Gantt(data.Data):
             date_type = row[self.duration][-1:]
             try:
                 duration = float(row[self.duration][:-1])
+                full, partial = divmod(duration, 1)
             except ValueError:
                 raise data.DataError(f'Invalid duration "{date_type}" defined for row index {row.name}')
             if date_type.lower() == 'w':
-                return row[self.x[0]] + pd.Timedelta(weeks=duration) + pd.offsets.BDay()
+                if partial > 0:
+                    partial = DateOffset(days=int(7 * partial))
+                else:
+                    partial = DateOffset(days=0)
+                return row[self.x[0]] + DateOffset(weeks=int(full)) + partial
             elif date_type.lower() == 'm':
-                return row[self.x[0]] + pd.Timedelta(weeks=4 * duration) + pd.offsets.BDay()
+                if partial > 0:
+                    partial = DateOffset(days=int(30 * partial))
+                else:
+                    partial = DateOffset(days=0)
+                return row[self.x[0]] + DateOffset(months=int(full))
             elif date_type.lower() == 'd':
-                return row[self.x[0]] + pd.Timedelta(days=duration) + pd.offsets.BDay()
+                if partial > 0:
+                    raise data.DataError('Partial days not allowed for duration; use only integers to specify days')
+                if self.business_days and self.us_holidays:
+                    return row[self.x[0]] + CustomBusinessDay(calendar=USFederalHolidayCalendar()) * int(full)
+                elif self.business_days:
+                    return row[self.x[0]] + BusinessDay() * int(full)
+                else:
+                    return row[self.x[0]] + pd.Timedelta(days=int(full))
             else:
                 raise data.DataError(f'Unknown duration date type "{date_type}" defined for row index {row.name}')
 
