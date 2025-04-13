@@ -1213,7 +1213,7 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
         layout.gantt.workstreams_title.on = False
 
     # Sort the values
-    ascending = False if layout.gantt.sort.lower() == 'descending' else True
+    ascending = False if str(layout.gantt.sort).lower() == 'descending' else True
     if layout.gantt.order_by_legend and data.legend is not None and not layout.gantt.workstreams.on:
         df_rc = df_rc.sort_values([data.legend, data.x[0]], ascending=ascending)
     elif layout.gantt.order_by_legend and data.legend is not None and \
@@ -1270,13 +1270,19 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
         new_xmax = layout.plot_gantt(ir, ic, iline, df, data.x, y, leg_name, xvals, yvals, bar_labels, ngroups, data)
 
         # Update the xmax range to accomodate size of plot objects like bar labels; do not override user xmax
-        if new_xmax is not None and not user_xmax:
+        if new_xmax > np.datetime64('0000-01-01') and not user_xmax:
             data.ranges['xmax'][ir, ic] = new_xmax
-        elif new_xmax is not None:
+        elif new_xmax > np.datetime64('0000-01-01'):
             data.ranges['xmax'][ir, ic] = max(data.ranges['xmax'][ir, ic], new_xmax)
+        # if data.ranges['xmin'][ir, ic] is not None:
+        #     layout.axes.obj[ir, ic].set_xlim(left=data.ranges['xmin'][ir, ic])
+        # if data.ranges['xmax'][ir, ic] is not None:
+        #     layout.axes.obj[ir, ic].set_xlim(right=data.ranges['xmax'][ir, ic])
+        ## SEEMS TO BE A BUG HERE!
 
     # Connect dependencies with arrows
     if layout.gantt.dependencies in df_rc.columns:
+        processed_deps = []
         for irow, row in df_rc.iterrows():
             if str(row[layout.gantt.dependencies]) == 'nan':
                 continue
@@ -1291,8 +1297,10 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
                     continue
                 if data.ranges['xmin'][ir, ic] is not None:
                     sub = sub.loc[sub[data.x[0]] >= data.ranges['xmin'][ir, ic]]
+                    layout.axes.obj[ir, ic].set_xlim(left=data.ranges['xmin'][ir, ic])
                 if data.ranges['xmax'][ir, ic] is not None:
                     sub = sub.loc[sub[data.x[1]] <= data.ranges['xmax'][ir, ic]]
+                    layout.axes.obj[ir, ic].set_xlim(right=data.ranges['xmax'][ir, ic])
                 for ii, val in sub.iterrows():
                     start_idx = utl.tuple_list_index(yvals, val[data.y[0]])
                     end_idx = utl.tuple_list_index(yvals, row[data.y[0]])
@@ -1318,7 +1326,9 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
                     layout.plot_gantt_dependencies(ir, ic, (val[data.x[1]], start_idx), (row[data.x[0]], end_idx),
                                                    min_collision, max_collision,
                                                    is_milestone_start=is_milestone_start,
-                                                   is_milestone_end=is_milestone_end)
+                                                   is_milestone_end=is_milestone_end,
+                                                   repeat_dep=True if dep in processed_deps else False)
+                processed_deps += [dep]
 
     # Add workstream labels
     if layout.gantt.workstreams.on and layout.gantt.workstreams.location != 'inline':

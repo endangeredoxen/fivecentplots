@@ -1104,7 +1104,8 @@ class BaseLayout:
                     )
 
         gantt_milestone_text = \
-            Element('gantt_milestone_text', self.fcpp, kwargs, on=True,
+            Element('gantt_milestone_text', self.fcpp, kwargs,
+                    on=utl.kwget(kwargs, self.fcpp, ['gantt_milestone_text', 'milestone_text'], True),
                     obj=self.obj_array,
                     coordinate='data',
                     columns=None,
@@ -1124,9 +1125,9 @@ class BaseLayout:
                                          ['gantt_milestone_text_font_style', 'milestone_text_font_style'], 'normal'),
                     font_weight=utl.kwget(kwargs, self.fcpp,
                                           ['gantt_milestone_text_font_weight', 'milestone_text_font_weight'], 'bold'),
-                    location=utl.kwget(kwargs, self.fcpp,
+                    location=utl.kwget(kwargs, self.fcpp, # top, right
                                        ['gantt_milestone_text_location', 'milestone_text_location'], 'top'),
-                    position=[0.01, 0],
+                    position=[],
                     rotation=utl.kwget(kwargs, self.fcpp,
                                        ['gantt_milestone_text_rotation', 'milestone_text_rotation'], 0),
                     units=utl.kwget(kwargs, self.fcpp,
@@ -1167,7 +1168,8 @@ class BaseLayout:
                                        ['gantt_workstreams_location', 'workstreams_location'], 'left'),
                     match_bar_color=utl.kwget(kwargs, self.fcpp,
                                               ['gantt_workstreams_match_bar_color',
-                                               'workstreams_match_bar_color'], False),
+                                               'workstreams_match_bar_color',
+                                               'match_bar_color'], False),
                     order=utl.kwget(kwargs, self.fcpp, ['gantt_workstreams_order', 'workstreams_order'], []),
                     padding=utl.kwget(kwargs, self.fcpp,
                                       ['gantt_workstreams_label_padding', 'workstreams_label_padding'], 0.3),
@@ -1228,7 +1230,7 @@ class BaseLayout:
                     box_padding_y=utl.kwget(kwargs, self.fcpp, ['gantt_label_box_padding_x', 'label_box_padding_y'], 6),
                     color_by=utl.kwget(kwargs, self.fcpp, ['gantt_color_by', 'color_by'], None),
                     date_location=utl.kwget(kwargs, self.fcpp, ['gantt_date_location', 'date_location'], 'top'),
-                    date_type=utl.kwget(kwargs, self.fcpp, ['gantt_date_type', 'date_type'], None),
+                    date_type=utl.kwget(kwargs, self.fcpp, ['gantt_date_type', 'date_type'], []),
                     dependencies=utl.kwget(kwargs, self.fcpp, ['gantt_dependencies', 'dependencies'], 'Dependency'),
                     edge_color=utl.kwget(
                        kwargs, self.fcpp, ['gantt_edge_color', 'bar_edge_color'], copy.copy(self.color_list)),

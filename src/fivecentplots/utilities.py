@@ -1929,7 +1929,7 @@ def unit_test_show_all(only_fails: bool, reference: pathlib.Path, name: str, sta
             db()
 
         # macos only convenience - close last opened files
-        if len(paths) > 0:
+        if paths is not None and len(paths) > 0:
             close_preview_windows_macos([f.name for f in paths] + ['difference.png'])
 
 
