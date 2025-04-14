@@ -1244,48 +1244,10 @@ class Layout(BaseLayout):
                                   weight=kw['font_weight'],
                                   size=kw['font_size'],
                                   bbox=dict(facecolor=kw['fill_color'],
-                                              edgecolor=kw['edge_color'],
-                                              pad=kw['padding'],
-                                              ),
-                                  zorder=45)
-            ]
-
-
-            # # Case 1: not the self.text object
-            # if element is not None:
-            #     text_obj = ax.text(pos[0] + offsetx,
-            #                        pos[1] + offsety,
-            #                        txt,
-            #                        transform=transform,
-            #                        rotation=kw['rotation'],
-            #                        color=kw['font_color'],
-            #                        fontname=kw['font'],
-            #                        style=kw['font_style'],
-            #                        weight=kw['font_weight'],
-            #                        size=kw['font_size'],
-            #                        bbox=dict(facecolor=kw['fill_color'],
-            #                                  edgecolor=kw['edge_color'],
-            #                                  pad=kw['padding'],
-            #                                  ),
-            #                        zorder=45)
-
-            # # Case 2: self.text object
-            # else:
-            #     text_obj = None
-            #     el.obj[ir, ic][itext] = ax.text(0,
-            #                                     0,
-            #                                     txt,
-            #                                     rotation=kw['rotation'],
-            #                                     color=kw['font_color'],
-            #                                     fontname=kw['font'],
-            #                                     style=kw['font_style'],
-            #                                     weight=kw['font_weight'],
-            #                                     size=kw['font_size'],
-            #                                     bbox=dict(facecolor=kw['fill_color'],
-            #                                               edgecolor=kw['edge_color'],
-            #                                               pad=kw['padding'],
-            #                                               ),
-            #                                     zorder=45)
+                                            edgecolor=kw['edge_color'],
+                                            pad=kw['padding'],
+                                            ),
+                                  zorder=45)]
 
         # Handle result
         if not track_element:
@@ -2776,8 +2738,6 @@ class Layout(BaseLayout):
                     self.gantt.bar_labels.text[ipos] = ''
 
             # Add the labels
-            #self.gantt.bar_labels.obj[ir, ic] = []
-
             self.add_text(ir, ic, element=self.gantt.bar_labels, position=position,
                           offsetx=0, offsety=0)
             if not self.gantt.labels_as_yticks:
