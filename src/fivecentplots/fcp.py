@@ -1264,21 +1264,18 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
         else:
             bar_labels = [' | '. join(f) for f in df_rc[layout.gantt.bar_labels.columns].values]
 
+    # Update the x-axis ranges (preserve user-defined xmax even if it cuts off labels)
+    user_xmax = True if data.xmax[utl.plot_num(ir, ic, layout.ncol)] is not None else False
+    layout.set_axes_ranges(ir, ic, {k: data.ranges[k] for k in ['xmin' 'xmax'] if k in data.ranges})
+
     # Plot the bars
-    user_xmax = data.ranges['xmax'][ir, ic] is not None
     for iline, df, x, y, z, leg_name, twin, ngroups in data.get_plot_data(df_rc):
         new_xmax = layout.plot_gantt(ir, ic, iline, df, data.x, y, leg_name, xvals, yvals, bar_labels, ngroups, data)
 
-        # Update the xmax range to accomodate size of plot objects like bar labels; do not override user xmax
-        if new_xmax > np.datetime64('0000-01-01') and not user_xmax:
-            data.ranges['xmax'][ir, ic] = new_xmax
-        elif new_xmax > np.datetime64('0000-01-01'):
-            data.ranges['xmax'][ir, ic] = max(data.ranges['xmax'][ir, ic], new_xmax)
-        # if data.ranges['xmin'][ir, ic] is not None:
-        #     layout.axes.obj[ir, ic].set_xlim(left=data.ranges['xmin'][ir, ic])
-        # if data.ranges['xmax'][ir, ic] is not None:
-        #     layout.axes.obj[ir, ic].set_xlim(right=data.ranges['xmax'][ir, ic])
-        ## SEEMS TO BE A BUG HERE!
+        # If xmax not explicitly set by user, update the xmax range to accomodate size of long labels
+        if not user_xmax and np.datetime64(new_xmax) > np.datetime64(data.ranges['xmax'][ir, ic]):
+            data.ranges['xmax'][ir, ic] = np.datetime64(new_xmax)
+            layout.set_axes_ranges(ir, ic, {k: data.ranges[k] for k in ['xmin' 'xmax'] if k in data.ranges})
 
     # Connect dependencies with arrows
     if layout.gantt.dependencies in df_rc.columns:
@@ -1297,10 +1294,10 @@ def plot_gantt(data, layout, ir, ic, df_rc, kwargs):
                     continue
                 if data.ranges['xmin'][ir, ic] is not None:
                     sub = sub.loc[sub[data.x[0]] >= data.ranges['xmin'][ir, ic]]
-                    layout.axes.obj[ir, ic].set_xlim(left=data.ranges['xmin'][ir, ic])
+                    layout.set_axes_ranges(ir, ic, {k: data.ranges[k] for k in ['xmin'] if k in data.ranges})
                 if data.ranges['xmax'][ir, ic] is not None:
                     sub = sub.loc[sub[data.x[1]] <= data.ranges['xmax'][ir, ic]]
-                    layout.axes.obj[ir, ic].set_xlim(right=data.ranges['xmax'][ir, ic])
+                    layout.set_axes_ranges(ir, ic, {k: data.ranges[k] for k in ['xmax'] if k in data.ranges})
                 for ii, val in sub.iterrows():
                     start_idx = utl.tuple_list_index(yvals, val[data.y[0]])
                     end_idx = utl.tuple_list_index(yvals, row[data.y[0]])

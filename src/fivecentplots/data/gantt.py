@@ -229,15 +229,9 @@ class Gantt(data.Data):
             self._add_range(ir, ic, 'y', 'min', -0.5)
 
             # shared axes
-            if self.share_x or (self.nrow == 1 and self.ncol == 1):
-                if self.ranges['xmin'][ir, ic] is not None:
-                    self._add_range(ir, ic, 'x', 'min', self.ranges['xmin'][ir, ic])
-                else:
-                    self._add_range(ir, ic, 'x', 'min', df_fig[self.x[0]].min())
-                if self.ranges['xmax'][ir, ic] is not None:
-                    self._add_range(ir, ic, 'x', 'max', self.ranges['xmax'][ir, ic])
-                else:
-                    self._add_range(ir, ic, 'x', 'max', df_fig[self.x[1]].max())
+            if self.share_x and (self.nrow != 1 or self.ncol != 1):
+                self._add_range(ir, ic, 'x', 'min', self.ranges['xmin'][self.ranges['xmin'] != None].min())  # noqa
+                self._add_range(ir, ic, 'x', 'max', self.ranges['xmax'][self.ranges['xmax'] != None].max())  # noqa
             if self.share_y or (self.nrow == 1 and self.ncol == 1):
                 if self.legend is not None and self.workstreams != self.legend:
                     self._add_range(ir, ic, 'y', 'max', len(df_fig[self.y[0]]) - 0.5)
@@ -246,10 +240,9 @@ class Gantt(data.Data):
 
             # non-shared axes
             if not self.share_x:
-                self._add_range(ir, ic, 'x', 'min', df_rc[self.x[0]].min())
-                if self.ranges['xmax'][ir, ic] is not None:
-                    self._add_range(ir, ic, 'x', 'max', self.ranges['xmax'][ir, ic])
-                else:
+                if self.ranges['xmin'][ir, ic] is None:
+                    self._add_range(ir, ic, 'x', 'min', df_rc[self.x[0]].min())
+                if self.ranges['xmax'][ir, ic] is None:
                     self._add_range(ir, ic, 'x', 'max', df_rc[self.x[1]].max())
             if not self.share_y:
                 self._add_range(ir, ic, 'y', 'max', len(df_rc[self.y[0]]) - 0.5)
@@ -343,6 +336,7 @@ class Gantt(data.Data):
             modified DataFrame subset
         """
         # Deal with missing dates
+        df = df.copy()
         earliest_start = df[self.x[0]].min()
         latest_end = df[self.x[1]].max()
 
@@ -374,14 +368,13 @@ class Gantt(data.Data):
             # set the top level index
             idx = []
             [idx.append(x) for x in self.df_all.set_index(self.y).index if x not in idx]
-            df_start = self.df_all.groupby(self.y)[self.x].min()
-            df_stop = self.df_all.groupby(self.y)[self.x].max()
-            df_start[self.x[1]] = df_stop.loc[df_start.index, self.x[1]]
-            df_all = df_start.reindex(idx).reset_index()
+            df_all = pd.DataFrame(self.df_all.groupby(self.y)[self.x[0]].min())
+            df_all[self.x[1]] = self.df_all.groupby(self.y)[self.x[1]].max()
+            df_all = df_all.reindex(idx).reset_index()
 
             # check for matches in the subset
             df = pd.merge(df_all, df, how='left', indicator='Exist')
-            df.loc[df.Exist != 'both', self.x[1]] = df[self.x[0]]  # set start/stop date to the same for sorting
+            df.loc[df.Exist != 'both', self.x[1]] = np.datetime64('NaT')  # set to NaT for sorting
             del df['Exist']
 
         return df
